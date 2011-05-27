@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <title>Cucumber.js</title>
+    <link href="example.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="vendor/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="vendor/gherkin.en.js"></script>
+    <script type="text/javascript" src="../lib/cucumber.js"></script>
+    <script type="text/javascript" src="example.js"></script>
+  </head>
+  <body>
+    <h1>Cucumber.js</h1>
+    <h2>Feature source</h2>
+    <textarea id="feature">Feature: Simple maths
+  In order to do maths
+  As a developer
+  I want to increment variables
+
+  Scenario: Increment variable once
+    Given a variable set to 1
+    When I increment the variable by 1
+    Then the variable should contain 2</textarea>
+    <h2>Step definitions</h2>
+    <textarea id="step-definitions">var variable;
+  
+Given(/a variable set to (\d+)/, function(number, callback) {
+  variable = parseInt(number);
+  callback();
+});
+
+When(/I increment the variable by (\d+)/, function(number, callback) {
+  variable += parseInt(number);
+  callback();
+});
+  
+Then(/the variable should contain (\d+)/, function(number, callback) {
+  if (variable != parseInt(number))
+    throw('Variable should contain '+number+' but it contains '+variable+'.');
+  callback();
+});</textarea>
+    
+  <h2>Output</h2>
+  <p><button id="run-feature">Run feature</button></p>
+  <textarea readonly="readonly" id="output"></textarea>
+  <div id="errors-container">
+    <h3>Errors</h3>
+    <pre id="errors"></pre>
+  </div>
+  </body>
+</html>

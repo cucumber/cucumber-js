@@ -1,0 +1,29 @@
+{ "name" : "cucumber"
+, "description" : "Pure Javascript implementation of Cucumber."
+, "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
+, "version" : "0.0.1"
+, "homepage" : "http://github.com/cucumber/cucumber-js"
+, "author" : "Julien Biezemans <jb@jbpros.com>"
+, "contributors" : [ 
+  ]
+, "repository" :
+  { "type" : "git"
+  , "url" : "git://github.com/cucumber/cucumber-js.git"
+  }
+, "bugs" :
+  { "mail" : "cukes@googlegroups.com"
+  , "web" : "http://github.com/cucumber/cucumber-js/issues"
+  }
+, "directories" : { "lib" : "./lib" }
+, "main" : "./lib/cucumber"
+, "engines" : { "node" : "0.4 || 0.5" }
+, "dependencies" : 
+  { "gherkin" : "2.3.9"
+  , "jasmine-node" : ">=1.0.4"
+  }
+, "licenses" :
+  [ { "type" : "MIT"
+    , "url" : "http://github.com/cucumber/cucumber.js/LICENSE"
+    }
+  ]
+}

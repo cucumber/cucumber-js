@@ -1,0 +1,20 @@
+html, body {
+  margin:1em;
+  min-height:100%;
+  font-family:helvetica, arial, freesans, clean, sans-serif;
+  font-size:.95em;
+}
+
+#feature, #step-definitions, #output, #errors {
+  width:700px;
+  font-family:'Bitstream Vera Sans Mono', Courier, monospace;
+  font-size:1em;
+}
+
+#feature, #step-definitions, #output {
+  height:12em;
+}
+
+#errors {
+  color: #a30;
+}
