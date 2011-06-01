@@ -1,3 +1,3 @@
 [submodule "features/global"]
 	path = features/global
-	url = git://github.com/aslakhellesoy/cucumber-features.git
+	url = git://github.com/cucumber/cucumber-features.git
