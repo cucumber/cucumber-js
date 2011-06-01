@@ -40,7 +40,7 @@ Specs:
 Features (yes, cucumber.js is eating itself):
 
     $ git submodule update --init
-    $ node cucumber.js features/global/basic_feature_execution.feature
-    $ node cucumber.js features/asynchronous_step_definitions-issue_01.feature
+    $ ./cucumber.js features/global/basic_feature_execution.feature
+    $ ./cucumber.js features/asynchronous_step_definitions-issue_01.feature
 
 The features have to be run one at a time for the moment. Sorry for that, we're working on it :)

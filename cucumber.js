@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var fs             = require('fs');
 var Cucumber       = require('./lib/cucumber');
 var supportCode    = require('./features/step_definitions/cucumber_steps');
