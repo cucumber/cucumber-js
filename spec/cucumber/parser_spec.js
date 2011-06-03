@@ -4,7 +4,7 @@ describe("Cucumber.Parser", function() {
   var Cucumber = require('cucumber');
   var parser, featuresSource;
   var features;
-  
+
   beforeEach(function() {
     features       = createSpy("Root 'features' AST element");
     spyOn(Cucumber.Ast, 'Features').andReturn(features);
@@ -17,7 +17,7 @@ describe("Cucumber.Parser", function() {
       expect(Cucumber.Ast.Features).toHaveBeenCalled();
     });
   });
-  
+
   describe("parse()", function() {
     var Gherkin = require('gherkin');
     var gherkinLexerConstructor, gherkinLexer;
@@ -30,7 +30,7 @@ describe("Cucumber.Parser", function() {
       spyOn(Gherkin, 'Lexer').andReturn(gherkinLexerConstructor);
       spyOn(parser, 'getEventHandlers').andReturn(eventHandlers);
     });
-    
+
     it("loads the gherkin lexer module for English", function() {
       parser.parse();
       expect(Gherkin.Lexer).toHaveBeenCalledWith('en');
@@ -40,7 +40,7 @@ describe("Cucumber.Parser", function() {
       parser.parse();
       expect(parser.getEventHandlers).toHaveBeenCalled();
     });
-    
+
     it("creates a gherkin lexer", function() {
       parser.parse();
       expect(gherkinLexerConstructor).toHaveBeenCalledWith(eventHandlers);
@@ -58,7 +58,7 @@ describe("Cucumber.Parser", function() {
 
   describe("getEventHandlers()", function() {
     var eventHandlers;
-    
+
     it("tells to bind 'feature' to handleFeature()", function() {
       spyOn(parser, 'handleFeature');
       eventHandlers = parser.getEventHandlers();
@@ -77,10 +77,10 @@ describe("Cucumber.Parser", function() {
       expect(eventHandlers['step']).toBe(parser.handleStep);
     });
 
-    it("tells to bind 'py_string' to handlePyString()", function() {
-      spyOn(parser, 'handlePyString');
+    it("tells to bind 'py_string' to handleDocString()", function() {
+      spyOn(parser, 'handleDocString');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['py_string']).toBe(parser.handlePyString);
+      expect(eventHandlers['py_string']).toBe(parser.handleDocString);
     });
 
     it("tells to bind 'eof' to handleEof()", function() {
@@ -159,7 +159,7 @@ describe("Cucumber.Parser", function() {
   describe("handleFeature()", function() {
     var keyword, name, description, line;
     var feature;
-    
+
     beforeEach(function() {
       keyword     = createSpy("'feature' keyword");
       name        = createSpy("Name of the feature");
@@ -180,11 +180,11 @@ describe("Cucumber.Parser", function() {
       expect(features.addFeature).toHaveBeenCalledWith(feature);
     });
   });
-  
+
   describe("handleScenario()", function() {
     var keyword, name, description, line;
     var scenario, currentFeature;
-    
+
     beforeEach(function() {
       keyword        = createSpy("'scenario' keyword");
       name           = createSpy("Name of the scenario");
@@ -222,7 +222,7 @@ describe("Cucumber.Parser", function() {
       line            = createSpy("Line number");
       step            = createSpy("Step AST element");
       currentScenario = createSpyWithStubs("Current scenario AST element", {addStep: null});
-      spyOn(Cucumber.Ast, 'Step').andReturn(step);        
+      spyOn(Cucumber.Ast, 'Step').andReturn(step);
       spyOn(parser, 'getCurrentScenario').andReturn(currentScenario);
     });
 
@@ -242,32 +242,32 @@ describe("Cucumber.Parser", function() {
     });
   });
 
-  describe("handlePyString()", function() {
+  describe("handleDocString()", function() {
     var string, line;
     var currentStep;
 
     beforeEach(function() {
-      string      = createSpy("PY string's actual string");
+      string      = createSpy("DocString's actual string");
       line        = createSpy("Line number");
-      pyString    = createSpy("PY string AST element");
-      currentStep = createSpyWithStubs("Current step", {attachPyString: null});
-      spyOn(Cucumber.Ast, 'PyString').andReturn(pyString);
+      docString   = createSpy("DocString AST element");
+      currentStep = createSpyWithStubs("Current step", {attachDocString: null});
+      spyOn(Cucumber.Ast, 'DocString').andReturn(docString);
       spyOn(parser, 'getCurrentStep').andReturn(currentStep);
     });
 
-    it("creates a new PY string AST element", function() {
-      parser.handlePyString(string, line);
-      expect(Cucumber.Ast.PyString).toHaveBeenCalledWith(string, line);
+    it("creates a new DocString AST element", function() {
+      parser.handleDocString(string, line);
+      expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(string, line);
     });
 
     it("gets the current step AST element", function() {
-      parser.handlePyString(string, line);
+      parser.handleDocString(string, line);
       expect(parser.getCurrentStep).toHaveBeenCalled();
     });
 
-    it("attaches the PY string element to the current step", function() {
-      parser.handlePyString(string, line);
-      expect(currentStep.attachPyString).toHaveBeenCalledWith(pyString);
+    it("attaches the DocString element to the current step", function() {
+      parser.handleDocString(string, line);
+      expect(currentStep.attachDocString).toHaveBeenCalledWith(docString);
     });
   });
 

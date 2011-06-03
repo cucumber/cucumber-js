@@ -3,15 +3,15 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Step", function() {
   var Cucumber = require('cucumber');
   var step, keyword, name, stepLine;
-  
+
   beforeEach(function() {
-    name     = createSpy("Step name");
-    keyword  = createSpy("Step keyword");
-    stepLine = createSpy("Step line");
-    pyString = createSpy("PY string AST element");
-    step     = Cucumber.Ast.Step(keyword, name, stepLine);
+    name      = createSpy("Step name");
+    keyword   = createSpy("Step keyword");
+    stepLine  = createSpy("Step line");
+    docString = createSpy("DocString AST element");
+    step      = Cucumber.Ast.Step(keyword, name, stepLine);
   });
-  
+
   describe("getKeyword()", function() {
     it("returns the keyword of the step", function() {
       expect(step.getKeyword()).toBe(keyword);
@@ -24,27 +24,27 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
-  describe("hasPyString()", function() {
-    it("returns true when a PY string was attached to the step", function() {
-      step.attachPyString(pyString);
-      expect(step.hasPyString()).toBeTruthy();
+  describe("hasDocString()", function() {
+    it("returns true when a DocString was attached to the step", function() {
+      step.attachDocString(docString);
+      expect(step.hasDocString()).toBeTruthy();
     });
 
-    it("returns false when no PY string was attached to the step", function() {
-      expect(step.hasPyString()).toBeFalsy();
+    it("returns false when no DocString was attached to the step", function() {
+      expect(step.hasDocString()).toBeFalsy();
     });
   });
 
-  describe("getPyString()", function() {
-    it("returns the PY string that was attached to the step through attachPyString()", function() {
-      step.attachPyString(pyString);
-      expect(step.getPyString()).toBe(pyString);
+  describe("getDocString()", function() {
+    it("returns the DocString that was attached to the step through attachDocString()", function() {
+      step.attachDocString(docString);
+      expect(step.getDocString()).toBe(docString);
     });
   });
 
   describe("acceptVisitor()", function() {
     var visitor, callback;
-    
+
     beforeEach(function() {
       visitor  = createSpyWithStubs("Visitor", {visitStepResult: null});
       callback = createSpy("Callback");
@@ -78,7 +78,7 @@ describe("Cucumber.Ast.Step", function() {
   describe("execute()", function() {
     var stepDefinition;
     var visitor, callback;
-    
+
     beforeEach(function() {
       stepDefinition = createSpy("Step definition");
       visitor        = createSpy("Visitor");
@@ -86,17 +86,17 @@ describe("Cucumber.Ast.Step", function() {
       spyOnStub(stepDefinition, 'invoke');
       spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
     });
-    
+
     it("looks up the step definition based on the step string", function() {
       step.execute(visitor, callback);
       expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
     });
 
-    it("invokes the step definition with the step name, PY string and the callback", function() {
-      var pyString = createSpy("PY string");
-      step.attachPyString(pyString);
+    it("invokes the step definition with the step name, DocString and the callback", function() {
+      var docString = createSpy("DocString");
+      step.attachDocString(docString);
       step.execute(visitor, callback);
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(name, pyString, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(name, docString, callback);
     });
   });
 });

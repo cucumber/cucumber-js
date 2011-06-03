@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.SupportCode.StepDefinition", function() {
   var Cucumber = require('cucumber');
   var stepDefinition, stepRegexp, stepCode;
-  
+
   beforeEach(function() {
     stepRegexp     = createSpyWithStubs("Step regexp", {test:null});
     stepCode       = createSpy("Step code");
@@ -16,7 +16,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
     beforeEach(function() {
       stepName = createSpy("Step name to match");
     });
-    
+
     it("tests the string against the step name", function() {
       stepDefinition.matchesStepName(stepName);
       expect(stepRegexp.test).toHaveBeenCalledWith(stepName);
@@ -34,12 +34,12 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
   });
 
   describe("invoke()", function() {
-    var stepName, pyString, callback;
+    var stepName, docString, callback;
     var parameters;
-    
+
     beforeEach(function() {
       stepName   = createSpy("Step name to match");
-      pyString   = createSpy("Step PY string");
+      docString  = createSpy("Step DocString");
       callback   = createSpy("Callback");
       parameters = createSpy("Code execution parameters");
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
@@ -47,15 +47,15 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
     });
 
     it("builds the step invocation parameters", function() {
-      stepDefinition.invoke(stepName, pyString, callback);
+      stepDefinition.invoke(stepName, docString, callback);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalled();
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(stepName, 1);
-      expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(pyString, 2);
+      expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(docString, 2);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithAFunctionAsNthParameter(3);
     });
 
     it("calls the step code with the parameters", function() {
-      stepDefinition.invoke(stepName, pyString, callback);
+      stepDefinition.invoke(stepName, docString, callback);
       expect(stepCode.apply).toHaveBeenCalledWith(undefined, parameters);
     });
 
@@ -64,7 +64,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       var stepResult;
 
       beforeEach(function() {
-        stepDefinition.invoke(stepName, pyString, callback);
+        stepDefinition.invoke(stepName, docString, callback);
         codeExecutionCallback = stepDefinition.buildInvocationParameters.mostRecentCall.args[2];
         stepResult = createSpy("Step result");
         spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
@@ -83,55 +83,55 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
   });
 
   describe("buildInvocationParameters()", function() {
-    var stepName, pyString, pyStringString;
+    var stepName, docString, docStringString;
     var matches, callback;
 
     beforeEach(function() {
-      stepName       = createSpy("Step name to match");
-      pyStringString = createSpy("PY string string");
-      pyString       = createSpyWithStubs("Step PY string", {getString:pyStringString});
-      matches        = createSpyWithStubs("Matches", {shift:null, push:null});
-      callback       = createSpy("Callback");
+      stepName        = createSpy("Step name to match");
+      docStringString = createSpy("DocString string");
+      docString       = createSpyWithStubs("Step DocString", {getString:docStringString});
+      matches         = createSpyWithStubs("Matches", {shift:null, push:null});
+      callback        = createSpy("Callback");
       spyOnStub(stepRegexp, 'exec').andReturn(matches);
     });
 
     it("executes the step regexp against the step name", function() {
-      stepDefinition.buildInvocationParameters(stepName, pyString, callback);
+      stepDefinition.buildInvocationParameters(stepName, docString, callback);
       expect(stepRegexp.exec).toHaveBeenCalledWith(stepName);
     });
 
     it("removes the whole matched string of the regexp result array (to only keep matching groups)", function() {
-      stepDefinition.buildInvocationParameters(stepName, pyString, callback);
+      stepDefinition.buildInvocationParameters(stepName, docString, callback);
       expect(matches.shift).toHaveBeenCalled();
     });
 
-    describe("when a pyString is present", function() {
-      it("gets the PY string's string", function() {
-        stepDefinition.buildInvocationParameters(stepName, pyString, callback);
-        expect(pyString.getString).toHaveBeenCalled();
+    describe("when a DocString is present", function() {
+      it("gets the DocString's string", function() {
+        stepDefinition.buildInvocationParameters(stepName, docString, callback);
+        expect(docString.getString).toHaveBeenCalled();
       });
 
       it("adds the string to the parameter array", function() {
-        stepDefinition.buildInvocationParameters(stepName, pyString, callback);
-        expect(matches.push).toHaveBeenCalledWith(pyStringString);
+        stepDefinition.buildInvocationParameters(stepName, docString, callback);
+        expect(matches.push).toHaveBeenCalledWith(docStringString);
       });
     });
 
-    describe("when no pyString is present", function() {
+    describe("when no DocString is present", function() {
       it("does not add the string to the parameter array", function() {
-        pyString = undefined;
-        stepDefinition.buildInvocationParameters(stepName, pyString, callback);
+        docString = undefined;
+        stepDefinition.buildInvocationParameters(stepName, docString, callback);
         expect(matches.push).not.toHaveBeenCalledWith(undefined);
       });
     });
 
     it("adds the callback to the parameter array", function() {
-      stepDefinition.buildInvocationParameters(stepName, pyString, callback);
+      stepDefinition.buildInvocationParameters(stepName, docString, callback);
       expect(matches.push).toHaveBeenCalledWith(callback);
     });
 
     it("returns the parameters", function() {
-      expect(stepDefinition.buildInvocationParameters(stepName, pyString, callback)).toBe(matches);
+      expect(stepDefinition.buildInvocationParameters(stepName, docString, callback)).toBe(matches);
     });
   });
 });
