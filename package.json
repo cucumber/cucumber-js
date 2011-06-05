@@ -18,7 +18,7 @@
 , "main" : "./lib/cucumber"
 , "engines" : { "node" : "0.4 || 0.5" }
 , "dependencies" : 
-  { "gherkin" : "2.3.9"
+  { "gherkin" : "2.4.0"
   , "jasmine-node" : ">=1.0.4"
   }
 , "licenses" :

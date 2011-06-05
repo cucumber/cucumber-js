@@ -77,10 +77,10 @@ describe("Cucumber.Parser", function() {
       expect(eventHandlers['step']).toBe(parser.handleStep);
     });
 
-    it("tells to bind 'py_string' to handleDocString()", function() {
+    it("tells to bind 'doc_string' to handleDocString()", function() {
       spyOn(parser, 'handleDocString');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['py_string']).toBe(parser.handleDocString);
+      expect(eventHandlers['doc_string']).toBe(parser.handleDocString);
     });
 
     it("tells to bind 'eof' to handleEof()", function() {
