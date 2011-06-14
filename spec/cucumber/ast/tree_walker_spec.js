@@ -1,8 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Ast.TreeWalker", function() {
-  var Cucumber     = require('cucumber');
-  var EventEmitter = require('events').EventEmitter;
+  var Cucumber = require('cucumber');
   var treeWalker, features, supportCodeLibrary, listeners;
 
   beforeEach(function() {
@@ -31,251 +30,368 @@ describe("Cucumber.Ast.TreeWalker", function() {
   });
 
   describe("visitFeatures()", function() {
-    var callback;
-    
+    var callback, event;
+
     beforeEach(function() {
       callback = createSpy("Callback");
-      spyOn(treeWalker, 'broadcastMessagesBeforeAndAfterFunction');
-    });
-    
-    it("broadcasts the features' visit with a callback", function() {
-      treeWalker.visitFeatures(features, callback);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).toHaveBeenCalled();
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(Cucumber.Ast.TreeWalker.FEATURES_MESSAGE, 1);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      event    = createSpy("Event");
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
-    describe("broadcast messages callback", function() {
-      var broadcastCallback;
+    it("creates a new event about the features' visit", function() {
+      treeWalker.visitFeatures(features, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.FEATURES_EVENT_NAME);
+    });
+
+    it("broadcasts the features' visit", function() {
+      treeWalker.visitFeatures(features, callback);
+      expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(event, 1);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(callback, 3);
+    });
+
+    describe("user function", function() {
+      var userFunction, userFunctionCallback;
 
       beforeEach(function() {
+        userFunctionCallback = createSpy("User function callback");
         treeWalker.visitFeatures(features, callback);
-        broadcastCallback = treeWalker.broadcastMessagesBeforeAndAfterFunction.mostRecentCall.args[1];
+        userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
       });
 
+
       it("visits the features, passing it the received callback", function() {
-        broadcastCallback();
-        expect(features.acceptVisitor).toHaveBeenCalledWith(treeWalker, callback);
-      });      
+        userFunction(userFunctionCallback);
+        expect(features.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+      });
     });
   });
 
   describe("visitFeature()", function() {
-    var feature, callback;
-    
+    var feature, callback, event, payload;
+
     beforeEach(function() {
       feature  = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
       callback = createSpy("Callback");
-      spyOn(treeWalker, 'broadcastMessagesBeforeAndAfterFunction');
-    });
-    
-    it("broadcasts the feature's visit and the feature itself with a callback", function() {
-      treeWalker.visitFeature(feature, callback);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).toHaveBeenCalled();
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(Cucumber.Ast.TreeWalker.FEATURE_MESSAGE, 1);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(feature, 2);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithAFunctionAsNthParameter(3);
+      event    = createSpy("Event");
+      payload  = {feature: feature};
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
-    describe("broadcast messages callback", function() {
-      var broadcastCallback;
+    it("creates a new event about the feature' visit", function() {
+      treeWalker.visitFeature(feature, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.FEATURE_EVENT_NAME, payload);
+    });
+
+    it("broadcasts the feature's visit", function() {
+      treeWalker.visitFeature(feature, callback);
+      expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(event, 1);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(callback, 3);
+    });
+
+    describe("user function", function() {
+      var userFunction, userFunctionCallback;
 
       beforeEach(function() {
+        userFunctionCallback = createSpy("User function callback");
         treeWalker.visitFeature(feature, callback);
-        broadcastCallback = treeWalker.broadcastMessagesBeforeAndAfterFunction.mostRecentCall.args[2];
+        userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
       });
 
       it("visits the feature, passing it the received callback", function() {
-        broadcastCallback();
-        expect(feature.acceptVisitor).toHaveBeenCalledWith(treeWalker, callback);
-      });      
+        userFunction(userFunctionCallback);
+        expect(feature.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+      });
     });
   });
 
   describe("visitScenario()", function() {
-    var scenario, callback;
+    var scenario, callback, event, payload;
 
     beforeEach(function() {
       scenario = createSpyWithStubs("Scenario AST element", {acceptVisitor: null});
       callback = createSpy("Callback");
-      spyOn(treeWalker, 'broadcastMessagesBeforeAndAfterFunction');
-    });
-    
-    it("broadcasts the scenario's visit and the scenario itself with a callback", function() {
-      treeWalker.visitScenario(scenario, callback);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).toHaveBeenCalled();
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(Cucumber.Ast.TreeWalker.SCENARIO_MESSAGE, 1);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(scenario, 2);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithAFunctionAsNthParameter(3);
+      event    = createSpy("Event");
+      payload  = {scenario: scenario};
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
-    describe("broadcast messages callback", function() {
-      var broadcastCallback;
+    it("creates a new event about the scenario's visit", function() {
+      treeWalker.visitScenario(scenario, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.SCENARIO_EVENT_NAME, payload);
+    });
+
+    it("broadcasts the scenario's visit", function() {
+      treeWalker.visitScenario(scenario, callback);
+      expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(event, 1);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(callback, 3);
+    });
+
+    describe("user function", function() {
+      var userFunction, userFunctionCallback;
 
       beforeEach(function() {
+        userFunctionCallback = createSpy("User function callback");
         treeWalker.visitScenario(scenario, callback);
-        broadcastCallback = treeWalker.broadcastMessagesBeforeAndAfterFunction.mostRecentCall.args[2];
+        userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
       });
 
       it("visits the scenario, passing it the received callback", function() {
-        broadcastCallback();
-        expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, callback);
-      });      
+        userFunction(userFunctionCallback);
+        expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+      });
     });
   });
 
   describe("visitStep()", function() {
-    var step, callback;
-    
+    var step, callback, event, payload;
+
     beforeEach(function() {
-      step     = createSpyWithStubs("Step", {acceptVisitor: null});
+      step     = createSpyWithStubs("Step AST element", {acceptVisitor: null});
       callback = createSpy("Callback");
-      spyOn(treeWalker, 'broadcastMessagesBeforeAndAfterFunction');
-    });
-    
-    it("broadcasts the step's visit and the step itself with a callback", function() {
-      treeWalker.visitStep(step, callback);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).toHaveBeenCalled();
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(Cucumber.Ast.TreeWalker.STEP_MESSAGE, 1);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithValueAsNthParameter(step, 2);
-      expect(treeWalker.broadcastMessagesBeforeAndAfterFunction).
-        toHaveBeenCalledWithAFunctionAsNthParameter(3);
+      event    = createSpy("Event");
+      payload  = {step: step};
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
-    describe("broadcast messages callback", function() {
-      var broadcastCallback;
+    it("creates a new event about the step's visit", function() {
+      treeWalker.visitStep(step, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_EVENT_NAME, payload);
+    });
+
+    it("broadcasts the step's visit", function() {
+      treeWalker.visitStep(step, callback);
+      expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(event, 1);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(callback, 3);
+    });
+
+    describe("user function", function() {
+      var userFunction, userFunctionCallback;
 
       beforeEach(function() {
+        userFunctionCallback = createSpy("User function callback");
         treeWalker.visitStep(step, callback);
-        broadcastCallback = treeWalker.broadcastMessagesBeforeAndAfterFunction.mostRecentCall.args[2];
+        userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
       });
 
       it("visits the step, passing it the received callback", function() {
-        broadcastCallback();
-        expect(step.acceptVisitor).toHaveBeenCalledWith(treeWalker, callback);
-      });      
+        userFunction(userFunctionCallback);
+        expect(step.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+      });
     });
   });
 
   describe("visitStepResult()", function() {
-    var stepResult, callback;
+    var stepResult, callback, event, payload;
 
     beforeEach(function() {
       stepResult = createSpy("Step result");
       callback   = createSpy("Callback");
-      spyOn(treeWalker, 'broadcastMessage');
+      event      = createSpy("Event");
+      payload    = {stepResult: stepResult};
+      spyOn(treeWalker, 'broadcastEvent');
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
     });
-    
+
+    it("creates a new event about the step result's visit", function() {
+      treeWalker.visitStepResult(stepResult, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_RESULT_EVENT_NAME, payload);
+    });
+
     it("broadcasts the step result visit and the step result itself", function() {
       treeWalker.visitStepResult(stepResult, callback);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_RESULT_MESSAGE, stepResult);
+      expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
     });
 
-    it("calls back", function() {
+    it("does not call back by itself", function() {
       treeWalker.visitStepResult(stepResult, callback);
-      expect(callback).toHaveBeenCalled();
+      expect(callback).not.toHaveBeenCalled();
     });
   });
 
-  describe("broadcastMessagesBeforeAndAfterFunction()", function() {
-    var message, callback;
-    var beforeMessage, afterMessage;
-    var beforeMessageBroadcasted, afterMessageBrodcasted;
-    
+  describe("broadcastEventAroundUserFunction()", function() {
+    var event, userFunction, callback;
+    var userFunctionWrapper;
+
     beforeEach(function() {
-      message                  = "EventMessage";
-      callback                 = createSpy("Callback");
-      beforeMessage            = Cucumber.Ast.TreeWalker.BEFORE_MESSAGE_PREFIX + message;
-      afterMessage             = Cucumber.Ast.TreeWalker.AFTER_MESSAGE_PREFIX  + message;
-      beforeMessageBroadcasted = false;
-      afterMessageBroadcasted  = false;
-      spyOn(treeWalker, 'broadcastMessage').andCallFake(function(message) {
-        if (message == beforeMessage)
-          beforeMessageBroadcasted = true;
-        if (message == afterMessage)
-          afterMessageBroadcasted = true;
-      });
+      event               = createSpy("Event");
+      userFunction        = createSpy("User function");
+      callback            = createSpy("Callback");
+      userFunctionWrapper = createSpy("User function wrapper");
+      spyOn(treeWalker, 'wrapUserFunctionAndAfterEventBroadcast').andReturn(userFunctionWrapper);
+      spyOn(treeWalker, 'broadcastBeforeEvent');
     });
 
-    it("sends a 'before event' message", function() {
-      treeWalker.broadcastMessagesBeforeAndAfterFunction(message, callback);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(beforeMessage);
+    it("wraps the user function and after event broadcast together", function() {
+      treeWalker.broadcastEventAroundUserFunction(event, userFunction, callback);
+      expect(treeWalker.wrapUserFunctionAndAfterEventBroadcast).toHaveBeenCalledWith(userFunction, event, callback);
     });
 
-    it("runs the callback after the before message and before the after message are sent", function() {
-      callback.andCallFake(function() {
-        expect(beforeMessageBroadcasted).toBeTruthy();
-        expect(afterMessageBroadcasted).toBeFalsy();
-      });
-      treeWalker.broadcastMessagesBeforeAndAfterFunction(message, callback);
-      expect(callback).toHaveBeenCalled();
-    });
-    
-    it("sends an 'after event' message", function() {
-      treeWalker.broadcastMessagesBeforeAndAfterFunction(message, callback);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(afterMessage);
-    });
-
-    it("broadcasts an optional parameter in both before and after events", function() {
-      var parameter = createSpy("Additional parameter");
-      treeWalker.broadcastMessagesBeforeAndAfterFunction(message, parameter, callback);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(beforeMessage, parameter);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(afterMessage, parameter);
-    });
-
-    it("broadcasts any optional parameter in both before and after events", function() {
-      var parameter1 = createSpy("Additional parameter 1");
-      var parameter2 = createSpy("Additional parameter 2");
-      var parameter3 = createSpy("Additional parameter 3");
-      treeWalker.broadcastMessagesBeforeAndAfterFunction(message, parameter1, parameter2, parameter3, callback);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(beforeMessage, parameter1, parameter2, parameter3);
-      expect(treeWalker.broadcastMessage).toHaveBeenCalledWith(afterMessage, parameter1, parameter2, parameter3);
+    it("broadcasts a before event with the user function and after event broadcast wrapper as callback", function() {
+      treeWalker.broadcastEventAroundUserFunction(event, userFunction, callback);
+      expect(treeWalker.broadcastBeforeEvent).toHaveBeenCalledWith(event, userFunctionWrapper);
     });
   });
 
-  describe("broadcastMessage()", function() {
-    var message, hearMethod;
+  describe("wrapUserFunctionAndAfterEventBroadcast()", function() {
+    var userFunction, event, callback;
+    var broadcastAfterEventWrapper;
 
     beforeEach(function() {
-      message     = "Message";
-      hearMethod = Cucumber.Ast.TreeWalker.HEAR_METHOD_PREFIX + message;
-      listeners.forEach(function(listener) {
-        spyOnStub(listener, hearMethod);
-      });
+      userFunction               = createSpy("User function");
+      event                      = createSpy("Event");
+      callback                   = createSpy("Callback");
+      broadcastAfterEventWrapper = createSpy("After event broadcast wrapper");
+      spyOn(treeWalker, 'wrapAfterEventBroadcast').andReturn(broadcastAfterEventWrapper);
     });
 
-    it("tells every listener about the message", function() {
-      treeWalker.broadcastMessage(message);
-      listeners.forEach(function(listener) {
-        expect(listener[hearMethod]).toHaveBeenCalled();
-      });
+    it("wraps the after event broadcast to use as a callback", function() {
+      treeWalker.wrapUserFunctionAndAfterEventBroadcast(userFunction, event, callback);
+      expect(treeWalker.wrapAfterEventBroadcast).toHaveBeenCalledWith(event, callback);
     });
 
-    it("passes an optional additional parameter to the listeners", function() {
-      var parameter = createSpy("Additional parameter");
-      treeWalker.broadcastMessage(message, parameter);
-      listeners.forEach(function(listener) {
-        expect(listener[hearMethod]).toHaveBeenCalledWith(parameter);
-      });
+    it("returns a wrapper function", function() {
+      var returned = treeWalker.wrapUserFunctionAndAfterEventBroadcast(userFunction, event, callback);
+      expect(returned).toBeAFunction();
     });
 
-    it("passes any additional parameter to the listeners", function() {
-      var parameter1 = createSpy("Additional parameter 1");
-      var parameter2 = createSpy("Additional parameter 2");
-      var parameter3 = createSpy("Additional parameter 3");
-      treeWalker.broadcastMessage(message, parameter1, parameter2, parameter3);
-      listeners.forEach(function(listener) {
-        expect(listener[hearMethod]).toHaveBeenCalledWith(parameter1, parameter2, parameter3);
+    describe("returned wrapper function", function() {
+      var wrapper;
+
+      beforeEach(function() {
+        wrapper = treeWalker.wrapUserFunctionAndAfterEventBroadcast(userFunction, event, callback);
+      });
+
+      it("calls the user function with the after event broadcast wrapper", function() {
+        wrapper();
+        expect(userFunction).toHaveBeenCalledWith(broadcastAfterEventWrapper);
+      });
+    });
+  });
+
+  describe("wrapAfterEventBroadcast()", function() {
+    var event, callback;
+
+    beforeEach(function() {
+      event    = createSpy("Event");
+      callback = createSpy("Callback");
+    });
+
+    it("returns a function", function() {
+      var returned = treeWalker.wrapAfterEventBroadcast(event, callback);
+      expect(returned).toBeAFunction();
+    });
+
+    describe("returned wrapper function", function() {
+      var wrapper;
+
+      beforeEach(function() {
+        wrapper = treeWalker.wrapAfterEventBroadcast(event, callback);
+        spyOn(treeWalker, 'broadcastAfterEvent');;
+      });
+
+      it("broadcasts an after event with the received callback as callback", function() {
+        wrapper();
+        expect(treeWalker.broadcastAfterEvent).toHaveBeenCalledWith(event, callback);
+      });
+    });
+  });
+
+  describe("broadcastBeforeEvent()", function() {
+    var event, callback, preEvent;
+
+    beforeEach(function() {
+      preEvent = createSpy("Pre-event (before)");
+      event    = createSpyWithStubs("Event", { replicateAsPreEvent: preEvent });
+      callback = createSpy("Callback");
+      spyOn(treeWalker, 'broadcastEvent');
+    });
+
+    it("asks the event to replicate itself as a before event", function() {
+      treeWalker.broadcastBeforeEvent(event, callback);
+      expect(event.replicateAsPreEvent).toHaveBeenCalled();
+    });
+
+    it("broadcasts the pre event with the call back", function() {
+      treeWalker.broadcastBeforeEvent(event, callback);
+      expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(preEvent, callback);
+    });
+  });
+
+  describe("broadcastAfterEvent()", function() {
+    var event, callback, preEvent;
+
+    beforeEach(function() {
+      preEvent = createSpy("Post-event (after)");
+      event    = createSpyWithStubs("Event", { replicateAsPostEvent: preEvent });
+      callback = createSpy("Callback");
+      spyOn(treeWalker, 'broadcastEvent');
+    });
+
+    it("asks the event to replicate itself as a after event", function() {
+      treeWalker.broadcastAfterEvent(event, callback);
+      expect(event.replicateAsPostEvent).toHaveBeenCalled();
+    });
+
+    it("broadcasts the pre event with the call back", function() {
+      treeWalker.broadcastAfterEvent(event, callback);
+      expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(preEvent, callback);
+    });
+  });
+
+
+  describe("broadcastEvent()", function() {
+    var event, eventName, callback;
+
+    beforeEach(function() {
+      event    = createSpy("Event");
+      callback = createSpy("Callback");
+      spyOn(listeners, 'forEach');
+    });
+
+    it("iterates over the listeners", function() {
+      treeWalker.broadcastEvent(event, callback);
+      expect(listeners.forEach).toHaveBeenCalled();
+      expect(listeners.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(listeners.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+    });
+
+    describe("for each listener", function() {
+      var userFunction, listener, forEachCallback;
+
+      beforeEach(function() {
+        listener        = createSpyWithStubs("Listener", {hear:null});
+        forEachCallback = createSpy("forEach() callback");
+        treeWalker.broadcastEvent(event, callback);
+        userFunction = listeners.forEach.mostRecentCall.args[0];
+      });
+
+      it("tells the listener about the event and calls back when finished", function() {
+        userFunction(listener, forEachCallback);
+        expect(listener.hear).toHaveBeenCalledWith(event, forEachCallback);
       });
     });
   });
@@ -288,7 +404,7 @@ describe("Cucumber.Ast.TreeWalker", function() {
       stepDefinition = createSpy("Step definition");
       spyOnStub(supportCodeLibrary, 'lookupStepDefinitionByName').andReturn(stepDefinition);
     });
-    
+
     it("asks the support code library for the step definition", function() {
       treeWalker.lookupStepDefinitionByName(stepName);
       expect(supportCodeLibrary.lookupStepDefinitionByName).toHaveBeenCalledWith(stepName);

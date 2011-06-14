@@ -4,7 +4,7 @@ describe("Cucumber.Ast.Features", function() {
   var Cucumber = require('cucumber');
   var featureCollection, lastFeature;
   var features;
-  
+
   beforeEach(function() {
     lastFeature       = createSpy("Last feature");
     featureCollection = createSpy("Feature collection");
@@ -14,7 +14,7 @@ describe("Cucumber.Ast.Features", function() {
     spyOn(Cucumber.Types, 'Collection').andReturn(featureCollection);
     features = Cucumber.Ast.Features();
   });
-  
+
   describe("constructor", function() {
     it("creates a new collection to store features", function() {
       expect(Cucumber.Types.Collection).toHaveBeenCalledWith();
