@@ -29,18 +29,18 @@ And probably lots of other browsers.
 The only dependency of cucumber.js is Gherkin:
 
     $ npm link
-    
+
 ## Run tests
 
 Specs:
 
     $ cd spec
     $ ../node_modules/.bin/jasmine-node .
-    
+
 Features (yes, cucumber.js is eating itself):
 
     $ git submodule update --init
-    $ ./cucumber.js features/global/basic_feature_execution.feature
+    $ ./cucumber.js features/cucumber-features/basic_feature_execution.feature
     $ ./cucumber.js features/asynchronous_step_definitions-issue_01.feature
 
 The features have to be run one at a time for the moment. Sorry for that, we're working on it :)
