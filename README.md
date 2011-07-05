@@ -32,15 +32,30 @@ The only dependency of cucumber.js is Gherkin:
 
 ## Run tests
 
-Specs:
+### Specs
 
     $ cd spec
     $ ../node_modules/.bin/jasmine-node .
 
-Features (yes, cucumber.js is eating itself):
+### Features
+
+Features run through cucumber.js have to be run one at a time for the moment. We are working on it :)
+
+#### Cucumber-features
+
+There is a common set of features shared between all cucumber implementations. Find more the [Github repository](http://github.com/cucumber/cucumber-features).
+
+Ruby and Bundler are required for this to work.
 
     $ git submodule update --init
-    $ ./cucumber.js features/cucumber-features/basic_feature_execution.feature
+    $ bundle
+    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-features/core.feature -r features
+    $ open doc/features/cucumber-features/*.html # might open a lot of files ;)
+
+#### Cucumber.js-specific features
+
     $ ./cucumber.js features/asynchronous_step_definitions-issue_01.feature
 
-The features have to be run one at a time for the moment. Sorry for that, we're working on it :)
+#### Legacy cucumber.js core feature
+
+    $ ./cucumber.js features/cucumber-features-legacy/core.feature

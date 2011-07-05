@@ -10,11 +10,6 @@ var stepDefinitions = function() {
   var _recordedStepParameters;
   var _stepCallCount;
 
-
-  // =======================================================
-  // ===== Implementation-independent step definitions =====
-  // =======================================================
-
   // Creates a Given, When or Then step definition that does nothing and pass all the time.
   //
   // Matching groups:
@@ -124,12 +119,56 @@ var stepDefinitions = function() {
   // Matching groups: none.
   // Multiline parameter: the feature to execute.
   When(/^I run the following feature:$/, function(featureSource, callback) {
-    _listener = Cucumber.Debug.SimpleAstListener();
-    _listener.beforeEachScenarioDo(function() {
-      _stepDefs               = [];
-      _recordedStepParameters = [];
-      _stepCallCount          = 0;
-    });
+    _buildListener(Cucumber.Debug.SimpleAstListener);
+    _runFeature(featureSource, callback);
+  });
+
+  // Checks that the feature previously run succeeded.
+  // Fails when Cucumber did not finish its process completly.
+  // Fails when the output of the run feature does not match the feature.
+  //
+  // Matching groups: none.
+  Then(/^the feature should have run successfully$/, function(callback) {
+    if (!_finishedCuking)
+      throw(new Error("Expected Cucumber to run the feature successfully."));
+    var actualOutput   = _normalizeString(_listener.getLogs());
+    var expectedOutput = _normalizeString(_featureSource);
+    if (actualOutput.indexOf(expectedOutput) == -1)
+      throw(UnexpectedOutputError(expectedOutput, actualOutput));
+    callback();
+  });
+
+  // =======================================================
+  // ======= Cucumber.js-specific step definitions =========
+  // =======================================================
+
+  Given(/^a step definition matching \/(.*)\/ calling back asynchronously after (\d+) milliseconds$/, function(name, delay, callback) {
+    var content = function(callback) {
+      setTimeout(callback, parseInt(delay));
+    };
+    _addStepDefinition(WHEN_KEYWORD, name, content);
+    callback();
+  });
+
+  When(/^I run the following feature with the "progress" formatter:$/, function(featureSource, callback) {
+    _buildListener(Cucumber.Listener.ProgressFormatter);
+    _runFeature(featureSource, callback);
+  });
+
+  Then(/^the listener should output the following:$/, function(expectedOutput, callback) {
+    var actualOutput   = _listener.getLogs();
+    var expectedOutput = expectedOutput;
+    if (actualOutput.indexOf(expectedOutput) == -1){
+      throw(UnexpectedOutputError(expectedOutput, actualOutput));
+    }
+    callback();
+  });
+
+  // =======================================================
+  // =====================  Helpers ========================
+  // =======================================================
+
+  function _runFeature(featureSource, callback) {
     var cucumber = Cucumber(featureSource, _getSupportCode);
     cucumber.attachListener(_listener);
     try {
@@ -144,43 +183,16 @@ var stepDefinitions = function() {
         throw(new Error("Step failed: Could not run the 'inside' feature successfully."));
       }, 10);
     };
-  });
+  };
 
-  // Checks that the feature previously run succeeded.
-  // Fails when Cucumber did not finish its process completly.
-  // Fails when the output of the run feature does not match the feature.
-  //
-  // Matching groups: none.
-  Then(/^the feature should have run successfully$/, function(callback) {
-    if (!_finishedCuking)
-      throw(new Error("Expected Cucumber to run the feature successfully."));
-
-    var actualOutput   = _normalizeString(_listener.getLogs());
-    var expectedOutput = _normalizeString(_featureSource);
-    if (!actualOutput.match(expectedOutput))
-      throw(new Error("Expected listener to output the feature source.\n\n<<<<<<< EXPECTED\n" +
-                      expectedOutput + "\n======= ACTUAL:\n" + actualOutput + "\n>>>>>>>"));
-
-    callback();
-  });
-
-
-  // =======================================================
-  // ======= Cucumber.js-specific step definitions =========
-  // =======================================================
-
-  Given(/^a step definition matching \/(.*)\/ calling back asynchronously after (\d+) milliseconds$/, function(name, delay, callback) {
-    var content = function(callback) {
-      setTimeout(callback, parseInt(delay));
-    };
-    _addStepDefinition(WHEN_KEYWORD, name, content);
-    callback();
-  });
-
-
-  // =======================================================
-  // =====================  Helpers ========================
-  // =======================================================
+  function _buildListener(listenerConstructor) {
+    _listener = listenerConstructor({logToConsole: false});
+    _listener.beforeEachScenarioDo(function() {
+      _stepDefs               = [];
+      _recordedStepParameters = [];
+      _stepCallCount          = 0;
+    });
+  };
 
   function _addStepDefinition(keyword, name, content) {
     var _stepName = RegExp(name);
@@ -209,14 +221,26 @@ var stepDefinitions = function() {
     var util = require('util');
     console.log("\n=================================================");
     console.log("=== Error caught while running inside feature ===");
-    console.log("=================================================\n");
-    console.log(error.toString() + "\n\nFeature logs:");
-    console.log("-------\n" + _listener.getLogs() + "\n" + error.stack + "\n-------");
-    console.log("=================================================\n");
+    console.log("=================================================");
+    console.log(error.toString());
+    console.log("\n============== INSIDE FEATURE LOGS ==============");
+    console.log(_listener.getLogs());
+    console.log("\n===================== TRACE =====================");
+    console.log(error.stack);
+    console.log("==================================================\n");
   };
 
   function translateParameterOffsetToIndex(offset) {
     return parseInt(offset) - 1;
+  };
+
+  function UnexpectedOutputError(expected, actual) {
+    return(new Error("Expected listener output is not met.\n\n<<<<<<< EXPECTED:\n" +
+                     showSpacesOnString(expected) + "\n======= GOT:\n" + showSpacesOnString(actual) + "\n>>>>>>>"));
+  };
+
+  function showSpacesOnString(string) {
+    return string.replace(/ /g, '·').replace(/\n/g, "¶\n");
   };
 };
 
