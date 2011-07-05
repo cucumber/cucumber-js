@@ -39,11 +39,11 @@ The only dependency of cucumber.js is Gherkin:
 
 ### Features
 
-Features run through cucumber.js have to be run one at a time for the moment. We are working on it :)
+Features run through cucumber.js have to be executed one at a time for the moment. We are working on it :)
 
 #### Cucumber-features
 
-There is a common set of features shared between all cucumber implementations. Find more the [Github repository](http://github.com/cucumber/cucumber-features).
+There is a common set of features shared between all cucumber implementations. Find more on the [Github repository](http://github.com/cucumber/cucumber-features).
 
 Ruby and Bundler are required for this to work.
 
