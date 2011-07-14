@@ -232,7 +232,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
 
     beforeEach(function() {
       spyOn(listener, 'log');
-      stepResult = createSpyWithStubs("step result", {isSuccess: true});
+      stepResult = createSpyWithStubs("step result", {isSuccessful: true});
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
       spyOn(listener, 'countOnePassedStep');
@@ -245,7 +245,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
 
     it("asks the step result if the step passed", function() {
       listener.handleStepResultEvent(event, callback);
-      expect(stepResult.isSuccess).toHaveBeenCalled();
+      expect(stepResult.isSuccessful).toHaveBeenCalled();
     });
 
     describe("when the step passed", function() {
@@ -262,7 +262,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
 
     describe("when the step did not pass", function() {
       beforeEach(function() {
-        stepResult.isSuccess.andReturn(false);
+        stepResult.isSuccessful.andReturn(false);
         spyOnStub(stepResult, 'isSkipped');
         spyOn(listener, 'countOneFailedStep');
       });
