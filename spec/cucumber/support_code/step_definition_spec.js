@@ -66,17 +66,35 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       beforeEach(function() {
         stepDefinition.invoke(stepName, docString, callback);
         codeExecutionCallback = stepDefinition.buildInvocationParameters.mostRecentCall.args[2];
-        stepResult = createSpy("Step result");
+        stepResult = createSpy("successful step result");
         spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
       });
 
-      it("creates a new step result AST element", function() {
+      it("creates a new successful step result", function() {
         codeExecutionCallback();
         expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(true);
       });
 
       it("calls back", function() {
         codeExecutionCallback();
+        expect(callback).toHaveBeenCalledWith(stepResult);
+      });
+    });
+
+    describe("when the step code throws an exception while executing", function() {
+      beforeEach(function() {
+        stepCode.apply.andThrow("I am a failing step definition");
+        stepResult = createSpy("failed step result");
+        spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
+      });
+
+      it("creates a new failed step result", function() {
+        stepDefinition.invoke(stepName, docString, callback);
+        expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(false);
+      });
+
+      it("calls back", function() {
+        stepDefinition.invoke(stepName, docString, callback);
         expect(callback).toHaveBeenCalledWith(stepResult);
       });
     });
