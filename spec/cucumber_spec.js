@@ -9,7 +9,7 @@ describe("Cucumber", function() {
 
   beforeEach(function() {
     listenerCollection    = createSpyWithStubs("listener collection", {add: null});
-    spyOn(Cucumber.Types, 'Collection').andReturn(listenerCollection);
+    spyOn(Cucumber.Type, 'Collection').andReturn(listenerCollection);
     featuresSource        = createSpy("features source buffer");
     supportCodeDefinition = createSpy("support code definition");
     supportCodeLibrary    = createSpy("support code library");
@@ -18,7 +18,7 @@ describe("Cucumber", function() {
 
   describe("constructor", function() {
     it("creates a listener collection", function() {
-      expect(Cucumber.Types.Collection).toHaveBeenCalled();
+      expect(Cucumber.Type.Collection).toHaveBeenCalled();
     });
   });
 
@@ -46,7 +46,7 @@ describe("Cucumber", function() {
       try { cucumber.start(); } catch(err) { exception = err; }
       expect(exception).toBeDefined();
     });
-    
+
     it("fails when the passed callback is not a function", function() {
       var exception;
       try { cucumber.start("some string"); } catch(err) { exception = err; }
@@ -62,7 +62,7 @@ describe("Cucumber", function() {
       cucumber.start(callback);
       expect(cucumber.initializeSupportCode).toHaveBeenCalledWith(supportCodeDefinition);
     });
-    
+
     it("executes the features", function() {
       cucumber.start(callback);
       expect(cucumber.executeFeaturesAgainstSupportCodeLibrary).toHaveBeenCalledWith(featuresAstElement, supportCodeLibrary, callback);
@@ -71,7 +71,7 @@ describe("Cucumber", function() {
 
   describe("parseFeaturesSource()", function() {
     var parser, features;
-    
+
     beforeEach(function() {
       features = createSpy("Features AST element");
       parser = createSpyWithStubs('A parser', {parse: features});
@@ -82,7 +82,7 @@ describe("Cucumber", function() {
       cucumber.parseFeaturesSource(featuresSource);
       expect(Cucumber.Parser).toHaveBeenCalledWith(featuresSource);
     });
-    
+
     it("asks the parser to parse", function() {
       cucumber.parseFeaturesSource(featuresSource);
       expect(Cucumber.Parser).toHaveBeenCalled();
@@ -97,7 +97,7 @@ describe("Cucumber", function() {
     beforeEach(function() {
       spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
     });
-    
+
     it("creates a new support code library", function() {
       cucumber.initializeSupportCode(supportCodeDefinition);
       expect(Cucumber.SupportCode.Library).toHaveBeenCalledWith(supportCodeDefinition);

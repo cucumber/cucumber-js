@@ -11,7 +11,7 @@ describe("Cucumber.Ast.Feature", function() {
     spyOnStub(scenarioCollection, 'add');
     spyOnStub(scenarioCollection, 'getLast').andReturn(lastScenario);
     spyOnStub(scenarioCollection, 'forEach');
-    spyOn(Cucumber.Types, 'Collection').andReturn(scenarioCollection);
+    spyOn(Cucumber.Type, 'Collection').andReturn(scenarioCollection);
     keyword     = createSpy("Feature keyword");
     name        = createSpy("Feature name");
     description = createSpy("Feature description");
@@ -20,7 +20,7 @@ describe("Cucumber.Ast.Feature", function() {
 
   describe("constructor", function() {
     it("creates a new collection to store scenarios", function() {
-      expect(Cucumber.Types.Collection).toHaveBeenCalled();
+      expect(Cucumber.Type.Collection).toHaveBeenCalled();
     });
   });
 
@@ -41,7 +41,7 @@ describe("Cucumber.Ast.Feature", function() {
       expect(feature.getDescription()).toBe(description);
     });
   });
-  
+
   describe("addScenario()", function() {
     it("adds the scenario to the scenarios (collection)", function() {
       var scenario = createSpy("scenario AST element");
@@ -68,7 +68,7 @@ describe("Cucumber.Ast.Feature", function() {
       visitor  = createSpyWithStubs("Visitor", {visitScenario: null});
       callback = createSpy("Callback");
     });
-    
+
     it ("iterates over the scenarios with a user function and the callback", function() {
       feature.acceptVisitor(visitor, callback);
       expect(scenarioCollection.forEach).toHaveBeenCalled();

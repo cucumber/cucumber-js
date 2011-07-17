@@ -1,6 +1,6 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Types.Collection", function() {
+describe("Cucumber.Type.Collection", function() {
   var Cucumber = require('cucumber');
   var collection, itemArray;
 
@@ -8,7 +8,7 @@ describe("Cucumber.Types.Collection", function() {
     itemArray = [1, 2, 3];
     spyOn(itemArray, 'push');
     spyOn(global, 'Array').andReturn(itemArray);
-    collection = Cucumber.Types.Collection();
+    collection = Cucumber.Type.Collection();
   });
 
   describe("constructor", function() {
@@ -24,12 +24,12 @@ describe("Cucumber.Types.Collection", function() {
       expect(itemArray.push).toHaveBeenCalledWith(item);
     });
   });
-  
+
   describe("getLast()", function() {
     it("returns the latest added item from the array", function() {
       var lastItem = createSpy("last item");
       itemArray[itemArray.length] = lastItem;
-      expect(collection.getLast()).toBe(lastItem);            
+      expect(collection.getLast()).toBe(lastItem);
     });
   });
 
@@ -76,7 +76,7 @@ describe("Cucumber.Types.Collection", function() {
       delayItemProcessing = true;
       collection.forEach(userFunction, callback);
       expect(allItemsProcessedBeforeCallback).toBeFalsy();
-      expect(callback).not.toHaveBeenCalled();      
+      expect(callback).not.toHaveBeenCalled();
     });
 
     it("does not process the next item until the current one is finished", function() {
@@ -97,7 +97,7 @@ describe("Cucumber.Types.Collection", function() {
 
   describe("syncForEach()", function() {
     var userFunction = createSpy("userFunction");
-    
+
     it("calls foreach on the array", function() {
       spyOn(itemArray, 'forEach');
       collection.syncForEach(userFunction);

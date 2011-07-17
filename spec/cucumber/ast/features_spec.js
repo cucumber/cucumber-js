@@ -11,13 +11,13 @@ describe("Cucumber.Ast.Features", function() {
     spyOnStub(featureCollection, 'add');
     spyOnStub(featureCollection, 'getLast').andReturn(lastFeature);
     spyOnStub(featureCollection, 'forEach');
-    spyOn(Cucumber.Types, 'Collection').andReturn(featureCollection);
+    spyOn(Cucumber.Type, 'Collection').andReturn(featureCollection);
     features = Cucumber.Ast.Features();
   });
 
   describe("constructor", function() {
     it("creates a new collection to store features", function() {
-      expect(Cucumber.Types.Collection).toHaveBeenCalledWith();
+      expect(Cucumber.Type.Collection).toHaveBeenCalledWith();
     });
   });
 

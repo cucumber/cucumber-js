@@ -6,13 +6,13 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
 
   beforeEach(function() {
     beforeEachScenarioUserFunctions = createSpy("User Functions to call before each scenario");
-    spyOn(Cucumber.Types, 'Collection').andReturn(beforeEachScenarioUserFunctions);
+    spyOn(Cucumber.Type, 'Collection').andReturn(beforeEachScenarioUserFunctions);
     listener = Cucumber.Listener.ProgressFormatter();
   });
 
   describe("constructor", function() {
     it("creates a new collection to store user functions to call before each scenario", function() {
-      expect(Cucumber.Types.Collection).toHaveBeenCalled();
+      expect(Cucumber.Type.Collection).toHaveBeenCalled();
     });
   });
 

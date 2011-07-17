@@ -18,13 +18,13 @@ describe("Cucumber.SupportCode.Library", function() {
       createSpyWithStubs("Third step definition",  {matchesStepName:false})
     ];
     spyOnStub(stepDefinitionCollection, 'syncForEach').andCallFake(function(cb) { stepDefinitionCollection.forEach(cb); });
-    spyOn(Cucumber.Types, 'Collection').andReturn(stepDefinitionCollection);
+    spyOn(Cucumber.Type, 'Collection').andReturn(stepDefinitionCollection);
   });
 
   describe("constructor", function() {
     it("creates a collection of step definitions", function() {
       library = Cucumber.SupportCode.Library(rawSupportCode);
-      expect(Cucumber.Types.Collection).toHaveBeenCalled();
+      expect(Cucumber.Type.Collection).toHaveBeenCalled();
     });
 
     describe("before executing the raw support code", function() {
@@ -50,7 +50,7 @@ describe("Cucumber.SupportCode.Library", function() {
         expect(given).toBe(library.defineThenStep);
       });
     });
-    
+
     it("executes the raw support code", function() {
       library = Cucumber.SupportCode.Library(rawSupportCode);
       expect(rawSupportCode).toHaveBeenCalled();
@@ -63,14 +63,14 @@ describe("Cucumber.SupportCode.Library", function() {
         Cucumber.SupportCode.Library(rawSupportCode);
         expect(Given).toBe(originalGiven);
       });
-      
+
       it("restores the global 'When' to its original value", function() {
         var originalWhen = createSpy("Original When");
         When             = originalWhen;
         Cucumber.SupportCode.Library(rawSupportCode);
         expect(When).toBe(originalWhen);
       });
-      
+
       it("restores the global 'Then' to its original value", function() {
         var originalThen = createSpy("Original Then");
         Then             = originalThen;
@@ -79,7 +79,7 @@ describe("Cucumber.SupportCode.Library", function() {
       });
     });
   });
-  
+
   describe("lookupStepDefinitionByName()", function() {
     var stepName;
 
@@ -87,7 +87,7 @@ describe("Cucumber.SupportCode.Library", function() {
       library  = Cucumber.SupportCode.Library(rawSupportCode);
       stepName = createSpy("Step name");
     });
-    
+
     it("asks each step definition in the library if they match the step name", function() {
       library.lookupStepDefinitionByName(stepName);
       stepDefinitionCollection.forEach(function(stepDefinition) {
@@ -106,7 +106,7 @@ describe("Cucumber.SupportCode.Library", function() {
     describe(methodName + "()", function() {
       var stepRegexp, stepCode;
       var stepDefinition;
-      
+
       beforeEach(function() {
         library        = Cucumber.SupportCode.Library(rawSupportCode);
         stepRegexp     = createSpy("Step name");
@@ -120,14 +120,14 @@ describe("Cucumber.SupportCode.Library", function() {
         library[methodName](stepRegexp, stepCode);
         expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(stepRegexp, stepCode);
       });
-      
+
       it("adds the step definition to the step definition collection", function() {
         library[methodName](stepRegexp, stepCode);
         expect(stepDefinitionCollection.add).toHaveBeenCalledWith(stepDefinition);
       });
     });
   };
-  
+
   describeStepDefiner('defineGivenStep');
   describeStepDefiner('defineWhenStep');
   describeStepDefiner('defineThenStep');

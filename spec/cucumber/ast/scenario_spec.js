@@ -4,7 +4,7 @@ describe("Cucumber.Ast.Scenario", function() {
   var Cucumber = require('cucumber');
   var stepCollection, steps;
   var scenario, keyword, name, lastStep;
-  
+
   beforeEach(function() {
     keyword        = createSpy("Feature keyword");
     name           = createSpy("Feature name");
@@ -13,13 +13,13 @@ describe("Cucumber.Ast.Scenario", function() {
     spyOnStub(stepCollection, 'add');
     spyOnStub(stepCollection, 'getLast').andReturn(lastStep);
     spyOnStub(stepCollection, 'forEach');
-    spyOn(Cucumber.Types, 'Collection').andReturn(stepCollection);
+    spyOn(Cucumber.Type, 'Collection').andReturn(stepCollection);
     scenario = Cucumber.Ast.Scenario(keyword, name);
   });
-  
+
   describe("constructor", function() {
     it("creates a new collection to store steps", function() {
-      expect(Cucumber.Types.Collection).toHaveBeenCalled();
+      expect(Cucumber.Type.Collection).toHaveBeenCalled();
     });
   });
 
@@ -34,7 +34,7 @@ describe("Cucumber.Ast.Scenario", function() {
       expect(scenario.getName()).toBe(name);
     });
   });
-  
+
   describe("addStep()", function() {
     it("adds the step to the steps (collection)", function() {
       var step = createSpy("Step AST element");
@@ -61,7 +61,7 @@ describe("Cucumber.Ast.Scenario", function() {
       visitor  = createSpyWithStubs("Visitor", {visitStep: null});
       callback = createSpy("Callback");
     });
-    
+
     it ("iterates over the steps with a user function and the callback", function() {
       scenario.acceptVisitor(visitor, callback);
       expect(stepCollection.forEach).toHaveBeenCalled();
