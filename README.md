@@ -22,7 +22,9 @@ And probably lots of other browsers.
 
 ## Play with it!
 
-    $ open example/index.html
+    $ node example/server.js
+
+Then go to [localhost:9797](http://localhost:9797/).
 
 ## Setup for using in Node.js and running tests
 

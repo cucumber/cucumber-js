@@ -54,7 +54,7 @@ createEmittingSpy = function(name) {
   spyOn(spy, 'on').andCallFake(function(event, callback) {
     if (spy.callbacks[event] === undefined) {
       spy.callbacks[event] = [];
-    }      
+    }
     spy.callbacks[event].push(callback);
   });
   return spy;
