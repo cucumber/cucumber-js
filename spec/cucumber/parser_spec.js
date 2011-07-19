@@ -19,17 +19,21 @@ describe("Cucumber.Parser", function() {
   });
 
   describe("parse()", function() {
-    var GherkinEnglishLexer;
+    var Gherkin = require('gherkin');
     var gherkinLexerConstructor, gherkinLexer;
     var eventHandlers;
 
     beforeEach(function() {
-      gherkinLexer              = createSpyWithStubs("Gherkin lexer instance", {scan: null});
-      gherkinLexerConstructor   = createSpy("Gherkin lexer constructor").andReturn(gherkinLexer);
-      GherkinEnglishLexer       = require('gherkin/lib/gherkin/lexer/en');
-      eventHandlers             = createSpy("Parser event handlers");
-      GherkinEnglishLexer.Lexer = gherkinLexerConstructor;
+      gherkinLexer            = createSpyWithStubs("Gherkin lexer instance", {scan: null});
+      gherkinLexerConstructor = createSpy("Gherkin lexer module").andReturn(gherkinLexer);
+      eventHandlers           = createSpy("Parser event handlers");
+      spyOn(Gherkin, 'Lexer').andReturn(gherkinLexerConstructor);
       spyOn(parser, 'getEventHandlers').andReturn(eventHandlers);
+    });
+
+    it("loads the gherkin lexer module for English", function() {
+      parser.parse();
+      expect(Gherkin.Lexer).toHaveBeenCalledWith('en');
     });
 
     it("gets the parse event handlers", function() {

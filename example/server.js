@@ -3,8 +3,8 @@ var server = connect.createServer();
 
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
-  require : __dirname + '/../lib/cucumber.js'
+  require: {'cucumber':           './lib/cucumber.js',
+            './gherkin/lexer/en': 'gherkin/lib/gherkin/lexer/en'}
 }));
-
 server.listen(9797);
-console.log('Listening on 9797...');
+console.log('Listening on port 9797...');
