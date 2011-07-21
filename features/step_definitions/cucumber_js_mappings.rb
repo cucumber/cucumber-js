@@ -160,12 +160,12 @@ EOF
 #   end
 
   def assert_passing_scenario
-    assert_partial_output("1 scenario(s) (1 passed)", all_output)
+    assert_partial_output("1 scenario (1 passed)", all_output)
     assert_success true
   end
 
   def assert_failing_scenario
-    assert_partial_output("1 scenario(s) (1 failed)", all_output)
+    assert_partial_output("1 scenario (1 failed)", all_output)
     assert_success false
   end
 

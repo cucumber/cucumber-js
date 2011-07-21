@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.Runtime.StepResult", function() {
   var Cucumber = require('cucumber');
   var stepResult, status;
-  
+
   describe("isSuccessful()", function() {
     it("returns true when the step invocation was successful", function() {
       stepResult = Cucumber.Runtime.StepResult(true);

@@ -17,15 +17,36 @@ describe("Cucumber.Ast.TreeWalker", function() {
 
     beforeEach(function() {
       callback = createSpy("Callback");
-    });
-
-    beforeEach(function() {
       spyOn(treeWalker, 'visitFeatures');
     });
 
-    it("visits all features", function() {
+    it("visits all features with a callback", function() {
       treeWalker.walk(callback);
-      expect(treeWalker.visitFeatures).toHaveBeenCalledWith(features, callback);
+      expect(treeWalker.visitFeatures).
+        toHaveBeenCalledWithValueAsNthParameter(features, 1);
+      expect(treeWalker.visitFeatures).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+    });
+
+    describe("features visit callback", function() {
+      var featuresVisitCallback, featuresResult;
+
+      beforeEach(function() {
+        treeWalker.walk(callback);
+        featuresVisitCallback = treeWalker.visitFeatures.mostRecentCall.args[1];
+        featuresResult = createSpy("result of all features");
+        spyOn(treeWalker, 'didAllFeaturesSucceed').andReturn(featuresResult);
+      });
+
+      it("checks wether all features were successful", function() {
+        featuresVisitCallback();
+        expect(treeWalker.didAllFeaturesSucceed).toHaveBeenCalled();
+      });
+
+      it("calls back with the result of the features", function() {
+        featuresVisitCallback();
+        expect(callback).toHaveBeenCalledWith(featuresResult);
+      });
     });
   });
 
@@ -126,6 +147,12 @@ describe("Cucumber.Ast.TreeWalker", function() {
       payload  = {scenario: scenario};
       spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
+      spyOn(treeWalker, 'witnessNewScenario');
+    });
+
+    it("witnesses a new scenario", function() {
+      treeWalker.visitScenario(scenario, callback);
+      expect(treeWalker.witnessNewScenario).toHaveBeenCalled();
     });
 
     it("creates a new event about the scenario's visit", function() {
@@ -166,40 +193,45 @@ describe("Cucumber.Ast.TreeWalker", function() {
     beforeEach(function() {
       step     = createSpyWithStubs("Step AST element", {acceptVisitor: null});
       callback = createSpy("Callback");
-      event    = createSpy("Event");
-      payload  = {step: step};
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
-      spyOn(treeWalker, 'broadcastEventAroundUserFunction');
+      spyOn(treeWalker, 'isSkippingSteps');
+      spyOn(treeWalker, 'executeStep');
+      spyOn(treeWalker, 'skipStep');
     });
 
-    it("creates a new event about the step's visit", function() {
+    it("checks wether the step should be skipped", function() {
       treeWalker.visitStep(step, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_EVENT_NAME, payload);
+      expect(treeWalker.isSkippingSteps).toHaveBeenCalled();
     });
 
-    it("broadcasts the step's visit", function() {
-      treeWalker.visitStep(step, callback);
-      expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
-      expect(treeWalker.broadcastEventAroundUserFunction).
-        toHaveBeenCalledWithValueAsNthParameter(event, 1);
-      expect(treeWalker.broadcastEventAroundUserFunction).
-        toHaveBeenCalledWithAFunctionAsNthParameter(2);
-      expect(treeWalker.broadcastEventAroundUserFunction).
-        toHaveBeenCalledWithValueAsNthParameter(callback, 3);
-    });
-
-    describe("user function", function() {
-      var userFunction, userFunctionCallback;
-
+    describe("when the steps are not skipped", function() {
       beforeEach(function() {
-        userFunctionCallback = createSpy("User function callback");
-        treeWalker.visitStep(step, callback);
-        userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
+        treeWalker.isSkippingSteps.andReturn(false);
       });
 
-      it("visits the step, passing it the received callback", function() {
-        userFunction(userFunctionCallback);
-        expect(step.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+      it("executes the step", function() {
+        treeWalker.visitStep(step, callback);
+        expect(treeWalker.executeStep).toHaveBeenCalledWith(step, callback);
+      });
+
+      it("does not skip the step", function() {
+        treeWalker.visitStep(step, callback);
+        expect(treeWalker.skipStep).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when the steps are skipped", function() {
+      beforeEach(function() {
+        treeWalker.isSkippingSteps.andReturn(true);
+      });
+
+      it("skips the step", function() {
+        treeWalker.visitStep(step, callback);
+        expect(treeWalker.skipStep).toHaveBeenCalledWith(step, callback);
+      });
+
+      it("does not execute the step", function() {
+        treeWalker.visitStep(step, callback);
+        expect(treeWalker.executeStep).not.toHaveBeenCalled();
       });
     });
   });
@@ -208,11 +240,12 @@ describe("Cucumber.Ast.TreeWalker", function() {
     var stepResult, callback, event, payload;
 
     beforeEach(function() {
-      stepResult = createSpy("Step result");
+      stepResult = createSpyWithStubs("Step result", {isSuccessful: undefined});
       callback   = createSpy("Callback");
       event      = createSpy("Event");
       payload    = {stepResult: stepResult};
       spyOn(treeWalker, 'broadcastEvent');
+      spyOn(treeWalker, 'witnessFailedStep');
       spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
     });
 
@@ -224,6 +257,33 @@ describe("Cucumber.Ast.TreeWalker", function() {
     it("broadcasts the step result visit and the step result itself", function() {
       treeWalker.visitStepResult(stepResult, callback);
       expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
+    });
+
+    it("checks wether the step succeeded or not", function() {
+      treeWalker.visitStepResult(stepResult, callback);
+      expect(stepResult.isSuccessful).toHaveBeenCalled();
+    });
+
+    describe("when the step succeeded", function() {
+      beforeEach(function() {
+        stepResult.isSuccessful.andReturn(true);
+      });
+
+      it("does not witness a failed step", function() {
+        treeWalker.visitStepResult(stepResult, callback);
+        expect(treeWalker.witnessFailedStep).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("when the step failed", function() {
+      beforeEach(function() {
+        stepResult.isSuccessful.andReturn(false);
+      });
+
+      it("witnesses a failed step", function() {
+        treeWalker.visitStepResult(stepResult, callback);
+        expect(treeWalker.witnessFailedStep).toHaveBeenCalled();
+      });
     });
 
     it("does not call back by itself", function() {
@@ -412,6 +472,100 @@ describe("Cucumber.Ast.TreeWalker", function() {
 
     it("returns the step definition returned by the library", function() {
       expect(treeWalker.lookupStepDefinitionByName(stepName)).toBe(stepDefinition);
+    });
+  });
+
+  describe("didAllFeaturesSucceed()", function() {
+    it("returns true when no failure was encountered", function() {
+      expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
+    });
+
+    it("returns false when a failed step was encountered", function() {
+      treeWalker.witnessFailedStep();
+      expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
+    });
+  });
+
+  describe("isSkippingSteps() [witnessFailedSteps()]", function() {
+    it("returns false when no failure was encountered", function() {
+      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+    });
+
+    it("returns true when a failed step was encountered", function() {
+      treeWalker.witnessFailedStep();
+      expect(treeWalker.isSkippingSteps()).toBeTruthy();
+    });
+
+    it("returns false when a failed step was encountered but not in the current scenario", function() {
+      treeWalker.witnessFailedStep();
+      treeWalker.witnessNewScenario();
+      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+    });
+  });
+
+  describe("executeStep()", function() {
+    var step, callback, event, payload;
+
+    beforeEach(function() {
+      step     = createSpyWithStubs("Step AST element", {acceptVisitor: null});
+      callback = createSpy("Callback");
+      event    = createSpy("Event");
+      payload  = {step: step};
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(treeWalker, 'broadcastEventAroundUserFunction');
+    });
+
+    it("creates a new event about the executed step's visit", function() {
+      treeWalker.executeStep(step, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_EVENT_NAME, payload);
+    });
+
+    it("broadcasts the step's visit", function() {
+      treeWalker.executeStep(step, callback);
+      expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(event, 1);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(treeWalker.broadcastEventAroundUserFunction).
+        toHaveBeenCalledWithValueAsNthParameter(callback, 3);
+    });
+
+    describe("user function", function() {
+      var userFunction, userFunctionCallback;
+
+      beforeEach(function() {
+        userFunctionCallback = createSpy("User function callback");
+        treeWalker.executeStep(step, callback);
+        userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
+      });
+
+      it("visits the step, passing it the received callback", function() {
+        userFunction(userFunctionCallback);
+        expect(step.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+      });
+    });
+  });
+
+  describe("skipStep()", function() {
+    var step, callback, event, payload;
+
+    beforeEach(function() {
+      step     = createSpyWithStubs("step AST element");
+      callback = createSpy("callback");
+      payload  = {step: step};
+      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(treeWalker, 'broadcastEvent');
+    });
+
+    it("creates a new event about the skipped step visit", function() {
+      treeWalker.skipStep(step, callback);
+      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.SKIPPED_STEP_EVENT_NAME, payload);
+    });
+
+    it("brodcasts the step's visit", function() {
+      treeWalker.skipStep(step, callback);
+      expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
     });
   });
 });

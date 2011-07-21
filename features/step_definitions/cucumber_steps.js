@@ -21,7 +21,24 @@ var stepDefinitions = function() {
   // The created step definition body should:
   //   1. Pass all the time.
   Given(/^a(?: "(Given|When|Then)")? step definition matching \/(.*)\/$/, function(keyword, name, callback) {
-    var content = function(callback) { callback() };
+    var content = function(callback) { callback(); };
+    _addStepDefinition(keyword, name, content);
+    callback();
+  });
+
+  // Creates a Given, When or Then step definition that does nothing but fails all the time.
+  //
+  // Matching groups:
+  //   1. /Given|When|Then/ Step definition keyword (optional)
+  //   2. /.*/              Step definition name
+  //   3. /.*/              Exception message
+  //
+  // Created step definition matching groups: none.
+  //
+  // The created step definition body should:
+  //   1. Fail all the time.
+  Given(/^a(?: "(Given|When|Then)")? step definition failing with message "(.*)" matching \/(.*)\/$/, function(keyword, errorMessage, name, callback) {
+    var content = function(callback) { throw(errorMessage); };
     _addStepDefinition(keyword, name, content);
     callback();
   });

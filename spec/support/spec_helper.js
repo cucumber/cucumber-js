@@ -3,7 +3,9 @@ require.paths.unshift('../lib');
 beforeEach(function() {
   this.addMatchers({
     toBeAFunction:          function()          { return typeof(this.actual) == 'function'; },
+
     toHaveBeenCalledNTimes: function(callCount) { return callCount == this.actual.callCount; },
+
     toHaveBeenCalledWithValueAsNthParameter: function(value, parameterOffset) {
       for(var i = 0; i < this.actual.callCount; i++) {
         var parameter = this.actual.argsForCall[i][parameterOffset - 1];
@@ -12,10 +14,20 @@ beforeEach(function() {
       }
       return false;
     },
+
     toHaveBeenCalledWithAFunctionAsNthParameter: function(parameterOffset) {
       for(var i = 0; i < this.actual.callCount; i++) {
         var parameter = this.actual.argsForCall[i][parameterOffset - 1];
         if (typeof(parameter) == 'function')
+          return true;
+      }
+      return false;
+    },
+
+    toHaveBeenCalledWithStringMatching: function(regexp) {
+      for(var i = 0; i < this.actual.callCount; i++) {
+        var parameter = this.actual.argsForCall[i][0];
+        if (regexp.test(parameter))
           return true;
       }
       return false;
