@@ -70,6 +70,20 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         expect(process.stdout.write).not.toHaveBeenCalledWith(logged);
       });
     });
+
+    describe("when asked to output to a function", function() {
+      var userFunction;
+
+      beforeEach(function() {
+        userFunction = createSpy("output user function");
+        listener     = Cucumber.Listener.ProgressFormatter({logToFunction: userFunction});
+      });
+
+      it("calls the function with the logged string", function() {
+        listener.log(logged);
+        expect(userFunction).toHaveBeenCalledWith(logged);
+      });
+    });
   });
 
   describe("getLogs()", function() {
