@@ -24,17 +24,17 @@
     <h2>Step definitions</h2>
     <textarea id="step-definitions">var variable;
 
-Given(/a variable set to (\d+)/, function(number, callback) {
+Given(/^a variable set to (\d+)$/, function(number, callback) {
   variable = parseInt(number);
   callback();
 });
 
-When(/I increment the variable by (\d+)/, function(number, callback) {
+When(/^I increment the variable by (\d+)$/, function(number, callback) {
   variable += parseInt(number);
   callback();
 });
 
-Then(/the variable should contain (\d+)/, function(number, callback) {
+Then(/^the variable should contain (\d+)$/, function(number, callback) {
   if (variable != parseInt(number))
     throw('Variable should contain '+number+' but it contains '+variable+'.');
   callback();

@@ -5,12 +5,12 @@ function runFeature() {
   var errors          = $('#errors');
   var errorsContainer = $('#errors-container');
   var featureSource   = $('#feature').val();
-  eval('supportCode = function() {' + $('#step-definitions').val() + '};');
+  eval('supportCode   = function() {' + $('#step-definitions').val() + '};');
   var cucumber        = Cucumber(featureSource, supportCode);
-  var simpleListener  = Cucumber.Debug.SimpleAstListener({logToFunction: function(message) {
-    output.val(output.val() + message + "\n");
+  var listener  = Cucumber.Listener.ProgressFormatter({logToConsole: false, logToFunction: function(message) {
+    output.val(output.val() + message);
   }});
-  cucumber.attachListener(simpleListener);
+  cucumber.attachListener(listener);
   output.val('');
   errors.text('');
   errorsContainer.hide();
