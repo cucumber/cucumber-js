@@ -15,9 +15,7 @@ function runFeature() {
   errors.text('');
   errorsContainer.hide();
   try {
-    cucumber.start(function() {
-      console.log("Done.");
-    });
+    cucumber.start(function() {});
   } catch(err) {
     errorsContainer.show();
     var errMessage = err.message || err;
