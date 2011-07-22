@@ -14,92 +14,62 @@ module CucumberJsMappings
     run_simple "#{cucumber_bin} #{FEATURE_FILE} #{STEP_DEFINITIONS_FILE}", false
   end
 
-#   def run_feature
-#     run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
-#   end
+  # def run_feature
+  #   run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
+  # end
 
   def cucumber_bin
     File.expand_path(File.dirname(__FILE__) + '/../../cucumber.js')
   end
 
   def write_passing_mapping(step_name)
-    @mapping_count ||= 0
-    if @mapping_count == 0
-      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n"
-    else
-      step_definition = "\n"
-    end
-    erb = ERB.new(<<-EOF, nil, '-')
-  Given(/<%= step_name -%>/, function(callback){
-    fs.writeFileSync("<%= step_file(step_name) %>", "");
-    callback();
-  });
-EOF
-    @mapping_count += 1
-    step_definition += erb.result(binding)
-    append_to_file(STEP_DEFINITIONS_FILE, step_definition)
+    append_step_definition(step_name, "// no-op, pass gently")
   end
 
-#   def write_pending_mapping(step_name)
-#     erb = ERB.new(<<-EOF, nil, '-')
-# Given /<%= step_name -%>/ do
-#   # ARUBA_IGNORE_START
-#   File.open("<%= step_file(step_name) %>", "w")
-#   # ARUBA_IGNORE_END
-#   pending
-# end
-
-# EOF
-#     append_to_file("features/step_definitions/some_stepdefs.rb", erb.result(binding))
-#   end
+  def write_pending_mapping(step_name)
+    append_step_definition(step_name, "callback.pending();")
+  end
 
   def write_failing_mapping(step_name)
-    @mapping_count ||= 0
-    if @mapping_count == 0
-      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n"
-    else
-      step_definition = "\n"
-    end
-    erb = ERB.new(<<-EOF, nil, '-')
-  Given(/<%= step_name -%>/, function(callback){
-    fs.writeFileSync("<%= step_file(step_name) %>", "");
-    throw "Boom!";
-    callback();
-  });
-EOF
-    @mapping_count += 1
-    step_definition += erb.result(binding)
-    append_to_file(STEP_DEFINITIONS_FILE, step_definition)
+    append_step_definition(step_name, "throw('Boom!');")
   end
 
-#   def write_calculator_code
-#         code = <<-EOF
-# # http://en.wikipedia.org/wiki/Reverse_Polish_notation
-# class RpnCalculator
-#   def initialize
-#     @stack = []
-#   end
+  def write_calculator_code
+    code = <<-EOF
+  // http://en.wikipedia.org/wiki/Reverse_Polish_notation
+  var RpnCalculator = function RpnCalculator() {
+    var stack = [];
 
-#   def push(arg)
-#     if(%w{- + * /}.index(arg))
-#       y, x = @stack.pop(2)
-#       push(x.__send__(arg, y))
-#     else
-#       @stack.push(arg)
-#     end
-#   end
+    function x() { return stack.splice(-2, 1)[0]; }
+    function y() { return stack.pop(); }
 
-#   def PI
-#     push(Math::PI)
-#   end
+    var self = {
+      push: function push(arg) {
+        if (arg == '+')
+          self.push(x() + y());
+        else if (arg == '-')
+          self.push(x() - y());
+        else if (arg == '*')
+          self.push(x() * y());
+        else if (arg == '/')
+          self.push(x() / y());
+        else
+          stack.push(parseInt(arg));
+      },
 
-#   def value
-#     @stack[-1]
-#   end
-# end
-# EOF
-#     write_file("lib/rpn_calculator.rb", code)
-#   end
+      pi: function pi() {
+        return Math.PI;
+      },
+
+      value: function value() {
+        return stack[stack.length-1];
+      }
+    };
+    return self;
+  };
+EOF
+    append_support_code(code)
+  end
 
 #   def write_mappings_for_calculator
 #     write_file("features/support/env.rb", "$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')\n")
@@ -169,10 +139,10 @@ EOF
     assert_success false
   end
 
-#   def assert_pending_scenario
-#     assert_partial_output("1 scenario (1 pending)", all_output)
-#     assert_success true
-#   end
+  def assert_pending_scenario
+    assert_partial_output("1 scenario (1 pending)", all_output)
+    assert_success true
+  end
 
 #   def assert_undefined_scenario
 #     assert_partial_output("1 scenario (1 undefined)", all_output)
@@ -182,6 +152,28 @@ EOF
 #   def failed_output
 #     "failed"
 #   end
+
+  def append_step_definition(step_name, code)
+    append_support_code(<<-EOF)
+  Given(/#{step_name}/, function(callback){
+    fs.writeFileSync("#{step_file(step_name)}", "");
+    #{code}
+    callback();
+  });
+EOF
+  end
+
+  def append_support_code(code)
+    @mapping_count ||= 0
+    if @mapping_count == 0
+      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n"
+    else
+      step_definition = "\n"
+    end
+    @mapping_count += 1
+    step_definition += code
+    append_to_file(STEP_DEFINITIONS_FILE, step_definition)
+  end
 end
 
 World(CucumberJsMappings)
