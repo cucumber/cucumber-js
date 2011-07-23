@@ -240,7 +240,7 @@ describe("Cucumber.Ast.TreeWalker", function() {
     var stepResult, callback, event, payload;
 
     beforeEach(function() {
-      stepResult = createSpyWithStubs("Step result", {isSuccessful: undefined});
+      stepResult = createSpyWithStubs("Step result", {isFailed: undefined, isPending: undefined});
       callback   = createSpy("Callback");
       event      = createSpy("Event");
       payload    = {stepResult: stepResult};
@@ -259,30 +259,58 @@ describe("Cucumber.Ast.TreeWalker", function() {
       expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
     });
 
-    it("checks wether the step succeeded or not", function() {
+    it("checks wether the step failed or not", function() {
       treeWalker.visitStepResult(stepResult, callback);
-      expect(stepResult.isSuccessful).toHaveBeenCalled();
+      expect(stepResult.isFailed).toHaveBeenCalled();
     });
 
-    describe("when the step succeeded", function() {
+    describe("when the step failed", function() {
       beforeEach(function() {
-        stepResult.isSuccessful.andReturn(true);
+        stepResult.isFailed.andReturn(true);
+      });
+
+      it("witnesses a failed step", function() {
+        treeWalker.visitStepResult(stepResult, callback);
+        expect(treeWalker.witnessFailedStep).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the step did not fail", function() {
+      beforeEach(function() {
+        stepResult.isFailed.andReturn(false);
+        spyOn(treeWalker, 'witnessPendingStep');
       });
 
       it("does not witness a failed step", function() {
         treeWalker.visitStepResult(stepResult, callback);
         expect(treeWalker.witnessFailedStep).not.toHaveBeenCalled();
       });
-    });
 
-    describe("when the step failed", function() {
-      beforeEach(function() {
-        stepResult.isSuccessful.andReturn(false);
+      it("checks wether the step was pending or not", function() {
+        treeWalker.visitStepResult(stepResult, callback);
+        expect(stepResult.isPending).toHaveBeenCalled();
       });
 
-      it("witnesses a failed step", function() {
-        treeWalker.visitStepResult(stepResult, callback);
-        expect(treeWalker.witnessFailedStep).toHaveBeenCalled();
+      describe("when the step was pending", function() {
+        beforeEach(function() {
+          stepResult.isPending.andReturn(true);
+        });
+
+        it("witnesses a pending step", function() {
+          treeWalker.visitStepResult(stepResult, callback);
+          expect(treeWalker.witnessPendingStep).toHaveBeenCalled();
+        });
+      });
+
+      describe("when the step was not pending", function() {
+        beforeEach(function() {
+          stepResult.isPending.andReturn(false);
+        });
+
+        it("does not witness a pending step", function() {
+          treeWalker.visitStepResult(stepResult, callback);
+          expect(treeWalker.witnessPendingStep).not.toHaveBeenCalled();
+        });
       });
     });
 
@@ -486,8 +514,8 @@ describe("Cucumber.Ast.TreeWalker", function() {
     });
   });
 
-  describe("isSkippingSteps() [witnessFailedSteps()]", function() {
-    it("returns false when no failure was encountered", function() {
+  describe("isSkippingSteps() [witnessFailedSteps(), witnessPendingSteps(), witnessNewScenario()]", function() {
+    it("returns false when no failed or pending step were encountered", function() {
       expect(treeWalker.isSkippingSteps()).toBeFalsy();
     });
 
@@ -498,6 +526,17 @@ describe("Cucumber.Ast.TreeWalker", function() {
 
     it("returns false when a failed step was encountered but not in the current scenario", function() {
       treeWalker.witnessFailedStep();
+      treeWalker.witnessNewScenario();
+      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+    });
+
+    it("returns true when a pending step was encountered", function() {
+      treeWalker.witnessPendingStep();
+      expect(treeWalker.isSkippingSteps()).toBeTruthy();
+    });
+
+    it("returns false when a pending step was encountered but not in the current scenario", function() {
+      treeWalker.witnessPendingStep();
       treeWalker.witnessNewScenario();
       expect(treeWalker.isSkippingSteps()).toBeFalsy();
     });

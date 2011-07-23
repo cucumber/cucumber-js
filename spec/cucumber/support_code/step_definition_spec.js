@@ -2,12 +2,12 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.StepDefinition", function() {
   var Cucumber = require('cucumber');
-  var stepDefinition, stepRegexp, stepCode;
+  var stepDefinition, stepRegexp, stepDefinitionCode;
 
   beforeEach(function() {
-    stepRegexp     = createSpyWithStubs("Step regexp", {test:null});
-    stepCode       = createSpy("Step code");
-    stepDefinition = Cucumber.SupportCode.StepDefinition(stepRegexp, stepCode);
+    stepRegexp         = createSpyWithStubs("Step regexp", {test:null});
+    stepDefinitionCode = createSpy("step definition code");
+    stepDefinition     = Cucumber.SupportCode.StepDefinition(stepRegexp, stepDefinitionCode);
   });
 
   describe("matchesStepName()", function() {
@@ -43,7 +43,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       callback   = createSpy("Callback");
       parameters = createSpy("Code execution parameters");
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
-      spyOn(stepCode, 'apply');
+      spyOn(stepDefinitionCode, 'apply');
     });
 
     it("builds the step invocation parameters", function() {
@@ -54,48 +54,110 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithAFunctionAsNthParameter(3);
     });
 
-    it("calls the step code with the parameters", function() {
+    it("calls the step definition code with the parameters", function() {
       stepDefinition.invoke(stepName, docString, callback);
-      expect(stepCode.apply).toHaveBeenCalledWith(undefined, parameters);
+      expect(stepDefinitionCode.apply).toHaveBeenCalledWith(undefined, parameters);
     });
 
-    describe("when the step code has finished executing", function() {
+    describe("callback passed to the step definition code", function() {
       var codeExecutionCallback;
-      var stepResult;
+      var successfulStepResult;
 
       beforeEach(function() {
         stepDefinition.invoke(stepName, docString, callback);
         codeExecutionCallback = stepDefinition.buildInvocationParameters.mostRecentCall.args[2];
-        stepResult = createSpy("successful step result");
-        spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
+        successfulStepResult = createSpy("successful step result");
+        spyOn(Cucumber.Runtime, 'SuccessfulStepResult').andReturn(successfulStepResult);
       });
 
-      it("creates a new successful step result", function() {
-        codeExecutionCallback();
-        expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(true);
+      describe("when the step definition code executes successfully and calls back", function() {
+        it("creates a new successful step result", function() {
+          codeExecutionCallback();
+          expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalled();
+        });
+
+        it("calls back", function() {
+          codeExecutionCallback();
+          expect(callback).toHaveBeenCalledWith(successfulStepResult);
+        });
+
+        it("supplies a function to the step to let it claim its pendingness", function() {
+          expect(codeExecutionCallback.pending).toBeAFunction();
+        });
       });
 
-      it("calls back", function() {
-        codeExecutionCallback();
-        expect(callback).toHaveBeenCalledWith(stepResult);
+      describe("pending()", function() {
+        var pendingFunction, reason, exception;
+
+        beforeEach(function() {
+          reason          = createSpy("a reason for being pending");
+          pendingFunction = codeExecutionCallback.pending;
+          exception       = createSpy("pending step exception");
+          spyOn(Cucumber.Runtime, 'PendingStepException').andReturn(exception);
+        });
+
+        it("creates a 'pending step' exception with the reason", function() {
+          try { pendingFunction(reason); } catch (e) { }
+          expect(Cucumber.Runtime.PendingStepException).toHaveBeenCalledWith(reason);
+        });
+
+        it("throws the pending step exception", function() {
+          expect(function() { pendingFunction(reason) }).toThrow(exception);
+        });
       });
     });
 
-    describe("when the step code throws an exception while executing", function() {
+    describe("when the step calls back as pending", function() {
+      var pendingReason, exception, pendingStepResult;
+
       beforeEach(function() {
-        stepCode.apply.andThrow("I am a failing step definition");
-        stepResult = createSpy("failed step result");
-        spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
+        pendingReason     = createSpy("a reason for being pending");
+        pendingStepResult = createSpy("pending step result");
+        exception         = Cucumber.Runtime.PendingStepException(pendingReason);
+        stepDefinitionCode.apply.andThrow(exception);
+        spyOn(Cucumber.Runtime, 'PendingStepResult').andReturn(pendingStepResult);
+        spyOn(Cucumber.Runtime, 'FailedStepResult');
+      });
+
+      it("creates a new pending step result", function() {
+        stepDefinition.invoke(stepName, docString, callback);
+        expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalled();
+      });
+
+      it("does not create a new failed step result", function() {
+        stepDefinition.invoke(stepName, docString, callback);
+        expect(Cucumber.Runtime.FailedStepResult).not.toHaveBeenCalled();
+      });
+
+      it("calls back with the step result", function() {
+        stepDefinition.invoke(stepName, docString, callback);
+        expect(callback).toHaveBeenCalledWith(pendingStepResult);
+      });
+    });
+
+    describe("when the step definition code fails", function() {
+      var failedStepResult;
+
+      beforeEach(function() {
+        stepDefinitionCode.apply.andThrow("I am a failing step definition");
+        failedStepResult = createSpy("failed step result");
+        spyOn(Cucumber.Runtime, 'FailedStepResult').andReturn(failedStepResult);
+        spyOn(Cucumber.Runtime, 'PendingStepResult');
       });
 
       it("creates a new failed step result", function() {
         stepDefinition.invoke(stepName, docString, callback);
-        expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(false);
+        expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalled();
       });
 
-      it("calls back", function() {
+      it("does not create a new pending step result", function() {
         stepDefinition.invoke(stepName, docString, callback);
-        expect(callback).toHaveBeenCalledWith(stepResult);
+        expect(Cucumber.Runtime.PendingStepResult).not.toHaveBeenCalled();
+      });
+
+      it("calls back with the step result", function() {
+        stepDefinition.invoke(stepName, docString, callback);
+        expect(callback).toHaveBeenCalledWith(failedStepResult);
       });
     });
   });

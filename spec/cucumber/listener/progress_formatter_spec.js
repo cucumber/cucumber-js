@@ -257,7 +257,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
-    it("asks the step result if the step passed", function() {
+    it("asks the step result wether the step passed", function() {
       listener.handleStepResultEvent(event, callback);
       expect(stepResult.isSuccessful).toHaveBeenCalled();
     });
@@ -270,41 +270,85 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
 
       it("logs the passing step character", function() {
         listener.handleStepResultEvent(event, callback);
-        expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSING_STEP_CHARACTER);
+        expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
       });
     });
 
     describe("when the step did not pass", function() {
       beforeEach(function() {
         stepResult.isSuccessful.andReturn(false);
-        spyOnStub(stepResult, 'isSkipped');
-        spyOn(listener, 'witnessFailedStep');
-        spyOn(listener, 'markCurrentScenarioAsFailing');
+        spyOnStub(stepResult, 'isPending');
       });
 
-      it("does not witness a passed step", function() {
+      it("asks the step result wether it was pending", function() {
         listener.handleStepResultEvent(event, callback);
-        expect(listener.witnessPassedStep).not.toHaveBeenCalled();
+        expect(stepResult.isPending).toHaveBeenCalled();
       });
 
-      it("does not log the passing step character", function() {
-        listener.handleStepResultEvent(event, callback);
-        expect(listener.log).not.toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSING_STEP_CHARACTER);
+      describe("when the step was pending", function() {
+        beforeEach(function() {
+          stepResult.isPending.andReturn(true);
+          spyOn(listener, 'witnessPendingStep');
+          spyOn(listener, 'markCurrentScenarioAsPending');
+        });
+
+        it("does not witness a passed step", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.witnessPassedStep).not.toHaveBeenCalled();
+        });
+
+        it("does not log the passing step character", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.log).not.toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+        });
+
+        it("witnesses a pending step", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.witnessPendingStep).toHaveBeenCalled();
+        });
+
+        it("marks the current scenario as pending", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.markCurrentScenarioAsPending).toHaveBeenCalled();
+        });
+
+        it("logs the pending step character", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PENDING_STEP_CHARACTER);
+        });
       });
 
-      it("witnesses a failed step", function() {
-        listener.handleStepResultEvent(event, callback);
-        expect(listener.witnessFailedStep).toHaveBeenCalled();
-      });
+      describe("when the step was not pending (failed)", function() {
+        beforeEach(function() {
+          stepResult.isPending.andReturn(false);
+          spyOn(listener, 'witnessFailedStep');
+          spyOn(listener, 'markCurrentScenarioAsFailing');
+        });
 
-      it("marks the current scenario as failing", function() {
-        listener.handleStepResultEvent(event, callback);
-        expect(listener.markCurrentScenarioAsFailing).toHaveBeenCalled();
-      });
+        it("does not witness a passed step", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.witnessPassedStep).not.toHaveBeenCalled();
+        });
 
-      it("logs the failed step character", function() {
-        listener.handleStepResultEvent(event, callback);
-        expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.FAILED_STEP_CHARACTER);
+        it("does not log the passing step character", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.log).not.toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+        });
+
+        it("witnesses a failed step", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.witnessFailedStep).toHaveBeenCalled();
+        });
+
+        it("marks the current scenario as failing", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.markCurrentScenarioAsFailing).toHaveBeenCalled();
+        });
+
+        it("logs the failed step character", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.FAILED_STEP_CHARACTER);
+        });
       });
     });
 
@@ -388,28 +432,13 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       callback = createSpy("callback");
       spyOn(listener, 'isCurrentScenarioFailing');
       spyOn(listener, 'witnessPassedScenario');
+      spyOn(listener, 'witnessPendingScenario');
       spyOn(listener, 'witnessFailedScenario');
     });
 
     it("checks wether the current scenario failed", function() {
       listener.handleAfterScenarioEvent(event, callback);
       expect(listener.isCurrentScenarioFailing).toHaveBeenCalled();
-    });
-
-    describe("when the current scenario passed", function() {
-      beforeEach(function() {
-        listener.isCurrentScenarioFailing.andReturn(false);
-      });
-
-      it("witnesses a passed scenario", function() {
-        listener.handleAfterScenarioEvent(event, callback);
-        expect(listener.witnessPassedScenario).toHaveBeenCalled();
-      });
-
-      it("does not witness a failed scenario", function() {
-        listener.handleAfterScenarioEvent(event, callback);
-        expect(listener.witnessFailedScenario).not.toHaveBeenCalled();
-      });
     });
 
     describe("when the current scenario failed", function() {
@@ -428,17 +457,58 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       });
     });
 
+    describe("when the current scenario did not fail", function() {
+      beforeEach(function() {
+        listener.isCurrentScenarioFailing.andReturn(false);
+        spyOn(listener, 'isCurrentScenarioPending');
+      });
+
+      it("checks wether the current scenario is pending", function() {
+        listener.handleAfterScenarioEvent(event, callback);
+        expect(listener.isCurrentScenarioPending).toHaveBeenCalled();
+      });
+
+      describe("when the current scenario is pending", function() {
+        beforeEach(function() {
+          listener.isCurrentScenarioPending.andReturn(true);
+        });
+
+        it("witnesses a pending scenario", function() {
+          listener.handleAfterScenarioEvent(event, callback);
+          expect(listener.witnessPendingScenario).toHaveBeenCalled();
+        });
+
+        it("does not witness a failed scenario", function() {
+          listener.handleAfterScenarioEvent(event, callback);
+          expect(listener.witnessFailedScenario).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the current scenario is not pending (passed)", function() {
+        beforeEach(function() {
+          listener.isCurrentScenarioPending.andReturn(false);
+        });
+
+        it("witnesses a passed scenario", function() {
+          listener.handleAfterScenarioEvent(event, callback);
+          expect(listener.witnessPassedScenario).toHaveBeenCalled();
+        });
+
+        it("does not witness a failed scenario", function() {
+          listener.handleAfterScenarioEvent(event, callback);
+          expect(listener.witnessFailedScenario).not.toHaveBeenCalled();
+        });
+
+        it("does not witness a pending scenario", function() {
+          listener.handleAfterScenarioEvent(event, callback);
+          expect(listener.witnessPendingScenario).not.toHaveBeenCalled();
+        });
+      });
+    });
+
     it("calls back", function() {
       listener.handleAfterScenarioEvent(event, callback);
       expect(callback).toHaveBeenCalled();
-    });
-  });
-
-  describe("prepareBeforeScenario()", function() {
-    it("unmarks the current scenario as failing", function() {
-      listener.markCurrentScenarioAsFailing();
-      listener.prepareBeforeScenario();
-      expect(listener.isCurrentScenarioFailing()).toBeFalsy();
     });
   });
 
@@ -447,15 +517,35 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.isCurrentScenarioFailing()).toBeFalsy();
     });
 
-    it("returns false when the current scenario did not fail yet", function() {
+    it("returns true when a step in the current scenario failed", function() {
       listener.markCurrentScenarioAsFailing();
       expect(listener.isCurrentScenarioFailing()).toBeTruthy();
     });
+  });
 
-    // it("returns true when a step in the current scenario failed", function() {
-    //   listener.handleStepResultEvent
-    //   expect(listener.isCurrentScenarioFailing()).toBeTruthy();
-    // });
+  describe("isCurrentScenarioPending()", function() {
+    it("returns false when the current scenario was not set pending yet", function() {
+      expect(listener.isCurrentScenarioPending()).toBeFalsy();
+    });
+
+    it("returns true when the current scenario was set pending", function() {
+      listener.markCurrentScenarioAsPending();
+      expect(listener.isCurrentScenarioPending()).toBeTruthy();
+    });
+  });
+
+  describe("prepareBeforeScenario()", function() {
+    it("unmarks the current scenario as pending", function() {
+      listener.markCurrentScenarioAsPending();
+      listener.prepareBeforeScenario();
+      expect(listener.isCurrentScenarioPending()).toBeFalsy();
+    });
+
+    it("unmarks the current scenario as failing", function() {
+      listener.markCurrentScenarioAsFailing();
+      listener.prepareBeforeScenario();
+      expect(listener.isCurrentScenarioFailing()).toBeFalsy();
+    });
   });
 
   describe("logSummary", function() {
@@ -490,6 +580,8 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   });
 
   describe("logScenariosSummary()", function() {
+    var scenarioCount, passedScenarioCount, pendingScenarioCount, failedScenarioCount;
+
     beforeEach(function() {
       scenarioCount       = 12;
       passedScenarioCount = 9;
@@ -497,6 +589,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       spyOn(listener, 'log');
       spyOn(listener, 'getScenarioCount').andReturn(scenarioCount);
       spyOn(listener, 'getPassedScenarioCount').andReturn(passedScenarioCount);
+      spyOn(listener, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
       spyOn(listener, 'getFailedScenarioCount').andReturn(failedScenarioCount);
     });
 
@@ -506,9 +599,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there are no scenarios", function() {
-      beforeEach(function() {
-        listener.getScenarioCount.andReturn(0);
-      });
+      beforeEach(function() { listener.getScenarioCount.andReturn(0); });
 
       it("logs 0 scenarios", function() {
         listener.logScenariosSummary();
@@ -517,9 +608,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there is one scenario", function() {
-      beforeEach(function() {
-        listener.getScenarioCount.andReturn(1);
-      });
+      beforeEach(function() { listener.getScenarioCount.andReturn(1); });
 
       it("logs one scenario", function() {
         listener.logScenariosSummary();
@@ -528,9 +617,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there are 2 or more scenarios", function() {
-      beforeEach(function() {
-        listener.getScenarioCount.andReturn(2);
-      });
+      beforeEach(function() { listener.getScenarioCount.andReturn(2); });
 
       it("logs two or more scenarios", function() {
         listener.logScenariosSummary();
@@ -544,9 +631,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there are no failed scenarios", function() {
-      beforeEach(function() {
-        listener.getFailedScenarioCount.andReturn(0);
-      });
+      beforeEach(function() { listener.getFailedScenarioCount.andReturn(0); });
 
       it("does not log failed scenarios", function() {
         listener.logScenariosSummary();
@@ -555,9 +640,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there is one failed scenario", function() {
-      beforeEach(function() {
-        listener.getFailedScenarioCount.andReturn(1);
-      });
+      beforeEach(function() { listener.getFailedScenarioCount.andReturn(1); });
 
       it("logs a failed scenario", function() {
         listener.logScenariosSummary();
@@ -565,14 +648,44 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       });
     });
 
-    describe("when there are two or more scenarios", function() {
-      beforeEach(function() {
-        listener.getFailedScenarioCount.andReturn(2);
-      });
+    describe("when there are two or more failed scenarios", function() {
+      beforeEach(function() { listener.getFailedScenarioCount.andReturn(2); });
 
       it("logs the number of failed scenarios", function() {
         listener.logScenariosSummary();
         expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+      });
+    });
+
+    it("gets the number of pending scenarios", function() {
+      listener.logScenariosSummary();
+      expect(listener.getPendingScenarioCount).toHaveBeenCalled();
+    });
+
+    describe("when there are no pending scenarios", function() {
+      beforeEach(function() { listener.getPendingScenarioCount.andReturn(0); });
+
+      it("does not log passed scenarios", function() {
+        listener.logScenariosSummary();
+        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+      });
+    });
+
+    describe("when there is one pending scenario", function() {
+      beforeEach(function() { listener.getPendingScenarioCount.andReturn(1); });
+
+      it("logs one pending scenario", function() {
+        listener.logScenariosSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+      });
+    });
+
+    describe("when there are two or more pending scenarios", function() {
+      beforeEach(function() { listener.getPendingScenarioCount.andReturn(2); });
+
+      it("logs the pending scenarios", function() {
+        listener.logScenariosSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
       });
     });
 
@@ -581,10 +694,8 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.getPassedScenarioCount).toHaveBeenCalled();
     });
 
-    describe("when there is no passed scenarios", function() {
-      beforeEach(function() {
-        listener.getPassedScenarioCount.andReturn(0);
-      });
+    describe("when there are no passed scenarios", function() {
+      beforeEach(function() { listener.getPassedScenarioCount.andReturn(0); });
 
       it("does not log passed scenarios", function() {
         listener.logScenariosSummary();
@@ -593,9 +704,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there is one passed scenario", function() {
-      beforeEach(function() {
-        listener.getPassedScenarioCount.andReturn(1);
-      });
+      beforeEach(function() { listener.getPassedScenarioCount.andReturn(1); });
 
       it("logs 1 passed scenarios", function() {
         listener.logScenariosSummary();
@@ -604,9 +713,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when there are two or more passed scenarios", function() {
-      beforeEach(function() {
-        listener.getPassedScenarioCount.andReturn(2);
-      });
+      beforeEach(function() { listener.getPassedScenarioCount.andReturn(2); });
 
       it("logs the number of passed scenarios", function() {
         listener.logScenariosSummary();
@@ -616,18 +723,20 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   });
 
   describe("logStepsSummary()", function() {
-    var stepCount, passedStepCount, failedStepCount, skippedStepCount;
+    var stepCount, passedStepCount, failedStepCount, skippedStepCount, pendingStepCount;
 
     beforeEach(function() {
       stepCount        = 34;
       passedStepCount  = 31;
       failedStepCount  = 7;
-      skippedStepCount = 5
+      skippedStepCount = 5;
+      pendingStepCount = 2;
       spyOn(listener, 'log');
       spyOn(listener, 'getStepCount').andReturn(stepCount);
       spyOn(listener, 'getPassedStepCount').andReturn(passedStepCount);
       spyOn(listener, 'getFailedStepCount').andReturn(failedStepCount);
       spyOn(listener, 'getSkippedStepCount').andReturn(skippedStepCount);
+      spyOn(listener, 'getPendingStepCount').andReturn(pendingStepCount);
     });
 
     it("gets the number of steps", function() {
@@ -703,6 +812,44 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       it("logs the number of failed steps", function() {
         listener.logStepsSummary();
         expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+      });
+    });
+
+    it("gets the number of pending steps", function() {
+      listener.logStepsSummary();
+      expect(listener.getPendingStepCount).toHaveBeenCalled();
+    });
+
+    describe("when there are no pending steps", function() {
+      beforeEach(function() {
+        listener.getPendingStepCount.andReturn(0);
+      });
+
+      it("does not log pending steps", function() {
+        listener.logStepsSummary();
+        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+      });
+    });
+
+    describe("when there is one pending step", function() {
+      beforeEach(function() {
+        listener.getPendingStepCount.andReturn(1);
+      });
+
+      it("logs one pending steps", function() {
+        listener.logStepsSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+      });
+    });
+
+    describe("when there are two or more pending steps", function() {
+      beforeEach(function() {
+        listener.getPendingStepCount.andReturn(2);
+      });
+
+      it("logs the number of pending steps", function() {
+        listener.logStepsSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
       });
     });
 
@@ -787,9 +934,11 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     var passedScenarioCount;
 
     beforeEach(function() {
-      passedScenarioCount = Math.floor(Math.random()*11) + 1;
-      failedScenarioCount = Math.floor(Math.random()*11) + 1;
+      passedScenarioCount  = Math.floor(Math.random()*11) + 1;
+      pendingScenarioCount = Math.floor(Math.random()*11) + 1;
+      failedScenarioCount  = Math.floor(Math.random()*11) + 1;
       spyOn(listener, 'getPassedScenarioCount').andReturn(passedScenarioCount);
+      spyOn(listener, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
       spyOn(listener, 'getFailedScenarioCount').andReturn(failedScenarioCount);
     });
 
@@ -798,25 +947,32 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.getPassedScenarioCount).toHaveBeenCalled();
     });
 
+    it("gets the number of pending scenarios", function() {
+      listener.getScenarioCount();
+      expect(listener.getPendingScenarioCount).toHaveBeenCalled();
+    });
+
     it("gets the number of failed scenarios", function() {
       listener.getScenarioCount();
       expect(listener.getFailedScenarioCount).toHaveBeenCalled();
     });
 
     it("returns the sum of passed and failed scenarios", function() {
-      expect(listener.getScenarioCount()).toBe(passedScenarioCount + failedScenarioCount);
+      expect(listener.getScenarioCount()).toBe(passedScenarioCount + pendingScenarioCount + failedScenarioCount);
     });
   });
 
   describe("getStepCount()", function() {
-    var passedStepCount, skippedStepCount, failedStepCount;
+    var passedStepCount, skippedStepCount, pendingStepCount, failedStepCount;
 
     beforeEach(function() {
       passedStepCount  = Math.floor(Math.random()*11) + 1;
       skippedStepCount = Math.floor(Math.random()*11) + 1;
+      pendingStepCount = Math.floor(Math.random()*11) + 1;
       failedStepCount  = Math.floor(Math.random()*11) + 1;
       spyOn(listener, 'getPassedStepCount').andReturn(passedStepCount);
       spyOn(listener, 'getSkippedStepCount').andReturn(skippedStepCount);
+      spyOn(listener, 'getPendingStepCount').andReturn(pendingStepCount);
       spyOn(listener, 'getFailedStepCount').andReturn(failedStepCount);
     });
 
@@ -830,13 +986,18 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.getSkippedStepCount).toHaveBeenCalled();
     });
 
+    it("gets the number of pending steps", function() {
+      listener.getStepCount();
+      expect(listener.getPendingStepCount).toHaveBeenCalled();
+    });
+
     it("gets the number of failed steps", function() {
       listener.getStepCount();
       expect(listener.getFailedStepCount).toHaveBeenCalled();
     });
 
     it("returns the sum of passed steps and failed steps", function() {
-      expect(listener.getStepCount()).toBe(passedStepCount + skippedStepCount + failedStepCount);
+      expect(listener.getStepCount()).toBe(passedStepCount + skippedStepCount + pendingStepCount + failedStepCount);
     });
   });
 
@@ -870,6 +1031,32 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.witnessPassedScenario();
         listener.witnessPassedScenario();
         expect(listener.getPassedScenarioCount()).toBe(3);
+      });
+    });
+  });
+
+  describe("pending scenario counting", function() {
+    describe("getPendingScenarioCount()", function() {
+      it("returns 0 when no scenarios pending", function() {
+        expect(listener.getPendingScenarioCount()).toBe(0);
+      });
+
+      it("returns 1 when one scenario passed", function() {
+        listener.witnessPendingScenario();
+        expect(listener.getPendingScenarioCount()).toBe(1);
+      });
+
+      it("returns 2 when two scenarios passed", function() {
+        listener.witnessPendingScenario();
+        listener.witnessPendingScenario();
+        expect(listener.getPendingScenarioCount()).toBe(2);
+      });
+
+      it("returns 3 when two scenarios passed", function() {
+        listener.witnessPendingScenario();
+        listener.witnessPendingScenario();
+        listener.witnessPendingScenario();
+        expect(listener.getPendingScenarioCount()).toBe(3);
       });
     });
   });
@@ -982,6 +1169,32 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.witnessSkippedStep();
         listener.witnessSkippedStep();
         expect(listener.getSkippedStepCount()).toBe(3);
+      });
+    });
+  });
+
+  describe("pending step counting", function() {
+    describe("getPendingStepCount()", function() {
+      it("returns 0 when no steps pending", function() {
+        expect(listener.getPendingStepCount()).toBe(0);
+      });
+
+      it("returns 1 when one step passed", function() {
+        listener.witnessPendingStep();
+        expect(listener.getPendingStepCount()).toBe(1);
+      });
+
+      it("returns 2 when two steps passed", function() {
+        listener.witnessPendingStep();
+        listener.witnessPendingStep();
+        expect(listener.getPendingStepCount()).toBe(2);
+      });
+
+      it("returns 3 when two steps passed", function() {
+        listener.witnessPendingStep();
+        listener.witnessPendingStep();
+        listener.witnessPendingStep();
+        expect(listener.getPendingStepCount()).toBe(3);
       });
     });
   });
