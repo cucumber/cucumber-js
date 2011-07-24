@@ -14,9 +14,9 @@ module CucumberJsMappings
     run_simple "#{cucumber_bin} #{FEATURE_FILE} #{STEP_DEFINITIONS_FILE}", false
   end
 
-  # def run_feature
-  #   run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
-  # end
+  def run_feature
+    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
+  end
 
   def cucumber_bin
     File.expand_path(File.dirname(__FILE__) + '/../../cucumber.js')
@@ -149,9 +149,9 @@ EOF
     assert_success true
   end
 
-#   def failed_output
-#     "failed"
-#   end
+  def failed_output
+    "failed"
+  end
 
   def append_step_definition(step_name, code)
     append_support_code(<<-EOF)

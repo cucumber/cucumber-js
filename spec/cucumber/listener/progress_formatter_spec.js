@@ -667,151 +667,160 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.logScenariosSummary();
         expect(listener.log).toHaveBeenCalledWithStringMatching(/0 scenarios/);
       });
-    });
 
-    describe("when there is one scenario", function() {
-      beforeEach(function() { listener.getScenarioCount.andReturn(1); });
-
-      it("logs one scenario", function() {
+      it("does not log any details", function() {
         listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 scenario([^s]|$)/);
+        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
       });
     });
 
-    describe("when there are 2 or more scenarios", function() {
-      beforeEach(function() { listener.getScenarioCount.andReturn(2); });
+    describe("when there are scenarios", function() {
+      beforeEach(function() { listener.getScenarioCount.andReturn(12); });
 
-      it("logs two or more scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 scenarios/);
+      describe("when there is one scenario", function() {
+        beforeEach(function() { listener.getScenarioCount.andReturn(1); });
+
+        it("logs one scenario", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 scenario([^s]|$)/);
+        });
       });
-    });
 
-    it("gets the number of failed scenarios", function() {
-      listener.logScenariosSummary();
-      expect(listener.getFailedScenarioCount).toHaveBeenCalled();
-    });
+      describe("when there are 2 or more scenarios", function() {
+        beforeEach(function() { listener.getScenarioCount.andReturn(2); });
 
-    describe("when there are no failed scenarios", function() {
-      beforeEach(function() { listener.getFailedScenarioCount.andReturn(0); });
-
-      it("does not log failed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/failed/);
+        it("logs two or more scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 scenarios/);
+        });
       });
-    });
 
-    describe("when there is one failed scenario", function() {
-      beforeEach(function() { listener.getFailedScenarioCount.andReturn(1); });
-
-      it("logs a failed scenario", function() {
+      it("gets the number of failed scenarios", function() {
         listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 failed/);
+        expect(listener.getFailedScenarioCount).toHaveBeenCalled();
       });
-    });
 
-    describe("when there are two or more failed scenarios", function() {
-      beforeEach(function() { listener.getFailedScenarioCount.andReturn(2); });
+      describe("when there are no failed scenarios", function() {
+        beforeEach(function() { listener.getFailedScenarioCount.andReturn(0); });
 
-      it("logs the number of failed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+        it("does not log failed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/failed/);
+        });
       });
-    });
 
-    it("gets the number of undefined scenarios", function() {
-      listener.logScenariosSummary();
-      expect(listener.getUndefinedScenarioCount).toHaveBeenCalled();
-    });
+      describe("when there is one failed scenario", function() {
+        beforeEach(function() { listener.getFailedScenarioCount.andReturn(1); });
 
-    describe("when there are no undefined scenarios", function() {
-      beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(0); });
-
-      it("does not log passed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+        it("logs a failed scenario", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 failed/);
+        });
       });
-    });
 
-    describe("when there is one undefined scenario", function() {
-      beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(1); });
+      describe("when there are two or more failed scenarios", function() {
+        beforeEach(function() { listener.getFailedScenarioCount.andReturn(2); });
 
-      it("logs one undefined scenario", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+        it("logs the number of failed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+        });
       });
-    });
 
-    describe("when there are two or more undefined scenarios", function() {
-      beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(2); });
-
-      it("logs the undefined scenarios", function() {
+      it("gets the number of undefined scenarios", function() {
         listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
+        expect(listener.getUndefinedScenarioCount).toHaveBeenCalled();
       });
-    });
 
-    it("gets the number of pending scenarios", function() {
-      listener.logScenariosSummary();
-      expect(listener.getPendingScenarioCount).toHaveBeenCalled();
-    });
+      describe("when there are no undefined scenarios", function() {
+        beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(0); });
 
-    describe("when there are no pending scenarios", function() {
-      beforeEach(function() { listener.getPendingScenarioCount.andReturn(0); });
-
-      it("does not log passed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+        it("does not log passed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+        });
       });
-    });
 
-    describe("when there is one pending scenario", function() {
-      beforeEach(function() { listener.getPendingScenarioCount.andReturn(1); });
+      describe("when there is one undefined scenario", function() {
+        beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(1); });
 
-      it("logs one pending scenario", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+        it("logs one undefined scenario", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+        });
       });
-    });
 
-    describe("when there are two or more pending scenarios", function() {
-      beforeEach(function() { listener.getPendingScenarioCount.andReturn(2); });
+      describe("when there are two or more undefined scenarios", function() {
+        beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(2); });
 
-      it("logs the pending scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
+        it("logs the undefined scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
+        });
       });
-    });
 
-    it("gets the number of passed scenarios", function() {
-      listener.logScenariosSummary();
-      expect(listener.getPassedScenarioCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no passed scenarios", function() {
-      beforeEach(function() { listener.getPassedScenarioCount.andReturn(0); });
-
-      it("does not log passed scenarios", function() {
+      it("gets the number of pending scenarios", function() {
         listener.logScenariosSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/passed/);
+        expect(listener.getPendingScenarioCount).toHaveBeenCalled();
       });
-    });
 
-    describe("when there is one passed scenario", function() {
-      beforeEach(function() { listener.getPassedScenarioCount.andReturn(1); });
+      describe("when there are no pending scenarios", function() {
+        beforeEach(function() { listener.getPendingScenarioCount.andReturn(0); });
 
-      it("logs 1 passed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 passed/);
+        it("does not log passed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+        });
       });
-    });
 
-    describe("when there are two or more passed scenarios", function() {
-      beforeEach(function() { listener.getPassedScenarioCount.andReturn(2); });
+      describe("when there is one pending scenario", function() {
+        beforeEach(function() { listener.getPendingScenarioCount.andReturn(1); });
 
-      it("logs the number of passed scenarios", function() {
+        it("logs one pending scenario", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+        });
+      });
+
+      describe("when there are two or more pending scenarios", function() {
+        beforeEach(function() { listener.getPendingScenarioCount.andReturn(2); });
+
+        it("logs the pending scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
+        });
+      });
+
+      it("gets the number of passed scenarios", function() {
         listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 passed/);
+        expect(listener.getPassedScenarioCount).toHaveBeenCalled();
+      });
+
+      describe("when there are no passed scenarios", function() {
+        beforeEach(function() { listener.getPassedScenarioCount.andReturn(0); });
+
+        it("does not log passed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/passed/);
+        });
+      });
+
+      describe("when there is one passed scenario", function() {
+        beforeEach(function() { listener.getPassedScenarioCount.andReturn(1); });
+
+        it("logs 1 passed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 passed/);
+        });
+      });
+
+      describe("when there are two or more passed scenarios", function() {
+        beforeEach(function() { listener.getPassedScenarioCount.andReturn(2); });
+
+        it("logs the number of passed scenarios", function() {
+          listener.logScenariosSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 passed/);
+        });
       });
     });
   });
@@ -849,217 +858,226 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.logStepsSummary();
         expect(listener.log).toHaveBeenCalledWithStringMatching(/0 steps/);
       });
-    });
 
-    describe("when there is one step", function() {
-      beforeEach(function() {
-        listener.getStepCount.andReturn(1);
-      });
-
-      it("logs 1 step", function() {
+      it("does not log any details", function() {
         listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 step/);
+        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
       });
     });
 
-    describe("when there are two or more steps", function() {
-      beforeEach(function() {
-        listener.getStepCount.andReturn(2);
+    describe("when there are steps", function() {
+      beforeEach(function() { listener.getStepCount.andReturn(13); });
+
+      describe("when there is one step", function() {
+        beforeEach(function() {
+          listener.getStepCount.andReturn(1);
+        });
+
+        it("logs 1 step", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 step/);
+        });
       });
 
-      it("logs the number of steps", function() {
+      describe("when there are two or more steps", function() {
+        beforeEach(function() {
+          listener.getStepCount.andReturn(2);
+        });
+
+        it("logs the number of steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 steps/);
+        });
+      });
+
+      it("gets the number of failed steps", function() {
         listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 steps/);
-      });
-    });
-
-    it("gets the number of failed steps", function() {
-      listener.logStepsSummary();
-      expect(listener.getFailedStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no failed steps", function() {
-      beforeEach(function() {
-        listener.getFailedStepCount.andReturn(0);
+        expect(listener.getFailedStepCount).toHaveBeenCalled();
       });
 
-      it("does not log failed steps", function() {
+      describe("when there are no failed steps", function() {
+        beforeEach(function() {
+          listener.getFailedStepCount.andReturn(0);
+        });
+
+        it("does not log failed steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/failed/);
+        });
+      });
+
+      describe("when there is one failed step", function() {
+        beforeEach(function() {
+          listener.getFailedStepCount.andReturn(1);
+        });
+
+        it("logs one failed step", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 failed/);
+        });
+      });
+
+      describe("when there is two or more failed steps", function() {
+        beforeEach(function() {
+          listener.getFailedStepCount.andReturn(2);
+        });
+
+        it("logs the number of failed steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+        });
+      });
+
+      it("gets the number of undefined steps", function() {
         listener.logStepsSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/failed/);
-      });
-    });
-
-    describe("when there is one failed step", function() {
-      beforeEach(function() {
-        listener.getFailedStepCount.andReturn(1);
+        expect(listener.getUndefinedStepCount).toHaveBeenCalled();
       });
 
-      it("logs one failed step", function() {
+      describe("when there are no undefined steps", function() {
+        beforeEach(function() {
+          listener.getUndefinedStepCount.andReturn(0);
+        });
+
+        it("does not log undefined steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+        });
+      });
+
+      describe("when there is one undefined step", function() {
+        beforeEach(function() {
+          listener.getUndefinedStepCount.andReturn(1);
+        });
+
+        it("logs one undefined steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+        });
+      });
+
+      describe("when there are two or more undefined steps", function() {
+        beforeEach(function() {
+          listener.getUndefinedStepCount.andReturn(2);
+        });
+
+        it("logs the number of undefined steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
+        });
+      });
+
+      it("gets the number of pending steps", function() {
         listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 failed/);
-      });
-    });
-
-    describe("when there is two or more failed steps", function() {
-      beforeEach(function() {
-        listener.getFailedStepCount.andReturn(2);
+        expect(listener.getPendingStepCount).toHaveBeenCalled();
       });
 
-      it("logs the number of failed steps", function() {
+      describe("when there are no pending steps", function() {
+        beforeEach(function() {
+          listener.getPendingStepCount.andReturn(0);
+        });
+
+        it("does not log pending steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+        });
+      });
+
+      describe("when there is one pending step", function() {
+        beforeEach(function() {
+          listener.getPendingStepCount.andReturn(1);
+        });
+
+        it("logs one pending steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+        });
+      });
+
+      describe("when there are two or more pending steps", function() {
+        beforeEach(function() {
+          listener.getPendingStepCount.andReturn(2);
+        });
+
+        it("logs the number of pending steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
+        });
+      });
+
+      it("gets the number of skipped steps", function() {
         listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
-      });
-    });
-
-    it("gets the number of undefined steps", function() {
-      listener.logStepsSummary();
-      expect(listener.getUndefinedStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no undefined steps", function() {
-      beforeEach(function() {
-        listener.getUndefinedStepCount.andReturn(0);
+        expect(listener.getSkippedStepCount).toHaveBeenCalled();
       });
 
-      it("does not log undefined steps", function() {
+      describe("when there are no skipped steps", function() {
+        beforeEach(function() {
+          listener.getSkippedStepCount.andReturn(0);
+        });
+
+        it("does not log skipped steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
+        });
+      });
+
+      describe("when there is one skipped step", function() {
+        beforeEach(function() {
+          listener.getSkippedStepCount.andReturn(1);
+        });
+
+        it("logs one skipped steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
+        });
+      });
+
+      describe("when there are two or more skipped steps", function() {
+        beforeEach(function() {
+          listener.getSkippedStepCount.andReturn(2);
+        });
+
+        it("logs the number of skipped steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 skipped/);
+        });
+      });
+
+      it("gets the number of passed steps", function() {
         listener.logStepsSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
-      });
-    });
-
-    describe("when there is one undefined step", function() {
-      beforeEach(function() {
-        listener.getUndefinedStepCount.andReturn(1);
+        expect(listener.getPassedStepCount).toHaveBeenCalled();
       });
 
-      it("logs one undefined steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
-      });
-    });
+      describe("when there are no passed steps", function() {
+        beforeEach(function() {
+          listener.getPassedStepCount.andReturn(0);
+        });
 
-    describe("when there are two or more undefined steps", function() {
-      beforeEach(function() {
-        listener.getUndefinedStepCount.andReturn(2);
-      });
-
-      it("logs the number of undefined steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
-      });
-    });
-
-    it("gets the number of pending steps", function() {
-      listener.logStepsSummary();
-      expect(listener.getPendingStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no pending steps", function() {
-      beforeEach(function() {
-        listener.getPendingStepCount.andReturn(0);
+        it("does not log passed steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/passed/);
+        });
       });
 
-      it("does not log pending steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
-      });
-    });
+      describe("when there is one passed step", function() {
+        beforeEach(function() {
+          listener.getPassedStepCount.andReturn(1);
+        });
 
-    describe("when there is one pending step", function() {
-      beforeEach(function() {
-        listener.getPendingStepCount.andReturn(1);
-      });
-
-      it("logs one pending steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
-      });
-    });
-
-    describe("when there are two or more pending steps", function() {
-      beforeEach(function() {
-        listener.getPendingStepCount.andReturn(2);
+        it("logs one passed step", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 passed/);
+        });
       });
 
-      it("logs the number of pending steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
-      });
-    });
+      describe("when there is two or more passed steps", function() {
+        beforeEach(function() {
+          listener.getPassedStepCount.andReturn(2);
+        });
 
-    it("gets the number of skipped steps", function() {
-      listener.logStepsSummary();
-      expect(listener.getSkippedStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no skipped steps", function() {
-      beforeEach(function() {
-        listener.getSkippedStepCount.andReturn(0);
-      });
-
-      it("does not log skipped steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
-      });
-    });
-
-    describe("when there is one skipped step", function() {
-      beforeEach(function() {
-        listener.getSkippedStepCount.andReturn(1);
-      });
-
-      it("logs one skipped steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
-      });
-    });
-
-    describe("when there are two or more skipped steps", function() {
-      beforeEach(function() {
-        listener.getSkippedStepCount.andReturn(2);
-      });
-
-      it("logs the number of skipped steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 skipped/);
-      });
-    });
-
-    it("gets the number of passed steps", function() {
-      listener.logStepsSummary();
-      expect(listener.getPassedStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no passed steps", function() {
-      beforeEach(function() {
-        listener.getPassedStepCount.andReturn(0);
-      });
-
-      it("does not log passed steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/passed/);
-      });
-    });
-
-    describe("when there is one passed step", function() {
-      beforeEach(function() {
-        listener.getPassedStepCount.andReturn(1);
-      });
-
-      it("logs one passed step", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 passed/);
-      });
-    });
-
-    describe("when there is two or more passed steps", function() {
-      beforeEach(function() {
-        listener.getPassedStepCount.andReturn(2);
-      });
-
-      it("logs the number of passed steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 passed/);
+        it("logs the number of passed steps", function() {
+          listener.logStepsSummary();
+          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 passed/);
+        });
       });
     });
   });
