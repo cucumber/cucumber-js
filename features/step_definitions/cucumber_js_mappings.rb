@@ -72,13 +72,25 @@ EOF
   end
 
   def write_mappings_for_calculator
-    append_step_definition(:given, /^a calculator$/,               "locals['calculator'] = RpnCalculator();");
-    append_step_definition(:when,  /^the calculator computes PI$/, "locals['calculator'].pi();");
-    append_step_definition(:then,  /^the calculator returns PI$/,  <<-EOF);
-if (locals['calculator'].value() != Math.PI)
-  throw "Expected PI";
-    EOF
+    append_support_code <<-EOC
+var calculator;
 
+Given(/^a calculator$/, function(callback) {
+  calculator = RpnCalculator();
+  callback();
+});
+
+When(/^the calculator computes PI$/, function(callback) {
+  calculator.pi();
+  callback();
+});
+
+Then(/^the calculator returns PI$/, function(callback) {
+  if (calculator.value() != Math.PI)
+    throw "Expected PI";
+  callback();
+});
+EOC
 
 # When /^the calculator adds up ([\\d\\.]+) and ([\\d\\.]+)$/ do |n1, n2|
 #   @calc.push(n1.to_f)
@@ -151,19 +163,12 @@ if (locals['calculator'].value() != Math.PI)
 
   protected
 
-  def append_step_definition(keyword, step_name, code = nil)
-    if code.nil?
-      code      = step_name
-      step_name = keyword
-      keyword   = :given
-    end
-    keyword       = keyword.to_s.capitalize
-    step_name     = step_name.source if step_name.is_a?(Regexp)
+  def append_step_definition(step_name, code)
     indented_code = ""
     code.each_line { |line| indented_code += "    #{line}" }
     indented_code.rstrip!
     append_support_code(<<-EOF)
-  #{keyword}(/#{step_name}/, function(callback) {
+  Given(/#{step_name}/, function(callback) {
     fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
     callback();
@@ -174,7 +179,7 @@ EOF
   def append_support_code(code)
     @mapping_count ||= 0
     if @mapping_count == 0
-      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n  var locals = {};\n"
+      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n"
     else
       step_definition = "\n"
     end
