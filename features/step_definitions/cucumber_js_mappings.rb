@@ -54,11 +54,11 @@ module CucumberJsMappings
         else if (arg == '/')
           self.push(x() / y());
         else
-          stack.push(parseInt(arg));
+          stack.push(parseFloat(arg));
       },
 
       pi: function pi() {
-        return Math.PI;
+        self.push(Math.PI);
       },
 
       value: function value() {
@@ -71,18 +71,14 @@ EOF
     append_support_code(code)
   end
 
-#   def write_mappings_for_calculator
-#     write_file("features/support/env.rb", "$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')\n")
-#     mapping_code = <<-EOF
-# require 'rpn_calculator'
+  def write_mappings_for_calculator
+    append_step_definition(:given, /^a calculator$/,               "locals['calculator'] = RpnCalculator();");
+    append_step_definition(:when,  /^the calculator computes PI$/, "locals['calculator'].pi();");
+    append_step_definition(:then,  /^the calculator returns PI$/,  <<-EOF);
+if (locals['calculator'].value() != Math.PI)
+  throw "Expected PI";
+    EOF
 
-# Given /^a calculator$/ do
-#   @calc = RpnCalculator.new
-# end
-
-# When /^the calculator computes PI$/ do
-#   @calc.PI
-# end
 
 # When /^the calculator adds up ([\\d\\.]+) and ([\\d\\.]+)$/ do |n1, n2|
 #   @calc.push(n1.to_f)
@@ -93,7 +89,7 @@ EOF
 # When /^the calculator adds up "([^"]*)" and "([^"]*)"$/ do |n1, n2|
 #   @calc.push(n1.to_i)
 #   @calc.push(n2.to_i)
-#   @calc.push('+')
+    #   @calc.push('+')
 # end
 
 # When /^the calculator adds up "([^"]*)", "([^"]*)" and "([^"]*)"$/ do |n1, n2, n3|
@@ -126,8 +122,8 @@ EOF
 # end
 
 # EOF
-#     write_file("features/step_definitions/calculator_mappings.rb", mapping_code)
-#   end
+     #     write_file("features/step_definitions/calculator_mappings.rb", mapping_code)
+  end
 
   def assert_passing_scenario
     assert_partial_output("1 scenario (1 passed)", all_output)
@@ -153,11 +149,23 @@ EOF
     "failed"
   end
 
-  def append_step_definition(step_name, code)
+  protected
+
+  def append_step_definition(keyword, step_name, code = nil)
+    if code.nil?
+      code      = step_name
+      step_name = keyword
+      keyword   = :given
+    end
+    keyword       = keyword.to_s.capitalize
+    step_name     = step_name.source if step_name.is_a?(Regexp)
+    indented_code = ""
+    code.each_line { |line| indented_code += "    #{line}" }
+    indented_code.rstrip!
     append_support_code(<<-EOF)
-  Given(/#{step_name}/, function(callback){
+  #{keyword}(/#{step_name}/, function(callback) {
     fs.writeFileSync("#{step_file(step_name)}", "");
-    #{code}
+#{indented_code}
     callback();
   });
 EOF
@@ -166,7 +174,7 @@ EOF
   def append_support_code(code)
     @mapping_count ||= 0
     if @mapping_count == 0
-      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n"
+      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n  var locals = {};\n"
     else
       step_definition = "\n"
     end
