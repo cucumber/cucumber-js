@@ -241,12 +241,14 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
-  describe("handleStepResultEvent", function() {
+  describe("handleStepResultEvent()", function() {
     var event, callback, stepResult;
 
     beforeEach(function() {
       spyOn(listener, 'log');
-      stepResult = createSpyWithStubs("step result", {isSuccessful: true});
+      stepResult = createSpyWithStubs("step result", {
+        isSuccessful: undefined, isPending: undefined, isUndefined: undefined
+      });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
       spyOn(listener, 'witnessPassedStep');
@@ -263,6 +265,10 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when the step passed", function() {
+      beforeEach(function() {
+        stepResult.isSuccessful.andReturn(true);
+      });
+
       it("witnesses a passed step", function() {
         listener.handleStepResultEvent(event, callback);
         expect(listener.witnessPassedStep).toHaveBeenCalled();
@@ -280,7 +286,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         spyOnStub(stepResult, 'isPending');
       });
 
-      it("asks the step result wether it was pending", function() {
+      it("asks the step result wether it is pending", function() {
         listener.handleStepResultEvent(event, callback);
         expect(stepResult.isPending).toHaveBeenCalled();
       });
@@ -318,11 +324,12 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         });
       });
 
-      describe("when the step was not pending (failed)", function() {
+      describe("when the step was not pending", function() {
         beforeEach(function() {
           stepResult.isPending.andReturn(false);
           spyOn(listener, 'witnessFailedStep');
           spyOn(listener, 'markCurrentScenarioAsFailing');
+          spyOnStub(stepResult, 'isUndefined');
         });
 
         it("does not witness a passed step", function() {
@@ -354,6 +361,38 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
 
     it("calls back", function() {
       listener.handleStepResultEvent(event, callback);
+      expect(callback).toHaveBeenCalled();
+    });
+  });
+
+  describe("handleUndefinedStepEvent()", function() {
+    var event, callback;
+
+    beforeEach(function() {
+      event    = createSpy("event");
+      callback = createSpy("callback");
+      spyOn(listener, 'witnessUndefinedStep');
+      spyOn(listener, 'markCurrentScenarioAsUndefined');
+      spyOn(listener, 'log');
+    });
+
+    it("witnesses an undefined step", function() {
+      listener.handleUndefinedStepEvent(event, callback);
+      expect(listener.witnessUndefinedStep).toHaveBeenCalled();
+    });
+
+    it("marks the current scenario as undefined", function() {
+      listener.handleUndefinedStepEvent(event, callback);
+      expect(listener.markCurrentScenarioAsUndefined).toHaveBeenCalled();
+    });
+
+    it("logs the undefined step character", function() {
+      listener.handleUndefinedStepEvent(event, callback);
+      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.UNDEFINED_STEP_CHARACTER);
+    });
+
+    it("calls back", function() {
+      listener.handleUndefinedStepEvent(event, callback);
       expect(callback).toHaveBeenCalled();
     });
   });
@@ -432,6 +471,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       callback = createSpy("callback");
       spyOn(listener, 'isCurrentScenarioFailing');
       spyOn(listener, 'witnessPassedScenario');
+      spyOn(listener, 'witnessUndefinedScenario');
       spyOn(listener, 'witnessPendingScenario');
       spyOn(listener, 'witnessFailedScenario');
     });
@@ -450,62 +490,64 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.handleAfterScenarioEvent(event, callback);
         expect(listener.witnessFailedScenario).toHaveBeenCalled();
       });
-
-      it("does not witness a passed scenario", function() {
-        listener.handleAfterScenarioEvent(event, callback);
-        expect(listener.witnessPassedScenario).not.toHaveBeenCalled();
-      });
     });
 
     describe("when the current scenario did not fail", function() {
       beforeEach(function() {
         listener.isCurrentScenarioFailing.andReturn(false);
-        spyOn(listener, 'isCurrentScenarioPending');
+        spyOn(listener, 'isCurrentScenarioUndefined');
       });
 
-      it("checks wether the current scenario is pending", function() {
+      it("checks wether the current scenario is undefined", function() {
         listener.handleAfterScenarioEvent(event, callback);
-        expect(listener.isCurrentScenarioPending).toHaveBeenCalled();
+        expect(listener.isCurrentScenarioUndefined).toHaveBeenCalled();
       });
 
-      describe("when the current scenario is pending", function() {
+      describe("when the current scenario is undefined", function() {
         beforeEach(function() {
-          listener.isCurrentScenarioPending.andReturn(true);
+          listener.isCurrentScenarioUndefined.andReturn(true);
         });
 
-        it("witnesses a pending scenario", function() {
+        it("witnesses an undefined scenario", function() {
           listener.handleAfterScenarioEvent(event, callback);
-          expect(listener.witnessPendingScenario).toHaveBeenCalled();
-        });
-
-        it("does not witness a failed scenario", function() {
-          listener.handleAfterScenarioEvent(event, callback);
-          expect(listener.witnessFailedScenario).not.toHaveBeenCalled();
+          expect(listener.witnessUndefinedScenario).toHaveBeenCalled();
         });
       });
 
-      describe("when the current scenario is not pending (passed)", function() {
+      describe("when the current scenario is not undefined", function() {
         beforeEach(function() {
-          listener.isCurrentScenarioPending.andReturn(false);
+          listener.isCurrentScenarioUndefined.andReturn(false);
+          spyOn(listener, 'isCurrentScenarioPending');
         });
 
-        it("witnesses a passed scenario", function() {
+        it("checks wether the current scenario is pending", function() {
           listener.handleAfterScenarioEvent(event, callback);
-          expect(listener.witnessPassedScenario).toHaveBeenCalled();
+          expect(listener.isCurrentScenarioPending).toHaveBeenCalled();
         });
 
-        it("does not witness a failed scenario", function() {
-          listener.handleAfterScenarioEvent(event, callback);
-          expect(listener.witnessFailedScenario).not.toHaveBeenCalled();
+        describe("when the current scenario is pending", function() {
+          beforeEach(function() {
+            listener.isCurrentScenarioPending.andReturn(true);
+          });
+
+          it("witnesses a pending scenario", function() {
+            listener.handleAfterScenarioEvent(event, callback);
+            expect(listener.witnessPendingScenario).toHaveBeenCalled();
+          });
         });
 
-        it("does not witness a pending scenario", function() {
-          listener.handleAfterScenarioEvent(event, callback);
-          expect(listener.witnessPendingScenario).not.toHaveBeenCalled();
+        describe("when the current scenario is not pending (passed)", function() {
+          beforeEach(function() {
+            listener.isCurrentScenarioPending.andReturn(false);
+          });
+
+          it("witnesses a passed scenario", function() {
+            listener.handleAfterScenarioEvent(event, callback);
+            expect(listener.witnessPassedScenario).toHaveBeenCalled();
+          });
         });
       });
     });
-
     it("calls back", function() {
       listener.handleAfterScenarioEvent(event, callback);
       expect(callback).toHaveBeenCalled();
@@ -534,6 +576,17 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
+  describe("isCurrentScenarioUndefined()", function() {
+    it("returns false when the current scenario was not set undefined yet", function() {
+      expect(listener.isCurrentScenarioUndefined()).toBeFalsy();
+    });
+
+    it("returns true when the current scenario was set undefined", function() {
+      listener.markCurrentScenarioAsUndefined();
+      expect(listener.isCurrentScenarioUndefined()).toBeTruthy();
+    });
+  });
+
   describe("prepareBeforeScenario()", function() {
     it("unmarks the current scenario as pending", function() {
       listener.markCurrentScenarioAsPending();
@@ -545,6 +598,12 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       listener.markCurrentScenarioAsFailing();
       listener.prepareBeforeScenario();
       expect(listener.isCurrentScenarioFailing()).toBeFalsy();
+    });
+
+    it("unmarks the current scenario as undefined", function() {
+      listener.markCurrentScenarioAsUndefined();
+      listener.prepareBeforeScenario();
+      expect(listener.isCurrentScenarioUndefined()).toBeFalsy();
     });
   });
 
@@ -583,12 +642,15 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     var scenarioCount, passedScenarioCount, pendingScenarioCount, failedScenarioCount;
 
     beforeEach(function() {
-      scenarioCount       = 12;
-      passedScenarioCount = 9;
-      failedScenarioCount = 15;
+      scenarioCount          = 12;
+      passedScenarioCount    = 9;
+      undefinedScenarioCount = 17;
+      pendingScenarioCount   = 7;
+      failedScenarioCount    = 15;
       spyOn(listener, 'log');
       spyOn(listener, 'getScenarioCount').andReturn(scenarioCount);
       spyOn(listener, 'getPassedScenarioCount').andReturn(passedScenarioCount);
+      spyOn(listener, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
       spyOn(listener, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
       spyOn(listener, 'getFailedScenarioCount').andReturn(failedScenarioCount);
     });
@@ -654,6 +716,38 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       it("logs the number of failed scenarios", function() {
         listener.logScenariosSummary();
         expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+      });
+    });
+
+    it("gets the number of undefined scenarios", function() {
+      listener.logScenariosSummary();
+      expect(listener.getUndefinedScenarioCount).toHaveBeenCalled();
+    });
+
+    describe("when there are no undefined scenarios", function() {
+      beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(0); });
+
+      it("does not log passed scenarios", function() {
+        listener.logScenariosSummary();
+        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+      });
+    });
+
+    describe("when there is one undefined scenario", function() {
+      beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(1); });
+
+      it("logs one undefined scenario", function() {
+        listener.logScenariosSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+      });
+    });
+
+    describe("when there are two or more undefined scenarios", function() {
+      beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(2); });
+
+      it("logs the undefined scenarios", function() {
+        listener.logScenariosSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
       });
     });
 
@@ -726,16 +820,18 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     var stepCount, passedStepCount, failedStepCount, skippedStepCount, pendingStepCount;
 
     beforeEach(function() {
-      stepCount        = 34;
-      passedStepCount  = 31;
-      failedStepCount  = 7;
-      skippedStepCount = 5;
-      pendingStepCount = 2;
+      stepCount          = 34;
+      passedStepCount    = 31;
+      failedStepCount    = 7;
+      skippedStepCount   = 5;
+      undefinedStepCount = 4;
+      pendingStepCount   = 2;
       spyOn(listener, 'log');
       spyOn(listener, 'getStepCount').andReturn(stepCount);
       spyOn(listener, 'getPassedStepCount').andReturn(passedStepCount);
       spyOn(listener, 'getFailedStepCount').andReturn(failedStepCount);
       spyOn(listener, 'getSkippedStepCount').andReturn(skippedStepCount);
+      spyOn(listener, 'getUndefinedStepCount').andReturn(undefinedStepCount);
       spyOn(listener, 'getPendingStepCount').andReturn(pendingStepCount);
     });
 
@@ -812,6 +908,44 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       it("logs the number of failed steps", function() {
         listener.logStepsSummary();
         expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+      });
+    });
+
+    it("gets the number of undefined steps", function() {
+      listener.logStepsSummary();
+      expect(listener.getUndefinedStepCount).toHaveBeenCalled();
+    });
+
+    describe("when there are no undefined steps", function() {
+      beforeEach(function() {
+        listener.getUndefinedStepCount.andReturn(0);
+      });
+
+      it("does not log undefined steps", function() {
+        listener.logStepsSummary();
+        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+      });
+    });
+
+    describe("when there is one undefined step", function() {
+      beforeEach(function() {
+        listener.getUndefinedStepCount.andReturn(1);
+      });
+
+      it("logs one undefined steps", function() {
+        listener.logStepsSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+      });
+    });
+
+    describe("when there are two or more undefined steps", function() {
+      beforeEach(function() {
+        listener.getUndefinedStepCount.andReturn(2);
+      });
+
+      it("logs the number of undefined steps", function() {
+        listener.logStepsSummary();
+        expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
       });
     });
 
@@ -931,13 +1065,15 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   });
 
   describe("getScenarioCount()", function() {
-    var passedScenarioCount;
+    var passedScenarioCount, undefinedScenarioCount, pendingScenarioCount, failedScenarioCount;
 
     beforeEach(function() {
-      passedScenarioCount  = Math.floor(Math.random()*11) + 1;
-      pendingScenarioCount = Math.floor(Math.random()*11) + 1;
-      failedScenarioCount  = Math.floor(Math.random()*11) + 1;
+      passedScenarioCount    = Math.floor(Math.random()*11) + 1;
+      undefinedScenarioCount = Math.floor(Math.random()*11) + 1;
+      pendingScenarioCount   = Math.floor(Math.random()*11) + 1;
+      failedScenarioCount    = Math.floor(Math.random()*11) + 1;
       spyOn(listener, 'getPassedScenarioCount').andReturn(passedScenarioCount);
+      spyOn(listener, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
       spyOn(listener, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
       spyOn(listener, 'getFailedScenarioCount').andReturn(failedScenarioCount);
     });
@@ -945,6 +1081,11 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     it("gets the number of passed scenarios", function() {
       listener.getScenarioCount();
       expect(listener.getPassedScenarioCount).toHaveBeenCalled();
+    });
+
+    it("gets the number of undefined scenarios", function() {
+      listener.getScenarioCount();
+      expect(listener.getUndefinedScenarioCount).toHaveBeenCalled();
     });
 
     it("gets the number of pending scenarios", function() {
@@ -957,20 +1098,28 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.getFailedScenarioCount).toHaveBeenCalled();
     });
 
-    it("returns the sum of passed and failed scenarios", function() {
-      expect(listener.getScenarioCount()).toBe(passedScenarioCount + pendingScenarioCount + failedScenarioCount);
+    it("returns the sum of passed, undefined, pending aand failed scenarios", function() {
+      expect(listener.getScenarioCount()).toBe(passedScenarioCount + undefinedScenarioCount + pendingScenarioCount + failedScenarioCount);
     });
   });
 
   describe("getStepCount()", function() {
-    var passedStepCount, skippedStepCount, pendingStepCount, failedStepCount;
+    var passedStepCount, undefinedStepCount, skippedStepCount, pendingStepCount, failedStepCount, stepCount;
 
     beforeEach(function() {
-      passedStepCount  = Math.floor(Math.random()*11) + 1;
-      skippedStepCount = Math.floor(Math.random()*11) + 1;
-      pendingStepCount = Math.floor(Math.random()*11) + 1;
-      failedStepCount  = Math.floor(Math.random()*11) + 1;
+      passedStepCount    = Math.floor(Math.random()*11) + 1;
+      undefinedStepCount = Math.floor(Math.random()*11) + 1;
+      skippedStepCount   = Math.floor(Math.random()*11) + 1;
+      pendingStepCount   = Math.floor(Math.random()*11) + 1;
+      failedStepCount    = Math.floor(Math.random()*11) + 1;
+      stepCount          =
+        undefinedStepCount +
+        passedStepCount    +
+        skippedStepCount   +
+        pendingStepCount   +
+        failedStepCount;
       spyOn(listener, 'getPassedStepCount').andReturn(passedStepCount);
+      spyOn(listener, 'getUndefinedStepCount').andReturn(undefinedStepCount);
       spyOn(listener, 'getSkippedStepCount').andReturn(skippedStepCount);
       spyOn(listener, 'getPendingStepCount').andReturn(pendingStepCount);
       spyOn(listener, 'getFailedStepCount').andReturn(failedStepCount);
@@ -979,6 +1128,11 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     it("gets the number of passed steps", function() {
       listener.getStepCount();
       expect(listener.getPassedStepCount).toHaveBeenCalled();
+    });
+
+    it("gets the number of undefined steps", function() {
+      listener.getStepCount();
+      expect(listener.getUndefinedStepCount).toHaveBeenCalled();
     });
 
     it("gets the number of skipped steps", function() {
@@ -997,7 +1151,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     it("returns the sum of passed steps and failed steps", function() {
-      expect(listener.getStepCount()).toBe(passedStepCount + skippedStepCount + pendingStepCount + failedStepCount);
+      expect(listener.getStepCount()).toBe(stepCount);
     });
   });
 
@@ -1031,6 +1185,32 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.witnessPassedScenario();
         listener.witnessPassedScenario();
         expect(listener.getPassedScenarioCount()).toBe(3);
+      });
+    });
+  });
+
+  describe("undefined scenario counting", function() {
+    describe("getUndefinedScenarioCount()", function() {
+      it("returns 0 when no scenarios undefined", function() {
+        expect(listener.getUndefinedScenarioCount()).toBe(0);
+      });
+
+      it("returns 1 when one scenario passed", function() {
+        listener.witnessUndefinedScenario();
+        expect(listener.getUndefinedScenarioCount()).toBe(1);
+      });
+
+      it("returns 2 when two scenarios passed", function() {
+        listener.witnessUndefinedScenario();
+        listener.witnessUndefinedScenario();
+        expect(listener.getUndefinedScenarioCount()).toBe(2);
+      });
+
+      it("returns 3 when two scenarios passed", function() {
+        listener.witnessUndefinedScenario();
+        listener.witnessUndefinedScenario();
+        listener.witnessUndefinedScenario();
+        expect(listener.getUndefinedScenarioCount()).toBe(3);
       });
     });
   });
@@ -1169,6 +1349,32 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.witnessSkippedStep();
         listener.witnessSkippedStep();
         expect(listener.getSkippedStepCount()).toBe(3);
+      });
+    });
+  });
+
+  describe("undefined step counting", function() {
+    describe("getUndefinedStepCount()", function() {
+      it("returns 0 when no steps undefined", function() {
+        expect(listener.getUndefinedStepCount()).toBe(0);
+      });
+
+      it("returns 1 when one step passed", function() {
+        listener.witnessUndefinedStep();
+        expect(listener.getUndefinedStepCount()).toBe(1);
+      });
+
+      it("returns 2 when two steps passed", function() {
+        listener.witnessUndefinedStep();
+        listener.witnessUndefinedStep();
+        expect(listener.getUndefinedStepCount()).toBe(2);
+      });
+
+      it("returns 3 when two steps passed", function() {
+        listener.witnessUndefinedStep();
+        listener.witnessUndefinedStep();
+        listener.witnessUndefinedStep();
+        expect(listener.getUndefinedStepCount()).toBe(3);
       });
     });
   });

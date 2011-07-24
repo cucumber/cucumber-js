@@ -144,10 +144,10 @@ EOF
     assert_success true
   end
 
-#   def assert_undefined_scenario
-#     assert_partial_output("1 scenario (1 undefined)", all_output)
-#     assert_success true
-#   end
+  def assert_undefined_scenario
+    assert_partial_output("1 scenario (1 undefined)", all_output)
+    assert_success true
+  end
 
 #   def failed_output
 #     "failed"

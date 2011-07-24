@@ -71,7 +71,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       });
 
       describe("when the step definition code executes successfully and calls back", function() {
-        it("creates a new successful step result", function() {
+        it("creates a successful step result", function() {
           codeExecutionCallback();
           expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalled();
         });

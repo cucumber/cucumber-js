@@ -102,6 +102,43 @@ describe("Cucumber.SupportCode.Library", function() {
     });
   });
 
+  describe("isStepDefinitionNameDefined()", function() {
+    var name;
+
+    beforeEach(function() {
+      name = createSpy("step name");
+      spyOn(library, 'lookupStepDefinitionByName');
+    });
+
+    it("looks up the step definition by the name", function() {
+      library.isStepDefinitionNameDefined(name);
+      expect(library.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
+    });
+
+    describe("when a step definition is found", function() {
+      var stepDefinition;
+
+      beforeEach(function() {
+        stepDefinition = createSpy("step definition");
+        library.lookupStepDefinitionByName.andReturn(stepDefinition);
+      });
+
+      it("returns true", function() {
+        expect(library.isStepDefinitionNameDefined(name)).toBeTruthy();
+      });
+    });
+
+    describe("when no step definition is found", function() {
+      beforeEach(function() {
+        library.lookupStepDefinitionByName.andReturn(undefined);
+      });
+
+      it("returns false", function() {
+        expect(library.isStepDefinitionNameDefined(name)).toBeFalsy();
+      });
+    });
+  });
+
   function describeStepDefiner(methodName) {
     describe(methodName + "()", function() {
       var stepRegexp, stepCode;
