@@ -73,68 +73,82 @@ EOF
 
   def write_mappings_for_calculator
     append_support_code <<-EOC
-var calculator;
+var calc;
+
+function isNumberWithinRangeOfValue(number, range, value) {
+  var lowerBound = value - range;
+  var upperBound = value + range;
+  withinLowerBound = number > lowerBound;
+  withinUpperBound = number < upperBound;
+  return (withinLowerBound && withinUpperBound);
+}
 
 Given(/^a calculator$/, function(callback) {
-  calculator = RpnCalculator();
+  calc = RpnCalculator();
   callback();
 });
 
 When(/^the calculator computes PI$/, function(callback) {
-  calculator.pi();
+  calc.pi();
+  callback();
+});
+
+When(/^the calculator adds up ([\\d\\.]+) and ([\\d\\.]+)$/, function(n1, n2, callback) {
+  calc.push(n1);
+  calc.push(n2);
+  calc.push('+');
+  callback();
+});
+
+When(/^the calculator adds up "([^"]*)" and "([^"]*)"$/, function(n1, n2, callback) {
+  calc.push(parseInt(n1));
+  calc.push(parseInt(n2));
+  calc.push('+');
+  callback();
+});
+
+When(/^the calculator adds up "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(n1, n2, n3, callback) {
+  calc.push(parseInt(n1));
+  calc.push(parseInt(n2));
+  calc.push(parseInt(n3));
+  calc.push('+');
+  calc.push('+');
+  callback();
+});
+
+When(/^the calculator adds up the following numbers:$/, function(numbers, callback) {
+  numbers     = numbers.split("\\n");
+  var len     = numbers.length;
+  var operate = false;
+  for(var i = 0; i < len; i++) {
+    var number = numbers[i];
+    calc.push(number);
+    operate ? calc.push('+') : operate = true;
+  }
   callback();
 });
 
 Then(/^the calculator returns PI$/, function(callback) {
-  if (calculator.value() != Math.PI)
-    throw "Expected PI";
+  var value = calc.value();
+  if (!isNumberWithinRangeOfValue(value, 0.00001, Math.PI))
+    throw("Expected " + Math.PI + " (PI), got " + value);
+  callback();
+});
+
+Then(/^the calculator returns "([^"]*)"$/, function(expected_number, callback) {
+  var value = calc.value();
+  if (!isNumberWithinRangeOfValue(value, 0.00001, parseFloat(expected_number)))
+    throw("Expected calculator to return a value within 0.00001 of " + expected_number + ", got " + value);
+  callback();
+});
+
+Then(/^the calculator does not return ([\\d\\.]+)$/, function(unexpected_number, callback) {
+  var value = calc.value();
+  if (isNumberWithinRangeOfValue(value, 0.00001, parseFloat(unexpected_number)))
+    throw("Expected calculator to not return a value within 0.00001 of " + unexpected_number + ", got " + value);
   callback();
 });
 EOC
-
-# When /^the calculator adds up ([\\d\\.]+) and ([\\d\\.]+)$/ do |n1, n2|
-#   @calc.push(n1.to_f)
-#   @calc.push(n2.to_f)
-#   @calc.push('+')
-# end
-
-# When /^the calculator adds up "([^"]*)" and "([^"]*)"$/ do |n1, n2|
-#   @calc.push(n1.to_i)
-#   @calc.push(n2.to_i)
-    #   @calc.push('+')
-# end
-
-# When /^the calculator adds up "([^"]*)", "([^"]*)" and "([^"]*)"$/ do |n1, n2, n3|
-#   @calc.push(n1.to_i)
-#   @calc.push(n2.to_i)
-#   @calc.push(n3.to_i)
-#   @calc.push('+')
-#   @calc.push('+')
-# end
-
-# When /^the calculator adds up the following numbers:$/ do |numbers|
-#   pushed = 0
-#   numbers.split("\\n").each do |n|
-#     @calc.push(n.to_i)
-#     pushed +=1
-#     @calc.push('+') if pushed > 1
-#   end
-# end
-
-# Then /^the calculator returns PI$/ do
-#   @calc.value.to_f.should be_within(0.00001).of(Math::PI)
-# end
-
-# Then /^the calculator returns "([^"]*)"$/ do |expected|
-#   @calc.value.to_f.should be_within(0.00001).of(expected.to_f)
-# end
-
-# Then /^the calculator does not return ([\\d\\.]+)$/ do |unexpected|
-#   @calc.value.to_f.should_not be_within(0.00001).of(unexpected.to_f)
-# end
-
-# EOF
-     #     write_file("features/step_definitions/calculator_mappings.rb", mapping_code)
   end
 
   def assert_passing_scenario
@@ -165,7 +179,7 @@ EOC
 
   def append_step_definition(step_name, code)
     indented_code = ""
-    code.each_line { |line| indented_code += "    #{line}" }
+    code.each_line { |line| indented_code += "  #{line}" }
     indented_code.rstrip!
     append_support_code(<<-EOF)
   Given(/#{step_name}/, function(callback) {
