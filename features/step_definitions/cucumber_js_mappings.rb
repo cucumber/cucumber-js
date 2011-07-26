@@ -3,6 +3,8 @@ module CucumberJsMappings
   STEP_DEFINITIONS_FILE = "features/step_definitions/cucumber_steps.js"
   FEATURE_FILE          = "features/a_feature.feature"
 
+  attr_accessor :support_code
+
   def features_dir
     'features'
   end
@@ -10,12 +12,13 @@ module CucumberJsMappings
   def run_scenario(scenario_name)
     # FIXME: do not run the whole feature but only the scenario:
     # run_simple "#{cucumber_bin} #{FEATURE_FILE} --name '#{scenario_name}'", false
-    append_to_file(STEP_DEFINITIONS_FILE, "};\nmodule.exports = stepDefinitions;")
+    write_main_step_definitions_file
     run_simple "#{cucumber_bin} #{FEATURE_FILE} #{STEP_DEFINITIONS_FILE}", false
   end
 
   def run_feature
-    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
+    write_main_step_definitions_file
+    run_simple "#{cucumber_bin} #{FEATURE_FILE} #{STEP_DEFINITIONS_FILE}", false
   end
 
   def cucumber_bin
@@ -35,120 +38,19 @@ module CucumberJsMappings
   end
 
   def write_calculator_code
-    code = <<-EOF
-  // http://en.wikipedia.org/wiki/Reverse_Polish_notation
-  var RpnCalculator = function RpnCalculator() {
-    var stack = [];
-
-    function x() { return stack.splice(-2, 1)[0]; }
-    function y() { return stack.pop(); }
-
-    var self = {
-      push: function push(arg) {
-        if (arg == '+')
-          self.push(x() + y());
-        else if (arg == '-')
-          self.push(x() - y());
-        else if (arg == '*')
-          self.push(x() * y());
-        else if (arg == '/')
-          self.push(x() / y());
-        else
-          stack.push(parseFloat(arg));
-      },
-
-      pi: function pi() {
-        self.push(Math.PI);
-      },
-
-      value: function value() {
-        return stack[stack.length-1];
-      }
-    };
-    return self;
-  };
-EOF
-    append_support_code(code)
+    rpn_calculator_code = get_file_contents('../support/rpn_calculator.js')
+    create_dir 'features/support'
+    write_file 'features/support/rpn_calculator.js', rpn_calculator_code
   end
 
   def write_mappings_for_calculator
-    append_support_code <<-EOC
-var calc;
-
-function isNumberWithinRangeOfValue(number, range, value) {
-  var lowerBound = value - range;
-  var upperBound = value + range;
-  withinLowerBound = number > lowerBound;
-  withinUpperBound = number < upperBound;
-  return (withinLowerBound && withinUpperBound);
-}
-
-Given(/^a calculator$/, function(callback) {
-  calc = RpnCalculator();
-  callback();
-});
-
-When(/^the calculator computes PI$/, function(callback) {
-  calc.pi();
-  callback();
-});
-
-When(/^the calculator adds up ([\\d\\.]+) and ([\\d\\.]+)$/, function(n1, n2, callback) {
-  calc.push(n1);
-  calc.push(n2);
-  calc.push('+');
-  callback();
-});
-
-When(/^the calculator adds up "([^"]*)" and "([^"]*)"$/, function(n1, n2, callback) {
-  calc.push(parseInt(n1));
-  calc.push(parseInt(n2));
-  calc.push('+');
-  callback();
-});
-
-When(/^the calculator adds up "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(n1, n2, n3, callback) {
-  calc.push(parseInt(n1));
-  calc.push(parseInt(n2));
-  calc.push(parseInt(n3));
-  calc.push('+');
-  calc.push('+');
-  callback();
-});
-
-When(/^the calculator adds up the following numbers:$/, function(numbers, callback) {
-  numbers     = numbers.split("\\n");
-  var len     = numbers.length;
-  var operate = false;
-  for(var i = 0; i < len; i++) {
-    var number = numbers[i];
-    calc.push(number);
-    operate ? calc.push('+') : operate = true;
-  }
-  callback();
-});
-
-Then(/^the calculator returns PI$/, function(callback) {
-  var value = calc.value();
-  if (!isNumberWithinRangeOfValue(value, 0.00001, Math.PI))
-    throw("Expected " + Math.PI + " (PI), got " + value);
-  callback();
-});
-
-Then(/^the calculator returns "([^"]*)"$/, function(expected_number, callback) {
-  var value = calc.value();
-  if (!isNumberWithinRangeOfValue(value, 0.00001, parseFloat(expected_number)))
-    throw("Expected calculator to return a value within 0.00001 of " + expected_number + ", got " + value);
-  callback();
-});
-
-Then(/^the calculator does not return ([\\d\\.]+)$/, function(unexpected_number, callback) {
-  var value = calc.value();
-  if (isNumberWithinRangeOfValue(value, 0.00001, parseFloat(unexpected_number)))
-    throw("Expected calculator to not return a value within 0.00001 of " + unexpected_number + ", got " + value);
-  callback();
-});
-EOC
+    calculator_steps = get_file_contents('./calculator_steps.js')
+    write_file 'features/step_definitions/calculator_steps.js', calculator_steps
+    append_support_code <<-EOF
+var RpnCalculator   = require('../support/rpn_calculator');
+var calculatorSteps = require('./calculator_steps');
+calculatorSteps(RpnCalculator);
+EOF
   end
 
   def assert_passing_scenario
@@ -178,29 +80,38 @@ EOC
   protected
 
   def append_step_definition(step_name, code)
-    indented_code = ""
-    code.each_line { |line| indented_code += "  #{line}" }
-    indented_code.rstrip!
-    append_support_code(<<-EOF)
-  Given(/#{step_name}/, function(callback) {
-    fs.writeFileSync("#{step_file(step_name)}", "");
+    indented_code = indent_code(code).rstrip
+    append_support_code <<-EOF
+Given(/#{step_name}/, function(callback) {
+  fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
-    callback();
-  });
+  callback();
+});
 EOF
   end
 
   def append_support_code(code)
-    @mapping_count ||= 0
-    if @mapping_count == 0
-      step_definition = "var fs = require('fs');\nvar stepDefinitions = function() {\n"
-    else
-      step_definition = "\n"
+    @support_code ||= ''
+    @support_code += indent_code(code)
+  end
+
+  def write_main_step_definitions_file
+    append_to_file(STEP_DEFINITIONS_FILE, "var fs = require('fs');\nvar stepDefinitions = function() {\n");
+    append_to_file(STEP_DEFINITIONS_FILE, support_code);
+    append_to_file(STEP_DEFINITIONS_FILE, "};\nmodule.exports = stepDefinitions;")
+  end
+
+  def get_file_contents(file_path)
+    file_realpath = File.expand_path(file_path, File.dirname(__FILE__))
+    File.open(file_realpath, 'rb') do |f|
+      f.read
     end
-    @mapping_count += 1
-    step_definition += code
-    append_to_file(STEP_DEFINITIONS_FILE, step_definition)
+  end
+
+  def indent_code(code, levels = 1)
+    indented_code = ''
+    code.each_line { |line| indented_code += "#{'  ' * levels}#{line}" }
+    indented_code
   end
 end
-
 World(CucumberJsMappings)

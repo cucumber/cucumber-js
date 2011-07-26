@@ -54,10 +54,10 @@ Ruby and Bundler are required for this to work.
     $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-features/core.feature -r features
     $ open doc/features/cucumber-features/*.html # might open a lot of files ;)
 
-#### Cucumber.js-specific features
+#### Run Cucumber.js to test itself
 
-    $ ./cucumber.js features/asynchronous_step_definitions-issue_01.feature
+This is still a work in progress; some step definition mappings are missing to run the core.feature with Cucumber.js.
 
-#### Legacy cucumber.js core feature
+You can run the following script which will execute cucumber.js recursively against all known passing features and "core.feature":
 
-    $ ./cucumber.js features/cucumber-features-legacy/core.feature
+    $ ./run_all_features.js
