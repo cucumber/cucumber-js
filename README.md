@@ -61,3 +61,15 @@ This is still a work in progress; some step definition mappings are missing to r
 You can run the following script which will execute cucumber.js recursively against all known passing features and "core.feature":
 
     $ ./run_all_features.js
+
+### Debug messages
+
+You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will diplay everything, `1` will only print out the critical things.
+
+    $ DEBUG_LEVEL=5 ./run_all_features.js
+    $ DEBUG_LEVEL=5 ./cucumber.js features/cucumber-features/core.feature
+
+It even works with Aruba:
+
+    $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-features/core.feature -r features
+    $ open doc/features/cucumber-features/*.html # you'll see debug messages in Aruba-generated docs

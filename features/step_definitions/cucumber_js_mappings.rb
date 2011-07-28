@@ -1,4 +1,3 @@
-# FIXME: Rename to CucumberJsMappings?
 module CucumberJsMappings
   STEP_DEFINITIONS_FILE = "features/step_definitions/cucumber_steps.js"
   FEATURE_FILE          = "features/a_feature.feature"
