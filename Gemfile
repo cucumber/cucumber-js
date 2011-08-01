@@ -1,2 +1,2 @@
 source :rubygems
-gem "aruba", "0.4.3"
+gem "aruba", "0.4.5"

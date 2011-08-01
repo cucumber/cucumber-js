@@ -36,7 +36,7 @@ When(/^I increment the variable by (\d+)$/, function(number, callback) {
 
 Then(/^the variable should contain (\d+)$/, function(number, callback) {
   if (variable != parseInt(number))
-    throw('Variable should contain '+number+' but it contains '+variable+'.');
+    throw(new Error('Variable should contain '+number+' but it contains '+variable+'.'));
   callback();
 });</textarea>
 

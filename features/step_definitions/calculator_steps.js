@@ -57,21 +57,21 @@ var calculatorSteps = function(Calculator) {
   Then(/^the calculator returns PI$/, function(callback) {
     var value = calc.value();
     if (!isNumberWithinRangeOfValue(value, 0.00001, Math.PI))
-      throw("Expected " + Math.PI + " (PI), got " + value);
+      throw(new Error("Expected " + Math.PI + " (PI), got " + value));
     callback();
   });
 
   Then(/^the calculator returns "([^"]*)"$/, function(expected_number, callback) {
     var value = calc.value();
     if (!isNumberWithinRangeOfValue(value, 0.00001, parseFloat(expected_number)))
-      throw("Expected calculator to return a value within 0.00001 of " + expected_number + ", got " + value);
+      throw(new Error("Expected calculator to return a value within 0.00001 of " + expected_number + ", got " + value));
     callback();
   });
 
   Then(/^the calculator does not return ([\d\.]+)$/, function(unexpected_number, callback) {
     var value = calc.value();
     if (isNumberWithinRangeOfValue(value, 0.00001, parseFloat(unexpected_number)))
-      throw("Expected calculator to not return a value within 0.00001 of " + unexpected_number + ", got " + value);
+      throw(new Error("Expected calculator to not return a value within 0.00001 of " + unexpected_number + ", got " + value));
     callback();
   });
 };

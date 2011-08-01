@@ -3,18 +3,20 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Scenario", function() {
   var Cucumber = require('cucumber');
   var stepCollection, steps;
-  var scenario, keyword, name, lastStep;
+  var scenario, keyword, name, description, line, lastStep;
 
   beforeEach(function() {
-    keyword        = createSpy("Feature keyword");
-    name           = createSpy("Feature name");
+    keyword        = createSpy("scenario keyword");
+    name           = createSpy("scenario name");
+    description    = createSpy("scenario description");
+    line           = createSpy("starting scenario line number");
     lastStep       = createSpy("Last step");
     stepCollection = createSpy("Step collection");
     spyOnStub(stepCollection, 'add');
     spyOnStub(stepCollection, 'getLast').andReturn(lastStep);
     spyOnStub(stepCollection, 'forEach');
     spyOn(Cucumber.Type, 'Collection').andReturn(stepCollection);
-    scenario = Cucumber.Ast.Scenario(keyword, name);
+    scenario = Cucumber.Ast.Scenario(keyword, name, description, line);
   });
 
   describe("constructor", function() {
@@ -32,6 +34,12 @@ describe("Cucumber.Ast.Scenario", function() {
   describe("getName()", function() {
     it("returns the name of the scenario", function() {
       expect(scenario.getName()).toBe(name);
+    });
+  });
+
+  describe("getLine()", function() {
+    it("returns the line on which the scenario starts", function() {
+      expect(scenario.getLine()).toBe(line);
     });
   });
 

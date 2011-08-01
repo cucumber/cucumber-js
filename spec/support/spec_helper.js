@@ -24,10 +24,11 @@ beforeEach(function() {
       return false;
     },
 
-    toHaveBeenCalledWithStringMatching: function(regexp) {
+    toHaveBeenCalledWithStringMatching: function(pattern) {
       for(var i = 0; i < this.actual.callCount; i++) {
         var parameter = this.actual.argsForCall[i][0];
-        if (regexp.test(parameter))
+        if ((pattern.test && pattern.test(parameter)) ||
+            (typeof(pattern) == 'string' && parameter.indexOf(pattern) >= 0))
           return true;
       }
       return false;

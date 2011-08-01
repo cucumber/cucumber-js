@@ -27,7 +27,16 @@ var cucumberSteps = function() {
     prepare();
     stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   touchStep(\"" + stepName + "\");\
-  throw('I was supposed to fail.');\
+  throw(new Error('I was supposed to fail.'));\
+});\n";
+    callback();
+  });
+
+  Given(/^the step "([^"]*)" has a mapping failing with the message "([^"]*)"$/, function(stepName, message, callback) {
+    prepare();
+    stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
+  touchStep(\"" + stepName + "\");\
+  throw(new Error('" + message + "'));\
 });\n";
     callback();
   });
@@ -63,7 +72,7 @@ var cucumberSteps = function() {
 
   Then(/^the scenario passes$/, function(callback) {
     if (!lastRunSucceeded)
-      throw("Expected the scenario to pass but it failed");
+      throw(new Error("Expected the scenario to pass but it failed"));
     callback();
   });
 
@@ -82,6 +91,16 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Then(/^the scenario called "([^"]*)" is reported as failing$/, function(scenarioName, callback) {
+    assertScenarioReportedAsFailing(scenarioName);
+    callback();
+  });
+
+  Then(/^the scenario called "([^"]*)" is not reported as failing$/, function(scenarioName, callback) {
+    assertScenarioNotReportedAsFailing(scenarioName);
+    callback();
+  });
+
   Then(/^the step "([^"]*)" is skipped$/, function(stepName, callback) {
     assertSkippedStep(stepName);
     callback();
@@ -89,6 +108,11 @@ var cucumberSteps = function() {
 
   Then(/^the feature passes$/, function(callback) {
     assertPassingFeature();
+    callback();
+  });
+
+  Then(/^the failure message "([^"]*)" is output$/, function(message, callback) {
+    assertFailureMessage(message);
     callback();
   });
 
@@ -150,29 +174,43 @@ var cucumberSteps = function() {
     assertSuccess();
   }
 
+  function assertScenarioReportedAsFailing(scenarioName) {
+    assertPartialOutput("# Scenario: " + scenarioName, lastRunOutput);
+    assertFailure();
+  }
+
+  function assertScenarioNotReportedAsFailing(scenarioName) {
+    assertNoPartialOutput("# Scenario: " + scenarioName, lastRunOutput);
+  }
+
   function assertSkippedStep(stepName) {
     if (isStepTouched(stepName))
-      throw("Expected step \"" + stepName + "\" to have been skipped.");
+      throw(new Error("Expected step \"" + stepName + "\" to have been skipped."));
   }
 
   function assertSuccess() {
     if (!lastRunSucceeded)
-      throw("Expected Cucumber to succeed but it failed.");
+      throw(new Error("Expected Cucumber to succeed but it failed."));
   }
 
   function assertFailure() {
     if (lastRunSucceeded)
-      throw("Expected Cucumber to fail but it succeeded.");
+      throw(new Error("Expected Cucumber to fail but it succeeded."));
+  }
+
+  function assertFailureMessage(message) {
+    assertPartialOutput(message, lastRunOutput);
+    assertFailure();
   }
 
   function assertPartialOutput(expected, actual) {
     if (actual.indexOf(expected) < 0)
-      throw("Expected:\n\"" + actual + "\"\nto match:\n\"" + expected + "\"");
+      throw(new Error("Expected:\n\"" + actual + "\"\nto match:\n\"" + expected + "\""));
   }
 
   function assertNoPartialOutput(expected, actual) {
     if (actual.indexOf(expected) >= 0)
-      throw("Expected:\n\"" + actual + "\"\nnot to match:\n\"" + expected + "\"");
+      throw(new Error("Expected:\n\"" + actual + "\"\nnot to match:\n\"" + expected + "\""));
   }
 };
 module.exports = cucumberSteps;

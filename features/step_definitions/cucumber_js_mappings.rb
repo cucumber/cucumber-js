@@ -25,7 +25,7 @@ module CucumberJsMappings
   end
 
   def write_passing_mapping(step_name)
-    append_step_definition(step_name, "// no-op, pass gently")
+    append_step_definition(step_name, "// no-op, pass gently\ncallback();")
   end
 
   def write_pending_mapping(step_name)
@@ -33,7 +33,11 @@ module CucumberJsMappings
   end
 
   def write_failing_mapping(step_name)
-    append_step_definition(step_name, "throw('Boom!');")
+    write_failing_mapping_with_message(step_name, "I was supposed to fail.")
+  end
+
+  def write_failing_mapping_with_message(step_name, message)
+    append_step_definition(step_name, "throw(new Error('#{message}'));")
   end
 
   def write_calculator_code
@@ -72,6 +76,15 @@ EOF
     assert_success true
   end
 
+  def assert_scenario_reported_as_failing(scenario_name)
+    assert_partial_output("# Scenario: #{scenario_name}", all_output)
+    assert_success false
+  end
+
+  def assert_scenario_not_reported_as_failing(scenario_name)
+    assert_no_partial_output("# Scenario: #{scenario_name}", all_output)
+  end
+
   def failed_output
     "failed"
   end
@@ -84,7 +97,6 @@ EOF
 Given(/#{step_name}/, function(callback) {
   fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
-  callback();
 });
 EOF
   end

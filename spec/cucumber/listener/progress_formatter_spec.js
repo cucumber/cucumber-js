@@ -2,29 +2,17 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.ProgressFormatter", function() {
   var Cucumber = require('cucumber');
-  var listener, beforeEachScenarioUserFunctions;
+  var listener, failedStepResults;
 
   beforeEach(function() {
-    beforeEachScenarioUserFunctions = createSpy("User Functions to call before each scenario");
-    spyOn(Cucumber.Type, 'Collection').andReturn(beforeEachScenarioUserFunctions);
-    listener = Cucumber.Listener.ProgressFormatter();
+    failedStepResults = createSpy("Failed steps");
+    spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
+    listener    = Cucumber.Listener.ProgressFormatter();
   });
 
   describe("constructor", function() {
-    it("creates a new collection to store user functions to call before each scenario", function() {
+    it("creates a collection to store the failed steps", function() {
       expect(Cucumber.Type.Collection).toHaveBeenCalled();
-    });
-  });
-
-  describe("beforeEachScenarioDo()", function() {
-    beforeEach(function() {
-      spyOnStub(beforeEachScenarioUserFunctions, 'add');
-    });
-
-    it("adds the user function to the collection of 'before each scenario' user functions", function() {
-      var userFunction = createSpy("A user function to call before each scenario");
-      listener.beforeEachScenarioDo(userFunction);
-      expect(beforeEachScenarioUserFunctions.add).toHaveBeenCalledWith(userFunction);
     });
   });
 
@@ -252,6 +240,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
       spyOn(listener, 'witnessPassedStep');
+      spyOnStub(listener, 'storeFailedStepResult');
     });
 
     it("gets the step result from the event payload", function() {
@@ -340,6 +329,11 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         it("does not log the passing step character", function() {
           listener.handleStepResultEvent(event, callback);
           expect(listener.log).not.toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+        });
+
+        it("stores the failed step result", function() {
+          listener.handleStepResultEvent(event, callback);
+          expect(listener.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
         });
 
         it("witnesses a failed step", function() {
@@ -482,13 +476,28 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
 
     describe("when the current scenario failed", function() {
+      var scenario;
+
       beforeEach(function() {
+        scenario = createSpy("scenario");
         listener.isCurrentScenarioFailing.andReturn(true);
+        spyOn(listener, 'storeFailedScenario');
+        spyOnStub(event, 'getPayloadItem').andReturn(scenario);
       });
 
       it("witnesses a failed scenario", function() {
         listener.handleAfterScenarioEvent(event, callback);
         expect(listener.witnessFailedScenario).toHaveBeenCalled();
+      });
+
+      it("gets the scenario from the payload", function() {
+        listener.handleAfterScenarioEvent(event, callback);
+        expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
+      });
+
+      it("stores the failed scenario", function() {
+        listener.handleAfterScenarioEvent(event, callback);
+        expect(listener.storeFailedScenario).toHaveBeenCalledWith(scenario);
       });
     });
 
@@ -607,12 +616,68 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
-  describe("logSummary", function() {
+  describe("storeFailedStepResult()", function() {
+    var failedStepResult;
+
+    beforeEach(function() {
+      failedStepResult = createSpy("failed step result");
+      spyOnStub(failedStepResults, 'add');
+    });
+
+    it("adds the result to the failed step result collection", function() {
+      listener.storeFailedStepResult(failedStepResult);
+      expect(failedStepResults.add).toHaveBeenCalledWith(failedStepResult);
+    });
+  });
+
+  describe("storeFailedScenario()", function() {
+    var failedScenario, name, line;
+
+    beforeEach(function() {
+      name           = "some failed scenario";
+      line           = "123";
+      string         = ":" + line + " # Scenario: " + name;
+      failedScenario = createSpyWithStubs("failedScenario", {getName: name, getLine: line});
+      spyOn(listener, 'appendStringToFailedScenarioLogBuffer');
+    });
+
+    it("gets the name of the scenario", function() {
+      listener.storeFailedScenario(failedScenario);
+      expect(failedScenario.getName).toHaveBeenCalled();
+    });
+
+    it("gets the line of the scenario", function() {
+      listener.storeFailedScenario(failedScenario);
+      expect(failedScenario.getLine).toHaveBeenCalled();
+    });
+
+    it("appends the scenario details to the failed scenario log buffer", function() {
+      listener.storeFailedScenario(failedScenario);
+      expect(listener.appendStringToFailedScenarioLogBuffer).toHaveBeenCalledWith(string);
+    });
+  });
+
+  describe("getFailedScenarioLogBuffer()", function() {
+    it("returns the logged failed scenario details", function() {
+      listener.appendStringToFailedScenarioLogBuffer("abc");
+      expect(listener.getFailedScenarioLogBuffer()).toBe("abc\n");
+    });
+
+    it("returns all logged failed scenario lines joined with a line break", function() {
+      listener.appendStringToFailedScenarioLogBuffer("abc");
+      listener.appendStringToFailedScenarioLogBuffer("def");
+      expect(listener.getFailedScenarioLogBuffer()).toBe("abc\ndef\n");
+    });
+  });
+
+  describe("logSummary()", function() {
     var scenarioCount, passedScenarioCount, failedScenarioCount;
     var stepCount, passedStepCount;
 
     beforeEach(function() {
       spyOn(listener, 'log');
+      spyOn(listener, 'witnessedAnyFailedStep');
+      spyOn(listener, 'logFailedStepResults');
       spyOn(listener, 'logScenariosSummary');
       spyOn(listener, 'logStepsSummary');
     });
@@ -620,6 +685,33 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     it("logs two line feeds", function() {
       listener.logSummary();
       expect(listener.log).toHaveBeenCalledWith("\n\n");
+    });
+
+    it("checks if there are failed steps", function() {
+      listener.logSummary();
+      expect(listener.witnessedAnyFailedStep).toHaveBeenCalled();
+    });
+
+    describe("when there are failed steps", function() {
+      beforeEach(function() {
+        listener.witnessedAnyFailedStep.andReturn(true);
+      });
+
+      it("logs the failed steps", function() {
+        listener.logSummary();
+        expect(listener.logFailedStepResults).toHaveBeenCalled();
+      });
+    });
+
+    describe("when there are no failed steps", function() {
+      beforeEach(function() {
+        listener.witnessedAnyFailedStep.andReturn(false);
+      });
+
+      it("does not log failed steps", function() {
+        listener.logSummary();
+        expect(listener.logFailedStepResults).not.toHaveBeenCalled();
+      });
     });
 
     it("logs the scenarios summary", function() {
@@ -635,6 +727,102 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     it("logs one line feed", function() {
       listener.logSummary();
       expect(listener.log).toHaveBeenCalledWith("\n");
+    });
+  });
+
+  describe("logFailedStepResults()", function() {
+    var failedScenarioLogBuffer;
+
+    beforeEach(function() {
+      failedScenarioLogBuffer = createSpy("failed scenario log buffer");
+      spyOnStub(failedStepResults, 'syncForEach');
+      spyOn(listener, 'log');
+      spyOn(listener, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
+    });
+
+    it("logs a failed steps header", function() {
+      listener.logFailedStepResults();
+      expect(listener.log).toHaveBeenCalledWith("(::) failed steps (::)\n\n");
+    });
+
+    it("iterates synchronously over the failed step results", function() {
+      listener.logFailedStepResults();
+      expect(failedStepResults.syncForEach).toHaveBeenCalled();
+      expect(failedStepResults.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+    });
+
+    describe("for each failed step result", function() {
+      var userFunction, failedStep, forEachCallback;
+
+      beforeEach(function() {
+        listener.logFailedStepResults();
+        userFunction     = failedStepResults.syncForEach.mostRecentCall.args[0];
+        failedStepResult = createSpy("failed step result");
+        spyOn(listener, 'logFailedStepResult');
+      });
+
+      it("tells the visitor to visit the feature and call back when finished", function() {
+        userFunction(failedStepResult);
+        expect(listener.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
+      });
+    });
+
+    it("logs a failed scenarios header", function() {
+      listener.logFailedStepResults();
+      expect(listener.log).toHaveBeenCalledWith("Failing scenarios:\n");
+    });
+
+    it("gets the failed scenario details from its log buffer", function() {
+      listener.logFailedStepResults();
+      expect(listener.getFailedScenarioLogBuffer).toHaveBeenCalled();
+    });
+
+    it("logs the failed scenario details", function() {
+      listener.logFailedStepResults();
+      expect(listener.log).toHaveBeenCalledWith(failedScenarioLogBuffer);
+    });
+
+    it("logs a line break", function() {
+      listener.logFailedStepResults();
+      expect(listener.log).toHaveBeenCalledWith("\n");
+    });
+  });
+
+  describe("logFailedStepResult()", function() {
+    var stepResult, failureException;
+
+    beforeEach(function() {
+      spyOn(listener, 'log');
+      failureException = createSpy('caught exception');
+      stepResult       = createSpyWithStubs("failed step result", { getFailureException: failureException });
+    });
+
+    it("gets the failure exception from the step result", function() {
+      listener.logFailedStepResult(stepResult);
+      expect(stepResult.getFailureException).toHaveBeenCalled();
+    });
+
+    describe("when the failure exception has a stack", function() {
+      beforeEach(function() {
+        failureException.stack = createSpy('failure exception stack');
+      });
+
+      it("logs the stack", function() {
+        listener.logFailedStepResult(stepResult);
+        expect(listener.log).toHaveBeenCalledWith(failureException.stack);
+      });
+    });
+
+    describe("when the failure exception has no stack", function() {
+      it("logs the exception itself", function() {
+        listener.logFailedStepResult(stepResult);
+        expect(listener.log).toHaveBeenCalledWith(failureException);
+      });
+    });
+
+    it("logs two line breaks", function() {
+      listener.logFailedStepResult(stepResult);
+      expect(listener.log).toHaveBeenCalledWith("\n\n");
     });
   });
 
@@ -1420,6 +1608,17 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
         listener.witnessPendingStep();
         expect(listener.getPendingStepCount()).toBe(3);
       });
+    });
+  });
+
+  describe("witnessedAnyFailedStep()", function() {
+    it("returns false when no failed step were encountered", function() {
+      expect(listener.witnessedAnyFailedStep()).toBeFalsy();
+    });
+
+    it("returns true when one or more steps were witnessed", function() {
+      listener.witnessFailedStep();
+      expect(listener.witnessedAnyFailedStep()).toBeTruthy();
     });
   });
 });

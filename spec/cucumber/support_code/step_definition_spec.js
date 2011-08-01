@@ -136,18 +136,19 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
     });
 
     describe("when the step definition code fails", function() {
-      var failedStepResult;
+      var failedStepResult, failureException;
 
       beforeEach(function() {
-        stepDefinitionCode.apply.andThrow("I am a failing step definition");
+        failureException = createSpy("I am a failing step definition");
         failedStepResult = createSpy("failed step result");
+        stepDefinitionCode.apply.andThrow(failureException);
         spyOn(Cucumber.Runtime, 'FailedStepResult').andReturn(failedStepResult);
         spyOn(Cucumber.Runtime, 'PendingStepResult');
       });
 
       it("creates a new failed step result", function() {
         stepDefinition.invoke(stepName, docString, callback);
-        expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalled();
+        expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith(failureException);
       });
 
       it("does not create a new pending step result", function() {

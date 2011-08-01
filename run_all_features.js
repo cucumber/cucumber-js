@@ -4,7 +4,10 @@ var util     = require('util');
 var spawn    = require('child_process').spawn;
 
 runFeaturesInDir('features/legacy', 'features/step_definitions/legacy/cucumber_steps.js', function() {
-  runFeature('features/cucumber-features/core.feature', 'features/step_definitions/cucumber_steps.js', function() {});
+  runFeature('features/cucumber-features/core.feature', 'features/step_definitions/cucumber_steps.js', function() {
+    runFeature('features/cucumber-features/failing_steps.feature', 'features/step_definitions/cucumber_steps.js', function() {
+    });
+  });
 });
 
 

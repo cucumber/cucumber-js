@@ -5,7 +5,7 @@ var featurePath     = process.ARGV[2];
 var supportCodePath = process.ARGV[3] ? process.cwd() + '/' + process.ARGV[3] : './features/step_definitions/cucumber_steps';
 
 if (typeof(featurePath) == 'undefined') {
-  throw("Please give me a feature, try something like `" + process.ARGV[1] + " features/cucumber-features/core.feature`.");
+  throw(new Error("Please give me a feature, try something like `" + process.ARGV[1] + " features/cucumber-features/core.feature`."));
 }
 
 var supportCode     = require(supportCodePath);

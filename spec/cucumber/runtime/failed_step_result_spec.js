@@ -2,10 +2,11 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.FailedStepResult", function() {
   var Cucumber = require('cucumber');
-  var stepResult;
+  var stepResult, failureException;
 
   beforeEach(function() {
-    stepResult = Cucumber.Runtime.FailedStepResult();
+    failureException = createSpy("failure exception");
+    stepResult       = Cucumber.Runtime.FailedStepResult(failureException);
   });
 
   describe("isSuccessful()", function() {
@@ -23,6 +24,12 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
   describe("isFailed()", function() {
     it("returns true", function() {
       expect(stepResult.isFailed()).toBeTruthy();
+    });
+  });
+
+  describe("getFailureException()", function() {
+    it("returns the exception passed to the constructor", function() {
+      expect(stepResult.getFailureException()).toBe(failureException);
     });
   });
 });

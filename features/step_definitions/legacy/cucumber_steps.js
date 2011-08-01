@@ -38,7 +38,7 @@ var stepDefinitions = function() {
   // The created step definition body should:
   //   1. Fail all the time.
   Given(/^a(?: "(Given|When|Then)")? step definition failing with message "(.*)" matching \/(.*)\/$/, function(keyword, errorMessage, name, callback) {
-    var content = function(callback) { throw(errorMessage); };
+    var content = function(callback) { throw(new Error(errorMessage)); };
     _addStepDefinition(keyword, name, content);
     callback();
   });
@@ -204,11 +204,6 @@ var stepDefinitions = function() {
 
   function _buildListener(listenerConstructor) {
     _listener = listenerConstructor({logToConsole: false});
-    _listener.beforeEachScenarioDo(function() {
-      _stepDefs               = [];
-      _recordedStepParameters = [];
-      _stepCallCount          = 0;
-    });
   };
 
   function _addStepDefinition(keyword, name, content) {
