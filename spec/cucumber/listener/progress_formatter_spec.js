@@ -723,11 +723,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       listener.logSummary();
       expect(listener.logStepsSummary).toHaveBeenCalled();
     });
-
-    it("logs one line feed", function() {
-      listener.logSummary();
-      expect(listener.log).toHaveBeenCalledWith("\n");
-    });
   });
 
   describe("logFailedStepResults()", function() {
