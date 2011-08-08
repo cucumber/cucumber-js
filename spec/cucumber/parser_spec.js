@@ -88,6 +88,12 @@ describe("Cucumber.Parser", function() {
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['eof']).toBe(parser.handleEof);
     });
+
+    it("tells to bind 'comment' to handleComment()", function() {
+      spyOn(parser, 'handleComment');
+      eventHandlers = parser.getEventHandlers();
+      expect(eventHandlers['comment']).toBe(parser.handleComment);
+    });
   });
 
   describe("getCurrentFeature()", function() {
@@ -274,6 +280,12 @@ describe("Cucumber.Parser", function() {
   describe("handleEof()", function() {
     it("exists but does nothing", function() {
       parser.handleEof();
+    });
+  });
+
+  describe("handleComment()", function() {
+    it("exists but does nothing", function() {
+      parser.handleComment();
     });
   });
 });
