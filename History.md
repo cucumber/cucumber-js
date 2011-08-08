@@ -60,6 +60,8 @@
 
 
 
-### [v0.0.1](https://github.com/cucumber/cucumber-js/commit/6fc78c6d5748bfb07180924e7c6c2b22d855084a)
+## [v0.0](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
 
-Emerge Cucumber.js. It has bare support for features, scenarios and steps. It does not handle several Gherkin elements nor failures yet. (Julien Biezemans)
+### [v0.0.1](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
+
+* Emerge Cucumber.js with bare support for features, scenarios and steps. It does not handle several Gherkin elements nor failures yet. (Julien Biezemans)
