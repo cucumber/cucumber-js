@@ -2,14 +2,17 @@ require('../support/spec_helper');
 
 describe("Cucumber.Parser", function() {
   var Cucumber = require('cucumber');
-  var parser, featuresSource;
+  var parser, featureSources;
   var features;
 
   beforeEach(function() {
     features       = createSpy("Root 'features' AST element");
+    featureSources = {
+      first_feature  : createSpy('first feature source'),
+      second_feature : createSpy('second feature source')
+    }
     spyOn(Cucumber.Ast, 'Features').andReturn(features);
-    featuresSource = createSpy('features source string');
-    parser         = Cucumber.Parser(featuresSource);
+    parser = Cucumber.Parser(featureSources);
   });
 
   describe("constructor", function() {
@@ -46,9 +49,10 @@ describe("Cucumber.Parser", function() {
       expect(gherkinLexerConstructor).toHaveBeenCalledWith(eventHandlers);
     });
 
-    it("asks the lexer to scan the features source", function() {
+    it("asks the lexer to scan each feature source", function() {
       parser.parse();
-      expect(gherkinLexer.scan).toHaveBeenCalledWith(featuresSource);
+      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources['first_feature']);
+      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources['second_feature']);
     });
 
     it("returns the features root element", function() {

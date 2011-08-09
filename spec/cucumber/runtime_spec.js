@@ -80,12 +80,12 @@ describe("Cucumber.Runtime", function() {
 
     it("creates a new parser", function() {
       runtime.parseFeaturesSource(featuresSource);
-      expect(Cucumber.Parser).toHaveBeenCalledWith(featuresSource);
+      expect(Cucumber.Parser).toHaveBeenCalledWith({feature: featuresSource});
     });
 
     it("asks the parser to parse", function() {
       runtime.parseFeaturesSource(featuresSource);
-      expect(Cucumber.Parser).toHaveBeenCalled();
+      expect(parser.parse).toHaveBeenCalled();
     });
 
     it("it returns the parsed features", function() {
