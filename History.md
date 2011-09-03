@@ -2,6 +2,23 @@
 
 ## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...master)
 
+### [v0.1.3](https://github.com/cucumber/cucumber-js/compare/v0.1.2...v0.1.3)
+
+#### New features
+
+* Allow several features to run at once (#14 Julien Biezemans)
+* Add support for --require (Julien Biezemans)
+
+#### Internals and tests
+
+* Improve features and support code API (Julien Biezemans)
+* Add "Cli" and "Volatile" configurations (Julien Biezemans)
+* Internal refactoring and cleanup (Julien Biezemans)
+* Cucumber.js can now fully test itself (Julien Biezemans)
+* Remove run_all_features script in favor of bin/cucumber.js (Julien Biezemans)
+
+
+
 ### [v0.1.2](https://github.com/cucumber/cucumber-js/compare/v0.1.1...v0.1.2)
 
 #### New features
