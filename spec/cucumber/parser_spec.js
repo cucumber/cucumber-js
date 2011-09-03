@@ -7,10 +7,10 @@ describe("Cucumber.Parser", function() {
 
   beforeEach(function() {
     features       = createSpy("Root 'features' AST element");
-    featureSources = {
-      first_feature  : createSpy('first feature source'),
-      second_feature : createSpy('second feature source')
-    }
+    featureSources = [
+      ["(feature:1)", createSpy('first feature source')],
+      ["(feature:2)", createSpy('second feature source')]
+    ];
     spyOn(Cucumber.Ast, 'Features').andReturn(features);
     parser = Cucumber.Parser(featureSources);
   });
@@ -51,8 +51,8 @@ describe("Cucumber.Parser", function() {
 
     it("asks the lexer to scan each feature source", function() {
       parser.parse();
-      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources['first_feature']);
-      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources['second_feature']);
+      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources[0][1]);
+      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources[1][1]);
     });
 
     it("returns the features root element", function() {

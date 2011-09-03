@@ -12,16 +12,16 @@ module CucumberJsMappings
     # FIXME: do not run the whole feature but only the scenario:
     # run_simple "#{cucumber_bin} #{FEATURE_FILE} --name '#{scenario_name}'", false
     write_main_step_definitions_file
-    run_simple "#{cucumber_bin} #{FEATURE_FILE} #{STEP_DEFINITIONS_FILE}", false
+    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
   end
 
   def run_feature
     write_main_step_definitions_file
-    run_simple "#{cucumber_bin} #{FEATURE_FILE} #{STEP_DEFINITIONS_FILE}", false
+    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
   end
 
   def cucumber_bin
-    File.expand_path(File.dirname(__FILE__) + '/../../cucumber.js')
+    File.expand_path(File.dirname(__FILE__) + '/../../bin/cucumber.js')
   end
 
   def write_passing_mapping(step_name)

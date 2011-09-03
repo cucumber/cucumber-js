@@ -1,6 +1,6 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Ast.TreeWalker", function() {
+describe("Cucumber.Runtime.AstTreeWalker", function() {
   var Cucumber = require('cucumber');
   var treeWalker, features, supportCodeLibrary, listeners;
 
@@ -9,7 +9,7 @@ describe("Cucumber.Ast.TreeWalker", function() {
     supportCodeLibrary = createSpy("Support code library");
     listeners          = [createSpy("First listener"), createSpy("Second listener")];
     spyOnStub(listeners, 'syncForEach').andCallFake(function(cb) { listeners.forEach(cb); });
-    treeWalker         = Cucumber.Ast.TreeWalker(features, supportCodeLibrary, listeners);
+    treeWalker         = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners);
   });
 
   describe("walk()", function() {
@@ -56,13 +56,13 @@ describe("Cucumber.Ast.TreeWalker", function() {
     beforeEach(function() {
       callback = createSpy("Callback");
       event    = createSpy("Event");
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
     it("creates a new event about the features' visit", function() {
       treeWalker.visitFeatures(features, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.FEATURES_EVENT_NAME);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURES_EVENT_NAME);
     });
 
     it("broadcasts the features' visit", function() {
@@ -101,13 +101,13 @@ describe("Cucumber.Ast.TreeWalker", function() {
       callback = createSpy("Callback");
       event    = createSpy("Event");
       payload  = {feature: feature};
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
     it("creates a new event about the feature' visit", function() {
       treeWalker.visitFeature(feature, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.FEATURE_EVENT_NAME, payload);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURE_EVENT_NAME, payload);
     });
 
     it("broadcasts the feature's visit", function() {
@@ -145,7 +145,7 @@ describe("Cucumber.Ast.TreeWalker", function() {
       callback = createSpy("Callback");
       event    = createSpy("Event");
       payload  = {scenario: scenario};
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
       spyOn(treeWalker, 'witnessNewScenario');
     });
@@ -157,7 +157,7 @@ describe("Cucumber.Ast.TreeWalker", function() {
 
     it("creates a new event about the scenario's visit", function() {
       treeWalker.visitScenario(scenario, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.SCENARIO_EVENT_NAME, payload);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.SCENARIO_EVENT_NAME, payload);
     });
 
     it("broadcasts the scenario's visit", function() {
@@ -286,12 +286,12 @@ describe("Cucumber.Ast.TreeWalker", function() {
       payload    = {stepResult: stepResult};
       spyOn(treeWalker, 'broadcastEvent');
       spyOn(treeWalker, 'witnessFailedStep');
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
     });
 
     it("creates a new event about the step result's visit", function() {
       treeWalker.visitStepResult(stepResult, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_RESULT_EVENT_NAME, payload);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.STEP_RESULT_EVENT_NAME, payload);
     });
 
     it("broadcasts the step result visit and the step result itself", function() {
@@ -641,13 +641,13 @@ describe("Cucumber.Ast.TreeWalker", function() {
       callback = createSpy("Callback");
       event    = createSpy("Event");
       payload  = {step: step};
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
     it("creates a new event about the executed step's visit", function() {
       treeWalker.executeStep(step, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.STEP_EVENT_NAME, payload);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.STEP_EVENT_NAME, payload);
     });
 
     it("broadcasts the step's visit", function() {
@@ -685,13 +685,13 @@ describe("Cucumber.Ast.TreeWalker", function() {
       callback = createSpy("callback");
       event    = createSpy("event");
       payload  = {step: step};
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEvent');
     });
 
     it("creates a new event about the skipped step visit", function() {
       treeWalker.skipStep(step, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.SKIPPED_STEP_EVENT_NAME, payload);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.SKIPPED_STEP_EVENT_NAME, payload);
     });
 
     it("brodcasts the skipped step's visit", function() {
@@ -707,13 +707,13 @@ describe("Cucumber.Ast.TreeWalker", function() {
       step     = createSpyWithStubs("step AST element");
       callback = createSpy("callback");
       payload  = {step: step};
-      spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(event);
+      spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEvent');
     });
 
     it("creates a new event about the undefined step visit", function() {
       treeWalker.skipUndefinedStep(step, callback);
-      expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(Cucumber.Ast.TreeWalker.UNDEFINED_STEP_EVENT_NAME, payload);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.UNDEFINED_STEP_EVENT_NAME, payload);
     });
 
     it("brodcasts the undefined step's visit", function() {

@@ -2,18 +2,15 @@ require('../support/spec_helper');
 
 describe("Cucumber.Runtime", function() {
   var Cucumber = require('cucumber');
-  var featuresSource;
-  var supportCodeDefinition;
+  var configuration;
   var runtime;
-  var supportCodeLibrary, listenerCollection;
+  var supportCodeLibrary, listeners;
 
   beforeEach(function() {
-    listenerCollection    = createSpyWithStubs("listener collection", {add: null});
-    spyOn(Cucumber.Type, 'Collection').andReturn(listenerCollection);
-    featuresSource        = createSpy("features source buffer");
-    supportCodeDefinition = createSpy("support code definition");
-    supportCodeLibrary    = createSpy("support code library");
-    runtime               = Cucumber.Runtime(featuresSource, supportCodeDefinition);
+    listeners     = createSpyWithStubs("listener collection", {add: null});
+    configuration = createSpy("configuration");
+    spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
+    runtime = Cucumber.Runtime(configuration);
   });
 
   describe("constructor", function() {
@@ -26,19 +23,21 @@ describe("Cucumber.Runtime", function() {
     it("adds the listener to the listener collection", function() {
       var listener = createSpy("AST tree listener");
       runtime.attachListener(listener);
-      expect(listenerCollection.add).toHaveBeenCalledWith(listener);
+      expect(listeners.add).toHaveBeenCalledWith(listener);
     });
   });
 
   describe("start()", function() {
-    var featuresAstElement, callback;
+    var features, supportCodeLibrary, callback, astTreeWalker;
 
     beforeEach(function() {
-      featuresAstElement = createSpy("Features AST element");
-      callback           = createSpy("Callback");
-      spyOn(runtime, 'parseFeaturesSource').andReturn(featuresAstElement);
-      spyOn(runtime, 'executeFeaturesAgainstSupportCodeLibrary');
-      spyOn(runtime, 'initializeSupportCode').andReturn(supportCodeLibrary);
+      features           = createSpy("features (AST)");
+      supportCodeLibrary = createSpy("support code library");
+      astTreeWalker      = createSpyWithStubs("AST tree walker", {walk: null});
+      callback           = createSpy("callback");
+      spyOn(runtime, 'getFeatures').andReturn(features);
+      spyOn(runtime, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
+      spyOn(Cucumber.Runtime, 'AstTreeWalker').andReturn(astTreeWalker);
     });
 
     it("fails when no callback is passed", function() {
@@ -53,81 +52,73 @@ describe("Cucumber.Runtime", function() {
       expect(exception).toBeDefined();
     });
 
-    it("parses the features source", function() {
+    it("gets the features", function() {
       runtime.start(callback);
-      expect(runtime.parseFeaturesSource).toHaveBeenCalledWith(featuresSource);
+      expect(runtime.getFeatures).toHaveBeenCalled();
     });
 
-    it("initiliazes the support code", function() {
+    it("gets the support code library", function() {
       runtime.start(callback);
-      expect(runtime.initializeSupportCode).toHaveBeenCalledWith(supportCodeDefinition);
+      expect(runtime.getSupportCodeLibrary).toHaveBeenCalled();
     });
 
-    it("executes the features", function() {
+    it("creates a new AST tree walker", function() {
       runtime.start(callback);
-      expect(runtime.executeFeaturesAgainstSupportCodeLibrary).toHaveBeenCalledWith(featuresAstElement, supportCodeLibrary, callback);
+      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners);
+    });
+
+    it("tells the AST tree walker to walk", function() {
+      runtime.start(callback);
+      expect(astTreeWalker.walk).toHaveBeenCalledWith(callback);
     });
   });
 
-  describe("parseFeaturesSource()", function() {
-    var parser, features;
+  describe("getFeatures()", function() {
+    var featureSources, parser, features;
 
     beforeEach(function() {
-      features = createSpy("Features AST element");
-      parser = createSpyWithStubs('A parser', {parse: features});
-      spyOn(Cucumber, "Parser").andReturn(parser);
+      featureSources = createSpy("feature sources");
+      features       = createSpy("features (AST)");
+      parser         = createSpyWithStubs("parser", {parse: features});
+      spyOnStub(configuration, 'getFeatureSources').andReturn(featureSources);
+      spyOn(Cucumber, 'Parser').andReturn(parser);
     });
 
-    it("creates a new parser", function() {
-      runtime.parseFeaturesSource(featuresSource);
-      expect(Cucumber.Parser).toHaveBeenCalledWith({feature: featuresSource});
+    it("gets the feature sources from the configuration", function() {
+      runtime.getFeatures();
+      expect(configuration.getFeatureSources).toHaveBeenCalled();
     });
 
-    it("asks the parser to parse", function() {
-      runtime.parseFeaturesSource(featuresSource);
+    it("creates a new Cucumber parser for the feature sources", function() {
+      runtime.getFeatures();
+      expect(Cucumber.Parser).toHaveBeenCalledWith(featureSources);
+    });
+
+    it("tells the parser to parse the features", function() {
+      runtime.getFeatures();
       expect(parser.parse).toHaveBeenCalled();
     });
 
-    it("it returns the parsed features", function() {
-      expect(runtime.parseFeaturesSource(featuresSource)).toBe(features);
+    it("returns the parsed features", function() {
+      expect(runtime.getFeatures()).toBe(features);
     });
   });
 
-  describe("initializeSupportCode()", function() {
-    beforeEach(function() {
-      spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
-    });
-
-    it("creates a new support code library", function() {
-      runtime.initializeSupportCode(supportCodeDefinition);
-      expect(Cucumber.SupportCode.Library).toHaveBeenCalledWith(supportCodeDefinition);
-    });
-
-    it("returns the support code library", function() {
-      expect(runtime.initializeSupportCode(supportCodeDefinition)).toBe(supportCodeLibrary);
-    });
-  });
-
-  describe("executeFeaturesAgainstSupportCodeLibrary()", function() {
-    var features, supportCodeLibrary, callback;
-    var treeWalker;
+  describe("getSupportCodeLibrary", function() {
+    var supportCodeLibrary;
 
     beforeEach(function() {
       supportCodeLibrary = createSpy("support code library");
-      features   = createSpy("Features AST element");
-      callback   = createSpy("Callback");
-      treeWalker = createSpyWithStubs("AST tree walker", {walk: null});
-      spyOn(Cucumber.Ast, 'TreeWalker').andReturn(treeWalker);
+      spyOnStub(configuration, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
     });
 
-    it("creates an AST tree walker giving it the features AST element from the parser and the listeners it will talk to", function() {
-      runtime.executeFeaturesAgainstSupportCodeLibrary(features, supportCodeLibrary, callback);
-      expect(Cucumber.Ast.TreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listenerCollection);
+    it("gets the support code library from the configuration", function() {
+      runtime.getSupportCodeLibrary();
+      expect(configuration.getSupportCodeLibrary).toHaveBeenCalled();
     });
 
-    it("asks the tree walker to walk", function() {
-      runtime.executeFeaturesAgainstSupportCodeLibrary(features, supportCodeLibrary, callback);
-      expect(treeWalker.walk).toHaveBeenCalledWith(callback);
+    it("returns the support code library", function() {
+      expect(runtime.getSupportCodeLibrary()).toBe(supportCodeLibrary);
     });
   });
 });

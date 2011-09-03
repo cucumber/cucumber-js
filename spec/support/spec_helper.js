@@ -32,7 +32,11 @@ beforeEach(function() {
           return true;
       }
       return false;
-    }
+    },
+
+    toHaveBeenRequired: function() {
+      return this.actual.requireCount > 0;
+    },
   });
 });
 
@@ -74,10 +78,37 @@ createEmittingSpy = function(name) {
 };
 
 jasmine.Spy.prototype.andReturnSeveral = function(values) {
+  var count = 0;
   this.plan = function() {
-    if (typeof(this.count) === 'undefined')
-      this.count = 0;
-    return values[this.count++];
+    return values[count++];
   };
   return this;
 };
+
+var moduleSpies = {};
+var originalJsLoader = require.extensions['.js'];
+
+spyOnModule = function spyOnModule(module) {
+  var path          = require.resolve(module);
+  var spy           = createSpy("spy on module \"" + module + "\"");
+  spy.requireCount  = 0;
+  moduleSpies[path] = spy;
+  delete require.cache[path];
+  return spy;
+};
+
+require.extensions['.js'] = function (obj, path) {
+  var spy = moduleSpies[path];
+  if (spy) {
+    spy.requireCount++;
+    obj.exports = spy;
+  } else {
+    return originalJsLoader(obj, path);
+  }
+}
+
+afterEach(function() {
+  for (var path in moduleSpies) {
+    delete moduleSpies[path];
+  }
+});

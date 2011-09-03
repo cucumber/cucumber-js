@@ -1,6 +1,6 @@
 require('../../../support/spec_helper');
 
-describe("Cucumber.Ast.TreeWalker.Event", function() {
+describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
   var Cucumber = require('cucumber');
 
   describe("non-instance method", function() {
@@ -21,7 +21,7 @@ describe("Cucumber.Ast.TreeWalker.Event", function() {
         secondItem: payloadItems[1],
         thirdItem:  payloadItems[2]
       };
-      event = Cucumber.Ast.TreeWalker.Event(name, payload);
+      event = Cucumber.Runtime.AstTreeWalker.Event(name, payload);
     });
 
     describe("getName()", function() {
@@ -35,13 +35,13 @@ describe("Cucumber.Ast.TreeWalker.Event", function() {
 
       beforeEach(function() {
         preEvent = createSpy("Pre-event (before)");
-        spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(preEvent);
+        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(preEvent);
       });
 
       it("creates a new event with the before prefix prepended to the event name and the same payload", function() {
-        var newName = Cucumber.Ast.TreeWalker.BEFORE_EVENT_NAME_PREFIX + name;
+        var newName = Cucumber.Runtime.AstTreeWalker.BEFORE_EVENT_NAME_PREFIX + name;
         event.replicateAsPreEvent();
-        expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(newName, payload);
+        expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(newName, payload);
       });
 
       it("returns the new event", function() {
@@ -54,13 +54,13 @@ describe("Cucumber.Ast.TreeWalker.Event", function() {
 
       beforeEach(function() {
         postEvent = createSpy("Post-event (after)");
-        spyOn(Cucumber.Ast.TreeWalker, 'Event').andReturn(postEvent);
+        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(postEvent);
       });
 
       it("creates a new event with the after prefix prepended to the event name and the same payload", function() {
-        var newName = Cucumber.Ast.TreeWalker.AFTER_EVENT_NAME_PREFIX + name;
+        var newName = Cucumber.Runtime.AstTreeWalker.AFTER_EVENT_NAME_PREFIX + name;
         event.replicateAsPostEvent();
-        expect(Cucumber.Ast.TreeWalker.Event).toHaveBeenCalledWith(newName, payload);
+        expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(newName, payload);
       });
 
       it("returns the new event", function() {
@@ -92,8 +92,8 @@ describe("Cucumber.Ast.TreeWalker.Event", function() {
 
     describe("occuredAfter()", function() {
       beforeEach(function() {
-        var afterName = Cucumber.Ast.TreeWalker.AFTER_EVENT_NAME_PREFIX + name;
-        event = Cucumber.Ast.TreeWalker.Event(afterName, payload);
+        var afterName = Cucumber.Runtime.AstTreeWalker.AFTER_EVENT_NAME_PREFIX + name;
+        event = Cucumber.Runtime.AstTreeWalker.Event(afterName, payload);
       });
 
       it("returns true when the received event name prefixed by the 'after' keyword matches the actual event name", function() {

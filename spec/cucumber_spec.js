@@ -3,22 +3,28 @@ require('./support/spec_helper');
 describe("Cucumber", function() {
   var Cucumber = require('cucumber');
 
-  var featuresSource, supportCodeDefinition, runtime;
+  var featureSource, supportCodeInitializer, configuration;
 
   beforeEach(function() {
-    featuresSource        = createSpy("features source");
-    supportCodeDefinition = createSpy("support code definition");
-    runtime               = createSpy("runtime");
+    featureSource          = createSpy("feature source");
+    supportCodeInitializer = createSpy("support code initialize");
+    configuration          = createSpy("volatile configuration");
+    runtime                = createSpy("Cucumber runtime");
+    spyOn(Cucumber, 'VolatileConfiguration').andReturn(configuration);
     spyOn(Cucumber, 'Runtime').andReturn(runtime);
   });
 
-  it("creates a runtime with the featuresSource and supportCodeDefinition", function() {
-    Cucumber(featuresSource, supportCodeDefinition);
-    expect(Cucumber.Runtime).toHaveBeenCalledWith(featuresSource, supportCodeDefinition);
+  it("creates a volatile configuration with the feature source and support code definition", function() {
+    Cucumber(featureSource, supportCodeInitializer);
+    expect(Cucumber.VolatileConfiguration).toHaveBeenCalledWith(featureSource, supportCodeInitializer);
   });
 
-  it("returns the runtime", function() {
-    var cucumber = Cucumber(featuresSource, supportCodeDefinition);
-    expect(cucumber).toBe(runtime);
+  it("creates a Cucumber runtime with the configuration", function() {
+    Cucumber(featureSource, supportCodeInitializer);
+    expect(Cucumber.Runtime).toHaveBeenCalledWith(configuration);
+  });
+
+  it("returns the Cucumber runtime", function() {
+    expect(Cucumber(featureSource, supportCodeInitializer)).toBe(runtime);
   });
 });

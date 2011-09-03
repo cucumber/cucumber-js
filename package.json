@@ -21,10 +21,15 @@
   { "gherkin" : "2.4.5"
   , "jasmine-node" : "1.0.6"
   , "connect" : "1.6.0"
-  , "browserify" : "1.3.0"
+  , "browserify" : "1.4.6"
+  , "nopt" : "1.0.6"
+  , "glob" : "2.0.7"
+  , "underscore" : "1.1.7"
+  , "rimraf" : "1.0.4"
+  , "mkdirp" : "0.0.6"
   }
-, "scripts" : { "test" : "./run_all_features.js" }
-, "bin": { "cucumber.js": "./cucumber.js" }
+, "scripts" : { "test" : "./bin/cucumber.js" }
+, "bin": { "cucumber.js": "./bin/cucumber.js" }
 , "licenses" :
   [ { "type" : "MIT"
     , "url" : "http://github.com/cucumber/cucumber.js/LICENSE"
