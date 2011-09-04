@@ -80,28 +80,28 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
       });
     });
 
-    describe("occuredOn()", function() {
+    describe("occurredOn()", function() {
       it("returns true when the received event name matches the actual event name", function() {
-        expect(event.occuredOn(name)).toBeTruthy();
+        expect(event.occurredOn(name)).toBeTruthy();
       });
 
       it("returns false when the received event name does not match the actual event name", function() {
-        expect(event.occuredOn("SomeOtherEvent")).toBeFalsy();
+        expect(event.occurredOn("SomeOtherEvent")).toBeFalsy();
       });
     });
 
-    describe("occuredAfter()", function() {
+    describe("occurredAfter()", function() {
       beforeEach(function() {
         var afterName = Cucumber.Runtime.AstTreeWalker.AFTER_EVENT_NAME_PREFIX + name;
         event = Cucumber.Runtime.AstTreeWalker.Event(afterName, payload);
       });
 
       it("returns true when the received event name prefixed by the 'after' keyword matches the actual event name", function() {
-        expect(event.occuredAfter(name)).toBeTruthy();
+        expect(event.occurredAfter(name)).toBeTruthy();
       });
 
       it("returns false when the received event name prefixed by the 'after' keyword does not match the actual event name", function() {
-        expect(event.occuredAfter('SomeOtherEvent')).toBeFalsy();
+        expect(event.occurredAfter('SomeOtherEvent')).toBeFalsy();
       });
     });
   });
