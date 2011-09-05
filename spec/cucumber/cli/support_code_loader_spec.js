@@ -167,11 +167,11 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
       ];
     });
 
-    it("returns a function", function() {
+    it("returns a function that wraps the initializers", function() {
       expect(supportCodeLoader.buildSupportCodeInitializerFromPaths(paths)).toBeAFunction();
     });
 
-    describe("returned function", function() {
+    describe("returned wrapper function", function() {
       var initializers, returnedFunction;
 
       beforeEach(function() {
