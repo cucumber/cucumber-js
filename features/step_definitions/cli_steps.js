@@ -22,7 +22,7 @@ var cliSteps = function cliSteps() {
     }
   };
 
-  Given(/^a file named "(.*)" with:$/, function(filePath, fileContent, callback) {
+  this.Given(/^a file named "(.*)" with:$/, function(filePath, fileContent, callback) {
     cleanseIfNeeded();
     var absoluteFilePath = tmpPath(filePath);
     var filePathParts    = absoluteFilePath.split('/');
@@ -37,7 +37,7 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  When(/^I run `cucumber.js(| .+)`$/, function(args, callback) {
+  this.When(/^I run `cucumber.js(| .+)`$/, function(args, callback) {
     var initialCwd = process.cwd();
     process.chdir(tmpDir);
     var command = baseDir + "/bin/cucumber.js" + args;
@@ -52,7 +52,7 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  Then(/^it should pass with exactly:$/, function(expectedOutput, callback) {
+  this.Then(/^it should pass with exactly:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
     if (actualOutput != expectedOutput)
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");

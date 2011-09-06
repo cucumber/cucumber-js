@@ -1,6 +1,8 @@
 var Cucumber = require('../../../lib/cucumber');
 
 var stepDefinitions = function() {
+  var Given = When = Then = this.defineStep;
+
   var GIVEN_KEYWORD   = "Given";
   var WHEN_KEYWORD    = "When";
   var THEN_KEYWORD    = "Then";
@@ -210,18 +212,19 @@ var stepDefinitions = function() {
     var _stepName = RegExp(name);
     var stepDefinition;
     if (keyword == THEN_KEYWORD) {
-      stepDefinition = function() { Then(_stepName, content); };
+      stepDefinition = function() { this.Then(_stepName, content); };
     } else if (keyword == WHEN_KEYWORD) {
-      stepDefinition = function() { When(_stepName, content); };
+      stepDefinition = function() { this.When(_stepName, content); };
     } else {
-      stepDefinition = function() { Given(_stepName, content); };
+      stepDefinition = function() { this.Given(_stepName, content); };
     }
     _stepDefs.push(stepDefinition);
   };
 
   function _getSupportCode() {
+    var supportCodeHelper = this;
     _stepDefs.forEach(function(defineStep) {
-      defineStep();
+      defineStep.call(supportCodeHelper);
     });
   };
 

@@ -52,7 +52,7 @@ module CucumberJsMappings
     append_support_code <<-EOF
 var RpnCalculator   = require('../support/rpn_calculator');
 var calculatorSteps = require('./calculator_steps');
-calculatorSteps(RpnCalculator);
+calculatorSteps.call(this, RpnCalculator);
 EOF
   end
 
@@ -94,7 +94,7 @@ EOF
   def append_step_definition(step_name, code)
     indented_code = indent_code(code).rstrip
     append_support_code <<-EOF
-Given(/#{step_name}/, function(callback) {
+this.defineStep(/#{step_name}/, function(callback) {
   fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
 });

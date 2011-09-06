@@ -65,20 +65,31 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
     });
 
     describe("returned function", function() {
-      var initializerFunction;
+      var initializerFunction, supportCodeHelper;
 
       beforeEach(function() {
         initializerFunction = supportCodeLoader.getSupportCodeInitializer();
+        supportCodeHelper   = createSpy("support code helper");
       });
 
       it("calls the prime support code", function() {
-        initializerFunction();
+        initializerFunction.call(supportCodeHelper);
         expect(primeSupportCodeInitializer).toHaveBeenCalled();
       });
 
+      it("calls the prime support code with the support code helper as 'this'", function() {
+        initializerFunction.call(supportCodeHelper);
+        expect(primeSupportCodeInitializer.mostRecentCall.object).toBe(supportCodeHelper);
+      });
+
       it("calls the secondary support code", function() {
-        initializerFunction();
+        initializerFunction.call(supportCodeHelper);
         expect(secondarySupportCodeInitializer).toHaveBeenCalled();
+      });
+
+      it("calls the secondary support code with the support code helper as 'this'", function() {
+        initializerFunction.call(supportCodeHelper);
+        expect(secondarySupportCodeInitializer.mostRecentCall.object).toBe(supportCodeHelper);
       });
     });
   });
@@ -172,7 +183,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
     });
 
     describe("returned wrapper function", function() {
-      var initializers, returnedFunction;
+      var initializers, returnedWrapperFunction, supportCodeHelper;
 
       beforeEach(function() {
         initializers = [];
@@ -180,20 +191,28 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
           var initializer = spyOnModule(path);
           initializers.push(initializer);
         });
-        returnedFunction = supportCodeLoader.buildSupportCodeInitializerFromPaths(paths);
+        returnedWrapperFunction = supportCodeLoader.buildSupportCodeInitializerFromPaths(paths);
+        supportCodeHelper       = createSpy("support code helper");
       });
 
       it("requires each initializer", function() {
-        returnedFunction();
+        returnedWrapperFunction.call(supportCodeHelper);
         initializers.forEach(function(initializer) {
           expect(initializer).toHaveBeenRequired();
         });
       });
 
       it("calls each initializer function", function() {
-        returnedFunction();
+        returnedWrapperFunction.call(supportCodeHelper);
         initializers.forEach(function(initializer) {
           expect(initializer).toHaveBeenCalled();
+        });
+      });
+
+      it("calls each initializer function with the support code helper as 'this'", function() {
+        returnedWrapperFunction.call(supportCodeHelper);
+        initializers.forEach(function(initializer) {
+          expect(initializer.mostRecentCall.object).toBe(supportCodeHelper);
         });
       });
     });

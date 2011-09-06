@@ -13,7 +13,7 @@ Feature: Command line interface
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        When(/^a step is passing$/, function(callback) { callback(); });
+        this.When(/^a step is passing$/, function(callback) { callback(); });
       };
       module.exports = cucumberSteps;
       """
@@ -54,7 +54,7 @@ Feature: Command line interface
     Given a file named "step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        When(/^a step is passing$/, function(callback) { callback(); });
+        this.When(/^a step is passing$/, function(callback) { callback(); });
       };
       module.exports = cucumberSteps;
       """
@@ -78,7 +78,7 @@ Feature: Command line interface
     Given a file named "step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        When(/^a step is passing$/, function(callback) { callback(); });
+        this.When(/^a step is passing$/, function(callback) { callback(); });
       };
       module.exports = cucumberSteps;
       """

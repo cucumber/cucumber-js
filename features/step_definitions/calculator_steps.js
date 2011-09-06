@@ -1,4 +1,5 @@
 var calculatorSteps = function(Calculator) {
+  var Given = When = Then = this.defineStep;
   var calc;
 
   function isNumberWithinRangeOfValue(number, range, value) {

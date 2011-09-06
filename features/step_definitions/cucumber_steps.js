@@ -1,4 +1,6 @@
 var cucumberSteps = function() {
+  var Given = When = Then = this.defineStep;
+
   var shouldPrepare = true;
   var featureSource;
   var stepDefinitions;
@@ -66,7 +68,7 @@ var cucumberSteps = function() {
 
   When(/^Cucumber runs the scenario with steps for a calculator$/, function(callback) {
     RpnCalculator = require('../support/rpn_calculator');
-    supportCode = function() { require('./calculator_steps')(RpnCalculator) };
+    supportCode = function() { require('./calculator_steps').call(this, RpnCalculator) };
     runFeatureWithSupportCodeSource(supportCode, callback);
   });
 
@@ -127,7 +129,8 @@ var cucumberSteps = function() {
 
   function runFeature(callback) {
     var supportCode;
-    var supportCodeSource = "supportCode = function() {\n" + stepDefinitions + "};\n";
+    var supportCodeSource = "supportCode = function() {\n  var Given = When = Then = this.defineStep;\n" +
+      stepDefinitions + "};\n";
     eval(supportCodeSource);
     runFeatureWithSupportCodeSource(supportCode, callback);
   }
