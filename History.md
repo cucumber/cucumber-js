@@ -2,6 +2,14 @@
 
 ## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...master)
 
+### [v0.1.4](https://github.com/cucumber/cucumber-js/compare/v0.1.3...v0.1.4)
+
+#### Changed features
+
+* Stop polluting the global namespace with Given(), When() and Then() (#2 Julien Biezemans)
+* Step definitions can be created with the support code helper passed as 'this':
+  this.Given(), this.When(), this.Then() and this.defineStep() (#2 Julien Biezemans)
+
 ### [v0.1.3](https://github.com/cucumber/cucumber-js/compare/v0.1.2...v0.1.3)
 
 #### New features
