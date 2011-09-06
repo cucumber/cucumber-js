@@ -22,7 +22,8 @@
     When I increment the variable by 1
     Then the variable should contain 2</textarea>
     <h2>Step definitions</h2>
-    <textarea id="step-definitions">var variable;
+    <textarea id="step-definitions">var Given = When = Then = this.defineStep;
+var variable;
 
 Given(/^a variable set to (\d+)$/, function(number, callback) {
   variable = parseInt(number);
