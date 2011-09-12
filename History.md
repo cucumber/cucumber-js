@@ -2,6 +2,19 @@
 
 ## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...master)
 
+### [v0.1.5](https://github.com/cucumber/cucumber-js/compare/v0.1.4...v0.1.5)
+
+#### New features
+
+* Add support for background (#9 Julien Biezemans)
+
+#### Internals and tests
+
+* Bump cucumber-features (twice) (Julien Biezemans)
+* Bump gherkin and reflect changes in its API (add DocString content type) (Julien Biezemans)
+
+
+
 ### [v0.1.4](https://github.com/cucumber/cucumber-js/compare/v0.1.3...v0.1.4)
 
 #### Changed features
