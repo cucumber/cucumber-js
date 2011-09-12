@@ -63,37 +63,43 @@ describe("Cucumber.Parser", function() {
   describe("getEventHandlers()", function() {
     var eventHandlers;
 
-    it("tells to bind 'feature' to handleFeature()", function() {
+    it("provides a 'feature' handler", function() {
       spyOn(parser, 'handleFeature');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['feature']).toBe(parser.handleFeature);
     });
 
-    it("tells to bind 'scenario' to handleScenario()", function() {
+    it("provides a 'background' handler", function() {
+      spyOn(parser, 'handleBackground');
+      eventHandlers = parser.getEventHandlers();
+      expect(eventHandlers['background']).toBe(parser.handleBackground);
+    });
+
+    it("provides a 'scenario' handler", function() {
       spyOn(parser, 'handleScenario');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['scenario']).toBe(parser.handleScenario);
     });
 
-    it("tells to bind 'step' to handleStep()", function() {
+    it("provides a 'step' handler", function() {
       spyOn(parser, 'handleStep');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['step']).toBe(parser.handleStep);
     });
 
-    it("tells to bind 'doc_string' to handleDocString()", function() {
+    it("provides a 'doc_string' handler", function() {
       spyOn(parser, 'handleDocString');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['doc_string']).toBe(parser.handleDocString);
     });
 
-    it("tells to bind 'eof' to handleEof()", function() {
+    it("provides a 'eof' handler", function() {
       spyOn(parser, 'handleEof');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['eof']).toBe(parser.handleEof);
     });
 
-    it("tells to bind 'comment' to handleComment()", function() {
+    it("provides a 'comment' handler", function() {
       spyOn(parser, 'handleComment');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['comment']).toBe(parser.handleComment);
@@ -118,28 +124,55 @@ describe("Cucumber.Parser", function() {
     });
   });
 
-  describe("getCurrentScenario()", function() {
-    var currentFeature, lastScenario;
+  describe("getCurrentScenarioOrBackground()", function() {
+    var currentFeature;
 
     beforeEach(function() {
-      lastScenario   = createSpy("Last scenario of the feature");
-      currentFeature = createSpyWithStubs("Current feature", {getLastScenario: lastScenario});
+      currentFeature = createSpyWithStubs("Current feature", {getLastScenario: undefined, getBackground: undefined});
       spyOn(parser, 'getCurrentFeature').andReturn(currentFeature);
     });
 
     it("gets the current feature", function() {
-      parser.getCurrentScenario();
+      parser.getCurrentScenarioOrBackground();
       expect(parser.getCurrentFeature).toHaveBeenCalled();
     });
 
     it("asks the current feature for its last scenario", function() {
-      parser.getCurrentScenario();
+      parser.getCurrentScenarioOrBackground();
       expect(currentFeature.getLastScenario).toHaveBeenCalled();
     });
 
-    it("returns the last scenario", function() {
-      expect(parser.getCurrentScenario()).toBe(lastScenario);
+    describe("when there is a last scenario", function() {
+      var lastScenario;
+
+      beforeEach(function() {
+        lastScenario = createSpy("Last scenario of the feature");
+        currentFeature.getLastScenario.andReturn(lastScenario);
+      });
+
+      it("returns the last scenario", function() {
+        expect(parser.getCurrentScenarioOrBackground()).toBe(lastScenario);
+      });
     });
+
+    describe("when there is no current scenario", function() {
+      var background;
+
+      beforeEach(function() {
+        background = createSpy("background");
+        spyOnStub(currentFeature, 'getBackground').andReturn(background);
+      });
+
+      it("gets the background", function() {
+        parser.getCurrentScenarioOrBackground();
+        expect(currentFeature.getBackground).toHaveBeenCalled();
+      });
+
+      it("returns the background", function() {
+        expect(parser.getCurrentScenarioOrBackground()).toBe(background);
+      });
+    });
+
   });
 
   describe("getCurrentStep()", function() {
@@ -148,12 +181,12 @@ describe("Cucumber.Parser", function() {
     beforeEach(function() {
       lastStep = createSpy("Last step of the scenario");
       currentScenario = createSpyWithStubs("Current scenario", {getLastStep: lastStep});
-      spyOn(parser, 'getCurrentScenario').andReturn(currentScenario);
+      spyOn(parser, 'getCurrentScenarioOrBackground').andReturn(currentScenario);
     });
 
     it("gets the current scenario", function() {
       parser.getCurrentStep();
-      expect(parser.getCurrentScenario).toHaveBeenCalled();
+      expect(parser.getCurrentScenarioOrBackground).toHaveBeenCalled();
     });
 
     it("asks the current scenario for its last step", function() {
@@ -191,8 +224,39 @@ describe("Cucumber.Parser", function() {
     });
   });
 
-  describe("handleScenario()", function() {
+  describe("handleBackground()", function() {
     var keyword, name, description, line;
+    var background, currentFeature;
+
+    beforeEach(function() {
+      keyword        = createSpy("'background' keyword");
+      name           = createSpy("name of the background");
+      description    = createSpy("description of the background");
+      line           = createSpy("line number");
+      background     = createSpyWithStubs("background AST element");
+      currentFeature = createSpyWithStubs("current feature AST element", {addBackground: null});
+      spyOn(Cucumber.Ast, 'Background').andReturn(background);
+      spyOn(parser, 'getCurrentFeature').andReturn(currentFeature);
+    });
+
+    it("creates a new background AST element", function() {
+      parser.handleBackground(keyword, name, description, line);
+      expect(Cucumber.Ast.Background).toHaveBeenCalledWith(keyword, name, description, line);
+    });
+
+    it("gets the current feature", function() {
+      parser.handleBackground(keyword, name, description, line);
+      expect(parser.getCurrentFeature).toHaveBeenCalled();
+    });
+
+    it("adds the background to the current feature", function() {
+      parser.handleBackground(keyword, name, description, line);
+      expect(currentFeature.addBackground).toHaveBeenCalledWith(background);
+    });
+  });
+
+  describe("handleScenario()", function() {
+    var keyword, name, description, line, background;
     var scenario, currentFeature;
 
     beforeEach(function() {
@@ -201,19 +265,25 @@ describe("Cucumber.Parser", function() {
       description    = createSpy("Description of the scenario");
       line           = createSpy("Line number");
       scenario       = createSpyWithStubs("Scenario AST element");
-      currentFeature = createSpyWithStubs("Current feature AST element", {addScenario: null});
+      background     = createSpy("background");
+      currentFeature = createSpyWithStubs("Current feature AST element", {addScenario: null, getBackground: background});
       spyOn(Cucumber.Ast, 'Scenario').andReturn(scenario);
       spyOn(parser, 'getCurrentFeature').andReturn(currentFeature);
-    });
-
-    it("creates a new scenario AST element", function() {
-      parser.handleScenario(keyword, name, description, line);
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(keyword, name, description, line);
     });
 
     it("gets the current feature", function() {
       parser.handleScenario(keyword, name, description, line);
       expect(parser.getCurrentFeature).toHaveBeenCalled();
+    });
+
+    it("gets the current background", function() {
+      parser.handleScenario(keyword, name, description, line);
+      expect(currentFeature.getBackground).toHaveBeenCalled();
+    });
+
+    it("creates a new scenario AST element", function() {
+      parser.handleScenario(keyword, name, description, line);
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(keyword, name, description, line, background);
     });
 
     it("adds the scenario to the current feature", function() {
@@ -233,7 +303,7 @@ describe("Cucumber.Parser", function() {
       step            = createSpy("Step AST element");
       currentScenario = createSpyWithStubs("Current scenario AST element", {addStep: null});
       spyOn(Cucumber.Ast, 'Step').andReturn(step);
-      spyOn(parser, 'getCurrentScenario').andReturn(currentScenario);
+      spyOn(parser, 'getCurrentScenarioOrBackground').andReturn(currentScenario);
     });
 
     it("creates a new step AST element", function() {
@@ -241,9 +311,9 @@ describe("Cucumber.Parser", function() {
       expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, name, line);
     });
 
-    it("gets the current scenario", function() {
+    it("gets the current scenario or background", function() {
       parser.handleStep(keyword, name, line);
-      expect(parser.getCurrentScenario).toHaveBeenCalled();
+      expect(parser.getCurrentScenarioOrBackground).toHaveBeenCalled();
     });
 
     it("adds the step to the current scenario", function() {

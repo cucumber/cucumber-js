@@ -103,6 +103,12 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Then(/^the step "([^"]*)" passes$/, function(stepName, callback) {
+    assertPassedStep(stepName);
+    callback();
+  });
+
+
   Then(/^the step "([^"]*)" is skipped$/, function(stepName, callback) {
     assertSkippedStep(stepName);
     callback();
@@ -184,6 +190,11 @@ var cucumberSteps = function() {
 
   function assertScenarioNotReportedAsFailing(scenarioName) {
     assertNoPartialOutput("# Scenario: " + scenarioName, lastRunOutput);
+  }
+
+  function assertPassedStep(stepName) {
+    if (!isStepTouched(stepName))
+      throw(new Error("Expected step \"" + stepName + "\" to have passed."));
   }
 
   function assertSkippedStep(stepName) {
