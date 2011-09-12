@@ -5,9 +5,10 @@ describe("Cucumber.Ast.DocString", function() {
   var docString, string, line;
 
   beforeEach(function() {
-    string    = createSpy("DocString string");
-    line      = createSpy("DocString line number");
-    docString = Cucumber.Ast.DocString(string, line);
+    contentType = createSpy("content type");
+    string      = createSpy("DocString string");
+    line        = createSpy("DocString line number");
+    docString   = Cucumber.Ast.DocString(contentType, string, line);
   });
 
   describe("getString()", function() {

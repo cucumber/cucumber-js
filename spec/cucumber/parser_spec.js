@@ -323,12 +323,13 @@ describe("Cucumber.Parser", function() {
   });
 
   describe("handleDocString()", function() {
-    var string, line;
+    var contentType, string, line;
     var currentStep;
 
     beforeEach(function() {
+      contentType = createSpy("DocString's content type");
       string      = createSpy("DocString's actual string");
-      line        = createSpy("Line number");
+      line        = createSpy("line number");
       docString   = createSpy("DocString AST element");
       currentStep = createSpyWithStubs("Current step", {attachDocString: null});
       spyOn(Cucumber.Ast, 'DocString').andReturn(docString);
@@ -336,17 +337,17 @@ describe("Cucumber.Parser", function() {
     });
 
     it("creates a new DocString AST element", function() {
-      parser.handleDocString(string, line);
-      expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(string, line);
+      parser.handleDocString(contentType, string, line);
+      expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(contentType, string, line);
     });
 
     it("gets the current step AST element", function() {
-      parser.handleDocString(string, line);
+      parser.handleDocString(contentType, string, line);
       expect(parser.getCurrentStep).toHaveBeenCalled();
     });
 
     it("attaches the DocString element to the current step", function() {
-      parser.handleDocString(string, line);
+      parser.handleDocString(contentType, string, line);
       expect(currentStep.attachDocString).toHaveBeenCalledWith(docString);
     });
   });
