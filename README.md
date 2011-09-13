@@ -36,8 +36,7 @@ Then go to [localhost:9797](http://localhost:9797/).
 
 ### Specs
 
-    $ cd spec
-    $ ../node_modules/.bin/jasmine-node .
+    $ node_modules/.bin/jasmine-node spec
 
 ### Features & documentation
 
