@@ -1,8 +1,8 @@
-require.paths.unshift('../lib');
+require.paths.unshift(__dirname + '/../../lib');
 
 beforeEach(function() {
   this.addMatchers({
-    toBeAFunction:          function()          { return typeof(this.actual) == 'function'; },
+    toBeAFunction: function() { return typeof(this.actual) == 'function'; },
 
     toHaveBeenCalledNTimes: function(callCount) { return callCount == this.actual.callCount; },
 
