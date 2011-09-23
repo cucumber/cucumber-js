@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Feature", function() {
   var Cucumber = require('cucumber');
   var scenarioCollection, lastScenario;
-  var feature, keyword, name;
+  var feature, keyword, name, line;
 
   beforeEach(function() {
     lastScenario = createSpy("Last scenario");
@@ -15,7 +15,8 @@ describe("Cucumber.Ast.Feature", function() {
     keyword     = createSpy("Feature keyword");
     name        = createSpy("Feature name");
     description = createSpy("Feature description");
-    feature     = Cucumber.Ast.Feature(keyword, name, description);
+    line        = createSpy("Feature line number");
+    feature     = Cucumber.Ast.Feature(keyword, name, description, line);
   });
 
   describe("constructor", function() {
@@ -39,6 +40,12 @@ describe("Cucumber.Ast.Feature", function() {
   describe("getDescription()", function() {
     it("returns the description of the feature", function() {
       expect(feature.getDescription()).toBe(description);
+    });
+  });
+
+  describe("getLine()", function() {
+    it("returns the line number on which the feature starts", function() {
+      expect(feature.getLine()).toBe(line);
     });
   });
 

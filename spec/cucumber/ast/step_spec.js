@@ -2,14 +2,14 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Step", function() {
   var Cucumber = require('cucumber');
-  var step, keyword, name, stepLine;
+  var step, keyword, name, line;
 
   beforeEach(function() {
     name      = createSpy("Step name");
     keyword   = createSpy("Step keyword");
-    stepLine  = createSpy("Step line");
+    line      = createSpy("Step line");
     docString = createSpy("DocString AST element");
-    step      = Cucumber.Ast.Step(keyword, name, stepLine);
+    step      = Cucumber.Ast.Step(keyword, name, line);
   });
 
   describe("getKeyword()", function() {
@@ -21,6 +21,12 @@ describe("Cucumber.Ast.Step", function() {
   describe("getName()", function() {
     it("returns the name of the step", function() {
       expect(step.getName()).toBe(name);
+    });
+  });
+
+  describe("getLine()", function() {
+    it("returns the line number on which the step lies", function() {
+      expect(step.getLine()).toBe(line);
     });
   });
 

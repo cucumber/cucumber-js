@@ -16,4 +16,16 @@ describe("Cucumber.Ast.DocString", function() {
       expect(docString.getString()).toBe(string);
     });
   });
+
+  describe("getContentType()", function() {
+    it("returns the doc type of the DocString", function() {
+      expect(docString.getContentType()).toBe(contentType);
+    });
+  });
+
+  describe("getLine()", function() {
+    it("returns the line on which the DocString starts", function() {
+      expect(docString.getLine()).toBe(line);
+    });
+  });
 });
