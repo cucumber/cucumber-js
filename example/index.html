@@ -11,6 +11,7 @@
   </head>
   <body>
     <h1><a href="https://github.com/cucumber/cucumber-js">Cucumber.js</a> demo</h1>
+    <p>Find more on the <a href="https://github.com/cucumber/cucumber-js">Cucumber.js repository</a>.</p>
     <h2>Feature source</h2>
     <textarea id="feature">Feature: Simple maths
   In order to do maths
@@ -43,11 +44,52 @@ Then(/^the variable should contain (\d+)$/, function(number, callback) {
 
     <h2>Output</h2>
     <p><button id="run-feature">Run feature</button></p>
-    <textarea readonly="readonly" id="output"></textarea>
+    <div id="output" class="cucumber-report"></div>
     <div id="errors-container">
       <h3>Errors</h3>
       <pre id="errors"></pre>
     </div>
-    <p>Find more on the <a href="https://github.com/cucumber/cucumber-js">Cucumber.js repository</a>.</p>
+
+    <!-- output templates -->
+    <div id="cucumber-templates">
+      <section class="blockelement" itemscope>
+        <details open>
+          <summary class="header">
+            <span class="keyword" itemprop="keyword">Keyword</span>: <span itemprop="name" class="name">This is the block name</span>
+          </summary>
+          <div itemprop="description" class="description">The description goes here</div>
+        </details>
+      </section>
+
+      <ol class="steps">
+      </ol>
+
+      <ol>
+        <li class="step"><span class="keyword" itemprop="keyword">Keyword</span><span class="name" itemprop="name">Name</span></li>
+      </ol>
+
+      <pre class="doc_string">
+      </pre>
+
+      <table class="data_table">
+        <tbody>
+        </tbody>
+      </table>
+
+      <table class="examples_table">
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+
+      <section class="embed">
+        <img itemprop="screenshot" class="screenshot" />
+      </section>
+      <div class="tags"></div>
+      <span class="tag"></span>
+      <div class="comments"></div>
+      <div class="comment"></div>
+    </div>
   </body>
 </html>
