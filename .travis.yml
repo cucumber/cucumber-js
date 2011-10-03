@@ -1,0 +1,13 @@
+rvm: "1.9.2"
+before_script: "git submodule update --init && npm install"
+script: "rake"
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    - jb@jbpros.com
+  irc:
+    - "irc.freenode.org#cucumber.js"

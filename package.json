@@ -29,7 +29,8 @@
   , "mkdirp" : "0.0.6"
   , "cucumber-html": "0.2.0"
   }
-, "scripts" : { "test" : "./bin/cucumber.js" }
+, "scripts" :
+  { "test" : "./bin/cucumber.js && jasmine-node spec" }
 , "bin": { "cucumber.js": "./bin/cucumber.js" }
 , "licenses" :
   [ { "type" : "MIT"

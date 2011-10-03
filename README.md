@@ -60,6 +60,14 @@ There are a few other Cucumber.js-dependent features. Execute everything:
 
     $ ./bin/cucumber.js
 
+### Rake
+
+Alternatively, you can run everything with the help of Rake:
+
+    $ git submodule update --init
+    $ bundle
+    $ rake
+
 ### Debug messages
 
 You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will diplay everything, `1` will only print out the critical things.
