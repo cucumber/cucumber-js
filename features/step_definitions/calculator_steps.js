@@ -1,4 +1,9 @@
-var calculatorSteps = function(Calculator) {
+var calculatorSteps = {};
+
+calculatorSteps.initialize = function(Calculator) {
+  if (typeof(Calculator) == 'undefined')
+    throw new Error("A Calculator is required");
+
   var Given = When = Then = this.defineStep;
   var calc;
 

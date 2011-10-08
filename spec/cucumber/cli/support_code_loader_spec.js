@@ -174,7 +174,8 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
     beforeEach(function() {
       paths = [
         fs.realpathSync(__dirname + "/../../support/initializer_stub1.js"),
-        fs.realpathSync(__dirname + "/../../support/initializer_stub2.js")
+        fs.realpathSync(__dirname + "/../../support/initializer_stub2.js"),
+        fs.realpathSync(__dirname + "/../../support/initializer_stub3.js")
       ];
     });
 
@@ -184,13 +185,16 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
 
     describe("returned wrapper function", function() {
       var initializers, returnedWrapperFunction, supportCodeHelper;
+      var nonInitializerSupportCodeCalled;
 
       beforeEach(function() {
-        initializers = [];
-        paths.forEach(function(path) {
-          var initializer = spyOnModule(path);
-          initializers.push(initializer);
-        });
+        nonInitializerSupportCode = { call: function() { nonInitializerSupportCodeCalled = true } };
+        nonInitializerSupportCodeCalled = false;
+        initializers = [
+          spyOnModule(paths[0]),
+          spyOnModule(paths[1])
+        ];
+        spyOnModuleAndReturn(paths[2], nonInitializerSupportCode);
         returnedWrapperFunction = supportCodeLoader.buildSupportCodeInitializerFromPaths(paths);
         supportCodeHelper       = createSpy("support code helper");
       });
@@ -207,6 +211,11 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
         initializers.forEach(function(initializer) {
           expect(initializer).toHaveBeenCalled();
         });
+      });
+
+      it("does not call non-functions (non-initializer support code)", function() {
+        returnedWrapperFunction.call(supportCodeHelper);
+        expect(nonInitializerSupportCodeCalled).toBeFalsy();
       });
 
       it("calls each initializer function with the support code helper as 'this'", function() {

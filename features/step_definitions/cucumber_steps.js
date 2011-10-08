@@ -68,7 +68,7 @@ var cucumberSteps = function() {
 
   When(/^Cucumber runs the scenario with steps for a calculator$/, function(callback) {
     RpnCalculator = require('../support/rpn_calculator');
-    supportCode = function() { require('./calculator_steps').call(this, RpnCalculator) };
+    supportCode = function() { require('./calculator_steps').initialize.call(this, RpnCalculator) };
     runFeatureWithSupportCodeSource(supportCode, callback);
   });
 

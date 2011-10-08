@@ -52,7 +52,7 @@ module CucumberJsMappings
     append_support_code <<-EOF
 var RpnCalculator   = require('../support/rpn_calculator');
 var calculatorSteps = require('./calculator_steps');
-calculatorSteps.call(this, RpnCalculator);
+calculatorSteps.initialize.call(this, RpnCalculator);
 EOF
   end
 

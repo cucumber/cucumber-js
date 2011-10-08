@@ -89,9 +89,13 @@ var moduleSpies = {};
 var originalJsLoader = require.extensions['.js'];
 
 spyOnModule = function spyOnModule(module) {
-  var path          = require.resolve(module);
   var spy           = createSpy("spy on module \"" + module + "\"");
   spy.requireCount  = 0;
+  return spyOnModuleAndReturn(module, spy);
+};
+
+spyOnModuleAndReturn = function spyOnModuleAndReturn(module, spy) {
+  var path          = require.resolve(module);
   moduleSpies[path] = spy;
   delete require.cache[path];
   return spy;
