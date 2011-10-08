@@ -21,7 +21,7 @@
   { "gherkin" : "2.5.1"
   , "jasmine-node" : "1.0.9"
   , "connect" : "1.6.0"
-  , "browserify" : "1.4.6"
+  , "browserify" : "1.5.0"
   , "nopt" : "1.0.6"
   , "glob" : "2.0.7"
   , "underscore" : "1.1.7"
