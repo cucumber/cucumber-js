@@ -22,5 +22,13 @@ describe("Cucumber.Cli.ArgumentParser.SupportCodePathExpander", function() {
     it("returns the expanded paths", function() {
       expect(SupportCodePathExpander.expandPaths(paths)).toBe(expandedPaths);
     });
+        
+  });
+
+  describe("SUPPORT_CODE_FILES_IN_DIR_REGEXP", function() {
+    it("matches on both JavaScript and CoffeeScript file extensions", function() {
+      expect("example_steps.js".match(SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP)).toNotEqual(null);      
+      expect("example_steps.coffee".match(SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP)).toNotEqual(null);      
+    });
   });
 });
