@@ -162,20 +162,34 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
   describe("visitScenario()", function() {
     var scenario, callback, event, payload;
+    var world;
 
     beforeEach(function() {
       scenario = createSpyWithStubs("Scenario AST element", {acceptVisitor: null});
       callback = createSpy("Callback");
       event    = createSpy("Event");
       payload  = {scenario: scenario};
+      world    = createSpy("world instance");
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
+      spyOnStub(supportCodeLibrary, 'instantiateNewWorld').andReturn(world);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
       spyOn(treeWalker, 'witnessNewScenario');
+      spyOn(treeWalker, 'setWorld');
     });
 
     it("witnesses a new scenario", function() {
       treeWalker.visitScenario(scenario, callback);
       expect(treeWalker.witnessNewScenario).toHaveBeenCalled();
+    });
+
+    it("instantiates a new World instance", function() {
+      treeWalker.visitScenario(scenario, callback);
+      expect(supportCodeLibrary.instantiateNewWorld).toHaveBeenCalled();
+    });
+
+    it("sets the new World instance", function() {
+      treeWalker.visitScenario(scenario, callback);
+      expect(treeWalker.setWorld).toHaveBeenCalledWith(world);
     });
 
     it("creates a new event about the scenario", function() {
@@ -544,6 +558,19 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         userFunction(listener, forEachCallback);
         expect(listener.hear).toHaveBeenCalledWith(event, forEachCallback);
       });
+    });
+  });
+
+  describe("getWorld() [setWorld()]", function() {
+    var world;
+
+    beforeEach(function() {
+      world = createSpy("world instance");
+    });
+
+    it("returns the World instance set with setWorld()", function() {
+      treeWalker.setWorld(world);
+      expect(treeWalker.getWorld()).toBe(world);
     });
   });
 

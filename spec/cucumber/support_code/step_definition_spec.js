@@ -34,29 +34,30 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
   });
 
   describe("invoke()", function() {
-    var stepName, docString, callback;
+    var stepName, world, docString, callback;
     var parameters;
 
     beforeEach(function() {
-      stepName   = createSpy("Step name to match");
-      docString  = createSpy("Step DocString");
-      callback   = createSpy("Callback");
-      parameters = createSpy("Code execution parameters");
+      stepName   = createSpy("step name to match");
+      world      = createSpy("world");
+      docString  = createSpy("step DocString");
+      callback   = createSpy("callback");
+      parameters = createSpy("code execution parameters");
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
       spyOn(stepDefinitionCode, 'apply');
     });
 
     it("builds the step invocation parameters", function() {
-      stepDefinition.invoke(stepName, docString, callback);
+      stepDefinition.invoke(stepName, world, docString, callback);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalled();
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(stepName, 1);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(docString, 2);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithAFunctionAsNthParameter(3);
     });
 
-    it("calls the step definition code with the parameters", function() {
-      stepDefinition.invoke(stepName, docString, callback);
-      expect(stepDefinitionCode.apply).toHaveBeenCalledWith(undefined, parameters);
+    it("calls the step definition code with the parameters and World as 'this'", function() {
+      stepDefinition.invoke(stepName, world, docString, callback);
+      expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
     });
 
     describe("callback passed to the step definition code", function() {
@@ -64,7 +65,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       var successfulStepResult;
 
       beforeEach(function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         codeExecutionCallback = stepDefinition.buildInvocationParameters.mostRecentCall.args[2];
         successfulStepResult = createSpy("successful step result");
         spyOn(Cucumber.Runtime, 'SuccessfulStepResult').andReturn(successfulStepResult);
@@ -120,17 +121,17 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       });
 
       it("creates a new pending step result", function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalled();
       });
 
       it("does not create a new failed step result", function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         expect(Cucumber.Runtime.FailedStepResult).not.toHaveBeenCalled();
       });
 
       it("calls back with the step result", function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         expect(callback).toHaveBeenCalledWith(pendingStepResult);
       });
     });
@@ -147,17 +148,17 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       });
 
       it("creates a new failed step result", function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith(failureException);
       });
 
       it("does not create a new pending step result", function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         expect(Cucumber.Runtime.PendingStepResult).not.toHaveBeenCalled();
       });
 
       it("calls back with the step result", function() {
-        stepDefinition.invoke(stepName, docString, callback);
+        stepDefinition.invoke(stepName, world, docString, callback);
         expect(callback).toHaveBeenCalledWith(failedStepResult);
       });
     });

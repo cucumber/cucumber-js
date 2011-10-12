@@ -2,6 +2,8 @@ module CucumberJsMappings
   STEP_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.js"
   COFFEE_SCRIPT_DEFINITIONS_FILE = "features/step_definitions/cucumber_steps.coffee"
   FEATURE_FILE                   = "features/a_feature.feature"
+  WORLD_VARIABLE_LOG_FILE        = "world_variable.log"
+  WORLD_FUNCTION_LOG_FILE        = "world_function.log"
 
   attr_accessor :support_code
 
@@ -41,6 +43,24 @@ module CucumberJsMappings
     append_step_definition(step_name, "throw(new Error('#{message}'));")
   end
 
+  def write_mapping_incrementing_world_variable_by_value(step_name, increment_value)
+    append_step_definition(step_name, "this.variable += #{increment_value}; callback();")
+  end
+
+  def write_mapping_logging_world_variable_value(step_name, time = "1")
+    step_def = <<-EOF
+fs.writeFileSync("#{WORLD_VARIABLE_LOG_FILE}.#{time}", "" + this.variable); callback();
+EOF
+    append_step_definition(step_name, step_def)
+  end
+
+  def write_mapping_calling_world_function(step_name)
+    step_def = <<-EOF
+this.someFunction(); callback();
+EOF
+    append_step_definition(step_name, step_def)
+  end
+
   def write_calculator_code
     rpn_calculator_code = get_file_contents('../support/rpn_calculator.js')
     create_dir 'features/support'
@@ -54,6 +74,20 @@ module CucumberJsMappings
 var RpnCalculator   = require('../support/rpn_calculator');
 var calculatorSteps = require('./calculator_steps');
 calculatorSteps.initialize.call(this, RpnCalculator);
+EOF
+  end
+
+  def write_world_variable_with_numeric_value(value)
+    append_support_code <<-EOF
+this.World.prototype.variable = #{value};
+EOF
+  end
+
+  def write_world_function
+    append_support_code <<-EOF
+this.World.prototype.someFunction = function() {
+  fs.writeFileSync("#{WORLD_FUNCTION_LOG_FILE}", "");
+};
 EOF
   end
 
@@ -84,6 +118,14 @@ EOF
 
   def assert_scenario_not_reported_as_failing(scenario_name)
     assert_no_partial_output("# Scenario: #{scenario_name}", all_output)
+  end
+
+  def assert_world_variable_held_value_at_time(value, time)
+    check_exact_file_content "#{WORLD_VARIABLE_LOG_FILE}.#{time}", value
+  end
+
+  def assert_world_function_called
+    check_file_presence [WORLD_FUNCTION_LOG_FILE], true
   end
 
   def failed_output

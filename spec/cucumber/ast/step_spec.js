@@ -82,15 +82,17 @@ describe("Cucumber.Ast.Step", function() {
   });
 
   describe("execute()", function() {
-    var stepDefinition;
+    var stepDefinition, world;
     var visitor, callback;
 
     beforeEach(function() {
-      stepDefinition = createSpy("Step definition");
-      visitor        = createSpy("Visitor");
-      callback       = createSpy("Callback received by execute()");
+      stepDefinition = createSpy("step definition");
+      world          = createSpy("world");
+      visitor        = createSpy("visitor");
+      callback       = createSpy("callback received by execute()");
       spyOnStub(stepDefinition, 'invoke');
       spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
+      spyOnStub(visitor, 'getWorld').andReturn(world);
     });
 
     it("looks up the step definition based on the step string", function() {
@@ -98,11 +100,16 @@ describe("Cucumber.Ast.Step", function() {
       expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
     });
 
-    it("invokes the step definition with the step name, DocString and the callback", function() {
+    it("gets the current World instance", function() {
+      step.execute(visitor, callback);
+      expect(visitor.getWorld).toHaveBeenCalled();
+    });
+
+    it("invokes the step definition with the step name, world, DocString and the callback", function() {
       var docString = createSpy("DocString");
       step.attachDocString(docString);
       step.execute(visitor, callback);
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(name, docString, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(name, world, docString, callback);
     });
   });
 });
