@@ -5,7 +5,7 @@ describe("Cucumber.Cli.ArgumentParser.SupportCodePathExpander", function() {
   var SupportCodePathExpander = Cucumber.Cli.ArgumentParser.SupportCodePathExpander;
   var PathExpander            = Cucumber.Cli.ArgumentParser.PathExpander;
 
-  describe("expandPaths", function() {
+  describe("expandPaths()", function() {
     var paths, expandedPaths;
 
     beforeEach(function() {
@@ -25,9 +25,14 @@ describe("Cucumber.Cli.ArgumentParser.SupportCodePathExpander", function() {
   });
 
   describe("SUPPORT_CODE_FILES_IN_DIR_REGEXP", function() {
-    it("matches on both JavaScript and CoffeeScript file extensions", function() {
-      expect("example_steps.js".match(SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP)).toNotEqual(null);
-      expect("example_steps.coffee".match(SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP)).toNotEqual(null);
+    it("matches JavaScript files", function() {
+      var matchedJsFile = SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP.test("example_steps.js");
+      expect(matchedJsFile).toBeTruthy();
+    });
+
+    it("matches CoffeeScript files", function() {
+      var matchedCoffeeScriptFile = SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP.test("example_steps.coffee");
+      expect(matchedCoffeeScriptFile).toBeTruthy();
     });
   });
 });
