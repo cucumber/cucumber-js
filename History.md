@@ -1,6 +1,52 @@
 # Cucumber.js changelog
 
-## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...master)
+## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
+
+### [v0.2.0](https://github.com/cucumber/cucumber-js/compare/v0.1.5...v0.2.0)
+
+#### New features
+
+* Setup application to run on [Travis CI](http://travis-ci.org/#!/jbpros/cucumber-js) (Julien Biezemans)
+* Add CoffeeScript support for step definition files (Paul Jensen)
+* Add "World" (#26 Julien Biezemans)
+
+#### Changed features
+
+* Add link to the Github repository on web example (Julien Biezemans)
+* Allow specifying the port the web example server should listen on (Julien Biezemans)
+* Update web example to use cucumber-html formatter (Julien Biezemans)
+
+#### Fixes
+
+* Fix load paths in spec helper (Julien Biezemans)
+* Prevent 'crypto' module from being included by browserify in web example (Julien Biezemans)
+* Fix HTML indentation (Julien Biezemans)
+* Prevent CLI support code loader from calling module main exports which are not functions (Julien Biezemans)
+* Remove use of username for submodule (Kushal Pisavadia)
+
+#### Internals and tests
+
+* Bump jasmine-node
+* Update README (Julien Biezemans)
+* Bump Gherkin twice (Julien Biezemans)
+* Bump cucumber-features twice (Julien Biezemans)
+* Add missing getters on several AST feature elements (mostly getLine()) (Julien Biezemans)
+* Ignore example/ on NPM (Julien Biezemans)
+* Add Procfile (used by Heroku when deploying to cucumber.heroku.com) (Julien Biezemans)
+* Bump Aruba (Julien Biezemans)
+* Add guard-jasmine-node (Julien Biezemans)
+* Improve Guardfile regular expressions (Julien Biezemans)
+* Bump cucumber-html and remove DOM templates from web example HTML file (Julien Biezemans)
+* Fix PathExpander internal name (Julien Biezemans)
+* Remove unneeded requires from FeaturePathExpander (Julien Biezemans)
+* Bump browserify (Julien Biezemans)
+* Remove "glob" from dependencies (Julien Biezemans)
+* Refactor SupportCodePathExpander spec (Julien Biezemans)
+* Add feature for CoffeeScript support (#29 Julien Biezemans)
+
+
+
+## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.5)
 
 ### [v0.1.5](https://github.com/cucumber/cucumber-js/compare/v0.1.4...v0.1.5)
 
