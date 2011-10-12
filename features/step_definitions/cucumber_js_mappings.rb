@@ -1,6 +1,7 @@
 module CucumberJsMappings
-  STEP_DEFINITIONS_FILE = "features/step_definitions/cucumber_steps.js"
-  FEATURE_FILE          = "features/a_feature.feature"
+  STEP_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.js"
+  COFFEE_SCRIPT_DEFINITIONS_FILE = "features/step_definitions/cucumber_steps.coffee"
+  FEATURE_FILE                   = "features/a_feature.feature"
 
   attr_accessor :support_code
 
@@ -110,6 +111,18 @@ EOF
     append_to_file(STEP_DEFINITIONS_FILE, "var fs = require('fs');\nvar stepDefinitions = function() {\n");
     append_to_file(STEP_DEFINITIONS_FILE, support_code);
     append_to_file(STEP_DEFINITIONS_FILE, "};\nmodule.exports = stepDefinitions;")
+  end
+
+  def write_coffee_script_definition_file
+    append_to_file COFFEE_SCRIPT_DEFINITIONS_FILE, <<-EOF
+fs = require('fs')
+stepDefinitions = () ->
+  this.defineStep(/^a mapping$/, (callback) ->
+    fs.writeFileSync('a_mapping.step', '')
+    callback()
+  )
+module.exports = stepDefinitions
+EOF
   end
 
   def get_file_contents(file_path)
