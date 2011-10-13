@@ -11,8 +11,12 @@ html, body {
   font-size:1em;
 }
 
-#feature, #step-definitions, #output {
-  height:12em;
+#feature {
+  height:16em;
+}
+
+#step-definitions {
+  height:28em;
 }
 
 #errors {

@@ -59,10 +59,6 @@
           formatter.match({uri:'report.feature', step: {line: step.getLine()}});
           formatter.result({status:'skipped'});
           break;
-
-        default:
-          if (console && console.log)
-            console.log('event not handled: '+eventName);
         }
         callback();
       },

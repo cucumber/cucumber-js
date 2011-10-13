@@ -18,27 +18,56 @@
   As a developer
   I want to increment variables
 
-  Scenario: Increment variable once
+  Scenario: easy maths
     Given a variable set to 1
     When I increment the variable by 1
-    Then the variable should contain 2</textarea>
+    Then the variable should contain 2
+
+  Scenario: much more complex stuff
+    Given a variable set to 100
+    When I increment the variable by 6
+    Then the variable should contain 106</textarea>
     <h2>Step definitions</h2>
-    <textarea id="step-definitions">var Given = When = Then = this.defineStep;
-var variable;
+    <textarea id="step-definitions">///// Your World /////
+
+// Provide a custom World constructor. It's optional, a default one is supplied.
+this.World = function() {};
+
+// Define your World!
+
+this.World.prototype.variable = 0;
+
+this.World.prototype.setTo = function(number) {
+  this.variable = parseInt(number);
+};
+
+this.World.prototype.incrementBy = function(number) {
+  this.variable += parseInt(number);
+};
+
+///// Your step definitions /////
+
+// use this.Given(), this.When() and this.Then() to declare step definitions
+
+// Alternatively you can use this.defineStep and even use it
+// like this:
+
+var Given = When = Then = this.defineStep;
 
 Given(/^a variable set to (\d+)$/, function(number, callback) {
-  variable = parseInt(number);
+  this.setTo(number);
   callback();
 });
 
 When(/^I increment the variable by (\d+)$/, function(number, callback) {
-  variable += parseInt(number);
+  this.incrementBy(number);
   callback();
 });
 
 Then(/^the variable should contain (\d+)$/, function(number, callback) {
-  if (variable != parseInt(number))
-    throw(new Error('Variable should contain '+number+' but it contains '+variable+'.'));
+  if (this.variable != parseInt(number))
+    throw(new Error('Variable should contain ' + number +
+      ' but it contains ' + this.variable + '.'));
   callback();
 });</textarea>
 
