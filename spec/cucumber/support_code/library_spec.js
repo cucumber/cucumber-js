@@ -164,6 +164,16 @@ describe("Cucumber.SupportCode.Library", function() {
       var worldInstance = library.instantiateNewWorld();
       expect(worldInstance.constructor).toBe(worldConstructor);
     });
+
+    describe("when the default World constructor is replaced by a custom one", function() {
+      it("instantiates custom Worlds", function() {
+        var customWorldConstructor = function customWorldConstructor() {};
+        rawSupportCode             = function() { this.World = customWorldConstructor; };
+        library                    = Cucumber.SupportCode.Library(rawSupportCode);
+        var worldInstance = library.instantiateNewWorld();
+        expect(worldInstance.constructor).toBe(customWorldConstructor);
+      });
+    });
   });
 });
 

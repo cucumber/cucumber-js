@@ -83,6 +83,10 @@ this.World.prototype.variable = #{value};
 EOF
   end
 
+  def write_custom_world_constructor
+    append_support_code "this.World = function CustomWorld() {};"
+  end
+
   def write_world_function
     append_support_code <<-EOF
 this.World.prototype.someFunction = function() {
