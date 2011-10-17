@@ -8,8 +8,6 @@ describe("Cucumber.Ast.Features", function() {
   beforeEach(function() {
     lastFeature       = createSpy("Last feature");
     featureCollection = createSpy("Feature collection");
-    spyOnStub(featureCollection, 'add');
-    spyOnStub(featureCollection, 'getLast').andReturn(lastFeature);
     spyOnStub(featureCollection, 'forEach');
     spyOn(Cucumber.Type, 'Collection').andReturn(featureCollection);
     features = Cucumber.Ast.Features();
@@ -22,6 +20,10 @@ describe("Cucumber.Ast.Features", function() {
   });
 
   describe("addFeature()", function() {
+    beforeEach(function() {
+      spyOnStub(featureCollection, 'add');
+    });
+
     it("adds the feature to the features (collection)", function() {
       var feature = createSpy("feature AST element");
       features.addFeature(feature);
@@ -30,6 +32,10 @@ describe("Cucumber.Ast.Features", function() {
   });
 
   describe("getLastFeature()", function() {
+    beforeEach(function() {
+      spyOnStub(featureCollection, 'getLast').andReturn(lastFeature);
+    });
+
     it("gets the last feature from the collection", function() {
       features.getLastFeature();
       expect(featureCollection.getLast).toHaveBeenCalled();

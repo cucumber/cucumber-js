@@ -4,7 +4,7 @@ module CucumberJsMappings
   FEATURE_FILE                   = "features/a_feature.feature"
   WORLD_VARIABLE_LOG_FILE        = "world_variable.log"
   WORLD_FUNCTION_LOG_FILE        = "world_function.log"
-
+  DATA_TABLE_LOG_FILE            = "data_table.log"
   attr_accessor :support_code
 
   def features_dir
@@ -59,6 +59,16 @@ EOF
 this.someFunction(); callback();
 EOF
     append_step_definition(step_name, step_def)
+  end
+
+  def write_mapping_receiving_data_table(step_name)
+    body = <<-EOF
+var dataTableArray = dataTable.raw();
+var dataTableJSON  = JSON.stringify(dataTableArray);
+fs.writeFileSync("#{DATA_TABLE_LOG_FILE}", "" + dataTableJSON);
+callback();
+EOF
+    append_step_definition(step_name, body, ["dataTable"])
   end
 
   def write_calculator_code
@@ -132,16 +142,27 @@ EOF
     check_file_presence [WORLD_FUNCTION_LOG_FILE], true
   end
 
+  def assert_data_table_equals_array_source(array_source)
+    prep_for_fs_check do
+      log_file_contents = IO.read(DATA_TABLE_LOG_FILE)
+      actual_array      = JSON.parse(log_file_contents)
+      expected_array = JSON.parse(array_source)
+      actual_array.should == expected_array
+    end
+  end
+
   def failed_output
     "failed"
   end
 
   protected
 
-  def append_step_definition(step_name, code)
+  def append_step_definition(step_name, code, params = [])
+    params.push("callback");
+    params_string = params.join(", ")
     indented_code = indent_code(code).rstrip
     append_support_code <<-EOF
-this.defineStep(/#{step_name}/, function(callback) {
+this.defineStep(/#{step_name}/, function(#{params_string}) {
   fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
 });

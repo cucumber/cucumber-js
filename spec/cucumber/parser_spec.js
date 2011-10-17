@@ -104,6 +104,12 @@ describe("Cucumber.Parser", function() {
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['comment']).toBe(parser.handleComment);
     });
+
+    it("provides a 'row' handler", function() {
+      spyOn(parser, 'handleRow');
+      eventHandlers = parser.getEventHandlers();
+      expect(eventHandlers['row']).toBe(parser.handleRow);
+    });
   });
 
   describe("getCurrentFeature()", function() {
@@ -199,31 +205,6 @@ describe("Cucumber.Parser", function() {
     });
   });
 
-  describe("handleFeature()", function() {
-    var keyword, name, description, line;
-    var feature;
-
-    beforeEach(function() {
-      keyword     = createSpy("'feature' keyword");
-      name        = createSpy("Name of the feature");
-      description = createSpy("Description of the feature");
-      line        = createSpy("Line number");
-      feature     = createSpyWithStubs("Feature AST element");
-      spyOn(Cucumber.Ast, 'Feature').andReturn(feature);
-      spyOnStub(features, 'addFeature');
-    });
-
-    it("creates a new feature AST element", function() {
-      parser.handleFeature(keyword, name, description, line);
-      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith(keyword, name, description, line);
-    });
-
-    it("adds the new feature to the root features AST element", function() {
-      parser.handleFeature(keyword, name, description, line);
-      expect(features.addFeature).toHaveBeenCalledWith(feature);
-    });
-  });
-
   describe("handleBackground()", function() {
     var keyword, name, description, line;
     var background, currentFeature;
@@ -252,6 +233,102 @@ describe("Cucumber.Parser", function() {
     it("adds the background to the current feature", function() {
       parser.handleBackground(keyword, name, description, line);
       expect(currentFeature.addBackground).toHaveBeenCalledWith(background);
+    });
+  });
+
+  describe("handleComment()", function() {
+    it("exists but does nothing", function() {
+      parser.handleComment();
+    });
+  });
+
+  describe("handleDocString()", function() {
+    var contentType, string, line;
+    var currentStep;
+
+    beforeEach(function() {
+      contentType = createSpy("DocString's content type");
+      string      = createSpy("DocString's actual string");
+      line        = createSpy("line number");
+      docString   = createSpy("DocString AST element");
+      currentStep = createSpyWithStubs("Current step", {attachDocString: null});
+      spyOn(Cucumber.Ast, 'DocString').andReturn(docString);
+      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
+    });
+
+    it("creates a new DocString AST element", function() {
+      parser.handleDocString(contentType, string, line);
+      expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(contentType, string, line);
+    });
+
+    it("gets the current step AST element", function() {
+      parser.handleDocString(contentType, string, line);
+      expect(parser.getCurrentStep).toHaveBeenCalled();
+    });
+
+    it("attaches the DocString element to the current step", function() {
+      parser.handleDocString(contentType, string, line);
+      expect(currentStep.attachDocString).toHaveBeenCalledWith(docString);
+    });
+  });
+
+  describe("handleEof()", function() {
+    it("exists but does nothing", function() {
+      parser.handleEof();
+    });
+  });
+
+  describe("handleFeature()", function() {
+    var keyword, name, description, line;
+    var feature;
+
+    beforeEach(function() {
+      keyword     = createSpy("'feature' keyword");
+      name        = createSpy("Name of the feature");
+      description = createSpy("Description of the feature");
+      line        = createSpy("Line number");
+      feature     = createSpyWithStubs("Feature AST element");
+      spyOn(Cucumber.Ast, 'Feature').andReturn(feature);
+      spyOnStub(features, 'addFeature');
+    });
+
+    it("creates a new feature AST element", function() {
+      parser.handleFeature(keyword, name, description, line);
+      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith(keyword, name, description, line);
+    });
+
+    it("adds the new feature to the root features AST element", function() {
+      parser.handleFeature(keyword, name, description, line);
+      expect(features.addFeature).toHaveBeenCalledWith(feature);
+    });
+  });
+
+  describe("handleRow()", function() {
+    var row, cells, line;
+    var currentStep;
+
+    beforeEach(function() {
+      row         = createSpy("data table row");
+      cells       = createSpy("data table cells");
+      line        = createSpy("line");
+      currentStep = createSpyWithStubs("Current step", {attachDataTableRow: null});
+      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
+      spyOn(Cucumber.Ast.DataTable, 'Row').andReturn(row);
+    });
+
+    it("gets the current step", function() {
+      parser.handleRow(cells, line);
+      expect(parser.getCurrentStep).toHaveBeenCalled();
+    });
+
+    it("creates a new data table row AST element", function() {
+      parser.handleRow(cells, line);
+      expect(Cucumber.Ast.DataTable.Row).toHaveBeenCalledWith(cells, line);
+    });
+
+    it("adds the data table row to the current step", function() {
+      parser.handleRow(cells, line);
+      expect(currentStep.attachDataTableRow).toHaveBeenCalledWith(row);
     });
   });
 
@@ -319,48 +396,6 @@ describe("Cucumber.Parser", function() {
     it("adds the step to the current scenario", function() {
       parser.handleStep(keyword, name, line);
       expect(currentScenario.addStep).toHaveBeenCalledWith(step);
-    });
-  });
-
-  describe("handleDocString()", function() {
-    var contentType, string, line;
-    var currentStep;
-
-    beforeEach(function() {
-      contentType = createSpy("DocString's content type");
-      string      = createSpy("DocString's actual string");
-      line        = createSpy("line number");
-      docString   = createSpy("DocString AST element");
-      currentStep = createSpyWithStubs("Current step", {attachDocString: null});
-      spyOn(Cucumber.Ast, 'DocString').andReturn(docString);
-      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
-    });
-
-    it("creates a new DocString AST element", function() {
-      parser.handleDocString(contentType, string, line);
-      expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(contentType, string, line);
-    });
-
-    it("gets the current step AST element", function() {
-      parser.handleDocString(contentType, string, line);
-      expect(parser.getCurrentStep).toHaveBeenCalled();
-    });
-
-    it("attaches the DocString element to the current step", function() {
-      parser.handleDocString(contentType, string, line);
-      expect(currentStep.attachDocString).toHaveBeenCalledWith(docString);
-    });
-  });
-
-  describe("handleEof()", function() {
-    it("exists but does nothing", function() {
-      parser.handleEof();
-    });
-  });
-
-  describe("handleComment()", function() {
-    it("exists but does nothing", function() {
-      parser.handleComment();
     });
   });
 });
