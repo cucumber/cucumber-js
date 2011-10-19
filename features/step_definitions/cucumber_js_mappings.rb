@@ -61,10 +61,20 @@ EOF
     append_step_definition(step_name, step_def)
   end
 
-  def write_mapping_receiving_data_table(step_name)
+  def write_mapping_receiving_data_table_as_raw(step_name)
     body = <<-EOF
 var dataTableArray = dataTable.raw();
 var dataTableJSON  = JSON.stringify(dataTableArray);
+fs.writeFileSync("#{DATA_TABLE_LOG_FILE}", "" + dataTableJSON);
+callback();
+EOF
+    append_step_definition(step_name, body, ["dataTable"])
+  end
+
+  def write_mapping_receiving_data_table_as_hashes(step_name)
+    body = <<-EOF
+var dataTableHashes = dataTable.hashes();
+var dataTableJSON   = JSON.stringify(dataTableHashes);
 fs.writeFileSync("#{DATA_TABLE_LOG_FILE}", "" + dataTableJSON);
 callback();
 EOF
@@ -142,11 +152,11 @@ EOF
     check_file_presence [WORLD_FUNCTION_LOG_FILE], true
   end
 
-  def assert_data_table_equals_array_source(array_source)
+  def assert_data_table_equals_json(json)
     prep_for_fs_check do
       log_file_contents = IO.read(DATA_TABLE_LOG_FILE)
       actual_array      = JSON.parse(log_file_contents)
-      expected_array = JSON.parse(array_source)
+      expected_array    = JSON.parse(json)
       actual_array.should == expected_array
     end
   end
@@ -197,12 +207,6 @@ EOF
     File.open(file_realpath, 'rb') do |f|
       f.read
     end
-  end
-
-  def indent_code(code, levels = 1)
-    indented_code = ''
-    code.each_line { |line| indented_code += "#{'  ' * levels}#{line}" }
-    indented_code
   end
 end
 World(CucumberJsMappings)

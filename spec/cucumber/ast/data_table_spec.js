@@ -62,4 +62,35 @@ describe("Cucumber.Ast.DataTable", function() {
       expect(dataTable.raw()).toEqual(rawRows);
     });
   });
+
+  describe("hashes", function() {
+    var raw, hashDataTable;
+
+    beforeEach(function() {
+      raw              = createSpy("raw data table");
+      rawHashDataTable = createSpy("raw hash data table");
+      hashDataTable    = createSpyWithStubs("hash data table", {raw: rawHashDataTable});
+      spyOn(dataTable, 'raw').andReturn(raw);
+      spyOn(Cucumber.Type, 'HashDataTable').andReturn(hashDataTable);
+    });
+
+    it("gets the raw representation of the data table", function() {
+      dataTable.hashes();
+      expect(dataTable.raw).toHaveBeenCalled();
+    });
+
+    it("creates a hash data table based on the raw representation", function() {
+      dataTable.hashes();
+      expect(Cucumber.Type.HashDataTable).toHaveBeenCalledWith(raw);
+    });
+
+    it("gets the raw representation of the hash data table", function() {
+      dataTable.hashes();
+      expect(hashDataTable.raw).toHaveBeenCalled();
+    });
+
+    it("returns the raw hash data table", function() {
+      expect(dataTable.hashes()).toBe(rawHashDataTable);
+    });
+  });
 });
