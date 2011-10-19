@@ -2,6 +2,19 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
+### [v0.2.1](https://github.com/cucumber/cucumber-js/compare/v0.2.0...v0.2.1)
+
+#### New features
+
+* Allow custom World constructors (Julien Biezemans)
+* Add support for data tables (with conversion to hashes) (#12 Julien Biezemans)
+
+#### Changed features
+
+* Demonstrate World object usages in web example (Julien Biezemans)
+
+
+
 ### [v0.2.0](https://github.com/cucumber/cucumber-js/compare/v0.1.5...v0.2.0)
 
 #### New features

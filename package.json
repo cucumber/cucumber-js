@@ -1,7 +1,7 @@
 { "name" : "cucumber"
 , "description" : "The official JavaScript implementation of Cucumber."
 , "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
-, "version" : "0.2.0"
+, "version" : "0.2.1"
 , "homepage" : "http://github.com/cucumber/cucumber-js"
 , "author" : "Julien Biezemans <jb@jbpros.com>"
 , "contributors" : [
