@@ -170,7 +170,7 @@ describe("Cucumber.SupportCode.Library", function() {
 
     it("creates a before hook with the code", function() {
       library.defineBefore(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith('before', code);
     });
 
     it("adds the before hook to the before hooks collection", function() {
@@ -191,7 +191,7 @@ describe("Cucumber.SupportCode.Library", function() {
 
     it("creates a after hook with the code", function() {
       library.defineAfter(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith('after', code);
     });
 
     it("adds the after hook to the after hooks collection", function() {
