@@ -95,17 +95,17 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
   describe("visitFeature()", function() {
     var feature, callback, event, payload;
-    var beforeCallbacks, afterCallbacks;
+    var beforeHooks, afterHooks;
 
     beforeEach(function() {
-      feature  = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
-      callback = createSpy("Callback");
-      event    = createSpy("Event");
-      payload  = {feature: feature};
-      beforeCallbacks = Cucumber.Type.Collection();
-      afterCallbacks  = Cucumber.Type.Collection();
-      spyOnStub(supportCodeLibrary, 'getBeforeCallbacks').andReturn(beforeCallbacks);
-      spyOnStub(supportCodeLibrary, 'getAfterCallbacks').andReturn(afterCallbacks);
+      feature     = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
+      callback    = createSpy("Callback");
+      event       = createSpy("Event");
+      payload     = {feature: feature};
+      beforeHooks = Cucumber.Type.Collection();
+      afterHooks  = Cucumber.Type.Collection();
+      spyOnStub(supportCodeLibrary, 'getBeforeHooks').andReturn(beforeHooks);
+      spyOnStub(supportCodeLibrary, 'getAfterHooks').andReturn(afterHooks);
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });

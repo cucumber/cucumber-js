@@ -3,8 +3,8 @@ require('../../support/spec_helper');
 describe("Cucumber.SupportCode.Library", function() {
   var Cucumber = requireLib('cucumber');
   var library, rawSupportCode;
-  var beforeCallbackCollection;
-  var afterCallbackCollection;
+  var beforeHookCollection;
+  var afterHookCollection;
   var stepDefinitionCollection;
   var worldConstructor;
   var spiesDuringSupportCodeDefinitionExecution = {};
@@ -12,11 +12,11 @@ describe("Cucumber.SupportCode.Library", function() {
 
   beforeEach(function() {
     rawSupportCode = createSpy("Raw support code");
-    beforeCallbackCollection = [
-      createSpyWithStubs("First before callback")
+    beforeHookCollection = [
+      createSpyWithStubs("First before hook")
     ];
-    afterCallbackCollection = [
-      createSpyWithStubs("First after callback")
+    afterHookCollection = [
+      createSpyWithStubs("First after hook")
     ];
     stepDefinitionCollection = [
       createSpyWithStubs("First step definition",  {matchesStepName:false}),
@@ -28,9 +28,9 @@ describe("Cucumber.SupportCode.Library", function() {
     spyOnStub(stepDefinitionCollection, 'syncForEach').andCallFake(function(cb) { stepDefinitionCollection.forEach(cb); });
     spyOn(Cucumber.Type, 'Collection').andCallFake(function() {
       if (this.Collection.callCount == 1) {
-        return beforeCallbackCollection;
+        return beforeHookCollection;
       } else if (this.Collection.callCount == 2) {
-        return afterCallbackCollection;
+        return afterHookCollection;
       } else {
         return stepDefinitionCollection;
       }
@@ -159,44 +159,44 @@ describe("Cucumber.SupportCode.Library", function() {
   });
 
   describe("defineBefore", function() {
-    var code, beforeCallback;
+    var code, beforeHook;
 
     beforeEach(function() {
-      code           = createSpy("before code");
-      beforeCallback = createSpy("before callback");
-      spyOn(Cucumber.SupportCode, "Callback").andReturn(beforeCallback);
-      spyOnStub(beforeCallbackCollection, "add");
+      code       = createSpy("before code");
+      beforeHook = createSpy("before hook");
+      spyOn(Cucumber.SupportCode, "Hook").andReturn(beforeHook);
+      spyOnStub(beforeHookCollection, "add");
     });
 
-    it("creates a before callback with the code", function() {
+    it("creates a before hook with the code", function() {
       library.defineBefore(code);
-      expect(Cucumber.SupportCode.Callback).toHaveBeenCalledWith(code);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
     });
 
-    it("adds the step definition to the step collection", function() {
+    it("adds the before hook to the before hooks collection", function() {
       library.defineBefore(code);
-      expect(beforeCallbackCollection.add).toHaveBeenCalledWith(beforeCallback);
+      expect(beforeHookCollection.add).toHaveBeenCalledWith(beforeHook);
     });
   });
 
   describe("defineAfter", function() {
-    var code, afterCallback;
+    var code, afterHook;
 
     beforeEach(function() {
-      code          = createSpy("after code");
-      afterCallback = createSpy("after callback");
-      spyOn(Cucumber.SupportCode, "Callback").andReturn(afterCallback);
-      spyOnStub(afterCallbackCollection, "add");
+      code      = createSpy("after code");
+      afterHook = createSpy("after hook");
+      spyOn(Cucumber.SupportCode, "Hook").andReturn(afterHook);
+      spyOnStub(afterHookCollection, "add");
     });
 
-    it("creates a after callback with the code", function() {
+    it("creates a after hook with the code", function() {
       library.defineAfter(code);
-      expect(Cucumber.SupportCode.Callback).toHaveBeenCalledWith(code);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
     });
 
-    it("adds the step definition to the step collection", function() {
+    it("adds the after hook to the after hooks collection", function() {
       library.defineAfter(code);
-      expect(afterCallbackCollection.add).toHaveBeenCalledWith(afterCallback);
+      expect(afterHookCollection.add).toHaveBeenCalledWith(afterHook);
     });
   });
 
