@@ -3,6 +3,8 @@ require('../../support/spec_helper');
 describe("Cucumber.SupportCode.Library", function() {
   var Cucumber = requireLib('cucumber');
   var library, rawSupportCode;
+  var beforeCallbackCollection;
+  var afterCallbackCollection;
   var stepDefinitionCollection;
   var worldConstructor;
   var spiesDuringSupportCodeDefinitionExecution = {};
@@ -10,6 +12,12 @@ describe("Cucumber.SupportCode.Library", function() {
 
   beforeEach(function() {
     rawSupportCode = createSpy("Raw support code");
+    beforeCallbackCollection = [
+      createSpyWithStubs("First before callback")
+    ];
+    afterCallbackCollection = [
+      createSpyWithStubs("First after callback")
+    ];
     stepDefinitionCollection = [
       createSpyWithStubs("First step definition",  {matchesStepName:false}),
       createSpyWithStubs("Second step definition", {matchesStepName:false}),
@@ -18,7 +26,15 @@ describe("Cucumber.SupportCode.Library", function() {
     worldConstructorCalled = false;
     worldConstructor = function() { worldConstructorCalled = true; };
     spyOnStub(stepDefinitionCollection, 'syncForEach').andCallFake(function(cb) { stepDefinitionCollection.forEach(cb); });
-    spyOn(Cucumber.Type, 'Collection').andReturn(stepDefinitionCollection);
+    spyOn(Cucumber.Type, 'Collection').andCallFake(function() {
+      if (this.Collection.callCount == 1) {
+        return beforeCallbackCollection;
+      } else if (this.Collection.callCount == 2) {
+        return afterCallbackCollection;
+      } else {
+        return stepDefinitionCollection;
+      }
+    });
     spyOn(Cucumber.SupportCode, 'WorldConstructor').andReturn(worldConstructor);
     library = Cucumber.SupportCode.Library(rawSupportCode);
   });
@@ -45,6 +61,16 @@ describe("Cucumber.SupportCode.Library", function() {
 
       beforeEach(function() {
         supportCodeHelper = rawSupportCode.mostRecentCall.object;
+      });
+
+      it("exposes a method to define Before methods", function() {
+        expect(supportCodeHelper.Before).toBeAFunction();
+        expect(supportCodeHelper.Before).toBe(library.defineBefore);
+      });
+
+      it("exposes a method to define After methods", function() {
+        expect(supportCodeHelper.After).toBeAFunction();
+        expect(supportCodeHelper.After).toBe(library.defineAfter);
       });
 
       it("exposes a method to define Given steps", function() {
@@ -129,6 +155,48 @@ describe("Cucumber.SupportCode.Library", function() {
       it("returns false", function() {
         expect(library.isStepDefinitionNameDefined(name)).toBeFalsy();
       });
+    });
+  });
+
+  describe("defineBefore", function() {
+    var code, beforeCallback;
+
+    beforeEach(function() {
+      code           = createSpy("before code");
+      beforeCallback = createSpy("before callback");
+      spyOn(Cucumber.SupportCode, "Callback").andReturn(beforeCallback);
+      spyOnStub(beforeCallbackCollection, "add");
+    });
+
+    it("creates a before callback with the code", function() {
+      library.defineBefore(code);
+      expect(Cucumber.SupportCode.Callback).toHaveBeenCalledWith(code);
+    });
+
+    it("adds the step definition to the step collection", function() {
+      library.defineBefore(code);
+      expect(beforeCallbackCollection.add).toHaveBeenCalledWith(beforeCallback);
+    });
+  });
+
+  describe("defineAfter", function() {
+    var code, afterCallback;
+
+    beforeEach(function() {
+      code          = createSpy("after code");
+      afterCallback = createSpy("after callback");
+      spyOn(Cucumber.SupportCode, "Callback").andReturn(afterCallback);
+      spyOnStub(afterCallbackCollection, "add");
+    });
+
+    it("creates a after callback with the code", function() {
+      library.defineAfter(code);
+      expect(Cucumber.SupportCode.Callback).toHaveBeenCalledWith(code);
+    });
+
+    it("adds the step definition to the step collection", function() {
+      library.defineAfter(code);
+      expect(afterCallbackCollection.add).toHaveBeenCalledWith(afterCallback);
     });
   });
 

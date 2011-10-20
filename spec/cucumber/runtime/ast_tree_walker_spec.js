@@ -95,12 +95,17 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
   describe("visitFeature()", function() {
     var feature, callback, event, payload;
+    var beforeCallbacks, afterCallbacks;
 
     beforeEach(function() {
       feature  = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
       callback = createSpy("Callback");
       event    = createSpy("Event");
       payload  = {feature: feature};
+      beforeCallbacks = Cucumber.Type.Collection();
+      afterCallbacks  = Cucumber.Type.Collection();
+      spyOnStub(supportCodeLibrary, 'getBeforeCallbacks').andReturn(beforeCallbacks);
+      spyOnStub(supportCodeLibrary, 'getAfterCallbacks').andReturn(afterCallbacks);
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
@@ -108,6 +113,12 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     it("creates a new event about the feature' visit", function() {
       treeWalker.visitFeature(feature, callback);
       expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURE_EVENT_NAME, payload);
+    });
+
+    xit("calls the before function callbacks", function() {
+    });
+
+    xit("calls the after function callbacks", function() {
     });
 
     it("broadcasts the visit of the feature", function() {
@@ -130,9 +141,14 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
       });
 
-      it("visits the feature, passing it the received callback", function() {
+      it("visits the feature, passing it the tree walker", function() {
         userFunction(userFunctionCallback);
-        expect(feature.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+        expect(feature.acceptVisitor).toHaveBeenCalled();
+        expect(feature.acceptVisitor).
+          toHaveBeenCalledWithValueAsNthParameter(treeWalker, 1);
+      });
+
+      xit("calls the user function callback after visiting the feature", function() {
       });
     });
   });

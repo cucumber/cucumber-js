@@ -18,6 +18,26 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^a passing before hook$/, function(callback) {
+    stepDefinitions += "Before(function(callback) { touchStep(\"Before\"); callback(); });\n";
+    callback();
+  });
+
+  Then(/^the before hook is fired before the scenario$/, function(callback) {
+    assertPassedStep("Before");
+    callback();
+  });
+
+  Given(/^a passing after hook$/, function(callback) {
+    stepDefinitions += "After(function(callback) { touchStep(\"After\"); callback(); });\n";
+    callback();
+  });
+
+  Then(/^the after hook is fired after the scenario$/, function(callback) {
+    assertPassedStep("After");
+    callback();
+  });
+
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
