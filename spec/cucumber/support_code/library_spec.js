@@ -186,7 +186,7 @@ describe("Cucumber.SupportCode.Library", function() {
       code      = createSpy("after code");
       afterHook = createSpy("after hook");
       spyOn(Cucumber.SupportCode, "Hook").andReturn(afterHook);
-      spyOnStub(afterHookCollection, "add");
+      spyOnStub(afterHookCollection, "unshift");
     });
 
     it("creates a after hook with the code", function() {
@@ -194,9 +194,9 @@ describe("Cucumber.SupportCode.Library", function() {
       expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith('after', code);
     });
 
-    it("adds the after hook to the after hooks collection", function() {
+    it("unshifts the after hook to the after hooks collection", function() {
       library.defineAfter(code);
-      expect(afterHookCollection.add).toHaveBeenCalledWith(afterHook);
+      expect(afterHookCollection.unshift).toHaveBeenCalledWith(afterHook);
     });
   });
 
