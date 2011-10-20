@@ -115,10 +115,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURE_EVENT_NAME, payload);
     });
 
-    xit("calls the before function callbacks", function() {
+    xit("calls the before hooks", function() {
     });
 
-    xit("calls the after function callbacks", function() {
+    xit("calls the after hooks", function() {
     });
 
     it("broadcasts the visit of the feature", function() {
