@@ -162,7 +162,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
   describe("visitScenario()", function() {
     var scenario, callback, event, payload;
-    var world, beforeHooks, afterHooks;
+    var world;
 
     beforeEach(function() {
       scenario    = createSpyWithStubs("Scenario AST element", {acceptVisitor: null});
@@ -170,12 +170,11 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       event       = createSpy("Event");
       payload     = {scenario: scenario};
       world       = createSpy("world instance");
-      beforeHooks = Cucumber.Type.Collection();
-      afterHooks  = Cucumber.Type.Collection();
+      triggerHookFake = function(world, callback) { callback(); };
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOnStub(supportCodeLibrary, 'instantiateNewWorld').andReturn(world);
-      spyOnStub(supportCodeLibrary, 'getBeforeHooks').andReturn(beforeHooks);
-      spyOnStub(supportCodeLibrary, 'getAfterHooks').andReturn(afterHooks);
+      spyOnStub(supportCodeLibrary, 'triggerBeforeHooks').andCallFake(triggerHookFake);
+      spyOnStub(supportCodeLibrary, 'triggerAfterHooks').andCallFake(triggerHookFake);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
       spyOn(treeWalker, 'witnessNewScenario');
       spyOn(treeWalker, 'setWorld');
@@ -213,31 +212,23 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     });
 
     it("invokes before hooks", function() {
-      var beforeHook = Cucumber.SupportCode.Hook('before', callback);
-      spyOn(beforeHook, 'invoke').andCallFake(function(world, callback) { callback(); });
-      beforeHooks.add(beforeHook);
-
       treeWalker.visitScenario(scenario, callback);
       treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1]();
 
-      expect(beforeHook.invoke).
+      expect(supportCodeLibrary.triggerBeforeHooks).
         toHaveBeenCalledWithValueAsNthParameter(world, 1);
-      expect(beforeHook.invoke).
+      expect(supportCodeLibrary.triggerBeforeHooks).
         toHaveBeenCalledWithAFunctionAsNthParameter(2);
     });
 
     it("invokes after hooks", function() {
-      var afterHook = Cucumber.SupportCode.Hook('after', callback);
-      spyOn(afterHook, 'invoke').andCallFake(function(world, callback) { callback(); });
-      afterHooks.add(afterHook);
-
       treeWalker.visitScenario(scenario, callback);
       treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1]();
       scenario.acceptVisitor.mostRecentCall.args[1]();
 
-      expect(afterHook.invoke).
+      expect(supportCodeLibrary.triggerAfterHooks).
         toHaveBeenCalledWithValueAsNthParameter(world, 1);
-      expect(afterHook.invoke).
+      expect(supportCodeLibrary.triggerAfterHooks).
         toHaveBeenCalledWithAFunctionAsNthParameter(2);
     });
 
