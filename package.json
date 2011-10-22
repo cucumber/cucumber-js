@@ -3,8 +3,12 @@
 , "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
 , "version" : "0.2.1"
 , "homepage" : "http://github.com/cucumber/cucumber-js"
-, "author" : "Julien Biezemans <jb@jbpros.com>"
+, "author" : "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
 , "contributors" : [
+    "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
+  , "Fernando Acorreia <fernandoacorreia@gmail.com>"
+  , "Paul Jensen <paulbjensen@gmail.com>"
+  , "Kushal Pisavadia"
   ]
 , "repository" :
   { "type" : "git"
