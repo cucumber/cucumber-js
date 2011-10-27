@@ -19,24 +19,28 @@ var cucumberSteps = function() {
   });
 
   Given(/^a passing before hook$/, function(callback) {
-    prepare();
-    stepDefinitions += "Before(function(callback) { touchStep(\"Before\"); callback(); });\n";
+    this.stepDefinitions += "Before(function(callback) {\
+  world.touchStep(\"Before\");\
+  callback();\
+});\n";
     callback();
   });
 
   Then(/^the before hook is fired before the scenario$/, function(callback) {
-    assertPassedStep("Before");
+    this.assertPassedStep("Before");
     callback();
   });
 
   Given(/^a passing after hook$/, function(callback) {
-    prepare();
-    stepDefinitions += "After(function(callback) { touchStep(\"After\"); callback(); });\n";
+    this.stepDefinitions += "After(function(callback) {\
+  world.touchStep(\"After\");\
+  callback();\
+});\n";
     callback();
   });
 
   Then(/^the after hook is fired after the scenario$/, function(callback) {
-    assertPassedStep("After");
+    this.assertPassedStep("After");
     callback();
   });
 

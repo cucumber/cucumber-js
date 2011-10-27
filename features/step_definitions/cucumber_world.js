@@ -12,6 +12,7 @@ var proto = CucumberWorld.prototype;
 proto.runFeature = function runFeature(callback) {
   var supportCode;
   var supportCodeSource = "supportCode = function() {\n  var Given = When = Then = this.defineStep;\n" +
+    "var Before = this.Before, After = this.After;\n" +
     this.stepDefinitions + "};\n";
   var world = this;
   eval(supportCodeSource);
