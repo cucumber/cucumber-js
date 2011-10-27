@@ -19,6 +19,7 @@ var cucumberSteps = function() {
   });
 
   Given(/^a passing before hook$/, function(callback) {
+    prepare();
     stepDefinitions += "Before(function(callback) { touchStep(\"Before\"); callback(); });\n";
     callback();
   });
@@ -29,6 +30,7 @@ var cucumberSteps = function() {
   });
 
   Given(/^a passing after hook$/, function(callback) {
+    prepare();
     stepDefinitions += "After(function(callback) { touchStep(\"After\"); callback(); });\n";
     callback();
   });
