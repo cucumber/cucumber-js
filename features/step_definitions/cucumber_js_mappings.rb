@@ -5,6 +5,8 @@ module CucumberJsMappings
   WORLD_VARIABLE_LOG_FILE        = "world_variable.log"
   WORLD_FUNCTION_LOG_FILE        = "world_function.log"
   DATA_TABLE_LOG_FILE            = "data_table.log"
+  CYCLE_LOG_FILE                 = "cycle.log"
+
   attr_accessor :support_code
 
   def features_dir
@@ -195,8 +197,23 @@ EOF
 
   def write_main_step_definitions_file
     append_to_file(STEP_DEFINITIONS_FILE, "var fs = require('fs');\nvar stepDefinitions = function() {\n");
+    append_to_file(STEP_DEFINITIONS_FILE, world_code)
     append_to_file(STEP_DEFINITIONS_FILE, support_code);
     append_to_file(STEP_DEFINITIONS_FILE, "};\nmodule.exports = stepDefinitions;")
+  end
+
+  def world_code
+    <<-EOF
+  this.World = function() {
+    this.callCount = 0;
+  };
+
+  this.World.prototype.logCycleEvent = function logCycleEvent(name) {
+    fd = fs.openSync('#{CYCLE_LOG_FILE}', 'a');
+    fs.writeSync(fd, " -> " + name, null);
+    fs.closeSync(fd);
+  };
+EOF
   end
 
   def write_coffee_script_definition_file

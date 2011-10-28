@@ -5,6 +5,17 @@ Given /^a mapping written in CoffeeScript$/ do
   write_coffee_script_definition_file
 end
 
+# TODO: encapsulate and move to cucumber-features
+Given /^a passing (before|after) hook$/ do |hook_type|
+  define_hook = hook_type.capitalize
+  append_support_code <<-EOF
+this.#{define_hook}(function(callback) {
+  this.logCycleEvent('#{hook_type}');
+  callback();
+});
+EOF
+end
+
 When /^Cucumber executes a scenario using that mapping$/ do
   write_feature <<-EOF
 Feature:
@@ -14,35 +25,20 @@ EOF
   run_feature
 end
 
-Then /^the mapping is run$/ do
-  assert_passed "a mapping"
-end
-
-Given /^a passing before hook$/ do
-  append_support_code <<-EOF
-this.Before(function(callback) {
-  this.calls = ["Before"];
-  callback();
-});
-EOF
-end
-
-Given /^a passing after hook$/ do
-  append_support_code <<-EOF
-this.After(function(callback) {
-  this.calls.push("After");
-  console.log(this.calls.join(","));
-  callback();
-});
-EOF
-end
-
+# TODO: encapsulate and move to cucumber-features
 When /^Cucumber executes a scenario$/ do
-  append_step_definition("Cucumber executes a step definition", "this.calls.push('Step');\ncallback();")
-  scenario_with_steps "A scenario", "Given Cucumber executes a step definition\n"
+  append_step_definition("a step", "this.logCycleEvent('step');\ncallback();")
+  scenario_with_steps "A scenario", "Given Cucumber executes a step definition"
   run_feature
 end
 
-Then /^the (after|before) hook is fired (?:after|before) the scenario$/ do |type|
-  assert_partial_output("Before,Step,After", all_output)
+# TODO: encapsulate and move to cucumber-features
+Then /^the (after|before) hook is fired (?:after|before) the scenario$/ do |hook_type|
+  expected_string = (hook_type == 'before' ? 'before -> step' : 'step -> after')
+  check_file_content(CYCLE_LOG_FILE, expected_string, true)
+end
+
+# TODO: encapsulate and move to cucumber-features
+Then /^the mapping is run$/ do
+  assert_passed "a mapping"
 end
