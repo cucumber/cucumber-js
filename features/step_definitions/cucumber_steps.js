@@ -3,9 +3,9 @@ var cucumberSteps = function() {
 
   this.World = require('./cucumber_world');
 
-  Given(/^a scenario "([^"]*)" with:$/, function(scenarioName, steps, callback) {
+  Given(/^a scenario with:$/, function(steps, callback) {
     this.featureSource += "Feature: A feature\n";
-    this.featureSource += "  Scenario: " + scenarioName + "\n";
+    this.featureSource += "  Scenario: A scenario\n";
     this.featureSource += steps.replace(/^/gm, '    ');
     callback();
   });
@@ -47,7 +47,7 @@ var cucumberSteps = function() {
     callback();
   });
 
-  When(/^Cucumber executes the scenario "([^"]*)"$/, function(scenarioName, callback) {
+  When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature(callback);
   });
 

@@ -11,13 +11,6 @@ module CucumberJsMappings
     'features'
   end
 
-  def run_scenario(scenario_name)
-    # FIXME: do not run the whole feature but only the scenario:
-    # run_simple "#{cucumber_bin} #{FEATURE_FILE} --name '#{scenario_name}'", false
-    write_main_step_definitions_file
-    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
-  end
-
   def run_feature
     write_main_step_definitions_file
     run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
