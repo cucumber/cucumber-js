@@ -1,4 +1,4 @@
-# Cucumber.js
+# Cucumber.js [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png)](http://travis-ci.org/cucumber/cucumber-js)
 
 Cucumber brought (natively) to your JavaScript stack.
 
