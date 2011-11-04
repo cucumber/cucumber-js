@@ -2,6 +2,22 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
+### [v0.2.2](https://github.com/cucumber/cucumber-js/compare/v0.2.1...v0.2.2)
+
+#### New features
+
+* Suggest step definition snippets for undefined steps (#33 Julien Biezemans)
+
+#### Internals and tests
+
+* Add contributors to NPM package manifest (Julien Biezemans)
+* Clean up JS step definitions (Julien Biezemans)
+* Bump cucumber-features and reflect step changes (Julien Biezemans)
+* Set up [continuous integration on Travis CI](http://travis-ci.org/#!/cucumber/cucumber-js) (Julien Biezemans)
+* Add Travis's build status icon to README (Julien Biezemans)
+
+
+
 ### [v0.2.1](https://github.com/cucumber/cucumber-js/compare/v0.2.0...v0.2.1)
 
 #### New features
