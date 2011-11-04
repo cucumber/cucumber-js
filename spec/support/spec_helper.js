@@ -24,6 +24,17 @@ beforeEach(function() {
       return false;
     },
 
+    toHaveBeenCalledWithRegExpAsNthParameter: function(regexp, parameterOffset) {
+      if (regexp.constructor != RegExp)
+        throw new Error("Please pass a RegExp instance");
+      for(var i = 0; i < this.actual.callCount; i++) {
+        var parameter = this.actual.argsForCall[i][parameterOffset - 1];
+        if (parameter.constructor && parameter.constructor == RegExp && parameter.toString() == regexp.toString())
+          return true;
+      }
+      return false;
+    },
+
     toHaveBeenCalledWithStringMatching: function(pattern) {
       for(var i = 0; i < this.actual.callCount; i++) {
         var parameter = this.actual.argsForCall[i][0];

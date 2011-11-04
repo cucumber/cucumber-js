@@ -371,26 +371,33 @@ describe("Cucumber.Parser", function() {
 
   describe("handleStep()", function() {
     var keyword, name, line;
-    var step, currentScenario;
+    var step, currentScenario, lastStep;
 
     beforeEach(function() {
       keyword         = createSpy("'step' keyword");
-      name            = createSpy("Name of the step");
-      line            = createSpy("Line number");
-      step            = createSpy("Step AST element");
+      name            = createSpy("name of the step");
+      line            = createSpy("line number");
+      step            = createSpy("step AST element");
       currentScenario = createSpyWithStubs("Current scenario AST element", {addStep: null});
+      currentStep     = createSpy("current step");
       spyOn(Cucumber.Ast, 'Step').andReturn(step);
       spyOn(parser, 'getCurrentScenarioOrBackground').andReturn(currentScenario);
-    });
-
-    it("creates a new step AST element", function() {
-      parser.handleStep(keyword, name, line);
-      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, name, line);
+      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
     });
 
     it("gets the current scenario or background", function() {
       parser.handleStep(keyword, name, line);
       expect(parser.getCurrentScenarioOrBackground).toHaveBeenCalled();
+    });
+
+    it("gets the current step (soon to be previous step)", function() {
+      parser.handleStep(keyword, name, line);
+      expect(parser.getCurrentStep).toHaveBeenCalled();
+    });
+
+    it("creates a new step AST element", function() {
+      parser.handleStep(keyword, name, line);
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, name, line, currentStep);
     });
 
     it("adds the step to the current scenario", function() {

@@ -18,7 +18,7 @@ Feature: Command line interface
       module.exports = cucumberSteps;
       """
     When I run `cucumber.js features/a.feature`
-    Then it should pass with exactly:
+    Then it should pass with:
       """
       .
 
@@ -35,7 +35,7 @@ Feature: Command line interface
           When a step is undefined
       """
     When I run `cucumber.js features/a.feature`
-    Then it should pass with exactly:
+    Then it should pass with:
       """
       U
 
@@ -59,7 +59,7 @@ Feature: Command line interface
       module.exports = cucumberSteps;
       """
     When I run `cucumber.js features/a.feature -r step_definitions/cucumber_steps.js`
-    Then it should pass with exactly:
+    Then it should pass with:
       """
       .
 
@@ -83,7 +83,7 @@ Feature: Command line interface
       module.exports = cucumberSteps;
       """
     When I run `cucumber.js features/a.feature -r step_definitions`
-    Then it should pass with exactly:
+    Then it should pass with:
       """
       .
 

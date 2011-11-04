@@ -52,9 +52,9 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  this.Then(/^it should pass with exactly:$/, function(expectedOutput, callback) {
+  this.Then(/^it should pass with:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
-    if (actualOutput != expectedOutput)
+    if (actualOutput.indexOf(expectedOutput) == -1)
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
     callback();
   });

@@ -360,14 +360,26 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   });
 
   describe("handleUndefinedStepEvent()", function() {
-    var event, callback;
+    var event, callback, stepResult;
 
     beforeEach(function() {
-      event    = createSpy("event");
-      callback = createSpy("callback");
+      step       = createSpy("step");
+      event      = createSpyWithStubs("event", {getPayloadItem: step});
+      callback   = createSpy("callback");
+      spyOn(listener, 'storeUndefinedStep');
       spyOn(listener, 'witnessUndefinedStep');
       spyOn(listener, 'markCurrentScenarioAsUndefined');
       spyOn(listener, 'log');
+    });
+
+    it("gets the step from the event payload", function() {
+      listener.handleUndefinedStepEvent(event, callback);
+      expect(event.getPayloadItem).toHaveBeenCalledWith('step');
+    });
+
+    it("stores the undefined step", function() {
+      listener.handleUndefinedStepEvent(event, callback);
+      expect(listener.storeUndefinedStep).toHaveBeenCalledWith(step);
     });
 
     it("witnesses an undefined step", function() {
@@ -657,7 +669,33 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
-  describe("getFailedScenarioLogBuffer()", function() {
+  describe("storeUndefinedStep()", function() {
+    var snippetBuilder, snippet;
+
+    beforeEach(function() {
+      snippet        = createSpy("step definition snippet");
+      snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
+      spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
+      spyOn(listener, 'appendStringToUndefinedStepLogBuffer');
+    });
+
+    it("creates a new step definition snippet builder", function() {
+      listener.storeUndefinedStep(step);
+      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step);
+    });
+
+    it("builds the step definition", function() {
+      listener.storeUndefinedStep(step);
+      expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
+    });
+
+    it("appends the snippet to the undefined step log buffer", function() {
+      listener.storeUndefinedStep(step);
+      expect(listener.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
+    });
+  });
+
+  describe("getFailedScenarioLogBuffer() [appendStringToFailedScenarioLogBuffer()]", function() {
     it("returns the logged failed scenario details", function() {
       listener.appendStringToFailedScenarioLogBuffer("abc");
       expect(listener.getFailedScenarioLogBuffer()).toBe("abc\n");
@@ -670,6 +708,19 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
+  describe("getUndefinedStepLogBuffer() [appendStringToUndefinedStepLogBuffer()]", function() {
+    it("returns the logged undefined step details", function() {
+      listener.appendStringToUndefinedStepLogBuffer("abc");
+      expect(listener.getUndefinedStepLogBuffer()).toBe("abc\n");
+    });
+
+    it("returns all logged failed scenario lines joined with a line break", function() {
+      listener.appendStringToUndefinedStepLogBuffer("abc");
+      listener.appendStringToUndefinedStepLogBuffer("def");
+      expect(listener.getUndefinedStepLogBuffer()).toBe("abc\ndef\n");
+    });
+  });
+
   describe("logSummary()", function() {
     var scenarioCount, passedScenarioCount, failedScenarioCount;
     var stepCount, passedStepCount;
@@ -677,9 +728,11 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     beforeEach(function() {
       spyOn(listener, 'log');
       spyOn(listener, 'witnessedAnyFailedStep');
+      spyOn(listener, 'witnessedAnyUndefinedStep');
       spyOn(listener, 'logFailedStepResults');
       spyOn(listener, 'logScenariosSummary');
       spyOn(listener, 'logStepsSummary');
+      spyOn(listener, 'logUndefinedStepSnippets');
     });
 
     it("logs two line feeds", function() {
@@ -687,7 +740,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.log).toHaveBeenCalledWith("\n\n");
     });
 
-    it("checks if there are failed steps", function() {
+    it("checks wether there are failed steps or not", function() {
       listener.logSummary();
       expect(listener.witnessedAnyFailedStep).toHaveBeenCalled();
     });
@@ -722,6 +775,33 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     it("logs the steps summary", function() {
       listener.logSummary();
       expect(listener.logStepsSummary).toHaveBeenCalled();
+    });
+
+    it("checks wether there are undefined steps or not", function() {
+      listener.logSummary();
+      expect(listener.witnessedAnyUndefinedStep).toHaveBeenCalled();
+    });
+
+    describe("when there are undefined steps", function() {
+      beforeEach(function() {
+        listener.witnessedAnyUndefinedStep.andReturn(true);
+      });
+
+      it("logs the undefined step snippets", function() {
+        listener.logSummary();
+        expect(listener.logUndefinedStepSnippets).toHaveBeenCalled();
+      });
+    });
+
+    describe("when there are no undefined steps", function() {
+      beforeEach(function() {
+        listener.witnessedAnyUndefinedStep.andReturn(false);
+      });
+
+      it("does not log the undefined step snippets", function() {
+        listener.logSummary();
+        expect(listener.logUndefinedStepSnippets).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -1265,6 +1345,31 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
+  describe("logUndefinedStepSnippets()", function() {
+    var undefinedStepLogBuffer;
+
+    beforeEach(function() {
+      undefinedStepLogBuffer = createSpy("undefined step log buffer");
+      spyOn(listener, 'log');
+      spyOn(listener, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
+    });
+
+    it("logs a little explanation about the snippets", function() {
+      listener.logUndefinedStepSnippets();
+      expect(listener.log).toHaveBeenCalledWith("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+    });
+
+    it("gets the undefined steps log buffer", function() {
+      listener.logUndefinedStepSnippets();
+      expect(listener.getUndefinedStepLogBuffer).toHaveBeenCalled();
+    });
+
+    it("logs the undefined steps", function() {
+      listener.logUndefinedStepSnippets();
+      expect(listener.log).toHaveBeenCalledWith(undefinedStepLogBuffer);
+    });
+  });
+
   describe("getScenarioCount()", function() {
     var passedScenarioCount, undefinedScenarioCount, pendingScenarioCount, failedScenarioCount;
 
@@ -1614,6 +1719,17 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     it("returns true when one or more steps were witnessed", function() {
       listener.witnessFailedStep();
       expect(listener.witnessedAnyFailedStep()).toBeTruthy();
+    });
+  });
+
+  describe("witnessedAnyUndefinedStep()", function() {
+    it("returns false when no undefined step were encountered", function() {
+      expect(listener.witnessedAnyUndefinedStep()).toBeFalsy();
+    });
+
+    it("returns true when one or more steps were witnessed", function() {
+      listener.witnessUndefinedStep();
+      expect(listener.witnessedAnyUndefinedStep()).toBeTruthy();
     });
   });
 });

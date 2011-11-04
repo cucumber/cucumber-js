@@ -28,6 +28,7 @@
   , "browserify" : "1.5.0"
   , "nopt" : "1.0.6"
   , "underscore" : "1.1.7"
+  , "underscore.string" : "1.1.6"
   , "rimraf" : "1.0.4"
   , "mkdirp" : "0.0.6"
   , "cucumber-html": "0.2.0"

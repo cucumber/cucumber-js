@@ -154,6 +154,22 @@ EOF
     end
   end
 
+  def assert_suggested_step_definition_snippet(stepdef_type, stepdef_name, parameter_count = 0, doc_string = false, data_table = false)
+    parameter_count ||= 0
+    params = Array.new(parameter_count) { |i| "arg#{i+1}" }
+    params << "string" if doc_string
+    params << "table"  if data_table
+    params << "callback"
+    params = params.join ", "
+    expected_snippet = <<-EOF
+this.#{stepdef_type}(#{stepdef_name}, function(#{params}) {
+  // express the regexp above with the code you wish you had
+  callback.pending();
+});
+EOF
+    assert_partial_output(expected_snippet, all_output)
+  end
+
   def failed_output
     "failed"
   end
