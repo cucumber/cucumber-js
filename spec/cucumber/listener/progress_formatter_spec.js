@@ -721,6 +721,14 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
+  describe("appendStringToUndefinedStepLogBuffer() [getUndefinedStepLogBuffer()]", function() {
+    it("does not log the same string twice", function() {
+      listener.appendStringToUndefinedStepLogBuffer("abcdef");
+      listener.appendStringToUndefinedStepLogBuffer("abcdef");
+      expect(listener.getUndefinedStepLogBuffer()).toBe("abcdef\n");
+    });
+  });
+
   describe("logSummary()", function() {
     var scenarioCount, passedScenarioCount, failedScenarioCount;
     var stepCount, passedStepCount;
