@@ -16,7 +16,7 @@
   }
 , "bugs" :
   { "mail" : "cukes@googlegroups.com"
-  , "web" : "http://github.com/cucumber/cucumber-js/issues"
+  , "url" : "http://github.com/cucumber/cucumber-js/issues"
   }
 , "directories" : { "lib" : "./lib" }
 , "main" : "./lib/cucumber"
