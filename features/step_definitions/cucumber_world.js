@@ -4,6 +4,7 @@ var CucumberWorld = function() {
   this.stepDefinitions = "";
   this.runOutput       = "";
   this.runSucceeded    = false;
+  CucumberWorld.mostRecentInstance = this;
 };
 
 var proto = CucumberWorld.prototype;
@@ -106,6 +107,13 @@ proto.assertPartialOutput = function assertPartialOutput(expected, actual) {
 proto.assertNoPartialOutput = function assertNoPartialOutput(expected, actual) {
   if (actual.indexOf(expected) >= 0)
     throw(new Error("Expected:\n\"" + actual + "\"\nnot to match:\n\"" + expected + "\""));
+}
+
+proto.assertEqual = function assertRawDataTable(expected, actual) {
+  var expectedJSON = JSON.stringify(expected);
+  var actualJSON   = JSON.stringify(actual);
+  if (actualJSON != expectedJSON)
+    throw(new Error("Expected:\n\"" + actualJSON + "\"\nto match:\n\"" + expectedJSON + "\""));
 }
 
 module.exports = CucumberWorld;

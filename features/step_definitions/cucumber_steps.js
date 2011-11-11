@@ -1,7 +1,7 @@
 var cucumberSteps = function() {
-  var Given = When = Then = this.defineStep;
-
-  this.World = require('./cucumber_world');
+  var Given  = When = Then = this.defineStep;
+  var World  = require('./cucumber_world');
+  this.World = World;
 
   Given(/^a scenario with:$/, function(steps, callback) {
     this.featureSource += "Feature: A feature\n";
@@ -47,6 +47,22 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^the step "([^"]*)" has a passing mapping that receives a data table$/, function(stepName, callback) {
+    this.stepDefinitions += "Given(/^" + stepName + "$/, function(dataTable, callback) {\
+  world.dataTableLog = dataTable.raw();\
+  callback();\
+});";
+    callback();
+  });
+
+  Given(/^the following data table in a step:$/, function(dataTable, callback) {
+    this.featureSource += "Feature:\n";
+    this.featureSource += "  Scenario:\n";
+    this.featureSource += "    When a step with data table:\n"
+    this.featureSource += dataTable.replace(/^/gm, '      ');
+    callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature(callback);
   });
@@ -59,6 +75,14 @@ var cucumberSteps = function() {
     RpnCalculator = require('../support/rpn_calculator');
     var supportCode = function() { require('./calculator_steps').initialize.call(this, RpnCalculator) };
     this.runFeatureWithSupportCodeSource(supportCode, callback);
+  });
+
+  When(/^the data table is passed to a step mapping that converts it to key\/value pairs$/, function(callback) {
+    this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
+  world.dataTableLog = dataTable.hashes();\
+  callback();\
+});\n";
+    this.runFeature(callback);
   });
 
   Then(/^the scenario passes$/, function(callback) {
@@ -96,7 +120,6 @@ var cucumberSteps = function() {
     callback();
   });
 
-
   Then(/^the step "([^"]*)" is skipped$/, function(stepName, callback) {
     this.assertSkippedStep(stepName);
     callback();
@@ -109,6 +132,18 @@ var cucumberSteps = function() {
 
   Then(/^the failure message "([^"]*)" is output$/, function(message, callback) {
     this.assertFailureMessage(message);
+    callback();
+  });
+
+  Then(/^the received data table array equals the following:$/, function(expectedDataTableJSON, callback) {
+    var expectedDataTable = JSON.parse(expectedDataTableJSON);
+    this.assertEqual(expectedDataTable, World.mostRecentInstance.dataTableLog);
+    callback();
+  });
+
+  Then(/^the data table is converted to the following:$/, function(expectedDataTableJSON, callback) {
+    var expectedDataTable = JSON.parse(expectedDataTableJSON);
+    this.assertEqual(expectedDataTable, World.mostRecentInstance.dataTableLog);
     callback();
   });
 };
