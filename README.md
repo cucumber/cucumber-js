@@ -40,21 +40,21 @@ Then go to [localhost:9797](http://localhost:9797/).
 
 ### Features & documentation
 
-There is a common set of features shared between all cucumber implementations. Find more on the [cucumber-features](http://github.com/cucumber/cucumber-features) repository.
+There is a common set of features shared by all cucumber implementations. It's called the *Technology Compatibility Kit* or *TCK*. Find more on the [cucumber-tck](http://github.com/cucumber/cucumber-tck) repository.
 
 The official way of running them is through Cucumber-ruby and Aruba. Ruby and Bundler are required for this to work.
 
     $ git submodule update --init
     $ bundle
-    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-features -r features
+    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
 
 You can then open the generated documentation:
 
-    $ open doc/features/cucumber-features/*.html # might open a lot of files ;)
+    $ open doc/features/cucumber-tck/*.html # might open a lot of files ;)
 
 In addition to that, Cucumber.js is able to run the features for itself too:
 
-    $ ./bin/cucumber.js features/cucumber-features -r features
+    $ ./bin/cucumber.js features/cucumber-tck -r features
 
 There are a few other Cucumber.js-dependent features. Execute everything:
 
@@ -76,5 +76,5 @@ You can display debug messages by setting the DEBUG_LEVEL environment variable. 
 
 It even works with Aruba:
 
-    $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-features -r features
-    $ open doc/features/cucumber-features/*.html # you'll see debug messages in Aruba-generated docs
+    $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
+    $ open doc/features/cucumber-tck/*.html # you'll see debug messages in Aruba-generated docs
