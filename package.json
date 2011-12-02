@@ -24,7 +24,7 @@
 , "dependencies" :
   { "gherkin" : "2.6.8"
   , "jasmine-node" : "1.0.13"
-  , "connect" : "1.6.0"
+  , "connect" : "1.8.1"
   , "browserify" : "1.5.0"
   , "nopt" : "1.0.6"
   , "underscore" : "1.1.7"
