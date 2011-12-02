@@ -2,7 +2,6 @@ rvm: "1.9.2"
 before_script: "git submodule update --init && npm install"
 script: "rake"
 
-language: node_js
 node_js:
   - 0.4
   - 0.6
