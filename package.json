@@ -29,7 +29,7 @@
   , "nopt" : "1.0.10"
   , "underscore" : "1.2.2"
   , "underscore.string" : "2.0.0"
-  , "rimraf" : "1.0.4"
+  , "rimraf" : "1.0.8"
   , "mkdirp" : "0.0.6"
   , "cucumber-html": "0.2.0"
   , "findit": "0.1.1"
