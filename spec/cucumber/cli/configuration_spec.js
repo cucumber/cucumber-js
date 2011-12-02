@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 require('../../support/configurations_shared_examples.js');
 
 describe("Cucumber.Cli.Configuration", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
 
   var argv, configuration;
   var argumentParser;

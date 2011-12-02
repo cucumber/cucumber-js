@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var treeWalker, features, supportCodeLibrary, listeners;
 
   beforeEach(function() {

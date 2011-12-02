@@ -1,5 +1,3 @@
-require.paths.unshift(__dirname + '/../../lib');
-
 beforeEach(function() {
   this.addMatchers({
     toBeAFunction: function() { return typeof(this.actual) == 'function'; },
@@ -121,6 +119,10 @@ require.extensions['.js'] = function (obj, path) {
     return originalJsLoader(obj, path);
   }
 }
+
+requireLib = function(modulePath) {
+  return require('../../lib/' + modulePath);
+};
 
 afterEach(function() {
   for (var path in moduleSpies) {

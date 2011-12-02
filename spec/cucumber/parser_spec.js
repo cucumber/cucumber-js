@@ -1,7 +1,7 @@
 require('../support/spec_helper');
 
 describe("Cucumber.Parser", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var parser, featureSources;
   var features;
 

@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Util.Arguments", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var argumentsObject, thisDuringSlice, argumentsArray;
 
   beforeEach(function() {

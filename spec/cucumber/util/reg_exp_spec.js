@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Util.RegExp", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
 
   describe("escapeString()", function() {
     var escapeString = Cucumber.Util.RegExp.escapeString;

@@ -13,7 +13,7 @@ It still needs a lot of work. Only a few feature elements are supported at the m
 
 ### Works on
 
-* Node.js 0.4.7, 0.4.8, 0.5.0-pre
+* Node.js 0.4, 0.5, 0.6
 * Google Chrome 13.0.772.0 (dev)
 * Firefox 4.0.1
 * Safari 5.0.5

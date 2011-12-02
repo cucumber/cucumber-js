@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.FailedStepResult", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var stepResult, failureException;
 
   beforeEach(function() {

@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Ast.DocString", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var docString, contents, line;
 
   beforeEach(function() {

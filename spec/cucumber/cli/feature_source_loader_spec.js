@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Cli.FeatureSourceLoader", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
 
   var featureSourceLoader, featureFilePaths;
 

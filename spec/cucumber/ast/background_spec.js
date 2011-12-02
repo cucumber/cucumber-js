@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Background", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var steps;
   var background, keyword, name, description, line, lastStep;
 

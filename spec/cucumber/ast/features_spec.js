@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Features", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var featureCollection, lastFeature;
   var features;
 

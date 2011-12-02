@@ -20,7 +20,7 @@
   }
 , "directories" : { "lib" : "./lib" }
 , "main" : "./lib/cucumber"
-, "engines" : { "node" : "0.4 || 0.5" }
+, "engines" : { "node" : "0.4 || 0.5 || 0.6" }
 , "dependencies" :
   { "gherkin" : "2.5.1"
   , "jasmine-node" : "1.0.9"

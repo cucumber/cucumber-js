@@ -1,7 +1,7 @@
 require('../support/spec_helper');
 
 describe("Cucumber.Runtime", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
   var supportCodeLibrary, listeners;

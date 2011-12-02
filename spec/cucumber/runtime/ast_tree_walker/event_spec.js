@@ -1,7 +1,7 @@
 require('../../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
 
   describe("non-instance method", function() {
   });

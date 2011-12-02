@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Cli.ArgumentParser", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var path     = require('path');
   var nopt;
 
@@ -76,7 +76,7 @@ describe("Cucumber.Cli.ArgumentParser", function() {
   });
 
   describe("getFeatureFilePaths()", function() {
-    var Cucumber = require('cucumber');
+    var Cucumber = requireLib('cucumber');
 
     var unexpandedFeaturePaths;
     var expandedFeaturePaths;

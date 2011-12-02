@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Library", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var library, rawSupportCode;
   var stepDefinitionCollection;
   var worldConstructor;

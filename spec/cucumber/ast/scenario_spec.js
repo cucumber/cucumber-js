@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Scenario", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
   var steps;
   var scenario, keyword, name, description, line, background, lastStep;
 

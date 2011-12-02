@@ -2,7 +2,7 @@ require('../support/spec_helper');
 require('../support/configurations_shared_examples.js');
 
 describe("Cucumber.VolatileConfiguration", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
 
   var featureSource, supportCodeInitializer, configuration;
   var supportCodeLibrary;

@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.WorldConstructor", function() {
-  var Cucumber = require('cucumber');
+  var Cucumber = requireLib('cucumber');
 
   it("returns a function", function() {
     worldConstructor = Cucumber.SupportCode.WorldConstructor();
