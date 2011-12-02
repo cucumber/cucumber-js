@@ -1,7 +1,7 @@
 source :rubygems
 
 group :test do
-  gem "aruba", "0.4.6"
+  gem "aruba", "0.4.7"
 end
 
 group :dev do
