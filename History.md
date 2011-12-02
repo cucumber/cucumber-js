@@ -2,6 +2,39 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
+
+
+### [v0.2.3](https://github.com/cucumber/cucumber-js/compare/v0.2.2...v0.2.3)
+
+#### New features
+
+* Add support for Node 0.6 (Julien Biezemans)
+
+#### Fixes
+
+* Prevent the same step definition snippet from being suggested twice (Julien Biezemans)
+
+#### Internals and tests
+
+* Don't make NPM ignore example/ anymore
+* Bump cucumber-features (Julien Biezemans)
+* Use non-deprecated "url" key instead of "web" in NPM manifest (Julien Biezemans)
+* Add JS step definitions related to data table scenarios (Julien Biezemans)
+* Move from cucumber-features to cucumber-tck (Julien Biezemans)
+* Bump Gherkin (Julien Biezemans)
+* Bump jasmine-node (Julien Biezemans)
+* Bump connect (Julien Biezemans)
+* Fix Travis build (Julien Biezemans)
+* Bump browserify (Julien Biezemans)
+* Bump nopt (Julien Biezemans)
+* Bump underscore (Julien Biezemans)
+* Bump underscore.string (Julien Biezemans)
+* Bump rimraf (Julien Biezemans)
+* Bump mkdirp (Julien Biezemans)
+* Bump Aruba (Julien Biezemans)
+
+
+
 ### [v0.2.2](https://github.com/cucumber/cucumber-js/compare/v0.2.1...v0.2.2)
 
 #### New features
