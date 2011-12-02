@@ -27,7 +27,7 @@
   , "connect" : "1.8.1"
   , "browserify" : "1.8.1"
   , "nopt" : "1.0.10"
-  , "underscore" : "1.1.7"
+  , "underscore" : "1.2.2"
   , "underscore.string" : "1.1.6"
   , "rimraf" : "1.0.4"
   , "mkdirp" : "0.0.6"
