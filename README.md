@@ -1,24 +1,24 @@
 # Cucumber.js [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png)](http://travis-ci.org/cucumber/cucumber-js)
 
-Cucumber brought (natively) to your JavaScript stack.
+This is the popular Behaviour-Driven Development tool called *[Cucumber](http://cukes.info)* brought to your JavaScript stack.
 
-It can run basic fatures inside both Node.js and web browsers.
+It runs on both Node.js and *modern* web browsers.
 
-It still needs a lot of work. Only a few feature elements are supported at the moment.
+**Cucumber.js is still a work in progress.**
 
 ## Prerequesites
 
-* Node.js 0.4.8 (tested on 0.4.7 too)
-* npm 1.0.6
+* [Node.js](http://nodejs.org)
+* [NPM](http://npmjs.org)
 
 ### Works on
 
 * Node.js 0.4, 0.5, 0.6
-* Google Chrome 13.0.772.0 (dev)
-* Firefox 4.0.1
-* Safari 5.0.5
+* Google Chrome
+* Firefox
+* Safari
 
-And probably lots of other browsers.
+And probably lots of other browsers (but not IE yet).
 
 ## Setup for using in Node.js and running tests
 
