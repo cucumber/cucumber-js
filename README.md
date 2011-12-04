@@ -4,6 +4,8 @@
 
 It runs on both Node.js and *modern* web browsers.
 
+**Try it now: [http://cucumber.no.de](http://cucumber.no.de)!**
+
 ## Development status
 
 Cucumber.js is still a work in progress. Here is its current status.
