@@ -70,6 +70,10 @@ Cucumber.js was tested on:
 * Firefox
 * Safari
 
+## Use it
+
+A very young [example app](https://github.com/jbpros/cucumber-js-example) is now available.
+
 ## Setup for using in Node.js and running tests
 
 Install the required dependencies:
