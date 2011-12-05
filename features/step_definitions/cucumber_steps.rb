@@ -35,7 +35,7 @@ end
 # TODO: encapsulate and move to cucumber-features
 Then /^the (after|before) hook is fired (?:after|before) the scenario$/ do |hook_type|
   expected_string = (hook_type == 'before' ? 'before -> step' : 'step -> after')
-  check_file_content(CYCLE_LOG_FILE, expected_string, true)
+  check_file_content(CucumberJsMappings::CYCLE_LOG_FILE, expected_string, true)
 end
 
 # TODO: encapsulate and move to cucumber-features
