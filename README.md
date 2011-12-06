@@ -174,6 +174,30 @@ var myStepDefinitions = function(){
 };
 ```
 
+#### Run cucumber
+
+Cucumber.js includes a binary file to execute the features.
+
+If you installed cucumber.js with `npm install --dev`, you may run cucumber with:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js
+```
+
+You may specify the features to run with the first argument:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature
+```
+
+And require specific step definitions with the --require option:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature \
+    --require features/step_definitions/myStepDefinitions.js
+```
+
+
 
 #### Examples
 
