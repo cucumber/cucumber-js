@@ -144,7 +144,7 @@ var World = module.exports = function(){
 Step definitions are written in javascript.
 Each step definition has a World property that can be set to a constructor function.
 Each individual step will be executed in the context of an instance of the World function. 
-(i.e. `this` inside a step will refer to a newly created instance of the World property, making sure state stays consistent between each step.)
+(i.e. `this` inside a step will refer to a newly created instance of the World property, making sure state stays consistent between each scenario)
 
 
 ``` javascript
@@ -158,7 +158,7 @@ var myStepDefinitions = function(){
     // this is set to a new this.World instance
     // i.e. you may use this.browser to execute the step...
     
-    this.browser.visit('http://github.com/cucumber/cucumber-js', next);
+    this.visit('http://github.com/cucumber/cucumber-js', next);
   });
   
   this.When( <REGEXP>, function(next) {
@@ -173,6 +173,30 @@ var myStepDefinitions = function(){
   });
 };
 ```
+
+#### Run cucumber
+
+Cucumber.js includes a binary file to execute the features.
+
+If you installed cucumber.js with `npm install --dev`, you may run cucumber with:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js
+```
+
+You may specify the features to run with the first argument:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature
+```
+
+And require specific step definitions with the --require option:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature \
+    --require features/step_definitions/myStepDefinitions.js
+```
+
 
 
 #### Examples
