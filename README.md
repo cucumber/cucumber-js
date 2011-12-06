@@ -70,9 +70,144 @@ Cucumber.js was tested on:
 * Firefox
 * Safari
 
-## Use it
+## Usage
 
-A very young [example app](https://github.com/jbpros/cucumber-js-example) is now available.
+#### Install
+
+Cucumber.js is available as an npm module. 
+
+Install globally with:
+
+``` shell
+$ npm install -g cucumber
+```
+
+OR 
+
+You may also define cucumber.js as a development dependency of your application by including it in a package.json file.
+
+``` json
+// package.json
+
+{ "devDependencies" : {
+    "cucumber": "latest"
+  }
+}
+```
+
+Then install with `npm install --dev`
+
+
+#### Features
+
+Features are written with the [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin)
+
+``` gherkin
+// features/myFeature.feature
+
+Feature: Example feature
+  As a user of cucumber.js
+  I want to have documentation on cucumber
+  So that I can concentrate on building awesome applications
+  
+  Scenario: Reading documentation
+    Given I am on the cucumber.js github page
+    When I go to the README file
+    Then I should see "Usage"
+```
+
+#### Support Files
+
+Support files let you setup the environment in which steps will be run, and define step definitions.
+
+##### World
+
+A World is a constructor function with utility properties, destined to be used in step definitions
+
+``` javascript
+// features/support/world.js
+
+require('zombie');
+var World = module.exports = function(){
+  this.browser = new zombie.Browser(); // this.browser will be available in step definitions
+  
+  this.visit = function(url){
+    this.browser.visit(url, callback(err, browser, status){
+      callback(err, browser, status);
+    });
+  };
+};
+```
+
+##### Step Definitions
+
+Step definitions are written in javascript.
+Each step definition has a World property that can be set to a constructor function.
+Each individual step will be executed in the context of an instance of the World function. 
+(i.e. `this` inside a step will refer to a newly created instance of the World property, making sure state stays consistent between each scenario)
+
+
+``` javascript
+// features/step_definitions/myStepDefinitions.js
+
+var myStepDefinitions = function(){
+  this.World = require(" <path to the world file> ");
+  
+  this.Given( <REGEXP>, function(next){
+    // express the regexp above with the code you wish you had
+    // this is set to a new this.World instance
+    // i.e. you may use this.browser to execute the step...
+    
+    this.visit('http://github.com/cucumber/cucumber-js', next);
+  });
+  
+  this.When( <REGEXP>, function(next) {
+    // express the regexp above with the code you wish you had
+    // Call next() at the end of the step, or next.pending() if the step is not yet implemented.
+    next.pending();
+  });
+  
+  this.Then( <REGEXP>, function(next) {
+    // express the regexp above with the code you wish you had
+    next.pending();
+  });
+};
+```
+
+#### Run cucumber
+
+Cucumber.js includes a binary file to execute the features.
+
+If you installed cucumber.js with `npm install --dev`, you may run cucumber with:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js
+```
+
+You may specify the features to run with the first argument:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature
+```
+
+And require specific step definitions with the --require option:
+
+``` shell
+  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature \
+    --require features/step_definitions/myStepDefinitions.js
+```
+
+
+
+#### Examples
+
+A few example apps are available for you to browse:
+
++ [Rails app serving features in the browser](https://github.com/jbpros/cucumber-js-example)
++ [Express.js app running features in the cli](https://github.com/olivoil/NodeBDD)
++ [Try cucumber.js in the browser](http://cucumber.no.de/)
+
+
 
 ## Setup for using in Node.js and running tests
 
