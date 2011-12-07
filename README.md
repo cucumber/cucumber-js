@@ -191,7 +191,7 @@ If you installed cucumber.js with `npm install --dev`, you may run cucumber with
   @NODE_ENV=test ./node_modules/.bin/cucumber.js
 ```
 
-You may specify the features to run with the first argument:
+You may specify the features to run:
 
 ``` shell
   @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature
