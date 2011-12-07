@@ -131,15 +131,16 @@ A World is a constructor function with utility properties, destined to be used i
 // features/support/world.js
 
 require('zombie');
-var World = module.exports = function(){
+var World = function() {
   this.browser = new zombie.Browser(); // this.browser will be available in step definitions
 
-  this.visit = function(url){
-    this.browser.visit(url, callback(err, browser, status){
+  this.visit = function(url, callback) {
+    this.browser.visit(url, function(err, browser, status) {
       callback(err, browser, status);
     });
   };
 };
+module.exports = World;
 ```
 
 #### Step Definitions
