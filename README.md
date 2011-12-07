@@ -72,9 +72,9 @@ Cucumber.js was tested on:
 
 ## Usage
 
-#### Install
+### Install
 
-Cucumber.js is available as an npm module. 
+Cucumber.js is available as an npm module.
 
 Install globally with:
 
@@ -82,7 +82,7 @@ Install globally with:
 $ npm install -g cucumber
 ```
 
-OR 
+OR
 
 You may also define cucumber.js as a development dependency of your application by including it in a package.json file.
 
@@ -98,7 +98,7 @@ You may also define cucumber.js as a development dependency of your application 
 Then install with `npm install --dev`
 
 
-#### Features
+### Features
 
 Features are written with the [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin)
 
@@ -109,18 +109,18 @@ Feature: Example feature
   As a user of cucumber.js
   I want to have documentation on cucumber
   So that I can concentrate on building awesome applications
-  
+
   Scenario: Reading documentation
     Given I am on the cucumber.js github page
     When I go to the README file
     Then I should see "Usage"
 ```
 
-#### Support Files
+### Support Files
 
 Support files let you setup the environment in which steps will be run, and define step definitions.
 
-##### World
+#### World
 
 A World is a constructor function with utility properties, destined to be used in step definitions
 
@@ -130,7 +130,7 @@ A World is a constructor function with utility properties, destined to be used i
 require('zombie');
 var World = module.exports = function(){
   this.browser = new zombie.Browser(); // this.browser will be available in step definitions
-  
+
   this.visit = function(url){
     this.browser.visit(url, callback(err, browser, status){
       callback(err, browser, status);
@@ -139,11 +139,11 @@ var World = module.exports = function(){
 };
 ```
 
-##### Step Definitions
+#### Step Definitions
 
 Step definitions are written in javascript.
 Each step definition has a World property that can be set to a constructor function.
-Each individual step will be executed in the context of an instance of the World function. 
+Each individual step will be executed in the context of an instance of the World function.
 (i.e. `this` inside a step will refer to a newly created instance of the World property, making sure state stays consistent between each scenario)
 
 
@@ -152,21 +152,21 @@ Each individual step will be executed in the context of an instance of the World
 
 var myStepDefinitions = function(){
   this.World = require(" <path to the world file> ");
-  
+
   this.Given( <REGEXP>, function(next){
     // express the regexp above with the code you wish you had
     // this is set to a new this.World instance
     // i.e. you may use this.browser to execute the step...
-    
+
     this.visit('http://github.com/cucumber/cucumber-js', next);
   });
-  
+
   this.When( <REGEXP>, function(next) {
     // express the regexp above with the code you wish you had
     // Call next() at the end of the step, or next.pending() if the step is not yet implemented.
     next.pending();
   });
-  
+
   this.Then( <REGEXP>, function(next) {
     // express the regexp above with the code you wish you had
     next.pending();
@@ -174,7 +174,7 @@ var myStepDefinitions = function(){
 };
 ```
 
-#### Run cucumber
+### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
 
@@ -199,7 +199,7 @@ And require specific step definitions with the --require option:
 
 
 
-#### Examples
+### Examples
 
 A few example apps are available for you to browse:
 
