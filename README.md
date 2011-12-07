@@ -138,24 +138,28 @@ var World = function() {
     this.browser.visit(url, callback);
   };
 };
-module.exports = World;
+exports.World = World;
 ```
 
 #### Step Definitions
 
-Step definitions are written in javascript.
-Each step definition has a World property that can be set to a constructor function.
-Each individual step will be executed in the context of an instance of the World function.
-(i.e. `this` inside a step will refer to a newly created instance of the World property, making sure state stays consistent between each scenario)
+Step definitions are the glue between features written in Gherkin and the actual *SUT* (*system under test*). They are written in JavaScript.
 
+All step definitions will run with `this` set to what is known as the *[World](https://github.com/cucumber/cucumber/wiki/A-Whole-New-World)* in Cucumber. It's an object exposing useful methods, helpers and variables to your step definitions. A new instance of `World` is created before each scenario.
+
+Step definitions are contained within one or more wrapper functions.
+
+Those wrappers are run before executing the feature suite. `this` is an object holding important properties like the `Given()`, `When()` and `Then()` functions. Another notable property is `World`; it contains a default `World` constructor that can be either extended or replaced.
+
+Step definitions are run when steps match their name. `this` is an instance of `World`.
 
 ``` javascript
 // features/step_definitions/myStepDefinitions.js
 
-var myStepDefinitions = function(){
-  this.World = require(" <path to the world file> ");
+var myStepDefinitionsWrapper = function() {
+  this.World = require("../support/world.js").World; // overwrite default World constructor
 
-  this.Given( <REGEXP>, function(next){
+  this.Given(/REGEXP/, function(next) {
     // express the regexp above with the code you wish you had
     // this is set to a new this.World instance
     // i.e. you may use this.browser to execute the step...
@@ -163,17 +167,18 @@ var myStepDefinitions = function(){
     this.visit('http://github.com/cucumber/cucumber-js', next);
   });
 
-  this.When( <REGEXP>, function(next) {
+  this.When(/REGEXP/, function(next) {
     // express the regexp above with the code you wish you had
     // Call next() at the end of the step, or next.pending() if the step is not yet implemented.
     next.pending();
   });
 
-  this.Then( <REGEXP>, function(next) {
-    // express the regexp above with the code you wish you had
+  this.Then(/REGEXP/, function(next) {
     next.pending();
   });
 };
+
+module.exports = myStepDefinitionsWrapper;
 ```
 
 ### Run cucumber
