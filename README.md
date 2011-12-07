@@ -135,9 +135,7 @@ var World = function() {
   this.browser = new zombie.Browser(); // this.browser will be available in step definitions
 
   this.visit = function(url, callback) {
-    this.browser.visit(url, function(err, browser, status) {
-      callback(err, browser, status);
-    });
+    this.browser.visit(url, callback);
   };
 };
 module.exports = World;
