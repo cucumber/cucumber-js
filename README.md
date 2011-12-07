@@ -106,7 +106,7 @@ Then install with `npm install --dev`
 Features are written with the [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin)
 
 ``` gherkin
-// features/myFeature.feature
+# features/myFeature.feature
 
 Feature: Example feature
   As a user of cucumber.js
