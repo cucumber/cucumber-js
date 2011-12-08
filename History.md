@@ -2,7 +2,25 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.3...master)
 
+#### Internals and tests
+
+* Update README (Julien Biezemans)
+* Add development status to README (Julien Biezemans)
+* Add link to demo at cucumber.no.de (Julien Biezemans)
+* Add link to example app to README (Julien Biezemans)
+* Add usage documentation to README (close #23) (Olivier Melcher)
+* Add examples to run features with the CLI (Olivier Melcher)
+* Fix header levels and whitespaces in README (Julien Biezemans)
+* Add Opera to supported browsers in README (Julien Biezemans)
+* Fix World constructor in README (Julien Biezemans)
+* Simplify World#visit in README (Julien Biezemans)
+* Rewrite step definition and wrapper documentation (Julien Biezemans)
+* Remove useless words (Julien Biezemans)
+* Use more consistent Markdown in README (Julien Biezemans)
+* Fix Gherkin comment in README (Julien Biezemans)
+* Add credits (Julien Biezemans)
 
 ### [v0.2.3](https://github.com/cucumber/cucumber-js/compare/v0.2.2...v0.2.3)
 
@@ -16,7 +34,7 @@
 
 #### Internals and tests
 
-* Don't make NPM ignore example/ anymore
+* Don't make NPM ignore `example/` anymore (Julien Biezemans)
 * Bump cucumber-features (Julien Biezemans)
 * Use non-deprecated "url" key instead of "web" in NPM manifest (Julien Biezemans)
 * Add JS step definitions related to data table scenarios (Julien Biezemans)
