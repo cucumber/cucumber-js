@@ -4,6 +4,10 @@
 
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.3...master)
 
+#### New features
+
+* Add --version to CLI (Julien Biezemans)
+
 #### Internals and tests
 
 * Update README (Julien Biezemans)
