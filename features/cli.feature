@@ -91,3 +91,7 @@ Feature: Command line interface
       1 step (1 passed)
 
       """
+
+  Scenario: display Cucumber version
+    When I run `cucumber.js --version`
+    Then I see the version of Cucumber

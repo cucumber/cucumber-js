@@ -17,3 +17,8 @@ end
 Then /^the mapping is run$/ do
   assert_passed "a mapping"
 end
+
+Then /^I see the version of Cucumber$/ do
+  assert_matching_output("\\d+\\.\\d+\\.\\d+\\n", all_output)
+  assert_success(true)
+end

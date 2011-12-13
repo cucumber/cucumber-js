@@ -10,9 +10,9 @@ describe("Cucumber.Cli.Configuration", function() {
 
   beforeEach(function() {
     argv                = createSpy("arguments (argv)");
-    argumentParser      = createSpyWithStubs("argument parser", {parse: null});
+    argumentParser      = createSpyWithStubs("argument parser", {parse: null, isVersionRequested: null});
     spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
-    configuration = Cucumber.Cli.Configuration(argv);
+    configuration       = Cucumber.Cli.Configuration(argv);
     context['configuration'] = configuration;
   });
 
@@ -89,6 +89,19 @@ describe("Cucumber.Cli.Configuration", function() {
 
     it("returns the support code library", function() {
       expect(configuration.getSupportCodeLibrary()).toBe(supportCodeLibrary);
+    });
+  });
+
+  describe("isVersionRequired()", function() {
+    it("asks the argument parser wether the version was requested or not", function() {
+      configuration.isVersionRequested();
+      expect(argumentParser.isVersionRequested).toHaveBeenCalled();
+    });
+
+    it("returns the answer from the argument parser", function() {
+      var isVersionRequested = createSpy("is version requested?");
+      argumentParser.isVersionRequested.andReturn(isVersionRequested);
+      expect(configuration.isVersionRequested()).toBe(isVersionRequested);
     });
   });
 });

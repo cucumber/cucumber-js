@@ -221,6 +221,24 @@ describe("Cucumber.Cli.ArgumentParser", function() {
     });
   });
 
+  describe("isVersionRequested()", function() {
+    var isVersionRequested;
+
+    beforeEach(function() {
+      isVersionRequested = createSpy("is version requested?");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isVersionRequested);
+    });
+
+    it("gets the 'version' flag with a default value", function() {
+      argumentParser.isVersionRequested();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME, Cucumber.Cli.ArgumentParser.DEFAULT_VERSION_FLAG_VALUE);
+    });
+
+    it("returns the flag value", function() {
+      expect(argumentParser.isVersionRequested()).toBe(isVersionRequested);
+    });
+  });
+
   describe("getOptions() [storeOptions()]", function() {
     var options;
 
