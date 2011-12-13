@@ -58,6 +58,11 @@ describe("Cucumber.Cli.ArgumentParser", function() {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_NAME]).toEqual([path, Array]);
     });
+
+    it("defines a --version flag", function() {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME]).toEqual(Boolean);
+    });
   });
 
   describe("getShortenedOptionDefinitions()", function() {
