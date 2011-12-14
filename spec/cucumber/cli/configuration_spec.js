@@ -10,7 +10,7 @@ describe("Cucumber.Cli.Configuration", function() {
 
   beforeEach(function() {
     argv                = createSpy("arguments (argv)");
-    argumentParser      = createSpyWithStubs("argument parser", {parse: null, isVersionRequested: null});
+    argumentParser      = createSpyWithStubs("argument parser", {parse: null});
     spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
     configuration       = Cucumber.Cli.Configuration(argv);
     context['configuration'] = configuration;
@@ -92,7 +92,28 @@ describe("Cucumber.Cli.Configuration", function() {
     });
   });
 
+  describe("isHelpRequired()", function() {
+    beforeEach(function() {
+      spyOnStub(argumentParser, 'isHelpRequested');
+    });
+
+    it("asks the argument parser wether the help was requested or not", function() {
+      configuration.isHelpRequested();
+      expect(argumentParser.isHelpRequested).toHaveBeenCalled();
+    });
+
+    it("returns the answer from the argument parser", function() {
+      var isHelpRequested = createSpy("is help requested?");
+      argumentParser.isHelpRequested.andReturn(isHelpRequested);
+      expect(configuration.isHelpRequested()).toBe(isHelpRequested);
+    });
+  });
+
   describe("isVersionRequired()", function() {
+    beforeEach(function() {
+      spyOnStub(argumentParser, 'isVersionRequested');
+    });
+
     it("asks the argument parser wether the version was requested or not", function() {
       configuration.isVersionRequested();
       expect(argumentParser.isVersionRequested).toHaveBeenCalled();

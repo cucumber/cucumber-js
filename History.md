@@ -7,6 +7,7 @@
 #### New features
 
 * Add --version to CLI (Julien Biezemans)
+* Add --help to CLI (Julien Biezemans)
 
 #### Internals and tests
 

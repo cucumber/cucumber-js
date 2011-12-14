@@ -67,5 +67,13 @@ var cliSteps = function cliSteps() {
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
     callback();
   });
+
+  this.Then(/^I see the help of Cucumber$/, function(callback) {
+    var actualOutput   = lastRun['stdout'];
+    var expectedOutput = "Usage: cucumber.js ";
+    if (actualOutput.indexOf(expectedOutput) == -1)
+      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
+    callback();
+  });
 };
 module.exports = cliSteps;

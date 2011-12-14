@@ -14,9 +14,11 @@ describe("Cucumber.Cli", function() {
     var configuration, callback;
 
     beforeEach(function() {
-      configuration = createSpyWithStubs("CLI configuration", {isVersionRequested: null});
+      configuration = createSpyWithStubs("CLI configuration", {isVersionRequested: false, isHelpRequested: false});
       callback      = createSpy("callback");
       spyOn(Cucumber.Cli, 'Configuration').andReturn(configuration);
+      spyOn(cli, 'displayHelp');
+      spyOn(cli, 'displayVersion');
       spyOn(cli, 'runSuiteWithConfiguration');
     });
 
@@ -25,36 +27,82 @@ describe("Cucumber.Cli", function() {
       expect(Cucumber.Cli.Configuration).toHaveBeenCalledWith(argv);
     });
 
-    it("checks wether the version is requested or not", function() {
+    it("checks wether the help is requested or not", function() {
       cli.run(callback);
-      expect(configuration.isVersionRequested).toHaveBeenCalled();
+      expect(configuration.isHelpRequested).toHaveBeenCalled();
     });
 
-    describe("when the version is requested", function() {
+    describe("when the help is requested", function() {
       beforeEach(function() {
-        configuration.isVersionRequested.andReturn(true);
-        spyOn(cli, 'displayVersion');
+        configuration.isHelpRequested.andReturn(true);
       });
 
-      it("displays the version", function() {
+      it("displays the help", function() {
         cli.run(callback);
-        expect(cli.displayVersion).toHaveBeenCalledWith(callback);
+        expect(cli.displayHelp).toHaveBeenCalledWith(callback);
       });
 
       it("does not run the suite", function() {
         cli.run(callback);
-        expect(cli.runSuiteWithConfiguration).not.toHaveBeenCalled();
+        expect(cli.runSuiteWithConfiguration).not.toHaveBeenCalledWith(callback);
+      });
+
+      it("does not display the version", function() {
+        cli.run(callback);
+        expect(cli.displayVersion).not.toHaveBeenCalledWith(callback);
       });
     });
 
-    describe("when the version is not requested", function() {
+    describe("when the help is not requested", function() {
       beforeEach(function() {
-        configuration.isVersionRequested.andReturn(false);
+        configuration.isHelpRequested.andReturn(false);
       });
 
-      it("runs the suite", function() {
+      it("checks wether the version is requested or not", function() {
         cli.run(callback);
-        expect(cli.runSuiteWithConfiguration).toHaveBeenCalledWith(configuration, callback);
+        expect(configuration.isVersionRequested).toHaveBeenCalled();
+      });
+
+      describe("when the version is requested", function() {
+        beforeEach(function() {
+          configuration.isVersionRequested.andReturn(true);
+        });
+
+        it("displays the version", function() {
+          cli.run(callback);
+          expect(cli.displayVersion).toHaveBeenCalledWith(callback);
+        });
+
+        it("does not display the help", function() {
+          cli.run(callback);
+          expect(cli.displayHelp).not.toHaveBeenCalled();
+        });
+
+        it("does not run the suite", function() {
+          cli.run(callback);
+          expect(cli.runSuiteWithConfiguration).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the version is not requested", function() {
+        beforeEach(function() {
+          configuration.isVersionRequested.andReturn(false);
+        });
+
+        it("runs the suite", function() {
+          cli.run(callback);
+          expect(cli.runSuiteWithConfiguration).toHaveBeenCalledWith(configuration, callback);
+        });
+
+        it("does not display the help", function() {
+          cli.run(callback);
+          expect(cli.displayHelp).not.toHaveBeenCalled();
+        });
+
+        it("does not display the version", function() {
+          cli.run(callback);
+          expect(cli.displayVersion).not.toHaveBeenCalledWith(callback);
+        });
       });
     });
   });
@@ -107,6 +155,25 @@ describe("Cucumber.Cli", function() {
 
     it("calls back and tells it succeeded", function() {
       cli.displayVersion(callback);
+      expect(callback).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe("displayHelp()", function() {
+    var callback;
+
+    beforeEach(function() {
+      callback = createSpy("callback");
+      spyOn(process.stdout, 'write');
+    });
+
+    it("outputs the usage of Cucumber to STDOUT", function() {
+      cli.displayHelp(callback);
+      expect(process.stdout.write).toHaveBeenCalledWithStringMatching("Usage: cucumber.js ");
+    });
+
+    it("calls back and tells it succeeded", function() {
+      cli.displayHelp(callback);
       expect(callback).toHaveBeenCalledWith(true);
     });
   });

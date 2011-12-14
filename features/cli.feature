@@ -95,3 +95,11 @@ Feature: Command line interface
   Scenario: display Cucumber version
     When I run `cucumber.js --version`
     Then I see the version of Cucumber
+
+  Scenario: display help
+    When I run `cucumber.js --help`
+    Then I see the help of Cucumber
+
+  Scenario: display help (short flag)
+    When I run `cucumber.js -h`
+    Then I see the help of Cucumber
