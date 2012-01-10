@@ -234,6 +234,8 @@ The official way of running them is through Cucumber-ruby and Aruba. Ruby and Bu
     $ bundle
     $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
 
+*Note*: you need the *bcat* and *rdiscount* gems in order to use the `ARUBA_REPORT_DIR` environment variable. Install it with `gem install bcat rdiscount`.
+
 You can then open the generated documentation:
 
     $ open doc/features/cucumber-tck/*.html # might open a lot of files ;)
