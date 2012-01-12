@@ -97,10 +97,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     var feature, callback, event, payload;
 
     beforeEach(function() {
-      feature  = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
-      callback = createSpy("Callback");
-      event    = createSpy("Event");
-      payload  = {feature: feature};
+      feature     = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
+      callback    = createSpy("Callback");
+      event       = createSpy("Event");
+      payload     = {feature: feature};
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
@@ -165,13 +165,16 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     var world;
 
     beforeEach(function() {
-      scenario = createSpyWithStubs("Scenario AST element", {acceptVisitor: null});
-      callback = createSpy("Callback");
-      event    = createSpy("Event");
-      payload  = {scenario: scenario};
-      world    = createSpy("world instance");
+      scenario    = createSpyWithStubs("Scenario AST element", {acceptVisitor: null});
+      callback    = createSpy("Callback");
+      event       = createSpy("Event");
+      payload     = {scenario: scenario};
+      world       = createSpy("world instance");
+      triggerHookFake = function(world, callback) { callback(); };
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOnStub(supportCodeLibrary, 'instantiateNewWorld').andReturn(world);
+      spyOnStub(supportCodeLibrary, 'triggerBeforeHooks').andCallFake(triggerHookFake);
+      spyOnStub(supportCodeLibrary, 'triggerAfterHooks').andCallFake(triggerHookFake);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
       spyOn(treeWalker, 'witnessNewScenario');
       spyOn(treeWalker, 'setWorld');
@@ -208,6 +211,27 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         toHaveBeenCalledWithValueAsNthParameter(callback, 3);
     });
 
+    it("invokes before hooks", function() {
+      treeWalker.visitScenario(scenario, callback);
+      treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1]();
+
+      expect(supportCodeLibrary.triggerBeforeHooks).
+        toHaveBeenCalledWithValueAsNthParameter(world, 1);
+      expect(supportCodeLibrary.triggerBeforeHooks).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+    });
+
+    it("invokes after hooks", function() {
+      treeWalker.visitScenario(scenario, callback);
+      treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1]();
+      scenario.acceptVisitor.mostRecentCall.args[1]();
+
+      expect(supportCodeLibrary.triggerAfterHooks).
+        toHaveBeenCalledWithValueAsNthParameter(world, 1);
+      expect(supportCodeLibrary.triggerAfterHooks).
+        toHaveBeenCalledWithAFunctionAsNthParameter(2);
+    });
+
     describe("user function", function() {
       var userFunction, userFunctionCallback;
 
@@ -217,7 +241,13 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
       });
 
-      it("visits the scenario, passing it the received callback", function() {
+      it("visits the scenario, passing it the tree walker", function() {
+        userFunction(userFunctionCallback);
+        expect(scenario.acceptVisitor).
+          toHaveBeenCalledWithValueAsNthParameter(treeWalker, 1);
+      });
+
+      xit("visits the scenario, passing it the received callback", function() {
         userFunction(userFunctionCallback);
         expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
       });

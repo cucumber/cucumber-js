@@ -18,6 +18,15 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^a passing (before|after) hook$/, function(hookType, callback) {
+    var defineHook = (hookType == 'before' ? 'Before' : 'After');
+    this.stepDefinitions += defineHook + "(function(callback) {\
+  world.touchStep('" + hookType + "-hook');\
+  callback();\
+});\n";
+    callback();
+  });
+
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
