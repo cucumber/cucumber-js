@@ -6,9 +6,12 @@ html, body {
 }
 
 #feature, #step-definitions, #output, #errors {
-  width:700px;
   font-family:'Bitstream Vera Sans Mono', Courier, monospace;
   font-size:1em;
+}
+
+#feature, #step-definitions, #errors {
+  width:700px;
 }
 
 #feature {
@@ -17,6 +20,10 @@ html, body {
 
 #step-definitions {
   height:28em;
+}
+
+#output {
+  width: 100%;
 }
 
 #errors {
@@ -101,6 +108,13 @@ html, body {
 .cucumber-report .comment {
   margin 0;
   padding 0;
+}
+
+.cucumber-report .error {
+  margin: .2em .75em;
+  padding: .2em;
+  border: 1px solid #900;
+  background-color: #EDBBBB;
 }
 
 #cucumber-templates {
