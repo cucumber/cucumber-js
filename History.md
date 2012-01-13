@@ -2,14 +2,25 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.3...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.4...master)
+
+(nothing yet)
+
+
+
+### [v0.2.4](https://github.com/cucumber/cucumber-js/compare/v0.2.3...v0.2.4)
 
 #### New features
 
 * Add --version to CLI (Julien Biezemans)
 * Add --help to CLI (Julien Biezemans)
 
-#### Internals and tests
+#### Changed features
+
+* Add styles for reported errors on web example (Julien Biezemans)
+* Make and expect World constructors to be asynchronous (close #39) (Julien Biezemans)
+
+#### Documentation, internals and tests
 
 * Update README (Julien Biezemans)
 * Add development status to README (Julien Biezemans)
@@ -26,6 +37,12 @@
 * Use more consistent Markdown in README (Julien Biezemans)
 * Fix Gherkin comment in README (Julien Biezemans)
 * Add credits (Julien Biezemans)
+* Add Aruba setup details to README (Julien Biezemans)
+* Fix World constructor on web example according to the recent API changes (Julien Biezemans)
+* Tell Travis CI to post build results to #cucumber (Julien Biezemans)
+* Add release checklist to README (Julien Biezemans)
+
+
 
 ### [v0.2.3](https://github.com/cucumber/cucumber-js/compare/v0.2.2...v0.2.3)
 
@@ -37,7 +54,7 @@
 
 * Prevent the same step definition snippet from being suggested twice (Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Don't make NPM ignore `example/` anymore (Julien Biezemans)
 * Bump cucumber-features (Julien Biezemans)
@@ -64,7 +81,7 @@
 
 * Suggest step definition snippets for undefined steps (#33 Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Add contributors to NPM package manifest (Julien Biezemans)
 * Clean up JS step definitions (Julien Biezemans)
@@ -109,7 +126,7 @@
 * Prevent CLI support code loader from calling module main exports which are not functions (Julien Biezemans)
 * Remove use of username for submodule (Kushal Pisavadia)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Bump jasmine-node
 * Update README (Julien Biezemans)
@@ -139,7 +156,7 @@
 
 * Add support for background (#9 Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Bump cucumber-features (twice) (Julien Biezemans)
 * Bump gherkin and reflect changes in its API (add DocString content type) (Julien Biezemans)
@@ -154,7 +171,7 @@
 * Step definitions can be created with the support code helper passed as 'this':
   this.Given(), this.When(), this.Then() and this.defineStep() (#2 Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Fix typo "occured" -> "occurred" (Fernando Acorreia)
 * Improve variable names in CLI support code loader (Julien Biezemans)
@@ -168,7 +185,7 @@
 * Allow several features to run at once (#14 Julien Biezemans)
 * Add support for --require (Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Improve features and support code API (Julien Biezemans)
 * Add "Cli" and "Volatile" configurations (Julien Biezemans)
@@ -196,7 +213,7 @@
 
 * Throw a clearer exception on missing feature argument (CLI) (Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Unify and clean up js-specific features and step definitions (#21 Julien Biezemans)
 
@@ -223,7 +240,7 @@
 * Load Gherkin properly in browsers (Julien Biezemans)
 * Remove calls to console.log in web example (Julien Biezemans)
 
-#### Internals and tests
+#### Documentation, internals and tests
 
 * Pass against core.feature in its new form, both with the Cucumber-ruby/Aruba pair and cucumber-js itself (Julien Biezemans)
 * Refactor cucumber-features JS mappings (Julien Biezemans)
