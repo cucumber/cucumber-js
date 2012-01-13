@@ -31,7 +31,9 @@
     <textarea id="step-definitions">///// Your World /////
 
 // Provide a custom World constructor. It's optional, a default one is supplied.
-this.World = function() {};
+this.World = function(callback) {
+  callback(this);
+};
 
 // Define your World!
 
