@@ -278,4 +278,5 @@ It even works with Aruba:
 * Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)
 * Tag commit as "v0.1.2" with short description of main changes
 * Push to main repo on Github
+* Publish to NPM
 * Deploy to cucumber.no.de
