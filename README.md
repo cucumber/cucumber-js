@@ -268,3 +268,14 @@ It even works with Aruba:
 
     $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
     $ open doc/features/cucumber-tck/*.html # you'll see debug messages in Aruba-generated docs
+
+## Release checklist
+
+* Update `History.md`
+* Bump version in `lib/cucumber.js`
+* Bump version in `package.json`
+* Add new contributors to `package.json`, if any
+* Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)
+* Tag commit as "v0.1.2" with short description of main changes
+* Push to main repo on Github
+* Deploy to cucumber.no.de
