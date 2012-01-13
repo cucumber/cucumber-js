@@ -1,6 +1,6 @@
 var cucumberSteps = function() {
   var Given  = When = Then = this.defineStep;
-  var World  = require('./cucumber_world');
+  var World  = require('./cucumber_world').World;
   this.World = World;
 
   Given(/^a scenario with:$/, function(steps, callback) {

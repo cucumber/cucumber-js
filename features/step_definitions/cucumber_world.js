@@ -1,13 +1,14 @@
-var CucumberWorld = function() {
+var World = function(callback) {
   this.touchedSteps    = [];
   this.featureSource   = "";
   this.stepDefinitions = "";
   this.runOutput       = "";
   this.runSucceeded    = false;
-  CucumberWorld.mostRecentInstance = this;
+  World.mostRecentInstance = this;
+  callback(this);
 };
 
-var proto = CucumberWorld.prototype;
+var proto = World.prototype;
 
 proto.runFeature = function runFeature(callback) {
   var supportCode;
@@ -116,4 +117,4 @@ proto.assertEqual = function assertRawDataTable(expected, actual) {
     throw(new Error("Expected:\n\"" + actualJSON + "\"\nto match:\n\"" + expectedJSON + "\""));
 }
 
-module.exports = CucumberWorld;
+exports.World = World;

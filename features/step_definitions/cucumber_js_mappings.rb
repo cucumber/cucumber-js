@@ -97,7 +97,7 @@ EOF
   end
 
   def write_custom_world_constructor
-    append_support_code "this.World = function CustomWorld() {};"
+    append_support_code "this.World = function CustomWorld(callback) { callback(this); };"
   end
 
   def write_world_function
