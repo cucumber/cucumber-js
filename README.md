@@ -269,6 +269,15 @@ It even works with Aruba:
     $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
     $ open doc/features/cucumber-tck/*.html # you'll see debug messages in Aruba-generated docs
 
+
+## Help & support
+
+* Twitter: [@cucumber_js](https://twitter.com/#!/cucumber_js/)
+* IRC: [#cucumber](http://webchat.freenode.net?channels=cucumber&uio=d4) on Freenode
+* Google Groups: [cukes](https://groups.google.com/group/cukes)
+* [cukes.info](http://cukes.info)
+
+
 ## Release checklist
 
 * Update `History.md`
