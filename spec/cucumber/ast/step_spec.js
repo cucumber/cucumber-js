@@ -429,6 +429,11 @@ describe("Cucumber.Ast.Step", function() {
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
+    it("returns true when the keyword is '* '", function() {
+      step = Cucumber.Ast.Step('* ', name, line, previousStep);
+      expect(step.hasRepeatStepKeyword()).toBeTruthy();
+    });
+
     it("returns false when the keyword is not 'And ' nor 'But '", function() {
       expect(step.hasRepeatStepKeyword()).toBeFalsy();
     });

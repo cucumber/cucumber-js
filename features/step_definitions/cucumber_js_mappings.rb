@@ -162,7 +162,7 @@ EOF
     params << "callback"
     params = params.join ", "
     expected_snippet = <<-EOF
-this.#{stepdef_type}(#{stepdef_name}, function(#{params}) {
+this.#{stepdef_type}(/#{stepdef_name}/, function(#{params}) {
   // express the regexp above with the code you wish you had
   callback.pending();
 });
