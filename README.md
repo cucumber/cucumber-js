@@ -173,6 +173,32 @@ var myStepDefinitionsWrapper = function() {
 module.exports = myStepDefinitionsWrapper;
 ```
 
+#### Before and After hooks
+
+If you need to execute some code before or after each scenario, you
+can use hooks, just like this:
+
+``` javascript
+// features/step_definitions/myStepDefinitions.js
+
+var myStepDefinitionsWrapper = function() {
+  this.Before(function(callback) {
+    // this is an instance of World, just like within step definitions
+    this.prepareStuff();
+    callback();
+  });
+
+  this.After(function(callback) {
+    this.tearDownStuff();
+    callback();
+  });
+
+  // ...
+};
+
+module.exports = myStepDefinitionsWrapper;
+```
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
