@@ -7,6 +7,7 @@ describe("Cucumber.Type.Collection", function() {
   beforeEach(function() {
     itemArray = [1, 2, 3];
     spyOn(itemArray, 'push');
+    spyOn(itemArray, 'unshift');
     spyOn(global, 'Array').andReturn(itemArray);
     collection = Cucumber.Type.Collection();
   });
@@ -22,6 +23,14 @@ describe("Cucumber.Type.Collection", function() {
       var item = createSpy("Collection item");
       collection.add(item);
       expect(itemArray.push).toHaveBeenCalledWith(item);
+    });
+  });
+
+  describe("unshift()", function() {
+    it("unshifts the item onto the start of the item array", function() {
+      var item = createSpy("Collection item");
+      collection.unshift(item);
+      expect(itemArray.unshift).toHaveBeenCalledWith(item);
     });
   });
 

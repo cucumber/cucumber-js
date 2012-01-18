@@ -5,6 +5,8 @@ module CucumberJsMappings
   WORLD_VARIABLE_LOG_FILE        = "world_variable.log"
   WORLD_FUNCTION_LOG_FILE        = "world_function.log"
   DATA_TABLE_LOG_FILE            = "data_table.log"
+  CYCLE_LOG_FILE                 = "cycle.log"
+
   attr_accessor :support_code
 
   def features_dir
@@ -108,6 +110,36 @@ this.World.prototype.someFunction = function() {
 EOF
   end
 
+  def write_passing_hook hook_type
+    provide_cycle_logging_facilities
+    define_hook = hook_type.capitalize
+    append_support_code <<-EOF
+this.#{define_hook}(function(callback) {
+  this.logCycleEvent('#{hook_type}');
+  callback();
+});
+EOF
+  end
+
+  def write_scenario
+    provide_cycle_logging_facilities
+    append_step_definition("a step", "this.logCycleEvent('step');\ncallback();")
+    scenario_with_steps("A scenario", "Given a step")
+  end
+
+  def provide_cycle_logging_facilities
+    return if @cycle_logging_facilities_ready
+
+    @cycle_logging_facilities_ready = true
+    append_support_code <<-EOF
+  this.World.prototype.logCycleEvent = function logCycleEvent(name) {
+    fd = fs.openSync('#{CYCLE_LOG_FILE}', 'a');
+    fs.writeSync(fd, " -> " + name, null);
+    fs.closeSync(fd);
+  };
+EOF
+  end
+
   def assert_passing_scenario
     assert_partial_output("1 scenario (1 passed)", all_output)
     assert_success true
@@ -145,6 +177,11 @@ EOF
     check_file_presence [WORLD_FUNCTION_LOG_FILE], true
   end
 
+  def assert_cycle_sequence *args
+    expected_string = args.join " -> "
+    check_file_content(CucumberJsMappings::CYCLE_LOG_FILE, expected_string, true)
+  end
+
   def assert_data_table_equals_json(json)
     prep_for_fs_check do
       log_file_contents = IO.read(DATA_TABLE_LOG_FILE)
@@ -154,7 +191,7 @@ EOF
     end
   end
 
-  def assert_suggested_step_definition_snippet(stepdef_type, stepdef_name, parameter_count = 0, doc_string = false, data_table = false)
+  def assert_suggested_step_definition_snippet(stepdef_keyword, stepdef_pattern, parameter_count = 0, doc_string = false, data_table = false)
     parameter_count ||= 0
     params = Array.new(parameter_count) { |i| "arg#{i+1}" }
     params << "string" if doc_string
@@ -162,7 +199,7 @@ EOF
     params << "callback"
     params = params.join ", "
     expected_snippet = <<-EOF
-this.#{stepdef_type}(/#{stepdef_name}/, function(#{params}) {
+this.#{stepdef_keyword}(/#{stepdef_pattern}/, function(#{params}) {
   // express the regexp above with the code you wish you had
   callback.pending();
 });

@@ -97,10 +97,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     var feature, callback, event, payload;
 
     beforeEach(function() {
-      feature  = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
-      callback = createSpy("Callback");
-      event    = createSpy("Event");
-      payload  = {feature: feature};
+      feature     = createSpyWithStubs("Feature AST element", {acceptVisitor: null});
+      callback    = createSpy("Callback");
+      event       = createSpy("Event");
+      payload     = {feature: feature};
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
@@ -177,19 +177,21 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     });
 
     describe("on world instantiation completion", function() {
-      var worldInstantiationCompletionCallback, world, event, payload;
+      var worldInstantiationCompletionCallback, world, event, payload, hookedUpFunction;
 
       beforeEach(function() {
         world = createSpy("world instance");
         treeWalker.visitScenario(scenario, callback);
         worldInstantiationCompletionCallback = supportCodeLibrary.instantiateNewWorld.mostRecentCall.args[0];
 
-        event    = createSpy("Event");
-        payload  = {scenario: scenario};
+        event                  = createSpy("Event");
+        payload                = {scenario: scenario};
+        scenarioVisitWithHooks = createSpy("scenario visit with hooks");
         spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
         spyOn(treeWalker, 'broadcastEventAroundUserFunction');
         spyOn(treeWalker, 'setWorld');
         spyOn(treeWalker, 'witnessNewScenario');
+        spyOn(treeWalker, 'hookUpFunction').andReturn(scenarioVisitWithHooks);
       });
 
       it("sets the new World instance", function() {
@@ -207,30 +209,30 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.SCENARIO_EVENT_NAME, payload);
       });
 
-      it("broadcasts the visit of the scenario", function() {
+      it("hooks up a function", function() {
         worldInstantiationCompletionCallback(world);
-        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
-        expect(treeWalker.broadcastEventAroundUserFunction).
-          toHaveBeenCalledWithValueAsNthParameter(event, 1);
-        expect(treeWalker.broadcastEventAroundUserFunction).
-          toHaveBeenCalledWithAFunctionAsNthParameter(2);
-        expect(treeWalker.broadcastEventAroundUserFunction).
-          toHaveBeenCalledWithValueAsNthParameter(callback, 3);
+        expect(treeWalker.hookUpFunction).toHaveBeenCalled();
+        expect(treeWalker.hookUpFunction).toHaveBeenCalledWithAFunctionAsNthParameter(1);
       });
 
-      describe("user function", function() {
-        var userFunction, userFunctionCallback;
+      describe("hooked up function", function() {
+        var hookedUpFunction, hookedUpFunctionCallback;
 
         beforeEach(function() {
-          userFunctionCallback = createSpy("User function callback");
+          hookedUpFunctionCallback = createSpy("hooked up function callback");
           worldInstantiationCompletionCallback(world);
-          userFunction = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
+          hookedUpFunction = treeWalker.hookUpFunction.mostRecentCall.args[0];
         });
 
-        it("visits the scenario, passing it the received callback", function() {
-          userFunction(userFunctionCallback);
-          expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, userFunctionCallback);
+        it("tells the scenario to accept the tree walker itself as a visitor", function() {
+          hookedUpFunction(hookedUpFunctionCallback);
+          expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, hookedUpFunctionCallback);
         });
+      });
+
+      it("broadcasts the visit of the scenario", function() {
+        worldInstantiationCompletionCallback(world);
+        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWith(event, scenarioVisitWithHooks, callback);
       });
     });
   });

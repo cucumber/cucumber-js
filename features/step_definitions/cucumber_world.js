@@ -3,6 +3,7 @@ var World = function(callback) {
   this.featureSource   = "";
   this.stepDefinitions = "";
   this.runOutput       = "";
+  this.cycleEvents     = "";
   this.runSucceeded    = false;
   World.mostRecentInstance = this;
   callback(this);
@@ -13,6 +14,7 @@ var proto = World.prototype;
 proto.runFeature = function runFeature(callback) {
   var supportCode;
   var supportCodeSource = "supportCode = function() {\n  var Given = When = Then = this.defineStep;\n" +
+    "  var Before = this.Before, After = this.After;\n" +
     this.stepDefinitions + "};\n";
   var world = this;
   eval(supportCodeSource);
@@ -31,6 +33,21 @@ proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource
     Cucumber.Debug.notice(world.runOutput, 'cucumber output', 5);
     callback();
   });
+}
+
+proto.runAScenario = function runAScenario(callback) {
+    this.featureSource   += "Feature:\n";
+    this.featureSource   += "  Scenario:\n";
+    this.featureSource   += "    Given a step\n";
+    this.stepDefinitions += "Given(/^a step$/, function(callback) {\
+  world.logCycleEvent('step');\
+  callback();\
+});";
+    this.runFeature(callback);
+}
+
+proto.logCycleEvent = function logCycleEvent(event) {
+  this.cycleEvents += " -> " + event;
 }
 
 proto.touchStep = function touchStep(string) {
@@ -115,6 +132,12 @@ proto.assertEqual = function assertRawDataTable(expected, actual) {
   var actualJSON   = JSON.stringify(actual);
   if (actualJSON != expectedJSON)
     throw(new Error("Expected:\n\"" + actualJSON + "\"\nto match:\n\"" + expectedJSON + "\""));
+}
+
+proto.assertCycleSequence = function assertCycleSequence(first, second) {
+  var partialSequence = first + ' -> ' + second;
+  if (this.cycleEvents.indexOf(partialSequence) < 0)
+    throw(new Error("Expected cycle sequence \"" + this.cycleEvents + "\" to contain \"" + partialSequence + "\""));
 }
 
 exports.World = World;

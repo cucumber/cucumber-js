@@ -18,6 +18,15 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^a passing (before|after) hook$/, function(hookType, callback) {
+    var defineHook = (hookType == 'before' ? 'Before' : 'After');
+    this.stepDefinitions += defineHook + "(function(callback) {\
+  world.logCycleEvent('" + hookType + "');\
+  callback();\
+});\n";
+    callback();
+  });
+
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
@@ -58,13 +67,17 @@ var cucumberSteps = function() {
   Given(/^the following data table in a step:$/, function(dataTable, callback) {
     this.featureSource += "Feature:\n";
     this.featureSource += "  Scenario:\n";
-    this.featureSource += "    When a step with data table:\n"
+    this.featureSource += "    When a step with data table:\n";
     this.featureSource += dataTable.replace(/^/gm, '      ');
     callback();
   });
 
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature(callback);
+  });
+
+  When(/^Cucumber executes a scenario$/, function(callback) {
+    this.runAScenario(callback);
   });
 
   When(/^Cucumber runs the feature$/, function(callback) {
@@ -144,6 +157,14 @@ var cucumberSteps = function() {
   Then(/^the data table is converted to the following:$/, function(expectedDataTableJSON, callback) {
     var expectedDataTable = JSON.parse(expectedDataTableJSON);
     this.assertEqual(expectedDataTable, World.mostRecentInstance.dataTableLog);
+    callback();
+  });
+
+  Then(/^the (before|after) hook is fired (?:before|after) the scenario$/, function(hookType, callback) {
+    if (hookType == 'before')
+      this.assertCycleSequence(hookType, 'step');
+    else
+      this.assertCycleSequence('step', hookType);
     callback();
   });
 };
