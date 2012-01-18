@@ -115,7 +115,7 @@ Support files let you setup the environment in which steps will be run, and defi
 
 #### World
 
-A World is a constructor function with utility properties, destined to be used in step definitions
+*World* is a constructor function with utility properties, destined to be used in step definitions
 
 ``` javascript
 // features/support/world.js
