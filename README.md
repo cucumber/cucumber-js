@@ -23,7 +23,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 | [Data tables](https://github.com/cucumber/cucumber-tck/blob/master/data_tables.feature)                                       | Done                |
 | [Doc Strings](https://github.com/cucumber/cucumber-tck/blob/master/doc_strings.feature)                                       | Done                |
 | [Failing steps](https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature)                                   | Done                |
-| [Hooks](https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature)                                                   | To do               |
+| [Hooks](https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature)                                                   | WIP<sup>3</sup>     |
 | [I18n](https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature)                                                     | To do               |
 | [JSON formatter](https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature)                                 | To do               |
 | [Pretty formatter](https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature)                             | To do<sup>2</sup>   |
@@ -37,6 +37,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
+3. Simple *Before* and *After* hooks are available.
 
 ### Cucumber.js-specific features
 
