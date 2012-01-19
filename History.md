@@ -4,9 +4,24 @@
 
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.4...master)
 
-(nothing yet)
+**TBD**
 
+### [v0.2.5](https://github.com/cucumber/cucumber-js/compare/v0.2.4...v0.2.5)
 
+#### New features
+
+* Add Before/After hooks (#32, close #31) (Tristan Dunn)
+
+#### Changed features
+
+* Interpret "*" step keyword as a repeat keyword (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Add NPM publishing to README release checklist (Julien Biezemans)
+* Add "Help & Support" to README (Julien Biezemans)
+* Words in README (Julien Biezemans)
+* Document before and after hooks (Julien Biezemans)
 
 ### [v0.2.4](https://github.com/cucumber/cucumber-js/compare/v0.2.3...v0.2.4)
 
