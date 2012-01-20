@@ -27,12 +27,18 @@ proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource
   var cucumber  = Cucumber(this.featureSource, supportCode);
   var formatter = Cucumber.Listener.ProgressFormatter({logToConsole: false});
   cucumber.attachListener(formatter);
-  cucumber.start(function(succeeded) {
-    world.runSucceeded = succeeded;
-    world.runOutput    = formatter.getLogs();
+  try {
+    cucumber.start(function(succeeded) {
+      world.runSucceeded = succeeded;
+      world.runOutput    = formatter.getLogs();
+      Cucumber.Debug.notice(world.runOutput, 'cucumber output', 5);
+      callback();
+    });
+  } catch(e) {
+    world.runOutput += e.toString();
     Cucumber.Debug.notice(world.runOutput, 'cucumber output', 5);
     callback();
-  });
+  }
 }
 
 proto.runAScenario = function runAScenario(callback) {

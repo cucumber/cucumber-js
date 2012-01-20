@@ -300,26 +300,43 @@ describe("Cucumber.SupportCode.Library", function() {
       beforeEach(function() {
         library.instantiateNewWorld(callback);
         worldConstructorCompletionCallback = worldConstructor.mostRecentCall.args[0];
-        world = createSpy("world instance");
         spyOn(process, 'nextTick');
-      });
+      })
 
-      it("registers a function for the next tick (to get out of the constructor call)", function() {
-        worldConstructorCompletionCallback(world);
-        expect(process.nextTick).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      });
-
-      describe("next tick registered function", function() {
-        var nextTickFunction;
-
+      describe("when the constructor called back with a world instance", function() {
         beforeEach(function() {
-          worldConstructorCompletionCallback(world);
-          nextTickFunction = process.nextTick.mostRecentCall.args[0];
+          world = createSpy("world instance");
         });
 
-        it("calls back with the world instance", function() {
-          nextTickFunction();
-          expect(callback).toHaveBeenCalledWith(world);
+        it("registers a function for the next tick (to get out of the constructor call)", function() {
+          worldConstructorCompletionCallback(world);
+          expect(process.nextTick).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+        });
+
+        describe("next tick registered function", function() {
+          var nextTickFunction;
+
+          beforeEach(function() {
+            worldConstructorCompletionCallback(world);
+            nextTickFunction = process.nextTick.mostRecentCall.args[0];
+          });
+
+          it("calls back with the world instance", function() {
+            nextTickFunction();
+            expect(callback).toHaveBeenCalledWith(world);
+          });
+        });
+      });
+
+      describe("when the constructor called back without a world instance", function() {
+        it("does not register a function for the next tick", function() {
+          try { worldConstructorCompletionCallback(null); } catch (e) {};
+          expect(process.nextTick).not.toHaveBeenCalled();
+        });
+
+        it("throws an exception", function() {
+          var expectedError = new Error("World constructor called back without World instance.");
+          expect(function() { worldConstructorCompletionCallback(null); }).toThrow(expectedError);
         });
       });
     });

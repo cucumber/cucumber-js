@@ -72,6 +72,11 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^a custom World constructor calling back without an instance$/, function(callback) {
+    this.stepDefinitions += "this.World = function CustomWorld(callback) { callback(); };\n";
+    callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature(callback);
   });
@@ -165,6 +170,11 @@ var cucumberSteps = function() {
       this.assertCycleSequence(hookType, 'step');
     else
       this.assertCycleSequence('step', hookType);
+    callback();
+  });
+
+  Then(/^an error about the missing World instance is raised$/, function(callback) {
+    this.assertFailureMessage("World constructor called back without World instance");
     callback();
   });
 };

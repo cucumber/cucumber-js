@@ -99,7 +99,11 @@ EOF
   end
 
   def write_custom_world_constructor
-    append_support_code "this.World = function CustomWorld(callback) { callback(this); };"
+    append_support_code "this.World = function CustomWorld(callback) { callback(this); };\n"
+  end
+
+  def write_world_constructor_not_calling_back_with_instance
+    append_support_code "this.World = function CustomWorld(callback) { callback(); };\n"
   end
 
   def write_world_function
@@ -132,11 +136,11 @@ EOF
 
     @cycle_logging_facilities_ready = true
     append_support_code <<-EOF
-  this.World.prototype.logCycleEvent = function logCycleEvent(name) {
-    fd = fs.openSync('#{CYCLE_LOG_FILE}', 'a');
-    fs.writeSync(fd, " -> " + name, null);
-    fs.closeSync(fd);
-  };
+this.World.prototype.logCycleEvent = function logCycleEvent(name) {
+  fd = fs.openSync('#{CYCLE_LOG_FILE}', 'a');
+  fs.writeSync(fd, " -> " + name, null);
+  fs.closeSync(fd);
+};
 EOF
   end
 
