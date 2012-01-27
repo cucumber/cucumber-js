@@ -287,7 +287,7 @@ Alternatively, you can run everything with the help of Rake:
 
 ### Debug messages
 
-You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will diplay everything, `1` will only print out the critical things.
+You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will display everything, `1` will only print out the critical things.
 
     $ DEBUG_LEVEL=5 ./bin/cucumber.js
 
