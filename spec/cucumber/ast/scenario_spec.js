@@ -3,20 +3,19 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Scenario", function() {
   var Cucumber = requireLib('cucumber');
   var steps;
-  var scenario, keyword, name, description, line, background, lastStep;
+  var scenario, keyword, name, description, line, lastStep;
 
   beforeEach(function() {
     keyword     = createSpy("scenario keyword");
     name        = createSpy("scenario name");
     description = createSpy("scenario description");
     line        = createSpy("starting scenario line number");
-    background  = undefined;
     lastStep    = createSpy("last step");
     steps       = createSpy("step collection");
     spyOnStub(steps, 'add');
     spyOnStub(steps, 'getLast').andReturn(lastStep);
     spyOn(Cucumber.Type, 'Collection').andReturn(steps);
-    scenario = Cucumber.Ast.Scenario(keyword, name, description, line, background);
+    scenario = Cucumber.Ast.Scenario(keyword, name, description, line);
   });
 
   describe("constructor", function() {
@@ -49,9 +48,34 @@ describe("Cucumber.Ast.Scenario", function() {
     });
   });
 
+  describe("getBackground() [setBackground()]", function() {
+    it("returns the background that was set as such", function() {
+      var background = createSpy("background");
+      scenario.setBackground(background);
+      expect(scenario.getBackground()).toBe(background);
+    });
+  });
+
   describe("addStep()", function() {
+    var step, lastStep;
+
+    beforeEach(function() {
+      step = createSpyWithStubs("step AST element", {setPreviousStep: null});
+      lastStep = createSpy("last step");
+      spyOn(scenario, 'getLastStep').andReturn(lastStep);
+    });
+
+    it("gets the last step", function() {
+      scenario.addStep(step);
+      expect(scenario.getLastStep).toHaveBeenCalled();
+    });
+
+    it("sets the last step as the previous step", function() {
+      scenario.addStep(step);
+      expect(step.setPreviousStep).toHaveBeenCalledWith(lastStep);
+    });
+
     it("adds the step to the steps (collection)", function() {
-      var step = createSpy("Step AST element");
       scenario.addStep(step);
       expect(steps.add).toHaveBeenCalledWith(step);
     });
@@ -103,16 +127,21 @@ describe("Cucumber.Ast.Scenario", function() {
     var visitor, callback, backgroundSteps;
 
     beforeEach(function() {
-      backgroundSteps = createSpy("background steps");
       visitor         = createSpyWithStubs("Visitor", {visitStep: null});
       callback        = createSpy("Callback");
+      spyOn(scenario, 'getBackground');
+    });
+
+    it("gets the background", function() {
+      scenario.instructVisitorToVisitBackgroundSteps(visitor, callback);
+      expect(scenario.getBackground).toHaveBeenCalled();
     });
 
     describe("when there is a background", function() {
       beforeEach(function() {
-        background = createSpy("background");
-        scenario   = Cucumber.Ast.Scenario(keyword, name, description, line, background);
-        spyOnStub(background, 'getSteps').andReturn(backgroundSteps);
+        backgroundSteps = createSpy("background steps");
+        background      = createSpyWithStubs("background", {getSteps: backgroundSteps});
+        scenario.getBackground.andReturn(background);
         spyOn(scenario, 'instructVisitorToVisitSteps');
       });
 
@@ -134,8 +163,7 @@ describe("Cucumber.Ast.Scenario", function() {
 
     describe("when there is no background", function() {
       beforeEach(function() {
-        background = undefined;
-        scenario   = Cucumber.Ast.Scenario(keyword, name, description, line, background);
+        scenario.getBackground.andReturn(undefined);
       });
 
       it("calls back", function() {

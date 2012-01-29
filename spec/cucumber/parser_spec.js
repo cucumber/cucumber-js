@@ -3,7 +3,7 @@ require('../support/spec_helper');
 describe("Cucumber.Parser", function() {
   var Cucumber = requireLib('cucumber');
   var parser, featureSources;
-  var features;
+  var features, astAssembler;
 
   beforeEach(function() {
     features       = createSpy("Root 'features' AST element");
@@ -11,13 +11,19 @@ describe("Cucumber.Parser", function() {
       ["(feature:1)", createSpy('first feature source')],
       ["(feature:2)", createSpy('second feature source')]
     ];
+    astAssembler   = createSpy("AST assembler");
     spyOn(Cucumber.Ast, 'Features').andReturn(features);
+    spyOn(Cucumber.Ast, 'Assembler').andReturn(astAssembler);
     parser = Cucumber.Parser(featureSources);
   });
 
   describe("constructor", function() {
     it("creates a new AST features element", function() {
       expect(Cucumber.Ast.Features).toHaveBeenCalled();
+    });
+
+    it("instantiates an AST assembler", function() {
+      expect(Cucumber.Ast.Assembler).toHaveBeenCalledWith(features);
     });
   });
 
@@ -106,108 +112,15 @@ describe("Cucumber.Parser", function() {
     });
 
     it("provides a 'row' handler", function() {
-      spyOn(parser, 'handleRow');
+      spyOn(parser, 'handleDataTableRow');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['row']).toBe(parser.handleRow);
-    });
-  });
-
-  describe("getCurrentFeature()", function() {
-    var lastFeature;
-
-    beforeEach(function() {
-      lastFeature = createSpy("Last recorded feature AST element");
-      spyOnStub(features, 'getLastFeature').andReturn(lastFeature);
-    });
-
-    it("gets the last feature from the root features AST element", function() {
-      parser.getCurrentFeature();
-      expect(features.getLastFeature).toHaveBeenCalled();
-    });
-
-    it("returns the last feature", function() {
-      expect(parser.getCurrentFeature()).toEqual(lastFeature);
-    });
-  });
-
-  describe("getCurrentScenarioOrBackground()", function() {
-    var currentFeature;
-
-    beforeEach(function() {
-      currentFeature = createSpyWithStubs("Current feature", {getLastScenario: undefined, getBackground: undefined});
-      spyOn(parser, 'getCurrentFeature').andReturn(currentFeature);
-    });
-
-    it("gets the current feature", function() {
-      parser.getCurrentScenarioOrBackground();
-      expect(parser.getCurrentFeature).toHaveBeenCalled();
-    });
-
-    it("asks the current feature for its last scenario", function() {
-      parser.getCurrentScenarioOrBackground();
-      expect(currentFeature.getLastScenario).toHaveBeenCalled();
-    });
-
-    describe("when there is a last scenario", function() {
-      var lastScenario;
-
-      beforeEach(function() {
-        lastScenario = createSpy("Last scenario of the feature");
-        currentFeature.getLastScenario.andReturn(lastScenario);
-      });
-
-      it("returns the last scenario", function() {
-        expect(parser.getCurrentScenarioOrBackground()).toBe(lastScenario);
-      });
-    });
-
-    describe("when there is no current scenario", function() {
-      var background;
-
-      beforeEach(function() {
-        background = createSpy("background");
-        spyOnStub(currentFeature, 'getBackground').andReturn(background);
-      });
-
-      it("gets the background", function() {
-        parser.getCurrentScenarioOrBackground();
-        expect(currentFeature.getBackground).toHaveBeenCalled();
-      });
-
-      it("returns the background", function() {
-        expect(parser.getCurrentScenarioOrBackground()).toBe(background);
-      });
-    });
-
-  });
-
-  describe("getCurrentStep()", function() {
-    var currentScenario, lastStep;
-
-    beforeEach(function() {
-      lastStep = createSpy("Last step of the scenario");
-      currentScenario = createSpyWithStubs("Current scenario", {getLastStep: lastStep});
-      spyOn(parser, 'getCurrentScenarioOrBackground').andReturn(currentScenario);
-    });
-
-    it("gets the current scenario", function() {
-      parser.getCurrentStep();
-      expect(parser.getCurrentScenarioOrBackground).toHaveBeenCalled();
-    });
-
-    it("asks the current scenario for its last step", function() {
-      parser.getCurrentStep();
-      expect(currentScenario.getLastStep).toHaveBeenCalled();
-    });
-
-    it("returns the last step", function() {
-      expect(parser.getCurrentStep()).toBe(lastStep);
+      expect(eventHandlers['row']).toBe(parser.handleDataTableRow);
     });
   });
 
   describe("handleBackground()", function() {
     var keyword, name, description, line;
-    var background, currentFeature;
+    var background;
 
     beforeEach(function() {
       keyword        = createSpy("'background' keyword");
@@ -215,9 +128,8 @@ describe("Cucumber.Parser", function() {
       description    = createSpy("description of the background");
       line           = createSpy("line number");
       background     = createSpyWithStubs("background AST element");
-      currentFeature = createSpyWithStubs("current feature AST element", {addBackground: null});
       spyOn(Cucumber.Ast, 'Background').andReturn(background);
-      spyOn(parser, 'getCurrentFeature').andReturn(currentFeature);
+      spyOnStub(astAssembler, 'insertBackground');
     });
 
     it("creates a new background AST element", function() {
@@ -225,14 +137,9 @@ describe("Cucumber.Parser", function() {
       expect(Cucumber.Ast.Background).toHaveBeenCalledWith(keyword, name, description, line);
     });
 
-    it("gets the current feature", function() {
+    it("tells the AST assembler to insert the background into the tree", function() {
       parser.handleBackground(keyword, name, description, line);
-      expect(parser.getCurrentFeature).toHaveBeenCalled();
-    });
-
-    it("adds the background to the current feature", function() {
-      parser.handleBackground(keyword, name, description, line);
-      expect(currentFeature.addBackground).toHaveBeenCalledWith(background);
+      expect(astAssembler.insertBackground).toHaveBeenCalledWith(background);
     });
   });
 
@@ -244,16 +151,15 @@ describe("Cucumber.Parser", function() {
 
   describe("handleDocString()", function() {
     var contentType, string, line;
-    var currentStep;
+    var docString;
 
     beforeEach(function() {
       contentType = createSpy("DocString's content type");
       string      = createSpy("DocString's actual string");
       line        = createSpy("line number");
       docString   = createSpy("DocString AST element");
-      currentStep = createSpyWithStubs("Current step", {attachDocString: null});
       spyOn(Cucumber.Ast, 'DocString').andReturn(docString);
-      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
+      spyOnStub(astAssembler, 'insertDocString');
     });
 
     it("creates a new DocString AST element", function() {
@@ -261,14 +167,9 @@ describe("Cucumber.Parser", function() {
       expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(contentType, string, line);
     });
 
-    it("gets the current step AST element", function() {
+    it("tells the AST assembler to insert the DocString into the tree", function() {
       parser.handleDocString(contentType, string, line);
-      expect(parser.getCurrentStep).toHaveBeenCalled();
-    });
-
-    it("attaches the DocString element to the current step", function() {
-      parser.handleDocString(contentType, string, line);
-      expect(currentStep.attachDocString).toHaveBeenCalledWith(docString);
+      expect(astAssembler.insertDocString).toHaveBeenCalledWith(docString);
     });
   });
 
@@ -289,7 +190,7 @@ describe("Cucumber.Parser", function() {
       line        = createSpy("Line number");
       feature     = createSpyWithStubs("Feature AST element");
       spyOn(Cucumber.Ast, 'Feature').andReturn(feature);
-      spyOnStub(features, 'addFeature');
+      spyOnStub(astAssembler, 'insertFeature');
     });
 
     it("creates a new feature AST element", function() {
@@ -297,44 +198,38 @@ describe("Cucumber.Parser", function() {
       expect(Cucumber.Ast.Feature).toHaveBeenCalledWith(keyword, name, description, line);
     });
 
-    it("adds the new feature to the root features AST element", function() {
+    it("tells the AST assembler to insert the feature into the tree", function() {
       parser.handleFeature(keyword, name, description, line);
-      expect(features.addFeature).toHaveBeenCalledWith(feature);
+      expect(astAssembler.insertFeature).toHaveBeenCalledWith(feature);
     });
   });
 
-  describe("handleRow()", function() {
-    var row, cells, line;
-    var currentStep;
+  describe("handleDataTableRow()", function() {
+    var cells, line;
+    var dataTableRow;
 
     beforeEach(function() {
-      row         = createSpy("data table row");
-      cells       = createSpy("data table cells");
-      line        = createSpy("line");
-      currentStep = createSpyWithStubs("Current step", {attachDataTableRow: null});
-      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
-      spyOn(Cucumber.Ast.DataTable, 'Row').andReturn(row);
-    });
-
-    it("gets the current step", function() {
-      parser.handleRow(cells, line);
-      expect(parser.getCurrentStep).toHaveBeenCalled();
+      dataTableRow = createSpy("data table row");
+      cells        = createSpy("data table cells");
+      line         = createSpy("line");
+      spyOn(Cucumber.Ast.DataTable, 'Row').andReturn(dataTableRow);
+      spyOnStub(astAssembler, 'insertDataTableRow');
     });
 
     it("creates a new data table row AST element", function() {
-      parser.handleRow(cells, line);
+      parser.handleDataTableRow(cells, line);
       expect(Cucumber.Ast.DataTable.Row).toHaveBeenCalledWith(cells, line);
     });
 
-    it("adds the data table row to the current step", function() {
-      parser.handleRow(cells, line);
-      expect(currentStep.attachDataTableRow).toHaveBeenCalledWith(row);
+    it("tells the AST assembler to insert the data table row into the tree", function() {
+      parser.handleDataTableRow(cells, line);
+      expect(astAssembler.insertDataTableRow).toHaveBeenCalledWith(dataTableRow);
     });
   });
 
   describe("handleScenario()", function() {
-    var keyword, name, description, line, background;
-    var scenario, currentFeature;
+    var keyword, name, description, line;
+    var scenario;
 
     beforeEach(function() {
       keyword        = createSpy("'scenario' keyword");
@@ -342,67 +237,42 @@ describe("Cucumber.Parser", function() {
       description    = createSpy("Description of the scenario");
       line           = createSpy("Line number");
       scenario       = createSpyWithStubs("Scenario AST element");
-      background     = createSpy("background");
-      currentFeature = createSpyWithStubs("Current feature AST element", {addScenario: null, getBackground: background});
       spyOn(Cucumber.Ast, 'Scenario').andReturn(scenario);
-      spyOn(parser, 'getCurrentFeature').andReturn(currentFeature);
-    });
-
-    it("gets the current feature", function() {
-      parser.handleScenario(keyword, name, description, line);
-      expect(parser.getCurrentFeature).toHaveBeenCalled();
-    });
-
-    it("gets the current background", function() {
-      parser.handleScenario(keyword, name, description, line);
-      expect(currentFeature.getBackground).toHaveBeenCalled();
+      spyOnStub(astAssembler, 'insertScenario');
     });
 
     it("creates a new scenario AST element", function() {
       parser.handleScenario(keyword, name, description, line);
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(keyword, name, description, line, background);
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(keyword, name, description, line);
     });
 
-    it("adds the scenario to the current feature", function() {
+    it("tells the AST assembler to insert the scenario into the tree", function() {
       parser.handleScenario(keyword, name, description, line);
-      expect(currentFeature.addScenario).toHaveBeenCalledWith(scenario);
+      expect(astAssembler.insertScenario).toHaveBeenCalledWith(scenario);
     });
   });
 
   describe("handleStep()", function() {
     var keyword, name, line;
-    var step, currentScenario, lastStep;
+    var step;
 
     beforeEach(function() {
       keyword         = createSpy("'step' keyword");
       name            = createSpy("name of the step");
       line            = createSpy("line number");
       step            = createSpy("step AST element");
-      currentScenario = createSpyWithStubs("Current scenario AST element", {addStep: null});
-      currentStep     = createSpy("current step");
       spyOn(Cucumber.Ast, 'Step').andReturn(step);
-      spyOn(parser, 'getCurrentScenarioOrBackground').andReturn(currentScenario);
-      spyOn(parser, 'getCurrentStep').andReturn(currentStep);
-    });
-
-    it("gets the current scenario or background", function() {
-      parser.handleStep(keyword, name, line);
-      expect(parser.getCurrentScenarioOrBackground).toHaveBeenCalled();
-    });
-
-    it("gets the current step (soon to be previous step)", function() {
-      parser.handleStep(keyword, name, line);
-      expect(parser.getCurrentStep).toHaveBeenCalled();
+      spyOnStub(astAssembler, 'insertStep');
     });
 
     it("creates a new step AST element", function() {
       parser.handleStep(keyword, name, line);
-      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, name, line, currentStep);
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, name, line);
     });
 
-    it("adds the step to the current scenario", function() {
-      parser.handleStep(keyword, name, line);
-      expect(currentScenario.addStep).toHaveBeenCalledWith(step);
+    it("tells the AST assembler to insert the step into the tree", function() {
+      parser.handleStep(keyword, name, description, line);
+      expect(astAssembler.insertStep).toHaveBeenCalledWith(step);
     });
   });
 });

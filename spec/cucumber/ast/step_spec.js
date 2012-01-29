@@ -2,17 +2,13 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Step", function() {
   var Cucumber = requireLib('cucumber');
-  var step, keyword, name, line, previousStep;
-  var docString, dataTable;
+  var step, keyword, name, line;
 
   beforeEach(function() {
     name         = createSpy("Step name");
     keyword      = createSpy("Step keyword");
     line         = createSpy("Step line");
-    docString    = createSpy("DocString AST element");
-    dataTable    = createSpy("data table");
-    previousStep = undefined;
-    step         = Cucumber.Ast.Step(keyword, name, line, previousStep);
+    step         = Cucumber.Ast.Step(keyword, name, line);
   });
 
   describe("getKeyword()", function() {
@@ -33,7 +29,33 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
+  describe("hasPreviousStep() [setPreviousStep()]", function() {
+    it("returns true when a previous step was set", function() {
+      var previousStep = createSpy("previous step");
+      step.setPreviousStep(previousStep);
+      expect(step.hasPreviousStep()).toBeTruthy();
+    });
+
+    it("returns false when no previous step was set", function() {
+      expect(step.hasPreviousStep()).toBeFalsy();
+    });
+  });
+
+  describe("getPreviousStep() [setPreviousStep()]", function() {
+    it("returns the previous step that was set as such", function() {
+      var previousStep = createSpy("previous step");
+      step.setPreviousStep(previousStep);
+      expect(step.getPreviousStep()).toBe(previousStep);
+    });
+  });
+
   describe("hasDocString() [attachDocString()]", function() {
+    var docString;
+
+    beforeEach(function() {
+      docString = createSpy("DocString");
+    });
+
     it("returns true when a DocString was attached to the step", function() {
       step.attachDocString(docString);
       expect(step.hasDocString()).toBeTruthy();
@@ -45,6 +67,12 @@ describe("Cucumber.Ast.Step", function() {
   });
 
   describe("getDocString() [attachDocString()]", function() {
+    var docString;
+
+    beforeEach(function() {
+      docString = createSpy("DocString");
+    });
+
     it("returns the DocString that was attached to the step through attachDocString()", function() {
       step.attachDocString(docString);
       expect(step.getDocString()).toBe(docString);
@@ -92,7 +120,10 @@ describe("Cucumber.Ast.Step", function() {
       });
 
       describe("when a data table is attached", function() {
+        var dataTable;
+
         beforeEach(function() {
+          dataTable = createSpy("data table");
           step.hasDataTable.andReturn(true);
           spyOn(step, 'getDataTable').andReturn(dataTable);
         });
@@ -162,12 +193,12 @@ describe("Cucumber.Ast.Step", function() {
         Cucumber.Ast.DataTable.andReturn(dataTable);
       });
 
-      it("creates a new data table AST element", function() {
+      it("creates a new data table", function() {
         step.ensureDataTableIsAttached();
         expect(Cucumber.Ast.DataTable).toHaveBeenCalled();
       });
 
-      it("attaches the new data table AST element to the step", function() {
+      it("attaches the new data table to the step", function() {
         step.ensureDataTableIsAttached();
         expect(step.attachDataTable).toHaveBeenCalledWith(dataTable);
       });
@@ -179,7 +210,7 @@ describe("Cucumber.Ast.Step", function() {
         step.getDataTable.andReturn(dataTable);
       });
 
-      it("does not create a new data table AST element", function() {
+      it("does not create a new data table", function() {
         step.ensureDataTableIsAttached();
         expect(Cucumber.Ast.DataTable).not.toHaveBeenCalled();
       });
@@ -192,6 +223,12 @@ describe("Cucumber.Ast.Step", function() {
   });
 
   describe("hasDataTable() [attachDataTable()]", function() {
+    var dataTable;
+
+    beforeEach(function() {
+      dataTable = createSpy("data table");
+    });
+
     it("returns true when a data table was attached to the step", function() {
       step.attachDataTable(dataTable);
       expect(step.hasDataTable()).toBeTruthy();
@@ -282,7 +319,7 @@ describe("Cucumber.Ast.Step", function() {
 
   describe("hasOutcomeStepKeyword()", function() {
     it("returns true when the keyword is 'Then '", function() {
-      step = Cucumber.Ast.Step('Then ', name, line, previousStep);
+      step = Cucumber.Ast.Step('Then ', name, line);
       expect(step.hasOutcomeStepKeyword()).toBeTruthy();
     });
 
@@ -293,7 +330,7 @@ describe("Cucumber.Ast.Step", function() {
 
   describe("hasEventStepKeyword()", function() {
     it("returns true when the keyword is 'When '", function() {
-      step = Cucumber.Ast.Step('When ', name, line, previousStep);
+      step = Cucumber.Ast.Step('When ', name, line);
       expect(step.hasEventStepKeyword()).toBeTruthy();
     });
 
@@ -420,17 +457,17 @@ describe("Cucumber.Ast.Step", function() {
 
   describe("hasRepeatStepKeyword()", function() {
     it("returns true when the keyword is 'And '", function() {
-      step = Cucumber.Ast.Step('And ', name, line, previousStep);
+      step = Cucumber.Ast.Step('And ', name, line);
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
     it("returns true when the keyword is 'But '", function() {
-      step = Cucumber.Ast.Step('But ', name, line, previousStep);
+      step = Cucumber.Ast.Step('But ', name, line);
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
     it("returns true when the keyword is '* '", function() {
-      step = Cucumber.Ast.Step('* ', name, line, previousStep);
+      step = Cucumber.Ast.Step('* ', name, line);
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
@@ -440,17 +477,37 @@ describe("Cucumber.Ast.Step", function() {
   });
 
   describe("isPrecededByOutcomeStep()", function() {
+    beforeEach(function() {
+      spyOn(step, 'hasPreviousStep');
+    });
+
+    it("checks wether there is a previous step or not", function() {
+      step.isPrecededByOutcomeStep();
+      expect(step.hasPreviousStep).toHaveBeenCalled();
+    });
+
     describe("when there are no previous steps", function() {
-      it("returns false", function() {
+      beforeEach(function() {
+        step.hasPreviousStep.andReturn(false);
+      });
+
+      it("is falsy", function() {
         expect(step.isPrecededByOutcomeStep()).toBeFalsy();
       });
     });
 
     describe("when there is a previous step", function() {
+      var previousStep;
+
       beforeEach(function() {
-        isPreviousStepOutcomeStep = createSpy("wether the previous step is an outcome step or not");
-        previousStep              = createSpyWithStubs("previous step", {isOutcomeStep: isPreviousStepOutcomeStep});
-        step                      = Cucumber.Ast.Step(keyword, name, line, previousStep);
+        step.hasPreviousStep.andReturn(true);
+        previousStep = createSpyWithStubs("previous step", {isOutcomeStep: null});
+        spyOn(step, 'getPreviousStep').andReturn(previousStep);
+      });
+
+      it("gets the previous step", function() {
+        step.isPrecededByOutcomeStep();
+        expect(step.getPreviousStep).toHaveBeenCalled();
       });
 
       it("checks wether the previous step is an outcome step or not", function() {
@@ -458,24 +515,60 @@ describe("Cucumber.Ast.Step", function() {
         expect(previousStep.isOutcomeStep).toHaveBeenCalled();
       });
 
-      it("returns wether the previous step is an outcome step or not", function() {
-        expect(step.isPrecededByOutcomeStep()).toBe(isPreviousStepOutcomeStep);
+      describe("when the previous step is an outcome step", function() {
+        beforeEach(function() {
+          previousStep.isOutcomeStep.andReturn(true);
+        });
+
+        it("is truthy", function() {
+          expect(step.isPrecededByOutcomeStep()).toBeTruthy();
+        });
+      });
+
+      describe("when the previous step is not an outcome step", function() {
+        beforeEach(function() {
+          previousStep.isOutcomeStep.andReturn(false);
+        });
+
+        it("is falsy", function() {
+          expect(step.isPrecededByOutcomeStep()).toBeFalsy();
+        });
       });
     });
   });
 
   describe("isPrecededByEventStep()", function() {
+    beforeEach(function() {
+      spyOn(step, 'hasPreviousStep');
+    });
+
+    it("checks wether there is a previous step or not", function() {
+      step.isPrecededByEventStep();
+      expect(step.hasPreviousStep).toHaveBeenCalled();
+    });
+
     describe("when there are no previous steps", function() {
-      it("returns false", function() {
+      beforeEach(function() {
+        step.hasPreviousStep.andReturn(false);
+      });
+
+      it("is falsy", function() {
         expect(step.isPrecededByEventStep()).toBeFalsy();
       });
     });
 
     describe("when there is a previous step", function() {
+      var previousStep;
+
       beforeEach(function() {
-        isPreviousStepEventStep = createSpy("wether the previous step is an event step or not");
-        previousStep            = createSpyWithStubs("previous step", {isEventStep: isPreviousStepEventStep});
-        step                    = Cucumber.Ast.Step(keyword, name, line, previousStep);
+        step.hasPreviousStep.andReturn(true);
+        previousStep = createSpyWithStubs("previous step", {isEventStep: null});
+        spyOn(step, 'getPreviousStep').andReturn(previousStep);
+      });
+
+      it("gets the previous step", function() {
+        step.isPrecededByEventStep();
+        expect(step.getPreviousStep).toHaveBeenCalled();
       });
 
       it("checks wether the previous step is an event step or not", function() {
@@ -483,8 +576,24 @@ describe("Cucumber.Ast.Step", function() {
         expect(previousStep.isEventStep).toHaveBeenCalled();
       });
 
-      it("returns wether the previous step is an event step or not", function() {
-        expect(step.isPrecededByEventStep()).toBe(isPreviousStepEventStep);
+      describe("when the previous step is an event step", function() {
+        beforeEach(function() {
+          previousStep.isEventStep.andReturn(true);
+        });
+
+        it("is truthy", function() {
+          expect(step.isPrecededByEventStep()).toBeTruthy();
+        });
+      });
+
+      describe("when the previous step is not an event step", function() {
+        beforeEach(function() {
+          previousStep.isEventStep.andReturn(false);
+        });
+
+        it("is falsy", function() {
+          expect(step.isPrecededByEventStep()).toBeFalsy();
+        });
       });
     });
   });

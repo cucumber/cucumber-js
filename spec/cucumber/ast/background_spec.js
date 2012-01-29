@@ -49,8 +49,25 @@ describe("Cucumber.Ast.Background", function() {
   });
 
   describe("addStep()", function() {
+    var step, lastStep;
+
+    beforeEach(function() {
+      step = createSpyWithStubs("step AST element", {setPreviousStep: null});
+      lastStep = createSpy("last step");
+      spyOn(background, 'getLastStep').andReturn(lastStep);
+    });
+
+    it("gets the last step", function() {
+      background.addStep(step);
+      expect(background.getLastStep).toHaveBeenCalled();
+    });
+
+    it("sets the last step as the previous step", function() {
+      background.addStep(step);
+      expect(step.setPreviousStep).toHaveBeenCalledWith(lastStep);
+    });
+
     it("adds the step to the steps (collection)", function() {
-      var step = createSpy("step AST element");
       background.addStep(step);
       expect(steps.add).toHaveBeenCalledWith(step);
     });

@@ -83,8 +83,25 @@ describe("Cucumber.Ast.Feature", function() {
   });
 
   describe("addScenario()", function() {
+    var scenario, background;
+
+    beforeEach(function() {
+      scenario  = createSpyWithStubs("scenario AST element", {setBackground: null});
+      background = createSpy("scenario background");
+      spyOn(feature, 'getBackground').andReturn(background);
+    });
+
+    it("gets the background", function() {
+      feature.addScenario(scenario);
+      expect(feature.getBackground).toHaveBeenCalled();
+    });
+
+    it("sets the background on the scenario", function() {
+      feature.addScenario(scenario);
+      expect(scenario.setBackground).toHaveBeenCalledWith(background);
+    });
+
     it("adds the scenario to the scenarios (collection)", function() {
-      var scenario = createSpy("scenario AST element");
       feature.addScenario(scenario);
       expect(scenarioCollection.add).toHaveBeenCalledWith(scenario);
     });
