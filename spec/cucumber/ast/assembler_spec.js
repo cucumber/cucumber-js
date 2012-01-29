@@ -9,95 +9,70 @@ describe("Cucumber.Ast.Assembler", function() {
     assembler = Cucumber.Ast.Assembler(features);
   });
 
-  describe("getCurrentFeature()", function() {
-    var lastFeature;
-
-    beforeEach(function() {
-      lastFeature = createSpy("Last recorded feature");
-      spyOnStub(features, 'getLastFeature').andReturn(lastFeature);
-    });
-
-    it("gets the last feature from the root features", function() {
-      assembler.getCurrentFeature();
-      expect(features.getLastFeature).toHaveBeenCalled();
-    });
-
-    it("returns the last feature", function() {
-      expect(assembler.getCurrentFeature()).toEqual(lastFeature);
-    });
-  });
-
-  describe("getCurrentScenarioOrBackground()", function() {
+  describe("setCurrentFeature()", function() {
     var currentFeature;
 
     beforeEach(function() {
-      currentFeature = createSpyWithStubs("Current feature", {getLastScenario: undefined, getBackground: undefined});
-      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
+      currentFeature = createSpy("current feature");
+      spyOn(assembler, 'setCurrentScenarioOrBackground');
     });
 
-    it("gets the current feature", function() {
-      assembler.getCurrentScenarioOrBackground();
-      expect(assembler.getCurrentFeature).toHaveBeenCalled();
-    });
-
-    it("asks the current feature for its last scenario", function() {
-      assembler.getCurrentScenarioOrBackground();
-      expect(currentFeature.getLastScenario).toHaveBeenCalled();
-    });
-
-    describe("when there is a last scenario", function() {
-      var lastScenario;
-
-      beforeEach(function() {
-        lastScenario = createSpy("Last scenario of the feature");
-        currentFeature.getLastScenario.andReturn(lastScenario);
-      });
-
-      it("returns the last scenario", function() {
-        expect(assembler.getCurrentScenarioOrBackground()).toBe(lastScenario);
-      });
-    });
-
-    describe("when there is no last scenario", function() {
-      var background;
-
-      beforeEach(function() {
-        background = createSpy("background");
-        spyOnStub(currentFeature, 'getBackground').andReturn(background);
-      });
-
-      it("gets the background", function() {
-        assembler.getCurrentScenarioOrBackground();
-        expect(currentFeature.getBackground).toHaveBeenCalled();
-      });
-
-      it("returns the background", function() {
-        expect(assembler.getCurrentScenarioOrBackground()).toBe(background);
-      });
+    it("unsets the current scenario", function() {
+      assembler.setCurrentFeature(currentFeature);
+      expect(assembler.setCurrentScenarioOrBackground).toHaveBeenCalledWith(undefined);
     });
   });
 
-  describe("getCurrentStep()", function() {
-    var currentScenario, lastStep;
+  describe("getCurrentFeature() [setCurrentFeature()]", function() {
+    var currentFeature;
 
     beforeEach(function() {
-      lastStep = createSpy("Last step of the scenario");
-      currentScenario = createSpyWithStubs("Current scenario", {getLastStep: lastStep});
-      spyOn(assembler, 'getCurrentScenarioOrBackground').andReturn(currentScenario);
+      currentFeature = createSpy("current feature");
     });
 
-    it("gets the current scenario or background", function() {
-      assembler.getCurrentStep();
-      expect(assembler.getCurrentScenarioOrBackground).toHaveBeenCalled();
+    it("returns the current feature", function() {
+      assembler.setCurrentFeature(currentFeature);
+      expect(assembler.getCurrentFeature()).toBe(currentFeature);
+    });
+  });
+
+  describe("setCurrentScenarioOrBackground()", function() {
+    var currentScenarioOrBackground;
+
+    beforeEach(function() {
+      currentScenarioOrBackground = createSpy("current scenario or background");
+      spyOn(assembler, 'setCurrentStep');
     });
 
-    it("asks the current scenario or background for its last step", function() {
-      assembler.getCurrentStep();
-      expect(currentScenario.getLastStep).toHaveBeenCalled();
+    it("unsets the current step", function() {
+      assembler.setCurrentScenarioOrBackground(currentScenarioOrBackground);
+      expect(assembler.setCurrentStep).toHaveBeenCalledWith(undefined);
+    });
+  });
+
+  describe("getCurrentScenarioOrBackground() [setCurrentScenarioOrBackground()]", function() {
+    var currentScenarioOrBackground;
+
+    beforeEach(function() {
+      currentScenarioOrBackground = createSpy("current scenario or background");
     });
 
-    it("returns the last step", function() {
-      expect(assembler.getCurrentStep()).toBe(lastStep);
+    it("returns the current scenario or background", function() {
+      assembler.setCurrentScenarioOrBackground(currentScenarioOrBackground);
+      expect(assembler.getCurrentScenarioOrBackground()).toBe(currentScenarioOrBackground);
+    });
+  });
+
+  describe("getCurrentStep() [setCurrentStep()]", function() {
+    var currentStep;
+
+    beforeEach(function() {
+      currentStep = createSpy("current step");
+    });
+
+    it("returns the current step", function() {
+      assembler.setCurrentStep(currentStep);
+      expect(assembler.getCurrentStep()).toBe(currentStep);
     });
   });
 
@@ -108,6 +83,12 @@ describe("Cucumber.Ast.Assembler", function() {
       background     = createSpy("background");
       currentFeature = createSpyWithStubs("current feature", {addBackground: null});
       spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
+      spyOn(assembler, 'setCurrentScenarioOrBackground');
+    });
+
+    it("sets the background as the current background", function() {
+      assembler.insertBackground(background);
+      expect(assembler.setCurrentScenarioOrBackground).toHaveBeenCalledWith(background);
     });
 
     it("gets the current feature", function() {
@@ -127,6 +108,12 @@ describe("Cucumber.Ast.Assembler", function() {
     beforeEach(function() {
       feature = createSpy("feature");
       spyOnStub(features, 'addFeature');
+      spyOn(assembler, 'setCurrentFeature');
+    });
+
+    it("sets the feature as the current feature", function() {
+      assembler.insertFeature(feature);
+      expect(assembler.setCurrentFeature).toHaveBeenCalledWith(feature);
     });
 
     it("adds the feature to the root features", function() {
@@ -182,6 +169,12 @@ describe("Cucumber.Ast.Assembler", function() {
       scenario     = createSpy("scenario");
       currentFeature = createSpyWithStubs("current feature", {addScenario: null});
       spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
+      spyOn(assembler, 'setCurrentScenarioOrBackground');
+    });
+
+    it("sets the scenario as the current scenario", function() {
+      assembler.insertScenario(scenario);
+      expect(assembler.setCurrentScenarioOrBackground).toHaveBeenCalledWith(scenario);
     });
 
     it("gets the current feature", function() {
@@ -202,6 +195,12 @@ describe("Cucumber.Ast.Assembler", function() {
       step                        = createSpy("step");
       currentScenarioOrBackground = createSpyWithStubs("current scenario or background", {addStep: null});
       spyOn(assembler, 'getCurrentScenarioOrBackground').andReturn(currentScenarioOrBackground);
+      spyOn(assembler, 'setCurrentStep');
+    });
+
+    it("sets the step as the current step", function() {
+      assembler.insertStep(step);
+      expect(assembler.setCurrentStep).toHaveBeenCalledWith(step);
     });
 
     it("gets the current scenario or background", function() {
