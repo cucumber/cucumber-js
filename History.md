@@ -2,7 +2,7 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.4...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.5...master)
 
 **TBD**
 
