@@ -92,11 +92,18 @@ describe("Cucumber.Ast.Scenario", function() {
     });
   });
 
-  describe("getTags() [setTags()]", function() {
+  describe("getTags() [addTags()]", function() {
+    it("returns an empty set when no tags were added", function() {
+      expect(scenario.getTags()).toEqual([]);
+    });
+
     it("returns the tags", function() {
-      var tags = createSpy("tags");
-      scenario.setTags(tags);
-      expect(scenario.getTags()).toBe(tags);
+      var tag1 = createSpy("tag 1");
+      var tag2 = createSpy("tag 2");
+      var tag3 = createSpy("tag 3");
+      scenario.addTags([tag1, tag2]);
+      scenario.addTags([tag3]);
+      expect(scenario.getTags()).toEqual([tag1, tag2, tag3]);
     });
   });
 

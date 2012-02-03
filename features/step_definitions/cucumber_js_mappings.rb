@@ -134,22 +134,17 @@ this.#{define_hook}(function(callback) {
 EOF
   end
 
-  def write_scenario
-    provide_cycle_logging_facilities
-    append_step_definition("a step", "this.logCycleEvent('step');\ncallback();")
-    scenario_with_steps("A scenario", "Given a step")
-  end
+  def write_scenario options = {}
+    tags = options[:with_tags] || []
 
-  def write_passing_scenario_with_tags(tags)
-    tags = [tags] unless tags.respond_to? :any?
     @next_step_count ||= 0
     step_name = nth_step_name @next_step_count += 1
+    tags_definition = tags.any? ? "\n  #{tags.join(' ')}" : ""
     provide_cycle_logging_facilities
     append_step_definition(step_name, "this.logCycleEvent('#{step_name}');\ncallback();")
     append_to_feature <<-EOF
-
-  #{tags.join(' ')}
-  Scenario: scenario tagged with #{tags.join(', ')}
+#{tags_definition}
+  Scenario: scenario #{"tagged with " + tags.join(', ') if tags.any?}
     Given #{step_name}
 EOF
   end

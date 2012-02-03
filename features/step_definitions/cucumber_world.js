@@ -88,8 +88,17 @@ proto.addPassingScenarioWithTags = function addPassingScenarioWithTags(tags) {
 });\n";
 };
 
-proto.createEmptyFeature = function createEmptyFeature() {
+proto.addPassingScenarioWithoutTags = function addPassingScenarioWithoutTags() {
+  this.addPassingScenarioWithTags([]);
+};
+
+proto.createEmptyFeature = function createEmptyFeature(options) {
+  options = options || {};
+  tags    = options['tags'] || [];
+
   if (!this.emptyFeatureReady) {
+    if (tags.length > 0)
+      this.featureSource += tags.join(' ') + "\n";
     this.featureSource += "Feature: A feature\n\n";
     this.emptyFeatureReady = true;
   }

@@ -99,11 +99,37 @@ describe("Cucumber.Ast.Assembler", function() {
     });
   });
 
+  describe("applyCurrentFeatureTagsToElement()", function() {
+    var feature, featureTags, element;
+
+    beforeEach(function() {
+      element     = createSpyWithStubs("AST element", {addTags: null});
+      featureTags = createSpy("feature tags");
+      feature     = createSpyWithStubs("current feature", {getTags: featureTags});
+      spyOn(assembler, 'getCurrentFeature').andReturn(feature);
+    });
+
+    it("gets the current feature", function() {
+      assembler.applyCurrentFeatureTagsToElement(element);
+      expect(assembler.getCurrentFeature).toHaveBeenCalled();
+    });
+
+    it("gets the feature tags", function() {
+      assembler.applyCurrentFeatureTagsToElement(element);
+      expect(feature.getTags).toHaveBeenCalled();
+    });
+
+    it("adds the feature tags to the element", function() {
+      assembler.applyCurrentFeatureTagsToElement(element);
+      expect(element.addTags).toHaveBeenCalledWith(featureTags);
+    });
+  });
+
   describe("applyStashedTagsToElement()", function() {
     var element, revealedTags;
 
     beforeEach(function() {
-      element      = createSpyWithStubs("any AST element accepting tags", {setTags: null});
+      element      = createSpyWithStubs("any AST element accepting tags", {addTags: null});
       revealedTags = createSpy("revealed tags");
       spyOn(assembler, 'revealTags').andReturn(revealedTags);
     });
@@ -113,9 +139,9 @@ describe("Cucumber.Ast.Assembler", function() {
       expect(assembler.revealTags).toHaveBeenCalled();
     });
 
-    it("sets the tags to the element", function() {
+    it("adds the tags to the element", function() {
       assembler.applyStashedTagsToElement(element);
-      expect(element.setTags).toHaveBeenCalledWith(revealedTags);
+      expect(element.addTags).toHaveBeenCalledWith(revealedTags);
     });
   });
 
@@ -217,10 +243,16 @@ describe("Cucumber.Ast.Assembler", function() {
     beforeEach(function() {
       scenario       = createSpy("scenario");
       currentFeature = createSpyWithStubs("current feature", {addScenario: null});
-      spyOn(assembler, 'applyStashedTagsToElement');
       spyOnStub(filter, 'isScenarioEnrolled');
+      spyOn(assembler, 'applyStashedTagsToElement');
+      spyOn(assembler, 'applyCurrentFeatureTagsToElement');
       spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
       spyOn(assembler, 'setCurrentScenarioOrBackground');
+    });
+
+    it("applies the current feature tags to the scenario", function() {
+      assembler.insertScenario(scenario);
+      expect(assembler.applyCurrentFeatureTagsToElement).toHaveBeenCalledWith(scenario);
     });
 
     it("applies the stashed tags to the scenario", function() {
@@ -239,7 +271,6 @@ describe("Cucumber.Ast.Assembler", function() {
     });
 
     describe("when the scenario is enrolled", function() {
-
       beforeEach(function() {
         filter.isScenarioEnrolled.andReturn(true);
       });
@@ -256,7 +287,6 @@ describe("Cucumber.Ast.Assembler", function() {
     });
 
     describe("when the scenario is not enrolled", function() {
-
       beforeEach(function() {
         filter.isScenarioEnrolled.andReturn(false);
       });

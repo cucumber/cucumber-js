@@ -77,6 +77,11 @@ var cucumberSteps = function() {
     callback();
   });
 
+  this.Given(/^a scenario without any tags$/, function(callback) {
+    this.addPassingScenarioWithoutTags();
+    callback();
+  });
+
   Given(/^a scenario tagged with "([^"]*)"$/, function(tag, callback) {
     this.addPassingScenarioWithTags([tag]);
     callback();
@@ -87,8 +92,13 @@ var cucumberSteps = function() {
     callback();
   });
 
-  this.Given(/^a scenario tagged with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
+  Given(/^a scenario tagged with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
     this.addPassingScenarioWithTags([tag1, tag2, tag3]);
+    callback();
+  });
+
+  Given(/^a feature tagged with "([^"]*)"$/, function(tag, callback) {
+    this.createEmptyFeature({tags: [tag]});
     callback();
   });
 
@@ -225,7 +235,7 @@ callback();\
     callback();
   });
 
-  Then(/^only the first scenario is executed$/, function(callback) {
+  Then(/^(?:only the first|the) scenario is executed$/, function(callback) {
     this.assertExecutedNumberedScenarios(1);
     callback();
   });

@@ -118,11 +118,18 @@ describe("Cucumber.Ast.Feature", function() {
     });
   });
 
-  describe("getTags() [setTags()]", function() {
+  describe("getTags() [addTags()]", function() {
+    it("returns an empty set when no tags were added", function() {
+      expect(feature.getTags()).toEqual([]);
+    });
+
     it("returns the tags", function() {
-      var tags = createSpy("tags");
-      feature.setTags(tags);
-      expect(feature.getTags()).toBe(tags);
+      var tag1 = createSpy("tag 1");
+      var tag2 = createSpy("tag 2");
+      var tag3 = createSpy("tag 3");
+      feature.addTags([tag1, tag2]);
+      feature.addTags([tag3]);
+      expect(feature.getTags()).toEqual([tag1, tag2, tag3]);
     });
   });
 
