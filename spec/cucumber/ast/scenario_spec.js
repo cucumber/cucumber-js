@@ -92,6 +92,14 @@ describe("Cucumber.Ast.Scenario", function() {
     });
   });
 
+  describe("getTags() [setTags()]", function() {
+    it("returns the tags", function() {
+      var tags = createSpy("tags");
+      scenario.setTags(tags);
+      expect(scenario.getTags()).toBe(tags);
+    });
+  });
+
   describe("acceptVisitor", function() {
     var visitor, callback;
 

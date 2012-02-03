@@ -3,10 +3,11 @@ require('../support/spec_helper');
 describe("Cucumber.Parser", function() {
   var Cucumber = requireLib('cucumber');
   var parser, featureSources;
-  var features, astAssembler;
+  var features, astFilter, astAssembler;
 
   beforeEach(function() {
     features       = createSpy("Root 'features' AST element");
+    astFilter      = createSpy("AST filter");
     featureSources = [
       ["(feature:1)", createSpy('first feature source')],
       ["(feature:2)", createSpy('second feature source')]
@@ -14,7 +15,7 @@ describe("Cucumber.Parser", function() {
     astAssembler   = createSpy("AST assembler");
     spyOn(Cucumber.Ast, 'Features').andReturn(features);
     spyOn(Cucumber.Ast, 'Assembler').andReturn(astAssembler);
-    parser = Cucumber.Parser(featureSources);
+    parser = Cucumber.Parser(featureSources, astFilter);
   });
 
   describe("constructor", function() {
@@ -23,7 +24,7 @@ describe("Cucumber.Parser", function() {
     });
 
     it("instantiates an AST assembler", function() {
-      expect(Cucumber.Ast.Assembler).toHaveBeenCalledWith(features);
+      expect(Cucumber.Ast.Assembler).toHaveBeenCalledWith(features, astFilter);
     });
   });
 
@@ -115,6 +116,12 @@ describe("Cucumber.Parser", function() {
       spyOn(parser, 'handleDataTableRow');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['row']).toBe(parser.handleDataTableRow);
+    });
+
+    it("provides a 'tag' handler", function() {
+      spyOn(parser, 'handleTag');
+      eventHandlers = parser.getEventHandlers();
+      expect(eventHandlers['tag']).toBe(parser.handleTag);
     });
   });
 
@@ -273,6 +280,28 @@ describe("Cucumber.Parser", function() {
     it("tells the AST assembler to insert the step into the tree", function() {
       parser.handleStep(keyword, name, description, line);
       expect(astAssembler.insertStep).toHaveBeenCalledWith(step);
+    });
+  });
+
+  describe("handleTag()", function() {
+    var name, line;
+
+    beforeEach(function() {
+      name = createSpy("tag name");
+      line = createSpy("line number");
+      tag  = createSpy("tag AST element");
+      spyOn(Cucumber.Ast, 'Tag').andReturn(tag);
+      spyOnStub(astAssembler, 'insertTag');
+    });
+
+    it("creates a new tag AST element", function() {
+      parser.handleTag(name, line);
+      expect(Cucumber.Ast.Tag).toHaveBeenCalledWith(name, line);
+    });
+
+    it("tells the AST assembler to insert the tag into the tree", function() {
+      parser.handleTag(name, line);
+      expect(astAssembler.insertTag).toHaveBeenCalledWith(tag);
     });
   });
 });

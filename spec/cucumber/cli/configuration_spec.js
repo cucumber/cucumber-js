@@ -60,6 +60,31 @@ describe("Cucumber.Cli.Configuration", function() {
     });
   });
 
+  describe("getAstFilter()", function() {
+    var astFilter, tagFilterRules;
+
+    beforeEach(function() {
+      astFilter      = createSpyWithStubs("AST filter");
+      tagFilterRules = createSpy("tag specs");
+      spyOn(Cucumber.Ast, 'Filter').andReturn(astFilter);
+      spyOn(configuration, 'getTagAstFilterRules').andReturn(tagFilterRules);
+    });
+
+    it("gets the tag filter rules", function() {
+      configuration.getAstFilter();
+      expect(configuration.getTagAstFilterRules).toHaveBeenCalled();
+    });
+
+    it("instantiates an AST filter", function() {
+      configuration.getAstFilter();
+      expect(Cucumber.Ast.Filter).toHaveBeenCalledWith(tagFilterRules);
+    });
+
+    it("returns the AST filter", function() {
+      expect(configuration.getAstFilter()).toBe(astFilter);
+    });
+  });
+
   describe("getSupportCodeLibrary()", function() {
     var supportCodeFilePaths, supportCodeLoader, supportCodeLibrary;
 
@@ -89,6 +114,33 @@ describe("Cucumber.Cli.Configuration", function() {
 
     it("returns the support code library", function() {
       expect(configuration.getSupportCodeLibrary()).toBe(supportCodeLibrary);
+    });
+  });
+
+  describe("getTagAstFilterRules()", function() {
+    var tagGroups, rules;
+
+    beforeEach(function() {
+      tagGroups = [createSpy("tag group 1"), createSpy("tag group 2"), createSpy("tag group 3")];
+      rules     = [createSpy("any of tags rule 1"), createSpy("any of tags rule 2"), createSpy("any of tags rule 3")];
+      spyOnStub(argumentParser, 'getTagGroups').andReturn(tagGroups);
+      spyOn(Cucumber.Ast.Filter, 'AnyOfTagsRule').andReturnSeveral(rules);
+    });
+
+    it("gets the tag groups from the argument parser", function() {
+      configuration.getTagAstFilterRules();
+      expect(argumentParser.getTagGroups).toHaveBeenCalled();
+    });
+
+    it("creates an 'any of tags' filter rule per each group", function() {
+      configuration.getTagAstFilterRules();
+      tagGroups.forEach(function(tagGroup) {
+        expect(Cucumber.Ast.Filter.AnyOfTagsRule).toHaveBeenCalledWith(tagGroup);
+      });
+    });
+
+    it("returns all the rules", function() {
+      expect(configuration.getTagAstFilterRules()).toEqual(rules);
     });
   });
 

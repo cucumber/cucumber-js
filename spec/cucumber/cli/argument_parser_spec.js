@@ -59,6 +59,11 @@ describe("Cucumber.Cli.ArgumentParser", function() {
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_NAME]).toEqual([path, Array]);
     });
 
+    it("defines a --tags option to include and exclude tags", function() {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.TAGS_OPTION_NAME]).toEqual([String, Array]);
+    });
+
     it("defines a --help flag", function() {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
@@ -236,6 +241,55 @@ describe("Cucumber.Cli.ArgumentParser", function() {
 
     it("returns the unexpanded support code file paths", function() {
       expect(argumentParser.getUnexpandedSupportCodeFilePaths()).toBe(unexpandedSupportCodeFilePaths);
+    });
+  });
+
+  describe("getTagGroups()", function() {
+    var _ = require('underscore');
+
+    var tagOptionValues, tagGroups;
+
+    beforeEach(function() {
+      tagOptionValues = createSpy("tag option values");
+      tagGroups       = createSpy("tag groups");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(tagOptionValues);
+      spyOn(_, 'map').andReturn(tagGroups);
+    });
+
+    it("gets the tag option values", function() {
+      argumentParser.getTagGroups();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.TAGS_OPTION_NAME, []);
+    });
+
+    it("maps the tag groups", function() {
+      argumentParser.getTagGroups();
+      expect(_.map).toHaveBeenCalled();
+      expect(_.map).toHaveBeenCalledWithValueAsNthParameter(tagOptionValues, 1);
+      expect(_.map).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+    });
+
+    describe("tag group mapper function", function() {
+      var tagGroupMapperFunc, tagOptionValue, tagGroup;
+
+      beforeEach(function() {
+        tagGroup       = createSpy("tag group");
+        tagOptionValue = createSpyWithStubs("tag option value", {split: tagGroup});
+        argumentParser.getTagGroups();
+        tagGroupMapperFunc = _.map.mostRecentCall.args[1];
+      });
+
+      it("splits the tag option value based on commas", function() {
+        tagGroupMapperFunc(tagOptionValue);
+        expect(tagOptionValue.split).toHaveBeenCalledWith(',');
+      });
+
+      it("returns the splitted tag group", function() {
+        expect(tagGroupMapperFunc(tagOptionValue)).toBe(tagGroup);
+      });
+    });
+
+    it("returns the tag option values", function() {
+      expect(argumentParser.getTagGroups()).toBe(tagGroups);
     });
   });
 

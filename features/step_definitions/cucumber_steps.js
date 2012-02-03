@@ -77,8 +77,23 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^a scenario tagged with "([^"]*)"$/, function(tag, callback) {
+    this.addPassingScenarioWithTags([tag]);
+    callback();
+  });
+
+  Given(/^a scenario tagged with "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, callback) {
+    this.addPassingScenarioWithTags([tag1, tag2]);
+    callback();
+  });
+
+  this.Given(/^a scenario tagged with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
+    this.addPassingScenarioWithTags([tag1, tag2, tag3]);
+    callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
-    this.runFeature(callback);
+    this.runFeature({}, callback);
   });
 
   When(/^Cucumber executes a scenario$/, function(callback) {
@@ -86,22 +101,54 @@ var cucumberSteps = function() {
   });
 
   When(/^Cucumber runs the feature$/, function(callback) {
-    this.runFeature(callback);
+    this.runFeature({}, callback);
   });
 
   When(/^Cucumber runs the scenario with steps for a calculator$/, function(callback) {
     RpnCalculator = require('../support/rpn_calculator');
     var supportCode = function() { require('./calculator_steps').initialize.call(this, RpnCalculator) };
-    this.runFeatureWithSupportCodeSource(supportCode, callback);
+    this.runFeatureWithSupportCodeSource(supportCode, {}, callback);
   });
 
   When(/^the data table is passed to a step mapping that converts it to key\/value pairs$/, function(callback) {
     this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
-  world.dataTableLog = dataTable.hashes();\
-  callback();\
+world.dataTableLog = dataTable.hashes();\
+callback();\
 });\n";
-    this.runFeature(callback);
+    this.runFeature({}, callback);
   });
+
+  When(/^Cucumber executes scenarios tagged with "([^"]*)"$/, function(tag, callback) {
+    this.runFeature({tags: [[tag]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios not tagged with "([^"]*)"$/, function(tag, callback) {
+    this.runFeature({tags: [['~'+tag]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios tagged with "([^"]*)" or "([^"]*)"$/, function(tag1, tag2, callback) {
+    this.runFeature({tags: [[tag1, tag2]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios tagged with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, callback) {
+    this.runFeature({tags: [[tag1], [tag2]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios not tagged with "([^"]*)" nor "([^"]*)"$/, function(tag1, tag2, callback) {
+    this.runFeature({tags: [['~'+tag1], ['~'+tag2]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios not tagged with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, callback) {
+    this.runFeature({tags: [['~'+tag1, '~'+tag2]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios tagged with "([^"]*)" or without "([^"]*)"$/, function(tag1, tag2, callback) {
+    this.runFeature({tags: [[tag1, '~'+tag2]]}, callback);
+  });
+
+  When(/^Cucumber executes scenarios tagged with "([^"]*)" but not with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
+    this.runFeature({tags: [[tag1], ['~'+tag2], ['~'+tag3]]}, callback);
+});
 
   Then(/^the scenario passes$/, function(callback) {
     this.assertPassedScenario();
@@ -175,6 +222,26 @@ var cucumberSteps = function() {
 
   Then(/^an error about the missing World instance is raised$/, function(callback) {
     this.assertFailureMessage("World constructor called back without World instance");
+    callback();
+  });
+
+  Then(/^only the first scenario is executed$/, function(callback) {
+    this.assertExecutedNumberedScenarios(1);
+    callback();
+  });
+
+  Then(/^only the first two scenarios are executed$/, function(callback) {
+    this.assertExecutedNumberedScenarios(1, 2);
+    callback();
+  });
+
+  Then(/^only the third scenario is executed$/, function(callback) {
+    this.assertExecutedNumberedScenarios(3);
+    callback();
+  });
+
+  Then(/^only the second, third and fourth scenarios are executed$/, function(callback) {
+    this.assertExecutedNumberedScenarios(2, 3, 4);
     callback();
   });
 };

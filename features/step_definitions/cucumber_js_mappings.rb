@@ -18,6 +18,15 @@ module CucumberJsMappings
     run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
   end
 
+  def run_feature_with_tag_groups tag_groups
+    write_main_step_definitions_file
+    command = "#{cucumber_bin} #{FEATURE_FILE}"
+    tag_groups.each do |tag_group|
+      command += " --tags #{tag_group.join(',')}"
+    end
+    run_simple command, false
+  end
+
   def cucumber_bin
     File.expand_path(File.dirname(__FILE__) + '/../../bin/cucumber.js')
   end
@@ -131,17 +140,31 @@ EOF
     scenario_with_steps("A scenario", "Given a step")
   end
 
-  def provide_cycle_logging_facilities
-    return if @cycle_logging_facilities_ready
+  def write_passing_scenario_with_tags(tags)
+    tags = [tags] unless tags.respond_to? :any?
+    @next_step_count ||= 0
+    step_name = nth_step_name @next_step_count += 1
+    provide_cycle_logging_facilities
+    append_step_definition(step_name, "this.logCycleEvent('#{step_name}');\ncallback();")
+    append_to_feature <<-EOF
 
-    @cycle_logging_facilities_ready = true
-    append_support_code <<-EOF
+  #{tags.join(' ')}
+  Scenario: scenario tagged with #{tags.join(', ')}
+    Given #{step_name}
+EOF
+  end
+
+  def provide_cycle_logging_facilities
+    unless @cycle_logging_facilities_ready
+      append_support_code <<-EOF
 this.World.prototype.logCycleEvent = function logCycleEvent(name) {
   fd = fs.openSync('#{CYCLE_LOG_FILE}', 'a');
   fs.writeSync(fd, " -> " + name, null);
   fs.closeSync(fd);
 };
 EOF
+      @cycle_logging_facilities_ready = true
+    end
   end
 
   def assert_passing_scenario
@@ -186,6 +209,11 @@ EOF
     check_file_content(CucumberJsMappings::CYCLE_LOG_FILE, expected_string, true)
   end
 
+  def assert_complete_cycle_sequence *args
+    expected_string = args.join " -> "
+    check_exact_file_content(CucumberJsMappings::CYCLE_LOG_FILE, expected_string)
+  end
+
   def assert_data_table_equals_json(json)
     prep_for_fs_check do
       log_file_contents = IO.read(DATA_TABLE_LOG_FILE)
@@ -209,6 +237,13 @@ this.#{stepdef_keyword}(/#{stepdef_pattern}/, function(#{params}) {
 });
 EOF
     assert_partial_output(expected_snippet, all_output)
+  end
+
+  def assert_executed_scenarios *scenario_offsets
+    sequence = scenario_offsets.inject('') do |sequence, scenario_offset|
+      "#{sequence} -> #{nth_step_name(scenario_offset)}"
+    end
+    assert_complete_cycle_sequence sequence
   end
 
   def failed_output
@@ -257,6 +292,10 @@ EOF
     File.open(file_realpath, 'rb') do |f|
       f.read
     end
+  end
+
+  def nth_step_name n
+    "step #{n}"
   end
 end
 World(CucumberJsMappings)

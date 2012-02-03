@@ -4,6 +4,7 @@ var World = function(callback) {
   this.stepDefinitions = "";
   this.runOutput       = "";
   this.cycleEvents     = "";
+  this.stepCount       = 0;
   this.runSucceeded    = false;
   World.mostRecentInstance = this;
   callback(this);
@@ -11,21 +12,25 @@ var World = function(callback) {
 
 var proto = World.prototype;
 
-proto.runFeature = function runFeature(callback) {
+proto.runFeature = function runFeature(options, callback) {
   var supportCode;
   var supportCodeSource = "supportCode = function() {\n  var Given = When = Then = this.defineStep;\n" +
     "  var Before = this.Before, After = this.After;\n" +
     this.stepDefinitions + "};\n";
   var world = this;
   eval(supportCodeSource);
-  this.runFeatureWithSupportCodeSource(supportCode, callback);
+  this.runFeatureWithSupportCodeSource(supportCode, options, callback);
 }
 
-proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource(supportCode, callback) {
+proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource(supportCode, options, callback) {
   var world     = this;
   var Cucumber  = require('../../lib/cucumber');
-  var cucumber  = Cucumber(this.featureSource, supportCode);
+  options = options || {};
+  var tags = options['tags'] || [];
+
+  var cucumber  = Cucumber(this.featureSource, supportCode, {tags: tags});
   var formatter = Cucumber.Listener.ProgressFormatter({logToConsole: false});
+
   cucumber.attachListener(formatter);
   try {
     cucumber.start(function(succeeded) {
@@ -42,14 +47,12 @@ proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource
 }
 
 proto.runAScenario = function runAScenario(callback) {
-    this.featureSource   += "Feature:\n";
-    this.featureSource   += "  Scenario:\n";
-    this.featureSource   += "    Given a step\n";
-    this.stepDefinitions += "Given(/^a step$/, function(callback) {\
+  this.addScenario("", "Given a step");
+  this.stepDefinitions += "Given(/^a step$/, function(callback) {\
   world.logCycleEvent('step');\
   callback();\
 });";
-    this.runFeature(callback);
+  this.runFeature({}, callback);
 }
 
 proto.logCycleEvent = function logCycleEvent(event) {
@@ -62,6 +65,40 @@ proto.touchStep = function touchStep(string) {
 
 proto.isStepTouched = function isStepTouched(pattern) {
   return (this.touchedSteps.indexOf(pattern) >= 0);
+}
+
+proto.addScenario = function addScenario(name, contents, options) {
+  options          = options || {};
+  var tags         = options['tags'] || [];
+  var tagString    = (tags.length > 0 ? tags.join(" ") + "\n" : "");
+  var scenarioName = tagString + "Scenario: " + name;
+  this.createEmptyFeature();
+  this.featureSource += this.indentCode(scenarioName, 1);
+  this.featureSource += this.indentCode(contents, 2);
+};
+
+proto.addPassingScenarioWithTags = function addPassingScenarioWithTags(tags) {
+  var stepName = this.makeNumberedStepName();
+  var scenarioName = "A scenario tagged with " + tags.join(', ');
+  var step = "Given " + stepName + "\n";
+  this.addScenario(scenarioName, step, {tags: tags});
+  this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
+  world.logCycleEvent('" + stepName + "');\
+  callback();\
+});\n";
+};
+
+proto.createEmptyFeature = function createEmptyFeature() {
+  if (!this.emptyFeatureReady) {
+    this.featureSource += "Feature: A feature\n\n";
+    this.emptyFeatureReady = true;
+  }
+};
+
+proto.makeNumberedStepName = function makeNumberedStepName(index) {
+  var index = index || (++this.stepCount);
+  var stepName = "step " + index;
+  return stepName;
 }
 
 proto.assertPassedFeature = function assertPassedFeature() {
@@ -140,10 +177,43 @@ proto.assertEqual = function assertRawDataTable(expected, actual) {
     throw(new Error("Expected:\n\"" + actualJSON + "\"\nto match:\n\"" + expectedJSON + "\""));
 }
 
-proto.assertCycleSequence = function assertCycleSequence(first, second) {
-  var partialSequence = first + ' -> ' + second;
+proto.assertExecutedNumberedScenarios = function assertExecutedNumberedScenarios() {
+  var self = this;
+  var scenarioIndexes = Array.prototype.slice.apply(arguments);
+  var stepNames       = [];
+  scenarioIndexes.forEach(function(scenarioIndex) {
+    var stepName = self.makeNumberedStepName(scenarioIndex);
+    stepNames.push(stepName);
+  });
+  this.assertCompleteCycleSequence.apply(this, stepNames);
+}
+
+proto.assertCycleSequence = function assertCycleSequence() {
+  var events          = Array.prototype.slice.apply(arguments);
+  var partialSequence = ' -> ' + events.join(' -> ');
   if (this.cycleEvents.indexOf(partialSequence) < 0)
     throw(new Error("Expected cycle sequence \"" + this.cycleEvents + "\" to contain \"" + partialSequence + "\""));
 }
+
+proto.assertCompleteCycleSequence = function assertCompleteCycleSequence() {
+  var events   = Array.prototype.slice.apply(arguments);
+  var sequence = ' -> ' + events.join(' -> ');
+
+  if (this.cycleEvents != sequence)
+    throw(new Error("Expected cycle sequence \"" + this.cycleEvents + "\" to be \"" + sequence + "\""));
+
+}
+
+proto.indentCode = function indentCode(code, levels) {
+  var indented = '';
+  var lines    = code.split("\n");
+  levels = levels || 1;
+
+  lines.forEach(function(line) {
+    var indent = (line == "" ? "" : Array(levels + 1).join("  "));
+    indented += indent + line + "\n";
+  });
+  return indented;
+};
 
 exports.World = World;

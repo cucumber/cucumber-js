@@ -118,6 +118,14 @@ describe("Cucumber.Ast.Feature", function() {
     });
   });
 
+  describe("getTags() [setTags()]", function() {
+    it("returns the tags", function() {
+      var tags = createSpy("tags");
+      feature.setTags(tags);
+      expect(feature.getTags()).toBe(tags);
+    });
+  });
+
   describe("acceptVisitor", function() {
     var visitor, callback;
 

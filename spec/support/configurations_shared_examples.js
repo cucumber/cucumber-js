@@ -12,4 +12,8 @@ itBehavesLikeAllCucumberConfigurations = function itBehavesLikeAllCucumberConfig
   it("supplies the support code library", function() {
     expect(configuration.getSupportCodeLibrary).toBeAFunction();
   });
+
+  it("supplies the AST filter", function() {
+    expect(configuration.getAstFilter).toBeAFunction();
+  });
 }

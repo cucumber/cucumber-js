@@ -10,7 +10,7 @@ describe("Cucumber.Runtime", function() {
     listeners     = createSpyWithStubs("listener collection", {add: null});
     configuration = createSpy("configuration");
     spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
-    runtime = Cucumber.Runtime(configuration);
+    runtime       = Cucumber.Runtime(configuration);
   });
 
   describe("constructor", function() {
@@ -74,13 +74,15 @@ describe("Cucumber.Runtime", function() {
   });
 
   describe("getFeatures()", function() {
-    var featureSources, parser, features;
+    var featureSources, astFilter, parser, features;
 
     beforeEach(function() {
       featureSources = createSpy("feature sources");
+      astFilter      = createSpy("AST filter");
       features       = createSpy("features (AST)");
       parser         = createSpyWithStubs("parser", {parse: features});
       spyOnStub(configuration, 'getFeatureSources').andReturn(featureSources);
+      spyOnStub(configuration, 'getAstFilter').andReturn(astFilter);
       spyOn(Cucumber, 'Parser').andReturn(parser);
     });
 
@@ -89,9 +91,14 @@ describe("Cucumber.Runtime", function() {
       expect(configuration.getFeatureSources).toHaveBeenCalled();
     });
 
+    it("gets the AST filter from the configuration", function() {
+      runtime.getFeatures();
+      expect(configuration.getAstFilter).toHaveBeenCalled();
+    });
+
     it("creates a new Cucumber parser for the feature sources", function() {
       runtime.getFeatures();
-      expect(Cucumber.Parser).toHaveBeenCalledWith(featureSources);
+      expect(Cucumber.Parser).toHaveBeenCalledWith(featureSources, astFilter);
     });
 
     it("tells the parser to parse the features", function() {
