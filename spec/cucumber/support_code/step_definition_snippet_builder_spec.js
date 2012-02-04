@@ -153,14 +153,14 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
     it("replaces numbers with matching groups", function() {
       snippetBuilder.parameterizeStepName(stepName);
       expect(stepName.replace).toHaveBeenCalled();
-      expect(stepName.replace).toHaveBeenCalledWithRegExpAsNthParameter(/\d+/i, 1);
+      expect(stepName.replace).toHaveBeenCalledWithRegExpAsNthParameter(/\d+/gi, 1);
       expect(stepName.replace).toHaveBeenCalledWithValueAsNthParameter('(\\d+)', 2);
     });
 
     it("replaces quoted strings with matching groups", function() {
       snippetBuilder.parameterizeStepName(stepName);
       expect(parameterizedNumbersStepName.replace).toHaveBeenCalled();
-      expect(parameterizedNumbersStepName.replace).toHaveBeenCalledWithRegExpAsNthParameter(/"[^"]*"/i, 1);
+      expect(parameterizedNumbersStepName.replace).toHaveBeenCalledWithRegExpAsNthParameter(/"[^"]*"/gi, 1);
       expect(parameterizedNumbersStepName.replace).toHaveBeenCalledWithValueAsNthParameter('"([^"]*)"', 2);
     });
 
@@ -254,7 +254,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       count       = numberCount + stringCount
       stepDefinitionPattern = createSpy("step definition pattern");
       spyOn(snippetBuilder, 'buildStepDefinitionPattern').andReturn(stepDefinitionPattern);
-      spyOn(_s, 'count').andReturnSeveral([numberCount, stringCount]);
+      spyOn(Cucumber.Util.String, 'count').andReturnSeveral([numberCount, stringCount]);
     });
 
     it("builds the step definition pattern", function() {
@@ -264,12 +264,12 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
 
     it("counts the number matching groups inside the pattern", function() {
       snippetBuilder.countStepDefinitionPatternMatchingGroups();
-      expect(_s.count).toHaveBeenCalledWith(stepDefinitionPattern, '(\\d+)');
+      expect(Cucumber.Util.String.count).toHaveBeenCalledWith(stepDefinitionPattern, '(\\d+)');
     });
 
     it("counts the quoted string matching groups inside the pattern", function() {
       snippetBuilder.countStepDefinitionPatternMatchingGroups();
-      expect(_s.count).toHaveBeenCalledWith(stepDefinitionPattern, '"([^"]*)"');
+      expect(Cucumber.Util.String.count).toHaveBeenCalledWith(stepDefinitionPattern, '"([^"]*)"');
     });
 
     it("returns the sum of both counts", function() {

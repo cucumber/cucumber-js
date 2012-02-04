@@ -38,10 +38,6 @@ describe("Cucumber.Util.RegExp", function() {
       expect(escapeString(".")).toBe("\\.");
     });
 
-    it("escapes commas", function() {
-      expect(escapeString(",")).toBe("\\,");
-    });
-
     it("escapes backslashes", function() {
       expect(escapeString("\\")).toBe("\\\\");
     });
