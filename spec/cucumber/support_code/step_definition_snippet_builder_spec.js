@@ -1,7 +1,6 @@
 require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
-  var _s                           = require('underscore.string');
   var Cucumber                     = requireLib('cucumber');
   var StepDefinitionSnippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder;
 
