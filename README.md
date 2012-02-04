@@ -30,7 +30,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 | [Scenario outlines and examples](https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature) | To do               |
 | [Stats collector](https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature)                               | To do               |
 | [Step argument transforms](https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature)             | To do               |
-| [Tags](https://github.com/cucumber/cucumber-tck/blob/master/tags.feature)                                                     | To do               |
+| [Tags](https://github.com/cucumber/cucumber-tck/blob/master/tags.feature)                                                     | Done                |
 | [Undefined steps](https://github.com/cucumber/cucumber-tck/blob/master/undefined_steps.feature)                               | Done                |
 | [Wire protocol](https://github.com/cucumber/cucumber-tck/blob/master/wire_protocol.feature)                                   | To do               |
 | [World](https://github.com/cucumber/cucumber-tck/blob/master/world.feature)                                                   | Done                |
