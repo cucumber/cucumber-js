@@ -2,9 +2,34 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.5...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.6...master)
 
 **TBD**
+
+
+
+### [v0.2.6](https://github.com/cucumber/cucumber-js/compare/v0.2.5...v0.2.6)
+
+#### New features
+
+* Add tags support (#7) (Julien Biezemans)
+* Add support for tags on features (close #7) (Julien Biezemans)
+
+#### Changed features
+
+* Handle missing instance in World constructor callback (close #40) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Update development status in README (Julien Biezemans)
+* Typo in README (Julien Biezemans)
+* Refactor parser and add AST assembler (required by #7) (Julien Biezemans)
+* Indent properly (Julien Biezemans)
+* Refactor AST assembler to be stateful (needed by #7) (Julien Biezemans)
+* Update master diff in History (Julien Biezemans)
+* Add --tags documentation to --help (CLI) (Julien Biezemans)
+
+
 
 ### [v0.2.5](https://github.com/cucumber/cucumber-js/compare/v0.2.4...v0.2.5)
 
@@ -22,6 +47,8 @@
 * Add "Help & Support" to README (Julien Biezemans)
 * Words in README (Julien Biezemans)
 * Document before and after hooks (Julien Biezemans)
+
+
 
 ### [v0.2.4](https://github.com/cucumber/cucumber-js/compare/v0.2.3...v0.2.4)
 
