@@ -278,7 +278,7 @@ describe("Cucumber.Parser", function() {
     });
 
     it("tells the AST assembler to insert the step into the tree", function() {
-      parser.handleStep(keyword, name, description, line);
+      parser.handleStep(keyword, name, line);
       expect(astAssembler.insertStep).toHaveBeenCalledWith(step);
     });
   });
