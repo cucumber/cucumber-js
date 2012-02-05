@@ -68,9 +68,10 @@ When(/^I increment the variable by (\d+)$/, function(number, callback) {
 
 Then(/^the variable should contain (\d+)$/, function(number, callback) {
   if (this.variable != parseInt(number))
-    throw(new Error('Variable should contain ' + number +
+    callback.fail(new Error('Variable should contain ' + number +
       ' but it contains ' + this.variable + '.'));
-  callback();
+  else
+    callback();
 });</textarea>
 
     <h2>Output</h2>
