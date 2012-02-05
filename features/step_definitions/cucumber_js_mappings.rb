@@ -47,8 +47,16 @@ module CucumberJsMappings
     write_failing_mapping_with_message(step_name, "I was supposed to fail.")
   end
 
+  def write_asynchronously_failing_mapping(step_name)
+    write_asynchronously_failing_mapping_with_message(step_name, "I was supposed to fail.")
+  end
+
   def write_failing_mapping_with_message(step_name, message)
     append_step_definition(step_name, "throw(new Error('#{message}'));")
+  end
+
+  def write_asynchronously_failing_mapping_with_message(step_name, message)
+    append_step_definition(step_name, "setTimeout(function() { callback.fail('#{message}');}, 10);")
   end
 
   def write_mapping_incrementing_world_variable_by_value(step_name, increment_value)
