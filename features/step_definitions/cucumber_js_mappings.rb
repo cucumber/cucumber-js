@@ -39,6 +39,10 @@ module CucumberJsMappings
     append_step_definition(step_name, "callback.pending();")
   end
 
+  def write_asynchronous_pending_mapping(step_name)
+    append_step_definition(step_name, "setTimeout(callback.pending, 10);")
+  end
+
   def write_failing_mapping(step_name)
     write_failing_mapping_with_message(step_name, "I was supposed to fail.")
   end

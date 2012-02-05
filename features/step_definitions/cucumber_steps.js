@@ -51,6 +51,14 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^the step "([^"]*)" has an asynchronous pending mapping$/, function(stepName, callback) {
+    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
+world.touchStep(\"" + stepName + "\");\
+setTimeout(callback.pending, 10);\
+});\n";
+    callback();
+  });
+
   Given(/^the following feature:$/, function(feature, callback) {
     this.featureSource = feature;
     callback();

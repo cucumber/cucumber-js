@@ -9,6 +9,10 @@ Given /^a custom World constructor calling back without an instance$/ do
   write_world_constructor_not_calling_back_with_instance
 end
 
+Given /^the step "([^"]*)" has an asynchronous pending mapping$/ do |step_name|
+  write_asynchronous_pending_mapping(step_name)
+end
+
 When /^Cucumber executes a scenario using that mapping$/ do
   write_feature <<-EOF
 Feature:

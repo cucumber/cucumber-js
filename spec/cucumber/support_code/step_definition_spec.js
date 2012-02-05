@@ -71,72 +71,42 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
         spyOn(Cucumber.Runtime, 'SuccessfulStepResult').andReturn(successfulStepResult);
       });
 
-      describe("when the step definition code executes successfully and calls back", function() {
-        it("creates a successful step result", function() {
-          codeExecutionCallback();
-          expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalled();
-        });
+      it("creates a successful step result", function() {
+        codeExecutionCallback();
+        expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalled();
+      });
 
-        it("calls back", function() {
-          codeExecutionCallback();
-          expect(callback).toHaveBeenCalledWith(successfulStepResult);
-        });
+      it("calls back", function() {
+        codeExecutionCallback();
+        expect(callback).toHaveBeenCalledWith(successfulStepResult);
+      });
 
-        it("supplies a function to the step to let it claim its pendingness", function() {
-          expect(codeExecutionCallback.pending).toBeAFunction();
-        });
+      it("supplies a function to the step to let it claim its pendingness", function() {
+        expect(codeExecutionCallback.pending).toBeAFunction();
       });
 
       describe("pending()", function() {
-        var pendingFunction, reason, exception;
+        var pendingReason, pendingStepResult;
 
         beforeEach(function() {
-          reason          = createSpy("a reason for being pending");
-          pendingFunction = codeExecutionCallback.pending;
-          exception       = createSpy("pending step exception");
-          spyOn(Cucumber.Runtime, 'PendingStepException').andReturn(exception);
+          pendingReason     = createSpy("pending reason");
+          pendingStepResult = createSpy("pending step result");
+          spyOn(Cucumber.Runtime, 'PendingStepResult').andReturn(pendingStepResult);
         });
 
-        it("creates a 'pending step' exception with the reason", function() {
-          try { pendingFunction(reason); } catch (e) { }
-          expect(Cucumber.Runtime.PendingStepException).toHaveBeenCalledWith(reason);
+        it("creates a pending step result", function() {
+          codeExecutionCallback.pending(pendingReason);
+          expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalledWith(pendingReason);
         });
 
-        it("throws the pending step exception", function() {
-          expect(function() { pendingFunction(reason) }).toThrow(exception);
+        it("calls back", function() {
+          codeExecutionCallback.pending(pendingReason);
+          expect(callback).toHaveBeenCalledWith(pendingStepResult);
         });
       });
     });
 
-    describe("when the step calls back as pending", function() {
-      var pendingReason, exception, pendingStepResult;
-
-      beforeEach(function() {
-        pendingReason     = createSpy("a reason for being pending");
-        pendingStepResult = createSpy("pending step result");
-        exception         = Cucumber.Runtime.PendingStepException(pendingReason);
-        stepDefinitionCode.apply.andThrow(exception);
-        spyOn(Cucumber.Runtime, 'PendingStepResult').andReturn(pendingStepResult);
-        spyOn(Cucumber.Runtime, 'FailedStepResult');
-      });
-
-      it("creates a new pending step result", function() {
-        stepDefinition.invoke(stepName, world, stepAttachment, callback);
-        expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalled();
-      });
-
-      it("does not create a new failed step result", function() {
-        stepDefinition.invoke(stepName, world, stepAttachment, callback);
-        expect(Cucumber.Runtime.FailedStepResult).not.toHaveBeenCalled();
-      });
-
-      it("calls back with the step result", function() {
-        stepDefinition.invoke(stepName, world, stepAttachment, callback);
-        expect(callback).toHaveBeenCalledWith(pendingStepResult);
-      });
-    });
-
-    describe("when the step definition code fails", function() {
+    describe("when the step definition code throws an exception", function() {
       var failedStepResult, failureException;
 
       beforeEach(function() {
