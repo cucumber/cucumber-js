@@ -2,11 +2,30 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.6...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.7...master)
 
 **TBD**
 
 
+### [v0.2.7](https://github.com/cucumber/cucumber-js/compare/v0.2.6...v0.2.7)
+
+#### New features
+
+* Allow for asynchronous pending steps (Julien Biezemans)
+* Allow for asynchronous step failures (Julien Biezemans)
+
+#### Fixes
+
+* Fix matching groups in step definition snippets (close #42) (Julien Biezemans)
+* Remove obsolete dependency from snippet builder spec (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Add steps to release process in README (Julien Biezemans)
+* Update development status table in README (Julien Biezemans)
+* Import implementation-specific scenarios from cucumber-tck/undefined_steps (Julien Biezemans)
+* Switch from throwing exceptions to callback.fail() in web example (Julien Biezemans)
+* Add callback.fail() example to README (Julien Biezemans)
 
 ### [v0.2.6](https://github.com/cucumber/cucumber-js/compare/v0.2.5...v0.2.6)
 
