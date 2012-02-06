@@ -121,7 +121,7 @@ Support files let you setup the environment in which steps will be run, and defi
 ``` javascript
 // features/support/world.js
 
-require('zombie');
+var zombie = require('zombie');
 var World = function(callback) {
   this.browser = new zombie.Browser(); // this.browser will be available in step definitions
 
