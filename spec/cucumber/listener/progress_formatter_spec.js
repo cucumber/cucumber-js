@@ -7,7 +7,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   beforeEach(function() {
     failedStepResults = createSpy("Failed steps");
     spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
-    listener    = Cucumber.Listener.ProgressFormatter();
+    listener = Cucumber.Listener.ProgressFormatter();
   });
 
   describe("constructor", function() {
@@ -233,14 +233,16 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     var event, callback, stepResult;
 
     beforeEach(function() {
-      spyOn(listener, 'log');
       stepResult = createSpyWithStubs("step result", {
-        isSuccessful: undefined, isPending: undefined, isUndefined: undefined
+        isSuccessful: undefined,
+        isPending:    undefined,
+        isFailed:     undefined,
+        isSkipped:    undefined,
+        isUndefined:  undefined
       });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
-      spyOn(listener, 'witnessPassedStep');
-      spyOnStub(listener, 'storeFailedStepResult');
+      spyOn(listener, 'handleFailedStepResult');
     });
 
     it("gets the step result from the event payload", function() {
@@ -248,7 +250,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
-    it("asks the step result wether the step passed", function() {
+    it("checks wether the step was successful or not", function() {
       listener.handleStepResultEvent(event, callback);
       expect(stepResult.isSuccessful).toHaveBeenCalled();
     });
@@ -256,26 +258,27 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     describe("when the step passed", function() {
       beforeEach(function() {
         stepResult.isSuccessful.andReturn(true);
+        spyOn(listener, 'handleSuccessfulStepResult');
       });
 
-      it("witnesses a passed step", function() {
+      it("handles the successful step result", function() {
         listener.handleStepResultEvent(event, callback);
-        expect(listener.witnessPassedStep).toHaveBeenCalled();
-      });
-
-      it("logs the passing step character", function() {
-        listener.handleStepResultEvent(event, callback);
-        expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+        expect(listener.handleSuccessfulStepResult).toHaveBeenCalled();
       });
     });
 
     describe("when the step did not pass", function() {
       beforeEach(function() {
         stepResult.isSuccessful.andReturn(false);
-        spyOnStub(stepResult, 'isPending');
+        spyOn(listener, 'handleSuccessfulStepResult');
       });
 
-      it("asks the step result wether it is pending", function() {
+      it("does not handle a successful step result", function() {
+        listener.handleStepResultEvent(event, callback);
+        expect(listener.handleSuccessfulStepResult).not.toHaveBeenCalled();
+      });
+
+      it("checks wether the step is pending", function() {
         listener.handleStepResultEvent(event, callback);
         expect(stepResult.isPending).toHaveBeenCalled();
       });
@@ -283,72 +286,87 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       describe("when the step was pending", function() {
         beforeEach(function() {
           stepResult.isPending.andReturn(true);
-          spyOn(listener, 'witnessPendingStep');
-          spyOn(listener, 'markCurrentScenarioAsPending');
+          spyOn(listener, 'handlePendingStepResult');
         });
 
-        it("does not witness a passed step", function() {
+        it("handles the pending step result", function() {
           listener.handleStepResultEvent(event, callback);
-          expect(listener.witnessPassedStep).not.toHaveBeenCalled();
-        });
-
-        it("does not log the passing step character", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.log).not.toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
-        });
-
-        it("witnesses a pending step", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.witnessPendingStep).toHaveBeenCalled();
-        });
-
-        it("marks the current scenario as pending", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.markCurrentScenarioAsPending).toHaveBeenCalled();
-        });
-
-        it("logs the pending step character", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PENDING_STEP_CHARACTER);
+          expect(listener.handlePendingStepResult).toHaveBeenCalled();
         });
       });
 
       describe("when the step was not pending", function() {
         beforeEach(function() {
           stepResult.isPending.andReturn(false);
-          spyOn(listener, 'witnessFailedStep');
-          spyOn(listener, 'markCurrentScenarioAsFailing');
-          spyOnStub(stepResult, 'isUndefined');
+          spyOn(listener, 'handlePendingStepResult');
         });
 
-        it("does not witness a passed step", function() {
+        it("does not handle a pending step result", function() {
           listener.handleStepResultEvent(event, callback);
-          expect(listener.witnessPassedStep).not.toHaveBeenCalled();
+          expect(listener.handlePendingStepResult).not.toHaveBeenCalled();
         });
 
-        it("does not log the passing step character", function() {
+        it("checks wether the step was skipped", function() {
           listener.handleStepResultEvent(event, callback);
-          expect(listener.log).not.toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+          expect(stepResult.isSkipped).toHaveBeenCalled();
         });
 
-        it("stores the failed step result", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
+        describe("when the step was skipped", function() {
+          beforeEach(function() {
+            stepResult.isSkipped.andReturn(true);
+            spyOn(listener, 'handleSkippedStepResult');
+          });
+
+          it("handles the skipped step result", function() {
+            listener.handleStepResultEvent(event, callback);
+            expect(listener.handleSkippedStepResult).toHaveBeenCalled();
+          });
         });
 
-        it("witnesses a failed step", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.witnessFailedStep).toHaveBeenCalled();
-        });
+        describe("when the step was not skipped", function() {
+          beforeEach(function() {
+            stepResult.isSkipped.andReturn(false);
+            spyOn(listener, 'handleSkippedStepResult');
+          });
 
-        it("marks the current scenario as failing", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.markCurrentScenarioAsFailing).toHaveBeenCalled();
-        });
+          it("does not handle a skipped step result", function() {
+            listener.handleStepResultEvent(event, callback);
+            expect(listener.handleSkippedStepResult).not.toHaveBeenCalled();
+          });
 
-        it("logs the failed step character", function() {
-          listener.handleStepResultEvent(event, callback);
-          expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.FAILED_STEP_CHARACTER);
+          it("checks wether the step was undefined", function() {
+            listener.handleStepResultEvent(event, callback);
+            expect(stepResult.isUndefined).toHaveBeenCalled();
+          });
+
+          describe("when the step was undefined", function() {
+            beforeEach(function() {
+              stepResult.isUndefined.andReturn(true);
+              spyOn(listener, 'handleUndefinedStepResult');
+            });
+
+            it("handles the undefined step result", function() {
+              listener.handleStepResultEvent(event, callback);
+              expect(listener.handleUndefinedStepResult).toHaveBeenCalledWith(stepResult);
+            });
+          });
+
+          describe("when the step was not undefined", function() {
+            beforeEach(function() {
+              stepResult.isUndefined.andReturn(false);
+              spyOn(listener, 'handleUndefinedStepResult');
+            });
+
+            it("does not handle a skipped step result", function() {
+              listener.handleStepResultEvent(event, callback);
+              expect(listener.handleSkippedStepResult).not.toHaveBeenCalled();
+            });
+
+            it("handles a failed step result", function() {
+              listener.handleStepResultEvent(event, callback);
+              expect(listener.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
+            });
+          });
         });
       });
     });
@@ -359,73 +377,130 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     });
   });
 
-  describe("handleUndefinedStepEvent()", function() {
-    var event, callback, stepResult;
+  describe("handleSuccessfulStepResult()", function() {
+    beforeEach(function() {
+      spyOn(listener, 'witnessPassedStep');
+      spyOn(listener, 'log');
+    });
+
+    it("witnesses a passed step", function() {
+      listener.handleSuccessfulStepResult();
+      expect(listener.witnessPassedStep).toHaveBeenCalled();
+    });
+
+    it("logs the passing step character", function() {
+      listener.handleSuccessfulStepResult();
+      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+    });
+  });
+
+  describe("handlePendingStepResult()", function() {
+    beforeEach(function() {
+      spyOn(listener, 'witnessPendingStep');
+      spyOn(listener, 'markCurrentScenarioAsPending');
+      spyOn(listener, 'log')
+    });
+
+    it("witnesses a pending step", function() {
+      listener.handlePendingStepResult();
+      expect(listener.witnessPendingStep).toHaveBeenCalled();
+    });
+
+    it("marks the current scenario as pending", function() {
+      listener.handlePendingStepResult();
+      expect(listener.markCurrentScenarioAsPending).toHaveBeenCalled();
+    });
+
+    it("logs the pending step character", function() {
+      listener.handlePendingStepResult();
+      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PENDING_STEP_CHARACTER);
+    });
+  });
+
+  describe("handleSkippedStepResult()", function() {
+    beforeEach(function() {
+      spyOn(listener, 'witnessSkippedStep');
+      spyOn(listener, 'log');
+    });
+
+    it("counts one more skipped step", function() {
+      listener.handleSkippedStepResult();
+      expect(listener.witnessSkippedStep).toHaveBeenCalled();
+    });
+
+    it("logs the skipped step character", function() {
+      listener.handleSkippedStepResult();
+      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.SKIPPED_STEP_CHARACTER);
+    });
+  });
+
+  describe("handleUndefinedStepResult()", function() {
+    var stepResult, step;
 
     beforeEach(function() {
       step       = createSpy("step");
-      event      = createSpyWithStubs("event", {getPayloadItem: step});
-      callback   = createSpy("callback");
+      stepResult = createSpyWithStubs("step result", {getStep: step});
       spyOn(listener, 'storeUndefinedStep');
       spyOn(listener, 'witnessUndefinedStep');
       spyOn(listener, 'markCurrentScenarioAsUndefined');
       spyOn(listener, 'log');
     });
 
-    it("gets the step from the event payload", function() {
-      listener.handleUndefinedStepEvent(event, callback);
-      expect(event.getPayloadItem).toHaveBeenCalledWith('step');
+    it("gets the step from the step result", function() {
+      listener.handleUndefinedStepResult(stepResult);
+      expect(stepResult.getStep).toHaveBeenCalled();
     });
 
     it("stores the undefined step", function() {
-      listener.handleUndefinedStepEvent(event, callback);
+      listener.handleUndefinedStepResult(stepResult);
       expect(listener.storeUndefinedStep).toHaveBeenCalledWith(step);
     });
 
     it("witnesses an undefined step", function() {
-      listener.handleUndefinedStepEvent(event, callback);
+      listener.handleUndefinedStepResult(stepResult);
       expect(listener.witnessUndefinedStep).toHaveBeenCalled();
     });
 
     it("marks the current scenario as undefined", function() {
-      listener.handleUndefinedStepEvent(event, callback);
+      listener.handleUndefinedStepResult(stepResult);
       expect(listener.markCurrentScenarioAsUndefined).toHaveBeenCalled();
     });
 
     it("logs the undefined step character", function() {
-      listener.handleUndefinedStepEvent(event, callback);
+      listener.handleUndefinedStepResult(stepResult);
       expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.UNDEFINED_STEP_CHARACTER);
-    });
-
-    it("calls back", function() {
-      listener.handleUndefinedStepEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
     });
   });
 
-  describe("handleSkippedStepEvent()", function() {
-    var event, callback;
+  describe("handleFailedStepResult()", function() {
+    var stepResult;
 
     beforeEach(function() {
-      event    = createSpy("event");
-      callback = createSpy("callback");
-      spyOn(listener, 'witnessSkippedStep');
+      stepResult = createSpy("failed step result");
+      spyOn(listener, 'storeFailedStepResult');
+      spyOn(listener, 'witnessFailedStep');
+      spyOn(listener, 'markCurrentScenarioAsFailing');
       spyOn(listener, 'log');
     });
 
-    it("counts one more skipped step", function() {
-      listener.handleSkippedStepEvent(event, callback);
-      expect(listener.witnessSkippedStep).toHaveBeenCalled();
+    it("stores the failed step result", function() {
+      listener.handleFailedStepResult(stepResult);
+      expect(listener.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
     });
 
-    it("logs the skipped step character", function() {
-      listener.handleSkippedStepEvent(event, callback);
-      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.SKIPPED_STEP_CHARACTER);
+    it("witnesses a failed step", function() {
+      listener.handleFailedStepResult(stepResult);
+      expect(listener.witnessFailedStep).toHaveBeenCalled();
     });
 
-    it("calls back", function() {
-      listener.handleSkippedStepEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+    it("marks the current scenario as failing", function() {
+      listener.handleFailedStepResult(stepResult);
+      expect(listener.markCurrentScenarioAsFailing).toHaveBeenCalled();
+    });
+
+    it("logs the failed step character", function() {
+      listener.handleFailedStepResult(stepResult);
+      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.FAILED_STEP_CHARACTER);
     });
   });
 
@@ -670,9 +745,10 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   });
 
   describe("storeUndefinedStep()", function() {
-    var snippetBuilder, snippet;
+    var snippetBuilder, snippet, step;
 
     beforeEach(function() {
+      stpe           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);

@@ -34,6 +34,7 @@
         case 'BeforeStep':
           var step = event.getPayloadItem('step');
           self.handleAnyStep(step);
+          console.log("BEFORE STEP");
           break;
 
         case 'StepResult':
@@ -43,6 +44,12 @@
             result = {status: 'passed'};
           } else if (stepResult.isPending()) {
             result = {status: 'pending'};
+          } else if (stepResult.isUndefined() || stepResult.isSkipped()) {
+            // this is needed until we get a "BeforeStep" event before undefined and skipped steps:
+            var step = stepResult.getStep();
+            self.handleAnyStep(step);
+
+            result = {status:'skipped'};
           } else {
             var error = stepResult.getFailureException();
             var errorMessage = error.stack || error;
@@ -51,23 +58,15 @@
           formatter.match({uri:'report.feature', step: {line: currentStep.getLine()}});
           formatter.result(result);
           break;
-
-        case 'UndefinedStep':
-        case 'SkippedStep':
-          var step = event.getPayloadItem('step');
-          self.handleAnyStep(step);
-          formatter.match({uri:'report.feature', step: {line: step.getLine()}});
-          formatter.result({status:'skipped'});
-          break;
         }
         callback();
       },
 
       handleAnyStep: function handleAnyStep(step) {
         formatter.step({
-          keyword     : step.getKeyword(),
-          name        : step.getName(),
-          line        : step.getLine(),
+          keyword: step.getKeyword(),
+          name   : step.getName(),
+          line   : step.getLine(),
         });
         currentStep = step;
       }

@@ -1,17 +1,17 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Runtime.FailedStepResult", function() {
+describe("Cucumber.Runtime.SkippedStepResult", function() {
   var Cucumber = requireLib('cucumber');
-  var stepResult, failureException;
+  var stepResult, step;
 
   beforeEach(function() {
-    failureException = createSpy("failure exception");
-    stepResult       = Cucumber.Runtime.FailedStepResult(failureException);
+    step       = createSpy("step");
+    stepResult = Cucumber.Runtime.SkippedStepResult({step: step});
   });
 
   describe("isFailed()", function() {
-    it("is truthy", function() {
-      expect(stepResult.isFailed()).toBeTruthy();
+    it("is falsy", function() {
+      expect(stepResult.isFailed()).toBeFalsy();
     });
   });
 
@@ -22,8 +22,8 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
   });
 
   describe("isSkipped()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isSkipped()).toBeFalsy();
+    it("is truthy", function() {
+      expect(stepResult.isSkipped()).toBeTruthy();
     });
   });
 
@@ -39,9 +39,9 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
     });
   });
 
-  describe("getFailureException()", function() {
-    it("returns the exception passed to the constructor", function() {
-      expect(stepResult.getFailureException()).toBe(failureException);
+  describe("getStep()", function() {
+    it("returns the step passed to the constructor", function() {
+      expect(stepResult.getStep()).toBe(step);
     });
   });
 });
