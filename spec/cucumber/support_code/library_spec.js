@@ -2,33 +2,33 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Library", function() {
   var Cucumber = requireLib('cucumber');
-  var library, rawSupportCode;
-  var beforeHookCollection;
-  var afterHookCollection;
+  var library, rawSupportCode, hooker;
   var stepDefinitionCollection;
   var worldConstructor;
-  var spiesDuringSupportCodeDefinitionExecution = {};
 
   beforeEach(function() {
-    rawSupportCode       = createSpy("Raw support code");
-    beforeHookCollection = createSpy("before hook collection");
-    afterHookCollection  = createSpy("after hook collection");
+    rawSupportCode = createSpy("Raw support code");
     stepDefinitionCollection = [
       createSpyWithStubs("First step definition",  {matchesStepName:false}),
       createSpyWithStubs("Second step definition", {matchesStepName:false}),
       createSpyWithStubs("Third step definition",  {matchesStepName:false})
     ];
+    hooker           = createSpyWithStubs("hooker");
     worldConstructor = createSpy("world constructor");
     spyOnStub(stepDefinitionCollection, 'syncForEach').andCallFake(function(cb) { stepDefinitionCollection.forEach(cb); });
-    spyOn(Cucumber.Type, 'Collection').andReturnSeveral([beforeHookCollection, afterHookCollection, stepDefinitionCollection]);
+    spyOn(Cucumber.Type, 'Collection').andReturn(stepDefinitionCollection);
+    spyOn(Cucumber.SupportCode.Library, 'Hooker').andReturn(hooker);
     spyOn(Cucumber.SupportCode, 'WorldConstructor').andReturn(worldConstructor);
     library = Cucumber.SupportCode.Library(rawSupportCode);
   });
 
   describe("constructor", function() {
-    it("creates collecitons of before hooks, after hooks and step definitions", function() {
+    it("creates a collection of step definitions", function() {
       expect(Cucumber.Type.Collection).toHaveBeenCalled();
-      expect(Cucumber.Type.Collection.callCount).toBe(3);
+    });
+
+    it("instantiates a hooker", function() {
+      expect(Cucumber.SupportCode.Library.Hooker).toHaveBeenCalled();
     });
 
     it("executes the raw support code", function() {
@@ -48,6 +48,11 @@ describe("Cucumber.SupportCode.Library", function() {
 
       beforeEach(function() {
         supportCodeHelper = rawSupportCode.mostRecentCall.object;
+      });
+
+      it("exposes a method to define Around hooks", function() {
+        expect(supportCodeHelper.Around).toBeAFunction();
+        expect(supportCodeHelper.Around).toBe(library.defineAroundHook);
       });
 
       it("exposes a method to define Before hooks", function() {
@@ -144,111 +149,65 @@ describe("Cucumber.SupportCode.Library", function() {
     });
   });
 
-  describe("defineBeforeHook", function() {
-    var beforeHook, code;
+  describe("hookUpFunctionWithWorld", function() {
+    var userFunction, world, hookedUpFunction;
 
     beforeEach(function() {
-      code       = createSpy("before code");
-      beforeHook = createSpy("before hook");
-      spyOn(Cucumber.SupportCode, "Hook").andReturn(beforeHook);
-      spyOnStub(beforeHookCollection, "add");
+      userFunction     = createSpy("user function");
+      hookedUpFunction = createSpy("hooked up function");
+      world            = createSpy("world instance");
+      spyOnStub(hooker, 'hookUpFunctionWithWorld').andReturn(hookedUpFunction);
     });
 
-    it("creates a before hook with the code", function() {
-      library.defineBeforeHook(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
+    it("hooks up the function with the world instance", function() {
+      library.hookUpFunctionWithWorld(userFunction, world);
+      expect(hooker.hookUpFunctionWithWorld).toHaveBeenCalledWith(userFunction, world);
     });
 
-    it("adds the before hook to the before hooks collection", function() {
-      library.defineBeforeHook(code);
-      expect(beforeHookCollection.add).toHaveBeenCalledWith(beforeHook);
+    it("returns the hooked up function", function() {
+      expect(library.hookUpFunctionWithWorld(userFunction, world)).toBe(hookedUpFunction);
     });
   });
 
-  describe("triggerBeforeHooks", function() {
-    var world, callback;
+  describe("defineAroundHook", function() {
+    var code;
 
     beforeEach(function() {
-      world      = createSpy("world");
-      callback   = createSpy("callback");
-      spyOnStub(beforeHookCollection, 'forEach');
+      code = createSpy("hook code");
+      spyOnStub(hooker, 'addAroundHookCode');
     });
 
-    it("iterates over the before hooks", function() {
-      library.triggerBeforeHooks(world, callback);
-      expect(beforeHookCollection.forEach).toHaveBeenCalled();
-      expect(beforeHookCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(beforeHookCollection.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+    it("instructs the hooker to use the code as an around hook", function() {
+      library.defineAroundHook(code);
+      expect(hooker.addAroundHookCode).toHaveBeenCalledWith(code);
+    });
+  });
+
+  describe("defineBeforeHook", function() {
+    var code;
+
+    beforeEach(function() {
+      code = createSpy("hook code");
+      spyOnStub(hooker, 'addBeforeHookCode');
     });
 
-    describe("for each before hook", function() {
-      var beforeHook, forEachBeforeHookFunction, forEachBeforeHookFunctionCallback;
-
-      beforeEach(function() {
-        library.triggerBeforeHooks(world, callback);
-        forEachBeforeHookFunction = beforeHookCollection.forEach.mostRecentCall.args[0];
-        forEachBeforeHookFunctionCallback = createSpy("for each before hook iteration callback");
-        beforeHook = createSpyWithStubs("before hook", {invoke: null});
-      });
-
-      it("invokes the hook", function() {
-        forEachBeforeHookFunction(beforeHook, forEachBeforeHookFunctionCallback);
-        expect(beforeHook.invoke).toHaveBeenCalledWith(world, forEachBeforeHookFunctionCallback);
-      });
+    it("instructs the hooker to use the code as an before hook", function() {
+      library.defineBeforeHook(code);
+      expect(hooker.addBeforeHookCode).toHaveBeenCalledWith(code);
     });
   });
 
   describe("defineAfterHook", function() {
-    var afterHook, code;
+    var code;
 
     beforeEach(function() {
-      code      = createSpy("after code");
-      afterHook = createSpy("after hook");
-      spyOn(Cucumber.SupportCode, "Hook").andReturn(afterHook);
-      spyOnStub(afterHookCollection, "unshift");
+      code = createSpy("hook code");
+      spyOnStub(hooker, 'addAfterHookCode');
     });
 
-    it("creates a after hook with the code", function() {
+    it("instructs the hooker to use the code as an after hook", function() {
       library.defineAfterHook(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
-    });
-
-    it("adds the after hook to the after hooks collection", function() {
-      library.defineAfterHook(code);
-      expect(afterHookCollection.unshift).toHaveBeenCalledWith(afterHook);
-    });
-  });
-
-  describe("triggerAfterHooks", function() {
-    var world, callback;
-
-    beforeEach(function() {
-      world      = createSpy("world");
-      callback   = createSpy("callback");
-      spyOnStub(afterHookCollection, 'forEach');
-    });
-
-    it("iterates over the after hooks", function() {
-      library.triggerAfterHooks(world, callback);
-      expect(afterHookCollection.forEach).toHaveBeenCalled();
-      expect(afterHookCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(afterHookCollection.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
-    });
-
-    describe("for each after hook", function() {
-      var afterHook, forEachAfterHookFunction, forEachAfterHookFunctionCallback;
-
-      beforeEach(function() {
-        library.triggerAfterHooks(world, callback);
-        forEachAfterHookFunction = afterHookCollection.forEach.mostRecentCall.args[0];
-        forEachAfterHookFunctionCallback = createSpy("for each after hook iteration callback");
-        afterHook = createSpyWithStubs("after hook", {invoke: null});
-      });
-
-      it("invokes the hook", function() {
-        forEachAfterHookFunction(afterHook, forEachAfterHookFunctionCallback);
-        expect(afterHook.invoke).toHaveBeenCalledWith(world, forEachAfterHookFunctionCallback);
-      });
+      expect(hooker.addAfterHookCode).toHaveBeenCalledWith(code);
     });
   });
 

@@ -27,6 +27,17 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^a passing around hook$/, function(callback) {
+    this.stepDefinitions += "this.Around(function(runScenario) {\
+  world.logCycleEvent('around-pre');\
+  runScenario(function(callback) {\
+    world.logCycleEvent('around-post');\
+    callback();\
+  });\
+});\n";
+    callback();
+  });
+
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
@@ -240,9 +251,19 @@ callback();\
 
   Then(/^the (before|after) hook is fired (?:before|after) the scenario$/, function(hookType, callback) {
     if (hookType == 'before')
-      this.assertCycleSequence(hookType, 'step');
+      this.assertCycleSequence(hookType, 'step 1');
     else
-      this.assertCycleSequence('step', hookType);
+      this.assertCycleSequence('step 1', hookType);
+    callback();
+  });
+
+  Then(/^the around hook fires around the scenario$/, function(callback) {
+    this.assertCycleSequence('around-pre', 'step 1', 'around-post');
+    callback();
+  });
+
+  Then(/^the around hook is fired around the other hooks$/, function(callback) {
+    this.assertCycleSequence('around-pre', 'before', 'step 1', 'after', 'around-post');
     callback();
   });
 

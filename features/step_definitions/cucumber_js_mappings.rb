@@ -138,12 +138,24 @@ EOF
   def write_passing_hook hook_type
     provide_cycle_logging_facilities
     define_hook = hook_type.capitalize
-    append_support_code <<-EOF
+    if hook_type == "around"
+      append_support_code <<-EOF
+this.#{define_hook}(function(runScenario) {
+  this.logCycleEvent('#{hook_type}-pre');
+  runScenario(function(callback) {
+    this.logCycleEvent('#{hook_type}-post');
+    callback();
+  });
+});
+EOF
+    else
+      append_support_code <<-EOF
 this.#{define_hook}(function(callback) {
   this.logCycleEvent('#{hook_type}');
   callback();
 });
 EOF
+    end
   end
 
   def write_scenario options = {}

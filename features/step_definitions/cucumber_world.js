@@ -49,7 +49,7 @@ proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource
 proto.runAScenario = function runAScenario(callback) {
   this.addScenario("", "Given a step");
   this.stepDefinitions += "Given(/^a step$/, function(callback) {\
-  world.logCycleEvent('step');\
+  world.logCycleEvent('step 1');\
   callback();\
 });";
   this.runFeature({}, callback);

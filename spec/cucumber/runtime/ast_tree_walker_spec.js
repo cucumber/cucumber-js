@@ -162,10 +162,9 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
   describe("visitScenario()", function() {
     var scenario, callback;
-    var world;
 
     beforeEach(function() {
-      scenario = createSpyWithStubs("Scenario AST element", {acceptVisitor: null});
+      scenario = createSpyWithStubs("scenario");
       callback = createSpy("Callback");
       spyOnStub(supportCodeLibrary, 'instantiateNewWorld');
     });
@@ -177,21 +176,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     });
 
     describe("on world instantiation completion", function() {
-      var worldInstantiationCompletionCallback, world, event, payload, hookedUpFunction;
+      var worldInstantiationCompletionCallback;
+      var world, event, payload;
+      var hookedUpScenarioVisit;
 
       beforeEach(function() {
-        world = createSpy("world instance");
         treeWalker.visitScenario(scenario, callback);
         worldInstantiationCompletionCallback = supportCodeLibrary.instantiateNewWorld.mostRecentCall.args[0];
-
-        event                  = createSpy("Event");
-        payload                = {scenario: scenario};
-        scenarioVisitWithHooks = createSpy("scenario visit with hooks");
-        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
-        spyOn(treeWalker, 'broadcastEventAroundUserFunction');
+        world   = createSpy("world instance");
+        event   = createSpy("scenario visit event");
+        hookedUpScenarioVisit = createSpy("hooked up scenario visit");
+        payload = {scenario: scenario};
         spyOn(treeWalker, 'setWorld');
         spyOn(treeWalker, 'witnessNewScenario');
-        spyOn(treeWalker, 'hookUpFunction').andReturn(scenarioVisitWithHooks);
+        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
+        spyOnStub(supportCodeLibrary, 'hookUpFunctionWithWorld').andReturn(hookedUpScenarioVisit);
+        spyOn(treeWalker, 'broadcastEventAroundUserFunction');
       });
 
       it("sets the new World instance", function() {
@@ -211,20 +211,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       it("hooks up a function", function() {
         worldInstantiationCompletionCallback(world);
-        expect(treeWalker.hookUpFunction).toHaveBeenCalled();
-        expect(treeWalker.hookUpFunction).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+        expect(supportCodeLibrary.hookUpFunctionWithWorld).toHaveBeenCalled();
+        expect(supportCodeLibrary.hookUpFunctionWithWorld).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+        expect(supportCodeLibrary.hookUpFunctionWithWorld).toHaveBeenCalledWithValueAsNthParameter(world, 2);
       });
 
       describe("hooked up function", function() {
         var hookedUpFunction, hookedUpFunctionCallback;
 
         beforeEach(function() {
-          hookedUpFunctionCallback = createSpy("hooked up function callback");
           worldInstantiationCompletionCallback(world);
-          hookedUpFunction = treeWalker.hookUpFunction.mostRecentCall.args[0];
+          hookedUpFunction         = supportCodeLibrary.hookUpFunctionWithWorld.mostRecentCall.args[0];
+          hookedUpFunctionCallback = createSpy("hooked up function callback");
+          spyOnStub(scenario, 'acceptVisitor');
         });
 
-        it("tells the scenario to accept the tree walker itself as a visitor", function() {
+        it("instructs the scenario to accept the tree walker as a visitor", function() {
           hookedUpFunction(hookedUpFunctionCallback);
           expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, hookedUpFunctionCallback);
         });
@@ -232,7 +234,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       it("broadcasts the visit of the scenario", function() {
         worldInstantiationCompletionCallback(world);
-        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWith(event, scenarioVisitWithHooks, callback);
+        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWith(event, hookedUpScenarioVisit, callback);
       });
     });
   });
