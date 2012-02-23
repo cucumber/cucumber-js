@@ -37,7 +37,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-3. Simple *Before* and *After* hooks are available.
+3. Simple *Around*, *Before* and *After* hooks are available.
 
 ### Cucumber.js-specific features
 
@@ -149,7 +149,7 @@ Step definitions are run when steps match their name. `this` is an instance of `
 ``` javascript
 // features/step_definitions/myStepDefinitions.js
 
-var myStepDefinitionsWrapper = function() {
+var myStepDefinitionsWrapper = function () {
   this.World = require("../support/world.js").World; // overwrite default World constructor
 
   this.Given(/REGEXP/, function(callback) {
@@ -183,30 +183,95 @@ var myStepDefinitionsWrapper = function() {
 module.exports = myStepDefinitionsWrapper;
 ```
 
-#### Before and After hooks
+#### Hooks
 
-If you need to execute some code before or after each scenario, you
-can use hooks, just like this:
+Hooks can be used to prepare and clean the environment before and after each scenario is executed.
+
+##### Before hooks
+
+To run something before every scenario, use before hooks:
 
 ``` javascript
-// features/step_definitions/myStepDefinitions.js
+// features/support/hooks.js (this path is just a suggestion)
 
-var myStepDefinitionsWrapper = function() {
+var myHooks = function () {
   this.Before(function(callback) {
-    // this is an instance of World, just like within step definitions
-    this.prepareStuff();
+    // Just like inside step definitions, "this" is set to a World instance.
+    // It's actually the same instance the current scenario step definitions
+    // will receive.
+
+    // Let's say we have a bunch of "maintenance" methods available on our World
+    // instance, we can fire some to prepare the application for the next
+    // scenario:
+
+    this.bootFullTextSearchServer();
+    this.createSomeUsers();
+
+    // Don't forget to tell Cucumber when you're done:
     callback();
   });
-
-  this.After(function(callback) {
-    this.tearDownStuff();
-    callback();
-  });
-
-  // ...
 };
 
-module.exports = myStepDefinitionsWrapper;
+module.exports = myHooks;
+```
+
+##### After hooks
+
+The *before hook* counterpart is the *after hook*. It's similar in shape but is executed, well, *after* every scenario:
+
+```javascript
+// features/support/after_hooks.js
+
+var myAfterHooks = function () {
+  this.After(function(callback) {
+    // Again, "this" is set to the World instance the scenario just finished
+    // playing with.
+
+    // We can then do some cleansing:
+
+    this.emptyDatabase();
+    this.shutdownFullTextSearchServer();
+
+    // Release control:
+    callback();
+  });
+};
+
+module.exports = myAfterHooks;
+```
+
+##### Around hooks
+
+It's also possible to combine both before and around hooks in one single definition with the help of *around hooks*:
+
+```javascript
+// features/support/advanced_hooks.js
+
+myAroundHooks = function() {
+  this.Around(function(runScenario) {
+    // "this" is - as always - an instance of World promised to the scenario.
+
+    // First do the "before scenario" tasks:
+
+    this.bootFullTextSearchServer();
+    this.createSomeUsers();
+
+    // When the "before" duty is finished, tell Cucumber to execute the scenario
+    // and pass a function to be called when the scenario is finished:
+
+    runScenario(function(callback) {
+      // Now, we can do our "after scenario" stuff:
+
+      this.emptyDatabase();
+      this.shutdownFullTextSearchServer();
+
+      // Tell Cucumber we're done:
+      callback();
+    });
+  });
+};
+
+module.exports = myAroundHooks;
 ```
 
 ### Run cucumber
