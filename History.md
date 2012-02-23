@@ -2,9 +2,32 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.7...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.8...master)
 
 **TBD**
+
+
+
+### [v0.2.8](https://github.com/cucumber/cucumber-js/compare/v0.2.7...v0.2.8)
+
+#### New features
+
+* Add around hooks (#32) (Julien Biezemans)
+
+#### Changed features
+
+* Treat undefined and skipped step as any other step (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove unused parameter in parser spec (Julien Biezemans)
+* Add JS stepdef for async failing steps scenario (Julien Biezemans)
+* Assign zombie in README example (close #44) (Julien Biezemans)
+* Remove trailing spaces (Julien Biezemans)
+* Get rid of obsolete PendingStepException (Julien Biezemans)
+* Refactor SupportCode.Library spec (Julien Biezemans)
+* Add around hooks documentation (#32) (Julien Biezemans)
+
 
 
 ### [v0.2.7](https://github.com/cucumber/cucumber-js/compare/v0.2.6...v0.2.7)
