@@ -54,7 +54,7 @@ var cucumberSteps = function() {
     callback();
   });
 
-  this.Given(/^the step "([^"]*)" has a mapping asynchronously failing with the message "([^"]*)"$/, function(stepName, message, callback) {
+  Given(/^the step "([^"]*)" has a mapping asynchronously failing with the message "([^"]*)"$/, function(stepName, message, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
   setTimeout(function() {callback.fail(new Error('" + message + "'));}, 10);\
@@ -104,7 +104,7 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
-  this.Given(/^a scenario without any tags$/, function(callback) {
+  Given(/^a scenario without any tags$/, function(callback) {
     this.addPassingScenarioWithoutTags();
     callback();
   });
