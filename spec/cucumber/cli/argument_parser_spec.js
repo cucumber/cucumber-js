@@ -269,21 +269,28 @@ describe("Cucumber.Cli.ArgumentParser", function() {
     });
 
     describe("tag group mapper function", function() {
-      var tagGroupMapperFunc, tagOptionValue, tagGroup;
+      var tagGroupMapperFunc, tagOptionValue, tagGroupParser, tagGroup;
 
       beforeEach(function() {
+        tagOptionValue = createSpy("tag option value");
         tagGroup       = createSpy("tag group");
-        tagOptionValue = createSpyWithStubs("tag option value", {split: tagGroup});
+        tagGroupParser = createSpyWithStubs("tag group parser", {parse: tagGroup});
         argumentParser.getTagGroups();
         tagGroupMapperFunc = _.map.mostRecentCall.args[1];
+        spyOn(Cucumber, 'TagGroupParser').andReturn(tagGroupParser);
       });
 
-      it("splits the tag option value based on commas", function() {
+      it("instantiates a tag group parser", function() {
         tagGroupMapperFunc(tagOptionValue);
-        expect(tagOptionValue.split).toHaveBeenCalledWith(',');
+        expect(Cucumber.TagGroupParser).toHaveBeenCalledWith(tagOptionValue);
       });
 
-      it("returns the splitted tag group", function() {
+      it("asks the parser for the parsed tag group", function() {
+        tagGroupMapperFunc(tagOptionValue);
+        expect(tagGroupParser.parse).toHaveBeenCalled();
+      });
+
+      it("returns the tag group", function() {
         expect(tagGroupMapperFunc(tagOptionValue)).toBe(tagGroup);
       });
     });
