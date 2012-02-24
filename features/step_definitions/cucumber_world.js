@@ -78,6 +78,8 @@ proto.addScenario = function addScenario(name, contents, options) {
 };
 
 proto.addPassingScenarioWithTags = function addPassingScenarioWithTags(tags) {
+  tags = Array.prototype.slice.call(arguments, 0);
+
   var stepName = this.makeNumberedStepName();
   var scenarioName = "A scenario tagged with " + tags.join(', ');
   var step = "Given " + stepName + "\n";
@@ -89,7 +91,7 @@ proto.addPassingScenarioWithTags = function addPassingScenarioWithTags(tags) {
 };
 
 proto.addPassingScenarioWithoutTags = function addPassingScenarioWithoutTags() {
-  this.addPassingScenarioWithTags([]);
+  this.addPassingScenarioWithTags();
 };
 
 proto.createEmptyFeature = function createEmptyFeature(options) {

@@ -18,11 +18,11 @@ module CucumberJsMappings
     run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
   end
 
-  def run_feature_with_tag_groups tag_groups
+  def run_feature_with_tags *tag_groups
     write_main_step_definitions_file
     command = "#{cucumber_bin} #{FEATURE_FILE}"
     tag_groups.each do |tag_group|
-      command += " --tags #{tag_group.join(',')}"
+      command += " --tags #{tag_group}"
     end
     run_simple command, false
   end

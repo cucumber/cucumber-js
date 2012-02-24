@@ -110,17 +110,17 @@ setTimeout(callback.pending, 10);\
   });
 
   Given(/^a scenario tagged with "([^"]*)"$/, function(tag, callback) {
-    this.addPassingScenarioWithTags([tag]);
+    this.addPassingScenarioWithTags(tag);
     callback();
   });
 
   Given(/^a scenario tagged with "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, callback) {
-    this.addPassingScenarioWithTags([tag1, tag2]);
+    this.addPassingScenarioWithTags(tag1, tag2);
     callback();
   });
 
   Given(/^a scenario tagged with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
-    this.addPassingScenarioWithTags([tag1, tag2, tag3]);
+    this.addPassingScenarioWithTags(tag1, tag2, tag3);
     callback();
   });
 
