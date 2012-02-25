@@ -156,35 +156,35 @@ callback();\
   });
 
   When(/^Cucumber executes scenarios tagged with "([^"]*)"$/, function(tag, callback) {
-    this.runFeature({tags: [[tag]]}, callback);
+    this.runFeature({tags: [tag]}, callback);
   });
 
   When(/^Cucumber executes scenarios not tagged with "([^"]*)"$/, function(tag, callback) {
-    this.runFeature({tags: [['~'+tag]]}, callback);
+    this.runFeature({tags: ['~'+tag]}, callback);
   });
 
   When(/^Cucumber executes scenarios tagged with "([^"]*)" or "([^"]*)"$/, function(tag1, tag2, callback) {
-    this.runFeature({tags: [[tag1, tag2]]}, callback);
+    this.runFeature({tags: [tag1 + ', ' + tag2]}, callback);
   });
 
   When(/^Cucumber executes scenarios tagged with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, callback) {
-    this.runFeature({tags: [[tag1], [tag2]]}, callback);
+    this.runFeature({tags: [tag1, tag2]}, callback);
   });
 
   When(/^Cucumber executes scenarios not tagged with "([^"]*)" nor "([^"]*)"$/, function(tag1, tag2, callback) {
-    this.runFeature({tags: [['~'+tag1], ['~'+tag2]]}, callback);
+    this.runFeature({tags: ['~'+tag1, '~'+tag2]}, callback);
   });
 
   When(/^Cucumber executes scenarios not tagged with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, callback) {
-    this.runFeature({tags: [['~'+tag1, '~'+tag2]]}, callback);
+    this.runFeature({tags: ['~' + tag1 + ', ~' + tag2]}, callback);
   });
 
   When(/^Cucumber executes scenarios tagged with "([^"]*)" or without "([^"]*)"$/, function(tag1, tag2, callback) {
-    this.runFeature({tags: [[tag1, '~'+tag2]]}, callback);
+    this.runFeature({tags: [tag1 + ', ~' + tag2]}, callback);
   });
 
   When(/^Cucumber executes scenarios tagged with "([^"]*)" but not with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
-    this.runFeature({tags: [[tag1], ['~'+tag2], ['~'+tag3]]}, callback);
+    this.runFeature({tags: [tag1, '~' + tag2, '~' + tag3]}, callback);
 });
 
   Then(/^the scenario passes$/, function(callback) {

@@ -65,37 +65,65 @@ describe("Cucumber.VolatileConfiguration", function() {
   });
 
   describe("getTagAstFilterRules()", function() {
-    describe("when there are no tags specified", function() {
-      beforeEach(function() {
-        configuration = Cucumber.VolatileConfiguration(featureSource, supportCodeInitializer);
-      });
+    var tagGroupStrings;
 
+    describe("when there are no tags specified", function() {
       it("returns an empty set of rules", function() {
         expect(configuration.getTagAstFilterRules()).toEqual([]);
       });
     });
 
-    describe("when there are some tags", function() {
-      var options, tagGroups, rules;
-
+    describe("when some tags were specified", function() {
       beforeEach(function() {
-        tagGroups = [createSpy("tag group 1"), createSpy("tag group 2"), createSpy("tag group 3")];
-        rules     = [createSpy("any of tags rule 1"), createSpy("any of tags rule 2"), createSpy("any of tags rule 3")];
-        spyOn(Cucumber.Ast.Filter, 'AnyOfTagsRule').andReturnSeveral(rules);
-        options                  = {tags: tagGroups};
-        configuration            = Cucumber.VolatileConfiguration(featureSource, supportCodeInitializer, options);
+        tagGroupStrings = [createSpy("tag group string 1"), createSpy("tag group string 2"), createSpy("tag group string 3")];
+        rules           = [createSpy("rule 1"), createSpy("rule 2"), createSpy("rule 3")];
+        configuration   = Cucumber.VolatileConfiguration(featureSource, supportCodeInitializer, {tags: tagGroupStrings});
+        spyOn(configuration, 'buildAstFilterRuleFromTagGroupString').andReturnSeveral(rules);
       });
 
-      it("creates an 'any of tags' filter rule per each group", function() {
+      it("builds the filter rule based on the tags", function() {
         configuration.getTagAstFilterRules();
-        tagGroups.forEach(function(tagGroup) {
-          expect(Cucumber.Ast.Filter.AnyOfTagsRule).toHaveBeenCalledWith(tagGroup);
+        tagGroupStrings.forEach(function(tagGroupString) {
+          expect(configuration.buildAstFilterRuleFromTagGroupString).toHaveBeenCalledWith(tagGroupString);
         });
       });
 
-      it("returns all the rules", function() {
+      it("returns the rules", function() {
         expect(configuration.getTagAstFilterRules()).toEqual(rules);
       });
+    });
+  });
+
+  describe("buildAstFilterRuleFromTagGroupString()", function() {
+    var tagGroupString, tagGroup, tagGroupParser, rule;
+
+    beforeEach(function() {
+      tagGroupString = createSpy("tag group string");
+      tagGroup       = createSpy("tag group");
+      tagGroupParser = createSpyWithStubs("tag group parser", {parse: tagGroup});
+      rule           = createSpy("rule");
+      spyOn(Cucumber, 'TagGroupParser').andReturn(tagGroupParser);
+      spyOn(Cucumber.Ast.Filter, 'AnyOfTagsRule').andReturn(rule);
+    });
+
+    it("instantiates a tag group parser", function() {
+      configuration.buildAstFilterRuleFromTagGroupString(tagGroupString);
+      expect(Cucumber.TagGroupParser).toHaveBeenCalledWith(tagGroupString);
+    });
+
+    it("parses the tag group", function() {
+      configuration.buildAstFilterRuleFromTagGroupString(tagGroupString);
+      expect(tagGroupParser.parse).toHaveBeenCalled();
+    });
+
+    it("instantiates an 'any of tags' rule based on the tag group", function() {
+      configuration.buildAstFilterRuleFromTagGroupString(tagGroupString);
+      expect(Cucumber.Ast.Filter.AnyOfTagsRule).toHaveBeenCalledWith(tagGroup);
+    });
+
+    it("returns the rule", function() {
+      var returned = configuration.buildAstFilterRuleFromTagGroupString(tagGroupString);
+      expect(returned).toBe(rule);
     });
   });
 });
