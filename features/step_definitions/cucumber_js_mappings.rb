@@ -6,6 +6,7 @@ module CucumberJsMappings
   WORLD_FUNCTION_LOG_FILE        = "world_function.log"
   DATA_TABLE_LOG_FILE            = "data_table.log"
   CYCLE_LOG_FILE                 = "cycle.log"
+  CYCLE_SEQUENCE_SEPARATOR       = " -> "
 
   attr_accessor :support_code
 
@@ -135,23 +136,34 @@ this.World.prototype.someFunction = function() {
 EOF
   end
 
-  def write_passing_hook hook_type
+  def write_passing_hook options = {}
+    log_string = options[:log_cycle_event_as]
+    if options[:type]
+      hook_type  = options[:type]
+      log_string ||= hook_type
+    else
+      hook_type  = "before"
+      log_string ||= "hook"
+    end
+    tags        = options[:tags] || []
     provide_cycle_logging_facilities
     define_hook = hook_type.capitalize
+    params      = tags.any? ? "'#{tags.join("', '")}', " : ""
+
     if hook_type == "around"
       append_support_code <<-EOF
-this.#{define_hook}(function(runScenario) {
-  this.logCycleEvent('#{hook_type}-pre');
+this.#{define_hook}(#{params}function(runScenario) {
+  this.logCycleEvent('#{log_string}-pre');
   runScenario(function(callback) {
-    this.logCycleEvent('#{hook_type}-post');
+    this.logCycleEvent('#{log_string}-post');
     callback();
   });
 });
 EOF
     else
       append_support_code <<-EOF
-this.#{define_hook}(function(callback) {
-  this.logCycleEvent('#{hook_type}');
+this.#{define_hook}(#{params}function(callback) {
+  this.logCycleEvent('#{log_string}');
   callback();
 });
 EOF
@@ -178,7 +190,7 @@ EOF
       append_support_code <<-EOF
 this.World.prototype.logCycleEvent = function logCycleEvent(name) {
   fd = fs.openSync('#{CYCLE_LOG_FILE}', 'a');
-  fs.writeSync(fd, " -> " + name, null);
+  fs.writeSync(fd, "#{CYCLE_SEQUENCE_SEPARATOR}" + name, null);
   fs.closeSync(fd);
 };
 EOF
@@ -224,12 +236,18 @@ EOF
   end
 
   def assert_cycle_sequence *args
-    expected_string = args.join " -> "
+    expected_string = args.join CYCLE_SEQUENCE_SEPARATOR
     check_file_content(CucumberJsMappings::CYCLE_LOG_FILE, expected_string, true)
   end
 
+  def assert_cycle_sequence_excluding *args
+    args.each do |unexpected_string|
+      check_file_content(CucumberJsMappings::CYCLE_LOG_FILE, unexpected_string, false)
+    end
+  end
+
   def assert_complete_cycle_sequence *args
-    expected_string = args.join " -> "
+    expected_string = "#{CYCLE_SEQUENCE_SEPARATOR}#{args.join(CYCLE_SEQUENCE_SEPARATOR)}"
     check_exact_file_content(CucumberJsMappings::CYCLE_LOG_FILE, expected_string)
   end
 
@@ -259,10 +277,10 @@ EOF
   end
 
   def assert_executed_scenarios *scenario_offsets
-    sequence = scenario_offsets.inject('') do |sequence, scenario_offset|
-      "#{sequence} -> #{nth_step_name(scenario_offset)}"
+    sequence = scenario_offsets.inject([]) do |sequence, scenario_offset|
+      sequence << nth_step_name(scenario_offset)
     end
-    assert_complete_cycle_sequence sequence
+    assert_complete_cycle_sequence *sequence
   end
 
   def failed_output

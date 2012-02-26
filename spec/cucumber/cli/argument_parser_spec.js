@@ -253,7 +253,7 @@ describe("Cucumber.Cli.ArgumentParser", function() {
       tagOptionValues = createSpy("tag option values");
       tagGroups       = createSpy("tag groups");
       spyOn(argumentParser, 'getOptionOrDefault').andReturn(tagOptionValues);
-      spyOn(_, 'map').andReturn(tagGroups);
+      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').andReturn(tagGroups);
     });
 
     it("gets the tag option values", function() {
@@ -261,38 +261,9 @@ describe("Cucumber.Cli.ArgumentParser", function() {
       expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.TAGS_OPTION_NAME, []);
     });
 
-    it("maps the tag groups", function() {
+    it("gets the tag groups based on the tag option values", function() {
       argumentParser.getTagGroups();
-      expect(_.map).toHaveBeenCalled();
-      expect(_.map).toHaveBeenCalledWithValueAsNthParameter(tagOptionValues, 1);
-      expect(_.map).toHaveBeenCalledWithAFunctionAsNthParameter(2);
-    });
-
-    describe("tag group mapper function", function() {
-      var tagGroupMapperFunc, tagOptionValue, tagGroupParser, tagGroup;
-
-      beforeEach(function() {
-        tagOptionValue = createSpy("tag option value");
-        tagGroup       = createSpy("tag group");
-        tagGroupParser = createSpyWithStubs("tag group parser", {parse: tagGroup});
-        argumentParser.getTagGroups();
-        tagGroupMapperFunc = _.map.mostRecentCall.args[1];
-        spyOn(Cucumber, 'TagGroupParser').andReturn(tagGroupParser);
-      });
-
-      it("instantiates a tag group parser", function() {
-        tagGroupMapperFunc(tagOptionValue);
-        expect(Cucumber.TagGroupParser).toHaveBeenCalledWith(tagOptionValue);
-      });
-
-      it("asks the parser for the parsed tag group", function() {
-        tagGroupMapperFunc(tagOptionValue);
-        expect(tagGroupParser.parse).toHaveBeenCalled();
-      });
-
-      it("returns the tag group", function() {
-        expect(tagGroupMapperFunc(tagOptionValue)).toBe(tagGroup);
-      });
+      expect(Cucumber.TagGroupParser.getTagGroupsFromStrings).toHaveBeenCalledWith(tagOptionValues);
     });
 
     it("returns the tag option values", function() {

@@ -183,14 +183,14 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       beforeEach(function() {
         treeWalker.visitScenario(scenario, callback);
         worldInstantiationCompletionCallback = supportCodeLibrary.instantiateNewWorld.mostRecentCall.args[0];
-        world   = createSpy("world instance");
-        event   = createSpy("scenario visit event");
+        world                 = createSpy("world instance");
+        event                 = createSpy("scenario visit event");
         hookedUpScenarioVisit = createSpy("hooked up scenario visit");
-        payload = {scenario: scenario};
+        payload               = {scenario: scenario};
         spyOn(treeWalker, 'setWorld');
         spyOn(treeWalker, 'witnessNewScenario');
         spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
-        spyOnStub(supportCodeLibrary, 'hookUpFunctionWithWorld').andReturn(hookedUpScenarioVisit);
+        spyOnStub(supportCodeLibrary, 'hookUpFunction').andReturn(hookedUpScenarioVisit);
         spyOn(treeWalker, 'broadcastEventAroundUserFunction');
       });
 
@@ -211,9 +211,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       it("hooks up a function", function() {
         worldInstantiationCompletionCallback(world);
-        expect(supportCodeLibrary.hookUpFunctionWithWorld).toHaveBeenCalled();
-        expect(supportCodeLibrary.hookUpFunctionWithWorld).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-        expect(supportCodeLibrary.hookUpFunctionWithWorld).toHaveBeenCalledWithValueAsNthParameter(world, 2);
+        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalled();
+        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithValueAsNthParameter(scenario, 2);
+        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithValueAsNthParameter(world, 3);
       });
 
       describe("hooked up function", function() {
@@ -221,7 +222,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
         beforeEach(function() {
           worldInstantiationCompletionCallback(world);
-          hookedUpFunction         = supportCodeLibrary.hookUpFunctionWithWorld.mostRecentCall.args[0];
+          hookedUpFunction         = supportCodeLibrary.hookUpFunction.mostRecentCall.args[0];
           hookedUpFunctionCallback = createSpy("hooked up function callback");
           spyOnStub(scenario, 'acceptVisitor');
         });

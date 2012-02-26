@@ -20,85 +20,89 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
   });
 
   describe("addAroundHookCode", function() {
-    var aroundHook, code;
+    var aroundHook, code, options;
 
     beforeEach(function() {
       code       = createSpy("around code");
+      options    = createSpy("options");
       aroundHook = createSpy("around hook");
       spyOn(Cucumber.SupportCode, "Hook").andReturn(aroundHook);
       spyOnStub(aroundHooks, "add");
     });
 
-    it("creates an around hook with the code", function() {
-      hooker.addAroundHookCode(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
+    it("creates an around hook with the code and options", function() {
+      hooker.addAroundHookCode(code, options);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, options);
     });
 
     it("unshifts the around hook to the around hook collection", function() {
-      hooker.addAroundHookCode(code);
+      hooker.addAroundHookCode(code, options);
       expect(aroundHooks.add).toHaveBeenCalledWith(aroundHook);
     });
   });
 
   describe("addBeforeHookCode", function() {
-    var beforeHook, code;
+    var beforeHook, code, options;
 
     beforeEach(function() {
       code       = createSpy("before code");
+      options    = createSpy("options");
       beforeHook = createSpy("before hook");
       spyOn(Cucumber.SupportCode, "Hook").andReturn(beforeHook);
       spyOnStub(beforeHooks, "add");
     });
 
-    it("creates a before hook with the code", function() {
-      hooker.addBeforeHookCode(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
+    it("creates a before hook with the code and options", function() {
+      hooker.addBeforeHookCode(code, options);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, options);
     });
 
     it("adds the before hook to the before hook collection", function() {
-      hooker.addBeforeHookCode(code);
+      hooker.addBeforeHookCode(code, options);
       expect(beforeHooks.add).toHaveBeenCalledWith(beforeHook);
     });
   });
 
   describe("addAfterHookCode", function() {
-    var afterHook, code;
+    var afterHook, code, options;
 
     beforeEach(function() {
       code      = createSpy("after code");
+      options   = createSpy("options");
       afterHook = createSpy("after hook");
       spyOn(Cucumber.SupportCode, "Hook").andReturn(afterHook);
       spyOnStub(afterHooks, "unshift");
     });
 
     it("creates a after hook with the code", function() {
-      hooker.addAfterHookCode(code);
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code);
+      hooker.addAfterHookCode(code, options);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, options);
     });
 
     it("prepends the after hook to the after hook collection", function() {
-      hooker.addAfterHookCode(code);
+      hooker.addAfterHookCode(code, options);
       expect(afterHooks.unshift).toHaveBeenCalledWith(afterHook);
     });
   });
 
-  describe("hookUpFunctionWithWorld()", function() {
-    var userFunction, world;
+  describe("hookUpFunction()", function() {
+    var userFunction, world, scenario;
 
     beforeEach(function() {
       userFunction = createSpy("user function");
+      scenario     = createSpy("scenario");
       world        = createSpy("world instance");
     });
 
     it("returns a function", function() {
-      expect(hooker.hookUpFunctionWithWorld(userFunction, world)).toBeAFunction();
+      expect(hooker.hookUpFunction(userFunction, scenario, world)).toBeAFunction();
     });
 
     describe("returned function", function() {
       var returnedFunction, callback, postScenarioAroundHookCallbacks;
 
       beforeEach(function() {
-        returnedFunction                = hooker.hookUpFunctionWithWorld(userFunction, world);
+        returnedFunction                = hooker.hookUpFunction(userFunction, scenario, world);
         callback                        = createSpy("callback");
         postScenarioAroundHookCallbacks = createSpy("post-scenario around hook callbacks");
         spyOnStub(aroundHooks, 'forEach');
@@ -121,17 +125,18 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
         var aroundHookIteration, aroundHook, iterationCallback;
 
         beforeEach(function() {
-          aroundHook          = createSpyWithStubs("around hook", {invoke: null});
+          aroundHook          = createSpyWithStubs("around hook", {invokeBesideScenario: null});
           iterationCallback   = createSpy("iteration callback");
           returnedFunction(callback);
           aroundHookIteration = aroundHooks.forEach.mostRecentCall.args[0];
         });
 
-        it("invokes the around hook with the world instance", function() {
+        it("invokes the around hook beside the scenario with the world instance", function() {
           aroundHookIteration(aroundHook, iterationCallback);
-          expect(aroundHook.invoke).toHaveBeenCalled();
-          expect(aroundHook.invoke).toHaveBeenCalledWithValueAsNthParameter(world, 1);
-          expect(aroundHook.invoke).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+          expect(aroundHook.invokeBesideScenario).toHaveBeenCalled();
+          expect(aroundHook.invokeBesideScenario).toHaveBeenCalledWithValueAsNthParameter(scenario, 1);
+          expect(aroundHook.invokeBesideScenario).toHaveBeenCalledWithValueAsNthParameter(world, 2);
+          expect(aroundHook.invokeBesideScenario).toHaveBeenCalledWithAFunctionAsNthParameter(3);
         });
 
         describe("on around hook invocation completion", function() {
@@ -139,7 +144,7 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
 
           beforeEach(function() {
             aroundHookIteration(aroundHook, iterationCallback);
-            invocationCompletionCallback   = aroundHook.invoke.mostRecentCall.args[1];
+            invocationCompletionCallback   = aroundHook.invokeBesideScenario.mostRecentCall.args[2];
             postScenarioAroundHookCallback = createSpy("post-scenario around hook callback");
             spyOnStub(postScenarioAroundHookCallbacks, 'unshift');
           });
@@ -156,7 +161,7 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
         });
       });
 
-      describe("on around hook look completion", function() {
+      describe("on around hook loop completion", function() {
         var aroundHooksLoopCallback;
 
         beforeEach(function() {
@@ -168,8 +173,9 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
         it("triggers the before hooks", function() {
           aroundHooksLoopCallback();
           expect(hooker.triggerBeforeHooks).toHaveBeenCalled();
-          expect(hooker.triggerBeforeHooks).toHaveBeenCalledWithValueAsNthParameter(world, 1);
-          expect(hooker.triggerBeforeHooks).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+          expect(hooker.triggerBeforeHooks).toHaveBeenCalledWithValueAsNthParameter(scenario, 1);
+          expect(hooker.triggerBeforeHooks).toHaveBeenCalledWithValueAsNthParameter(world, 2);
+          expect(hooker.triggerBeforeHooks).toHaveBeenCalledWithAFunctionAsNthParameter(3);
         });
 
         describe("on before hooks completion", function() {
@@ -177,7 +183,7 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
 
           beforeEach(function() {
             aroundHooksLoopCallback();
-            beforeHooksCompletionCallback = hooker.triggerBeforeHooks.mostRecentCall.args[1];
+            beforeHooksCompletionCallback = hooker.triggerBeforeHooks.mostRecentCall.args[2];
           });
 
           it("calls the user function", function() {
@@ -198,8 +204,9 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
             it("triggers the after hooks", function() {
               userFunctionCallback();
               expect(hooker.triggerAfterHooks).toHaveBeenCalled();
-              expect(hooker.triggerAfterHooks).toHaveBeenCalledWithValueAsNthParameter(world, 1);
-              expect(hooker.triggerAfterHooks).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+              expect(hooker.triggerAfterHooks).toHaveBeenCalledWithValueAsNthParameter(scenario, 1);
+              expect(hooker.triggerAfterHooks).toHaveBeenCalledWithValueAsNthParameter(world, 2);
+              expect(hooker.triggerAfterHooks).toHaveBeenCalledWithAFunctionAsNthParameter(3);
             });
 
             describe("on after hooks completion", function() {
@@ -207,7 +214,7 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
 
               beforeEach(function() {
                 userFunctionCallback();
-                afterHooksCompletionCallback = hooker.triggerAfterHooks.mostRecentCall.args[1];
+                afterHooksCompletionCallback = hooker.triggerAfterHooks.mostRecentCall.args[2];
                 spyOnStub(postScenarioAroundHookCallbacks, 'forEach');
               });
 
@@ -242,16 +249,17 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
   });
 
   describe("triggerBeforeHooks", function() {
-    var world, callback;
+    var scenario, world, callback;
 
     beforeEach(function() {
-      world      = createSpy("world");
-      callback   = createSpy("callback");
+      scenario = createSpy("scenario");
+      world    = createSpy("world");
+      callback = createSpy("callback");
       spyOnStub(beforeHooks, 'forEach');
     });
 
     it("iterates over the before hooks", function() {
-      hooker.triggerBeforeHooks(world, callback);
+      hooker.triggerBeforeHooks(scenario, world, callback);
       expect(beforeHooks.forEach).toHaveBeenCalled();
       expect(beforeHooks.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
       expect(beforeHooks.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
@@ -261,30 +269,31 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
       var beforeHook, forEachBeforeHookFunction, forEachBeforeHookFunctionCallback;
 
       beforeEach(function() {
-        hooker.triggerBeforeHooks(world, callback);
+        hooker.triggerBeforeHooks(scenario, world, callback);
         forEachBeforeHookFunction = beforeHooks.forEach.mostRecentCall.args[0];
         forEachBeforeHookFunctionCallback = createSpy("for each before hook iteration callback");
-        beforeHook = createSpyWithStubs("before hook", {invoke: null});
+        beforeHook = createSpyWithStubs("before hook", {invokeBesideScenario: null});
       });
 
-      it("invokes the hook", function() {
+      it("invokes the hook beside the scenario", function() {
         forEachBeforeHookFunction(beforeHook, forEachBeforeHookFunctionCallback);
-        expect(beforeHook.invoke).toHaveBeenCalledWith(world, forEachBeforeHookFunctionCallback);
+        expect(beforeHook.invokeBesideScenario).toHaveBeenCalledWith(scenario, world, forEachBeforeHookFunctionCallback);
       });
     });
   });
 
   describe("triggerAfterHooks", function() {
-    var world, callback;
+    var scenario, world, callback;
 
     beforeEach(function() {
-      world      = createSpy("world");
-      callback   = createSpy("callback");
+      scenario = createSpy("scenario");
+      world    = createSpy("world");
+      callback = createSpy("callback");
       spyOnStub(afterHooks, 'forEach');
     });
 
     it("iterates over the after hooks", function() {
-      hooker.triggerAfterHooks(world, callback);
+      hooker.triggerAfterHooks(scenario, world, callback);
       expect(afterHooks.forEach).toHaveBeenCalled();
       expect(afterHooks.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
       expect(afterHooks.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
@@ -294,15 +303,15 @@ describe("Cucumber.SupportCode.Library.Hooker", function() {
       var afterHook, forEachAfterHookFunction, forEachAfterHookFunctionCallback;
 
       beforeEach(function() {
-        hooker.triggerAfterHooks(world, callback);
+        hooker.triggerAfterHooks(scenario, world, callback);
         forEachAfterHookFunction = afterHooks.forEach.mostRecentCall.args[0];
         forEachAfterHookFunctionCallback = createSpy("for each after hook iteration callback");
-        afterHook = createSpyWithStubs("after hook", {invoke: null});
+        afterHook = createSpyWithStubs("after hook", {invokeBesideScenario: null});
       });
 
-      it("invokes the hook", function() {
+      it("invokes the hook beside the scenario", function() {
         forEachAfterHookFunction(afterHook, forEachAfterHookFunctionCallback);
-        expect(afterHook.invoke).toHaveBeenCalledWith(world, forEachAfterHookFunctionCallback);
+        expect(afterHook.invokeBesideScenario).toHaveBeenCalledWith(scenario, world, forEachAfterHookFunctionCallback);
       });
     });
   });

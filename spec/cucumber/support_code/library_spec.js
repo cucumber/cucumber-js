@@ -149,27 +149,28 @@ describe("Cucumber.SupportCode.Library", function() {
     });
   });
 
-  describe("hookUpFunctionWithWorld", function() {
-    var userFunction, world, hookedUpFunction;
+  describe("hookUpFunction()", function() {
+    var userFunction, scenario, world, hookedUpFunction;
 
     beforeEach(function() {
       userFunction     = createSpy("user function");
       hookedUpFunction = createSpy("hooked up function");
+      scenario         = createSpy("scenario");
       world            = createSpy("world instance");
-      spyOnStub(hooker, 'hookUpFunctionWithWorld').andReturn(hookedUpFunction);
+      spyOnStub(hooker, 'hookUpFunction').andReturn(hookedUpFunction);
     });
 
     it("hooks up the function with the world instance", function() {
-      library.hookUpFunctionWithWorld(userFunction, world);
-      expect(hooker.hookUpFunctionWithWorld).toHaveBeenCalledWith(userFunction, world);
+      library.hookUpFunction(userFunction, scenario, world);
+      expect(hooker.hookUpFunction).toHaveBeenCalledWith(userFunction, scenario, world);
     });
 
     it("returns the hooked up function", function() {
-      expect(library.hookUpFunctionWithWorld(userFunction, world)).toBe(hookedUpFunction);
+      expect(library.hookUpFunction(userFunction, scenario, world)).toBe(hookedUpFunction);
     });
   });
 
-  describe("defineAroundHook", function() {
+  describe("defineAroundHook()", function() {
     var code;
 
     beforeEach(function() {
@@ -179,11 +180,24 @@ describe("Cucumber.SupportCode.Library", function() {
 
     it("instructs the hooker to use the code as an around hook", function() {
       library.defineAroundHook(code);
-      expect(hooker.addAroundHookCode).toHaveBeenCalledWith(code);
+      expect(hooker.addAroundHookCode).toHaveBeenCalledWith(code, {tags: []});
+    });
+
+    it("instructs the hooker to use the code as an around hook with a tag group", function() {
+      var tagGroup = createSpy("tag group");
+      library.defineAroundHook(tagGroup, code);
+      expect(hooker.addAroundHookCode).toHaveBeenCalledWith(code, {tags: [tagGroup]});
+    });
+
+    it("instructs the hooker to use the code as an around hook with tag groups", function() {
+      var tagGroup1 = createSpy("tag group 1");
+      var tagGroup2 = createSpy("tag group 2");
+      library.defineAroundHook(tagGroup1, tagGroup2, code);
+      expect(hooker.addAroundHookCode).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]});
     });
   });
 
-  describe("defineBeforeHook", function() {
+  describe("defineBeforeHook()", function() {
     var code;
 
     beforeEach(function() {
@@ -193,11 +207,24 @@ describe("Cucumber.SupportCode.Library", function() {
 
     it("instructs the hooker to use the code as an before hook", function() {
       library.defineBeforeHook(code);
-      expect(hooker.addBeforeHookCode).toHaveBeenCalledWith(code);
+      expect(hooker.addBeforeHookCode).toHaveBeenCalledWith(code, {tags: []});
+    });
+
+    it("instructs the hooker to use the code as an before hook with a tag group", function() {
+      var tagGroup = createSpy("tag group");
+      library.defineBeforeHook(tagGroup, code);
+      expect(hooker.addBeforeHookCode).toHaveBeenCalledWith(code, {tags: [tagGroup]});
+    });
+
+    it("instructs the hooker to use the code as an before hook with tag groups", function() {
+      var tagGroup1 = createSpy("tag group 1");
+      var tagGroup2 = createSpy("tag group 2");
+      library.defineBeforeHook(tagGroup1, tagGroup2, code);
+      expect(hooker.addBeforeHookCode).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]});
     });
   });
 
-  describe("defineAfterHook", function() {
+  describe("defineAfterHook()", function() {
     var code;
 
     beforeEach(function() {
@@ -207,7 +234,20 @@ describe("Cucumber.SupportCode.Library", function() {
 
     it("instructs the hooker to use the code as an after hook", function() {
       library.defineAfterHook(code);
-      expect(hooker.addAfterHookCode).toHaveBeenCalledWith(code);
+      expect(hooker.addAfterHookCode).toHaveBeenCalledWith(code, {tags: []});
+    });
+
+    it("instructs the hooker to use the code as an after hook with a tag group", function() {
+      var tagGroup = createSpy("tag group");
+      library.defineAfterHook(tagGroup, code);
+      expect(hooker.addAfterHookCode).toHaveBeenCalledWith(code, {tags: [tagGroup]});
+    });
+
+    it("instructs the hooker to use the code as an after hook with tag groups", function() {
+      var tagGroup1 = createSpy("tag group 1");
+      var tagGroup2 = createSpy("tag group 2");
+      library.defineAfterHook(tagGroup1, tagGroup2, code);
+      expect(hooker.addAfterHookCode).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]});
     });
   });
 

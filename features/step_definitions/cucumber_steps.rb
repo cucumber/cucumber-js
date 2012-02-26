@@ -17,6 +17,10 @@ Given /^the step "([^"]*)" has a mapping asynchronously failing with the message
   write_asynchronously_failing_mapping_with_message(step_name, message)
 end
 
+Given /^an around hook tagged with "([^"]*)"$/ do |tag|
+  write_passing_hook :type => "around", :tags => [tag], :log_cycle_event_as => "hook"
+end
+
 When /^Cucumber executes a scenario using that mapping$/ do
   write_feature <<-EOF
 Feature:

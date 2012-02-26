@@ -15,7 +15,7 @@ var proto = World.prototype;
 proto.runFeature = function runFeature(options, callback) {
   var supportCode;
   var supportCodeSource = "supportCode = function() {\n  var Given = When = Then = this.defineStep;\n" +
-    "  var Before = this.Before, After = this.After;\n" +
+    "  var Around = this.Around, Before = this.Before, After = this.After;\n" +
     this.stepDefinitions + "};\n";
   var world = this;
   eval(supportCodeSource);
@@ -213,6 +213,15 @@ proto.assertCompleteCycleSequence = function assertCompleteCycleSequence() {
   if (this.cycleEvents != sequence)
     throw(new Error("Expected cycle sequence \"" + this.cycleEvents + "\" to be \"" + sequence + "\""));
 
+}
+
+proto.assertCycleSequenceExcluding = function assertCycleSequenceExcluding() {
+  var self   = this;
+  var events = Array.prototype.slice.apply(arguments);
+  events.forEach(function(event) {
+    if (self.cycleEvents.indexOf(event) >= 0)
+      throw(new Error("Expected cycle sequence \"" + self.cycleEvents + "\" not to contain \"" + event + "\""));
+  });
 }
 
 proto.indentCode = function indentCode(code, levels) {

@@ -28,10 +28,37 @@ var cucumberSteps = function() {
   });
 
   Given(/^a passing around hook$/, function(callback) {
-    this.stepDefinitions += "this.Around(function(runScenario) {\
+    this.stepDefinitions += "Around(function(runScenario) {\
   world.logCycleEvent('around-pre');\
   runScenario(function(callback) {\
     world.logCycleEvent('around-post');\
+    callback();\
+  });\
+});\n";
+    callback();
+  });
+
+  Given(/^an untagged hook$/, function(callback) {
+    this.stepDefinitions += "Before(function(callback) {\
+  world.logCycleEvent('hook');\
+  callback();\
+});\n";
+    callback();
+  });
+
+  Given(/^a hook tagged with "([^"]*)"$/, function(tag, callback) {
+    this.stepDefinitions += "Before('" + tag +"', function(callback) {\
+  world.logCycleEvent('hook');\
+  callback();\
+});\n";
+    callback();
+  });
+
+  Given(/^an around hook tagged with "([^"]*)"$/, function(tag, callback) {
+    this.stepDefinitions += "Around('" + tag + "', function(runScenario) {\
+  world.logCycleEvent('hook-pre');\
+  runScenario(function(callback) {\
+    world.logCycleEvent('hook-post');\
     callback();\
   });\
 });\n";
@@ -133,8 +160,13 @@ setTimeout(callback.pending, 10);\
     this.runFeature({}, callback);
   });
 
-  When(/^Cucumber executes a scenario$/, function(callback) {
+  When(/^Cucumber executes a scenario(?: with no tags)?$/, function(callback) {
     this.runAScenario(callback);
+  });
+
+  When(/^Cucumber executes a scenario tagged with "([^"]*)"$/, function(tag, callback) {
+    this.addPassingScenarioWithTags(tag);
+    this.runFeature({}, callback);
   });
 
   When(/^Cucumber runs the feature$/, function(callback) {
@@ -264,6 +296,16 @@ callback();\
 
   Then(/^the around hook is fired around the other hooks$/, function(callback) {
     this.assertCycleSequence('around-pre', 'before', 'step 1', 'after', 'around-post');
+    callback();
+  });
+
+  Then(/^the hook is fired$/, function(callback) {
+    this.assertCycleSequence('hook');
+    callback();
+  });
+
+  Then(/^the hook is not fired$/, function(callback) {
+    this.assertCycleSequenceExcluding('hook');
     callback();
   });
 
