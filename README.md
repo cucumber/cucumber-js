@@ -274,6 +274,27 @@ myAroundHooks = function() {
 module.exports = myAroundHooks;
 ```
 
+##### Tagged hooks
+
+Hooks can be conditionally elected for execution based on the tags of the scenario.
+
+``` javascript
+// features/support/hooks.js (this path is just a suggestion)
+
+var myHooks = function () {
+  this.Before("@foo", "@bar,@baz", function(callback) {
+    // This hook will be executed before scenarios tagged with @foo and either
+    // @bar or @baz.
+
+    // ...
+
+    callback();
+  });
+};
+
+module.exports = myHooks;
+```
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
