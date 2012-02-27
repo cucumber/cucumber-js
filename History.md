@@ -2,9 +2,29 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.8...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.9...master)
 
 **TBD**
+
+
+
+### [v0.2.9](https://github.com/cucumber/cucumber-js/compare/v0.2.8...v0.2.9)
+
+#### New features
+
+* Add support for tagged hooks (close #32) (Julien Biezemans)
+
+#### Changed features
+
+* Allow for whitespaces in tag groups (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Add Cucumber.Type.String and String#trim() (Julien Biezemans)
+* Remove unnecessary this. from stepdefs (Julien Biezemans)
+* Simplify tag-related stepdefs (Julien Biezemans)
+* Simplify tag selection syntax in volatile configuration (Julien Biezemans)
+* Mark hooks "done" in README dev status (Julien Biezemans)
 
 
 
