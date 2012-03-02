@@ -8,7 +8,6 @@ var cukeBundle = browserify({
   require: ['cucumber-html', './lib/cucumber', {'./gherkin/lexer/en': 'gherkin/lib/gherkin/lexer/en'}],
   ignore: ['./cucumber/cli', 'connect']
 });
-cukeBundle.alias('cucumber', './lib/cucumber');
 
 server.use(connect.static(__dirname));
 server.use(cukeBundle);
