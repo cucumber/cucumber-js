@@ -2,9 +2,24 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.9...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.10...master)
 
 **TBD**
+
+
+### [v0.2.10](https://github.com/cucumber/cucumber-js/compare/v0.2.9...v0.2.10)
+
+#### Fixes
+
+* Fix path handling on Windows platforms (close #47) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Add tagged hooks example to README (Julien Biezemans)
+* Fix browserify setup for example page load (Julien Biezemans)
+* Rename bundle to 'cucumber.js' in web example (Julien Biezemans)
+* Remove obsolete browserify directive (Julien Biezemans)
+* Improve platform detection (Julien Biezemans)
 
 
 
