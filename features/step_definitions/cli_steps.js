@@ -22,12 +22,22 @@ var cliSteps = function cliSteps() {
     }
   };
 
+  function isWindowsPlatform() {
+    var platform = require('os').platform();
+    return (platform == 'win32' || platform == 'win64');
+  };
+
+  function joinPathSegments(segments) {
+    var pathJoiner = isWindowsPlatform() ? "\\" : '/';
+    return segments.join(pathJoiner);
+  }
+
   this.Given(/^a file named "(.*)" with:$/, function(filePath, fileContent, callback) {
     cleanseIfNeeded();
     var absoluteFilePath = tmpPath(filePath);
-    var filePathParts    = absoluteFilePath.split('/');
-    var fileName         = filePathParts.pop();
-    var dirName          = filePathParts.join('/');
+    var filePathSegments = absoluteFilePath.split('/');
+    var fileName         = filePathSegments.pop();
+    var dirName          = joinPathSegments(filePathSegments);
     mkdirp(dirName, 0755, function(err) {
       if (err) { throw new Error(err); }
       fs.writeFile(absoluteFilePath, fileContent, function(err) {
@@ -40,7 +50,8 @@ var cliSteps = function cliSteps() {
   this.When(/^I run `cucumber.js(| .+)`$/, function(args, callback) {
     var initialCwd = process.cwd();
     process.chdir(tmpDir);
-    var command = baseDir + "/bin/cucumber.js" + args;
+    var runtimePath = joinPathSegments([baseDir, 'bin', 'cucumber.js']);
+    var command     = "node \"" + runtimePath + "\"" + args;
     exec(command,
          function (error, stdout, stderr) {
            lastRun['error']  = error;
