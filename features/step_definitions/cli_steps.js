@@ -23,8 +23,7 @@ var cliSteps = function cliSteps() {
   };
 
   function isWindowsPlatform() {
-    var platform = require('os').platform();
-    return (platform == 'win32' || platform == 'win64');
+    return (process.platform == 'win32' || process.platform == 'win64');
   };
 
   function joinPathSegments(segments) {
