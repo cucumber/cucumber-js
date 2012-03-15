@@ -156,6 +156,10 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given('a feature is defined with a string', function( callback ) {
+  	callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature({}, callback);
   });
@@ -218,6 +222,22 @@ callback();\
   When(/^Cucumber executes scenarios tagged with "([^"]*)" but not with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
     this.runFeature({tags: [tag1, '~' + tag2, '~' + tag3]}, callback);
 });
+
+  When('Cucumber executes scenarios with parameter $param1 and $param2 are not equal in a string', function( param1, param2, callback ) {
+  	if( param1 != param2 ) {
+  		callback();
+  	} else {
+  		throw(new Error('Params were equal'));
+  	}
+  });
+
+  When('Cucumber executes scenarios with parameter $param1 and $param2 are equal in a string', function( param1, param2, callback ) {
+  	if( param1 == param2 ) {
+  		callback();
+  	} else {
+  		throw(new Error('Params were equal'));
+  	}
+  });
 
   Then(/^the scenario passes$/, function(callback) {
     this.assertPassedScenario();
@@ -332,6 +352,10 @@ callback();\
   Then(/^only the second, third and fourth scenarios are executed$/, function(callback) {
     this.assertExecutedNumberedScenarios(2, 3, 4);
     callback();
+  });
+
+  Then('The string-defined scenario is finished', function(callback) {
+  	callback();
   });
 };
 module.exports = cucumberSteps;

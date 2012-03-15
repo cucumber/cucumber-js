@@ -34,6 +34,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 | [Undefined steps](https://github.com/cucumber/cucumber-tck/blob/master/undefined_steps.feature)                               | Done                |
 | [Wire protocol](https://github.com/cucumber/cucumber-tck/blob/master/wire_protocol.feature)                                   | To do               |
 | [World](https://github.com/cucumber/cucumber-tck/blob/master/world.feature)                                                   | Done                |
+| [String defined step definitions](https://github.com/cucumber/cucumber-tck/blob/master/stringdefined.feature)                                                   | Done                |
 
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
