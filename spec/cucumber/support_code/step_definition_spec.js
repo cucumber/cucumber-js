@@ -123,6 +123,13 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
           expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith(failureReason);
         });
 
+        describe("when no failure reason is given", function() {
+          it("creates a failing step result with a generic step failure exception", function() {
+            codeExecutionCallback.fail();
+            expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWithInstanceOfConstructorAsNthParameter(Error, 1);
+          });
+        });
+
         it("calls back", function() {
           codeExecutionCallback.fail(failureReason);
           expect(callback).toHaveBeenCalledWith(failedStepResult);
