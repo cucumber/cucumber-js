@@ -33,6 +33,15 @@ beforeEach(function() {
       return false;
     },
 
+    toHaveBeenCalledWithInstanceOfConstructorAsNthParameter: function(constructor, parameterOffset) {
+      for(var i = 0; i < this.actual.callCount; i++) {
+        var parameter = this.actual.argsForCall[i][parameterOffset - 1];
+        if (parameter instanceof constructor)
+          return true;
+      }
+      return false;
+    },
+
     toHaveBeenCalledWithStringMatching: function(pattern) {
       for(var i = 0; i < this.actual.callCount; i++) {
         var parameter = this.actual.argsForCall[i][0];
