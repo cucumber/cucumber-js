@@ -2,9 +2,27 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.10...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.11...master)
 
 **TBD**
+
+
+### [v0.2.11](https://github.com/cucumber/cucumber-js/compare/v0.2.10...v0.2.11)
+
+#### Changed features
+
+* Simplify World callbacks (close #49) (Julien Biezemans)
+
+#### Fixes
+
+* Fix callback.fail() when called without any reasons (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Add toHaveBeenCalledWithInstanceOfConstructorAsNthParameter() spec helper (Julien Biezemans)
+* Simplify default World constructor callback (Julien Biezemans)
+* Adapt World constructors (Julien Biezemans)
+
 
 
 ### [v0.2.10](https://github.com/cucumber/cucumber-js/compare/v0.2.9...v0.2.10)
