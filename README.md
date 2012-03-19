@@ -116,7 +116,7 @@ Support files let you setup the environment in which steps will be run, and defi
 
 #### World
 
-*World* is a constructor function with utility properties, destined to be used in step definitions
+*World* is a constructor function with utility properties, destined to be used in step definitions:
 
 ``` javascript
 // features/support/world.js
@@ -129,7 +129,7 @@ var World = function(callback) {
     this.browser.visit(url, callback);
   };
 
-  callback(this); // tell Cucumber we're finished and what to use as World (this)
+  callback(); // tell Cucumber we're finished
 };
 exports.World = World;
 ```

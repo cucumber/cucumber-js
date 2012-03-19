@@ -126,11 +126,6 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
-  Given(/^a custom World constructor calling back without an instance$/, function(callback) {
-    this.stepDefinitions += "this.World = function CustomWorld(callback) { callback(); };\n";
-    callback();
-  });
-
   Given(/^a scenario without any tags$/, function(callback) {
     this.addPassingScenarioWithoutTags();
     callback();
@@ -306,11 +301,6 @@ callback();\
 
   Then(/^the hook is not fired$/, function(callback) {
     this.assertCycleSequenceExcluding('hook');
-    callback();
-  });
-
-  Then(/^an error about the missing World instance is raised$/, function(callback) {
-    this.assertFailureMessage("World constructor called back without World instance");
     callback();
   });
 

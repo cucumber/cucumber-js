@@ -121,10 +121,6 @@ EOF
   end
 
   def write_custom_world_constructor
-    append_support_code "this.World = function CustomWorld(callback) { callback(this); };\n"
-  end
-
-  def write_world_constructor_not_calling_back_with_instance
     append_support_code "this.World = function CustomWorld(callback) { callback(); };\n"
   end
 
