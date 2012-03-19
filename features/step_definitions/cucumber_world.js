@@ -7,7 +7,7 @@ var World = function(callback) {
   this.stepCount       = 0;
   this.runSucceeded    = false;
   World.mostRecentInstance = this;
-  callback(this);
+  callback();
 };
 
 var proto = World.prototype;

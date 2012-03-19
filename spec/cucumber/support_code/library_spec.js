@@ -281,7 +281,7 @@ describe("Cucumber.SupportCode.Library", function() {
       worldConstructor.andCallFake(function(callback) {
         worldInstance = this;
         if (callback)
-          callback(this);
+          callback();
       });
       callback = createSpy("callback");
     });
@@ -328,7 +328,7 @@ describe("Cucumber.SupportCode.Library", function() {
       var worldInstance;
       var worldReady             = false;
       var customWorldConstructor = function(callback) {
-        callback(this);
+        callback();
       };
       rawSupportCode             = function() { this.World = customWorldConstructor; };
       library                    = Cucumber.SupportCode.Library(rawSupportCode);
