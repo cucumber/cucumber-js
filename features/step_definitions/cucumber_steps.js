@@ -126,6 +126,13 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/a custom World constructor calling back with an explicit object$/, function(callback) {
+    this.stepDefinitions += "this.World = function CustomWorldConstructor(callback) {\n\
+  callback({someFunction: function () {world.explicitWorldFunctionCalled = true; }});\n\
+};\n";
+    callback();
+  });
+
   Given(/^a scenario without any tags$/, function(callback) {
     this.addPassingScenarioWithoutTags();
     callback();
@@ -157,6 +164,11 @@ setTimeout(callback.pending, 10);\
 
   When(/^Cucumber executes a scenario(?: with no tags)?$/, function(callback) {
     this.runAScenario(callback);
+  });
+
+  When(/^Cucumber executes a scenario that calls a function on the explicit World object$/, function(callback) {
+    // express the regexp above with the code you wish you had
+    this.runAScenarioCallingWorldFunction(callback);
   });
 
   When(/^Cucumber executes a scenario tagged with "([^"]*)"$/, function(tag, callback) {
@@ -275,6 +287,12 @@ callback();\
     this.assertEqual(expectedDataTable, World.mostRecentInstance.dataTableLog);
     callback();
   });
+
+  this.Then(/^the explicit World object function should have been called$/, function(callback) {
+    this.assertTrue(this.explicitWorldFunctionCalled);
+    callback();
+  });
+
 
   Then(/^the (before|after) hook is fired (?:before|after) the scenario$/, function(hookType, callback) {
     if (hookType == 'before')

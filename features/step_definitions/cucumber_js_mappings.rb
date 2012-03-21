@@ -1,12 +1,13 @@
 module CucumberJsMappings
-  STEP_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.js"
-  COFFEE_SCRIPT_DEFINITIONS_FILE = "features/step_definitions/cucumber_steps.coffee"
-  FEATURE_FILE                   = "features/a_feature.feature"
-  WORLD_VARIABLE_LOG_FILE        = "world_variable.log"
-  WORLD_FUNCTION_LOG_FILE        = "world_function.log"
-  DATA_TABLE_LOG_FILE            = "data_table.log"
-  CYCLE_LOG_FILE                 = "cycle.log"
-  CYCLE_SEQUENCE_SEPARATOR       = " -> "
+  STEP_DEFINITIONS_FILE                   = "features/step_definitions/cucumber_steps.js"
+  COFFEE_SCRIPT_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.coffee"
+  FEATURE_FILE                            = "features/a_feature.feature"
+  WORLD_VARIABLE_LOG_FILE                 = "world_variable.log"
+  WORLD_FUNCTION_LOG_FILE                 = "world_function.log"
+  EXPLICIT_WORLD_OBJECT_FUNCTION_LOG_FILE = "world_function.log";
+  DATA_TABLE_LOG_FILE                     = "data_table.log"
+  CYCLE_LOG_FILE                          = "cycle.log"
+  CYCLE_SEQUENCE_SEPARATOR                = " -> "
 
   attr_accessor :support_code
 
@@ -124,6 +125,14 @@ EOF
     append_support_code "this.World = function CustomWorld(callback) { callback(); };\n"
   end
 
+  def write_custom_world_constructor_calling_back_with_explicit_object
+    append_support_code "this.World = function CustomWorldConstructor(callback) {
+  callback({
+    someFunction: function() { fs.writeFileSync(\"#{EXPLICIT_WORLD_OBJECT_FUNCTION_LOG_FILE}\", \"\")}
+  });
+};\n"
+  end
+
   def write_world_function
     append_support_code <<-EOF
 this.World.prototype.someFunction = function() {
@@ -229,6 +238,10 @@ EOF
 
   def assert_world_function_called
     check_file_presence [WORLD_FUNCTION_LOG_FILE], true
+  end
+
+  def assert_explicit_world_object_function_called
+    check_file_presence [EXPLICIT_WORLD_OBJECT_FUNCTION_LOG_FILE], true
   end
 
   def assert_cycle_sequence *args

@@ -55,6 +55,16 @@ proto.runAScenario = function runAScenario(callback) {
   this.runFeature({}, callback);
 }
 
+proto.runAScenarioCallingWorldFunction = function runAScenarioCallingWorldFunction(callback) {
+  this.addScenario("", "Given a step");
+  this.stepDefinitions += "Given(/^a step$/, function(callback) {\
+  world.logCycleEvent('step 1');\
+  this.someFunction();\
+  callback();\
+});";
+  this.runFeature({}, callback);
+}
+
 proto.logCycleEvent = function logCycleEvent(event) {
   this.cycleEvents += " -> " + event;
 }
@@ -186,6 +196,11 @@ proto.assertEqual = function assertRawDataTable(expected, actual) {
   var actualJSON   = JSON.stringify(actual);
   if (actualJSON != expectedJSON)
     throw(new Error("Expected:\n\"" + actualJSON + "\"\nto match:\n\"" + expectedJSON + "\""));
+}
+
+proto.assertTrue = function assertTrue(value) {
+  if (!value)
+    throw(new Error("Expected:\n\"" + value + "\"\n to be true"));
 }
 
 proto.assertExecutedNumberedScenarios = function assertExecutedNumberedScenarios() {

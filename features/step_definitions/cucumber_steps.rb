@@ -13,6 +13,10 @@ Given /^the step "([^"]*)" has a mapping asynchronously failing with the message
   write_asynchronously_failing_mapping_with_message(step_name, message)
 end
 
+Given /^a custom World constructor calling back with an explicit object$/ do
+  write_custom_world_constructor_calling_back_with_explicit_object
+end
+
 Given /^an around hook tagged with "([^"]*)"$/ do |tag|
   write_passing_hook :type => "around", :tags => [tag], :log_cycle_event_as => "hook"
 end
@@ -26,8 +30,22 @@ EOF
   run_feature
 end
 
+When /^Cucumber executes a scenario that calls a function on the explicit World object$/ do
+  write_mapping_calling_world_function("I call the explicit world object function")
+  write_feature <<-EOF
+Feature:
+  Scenario:
+    When I call the explicit world object function
+EOF
+  run_feature
+end
+
 Then /^the mapping is run$/ do
   assert_passed "a mapping"
+end
+
+Then /^the explicit World object function should have been called$/ do
+  assert_explicit_world_object_function_called
 end
 
 Then /^I see the version of Cucumber$/ do

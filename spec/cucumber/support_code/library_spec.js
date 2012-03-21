@@ -310,15 +310,33 @@ describe("Cucumber.SupportCode.Library", function() {
       describe("next tick registered function", function() {
         var nextTickFunction;
 
-        beforeEach(function() {
-          worldConstructorCompletionCallback();
-          nextTickFunction = process.nextTick.mostRecentCall.args[0];
+        describe("when the world constructor called back without any argument", function() {
+          beforeEach(function() {
+            worldConstructorCompletionCallback();
+            nextTickFunction = process.nextTick.mostRecentCall.args[0];
+          });
+
+          it("calls back with the world instance", function() {
+            nextTickFunction();
+            expect(callback).toHaveBeenCalledWith(worldInstance);
+          });
         });
 
-        it("calls back with the world instance", function() {
-          nextTickFunction();
-          expect(callback).toHaveBeenCalledWith(worldInstance);
+        describe("when the world constructor called back with an explicit world object", function() {
+          var explicitWorld;
+
+          beforeEach(function() {
+            explicitWorld = createSpy("explicit world object");
+            worldConstructorCompletionCallback(explicitWorld);
+            nextTickFunction = process.nextTick.mostRecentCall.args[0];
+          });
+
+          it("calls back with the world instance", function() {
+            nextTickFunction();
+            expect(callback).toHaveBeenCalledWith(explicitWorld);
+          });
         });
+
       });
     });
   });
