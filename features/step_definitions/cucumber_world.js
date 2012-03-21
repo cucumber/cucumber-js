@@ -20,7 +20,7 @@ proto.runFeature = function runFeature(options, callback) {
   var world = this;
   eval(supportCodeSource);
   this.runFeatureWithSupportCodeSource(supportCode, options, callback);
-}
+};
 
 proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource(supportCode, options, callback) {
   var world     = this;
@@ -44,7 +44,7 @@ proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource
     Cucumber.Debug.notice(world.runOutput, 'cucumber output', 5);
     callback();
   }
-}
+};
 
 proto.runAScenario = function runAScenario(callback) {
   this.addScenario("", "Given a step");
@@ -53,7 +53,7 @@ proto.runAScenario = function runAScenario(callback) {
   callback();\
 });";
   this.runFeature({}, callback);
-}
+};
 
 proto.runAScenarioCallingWorldFunction = function runAScenarioCallingWorldFunction(callback) {
   this.addScenario("", "Given a step");
@@ -63,19 +63,19 @@ proto.runAScenarioCallingWorldFunction = function runAScenarioCallingWorldFuncti
   callback();\
 });";
   this.runFeature({}, callback);
-}
+};
 
 proto.logCycleEvent = function logCycleEvent(event) {
   this.cycleEvents += " -> " + event;
-}
+};
 
 proto.touchStep = function touchStep(string) {
   this.touchedSteps.push(string);
-}
+};
 
 proto.isStepTouched = function isStepTouched(pattern) {
   return (this.touchedSteps.indexOf(pattern) >= 0);
-}
+};
 
 proto.addScenario = function addScenario(name, contents, options) {
   options          = options || {};
@@ -120,88 +120,88 @@ proto.makeNumberedStepName = function makeNumberedStepName(index) {
   var index = index || (++this.stepCount);
   var stepName = "step " + index;
   return stepName;
-}
+};
 
 proto.assertPassedFeature = function assertPassedFeature() {
   this.assertNoPartialOutput("failed", this.runOutput);
   this.assertSuccess();
-}
+};
 
 proto.assertPassedScenario = function assertPassedScenario() {
   this.assertPartialOutput("1 scenario (1 passed)", this.runOutput);
   this.assertSuccess();
-}
+};
 
 proto.assertFailedScenario = function assertFailedScenario() {
   this.assertPartialOutput("1 scenario (1 failed)", this.runOutput);
   this.assertFailure();
-}
+};
 
 proto.assertPendingScenario = function assertPendingScenario() {
   this.assertPartialOutput("1 scenario (1 pending)", this.runOutput);
   this.assertSuccess();
-}
+};
 
 proto.assertUndefinedScenario = function assertUndefinedScenario() {
   this.assertPartialOutput("1 scenario (1 undefined)", this.runOutput);
   this.assertSuccess();
-}
+};
 
 proto.assertScenarioReportedAsFailing = function assertScenarioReportedAsFailing(scenarioName) {
   this.assertPartialOutput("# Scenario: " + scenarioName, this.runOutput);
   this.assertFailure();
-}
+};
 
 proto.assertScenarioNotReportedAsFailing = function assertScenarioNotReportedAsFailing(scenarioName) {
   this.assertNoPartialOutput("# Scenario: " + scenarioName, this.runOutput);
-}
+};
 
 proto.assertPassedStep = function assertPassedStep(stepName) {
   if (!this.isStepTouched(stepName))
     throw(new Error("Expected step \"" + stepName + "\" to have passed."));
-}
+};
 
 proto.assertSkippedStep = function assertSkippedStep(stepName) {
   if (this.isStepTouched(stepName))
     throw(new Error("Expected step \"" + stepName + "\" to have been skipped."));
-}
+};
 
 proto.assertSuccess = function assertSuccess() {
   if (!this.runSucceeded)
     throw(new Error("Expected Cucumber to succeed but it failed."));
-}
+};
 
 proto.assertFailure = function assertFailure() {
   if (this.runSucceeded)
     throw(new Error("Expected Cucumber to fail but it succeeded."));
-}
+};
 
 proto.assertFailureMessage = function assertFailureMessage(message) {
   this.assertPartialOutput(message, this.runOutput);
   this.assertFailure();
-}
+};
 
 proto.assertPartialOutput = function assertPartialOutput(expected, actual) {
   if (actual.indexOf(expected) < 0)
     throw(new Error("Expected:\n\"" + actual + "\"\nto match:\n\"" + expected + "\""));
-}
+};
 
 proto.assertNoPartialOutput = function assertNoPartialOutput(expected, actual) {
   if (actual.indexOf(expected) >= 0)
     throw(new Error("Expected:\n\"" + actual + "\"\nnot to match:\n\"" + expected + "\""));
-}
+};
 
 proto.assertEqual = function assertRawDataTable(expected, actual) {
   var expectedJSON = JSON.stringify(expected);
   var actualJSON   = JSON.stringify(actual);
   if (actualJSON != expectedJSON)
     throw(new Error("Expected:\n\"" + actualJSON + "\"\nto match:\n\"" + expectedJSON + "\""));
-}
+};
 
 proto.assertTrue = function assertTrue(value) {
   if (!value)
     throw(new Error("Expected:\n\"" + value + "\"\n to be true"));
-}
+};
 
 proto.assertExecutedNumberedScenarios = function assertExecutedNumberedScenarios() {
   var self = this;
@@ -212,14 +212,14 @@ proto.assertExecutedNumberedScenarios = function assertExecutedNumberedScenarios
     stepNames.push(stepName);
   });
   this.assertCompleteCycleSequence.apply(this, stepNames);
-}
+};
 
 proto.assertCycleSequence = function assertCycleSequence() {
   var events          = Array.prototype.slice.apply(arguments);
   var partialSequence = ' -> ' + events.join(' -> ');
   if (this.cycleEvents.indexOf(partialSequence) < 0)
     throw(new Error("Expected cycle sequence \"" + this.cycleEvents + "\" to contain \"" + partialSequence + "\""));
-}
+};
 
 proto.assertCompleteCycleSequence = function assertCompleteCycleSequence() {
   var events   = Array.prototype.slice.apply(arguments);
@@ -228,7 +228,7 @@ proto.assertCompleteCycleSequence = function assertCompleteCycleSequence() {
   if (this.cycleEvents != sequence)
     throw(new Error("Expected cycle sequence \"" + this.cycleEvents + "\" to be \"" + sequence + "\""));
 
-}
+};
 
 proto.assertCycleSequenceExcluding = function assertCycleSequenceExcluding() {
   var self   = this;
@@ -237,7 +237,7 @@ proto.assertCycleSequenceExcluding = function assertCycleSequenceExcluding() {
     if (self.cycleEvents.indexOf(event) >= 0)
       throw(new Error("Expected cycle sequence \"" + self.cycleEvents + "\" not to contain \"" + event + "\""));
   });
-}
+};
 
 proto.indentCode = function indentCode(code, levels) {
   var indented = '';
