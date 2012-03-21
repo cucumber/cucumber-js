@@ -2,9 +2,22 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.11...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.12...master)
 
 **TBD**
+
+
+### [v0.2.12](https://github.com/cucumber/cucumber-js/compare/v0.2.11...v0.2.12)
+
+#### Changed features
+
+* Allow World constructor to set explicit World object (close #50) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Add semicolons (Julien Biezemans)
+* Add documentation about World to README (Julien Biezemans)
+
 
 
 ### [v0.2.11](https://github.com/cucumber/cucumber-js/compare/v0.2.10...v0.2.11)
