@@ -1,6 +1,6 @@
+require(["cucumber", "cucumber-html"], function(Cucumber, CucumberHTML) {
 (function($) {
   var CucumberHTMLListener = function($root) {
-    var CucumberHTML = require('cucumber-html');
     var formatter    = new CucumberHTML.DOMFormatter($root);
 
     formatter.uri('report.feature');
@@ -70,7 +70,6 @@
   };
 
   function runFeature() {
-    var Cucumber        = require('./cucumber');
     var supportCode;
     var output          = $('#output');
     var errors          = $('#errors');
@@ -102,3 +101,4 @@
     $('#errors-container').hide();
   });
 })(jQuery);
+});
