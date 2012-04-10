@@ -27,14 +27,14 @@
   { "gherkin" : "2.6.8"
   , "jasmine-node" : "1.0.13"
   , "connect" : "1.8.1"
-  , "browserify" : "1.8.1"
   , "nopt" : "1.0.10"
-  , "underscore" : "1.2.2"
   , "rimraf" : "1.0.8"
   , "mkdirp" : "0.2.1"
   , "cucumber-html": "0.2.0"
   , "findit": "0.1.1"
   , "coffee-script": "1.1.2"
+  , "ansi-color": "0.2.1"
+  , "amdefine": ">=0.0.2"
   }
 , "scripts" :
   { "test" : "./bin/cucumber.js && jasmine-node spec" }

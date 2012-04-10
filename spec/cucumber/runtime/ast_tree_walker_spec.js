@@ -292,24 +292,24 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       stepResult = createSpyWithStubs("Step result", {isFailed: undefined, isPending: undefined});
       callback   = createSpy("Callback");
       event      = createSpy("Event");
-      payload    = {stepResult: stepResult};
+      payload    = {step: null, stepResult: stepResult};
       spyOn(treeWalker, 'broadcastEvent');
       spyOn(treeWalker, 'witnessFailedStep');
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
     });
 
     it("creates a new event about the step result", function() {
-      treeWalker.visitStepResult(stepResult, callback);
+      treeWalker.visitStepResult(null, stepResult, callback);
       expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.STEP_RESULT_EVENT_NAME, payload);
     });
 
     it("broadcasts the visit of the step result and the step result itself", function() {
-      treeWalker.visitStepResult(stepResult, callback);
+      treeWalker.visitStepResult(null, stepResult, callback);
       expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
     });
 
     it("checks wether the step failed or not", function() {
-      treeWalker.visitStepResult(stepResult, callback);
+      treeWalker.visitStepResult(null, stepResult, callback);
       expect(stepResult.isFailed).toHaveBeenCalled();
     });
 
@@ -319,7 +319,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       });
 
       it("witnesses a failed step", function() {
-        treeWalker.visitStepResult(stepResult, callback);
+        treeWalker.visitStepResult(null, stepResult, callback);
         expect(treeWalker.witnessFailedStep).toHaveBeenCalled();
       });
     });
@@ -331,12 +331,12 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       });
 
       it("does not witness a failed step", function() {
-        treeWalker.visitStepResult(stepResult, callback);
+        treeWalker.visitStepResult(null, stepResult, callback);
         expect(treeWalker.witnessFailedStep).not.toHaveBeenCalled();
       });
 
       it("checks wether the step was pending or not", function() {
-        treeWalker.visitStepResult(stepResult, callback);
+        treeWalker.visitStepResult(null, stepResult, callback);
         expect(stepResult.isPending).toHaveBeenCalled();
       });
 
@@ -346,7 +346,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         });
 
         it("witnesses a pending step", function() {
-          treeWalker.visitStepResult(stepResult, callback);
+          treeWalker.visitStepResult(null, stepResult, callback);
           expect(treeWalker.witnessPendingStep).toHaveBeenCalled();
         });
       });
@@ -357,14 +357,14 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         });
 
         it("does not witness a pending step", function() {
-          treeWalker.visitStepResult(stepResult, callback);
+          treeWalker.visitStepResult(null, stepResult, callback);
           expect(treeWalker.witnessPendingStep).not.toHaveBeenCalled();
         });
       });
     });
 
     it("does not call back by itself", function() {
-      treeWalker.visitStepResult(stepResult, callback);
+      treeWalker.visitStepResult(null, stepResult, callback);
       expect(callback).not.toHaveBeenCalled();
     });
   });
@@ -776,7 +776,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       callback          = createSpy("callback");
       event             = createSpy("event");
       skippedStepResult = createSpy("skipped step result");
-      payload           = { stepResult: skippedStepResult};
+      payload           = {step: step, stepResult: skippedStepResult};
       spyOn(Cucumber.Runtime, 'SkippedStepResult').andReturn(skippedStepResult);
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEvent');
@@ -805,7 +805,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       step                = createSpyWithStubs("step AST element");
       callback            = createSpy("callback");
       undefinedStepResult = createSpy("undefined step result");
-      payload             = {stepResult: undefinedStepResult};
+      payload             = {step: step, stepResult: undefinedStepResult};
       spyOn(Cucumber.Runtime, 'UndefinedStepResult').andReturn(undefinedStepResult);
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEvent');

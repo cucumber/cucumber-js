@@ -11,12 +11,12 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function() {
   });
 
   describe("isMatching()", function() {
-    var _ = require('underscore');
+    var _ = Cucumber.Util.Array;
 
     var element, elementTags, matchingElement;
 
     beforeEach(function() {
-      elementTags     = createSpy("element tags");
+      elementTags     = createSpyWithStubs("element tags", {slice: []});
       element         = createSpyWithStubs("element", {getTags: elementTags});
       matchingElement = createSpy("wether the element is matching or not");
       spyOn(spec, 'isExpectingTag');
@@ -35,12 +35,12 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function() {
     describe("when the spec tag is expected on the element", function() {
       beforeEach(function() {
         spec.isExpectingTag.andReturn(true);
-        spyOn(_, 'any').andReturn(matchingElement);
+        spyOn(_, 'some').andReturn(matchingElement);
       });
 
       it("checks wether any of the element tags match the spec tag", function() {
         spec.isMatching(element);
-        expect(_.any).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
+        expect(_.some).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
       });
 
       it("returns wether the element matched or not", function() {
@@ -51,12 +51,12 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function() {
     describe("when the spec tag is not expected on the element", function() {
       beforeEach(function() {
         spec.isExpectingTag.andReturn(false);
-        spyOn(_, 'all').andReturn(matchingElement);
+        spyOn(_, 'every').andReturn(matchingElement);
       });
 
       it("checks wether any of the element tags match the spec tag", function() {
         spec.isMatching(element);
-        expect(_.all).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
+        expect(_.every).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
       });
 
       it("returns wether the element matched or not", function() {

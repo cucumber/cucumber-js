@@ -1,16 +1,9 @@
 var connect    = require('connect');
 var server     = connect.createServer();
-var browserify = require('browserify');
-
 var port       = process.env.PORT || 9797;
-var cukeBundle = browserify({
-  mount: '/cucumber.js',
-  require: ['cucumber-html', './lib/cucumber', {'./gherkin/lexer/en': 'gherkin/lib/gherkin/lexer/en'}],
-  ignore: ['./cucumber/cli', 'connect']
-});
+var static_dir = __dirname.slice(0, __dirname.lastIndexOf("/"));
 
-server.use(connect.static(__dirname));
-server.use(cukeBundle);
+server.use(connect.static(static_dir));
 server.listen(port);
 
-console.log('Accepting connections on port ' + port + '...');
+console.log('Accepting connections on port ' + port + ' from ' + static_dir + '...');
