@@ -11,21 +11,21 @@ describe("Cucumber.Ast.Filter", function() {
   });
 
   describe("isScenarioEnrolled()", function() {
-    var _ = require('underscore');
+    var _ = Cucumber.Util.Array;
 
     var scenario, scenarioEnrolled;
 
     beforeEach(function() {
       scenario         = createSpy("scenario");
       scenarioEnrolled = createSpy("wether the scenario is enrolled or not");
-      spyOn(_, 'all').andReturn(scenarioEnrolled);
+      spyOn(_, 'every').andReturn(scenarioEnrolled);
     });
 
     it("checks all the rules for a condition", function() {
       filter.isScenarioEnrolled(scenario);
-      expect(_.all).toHaveBeenCalled();
-      expect(_.all).toHaveBeenCalledWithValueAsNthParameter(rules, 1);
-      expect(_.all).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(_.every).toHaveBeenCalled();
+      expect(_.every).toHaveBeenCalledWithValueAsNthParameter(rules, 1);
+      expect(_.every).toHaveBeenCalledWithAFunctionAsNthParameter(2);
     });
 
     describe("every rule condition", function() {
@@ -35,7 +35,7 @@ describe("Cucumber.Ast.Filter", function() {
         ruleSatisfied = createSpy("wether the rule was satisfied or not");
         rule          = createSpyWithStubs("rule", {isSatisfiedByElement: ruleSatisfied});
         filter.isScenarioEnrolled(scenario);
-        ruleConditionFunc = _.all.mostRecentCall.args[1];
+        ruleConditionFunc = _.every.mostRecentCall.args[1];
       });
 
       it("checks wether the rule is satisfied by the scenario", function() {

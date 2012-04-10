@@ -108,15 +108,18 @@ describe("Cucumber.Cli", function() {
   });
 
   describe("runSuiteWithConfiguration()", function() {
-    var configuration, runtime, callback;
+    var configuration, runtime, callback, argumentParser;
     var progressFormatter;
 
     beforeEach(function() {
-      configuration = createSpy("CLI configuration");
-      runtime       = createSpyWithStubs("runtime", {start: null, attachListener: null});
-      callback      = createSpy("callback");
+      //configuration.getFormatter = function() { return Cucumber.Listener.ProgressFormatter(); };
+      runtime        = createSpyWithStubs("runtime", {start: null, attachListener: null});
+      callback       = createSpy("callback");
+      argumentParser = createSpyWithStubs("CLI argument parser", {parse: null, getOptionOrDefault: "progress"});
       spyOn(Cucumber, 'Runtime').andReturn(runtime);
       spyOn(Cucumber.Listener, 'ProgressFormatter').andReturn(progressFormatter);
+      spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
+      configuration = Cucumber.Cli.Configuration(argv);
     });
 
     it("creates a Cucumber runtime with the CLI configuration", function() {

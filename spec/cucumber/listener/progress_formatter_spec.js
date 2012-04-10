@@ -748,7 +748,7 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     var snippetBuilder, snippet, step;
 
     beforeEach(function() {
-      stpe           = createSpy("step");
+      step           = Cucumber.Ast.Step("Given", "step", "line");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
