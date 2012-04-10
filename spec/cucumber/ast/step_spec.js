@@ -715,7 +715,7 @@ describe("Cucumber.Ast.Step", function() {
 
       it("tells the visitor to visit the step result", function() {
         executeCallback(stepResult);
-        expect(visitor.visitStepResult).toHaveBeenCalledWith(stepResult, callback);
+        expect(visitor.visitStepResult).toHaveBeenCalledWith(step, stepResult, callback);
       });
     });
   });
