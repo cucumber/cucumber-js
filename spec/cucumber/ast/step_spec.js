@@ -146,6 +146,95 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
+  describe("getAttachmentContents()", function() {
+    beforeEach(function() {
+      spyOn(step, 'getAttachment');
+    });
+
+    it("gets the attachment", function() {
+      step.getAttachmentContents();
+      expect(step.getAttachment).toHaveBeenCalled();
+    });
+
+    describe("when there is an attachment", function() {
+      var attachment, attachmentContents;
+
+      beforeEach(function() {
+        attachmentContents = createSpy("step attachment contents");
+        attachment         = createSpyWithStubs("step attachment", {getContents: attachmentContents});
+        step.getAttachment.andReturn(attachment);
+      });
+
+      it("gets the attachment contents", function() {
+        step.getAttachmentContents();
+        expect(attachment.getContents).toHaveBeenCalled();
+      });
+
+      it("returns the attachment contents", function() {
+        expect(step.getAttachmentContents()).toBe(attachmentContents);
+      });
+    });
+
+    describe("when there is no attachement", function() {
+      it("returns nothing", function() {
+        expect(step.getAttachmentContents()).toBeUndefined();
+      });
+    });
+  });
+
+  describe("hasAttachment()", function() {
+    beforeEach(function() {
+      spyOn(step, 'hasDocString');
+      spyOn(step, 'hasDataTable');
+    });
+
+    it("checks wether the step has a doc string attached or not", function() {
+      step.hasAttachment();
+      expect(step.hasDocString).toHaveBeenCalled();
+    });
+
+    describe("when there is a doc string attached", function() {
+      beforeEach(function() {
+        step.hasDocString.andReturn(true);
+      });
+
+      it("is truthy", function() {
+        expect(step.hasAttachment()).toBeTruthy();
+      });
+    });
+
+    describe("when there is no doc string attached", function() {
+      beforeEach(function() {
+        step.hasDocString.andReturn(false);
+      });
+
+      it("checks wether the step has a data table attached or not", function() {
+        step.hasAttachment();
+        expect(step.hasDataTable).toHaveBeenCalled();
+      });
+
+      describe("when there is a data table attached", function() {
+        beforeEach(function() {
+          step.hasDataTable.andReturn(true);
+        });
+
+        it("is truthy", function() {
+          expect(step.hasAttachment()).toBeTruthy();
+        });
+      });
+
+      describe("when there is no data table attached", function() {
+        beforeEach(function() {
+          step.hasDataTable.andReturn(false);
+        });
+
+        it("is truthy", function() {
+          expect(step.hasAttachment()).toBeFalsy();
+        });
+      });
+    });
+  });
+
   describe("attachDataTableRow()", function() {
     var row, dataTable;
 
@@ -632,19 +721,17 @@ describe("Cucumber.Ast.Step", function() {
   });
 
   describe("execute()", function() {
-    var stepDefinition, world, attachment;
+    var stepDefinition, world;
     var visitor, callback;
 
     beforeEach(function() {
       stepDefinition = createSpy("step definition");
       world          = createSpy("world");
-      attachment     = createSpy("attachment");
       visitor        = createSpy("visitor");
       callback       = createSpy("callback received by execute()");
       spyOnStub(stepDefinition, 'invoke');
       spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
       spyOnStub(visitor, 'getWorld').andReturn(world);
-      spyOnStub(step, 'getAttachment').andReturn(attachment);
     });
 
     it("looks up the step definition based on the step string", function() {
@@ -657,14 +744,9 @@ describe("Cucumber.Ast.Step", function() {
       expect(visitor.getWorld).toHaveBeenCalled();
     });
 
-    it("gets the step attachement", function() {
+    it("invokes the step definition", function() {
       step.execute(visitor, callback);
-      expect(step.getAttachment).toHaveBeenCalled();
-    });
-
-    it("invokes the step definition with the step name, world, attachment and the callback", function() {
-      step.execute(visitor, callback);
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(name, world, attachment, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, callback);
     });
   });
 });
