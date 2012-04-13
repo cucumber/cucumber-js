@@ -8,33 +8,23 @@ describe("Cucumber.Runtime.SuccessfulStepResult", function() {
     stepResult = Cucumber.Runtime.SuccessfulStepResult();
   });
 
-  describe("isFailed()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isFailed()).toBeFalsy();
-    });
+  it("is not failed", function() {
+    expect(stepResult.isFailed()).toBeFalsy();
   });
 
-  describe("isPending()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isPending()).toBeFalsy();
-    });
+  it("is not pending", function() {
+    expect(stepResult.isPending()).toBeFalsy();
   });
 
-  describe("isSkipped()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isSkipped()).toBeFalsy();
-    });
+  it("is not skipped", function() {
+    expect(stepResult.isSkipped()).toBeFalsy();
   });
 
-  describe("isSuccessful()", function() {
-    it("is truthy", function() {
-      expect(stepResult.isSuccessful()).toBeTruthy();
-    });
+  it("is successful", function () {
+    expect(stepResult.isSuccessful()).toBeTruthy();
   });
 
-  describe("isUndefined()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isUndefined()).toBeFalsy();
-    });
+  it("is not undefined", function() {
+    expect(stepResult.isUndefined()).toBeFalsy();
   });
 });

@@ -9,34 +9,24 @@ describe("Cucumber.Runtime.UndefinedStepResult", function() {
     stepResult = Cucumber.Runtime.UndefinedStepResult({step: step});
   });
 
-  describe("isFailed()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isFailed()).toBeFalsy();
-    });
+  it("is not failed", function() {
+    expect(stepResult.isFailed()).toBeFalsy();
   });
 
-  describe("isPending()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isPending()).toBeFalsy();
-    });
+  it("is not pending", function() {
+    expect(stepResult.isPending()).toBeFalsy();
   });
 
-  describe("isSkipped()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isSkipped()).toBeFalsy();
-    });
+  it("is not skipped", function() {
+    expect(stepResult.isSkipped()).toBeFalsy();
   });
 
-  describe("isSuccessful()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isSuccessful()).toBeFalsy();
-    });
+  it("is not successful", function () {
+    expect(stepResult.isSuccessful()).toBeFalsy();
   });
 
-  describe("isUndefined()", function() {
-    it("is truthy", function() {
-      expect(stepResult.isUndefined()).toBeTruthy();
-    });
+  it("is undefined", function() {
+    expect(stepResult.isUndefined()).toBeTruthy();
   });
 
   describe("getStep()", function() {

@@ -9,34 +9,24 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
     stepResult       = Cucumber.Runtime.FailedStepResult(failureException);
   });
 
-  describe("isFailed()", function() {
-    it("is truthy", function() {
-      expect(stepResult.isFailed()).toBeTruthy();
-    });
+  it("is failed", function() {
+    expect(stepResult.isFailed()).toBeTruthy();
   });
 
-  describe("isPending()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isPending()).toBeFalsy();
-    });
+  it("is not pending", function() {
+    expect(stepResult.isPending()).toBeFalsy();
   });
 
-  describe("isSkipped()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isSkipped()).toBeFalsy();
-    });
+  it("is not skipped", function() {
+    expect(stepResult.isSkipped()).toBeFalsy();
   });
 
-  describe("isSuccessful()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isSuccessful()).toBeFalsy();
-    });
+  it("is not successful", function () {
+    expect(stepResult.isSuccessful()).toBeFalsy();
   });
 
-  describe("isUndefined()", function() {
-    it("is falsy", function() {
-      expect(stepResult.isUndefined()).toBeFalsy();
-    });
+  it("is not undefined", function() {
+    expect(stepResult.isUndefined()).toBeFalsy();
   });
 
   describe("getFailureException()", function() {
