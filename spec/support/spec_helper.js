@@ -1,5 +1,9 @@
 beforeEach(function() {
   this.addMatchers({
+    toBeAnInstanceOf: function(constructor) {
+      return this.actual.constructor && this.actual.constructor == constructor;
+    },
+
     toBeAFunction: function() { return typeof(this.actual) == 'function'; },
 
     toHaveBeenCalledNTimes: function(callCount) { return callCount == this.actual.callCount; },

@@ -71,7 +71,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
 
       it("creates a successful step result", function() {
         codeExecutionCallback();
-        expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalled();
+        expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalledWith({step: step});
       });
 
       it("calls back", function() {
@@ -98,7 +98,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
 
         it("creates a pending step result", function() {
           codeExecutionCallback.pending(pendingReason);
-          expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalledWith(pendingReason);
+          expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalledWith({step: step, pendingReason: pendingReason});
         });
 
         it("calls back", function() {
@@ -118,13 +118,15 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
 
         it("creates a failing step result", function() {
           codeExecutionCallback.fail(failureReason);
-          expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith(failureReason);
+          expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: failureReason});
         });
 
         describe("when no failure reason is given", function() {
           it("creates a failing step result with a generic step failure exception", function() {
             codeExecutionCallback.fail();
-            expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWithInstanceOfConstructorAsNthParameter(Error, 1);
+            var payload = Cucumber.Runtime.FailedStepResult.mostRecentCall.args[0];
+            expect(payload.step).toBe(step);
+            expect(payload.failureException).toBeAnInstanceOf(Error);
           });
         });
 
@@ -147,7 +149,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
 
       it("creates a new failed step result", function() {
         stepDefinition.invoke(step, world, callback);
-        expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith(failureException);
+        expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: failureException});
       });
 
       it("calls back with the step result", function() {

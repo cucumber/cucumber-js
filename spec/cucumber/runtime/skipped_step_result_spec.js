@@ -2,36 +2,23 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.SkippedStepResult", function() {
   var Cucumber = requireLib('cucumber');
-  var stepResult, step;
+  var skippedStepResult, stepResult, step, payload;;
 
   beforeEach(function() {
-    step       = createSpy("step");
-    stepResult = Cucumber.Runtime.SkippedStepResult({step: step});
-  });
-
-  it("is not failed", function() {
-    expect(stepResult.isFailed()).toBeFalsy();
-  });
-
-  it("is not pending", function() {
-    expect(stepResult.isPending()).toBeFalsy();
+    skippedStepResult = createSpy("base step result");
+    spyOn(Cucumber.Runtime, 'StepResult').andReturn(skippedStepResult);
+    step              = createSpy("step");
+    payload           = {step: step};
+    skippedStepResult = Cucumber.Runtime.SkippedStepResult(payload);
   });
 
   it("is skipped", function() {
-    expect(stepResult.isSkipped()).toBeTruthy();
+    expect(skippedStepResult.isSkipped()).toBeTruthy();
   });
 
-  it("is not successful", function () {
-    expect(stepResult.isSuccessful()).toBeFalsy();
-  });
-
-  it("is not undefined", function() {
-    expect(stepResult.isUndefined()).toBeFalsy();
-  });
-
-  describe("getStep()", function() {
-    it("returns the step passed to the constructor", function() {
-      expect(stepResult.getStep()).toBe(step);
+  describe("constructor", function() {
+    it("instantiates a step result", function() {
+      expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(payload);
     });
   });
 });
