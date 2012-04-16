@@ -2,34 +2,42 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.StepDefinition", function() {
   var Cucumber = requireLib('cucumber');
-  var stepDefinition, stepRegexp, stepDefinitionCode;
+  var stepDefinition, pattern, stepDefinitionCode;
 
   beforeEach(function() {
-    stepRegexp         = createSpyWithStubs("Step regexp", {test:null});
+    pattern         = createSpyWithStubs("pattern", {test:null});
     stepDefinitionCode = createSpy("step definition code");
-    stepDefinition     = Cucumber.SupportCode.StepDefinition(stepRegexp, stepDefinitionCode);
+    stepDefinition     = Cucumber.SupportCode.StepDefinition(pattern, stepDefinitionCode);
+  });
+
+  describe("getPatternRegexp()", function() {
+    it("returns the pattern itself", function() {
+      expect(stepDefinition.getPatternRegexp()).toBe(pattern);
+    });
   });
 
   describe("matchesStepName()", function() {
-    var stepName;
+    var patternRegexp, stepName;
 
     beforeEach(function() {
-      stepName = createSpy("Step name to match");
+      stepName      = createSpy("step name");
+      matchResult   = createSpy("step match result (boolean)");
+      patternRegexp = createSpyWithStubs("pattern regexp", {test: matchResult});
+      spyOn(stepDefinition, 'getPatternRegexp').andReturn(patternRegexp);
+    });
+
+    it("gets the pattern regexp", function(){
+      stepDefinition.matchesStepName(stepName);
+      expect(stepDefinition.getPatternRegexp).toHaveBeenCalled();
     });
 
     it("tests the string against the step name", function() {
       stepDefinition.matchesStepName(stepName);
-      expect(stepRegexp.test).toHaveBeenCalledWith(stepName);
+      expect(patternRegexp.test).toHaveBeenCalledWith(stepName);
     });
 
-    it("returns true when the step name matches the step definition regexp", function() {
-      stepRegexp.test.andReturn(true);
-      expect(stepDefinition.matchesStepName(stepName)).toBeTruthy();
-    });
-
-    it("returns false when the step name does not match the step definition regexp", function() {
-      stepRegexp.test.andReturn(false);
-      expect(stepDefinition.matchesStepName(stepName)).toBeFalsy();
+    it("returns the match result", function() {
+      expect(stepDefinition.matchesStepName(stepName)).toBe(matchResult);
     });
   });
 
@@ -160,16 +168,18 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
   });
 
   describe("buildInvocationParameters()", function() {
-    var step, stepName, stepAttachment, stepAttachmentContents;
+    var patternRegexp, step, stepName, stepAttachment, stepAttachmentContents;
     var matches, callback;
 
     beforeEach(function() {
       stepName               = createSpy("step name to match");
+      matches                = createSpyWithStubs("matches", {shift: null, push: null});
+      patternRegexp          = createSpyWithStubs("pattern regexp", {test: matches});
       stepAttachmentContents = createSpy("step attachment contents");
       step                   = createSpyWithStubs("step", {hasAttachment: null, getName: stepName, getAttachmentContents: stepAttachmentContents});
-      matches                = createSpyWithStubs("matches", {shift: null, push: null});
       callback               = createSpy("callback");
-      spyOnStub(stepRegexp, 'exec').andReturn(matches);
+      spyOn(stepDefinition, 'getPatternRegexp').andReturn(patternRegexp);
+      spyOnStub(patternRegexp, 'exec').andReturn(matches);
     });
 
     it("gets the step name", function() {
@@ -177,9 +187,14 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       expect(step.getName).toHaveBeenCalled();
     });
 
-    it("executes the step regexp against the step name", function() {
+    it("gets the pattern regexp", function() {
       stepDefinition.buildInvocationParameters(step, callback);
-      expect(stepRegexp.exec).toHaveBeenCalledWith(stepName);
+      expect(stepDefinition.getPatternRegexp).toHaveBeenCalled();
+    });
+
+    it("executes the pattern regexp against the step name", function() {
+      stepDefinition.buildInvocationParameters(step, callback);
+      expect(patternRegexp.exec).toHaveBeenCalledWith(stepName);
     });
 
     it("removes the whole matched string of the regexp result array (to only keep matching groups)", function() {
