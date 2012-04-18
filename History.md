@@ -2,9 +2,26 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.12...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.13...master)
 
 **TBD**
+
+
+### [v0.2.13](https://github.com/cucumber/cucumber-js/compare/v0.2.12...v0.2.13)
+
+
+#### New features
+
+* Add support for string-based step definition patterns (closes #48) (Ted de Koning, Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Pass step instance to step definition invocation (#57) (Julien Biezemans)
+* Refactor step result specs (Julien Biezemans)
+* Store step on step results (#57) (Julien Biezemans)
+* Increase Aruba timeout delay for slow Travis (Julien Biezemans)
+* Decouple pattern from regexp in step definition (#48) (Julien Biezemans)
+
 
 
 ### [v0.2.12](https://github.com/cucumber/cucumber-js/compare/v0.2.11...v0.2.12)
