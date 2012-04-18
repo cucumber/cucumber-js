@@ -8,4 +8,3 @@ Feature: CoffeeScript support
     When Cucumber executes a scenario using that mapping
     Then the feature passes
     And the mapping is run
-

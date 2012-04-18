@@ -55,6 +55,17 @@ proto.runAScenario = function runAScenario(callback) {
   this.runFeature({}, callback);
 };
 
+proto.runAScenarioCallingMapping = function runAScenarioCallingMapping(callback) {
+  this.addScenario("", "Given a mapping");
+  this.runFeature({}, callback);
+};
+
+proto.runAScenarioCallingMappingWithParameters = function runAScenarioCallingMappingWithParameters(callback) {
+  this.expectedMappingArguments = [5, "fresh cucumbers"];
+  this.addScenario("", 'Given a mapping with ' + this.expectedMappingArguments[0] + ' "' + this.expectedMappingArguments[1] + '"');
+  this.runFeature({}, callback);
+};
+
 proto.runAScenarioCallingWorldFunction = function runAScenarioCallingWorldFunction(callback) {
   this.addScenario("", "Given a step");
   this.stepDefinitions += "Given(/^a step$/, function(callback) {\
@@ -75,6 +86,21 @@ proto.touchStep = function touchStep(string) {
 
 proto.isStepTouched = function isStepTouched(pattern) {
   return (this.touchedSteps.indexOf(pattern) >= 0);
+};
+
+proto.addStringBasedPatternMapping = function addStringBasedPatternMapping() {
+  this.stepDefinitions += "Given('a mapping', function(callback) {\
+  world.logCycleEvent('a mapping');\
+  callback();\
+});";
+};
+
+proto.addStringBasedPatternMappingWithParameters = function addStringBasedPatternMappingWithParameters() {
+  this.stepDefinitions += "Given('a mapping with $word_param \"$multi_word_param\"', function(p1, p2, callback) {\
+  world.logCycleEvent('a mapping');\
+  world.actualMappingArguments = [p1, p2];\
+  callback();\
+});";
 };
 
 proto.addScenario = function addScenario(name, contents, options) {
@@ -164,6 +190,18 @@ proto.assertPassedStep = function assertPassedStep(stepName) {
 proto.assertSkippedStep = function assertSkippedStep(stepName) {
   if (this.isStepTouched(stepName))
     throw(new Error("Expected step \"" + stepName + "\" to have been skipped."));
+};
+
+proto.assertPassedMapping = function assertPassedMapping() {
+  this.assertCycleSequence("a mapping");
+};
+
+proto.assertPassedMappingWithArguments = function assertPassedMappingWithArguments() {
+  this.assertPassedMapping();
+  if (this.actualMappingArguments.length != this.expectedMappingArguments.length ||
+      this.actualMappingArguments[0] != this.expectedMappingArguments[0] ||
+      this.actualMappingArguments[1] != this.expectedMappingArguments[1])
+    throw(new Error("Expected arguments to be passed to mapping."));
 };
 
 proto.assertSuccess = function assertSuccess() {

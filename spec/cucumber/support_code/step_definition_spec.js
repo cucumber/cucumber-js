@@ -5,14 +5,52 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
   var stepDefinition, pattern, stepDefinitionCode;
 
   beforeEach(function() {
-    pattern         = createSpyWithStubs("pattern", {test:null});
+    pattern            = createSpyWithStubs("pattern", {test: null});
     stepDefinitionCode = createSpy("step definition code");
     stepDefinition     = Cucumber.SupportCode.StepDefinition(pattern, stepDefinitionCode);
+    spyOn(global, 'RegExp');
   });
 
   describe("getPatternRegexp()", function() {
-    it("returns the pattern itself", function() {
-      expect(stepDefinition.getPatternRegexp()).toBe(pattern);
+    describe("when the pattern is a RegExp", function() {
+      it("does not instantiate a RegExp", function() {
+        expect(global.RegExp).not.toHaveBeenCalled();
+      });
+
+      it("returns the pattern itself", function() {
+        expect(stepDefinition.getPatternRegexp()).toBe(pattern);
+      });
+    });
+
+    describe("when the pattern is a String", function() {
+      var regexp, quotedDollarParameterSubstitutedPattern, regexpString;
+
+      beforeEach(function() {
+        regexp                                  = createSpy("regexp");
+        regexpString                            = createSpy("regexp string");
+        quotedDollarParameterSubstitutedPattern = createSpyWithStubs("quoted dollar param substituted pattern", {replace: regexpString});
+        spyOnStub(pattern, 'replace').andReturn(quotedDollarParameterSubstitutedPattern);
+        global.RegExp.andReturn(regexp);
+      });
+
+      it("replaces quoted dollar-prefixed parameters with the regexp equivalent", function() {
+        stepDefinition.getPatternRegexp();
+        expect(pattern.replace).toHaveBeenCalledWith(Cucumber.SupportCode.StepDefinition.QUOTED_DOLLAR_PARAMETER_REGEXP, Cucumber.SupportCode.StepDefinition.QUOTED_DOLLAR_PARAMETER_SUBSTITUTION);
+      });
+
+      it("replaces other dollar-prefixed parameter with the regexp equivalent", function() {
+        stepDefinition.getPatternRegexp();
+        expect(quotedDollarParameterSubstitutedPattern.replace).toHaveBeenCalledWith(Cucumber.SupportCode.StepDefinition.DOLLAR_PARAMETER_REGEXP, Cucumber.SupportCode.StepDefinition.DOLLAR_PARAMETER_SUBSTITUTION);
+      });
+
+      it("instantiates a new RegExp", function() {
+        stepDefinition.getPatternRegexp();
+        expect(global.RegExp).toHaveBeenCalledWith(regexpString);
+      });
+
+      it("returns the new RegExp", function() {
+        expect(stepDefinition.getPatternRegexp()).toBe(regexp);
+      });
     });
   });
 

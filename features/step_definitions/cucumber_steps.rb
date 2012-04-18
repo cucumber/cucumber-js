@@ -5,6 +5,14 @@ Given /^a mapping written in CoffeeScript$/ do
   write_coffee_script_definition_file
 end
 
+Given /^a mapping with a string-based pattern$/ do
+  write_string_based_pattern_mapping
+end
+
+Given /^a mapping with a string-based pattern and parameters$/ do
+  write_string_based_pattern_mapping_with_parameters
+end
+
 Given /^the step "([^"]*)" has an asynchronous pending mapping$/ do |step_name|
   write_asynchronous_pending_mapping(step_name)
 end
@@ -30,6 +38,16 @@ EOF
   run_feature
 end
 
+When /^Cucumber executes a scenario that passes arguments to that mapping$/ do
+  @mapping_arguments = [5, "cucumbers in perfect state"]
+  write_feature <<-EOF
+Feature:
+  Scenario:
+    Given a mapping with #{@mapping_arguments[0]} "#{@mapping_arguments[1]}"
+EOF
+  run_feature
+end
+
 When /^Cucumber executes a scenario that calls a function on the explicit World object$/ do
   write_mapping_calling_world_function("I call the explicit world object function")
   write_feature <<-EOF
@@ -42,6 +60,10 @@ end
 
 Then /^the mapping is run$/ do
   assert_passed "a mapping"
+end
+
+Then /^the mapping receives the arguments$/ do
+  assert_passed_with_arguments "a mapping", @mapping_arguments
 end
 
 Then /^the explicit World object function should have been called$/ do

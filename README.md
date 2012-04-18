@@ -105,9 +105,9 @@ Feature: Example feature
   So that I can concentrate on building awesome applications
 
   Scenario: Reading documentation
-    Given I am on the cucumber.js github page
+    Given I am on the Cucumber.js Github repository
     When I go to the README file
-    Then I should see "Usage"
+    Then I should see "Usage" as the page title
 ```
 
 ### Support Files
@@ -172,7 +172,7 @@ Step definitions are run when steps match their name. `this` is an instance of `
 var myStepDefinitionsWrapper = function () {
   this.World = require("../support/world.js").World; // overwrite default World constructor
 
-  this.Given(/REGEXP/, function(callback) {
+  this.Given(/^I am on the Cucumber.js Github repository$/, function(callback) {
     // Express the regexp above with the code you wish you had.
     // `this` is set to a new this.World instance.
     // i.e. you may use this.browser to execute the step:
@@ -183,18 +183,19 @@ var myStepDefinitionsWrapper = function () {
     // be executed by Cucumber.
   });
 
-  this.When(/REGEXP/, function(callback) {
+  this.When(/^I go to the README file$/, function(callback) {
     // Express the regexp above with the code you wish you had. Call callback() at the end
     // of the step, or callback.pending() if the step is not yet implemented:
 
     callback.pending();
   });
 
-  this.Then(/REGEXP/, function(callback) {
-    // You can make steps fail by calling the `fail()` function on the callback:
+  this.Then(/^I should see "(.*)" as the page title$/, function(title, callback) {
+    // matching groups are passed as parameters to the step definition
 
-    if (!this.isOnPageWithTitle("Cucumber.js demo"))
-      callback.fail(new Error("Expected to be on 'Cucumber.js demo' page"));
+    if (!this.isOnPageWithTitle(title))
+      // You can make steps fail by calling the `fail()` function on the callback:
+      callback.fail(new Error("Expected to be on page with title " + title));
     else
       callback();
   });
@@ -202,6 +203,23 @@ var myStepDefinitionsWrapper = function () {
 
 module.exports = myStepDefinitionsWrapper;
 ```
+
+It is also possible to use simple strings instead of regexps as step definition patterns:
+
+```javascript
+this.Then('I should see "$title" as the page title', function(title, callback) {
+  // the above string is converted to the following Regexp by Cucumber:
+  // /^I should see "([^"]*)" as the page title$/
+
+  if (!this.isOnPageWithTitle(title))
+    // You can make steps fail by calling the `fail()` function on the callback:
+    callback.fail(new Error("Expected to be on page with title " + title));
+  else
+    callback();
+});
+```
+
+`'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)")$/`.
 
 #### Hooks
 

@@ -292,6 +292,11 @@ EOF
     assert_complete_cycle_sequence *sequence
   end
 
+  def assert_passed_with_arguments(pattern, arguments)
+    raise "#{pattern} did not pass" unless pattern_exists?(pattern)
+    check_exact_file_content step_file(pattern), arguments.join("\n")
+  end
+
   def failed_output
     "failed"
   end
@@ -330,6 +335,24 @@ stepDefinitions = () ->
     callback()
   )
 module.exports = stepDefinitions
+EOF
+  end
+
+  def write_string_based_pattern_mapping
+    append_support_code <<-EOF
+this.defineStep("a mapping", function(callback) {
+  fs.writeFileSync("#{step_file("a mapping")}", "");
+  callback();
+});
+EOF
+  end
+
+  def write_string_based_pattern_mapping_with_parameters
+    append_support_code <<-EOF
+this.defineStep('a mapping with $word_param "$multi_word_param"', function(p1, p2, callback) {
+  fs.writeFileSync("#{step_file("a mapping")}", p1 + "\\n" + p2);
+  callback();
+});
 EOF
   end
 

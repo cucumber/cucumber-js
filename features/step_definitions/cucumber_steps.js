@@ -105,6 +105,16 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/^a mapping with a string-based pattern$/, function(callback) {
+    this.addStringBasedPatternMapping();
+    callback();
+  });
+
+  Given(/^a mapping with a string-based pattern and parameters$/, function(callback) {
+    this.addStringBasedPatternMappingWithParameters();
+    callback();
+  });
+
   Given(/^the following feature:$/, function(feature, callback) {
     this.featureSource = feature;
     callback();
@@ -166,8 +176,15 @@ setTimeout(callback.pending, 10);\
     this.runAScenario(callback);
   });
 
+  this.When(/^Cucumber executes a scenario using that mapping$/, function(callback) {
+    this.runAScenarioCallingMapping(callback);
+  });
+
+  this.When(/^Cucumber executes a scenario that passes arguments to that mapping$/, function(callback) {
+    this.runAScenarioCallingMappingWithParameters(callback);
+  });
+
   When(/^Cucumber executes a scenario that calls a function on the explicit World object$/, function(callback) {
-    // express the regexp above with the code you wish you had
     this.runAScenarioCallingWorldFunction(callback);
   });
 
@@ -263,6 +280,16 @@ callback();\
 
   Then(/^the step "([^"]*)" is skipped$/, function(stepName, callback) {
     this.assertSkippedStep(stepName);
+    callback();
+  });
+
+  Then(/^the mapping is run$/, function(callback) {
+    this.assertPassedMapping();
+    callback();
+  });
+
+  Then(/^the mapping receives the arguments$/, function(callback) {
+    this.assertPassedMappingWithArguments();
     callback();
   });
 
