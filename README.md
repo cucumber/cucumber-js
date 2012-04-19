@@ -112,7 +112,7 @@ Feature: Example feature
 
 ### Support Files
 
-Support files let you setup the environment in which steps will be run, and define step definitions.
+Support files let you setup the environment in which steps will be run, and define step definitions. Both JavaScript (`.js`) and CoffeeScript (`.coffee`) source files are supported.
 
 #### World
 
