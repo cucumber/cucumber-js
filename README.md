@@ -337,26 +337,31 @@ module.exports = myHooks;
 
 Cucumber.js includes a binary file to execute the features.
 
-If you installed cucumber.js with `npm install --dev`, you may run cucumber with:
+If you installed cucumber.js globally, you may run it with:
 
 ``` shell
-  @NODE_ENV=test ./node_modules/.bin/cucumber.js
+$ cucumber.js
 ```
 
 You may specify the features to run:
 
 ``` shell
-  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature
+$ cucumber.js features/my_feature.feature
 ```
 
-And require specific step definitions with the --require option:
+And require specific step definitions and support code files with the --require option:
 
 ``` shell
-  @NODE_ENV=test ./node_modules/.bin/cucumber.js features/myFeature.feature \
-    --require features/step_definitions/myStepDefinitions.js
+$ cucumber.js features/my_feature.feature --require features/step_definitions/my_step_definitions.js
 ```
 
+If you installed Cucumber locally or with `npm install --dev`, you'll need to specify the path to the binary:
 
+``` shell
+$ ./node_modules/.bin/cucumber.js
+```
+
+**Note to Windows users:** invoke Cucumber.js with `cucumber-js` instead of `cucumber.js`. The latter is causing the operating system to invoke JScript instead of Node.js, because of the so-called file extension.
 
 ### Examples
 
