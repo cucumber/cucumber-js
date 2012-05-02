@@ -2,9 +2,23 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.13...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.14...master)
 
 **TBD**
+
+
+### [v0.2.14](https://github.com/cucumber/cucumber-js/compare/v0.2.13...v0.2.14)
+
+
+#### Fixes
+
+* Add alternate binary script for Windows (close #60) (Julien Biezemans)
+
+#### New features
+
+* Mention CS support in README (Julien Biezemans)
+* Update command-line documentation in README (Julien Biezemans)
+
 
 
 ### [v0.2.13](https://github.com/cucumber/cucumber-js/compare/v0.2.12...v0.2.13)
