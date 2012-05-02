@@ -39,7 +39,7 @@
   }
 , "scripts" :
   { "test" : "./bin/cucumber.js && jasmine-node spec" }
-, "bin": { "cucumber.js": "./bin/cucumber.js" }
+, "bin": { "cucumber.js": "./bin/cucumber.js", "cucumber-js": "./bin/cucumber.js" }
 , "licenses" :
   [ { "type" : "MIT"
     , "url" : "http://github.com/cucumber/cucumber.js/LICENSE"
