@@ -5,9 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Cucumber.js</title>
     <link href="example.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="vendor/require.js"></script>
+    <script type="text/javascript">
+        require.config({
+          paths: {
+            "cucumber": "../lib/cucumber",
+            "gherkin": "../node_modules/gherkin/lib/gherkin",
+            "ansi-color": "../node_modules/ansi-color/lib/ansi-color",
+            "cucumber-html": "../node_modules/cucumber-html/src/main/resources/cucumber/formatter/formatter"
+          }
+        });
+    </script>
     <script type="text/javascript" src="vendor/jquery-1.6.1.min.js"></script>
-    <script type="text/javascript" src="/cucumber.js"></script>
-    <script type="text/javascript" src="/example.js"></script>
+    <script type="text/javascript" src="/lib/cucumber.js"></script>
+    <script type="text/javascript" src="example.js"></script>
   </head>
   <body>
     <h1><a href="https://github.com/cucumber/cucumber-js">Cucumber.js</a> demo</h1>

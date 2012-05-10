@@ -31,7 +31,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
     });
 
     describe("replicateAsPreEvent()", function() {
-      var preEvent;
+      var preEvent, BEFORE_EVENT_NAME_PREFIX = Cucumber.Runtime.AstTreeWalker.Event.BEFORE_EVENT_NAME_PREFIX;
 
       beforeEach(function() {
         preEvent = createSpy("Pre-event (before)");
@@ -39,7 +39,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
       });
 
       it("creates a new event with the before prefix prepended to the event name and the same payload", function() {
-        var newName = Cucumber.Runtime.AstTreeWalker.BEFORE_EVENT_NAME_PREFIX + name;
+        var newName = BEFORE_EVENT_NAME_PREFIX + name;
         event.replicateAsPreEvent();
         expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(newName, payload);
       });
@@ -50,7 +50,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
     });
 
     describe("replicateAsPostEvent()", function() {
-      var postEvent;
+      var postEvent, AFTER_EVENT_NAME_PREFIX = Cucumber.Runtime.AstTreeWalker.Event.AFTER_EVENT_NAME_PREFIX;
 
       beforeEach(function() {
         postEvent = createSpy("Post-event (after)");
@@ -58,7 +58,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
       });
 
       it("creates a new event with the after prefix prepended to the event name and the same payload", function() {
-        var newName = Cucumber.Runtime.AstTreeWalker.AFTER_EVENT_NAME_PREFIX + name;
+        var newName = AFTER_EVENT_NAME_PREFIX + name;
         event.replicateAsPostEvent();
         expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(newName, payload);
       });
@@ -92,7 +92,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
 
     describe("occurredAfter()", function() {
       beforeEach(function() {
-        var afterName = Cucumber.Runtime.AstTreeWalker.AFTER_EVENT_NAME_PREFIX + name;
+        var afterName = Cucumber.Runtime.AstTreeWalker.Event.AFTER_EVENT_NAME_PREFIX + name;
         event = Cucumber.Runtime.AstTreeWalker.Event(afterName, payload);
       });
 

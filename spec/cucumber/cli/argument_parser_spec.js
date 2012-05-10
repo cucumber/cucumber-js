@@ -245,7 +245,7 @@ describe("Cucumber.Cli.ArgumentParser", function() {
   });
 
   describe("getTagGroups()", function() {
-    var _ = require('underscore');
+    var _ = Cucumber.Util.Array;
 
     var tagOptionValues, tagGroups;
 
