@@ -8,7 +8,32 @@ Feature: JSON Formatter
       Feature: some feature
       """
     When I run `cucumber.js -f json`
-    Then it should pass with:
+    Then it should pass with this json:
       """
-      { name: 'some feature', id: '' }
+{
+  "name": "some feature",
+  "id": ""
+}
       """
+
+  Scenario: output JSON for a feature with one undefined scenario
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: I havn't done anything yet
+      """
+    When I run `cucumber.js -f json`
+    Then it should pass with this json:
+      """
+{
+  "name": "some feature",
+  "id": "",
+  "elements": [
+    {
+      "name": "I havn't done anything yet"
+    }
+  ]
+}
+      """
+

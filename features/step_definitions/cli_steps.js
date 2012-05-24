@@ -75,6 +75,25 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
+  this.Then(/^it should pass with this json:$/, function(expectedOutput, callback) {
+    var actualOutput = lastRun['stdout'];
+
+    var actualError =  lastRun['error'];
+    var actualStderr =  lastRun['stderr'];
+
+    var actualJson = JSON.parse(actualOutput);
+    var expectedJson = JSON.parse(expectedOutput);
+
+    var actualJsonString = JSON.stringify(actualJson, null, 2);
+    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+
+    if (actualJsonString.indexOf(expectedJsonString) == -1)
+      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\nGot:\n'" + actualJsonString + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
+    callback();
+  });
+
   this.Then(/^I see the version of Cucumber$/, function(callback) {
     var Cucumber       = require('../../lib/cucumber');
     var actualOutput   = lastRun['stdout'];
