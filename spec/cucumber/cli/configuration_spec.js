@@ -177,4 +177,20 @@ describe("Cucumber.Cli.Configuration", function() {
       expect(configuration.isVersionRequested()).toBe(isVersionRequested);
     });
   });
+
+  describe("getFormatter()", function() {
+    beforeEach(function() {
+      spyOnStub(argumentParser, 'getFormat');
+    });
+
+    it("asks the argument parser which format we should be outputting in", function() {
+      configuration.getFormatter();
+      expect(argumentParser.getFormat).toHaveBeenCalled();
+    });
+//
+//    it("returns the corresponding formatter for us to use", function() {
+//      // TODO: Fill this out when my head is in a better place
+//    });
+  });
+
 });

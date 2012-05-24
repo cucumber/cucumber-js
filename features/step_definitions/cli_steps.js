@@ -8,7 +8,7 @@ var cliSteps = function cliSteps() {
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
   var cleansingNeeded = true;
 
-  var lastRun;
+  var lastRun = { error: null, stdout: "", stderr: "" };
 
   function tmpPath(path) {
     return (tmpDir + "/" + path);
@@ -64,8 +64,14 @@ var cliSteps = function cliSteps() {
 
   this.Then(/^it should pass with:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
+
+    var actualError =  lastRun['error'];
+    var actualStderr =  lastRun['stderr'];
+
     if (actualOutput.indexOf(expectedOutput) == -1)
-      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
+      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
     callback();
   });
 
