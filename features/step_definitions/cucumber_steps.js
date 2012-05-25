@@ -86,8 +86,8 @@ var cucumberSteps = function() {
   world.touchStep(\"" + stepName + "\");\
   setTimeout(function() {callback.fail(new Error('" + message + "'));}, 10);\
 });\n";
-  callback();
-});
+    callback();
+  });
 
   Given(/^the step "([^"]*)" has a pending mapping$/, function(stepName, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\

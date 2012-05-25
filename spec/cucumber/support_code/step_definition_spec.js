@@ -81,14 +81,17 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
 
   describe("invoke()", function() {
     var step, world, callback;
-    var parameters;
+    var parameters, exceptionHandler;
 
     beforeEach(function() {
-      step           = createSpy("step");
-      world          = createSpy("world");
-      callback       = createSpy("callback");
-      parameters     = createSpy("code execution parameters");
+      step             = createSpy("step");
+      world            = createSpy("world");
+      callback         = createSpy("callback");
+      parameters       = createSpy("code execution parameters");
+      exceptionHandler = createSpy("exception handler");
+      spyOn(Cucumber.Util.Exception, 'registerUncaughtExceptionHandler');
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
+      spyOn(stepDefinition, 'buildExceptionHandlerToCodeCallback').andReturn(exceptionHandler);
       spyOn(stepDefinitionCode, 'apply');
     });
 
@@ -97,6 +100,20 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalled();
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(step, 1);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+    });
+
+    it("builds an exception handler for the code callback", function() {
+      stepDefinition.invoke(step, world, callback);
+      expect(stepDefinition.buildExceptionHandlerToCodeCallback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+
+      var codeExecutionCallbackPassedToParameterBuilder = stepDefinition.buildInvocationParameters.mostRecentCall.args[1];
+      var codeExecutionCallbackPassedToExceptionHandlerBuilder = stepDefinition.buildExceptionHandlerToCodeCallback.mostRecentCall.args[0];
+      expect(codeExecutionCallbackPassedToExceptionHandlerBuilder).toBe(codeExecutionCallbackPassedToParameterBuilder);
+    });
+
+    it("registers the exception handler for uncaught exceptions", function () {
+      stepDefinition.invoke(step, world, callback);
+      expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
     });
 
     it("calls the step definition code with the parameters and World as 'this'", function() {
@@ -113,11 +130,17 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
         codeExecutionCallback = stepDefinition.buildInvocationParameters.mostRecentCall.args[1];
         successfulStepResult = createSpy("successful step result");
         spyOn(Cucumber.Runtime, 'SuccessfulStepResult').andReturn(successfulStepResult);
+        spyOn(Cucumber.Util.Exception, 'unregisterUncaughtExceptionHandler');
       });
 
       it("creates a successful step result", function() {
         codeExecutionCallback();
         expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalledWith({step: step});
+      });
+
+      it("unregisters the exception handler", function() {
+        codeExecutionCallback();
+        expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
       });
 
       it("calls back", function() {
@@ -145,6 +168,11 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
         it("creates a pending step result", function() {
           codeExecutionCallback.pending(pendingReason);
           expect(Cucumber.Runtime.PendingStepResult).toHaveBeenCalledWith({step: step, pendingReason: pendingReason});
+        });
+
+        it("unregisters the exception handler", function() {
+          codeExecutionCallback.pending(pendingReason);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
         });
 
         it("calls back", function() {
@@ -176,6 +204,11 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
           });
         });
 
+        it("unregisters the exception handler", function() {
+          codeExecutionCallback.fail(failureReason);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
+        });
+
         it("calls back", function() {
           codeExecutionCallback.fail(failureReason);
           expect(callback).toHaveBeenCalledWith(failedStepResult);
@@ -184,23 +217,16 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
     });
 
     describe("when the step definition code throws an exception", function() {
-      var failedStepResult, failureException;
+      var failureException;
 
       beforeEach(function() {
         failureException = createSpy("I am a failing step definition");
-        failedStepResult = createSpy("failed step result");
         stepDefinitionCode.apply.andThrow(failureException);
-        spyOn(Cucumber.Runtime, 'FailedStepResult').andReturn(failedStepResult);
       });
 
-      it("creates a new failed step result", function() {
+      it("handles the exception with the exception handler", function() {
         stepDefinition.invoke(step, world, callback);
-        expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: failureException});
-      });
-
-      it("calls back with the step result", function() {
-        stepDefinition.invoke(step, world, callback);
-        expect(callback).toHaveBeenCalledWith(failedStepResult);
+        expect(exceptionHandler).toHaveBeenCalledWith(failureException);
       });
     });
   });
@@ -284,6 +310,32 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
 
     it("returns the parameters", function() {
       expect(stepDefinition.buildInvocationParameters(step, callback)).toBe(matches);
+    });
+  });
+
+  describe("buildExceptionHandlerToCodeCallback()", function () {
+    var codeCallback, exceptionHandler;
+
+    beforeEach(function() {
+      codeCallback = createSpyWithStubs("code callback", {fail: null});
+      exceptionHandler = stepDefinition.buildExceptionHandlerToCodeCallback(codeCallback);
+    });
+
+    it("returns an exception handler", function() {
+      expect(exceptionHandler).toBeAFunction();
+    });
+
+    describe("returned exception handler", function () {
+      var exception;
+
+      beforeEach(function () {
+        exception = createSpy("exception");
+      });
+
+      it("calls back as a failure with the exception", function () {
+        exceptionHandler(exception);
+        expect(codeCallback.fail).toHaveBeenCalledWith(exception);
+      });
     });
   });
 });

@@ -21,6 +21,10 @@ Given /^the step "([^"]*)" has a mapping asynchronously failing with the message
   write_asynchronously_failing_mapping_with_message(step_name, message)
 end
 
+Given /^the step "([^"]*)" has a mapping asynchronously failing through an exception with the message "([^"]*)"$/ do |step_name, message|
+  write_asynchronously_failing_mapping_through_exception_with_message(step_name, message)
+end
+
 Given /^a custom World constructor calling back with an explicit object$/ do
   write_custom_world_constructor_calling_back_with_explicit_object
 end
