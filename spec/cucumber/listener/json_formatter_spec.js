@@ -1,92 +1,18 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Listener.ProgressFormatter", function() {
+describe("Cucumber.Listener.JsonFormatter", function() {
   var Cucumber = requireLib('cucumber');
   var listener, failedStepResults;
 
   beforeEach(function() {
     failedStepResults = createSpy("Failed steps");
     spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
-    listener = Cucumber.Listener.ProgressFormatter();
+    listener = Cucumber.Listener.JsonFormatter();
   });
 
   describe("constructor", function() {
     it("creates a collection to store the failed steps", function() {
       expect(Cucumber.Type.Collection).toHaveBeenCalled();
-    });
-  });
-
-  describe("log()", function() {
-    var logged, alsoLogged, loggedBuffer;
-
-    beforeEach(function() {
-      logged       = "this was logged";
-      alsoLogged   = "this was also logged";
-      loggedBuffer = logged + alsoLogged;
-      spyOn(process.stdout, 'write');
-    });
-
-    it("records logged strings", function() {
-      listener.log(logged);
-      listener.log(alsoLogged);
-      expect(listener.getLogs()).toBe(loggedBuffer);
-    });
-
-    it("outputs the logged string to STDOUT by default", function() {
-        listener.log(logged);
-        expect(process.stdout.write).toHaveBeenCalledWith(logged);
-    });
-
-    describe("when asked to output to STDOUT", function() {
-      beforeEach(function() {
-        listener = Cucumber.Listener.ProgressFormatter({logToConsole: true});
-      });
-
-      it("outputs the logged string to STDOUT", function() {
-        listener.log(logged);
-        expect(process.stdout.write).toHaveBeenCalledWith(logged);
-      });
-    });
-
-    describe("when asked to not output to STDOUT", function() {
-      beforeEach(function() {
-        listener = Cucumber.Listener.ProgressFormatter({logToConsole: false});
-      });
-
-      it("does not output anything to STDOUT", function() {
-        listener.log(logged);
-        expect(process.stdout.write).not.toHaveBeenCalledWith(logged);
-      });
-    });
-
-    describe("when asked to output to a function", function() {
-      var userFunction;
-
-      beforeEach(function() {
-        userFunction = createSpy("output user function");
-        listener     = Cucumber.Listener.ProgressFormatter({logToFunction: userFunction});
-      });
-
-      it("calls the function with the logged string", function() {
-        listener.log(logged);
-        expect(userFunction).toHaveBeenCalledWith(logged);
-      });
-    });
-  });
-
-  describe("getLogs()", function() {
-    it("returns the logged buffer", function() {
-      var logged       = "this was logged";
-      var alsoLogged   = "this was also logged";
-      var loggedBuffer = logged + alsoLogged;
-      spyOn(process.stdout, 'write'); // prevent actual output during spec execution
-      listener.log(logged);
-      listener.log(alsoLogged);
-      expect(listener.getLogs()).toBe(loggedBuffer);
-    });
-
-    it("returns an empty string when the listener did not log anything yet", function() {
-      expect(listener.getLogs()).toBe("");
     });
   });
 
@@ -380,7 +306,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
   describe("handleSuccessfulStepResult()", function() {
     beforeEach(function() {
       spyOn(listener, 'witnessPassedStep');
-      spyOn(listener, 'log');
     });
 
     it("witnesses a passed step", function() {
@@ -388,17 +313,12 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.witnessPassedStep).toHaveBeenCalled();
     });
 
-    it("logs the passing step character", function() {
-      listener.handleSuccessfulStepResult();
-      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
-    });
   });
 
   describe("handlePendingStepResult()", function() {
     beforeEach(function() {
       spyOn(listener, 'witnessPendingStep');
       spyOn(listener, 'markCurrentScenarioAsPending');
-      spyOn(listener, 'log')
     });
 
     it("witnesses a pending step", function() {
@@ -411,16 +331,11 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.markCurrentScenarioAsPending).toHaveBeenCalled();
     });
 
-    it("logs the pending step character", function() {
-      listener.handlePendingStepResult();
-      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PENDING_STEP_CHARACTER);
-    });
   });
 
   describe("handleSkippedStepResult()", function() {
     beforeEach(function() {
       spyOn(listener, 'witnessSkippedStep');
-      spyOn(listener, 'log');
     });
 
     it("counts one more skipped step", function() {
@@ -428,10 +343,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.witnessSkippedStep).toHaveBeenCalled();
     });
 
-    it("logs the skipped step character", function() {
-      listener.handleSkippedStepResult();
-      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.SKIPPED_STEP_CHARACTER);
-    });
   });
 
   describe("handleUndefinedStepResult()", function() {
@@ -443,7 +354,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       spyOn(listener, 'storeUndefinedStep');
       spyOn(listener, 'witnessUndefinedStep');
       spyOn(listener, 'markCurrentScenarioAsUndefined');
-      spyOn(listener, 'log');
     });
 
     it("gets the step from the step result", function() {
@@ -466,10 +376,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.markCurrentScenarioAsUndefined).toHaveBeenCalled();
     });
 
-    it("logs the undefined step character", function() {
-      listener.handleUndefinedStepResult(stepResult);
-      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.UNDEFINED_STEP_CHARACTER);
-    });
   });
 
   describe("handleFailedStepResult()", function() {
@@ -480,7 +386,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       spyOn(listener, 'storeFailedStepResult');
       spyOn(listener, 'witnessFailedStep');
       spyOn(listener, 'markCurrentScenarioAsFailing');
-      spyOn(listener, 'log');
     });
 
     it("stores the failed step result", function() {
@@ -498,17 +403,16 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       expect(listener.markCurrentScenarioAsFailing).toHaveBeenCalled();
     });
 
-    it("logs the failed step character", function() {
-      listener.handleFailedStepResult(stepResult);
-      expect(listener.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.FAILED_STEP_CHARACTER);
-    });
   });
 
   describe("handleBeforeScenarioEvent", function() {
-    var event, callback;
+    var scenario, event, callback;
 
     beforeEach(function() {
-      event    = createSpy("event");
+      scenario = createSpyWithStubs("scenario", {getName: "A Scenario"});
+      event    = createSpyWithStubs("event", {getPayloadItem: scenario});
+
+
       callback = createSpy("callback");
       spyOn(listener, 'prepareBeforeScenario');
     });
@@ -530,12 +434,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
     beforeEach(function() {
       event    = createSpy("Event");
       callback = createSpy("Callback");
-      spyOn(listener, "logSummary");
-    });
-
-    it("displays a summary", function() {
-      listener.handleAfterFeaturesEvent(event, callback);
-      expect(listener.logSummary).toHaveBeenCalled();
     });
 
     it("calls back", function() {
@@ -802,655 +700,6 @@ describe("Cucumber.Listener.ProgressFormatter", function() {
       listener.appendStringToUndefinedStepLogBuffer("abcdef");
       listener.appendStringToUndefinedStepLogBuffer("abcdef");
       expect(listener.getUndefinedStepLogBuffer()).toBe("abcdef\n");
-    });
-  });
-
-  describe("logSummary()", function() {
-    var scenarioCount, passedScenarioCount, failedScenarioCount;
-    var stepCount, passedStepCount;
-
-    beforeEach(function() {
-      spyOn(listener, 'log');
-      spyOn(listener, 'witnessedAnyFailedStep');
-      spyOn(listener, 'witnessedAnyUndefinedStep');
-      spyOn(listener, 'logFailedStepResults');
-      spyOn(listener, 'logScenariosSummary');
-      spyOn(listener, 'logStepsSummary');
-      spyOn(listener, 'logUndefinedStepSnippets');
-    });
-
-    it("logs two line feeds", function() {
-      listener.logSummary();
-      expect(listener.log).toHaveBeenCalledWith("\n\n");
-    });
-
-    it("checks wether there are failed steps or not", function() {
-      listener.logSummary();
-      expect(listener.witnessedAnyFailedStep).toHaveBeenCalled();
-    });
-
-    describe("when there are failed steps", function() {
-      beforeEach(function() {
-        listener.witnessedAnyFailedStep.andReturn(true);
-      });
-
-      it("logs the failed steps", function() {
-        listener.logSummary();
-        expect(listener.logFailedStepResults).toHaveBeenCalled();
-      });
-    });
-
-    describe("when there are no failed steps", function() {
-      beforeEach(function() {
-        listener.witnessedAnyFailedStep.andReturn(false);
-      });
-
-      it("does not log failed steps", function() {
-        listener.logSummary();
-        expect(listener.logFailedStepResults).not.toHaveBeenCalled();
-      });
-    });
-
-    it("logs the scenarios summary", function() {
-      listener.logSummary();
-      expect(listener.logScenariosSummary).toHaveBeenCalled();
-    });
-
-    it("logs the steps summary", function() {
-      listener.logSummary();
-      expect(listener.logStepsSummary).toHaveBeenCalled();
-    });
-
-    it("checks wether there are undefined steps or not", function() {
-      listener.logSummary();
-      expect(listener.witnessedAnyUndefinedStep).toHaveBeenCalled();
-    });
-
-    describe("when there are undefined steps", function() {
-      beforeEach(function() {
-        listener.witnessedAnyUndefinedStep.andReturn(true);
-      });
-
-      it("logs the undefined step snippets", function() {
-        listener.logSummary();
-        expect(listener.logUndefinedStepSnippets).toHaveBeenCalled();
-      });
-    });
-
-    describe("when there are no undefined steps", function() {
-      beforeEach(function() {
-        listener.witnessedAnyUndefinedStep.andReturn(false);
-      });
-
-      it("does not log the undefined step snippets", function() {
-        listener.logSummary();
-        expect(listener.logUndefinedStepSnippets).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe("logFailedStepResults()", function() {
-    var failedScenarioLogBuffer;
-
-    beforeEach(function() {
-      failedScenarioLogBuffer = createSpy("failed scenario log buffer");
-      spyOnStub(failedStepResults, 'syncForEach');
-      spyOn(listener, 'log');
-      spyOn(listener, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
-    });
-
-    it("logs a failed steps header", function() {
-      listener.logFailedStepResults();
-      expect(listener.log).toHaveBeenCalledWith("(::) failed steps (::)\n\n");
-    });
-
-    it("iterates synchronously over the failed step results", function() {
-      listener.logFailedStepResults();
-      expect(failedStepResults.syncForEach).toHaveBeenCalled();
-      expect(failedStepResults.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-    });
-
-    describe("for each failed step result", function() {
-      var userFunction, failedStep, forEachCallback;
-
-      beforeEach(function() {
-        listener.logFailedStepResults();
-        userFunction     = failedStepResults.syncForEach.mostRecentCall.args[0];
-        failedStepResult = createSpy("failed step result");
-        spyOn(listener, 'logFailedStepResult');
-      });
-
-      it("tells the visitor to visit the feature and call back when finished", function() {
-        userFunction(failedStepResult);
-        expect(listener.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
-      });
-    });
-
-    it("logs a failed scenarios header", function() {
-      listener.logFailedStepResults();
-      expect(listener.log).toHaveBeenCalledWith("Failing scenarios:\n");
-    });
-
-    it("gets the failed scenario details from its log buffer", function() {
-      listener.logFailedStepResults();
-      expect(listener.getFailedScenarioLogBuffer).toHaveBeenCalled();
-    });
-
-    it("logs the failed scenario details", function() {
-      listener.logFailedStepResults();
-      expect(listener.log).toHaveBeenCalledWith(failedScenarioLogBuffer);
-    });
-
-    it("logs a line break", function() {
-      listener.logFailedStepResults();
-      expect(listener.log).toHaveBeenCalledWith("\n");
-    });
-  });
-
-  describe("logFailedStepResult()", function() {
-    var stepResult, failureException;
-
-    beforeEach(function() {
-      spyOn(listener, 'log');
-      failureException = createSpy('caught exception');
-      stepResult       = createSpyWithStubs("failed step result", { getFailureException: failureException });
-    });
-
-    it("gets the failure exception from the step result", function() {
-      listener.logFailedStepResult(stepResult);
-      expect(stepResult.getFailureException).toHaveBeenCalled();
-    });
-
-    describe("when the failure exception has a stack", function() {
-      beforeEach(function() {
-        failureException.stack = createSpy('failure exception stack');
-      });
-
-      it("logs the stack", function() {
-        listener.logFailedStepResult(stepResult);
-        expect(listener.log).toHaveBeenCalledWith(failureException.stack);
-      });
-    });
-
-    describe("when the failure exception has no stack", function() {
-      it("logs the exception itself", function() {
-        listener.logFailedStepResult(stepResult);
-        expect(listener.log).toHaveBeenCalledWith(failureException);
-      });
-    });
-
-    it("logs two line breaks", function() {
-      listener.logFailedStepResult(stepResult);
-      expect(listener.log).toHaveBeenCalledWith("\n\n");
-    });
-  });
-
-  describe("logScenariosSummary()", function() {
-    var scenarioCount, passedScenarioCount, pendingScenarioCount, failedScenarioCount;
-
-    beforeEach(function() {
-      scenarioCount          = 12;
-      passedScenarioCount    = 9;
-      undefinedScenarioCount = 17;
-      pendingScenarioCount   = 7;
-      failedScenarioCount    = 15;
-      spyOn(listener, 'log');
-      spyOn(listener, 'getScenarioCount').andReturn(scenarioCount);
-      spyOn(listener, 'getPassedScenarioCount').andReturn(passedScenarioCount);
-      spyOn(listener, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
-      spyOn(listener, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
-      spyOn(listener, 'getFailedScenarioCount').andReturn(failedScenarioCount);
-    });
-
-    it("gets the number of scenarios", function() {
-      listener.logScenariosSummary();
-      expect(listener.getScenarioCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no scenarios", function() {
-      beforeEach(function() { listener.getScenarioCount.andReturn(0); });
-
-      it("logs 0 scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/0 scenarios/);
-      });
-
-      it("does not log any details", function() {
-        listener.logScenariosSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
-      });
-    });
-
-    describe("when there are scenarios", function() {
-      beforeEach(function() { listener.getScenarioCount.andReturn(12); });
-
-      describe("when there is one scenario", function() {
-        beforeEach(function() { listener.getScenarioCount.andReturn(1); });
-
-        it("logs one scenario", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 scenario([^s]|$)/);
-        });
-      });
-
-      describe("when there are 2 or more scenarios", function() {
-        beforeEach(function() { listener.getScenarioCount.andReturn(2); });
-
-        it("logs two or more scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 scenarios/);
-        });
-      });
-
-      it("gets the number of failed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.getFailedScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no failed scenarios", function() {
-        beforeEach(function() { listener.getFailedScenarioCount.andReturn(0); });
-
-        it("does not log failed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/failed/);
-        });
-      });
-
-      describe("when there is one failed scenario", function() {
-        beforeEach(function() { listener.getFailedScenarioCount.andReturn(1); });
-
-        it("logs a failed scenario", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 failed/);
-        });
-      });
-
-      describe("when there are two or more failed scenarios", function() {
-        beforeEach(function() { listener.getFailedScenarioCount.andReturn(2); });
-
-        it("logs the number of failed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
-        });
-      });
-
-      it("gets the number of undefined scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.getUndefinedScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no undefined scenarios", function() {
-        beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(0); });
-
-        it("does not log passed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
-        });
-      });
-
-      describe("when there is one undefined scenario", function() {
-        beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(1); });
-
-        it("logs one undefined scenario", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
-        });
-      });
-
-      describe("when there are two or more undefined scenarios", function() {
-        beforeEach(function() { listener.getUndefinedScenarioCount.andReturn(2); });
-
-        it("logs the undefined scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
-        });
-      });
-
-      it("gets the number of pending scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.getPendingScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no pending scenarios", function() {
-        beforeEach(function() { listener.getPendingScenarioCount.andReturn(0); });
-
-        it("does not log passed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
-        });
-      });
-
-      describe("when there is one pending scenario", function() {
-        beforeEach(function() { listener.getPendingScenarioCount.andReturn(1); });
-
-        it("logs one pending scenario", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
-        });
-      });
-
-      describe("when there are two or more pending scenarios", function() {
-        beforeEach(function() { listener.getPendingScenarioCount.andReturn(2); });
-
-        it("logs the pending scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
-        });
-      });
-
-      it("gets the number of passed scenarios", function() {
-        listener.logScenariosSummary();
-        expect(listener.getPassedScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no passed scenarios", function() {
-        beforeEach(function() { listener.getPassedScenarioCount.andReturn(0); });
-
-        it("does not log passed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/passed/);
-        });
-      });
-
-      describe("when there is one passed scenario", function() {
-        beforeEach(function() { listener.getPassedScenarioCount.andReturn(1); });
-
-        it("logs 1 passed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 passed/);
-        });
-      });
-
-      describe("when there are two or more passed scenarios", function() {
-        beforeEach(function() { listener.getPassedScenarioCount.andReturn(2); });
-
-        it("logs the number of passed scenarios", function() {
-          listener.logScenariosSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 passed/);
-        });
-      });
-    });
-  });
-
-  describe("logStepsSummary()", function() {
-    var stepCount, passedStepCount, failedStepCount, skippedStepCount, pendingStepCount;
-
-    beforeEach(function() {
-      stepCount          = 34;
-      passedStepCount    = 31;
-      failedStepCount    = 7;
-      skippedStepCount   = 5;
-      undefinedStepCount = 4;
-      pendingStepCount   = 2;
-      spyOn(listener, 'log');
-      spyOn(listener, 'getStepCount').andReturn(stepCount);
-      spyOn(listener, 'getPassedStepCount').andReturn(passedStepCount);
-      spyOn(listener, 'getFailedStepCount').andReturn(failedStepCount);
-      spyOn(listener, 'getSkippedStepCount').andReturn(skippedStepCount);
-      spyOn(listener, 'getUndefinedStepCount').andReturn(undefinedStepCount);
-      spyOn(listener, 'getPendingStepCount').andReturn(pendingStepCount);
-    });
-
-    it("gets the number of steps", function() {
-      listener.logStepsSummary();
-      expect(listener.getStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no steps", function() {
-      beforeEach(function() {
-        listener.getStepCount.andReturn(0);
-      });
-
-      it("logs 0 steps", function() {
-        listener.logStepsSummary();
-        expect(listener.log).toHaveBeenCalledWithStringMatching(/0 steps/);
-      });
-
-      it("does not log any details", function() {
-        listener.logStepsSummary();
-        expect(listener.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
-      });
-    });
-
-    describe("when there are steps", function() {
-      beforeEach(function() { listener.getStepCount.andReturn(13); });
-
-      describe("when there is one step", function() {
-        beforeEach(function() {
-          listener.getStepCount.andReturn(1);
-        });
-
-        it("logs 1 step", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 step/);
-        });
-      });
-
-      describe("when there are two or more steps", function() {
-        beforeEach(function() {
-          listener.getStepCount.andReturn(2);
-        });
-
-        it("logs the number of steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 steps/);
-        });
-      });
-
-      it("gets the number of failed steps", function() {
-        listener.logStepsSummary();
-        expect(listener.getFailedStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no failed steps", function() {
-        beforeEach(function() {
-          listener.getFailedStepCount.andReturn(0);
-        });
-
-        it("does not log failed steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/failed/);
-        });
-      });
-
-      describe("when there is one failed step", function() {
-        beforeEach(function() {
-          listener.getFailedStepCount.andReturn(1);
-        });
-
-        it("logs one failed step", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 failed/);
-        });
-      });
-
-      describe("when there is two or more failed steps", function() {
-        beforeEach(function() {
-          listener.getFailedStepCount.andReturn(2);
-        });
-
-        it("logs the number of failed steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 failed/);
-        });
-      });
-
-      it("gets the number of undefined steps", function() {
-        listener.logStepsSummary();
-        expect(listener.getUndefinedStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no undefined steps", function() {
-        beforeEach(function() {
-          listener.getUndefinedStepCount.andReturn(0);
-        });
-
-        it("does not log undefined steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
-        });
-      });
-
-      describe("when there is one undefined step", function() {
-        beforeEach(function() {
-          listener.getUndefinedStepCount.andReturn(1);
-        });
-
-        it("logs one undefined steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
-        });
-      });
-
-      describe("when there are two or more undefined steps", function() {
-        beforeEach(function() {
-          listener.getUndefinedStepCount.andReturn(2);
-        });
-
-        it("logs the number of undefined steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
-        });
-      });
-
-      it("gets the number of pending steps", function() {
-        listener.logStepsSummary();
-        expect(listener.getPendingStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no pending steps", function() {
-        beforeEach(function() {
-          listener.getPendingStepCount.andReturn(0);
-        });
-
-        it("does not log pending steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/pending/);
-        });
-      });
-
-      describe("when there is one pending step", function() {
-        beforeEach(function() {
-          listener.getPendingStepCount.andReturn(1);
-        });
-
-        it("logs one pending steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 pending/);
-        });
-      });
-
-      describe("when there are two or more pending steps", function() {
-        beforeEach(function() {
-          listener.getPendingStepCount.andReturn(2);
-        });
-
-        it("logs the number of pending steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 pending/);
-        });
-      });
-
-      it("gets the number of skipped steps", function() {
-        listener.logStepsSummary();
-        expect(listener.getSkippedStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no skipped steps", function() {
-        beforeEach(function() {
-          listener.getSkippedStepCount.andReturn(0);
-        });
-
-        it("does not log skipped steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
-        });
-      });
-
-      describe("when there is one skipped step", function() {
-        beforeEach(function() {
-          listener.getSkippedStepCount.andReturn(1);
-        });
-
-        it("logs one skipped steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
-        });
-      });
-
-      describe("when there are two or more skipped steps", function() {
-        beforeEach(function() {
-          listener.getSkippedStepCount.andReturn(2);
-        });
-
-        it("logs the number of skipped steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 skipped/);
-        });
-      });
-
-      it("gets the number of passed steps", function() {
-        listener.logStepsSummary();
-        expect(listener.getPassedStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no passed steps", function() {
-        beforeEach(function() {
-          listener.getPassedStepCount.andReturn(0);
-        });
-
-        it("does not log passed steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).not.toHaveBeenCalledWithStringMatching(/passed/);
-        });
-      });
-
-      describe("when there is one passed step", function() {
-        beforeEach(function() {
-          listener.getPassedStepCount.andReturn(1);
-        });
-
-        it("logs one passed step", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/1 passed/);
-        });
-      });
-
-      describe("when there is two or more passed steps", function() {
-        beforeEach(function() {
-          listener.getPassedStepCount.andReturn(2);
-        });
-
-        it("logs the number of passed steps", function() {
-          listener.logStepsSummary();
-          expect(listener.log).toHaveBeenCalledWithStringMatching(/2 passed/);
-        });
-      });
-    });
-  });
-
-  describe("logUndefinedStepSnippets()", function() {
-    var undefinedStepLogBuffer;
-
-    beforeEach(function() {
-      undefinedStepLogBuffer = createSpy("undefined step log buffer");
-      spyOn(listener, 'log');
-      spyOn(listener, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
-    });
-
-    it("logs a little explanation about the snippets", function() {
-      listener.logUndefinedStepSnippets();
-      expect(listener.log).toHaveBeenCalledWith("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
-    });
-
-    it("gets the undefined steps log buffer", function() {
-      listener.logUndefinedStepSnippets();
-      expect(listener.getUndefinedStepLogBuffer).toHaveBeenCalled();
-    });
-
-    it("logs the undefined steps", function() {
-      listener.logUndefinedStepSnippets();
-      expect(listener.log).toHaveBeenCalledWith(undefinedStepLogBuffer);
     });
   });
 

@@ -1,0 +1,728 @@
+{
+  "name": "",
+  "id": ""
+}
+Cucumber.Listener.JsonFormatter
+
+  constructor
+[32m    creates a collection to store the failed steps[0m
+
+  hear()
+[32m    checks wether there is a handler for the event[0m
+
+    when there is a handler for that event
+[32m      gets the handler for that event[0m
+[32m      calls the handler with the event and the callback[0m
+[32m      does not callback[0m
+
+    when there are no handlers for that event
+[32m      calls back[0m
+[32m      does not get the handler for the event[0m
+
+  hasHandlerForEvent
+[32m    builds the name of the handler for that event[0m
+
+    when the handler exists
+[32m      returns true[0m
+
+    when the handler does not exist
+[32m      returns false[0m
+
+  buildHandlerNameForEvent
+[32m    gets the name of the event[0m
+[32m    returns the name of the event with prefix 'handle' and suffix 'Event'[0m
+
+  getHandlerForEvent()
+[32m    gets the name of the handler for the event[0m
+
+    when an event handler exists for the event
+[32m      returns the event handler[0m
+
+    when no event handlers exist for the event
+[32m      returns nothing[0m
+
+  handleStepResultEvent()
+[32m    gets the step result from the event payload[0m
+[32m    checks wether the step was successful or not[0m
+
+    when the step passed
+[32m      handles the successful step result[0m
+
+    when the step did not pass
+[32m      does not handle a successful step result[0m
+[32m      checks wether the step is pending[0m
+
+      when the step was pending
+[32m        handles the pending step result[0m
+
+      when the step was not pending
+[32m        does not handle a pending step result[0m
+[32m        checks wether the step was skipped[0m
+
+        when the step was skipped
+[32m          handles the skipped step result[0m
+
+        when the step was not skipped
+[32m          does not handle a skipped step result[0m
+[32m          checks wether the step was undefined[0m
+
+          when the step was undefined
+[32m            handles the undefined step result[0m
+
+          when the step was not undefined
+[32m            does not handle a skipped step result[0m
+[32m            handles a failed step result[0m
+[32m            calls back[0m
+
+  handleSuccessfulStepResult()
+[32m    witnesses a passed step[0m
+
+  handlePendingStepResult()
+[32m    witnesses a pending step[0m
+[32m    marks the current scenario as pending[0m
+
+  handleSkippedStepResult()
+[32m    counts one more skipped step[0m
+
+  handleUndefinedStepResult()
+[32m    gets the step from the step result[0m
+[32m    stores the undefined step[0m
+[32m    witnesses an undefined step[0m
+[32m    marks the current scenario as undefined[0m
+
+  handleFailedStepResult()
+[32m    stores the failed step result[0m
+[32m    witnesses a failed step[0m
+[32m    marks the current scenario as failing[0m
+
+  handleBeforeScenarioEvent
+[32m    prepares for a new scenario[0m
+[32m    calls back[0m
+
+  handleAfterFeaturesEvent()
+[32m    calls back[0m
+
+  handleAfterScenarioEvent()
+[32m    checks wether the current scenario failed[0m
+
+    when the current scenario failed
+[32m      witnesses a failed scenario[0m
+[32m      gets the scenario from the payload[0m
+[32m      stores the failed scenario[0m
+
+    when the current scenario did not fail
+[32m      checks wether the current scenario is undefined[0m
+
+      when the current scenario is undefined
+[32m        witnesses an undefined scenario[0m
+
+      when the current scenario is not undefined
+[32m        checks wether the current scenario is pending[0m
+
+        when the current scenario is pending
+[32m          witnesses a pending scenario[0m
+
+        when the current scenario is not pending (passed)
+[32m          witnesses a passed scenario[0m
+[32m          calls back[0m
+
+  isCurrentScenarioFailing()
+[32m    returns false when the current scenario did not fail yet[0m
+[32m    returns true when a step in the current scenario failed[0m
+
+  isCurrentScenarioPending()
+[32m    returns false when the current scenario was not set pending yet[0m
+[32m    returns true when the current scenario was set pending[0m
+
+  isCurrentScenarioUndefined()
+[32m    returns false when the current scenario was not set undefined yet[0m
+[32m    returns true when the current scenario was set undefined[0m
+
+  prepareBeforeScenario()
+[32m    unmarks the current scenario as pending[0m
+[32m    unmarks the current scenario as failing[0m
+[32m    unmarks the current scenario as undefined[0m
+
+  storeFailedStepResult()
+[32m    adds the result to the failed step result collection[0m
+
+  storeFailedScenario()
+[32m    gets the name of the scenario[0m
+[32m    gets the line of the scenario[0m
+[32m    appends the scenario details to the failed scenario log buffer[0m
+
+  storeUndefinedStep()
+[32m    creates a new step definition snippet builder[0m
+[32m    builds the step definition[0m
+[32m    appends the snippet to the undefined step log buffer[0m
+
+  getFailedScenarioLogBuffer() [appendStringToFailedScenarioLogBuffer()]
+[32m    returns the logged failed scenario details[0m
+[32m    returns all logged failed scenario lines joined with a line break[0m
+
+  getUndefinedStepLogBuffer() [appendStringToUndefinedStepLogBuffer()]
+[32m    returns the logged undefined step details[0m
+[32m    returns all logged failed scenario lines joined with a line break[0m
+
+  appendStringToUndefinedStepLogBuffer() [getUndefinedStepLogBuffer()]
+[32m    does not log the same string twice[0m
+
+  getScenarioCount()
+[32m    gets the number of passed scenarios[0m
+[32m    gets the number of undefined scenarios[0m
+[32m    gets the number of pending scenarios[0m
+[32m    gets the number of failed scenarios[0m
+[32m    returns the sum of passed, undefined, pending aand failed scenarios[0m
+
+  getStepCount()
+[32m    gets the number of passed steps[0m
+[32m    gets the number of undefined steps[0m
+[32m    gets the number of skipped steps[0m
+[32m    gets the number of pending steps[0m
+[32m    gets the number of failed steps[0m
+[32m    returns the sum of passed steps and failed steps[0m
+
+  passed scenario counting
+
+    witnessPassedScenario()
+[32m      counts one more passed scenario[0m
+
+    getPassedScenarioCount()
+[32m      returns 0 when no scenario passed[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when three scenarios passed[0m
+
+  undefined scenario counting
+
+    getUndefinedScenarioCount()
+[32m      returns 0 when no scenarios undefined[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when two scenarios passed[0m
+
+  pending scenario counting
+
+    getPendingScenarioCount()
+[32m      returns 0 when no scenarios pending[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when two scenarios passed[0m
+
+  failed scenario counting
+
+    getFailedScenarioCount()
+[32m      returns 0 when no scenarios failed[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when two scenarios passed[0m
+
+  passed step counting
+
+    witnessPassedStep()
+[32m      counts one more passed step[0m
+
+    getPassedStepCount()
+[32m      returns 0 when no step passed[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when three steps passed[0m
+
+  failed step counting
+
+    getFailedStepCount()
+[32m      returns 0 when no steps failed[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  skipped step counting
+
+    getSkippedStepCount()
+[32m      returns 0 when no steps skipped[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  undefined step counting
+
+    getUndefinedStepCount()
+[32m      returns 0 when no steps undefined[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  pending step counting
+
+    getPendingStepCount()
+[32m      returns 0 when no steps pending[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  witnessedAnyFailedStep()
+[32m    returns false when no failed step were encountered[0m
+[32m    returns true when one or more steps were witnessed[0m
+
+  witnessedAnyUndefinedStep()
+[32m    returns false when no undefined step were encountered[0m
+[32m    returns true when one or more steps were witnessed[0m
+
+Cucumber.Listener.ProgressFormatter
+
+  constructor
+[32m    creates a collection to store the failed steps[0m
+
+  log()
+[32m    records logged strings[0m
+[32m    outputs the logged string to STDOUT by default[0m
+
+    when asked to output to STDOUT
+[32m      outputs the logged string to STDOUT[0m
+
+    when asked to not output to STDOUT
+[32m      does not output anything to STDOUT[0m
+
+    when asked to output to a function
+[32m      calls the function with the logged string[0m
+
+  getLogs()
+[32m    returns the logged buffer[0m
+[32m    returns an empty string when the listener did not log anything yet[0m
+
+  hear()
+[32m    checks wether there is a handler for the event[0m
+
+    when there is a handler for that event
+[32m      gets the handler for that event[0m
+[32m      calls the handler with the event and the callback[0m
+[32m      does not callback[0m
+
+    when there are no handlers for that event
+[32m      calls back[0m
+[32m      does not get the handler for the event[0m
+
+  hasHandlerForEvent
+[32m    builds the name of the handler for that event[0m
+
+    when the handler exists
+[32m      returns true[0m
+
+    when the handler does not exist
+[32m      returns false[0m
+
+  buildHandlerNameForEvent
+[32m    gets the name of the event[0m
+[32m    returns the name of the event with prefix 'handle' and suffix 'Event'[0m
+
+  getHandlerForEvent()
+[32m    gets the name of the handler for the event[0m
+
+    when an event handler exists for the event
+[32m      returns the event handler[0m
+
+    when no event handlers exist for the event
+[32m      returns nothing[0m
+
+  handleStepResultEvent()
+[32m    gets the step result from the event payload[0m
+[32m    checks wether the step was successful or not[0m
+
+    when the step passed
+[32m      handles the successful step result[0m
+
+    when the step did not pass
+[32m      does not handle a successful step result[0m
+[32m      checks wether the step is pending[0m
+
+      when the step was pending
+[32m        handles the pending step result[0m
+
+      when the step was not pending
+[32m        does not handle a pending step result[0m
+[32m        checks wether the step was skipped[0m
+
+        when the step was skipped
+[32m          handles the skipped step result[0m
+
+        when the step was not skipped
+[32m          does not handle a skipped step result[0m
+[32m          checks wether the step was undefined[0m
+
+          when the step was undefined
+[32m            handles the undefined step result[0m
+
+          when the step was not undefined
+[32m            does not handle a skipped step result[0m
+[32m            handles a failed step result[0m
+[32m            calls back[0m
+
+  handleSuccessfulStepResult()
+[32m    witnesses a passed step[0m
+[32m    logs the passing step character[0m
+
+  handlePendingStepResult()
+[32m    witnesses a pending step[0m
+[32m    marks the current scenario as pending[0m
+[32m    logs the pending step character[0m
+
+  handleSkippedStepResult()
+[32m    counts one more skipped step[0m
+[32m    logs the skipped step character[0m
+
+  handleUndefinedStepResult()
+[32m    gets the step from the step result[0m
+[32m    stores the undefined step[0m
+[32m    witnesses an undefined step[0m
+[32m    marks the current scenario as undefined[0m
+[32m    logs the undefined step character[0m
+
+  handleFailedStepResult()
+[32m    stores the failed step result[0m
+[32m    witnesses a failed step[0m
+[32m    marks the current scenario as failing[0m
+[32m    logs the failed step character[0m
+
+  handleBeforeScenarioEvent
+[32m    prepares for a new scenario[0m
+[32m    calls back[0m
+
+  handleAfterFeaturesEvent()
+[32m    displays a summary[0m
+[32m    calls back[0m
+
+  handleAfterScenarioEvent()
+[32m    checks wether the current scenario failed[0m
+
+    when the current scenario failed
+[32m      witnesses a failed scenario[0m
+[32m      gets the scenario from the payload[0m
+[32m      stores the failed scenario[0m
+
+    when the current scenario did not fail
+[32m      checks wether the current scenario is undefined[0m
+
+      when the current scenario is undefined
+[32m        witnesses an undefined scenario[0m
+
+      when the current scenario is not undefined
+[32m        checks wether the current scenario is pending[0m
+
+        when the current scenario is pending
+[32m          witnesses a pending scenario[0m
+
+        when the current scenario is not pending (passed)
+[32m          witnesses a passed scenario[0m
+[32m          calls back[0m
+
+  isCurrentScenarioFailing()
+[32m    returns false when the current scenario did not fail yet[0m
+[32m    returns true when a step in the current scenario failed[0m
+
+  isCurrentScenarioPending()
+[32m    returns false when the current scenario was not set pending yet[0m
+[32m    returns true when the current scenario was set pending[0m
+
+  isCurrentScenarioUndefined()
+[32m    returns false when the current scenario was not set undefined yet[0m
+[32m    returns true when the current scenario was set undefined[0m
+
+  prepareBeforeScenario()
+[32m    unmarks the current scenario as pending[0m
+[32m    unmarks the current scenario as failing[0m
+[32m    unmarks the current scenario as undefined[0m
+
+  storeFailedStepResult()
+[32m    adds the result to the failed step result collection[0m
+
+  storeFailedScenario()
+[32m    gets the name of the scenario[0m
+[32m    gets the line of the scenario[0m
+[32m    appends the scenario details to the failed scenario log buffer[0m
+
+  storeUndefinedStep()
+[32m    creates a new step definition snippet builder[0m
+[32m    builds the step definition[0m
+[32m    appends the snippet to the undefined step log buffer[0m
+
+  getFailedScenarioLogBuffer() [appendStringToFailedScenarioLogBuffer()]
+[32m    returns the logged failed scenario details[0m
+[32m    returns all logged failed scenario lines joined with a line break[0m
+
+  getUndefinedStepLogBuffer() [appendStringToUndefinedStepLogBuffer()]
+[32m    returns the logged undefined step details[0m
+[32m    returns all logged failed scenario lines joined with a line break[0m
+
+  appendStringToUndefinedStepLogBuffer() [getUndefinedStepLogBuffer()]
+[32m    does not log the same string twice[0m
+
+  logSummary()
+[32m    logs two line feeds[0m
+[32m    checks wether there are failed steps or not[0m
+
+    when there are failed steps
+[32m      logs the failed steps[0m
+
+    when there are no failed steps
+[32m      does not log failed steps[0m
+[32m      logs the scenarios summary[0m
+[32m      logs the steps summary[0m
+[32m      checks wether there are undefined steps or not[0m
+
+    when there are undefined steps
+[32m      logs the undefined step snippets[0m
+
+    when there are no undefined steps
+[32m      does not log the undefined step snippets[0m
+
+  logFailedStepResults()
+[32m    logs a failed steps header[0m
+[32m    iterates synchronously over the failed step results[0m
+
+    for each failed step result
+[32m      tells the visitor to visit the feature and call back when finished[0m
+[32m      logs a failed scenarios header[0m
+[32m      gets the failed scenario details from its log buffer[0m
+[32m      logs the failed scenario details[0m
+[32m      logs a line break[0m
+
+  logFailedStepResult()
+[32m    gets the failure exception from the step result[0m
+
+    when the failure exception has a stack
+[32m      logs the stack[0m
+
+    when the failure exception has no stack
+[32m      logs the exception itself[0m
+[32m      logs two line breaks[0m
+
+  logScenariosSummary()
+[32m    gets the number of scenarios[0m
+
+    when there are no scenarios
+[32m      logs 0 scenarios[0m
+[32m      does not log any details[0m
+
+    when there are scenarios
+
+      when there is one scenario
+[32m        logs one scenario[0m
+
+      when there are 2 or more scenarios
+[32m        logs two or more scenarios[0m
+[32m        gets the number of failed scenarios[0m
+
+      when there are no failed scenarios
+[32m        does not log failed scenarios[0m
+
+      when there is one failed scenario
+[32m        logs a failed scenario[0m
+
+      when there are two or more failed scenarios
+[32m        logs the number of failed scenarios[0m
+[32m        gets the number of undefined scenarios[0m
+
+      when there are no undefined scenarios
+[32m        does not log passed scenarios[0m
+
+      when there is one undefined scenario
+[32m        logs one undefined scenario[0m
+
+      when there are two or more undefined scenarios
+[32m        logs the undefined scenarios[0m
+[32m        gets the number of pending scenarios[0m
+
+      when there are no pending scenarios
+[32m        does not log passed scenarios[0m
+
+      when there is one pending scenario
+[32m        logs one pending scenario[0m
+
+      when there are two or more pending scenarios
+[32m        logs the pending scenarios[0m
+[32m        gets the number of passed scenarios[0m
+
+      when there are no passed scenarios
+[32m        does not log passed scenarios[0m
+
+      when there is one passed scenario
+[32m        logs 1 passed scenarios[0m
+
+      when there are two or more passed scenarios
+[32m        logs the number of passed scenarios[0m
+
+  logStepsSummary()
+[32m    gets the number of steps[0m
+
+    when there are no steps
+[32m      logs 0 steps[0m
+[32m      does not log any details[0m
+
+    when there are steps
+
+      when there is one step
+[32m        logs 1 step[0m
+
+      when there are two or more steps
+[32m        logs the number of steps[0m
+[32m        gets the number of failed steps[0m
+
+      when there are no failed steps
+[32m        does not log failed steps[0m
+
+      when there is one failed step
+[32m        logs one failed step[0m
+
+      when there is two or more failed steps
+[32m        logs the number of failed steps[0m
+[32m        gets the number of undefined steps[0m
+
+      when there are no undefined steps
+[32m        does not log undefined steps[0m
+
+      when there is one undefined step
+[32m        logs one undefined steps[0m
+
+      when there are two or more undefined steps
+[32m        logs the number of undefined steps[0m
+[32m        gets the number of pending steps[0m
+
+      when there are no pending steps
+[32m        does not log pending steps[0m
+
+      when there is one pending step
+[32m        logs one pending steps[0m
+
+      when there are two or more pending steps
+[32m        logs the number of pending steps[0m
+[32m        gets the number of skipped steps[0m
+
+      when there are no skipped steps
+[32m        does not log skipped steps[0m
+
+      when there is one skipped step
+[32m        logs one skipped steps[0m
+
+      when there are two or more skipped steps
+[32m        logs the number of skipped steps[0m
+[32m        gets the number of passed steps[0m
+
+      when there are no passed steps
+[32m        does not log passed steps[0m
+
+      when there is one passed step
+[32m        logs one passed step[0m
+
+      when there is two or more passed steps
+[32m        logs the number of passed steps[0m
+
+  logUndefinedStepSnippets()
+[32m    logs a little explanation about the snippets[0m
+[32m    gets the undefined steps log buffer[0m
+[32m    logs the undefined steps[0m
+
+  getScenarioCount()
+[32m    gets the number of passed scenarios[0m
+[32m    gets the number of undefined scenarios[0m
+[32m    gets the number of pending scenarios[0m
+[32m    gets the number of failed scenarios[0m
+[32m    returns the sum of passed, undefined, pending aand failed scenarios[0m
+
+  getStepCount()
+[32m    gets the number of passed steps[0m
+[32m    gets the number of undefined steps[0m
+[32m    gets the number of skipped steps[0m
+[32m    gets the number of pending steps[0m
+[32m    gets the number of failed steps[0m
+[32m    returns the sum of passed steps and failed steps[0m
+
+  passed scenario counting
+
+    witnessPassedScenario()
+[32m      counts one more passed scenario[0m
+
+    getPassedScenarioCount()
+[32m      returns 0 when no scenario passed[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when three scenarios passed[0m
+
+  undefined scenario counting
+
+    getUndefinedScenarioCount()
+[32m      returns 0 when no scenarios undefined[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when two scenarios passed[0m
+
+  pending scenario counting
+
+    getPendingScenarioCount()
+[32m      returns 0 when no scenarios pending[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when two scenarios passed[0m
+
+  failed scenario counting
+
+    getFailedScenarioCount()
+[32m      returns 0 when no scenarios failed[0m
+[32m      returns 1 when one scenario passed[0m
+[32m      returns 2 when two scenarios passed[0m
+[32m      returns 3 when two scenarios passed[0m
+
+  passed step counting
+
+    witnessPassedStep()
+[32m      counts one more passed step[0m
+
+    getPassedStepCount()
+[32m      returns 0 when no step passed[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when three steps passed[0m
+
+  failed step counting
+
+    getFailedStepCount()
+[32m      returns 0 when no steps failed[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  skipped step counting
+
+    getSkippedStepCount()
+[32m      returns 0 when no steps skipped[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  undefined step counting
+
+    getUndefinedStepCount()
+[32m      returns 0 when no steps undefined[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  pending step counting
+
+    getPendingStepCount()
+[32m      returns 0 when no steps pending[0m
+[32m      returns 1 when one step passed[0m
+[32m      returns 2 when two steps passed[0m
+[32m      returns 3 when two steps passed[0m
+
+  witnessedAnyFailedStep()
+[32m    returns false when no failed step were encountered[0m
+[32m    returns true when one or more steps were witnessed[0m
+
+  witnessedAnyUndefinedStep()
+[32m    returns false when no undefined step were encountered[0m
+[32m    returns true when one or more steps were witnessed[0m
+
+Finished in 0.095 seconds
+[32m338 tests, 339 assertions, 0 failures
+[0m
+
