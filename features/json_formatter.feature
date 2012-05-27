@@ -51,3 +51,47 @@ Feature: JSON Formatter
   }
 ]
       """
+
+  Scenario: output JSON for a feature with one scenario with one pending step
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: I've declaired one step but not yet defined it
+          Given I have not defined this step
+      """
+    When I run `cucumber.js -f json`
+    Then it should pass with this json:
+      """
+[
+  {
+    "id": "some-feature",
+    "name": "some feature",
+    "description": "",
+    "line": 1,
+    "keyword": "Feature",
+    "elements": [
+      {
+        "name": "I've declaired one step but not yet defined it",
+        "id": "some-feature;i've-declaired-one-step-but-not-yet-defined-it",
+        "line": 3,
+        "keyword": "Scenario",
+        "description": "",
+        "type": "scenario",
+        "steps":[
+          {"name":"I have not defined this step",
+           "line":4,
+           "keyword":"Given ",
+           "result":
+            {"status":"undefined"
+            },
+           "match":
+            {"location":"TODO"
+            }
+          }
+          ]
+      }
+    ]
+  }
+]
+      """
