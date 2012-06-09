@@ -128,6 +128,14 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/^the step "([^"]*)" has a passing mapping that receives a doc string$/, function(stepName, callback) {
+    this.stepDefinitions += "Given(/^" + stepName + "$/, function(docString, callback) {\
+  world.docString = docString;\
+  callback();\
+});";
+    callback();
+  });
+
   Given(/^the following data table in a step:$/, function(dataTable, callback) {
     this.featureSource += "Feature:\n";
     this.featureSource += "  Scenario:\n";
@@ -312,6 +320,11 @@ callback();\
   Then(/^the data table is converted to the following:$/, function(expectedDataTableJSON, callback) {
     var expectedDataTable = JSON.parse(expectedDataTableJSON);
     this.assertEqual(expectedDataTable, World.mostRecentInstance.dataTableLog);
+    callback();
+  });
+
+  Then(/^the received doc string equals the following:$/, function(docString, callback) {
+    this.assertEqual(docString, World.mostRecentInstance.docString);
     callback();
   });
 

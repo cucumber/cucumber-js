@@ -1,31 +1,31 @@
 { "name" : "cucumber"
-, "description" : "The official JavaScript implementation of Cucumber."
-, "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
-, "version" : "0.2.15"
-, "homepage" : "http://github.com/cucumber/cucumber-js"
-, "author" : "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
-, "contributors" : [
-    "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
+  , "description" : "The official JavaScript implementation of Cucumber."
+  , "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
+  , "version" : "0.2.15"
+  , "homepage" : "http://github.com/cucumber/cucumber-js"
+  , "author" : "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
+  , "contributors" : [
+  "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
   , "Fernando Acorreia <fernandoacorreia@gmail.com>"
   , "Paul Jensen <paulbjensen@gmail.com>"
   , "Kushal Pisavadia"
   , "Olivier Melcher <olivier.melcher@gmail.com>"
   , "Tristan Dunn <tristanzdunn@gmail.com>"
   , "Ted de Koning"
-  ]
-, "repository" :
-  { "type" : "git"
+]
+  , "repository" :
+{ "type" : "git"
   , "url" : "git://github.com/cucumber/cucumber-js.git"
-  }
-, "bugs" :
-  { "mail" : "cukes@googlegroups.com"
+}
+  , "bugs" :
+{ "mail" : "cukes@googlegroups.com"
   , "url" : "http://github.com/cucumber/cucumber-js/issues"
-  }
-, "directories" : { "lib" : "./lib" }
-, "main" : "./lib/cucumber"
-, "engines" : { "node" : "0.4 || 0.5 || 0.6" }
-, "dependencies" :
-  { "gherkin" : "2.6.8"
+}
+  , "directories" : { "lib" : "./lib" }
+  , "main" : "./lib/cucumber"
+  , "engines" : { "node" : "0.4 || 0.5 || 0.6" }
+  , "dependencies" :
+{ "gherkin" : "2.6.8"
   , "jasmine-node" : "1.0.13"
   , "connect" : "1.8.1"
   , "browserify" : "1.8.1"
@@ -36,13 +36,13 @@
   , "cucumber-html": "0.2.0"
   , "findit": "0.1.1"
   , "coffee-script": "1.1.2"
-  }
-, "scripts" :
-  { "test" : "./bin/cucumber.js && jasmine-node spec" }
-, "bin": { "cucumber.js": "./bin/cucumber.js", "cucumber-js": "./bin/cucumber.js" }
-, "licenses" :
-  [ { "type" : "MIT"
-    , "url" : "http://github.com/cucumber/cucumber.js/LICENSE"
+}
+  , "scripts" :
+{ "test" : "./bin/cucumber.js && jasmine-node spec" }
+  , "bin": { "cucumber.js": "./bin/cucumber.js", "cucumber-js": "./bin/cucumber.js" }
+  , "licenses" :
+    [ { "type" : "MIT"
+      , "url" : "http://github.com/cucumber/cucumber.js/LICENSE"
     }
-  ]
+    ]
 }
