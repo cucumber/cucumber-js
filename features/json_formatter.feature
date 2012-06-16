@@ -101,7 +101,7 @@ Feature: JSON Formatter
       """
       Feature: some feature
 
-      Scenario: I've declaired one step but not yet defined it
+      Scenario: I've declaired one step which is pending
           Given This step is pending
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
@@ -124,8 +124,8 @@ Feature: JSON Formatter
               "keyword": "Feature",
               "elements": [
                   {
-                      "name": "I've declaired one step but not yet defined it",
-                      "id": "some-feature;i've-declaired-one-step-but-not-yet-defined-it",
+                      "name": "I've declaired one step which is pending",
+                      "id": "some-feature;i've-declaired-one-step-which-is-pending",
                       "line": 3,
                       "keyword": "Scenario",
                       "description": "",
@@ -147,5 +147,108 @@ Feature: JSON Formatter
                   }
               ]
           }
+      ]
+      """
+  Scenario: output JSON for a feature with one scenario with failing step
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: I've declaired one step but it is failing
+          Given This step is failing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is failing$/, function(callback) { callback.fail(); });
+      };
+      module.exports = cucumberSteps;
+      """
+
+    When I run `cucumber.js -f json`
+    Then it should pass with this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "elements": [
+            {
+              "name": "I've declaired one step but it is failing",
+              "id": "some-feature;i've-declaired-one-step-but-it-is-failing",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This step is failing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "status": "failed"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+  Scenario: output JSON for a feature with one scenario with passing step
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: I've declaired one step which passes
+          Given This step is passing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should pass with this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "elements": [
+            {
+              "name": "I've declaired one step which passes",
+              "id": "some-feature;i've-declaired-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "status": "passed"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                }
+              ]
+            }
+          ]
+        }
       ]
       """
