@@ -85,7 +85,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'hasDataTable');
     });
 
-    it("checks wether a doc string is attached", function() {
+    it("checks whether a doc string is attached", function() {
       step.getAttachment();
       expect(step.hasDocString).toHaveBeenCalled();
     });
@@ -114,7 +114,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasDocString.andReturn(false);
       });
 
-      it("checks wether a data table is attached", function() {
+      it("checks whether a data table is attached", function() {
         step.getAttachment();
         expect(step.hasDataTable).toHaveBeenCalled();
       });
@@ -188,7 +188,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'hasDataTable');
     });
 
-    it("checks wether the step has a doc string attached or not", function() {
+    it("checks whether the step has a doc string attached or not", function() {
       step.hasAttachment();
       expect(step.hasDocString).toHaveBeenCalled();
     });
@@ -208,7 +208,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasDocString.andReturn(false);
       });
 
-      it("checks wether the step has a data table attached or not", function() {
+      it("checks whether the step has a data table attached or not", function() {
         step.hasAttachment();
         expect(step.hasDataTable).toHaveBeenCalled();
       });
@@ -346,7 +346,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'isRepeatingOutcomeStep');
     });
 
-    it("checks wether the keyword is an outcome step keyword", function() {
+    it("checks whether the keyword is an outcome step keyword", function() {
       step.isOutcomeStep();
       expect(step.hasOutcomeStepKeyword).toHaveBeenCalled();
     });
@@ -361,7 +361,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasOutcomeStepKeyword.andReturn(false);
       });
 
-      it("checks wether the keyword is repeating an outcome step", function() {
+      it("checks whether the keyword is repeating an outcome step", function() {
         step.isOutcomeStep();
         expect(step.isRepeatingOutcomeStep).toHaveBeenCalled();
       });
@@ -379,7 +379,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'isRepeatingEventStep');
     });
 
-    it("checks wether the keyword is an event step keyword", function() {
+    it("checks whether the keyword is an event step keyword", function() {
       step.isEventStep();
       expect(step.hasEventStepKeyword).toHaveBeenCalled();
     });
@@ -394,7 +394,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasEventStepKeyword.andReturn(false);
       });
 
-      it("checks wether the keyword is repeating an event step", function() {
+      it("checks whether the keyword is repeating an event step", function() {
         step.isEventStep();
         expect(step.isRepeatingEventStep).toHaveBeenCalled();
       });
@@ -434,7 +434,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'isPrecededByOutcomeStep');
     });
 
-    it("checks wether the keyword is a repeating keyword", function() {
+    it("checks whether the keyword is a repeating keyword", function() {
       step.isRepeatingOutcomeStep();
       expect(step.hasRepeatStepKeyword).toHaveBeenCalled();
     });
@@ -444,7 +444,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasRepeatStepKeyword.andReturn(true);
       });
 
-      it("checks wether the preceding step is an outcome step", function() {
+      it("checks whether the preceding step is an outcome step", function() {
         step.isRepeatingOutcomeStep();
         expect(step.isPrecededByOutcomeStep).toHaveBeenCalled();
       });
@@ -475,7 +475,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasRepeatStepKeyword.andReturn(false);
       });
 
-      it("does not check wether the preceding step is an outcome step", function() {
+      it("does not check whether the preceding step is an outcome step", function() {
         step.isRepeatingOutcomeStep();
         expect(step.isPrecededByOutcomeStep).not.toHaveBeenCalled();
       });
@@ -492,7 +492,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'isPrecededByEventStep');
     });
 
-    it("checks wether the keyword is a repeating keyword", function() {
+    it("checks whether the keyword is a repeating keyword", function() {
       step.isRepeatingEventStep();
       expect(step.hasRepeatStepKeyword).toHaveBeenCalled();
     });
@@ -502,7 +502,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasRepeatStepKeyword.andReturn(true);
       });
 
-      it("checks wether the preceding step is an event step", function() {
+      it("checks whether the preceding step is an event step", function() {
         step.isRepeatingEventStep();
         expect(step.isPrecededByEventStep).toHaveBeenCalled();
       });
@@ -533,7 +533,7 @@ describe("Cucumber.Ast.Step", function() {
         step.hasRepeatStepKeyword.andReturn(false);
       });
 
-      it("does not check wether the preceding step is an event step", function() {
+      it("does not check whether the preceding step is an event step", function() {
         step.isRepeatingEventStep();
         expect(step.isPrecededByEventStep).not.toHaveBeenCalled();
       });
@@ -570,7 +570,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'hasPreviousStep');
     });
 
-    it("checks wether there is a previous step or not", function() {
+    it("checks whether there is a previous step or not", function() {
       step.isPrecededByOutcomeStep();
       expect(step.hasPreviousStep).toHaveBeenCalled();
     });
@@ -599,7 +599,7 @@ describe("Cucumber.Ast.Step", function() {
         expect(step.getPreviousStep).toHaveBeenCalled();
       });
 
-      it("checks wether the previous step is an outcome step or not", function() {
+      it("checks whether the previous step is an outcome step or not", function() {
         step.isPrecededByOutcomeStep();
         expect(previousStep.isOutcomeStep).toHaveBeenCalled();
       });
@@ -631,7 +631,7 @@ describe("Cucumber.Ast.Step", function() {
       spyOn(step, 'hasPreviousStep');
     });
 
-    it("checks wether there is a previous step or not", function() {
+    it("checks whether there is a previous step or not", function() {
       step.isPrecededByEventStep();
       expect(step.hasPreviousStep).toHaveBeenCalled();
     });
@@ -660,7 +660,7 @@ describe("Cucumber.Ast.Step", function() {
         expect(step.getPreviousStep).toHaveBeenCalled();
       });
 
-      it("checks wether the previous step is an event step or not", function() {
+      it("checks whether the previous step is an event step or not", function() {
         step.isPrecededByEventStep();
         expect(previousStep.isEventStep).toHaveBeenCalled();
       });

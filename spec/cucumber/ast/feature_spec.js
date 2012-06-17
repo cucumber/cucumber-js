@@ -173,7 +173,7 @@ describe("Cucumber.Ast.Feature", function() {
       spyOn(feature, 'hasBackground');
     });
 
-    it("checks wether the feature has a background", function() {
+    it("checks whether the feature has a background", function() {
       feature.instructVisitorToVisitBackground(visitor, callback);
       expect(feature.hasBackground).toHaveBeenCalled();
     });

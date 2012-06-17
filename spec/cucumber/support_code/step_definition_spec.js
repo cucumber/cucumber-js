@@ -266,7 +266,7 @@ describe("Cucumber.SupportCode.StepDefinition", function() {
       expect(matches.shift).toHaveBeenCalled();
     });
 
-    it("checks wether the step has an attachment or not", function() {
+    it("checks whether the step has an attachment or not", function() {
       stepDefinition.buildInvocationParameters(step, callback);
       expect(step.hasAttachment).toHaveBeenCalled();
     });

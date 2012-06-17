@@ -27,7 +27,7 @@ describe("Cucumber.Cli", function() {
       expect(Cucumber.Cli.Configuration).toHaveBeenCalledWith(argv);
     });
 
-    it("checks wether the help is requested or not", function() {
+    it("checks whether the help is requested or not", function() {
       cli.run(callback);
       expect(configuration.isHelpRequested).toHaveBeenCalled();
     });
@@ -58,7 +58,7 @@ describe("Cucumber.Cli", function() {
         configuration.isHelpRequested.andReturn(false);
       });
 
-      it("checks wether the version is requested or not", function() {
+      it("checks whether the version is requested or not", function() {
         cli.run(callback);
         expect(configuration.isVersionRequested).toHaveBeenCalled();
       });

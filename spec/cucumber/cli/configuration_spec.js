@@ -149,7 +149,7 @@ describe("Cucumber.Cli.Configuration", function() {
       spyOnStub(argumentParser, 'isHelpRequested');
     });
 
-    it("asks the argument parser wether the help was requested or not", function() {
+    it("asks the argument parser whether the help was requested or not", function() {
       configuration.isHelpRequested();
       expect(argumentParser.isHelpRequested).toHaveBeenCalled();
     });
@@ -166,7 +166,7 @@ describe("Cucumber.Cli.Configuration", function() {
       spyOnStub(argumentParser, 'isVersionRequested');
     });
 
-    it("asks the argument parser wether the version was requested or not", function() {
+    it("asks the argument parser whether the version was requested or not", function() {
       configuration.isVersionRequested();
       expect(argumentParser.isVersionRequested).toHaveBeenCalled();
     });

@@ -119,7 +119,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
   });
 
   describe("getPrimeSupportCodeFilePaths()", function() {
-    it("for each support code file path, checks wether they match the prime support code directory name convention", function() {
+    it("for each support code file path, checks whether they match the prime support code directory name convention", function() {
       supportCodeLoader.getPrimeSupportCodeFilePaths();
       supportCodeFilePaths.forEach(function(path) {
         expect(path.match).toHaveBeenCalledWith(Cucumber.Cli.SupportCodeLoader.PRIME_SUPPORT_CODE_PATH_REGEXP);
@@ -156,7 +156,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
   });
 
   describe("getSecondarySupportCodeFilePaths()", function() {
-    it("for each support code file path, checks wether they match the prime support code directory name convention", function() {
+    it("for each support code file path, checks whether they match the prime support code directory name convention", function() {
       supportCodeLoader.getSecondarySupportCodeFilePaths();
       supportCodeFilePaths.forEach(function(path) {
         expect(path.match).toHaveBeenCalledWith(Cucumber.Cli.SupportCodeLoader.PRIME_SUPPORT_CODE_PATH_REGEXP);
