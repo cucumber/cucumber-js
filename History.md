@@ -2,9 +2,25 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.15...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.16...master)
 
 **TBD**
+
+### [v0.2.16](https://github.com/cucumber/cucumber-js/compare/v0.2.15...v0.2.16)
+
+
+#### New features
+
+* Display failing scenario URIs in summary (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Ran a gem update (Aslak Hellesøy)
+* Update NPM dependencies (#69) (Aslak Hellesøy)
+* Refactor listener infrastructure (#35, #59, #63) (Julien Biezemans)
+* Extract summary logger from progress formatter (#59, #63) (Julien Biezemans)
+* Store URI on AST elements (Julien Biezemans)
+
 
 
 ### [v0.2.15](https://github.com/cucumber/cucumber-js/compare/v0.2.14...v0.2.15)
