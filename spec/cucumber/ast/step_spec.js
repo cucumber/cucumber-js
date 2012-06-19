@@ -2,13 +2,14 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Step", function() {
   var Cucumber = requireLib('cucumber');
-  var step, keyword, name, line;
+  var step, keyword, name, uri, line;
 
   beforeEach(function() {
-    name         = createSpy("Step name");
-    keyword      = createSpy("Step keyword");
-    line         = createSpy("Step line");
-    step         = Cucumber.Ast.Step(keyword, name, line);
+    name         = createSpy("name");
+    keyword      = createSpy("keyword");
+    uri          = createSpy("uri");
+    line         = createSpy("line");
+    step         = Cucumber.Ast.Step(keyword, name, uri, line);
   });
 
   describe("getKeyword()", function() {
@@ -20,6 +21,12 @@ describe("Cucumber.Ast.Step", function() {
   describe("getName()", function() {
     it("returns the name of the step", function() {
       expect(step.getName()).toBe(name);
+    });
+  });
+
+  describe("getUri()", function() {
+    it("returns the URI on which the background starts", function() {
+      expect(step.getUri()).toBe(uri);
     });
   });
 

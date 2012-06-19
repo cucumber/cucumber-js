@@ -3,19 +3,20 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Scenario", function() {
   var Cucumber = requireLib('cucumber');
   var steps;
-  var scenario, keyword, name, description, line, lastStep;
+  var scenario, keyword, name, description, uri, line, lastStep;
 
   beforeEach(function() {
     keyword     = createSpy("scenario keyword");
     name        = createSpy("scenario name");
     description = createSpy("scenario description");
+    uri         = createSpy("uri");
     line        = createSpy("starting scenario line number");
     lastStep    = createSpy("last step");
     steps       = createSpy("step collection");
     spyOnStub(steps, 'add');
     spyOnStub(steps, 'getLast').andReturn(lastStep);
     spyOn(Cucumber.Type, 'Collection').andReturn(steps);
-    scenario = Cucumber.Ast.Scenario(keyword, name, description, line);
+    scenario = Cucumber.Ast.Scenario(keyword, name, description, uri, line);
   });
 
   describe("constructor", function() {
@@ -39,6 +40,12 @@ describe("Cucumber.Ast.Scenario", function() {
   describe("getDescription()", function() {
     it("returns the description of the scenario", function() {
       expect(scenario.getDescription()).toBe(description);
+    });
+  });
+
+  describe("getUri()", function() {
+    it("returns the URI on which the background starts", function() {
+      expect(scenario.getUri()).toBe(uri);
     });
   });
 
