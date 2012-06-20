@@ -1,7 +1,7 @@
 { "name" : "cucumber"
 , "description" : "The official JavaScript implementation of Cucumber."
 , "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
-, "version" : "0.2.16"
+, "version" : "0.2.17"
 , "homepage" : "http://github.com/cucumber/cucumber-js"
 , "author" : "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
 , "contributors" : [
@@ -12,6 +12,7 @@
   , "Olivier Melcher <olivier.melcher@gmail.com>"
   , "Tristan Dunn <tristanzdunn@gmail.com>"
   , "Ted de Koning"
+  , "@renier"
   ]
 , "repository" :
   { "type" : "git"

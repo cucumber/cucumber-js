@@ -2,9 +2,24 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.16...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.17...master)
 
 **TBD**
+
+### [v0.2.17](https://github.com/cucumber/cucumber-js/compare/v0.2.16...v0.2.17)
+
+
+#### New features
+
+* Add pretty formatter (simplified, monochrome) (#59) (@renier, Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Display only master branch build status in README (Julien Biezemans)
+* Rename "summary logger" to "summarizer" (#59) (Julien Biezemans)
+* Extract common formatter methods (#59, #63) (Julien Biezemans)
+
+
 
 ### [v0.2.16](https://github.com/cucumber/cucumber-js/compare/v0.2.15...v0.2.16)
 
