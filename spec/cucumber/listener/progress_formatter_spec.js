@@ -2,15 +2,15 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.ProgressFormatter", function () {
   var Cucumber = requireLib('cucumber');
-  var listener, listenerHearMethod, summaryLogger, progressFormatter;
+  var listener, listenerHearMethod, summarizer, progressFormatter;
 
   beforeEach(function () {
     var ProgressFormatter = Cucumber.Listener.ProgressFormatter;
     listener           = createSpy("listener");
     listenerHearMethod = spyOnStub(listener, 'hear');
-    summaryLogger      = createSpy("summary logger");
+    summarizer         = createSpy("summarizer");
     spyOn(Cucumber, 'Listener').andReturn(listener);
-    spyOnStub(Cucumber.Listener, 'SummaryLogger').andReturn(summaryLogger);
+    spyOnStub(Cucumber.Listener, 'Summarizer').andReturn(summarizer);
     Cucumber.Listener.ProgressFormatter = ProgressFormatter;
     progressFormatter                   = Cucumber.Listener.ProgressFormatter();
   });
@@ -24,8 +24,8 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
       expect(progressFormatter).toBe(listener);
     });
 
-    it("creates a summary logger", function () {
-      expect(Cucumber.Listener.SummaryLogger).toHaveBeenCalled();
+    it("creates a summarizer", function () {
+      expect(Cucumber.Listener.Summarizer).toHaveBeenCalled();
     });
   });
 
@@ -35,26 +35,26 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
     beforeEach(function () {
       event    = createSpy("event");
       callback = createSpy("callback");
-      spyOnStub(summaryLogger, 'hear');
+      spyOnStub(summarizer, 'hear');
     });
 
-    it("tells the summary logger to listen to the event", function () {
+    it("tells the summarizer to listen to the event", function () {
       progressFormatter.hear(event, callback);
-      expect(summaryLogger.hear).toHaveBeenCalled();
-      expect(summaryLogger.hear).toHaveBeenCalledWithValueAsNthParameter(event, 1);
-      expect(summaryLogger.hear).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      expect(summarizer.hear).toHaveBeenCalled();
+      expect(summarizer.hear).toHaveBeenCalledWithValueAsNthParameter(event, 1);
+      expect(summarizer.hear).toHaveBeenCalledWithAFunctionAsNthParameter(2);
     });
 
-    describe("summary logger callback", function () {
-      var summaryLoggerCallback;
+    describe("summarizer callback", function () {
+      var summarizerCallback;
 
       beforeEach(function () {
         progressFormatter.hear(event, callback);
-        summaryLoggerCallback = summaryLogger.hear.mostRecentCall.args[1];
+        summarizerCallback = summarizer.hear.mostRecentCall.args[1];
       });
 
       it("tells the listener to listen to the event", function () {
-        summaryLoggerCallback();
+        summarizerCallback();
         expect(listenerHearMethod).toHaveBeenCalledWith(event, callback);
       });
     });
@@ -350,13 +350,13 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
       event       = createSpy("event");
       callback    = createSpy("callback");
       summaryLogs = createSpy("summary logs");
-      spyOnStub(summaryLogger, 'getLogs').andReturn(summaryLogs);
+      spyOnStub(summarizer, 'getLogs').andReturn(summaryLogs);
       spyOn(progressFormatter, 'log');
     });
 
     it("gets the summary", function () {
       progressFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(summaryLogger.getLogs).toHaveBeenCalled();
+      expect(summarizer.getLogs).toHaveBeenCalled();
     });
 
     it("logs the summary", function () {
