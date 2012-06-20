@@ -109,14 +109,14 @@ describe("Cucumber.Cli", function() {
 
   describe("runSuiteWithConfiguration()", function() {
     var configuration, runtime, callback;
-    var progressFormatter;
+    var formatter;
 
     beforeEach(function() {
-      configuration = createSpy("CLI configuration");
+      formatter     = createSpy("formatter");
+      configuration = createSpyWithStubs("CLI configuration", {getFormatter: formatter});
       runtime       = createSpyWithStubs("runtime", {start: null, attachListener: null});
       callback      = createSpy("callback");
       spyOn(Cucumber, 'Runtime').andReturn(runtime);
-      spyOn(Cucumber.Listener, 'ProgressFormatter').andReturn(progressFormatter);
     });
 
     it("creates a Cucumber runtime with the CLI configuration", function() {
@@ -124,14 +124,14 @@ describe("Cucumber.Cli", function() {
       expect(Cucumber.Runtime).toHaveBeenCalledWith(configuration);
     });
 
-    it("creates a new progress formatter", function() {
+    it("gets the formatter from the configuration", function() {
       cli.runSuiteWithConfiguration(configuration, callback);
-      expect(Cucumber.Listener.ProgressFormatter).toHaveBeenCalled();
+      expect(configuration.getFormatter).toHaveBeenCalled();
     });
 
-    it("attaches the progress formatter to the runtime", function() {
+    it("attaches the formatter to the runtime", function() {
       cli.runSuiteWithConfiguration(configuration, callback);
-      expect(runtime.attachListener).toHaveBeenCalledWith(progressFormatter);
+      expect(runtime.attachListener).toHaveBeenCalledWith(formatter);
     });
 
     it("runs the runtime with the callback", function() {
