@@ -2,26 +2,25 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.ProgressFormatter", function () {
   var Cucumber = requireLib('cucumber');
-  var listener, listenerHearMethod, summarizer, progressFormatter;
+  var formatter, formatterHearMethod, summarizer, progressFormatter, options;
 
   beforeEach(function () {
-    var ProgressFormatter = Cucumber.Listener.ProgressFormatter;
-    listener           = createSpy("listener");
-    listenerHearMethod = spyOnStub(listener, 'hear');
-    summarizer         = createSpy("summarizer");
-    spyOn(Cucumber, 'Listener').andReturn(listener);
-    spyOnStub(Cucumber.Listener, 'Summarizer').andReturn(summarizer);
-    Cucumber.Listener.ProgressFormatter = ProgressFormatter;
-    progressFormatter                   = Cucumber.Listener.ProgressFormatter();
+    options             = createSpy(options);
+    formatter           = createSpyWithStubs("formatter", {log: null});
+    formatterHearMethod = spyOnStub(formatter, 'hear');
+    summarizer          = createSpy("summarizer");
+    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
+    spyOn(Cucumber.Listener, 'Summarizer').andReturn(summarizer);
+    progressFormatter = Cucumber.Listener.ProgressFormatter(options);
   });
 
   describe("constructor", function () {
-    it("creates a listener", function() {
-      expect(Cucumber.Listener).toHaveBeenCalled();
+    it("creates a formatter", function() {
+      expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 
-    it("extends the listener", function () {
-      expect(progressFormatter).toBe(listener);
+    it("extends the formatter", function () {
+      expect(progressFormatter).toBe(formatter);
     });
 
     it("creates a summarizer", function () {
@@ -53,84 +52,10 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
         summarizerCallback = summarizer.hear.mostRecentCall.args[1];
       });
 
-      it("tells the listener to listen to the event", function () {
+      it("tells the formatter to listen to the event", function () {
         summarizerCallback();
-        expect(listenerHearMethod).toHaveBeenCalledWith(event, callback);
+        expect(formatterHearMethod).toHaveBeenCalledWith(event, callback);
       });
-    });
-  });
-
-  describe("log()", function () {
-    var logged, alsoLogged, loggedBuffer;
-
-    beforeEach(function () {
-      logged       = "this was logged";
-      alsoLogged   = "this was also logged";
-      loggedBuffer = logged + alsoLogged;
-      spyOn(process.stdout, 'write');
-    });
-
-    it("records logged strings", function () {
-      progressFormatter.log(logged);
-      progressFormatter.log(alsoLogged);
-      expect(progressFormatter.getLogs()).toBe(loggedBuffer);
-    });
-
-    it("outputs the logged string to STDOUT by default", function () {
-        progressFormatter.log(logged);
-        expect(process.stdout.write).toHaveBeenCalledWith(logged);
-    });
-
-    describe("when asked to output to STDOUT", function () {
-      beforeEach(function () {
-        progressFormatter = Cucumber.Listener.ProgressFormatter({logToConsole: true});
-      });
-
-      it("outputs the logged string to STDOUT", function () {
-        progressFormatter.log(logged);
-        expect(process.stdout.write).toHaveBeenCalledWith(logged);
-      });
-    });
-
-    describe("when asked to not output to STDOUT", function () {
-      beforeEach(function () {
-        progressFormatter = Cucumber.Listener.ProgressFormatter({logToConsole: false});
-      });
-
-      it("does not output anything to STDOUT", function () {
-        progressFormatter.log(logged);
-        expect(process.stdout.write).not.toHaveBeenCalledWith(logged);
-      });
-    });
-
-    describe("when asked to output to a function", function () {
-      var userFunction;
-
-      beforeEach(function () {
-        userFunction      = createSpy("output user function");
-        progressFormatter = Cucumber.Listener.ProgressFormatter({logToFunction: userFunction});
-      });
-
-      it("calls the function with the logged string", function () {
-        progressFormatter.log(logged);
-        expect(userFunction).toHaveBeenCalledWith(logged);
-      });
-    });
-  });
-
-  describe("getLogs()", function () {
-    it("returns the logged buffer", function () {
-      var logged       = "this was logged";
-      var alsoLogged   = "this was also logged";
-      var loggedBuffer = logged + alsoLogged;
-      spyOn(process.stdout, 'write'); // prevent actual output during spec execution
-      progressFormatter.log(logged);
-      progressFormatter.log(alsoLogged);
-      expect(progressFormatter.getLogs()).toBe(loggedBuffer);
-    });
-
-    it("returns an empty string when the progress formatter did not log anything yet", function () {
-      expect(progressFormatter.getLogs()).toBe("");
     });
   });
 
@@ -283,10 +208,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("handleSuccessfulStepResult()", function () {
-    beforeEach(function () {
-      spyOn(progressFormatter, 'log');
-    });
-
     it("logs the passing step character", function () {
       progressFormatter.handleSuccessfulStepResult();
       expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
@@ -294,10 +215,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("handlePendingStepResult()", function () {
-    beforeEach(function () {
-      spyOn(progressFormatter, 'log')
-    });
-
     it("logs the pending step character", function () {
       progressFormatter.handlePendingStepResult();
       expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PENDING_STEP_CHARACTER);
@@ -305,10 +222,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("handleSkippedStepResult()", function () {
-    beforeEach(function () {
-      spyOn(progressFormatter, 'log');
-    });
-
     it("logs the skipped step character", function () {
       progressFormatter.handleSkippedStepResult();
       expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.SKIPPED_STEP_CHARACTER);
@@ -320,7 +233,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
     beforeEach(function () {
       step       = createSpy("step");
-      spyOn(progressFormatter, 'log');
     });
 
     it("logs the undefined step character", function () {
@@ -334,7 +246,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
     beforeEach(function () {
       stepResult = createSpy("failed step result");
-      spyOn(progressFormatter, 'log');
     });
 
     it("logs the failed step character", function () {
@@ -351,7 +262,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
       callback    = createSpy("callback");
       summaryLogs = createSpy("summary logs");
       spyOnStub(summarizer, 'getLogs').andReturn(summaryLogs);
-      spyOn(progressFormatter, 'log');
     });
 
     it("gets the summary", function () {
