@@ -166,7 +166,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-
+    And CUCUMBER_JS_HOME environment variable has been set to the cucumber-js install dir
     When I run `cucumber.js -f json`
     Then it should output this json:
       """
@@ -192,6 +192,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                  "error_message": "Error: Step failure\n    at Function.fail ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:52:49)\n    at World.<anonymous> ($CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/step_definitions/cucumber_steps.js:2:70)\n    at Object.invoke ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:59:14)\n    at Object.execute ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:153:22)\n    at Object.acceptVisitor ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:145:12)\n    at Object.executeStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:170:12)\n    at Object.processStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:165:14)\n    at $CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:67:16\n    at callUserFunctionAndBroadcastAfterEvent ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:91:9)\n    at iterate ($CUCUMBER_JS_HOME/lib/cucumber/type/collection.js:14:11)",
                     "status": "failed"
                   },
                   "match": {
@@ -435,6 +436,7 @@ Scenario: one feature, one passing scenario, one failing scenario
       };
       module.exports = cucumberSteps;
       """
+    And CUCUMBER_JS_HOME environment variable has been set to the cucumber-js install dir
     When I run `cucumber.js -f json`
     Then it should output this json:
       """
@@ -481,6 +483,7 @@ Scenario: one feature, one passing scenario, one failing scenario
             "line": 6,
             "keyword": "Given ",
             "result": {
+              "error_message": "Error: Step failure\n    at Function.fail ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:52:49)\n    at World.<anonymous> ($CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/step_definitions/cucumber_steps.js:3:70)\n    at Object.invoke ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:59:14)\n    at Object.execute ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:153:22)\n    at Object.acceptVisitor ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:145:12)\n    at Object.executeStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:170:12)\n    at Object.processStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:165:14)\n    at $CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:67:16\n    at callUserFunctionAndBroadcastAfterEvent ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:91:9)\n    at iterate ($CUCUMBER_JS_HOME/lib/cucumber/type/collection.js:14:11)",
               "status": "failed"
             },
             "match": {

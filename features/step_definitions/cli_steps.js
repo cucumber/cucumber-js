@@ -75,6 +75,16 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
+  this.Given(/^CUCUMBER_JS_HOME environment variable has been set to the cucumber\-js install dir$/, function(callback) {
+    // This is needed to allow us to check the error_message produced for a failed steps which includes paths which
+    // contain the location where cucumber-js is installed.
+    if (process.env.CUCUMBER_JS_HOME) {
+      callback();
+    } else {
+      callback.fail(new Error("CUCUMBER_JS_HOME has not been set."));
+    }
+  });
+
   this.Then(/^it should output this json:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
 
@@ -86,6 +96,14 @@ var cliSteps = function cliSteps() {
     }    
     catch(err) {
         throw new Error("Error parsing actual JSON:\n" + actualOutput);
+    }
+
+    if (expectedOutput.indexOf('$CUCUMBER_JS_HOME') != -1) {
+      if (!process.env.CUCUMBER_JS_HOME) {
+        callback.fail(new Error("CUCUMBER_JS_HOME has not been set."));
+      } else {
+        expectedOutput = expectedOutput.replace(/\$CUCUMBER_JS_HOME/g, process.env.CUCUMBER_JS_HOME);
+        }
     }
 
     try {

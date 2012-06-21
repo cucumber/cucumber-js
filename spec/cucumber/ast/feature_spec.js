@@ -16,7 +16,8 @@ describe("Cucumber.Ast.Feature", function() {
     name        = createSpy("Feature name");
     description = createSpy("Feature description");
     line        = createSpy("Feature line number");
-    feature     = Cucumber.Ast.Feature(keyword, name, description, line);
+    uri         = createSpy("Feaure uri");
+    feature     = Cucumber.Ast.Feature(keyword, name, description, line, uri);
   });
 
   describe("constructor", function() {
@@ -46,6 +47,12 @@ describe("Cucumber.Ast.Feature", function() {
   describe("getLine()", function() {
     it("returns the line number on which the feature starts", function() {
       expect(feature.getLine()).toBe(line);
+    });
+  });
+
+  describe("getUri()", function() {
+    it("returns a uniform resource identifier for the feature consisting of the filename containing the feature", function() {
+      expect(feature.getUri()).toBe(uri);
     });
   });
 
