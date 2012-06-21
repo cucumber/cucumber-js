@@ -75,7 +75,7 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
-  this.Then(/^it should pass with this json:$/, function(expectedOutput, callback) {
+  this.Then(/^it should output this json:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
 
     var actualError =  lastRun['error'];
