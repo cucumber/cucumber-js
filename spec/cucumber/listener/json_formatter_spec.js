@@ -11,6 +11,8 @@ describe("Cucumber.Listener.JsonFormatter", function() {
   describe("constructor", function() {
   });
 
+  // Get Event
+
   describe("hear()", function() {
     var event, callback;
     var eventHandler;
@@ -150,13 +152,146 @@ describe("Cucumber.Listener.JsonFormatter", function() {
     });
   });
 
+  // Handle Feature
+
+  describe("handleBeforeFeatureEvent()", function() {
+    var scenario, event, callback;
+
+    beforeEach(function() {
+      feature = createSpyWithStubs("feature", 
+                                   {getKeyword: 'Feature',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getUri: 'TODO'});
+
+      event    = createSpyWithStubs("event", {getPayloadItem: feature});
+
+      callback = createSpy("callback");
+    });
+
+    it("adds the feature attributes to the output", function() {
+      listener.handleBeforeFeatureEvent(event, callback);
+      var output = listener.getOutput(); 
+      var expectedOutput = '[ { "id": "A-Name", \
+                                "name": "A Name", \
+                                "description": "A Description", \
+                                "line": 3, \
+                                "keyword": "Feature", \
+                                "uri": "TODO" } ]';
+
+      var expectedJson = JSON.parse(expectedOutput);
+      var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+      var actualJsonString = JSON.stringify(output, null, 2);
+
+      expect(actualJsonString).toEqual(expectedJsonString);
+
+    });
+
+    it("it keeps track of the current feature so we can add scenarios and steps to it", function() {
+      listener.handleBeforeFeatureEvent(event, callback);
+      expect(listener.getCurrentFeatureIndex()).toEqual(0);
+      listener.handleBeforeFeatureEvent(event, callback);
+      expect(listener.getCurrentFeatureIndex()).toEqual(1);
+      listener.handleBeforeFeatureEvent(event, callback);
+      expect(listener.getCurrentFeatureIndex()).toEqual(2);
+    });
+
+  });
+
+  // Handle Scenario
+
+  describe("handleBeforeScenarioEvent()", function() {
+
+  });
+
+  // Handle Step Results
+
   describe("handleStepResultEvent()", function() {
     var event, callback, stepResult;
 
     beforeEach(function() {
+
+      step = createSpyWithStubs("step", {
+        getName: 'Step',
+        getLine: 3,
+        getKeyword: 'Step'        
+      });
+
+      stepResult = createSpyWithStubs("step result", {
+        isSuccessful: undefined,
+        isPending:    undefined,
+        isFailed:     undefined,
+        isSkipped:    undefined,
+        isUndefined:  undefined,
+        getStep:      step 
+      });
+
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
     });
+
+
+    it("adds the step result to the parent scenario in the output", function(){
+      stepResult.isSuccessful.andReturn(true);
+      listener.handleStepResultEvent(event, callback);
+      output = listener.getOutput();
+
+      var expectedOutput = '[ \
+                            { \
+                              "elements": [ \
+                                { \
+                                  "steps": [ \
+                                    { \
+                                      "name": "Step", \
+                                      "line": 3, \
+                                      "keyword": "Step", \
+                                      "result": { \
+                                        "status": "passed" \
+                                      }, \
+                                      "match": { \
+                                        "location": "TODO" \
+                                      } \
+                                    } \
+                                  ] \
+                                } \
+                              ] \
+                            } \
+                          ]';
+
+      var expectedJson = JSON.parse(expectedOutput);
+      var actualJsonString = JSON.stringify(output, null, 2);
+      var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+
+      expect(actualJsonString).toEqual(expectedJsonString);
+
+    });
+
+    it("adds the step result to parent when there are multiple features in the output", function(){
+
+      stepResult.isSuccessful.andReturn(true);
+
+      feature = createSpyWithStubs("feature", 
+                                   {getKeyword: 'Feature',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getUri: 'TODO'});
+
+      feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
+
+      listener.handleBeforeFeatureEvent(feature_event, callback);
+      listener.handleStepResultEvent(event, callback);
+
+      listener.handleBeforeFeatureEvent(feature_event, callback);
+      listener.handleStepResultEvent(event, callback);
+
+      listener.handleBeforeFeatureEvent(feature_event, callback);
+      listener.handleStepResultEvent(event, callback);
+
+      // console.log(listener.getOutput());
+    });
+
 
     it("gets the step result from the event payload", function() {
     });
@@ -239,21 +374,7 @@ describe("Cucumber.Listener.JsonFormatter", function() {
     });
   });
 
-  describe("handleBeforeScenarioEvent", function() {
-    var scenario, event, callback;
-
-    beforeEach(function() {
-      scenario = createSpyWithStubs("scenario", {getName: "A Scenario"});
-      event    = createSpyWithStubs("event", {getPayloadItem: scenario});
-
-
-      callback = createSpy("callback");
-      spyOn(listener, 'prepareBeforeScenario');
-    });
-
-    // TODO: Add replacement tests
-
-  });
+  // We're all done.  Output the JSON.
 
   describe("handleAfterFeaturesEvent()", function() {
     var features, callback;
@@ -261,17 +382,20 @@ describe("Cucumber.Listener.JsonFormatter", function() {
     beforeEach(function() {
       event    = createSpy("Event");
       callback = createSpy("Callback");
+      spyOn(process.stdout, 'write'); // prevent actual output during spec execution
+    });
+
+    it("writes to stdout", function() {
+      listener.handleAfterFeaturesEvent(event, callback);
+      expect(process.stdout.write).toHaveBeenCalled(); //TODO: With anything?
     });
 
     it("calls back", function() {
       listener.handleAfterFeaturesEvent(event, callback);
       expect(callback).toHaveBeenCalled();
     });
+
   });
 
-  describe("handleAfterScenarioEvent()", function() {
-    var event, callback;
-    // DO WE EVEN NEED THIS?
-  });
 });
 
