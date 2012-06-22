@@ -5,8 +5,10 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   var formatter, formatterHearMethod, summarizer, prettyFormatter, options;
 
   beforeEach(function () {
+    var Formatter = Cucumber.Listener.Formatter;
     options             = createSpy(options);
     formatter           = createSpyWithStubs("formatter", {log: null});
+    formatter.colorize = Formatter().colorize;
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summarizer          = createSpy("summarizer");
     spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
@@ -162,7 +164,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       keyword    = "step-keyword ";
       name       = "step-name";
       step       = createSpyWithStubs("step", { getKeyword: keyword, getName: name });
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
+      stepResult = createSpyWithStubs("step result", {
+        getStep: step, isFailed: null, isSkipped: null, isSuccessful: null, isPending: null, isUndefined: null });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       spyOn(prettyFormatter, 'logIndented');
       callback   = createSpy("callback");
@@ -215,18 +218,26 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it("logs the failure stack when there is one, indented by three levels", function () {
         var stack  = "failure stack";
-        var text = stack + "\n";
+        var text = formatter.colorize(stack, stepResult) + "\n";
         exception.stack = stack;
         prettyFormatter.handleStepResultEvent(event, callback);
-        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
+        //expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
+        // logIndented being called twice
+        expect(prettyFormatter.logIndented.mostRecentCall.args.length).toBe(2);
+        expect(prettyFormatter.logIndented.mostRecentCall.args[0]).toBe(text);
+        expect(prettyFormatter.logIndented.mostRecentCall.args[1]).toBe(3);
       });
 
       it("logs the failure itself when there no stack, indented by three levels", function () {
         exception = "exception text";
-        var text  = exception + "\n";
+        var text  = formatter.colorize(exception, stepResult) + "\n";
         stepResult.getFailureException.andReturn(exception);
         prettyFormatter.handleStepResultEvent(event, callback);
-        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
+        //expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
+        // logIndented being called twice
+        expect(prettyFormatter.logIndented.mostRecentCall.args.length).toBe(2);
+        expect(prettyFormatter.logIndented.mostRecentCall.args[0]).toBe(text);
+        expect(prettyFormatter.logIndented.mostRecentCall.args[1]).toBe(3);
       });
     });
 

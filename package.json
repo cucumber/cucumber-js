@@ -19,7 +19,7 @@
     "Olivier Melcher <olivier.melcher@gmail.com>",
     "Tristan Dunn <tristanzdunn@gmail.com>",
     "Ted de Koning",
-    "@renier",
+    "Renier Morales <renier@morales-rodriguez.net>",
     "Aslak Hellesøy <aslak.hellesoy@gmail.com>",
     "Aaron Garvey"
   ],
@@ -49,7 +49,8 @@
     "mkdirp": "0.3.3",
     "cucumber-html": "0.2.0",
     "walkdir": "0.0.4",
-    "coffee-script": "1.3.3"
+    "coffee-script": "1.3.3",
+    "ansi-color": "0.2.1"
   },
   "scripts": {
     "test": "./bin/cucumber.js && jasmine-node spec"

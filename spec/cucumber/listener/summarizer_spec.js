@@ -6,6 +6,7 @@ describe("Cucumber.Listener.Summarizer", function () {
 
   beforeEach(function () {
     var Summarizer = Cucumber.Listener.Summarizer;
+    var Formatter  = Cucumber.Listener.Formatter;
     listener           = createSpyWithStubs("listener");
     listenerHearMethod = spyOnStub(listener, 'hear');
     statsJournal       = createSpy("stats journal");
@@ -14,6 +15,7 @@ describe("Cucumber.Listener.Summarizer", function () {
     spyOn(Cucumber, 'Listener').andReturn(listener);
     spyOnStub(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
     Cucumber.Listener.Summarizer = Summarizer;
+    Cucumber.Listener.Formatter = Formatter;
     summarizer = Cucumber.Listener.Summarizer();
   });
 
