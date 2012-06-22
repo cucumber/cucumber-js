@@ -93,19 +93,19 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function() {
   });
 
   describe("expandDirectoryWithRegexp()", function() {
-    var findit = require('findit');
+    var walkdir = require('walkdir');
     var directory, regexp, innerPaths;
 
     beforeEach(function() {
       directory  = createSpy("directory");
       regexp     = createSpyWithStubs("regexp", {test: null});
       innerPaths = [createSpy("inner path 1"), createSpy("inner path 2"), createSpy("inner path 3")];
-      spyOn(findit, 'sync').andReturn(innerPaths);
+      spyOn(walkdir, 'sync').andReturn(innerPaths);
     });
 
     it("recursively finds the directory inner paths", function() {
       PathExpander.expandDirectoryWithRegexp(directory, regexp);
-      expect(findit.sync).toHaveBeenCalledWith(directory);
+      expect(walkdir.sync).toHaveBeenCalledWith(directory);
     });
 
     it("tests the regexp against each inner path", function() {
