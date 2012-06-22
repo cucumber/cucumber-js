@@ -60,7 +60,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       spyOnStub(step, 'isEventStep');
     });
 
-    it("checks wether the step is a context step", function() {
+    it("checks whether the step is a context step", function() {
       snippetBuilder.buildStepDefinitionFunctionName();
       expect(step.isOutcomeStep).toHaveBeenCalled();
     });
@@ -80,7 +80,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
         step.isOutcomeStep.andReturn(false);
       });
 
-      it("checks wether the step is an event step", function() {
+      it("checks whether the step is an event step", function() {
         snippetBuilder.buildStepDefinitionFunctionName();
         expect(step.isEventStep).toHaveBeenCalled();
       });
@@ -183,12 +183,12 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       expect(snippetBuilder.getStepDefinitionPatternMatchingGroupParameters).toHaveBeenCalled();
     });
 
-    it("checks wether the step has a doc string attached or not", function() {
+    it("checks whether the step has a doc string attached or not", function() {
       snippetBuilder.buildStepDefinitionParameters();
       expect(step.hasDocString).toHaveBeenCalled();
     });
 
-    it("checks wether the step has a data table attached or not", function() {
+    it("checks whether the step has a data table attached or not", function() {
       snippetBuilder.buildStepDefinitionParameters();
       expect(step.hasDataTable).toHaveBeenCalled();
     });

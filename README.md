@@ -1,4 +1,4 @@
-# Cucumber.js [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png)](http://travis-ci.org/cucumber/cucumber-js)
+# Cucumber.js [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png?branch=master)](http://travis-ci.org/cucumber/cucumber-js)
 
 *Cucumber*, the [popular Behaviour-Driven Development tool](http://cukes.info), brought to your JavaScript stack.
 
@@ -25,8 +25,13 @@ Cucumber.js is still a work in progress. Here is its current status.
 | [Failing steps](https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature)                                   | Done                |
 | [Hooks](https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature)                                                   | Done                |
 | [I18n](https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature)                                                     | To do               |
+<<<<<<< HEAD
 | [JSON formatter](https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature)                                 | In Progress<sup>4</sup> |
 | [Pretty formatter](https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature)                             | To do<sup>2</sup>   |
+=======
+| [JSON formatter](https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature)                                 | To do               |
+| [Pretty formatter](https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature)                             | WIP<sup>2</sup>   |
+>>>>>>> upstream/master
 | [Scenario outlines and examples](https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature) | To do               |
 | [Stats collector](https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature)                               | To do               |
 | [Step argument transforms](https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature)             | To do               |
@@ -38,7 +43,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
 3. Simple *Around*, *Before* and *After* hooks are available.
-4. Missing 'uri' and 'matches' attributes. Needs more Jasmine tests and refactoring before submitting 'pull' request.
+4. Missing 'matches' attributes. Needs more Jasmine tests and refactoring before submitting 'pull' request.
 
 ### Cucumber.js-specific features
 
@@ -372,69 +377,9 @@ A few example apps are available for you to browse:
 * [Express.js app running features in the cli](https://github.com/olivoil/NodeBDD)
 * [Try cucumber.js in the browser](http://cucumber.no.de/)
 
+## Contribute
 
-
-## Setup for using in Node.js and running tests
-
-Install the required dependencies:
-
-    $ npm link
-
-## Play
-
-    $ node example/server.js
-
-Then go to [localhost:9797](http://localhost:9797/).
-
-## Run tests
-
-### Specs
-
-    $ node_modules/.bin/jasmine-node spec
-
-### Features & documentation
-
-There is a common set of features shared by all cucumber implementations. It's called the *Technology Compatibility Kit* or *TCK*. Find more on the [Cucumber TCK](http://github.com/cucumber/cucumber-tck) repository.
-
-The official way of running them is through Cucumber-ruby and Aruba. Ruby and Bundler are required for this to work.
-
-    $ git submodule update --init
-    $ bundle
-    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
-
-*Note*: you need the *bcat* and *rdiscount* gems in order to use the `ARUBA_REPORT_DIR` environment variable. Install it with `gem install bcat rdiscount`.
-
-You can then open the generated documentation:
-
-    $ open doc/features/cucumber-tck/*.html # might open a lot of files ;)
-
-In addition to that, Cucumber.js is able to run the features for itself too:
-
-    $ ./bin/cucumber.js features/cucumber-tck -r features
-
-There are a few other Cucumber.js-dependent features. Execute everything:
-
-    $ ./bin/cucumber.js
-
-### Rake
-
-Alternatively, you can run everything with the help of Rake:
-
-    $ git submodule update --init
-    $ bundle
-    $ rake
-
-### Debug messages
-
-You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will display everything, `1` will only print out the critical things.
-
-    $ DEBUG_LEVEL=5 ./bin/cucumber.js
-
-It even works with Aruba:
-
-    $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
-    $ open doc/features/cucumber-tck/*.html # you'll see debug messages in Aruba-generated docs
-
+See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.md).
 
 ## Help & support
 

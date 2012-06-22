@@ -60,7 +60,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function() {
       expect(fs.statSync).toHaveBeenCalledWith(realPath);
     });
 
-    it("checks wether the path points to a directory or not", function() {
+    it("checks whether the path points to a directory or not", function() {
       PathExpander.expandPathWithRegexp(path);
       expect(stats.isDirectory).toHaveBeenCalled();
     });

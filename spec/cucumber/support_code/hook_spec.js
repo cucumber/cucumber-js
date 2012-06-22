@@ -20,7 +20,7 @@ describe("Cucumber.SupportCode.Hook", function() {
       spyOn(hook, 'appliesToScenario');
     });
 
-    it("checks wether the hook applies to this scenario or not", function() {
+    it("checks whether the hook applies to this scenario or not", function() {
       hook.invokeBesideScenario(scenario, world, callback);
       expect(hook.appliesToScenario).toHaveBeenCalledWith(scenario);
     });
@@ -90,7 +90,7 @@ describe("Cucumber.SupportCode.Hook", function() {
       expect(hook.getAstFilter).toHaveBeenCalled();
     });
 
-    it("asks the AST filter wether the scenario is enrolled or not", function() {
+    it("asks the AST filter whether the scenario is enrolled or not", function() {
       hook.appliesToScenario(scenario);
       expect(astFilter.isScenarioEnrolled).toHaveBeenCalledWith(scenario);
     });

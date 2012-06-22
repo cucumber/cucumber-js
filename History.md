@@ -2,22 +2,66 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.14...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.17...master)
 
 **TBD**
+
+### [v0.2.17](https://github.com/cucumber/cucumber-js/compare/v0.2.16...v0.2.17)
+
+
+#### New features
+
+* Add pretty formatter (simplified, monochrome) (#59) (@renier, Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Display only master branch build status in README (Julien Biezemans)
+* Rename "summary logger" to "summarizer" (#59) (Julien Biezemans)
+* Extract common formatter methods (#59, #63) (Julien Biezemans)
+
+
+
+### [v0.2.16](https://github.com/cucumber/cucumber-js/compare/v0.2.15...v0.2.16)
+
+
+#### New features
+
+* Display failing scenario URIs in summary (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Ran a gem update (Aslak Hellesøy)
+* Update NPM dependencies (#69) (Aslak Hellesøy)
+* Refactor listener infrastructure (#35, #59, #63) (Julien Biezemans)
+* Extract summary logger from progress formatter (#59, #63) (Julien Biezemans)
+* Store URI on AST elements (Julien Biezemans)
+
+
+
+### [v0.2.15](https://github.com/cucumber/cucumber-js/compare/v0.2.14...v0.2.15)
+
+
+#### New features
+
+* Handle asynchronous exceptions (#51) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove commented code (Julien Biezemans)
+
 
 
 ### [v0.2.14](https://github.com/cucumber/cucumber-js/compare/v0.2.13...v0.2.14)
 
 
-#### Fixes
-
-* Add alternate binary script for Windows (close #60) (Julien Biezemans)
-
 #### New features
 
 * Mention CS support in README (Julien Biezemans)
 * Update command-line documentation in README (Julien Biezemans)
+
+#### Fixes
+
+* Add alternate binary script for Windows (#60) (Julien Biezemans)
 
 
 
@@ -42,7 +86,7 @@
 
 #### Changed features
 
-* Allow World constructor to set explicit World object (close #50) (Julien Biezemans)
+* Allow World constructor to set explicit World object (#50) (Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -55,7 +99,7 @@
 
 #### Changed features
 
-* Simplify World callbacks (close #49) (Julien Biezemans)
+* Simplify World callbacks (#49) (Julien Biezemans)
 
 #### Fixes
 
@@ -73,7 +117,7 @@
 
 #### Fixes
 
-* Fix path handling on Windows platforms (close #47) (Julien Biezemans)
+* Fix path handling on Windows platforms (#47) (Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -89,7 +133,7 @@
 
 #### New features
 
-* Add support for tagged hooks (close #32) (Julien Biezemans)
+* Add support for tagged hooks (#32) (Julien Biezemans)
 
 #### Changed features
 
@@ -119,7 +163,7 @@
 
 * Remove unused parameter in parser spec (Julien Biezemans)
 * Add JS stepdef for async failing steps scenario (Julien Biezemans)
-* Assign zombie in README example (close #44) (Julien Biezemans)
+* Assign zombie in README example (#44) (Julien Biezemans)
 * Remove trailing spaces (Julien Biezemans)
 * Get rid of obsolete PendingStepException (Julien Biezemans)
 * Refactor SupportCode.Library spec (Julien Biezemans)
@@ -136,7 +180,7 @@
 
 #### Fixes
 
-* Fix matching groups in step definition snippets (close #42) (Julien Biezemans)
+* Fix matching groups in step definition snippets (#42) (Julien Biezemans)
 * Remove obsolete dependency from snippet builder spec (Julien Biezemans)
 
 #### Documentation, internals and tests
@@ -152,11 +196,11 @@
 #### New features
 
 * Add tags support (#7) (Julien Biezemans)
-* Add support for tags on features (close #7) (Julien Biezemans)
+* Add support for tags on features (#7) (Julien Biezemans)
 
 #### Changed features
 
-* Handle missing instance in World constructor callback (close #40) (Julien Biezemans)
+* Handle missing instance in World constructor callback (#40) (Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -174,7 +218,7 @@
 
 #### New features
 
-* Add Before/After hooks (#32, close #31) (Tristan Dunn)
+* Add Before/After hooks (#32, #31) (Tristan Dunn)
 
 #### Changed features
 
@@ -199,7 +243,7 @@
 #### Changed features
 
 * Add styles for reported errors on web example (Julien Biezemans)
-* Make and expect World constructors to be asynchronous (close #39) (Julien Biezemans)
+* Make and expect World constructors to be asynchronous (#39) (Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -207,7 +251,7 @@
 * Add development status to README (Julien Biezemans)
 * Add link to demo at cucumber.no.de (Julien Biezemans)
 * Add link to example app to README (Julien Biezemans)
-* Add usage documentation to README (close #23) (Olivier Melcher)
+* Add usage documentation to README (#23) (Olivier Melcher)
 * Add examples to run features with the CLI (Olivier Melcher)
 * Fix header levels and whitespaces in README (Julien Biezemans)
 * Add Opera to supported browsers in README (Julien Biezemans)

@@ -38,7 +38,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         spyOn(treeWalker, 'didAllFeaturesSucceed').andReturn(featuresResult);
       });
 
-      it("checks wether all features were successful", function() {
+      it("checks whether all features were successful", function() {
         featuresVisitCallback();
         expect(treeWalker.didAllFeaturesSucceed).toHaveBeenCalled();
       });
@@ -308,7 +308,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
     });
 
-    it("checks wether the step failed or not", function() {
+    it("checks whether the step failed or not", function() {
       treeWalker.visitStepResult(stepResult, callback);
       expect(stepResult.isFailed).toHaveBeenCalled();
     });
@@ -335,7 +335,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         expect(treeWalker.witnessFailedStep).not.toHaveBeenCalled();
       });
 
-      it("checks wether the step was pending or not", function() {
+      it("checks whether the step was pending or not", function() {
         treeWalker.visitStepResult(stepResult, callback);
         expect(stepResult.isPending).toHaveBeenCalled();
       });
@@ -579,7 +579,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       expect(step.getName).toHaveBeenCalled();
     });
 
-    it("asks the support code library wether a step definition is defined for that name", function() {
+    it("asks the support code library whether a step definition is defined for that name", function() {
       treeWalker.isStepUndefined(step);
       expect(supportCodeLibrary.isStepDefinitionNameDefined).toHaveBeenCalledWith(stepName);
     });
@@ -668,7 +668,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       spyOn(treeWalker, 'skipStep');
     });
 
-    it("checks wether the step is undefined or not", function() {
+    it("checks whether the step is undefined or not", function() {
       treeWalker.processStep(step, callback);
       expect(treeWalker.isStepUndefined).toHaveBeenCalledWith(step);
     });
@@ -705,7 +705,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         treeWalker.isStepUndefined.andReturn(false);
       });
 
-      it("checks wether the step should be skipped", function() {
+      it("checks whether the step should be skipped", function() {
         treeWalker.processStep(step, callback);
         expect(treeWalker.isSkippingSteps).toHaveBeenCalled();
       });

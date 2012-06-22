@@ -3,19 +3,20 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Background", function() {
   var Cucumber = requireLib('cucumber');
   var steps;
-  var background, keyword, name, description, line, lastStep;
+  var background, keyword, name, description, uri, line, lastStep;
 
   beforeEach(function() {
     keyword     = createSpy("background keyword");
     name        = createSpy("background name");
     description = createSpy("background description");
+    uri         = createSpy("uri");
     line        = createSpy("starting background line number");
     lastStep    = createSpy("Last step");
     steps       = createSpy("Step collection");
     spyOnStub(steps, 'add');
     spyOnStub(steps, 'getLast').andReturn(lastStep);
     spyOn(Cucumber.Type, 'Collection').andReturn(steps);
-    background = Cucumber.Ast.Background(keyword, name, description, line);
+    background = Cucumber.Ast.Background(keyword, name, description, uri, line);
   });
 
   describe("constructor", function() {
@@ -39,6 +40,12 @@ describe("Cucumber.Ast.Background", function() {
   describe("getDescription()", function() {
     it("returns the description of the background", function() {
       expect(background.getDescription()).toBe(description);
+    });
+  });
+
+  describe("getUri()", function() {
+    it("returns the URI on which the background starts", function() {
+      expect(background.getUri()).toBe(uri);
     });
   });
 

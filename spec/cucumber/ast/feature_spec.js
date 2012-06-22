@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Feature", function() {
   var Cucumber = requireLib('cucumber');
   var scenarioCollection, lastScenario;
-  var feature, keyword, name, line;
+  var feature, keyword, name, uri, line;
 
   beforeEach(function() {
     lastScenario = createSpy("Last scenario");
@@ -12,12 +12,12 @@ describe("Cucumber.Ast.Feature", function() {
     spyOnStub(scenarioCollection, 'getLast').andReturn(lastScenario);
     spyOnStub(scenarioCollection, 'forEach');
     spyOn(Cucumber.Type, 'Collection').andReturn(scenarioCollection);
-    keyword     = createSpy("Feature keyword");
-    name        = createSpy("Feature name");
-    description = createSpy("Feature description");
-    line        = createSpy("Feature line number");
-    uri         = createSpy("Feaure uri");
-    feature     = Cucumber.Ast.Feature(keyword, name, description, line, uri);
+    keyword     = createSpy("keyword");
+    name        = createSpy("name");
+    description = createSpy("description");
+    uri         = createSpy("uri");
+    line        = createSpy("line number");
+    feature     = Cucumber.Ast.Feature(keyword, name, description, uri, line);
   });
 
   describe("constructor", function() {
@@ -41,6 +41,12 @@ describe("Cucumber.Ast.Feature", function() {
   describe("getDescription()", function() {
     it("returns the description of the feature", function() {
       expect(feature.getDescription()).toBe(description);
+    });
+  });
+
+  describe("getUri()", function() {
+    it("returns the URI on which the background starts", function() {
+      expect(feature.getUri()).toBe(uri);
     });
   });
 
@@ -180,7 +186,7 @@ describe("Cucumber.Ast.Feature", function() {
       spyOn(feature, 'hasBackground');
     });
 
-    it("checks wether the feature has a background", function() {
+    it("checks whether the feature has a background", function() {
       feature.instructVisitorToVisitBackground(visitor, callback);
       expect(feature.hasBackground).toHaveBeenCalled();
     });

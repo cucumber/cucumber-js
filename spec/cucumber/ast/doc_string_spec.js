@@ -2,13 +2,14 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.DocString", function() {
   var Cucumber = requireLib('cucumber');
-  var docString, contents, line;
+  var docString, contents, uri, line;
 
   beforeEach(function() {
     contentType = createSpy("content type");
-    contents    = createSpy("DocString contents");
-    line        = createSpy("DocString line number");
-    docString   = Cucumber.Ast.DocString(contentType, contents, line);
+    contents    = createSpy("contents");
+    uri         = createSpy("uri");
+    line        = createSpy("line number");
+    docString   = Cucumber.Ast.DocString(contentType, contents, uri, line);
   });
 
   describe("getContents()", function() {
@@ -20,6 +21,12 @@ describe("Cucumber.Ast.DocString", function() {
   describe("getContentType()", function() {
     it("returns the doc type of the DocString", function() {
       expect(docString.getContentType()).toBe(contentType);
+    });
+  });
+
+  describe("getUri()", function() {
+    it("returns the URI on which the background starts", function() {
+      expect(docString.getUri()).toBe(uri);
     });
   });
 
