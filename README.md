@@ -38,7 +38,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
 3. Simple *Around*, *Before* and *After* hooks are available.
-4. Missing 'uri' and 'matches' attributes.
+4. Missing 'uri' and 'matches' attributes. Needs more Jasmine tests and refactoring before submitting 'pull' request.
 
 ### Cucumber.js-specific features
 
