@@ -62,7 +62,7 @@ In Gherkin itself
 
 Cucumber.js is tested on:
 
-* Node.js 0.4, 0.6 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js)) and supposedly 0.5.
+* Node.js 0.6 or 0.7 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari

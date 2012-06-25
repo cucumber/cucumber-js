@@ -1,49 +1,69 @@
-{ "name" : "cucumber"
-, "description" : "The official JavaScript implementation of Cucumber."
-, "keywords" : [ "testing", "bdd", "cucumber", "gherkin", "tests" ]
-, "version" : "0.2.17"
-, "homepage" : "http://github.com/cucumber/cucumber-js"
-, "author" : "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
-, "contributors" : [
-    "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)"
-  , "Fernando Acorreia <fernandoacorreia@gmail.com>"
-  , "Paul Jensen <paulbjensen@gmail.com>"
-  , "Kushal Pisavadia"
-  , "Olivier Melcher <olivier.melcher@gmail.com>"
-  , "Tristan Dunn <tristanzdunn@gmail.com>"
-  , "Ted de Koning"
-  , "@renier"
-  ]
-, "repository" :
-  { "type" : "git"
-  , "url" : "git://github.com/cucumber/cucumber-js.git"
-  }
-, "bugs" :
-  { "mail" : "cukes@googlegroups.com"
-  , "url" : "http://github.com/cucumber/cucumber-js/issues"
-  }
-, "directories" : { "lib" : "./lib" }
-, "main" : "./lib/cucumber"
-, "engines" : { "node" : "0.4 || 0.5 || 0.6" }
-, "dependencies" :
-  { "gherkin" : "2.11.0"
-  , "jasmine-node" : "1.0.26"
-  , "connect" : "2.3.2"
-  , "browserify" : "1.8.1"
-  , "nopt" : "1.0.10"
-  , "underscore" : "1.3.3"
-  , "rimraf" : "2.0.2"
-  , "mkdirp" : "0.3.3"
-  , "cucumber-html": "0.2.0"
-  , "findit": "0.1.2"
-  , "coffee-script": "1.3.3"
-  }
-, "scripts" :
-  { "test" : "./bin/cucumber.js && jasmine-node spec" }
-, "bin": { "cucumber.js": "./bin/cucumber.js", "cucumber-js": "./bin/cucumber.js" }
-, "licenses" :
-  [ { "type" : "MIT"
-    , "url" : "http://github.com/cucumber/cucumber.js/LICENSE"
+{
+  "name": "cucumber",
+  "description": "The official JavaScript implementation of Cucumber.",
+  "keywords": [
+    "testing",
+    "bdd",
+    "cucumber",
+    "gherkin",
+    "tests"
+  ],
+  "version": "0.2.18",
+  "homepage": "http://github.com/cucumber/cucumber-js",
+  "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
+  "contributors": [
+    "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
+    "Fernando Acorreia <fernandoacorreia@gmail.com>",
+    "Paul Jensen <paulbjensen@gmail.com>",
+    "Kushal Pisavadia",
+    "Olivier Melcher <olivier.melcher@gmail.com>",
+    "Tristan Dunn <tristanzdunn@gmail.com>",
+    "Ted de Koning",
+    "@renier",
+    "Aslak Hellesøy <aslak.hellesoy@gmail.com>",
+    "Aaron Garvey"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cucumber/cucumber-js.git"
+  },
+  "bugs": {
+    "email": "cukes@googlegroups.com",
+    "url": "http://github.com/cucumber/cucumber-js/issues"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "main": "./lib/cucumber",
+  "engines": {
+    "node": "0.6 || 0.7 || 0.8"
+  },
+  "dependencies": {
+    "gherkin": "2.11.0",
+    "jasmine-node": "1.0.26",
+    "connect": "2.3.2",
+    "browserify": "1.13.2",
+    "nopt": "1.0.10",
+    "underscore": "1.3.3",
+    "rimraf": "2.0.2",
+    "mkdirp": "0.3.3",
+    "cucumber-html": "0.2.0",
+    "walkdir": "0.0.4",
+    "coffee-script": "1.3.3"
+  },
+  "scripts": {
+    "test": "./bin/cucumber.js && jasmine-node spec"
+  },
+  "bin": {
+    "cucumber.js": "./bin/cucumber.js",
+    "cucumber-js": "./bin/cucumber.js"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/cucumber/cucumber.js/LICENSE"
     }
-  ]
+  ],
+  "devDependencies": {},
+  "optionalDependencies": {}
 }

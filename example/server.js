@@ -5,7 +5,7 @@ var browserify = require('browserify');
 var port       = process.env.PORT || 9797;
 var cukeBundle = browserify({
   mount: '/cucumber.js',
-  require: ['cucumber-html', './lib/cucumber', {'./gherkin/lexer/en': 'gherkin/lib/gherkin/lexer/en'}],
+  require: ['cucumber-html', './lib/cucumber', 'gherkin/lib/gherkin/lexer/en'],
   ignore: ['./cucumber/cli', 'connect']
 });
 
