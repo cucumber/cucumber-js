@@ -70,7 +70,7 @@
   };
 
   function runFeature() {
-    var Cucumber        = require('./cucumber');
+    var Cucumber        = require('./lib/cucumber');
     var supportCode;
     var output          = $('#output');
     var errors          = $('#errors');
