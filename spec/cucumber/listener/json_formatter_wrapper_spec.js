@@ -14,7 +14,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   });
 
   // Get Event
-/*
+
   describe("hear()", function() {
     var event, callback;
     var eventHandler;
@@ -153,7 +153,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       });
     });
   });
-*/
+
   // Handle Feature
 
   describe("handleBeforeFeatureEvent()", function() {
@@ -291,7 +291,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       var output = buffer.toString();
       output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
 
-      var expected = '[]';
+      var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"keyword":"Scenario","name":"A Name","description":"A Description","line":3,"id":"A-Name;a-name"}]}]';
 
       expect(output).toEqual(expected);
 
@@ -299,114 +299,6 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
   });
 
-/*
-    it("adds the step result to parent when there are multiple features in the output", function(){
-
-      stepResult.isSuccessful.andReturn(true);
-
-      feature = createSpyWithStubs("feature", 
-                                   {getKeyword: 'Feature',
-                                    getName: 'A Name',
-                                    getDescription: 'A Description',
-                                    getLine: 3,
-                                    getUri: 'TODO'});
-
-      feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
-
-      listener.handleBeforeFeatureEvent(feature_event, callback);
-      listener.handleStepResultEvent(event, callback);
-
-      listener.handleBeforeFeatureEvent(feature_event, callback);
-      listener.handleStepResultEvent(event, callback);
-
-      listener.handleBeforeFeatureEvent(feature_event, callback);
-      listener.handleStepResultEvent(event, callback);
-
-    });
-
-
-    it("gets the step result from the event payload", function() {
-    });
-
-    it("checks wether the step was successful or not", function() {
-    });
-
-    describe("when the step passed", function() {
-    });
-
-    describe("when the step did not pass", function() {
-      beforeEach(function() {
-      });
-
-      it("does not handle a successful step result", function() {
-      });
-
-      it("checks wether the step is pending", function() {
-      });
-
-      describe("when the step was pending", function() {
-        beforeEach(function() {
-        });
-
-        it("handles the pending step result", function() {
-        });
-      });
-
-      describe("when the step was not pending", function() {
-        beforeEach(function() {
-        });
-
-        it("does not handle a pending step result", function() {
-        });
-
-        it("checks wether the step was skipped", function() {
-        });
-
-        describe("when the step was skipped", function() {
-          beforeEach(function() {
-          });
-
-          it("handles the skipped step result", function() {
-          });
-        });
-
-        describe("when the step was not skipped", function() {
-          beforeEach(function() {
-          });
-
-          it("does not handle a skipped step result", function() {
-          });
-
-          it("checks wether the step was undefined", function() {
-          });
-
-          describe("when the step was undefined", function() {
-            beforeEach(function() {
-            });
-
-            it("handles the undefined step result", function() {
-            });
-          });
-
-          describe("when the step was not undefined", function() {
-            beforeEach(function() {
-            });
-
-            it("does not handle a skipped step result", function() {
-            });
-
-            it("handles a failed step result", function() {
-            });
-          });
-        });
-      });
-    });
-
-    it("calls back", function() {
-    });
-   
-  });
-*/
   // We're all done.  Output the JSON.
 
   describe("handleAfterFeaturesEvent()", function() {
@@ -420,7 +312,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
     it("writes to stdout", function() {
       listener.handleAfterFeaturesEvent(event, callback);
-      // expect(process.stdout.write).toHaveBeenCalled(); //TODO: With anything?
+      expect(process.stdout.write).toHaveBeenCalled(); 
     });
 
     it("calls back", function() {
