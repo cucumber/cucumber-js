@@ -197,7 +197,6 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
   });
 
-
   // Handle Scenario
 
   describe("handleBeforeScenarioEvent()", function() {
@@ -230,7 +229,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       var output = buffer.toString();
       output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
 
-      var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"keyword":"Scenario","name":"A Name","description":"A Description","line":3,"id":"A-Name;a-name"}]}]';
+      var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"name":"A Name","id":"A-Name;a-name","line":3,"keyword":"Scenario","description":"A Description","type":"scenario"}]}]';
 
       expect(output).toEqual(expected);
 
@@ -291,7 +290,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       var output = buffer.toString();
       output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
 
-      var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"keyword":"Scenario","name":"A Name","description":"A Description","line":3,"id":"A-Name;a-name"}]}]';
+      var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"name":"A Name","id":"A-Name;a-name","line":3,"keyword":"Scenario","description":"A Description","type":"scenario","steps":[{"name":"Step","line":3,"keyword":"Step","result":{"status":"passed"},"match":{"location":"TODO"}}]}]}]';
 
       expect(output).toEqual(expected);
 
@@ -310,10 +309,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       
     });
 
-    it("writes to stdout", function() {
-      listener.handleAfterFeaturesEvent(event, callback);
-      expect(process.stdout.write).toHaveBeenCalled(); 
-    });
+    // TODO: What else should we test here?  e.g. calls made to the formatter?
 
     it("calls back", function() {
       listener.handleAfterFeaturesEvent(event, callback);

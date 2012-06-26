@@ -242,10 +242,10 @@ describe("Cucumber.Cli.Configuration", function () {
 
   describe("getFormatter()", function() {
     beforeEach(function() {
-      spyOnStub(argumentParser, 'getFormat');
+      spyOnStub(argumentParser, 'getFormat').andReturn("progress");
     });
 
-    it("asks the argument parser which format we should be outputting in", function() {
+    it("asks the argument parser which format we should be outputting", function() {
       configuration.getFormatter();
       expect(argumentParser.getFormat).toHaveBeenCalled();
     });
