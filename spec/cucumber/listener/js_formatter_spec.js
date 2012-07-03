@@ -22,6 +22,25 @@ describe("Cucumber.Listener.JSFormatter", function () {
     });
   });
 
+  describe("handleAfterFeaturesEvent()", function () {
+    var callback;
+
+    beforeEach(function () {
+      callback   = createSpy("Callback");
+      jsFormatter.allFeatures = [{test:'hello'},{test:'world'}];
+    });
+
+    it("logs the list of features", function() {
+      jsFormatter.handleAfterFeaturesEvent(null, callback);
+      expect(jsFormatter.log).toHaveBeenCalledWith('[{"test":"hello"},{"test":"world"}]');
+    });
+
+    it("calls back", function () {
+      jsFormatter.handleAfterFeaturesEvent(event, callback);
+      expect(callback).toHaveBeenCalled();
+    });
+  });
+
   describe("handleBeforeFeatureEvent()", function () {
     var event, callback, feature, jsFeature;
 
@@ -60,11 +79,12 @@ describe("Cucumber.Listener.JSFormatter", function () {
     beforeEach(function () {
       callback   = createSpy("Callback");
       jsFormatter.currentFeature = {test:'hello'};
+      spyOn(jsFormatter, 'addFeature');
     });
 
-    it("logs the JSON feature", function() {
+    it("adds the feature to the list of features", function() {
       jsFormatter.handleAfterFeatureEvent(null, callback);
-      expect(jsFormatter.log).toHaveBeenCalledWith('{"test":"hello"}');
+      expect(jsFormatter.addFeature).toHaveBeenCalledWith({test:'hello'});
     });
 
     it("calls back", function () {
@@ -147,6 +167,223 @@ describe("Cucumber.Listener.JSFormatter", function () {
     it("calls back", function () {
       jsFormatter.handleStepResultEvent(event, callback);
       expect(callback).toHaveBeenCalled();
+    });
+  });
+
+  describe('buildFeature()', function() {
+    var feature;
+
+    beforeEach(function() {
+      feature = createSpyWithStubs('feature', {
+        getName: 'featureName',
+        getDescription: 'featureDescription'
+      });
+    });
+
+    it('gets the name', function() {
+      jsFormatter.buildFeature(feature);
+      expect(feature.getName).toHaveBeenCalled();
+    });
+
+    it('gets the description', function() {
+      jsFormatter.buildFeature(feature);
+      expect(feature.getDescription).toHaveBeenCalled();
+    });
+
+    it ('returns the feature', function() {
+      var theFeature = jsFormatter.buildFeature(feature);
+      expect(theFeature).toEqual({
+        name: 'featureName',
+        description: 'featureDescription',
+        scenarios: []
+      });
+    });
+  });
+
+  describe('buildScenario()', function() {
+    var scenario;
+
+    beforeEach(function() {
+      scenario = createSpyWithStubs('scenario', {
+        getName: 'scenarioName',
+        getDescription: 'scenarioDescription'
+      });
+    });
+
+    it('gets the name', function() {
+      jsFormatter.buildScenario(scenario);
+      expect(scenario.getName).toHaveBeenCalled();
+    });
+
+    it('gets the description', function() {
+      jsFormatter.buildScenario(scenario);
+      expect(scenario.getDescription).toHaveBeenCalled();
+    });
+
+    it ('returns the feature', function() {
+      var theScenario = jsFormatter.buildScenario(scenario);
+      expect(theScenario).toEqual({
+        name: 'scenarioName',
+        description: 'scenarioDescription',
+        steps: []
+      });
+    });
+  });
+
+  describe('buildStep()', function() {
+    var stepResult, step;
+
+    beforeEach(function() {
+      stepResult = createSpyWithStubs('step result', {
+        isFailed: undefined,
+        isPending: undefined,
+        isSkipped: undefined,
+        isSuccessful: undefined
+      });
+      step = createSpyWithStubs('step', {
+        getName: 'stepName',
+        getKeyword: 'stepKeyword'
+      });
+    });
+
+    it('gets the step name', function() {
+      jsFormatter.buildStep(stepResult, step);
+      expect(step.getName).toHaveBeenCalled();
+    });
+
+    it('gets the step keyword', function() {
+      jsFormatter.buildStep(stepResult, step);
+      expect(step.getKeyword).toHaveBeenCalled();
+    });
+
+    describe('failed', function() {
+      beforeEach(function() {
+        stepResult.isFailed.andReturn(true);
+        spyOn(jsFormatter, 'getStepFailureMessage').andReturn('failureMessage');
+      });
+
+      it('calls getStepFailureMessage', function() {
+        jsFormatter.buildStep(stepResult, step);
+        expect(jsFormatter.getStepFailureMessage).wasCalledWith(stepResult);
+      });
+
+      it('returns a step that failed and contains a failure message', function() {
+        var theStep = jsFormatter.buildStep(stepResult, step);
+        expect(theStep).toEqual({
+          name:'stepName',
+          keyword:'stepKeyword',
+          result:'failed',
+          message:'failureMessage'
+        });
+      });
+    });
+
+    describe('pending', function() {
+      beforeEach(function() {
+        stepResult.isPending.andReturn(true);
+      });
+
+      it('returns a step that failed and contains a failure message', function() {
+        var theStep = jsFormatter.buildStep(stepResult, step);
+        expect(theStep).toEqual({
+          name:'stepName',
+          keyword:'stepKeyword',
+          result:'pending',
+          message:undefined
+        });
+      });
+    });
+
+    describe('skipped', function() {
+      beforeEach(function() {
+        stepResult.isSkipped.andReturn(true);
+      });
+
+      it('returns a step that failed and contains a failure message', function() {
+        var theStep = jsFormatter.buildStep(stepResult, step);
+        expect(theStep).toEqual({
+          name:'stepName',
+          keyword:'stepKeyword',
+          result:'skipped',
+          message:undefined
+        });
+      });
+    });
+
+    describe('successful', function() {
+      beforeEach(function() {
+        stepResult.isSuccessful.andReturn(true);
+      });
+
+      it('returns a step that failed and contains a failure message', function() {
+        var theStep = jsFormatter.buildStep(stepResult, step);
+        expect(theStep).toEqual({
+          name:'stepName',
+          keyword:'stepKeyword',
+          result:'successful',
+          message:undefined
+        });
+      });
+    });
+
+    describe('undefined', function() {
+      it('returns a step that failed and contains a failure message', function() {
+        var theStep = jsFormatter.buildStep(stepResult, step);
+        expect(theStep).toEqual({
+          name:'stepName',
+          keyword:'stepKeyword',
+          result:'undefined',
+          message:undefined
+        });
+      });
+    });
+  });
+
+  describe('getStepFailureMessage()', function() {
+    var exception, stepResult;
+
+    beforeEach(function() {
+      exception = createSpyWithStubs('exception');
+      stepResult = createSpyWithStubs('step result', { getFailureException: exception });
+    });
+
+    it('gets the failure exception', function() {
+      jsFormatter.getStepFailureMessage(stepResult);
+      expect(stepResult.getFailureException).toHaveBeenCalled();
+    });
+
+    it('returns the exception if there is no stack', function() {
+      var message = jsFormatter.getStepFailureMessage(stepResult);
+      expect(message).toEqual(exception);
+    });
+
+    it('returns the stack if it exists', function() {
+      exception.stack = 'theStack'
+      var message = jsFormatter.getStepFailureMessage(stepResult);
+      expect(message).toEqual('theStack');
+    });
+  });
+
+  describe('addFeature()', function() {
+    it('adds a feature to the allFeatures list', function() {
+      jsFormatter.addFeature({test:'feature'});
+      expect(jsFormatter.allFeatures.features).toContain({test:'feature'});
+    });
+  });
+
+  describe('addScenario()', function() {
+    it('adds a scenario to the current feature', function() {
+      jsFormatter.currentFeature = {scenarios: []}
+      jsFormatter.addScenario({test:'scenario'});
+      expect(jsFormatter.currentFeature.scenarios).toContain({test:'scenario'});
+    });
+  });
+
+  describe('addStep()', function() {
+    it('adds a step to the current scenario', function() {
+      jsFormatter.currentScenario = {steps: []}
+      jsFormatter.addStep({test:'step'});
+      expect(jsFormatter.currentScenario.steps).toContain({test:'step'});
     });
   });
 
