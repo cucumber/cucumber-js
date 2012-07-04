@@ -6,3 +6,5 @@ node_modules
 doc/
 tmp/
 npm-debug.log
+.idea/
+*.swp
