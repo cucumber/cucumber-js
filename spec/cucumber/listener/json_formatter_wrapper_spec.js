@@ -13,146 +13,6 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   describe("constructor", function() {
   });
 
-  // Get Event
-
-  describe("hear()", function() {
-    var event, callback;
-    var eventHandler;
-
-    beforeEach(function() {
-      event    = createSpy("Event");
-      callback = createSpy("Callback");
-      spyOn(listener, 'hasHandlerForEvent');
-      spyOn(listener, 'getHandlerForEvent');
-    });
-
-    it("checks wether there is a handler for the event", function() {
-      listener.hear(event, callback);
-      expect(listener.hasHandlerForEvent).toHaveBeenCalledWith(event);
-    });
-
-    describe("when there is a handler for that event", function() {
-      beforeEach(function() {
-        eventHandler = createSpy("Event handler (function)");
-        listener.hasHandlerForEvent.andReturn(true);
-        listener.getHandlerForEvent.andReturn(eventHandler);
-      });
-
-      it("gets the handler for that event", function() {
-        listener.hear(event, callback);
-        expect(listener.getHandlerForEvent).toHaveBeenCalledWith(event);
-      });
-
-      it("calls the handler with the event and the callback", function() {
-        listener.hear(event, callback);
-        expect(eventHandler).toHaveBeenCalledWith(event, callback);
-      });
-
-      it("does not callback", function() {
-        listener.hear(event, callback);
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    describe("when there are no handlers for that event", function() {
-      beforeEach(function() {
-        listener.hasHandlerForEvent.andReturn(false);
-      });
-
-      it("calls back", function() {
-        listener.hear(event, callback);
-        expect(callback).toHaveBeenCalled();
-      });
-
-      it("does not get the handler for the event", function() {
-        listener.hear(event, callback);
-        expect(listener.getHandlerForEvent).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe("hasHandlerForEvent", function() {
-    var event, eventHandlerName, eventHandler;
-
-    beforeEach(function() {
-      event            = createSpy("Event");
-      eventHandlerName = createSpy("event handler name");
-      spyOn(listener, 'buildHandlerNameForEvent').andReturn(eventHandlerName);
-    });
-
-    it("builds the name of the handler for that event", function() {
-      listener.hasHandlerForEvent(event);
-      expect(listener.buildHandlerNameForEvent).toHaveBeenCalledWith(event);
-    });
-
-    describe("when the handler exists", function() {
-      beforeEach(function() {
-        eventHandler = createSpy("event handler");
-        listener[eventHandlerName] = eventHandler;
-      });
-
-      it("returns true", function() {
-        expect(listener.hasHandlerForEvent(event)).toBeTruthy();
-      });
-    });
-
-    describe("when the handler does not exist", function() {
-      it("returns false", function() {
-        expect(listener.hasHandlerForEvent(event)).toBeFalsy();
-      });
-    });
-  });
-
-  describe("buildHandlerNameForEvent", function() {
-    var event, eventName;
-
-    beforeEach(function() {
-      eventName = "SomeEventName";
-      event     = createSpyWithStubs("Event", {getName: eventName});
-    });
-
-    it("gets the name of the event", function() {
-      listener.buildHandlerNameForEvent(event);
-      expect(event.getName).toHaveBeenCalled();
-    });
-
-    it("returns the name of the event with prefix 'handle' and suffix 'Event'", function() {
-      expect(listener.buildHandlerNameForEvent(event)).toBe("handle" + eventName + "Event");
-    });
-  });
-
-  describe("getHandlerForEvent()", function() {
-    var event;
-    var eventHandlerName, eventHandler;
-
-    beforeEach(function() {
-      event            = createSpy("event");
-      eventHandlerName = 'handleSomeEvent';
-      eventHandler     = createSpy("event handler");
-      spyOn(listener, 'buildHandlerNameForEvent').andReturn(eventHandlerName);
-    });
-
-    it("gets the name of the handler for the event", function() {
-      listener.getHandlerForEvent(event);
-      expect(listener.buildHandlerNameForEvent).toHaveBeenCalledWith(event);
-    });
-
-    describe("when an event handler exists for the event", function() {
-      beforeEach(function() {
-        listener[eventHandlerName] = eventHandler;
-      });
-
-      it("returns the event handler", function() {
-        expect(listener.getHandlerForEvent(event)).toBe(eventHandler);
-      });
-    });
-
-    describe("when no event handlers exist for the event", function() {
-      it("returns nothing", function() {
-        expect(listener.getHandlerForEvent(event)).toBeUndefined();
-      });
-    });
-  });
 
   // Handle Feature
 
@@ -196,6 +56,56 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
     });
 
   });
+
+  // Handle Background
+
+  describe("handleBackgroundEvent()", function() {
+
+    var parent_feature_event, background, step, steps, event, callback;
+
+    beforeEach(function() {
+      feature = createSpyWithStubs("feature", 
+                                   {getKeyword: 'Feature',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getUri: 'feature-uri'});
+
+      parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
+
+      step = createSpyWithStubs("step", {
+        getName: 'Step',
+        getLine: 3,
+        getKeyword: 'Step'        
+      });
+
+      steps = [step];
+
+      background = createSpyWithStubs("background", 
+                                   {getKeyword: 'Background',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getSteps: steps});
+
+      event    = createSpyWithStubs("event", {getPayloadItem: background});
+      callback = createSpy("callback");
+    });
+
+    it("adds the background attributes to the output", function() {
+      listener.handleBeforeFeatureEvent(parent_feature_event, callback);
+      listener.handleBackgroundEvent(event, callback);
+      listener.handleAfterFeaturesEvent(parent_feature_event, callback); 
+      var output = buffer.toString();
+      output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
+
+      var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"name":"A Name","keyword":"Background","description":"A Description","type":"background","line":3,"steps":[{"name":"Step","line":3,"keyword":"Step"}]}]}]';
+
+      expect(output).toEqual(expected);
+
+    });
+
+});
 
   // Handle Scenario
 

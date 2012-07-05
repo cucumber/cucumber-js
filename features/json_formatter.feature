@@ -898,6 +898,99 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """
 
+  Scenario: output JSON for a feature with a background 
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Background:
+          Given This applies to all scenarios
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This applies to all scenarios$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+          {
+              "id": "some-feature",
+              "name": "some feature",
+              "description": "",
+              "line": 1,
+              "keyword": "Feature",
+              "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+              "elements": [
+                  {
+                      "name": "",
+                      "keyword": "Background",
+                      "description": "",
+                      "type": "background",
+                      "line": 3,
+                      "steps": [
+                          {
+                              "name": "This applies to all scenarios",
+                              "line": 4,
+                              "keyword": "Given "
+                          }
+                      ]
+                  }
+              ]
+          }
+      ]
+      """
+
+  Scenario: output JSON for a feature with a failing background 
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Background:
+          Given This applies to all scenarios but fails
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This applies to all scenarios but fails$/, function(callback) { callback.fail(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+          {
+              "id": "some-feature",
+              "name": "some feature",
+              "description": "",
+              "line": 1,
+              "keyword": "Feature",
+              "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+              "elements": [
+                  {
+                      "name": "",
+                      "keyword": "Background",
+                      "description": "",
+                      "type": "background",
+                      "line": 3,
+                      "steps": [
+                          {
+                              "name": "This applies to all scenarios but fails",
+                              "line": 4,
+                              "keyword": "Given "
+                          }
+                      ]
+                  }
+              ]
+          }
+      ]
+      """
+
+   # TODO: Add step results to background steps
    # TODO: Embedings
    # TODO: DocString
-   # TODO: Backgrounds
+   # TODO: Tags
