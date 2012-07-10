@@ -269,6 +269,11 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
       expect(summaryFormatter.getLogs).toHaveBeenCalled();
     });
 
+    it("logs two line feeds", function () {
+      progressFormatter.handleAfterFeaturesEvent(event, callback);
+      expect(progressFormatter.log).toHaveBeenCalledWith("\n\n");
+    });
+
     it("logs the summary", function () {
       progressFormatter.handleAfterFeaturesEvent(event, callback);
       expect(progressFormatter.log).toHaveBeenCalledWith(summaryLogs);

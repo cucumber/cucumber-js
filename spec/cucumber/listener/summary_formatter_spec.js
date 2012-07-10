@@ -383,11 +383,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       spyOnStub(statsJournal, 'logUndefinedStepSnippets');
     });
 
-    it("logs two line feeds", function () {
-      summaryFormatter.logSummary();
-      expect(summaryFormatter.log).toHaveBeenCalledWith("\n\n");
-    });
-
     it("checks whether there are failed steps or not", function () {
       summaryFormatter.logSummary();
       expect(statsJournal.witnessedAnyFailedStep).toHaveBeenCalled();

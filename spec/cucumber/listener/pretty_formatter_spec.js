@@ -251,6 +251,11 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(summaryFormatter.getLogs).toHaveBeenCalled();
     });
 
+    it("logs one line feed", function () {
+      prettyFormatter.handleAfterFeaturesEvent(event, callback);
+      expect(prettyFormatter.log).toHaveBeenCalledWith("\n");
+    });
+
     it("logs the summary", function () {
       prettyFormatter.handleAfterFeaturesEvent(event, callback);
       expect(prettyFormatter.log).toHaveBeenCalledWith(summary);
