@@ -776,7 +776,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       callback          = createSpy("callback");
       event             = createSpy("event");
       skippedStepResult = createSpy("skipped step result");
-      payload           = { stepResult: skippedStepResult};
+      payload           = {stepResult: skippedStepResult};
       spyOn(Cucumber.Runtime, 'SkippedStepResult').andReturn(skippedStepResult);
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEvent');

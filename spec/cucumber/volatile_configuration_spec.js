@@ -11,6 +11,7 @@ describe("Cucumber.VolatileConfiguration", function() {
   beforeEach(function() {
     supportCodeLibrary       = createSpy("support code library");
     spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
+    Cucumber.SupportCode.Library.Hooker = createSpy("support code library hooker");
     featureSource            = createSpy("feature source");
     supportCodeInitializer   = createSpy("support code initializer");
     configuration            = Cucumber.VolatileConfiguration(featureSource, supportCodeInitializer);
