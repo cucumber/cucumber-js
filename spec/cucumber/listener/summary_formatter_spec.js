@@ -1,29 +1,28 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Listener.Summarizer", function () {
+describe("Cucumber.Listener.SummaryFormatter", function () {
   var Cucumber = requireLib('cucumber');
-  var listener, listenerHearMethod, summarizer, statsJournal, failedStepResults;
+  var formatter, formatterHearMethod, summaryFormatter, statsJournal, failedStepResults, options;
 
   beforeEach(function () {
-    var Summarizer = Cucumber.Listener.Summarizer;
-    listener           = createSpyWithStubs("listener");
-    listenerHearMethod = spyOnStub(listener, 'hear');
-    statsJournal       = createSpy("stats journal");
-    failedStepResults  = createSpy("failed steps");
+    options              = createSpy("options");
+    formatter            = createSpyWithStubs("formatter", {log: null});
+    formatterHearMethod  = spyOnStub(formatter, 'hear');
+    statsJournal         = createSpy("stats journal");
+    failedStepResults    = createSpy("failed steps");
     spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
-    spyOn(Cucumber, 'Listener').andReturn(listener);
-    spyOnStub(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
-    Cucumber.Listener.Summarizer = Summarizer;
-    summarizer = Cucumber.Listener.Summarizer();
+    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
+    spyOn(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
+    summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
   });
 
   describe("constructor", function () {
-    it("creates a listener", function() {
-      expect(Cucumber.Listener).toHaveBeenCalled();
+    it("creates a formatter", function() {
+      expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 
-    it("extends the listener", function () {
-      expect(summarizer).toBe(listener);
+    it("extends the formatter", function () {
+      expect(summaryFormatter).toBe(formatter);
     });
 
     it("creates a collection to store the failed steps", function () {
@@ -33,39 +32,6 @@ describe("Cucumber.Listener.Summarizer", function () {
     it("creates a stats journal", function () {
       expect(Cucumber.Listener.StatsJournal).toHaveBeenCalled();
     })
-  });
-
-  describe("log()", function () {
-    var logged, alsoLogged, loggedBuffer;
-
-    beforeEach(function () {
-      logged       = "this was logged";
-      alsoLogged   = "this was also logged";
-      loggedBuffer = logged + alsoLogged;
-      spyOn(process.stdout, 'write');
-    });
-
-    it("records logged strings", function () {
-      summarizer.log(logged);
-      summarizer.log(alsoLogged);
-      expect(summarizer.getLogs()).toBe(loggedBuffer);
-    });
-  });
-
-  describe("getLogs()", function () {
-    it("returns the logged buffer", function () {
-      var logged       = "this was logged";
-      var alsoLogged   = "this was also logged";
-      var loggedBuffer = logged + alsoLogged;
-      spyOn(process.stdout, 'write'); // prevent actual output during spec execution
-      summarizer.log(logged);
-      summarizer.log(alsoLogged);
-      expect(summarizer.getLogs()).toBe(loggedBuffer);
-    });
-
-    it("returns an empty string when the progress formatter did not log anything yet", function () {
-      expect(summarizer.getLogs()).toBe("");
-    });
   });
 
   describe("hear()", function () {
@@ -78,7 +44,7 @@ describe("Cucumber.Listener.Summarizer", function () {
     });
 
     it("tells the stats journal to listen to the event", function () {
-      summarizer.hear(event, callback);
+      summaryFormatter.hear(event, callback);
       expect(statsJournal.hear).toHaveBeenCalled();
       expect(statsJournal.hear).toHaveBeenCalledWithValueAsNthParameter(event, 1);
       expect(statsJournal.hear).toHaveBeenCalledWithAFunctionAsNthParameter(2);
@@ -88,13 +54,13 @@ describe("Cucumber.Listener.Summarizer", function () {
       var statsJournalCallback;
 
       beforeEach(function () {
-        summarizer.hear(event, callback);
+        summaryFormatter.hear(event, callback);
         statsJournalCallback = statsJournal.hear.mostRecentCall.args[1];
       });
 
-      it("tells the listener to listen to the event", function () {
+      it("tells the formatter to listen to the event", function () {
         statsJournalCallback();
-        expect(listenerHearMethod).toHaveBeenCalledWith(event, callback);
+        expect(formatterHearMethod).toHaveBeenCalledWith(event, callback);
       });
     });
   });
@@ -109,44 +75,44 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
-      spyOn(summarizer, 'handleFailedStepResult');
+      spyOn(summaryFormatter, 'handleFailedStepResult');
     });
 
     it("gets the step result from the event payload", function () {
-      summarizer.handleStepResultEvent(event, callback);
+      summaryFormatter.handleStepResultEvent(event, callback);
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
     it("checks whether the step was undefined", function () {
-      summarizer.handleStepResultEvent(event, callback);
+      summaryFormatter.handleStepResultEvent(event, callback);
       expect(stepResult.isUndefined).toHaveBeenCalled();
     });
 
     describe("when the step was undefined", function () {
       beforeEach(function () {
         stepResult.isUndefined.andReturn(true);
-        spyOn(summarizer, 'handleUndefinedStepResult');
+        spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
       it("handles the undefined step result", function () {
-        summarizer.handleStepResultEvent(event, callback);
-        expect(summarizer.handleUndefinedStepResult).toHaveBeenCalledWith(stepResult);
+        summaryFormatter.handleStepResultEvent(event, callback);
+        expect(summaryFormatter.handleUndefinedStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
 
     describe("when the step was not undefined", function () {
       beforeEach(function () {
         stepResult.isUndefined.andReturn(false);
-        spyOn(summarizer, 'handleUndefinedStepResult');
+        spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
       it("does not handle an undefined step result", function () {
-        summarizer.handleStepResultEvent(event, callback);
-        expect(summarizer.handleUndefinedStepResult).not.toHaveBeenCalled();
+        summaryFormatter.handleStepResultEvent(event, callback);
+        expect(summaryFormatter.handleUndefinedStepResult).not.toHaveBeenCalled();
       });
 
       it("checks whether the step failed", function () {
-        summarizer.handleStepResultEvent(event, callback);
+        summaryFormatter.handleStepResultEvent(event, callback);
         expect(stepResult.isFailed).toHaveBeenCalled();
       });
 
@@ -156,8 +122,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("handles the failed step result", function () {
-          summarizer.handleStepResultEvent(event, callback);
-          expect(summarizer.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
+          summaryFormatter.handleStepResultEvent(event, callback);
+          expect(summaryFormatter.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
         });
       });
 
@@ -167,14 +133,14 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("handles the failed step result", function () {
-          summarizer.handleStepResultEvent(event, callback);
-          expect(summarizer.handleFailedStepResult).not.toHaveBeenCalled();
+          summaryFormatter.handleStepResultEvent(event, callback);
+          expect(summaryFormatter.handleFailedStepResult).not.toHaveBeenCalled();
         });
       });
     });
 
     it("calls back", function () {
-      summarizer.handleStepResultEvent(event, callback);
+      summaryFormatter.handleStepResultEvent(event, callback);
       expect(callback).toHaveBeenCalled();
     });
   });
@@ -185,17 +151,17 @@ describe("Cucumber.Listener.Summarizer", function () {
     beforeEach(function () {
       step       = createSpy("step");
       stepResult = createSpyWithStubs("step result", {getStep: step});
-      spyOn(summarizer, 'storeUndefinedStep');
+      spyOn(summaryFormatter, 'storeUndefinedStep');
     });
 
     it("gets the step from the step result", function () {
-      summarizer.handleUndefinedStepResult(stepResult);
+      summaryFormatter.handleUndefinedStepResult(stepResult);
       expect(stepResult.getStep).toHaveBeenCalled();
     });
 
     it("stores the undefined step", function () {
-      summarizer.handleUndefinedStepResult(stepResult);
-      expect(summarizer.storeUndefinedStep).toHaveBeenCalledWith(step);
+      summaryFormatter.handleUndefinedStepResult(stepResult);
+      expect(summaryFormatter.storeUndefinedStep).toHaveBeenCalledWith(step);
     });
   });
 
@@ -204,12 +170,12 @@ describe("Cucumber.Listener.Summarizer", function () {
 
     beforeEach(function () {
       stepResult = createSpy("failed step result");
-      spyOn(summarizer, 'storeFailedStepResult');
+      spyOn(summaryFormatter, 'storeFailedStepResult');
     });
 
     it("stores the failed step result", function () {
-      summarizer.handleFailedStepResult(stepResult);
-      expect(summarizer.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
+      summaryFormatter.handleFailedStepResult(stepResult);
+      expect(summaryFormatter.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
     });
   });
 
@@ -223,7 +189,7 @@ describe("Cucumber.Listener.Summarizer", function () {
     });
 
     it("checks whether the current scenario failed", function () {
-      summarizer.handleAfterScenarioEvent(event, callback);
+      summaryFormatter.handleAfterScenarioEvent(event, callback);
       expect(statsJournal.isCurrentScenarioFailing).toHaveBeenCalled();
     });
 
@@ -233,41 +199,41 @@ describe("Cucumber.Listener.Summarizer", function () {
       beforeEach(function () {
         scenario = createSpy("scenario");
         statsJournal.isCurrentScenarioFailing.andReturn(true);
-        spyOn(summarizer, 'storeFailedScenario');
+        spyOn(summaryFormatter, 'storeFailedScenario');
         spyOnStub(event, 'getPayloadItem').andReturn(scenario);
       });
 
       it("gets the scenario from the payload", function () {
-        summarizer.handleAfterScenarioEvent(event, callback);
+        summaryFormatter.handleAfterScenarioEvent(event, callback);
         expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
       });
 
       it("stores the failed scenario", function () {
-        summarizer.handleAfterScenarioEvent(event, callback);
-        expect(summarizer.storeFailedScenario).toHaveBeenCalledWith(scenario);
+        summaryFormatter.handleAfterScenarioEvent(event, callback);
+        expect(summaryFormatter.storeFailedScenario).toHaveBeenCalledWith(scenario);
       });
     });
 
     describe("when the current scenario did not fail", function () {
       beforeEach(function () {
         statsJournal.isCurrentScenarioFailing.andReturn(false);
-        spyOn(summarizer, 'storeFailedScenario');
+        spyOn(summaryFormatter, 'storeFailedScenario');
         spyOnStub(event, 'getPayloadItem');
       });
 
       it("does not get the scenario from the payload", function () {
-        summarizer.handleAfterScenarioEvent(event, callback);
+        summaryFormatter.handleAfterScenarioEvent(event, callback);
         expect(event.getPayloadItem).not.toHaveBeenCalled();
       });
 
       it("does not store the failed scenario", function () {
-        summarizer.handleAfterScenarioEvent(event, callback);
-        expect(summarizer.storeFailedScenario).not.toHaveBeenCalled();
+        summaryFormatter.handleAfterScenarioEvent(event, callback);
+        expect(summaryFormatter.storeFailedScenario).not.toHaveBeenCalled();
       });
     });
 
     it("calls back", function () {
-      summarizer.handleAfterScenarioEvent(event, callback);
+      summaryFormatter.handleAfterScenarioEvent(event, callback);
       expect(callback).toHaveBeenCalled();
     });
   });
@@ -277,16 +243,16 @@ describe("Cucumber.Listener.Summarizer", function () {
 
     beforeEach(function () {
       callback = createSpy("callback");
-      spyOn(summarizer, 'logSummary');
+      spyOn(summaryFormatter, 'logSummary');
     });
 
     it("logs the summary", function () {
-      summarizer.handleAfterFeaturesEvent(event, callback);
-      expect(summarizer.logSummary).toHaveBeenCalled();
+      summaryFormatter.handleAfterFeaturesEvent(event, callback);
+      expect(summaryFormatter.logSummary).toHaveBeenCalled();
     });
 
     it("calls back", function () {
-      summarizer.handleAfterFeaturesEvent(event, callback);
+      summaryFormatter.handleAfterFeaturesEvent(event, callback);
       expect(callback).toHaveBeenCalled();
     });
   });
@@ -301,7 +267,7 @@ describe("Cucumber.Listener.Summarizer", function () {
     });
 
     it("adds the result to the failed step result collection", function () {
-      summarizer.storeFailedStepResult(failedStepResult);
+      summaryFormatter.storeFailedStepResult(failedStepResult);
       expect(failedStepResults.add).toHaveBeenCalledWith(failedStepResult);
     });
   });
@@ -315,27 +281,27 @@ describe("Cucumber.Listener.Summarizer", function () {
       line           = "123";
       string         = uri + ":" + line + " # Scenario: " + name;
       failedScenario = createSpyWithStubs("failedScenario", {getName: name, getUri: uri, getLine: line});
-      spyOn(summarizer, 'appendStringToFailedScenarioLogBuffer');
+      spyOn(summaryFormatter, 'appendStringToFailedScenarioLogBuffer');
     });
 
     it("gets the name of the scenario", function () {
-      summarizer.storeFailedScenario(failedScenario);
+      summaryFormatter.storeFailedScenario(failedScenario);
       expect(failedScenario.getName).toHaveBeenCalled();
     });
 
     it("gets the URI of the scenario", function () {
-      summarizer.storeFailedScenario(failedScenario);
+      summaryFormatter.storeFailedScenario(failedScenario);
       expect(failedScenario.getUri).toHaveBeenCalled();
     });
 
     it("gets the line of the scenario", function () {
-      summarizer.storeFailedScenario(failedScenario);
+      summaryFormatter.storeFailedScenario(failedScenario);
       expect(failedScenario.getLine).toHaveBeenCalled();
     });
 
     it("appends the scenario details to the failed scenario log buffer", function () {
-      summarizer.storeFailedScenario(failedScenario);
-      expect(summarizer.appendStringToFailedScenarioLogBuffer).toHaveBeenCalledWith(string);
+      summaryFormatter.storeFailedScenario(failedScenario);
+      expect(summaryFormatter.appendStringToFailedScenarioLogBuffer).toHaveBeenCalledWith(string);
     });
   });
 
@@ -347,56 +313,56 @@ describe("Cucumber.Listener.Summarizer", function () {
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
-      spyOn(summarizer, 'appendStringToUndefinedStepLogBuffer');
+      spyOn(summaryFormatter, 'appendStringToUndefinedStepLogBuffer');
     });
 
     it("creates a new step definition snippet builder", function () {
-      summarizer.storeUndefinedStep(step);
+      summaryFormatter.storeUndefinedStep(step);
       expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step);
     });
 
     it("builds the step definition", function () {
-      summarizer.storeUndefinedStep(step);
+      summaryFormatter.storeUndefinedStep(step);
       expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summarizer.storeUndefinedStep(step);
-      expect(summarizer.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
+      summaryFormatter.storeUndefinedStep(step);
+      expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });
 
   describe("getFailedScenarioLogBuffer() [appendStringToFailedScenarioLogBuffer()]", function () {
     it("returns the logged failed scenario details", function () {
-      summarizer.appendStringToFailedScenarioLogBuffer("abc");
-      expect(summarizer.getFailedScenarioLogBuffer()).toBe("abc\n");
+      summaryFormatter.appendStringToFailedScenarioLogBuffer("abc");
+      expect(summaryFormatter.getFailedScenarioLogBuffer()).toBe("abc\n");
     });
 
     it("returns all logged failed scenario lines joined with a line break", function () {
-      summarizer.appendStringToFailedScenarioLogBuffer("abc");
-      summarizer.appendStringToFailedScenarioLogBuffer("def");
-      expect(summarizer.getFailedScenarioLogBuffer()).toBe("abc\ndef\n");
+      summaryFormatter.appendStringToFailedScenarioLogBuffer("abc");
+      summaryFormatter.appendStringToFailedScenarioLogBuffer("def");
+      expect(summaryFormatter.getFailedScenarioLogBuffer()).toBe("abc\ndef\n");
     });
   });
 
   describe("getUndefinedStepLogBuffer() [appendStringToUndefinedStepLogBuffer()]", function () {
     it("returns the logged undefined step details", function () {
-      summarizer.appendStringToUndefinedStepLogBuffer("abc");
-      expect(summarizer.getUndefinedStepLogBuffer()).toBe("abc\n");
+      summaryFormatter.appendStringToUndefinedStepLogBuffer("abc");
+      expect(summaryFormatter.getUndefinedStepLogBuffer()).toBe("abc\n");
     });
 
     it("returns all logged failed scenario lines joined with a line break", function () {
-      summarizer.appendStringToUndefinedStepLogBuffer("abc");
-      summarizer.appendStringToUndefinedStepLogBuffer("def");
-      expect(summarizer.getUndefinedStepLogBuffer()).toBe("abc\ndef\n");
+      summaryFormatter.appendStringToUndefinedStepLogBuffer("abc");
+      summaryFormatter.appendStringToUndefinedStepLogBuffer("def");
+      expect(summaryFormatter.getUndefinedStepLogBuffer()).toBe("abc\ndef\n");
     });
   });
 
   describe("appendStringToUndefinedStepLogBuffer() [getUndefinedStepLogBuffer()]", function () {
     it("does not log the same string twice", function () {
-      summarizer.appendStringToUndefinedStepLogBuffer("abcdef");
-      summarizer.appendStringToUndefinedStepLogBuffer("abcdef");
-      expect(summarizer.getUndefinedStepLogBuffer()).toBe("abcdef\n");
+      summaryFormatter.appendStringToUndefinedStepLogBuffer("abcdef");
+      summaryFormatter.appendStringToUndefinedStepLogBuffer("abcdef");
+      expect(summaryFormatter.getUndefinedStepLogBuffer()).toBe("abcdef\n");
     });
   });
 
@@ -405,11 +371,10 @@ describe("Cucumber.Listener.Summarizer", function () {
     var stepCount, passedStepCount;
 
     beforeEach(function () {
-      spyOn(summarizer, 'log');
-      spyOn(summarizer, 'logScenariosSummary');
-      spyOn(summarizer, 'logStepsSummary');
-      spyOn(summarizer, 'logFailedStepResults');
-      spyOn(summarizer, 'logUndefinedStepSnippets');
+      spyOn(summaryFormatter, 'logScenariosSummary');
+      spyOn(summaryFormatter, 'logStepsSummary');
+      spyOn(summaryFormatter, 'logFailedStepResults');
+      spyOn(summaryFormatter, 'logUndefinedStepSnippets');
       spyOnStub(statsJournal, 'witnessedAnyFailedStep');
       spyOnStub(statsJournal, 'witnessedAnyUndefinedStep');
       spyOnStub(statsJournal, 'logFailedStepResults');
@@ -419,12 +384,12 @@ describe("Cucumber.Listener.Summarizer", function () {
     });
 
     it("logs two line feeds", function () {
-      summarizer.logSummary();
-      expect(summarizer.log).toHaveBeenCalledWith("\n\n");
+      summaryFormatter.logSummary();
+      expect(summaryFormatter.log).toHaveBeenCalledWith("\n\n");
     });
 
     it("checks whether there are failed steps or not", function () {
-      summarizer.logSummary();
+      summaryFormatter.logSummary();
       expect(statsJournal.witnessedAnyFailedStep).toHaveBeenCalled();
     });
 
@@ -434,8 +399,8 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
 
       it("logs the failed steps", function () {
-        summarizer.logSummary();
-        expect(summarizer.logFailedStepResults).toHaveBeenCalled();
+        summaryFormatter.logSummary();
+        expect(summaryFormatter.logFailedStepResults).toHaveBeenCalled();
       });
     });
 
@@ -445,23 +410,23 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
 
       it("does not log failed steps", function () {
-        summarizer.logSummary();
-        expect(summarizer.logFailedStepResults).not.toHaveBeenCalled();
+        summaryFormatter.logSummary();
+        expect(summaryFormatter.logFailedStepResults).not.toHaveBeenCalled();
       });
     });
 
     it("logs the scenarios summary", function () {
-      summarizer.logSummary();
-      expect(summarizer.logScenariosSummary).toHaveBeenCalled();
+      summaryFormatter.logSummary();
+      expect(summaryFormatter.logScenariosSummary).toHaveBeenCalled();
     });
 
     it("logs the steps summary", function () {
-      summarizer.logSummary();
-      expect(summarizer.logStepsSummary).toHaveBeenCalled();
+      summaryFormatter.logSummary();
+      expect(summaryFormatter.logStepsSummary).toHaveBeenCalled();
     });
 
     it("checks whether there are undefined steps or not", function () {
-      summarizer.logSummary();
+      summaryFormatter.logSummary();
       expect(statsJournal.witnessedAnyUndefinedStep).toHaveBeenCalled();
     });
 
@@ -471,8 +436,8 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
 
       it("logs the undefined step snippets", function () {
-        summarizer.logSummary();
-        expect(summarizer.logUndefinedStepSnippets).toHaveBeenCalled();
+        summaryFormatter.logSummary();
+        expect(summaryFormatter.logUndefinedStepSnippets).toHaveBeenCalled();
       });
     });
 
@@ -482,8 +447,8 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
 
       it("does not log the undefined step snippets", function () {
-        summarizer.logSummary();
-        expect(summarizer.logUndefinedStepSnippets).not.toHaveBeenCalled();
+        summaryFormatter.logSummary();
+        expect(summaryFormatter.logUndefinedStepSnippets).not.toHaveBeenCalled();
       });
     });
   });
@@ -494,17 +459,16 @@ describe("Cucumber.Listener.Summarizer", function () {
     beforeEach(function () {
       failedScenarioLogBuffer = createSpy("failed scenario log buffer");
       spyOnStub(failedStepResults, 'syncForEach');
-      spyOn(summarizer, 'log');
-      spyOn(summarizer, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
+      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
     });
 
     it("logs a failed steps header", function () {
-      summarizer.logFailedStepResults();
-      expect(summarizer.log).toHaveBeenCalledWith("(::) failed steps (::)\n\n");
+      summaryFormatter.logFailedStepResults();
+      expect(summaryFormatter.log).toHaveBeenCalledWith("(::) failed steps (::)\n\n");
     });
 
     it("iterates synchronously over the failed step results", function () {
-      summarizer.logFailedStepResults();
+      summaryFormatter.logFailedStepResults();
       expect(failedStepResults.syncForEach).toHaveBeenCalled();
       expect(failedStepResults.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
@@ -513,36 +477,36 @@ describe("Cucumber.Listener.Summarizer", function () {
       var userFunction, failedStep, forEachCallback;
 
       beforeEach(function () {
-        summarizer.logFailedStepResults();
+        summaryFormatter.logFailedStepResults();
         userFunction     = failedStepResults.syncForEach.mostRecentCall.args[0];
         failedStepResult = createSpy("failed step result");
-        spyOn(summarizer, 'logFailedStepResult');
+        spyOn(summaryFormatter, 'logFailedStepResult');
       });
 
       it("tells the visitor to visit the feature and call back when finished", function () {
         userFunction(failedStepResult);
-        expect(summarizer.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
+        expect(summaryFormatter.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
       });
     });
 
     it("logs a failed scenarios header", function () {
-      summarizer.logFailedStepResults();
-      expect(summarizer.log).toHaveBeenCalledWith("Failing scenarios:\n");
+      summaryFormatter.logFailedStepResults();
+      expect(summaryFormatter.log).toHaveBeenCalledWith("Failing scenarios:\n");
     });
 
     it("gets the failed scenario details from its log buffer", function () {
-      summarizer.logFailedStepResults();
-      expect(summarizer.getFailedScenarioLogBuffer).toHaveBeenCalled();
+      summaryFormatter.logFailedStepResults();
+      expect(summaryFormatter.getFailedScenarioLogBuffer).toHaveBeenCalled();
     });
 
     it("logs the failed scenario details", function () {
-      summarizer.logFailedStepResults();
-      expect(summarizer.log).toHaveBeenCalledWith(failedScenarioLogBuffer);
+      summaryFormatter.logFailedStepResults();
+      expect(summaryFormatter.log).toHaveBeenCalledWith(failedScenarioLogBuffer);
     });
 
     it("logs a line break", function () {
-      summarizer.logFailedStepResults();
-      expect(summarizer.log).toHaveBeenCalledWith("\n");
+      summaryFormatter.logFailedStepResults();
+      expect(summaryFormatter.log).toHaveBeenCalledWith("\n");
     });
   });
 
@@ -550,13 +514,12 @@ describe("Cucumber.Listener.Summarizer", function () {
     var stepResult, failureException;
 
     beforeEach(function () {
-      spyOn(summarizer, 'log');
       failureException = createSpy('caught exception');
       stepResult       = createSpyWithStubs("failed step result", { getFailureException: failureException });
     });
 
     it("gets the failure exception from the step result", function () {
-      summarizer.logFailedStepResult(stepResult);
+      summaryFormatter.logFailedStepResult(stepResult);
       expect(stepResult.getFailureException).toHaveBeenCalled();
     });
 
@@ -566,21 +529,21 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
 
       it("logs the stack", function () {
-        summarizer.logFailedStepResult(stepResult);
-        expect(summarizer.log).toHaveBeenCalledWith(failureException.stack);
+        summaryFormatter.logFailedStepResult(stepResult);
+        expect(summaryFormatter.log).toHaveBeenCalledWith(failureException.stack);
       });
     });
 
     describe("when the failure exception has no stack", function () {
       it("logs the exception itself", function () {
-        summarizer.logFailedStepResult(stepResult);
-        expect(summarizer.log).toHaveBeenCalledWith(failureException);
+        summaryFormatter.logFailedStepResult(stepResult);
+        expect(summaryFormatter.log).toHaveBeenCalledWith(failureException);
       });
     });
 
     it("logs two line breaks", function () {
-      summarizer.logFailedStepResult(stepResult);
-      expect(summarizer.log).toHaveBeenCalledWith("\n\n");
+      summaryFormatter.logFailedStepResult(stepResult);
+      expect(summaryFormatter.log).toHaveBeenCalledWith("\n\n");
     });
   });
 
@@ -593,7 +556,6 @@ describe("Cucumber.Listener.Summarizer", function () {
       undefinedScenarioCount = 17;
       pendingScenarioCount   = 7;
       failedScenarioCount    = 15;
-      spyOn(summarizer, 'log');
       spyOnStub(statsJournal, 'getScenarioCount').andReturn(scenarioCount);
       spyOnStub(statsJournal, 'getPassedScenarioCount').andReturn(passedScenarioCount);
       spyOnStub(statsJournal, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
@@ -602,7 +564,7 @@ describe("Cucumber.Listener.Summarizer", function () {
     });
 
     it("gets the number of scenarios", function () {
-      summarizer.logScenariosSummary();
+      summaryFormatter.logScenariosSummary();
       expect(statsJournal.getScenarioCount).toHaveBeenCalled();
     });
 
@@ -610,13 +572,13 @@ describe("Cucumber.Listener.Summarizer", function () {
       beforeEach(function () { statsJournal.getScenarioCount.andReturn(0); });
 
       it("logs 0 scenarios", function () {
-        summarizer.logScenariosSummary();
-        expect(summarizer.log).toHaveBeenCalledWithStringMatching(/0 scenarios/);
+        summaryFormatter.logScenariosSummary();
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/0 scenarios/);
       });
 
       it("does not log any details", function () {
-        summarizer.logScenariosSummary();
-        expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
+        summaryFormatter.logScenariosSummary();
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
       });
     });
 
@@ -627,8 +589,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getScenarioCount.andReturn(1); });
 
         it("logs one scenario", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 scenario([^s]|$)/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 scenario([^s]|$)/);
         });
       });
 
@@ -636,13 +598,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getScenarioCount.andReturn(2); });
 
         it("logs two or more scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 scenarios/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 scenarios/);
         });
       });
 
       it("gets the number of failed scenarios", function () {
-        summarizer.logScenariosSummary();
+        summaryFormatter.logScenariosSummary();
         expect(statsJournal.getFailedScenarioCount).toHaveBeenCalled();
       });
 
@@ -650,8 +612,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getFailedScenarioCount.andReturn(0); });
 
         it("does not log failed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/failed/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/failed/);
         });
       });
 
@@ -659,8 +621,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getFailedScenarioCount.andReturn(1); });
 
         it("logs a failed scenario", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 failed/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 failed/);
         });
       });
 
@@ -668,13 +630,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getFailedScenarioCount.andReturn(2); });
 
         it("logs the number of failed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 failed/);
         });
       });
 
       it("gets the number of undefined scenarios", function () {
-        summarizer.logScenariosSummary();
+        summaryFormatter.logScenariosSummary();
         expect(statsJournal.getUndefinedScenarioCount).toHaveBeenCalled();
       });
 
@@ -682,8 +644,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getUndefinedScenarioCount.andReturn(0); });
 
         it("does not log passed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
         });
       });
 
@@ -691,8 +653,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getUndefinedScenarioCount.andReturn(1); });
 
         it("logs one undefined scenario", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
         });
       });
 
@@ -700,13 +662,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getUndefinedScenarioCount.andReturn(2); });
 
         it("logs the undefined scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
         });
       });
 
       it("gets the number of pending scenarios", function () {
-        summarizer.logScenariosSummary();
+        summaryFormatter.logScenariosSummary();
         expect(statsJournal.getPendingScenarioCount).toHaveBeenCalled();
       });
 
@@ -714,8 +676,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getPendingScenarioCount.andReturn(0); });
 
         it("does not log passed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/pending/);
         });
       });
 
@@ -723,8 +685,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getPendingScenarioCount.andReturn(1); });
 
         it("logs one pending scenario", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 pending/);
         });
       });
 
@@ -732,13 +694,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getPendingScenarioCount.andReturn(2); });
 
         it("logs the pending scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 pending/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 pending/);
         });
       });
 
       it("gets the number of passed scenarios", function () {
-        summarizer.logScenariosSummary();
+        summaryFormatter.logScenariosSummary();
         expect(statsJournal.getPassedScenarioCount).toHaveBeenCalled();
       });
 
@@ -746,8 +708,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getPassedScenarioCount.andReturn(0); });
 
         it("does not log passed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/passed/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/passed/);
         });
       });
 
@@ -755,8 +717,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getPassedScenarioCount.andReturn(1); });
 
         it("logs 1 passed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 passed/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 passed/);
         });
       });
 
@@ -764,8 +726,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         beforeEach(function () { statsJournal.getPassedScenarioCount.andReturn(2); });
 
         it("logs the number of passed scenarios", function () {
-          summarizer.logScenariosSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 passed/);
+          summaryFormatter.logScenariosSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 passed/);
         });
       });
     });
@@ -781,7 +743,6 @@ describe("Cucumber.Listener.Summarizer", function () {
       skippedStepCount   = 5;
       undefinedStepCount = 4;
       pendingStepCount   = 2;
-      spyOn(summarizer, 'log');
       spyOnStub(statsJournal, 'getStepCount').andReturn(stepCount);
       spyOnStub(statsJournal, 'getPassedStepCount').andReturn(passedStepCount);
       spyOnStub(statsJournal, 'getFailedStepCount').andReturn(failedStepCount);
@@ -791,7 +752,7 @@ describe("Cucumber.Listener.Summarizer", function () {
     });
 
     it("gets the number of steps", function () {
-      summarizer.logStepsSummary();
+      summaryFormatter.logStepsSummary();
       expect(statsJournal.getStepCount).toHaveBeenCalled();
     });
 
@@ -801,13 +762,13 @@ describe("Cucumber.Listener.Summarizer", function () {
       });
 
       it("logs 0 steps", function () {
-        summarizer.logStepsSummary();
-        expect(summarizer.log).toHaveBeenCalledWithStringMatching(/0 steps/);
+        summaryFormatter.logStepsSummary();
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/0 steps/);
       });
 
       it("does not log any details", function () {
-        summarizer.logStepsSummary();
-        expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
+        summaryFormatter.logStepsSummary();
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
       });
     });
 
@@ -820,8 +781,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs 1 step", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 step/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 step/);
         });
       });
 
@@ -831,13 +792,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs the number of steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 steps/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 steps/);
         });
       });
 
       it("gets the number of failed steps", function () {
-        summarizer.logStepsSummary();
+        summaryFormatter.logStepsSummary();
         expect(statsJournal.getFailedStepCount).toHaveBeenCalled();
       });
 
@@ -847,8 +808,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("does not log failed steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/failed/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/failed/);
         });
       });
 
@@ -858,8 +819,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs one failed step", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 failed/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 failed/);
         });
       });
 
@@ -869,13 +830,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs the number of failed steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 failed/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 failed/);
         });
       });
 
       it("gets the number of undefined steps", function () {
-        summarizer.logStepsSummary();
+        summaryFormatter.logStepsSummary();
         expect(statsJournal.getUndefinedStepCount).toHaveBeenCalled();
       });
 
@@ -885,8 +846,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("does not log undefined steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
         });
       });
 
@@ -896,8 +857,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs one undefined steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
         });
       });
 
@@ -907,13 +868,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs the number of undefined steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
         });
       });
 
       it("gets the number of pending steps", function () {
-        summarizer.logStepsSummary();
+        summaryFormatter.logStepsSummary();
         expect(statsJournal.getPendingStepCount).toHaveBeenCalled();
       });
 
@@ -923,8 +884,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("does not log pending steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/pending/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/pending/);
         });
       });
 
@@ -934,8 +895,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs one pending steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 pending/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 pending/);
         });
       });
 
@@ -945,13 +906,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs the number of pending steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 pending/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 pending/);
         });
       });
 
       it("gets the number of skipped steps", function () {
-        summarizer.logStepsSummary();
+        summaryFormatter.logStepsSummary();
         expect(statsJournal.getSkippedStepCount).toHaveBeenCalled();
       });
 
@@ -961,8 +922,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("does not log skipped steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
         });
       });
 
@@ -972,8 +933,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs one skipped steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
         });
       });
 
@@ -983,13 +944,13 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs the number of skipped steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 skipped/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 skipped/);
         });
       });
 
       it("gets the number of passed steps", function () {
-        summarizer.logStepsSummary();
+        summaryFormatter.logStepsSummary();
         expect(statsJournal.getPassedStepCount).toHaveBeenCalled();
       });
 
@@ -999,8 +960,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("does not log passed steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).not.toHaveBeenCalledWithStringMatching(/passed/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/passed/);
         });
       });
 
@@ -1010,8 +971,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs one passed step", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/1 passed/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 passed/);
         });
       });
 
@@ -1021,8 +982,8 @@ describe("Cucumber.Listener.Summarizer", function () {
         });
 
         it("logs the number of passed steps", function () {
-          summarizer.logStepsSummary();
-          expect(summarizer.log).toHaveBeenCalledWithStringMatching(/2 passed/);
+          summaryFormatter.logStepsSummary();
+          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 passed/);
         });
       });
     });
@@ -1033,23 +994,22 @@ describe("Cucumber.Listener.Summarizer", function () {
 
     beforeEach(function () {
       undefinedStepLogBuffer = createSpy("undefined step log buffer");
-      spyOn(summarizer, 'log');
-      spyOn(summarizer, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
+      spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
     });
 
     it("logs a little explanation about the snippets", function () {
-      summarizer.logUndefinedStepSnippets();
-      expect(summarizer.log).toHaveBeenCalledWith("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+      summaryFormatter.logUndefinedStepSnippets();
+      expect(summaryFormatter.log).toHaveBeenCalledWith("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
     });
 
     it("gets the undefined steps log buffer", function () {
-      summarizer.logUndefinedStepSnippets();
-      expect(summarizer.getUndefinedStepLogBuffer).toHaveBeenCalled();
+      summaryFormatter.logUndefinedStepSnippets();
+      expect(summaryFormatter.getUndefinedStepLogBuffer).toHaveBeenCalled();
     });
 
     it("logs the undefined steps", function () {
-      summarizer.logUndefinedStepSnippets();
-      expect(summarizer.log).toHaveBeenCalledWith(undefinedStepLogBuffer);
+      summaryFormatter.logUndefinedStepSnippets();
+      expect(summaryFormatter.log).toHaveBeenCalledWith(undefinedStepLogBuffer);
     });
   });
 });

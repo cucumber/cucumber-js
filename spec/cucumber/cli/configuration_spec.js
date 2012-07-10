@@ -31,6 +31,8 @@ describe("Cucumber.Cli.Configuration", function () {
   describe("getFormatter()", function () {
     beforeEach(function () {
       spyOnStub(argumentParser, 'getFormat').andReturn("progress");
+      spyOn(Cucumber.Listener, 'ProgressFormatter');
+      spyOn(Cucumber.Listener, 'PrettyFormatter');
     });
 
     it("gets the formatter name from the argument parser", function () {
@@ -44,7 +46,7 @@ describe("Cucumber.Cli.Configuration", function () {
       beforeEach(function () {
         argumentParser.getFormat.andReturn("progress");
         formatter = createSpy("formatter");
-        spyOn(Cucumber.Listener, 'ProgressFormatter').andReturn(formatter);
+        Cucumber.Listener.ProgressFormatter.andReturn(formatter);
       });
 
       it("creates a new progress formatter", function () {
@@ -63,7 +65,7 @@ describe("Cucumber.Cli.Configuration", function () {
       beforeEach(function () {
         argumentParser.getFormat.andReturn("pretty");
         formatter = createSpy("formatter");
-        spyOn(Cucumber.Listener, 'PrettyFormatter').andReturn(formatter);
+        Cucumber.Listener.PrettyFormatter.andReturn(formatter);
       });
 
       it("creates a new pretty formatter", function () {
