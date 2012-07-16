@@ -31,6 +31,9 @@ describe("Cucumber.Cli.Configuration", function () {
   describe("getFormatter()", function () {
     beforeEach(function () {
       spyOnStub(argumentParser, 'getFormat').andReturn("progress");
+      spyOn(Cucumber.Listener, 'ProgressFormatter');
+      spyOn(Cucumber.Listener, 'PrettyFormatter');
+      spyOn(Cucumber.Listener, 'SummaryFormatter');
     });
 
     it("gets the formatter name from the argument parser", function () {
@@ -44,7 +47,7 @@ describe("Cucumber.Cli.Configuration", function () {
       beforeEach(function () {
         argumentParser.getFormat.andReturn("progress");
         formatter = createSpy("formatter");
-        spyOn(Cucumber.Listener, 'ProgressFormatter').andReturn(formatter);
+        Cucumber.Listener.ProgressFormatter.andReturn(formatter);
       });
 
       it("creates a new progress formatter", function () {
@@ -63,7 +66,7 @@ describe("Cucumber.Cli.Configuration", function () {
       beforeEach(function () {
         argumentParser.getFormat.andReturn("pretty");
         formatter = createSpy("formatter");
-        spyOn(Cucumber.Listener, 'PrettyFormatter').andReturn(formatter);
+        Cucumber.Listener.PrettyFormatter.andReturn(formatter);
       });
 
       it("creates a new pretty formatter", function () {
@@ -72,6 +75,25 @@ describe("Cucumber.Cli.Configuration", function () {
       });
 
       it("returns the pretty formatter", function () {
+        expect(configuration.getFormatter()).toBe(formatter);
+      });
+    });
+
+    describe("when the formatter name is \"summary\"", function () {
+      var formatter;
+
+      beforeEach(function () {
+        argumentParser.getFormat.andReturn("summary");
+        formatter = createSpy("formatter");
+        Cucumber.Listener.SummaryFormatter.andReturn(formatter);
+      });
+
+      it("creates a new summary formatter", function () {
+        configuration.getFormatter();
+        expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalled();
+      });
+
+      it("returns the summary formatter", function () {
         expect(configuration.getFormatter()).toBe(formatter);
       });
     });
