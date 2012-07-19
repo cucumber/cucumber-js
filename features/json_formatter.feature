@@ -944,7 +944,10 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """
 
-  Scenario: output JSON for a feature with a failing background 
+  Scenario: output JSON for a feature with a failing background
+  # Since the background step is re-evaluated for each scenario that is where the result of the step is currently recorded in the JSON output
+  # If the background is being reevaluated  for each scenario then it would be misleading to only output the result for the first time it was evaluated.
+ 
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -989,8 +992,63 @@ Scenario: one feature, one passing scenario, one failing scenario
           }
       ]
       """
+      
+  Scenario: output JSON for a feature with a DocString
+    Given a file named "features/a.feature" with:
+      """
+            Feature: some feature
 
-   # TODO: Add step results to background steps
+            Scenario: Scenario with DocString
+              Given we have this DocString:
+              \"\"\"
+              This is a DocString
+              \"\"\"
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^we have this DocString:$/, function(string, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+    # DocString doesn't appear to be being populated. QUESTION: Is this expected behaviour?
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "elements": [
+            {
+              "name": "Scenario with DocString",
+              "id": "some-feature;scenario-with-docstring",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "we have this DocString:",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "doc_string": {},
+                  "result": {
+                    "status": "passed"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
    # TODO: Embedings
-   # TODO: DocString
    # TODO: Tags

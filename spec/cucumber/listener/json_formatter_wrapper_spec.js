@@ -76,7 +76,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       step = createSpyWithStubs("step", {
         getName: 'Step',
         getLine: 3,
-        getKeyword: 'Step'        
+        getKeyword: 'Step',
+        hasDocString: false        
       });
 
       steps = [step];
@@ -173,7 +174,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       step = createSpyWithStubs("step", {
         getName: 'Step',
         getLine: 3,
-        getKeyword: 'Step'        
+        getKeyword: 'Step',
+        hasDocString: false        
       });
 
       stepResult = createSpyWithStubs("step result", {
