@@ -5,6 +5,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   var listener, failedStepResults;
   var buffer = new Buffer(1024); 
 
+  var parentFeatureTags;
+
   beforeEach(function() {
     buffer.fill(0);
     listener = Cucumber.Listener.JsonFormatterWrapper(buffer);

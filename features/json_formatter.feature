@@ -1055,6 +1055,75 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """
 
+  Scenario: Feature with tags
+
+    Given a file named "features/a.feature" with:
+      """
+      @alpha @beta @gamma
+      Feature: some feature
+
+      Scenario: This scenario has no tags
+          Given This step is passing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 2,
+          "keyword": "Feature",
+          "tags": [
+            {
+              "name": "@alpha",
+              "line": 1
+            },
+            {
+              "name": "@beta",
+              "line": 1
+            },
+            {
+              "name": "@gamma",
+              "line": 1
+            }
+          ],
+          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "elements": [
+            {
+              "name": "This scenario has no tags",
+              "id": "some-feature;this-scenario-has-no-tags",
+              "line": 4,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This step is passing",
+                  "line": 5,
+                  "keyword": "Given ",
+                  "result": {
+                    "status": "passed"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
   Scenario: Scenario with tags
 
     Given a file named "features/a.feature" with:
@@ -1125,4 +1194,3 @@ Scenario: one feature, one passing scenario, one failing scenario
       """
 
    # TODO: Embedings
-   # TODO: Tags
