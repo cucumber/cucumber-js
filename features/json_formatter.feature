@@ -1054,5 +1054,75 @@ Scenario: one feature, one passing scenario, one failing scenario
         }
       ]
       """
+
+  Scenario: Scenario with tags
+
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      @one @two @three
+      Scenario: This scenario has tags
+          Given This step is passing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "elements": [
+            {
+              "name": "This scenario has tags",
+              "id": "some-feature;this-scenario-has-tags",
+              "line": 4,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "tags": [
+                {
+                  "name": "@one",
+                  "line": 3
+                },
+                {
+                  "name": "@two",
+                  "line": 3
+                },
+                {
+                  "name": "@three",
+                  "line": 3
+                }
+              ],
+              "steps": [
+                {
+                  "name": "This step is passing",
+                  "line": 5,
+                  "keyword": "Given ",
+                  "result": {
+                    "status": "passed"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
    # TODO: Embedings
    # TODO: Tags

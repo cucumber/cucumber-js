@@ -127,7 +127,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                    {getKeyword: 'Scenario',
                                     getName: 'A Name',
                                     getDescription: 'A Description',
-                                    getLine: 3});
+                                    getLine: 3,
+                                    getTags: false});
 
       event    = createSpyWithStubs("event", {getPayloadItem: scenario});
       callback = createSpy("callback");
@@ -167,7 +168,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                    {getKeyword: 'Scenario',
                                     getName: 'A Name',
                                     getDescription: 'A Description',
-                                    getLine: 3});
+                                    getLine: 3,
+                                    getTags: false});
 
       parent_scenario_event    = createSpyWithStubs("event", {getPayloadItem: scenario});
 
