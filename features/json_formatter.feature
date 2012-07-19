@@ -1013,7 +1013,6 @@ Scenario: one feature, one passing scenario, one failing scenario
       """
     When I run `cucumber.js -f json`
     Then it should output this json:
-    # DocString doesn't appear to be being populated. QUESTION: Is this expected behaviour?
       """
       [
         {
@@ -1036,7 +1035,12 @@ Scenario: one feature, one passing scenario, one failing scenario
                   "name": "we have this DocString:",
                   "line": 4,
                   "keyword": "Given ",
-                  "doc_string": {},
+                  "doc_string": 
+                    {
+                      "value": "This is a DocString",
+                      "line": 5,
+                      "content_type": ""
+                    },
                   "result": {
                     "status": "passed"
                   },
