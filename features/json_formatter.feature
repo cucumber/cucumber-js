@@ -1284,3 +1284,88 @@ Scenario: one feature, one passing scenario, one failing scenario
         }
       ]
       """ 
+
+  Scenario: Background with table
+  # Rows do not appear to support line attribute yet.   
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Background:
+          Given This table:
+          |col 1|col 2|col 3|
+          |one  |two  |three|
+          |1    |2    |3    |
+          |!    |~    |@    |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This table:$/, function(table, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "elements": [
+            {
+              "name": "",
+              "keyword": "Background",
+              "description": "",
+              "type": "background",
+              "line": 3,
+              "steps": [
+                {
+                  "name": "This table:",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "rows": [
+                    {
+                      "line": "TODO",
+                      "cells": [
+                        "col 1",
+                        "col 2",
+                        "col 3"
+                      ]
+                    },
+                    {
+                      "line": "TODO",
+                      "cells": [
+                        "one",
+                        "two",
+                        "three"
+                      ]
+                    },
+                    {
+                      "line": "TODO",
+                      "cells": [
+                        "1",
+                        "2",
+                        "3"
+                      ]
+                    },
+                    {
+                      "line": "TODO",
+                      "cells": [
+                        "!",
+                        "~",
+                        "@"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
