@@ -1055,7 +1055,61 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """
 
-  Scenario: Feature with tags
+  Scenario: output JSON for background step with a DocString
+    Given a file named "features/a.feature" with:
+      """
+            Feature: some feature
+
+            Background: Background with DocString
+              Given we have this DocString:
+              \"\"\"
+              This is a DocString
+              \"\"\"
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^we have this DocString:$/, function(string, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+    """
+    [
+      {
+        "id": "some-feature",
+        "name": "some feature",
+        "description": "",
+        "line": 1,
+        "keyword": "Feature",
+        "uri": "/Users/chris/src/cucumber-js-fork/tmp/cucumber-js-sandbox/features/a.feature",
+        "elements": [
+          {
+            "name": "Background with DocString",
+            "keyword": "Background",
+            "description": "",
+            "type": "background",
+            "line": 3,
+            "steps": [
+              {
+                "name": "we have this DocString:",
+                "line": 4,
+                "keyword": "Given ",
+                "doc_string": {
+                  "value": "This is a DocString",
+                  "line": 5,
+                  "content_type": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+    """
+
+  Scenario: output JSON for a feature with tags
 
     Given a file named "features/a.feature" with:
       """
@@ -1193,7 +1247,7 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """
 
-  Scenario: Step with table
+  Scenario: output JSON for a step with table
   # Rows do not appear to support line attribute yet.   
     Given a file named "features/a.feature" with:
       """
@@ -1285,7 +1339,7 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """ 
 
-  Scenario: Background with table
+  Scenario: output JSON for background with table
   # Rows do not appear to support line attribute yet.   
     Given a file named "features/a.feature" with:
       """
