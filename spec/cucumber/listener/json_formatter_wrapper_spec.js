@@ -5,9 +5,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   var listener, failedStepResults;
   var buffer = new Buffer(1024); 
 
-  var parentFeatureTags;
-
-  beforeEach(function() {
+    beforeEach(function() {
     buffer.fill(0);
     listener = Cucumber.Listener.JsonFormatterWrapper(buffer);
   });
@@ -27,7 +25,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                     getName: 'A Name',
                                     getDescription: 'A Description',
                                     getLine: 3,
-                                    getUri: 'TODO'});
+                                    getUri: 'TODO',
+                                    getTags: false});
 
       event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
@@ -71,7 +70,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                     getName: 'A Name',
                                     getDescription: 'A Description',
                                     getLine: 3,
-                                    getUri: 'feature-uri'});
+                                    getUri: 'feature-uri',
+                                    getTags: false});
 
       parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
@@ -79,7 +79,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
-        hasDocString: false        
+        hasDocString: false,
+        hasDataTable: false        
       });
 
       steps = [step];
@@ -121,7 +122,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                     getName: 'A Name',
                                     getDescription: 'A Description',
                                     getLine: 3,
-                                    getUri: 'feature-uri'});
+                                    getUri: 'feature-uri',
+                                    getTags: false});
 
       parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
@@ -162,7 +164,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                     getName: 'A Name',
                                     getDescription: 'A Description',
                                     getLine: 3,
-                                    getUri: 'feature-uri'});
+                                    getUri: 'feature-uri',
+                                    getTags: false});
 
       parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
@@ -179,7 +182,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
-        hasDocString: false        
+        hasDocString: false,
+        hasDataTable: false        
       });
 
       stepResult = createSpyWithStubs("step result", {
