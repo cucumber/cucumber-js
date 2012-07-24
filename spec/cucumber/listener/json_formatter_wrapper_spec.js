@@ -4,6 +4,12 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   var Cucumber = requireLib('cucumber');
   var listener, failedStepResults;
 
+  var fakeFormatter = createSpyObj('formatter', ['step', 'uri', 'feature', 'background', 'scenario', 'result', 'match', 'eof', 'done']);
+
+  beforeEach(function() {
+    listener = Cucumber.Listener.JsonFormatterWrapper(fakeFormatter);
+  });
+
   describe("constructor", function() {
     // TODO!
   });
@@ -11,152 +17,127 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
   // Handle Feature
 
-  // describe("handleBeforeFeatureEvent()", function() {
-  //   var event, feature, callback;
+  describe("handleBeforeFeatureEvent()", function() {
+    var event, feature, callback;
 
-  //   beforeEach(function() {
-  //     feature = createSpyWithStubs("feature", 
-  //                                  {getKeyword: 'Feature',
-  //                                   getName: 'A Name',
-  //                                   getDescription: 'A Description',
-  //                                   getLine: 3,
-  //                                   getUri: 'TODO',
-  //                                   getTags: false});
+    beforeEach(function() {
+      feature = createSpyWithStubs("feature", 
+                                   {getKeyword: 'Feature',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getUri: 'TODO',
+                                    getTags: false});
 
-  //     event    = createSpyWithStubs("event", {getPayloadItem: feature});
+      event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
-  //     callback = createSpy("callback");
-  //   });
+      callback = createSpy("callback");
+    });
 
-  //   it("adds the feature attributes to the output", function() {
-  //     listener.handleBeforeFeatureEvent(event, callback);
-  //     listener.handleAfterFeaturesEvent(event, callback); 
-     
-  //     var output = buffer.toString();
-  //     output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
+    it("adds the feature attributes to the output", function() {
+      listener.handleBeforeFeatureEvent(event, callback);     
+      expect(fakeFormatter.uri).toHaveBeenCalledWith('TODO');
+      expect(fakeFormatter.feature).toHaveBeenCalledWith({id: 'A-Name', 
+                                                           name: 'A Name', 
+                                                           description: 'A Description', 
+                                                           line: 3, 
+                                                           keyword: 'Feature'});
 
-  //     var expectedOutput = '[ { "id": "A-Name", \
-  //                               "name": "A Name", \
-  //                               "description": "A Description", \
-  //                               "line": 3, \
-  //                               "keyword": "Feature", \
-  //                               "uri": "TODO" } ]';
+    });
 
-  //     var expectedJson = JSON.parse(expectedOutput);
-  //     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
-  //     var actualJson = JSON.parse(output);
-  //     var actualJsonString = JSON.stringify(actualJson, null, 2);
-
-  //     expect(actualJsonString).toEqual(expectedJsonString);
-
-  //   });
-
-  // });
+  });
 
   // Handle Background
 
-//   describe("handleBackgroundEvent()", function() {
+  describe("handleBackgroundEvent()", function() {
 
-//     var parent_feature_event, background, step, steps, event, callback;
+    var parent_feature_event, background, step, steps, event, callback;
 
-//     beforeEach(function() {
-//       feature = createSpyWithStubs("feature", 
-//                                    {getKeyword: 'Feature',
-//                                     getName: 'A Name',
-//                                     getDescription: 'A Description',
-//                                     getLine: 3,
-//                                     getUri: 'feature-uri',
-//                                     getTags: false});
+    beforeEach(function() {
+      feature = createSpyWithStubs("feature", 
+                                   {getKeyword: 'Feature',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getUri: 'feature-uri',
+                                    getTags: false});
 
-//       parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
+      parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
-//       step = createSpyWithStubs("step", {
-//         getName: 'Step',
-//         getLine: 3,
-//         getKeyword: 'Step',
-//         hasDocString: false,
-//         hasDataTable: false        
-//       });
+      step = createSpyWithStubs("step", {
+        getName: 'Step',
+        getLine: 3,
+        getKeyword: 'Step',
+        hasDocString: false,
+        hasDataTable: false        
+      });
 
-//       steps = [step];
+      steps = [step];
 
-//       background = createSpyWithStubs("background", 
-//                                    {getKeyword: 'Background',
-//                                     getName: 'A Name',
-//                                     getDescription: 'A Description',
-//                                     getLine: 3,
-//                                     getSteps: steps});
+      background = createSpyWithStubs("background", 
+                                   {getKeyword: 'Background',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getSteps: steps});
 
-//       event    = createSpyWithStubs("event", {getPayloadItem: background});
-//       callback = createSpy("callback");
-//     });
+      event    = createSpyWithStubs("event", {getPayloadItem: background});
+      callback = createSpy("callback");
+    });
 
-//     it("adds the background attributes to the output", function() {
-//       listener.handleBeforeFeatureEvent(parent_feature_event, callback);
-//       listener.handleBackgroundEvent(event, callback);
-//       listener.handleAfterFeaturesEvent(parent_feature_event, callback); 
-//       var output = buffer.toString();
-//       output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
+    it("adds the background attributes to the output", function() {
+      listener.handleBackgroundEvent(event, callback);
+      expect(fakeFormatter.background).toHaveBeenCalledWith({name: 'A Name', 
+                                                             keyword: 'Background', 
+                                                             description: 'A Description', 
+                                                             type: 'background', 
+                                                             line: 3 });
+    });
 
-//       var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"name":"A Name","keyword":"Background","description":"A Description","type":"background","line":3,"steps":[{"name":"Step","line":3,"keyword":"Step"}]}]}]';
-
-//       expect(output).toEqual(expected);
-
-//     });
-
-// });
+  });
 
   // Handle Scenario
 
-  // describe("handleBeforeScenarioEvent()", function() {
-  //   var parent_feature_event, scenario, callback;
+  describe("handleBeforeScenarioEvent()", function() {
+    var parent_feature_event, scenario, callback;
 
-  //   beforeEach(function() {
-  //     feature = createSpyWithStubs("feature", 
-  //                                  {getKeyword: 'Feature',
-  //                                   getName: 'A Name',
-  //                                   getDescription: 'A Description',
-  //                                   getLine: 3,
-  //                                   getUri: 'feature-uri',
-  //                                   getTags: false});
+    beforeEach(function() {
+      feature = createSpyWithStubs("feature", 
+                                   {getKeyword: 'Feature',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getUri: 'feature-uri',
+                                    getTags: false});
 
-  //     parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
+      parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
 
-  //     scenario = createSpyWithStubs("scenario", 
-  //                                  {getKeyword: 'Scenario',
-  //                                   getName: 'A Name',
-  //                                   getDescription: 'A Description',
-  //                                   getLine: 3,
-  //                                   getTags: false});
+      scenario = createSpyWithStubs("scenario", 
+                                   {getKeyword: 'Scenario',
+                                    getName: 'A Name',
+                                    getDescription: 'A Description',
+                                    getLine: 3,
+                                    getTags: false});
 
-  //     event    = createSpyWithStubs("event", {getPayloadItem: scenario});
-  //     callback = createSpy("callback");
-  //   });
+      event    = createSpyWithStubs("event", {getPayloadItem: scenario});
+      callback = createSpy("callback");
+    });
 
-  //   it("adds the scenario attributes to the output", function() {
-  //     listener.handleBeforeFeatureEvent(parent_feature_event, callback);
-  //     listener.handleBeforeScenarioEvent(event, callback);
-  //     listener.handleAfterFeaturesEvent(parent_feature_event, callback); 
-  //     var output = buffer.toString();
-  //     output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
+    it("adds the scenario attributes to the output", function() {
+      listener.handleBeforeScenarioEvent(event, callback);
+      expect(fakeFormatter.scenario).toHaveBeenCalledWith({name: 'A Name', 
+                                                           id: 'undefined;a-name', 
+                                                           line: 3, 
+                                                           keyword: 'Scenario', 
+                                                           description: 'A Description', 
+                                                           type: 'scenario' });
+    });
 
-  //     var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"name":"A Name","id":"A-Name;a-name","line":3,"keyword":"Scenario","description":"A Description","type":"scenario"}]}]';
-
-  //     expect(output).toEqual(expected);
-
-  //   });
-
-  // });
+  });
 
   // Step Formatting
 
   describe("formatStep()", function() {
-
-    var fakeFormatter = createSpyObj('formatter', ['step']);
-
-    beforeEach(function() {
-      listener = Cucumber.Listener.JsonFormatterWrapper(fakeFormatter);
-    });
 
     it("adds name, line and keyword to the step properties", function(){
 
@@ -190,21 +171,25 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       });
 
       listener.formatStep(step);
-      expect(fakeFormatter.step).toHaveBeenCalledWith({ name : 'Step', line : 3, keyword : 'Step', doc_string : { value : 'This is a DocString', line : 3, content_type : null } });
+      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', 
+                                                       line: 3, 
+                                                       keyword: 'Step', 
+                                                       doc_string: {value: 'This is a DocString', line: 3, content_type: null} 
+                                                      });
 
     });
 
     it("if the step has one, adds a DataTable to the step properties", function(){
 
       var fakeContents = createSpyWithStubs("row", {
-        raw: "RAW DATA"
+        raw: [['a:1', 'a:2', 'a:3'],['b:1', 'b:2', 'b:3'],['c:1', 'c:2', 'c:3']]
       })
 
       var fakeDataTable = createSpyWithStubs("dataTable", {
         getContents: fakeContents
       });
 
-      var stepTwo = createSpyWithStubs("step", {
+      var step = createSpyWithStubs("step", {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
@@ -213,105 +198,116 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
         getDataTable: fakeDataTable        
       });
 
-      listener.formatStep(stepTwo);
-      // expect(fakeFormatter.step).toHaveBeenCalledWith("FOO");
+      listener.formatStep(step);
+      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', 
+                                                       line: 3, 
+                                                       keyword: 'Step', 
+                                                       rows: [{line : 'TODO', cells: ['a:1', 'a:2', 'a:3'] }, 
+                                                              {line : 'TODO', cells: ['b:1', 'b:2', 'b:3'] }, 
+                                                              {line : 'TODO', cells: ['c:1', 'c:2', 'c:3'] }] 
+                                                      });
     });
 
   });
 
+  // Tag Formatting
+
   describe("formatTags()", function() {
+
     it("returns the given tags in the format expected by the JSON formatter", function(){
+
+      var tags = [createSpyWithStubs("tag", {getName: "tag_one", getLine:1}), 
+                  createSpyWithStubs("tag", {getName: "tag_two", getLine:2}),
+                  createSpyWithStubs("tag", {getName: "tag_three", getLine:3})];
+
+      expect(listener.formatTags(tags, null)).toEqual([{name: 'tag_one', line :1},
+                                                       {name: 'tag_two', line :2},
+                                                       {name: 'tag_three', line :3}]);
+
     });
 
     it("filters out any tags it is told to ignore - e.g. those of the parent feature", function(){
+
+      var tags = [createSpyWithStubs("tag", {getName: "tag_one", getLine:1}), 
+                  createSpyWithStubs("tag", {getName: "tag_two", getLine:2}),
+                  createSpyWithStubs("tag", {getName: "parent_one", getLine:3}),
+                  createSpyWithStubs("tag", {getName: "parent_two", getLine:3})];
+
+      var parent_tags = [createSpyWithStubs("tag", {getName: "parent_one", getLine:3}),
+                         createSpyWithStubs("tag", {getName: "parent_two", getLine:3})];
+
+
+      expect(listener.formatTags(tags, parent_tags)).toEqual([{name: 'tag_one', line :1},
+                                                              {name: 'tag_two', line :2}]);
     });
 
   });
 
   // Handle Step Results
 
-  // describe("handleStepResultEvent()", function() {
-  //   var parent_feature_event, feature, parent_scenario_event, scenario, event, callback, stepResult;
+  describe("handleStepResultEvent()", function() {
+    var parent_feature_event, feature, parent_scenario_event, scenario, event, callback, stepResult;
 
-  //   beforeEach(function() {
-  //     feature = createSpyWithStubs("feature", 
-  //                                  {getKeyword: 'Feature',
-  //                                   getName: 'A Name',
-  //                                   getDescription: 'A Description',
-  //                                   getLine: 3,
-  //                                   getUri: 'feature-uri',
-  //                                   getTags: false});
+    beforeEach(function() {
 
-  //     parent_feature_event    = createSpyWithStubs("event", {getPayloadItem: feature});
+      step = createSpyWithStubs("step", {
+        getName: 'Step',
+        getLine: 3,
+        getKeyword: 'Step',
+        hasDocString: false,
+        hasDataTable: false        
+      });
 
-  //     scenario = createSpyWithStubs("scenario", 
-  //                                  {getKeyword: 'Scenario',
-  //                                   getName: 'A Name',
-  //                                   getDescription: 'A Description',
-  //                                   getLine: 3,
-  //                                   getTags: false});
+      stepResult = createSpyWithStubs("step result", {
+        isSuccessful: undefined,
+        isPending:    undefined,
+        isFailed:     undefined,
+        isSkipped:    undefined,
+        isUndefined:  undefined,
+        getStep:      step 
+      });
 
-  //     parent_scenario_event    = createSpyWithStubs("event", {getPayloadItem: scenario});
+      event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
+      callback   = createSpy("Callback");
+    });
 
-  //     step = createSpyWithStubs("step", {
-  //       getName: 'Step',
-  //       getLine: 3,
-  //       getKeyword: 'Step',
-  //       hasDocString: false,
-  //       hasDataTable: false        
-  //     });
+    // Extra tests for errors etc...
 
-  //     stepResult = createSpyWithStubs("step result", {
-  //       isSuccessful: undefined,
-  //       isPending:    undefined,
-  //       isFailed:     undefined,
-  //       isSkipped:    undefined,
-  //       isUndefined:  undefined,
-  //       getStep:      step 
-  //     });
+    it("outputs a step and its result", function(){
+      stepResult.isSuccessful.andReturn(true);
+      listener.handleStepResultEvent(event, callback);
 
-  //     event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
-  //     callback   = createSpy("Callback");
-  //   });
+      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'passed'});
+      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
+    });
 
-  //   it("adds the step result to the parent scenario in the output", function(){
-  //     stepResult.isSuccessful.andReturn(true);
-  //     listener.handleBeforeFeatureEvent(parent_feature_event, callback);
-  //     listener.handleBeforeScenarioEvent(parent_scenario_event, callback);
-  //     listener.handleStepResultEvent(event, callback);
-  //     listener.handleAfterFeaturesEvent(parent_feature_event, callback); 
+  });
 
-  //     var output = buffer.toString();
-  //     output = output.substr(0,output.indexOf(String.fromCharCode(0))); 
+  // We're all done. Output the JSON.
 
-  //     var expected = '[{"id":"A-Name","name":"A Name","description":"A Description","line":3,"keyword":"Feature","uri":"feature-uri","elements":[{"name":"A Name","id":"A-Name;a-name","line":3,"keyword":"Scenario","description":"A Description","type":"scenario","steps":[{"name":"Step","line":3,"keyword":"Step","result":{"status":"passed"},"match":{"location":"TODO"}}]}]}]';
+  describe("handleAfterFeaturesEvent()", function() {
+    var features, callback;
 
-  //     expect(output).toEqual(expected);
-
-  //   });
-
-  // });
-
-  // // We're all done. Output the JSON.
-
-  // describe("handleAfterFeaturesEvent()", function() {
-  //   var features, callback;
-
-  //   beforeEach(function() {
-  //     event    = createSpy("Event");
-  //     callback = createSpy("Callback");
+    beforeEach(function() {
+      event    = createSpy("Event");
+      callback = createSpy("Callback");
       
-  //   });
+    });
 
-  //   // TODO: What else should we test here?  e.g. calls made to the formatter?
+    it("finalises output", function() {
+      listener.handleAfterFeaturesEvent(event, callback);
+      expect(fakeFormatter.eof).toHaveBeenCalled();
+      expect(fakeFormatter.done).toHaveBeenCalled();
+    });
 
-  //   it("calls back", function() {
-  //     listener.handleAfterFeaturesEvent(event, callback);
-  //     expect(callback).toHaveBeenCalled();
-  //   });
+    it("calls back", function() {
+      listener.handleAfterFeaturesEvent(event, callback);
+      expect(callback).toHaveBeenCalled();
+    });
 
-  // });
+  });
 
 });
 
