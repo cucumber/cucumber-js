@@ -100,6 +100,73 @@
       ]
       """
 
+  Scenario: output JSON for a feature with one undefined step and subsequent defined steps which should be skipped
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: One pending step and two following steps which will be skipped
+          Given This step is undefined
+          Then this step should be skipped
+
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Then(/^this step should be skipped$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "elements": [
+            {
+              "name": "One pending step and two following steps which will be skipped",
+              "id": "some-feature;one-pending-step-and-two-following-steps-which-will-be-skipped",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This step is undefined",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "status": "undefined"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                },
+                {
+                  "name": "this step should be skipped",
+                  "line": 5,
+                  "keyword": "Then ",
+                  "result": {
+                    "status": "skipped"
+                  },
+                  "match": {
+                    "location": "TODO"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
   Scenario: output JSON for a feature with one scenario with one pending step
     Given a file named "features/a.feature" with:
       """

@@ -10,11 +10,6 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
     listener = Cucumber.Listener.JsonFormatterWrapper(fakeFormatter);
   });
 
-  describe("constructor", function() {
-    // TODO!
-  });
-
-
   // Handle Feature
 
   describe("handleBeforeFeatureEvent()", function() {
@@ -249,6 +244,10 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
     var parent_feature_event, feature, parent_scenario_event, scenario, event, callback, stepResult;
 
     beforeEach(function() {
+      callback   = createSpy("Callback");
+    });
+
+    it("outputs a step with failed status where no result has been defined", function(){
 
       step = createSpyWithStubs("step", {
         getName: 'Step',
@@ -258,27 +257,22 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
         hasDataTable: false        
       });
 
-      stepResult = createSpyWithStubs("step result", {
+      stepResult = createSpyWithStubs("stepResult", {
         isSuccessful: undefined,
         isPending:    undefined,
         isFailed:     undefined,
         isSkipped:    undefined,
         isUndefined:  undefined,
+        getFailureException: false,
         getStep:      step 
       });
 
-      event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
-      callback   = createSpy("Callback");
-    });
+      fakeEvent      = createSpyWithStubs("event", {getPayloadItem: stepResult});
 
-    // Extra tests for errors etc...
-
-    it("outputs a step and its result", function(){
-      stepResult.isSuccessful.andReturn(true);
-      listener.handleStepResultEvent(event, callback);
+      listener.handleStepResultEvent(fakeEvent, callback);
 
       expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'passed'});
+      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'failed'});
       expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
