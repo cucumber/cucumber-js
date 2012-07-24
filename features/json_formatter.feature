@@ -1,28 +1,29 @@
- Feature: JSON Formatter
-   In order to simplify processing of Cucumber features and results
-   Developers should be able to consume features as JSON
+Feature: JSON Formatter
+ In order to simplify processing of Cucumber features and results
+ Developers should be able to consume features as JSON
 
-   Background:
-     Given CUCUMBER_JS_HOME environment variable has been set to the cucumber-js install dir
+  Background:
+    Given CUCUMBER_JS_HOME environment variable has been set to the cucumber-js install dir
 
-   Scenario: output JSON for a feature with no scenarios
-     Given a file named "features/a.feature" with:
-       """
-       Feature: some feature
-       """
-     When I run `cucumber.js -f json`
-     Then it should output this json:
-       """
-       [
-         {"id":"some-feature",
+  Scenario: output JSON for a feature with no scenarios
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+      """
+    When I run `cucumber.js -f json`
+    Then it should output this json:
+      """
+      [
+        {
+          "id":"some-feature",
           "name":"some feature",
           "description":"",
           "line":1,
           "keyword":"Feature",
           "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature"
-          }
-       ]
-       """
+        }
+      ]
+      """
 
   Scenario: output JSON for a feature with one undefined scenario
     Given a file named "features/a.feature" with:
@@ -487,7 +488,7 @@
       ]
       """
 
-Scenario: one feature, one passing scenario, one failing scenario
+  Scenario: output JSON for one feature, one passing scenario, one failing scenario
     Given a file named "features/a.feature" with:
       """
       Feature: one passes one fails
@@ -1245,7 +1246,7 @@ Scenario: one feature, one passing scenario, one failing scenario
       ]
       """
 
-  Scenario: Scenario with tags
+  Scenario: output JSON for scenario with tags
 
     Given a file named "features/a.feature" with:
       """
