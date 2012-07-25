@@ -4,11 +4,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   var Cucumber = requireLib('cucumber');
   var listener, failedStepResults;
 
-  // var fakeFormatter = createSpyObj('formatter', ['step', 'uri', 'feature', 'background', 'scenario', 'result', 'match', 'eof', 'done']);
-
   beforeEach(function() {
     spyOn(process.stdout, 'write'); // prevent actual output during spec execution
-    listener = Cucumber.Listener.JsonFormatterWrapper(process.stdout);
+    listener = Cucumber.Listener.JsonFormatter(process.stdout);
     formatter = listener.getGherkinFormatter(); 
 
     spyOn(formatter, 'uri');
