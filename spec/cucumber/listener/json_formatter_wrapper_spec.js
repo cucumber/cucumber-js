@@ -4,10 +4,23 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
   var Cucumber = requireLib('cucumber');
   var listener, failedStepResults;
 
-  var fakeFormatter = createSpyObj('formatter', ['step', 'uri', 'feature', 'background', 'scenario', 'result', 'match', 'eof', 'done']);
+  // var fakeFormatter = createSpyObj('formatter', ['step', 'uri', 'feature', 'background', 'scenario', 'result', 'match', 'eof', 'done']);
 
   beforeEach(function() {
-    listener = Cucumber.Listener.JsonFormatterWrapper(fakeFormatter);
+    spyOn(process.stdout, 'write'); // prevent actual output during spec execution
+    listener = Cucumber.Listener.JsonFormatterWrapper(process.stdout);
+    formatter = listener.getGherkinFormatter(); 
+
+    spyOn(formatter, 'uri');
+    spyOn(formatter, 'feature');
+    spyOn(formatter, 'step');
+    spyOn(formatter, 'background');
+    spyOn(formatter, 'scenario');
+    spyOn(formatter, 'result');
+    spyOn(formatter, 'match');
+    spyOn(formatter, 'eof');
+    spyOn(formatter, 'done');
+
   });
 
   // Handle Feature
@@ -31,8 +44,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
     it("adds the feature attributes to the output", function() {
       listener.handleBeforeFeatureEvent(event, callback);     
-      expect(fakeFormatter.uri).toHaveBeenCalledWith('TODO');
-      expect(fakeFormatter.feature).toHaveBeenCalledWith({id: 'A-Name', 
+      expect(formatter.uri).toHaveBeenCalledWith('TODO');
+      expect(formatter.feature).toHaveBeenCalledWith({id: 'A-Name', 
                                                            name: 'A Name', 
                                                            description: 'A Description', 
                                                            line: 3, 
@@ -82,7 +95,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
     it("adds the background attributes to the output", function() {
       listener.handleBackgroundEvent(event, callback);
-      expect(fakeFormatter.background).toHaveBeenCalledWith({name: 'A Name', 
+      expect(formatter.background).toHaveBeenCalledWith({name: 'A Name', 
                                                              keyword: 'Background', 
                                                              description: 'A Description', 
                                                              type: 'background', 
@@ -120,7 +133,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
     it("adds the scenario attributes to the output", function() {
       listener.handleBeforeScenarioEvent(event, callback);
-      expect(fakeFormatter.scenario).toHaveBeenCalledWith({name: 'A Name', 
+      expect(formatter.scenario).toHaveBeenCalledWith({name: 'A Name', 
                                                            id: 'undefined;a-name', 
                                                            line: 3, 
                                                            keyword: 'Scenario', 
@@ -145,7 +158,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       });
 
       listener.formatStep(step);
-      expect(fakeFormatter.step).toHaveBeenCalledWith({ name : 'Step', line : 3, keyword : 'Step'});
+      expect(formatter.step).toHaveBeenCalledWith({ name : 'Step', line : 3, keyword : 'Step'});
 
     });
 
@@ -166,7 +179,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       });
 
       listener.formatStep(step);
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', 
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', 
                                                        line: 3, 
                                                        keyword: 'Step', 
                                                        doc_string: {value: 'This is a DocString', line: 3, content_type: null} 
@@ -194,7 +207,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       });
 
       listener.formatStep(step);
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', 
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', 
                                                        line: 3, 
                                                        keyword: 'Step', 
                                                        rows: [{line : 'TODO', cells: ['a:1', 'a:2', 'a:3'] }, 
@@ -271,9 +284,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       listener.handleStepResultEvent(fakeEvent, callback);
 
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'failed'});
-      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});
+      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
 
@@ -302,9 +315,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       listener.handleStepResultEvent(fakeEvent, callback);
 
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'passed'});
-      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'passed'});
+      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
 
@@ -333,9 +346,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       listener.handleStepResultEvent(fakeEvent, callback);
 
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'pending', error_message: 'TODO'});      
-      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'pending', error_message: 'TODO'});      
+      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
 
@@ -364,9 +377,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       listener.handleStepResultEvent(fakeEvent, callback);
 
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'failed'});      
-      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});      
+      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
 
@@ -395,9 +408,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       listener.handleStepResultEvent(fakeEvent, callback);
 
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'skipped'});      
-      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'skipped'});      
+      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
 
@@ -426,9 +439,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       listener.handleStepResultEvent(fakeEvent, callback);
 
-      expect(fakeFormatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(fakeFormatter.result).toHaveBeenCalledWith({status: 'undefined'});      
-      expect(fakeFormatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'undefined'});      
+      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
 
     });
 
@@ -447,8 +460,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
     it("finalises output", function() {
       listener.handleAfterFeaturesEvent(event, callback);
-      expect(fakeFormatter.eof).toHaveBeenCalled();
-      expect(fakeFormatter.done).toHaveBeenCalled();
+      expect(formatter.eof).toHaveBeenCalled();
+      expect(formatter.done).toHaveBeenCalled();
     });
 
     it("calls back", function() {
