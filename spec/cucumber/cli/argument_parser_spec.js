@@ -116,9 +116,6 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
     });
 
-    it("defines an alias to --output as -o", function() {
-    });
-
   });
 
   describe("getFeatureFilePaths()", function () {
