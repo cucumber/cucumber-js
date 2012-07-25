@@ -2,9 +2,6 @@ Feature: JSON Formatter
  In order to simplify processing of Cucumber features and results
  Developers should be able to consume features as JSON
 
-  Background:
-    Given CUCUMBER_JS_HOME environment variable has been set to the cucumber-js install dir
-
   Scenario: output JSON for a feature with no scenarios
     Given a file named "features/a.feature" with:
       """
@@ -20,7 +17,7 @@ Feature: JSON Formatter
           "description":"",
           "line":1,
           "keyword":"Feature",
-          "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature"
+          "uri":"/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature"
         }
       ]
       """
@@ -42,7 +39,7 @@ Feature: JSON Formatter
          "description":"",
          "line":1,
          "keyword":"Feature",
-         "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+         "uri":"/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
          "elements":[
            {"name":"I havn't done anything yet",
             "id":"some-feature;i-havn't-done-anything-yet",
@@ -74,7 +71,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri":"/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "I've declaired one step but not yet defined it",
@@ -129,7 +126,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "One pending step and two following steps which will be skipped",
@@ -194,7 +191,7 @@ Feature: JSON Formatter
               "description": "",
               "line": 1,
               "keyword": "Feature",
-              "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+              "uri":"/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
               "elements": [
                   {
                       "name": "I've declaired one step which is pending",
@@ -209,7 +206,7 @@ Feature: JSON Formatter
                               "line": 4,
                               "keyword": "Given ",
                               "result": {
-                                  "error_message": "TODO",
+                                  "error_message": "ERROR_MESSAGE",
                                   "status": "pending"
                               },
                               "match": {
@@ -247,7 +244,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri":"/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "I've declaired one step but it is failing",
@@ -262,7 +259,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
-                  "error_message": "Error: Step failure\n    at Function.fail ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:41:49)\n    at World.<anonymous> ($CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/step_definitions/cucumber_steps.js:2:70)\n    at Object.invoke ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:52:14)\n    at Object.execute ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:157:22)\n    at Object.acceptVisitor ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:149:12)\n    at Object.executeStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:170:12)\n    at Object.processStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:165:14)\n    at $CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:67:16\n    at callUserFunctionAndBroadcastAfterEvent ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:91:9)\n    at iterate ($CUCUMBER_JS_HOME/lib/cucumber/type/collection.js:14:11)",
+                  "error_message": "ERROR_MESSAGE",
                     "status": "failed"
                   },
                   "match": {
@@ -300,7 +297,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri":"$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri":"/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "I've declaired one step which passes",
@@ -357,7 +354,7 @@ Feature: JSON Formatter
             "description": "",
             "line": 1,
             "keyword": "Feature",
-            "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+            "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
             "elements": [
                 {
                     "name": "I've declaired one step which is passing, one pending and one failing.",
@@ -383,7 +380,7 @@ Feature: JSON Formatter
                             "line": 5,
                             "keyword": "And ",
                             "result": {
-                                "error_message": "TODO",
+                                "error_message": "ERROR_MESSAGE",
                                 "status": "pending"
                             },
                             "match": {
@@ -437,7 +434,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "I've declaired one step which is passing, one pending and one failing.",
@@ -452,7 +449,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
-                    "error_message": "TODO",
+                    "error_message": "ERROR_MESSAGE",
                     "status": "pending"
                   },
                   "match": {
@@ -516,7 +513,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "This one passes",
@@ -552,7 +549,7 @@ Feature: JSON Formatter
                   "line": 6,
                   "keyword": "Given ",
                   "result": {
-                    "error_message": "Error: Step failure\n    at Function.fail ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:41:49)\n    at World.<anonymous> ($CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/step_definitions/cucumber_steps.js:3:70)\n    at Object.invoke ($CUCUMBER_JS_HOME/lib/cucumber/support_code/step_definition.js:52:14)\n    at Object.execute ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:157:22)\n    at Object.acceptVisitor ($CUCUMBER_JS_HOME/lib/cucumber/ast/step.js:149:12)\n    at Object.executeStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:170:12)\n    at Object.processStep ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:165:14)\n    at $CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:67:16\n    at callUserFunctionAndBroadcastAfterEvent ($CUCUMBER_JS_HOME/lib/cucumber/runtime/ast_tree_walker.js:91:9)\n    at iterate ($CUCUMBER_JS_HOME/lib/cucumber/type/collection.js:14:11)",
+                    "error_message": "ERROR_MESSAGE",
                     "status": "failed"
                   },
                   "match": {
@@ -604,7 +601,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "This is the first feature",
@@ -635,7 +632,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/b.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/b.feature",
           "elements": [
             {
               "name": "This is the second feature",
@@ -666,7 +663,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/c.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/c.feature",
           "elements": [
             {
               "name": "This is the third feature",
@@ -750,7 +747,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "This is the feature a scenario one",
@@ -823,7 +820,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/b.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/b.feature",
           "elements": [
             {
               "name": "This is the feature b scenario one",
@@ -896,7 +893,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/c.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/c.feature",
           "elements": [
             {
               "name": "This is the feature c scenario one",
@@ -991,7 +988,7 @@ Feature: JSON Formatter
               "description": "",
               "line": 1,
               "keyword": "Feature",
-              "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+              "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
               "elements": [
                   {
                       "name": "",
@@ -1040,7 +1037,7 @@ Feature: JSON Formatter
               "description": "",
               "line": 1,
               "keyword": "Feature",
-              "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+              "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
               "elements": [
                   {
                       "name": "",
@@ -1089,7 +1086,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "Scenario with DocString",
@@ -1151,7 +1148,7 @@ Feature: JSON Formatter
         "description": "",
         "line": 1,
         "keyword": "Feature",
-        "uri": "/Users/chris/src/cucumber-js-fork/tmp/cucumber-js-sandbox/features/a.feature",
+        "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
         "elements": [
           {
             "name": "Background with DocString",
@@ -1218,7 +1215,7 @@ Feature: JSON Formatter
               "line": 1
             }
           ],
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "This scenario has no tags",
@@ -1273,7 +1270,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "This scenario has tags",
@@ -1345,7 +1342,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "This scenario contains a step with a table",
@@ -1437,7 +1434,7 @@ Feature: JSON Formatter
           "description": "",
           "line": 1,
           "keyword": "Feature",
-          "uri": "$CUCUMBER_JS_HOME/tmp/cucumber-js-sandbox/features/a.feature",
+          "uri": "/path/to/sandbox/tmp/cucumber-js-sandbox/features/a.feature",
           "elements": [
             {
               "name": "",

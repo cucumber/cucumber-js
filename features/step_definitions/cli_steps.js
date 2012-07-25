@@ -98,14 +98,6 @@ var cliSteps = function cliSteps() {
         throw new Error("Error parsing actual JSON:\n" + actualOutput);
     }
 
-    if (expectedOutput.indexOf('$CUCUMBER_JS_HOME') != -1) {
-      if (!process.env.CUCUMBER_JS_HOME) {
-        callback.fail(new Error("CUCUMBER_JS_HOME has not been set."));
-      } else {
-        expectedOutput = expectedOutput.replace(/\$CUCUMBER_JS_HOME/g, process.env.CUCUMBER_JS_HOME);
-        }
-    }
-
     try {
         var expectedJson = JSON.parse(expectedOutput);
     }
@@ -114,6 +106,12 @@ var cliSteps = function cliSteps() {
     } 
 
     var actualJsonString = JSON.stringify(actualJson, null, 2);
+
+    // remove path to sandbox from uris
+    actualJsonString = actualJsonString.replace(/(\"uri\"\:\ \")(.+?)(\/tmp\/cucumber-js-sandbox\/)/g, "$1/path/to/sandbox$3");
+    // remove location specific error messages
+    actualJsonString = actualJsonString.replace(/(\"error_message\"\:\ \")(.+?)(\"\,)/g, "$1ERROR_MESSAGE$3");
+
     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
 
     if (actualJsonString != expectedJsonString)
