@@ -56,12 +56,6 @@ describe("Cucumber.Ast.Feature", function() {
     });
   });
 
-  describe("getUri()", function() {
-    it("returns a uniform resource identifier for the feature consisting of the filename containing the feature", function() {
-      expect(feature.getUri()).toBe(uri);
-    });
-  });
-
   describe("getBackground() [addBackground()]", function() {
     describe("when a background was previously added", function() {
       var background;
