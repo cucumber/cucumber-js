@@ -20,11 +20,11 @@ describe("Cucumber.Cli.Configuration", function () {
 
   describe("constructor", function () {
     it("creates an argument parser", function () {
-      expect(Cucumber.Cli.ArgumentParser).toHaveBeenCalledWith();
+      expect(Cucumber.Cli.ArgumentParser).toHaveBeenCalledWith(argv);
     });
 
     it("tells the argument parser to parse the arguments", function () {
-      expect(argumentParser.parse).toHaveBeenCalledWith(argv);
+      expect(argumentParser.parse).toHaveBeenCalledWith();
     });
   });
 
