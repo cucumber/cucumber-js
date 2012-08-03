@@ -2,9 +2,23 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.18...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.19...master)
 
 **TBD**
+
+
+
+### [v0.2.19](https://github.com/cucumber/cucumber-js/compare/v0.2.18...v0.2.19)
+
+#### Fixes
+
+* Fix CLI arguments passing (#83) (Omar Gonzalez)
+
+#### Documentation, internals and tests
+
+* Refactor "summarizer" listener to summary formatter (#71)	28b74ef (Julien Biezemans)
+* Add "summary" formatter to available CLI formatters (Julien Biezemans)
+* Fix spec example description (Julien Biezemans)
 
 
 
