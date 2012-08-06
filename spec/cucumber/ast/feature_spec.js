@@ -45,7 +45,7 @@ describe("Cucumber.Ast.Feature", function() {
   });
 
   describe("getUri()", function() {
-    it("returns the URI on which the background starts", function() {
+    it("returns the URI of the feature", function() {
       expect(feature.getUri()).toBe(uri);
     });
   });
