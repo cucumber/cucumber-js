@@ -78,6 +78,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME]).toEqual(Boolean);
     });
+
+    it("defines an --output option to specify output format", function() {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
+    });
+
   });
 
   describe("getShortenedOptionDefinitions()", function () {
@@ -109,6 +115,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
     });
+
   });
 
   describe("getFeatureFilePaths()", function () {

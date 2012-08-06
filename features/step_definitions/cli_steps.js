@@ -8,7 +8,7 @@ var cliSteps = function cliSteps() {
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
   var cleansingNeeded = true;
 
-  var lastRun;
+  var lastRun = { error: null, stdout: "", stderr: "" };
 
   function tmpPath(path) {
     return (tmpDir + "/" + path);
@@ -64,8 +64,60 @@ var cliSteps = function cliSteps() {
 
   this.Then(/^it should pass with:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
+
+    var actualError =  lastRun['error'];
+    var actualStderr =  lastRun['stderr'];
+
     if (actualOutput.indexOf(expectedOutput) == -1)
-      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
+      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
+    callback();
+  });
+
+  this.Given(/^CUCUMBER_JS_HOME environment variable has been set to the cucumber\-js install dir$/, function(callback) {
+    // This is needed to allow us to check the error_message produced for a failed steps which includes paths which
+    // contain the location where cucumber-js is installed.
+    if (process.env.CUCUMBER_JS_HOME) {
+      callback();
+    } else {
+      callback.fail(new Error("CUCUMBER_JS_HOME has not been set."));
+    }
+  });
+
+  this.Then(/^it should output this json:$/, function(expectedOutput, callback) {
+    var actualOutput = lastRun['stdout'];
+
+    var actualError =  lastRun['error'];
+    var actualStderr =  lastRun['stderr'];
+
+    try {
+        var actualJson = JSON.parse(actualOutput);
+    }    
+    catch(err) {
+        throw new Error("Error parsing actual JSON:\n" + actualOutput);
+    }
+
+    try {
+        var expectedJson = JSON.parse(expectedOutput);
+    }
+    catch(err) {
+        throw new Error("Error parsing expected JSON:\n" + expectedOutput); 
+    } 
+
+    var actualJsonString = JSON.stringify(actualJson, null, 2);
+
+    // remove path to sandbox from uris
+    actualJsonString = actualJsonString.replace(/(\"uri\"\:\ \")(.+?)(\/tmp\/cucumber-js-sandbox\/)/g, "$1/path/to/sandbox$3");
+    // remove location specific error messages
+    actualJsonString = actualJsonString.replace(/(\"error_message\"\:\ \")(.+?)(\"\,)/g, "$1ERROR_MESSAGE$3");
+
+    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+
+    if (actualJsonString != expectedJsonString)
+      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\nGot:\n'" + actualJsonString + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
     callback();
   });
 
