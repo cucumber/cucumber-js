@@ -87,9 +87,8 @@ Feature: JSON Formatter
                  "result":
                   {"status":"undefined"
                   },
-                 "match":
-                  {"location":"TODO"
-                  }
+                 "match": {                 
+                 }
                 }
                 ]
             }
@@ -144,7 +143,6 @@ Feature: JSON Formatter
                     "status": "undefined"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 },
                 {
@@ -155,7 +153,6 @@ Feature: JSON Formatter
                     "status": "skipped"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -206,11 +203,9 @@ Feature: JSON Formatter
                               "line": 4,
                               "keyword": "Given ",
                               "result": {
-                                  "error_message": "ERROR_MESSAGE",
                                   "status": "pending"
                               },
                               "match": {
-                                  "location": "TODO"
                               }
                           }
                       ]
@@ -263,7 +258,6 @@ Feature: JSON Formatter
                     "status": "failed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -315,7 +309,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -372,7 +365,6 @@ Feature: JSON Formatter
                                 "status": "passed"
                             },
                             "match": {
-                                "location": "TODO"
                             }
                         },
                         {
@@ -380,11 +372,9 @@ Feature: JSON Formatter
                             "line": 5,
                             "keyword": "And ",
                             "result": {
-                                "error_message": "ERROR_MESSAGE",
                                 "status": "pending"
                             },
                             "match": {
-                                "location": "TODO"
                             }
                         },
                         {
@@ -395,7 +385,6 @@ Feature: JSON Formatter
                                 "status": "skipped"
                             },
                             "match": {
-                                "location": "TODO"
                             }
                         }
                     ]
@@ -449,11 +438,9 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
-                    "error_message": "ERROR_MESSAGE",
                     "status": "pending"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 },
                 {
@@ -464,7 +451,6 @@ Feature: JSON Formatter
                     "status": "skipped"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 },
                 {
@@ -475,7 +461,6 @@ Feature: JSON Formatter
                     "status": "skipped"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -531,7 +516,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -553,7 +537,6 @@ Feature: JSON Formatter
                     "status": "failed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -619,7 +602,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -650,7 +632,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -681,7 +662,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -765,7 +745,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -786,7 +765,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -807,7 +785,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -838,7 +815,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -859,7 +835,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -880,7 +855,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -911,7 +885,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -932,7 +905,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -953,7 +925,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -1110,7 +1081,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -1233,7 +1203,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -1302,7 +1271,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -1358,7 +1326,6 @@ Feature: JSON Formatter
                   "keyword": "Given ",
                   "rows": [
                     {
-                      "line": "TODO",
                       "cells": [
                         "col 1",
                         "col 2",
@@ -1366,7 +1333,6 @@ Feature: JSON Formatter
                       ]
                     },
                     {
-                      "line": "TODO",
                       "cells": [
                         "one",
                         "two",
@@ -1374,7 +1340,6 @@ Feature: JSON Formatter
                       ]
                     },
                     {
-                      "line": "TODO",
                       "cells": [
                         "1",
                         "2",
@@ -1382,7 +1347,6 @@ Feature: JSON Formatter
                       ]
                     },
                     {
-                      "line": "TODO",
                       "cells": [
                         "!",
                         "~",
@@ -1394,7 +1358,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {
-                    "location": "TODO"
                   }
                 }
               ]
@@ -1449,7 +1412,6 @@ Feature: JSON Formatter
                   "keyword": "Given ",
                   "rows": [
                     {
-                      "line": "TODO",
                       "cells": [
                         "col 1",
                         "col 2",
@@ -1457,7 +1419,6 @@ Feature: JSON Formatter
                       ]
                     },
                     {
-                      "line": "TODO",
                       "cells": [
                         "one",
                         "two",
@@ -1465,7 +1426,6 @@ Feature: JSON Formatter
                       ]
                     },
                     {
-                      "line": "TODO",
                       "cells": [
                         "1",
                         "2",
@@ -1473,7 +1433,6 @@ Feature: JSON Formatter
                       ]
                     },
                     {
-                      "line": "TODO",
                       "cells": [
                         "!",
                         "~",

@@ -32,7 +32,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
                                     getName: 'A Name',
                                     getDescription: 'A Description',
                                     getLine: 3,
-                                    getUri: 'TODO',
+                                    getUri: undefined,
                                     getTags: false});
 
       event    = createSpyWithStubs("event", {getPayloadItem: feature});
@@ -42,7 +42,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
     it("adds the feature attributes to the output", function() {
       listener.handleBeforeFeatureEvent(event, callback);     
-      expect(formatter.uri).toHaveBeenCalledWith('TODO');
+      expect(formatter.uri).toHaveBeenCalledWith(undefined);
       expect(formatter.feature).toHaveBeenCalledWith({id: 'A-Name', 
                                                            name: 'A Name', 
                                                            description: 'A Description', 
@@ -208,9 +208,9 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', 
                                                        line: 3, 
                                                        keyword: 'Step', 
-                                                       rows: [{line : 'TODO', cells: ['a:1', 'a:2', 'a:3'] }, 
-                                                              {line : 'TODO', cells: ['b:1', 'b:2', 'b:3'] }, 
-                                                              {line : 'TODO', cells: ['c:1', 'c:2', 'c:3'] }] 
+                                                       rows: [{line : undefined, cells: ['a:1', 'a:2', 'a:3'] }, 
+                                                              {line : undefined, cells: ['b:1', 'b:2', 'b:3'] }, 
+                                                              {line : undefined, cells: ['c:1', 'c:2', 'c:3'] }] 
                                                       });
     });
 
@@ -284,7 +284,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
       expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});
-      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.match).toHaveBeenCalledWith({location: undefined});
 
     });
 
@@ -315,7 +315,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
       expect(formatter.result).toHaveBeenCalledWith({status: 'passed'});
-      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.match).toHaveBeenCalledWith({location: undefined});
 
     });
 
@@ -345,8 +345,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
       listener.handleStepResultEvent(fakeEvent, callback);
 
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
-      expect(formatter.result).toHaveBeenCalledWith({status: 'pending', error_message: 'TODO'});      
-      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.result).toHaveBeenCalledWith({status: 'pending', error_message: undefined});      
+      expect(formatter.match).toHaveBeenCalledWith({location: undefined});
 
     });
 
@@ -377,7 +377,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
       expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});      
-      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.match).toHaveBeenCalledWith({location: undefined});
 
     });
 
@@ -408,7 +408,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
       expect(formatter.result).toHaveBeenCalledWith({status: 'skipped'});      
-      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.match).toHaveBeenCalledWith({location: undefined});
 
     });
 
@@ -439,7 +439,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function() {
 
       expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
       expect(formatter.result).toHaveBeenCalledWith({status: 'undefined'});      
-      expect(formatter.match).toHaveBeenCalledWith({location: 'TODO'});
+      expect(formatter.match).toHaveBeenCalledWith({location: undefined});
 
     });
 
