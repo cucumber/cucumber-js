@@ -574,7 +574,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run `cucumber.js -f json features/a.feature features/b.feature features/c.feature`
     Then it outputs this json:
       """
       [
@@ -715,7 +715,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run `cucumber.js -f json features/a.feature features/b.feature features/c.feature`
     Then it outputs this json:
       """
       [
