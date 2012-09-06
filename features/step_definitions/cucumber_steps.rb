@@ -83,3 +83,7 @@ Then /^I see the help of Cucumber$/ do
   assert_partial_output "Usage: cucumber.js ", all_output
   assert_success true
 end
+
+Then /^it outputs this json:$/ do |json|
+  assert_json_output json
+end

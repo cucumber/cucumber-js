@@ -8,7 +8,7 @@ var cliSteps = function cliSteps() {
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
   var cleansingNeeded = true;
 
-  var lastRun;
+  var lastRun = { error: null, stdout: "", stderr: "" };
 
   function tmpPath(path) {
     return (tmpDir + "/" + path);
@@ -62,10 +62,42 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  this.Then(/^it should pass with:$/, function(expectedOutput, callback) {
+  this.Then(/^it passes with:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
+    var actualError  = lastRun['error'];
+    var actualStderr = lastRun['stderr'];
+
     if (actualOutput.indexOf(expectedOutput) == -1)
-      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
+      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
+    callback();
+  });
+
+  this.Then(/^it outputs this json:$/, function(expectedOutput, callback) {
+    var actualOutput = lastRun['stdout'];
+    var actualError =  lastRun['error'];
+    var actualStderr =  lastRun['stderr'];
+
+    try { var actualJson = JSON.parse(actualOutput); }
+    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput); }
+
+    var errorMessageSubstitute = "Random error message #" + Math.floor(Math.random() * 100000);
+    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir);
+    expectedOutput = expectedOutput.replace(/<error-message>/g, errorMessageSubstitute);
+
+    try { var expectedJson = JSON.parse(expectedOutput); }
+    catch(err) { throw new Error("Error parsing expected JSON:\n" + expectedOutput); }
+
+    var actualJsonString = JSON.stringify(actualJson, null, 2);
+    actualJsonString = actualJsonString.replace(/("error_message": ")(.+)(",)/g, "$1"+errorMessageSubstitute+"$3");
+
+    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+
+    if (actualJsonString != expectedJsonString)
+      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\nGot:\n'" + actualJsonString + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
     callback();
   });
 

@@ -301,6 +301,15 @@ EOF
     check_exact_file_content step_file(pattern), arguments.join("\n")
   end
 
+  def assert_json_output(expected)
+    expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
+    expected = JSON(expected).to_s
+    actual   = JSON(all_output)
+    neutralise_error_messages_in_enumerable actual
+    actual   = actual.to_s
+    actual.should == expected
+  end
+
   def failed_output
     "failed"
   end
@@ -370,5 +379,22 @@ EOF
   def nth_step_name n
     "step #{n}"
   end
+
+  def neutralise_error_messages_in_enumerable enumerable
+    if enumerable.is_a? Array
+      enumerable.each do |item|
+        neutralise_error_messages_in_enumerable item if item.respond_to? :each
+      end
+    else
+      enumerable.each do |attr, value|
+        if attr == "error_message"
+          enumerable[attr] = "<error-message>"
+        elsif value.respond_to? :each
+          neutralise_error_messages_in_enumerable value
+        end
+      end
+    end
+  end
 end
+
 World(CucumberJsMappings)

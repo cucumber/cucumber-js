@@ -109,6 +109,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
     });
+
   });
 
   describe("getFeatureFilePaths()", function () {

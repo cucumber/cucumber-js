@@ -10,7 +10,7 @@ Feature: Command line interface
         Scenario:
           When a step is passing
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
         this.When(/^a step is passing$/, function(callback) { callback(); });
@@ -51,7 +51,7 @@ Feature: Command line interface
         Scenario:
           When a step is passing
       """
-    Given a file named "step_definitions/cucumber_steps.js" with:
+    And a file named "step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
         this.When(/^a step is passing$/, function(callback) { callback(); });
@@ -75,7 +75,7 @@ Feature: Command line interface
         Scenario:
           When a step is passing
       """
-    Given a file named "step_definitions/cucumber_steps.js" with:
+    And a file named "step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
         this.When(/^a step is passing$/, function(callback) { callback(); });
