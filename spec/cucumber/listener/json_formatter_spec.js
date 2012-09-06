@@ -210,7 +210,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
   });
 
   describe("formatTags()", function () {
-    it("returns the given tags in the format expected by the JSON formatter", function (){
+    it("returns the given tags in the format expected by the JSON formatter", function () {
       var tags = [
         createSpyWithStubs("tag", {getName: "tag_one", getLine:1}),
         createSpyWithStubs("tag", {getName: "tag_two", getLine:2}),
