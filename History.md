@@ -2,9 +2,23 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.19...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.20...master)
 
 **TBD**
+
+### [v0.2.20](https://github.com/cucumber/cucumber-js/compare/v0.2.19...v0.2.20)
+
+#### New features
+
+* Add JSON formatter (#79) (Chris Young)
+
+#### Fixes
+
+* Fix data table and tags handling in JSON formatter (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Force example feature execution order in JSON feature (Julien Biezemans)
 
 
 
