@@ -25,8 +25,8 @@ Cucumber.js is still a work in progress. Here is its current status.
 | [Failing steps](https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature)                                   | Done                |
 | [Hooks](https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature)                                                   | Done                |
 | [I18n](https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature)                                                     | To do               |
-| [JSON formatter](https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature)                                 | WIP<sup>4</sup> |
-| [Pretty formatter](https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature)                             | WIP<sup>2</sup>   |
+| [JSON formatter](https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature)                                 | WIP<sup>3</sup>     |
+| [Pretty formatter](https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature)                             | WIP<sup>2</sup>     |
 | [Scenario outlines and examples](https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature) | To do               |
 | [Stats collector](https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature)                               | To do               |
 | [Step argument transforms](https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature)             | To do               |
@@ -37,13 +37,12 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-3. Simple *Around*, *Before* and *After* hooks are available.
-4. Missing 'matches' attributes. Simple wrapper for Gherkin JsonFormatter pending porting of:
+3. Missing 'matches' attributes. Simple wrapper for *Gherkin*'s `JsonFormatter` pending porting of:
 
-* https://github.com/cucumber/gherkin/blob/master/lib/gherkin/listener/formatter_listener.rb
-* https://github.com/cucumber/gherkin/blob/master/lib/gherkin/formatter/filter_formatter.rb
+  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/listener/formatter_listener.rb
+  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/formatter/filter_formatter.rb
 
-In Gherkin itself
+  in Gherkin itself.
 
 ### Cucumber.js-specific features
 
