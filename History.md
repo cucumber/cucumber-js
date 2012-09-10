@@ -2,7 +2,17 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.20...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.21...master)
+
+**TBD**
+
+### [v0.2.21](https://github.com/cucumber/cucumber-js/compare/v0.2.20...v0.2.21)
+
+#### New features
+
+* Add bundler (Julien Biezemans)
+
+
 
 **TBD**
 
