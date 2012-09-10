@@ -44,7 +44,7 @@
     "gherkin": "2.11.1",
     "jasmine-node": "1.0.26",
     "connect": "2.3.2",
-    "browserify": "1.13.2",
+    "browserify": "1.15.5",
     "nopt": "1.0.10",
     "underscore": "1.3.3",
     "rimraf": "2.0.2",

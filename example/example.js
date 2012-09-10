@@ -1,6 +1,6 @@
 (function($) {
   var CucumberHTMLListener = function($root) {
-    var CucumberHTML = require('cucumber-html');
+    var CucumberHTML = window.CucumberHTML;
     var formatter    = new CucumberHTML.DOMFormatter($root);
 
     formatter.uri('report.feature');
@@ -70,7 +70,7 @@
   };
 
   function runFeature() {
-    var Cucumber        = require('./lib/cucumber');
+    var Cucumber        = window.Cucumber;
     var supportCode;
     var output          = $('#output');
     var errors          = $('#errors');
