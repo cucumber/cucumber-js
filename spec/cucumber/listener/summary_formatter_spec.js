@@ -239,10 +239,11 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("handleAfterFeaturesEvent()", function () {
-    var callback;
+    var callback, event;
 
     beforeEach(function () {
       callback = createSpy("callback");
+      event    = createSpy("event");
       spyOn(summaryFormatter, 'logSummary');
     });
 
@@ -306,28 +307,31 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("storeUndefinedStep()", function () {
-    var snippetBuilder, snippet, step;
+    var snippetBuilderSyntax, numberMatchingGroup, snippetBuilder, snippet, step;
 
     beforeEach(function () {
+      numberMatchingGroup  = createSpy("snippet number matching group");
+      snippetBuilderSyntax = createSpyWithStubs("snippet builder syntax", {getNumberMatchingGroup: numberMatchingGroup});
       step           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
       spyOn(summaryFormatter, 'appendStringToUndefinedStepLogBuffer');
+      spyOn(summaryFormatter, 'getStepDefinitionSyntax').andReturn(snippetBuilderSyntax);
     });
 
     it("creates a new step definition snippet builder", function () {
-      summaryFormatter.storeUndefinedStep(step);
-      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, false);
+      summaryFormatter.storeUndefinedStep(step, snippetBuilderSyntax);
+      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetBuilderSyntax);
     });
 
     it("builds the step definition", function () {
-      summaryFormatter.storeUndefinedStep(step);
+      summaryFormatter.storeUndefinedStep(step, snippetBuilderSyntax);
       expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summaryFormatter.storeUndefinedStep(step);
+      summaryFormatter.storeUndefinedStep(step, snippetBuilderSyntax);
       expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });
