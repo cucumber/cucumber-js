@@ -31,6 +31,7 @@ describe("Cucumber.Cli.Configuration", function () {
   describe("getFormatter()", function () {
     beforeEach(function () {
       spyOnStub(argumentParser, 'getFormat').andReturn("progress");
+      spyOnStub(argumentParser, 'shouldSnippetsBeInCoffee').andReturn(false);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
