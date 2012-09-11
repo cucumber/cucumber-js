@@ -309,7 +309,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     var snippetBuilder, snippet, step;
 
     beforeEach(function () {
-      stpe           = createSpy("step");
+      step           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
@@ -318,7 +318,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("creates a new step definition snippet builder", function () {
       summaryFormatter.storeUndefinedStep(step);
-      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step);
+      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, false);
     });
 
     it("builds the step definition", function () {
