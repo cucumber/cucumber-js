@@ -161,10 +161,11 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     beforeEach(function () {
       keyword    = "step-keyword ";
       name       = "step-name";
-      step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, getName: name });
+      step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name });
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       spyOn(prettyFormatter, 'logDataTable');
+      spyOn(prettyFormatter, 'logDocString');
       spyOn(prettyFormatter, 'logIndented');
       callback   = createSpy("callback");
     });
@@ -233,6 +234,47 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       it("does not log the data table", function () {
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logDataTable).not.toHaveBeenCalled();
+      });
+    });
+
+    it("checks whether the step result has a doc string or not", function () {
+      prettyFormatter.handleStepResultEvent(event, callback);
+      expect(step.hasDocString).toHaveBeenCalled();
+    });
+
+    describe("when the step has a doc string", function () {
+      var docString;
+
+      beforeEach(function () {
+        docString = createSpy("doc string");
+        step.hasDocString.andReturn(true);
+        step.getDocString.andReturn(docString);
+      });
+
+      it("gets the doc string", function () {
+        prettyFormatter.handleStepResultEvent(event, callback);
+        expect(step.getDocString).toHaveBeenCalled();
+      });
+
+      it("logs the doc string", function () {
+        prettyFormatter.handleStepResultEvent(event, callback);
+        expect(prettyFormatter.logDocString).toHaveBeenCalledWith(docString);
+      });
+    });
+
+    describe("when the step has no doc string", function () {
+      beforeEach(function () {
+        step.hasDocString.andReturn(false);
+      });
+
+      it("does not get the doc string", function () {
+        prettyFormatter.handleStepResultEvent(event, callback);
+        expect(step.getDocString).not.toHaveBeenCalled();
+      });
+
+      it("logs the doc string", function () {
+        prettyFormatter.handleStepResultEvent(event, callback);
+        expect(prettyFormatter.logDocString).not.toHaveBeenCalled();
       });
     });
 
@@ -332,6 +374,26 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith("| cuk | cuke | cukejs   |\n", 3);
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith("| c   | cuke | cuke.js  |\n", 3);
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith("| cu  | cuke | cucumber |\n", 3);
+    });
+  });
+
+  describe("logDocString()", function () {
+    var docString, contents;
+
+    beforeEach(function () {
+      contents  = "this is a multiline\ndoc string\n\n:-)";
+      docString = createSpyWithStubs("doc string", {getContents: contents});
+      spyOn(prettyFormatter, "logIndented");
+    });
+
+    it("gets the contents of the doc string", function () {
+      prettyFormatter.logDocString(docString);
+      expect(docString.getContents).toHaveBeenCalled();
+    });
+
+    it("logs the contents of the doc string, with a 3-level indentation", function () {
+      prettyFormatter.logDocString(docString);
+      expect(prettyFormatter.logIndented).toHaveBeenCalledWith('"""\n' + contents + '\n"""\n', 3);
     });
   });
 
