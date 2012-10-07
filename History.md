@@ -2,9 +2,21 @@
 
 ## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.21...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.22...master)
 
 **TBD**
+
+### [v0.2.22](https://github.com/cucumber/cucumber-js/compare/v0.2.21...v0.2.22)
+
+#### New features
+
+* Print data tables and doc strings in pretty formatter output (#89, #81) (Julien Biezemans)
+
+#### Fixes
+
+* Exclude unmatched features from AST (close #80) (Julien Biezemans)
+
+
 
 ### [v0.2.21](https://github.com/cucumber/cucumber-js/compare/v0.2.20...v0.2.21)
 
