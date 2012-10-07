@@ -10,7 +10,7 @@ describe("Cucumber.Ast.Filter", function() {
     filter = Cucumber.Ast.Filter(rules);
   });
 
-  describe("isScenarioEnrolled()", function() {
+  describe("isElementEnrolled()", function() {
     var _ = require('underscore');
 
     var scenario, scenarioEnrolled;
@@ -22,7 +22,7 @@ describe("Cucumber.Ast.Filter", function() {
     });
 
     it("checks all the rules for a condition", function() {
-      filter.isScenarioEnrolled(scenario);
+      filter.isElementEnrolled(scenario);
       expect(_.all).toHaveBeenCalled();
       expect(_.all).toHaveBeenCalledWithValueAsNthParameter(rules, 1);
       expect(_.all).toHaveBeenCalledWithAFunctionAsNthParameter(2);
@@ -34,7 +34,7 @@ describe("Cucumber.Ast.Filter", function() {
       beforeEach(function() {
         ruleSatisfied = createSpy("whether the rule was satisfied or not");
         rule          = createSpyWithStubs("rule", {isSatisfiedByElement: ruleSatisfied});
-        filter.isScenarioEnrolled(scenario);
+        filter.isElementEnrolled(scenario);
         ruleConditionFunc = _.all.mostRecentCall.args[1];
       });
 
@@ -49,7 +49,7 @@ describe("Cucumber.Ast.Filter", function() {
     });
 
     it("returns whether the scenario was enrolled or not", function() {
-      expect(filter.isScenarioEnrolled(scenario)).toBe(scenarioEnrolled);
+      expect(filter.isElementEnrolled(scenario)).toBe(scenarioEnrolled);
     })
   });
 });

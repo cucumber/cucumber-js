@@ -80,7 +80,7 @@ describe("Cucumber.SupportCode.Hook", function() {
 
     beforeEach(function() {
       scenarioEnrolled = createSpy("scenario enrolled?");
-      astFilter        = createSpyWithStubs("AST filter", {isScenarioEnrolled: scenarioEnrolled});
+      astFilter        = createSpyWithStubs("AST filter", { isElementEnrolled: scenarioEnrolled });
       scenario         = createSpy("scenario");
       spyOn(hook, 'getAstFilter').andReturn(astFilter);
     });
@@ -92,7 +92,7 @@ describe("Cucumber.SupportCode.Hook", function() {
 
     it("asks the AST filter whether the scenario is enrolled or not", function() {
       hook.appliesToScenario(scenario);
-      expect(astFilter.isScenarioEnrolled).toHaveBeenCalledWith(scenario);
+      expect(astFilter.isElementEnrolled).toHaveBeenCalledWith(scenario);
     });
 
     it("returns the AST filter answer", function() {

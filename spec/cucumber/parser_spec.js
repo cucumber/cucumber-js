@@ -215,8 +215,13 @@ describe("Cucumber.Parser", function () {
   });
 
   describe("handleEof()", function () {
-    it("exists but does nothing", function () {
+    beforeEach(function () {
+      spyOnStub(astAssembler, 'finish');
+    });
+
+    it("tells the assembler to finish its duty", function () {
       parser.handleEof();
+      expect(astAssembler.finish).toHaveBeenCalled();
     });
   });
 
