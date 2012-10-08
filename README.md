@@ -111,11 +111,25 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 ### Cucumber.js-specific features
 
-| Feature                                                                                                           | Status           |
-|:------------------------------------------------------------------------------------------------------------------|:-----------------|
-| [Background](https://github.com/cucumber/cucumber-js/blob/master/features/background.feature)                     | Done<sup>1</sup> |
-| [CoffeeScript support](https://github.com/cucumber/cucumber-js/blob/master/features/coffeescript_support.feature) | Done             |
-| [Command-line interface](https://github.com/cucumber/cucumber-js/blob/master/features/cli.feature)                | Done             |
+<table>
+  <thead>
+    <tr><th>Feature</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/background.feature">Background</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/coffeescript_support.feature">CoffeeScript support</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/cli.featur">Command-line interface</a></td>
+      <td>Done</td>
+    </tr>
+  </tbody>
+</table>
 
 1. Will be certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
 
