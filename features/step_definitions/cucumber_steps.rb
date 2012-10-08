@@ -25,6 +25,10 @@ Given /^the step "([^"]*)" has a mapping asynchronously failing through an excep
   write_asynchronously_failing_mapping_through_exception_with_message(step_name, message)
 end
 
+Given /^the step "([^"]*)" has a mapping failing via a Node-like error construct$/ do |step_name|
+  write_failing_mapping_through_nodejs_callback(step_name)
+end
+
 Given /^a custom World constructor calling back with an explicit object$/ do
   write_custom_world_constructor_calling_back_with_explicit_object
 end

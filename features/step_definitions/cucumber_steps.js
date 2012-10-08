@@ -89,6 +89,14 @@ var cucumberSteps = function() {
     callback();
   });
 
+  Given(/^the step "([^"]*)" has a mapping failing via a Node-like error construct$/, function(stepName, callback) {
+    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
+  world.touchStep(\"" + stepName + "\");\
+  callback(new Error('#fail'));\
+});\n";
+    callback();
+  });
+
   Given(/^the step "([^"]*)" has a pending mapping$/, function(stepName, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\

@@ -65,6 +65,10 @@ module CucumberJsMappings
     append_step_definition(step_name, "setTimeout(function() { throw new Error('#{message}');}, 10);")
   end
 
+  def write_failing_mapping_through_nodejs_callback(step_name)
+    append_step_definition(step_name, "callback(new Error('#fail'));")
+  end
+
   def write_mapping_incrementing_world_variable_by_value(step_name, increment_value)
     append_step_definition(step_name, "this.variable += #{increment_value}; callback();")
   end
