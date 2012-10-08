@@ -2,10 +2,12 @@ require('../support/spec_helper');
 
 describe("Cucumber.Parser", function () {
   var Cucumber = requireLib('cucumber');
+  var gherkinLexerConstructor;
   var parser, featureSources;
   var features, astFilter, astAssembler;
 
   beforeEach(function () {
+    gherkinLexerConstructor = spyOnModule("gherkin/lib/gherkin/lexer/en");
     features       = createSpy("Root 'features' AST element");
     astFilter      = createSpy("AST filter");
     featureSources = [
@@ -30,21 +32,15 @@ describe("Cucumber.Parser", function () {
 
   describe("parse()", function () {
     var Gherkin = require('gherkin');
-    var gherkinLexerConstructor, gherkinLexer;
+    var gherkinLexer;
     var eventHandlers;
 
     beforeEach(function () {
-      gherkinLexer            = createSpyWithStubs("Gherkin lexer instance", {scan: null});
-      gherkinLexerConstructor = createSpy("Gherkin lexer module").andReturn(gherkinLexer);
-      eventHandlers           = createSpy("Parser event handlers");
-      spyOn(Gherkin, 'Lexer').andReturn(gherkinLexerConstructor);
+      gherkinLexer = createSpyWithStubs("English gherkin lexer instance", {scan: null});
+      gherkinLexerConstructor.andReturn(gherkinLexer);
+      eventHandlers = createSpy("Parser event handlers");
       spyOn(parser, 'getEventHandlers').andReturn(eventHandlers);
       spyOn(parser, 'setCurrentSourceUri');
-    });
-
-    it("loads the gherkin lexer module for English", function () {
-      parser.parse();
-      expect(Gherkin.Lexer).toHaveBeenCalledWith('en');
     });
 
     it("gets the parse event handlers", function () {
@@ -52,7 +48,7 @@ describe("Cucumber.Parser", function () {
       expect(parser.getEventHandlers).toHaveBeenCalled();
     });
 
-    it("creates a gherkin lexer", function () {
+    it("creates a gherkin lexer for the English language", function () {
       parser.parse();
       expect(gherkinLexerConstructor).toHaveBeenCalledWith(eventHandlers);
     });
@@ -142,6 +138,18 @@ describe("Cucumber.Parser", function () {
       spyOn(parser, 'handleTag');
       eventHandlers = parser.getEventHandlers();
       expect(eventHandlers['tag']).toBe(parser.handleTag);
+    });
+
+    it("provides a 'scenario_outline' handler", function () {
+      spyOn(parser, 'handleScenarioOutline');
+      eventHandlers = parser.getEventHandlers();
+      expect(eventHandlers['scenario_outline']).toBe(parser.handleScenarioOutline);
+    });
+
+    it("provides an 'examples' handler", function () {
+      spyOn(parser, 'handleExamples');
+      eventHandlers = parser.getEventHandlers();
+      expect(eventHandlers['examples']).toBe(parser.handleExamples);
     });
   });
 
@@ -376,6 +384,18 @@ describe("Cucumber.Parser", function () {
     it("tells the AST assembler to insert the tag into the tree", function () {
       parser.handleTag(name, line);
       expect(astAssembler.insertTag).toHaveBeenCalledWith(tag);
+    });
+  });
+
+  describe("handleScenarioOutline()", function () {
+    it("throws an error", function () {
+      expect(parser.handleScenarioOutline).toThrow();
+    });
+  });
+
+  describe("handleExamples()", function () {
+    it("throws an error", function () {
+      expect(parser.handleExamples).toThrow();
     });
   });
 });
