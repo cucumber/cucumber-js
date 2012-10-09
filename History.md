@@ -13,18 +13,18 @@
 #### New features
 
 * Allow for node-like callback errors (Julien Biezemans)
-* Accept multiple features in volatile configuration (close #52) (Julien Biezemans)
+* Accept multiple features in volatile configuration (#52) (Julien Biezemans)
 
 #### Fixes
 
 * Add ^ prefix and $ suffix to string-based step definition regexps (#77) (Julien Biezemans)
-* Allow for unsafe regexp characters in stepdef string patterns (close #77) (Julien Biezemans)
+* Allow for unsafe regexp characters in stepdef string patterns (#77) (Julien Biezemans)
 
 #### Documentation, internals and tests
 
 * Build on Node.js 0.8 on Travis (Julien Biezemans)
 * Rewrite README's status table in HTML (Julien Biezemans)
-* Bump Gherkin (close #78) (Julien Biezemans)
+* Bump Gherkin (#78) (Julien Biezemans)
 * Switch to HTML tables in README (Julien Biezemans)
 * Bump Aruba (Julien Biezemans)
 
@@ -40,7 +40,7 @@
 
 #### Fixes
 
-* Exclude unmatched features from AST (close #80) (Julien Biezemans)
+* Exclude unmatched features from AST (#80) (Julien Biezemans)
 
 
 
@@ -158,7 +158,7 @@
 
 #### New features
 
-* Add support for string-based step definition patterns (closes #48) (Ted de Koning, Julien Biezemans)
+* Add support for string-based step definition patterns (#48) (Ted de Koning, Julien Biezemans)
 
 #### Documentation, internals and tests
 
