@@ -1,10 +1,36 @@
 # Cucumber.js changelog
 
-## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
+## [v0.3.x](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.22...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
 
 **TBD**
+
+
+
+### [v0.3.0](https://github.com/cucumber/cucumber-js/compare/v0.2.22...v0.3.0)
+
+#### New features
+
+* Allow for node-like callback errors (Julien Biezemans)
+* Accept multiple features in volatile configuration (close #52) (Julien Biezemans)
+
+#### Fixes
+
+* Add ^ prefix and $ suffix to string-based step definition regexps (#77) (Julien Biezemans)
+* Allow for unsafe regexp characters in stepdef string patterns (close #77) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Build on Node.js 0.8 on Travis (Julien Biezemans)
+* Rewrite README's status table in HTML (Julien Biezemans)
+* Bump Gherkin (close #78) (Julien Biezemans)
+* Switch to HTML tables in README (Julien Biezemans)
+* Bump Aruba (Julien Biezemans)
+
+
+
+## [v0.2.x](https://github.com/cucumber/cucumber-js/compare/v0.2.0...v0.3.0^)
 
 ### [v0.2.22](https://github.com/cucumber/cucumber-js/compare/v0.2.21...v0.2.22)
 
@@ -383,7 +409,7 @@
 #### New features
 
 * Allow custom World constructors (Julien Biezemans)
-* Add support for data tables (with conversion to hashes) (#12 Julien Biezemans)
+* Add support for data tables (with conversion to hashes) (#12) (Julien Biezemans)
 
 #### Changed features
 
@@ -431,11 +457,11 @@
 * Bump browserify (Julien Biezemans)
 * Remove "glob" from dependencies (Julien Biezemans)
 * Refactor SupportCodePathExpander spec (Julien Biezemans)
-* Add feature for CoffeeScript support (#29 Julien Biezemans)
+* Add feature for CoffeeScript support (#29) (Julien Biezemans)
 
 
 
-## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.5)
+## [v0.1.x](https://github.com/cucumber/cucumber-js/compare/v0.1.0...v0.2.0^)
 
 ### [v0.1.5](https://github.com/cucumber/cucumber-js/compare/v0.1.4...v0.1.5)
 
@@ -469,7 +495,7 @@
 
 #### New features
 
-* Allow several features to run at once (#14 Julien Biezemans)
+* Allow several features to run at once (#14) (Julien Biezemans)
 * Add support for --require (Julien Biezemans)
 
 #### Documentation, internals and tests
@@ -486,7 +512,7 @@
 
 #### New features
 
-* Add failure reporting to the progress formatter (#20 Julien Biezemans)
+* Add failure reporting to the progress formatter (#20) (Julien Biezemans)
 
 
 
@@ -502,7 +528,7 @@
 
 #### Documentation, internals and tests
 
-* Unify and clean up js-specific features and step definitions (#21 Julien Biezemans)
+* Unify and clean up js-specific features and step definitions (#21) (Julien Biezemans)
 
 
 
@@ -511,10 +537,10 @@
 #### New features
 
 * Add cucumber.js executable (Julien Biezemans)
-* Handle step failures (#6 Julien Biezemans)
-* Add the progress formatter (#16 Julien Biezemans)
-* Add support for pending steps (#18 Julien Biezemans)
-* Add support for undefined steps (#19 Julien Biezemans)
+* Handle step failures (#6) (Julien Biezemans)
+* Add the progress formatter (#16) (Julien Biezemans)
+* Add support for pending steps (#18) (Julien Biezemans)
+* Add support for undefined steps (#19) (Julien Biezemans)
 
 #### Changed features
 
@@ -522,7 +548,7 @@
 
 #### Fixes
 
-* Fix asynchronous step definition callbacks (#1 Julien Biezemans)
+* Fix asynchronous step definition callbacks (#1) (Julien Biezemans)
 * Fix stepResult.isSuccessful call in ProgressFormatter (Julien Biezemans)
 * Load Gherkin properly in browsers (Julien Biezemans)
 * Remove calls to console.log in web example (Julien Biezemans)
@@ -532,15 +558,15 @@
 * Pass against core.feature in its new form, both with the Cucumber-ruby/Aruba pair and cucumber-js itself (Julien Biezemans)
 * Refactor cucumber-features JS mappings (Julien Biezemans)
 * Refactor js-specific features (Julien Biezemans)
-* Rename PyString to DocString (#15 Julien Biezemans)
+* Rename PyString to DocString (#15) (Julien Biezemans)
 * Update Gherkin to 2.4.0 (Julien Biezemans)
 * Modularize the project and use browserify.js to serve a single JS file to browsers. (#3 Julien Biezemans)
 * Rename Cucumber.Types to Cucumber.Type (Julien Biezemans)
-* Use progress formatter in cucumber-features (#17 Julien Biezemans)
+* Use progress formatter in cucumber-features (#17) (Julien Biezemans)
 
 
 
-## [v0.0](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
+## [v0.0.x](https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.0^)
 
 ### [v0.0.1](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
 
