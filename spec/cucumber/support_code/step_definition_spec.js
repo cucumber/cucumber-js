@@ -27,7 +27,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
       beforeEach(function () {
         regexp                                  = createSpy("regexp");
-        regexpString                            = createSpy("regexp string");
+        regexpString                            = "regexp string";
         quotedDollarParameterSubstitutedPattern = createSpyWithStubs("quoted dollar param substituted pattern", {replace: regexpString});
         spyOnStub(pattern, 'replace').andReturn(quotedDollarParameterSubstitutedPattern);
         global.RegExp.andReturn(regexp);
@@ -45,7 +45,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
       it("instantiates a new RegExp", function () {
         stepDefinition.getPatternRegexp();
-        expect(global.RegExp).toHaveBeenCalledWith(regexpString);
+        expect(global.RegExp).toHaveBeenCalledWith("^" + regexpString + "$");
       });
 
       it("returns the new RegExp", function () {
