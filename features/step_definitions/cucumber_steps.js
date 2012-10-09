@@ -176,6 +176,15 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/^several features$/, function(callback) {
+    this.features = [
+      ["feature1", "Feature: One\n\n  Scenario:\n"],
+      ["feature2", "Feature: Two\n\n  Scenario:\n"],
+      ["feature3", "Feature: Three\n\n  Scenario:\n"],
+    ];
+    callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature({}, callback);
   });
@@ -203,6 +212,10 @@ setTimeout(callback.pending, 10);\
 
   When(/^Cucumber runs the feature$/, function(callback) {
     this.runFeature({}, callback);
+  });
+
+  When(/^Cucumber runs the features$/, function(callback) {
+    this.runFeatures({}, callback);
   });
 
   When(/^Cucumber runs the scenario with steps for a calculator$/, function(callback) {
@@ -306,6 +319,11 @@ callback();\
     callback();
   });
 
+  Then(/^all features are run$/, function(callback) {
+    this.assertPassedFeatures();
+    callback();
+  });
+
   Then(/^the failure message "([^"]*)" is output$/, function(message, callback) {
     this.assertFailureMessage(message);
     callback();
@@ -327,7 +345,6 @@ callback();\
     this.assertTrue(this.explicitWorldFunctionCalled);
     callback();
   });
-
 
   Then(/^the (before|after) hook is fired (?:before|after) the scenario$/, function(hookType, callback) {
     if (hookType == 'before')

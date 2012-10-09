@@ -22,13 +22,21 @@ proto.runFeature = function runFeature(options, callback) {
   this.runFeatureWithSupportCodeSource(supportCode, options, callback);
 };
 
+proto.runFeatures = function runFeatures(options, callback) {
+  this.runFeaturesWithSupportCodeSource(this.features, function() {}, options, callback);
+};
+
 proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource(supportCode, options, callback) {
+  this.runFeaturesWithSupportCodeSource(this.featureSource, supportCode, options, callback);
+};
+
+proto.runFeaturesWithSupportCodeSource = function runFeaturesWithSupportCodeSource(features, supportCode, options, callback) {
   var world     = this;
   var Cucumber  = require('../../lib/cucumber');
   options = options || {};
   var tags = options['tags'] || [];
 
-  var cucumber  = Cucumber(this.featureSource, supportCode, {tags: tags});
+  var cucumber  = Cucumber(features, supportCode, {tags: tags});
   var formatter = Cucumber.Listener.ProgressFormatter({logToConsole: false});
 
   cucumber.attachListener(formatter);
@@ -152,6 +160,12 @@ proto.makeNumberedStepName = function makeNumberedStepName(index) {
 
 proto.assertPassedFeature = function assertPassedFeature() {
   this.assertNoPartialOutput("failed", this.runOutput);
+  this.assertSuccess();
+};
+
+proto.assertPassedFeatures = function assertPassedFeatures() {
+  this.assertNoPartialOutput("failed", this.runOutput);
+  this.assertPartialOutput("3 scenarios (3 passed)", this.runOutput);
   this.assertSuccess();
 };
 

@@ -4,17 +4,17 @@ require('../support/configurations_shared_examples.js');
 describe("Cucumber.VolatileConfiguration", function() {
   var Cucumber = requireLib('cucumber');
 
-  var featureSource, supportCodeInitializer, configuration;
+  var featureSources, supportCodeInitializer, configuration;
   var supportCodeLibrary;
   var context = {};
 
   beforeEach(function() {
     supportCodeLibrary       = createSpy("support code library");
     spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
-    featureSource            = createSpy("feature source");
+    featureSources            = createSpy("feature source");
     supportCodeInitializer   = createSpy("support code initializer");
-    configuration            = Cucumber.VolatileConfiguration(featureSource, supportCodeInitializer);
-    context['configuration'] = configuration;
+    configuration            = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer);
+    context.configuration    = configuration;
   });
 
   itBehavesLikeAllCucumberConfigurations(context);
@@ -26,11 +26,23 @@ describe("Cucumber.VolatileConfiguration", function() {
   });
 
   describe("getFeatureSources()", function() {
-    it("returns the feature source and its volatile name", function() {
-      var featureNameSourcePair = [Cucumber.VolatileConfiguration.FEATURE_SOURCE_NAME, featureSource];
-      var featureSources        = [featureNameSourcePair];
-      expect(configuration.getFeatureSources()).toEqual(featureSources);
-    })
+    describe("when a single feature source string is passed", function () {
+      beforeEach(function () {
+        featureSources.replace = function () {};
+      });
+
+      it("returns the feature source and its volatile name", function() {
+        var featureNameSourcePair = [Cucumber.VolatileConfiguration.FEATURE_SOURCE_NAME, featureSources];
+        var featureSourceArray    = [featureNameSourcePair];
+        expect(configuration.getFeatureSources()).toEqual(featureSourceArray);
+      });
+    });
+
+    describe("when an array of features is passed", function () {
+      it("returns the array", function() {
+        expect(configuration.getFeatureSources()).toEqual(featureSources);
+      });
+    });
   });
 
   describe("getAstFilter()", function() {
@@ -77,7 +89,7 @@ describe("Cucumber.VolatileConfiguration", function() {
       beforeEach(function() {
         tagGroupStrings = [createSpy("tag group string 1"), createSpy("tag group string 2"), createSpy("tag group string 3")];
         rules           = [createSpy("rule 1"), createSpy("rule 2"), createSpy("rule 3")];
-        configuration   = Cucumber.VolatileConfiguration(featureSource, supportCodeInitializer, {tags: tagGroupStrings});
+        configuration   = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {tags: tagGroupStrings});
         spyOn(configuration, 'buildAstFilterRuleFromTagGroupString').andReturnSeveral(rules);
       });
 
