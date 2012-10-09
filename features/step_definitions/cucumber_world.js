@@ -56,7 +56,7 @@ proto.runAScenario = function runAScenario(callback) {
 };
 
 proto.runAScenarioCallingMapping = function runAScenarioCallingMapping(callback) {
-  this.addScenario("", "Given a mapping");
+  this.addScenario("", "Given " + this.mappingName);
   this.runFeature({}, callback);
 };
 
@@ -89,15 +89,17 @@ proto.isStepTouched = function isStepTouched(pattern) {
 };
 
 proto.addStringBasedPatternMapping = function addStringBasedPatternMapping() {
-  this.stepDefinitions += "Given('a mapping', function(callback) {\
-  world.logCycleEvent('a mapping');\
+  this.mappingName = "/a string-based mapping with fancy characters |\\ ^*-{(})+[a].?";
+  this.stepDefinitions += "Given('/a string-based mapping with fancy characters |\\\\ ^*-{(})+[a].?', function(callback) {\
+  world.logCycleEvent('/a string-based mapping with fancy characters |\\\\ ^*-{(})+[a].?');\
   callback();\
 });";
 };
 
 proto.addStringBasedPatternMappingWithParameters = function addStringBasedPatternMappingWithParameters() {
+  this.mappingName = "a string-based mapping";
   this.stepDefinitions += "Given('a mapping with $word_param \"$multi_word_param\"', function(p1, p2, callback) {\
-  world.logCycleEvent('a mapping');\
+  world.logCycleEvent('a string-based mapping');\
   world.actualMappingArguments = [p1, p2];\
   callback();\
 });";
@@ -193,7 +195,7 @@ proto.assertSkippedStep = function assertSkippedStep(stepName) {
 };
 
 proto.assertPassedMapping = function assertPassedMapping() {
-  this.assertCycleSequence("a mapping");
+  this.assertCycleSequence(this.mappingName);
 };
 
 proto.assertPassedMappingWithArguments = function assertPassedMappingWithArguments() {

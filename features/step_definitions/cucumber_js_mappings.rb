@@ -344,11 +344,12 @@ EOF
   end
 
   def write_coffee_script_definition_file
+    @mapping_name = "a CoffeeScript mapping"
     append_to_file COFFEE_SCRIPT_DEFINITIONS_FILE, <<-EOF
 fs = require('fs')
 stepDefinitions = () ->
-  this.defineStep(/^a mapping$/, (callback) ->
-    fs.writeFileSync('a_mapping.step', '')
+  this.defineStep(/^#{@mapping_name}$/, (callback) ->
+    fs.writeFileSync('#{step_file(@mapping_name)}', '')
     callback()
   )
 module.exports = stepDefinitions
@@ -356,18 +357,20 @@ EOF
   end
 
   def write_string_based_pattern_mapping
+    @mapping_name = "a mapping + fancy characters"
     append_support_code <<-EOF
-this.defineStep("a mapping", function(callback) {
-  fs.writeFileSync("#{step_file("a mapping")}", "");
+this.defineStep("a mapping + fancy characters", function(callback) {
+  fs.writeFileSync("#{step_file(@mapping_name)}", "");
   callback();
 });
 EOF
   end
 
   def write_string_based_pattern_mapping_with_parameters
+    @mapping_name = "a string-based mapping with parameters"
     append_support_code <<-EOF
 this.defineStep('a mapping with $word_param "$multi_word_param"', function(p1, p2, callback) {
-  fs.writeFileSync("#{step_file("a mapping")}", p1 + "\\n" + p2);
+  fs.writeFileSync("#{step_file(@mapping_name)}", p1 + "\\n" + p2);
   callback();
 });
 EOF

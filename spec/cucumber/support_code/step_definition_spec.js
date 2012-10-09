@@ -23,19 +23,26 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
 
     describe("when the pattern is a String", function () {
-      var regexp, quotedDollarParameterSubstitutedPattern, regexpString;
+      var regexp, quotedDollarParameterSubstitutedPattern, safeString, regexpString;
 
       beforeEach(function () {
         regexp                                  = createSpy("regexp");
         regexpString                            = "regexp string";
+        safeString                              = createSpyWithStubs("safe string");
         quotedDollarParameterSubstitutedPattern = createSpyWithStubs("quoted dollar param substituted pattern", {replace: regexpString});
-        spyOnStub(pattern, 'replace').andReturn(quotedDollarParameterSubstitutedPattern);
+        spyOnStub(pattern, 'replace').andReturn(safeString);
+        spyOnStub(safeString, 'replace').andReturn(quotedDollarParameterSubstitutedPattern);
         global.RegExp.andReturn(regexp);
+      });
+
+      it("escapes unsafe regexp characters from the string", function () {
+        stepDefinition.getPatternRegexp();
+        expect(pattern.replace).toHaveBeenCalledWith(Cucumber.SupportCode.StepDefinition.UNSAFE_STRING_CHARACTERS_REGEXP, Cucumber.SupportCode.StepDefinition.PREVIOUS_REGEXP_MATCH);
       });
 
       it("replaces quoted dollar-prefixed parameters with the regexp equivalent", function () {
         stepDefinition.getPatternRegexp();
-        expect(pattern.replace).toHaveBeenCalledWith(Cucumber.SupportCode.StepDefinition.QUOTED_DOLLAR_PARAMETER_REGEXP, Cucumber.SupportCode.StepDefinition.QUOTED_DOLLAR_PARAMETER_SUBSTITUTION);
+        expect(safeString.replace).toHaveBeenCalledWith(Cucumber.SupportCode.StepDefinition.QUOTED_DOLLAR_PARAMETER_REGEXP, Cucumber.SupportCode.StepDefinition.QUOTED_DOLLAR_PARAMETER_SUBSTITUTION);
       });
 
       it("replaces other dollar-prefixed parameter with the regexp equivalent", function () {

@@ -41,7 +41,7 @@ When /^Cucumber executes a scenario using that mapping$/ do
   write_feature <<-EOF
 Feature:
   Scenario:
-    Given a mapping
+    Given #{@mapping_name}
 EOF
   run_feature
 end
@@ -67,11 +67,11 @@ EOF
 end
 
 Then /^the mapping is run$/ do
-  assert_passed "a mapping"
+  assert_passed @mapping_name
 end
 
 Then /^the mapping receives the arguments$/ do
-  assert_passed_with_arguments "a mapping", @mapping_arguments
+  assert_passed_with_arguments @mapping_name, @mapping_arguments
 end
 
 Then /^the explicit World object function should have been called$/ do
