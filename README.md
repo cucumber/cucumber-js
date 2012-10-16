@@ -26,10 +26,6 @@ Cucumber.js is still a work in progress. Here is its current status.
       <td>Done<sup>1</sup></td>
     </tr>
     <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/calling_steps_from_step_defs.feature">Calling steps from step defs</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/comments.feature">Comments</a></td>
       <td>Done</td>
     </tr>
