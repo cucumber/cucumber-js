@@ -41,7 +41,7 @@
     "node": "0.6 || 0.7 || 0.8"
   },
   "dependencies": {
-    "gherkin": "2.11.3",
+    "gherkin": "2.11.5",
     "jasmine-node": "1.0.26",
     "connect": "2.3.2",
     "browserify": "1.15.5",
