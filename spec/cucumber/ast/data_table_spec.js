@@ -80,7 +80,7 @@ describe("Cucumber.Ast.DataTable", function() {
     it("gets the raw representation of the row without the header", function() {
       dataTable.rows();
       expect(rowArray[1].raw).toHaveBeenCalled();
-      expect(rowArray[0].raw).wasNotCalled();
+      expect(rowArray[0].raw).not.toHaveBeenCalled();
     });
   });
 
