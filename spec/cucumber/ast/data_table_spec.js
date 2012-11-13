@@ -63,6 +63,28 @@ describe("Cucumber.Ast.DataTable", function() {
     });
   });
 
+  describe("rows()", function() {
+    var rowArray;
+    beforeEach(function() {
+      rawRows = [
+        createSpy("raw row 1"),
+        createSpy("raw row 2")];
+      rowArray = [
+        createSpyWithStubs("row 1", {raw: rawRows[0]}),
+        createSpyWithStubs("row 2", {raw: rawRows[1]})
+      ];
+      rows.add(rowArray[0]);
+      rows.add(rowArray[1]);
+    });
+
+    it("gets the raw representation of the row without the header", function() {
+      dataTable.rows();
+      expect(rowArray[1].raw).toHaveBeenCalled();
+      expect(rowArray[0].raw).wasNotCalled();
+    });
+  });
+
+
   describe("hashes", function() {
     var raw, hashDataTable;
 

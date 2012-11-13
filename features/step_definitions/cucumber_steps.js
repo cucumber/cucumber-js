@@ -232,6 +232,14 @@ callback();\
     this.runFeature({}, callback);
   });
 
+  When(/^the data table is passed to a step mapping that gets the row arrays without the header$/, function(callback) {
+    this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
+world.dataTableLog = dataTable.rows();\
+callback();\
+});\n";
+    this.runFeature({}, callback);
+  });
+
   When(/^Cucumber executes scenarios tagged with "([^"]*)"$/, function(tag, callback) {
     this.runFeature({tags: [tag]}, callback);
   });
