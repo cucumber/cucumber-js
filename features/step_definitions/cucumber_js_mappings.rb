@@ -107,6 +107,16 @@ EOF
     append_step_definition(step_name, body, ["dataTable"])
   end
 
+  def write_mapping_receiving_data_table_as_headless_row_array(step_name)
+    body = <<-EOF
+var dataTableHashes = dataTable.rows();
+var dataTableJSON   = JSON.stringify(dataTableHashes);
+fs.writeFileSync("#{DATA_TABLE_LOG_FILE}", "" + dataTableJSON);
+callback();
+EOF
+    append_step_definition(step_name, body, ["dataTable"])
+  end
+
   def write_calculator_code
     rpn_calculator_code = get_file_contents('../support/rpn_calculator.js')
     create_dir 'features/support'
