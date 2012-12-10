@@ -14,6 +14,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
     spyOn(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
     summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
+    color = Cucumber.Util.ConsoleColor;
   });
 
   describe("constructor", function () {
@@ -994,7 +995,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs a little explanation about the snippets", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      expect(summaryFormatter.log).toHaveBeenCalledWith("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+      expect(summaryFormatter.log).toHaveBeenCalledWith(color.format('pending', "\nYou can implement step definitions for undefined steps with these snippets:\n\n"));
     });
 
     it("gets the undefined steps log buffer", function () {
@@ -1004,7 +1005,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs the undefined steps", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      expect(summaryFormatter.log).toHaveBeenCalledWith(undefinedStepLogBuffer);
+      expect(summaryFormatter.log).toHaveBeenCalledWith(color.format('pending', undefinedStepLogBuffer));
     });
   });
 });
