@@ -67,7 +67,7 @@ describe("Cucumber.Ast.Scenario", function() {
     var step, lastStep;
 
     beforeEach(function() {
-      step = createSpyWithStubs("step AST element", {setPreviousStep: null});
+      step = createSpyWithStubs("step AST element", {setPreviousStep: null, setScenario: null});
       lastStep = createSpy("last step");
       spyOn(scenario, 'getLastStep').andReturn(lastStep);
     });
@@ -80,6 +80,11 @@ describe("Cucumber.Ast.Scenario", function() {
     it("sets the last step as the previous step", function() {
       scenario.addStep(step);
       expect(step.setPreviousStep).toHaveBeenCalledWith(lastStep);
+    });
+
+    it("sets the step's scenario to the current scenario", function() {
+      scenario.addStep(step);
+      expect(step.setScenario).toHaveBeenCalledWith(scenario);
     });
 
     it("adds the step to the steps (collection)", function() {
