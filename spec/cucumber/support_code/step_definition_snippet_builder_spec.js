@@ -8,7 +8,24 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
 
   beforeEach(function() {
     step           = createSpy("step");
-    snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step);
+    syntax         = createSpyWithStubs("step syntax", {
+      getStepDefinitionStart               : 'this.',
+      getStepDefinitionInner1              : '(',
+      getStepDefinitionInner2              : ', function(',
+      getStepDefinitionEnd                 : ") {\n  // express the regexp above with the code you wish you had\n  callback.pending();\n});\n",
+      getContextStepDefinitionFunctionName : 'Given',
+      getEventStepDefinitionFunctionName   : 'When',
+      getOutcomeStepDefinitionFunctionName : 'Then',
+      getNumberMatchingGroup               : '(\\d+)',
+      getQuotedStringMatchingGroup         : '"([^"]*)"',
+      getFunctionParameterSeparator        : ', ',
+      getStepDefinitionDocString           : 'string',
+      getStepDefinitionDataTable           : 'table',
+      getStepDefinitionCallback            : 'callback',
+      getPatternStart                      : '/^',
+      getPatternEnd                        : '$/'
+    });
+    snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step, syntax);
   });
 
   describe("buildSnippet()", function() {
