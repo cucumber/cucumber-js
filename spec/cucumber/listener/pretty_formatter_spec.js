@@ -112,7 +112,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     beforeEach(function () {
       keyword  = "scenario-keyword";
       name     = "scenario-name";
-      backgroundStepLength = 30;
+      //Background step assumed to be the longest
+      backgroundStepLength = 40;
       scenarioStepLength = 20;
       line = 10
       uri = "scenario-uri";
