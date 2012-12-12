@@ -993,7 +993,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     var undefinedStepLogBuffer;
 
     beforeEach(function () {
-      undefinedStepLogBuffer = createSpy("undefined step log buffer");
+      // Undefined Step Log buffer is string
+      undefinedStepLogBuffer = 'undefinedStepsLogBuffer';
       spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
     });
 

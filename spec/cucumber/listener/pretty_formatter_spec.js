@@ -67,7 +67,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       keyword  = "feature-keyword";
       name     = "feature-name";
       description = "feature-description";
-      feature  = createSpyWithStubs("feature", { getKeyword: keyword, getName: name, getDescription: description });
+      tags = [createSpyWithStubs("tags", {getName: '@tag'})];
+      feature  = createSpyWithStubs("feature", { getKeyword: keyword, getName: name, getDescription: description, getTags: tags });
       event    = createSpyWithStubs("event", { getPayloadItem: feature });
       callback = createSpy("callback");
       spyOn(prettyFormatter, 'logIndented');
@@ -90,7 +91,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the feature header", function () {
       prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      var text = keyword + ": " + name + "\n";
+      var text = color.format('tag', '@tag') + "\n" +keyword + ": " + name + "\n";
       expect(prettyFormatter.log).toHaveBeenCalledWith(text);
     });
 
@@ -113,12 +114,13 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       keyword  = "scenario-keyword";
       name     = "scenario-name";
       //Background step assumed to be the longest
-      backgroundStepLength = 40;
+      backgroundStepLength = 50;
       scenarioStepLength = 20;
+      tags = [createSpyWithStubs("tags", {getName: '@tag'})];
       line = 10
       uri = "scenario-uri";
       background = createSpyWithStubs("background", { getMaxStepLength: backgroundStepLength})
-      scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getMaxStepLength: scenarioStepLength, getUri: uri, getLine: line, getBackground: background });
+      scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getMaxStepLength: scenarioStepLength, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
       event    = createSpyWithStubs("event", { getPayloadItem: scenario });
       spyOn(prettyFormatter, 'logIndented');
       callback = createSpy("callback");
@@ -141,7 +143,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the scenario header, indented by one level", function () {
       prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      var text = prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + color.format('comment', "# " + scenario.getUri().slice(1) + ":" + scenario.getLine()) + "\n";
+      var text = color.format('tag', "@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + color.format('comment', "# " + scenario.getUri().slice(1) + ":" + scenario.getLine()) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 1);
     });
 
