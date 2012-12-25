@@ -103,7 +103,7 @@ describe("Cucumber.Ast.Assembler", function() {
     var feature, featureTags, element;
 
     beforeEach(function() {
-      element     = createSpyWithStubs("AST element", {addTags: null, addFeatureTags: null});
+      element     = createSpyWithStubs("AST element", {addFeatureTags: null});
       featureTags = createSpy("feature tags");
       feature     = createSpyWithStubs("current feature", {getTags: featureTags});
       spyOn(assembler, 'getCurrentFeature').andReturn(feature);
