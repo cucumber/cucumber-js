@@ -111,4 +111,3 @@ This a reminder of the steps maintainers have to follow to release a new version
 * Push to main repo on Github
 * Wait for build to go green
 * Publish to NPM
-* Deploy to cucumber.no.de
