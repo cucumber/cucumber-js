@@ -4,8 +4,6 @@
 
 It runs on both Node.js and *modern* web browsers.
 
-**Try it now: [http://cucumber.no.de](http://cucumber.no.de)!**
-
 ## Development status
 
 Cucumber.js is still a work in progress. Here is its current status.
@@ -449,7 +447,6 @@ A few example apps are available for you to browse:
 
 * [Rails app serving features in the browser](https://github.com/jbpros/cucumber-js-example)
 * [Express.js app running features in the cli](https://github.com/olivoil/NodeBDD)
-* [Try cucumber.js in the browser](http://cucumber.no.de/)
 
 ## Contribute
 
