@@ -134,7 +134,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 Cucumber.js is tested on:
 
-* Node.js 0.6 and 0.8 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
+* Node.js 0.6, 0.8 and 0.10.0 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
