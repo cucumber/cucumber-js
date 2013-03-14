@@ -3,9 +3,9 @@ before_script: "git submodule update --init && npm install"
 script: "rake"
 
 node_js:
-  - 0.6
-  - 0.8
-  - 0.10
+  - "0.6"
+  - "0.8"
+  - "0.10"
 
 branches:
   only:
