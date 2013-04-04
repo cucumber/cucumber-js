@@ -1,6 +1,7 @@
 module CucumberJsMappings
   STEP_DEFINITIONS_FILE                   = "features/step_definitions/cucumber_steps.js"
   COFFEE_SCRIPT_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.coffee"
+  POGO_SCRIPT_DEFINITIONS_FILE            = "features/step_definitions/cucumber_steps.pogo"
   FEATURE_FILE                            = "features/a_feature.feature"
   WORLD_VARIABLE_LOG_FILE                 = "world_variable.log"
   WORLD_FUNCTION_LOG_FILE                 = "world_function.log"
@@ -363,6 +364,19 @@ stepDefinitions = () ->
     callback()
   )
 module.exports = stepDefinitions
+EOF
+  end
+  
+  def write_pogo_script_definition_file
+    @mapping_name = "a PogoScript mapping"
+    append_to_file POGO_SCRIPT_DEFINITIONS_FILE, <<-EOF
+fs = require('fs')
+step definitions () =
+    this.define step r/^#{@mapping_name}$/ @(callback)
+        fs.write file sync ('#{step_file(@mapping_name)}', '')
+        callback()
+  
+module.exports = step definitions
 EOF
   end
 

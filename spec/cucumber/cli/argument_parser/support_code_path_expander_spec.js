@@ -34,5 +34,10 @@ describe("Cucumber.Cli.ArgumentParser.SupportCodePathExpander", function() {
       var matchedCoffeeScriptFile = SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP.test("example_steps.coffee");
       expect(matchedCoffeeScriptFile).toBeTruthy();
     });
+    
+    it("matches PogoScript files", function() {
+      var matchedPogoScriptFile = SupportCodePathExpander.SUPPORT_CODE_FILES_IN_DIR_REGEXP.test("example_steps.pogo");
+      expect(matchedPogoScriptFile).toBeTruthy();
+    });
   });
 });
