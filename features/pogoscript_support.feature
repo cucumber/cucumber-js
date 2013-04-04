@@ -3,7 +3,6 @@ Feature: PogoScript support
   As a step definition implementor
   I want to use PogoScript for writing step definitions
 
-  @wip
   Scenario: PogoScript step definition
     Given a mapping written in PogoScript
     When Cucumber executes a scenario using that mapping
