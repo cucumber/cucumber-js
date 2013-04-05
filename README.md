@@ -119,7 +119,7 @@ Cucumber.js is still a work in progress. Here is its current status.
       <td>Done</td>
     </tr>
     <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/cli.featur">Command-line interface</a></td>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/cli.feature">Command-line interface</a></td>
       <td>Done</td>
     </tr>
   </tbody>
