@@ -140,6 +140,67 @@ proto.addPassingScenarioWithoutTags = function addPassingScenarioWithoutTags() {
   this.addPassingScenarioWithTags();
 };
 
+proto.addBeforeHook = function (callback) {
+  this._addHook({ type: "before" }, callback);
+};
+
+proto.addAfterHook = function (callback) {
+  this._addHook({ type: "after" }, callback);
+};
+
+proto.addAroundHook = function (callback) {
+  this._addAroundHook(callback);
+};
+
+proto.addAroundHookWithTags = function (tags, callback) {
+  this._addAroundHook({ tags: tags, logEvent: "hook" }, callback);
+};
+
+proto.addUntaggedHook = function (callback) {
+  this._addHook({ type: "before", logEvent: "hook" }, callback);
+};
+
+proto.addHookWithTags = function (tags, callback) {
+  this._addHook({ type: "before", logEvent: "hook", tags: tags }, callback);
+};
+
+proto._addHook = function (options, callback) {
+  if (!callback) {
+    callback = options;
+    options = {};
+  }
+  var type = "before";
+  var tags = "";
+  if (options.type) type = options.type;
+  if (!options.logEvent) options.logEvent = type;
+  if (options.tags) tags = '"' + options.tags + '", ';
+  var defineHook = (type == 'before' ? 'Before' : 'After');
+  this.stepDefinitions += defineHook + "(" + tags + "function(callback) {\
+  world.logCycleEvent('" + options.logEvent + "');\
+  callback();\
+});\n";
+  callback();
+};
+
+proto._addAroundHook = function (options, callback) {
+  if (!callback) {
+    callback = options;
+    options = {};
+  }
+  var tags = "";
+  var logEvent = "around";
+  if (options.tags) tags = '"' + options.tags + '", ';
+  if (options.logEvent) logEvent = options.logEvent;
+  this.stepDefinitions += "Around(" + tags + "function(runScenario) {\
+  world.logCycleEvent('" + logEvent + "-pre');\
+  runScenario(function(callback) {\
+  world.logCycleEvent('" + logEvent + "-post');\
+    callback();\
+  });\
+});\n";
+  callback();
+};
+
 proto.createEmptyFeature = function createEmptyFeature(options) {
   options = options || {};
   tags    = options['tags'] || [];
@@ -150,6 +211,14 @@ proto.createEmptyFeature = function createEmptyFeature(options) {
     this.featureSource += "Feature: A feature\n\n";
     this.emptyFeatureReady = true;
   }
+};
+
+proto.addPassingStepDefinitionWithName = function (name, callback) {
+  this.stepDefinitions += "Given(/^" + name + "$/, function(callback) {\
+  world.touchStep(\"" + name + "\");\
+  callback();\
+});\n";
+  callback();
 };
 
 proto.makeNumberedStepName = function makeNumberedStepName(index) {
