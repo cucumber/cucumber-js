@@ -201,6 +201,15 @@ proto._addAroundHook = function (options, callback) {
   callback();
 };
 
+proto.addFailingMapping = function (stepName, callback) {
+  this.stepDefinitions += "\
+Given(/^" + stepName + "$/, function(callback) {\
+  world.touchStep(\"" + stepName + "\");\
+  throw(new Error('I was supposed to fail.'));\
+});";
+  callback();
+};
+
 proto.createEmptyFeature = function createEmptyFeature(options) {
   options = options || {};
   tags    = options['tags'] || [];

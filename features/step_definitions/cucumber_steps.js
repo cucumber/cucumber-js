@@ -34,11 +34,7 @@ var cucumberSteps = function() {
   });
 
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
-    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
-  world.touchStep(\"" + stepName + "\");\
-  throw(new Error('I was supposed to fail.'));\
-});\n";
-    callback();
+    this.addFailingMapping(stepName, callback);
   });
 
   Given(/^the step "([^"]*)" has a mapping failing with the message "([^"]*)"$/, function(stepName, message, callback) {
