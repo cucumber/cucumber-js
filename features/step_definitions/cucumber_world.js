@@ -202,11 +202,24 @@ proto._addAroundHook = function (options, callback) {
 };
 
 proto.addFailingMapping = function (stepName, callback) {
+  this._addFailingMapping(stepName, {}, callback);
+};
+
+proto.addFailingMappingWithMessage = function (stepName, message, callback) {
+  this._addFailingMapping(stepName, { message: message }, callback);
+};
+
+proto._addFailingMapping = function (stepName, options, callback) {
+  var message = "I was supposed to fail.";
+  if (options.message) message = options.message;
+  var body = "throw(new Error('" + message + "'));";
+  this._addMapping(stepName, body, callback);
+};
+
+proto._addMapping = function (stepName, body, callback) {
   this.stepDefinitions += "\
 Given(/^" + stepName + "$/, function(callback) {\
-  world.touchStep(\"" + stepName + "\");\
-  throw(new Error('I was supposed to fail.'));\
-});";
+  world.touchStep(\"" + stepName + "\");\n" + body + "});";
   callback();
 };
 
