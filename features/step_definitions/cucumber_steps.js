@@ -34,11 +34,11 @@ var cucumberSteps = function() {
   });
 
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
-    this.addFailingMapping(stepName, callback);
+    this.addFailingMapping(stepName, {}, callback);
   });
 
   Given(/^the step "([^"]*)" has a mapping failing with the message "([^"]*)"$/, function(stepName, message, callback) {
-    this.addFailingMappingWithMessage(stepName, message, callback);
+    this.addFailingMapping(stepName, { message: message }, callback);
   });
 
   Given(/^the step "([^"]*)" has a mapping asynchronously failing with the message "([^"]*)"$/, function(stepName, message, callback) {
