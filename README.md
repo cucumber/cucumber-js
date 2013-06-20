@@ -297,7 +297,7 @@ this.Then('I should see "$title" as the page title', function(title, callback) {
 });
 ```
 
-`'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)")$/`.
+`'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)"$/`.
 
 #### Hooks
 
@@ -358,7 +358,7 @@ module.exports = myAfterHooks;
 
 ##### Around hooks
 
-It's also possible to combine both before and around hooks in one single definition with the help of *around hooks*:
+It's also possible to combine both before and after hooks in one single definition with the help of *around hooks*:
 
 ```javascript
 // features/support/advanced_hooks.js
