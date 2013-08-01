@@ -196,11 +196,12 @@ Support files let you setup the environment in which steps will be run, and defi
 
 *World* is a constructor function with utility properties, destined to be used in step definitions:
 
+
 ``` javascript
 // features/support/world.js
 
 var zombie = require('zombie');
-var World = function World(callback) {
+var World = function World(callback, cucumber) {
   this.browser = new zombie(); // this.browser will be available in step definitions
 
   this.visit = function(url, callback) {
@@ -218,7 +219,7 @@ It is possible to tell Cucumber to use another object instance than the construc
 // features/support/world.js
 
 var zombie = require('zombie');
-var WorldConstructor = function WorldConstructor(callback) {
+var WorldConstructor = function WorldConstructor(callback, cucumber) {
   this.browser = new zombie(); // this.browser will be available in step definitions
 
   var world = {
@@ -231,6 +232,9 @@ var WorldConstructor = function WorldConstructor(callback) {
 };
 exports.World = WorldConstructor;
 ```
+
+A new instance of `World` is created before each scenerio and provided with a callback property for asynchronous
+construction and a reference to the cucumber runtime.
 
 #### Step Definitions
 

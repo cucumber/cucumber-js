@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Library", function() {
   var Cucumber = requireLib('cucumber');
-  var library, rawSupportCode, hooker;
+  var library, rawSupportCode, hooker, runtime;
   var stepDefinitionCollection;
   var worldConstructor;
 
@@ -20,6 +20,7 @@ describe("Cucumber.SupportCode.Library", function() {
     spyOn(Cucumber.SupportCode.Library, 'Hooker').andReturn(hooker);
     spyOn(Cucumber.SupportCode, 'WorldConstructor').andReturn(worldConstructor);
     library = Cucumber.SupportCode.Library(rawSupportCode);
+    runtime = {};
   });
 
   describe("constructor", function() {
@@ -286,9 +287,10 @@ describe("Cucumber.SupportCode.Library", function() {
       callback = createSpy("callback");
     });
 
-    it("creates a new instance of the World and give it a callback", function() {
-      library.instantiateNewWorld(callback);
+    it("creates a new instance of the World and give it a callback and runtime", function() {
+      library.instantiateNewWorld(runtime, callback);
       expect(worldConstructor).toHaveBeenCalled();
+      expect(worldConstructor.mostRecentCall.args[1]).toBe(runtime);
       expect(worldConstructor).toHaveBeenCalledWithAFunctionAsNthParameter(1);
       expect(worldInstance.constructor).toBe(worldConstructor);
     });
@@ -297,10 +299,10 @@ describe("Cucumber.SupportCode.Library", function() {
       var worldConstructorCompletionCallback;
 
       beforeEach(function() {
-        library.instantiateNewWorld(callback);
+        library.instantiateNewWorld(runtime, callback);
         worldConstructorCompletionCallback = worldConstructor.mostRecentCall.args[0];
         spyOn(process, 'nextTick');
-      })
+      });
 
       it("registers a function for the next tick (to get out of the constructor call)", function() {
         worldConstructorCompletionCallback();
@@ -352,7 +354,7 @@ describe("Cucumber.SupportCode.Library", function() {
       library                    = Cucumber.SupportCode.Library(rawSupportCode);
 
       runs(function() {
-        library.instantiateNewWorld(function(world) {
+        library.instantiateNewWorld(runtime, function(world) {
           worldInstance = world;
           worldReady = true;
         });

@@ -2,14 +2,15 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker", function() {
   var Cucumber = requireLib('cucumber');
-  var treeWalker, features, supportCodeLibrary, listeners;
+  var treeWalker, features, supportCodeLibrary, listeners, runtime;
 
   beforeEach(function() {
     features           = createSpyWithStubs("Features AST element", {acceptVisitor: null});
     supportCodeLibrary = createSpy("Support code library");
     listeners          = [createSpy("First listener"), createSpy("Second listener")];
     spyOnStub(listeners, 'syncForEach').andCallFake(function(cb) { listeners.forEach(cb); });
-    treeWalker         = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners);
+    runtime            = createSpy("runtime");
+    treeWalker         = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, runtime);
   });
 
   describe("walk()", function() {
@@ -172,7 +173,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     it("instantiates a new World instance asynchronously", function() {
       treeWalker.visitScenario(scenario, callback);
       expect(supportCodeLibrary.instantiateNewWorld).toHaveBeenCalled();
-      expect(supportCodeLibrary.instantiateNewWorld).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(supportCodeLibrary.instantiateNewWorld.mostRecentCall.args[0]).toEqual(runtime);
+      expect(supportCodeLibrary.instantiateNewWorld).toHaveBeenCalledWithAFunctionAsNthParameter(2);
     });
 
     describe("on world instantiation completion", function() {
@@ -182,7 +184,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       beforeEach(function() {
         treeWalker.visitScenario(scenario, callback);
-        worldInstantiationCompletionCallback = supportCodeLibrary.instantiateNewWorld.mostRecentCall.args[0];
+        worldInstantiationCompletionCallback = supportCodeLibrary.instantiateNewWorld.mostRecentCall.args[1];
         world                 = createSpy("world instance");
         event                 = createSpy("scenario visit event");
         hookedUpScenarioVisit = createSpy("hooked up scenario visit");
@@ -447,7 +449,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       beforeEach(function() {
         wrapper = treeWalker.wrapAfterEventBroadcast(event, callback);
-        spyOn(treeWalker, 'broadcastAfterEvent');;
+        spyOn(treeWalker, 'broadcastAfterEvent');
       });
 
       it("broadcasts an after event with the received callback as callback", function() {
@@ -501,7 +503,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
 
   describe("broadcastEvent()", function() {
-    var event, eventName, callback;
+    var event, callback;
 
     beforeEach(function() {
       event    = createSpy("Event");

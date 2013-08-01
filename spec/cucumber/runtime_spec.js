@@ -4,7 +4,7 @@ describe("Cucumber.Runtime", function() {
   var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
-  var supportCodeLibrary, listeners;
+  var listeners;
 
   beforeEach(function() {
     listeners     = createSpyWithStubs("listener collection", {add: null});
@@ -64,7 +64,7 @@ describe("Cucumber.Runtime", function() {
 
     it("creates a new AST tree walker", function() {
       runtime.start(callback);
-      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners);
+      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners, runtime);
     });
 
     it("tells the AST tree walker to walk", function() {
