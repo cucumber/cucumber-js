@@ -2,9 +2,47 @@
 
 ## [v0.3.x](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.1...master)
 
 **TBD**
+
+
+
+### [v0.3.1](https://github.com/cucumber/cucumber-js/compare/v0.3.0...v0.3.1)
+
+#### New features
+
+* Add DataTable.rows() (Niklas Närhinen)
+* Officially support Node 0.10 and 0.11 (Julien Biezemans)
+
+#### Changed features
+
+* Update cucumber-html (Aslak Hellesøy)
+* Bump Gherkin (Julien Biezemans)
+* Add options parameter to JSON formatter (Israël Hallé)
+* Updated CoffeeScript (Matteo Collina)
+* Specify strict coffee-script version number (Julien Biezemans)
+* Bump jasmine-node (Julien Biezemans)
+
+#### Fixes
+
+* Fix travis build Node versions (Julien Biezemans)
+* Fix Travis CI configuration (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove words in History (Julien Biezemans)
+* Update dev status table in README (Julien Biezemans)
+* Update LICENSE (Julien Biezemans)
+* Add contributors (Julien Biezemans)
+* Move data table scenario to TCK (Julien Biezemans)
+* Be consistent in spec matchers (Julien Biezemans)
+* Remove cucumber.no.de links	(Kim, Jang-hwan)
+* Fix broken link in README dev status table (#118) (Michael Zedeler)
+* Refactor hook-related Given steps in JS stepdefs (Julien Biezemans)
+* Refactor failing mapping JS step definitions (Julien Biezemans & Matt Wynne)
+* Update README.md to correct error in example for zombie initialization (Tom V)
+* Update minor typos in README.md (David Godfrey)
 
 
 
