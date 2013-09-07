@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -46,7 +46,7 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": "0.6 || 0.7 || 0.8"
+    "node": "0.6 || 0.8 || 0.10 || 0.11"
   },
   "dependencies": {
     "gherkin": "2.11.5",
