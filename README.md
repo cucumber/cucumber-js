@@ -187,7 +187,7 @@ Feature: Example feature
   So that I can concentrate on building awesome applications
 
   Scenario: Reading documentation
-    Given I am on the Cucumber.js Github repository
+    Given I am on the Cucumber.js GitHub repository
     When I go to the README file
     Then I should see "Usage" as the page title
 ```
@@ -254,7 +254,7 @@ Step definitions are run when steps match their name. `this` is an instance of `
 var myStepDefinitionsWrapper = function () {
   this.World = require("../support/world.js").World; // overwrite default World constructor
 
-  this.Given(/^I am on the Cucumber.js Github repository$/, function(callback) {
+  this.Given(/^I am on the Cucumber.js GitHub repository$/, function(callback) {
     // Express the regexp above with the code you wish you had.
     // `this` is set to a new this.World instance.
     // i.e. you may use this.browser to execute the step:
