@@ -317,9 +317,13 @@ EOF
 
   def assert_json_output(expected)
     expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
-    expected = JSON(expected).to_s
+    expected = JSON(expected)
     actual   = JSON(all_output)
-    neutralise_error_messages_in_enumerable actual
+
+    neutralise_variable_values_in_json expected
+    neutralise_variable_values_in_json actual
+
+    expected = expected.to_s
     actual   = actual.to_s
     actual.should == expected
   end
@@ -397,17 +401,14 @@ EOF
     "step #{n}"
   end
 
-  def neutralise_error_messages_in_enumerable enumerable
-    if enumerable.is_a? Array
-      enumerable.each do |item|
-        neutralise_error_messages_in_enumerable item if item.respond_to? :each
-      end
-    else
-      enumerable.each do |attr, value|
-        if attr == "error_message"
-          enumerable[attr] = "<error-message>"
-        elsif value.respond_to? :each
-          neutralise_error_messages_in_enumerable value
+  def neutralise_variable_values_in_json json
+    json.each do |item|
+      (item['elements'] || []).each do |element|
+        (element['steps'] || []).each do |step|
+          if step.include? 'result'
+            step['result']['error_message'] = "<error-message>" if step['result'].include? 'error_message'
+            step['result']['duration'] = "<duration>" if step['result'].include? 'duration'
+          end
         end
       end
     end
