@@ -17,6 +17,16 @@ Given /^a mapping with a string-based pattern and parameters$/ do
   write_string_based_pattern_mapping_with_parameters
 end
 
+Given(/^a promise-based mapping$/) do
+  @mapping_name = "passing promise stepdef"
+  write_passing_promise_mapping(@mapping_name)
+end
+
+Given(/^a failing promise-based mapping$/) do
+  @mapping_name = "failing promise stepdef"
+  write_failing_promise_mapping(@mapping_name)
+end
+
 Given /^the step "([^"]*)" has an asynchronous pending mapping$/ do |step_name|
   write_asynchronous_pending_mapping(step_name)
 end
@@ -41,7 +51,7 @@ Given /^an around hook tagged with "([^"]*)"$/ do |tag|
   write_passing_hook :type => "around", :tags => [tag], :log_cycle_event_as => "hook"
 end
 
-When /^Cucumber executes a scenario using that mapping$/ do
+When /^Cucumber executes (?:a scenario using )?that mapping$/ do
   write_feature <<-EOF
 Feature:
   Scenario:

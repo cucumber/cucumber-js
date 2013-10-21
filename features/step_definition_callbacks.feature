@@ -8,3 +8,15 @@ Feature: Step definition callbacks
     And the step "I divide 10 by 0" has a mapping failing via a Node-like error construct
     When Cucumber executes the scenario
     Then the scenario fails
+
+  Scenario: succeed with promise
+    Given a promise-based mapping
+    When Cucumber executes that mapping
+    Then the mapping is run
+    And the scenario passes
+
+  Scenario: fail with promise
+    Given a failing promise-based mapping
+    When Cucumber executes that mapping
+    Then the mapping is run
+    And the scenario fails
