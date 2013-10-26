@@ -272,6 +272,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
           var duration;
 
+
           if (process.hrtime) {
             duration = 1;
           }
