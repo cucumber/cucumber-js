@@ -105,10 +105,10 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       if (process.hrtime) {
         spyOn(process, 'hrtime').andCallFake(function (time) {
           if (time) {
-            return [0 - time[0], timestamp - time[1]];
+            return [0 - time[0], (timestamp * 1e6) - time[1]];
           }
           else {
-            return [0, timestamp];
+            return [0, timestamp * 1e6];
           }
         });
       }
@@ -169,16 +169,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         });
 
         it("creates a successful step result", function () {
-          var duration;
-
-          if (process.hrtime) {
-            duration = 1;
-          }
-          else {
-            duration = 1e6;
-          }
-
-          expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalledWith({step: step, duration: duration});
+          expect(Cucumber.Runtime.SuccessfulStepResult).toHaveBeenCalledWith({step: step, duration: 1e6});
         });
 
         it("unregisters the exception handler", function () {
@@ -269,18 +260,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
         it("creates a failing step result", function () {
           codeExecutionCallback.fail(failureReason);
-
-          var duration;
-
-
-          if (process.hrtime) {
-            duration = 1;
-          }
-          else {
-            duration = 1e6;
-          }
-
-          expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: failureReason, duration: duration});
+          expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: failureReason, duration: 1e6});
         });
 
         describe("when no failure reason is given", function () {
