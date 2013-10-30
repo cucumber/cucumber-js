@@ -277,11 +277,12 @@ var myStepDefinitionsWrapper = function () {
   this.Then(/^I should see "(.*)" as the page title$/, function(title, callback) {
     // matching groups are passed as parameters to the step definition
 
-    if (!this.isOnPageWithTitle(title))
-      // You can make steps fail by calling the `fail()` function on the callback:
-      callback.fail(new Error("Expected to be on page with title " + title));
-    else
+    var pageTitle = this.browser.text('title');
+    if (title === pageTitle) {
       callback();
+    } else {
+      callback.fail(new Error("Expected to be on page with title " + title));
+    }
   });
 };
 
@@ -295,11 +296,12 @@ this.Then('I should see "$title" as the page title', function(title, callback) {
   // the above string is converted to the following Regexp by Cucumber:
   // /^I should see "([^"]*)" as the page title$/
 
-  if (!this.isOnPageWithTitle(title))
-    // You can make steps fail by calling the `fail()` function on the callback:
-    callback.fail(new Error("Expected to be on page with title " + title));
-  else
+  var pageTitle = this.browser.text('title');
+  if (title === pageTitle) {
     callback();
+  } else {
+    callback.fail(new Error("Expected to be on page with title " + title));
+  }
 });
 ```
 
