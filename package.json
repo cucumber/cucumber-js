@@ -54,7 +54,7 @@
     "nopt": "2.1.2",
     "underscore": "1.5.2",
     "cucumber-html": "0.2.3",
-    "walkdir": "0.0.4",
+    "walkdir": "0.0.7",
     "coffee-script": "1.6.3",
     "pogo": "0.5.1"
   },
