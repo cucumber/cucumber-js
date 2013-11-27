@@ -254,27 +254,27 @@ proto.assertPassedFeature = function assertPassedFeature() {
 
 proto.assertPassedFeatures = function assertPassedFeatures() {
   this.assertNoPartialOutput("failed", this.runOutput);
-  this.assertPartialOutput("3 scenarios (3 passed)", this.runOutput);
+  this.assertPartialOutput("3 scenarios ("+this.color.format("passed","3 passed")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertPassedScenario = function assertPassedScenario() {
-  this.assertPartialOutput("1 scenario (1 passed)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("passed","1 passed")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertFailedScenario = function assertFailedScenario() {
-  this.assertPartialOutput("1 scenario (1 failed)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("failed","1 failed")+")", this.runOutput);
   this.assertFailure();
 };
 
 proto.assertPendingScenario = function assertPendingScenario() {
-  this.assertPartialOutput("1 scenario (1 pending)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("pending","1 pending")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertUndefinedScenario = function assertUndefinedScenario() {
-  this.assertPartialOutput("1 scenario (1 undefined)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("undefined", "1 undefined")+")", this.runOutput);
   this.assertSuccess();
 };
 
@@ -394,4 +394,7 @@ proto.indentCode = function indentCode(code, levels) {
   return indented;
 };
 
+proto.color = require('../../lib/cucumber/util/colors');
+
 exports.World = World;
+
