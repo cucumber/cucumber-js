@@ -2,10 +2,27 @@
 
 ## [v0.3.x](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.3...master)
 
 **TBD**
 
+
+### [v0.3.3](https://github.com/cucumber/cucumber-js/compare/v0.3.2...v0.3.3)
+
+#### New features
+
+* Output step definition snippets in CoffeeScript (John George Wright)
+* Add colors to CLI (Johny Jose)
+
+#### Changed features
+
+* Add durations to JSON formatter (Simon Dean)
+
+#### Documentation, internals and tests
+
+* Bump most dependencies (Julien Biezemans)
+* DRY (Julien Biezemans)
+* Refactor (Julien Biezemans)
 
 ### [v0.3.2](https://github.com/cucumber/cucumber-js/compare/v0.3.1...v0.3.2)
 
