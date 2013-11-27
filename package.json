@@ -59,7 +59,8 @@
     "cucumber-html": "0.2.2",
     "walkdir": "0.0.4",
     "coffee-script": "1.4.0",
-    "pogo": "~0.3.2"
+    "pogo": "~0.3.2",
+    "when": "~2.5.1"
   },
   "scripts": {
     "test": "./bin/cucumber.js && jasmine-node spec"
