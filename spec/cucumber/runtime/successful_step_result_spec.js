@@ -8,7 +8,7 @@ describe("Cucumber.Runtime.SuccessfulStepResult", function() {
     stepResult           = createSpy("base step result");
     spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
     step                 = createSpy("step");
-    payload              = {step: step, duration: 1};
+    payload              = { step: step };
     successfulStepResult = Cucumber.Runtime.SuccessfulStepResult(payload);
   });
 
@@ -19,12 +19,6 @@ describe("Cucumber.Runtime.SuccessfulStepResult", function() {
   describe("constructor", function() {
     it("instantiates a step result", function() {
       expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(payload);
-    });
-  });
-
-  describe("getDuration()", function() {
-    it("returns the duration passed to the constructor", function() {
-      expect(successfulStepResult.getDuration()).toBe(1);
     });
   });
 });

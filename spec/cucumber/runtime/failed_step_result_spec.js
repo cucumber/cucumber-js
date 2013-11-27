@@ -9,7 +9,7 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
     spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
     step             = createSpy("step");
     failureException = createSpy("failure exception");
-    payload          = {step: step, failureException: failureException, duration: 1};
+    payload          = { step: step, failureException: failureException };
     failedStepResult = Cucumber.Runtime.FailedStepResult(payload);
   });
 
@@ -26,12 +26,6 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
   describe("getFailureException()", function() {
     it("returns the exception passed to the constructor", function() {
       expect(failedStepResult.getFailureException()).toBe(failureException);
-    });
-  });
-
-  describe("getDuration()", function() {
-    it("returns the duration passed to the constructor", function() {
-      expect(failedStepResult.getDuration()).toBe(1);
     });
   });
 });

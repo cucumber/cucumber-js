@@ -6,7 +6,7 @@ describe("Cucumber.Runtime.StepResult", function() {
 
   beforeEach(function() {
     step = createSpy("step");
-    stepResult = Cucumber.Runtime.StepResult({step: step});
+    stepResult = Cucumber.Runtime.StepResult({ step: step, duration: 123 });
   });
 
   it("is not failed", function() {
@@ -32,6 +32,12 @@ describe("Cucumber.Runtime.StepResult", function() {
   describe("getStep()", function() {
     it("returns the step passed to the constructor", function() {
       expect(stepResult.getStep()).toBe(step);
+    });
+  });
+
+  describe("getDuration()", function() {
+    it("returns the duration passed to the constructor", function() {
+      expect(stepResult.getDuration()).toBe(123);
     });
   });
 });
