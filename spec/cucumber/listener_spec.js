@@ -103,7 +103,6 @@ describe("Cucumber.Listener", function() {
       eventName = "SomeEventName";
       event     = createSpyWithStubs("Event", {getName: eventName});
       buildHandlerName = spyOn(listener, "buildHandlerName");
-
     });
 
     it("gets the name of the event", function () {
