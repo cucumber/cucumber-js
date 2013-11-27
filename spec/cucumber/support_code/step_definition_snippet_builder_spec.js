@@ -221,6 +221,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
     });
 
     it("gets the number of step definition pattern matching groups", function() {
+      snippetBuilder.countStepDefinitionPatternMatchingGroups.andReturn(0);
       snippetBuilder.getStepDefinitionPatternMatchingGroupParameters();
       expect(snippetBuilder.countStepDefinitionPatternMatchingGroups).toHaveBeenCalled();
     });
