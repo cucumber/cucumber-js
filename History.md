@@ -2,11 +2,24 @@
 
 ## [v0.3.x](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.2...master)
 
 **TBD**
 
 
+### [v0.3.2](https://github.com/cucumber/cucumber-js/compare/v0.3.1...v0.3.2)
+
+#### New features
+
+* Add PogoScript support (Josh Chisholm)
+* Add listener and event handler registration (close #130) (Paul Shannon)
+
+#### Documentation, internals and tests
+
+* Added some nice stats (Aslak Hellesøy)
+* Fix spelling of "GitHub" (Peter Suschlik)
+* Add Code Climate badge to README (Julien Biezemans)
+* Update README.md (Sebastian Schürmann)
 
 ### [v0.3.1](https://github.com/cucumber/cucumber-js/compare/v0.3.0...v0.3.1)
 

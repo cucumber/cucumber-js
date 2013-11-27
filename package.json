@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -60,7 +60,7 @@
     "cucumber-html": "0.2.2",
     "walkdir": "0.0.4",
     "coffee-script": "1.4.0",
-    "pogo": "~0.3.2"
+    "pogo": "0.3.2"
   },
   "scripts": {
     "test": "./bin/cucumber.js && jasmine-node spec"
