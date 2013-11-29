@@ -176,7 +176,7 @@ EOF
 
     if hook_type == "around"
       append_support_code <<-EOF
-this.#{define_hook}(#{params}function(runScenario) {
+this.#{define_hook}(#{params}function(scenario, runScenario) {
   this.logCycleEvent('#{log_string}-pre');
   runScenario(function(callback) {
     this.logCycleEvent('#{log_string}-post');
@@ -186,7 +186,7 @@ this.#{define_hook}(#{params}function(runScenario) {
 EOF
     else
       append_support_code <<-EOF
-this.#{define_hook}(#{params}function(callback) {
+this.#{define_hook}(#{params}function(scenario, callback) {
   this.logCycleEvent('#{log_string}');
   callback();
 });
