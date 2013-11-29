@@ -419,6 +419,22 @@ var myHooks = function () {
 module.exports = myHooks;
 ```
 
+##### Context data
+
+You can access the scenario currently being run by adding a parameter
+to your function:
+
+``` javascript
+this.Before(function (scenario, callback) {
+  console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+  callback();
+});
+```
+
+See
+[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/ast/scenario.js)
+for more information about the `scenario` object.
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
