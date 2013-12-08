@@ -25,7 +25,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
     beforeEach(function () {
       feature = createSpyWithStubs("feature", {
         getKeyword: 'Feature',
-        getName: 'A Name',
+        getName: 'A Feature Name',
         getDescription: 'A Description',
         getLine: 3,
         getUri: undefined,
@@ -39,8 +39,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
       listener.handleBeforeFeatureEvent(event, callback);
       expect(formatter.uri).toHaveBeenCalledWith(undefined);
       expect(formatter.feature).toHaveBeenCalledWith({
-        id: 'A-Name',
-        name: 'A Name',
+        id: 'A-Feature-Name',
+        name: 'A Feature Name',
         description: 'A Description',
         line: 3,
         keyword: 'Feature'
