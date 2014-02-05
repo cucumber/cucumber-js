@@ -20,7 +20,7 @@ describe("Cucumber.SupportCode.Hook", function() {
       spyOn(hook, 'appliesToScenario');
     });
 
-    it("checks wether the hook applies to this scenario or not", function() {
+    it("checks whether the hook applies to this scenario or not", function() {
       hook.invokeBesideScenario(scenario, world, callback);
       expect(hook.appliesToScenario).toHaveBeenCalledWith(scenario);
     });
@@ -30,10 +30,26 @@ describe("Cucumber.SupportCode.Hook", function() {
         hook.appliesToScenario.andReturn(true);
       });
 
-      it("calls the code with the world instance as this", function() {
+      it("calls the code with the world instance as this and pass it the current scenario", function() {
         hook.invokeBesideScenario(scenario, world, callback);
-        expect(code).toHaveBeenCalledWith(callback);
+        expect(code).toHaveBeenCalledWith(scenario, callback);
         expect(code.mostRecentCall.object).toBe(world);
+      });
+
+      describe("when the hook function only accepts one parameter", function () {
+        beforeEach(function () {
+          var codeObservingWrapper = function (callback) {
+            code.apply(this, arguments);
+          };
+          hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
+        });
+
+        it("doesn't pass the current scenario to the hook function", function() {
+          hook.invokeBesideScenario(scenario, world, callback);
+          expect(code).not.toHaveBeenCalledWith(scenario, callback);
+          expect(code).toHaveBeenCalledWith(callback);
+          expect(code.mostRecentCall.object).toBe(world);
+        });
       });
 
       it("does not call back", function() {
@@ -80,7 +96,7 @@ describe("Cucumber.SupportCode.Hook", function() {
 
     beforeEach(function() {
       scenarioEnrolled = createSpy("scenario enrolled?");
-      astFilter        = createSpyWithStubs("AST filter", {isScenarioEnrolled: scenarioEnrolled});
+      astFilter        = createSpyWithStubs("AST filter", { isElementEnrolled: scenarioEnrolled });
       scenario         = createSpy("scenario");
       spyOn(hook, 'getAstFilter').andReturn(astFilter);
     });
@@ -90,9 +106,9 @@ describe("Cucumber.SupportCode.Hook", function() {
       expect(hook.getAstFilter).toHaveBeenCalled();
     });
 
-    it("asks the AST filter wether the scenario is enrolled or not", function() {
+    it("asks the AST filter whether the scenario is enrolled or not", function() {
       hook.appliesToScenario(scenario);
-      expect(astFilter.isScenarioEnrolled).toHaveBeenCalledWith(scenario);
+      expect(astFilter.isElementEnrolled).toHaveBeenCalledWith(scenario);
     });
 
     it("returns the AST filter answer", function() {

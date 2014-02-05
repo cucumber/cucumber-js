@@ -22,13 +22,21 @@ proto.runFeature = function runFeature(options, callback) {
   this.runFeatureWithSupportCodeSource(supportCode, options, callback);
 };
 
+proto.runFeatures = function runFeatures(options, callback) {
+  this.runFeaturesWithSupportCodeSource(this.features, function() {}, options, callback);
+};
+
 proto.runFeatureWithSupportCodeSource = function runFeatureWithSupportCodeSource(supportCode, options, callback) {
+  this.runFeaturesWithSupportCodeSource(this.featureSource, supportCode, options, callback);
+};
+
+proto.runFeaturesWithSupportCodeSource = function runFeaturesWithSupportCodeSource(features, supportCode, options, callback) {
   var world     = this;
   var Cucumber  = require('../../lib/cucumber');
   options = options || {};
   var tags = options['tags'] || [];
 
-  var cucumber  = Cucumber(this.featureSource, supportCode, {tags: tags});
+  var cucumber  = Cucumber(features, supportCode, {tags: tags});
   var formatter = Cucumber.Listener.ProgressFormatter({logToConsole: false});
 
   cucumber.attachListener(formatter);
@@ -56,7 +64,7 @@ proto.runAScenario = function runAScenario(callback) {
 };
 
 proto.runAScenarioCallingMapping = function runAScenarioCallingMapping(callback) {
-  this.addScenario("", "Given a mapping");
+  this.addScenario("", "Given " + this.mappingName);
   this.runFeature({}, callback);
 };
 
@@ -89,15 +97,17 @@ proto.isStepTouched = function isStepTouched(pattern) {
 };
 
 proto.addStringBasedPatternMapping = function addStringBasedPatternMapping() {
-  this.stepDefinitions += "Given('a mapping', function(callback) {\
-  world.logCycleEvent('a mapping');\
+  this.mappingName = "/a string-based mapping with fancy characters |\\ ^*-{(})+[a].?";
+  this.stepDefinitions += "Given('/a string-based mapping with fancy characters |\\\\ ^*-{(})+[a].?', function(callback) {\
+  world.logCycleEvent('/a string-based mapping with fancy characters |\\\\ ^*-{(})+[a].?');\
   callback();\
 });";
 };
 
 proto.addStringBasedPatternMappingWithParameters = function addStringBasedPatternMappingWithParameters() {
+  this.mappingName = "a string-based mapping";
   this.stepDefinitions += "Given('a mapping with $word_param \"$multi_word_param\"', function(p1, p2, callback) {\
-  world.logCycleEvent('a mapping');\
+  world.logCycleEvent('a string-based mapping');\
   world.actualMappingArguments = [p1, p2];\
   callback();\
 });";
@@ -130,6 +140,91 @@ proto.addPassingScenarioWithoutTags = function addPassingScenarioWithoutTags() {
   this.addPassingScenarioWithTags();
 };
 
+proto.addBeforeHook = function (callback) {
+  this._addHook({ type: "before" }, callback);
+};
+
+proto.addAfterHook = function (callback) {
+  this._addHook({ type: "after" }, callback);
+};
+
+proto.addAroundHook = function (callback) {
+  this._addAroundHook(callback);
+};
+
+proto.addAroundHookWithTags = function (tags, callback) {
+  this._addAroundHook({ tags: tags, logEvent: "hook" }, callback);
+};
+
+proto.addUntaggedHook = function (callback) {
+  this._addHook({ type: "before", logEvent: "hook" }, callback);
+};
+
+proto.addHookWithTags = function (tags, callback) {
+  this._addHook({ type: "before", logEvent: "hook", tags: tags }, callback);
+};
+
+proto._addHook = function (options, scenario, callback) {
+  if (!callback) {
+    if (scenario) {
+      callback = scenario;
+    } else {
+      callback = options;
+      options = {};
+    }
+  }
+  var type = "before";
+  var tags = "";
+  if (options.type) type = options.type;
+  if (!options.logEvent) options.logEvent = type;
+  if (options.tags) tags = '"' + options.tags + '", ';
+  var defineHook = (type == 'before' ? 'Before' : 'After');
+  this.stepDefinitions += defineHook + "(" + tags + "function(scenario, callback) {\
+  world.logCycleEvent('" + options.logEvent + "');\
+  callback();\
+});\n";
+  callback();
+};
+
+proto._addAroundHook = function (options, callback) {
+  if (!callback) {
+    callback = options;
+    options = {};
+  }
+  var tags = "";
+  var logEvent = "around";
+  if (options.tags) tags = '"' + options.tags + '", ';
+  if (options.logEvent) logEvent = options.logEvent;
+  this.stepDefinitions += "Around(" + tags + "function(scenario, runScenario) {\
+  world.logCycleEvent('" + logEvent + "-pre');\
+  runScenario(function(callback) {\
+  world.logCycleEvent('" + logEvent + "-post');\
+    callback();\
+  });\
+});\n";
+  callback();
+};
+
+proto.addFailingMapping = function (stepName, options, callback) {
+  this.stepDefinitions += this._generateFailingMapping(stepName, options);
+  callback();
+};
+
+proto._generateMapping = function (stepName, body) {
+  return "\
+Given(/^" + stepName + "$/, function(callback) {\
+  world.touchStep(\"" + stepName + "\");\n" + body + "\
+});\
+";
+};
+
+proto._generateFailingMapping = function (stepName, options) {
+  var message = "I was supposed to fail.";
+  if (options.message) message = options.message;
+  var body = "throw(new Error('" + message + "'));";
+  return this._generateMapping(stepName, body);
+};
+
 proto.createEmptyFeature = function createEmptyFeature(options) {
   options = options || {};
   tags    = options['tags'] || [];
@@ -140,6 +235,14 @@ proto.createEmptyFeature = function createEmptyFeature(options) {
     this.featureSource += "Feature: A feature\n\n";
     this.emptyFeatureReady = true;
   }
+};
+
+proto.addPassingStepDefinitionWithName = function (name, callback) {
+  this.stepDefinitions += "Given(/^" + name + "$/, function(callback) {\
+  world.touchStep(\"" + name + "\");\
+  callback();\
+});\n";
+  callback();
 };
 
 proto.makeNumberedStepName = function makeNumberedStepName(index) {
@@ -153,23 +256,29 @@ proto.assertPassedFeature = function assertPassedFeature() {
   this.assertSuccess();
 };
 
+proto.assertPassedFeatures = function assertPassedFeatures() {
+  this.assertNoPartialOutput("failed", this.runOutput);
+  this.assertPartialOutput("3 scenarios ("+this.color.format("passed","3 passed")+")", this.runOutput);
+  this.assertSuccess();
+};
+
 proto.assertPassedScenario = function assertPassedScenario() {
-  this.assertPartialOutput("1 scenario (1 passed)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("passed","1 passed")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertFailedScenario = function assertFailedScenario() {
-  this.assertPartialOutput("1 scenario (1 failed)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("failed","1 failed")+")", this.runOutput);
   this.assertFailure();
 };
 
 proto.assertPendingScenario = function assertPendingScenario() {
-  this.assertPartialOutput("1 scenario (1 pending)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("pending","1 pending")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertUndefinedScenario = function assertUndefinedScenario() {
-  this.assertPartialOutput("1 scenario (1 undefined)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("undefined", "1 undefined")+")", this.runOutput);
   this.assertSuccess();
 };
 
@@ -193,7 +302,7 @@ proto.assertSkippedStep = function assertSkippedStep(stepName) {
 };
 
 proto.assertPassedMapping = function assertPassedMapping() {
-  this.assertCycleSequence("a mapping");
+  this.assertCycleSequence(this.mappingName);
 };
 
 proto.assertPassedMappingWithArguments = function assertPassedMappingWithArguments() {
@@ -289,4 +398,7 @@ proto.indentCode = function indentCode(code, levels) {
   return indented;
 };
 
+proto.color = require('../../lib/cucumber/util/colors');
+
 exports.World = World;
+

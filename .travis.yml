@@ -1,14 +1,23 @@
 rvm: "1.9.2"
-before_script: "git submodule update --init && npm install"
+before_install:
+  - ruby --version
+  - gem --version
+  - rvm --version
+  - bundle install
+
 script: "rake"
 
-node_js:
-  - 0.4
-  - 0.6
+language: node_js
 
-branches:
-  only:
-    - master
+node_js:
+  - "0.11"
+  - "0.10"
+  - "0.8"
+  - "0.6"
+
+matrix:
+  allow_failures:
+    - node_js: "0.11"
 
 notifications:
   email:

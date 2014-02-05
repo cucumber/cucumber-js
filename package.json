@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.2.18",
+  "version": "0.3.3",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -19,9 +19,23 @@
     "Olivier Melcher <olivier.melcher@gmail.com>",
     "Tristan Dunn <tristanzdunn@gmail.com>",
     "Ted de Koning",
-    "@renier",
+    "Renier Morales <renier@morales-rodriguez.net>",
     "Aslak Hellesøy <aslak.hellesoy@gmail.com>",
-    "Aaron Garvey"
+    "Aaron Garvey",
+    "Omar Gonzalez <omar@almerblank.com>",
+    "Chris Young <chris@chrisyoung.org>",
+    "Israel Halle <isra017@gmail.com>",
+    "Matteo Collina <matteo.collina@gmail.com>",
+    "Niklas Närhinen <niklas@narhinen.net>",
+    "Kim, Jang-hwan <janghwan@gmail.com>",
+    "Michael Zedeler <michael@zedeler.dk>",
+    "Tom V <tom@toc.com>",
+    "David Godfrey <reactiveraven@reactiveraven.co.uk>",
+    "Paul Shannon (http://devpaul.com)",
+    "Simon Dean <simon@simondean.org> (http://www.simondean.org)",
+    "John Wright <johngeorge.wright@gmail.com>",
+    "Johny Jose <johny@playlyfe.com>",
+    "Marat Dyatko <vectart@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -36,20 +50,24 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": "0.6 || 0.7 || 0.8"
+    "node": "0.6 || 0.8 || 0.10 || 0.11"
   },
   "dependencies": {
-    "gherkin": "2.11.0",
-    "jasmine-node": "1.0.26",
-    "connect": "2.3.2",
-    "browserify": "1.13.2",
-    "nopt": "1.0.10",
-    "underscore": "1.3.3",
-    "rimraf": "2.0.2",
-    "mkdirp": "0.3.3",
-    "cucumber-html": "0.2.0",
-    "walkdir": "0.0.4",
-    "coffee-script": "1.3.3"
+    "gherkin": "2.12.2",
+    "browserify": "1.15.5",
+    "nopt": "2.1.2",
+    "underscore": "1.5.2",
+    "cucumber-html": "0.2.3",
+    "walkdir": "0.0.7",
+    "coffee-script": "1.6.3",
+    "pogo": "0.5.1"
+  },
+  "devDependencies": {
+    "connect": "2.11.0",
+    "jasmine-node": "1.11.0",
+    "mkdirp": "0.3.5",
+    "rimraf": "2.2.2",
+    "bower": "~1.2.7"
   },
   "scripts": {
     "test": "./bin/cucumber.js && jasmine-node spec"
@@ -64,6 +82,5 @@
       "url": "http://github.com/cucumber/cucumber.js/LICENSE"
     }
   ],
-  "devDependencies": {},
   "optionalDependencies": {}
 }

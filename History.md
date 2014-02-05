@@ -1,14 +1,203 @@
 # Cucumber.js changelog
 
-## [v0.2](https://github.com/cucumber/cucumber-js/compare/v0.1.5...master)
+## [v0.3.x](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.2.15...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.3...master)
 
 **TBD**
 
 
-### [v0.2.15](https://github.com/cucumber/cucumber-js/compare/v0.2.14...v0.2.15)
+### [v0.3.3](https://github.com/cucumber/cucumber-js/compare/v0.3.2...v0.3.3)
 
+#### New features
+
+* Output step definition snippets in CoffeeScript (John George Wright)
+* Add colors to CLI (Johny Jose)
+
+#### Changed features
+
+* Add durations to JSON formatter (Simon Dean)
+
+#### Documentation, internals and tests
+
+* Bump most dependencies (Julien Biezemans)
+* DRY (Julien Biezemans)
+* Refactor (Julien Biezemans)
+
+### [v0.3.2](https://github.com/cucumber/cucumber-js/compare/v0.3.1...v0.3.2)
+
+#### New features
+
+* Add PogoScript support (Josh Chisholm)
+* Add listener and event handler registration (close #130) (Paul Shannon)
+
+#### Documentation, internals and tests
+
+* Added some nice stats (Aslak Hellesøy)
+* Fix spelling of "GitHub" (Peter Suschlik)
+* Add Code Climate badge to README (Julien Biezemans)
+* Update README.md (Sebastian Schürmann)
+
+### [v0.3.1](https://github.com/cucumber/cucumber-js/compare/v0.3.0...v0.3.1)
+
+#### New features
+
+* Add DataTable.rows() (Niklas Närhinen)
+* Officially support Node 0.10 and 0.11 (Julien Biezemans)
+
+#### Changed features
+
+* Update cucumber-html (Aslak Hellesøy)
+* Bump Gherkin (Julien Biezemans)
+* Add options parameter to JSON formatter (Israël Hallé)
+* Updated CoffeeScript (Matteo Collina)
+* Specify strict coffee-script version number (Julien Biezemans)
+* Bump jasmine-node (Julien Biezemans)
+
+#### Fixes
+
+* Fix travis build Node versions (Julien Biezemans)
+* Fix Travis CI configuration (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove words in History (Julien Biezemans)
+* Update dev status table in README (Julien Biezemans)
+* Update LICENSE (Julien Biezemans)
+* Add contributors (Julien Biezemans)
+* Move data table scenario to TCK (Julien Biezemans)
+* Be consistent in spec matchers (Julien Biezemans)
+* Remove cucumber.no.de links	(Kim, Jang-hwan)
+* Fix broken link in README dev status table (#118) (Michael Zedeler)
+* Refactor hook-related Given steps in JS stepdefs (Julien Biezemans)
+* Refactor failing mapping JS step definitions (Julien Biezemans & Matt Wynne)
+* Update README.md to correct error in example for zombie initialization (Tom V)
+* Update minor typos in README.md (David Godfrey)
+
+
+
+### [v0.3.0](https://github.com/cucumber/cucumber-js/compare/v0.2.22...v0.3.0)
+
+#### New features
+
+* Allow for node-like callback errors (Julien Biezemans)
+* Accept multiple features in volatile configuration (#52) (Julien Biezemans)
+
+#### Fixes
+
+* Add ^ prefix and $ suffix to string-based step definition regexps (#77) (Julien Biezemans)
+* Allow for unsafe regexp characters in stepdef string patterns (#77) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Build on Node.js 0.8 on Travis (Julien Biezemans)
+* Rewrite README's status table in HTML (Julien Biezemans)
+* Bump Gherkin (#78) (Julien Biezemans)
+* Switch to HTML tables in README (Julien Biezemans)
+* Bump Aruba (Julien Biezemans)
+
+
+
+## [v0.2.x](https://github.com/cucumber/cucumber-js/compare/v0.2.0...v0.3.0^)
+
+### [v0.2.22](https://github.com/cucumber/cucumber-js/compare/v0.2.21...v0.2.22)
+
+#### New features
+
+* Print data tables and doc strings in pretty formatter output (#89, #81) (Julien Biezemans)
+
+#### Fixes
+
+* Exclude unmatched features from AST (#80) (Julien Biezemans)
+
+
+
+### [v0.2.21](https://github.com/cucumber/cucumber-js/compare/v0.2.20...v0.2.21)
+
+#### New features
+
+* Add bundler (Julien Biezemans)
+
+
+
+**TBD**
+
+### [v0.2.20](https://github.com/cucumber/cucumber-js/compare/v0.2.19...v0.2.20)
+
+#### New features
+
+* Add JSON formatter (#79) (Chris Young)
+
+#### Fixes
+
+* Fix data table and tags handling in JSON formatter (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Force example feature execution order in JSON feature (Julien Biezemans)
+
+
+
+### [v0.2.19](https://github.com/cucumber/cucumber-js/compare/v0.2.18...v0.2.19)
+
+#### Fixes
+
+* Fix CLI arguments passing (#83) (Omar Gonzalez)
+
+#### Documentation, internals and tests
+
+* Refactor "summarizer" listener to summary formatter (#71)	28b74ef (Julien Biezemans)
+* Add "summary" formatter to available CLI formatters (Julien Biezemans)
+* Fix spec example description (Julien Biezemans)
+
+
+
+### [v0.2.18](https://github.com/cucumber/cucumber-js/compare/v0.2.17...v0.2.18)
+
+#### Fixes
+
+* Replace findit with walkdir to fix file loading on Windows (#73) (Aaron Garvey)
+
+#### Documentation, internals and tests
+
+* Rename spec file (Julien Biezemans)
+* Extract developer documentation from README to CONTRIBUTE (Julien Biezemans)
+* Bump browserify (Julien Biezemans)
+* Update supported Node.js versions (Julien Biezemans)
+
+
+
+### [v0.2.17](https://github.com/cucumber/cucumber-js/compare/v0.2.16...v0.2.17)
+
+#### New features
+
+* Add pretty formatter (simplified, monochrome) (#59) (@renier, Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Display only master branch build status in README (Julien Biezemans)
+* Rename "summary logger" to "summarizer" (#59) (Julien Biezemans)
+* Extract common formatter methods (#59, #63) (Julien Biezemans)
+
+
+
+### [v0.2.16](https://github.com/cucumber/cucumber-js/compare/v0.2.15...v0.2.16)
+
+#### New features
+
+* Display failing scenario URIs in summary (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Ran a gem update (Aslak Hellesøy)
+* Update NPM dependencies (#69) (Aslak Hellesøy)
+* Refactor listener infrastructure (#35, #59, #63) (Julien Biezemans)
+* Extract summary logger from progress formatter (#59, #63) (Julien Biezemans)
+* Store URI on AST elements (Julien Biezemans)
+
+
+
+### [v0.2.15](https://github.com/cucumber/cucumber-js/compare/v0.2.14...v0.2.15)
 
 #### New features
 
@@ -21,7 +210,6 @@
 
 
 ### [v0.2.14](https://github.com/cucumber/cucumber-js/compare/v0.2.13...v0.2.14)
-
 
 #### New features
 
@@ -36,10 +224,9 @@
 
 ### [v0.2.13](https://github.com/cucumber/cucumber-js/compare/v0.2.12...v0.2.13)
 
-
 #### New features
 
-* Add support for string-based step definition patterns (closes #48) (Ted de Koning, Julien Biezemans)
+* Add support for string-based step definition patterns (#48) (Ted de Koning, Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -290,7 +477,7 @@
 #### New features
 
 * Allow custom World constructors (Julien Biezemans)
-* Add support for data tables (with conversion to hashes) (#12 Julien Biezemans)
+* Add support for data tables (with conversion to hashes) (#12) (Julien Biezemans)
 
 #### Changed features
 
@@ -338,11 +525,11 @@
 * Bump browserify (Julien Biezemans)
 * Remove "glob" from dependencies (Julien Biezemans)
 * Refactor SupportCodePathExpander spec (Julien Biezemans)
-* Add feature for CoffeeScript support (#29 Julien Biezemans)
+* Add feature for CoffeeScript support (#29) (Julien Biezemans)
 
 
 
-## [v0.1](https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.5)
+## [v0.1.x](https://github.com/cucumber/cucumber-js/compare/v0.1.0...v0.2.0^)
 
 ### [v0.1.5](https://github.com/cucumber/cucumber-js/compare/v0.1.4...v0.1.5)
 
@@ -376,7 +563,7 @@
 
 #### New features
 
-* Allow several features to run at once (#14 Julien Biezemans)
+* Allow several features to run at once (#14) (Julien Biezemans)
 * Add support for --require (Julien Biezemans)
 
 #### Documentation, internals and tests
@@ -393,7 +580,7 @@
 
 #### New features
 
-* Add failure reporting to the progress formatter (#20 Julien Biezemans)
+* Add failure reporting to the progress formatter (#20) (Julien Biezemans)
 
 
 
@@ -409,7 +596,7 @@
 
 #### Documentation, internals and tests
 
-* Unify and clean up js-specific features and step definitions (#21 Julien Biezemans)
+* Unify and clean up js-specific features and step definitions (#21) (Julien Biezemans)
 
 
 
@@ -418,10 +605,10 @@
 #### New features
 
 * Add cucumber.js executable (Julien Biezemans)
-* Handle step failures (#6 Julien Biezemans)
-* Add the progress formatter (#16 Julien Biezemans)
-* Add support for pending steps (#18 Julien Biezemans)
-* Add support for undefined steps (#19 Julien Biezemans)
+* Handle step failures (#6) (Julien Biezemans)
+* Add the progress formatter (#16) (Julien Biezemans)
+* Add support for pending steps (#18) (Julien Biezemans)
+* Add support for undefined steps (#19) (Julien Biezemans)
 
 #### Changed features
 
@@ -429,7 +616,7 @@
 
 #### Fixes
 
-* Fix asynchronous step definition callbacks (#1 Julien Biezemans)
+* Fix asynchronous step definition callbacks (#1) (Julien Biezemans)
 * Fix stepResult.isSuccessful call in ProgressFormatter (Julien Biezemans)
 * Load Gherkin properly in browsers (Julien Biezemans)
 * Remove calls to console.log in web example (Julien Biezemans)
@@ -439,15 +626,15 @@
 * Pass against core.feature in its new form, both with the Cucumber-ruby/Aruba pair and cucumber-js itself (Julien Biezemans)
 * Refactor cucumber-features JS mappings (Julien Biezemans)
 * Refactor js-specific features (Julien Biezemans)
-* Rename PyString to DocString (#15 Julien Biezemans)
+* Rename PyString to DocString (#15) (Julien Biezemans)
 * Update Gherkin to 2.4.0 (Julien Biezemans)
 * Modularize the project and use browserify.js to serve a single JS file to browsers. (#3 Julien Biezemans)
 * Rename Cucumber.Types to Cucumber.Type (Julien Biezemans)
-* Use progress formatter in cucumber-features (#17 Julien Biezemans)
+* Use progress formatter in cucumber-features (#17) (Julien Biezemans)
 
 
 
-## [v0.0](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
+## [v0.0.x](https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.0^)
 
 ### [v0.0.1](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
 

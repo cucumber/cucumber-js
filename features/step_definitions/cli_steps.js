@@ -8,7 +8,7 @@ var cliSteps = function cliSteps() {
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
   var cleansingNeeded = true;
 
-  var lastRun;
+  var lastRun = { error: null, stdout: "", stderr: "" };
 
   function tmpPath(path) {
     return (tmpDir + "/" + path);
@@ -62,10 +62,41 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  this.Then(/^it should pass with:$/, function(expectedOutput, callback) {
+  this.Then(/^it passes with:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
+    var actualError  = lastRun['error'];
+    var actualStderr = lastRun['stderr'];
+
     if (actualOutput.indexOf(expectedOutput) == -1)
-      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
+      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
+    callback();
+  });
+
+  this.Then(/^it outputs this json:$/, function(expectedOutput, callback) {
+    var actualOutput = lastRun['stdout'];
+    var actualError =  lastRun['error'];
+    var actualStderr =  lastRun['stderr'];
+
+    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir);
+
+    try { var actualJson = JSON.parse(actualOutput); }
+    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput); }
+
+    try { var expectedJson = JSON.parse(expectedOutput); }
+    catch(err) { throw new Error("Error parsing expected JSON:\n" + expectedOutput); }
+
+    neutraliseVariableValuesInJson(actualJson);
+    neutraliseVariableValuesInJson(expectedJson);
+
+    var actualJsonString = JSON.stringify(actualJson, null, 2);
+    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+
+    if (actualJsonString != expectedJsonString)
+      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\nGot:\n'" + actualJsonString + "'.\n" +
+                      "Error:\n'" + actualError + "'.\n" +
+                      "stderr:\n'" + actualStderr  +"'.");
     callback();
   });
 
@@ -86,4 +117,23 @@ var cliSteps = function cliSteps() {
     callback();
   });
 };
+
+var neutraliseVariableValuesInJson = function neutraliseVariableValuesInJson(report) {
+  report.forEach(function (item) {
+    (item.elements || []).forEach(function (element) {
+      (element['steps'] || []).forEach(function (step) {
+        if ('result' in step) {
+          if ('error_message' in step.result) {
+            step.result.error_message = "<error-message>";
+          }
+
+          if ('duration' in step.result) {
+            step.result.duration = "<duration>";
+          }
+        }
+      });
+    });
+  });
+};
+
 module.exports = cliSteps;

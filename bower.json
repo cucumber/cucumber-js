@@ -1,0 +1,28 @@
+{
+  "name": "cucumber",
+  "version": "0.3.3",
+  "homepage": "http://git.io/cukejs",
+  "authors": [
+    "Julien Biezemans <jb@jbpros.com>"
+  ],
+  "description": "The official JavaScript implementation of Cucumber.",
+  "main": "release/cucumber.js",
+  "keywords": [
+    "testing",
+    "bdd",
+    "cucumber",
+    "gherkin",
+    "tests"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tmp",
+    "spec",
+    "features",
+    "examples",
+    "scripts"
+  ]
+}

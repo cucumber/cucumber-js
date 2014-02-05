@@ -10,19 +10,19 @@ describe("Cucumber.Ast.Filter", function() {
     filter = Cucumber.Ast.Filter(rules);
   });
 
-  describe("isScenarioEnrolled()", function() {
+  describe("isElementEnrolled()", function() {
     var _ = require('underscore');
 
     var scenario, scenarioEnrolled;
 
     beforeEach(function() {
       scenario         = createSpy("scenario");
-      scenarioEnrolled = createSpy("wether the scenario is enrolled or not");
+      scenarioEnrolled = createSpy("whether the scenario is enrolled or not");
       spyOn(_, 'all').andReturn(scenarioEnrolled);
     });
 
     it("checks all the rules for a condition", function() {
-      filter.isScenarioEnrolled(scenario);
+      filter.isElementEnrolled(scenario);
       expect(_.all).toHaveBeenCalled();
       expect(_.all).toHaveBeenCalledWithValueAsNthParameter(rules, 1);
       expect(_.all).toHaveBeenCalledWithAFunctionAsNthParameter(2);
@@ -32,24 +32,24 @@ describe("Cucumber.Ast.Filter", function() {
       var ruleConditionFunc, rule, ruleSatisfied;
 
       beforeEach(function() {
-        ruleSatisfied = createSpy("wether the rule was satisfied or not");
+        ruleSatisfied = createSpy("whether the rule was satisfied or not");
         rule          = createSpyWithStubs("rule", {isSatisfiedByElement: ruleSatisfied});
-        filter.isScenarioEnrolled(scenario);
+        filter.isElementEnrolled(scenario);
         ruleConditionFunc = _.all.mostRecentCall.args[1];
       });
 
-      it("checks wether the rule is satisfied by the scenario", function() {
+      it("checks whether the rule is satisfied by the scenario", function() {
         ruleConditionFunc(rule);
         expect(rule.isSatisfiedByElement).toHaveBeenCalledWith(scenario);
       });
 
-      it("returns wether the rule wa satisfied or not", function() {
+      it("returns whether the rule wa satisfied or not", function() {
         expect(ruleConditionFunc(rule)).toBe(ruleSatisfied);
       });
     });
 
-    it("returns wether the scenario was enrolled or not", function() {
-      expect(filter.isScenarioEnrolled(scenario)).toBe(scenarioEnrolled);
+    it("returns whether the scenario was enrolled or not", function() {
+      expect(filter.isElementEnrolled(scenario)).toBe(scenarioEnrolled);
     })
   });
 });

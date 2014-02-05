@@ -1,10 +1,14 @@
-# Cucumber.js [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png)](http://travis-ci.org/cucumber/cucumber-js)
+# Cucumber.js
+  [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png?branch=master)](http://travis-ci.org/cucumber/cucumber-js)
+  [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js) [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
+
+[![NPM](https://nodei.co/npm/cucumber.png?stars&downloads)](https://nodei.co/npm/cucumber/)
+[![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
+
 
 *Cucumber*, the [popular Behaviour-Driven Development tool](http://cukes.info), brought to your JavaScript stack.
 
 It runs on both Node.js and *modern* web browsers.
-
-**Try it now: [http://cucumber.no.de](http://cucumber.no.de)!**
 
 ## Development status
 
@@ -12,40 +16,120 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 ### Cucumber Technology Compatibility Kit
 
-| Feature                                                                                                                       | Status              |
-|:------------------------------------------------------------------------------------------------------------------------------|:--------------------|
-| [Core](https://github.com/cucumber/cucumber-tck/blob/master/core.feature) (scenarios, steps, mappings)                        | Done                |
-| [Background](https://github.com/cucumber/cucumber-tck/blob/master/background.feature)                                         | Done<sup>1</sup>    |
-| [Calling steps from step defs](https://github.com/cucumber/cucumber-tck/blob/master/calling_steps_from_stepdefs.feature)      | To do               |
-| [Comments](https://github.com/cucumber/cucumber-tck/blob/master/comments.feature)                                             | Done                |
-| [Command-line interface](https://github.com/cucumber/cucumber-tck/blob/master/command_line_interface.feature)                 | Done<sup>1, 2</sup> |
-| [Command-line options](https://github.com/cucumber/cucumber-tck/blob/master/command_line_options.feature)                     | To do<sup>2</sup>   |
-| [Data tables](https://github.com/cucumber/cucumber-tck/blob/master/data_tables.feature)                                       | Done                |
-| [Doc Strings](https://github.com/cucumber/cucumber-tck/blob/master/doc_strings.feature)                                       | Done                |
-| [Failing steps](https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature)                                   | Done                |
-| [Hooks](https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature)                                                   | Done                |
-| [I18n](https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature)                                                     | To do               |
-| [JSON formatter](https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature)                                 | To do               |
-| [Pretty formatter](https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature)                             | To do<sup>2</sup>   |
-| [Scenario outlines and examples](https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature) | To do               |
-| [Stats collector](https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature)                               | To do               |
-| [Step argument transforms](https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature)             | To do               |
-| [Tags](https://github.com/cucumber/cucumber-tck/blob/master/tags.feature)                                                     | Done                |
-| [Undefined steps](https://github.com/cucumber/cucumber-tck/blob/master/undefined_steps.feature)                               | Done                |
-| [Wire protocol](https://github.com/cucumber/cucumber-tck/blob/master/wire_protocol.feature)                                   | To do               |
-| [World](https://github.com/cucumber/cucumber-tck/blob/master/world.feature)                                                   | Done                |
+<table>
+  <thead>
+    <tr><th>Feature</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/core.feature">Core</a> (scenarios, steps, mappings)</td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/background.feature">Background</a></td>
+      <td>Done<sup>1</sup></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/comments.feature">Comments</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/command_line_interface.feature">Command-line interface</a></td>
+      <td>Done<sup>1, 2</sup></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/command_line_options.feature">Command-line options</a></td>
+      <td>Todo<sup>2</sup></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/data_tables.feature">Data tables</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/doc_strings.feature">Doc strings</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature">Failing steps</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature">Hooks</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature">I18n</a></td>
+      <td>To do</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature">JSON formatter</a></td>
+      <td>WIP<sup>3</sup></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature">Pretty formatter</a></td>
+      <td>WIP<sup>2</sup></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature">Scenario outlines and examples</a></td>
+      <td>To do</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature">Stats collector</a></td>
+      <td>To do</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature">Step argument transforms</a></td>
+      <td>To do</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/tags.feature">Tags</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/undefined_steps.feature">Undefined steps</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/wire_protocol.feature">Wire protocol</a></td>
+      <td>To do</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/world.feature">World</a></td>
+      <td>Done</td>
+    </tr>
+  </tbody>
+</table>
 
 1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
 2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-3. Simple *Around*, *Before* and *After* hooks are available.
+3. Missing 'matches' attributes. Simple wrapper for *Gherkin*'s `JsonFormatter` pending porting of:
+
+  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/listener/formatter_listener.rb
+  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/formatter/filter_formatter.rb
+
+  in Gherkin itself.
 
 ### Cucumber.js-specific features
 
-| Feature                                                                                                           | Status           |
-|:------------------------------------------------------------------------------------------------------------------|:-----------------|
-| [Background](https://github.com/cucumber/cucumber-js/blob/master/features/background.feature)                     | Done<sup>1</sup> |
-| [CoffeeScript support](https://github.com/cucumber/cucumber-js/blob/master/features/coffeescript_support.feature) | Done             |
-| [Command-line interface](https://github.com/cucumber/cucumber-js/blob/master/features/cli.feature)                | Done             |
+<table>
+  <thead>
+    <tr><th>Feature</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/background.feature">Background</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/coffeescript_support.feature">CoffeeScript support</a></td>
+      <td>Done</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/cli.feature">Command-line interface</a></td>
+      <td>Done</td>
+    </tr>
+  </tbody>
+</table>
 
 1. Will be certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
 
@@ -56,7 +140,7 @@ Cucumber.js is still a work in progress. Here is its current status.
 
 Cucumber.js is tested on:
 
-* Node.js 0.4, 0.6 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js)) and supposedly 0.5.
+* Node.js 0.6, 0.8 and 0.10.0 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
@@ -105,7 +189,7 @@ Feature: Example feature
   So that I can concentrate on building awesome applications
 
   Scenario: Reading documentation
-    Given I am on the Cucumber.js Github repository
+    Given I am on the Cucumber.js GitHub repository
     When I go to the README file
     Then I should see "Usage" as the page title
 ```
@@ -123,7 +207,7 @@ Support files let you setup the environment in which steps will be run, and defi
 
 var zombie = require('zombie');
 var World = function World(callback) {
-  this.browser = new zombie.Browser(); // this.browser will be available in step definitions
+  this.browser = new zombie(); // this.browser will be available in step definitions
 
   this.visit = function(url, callback) {
     this.browser.visit(url, callback);
@@ -141,7 +225,7 @@ It is possible to tell Cucumber to use another object instance than the construc
 
 var zombie = require('zombie');
 var WorldConstructor = function WorldConstructor(callback) {
-  this.browser = new zombie.Browser(); // this.browser will be available in step definitions
+  this.browser = new zombie(); // this.browser will be available in step definitions
 
   var world = {
     visit: function(url, callback) {
@@ -172,7 +256,7 @@ Step definitions are run when steps match their name. `this` is an instance of `
 var myStepDefinitionsWrapper = function () {
   this.World = require("../support/world.js").World; // overwrite default World constructor
 
-  this.Given(/^I am on the Cucumber.js Github repository$/, function(callback) {
+  this.Given(/^I am on the Cucumber.js GitHub repository$/, function(callback) {
     // Express the regexp above with the code you wish you had.
     // `this` is set to a new this.World instance.
     // i.e. you may use this.browser to execute the step:
@@ -193,11 +277,12 @@ var myStepDefinitionsWrapper = function () {
   this.Then(/^I should see "(.*)" as the page title$/, function(title, callback) {
     // matching groups are passed as parameters to the step definition
 
-    if (!this.isOnPageWithTitle(title))
-      // You can make steps fail by calling the `fail()` function on the callback:
-      callback.fail(new Error("Expected to be on page with title " + title));
-    else
+    var pageTitle = this.browser.text('title');
+    if (title === pageTitle) {
       callback();
+    } else {
+      callback.fail(new Error("Expected to be on page with title " + title));
+    }
   });
 };
 
@@ -211,15 +296,16 @@ this.Then('I should see "$title" as the page title', function(title, callback) {
   // the above string is converted to the following Regexp by Cucumber:
   // /^I should see "([^"]*)" as the page title$/
 
-  if (!this.isOnPageWithTitle(title))
-    // You can make steps fail by calling the `fail()` function on the callback:
-    callback.fail(new Error("Expected to be on page with title " + title));
-  else
+  var pageTitle = this.browser.text('title');
+  if (title === pageTitle) {
     callback();
+  } else {
+    callback.fail(new Error("Expected to be on page with title " + title));
+  }
 });
 ```
 
-`'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)")$/`.
+`'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)"$/`.
 
 #### Hooks
 
@@ -280,7 +366,7 @@ module.exports = myAfterHooks;
 
 ##### Around hooks
 
-It's also possible to combine both before and around hooks in one single definition with the help of *around hooks*:
+It's also possible to combine both before and after hooks in one single definition with the help of *around hooks*:
 
 ```javascript
 // features/support/advanced_hooks.js
@@ -333,6 +419,22 @@ var myHooks = function () {
 module.exports = myHooks;
 ```
 
+##### Context data
+
+You can access the scenario currently being run by adding a parameter
+to your function:
+
+``` javascript
+this.Before(function (scenario, callback) {
+  console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+  callback();
+});
+```
+
+See
+[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/ast/scenario.js)
+for more information about the `scenario` object.
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
@@ -369,71 +471,10 @@ A few example apps are available for you to browse:
 
 * [Rails app serving features in the browser](https://github.com/jbpros/cucumber-js-example)
 * [Express.js app running features in the cli](https://github.com/olivoil/NodeBDD)
-* [Try cucumber.js in the browser](http://cucumber.no.de/)
 
+## Contribute
 
-
-## Setup for using in Node.js and running tests
-
-Install the required dependencies:
-
-    $ npm link
-
-## Play
-
-    $ node example/server.js
-
-Then go to [localhost:9797](http://localhost:9797/).
-
-## Run tests
-
-### Specs
-
-    $ node_modules/.bin/jasmine-node spec
-
-### Features & documentation
-
-There is a common set of features shared by all cucumber implementations. It's called the *Technology Compatibility Kit* or *TCK*. Find more on the [Cucumber TCK](http://github.com/cucumber/cucumber-tck) repository.
-
-The official way of running them is through Cucumber-ruby and Aruba. Ruby and Bundler are required for this to work.
-
-    $ git submodule update --init
-    $ bundle
-    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
-
-*Note*: you need the *bcat* and *rdiscount* gems in order to use the `ARUBA_REPORT_DIR` environment variable. Install it with `gem install bcat rdiscount`.
-
-You can then open the generated documentation:
-
-    $ open doc/features/cucumber-tck/*.html # might open a lot of files ;)
-
-In addition to that, Cucumber.js is able to run the features for itself too:
-
-    $ ./bin/cucumber.js features/cucumber-tck -r features
-
-There are a few other Cucumber.js-dependent features. Execute everything:
-
-    $ ./bin/cucumber.js
-
-### Rake
-
-Alternatively, you can run everything with the help of Rake:
-
-    $ git submodule update --init
-    $ bundle
-    $ rake
-
-### Debug messages
-
-You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will display everything, `1` will only print out the critical things.
-
-    $ DEBUG_LEVEL=5 ./bin/cucumber.js
-
-It even works with Aruba:
-
-    $ rm -rf doc; DEBUG_LEVEL=5 ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
-    $ open doc/features/cucumber-tck/*.html # you'll see debug messages in Aruba-generated docs
-
+See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.md).
 
 ## Help & support
 
@@ -441,18 +482,3 @@ It even works with Aruba:
 * IRC: [#cucumber](http://webchat.freenode.net?channels=cucumber&uio=d4) on Freenode
 * Google Groups: [cukes](https://groups.google.com/group/cukes)
 * [cukes.info](http://cukes.info)
-
-
-## Release checklist
-
-* Update development status in `README.md`, if relevant
-* Update `History.md`
-* Bump version in `lib/cucumber.js`
-* Bump version in `package.json`
-* Add new contributors to `package.json`, if any
-* Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)
-* Tag commit as "v0.1.2" with short description of main changes
-* Push to main repo on Github
-* Wait for build to go green
-* Publish to NPM
-* Deploy to cucumber.no.de

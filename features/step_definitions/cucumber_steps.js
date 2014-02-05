@@ -4,87 +4,55 @@ var cucumberSteps = function() {
   this.World = World;
 
   Given(/^a scenario with:$/, function(steps, callback) {
-    this.featureSource += "Feature: A feature\n";
-    this.featureSource += "  Scenario: A scenario\n";
-    this.featureSource += steps.replace(/^/gm, '    ');
+    this.addScenario("A scenario", steps);
     callback();
   });
 
   Given(/^the step "([^"]*)" has a passing mapping$/, function(stepName, callback) {
-    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
-  world.touchStep(\"" + stepName + "\");\
-  callback();\
-});\n";
-    callback();
+    this.addPassingStepDefinitionWithName(stepName, callback);
   });
 
-  Given(/^a passing (before|after) hook$/, function(hookType, callback) {
-    var defineHook = (hookType == 'before' ? 'Before' : 'After');
-    this.stepDefinitions += defineHook + "(function(callback) {\
-  world.logCycleEvent('" + hookType + "');\
-  callback();\
-});\n";
-    callback();
-  });
-
-  Given(/^a passing around hook$/, function(callback) {
-    this.stepDefinitions += "Around(function(runScenario) {\
-  world.logCycleEvent('around-pre');\
-  runScenario(function(callback) {\
-    world.logCycleEvent('around-post');\
-    callback();\
-  });\
-});\n";
-    callback();
+  Given(/^a passing (before|after|around) hook$/, function(hookType, callback) {
+    if (hookType == "before")
+      this.addBeforeHook(callback);
+    else if (hookType == "after")
+      this.addAfterHook(callback);
+    else
+      this.addAroundHook(callback);
   });
 
   Given(/^an untagged hook$/, function(callback) {
-    this.stepDefinitions += "Before(function(callback) {\
-  world.logCycleEvent('hook');\
-  callback();\
-});\n";
-    callback();
+    this.addUntaggedHook(callback);
   });
 
-  Given(/^a hook tagged with "([^"]*)"$/, function(tag, callback) {
-    this.stepDefinitions += "Before('" + tag +"', function(callback) {\
-  world.logCycleEvent('hook');\
-  callback();\
-});\n";
-    callback();
+  Given(/^a hook tagged with "([^"]*)"$/, function(tags, callback) {
+    this.addHookWithTags(tags, callback);
   });
 
-  Given(/^an around hook tagged with "([^"]*)"$/, function(tag, callback) {
-    this.stepDefinitions += "Around('" + tag + "', function(runScenario) {\
-  world.logCycleEvent('hook-pre');\
-  runScenario(function(callback) {\
-    world.logCycleEvent('hook-post');\
-    callback();\
-  });\
-});\n";
-    callback();
+  Given(/^an around hook tagged with "([^"]*)"$/, function(tags, callback) {
+    this.addAroundHookWithTags(tags, callback);
   });
 
   Given(/^the step "([^"]*)" has a failing mapping$/, function(stepName, callback) {
-    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
-  world.touchStep(\"" + stepName + "\");\
-  throw(new Error('I was supposed to fail.'));\
-});\n";
-    callback();
+    this.addFailingMapping(stepName, {}, callback);
   });
 
   Given(/^the step "([^"]*)" has a mapping failing with the message "([^"]*)"$/, function(stepName, message, callback) {
-    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
-  world.touchStep(\"" + stepName + "\");\
-  throw(new Error('" + message + "'));\
-});\n";
-    callback();
+    this.addFailingMapping(stepName, { message: message }, callback);
   });
 
   Given(/^the step "([^"]*)" has a mapping asynchronously failing with the message "([^"]*)"$/, function(stepName, message, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
   setTimeout(function() {callback.fail(new Error('" + message + "'));}, 10);\
+});\n";
+    callback();
+  });
+
+  Given(/^the step "([^"]*)" has a mapping failing via a Node-like error construct$/, function(stepName, callback) {
+    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
+  world.touchStep(\"" + stepName + "\");\
+  callback(new Error('#fail'));\
 });\n";
     callback();
   });
@@ -176,6 +144,15 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/^several features$/, function(callback) {
+    this.features = [
+      ["feature1", "Feature: One\n\n  Scenario:\n"],
+      ["feature2", "Feature: Two\n\n  Scenario:\n"],
+      ["feature3", "Feature: Three\n\n  Scenario:\n"],
+    ];
+    callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature({}, callback);
   });
@@ -205,6 +182,10 @@ setTimeout(callback.pending, 10);\
     this.runFeature({}, callback);
   });
 
+  When(/^Cucumber runs the features$/, function(callback) {
+    this.runFeatures({}, callback);
+  });
+
   When(/^Cucumber runs the scenario with steps for a calculator$/, function(callback) {
     RpnCalculator = require('../support/rpn_calculator');
     var supportCode = function() { require('./calculator_steps').initialize.call(this, RpnCalculator) };
@@ -214,6 +195,14 @@ setTimeout(callback.pending, 10);\
   When(/^the data table is passed to a step mapping that converts it to key\/value pairs$/, function(callback) {
     this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
 world.dataTableLog = dataTable.hashes();\
+callback();\
+});\n";
+    this.runFeature({}, callback);
+  });
+
+  When(/^the data table is passed to a step mapping that gets the row arrays without the header$/, function(callback) {
+    this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
+world.dataTableLog = dataTable.rows();\
 callback();\
 });\n";
     this.runFeature({}, callback);
@@ -306,6 +295,11 @@ callback();\
     callback();
   });
 
+  Then(/^all features are run$/, function(callback) {
+    this.assertPassedFeatures();
+    callback();
+  });
+
   Then(/^the failure message "([^"]*)" is output$/, function(message, callback) {
     this.assertFailureMessage(message);
     callback();
@@ -332,7 +326,6 @@ callback();\
     this.assertTrue(this.explicitWorldFunctionCalled);
     callback();
   });
-
 
   Then(/^the (before|after) hook is fired (?:before|after) the scenario$/, function(hookType, callback) {
     if (hookType == 'before')

@@ -103,7 +103,7 @@ describe("Cucumber.Ast.Assembler", function() {
     var feature, featureTags, element;
 
     beforeEach(function() {
-      element     = createSpyWithStubs("AST element", {addTags: null});
+      element     = createSpyWithStubs("AST element", {addInheritedtags: null});
       featureTags = createSpy("feature tags");
       feature     = createSpyWithStubs("current feature", {getTags: featureTags});
       spyOn(assembler, 'getCurrentFeature').andReturn(feature);
@@ -121,7 +121,7 @@ describe("Cucumber.Ast.Assembler", function() {
 
     it("adds the feature tags to the element", function() {
       assembler.applyCurrentFeatureTagsToElement(element);
-      expect(element.addTags).toHaveBeenCalledWith(featureTags);
+      expect(element.addInheritedtags).toHaveBeenCalledWith(featureTags);
     });
   });
 
@@ -176,9 +176,15 @@ describe("Cucumber.Ast.Assembler", function() {
 
     beforeEach(function() {
       feature = createSpy("feature");
-      spyOnStub(features, 'addFeature');
+      spyOn(assembler, 'tryEnrollingSuggestedFeature');
       spyOn(assembler, 'applyStashedTagsToElement');
       spyOn(assembler, 'setCurrentFeature');
+      spyOn(assembler, 'suggestFeature');
+    });
+
+    it("tries to enroll the suggested feature, if any", function () {
+      assembler.insertFeature(feature);
+      expect(assembler.tryEnrollingSuggestedFeature).toHaveBeenCalled();
     });
 
     it("applies the stashed tags to the feature", function() {
@@ -191,9 +197,9 @@ describe("Cucumber.Ast.Assembler", function() {
       expect(assembler.setCurrentFeature).toHaveBeenCalledWith(feature);
     });
 
-    it("adds the feature to the root features", function() {
+    it("suggests the feature to be added to root features", function() {
       assembler.insertFeature(feature);
-      expect(features.addFeature).toHaveBeenCalledWith(feature);
+      expect(assembler.suggestFeature).toHaveBeenCalledWith(feature);
     });
   });
 
@@ -243,7 +249,7 @@ describe("Cucumber.Ast.Assembler", function() {
     beforeEach(function() {
       scenario       = createSpy("scenario");
       currentFeature = createSpyWithStubs("current feature", {addScenario: null});
-      spyOnStub(filter, 'isScenarioEnrolled');
+      spyOnStub(filter, 'isElementEnrolled');
       spyOn(assembler, 'applyStashedTagsToElement');
       spyOn(assembler, 'applyCurrentFeatureTagsToElement');
       spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
@@ -267,12 +273,12 @@ describe("Cucumber.Ast.Assembler", function() {
 
     it("asks the filter if the scenario is enrolled", function() {
       assembler.insertScenario(scenario);
-      expect(filter.isScenarioEnrolled).toHaveBeenCalledWith(scenario);
+      expect(filter.isElementEnrolled).toHaveBeenCalledWith(scenario);
     });
 
     describe("when the scenario is enrolled", function() {
       beforeEach(function() {
-        filter.isScenarioEnrolled.andReturn(true);
+        filter.isElementEnrolled.andReturn(true);
       });
 
       it("gets the current feature", function() {
@@ -288,7 +294,7 @@ describe("Cucumber.Ast.Assembler", function() {
 
     describe("when the scenario is not enrolled", function() {
       beforeEach(function() {
-        filter.isScenarioEnrolled.andReturn(false);
+        filter.isElementEnrolled.andReturn(false);
       });
 
       it("does not get the current feature", function() {
@@ -340,6 +346,128 @@ describe("Cucumber.Ast.Assembler", function() {
     it("stashes the tag", function() {
       assembler.insertTag(tag);
       expect(assembler.stashTag).toHaveBeenCalledWith(tag);
+    });
+  });
+
+  describe("finish()", function () {
+    beforeEach(function() {
+      spyOn(assembler, 'tryEnrollingSuggestedFeature');
+    });
+
+    it("tries to enroll the suggested feature, if any", function () {
+      assembler.finish();
+      expect(assembler.tryEnrollingSuggestedFeature).toHaveBeenCalled();
+    });
+  });
+
+  describe("isSuggestedFeatureEnrollable() [suggestFeature()]", function () {
+    it("is falsy when no feature is suggested for enrolment", function () {
+      var enrollable = assembler.isSuggestedFeatureEnrollable();
+      expect(enrollable).toBeFalsy();
+    });
+
+    describe("when a feature is suggested", function () {
+      var feature;
+
+      beforeEach(function () {
+        feature = createSpyWithStubs("suggested feature", {hasScenarios: null});
+        assembler.suggestFeature(feature);
+        spyOnStub(filter, 'isElementEnrolled');
+      });
+
+      it("checks whether the feature has scenarios or not", function () {
+        assembler.isSuggestedFeatureEnrollable();
+        expect(feature.hasScenarios).toHaveBeenCalled();
+      });
+
+      describe("when the feature has scenarios", function () {
+        beforeEach(function () {
+          feature.hasScenarios.andReturn(true);
+        });
+
+        it("is truthy", function () {
+          var enrollable = assembler.isSuggestedFeatureEnrollable();
+          expect(enrollable).toBeTruthy();
+        });
+      });
+
+      describe("when the feature has got no scenarios", function () {
+        beforeEach(function () {
+          feature.hasScenarios.andReturn(false);
+        });
+
+        it("asks the filter is the feature should be enrolled", function () {
+          assembler.isSuggestedFeatureEnrollable();
+          expect(filter.isElementEnrolled).toHaveBeenCalledWith(feature);
+        });
+
+        it("is truthy when the filter tells the feature should be enrolled", function () {
+          filter.isElementEnrolled.andReturn(true);
+          var enrollable = assembler.isSuggestedFeatureEnrollable();
+          expect(enrollable).toBeTruthy();
+        });
+
+        it("is falsy when the filter tells the feature should be enrolled", function () {
+          filter.isElementEnrolled.andReturn(false);
+          var enrollable = assembler.isSuggestedFeatureEnrollable();
+          expect(enrollable).toBeFalsy();
+        });
+      });
+    });
+  });
+
+  describe("tryEnrollingSuggestedFeature()", function () {
+    beforeEach(function () {
+      spyOn(assembler, 'isSuggestedFeatureEnrollable');
+      spyOn(assembler, 'enrolSuggestedFeature');
+    });
+
+    it("checks whether the possible suggested feature is enrollable", function () {
+      assembler.tryEnrollingSuggestedFeature();
+      expect(assembler.isSuggestedFeatureEnrollable).toHaveBeenCalled();
+    });
+
+    describe("when the suggested feature is enrollable", function () {
+      beforeEach(function () {
+        assembler.isSuggestedFeatureEnrollable.andReturn(true);
+      });
+
+      it("enrols the suggested feature", function () {
+        assembler.tryEnrollingSuggestedFeature();
+        expect(assembler.enrolSuggestedFeature).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the suggested feature is not enrollable (or there is no suggested feature yet)", function () {
+      beforeEach(function () {
+        assembler.isSuggestedFeatureEnrollable.andReturn(false);
+      });
+
+      it("enrols the suggested feature", function () {
+        assembler.tryEnrollingSuggestedFeature();
+        expect(assembler.enrolSuggestedFeature).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("enrolSuggestedFeature", function () {
+    var feature;
+
+    beforeEach(function () {
+      feature = createSpyWithStubs("suggested feature", {hasScenarios: true});
+      spyOnStub(features, 'addFeature');
+      assembler.suggestFeature(feature);
+      expect(assembler.isSuggestedFeatureEnrollable()).toBeTruthy();
+    });
+
+    it("adds the feature to the root features", function () {
+      assembler.enrolSuggestedFeature();
+      expect(features.addFeature).toHaveBeenCalledWith(feature);
+    });
+
+    it("removes the suggested feature", function () {
+      assembler.enrolSuggestedFeature();
+      expect(assembler.isSuggestedFeatureEnrollable()).toBeFalsy();
     });
   });
 });

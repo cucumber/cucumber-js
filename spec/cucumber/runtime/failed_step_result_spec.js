@@ -9,7 +9,7 @@ describe("Cucumber.Runtime.FailedStepResult", function() {
     spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
     step             = createSpy("step");
     failureException = createSpy("failure exception");
-    payload          = {step: step, failureException: failureException};
+    payload          = { step: step, failureException: failureException };
     failedStepResult = Cucumber.Runtime.FailedStepResult(payload);
   });
 
