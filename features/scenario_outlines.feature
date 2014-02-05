@@ -1,70 +1,51 @@
-Feature: Scenario Outlines and Examples
+Feature: Data Tables
 
-  Scenario: Basic outline
-    Given the following feature:
+  Scenario: a data table interpreted as an array
+    Given a scenario with:
       """
-      Feature: testing scenarios
-        Background:
-          Given a background step
-
-        Scenario Outline: outline
-          When a <some> step
-          Then i get <result>
-        Examples:
-          | some    | result  |
-          | passing | passed  |
-          | failing | skipped |
+      Given the following cukes:
+        | Cucumis sativus | Cucumber     |
+        | Cucumis anguria | Burr Gherkin |
       """
-    And the step "a background step" has a passing mapping
-    And the step "a passing step" has a passing mapping
-    And the step "a failing step" has a failing mapping
-    And the step "i get passed" has a passing mapping
-    And the step "i get skipped" has a passing mapping
-    When Cucumber runs the feature
-    Then the scenario called "outline" is reported as failing
-    And the step "a background step" passes
-    And the step "a passing step" passes
-    And the step "a failing step" passes
-    And the step "i get passed" passes
-    And the step "i get skipped" is skipped
-
-  Scenario: Outline with table
-    Given the following feature:
-    """
-      Feature: testing scenarios
-        Scenario Outline: outline
-          When a table step:
-            | first   | second   |
-            | <first> | <second> |
-        Examples:
-          | first   | second  |
-          | 1       | 2       |
+    And the step "the following cukes:" has a passing mapping that receives a data table
+    When Cucumber executes the scenario
+    Then the scenario passes
+    And the received data table array equals the following:
       """
-    And the step "a table step:" has a passing mapping that receives a data table
-    When Cucumber runs the feature
-    Then the received data table array equals the following:
-      """
-      [["first","second"],["1","2"]]
+      [
+        [ "Cucumis sativus", "Cucumber" ],
+        [ "Cucumis anguria", "Burr Gherkin" ]
+      ]
       """
 
-  Scenario: Outline with doc string
-    Given the following feature:
-    """
-      Feature: testing scenarios
-        Scenario Outline: outline
-          When a doc sting step:
-            \"\"\"
-            I am doc string in <example> example
-            And there are <string> string
-            \"\"\"
-        Examples:
-          | example | string |
-          | first   | some   |
+  Scenario: a data table can be read as an array of hashes
+    Given the following data table in a step:
       """
-    And the step "a doc sting step:" has a passing mapping that receives a doc string
-    When Cucumber runs the feature
-    Then the received doc string equals the following:
-    """
-    I am doc string in first example
-    And there are some string
-    """
+      | Latin           | English      |
+      | Cucumis sativus | Cucumber     |
+      | Cucumis anguria | Burr Gherkin |
+      """
+    When the data table is passed to a step mapping that converts it to key/value pairs
+    Then the data table is converted to the following:
+      """
+      [
+        { "Latin":"Cucumis sativus", "English":"Cucumber" },
+        { "Latin":"Cucumis anguria", "English":"Burr Gherkin" }
+      ]
+      """
+
+  Scenario: a data table can be read as an array of values
+    Given the following data table in a step:
+      """
+      | Latin           | English      |
+      | Cucumis sativus | Cucumber     |
+      | Cucumis anguria | Burr Gherkin |
+      """
+    When the data table is passed to a step mapping that gets the row arrays without the header
+    Then the data table is converted to the following:
+      """
+      [
+        [ "Cucumis sativus", "Cucumber" ],
+        [ "Cucumis anguria", "Burr Gherkin" ]
+      ]
+      """
