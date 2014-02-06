@@ -21,12 +21,12 @@ Feature: Scenario Outlines and Examples
     And the step "i get passed" has a passing mapping
     And the step "i get skipped" has a passing mapping
     When Cucumber runs the feature
-    #Then the scenario called "outline" is reported as failing
-    #And the step "a background step" passes
-    #And the step "a passing step" passes
-    #And the step "a failing step" passes
-    #And the step "i get passed" passes
-    #And the step "i get skipped" is skipped
+    Then the scenario called "outline" is reported as failing
+    And the step "a background step" passes
+    And the step "a passing step" passes
+    And the step "a failing step" passes
+    And the step "i get passed" passes
+    And the step "i get skipped" is skipped
 
 #  Scenario: Outline with table
 #    Given the following feature:
