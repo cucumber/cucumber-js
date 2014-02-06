@@ -1,0 +1,574 @@
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m
+
+(::) failed steps (::)
+
+Error: Expected step "a background step" to have passed.
+    at assertPassedStep (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_world.js:296:11)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:196:10)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:117:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:107:32
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:32:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:27:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:39:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.visitStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:91:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:150:17
+    at codeCallback (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:61:11)
+    at proto.addPassingStepDefinitionWithName (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_world.js:245:3)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:12:10)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:117:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:107:32
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:32:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:27:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:39:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.visitStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:91:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:150:17
+    at codeCallback (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:61:11)
+    at proto.addPassingStepDefinitionWithName (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_world.js:245:3)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:12:10)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:117:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:107:32
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:32:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:27:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:39:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.visitStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:91:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:150:17
+    at codeCallback (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:61:11)
+    at proto.addFailingMapping (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_world.js:210:3)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:25:10)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:117:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:107:32
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:32:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:27:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:39:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.visitStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:91:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:150:17
+    at codeCallback (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:61:11)
+    at proto.addPassingStepDefinitionWithName (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_world.js:245:3)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:12:10)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:117:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:107:32
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:32:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:27:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:39:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.visitStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:91:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:150:17
+    at codeCallback (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:61:11)
+    at proto.addPassingStepDefinitionWithName (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_world.js:245:3)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:12:10)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:117:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:107:32
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:32:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:27:5)
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:39:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.visitStepResult (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:91:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:150:17
+    at codeCallback (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:61:11)
+    at null.<anonymous> (c:\Users\bvantreese\Code\cucumber-js\features\step_definitions\cucumber_steps.js:76:5)
+    at Object.invoke (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\step_definition.js:84:14)
+    at Object.execute (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:157:22)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\step.js:149:12)
+    at Object.executeStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:190:12)
+    at Object.processStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:185:14)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:78:16
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at Object.visitStep (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:75:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:100:17
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at Object.instructVisitorToVisitSteps (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:99:13)
+    at Object.instructVisitorToVisitScenarioSteps (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:95:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:80:14
+    at Object.instructVisitorToVisitBackgroundSteps (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:90:9)
+    at Object.acceptVisitor (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\ast\scenario.js:79:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:49:41
+    at callUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\library\hooker.js:41:11)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at Object.triggerBeforeHooks (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\library\hooker.js:63:19)
+    at callBeforeHooks (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\library\hooker.js:37:16)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at hookedUpFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\library\hooker.js:27:21)
+    at callUserFunctionAndBroadcastAfterEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:102:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at onRuntimeListenersComplete (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:125:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:15:11)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:21:11
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:16:7
+    at hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:8:9)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:16:7
+    at handleBeforeScenarioEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\stats_journal.js:24:5)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener.js:6:9)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\summary_formatter.js:15:18)
+    at Object.hear (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\listener\progress_formatter.js:15:22)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:130:51
+    at processItem (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:20:9)
+    at iterate (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:13:11)
+    at Object.forEach (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\type\collection.js:24:7)
+    at broadcastToListeners (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:129:19)
+    at Object.broadcastEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:121:7)
+    at Object.broadcastBeforeEvent (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:112:12)
+    at Object.broadcastEventAroundUserFunction (c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:96:12)
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\runtime\ast_tree_walker.js:53:14
+    at c:\Users\bvantreese\Code\cucumber-js\lib\cucumber\support_code\library.js:72:11
+    at process._tickCallback (node.js:415:13)
+    at Function.Module.runMain (module.js:499:11)
+    at startup (node.js:119:16)
+    at node.js:901:3
+
+Failing scenarios:
+c:\Users\bvantreese\Code\cucumber-js\features\scenario_outlines.feature:3 # Scenario: Basic outline
+
+1 scenario ([31m1 failed[0m)
+7 steps ([31m1 failed[0m, [32m6 passed[0m)
