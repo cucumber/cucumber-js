@@ -15,9 +15,11 @@ describe("Cucumber.Ast.ScenarioOutline", function() {
     lastStep    = createSpy("last step");
     steps       = createSpy("step collection");
     examples    = createSpy("examples collection");
+    
     spyOnStub(steps, 'add');
     spyOnStub(steps, 'getLast').andReturn(lastStep);
-    spyOn(Cucumber.Type, 'Collection').andReturn(steps);
+    //spyOn(Cucumber.Type, 'Collection').andReturn(steps);
+    
     scenario = Cucumber.Ast.ScenarioOutline(keyword, name, description, uri, line);
   });
 
@@ -27,10 +29,34 @@ describe("Cucumber.Ast.ScenarioOutline", function() {
     });
 
     it("returns the examples", function() {
-      var example1 = createSpy("example 1");
-      var example2 = createSpy("example 2");
-      scenario.setExamples([example1,example2]);
-      expect(scenario.getExamples()).toEqual([example1,example2]);
+      scenario.setExamples(examples);
+      expect(scenario.getExamples()).toBe(examples);
+    });
+  });
+
+  describe("acceptVisitor", function() {
+    var visitor, callback, data_row;
+
+    beforeEach(function() {
+      visitor  = createSpyWithStubs("Visitor", {visitStep: null});
+      
+      data_row = createSpyWithStubs("row",{raw: "data row"});
+      var rows = Cucumber.Type.Collection();
+      rows.add(createSpyWithStubs("row",{raw: "header row"}));
+      rows.add(data_row);
+
+      dataTable = createSpyWithStubs("DataTable",{getRows: rows});
+      examples = createSpyWithStubs("Visitor", {getDataTable: dataTable});
+      callback = createSpy("Callback");
+      spyOn(scenario, 'instructVisitorToVisitRowSteps');
+      scenario.setExamples(examples);
+    });
+
+    it("instructs the visitor to visit the row steps", function() {
+      scenario.acceptVisitor(visitor, callback);
+      expect(scenario.instructVisitorToVisitRowSteps).toHaveBeenCalledWithValueAsNthParameter(visitor, 1);
+      expect(scenario.instructVisitorToVisitRowSteps).toHaveBeenCalledWithValueAsNthParameter(data_row, 2);
+      expect(scenario.instructVisitorToVisitRowSteps).toHaveBeenCalledWithAFunctionAsNthParameter(3);
     });
   });
 });
