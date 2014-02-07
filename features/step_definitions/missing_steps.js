@@ -43,5 +43,15 @@ this.World = World;
     callback.pending();
   });
 
+  this.When(/^a <some> step$/, function (callback) {
+  // express the regexp above with the code you wish you had
+  callback.pending();
+});
+
+this.Then(/^i get <result>$/, function (callback) {
+  // express the regexp above with the code you wish you had
+  callback.pending();
+});
+
 };
 module.exports = missing_steps;
