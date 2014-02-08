@@ -21,7 +21,7 @@ Feature: Scenario Outlines and Examples
     And the step "i get passed" has a passing mapping
     And the step "i get skipped" has a passing mapping
     When Cucumber runs the feature
-    Then the scenario called "outline" is not reported as failing
+    Then the scenario called "outline" is reported as failing
     And the step "a background step" passes
     And the step "a passing step" passes
     And the step "a failing step" passes
@@ -52,7 +52,7 @@ Feature: Scenario Outlines and Examples
     """
       Feature: testing scenarios
         Scenario Outline: outline
-          When a doc sting step:
+          When a doc string step:
             \"\"\"
             I am doc string in <example> example
             And there are <string> string
@@ -61,10 +61,18 @@ Feature: Scenario Outlines and Examples
           | example | string |
           | first   | some   |
       """
-    And the step "a doc sting step:" has a passing mapping that receives a doc string
+    And the step "a doc string step:" has a passing mapping that receives a doc string
     When Cucumber runs the feature
     Then the received doc string equals the following:
     """
     I am doc string in first example
     And there are some string
-    """
+    """   
+    
+    Scenario Outline: outline
+      When a <some> step
+      Then i get <result>
+    Examples:
+      | some    | result  |
+      | passing | passed  |
+      | failing | skipped |

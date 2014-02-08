@@ -292,7 +292,7 @@ proto.assertScenarioNotReportedAsFailing = function assertScenarioNotReportedAsF
 };
 
 proto.assertPassedStep = function assertPassedStep(stepName) {
-  if (!this.isStepTouched(stepName))
+  if (!this.isStepTouched(stepName))      
     throw(new Error("Expected step \"" + stepName + "\" to have passed."));
 };
 
