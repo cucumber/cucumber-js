@@ -351,6 +351,7 @@ describe("Cucumber.Ast.Assembler", function() {
 
   describe("finish()", function () {
     beforeEach(function() {
+      spyOn(assembler, 'convertScenarioOutlinesToScenarios');
       spyOn(assembler, 'tryEnrollingSuggestedFeature');
     });
 
@@ -419,7 +420,7 @@ describe("Cucumber.Ast.Assembler", function() {
   describe("tryEnrollingSuggestedFeature()", function () {
     beforeEach(function () {
       spyOn(assembler, 'isSuggestedFeatureEnrollable');
-      spyOn(assembler, 'enrolSuggestedFeature');
+      spyOn(assembler, 'enrollSuggestedFeature');
     });
 
     it("checks whether the possible suggested feature is enrollable", function () {
@@ -434,7 +435,7 @@ describe("Cucumber.Ast.Assembler", function() {
 
       it("enrols the suggested feature", function () {
         assembler.tryEnrollingSuggestedFeature();
-        expect(assembler.enrolSuggestedFeature).toHaveBeenCalled();
+        expect(assembler.enrollSuggestedFeature).toHaveBeenCalled();
       });
     });
 
@@ -445,12 +446,12 @@ describe("Cucumber.Ast.Assembler", function() {
 
       it("enrols the suggested feature", function () {
         assembler.tryEnrollingSuggestedFeature();
-        expect(assembler.enrolSuggestedFeature).not.toHaveBeenCalled();
+        expect(assembler.enrollSuggestedFeature).not.toHaveBeenCalled();
       });
     });
   });
 
-  describe("enrolSuggestedFeature", function () {
+  describe("enrollSuggestedFeature", function () {
     var feature;
 
     beforeEach(function () {
@@ -461,12 +462,12 @@ describe("Cucumber.Ast.Assembler", function() {
     });
 
     it("adds the feature to the root features", function () {
-      assembler.enrolSuggestedFeature();
+      assembler.enrollSuggestedFeature();
       expect(features.addFeature).toHaveBeenCalledWith(feature);
     });
 
     it("removes the suggested feature", function () {
-      assembler.enrolSuggestedFeature();
+      assembler.enrollSuggestedFeature();
       expect(assembler.isSuggestedFeatureEnrollable()).toBeFalsy();
     });
   });
