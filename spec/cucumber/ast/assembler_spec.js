@@ -349,6 +349,49 @@ describe("Cucumber.Ast.Assembler", function() {
     });
   });
 
+  describe("convertScenarioOutlinesToScenarios()", function () {
+    var scenarioOutline, subScenario;
+    beforeEach(function() {
+      subScenario = createSpy('subScenario');
+      var subScenarios = Cucumber.Type.Collection();
+      subScenarios.add(subScenario);
+      scenarioOutline = createSpyWithStubs('scenario', {'buildScenarios': subScenarios});
+      scenarioOutline.payload_type = 'scenarioOutline';
+
+      spyOn(assembler, 'insertBuiltScenarioAndSteps');
+    });
+
+    it("it should get the scenarios from the current feature", function () {
+      assembler.convertScenarioOutlineToScenarios(scenarioOutline);      
+      expect(assembler.insertBuiltScenarioAndSteps).toHaveBeenCalledWithValueAsNthParameter(subScenario,1);
+    });
+  });
+
+  describe("convertScenarioOutlinesToScenarios()", function () {
+    var currentFeature, scenario, scenarios;
+
+    beforeEach(function() {
+      spyOn(assembler, "getCurrentFeature");
+      spyOn(assembler, "convertScenarioOutlineToScenarios");
+      scenario = createSpy('scenario');
+      scenarios = Cucumber.Type.Collection();
+      scenarios.add(scenario);
+      currentFeature = createSpyWithStubs("currentFeature", {'getScenarios' : scenarios})
+      assembler.getCurrentFeature.andReturn(currentFeature);
+    });
+
+    it("it should get the scenarios from the current feature", function () {
+      assembler.convertScenarioOutlinesToScenarios();
+      expect(assembler.getCurrentFeature).toHaveBeenCalled();
+      expect(currentFeature.getScenarios).toHaveBeenCalled();
+    });
+
+    it("it should get the scenarios from the current feature", function () {
+      assembler.convertScenarioOutlinesToScenarios();      
+      expect(assembler.convertScenarioOutlineToScenarios).toHaveBeenCalledWith(scenario);
+    });    
+  });
+
   describe("finish()", function () {
     beforeEach(function() {
       spyOn(assembler, 'convertScenarioOutlinesToScenarios');
