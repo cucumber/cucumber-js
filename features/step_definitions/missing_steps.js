@@ -43,21 +43,7 @@ this.World = World;
     callback.pending();
   });
 
-this.When(/^a ([^"]*) step$/, function (stepName, callback) {    
-    if(stepName === 'passing' || stepName === 'failing' || stepName === 'background') {
-        callback();
-    }else{
-        callback.fail();
-    }
-});
 
-this.Then(/^i get ([^"]*)$/, function (result, callback) {
-    if(result === 'passed' || result === 'skipped' || stepName === 'result') {
-        callback();
-    }else{
-        callback.fail();
-    }
-});
 
 
 };
