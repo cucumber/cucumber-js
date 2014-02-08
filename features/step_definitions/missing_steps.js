@@ -43,7 +43,13 @@ this.World = World;
     callback.pending();
   });
 
-
+this.When(/^a ([^"]*) step$/, function (some, callback) {         
+  callback();                                           
+});                                                             
+                                                                
+this.Then(/^i get ([^"]*)$/, function (result, callback) {        
+  callback();                                           
+});                                                             
 
 
 };
