@@ -355,6 +355,11 @@ describe("Cucumber.Ast.Assembler", function() {
       spyOn(assembler, 'tryEnrollingSuggestedFeature');
     });
 
+    it("tries to convert scenario outlines to scenarios if any", function () {
+      assembler.finish();
+      expect(assembler.convertScenarioOutlinesToScenarios).toHaveBeenCalled();
+    });
+
     it("tries to enroll the suggested feature, if any", function () {
       assembler.finish();
       expect(assembler.tryEnrollingSuggestedFeature).toHaveBeenCalled();
