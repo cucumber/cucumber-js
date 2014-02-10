@@ -168,7 +168,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
     beforeEach(function() {
       scenario = createSpyObj("scenario",['mock']);
-      scenario.payload_type = 'scenario';
+      scenario.payloadType = 'scenario';
       callback = createSpy("Callback");
       spyOnStub(supportCodeLibrary, 'instantiateNewWorld');
     });
