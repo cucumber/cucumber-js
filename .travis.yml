@@ -3,7 +3,6 @@ before_install:
   - ruby --version
   - gem --version
   - rvm --version
-  - rvm @global do gem install bundler
   - bundle install
 
 script: "rake"
