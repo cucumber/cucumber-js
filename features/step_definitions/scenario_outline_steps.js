@@ -4,15 +4,14 @@ var scenario_outline_steps = function() {
 	this.World = World;
 
 	this.When(/^a (.*) step$/, function (some, callback) {
-	   this.assertTrue(some === "passing" || some === "failing");
-	   callback();
+	   	this.assertTrue(some === "passing" || some === "failing");
+	   	callback();
 	});                                                             
 	                                                                
 	this.Then(/^i get (.*)$/, function (result, callback) {
 		this.assertTrue(result === "passed" || result === "skipped");
-	   callback();                                           
+   		callback();                                           
 	});            
-
 }
 
 module.exports = scenario_outline_steps;
