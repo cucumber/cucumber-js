@@ -63,7 +63,7 @@
     "pogo": "0.5.1"
   },
   "devDependencies": {
-    "connect": "2.11.0",
+    "connect": "2.13.0",
     "jasmine-node": "1.11.0",
     "mkdirp": "0.3.5",
     "rimraf": "2.2.2",
