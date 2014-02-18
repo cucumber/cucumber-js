@@ -57,6 +57,7 @@
     "browserify": "1.15.5",
     "nopt": "2.1.2",
     "underscore": "1.5.2",
+    "underscore.string" : "2.3.3",
     "cucumber-html": "0.2.3",
     "walkdir": "0.0.7",
     "coffee-script": "1.6.3",
