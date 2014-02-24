@@ -79,9 +79,9 @@ var cliSteps = function cliSteps() {
     var actualError =  lastRun['error'];
     var actualStderr =  lastRun['stderr'];
 
-    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir);
+    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir.replace(/\\/g,'/'));
 
-    try { var actualJson = JSON.parse(actualOutput); }
+    try { var actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
     catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput); }
 
     try { var expectedJson = JSON.parse(expectedOutput); }
