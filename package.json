@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.3.3",
+  "version": "0.4.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -35,7 +35,14 @@
     "Simon Dean <simon@simondean.org> (http://www.simondean.org)",
     "John Wright <johngeorge.wright@gmail.com>",
     "Johny Jose <johny@playlyfe.com>",
-    "Marat Dyatko <vectart@gmail.com>"
+    "Marat Dyatko <vectart@gmail.com>",
+    "Tim Perry <tim.perry@softwire.com>",
+    "Fedotov Daniil <hairyhum@gmail.com>",
+    "unknown <jharlin@NormanDev2.telogical.com>",
+    "Ben Van Treese <vantreeseba@gmail.com>",
+    "Gabe Hayes <gabriel.hayes@gmail.com>",
+    "Brian Clozel <brian.clozel@gmail.com>",
+    "Lukas Degener <l.degener@tarent.de>"
   ],
   "repository": {
     "type": "git",
