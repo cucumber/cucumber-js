@@ -57,13 +57,14 @@
     "browserify": "1.15.5",
     "nopt": "2.1.2",
     "underscore": "1.5.2",
+    "underscore.string" : "2.3.3",
     "cucumber-html": "0.2.3",
     "walkdir": "0.0.7",
     "coffee-script": "1.6.3",
     "pogo": "0.5.1"
   },
   "devDependencies": {
-    "connect": "2.11.0",
+    "connect": "2.13.0",
     "jasmine-node": "1.11.0",
     "mkdirp": "0.3.5",
     "rimraf": "2.2.2",

@@ -18,6 +18,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       getOutcomeStepDefinitionFunctionName : 'Then',
       getNumberMatchingGroup               : '(\\d+)',
       getQuotedStringMatchingGroup         : '"([^"]*)"',
+      getOutlineExampleMatchingGroup       : '<([^>]*)>',
       getFunctionParameterSeparator        : ', ',
       getStepDefinitionDocString           : 'string',
       getStepDefinitionDataTable           : 'table',
@@ -132,8 +133,9 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       escapedStepName = createSpy("escaped step name");
       stepName        = createSpy("step name");
       spyOnStub(step, 'getName').andReturn(stepName);
+      spyOnStub(step, 'isOutlineStep');
       spyOnStub(Cucumber.Util.RegExp, 'escapeString').andReturn(escapedStepName);
-      spyOn(snippetBuilder, 'parameterizeStepName').andReturn(parameterizedStepName);
+      spyOn(snippetBuilder, 'parameterizeStepName').andReturn(parameterizedStepName);      
     });
 
     it("gets the step name", function() {
@@ -162,7 +164,8 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
 
     beforeEach(function() {
       parameterizedStepName        = createSpy("parameterized step name");
-      parameterizedNumbersStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
+      parameterizedExamplesStepName= createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
+      parameterizedNumbersStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedExamplesStepName});
       stepName                     = createSpyWithStubs("step name", {replace: parameterizedNumbersStepName});
     });
 
@@ -193,6 +196,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       spyOn(snippetBuilder, 'getStepDefinitionPatternMatchingGroupParameters').andReturn(patternMatchingGroupParameters);
       spyOnStub(step, 'hasDocString');
       spyOnStub(step, 'hasDataTable');
+      spyOnStub(step, 'isOutlineStep');
     });
 
     it("gets the step definition pattern matching group parameters", function() {
@@ -235,6 +239,9 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
   describe("getStepDefinitionPatternMatchingGroupParameters()", function() {
     beforeEach(function() {
       spyOn(snippetBuilder, 'countStepDefinitionPatternMatchingGroups');
+      spyOnStub(step, 'isOutlineStep');
+      spyOnStub(step, 'getName');
+      step.getName.andReturn('stepName');
     });
 
     it("gets the number of step definition pattern matching groups", function() {

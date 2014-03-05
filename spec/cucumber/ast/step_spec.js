@@ -24,6 +24,12 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
+  describe("IsOutlineStep()", function() {
+    it("returns false for a non outline step", function() {
+      expect(step.isOutlineStep()).toBe(false);
+    });
+  });
+
   describe("getUri()", function() {
     it("returns the URI on which the background starts", function() {
       expect(step.getUri()).toBe(uri);

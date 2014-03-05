@@ -100,29 +100,29 @@ describe("Cucumber.Ast.Feature", function () {
     });
 
     it("gets the background", function () {
-      feature.addScenario(scenario);
+      feature.addFeatureElement(scenario);
       expect(feature.getBackground).toHaveBeenCalled();
     });
 
     it("sets the background on the scenario", function () {
-      feature.addScenario(scenario);
+      feature.addFeatureElement(scenario);
       expect(scenario.setBackground).toHaveBeenCalledWith(background);
     });
 
     it("adds the scenario to the scenarios (collection)", function () {
-      feature.addScenario(scenario);
+      feature.addFeatureElement(scenario);
       expect(scenarioCollection.add).toHaveBeenCalledWith(scenario);
     });
   });
 
   describe("getLastScenario()", function () {
     it("gets the last scenario from the collection", function () {
-      feature.getLastScenario();
+      feature.getLastFeatureElement();
       expect(scenarioCollection.getLast).toHaveBeenCalled();
     });
 
     it("returns the last scenario", function () {
-      expect(feature.getLastScenario()).toBe(lastScenario);
+      expect(feature.getLastFeatureElement()).toBe(lastScenario);
     });
   });
 
@@ -132,23 +132,23 @@ describe("Cucumber.Ast.Feature", function () {
     });
 
     it("gets the number of scenarios", function () {
-      feature.hasScenarios();
+      feature.hasFeatureElements();
       expect(scenarioCollection.length).toHaveBeenCalled();
     });
 
     it("is falsy when there are 0 scenarios", function () {
       scenarioCollection.length.andReturn(0);
-      expect(feature.hasScenarios()).toBeFalsy();
+      expect(feature.hasFeatureElements()).toBeFalsy();
     });
 
     it("is truthy when there is 1 scenario", function () {
       scenarioCollection.length.andReturn(1);
-      expect(feature.hasScenarios()).toBeTruthy();
+      expect(feature.hasFeatureElements()).toBeTruthy();
     });
 
     it("is truthy when there are more than 1 scenarios", function () {
       scenarioCollection.length.andReturn(2);
-      expect(feature.hasScenarios()).toBeTruthy();
+      expect(feature.hasFeatureElements()).toBeTruthy();
     });
   });
 
