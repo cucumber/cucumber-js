@@ -401,4 +401,3 @@ proto.indentCode = function indentCode(code, levels) {
 proto.color = require('../../lib/cucumber/util/colors');
 
 exports.World = World;
-
