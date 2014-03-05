@@ -71,7 +71,7 @@ Cucumber.js is still a work in progress. Here is its current status.
     </tr>
     <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature">Scenario outlines and examples</a></td>
-      <td>To do</td>
+      <td>Done</td>
     </tr>
     <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature">Stats collector</a></td>
