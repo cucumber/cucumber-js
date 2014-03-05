@@ -2,17 +2,15 @@ require('../support/spec_helper');
 
 describe("Cucumber.Parser", function () {
   var Cucumber = requireLib('cucumber');
-  var gherkinLexerConstructor;
   var parser, featureSources;
   var features, astFilter, astAssembler;
 
   beforeEach(function () {
-    gherkinLexerConstructor = spyOnModule("gherkin/lib/gherkin/lexer/en");
     features       = createSpy("Root 'features' AST element");
     astFilter      = createSpy("AST filter");
     featureSources = [
-      ["(feature:1)", createSpy('first feature source')],
-      ["(feature:2)", createSpy('second feature source')]
+      ["(feature:1)", createSpyWithStubs('first feature source', {toString:"first feature source"})],
+      ["(feature:2)", createSpyWithStubs('second feature source', {toString:"# language: fr\nsecond feature source"})]
     ];
     astAssembler   = createSpy("AST assembler");
     spyOn(Cucumber.Ast, 'Features').andReturn(features);
@@ -32,12 +30,25 @@ describe("Cucumber.Parser", function () {
 
   describe("parse()", function () {
     var Gherkin = require('gherkin');
-    var gherkinLexer;
+    var gherkinENLexerConstructor, gherkinFRLexerConstructor, gherkinENLexer, gherkinFRLexer;
     var eventHandlers;
 
     beforeEach(function () {
-      gherkinLexer = createSpyWithStubs("English gherkin lexer instance", {scan: null});
-      gherkinLexerConstructor.andReturn(gherkinLexer);
+      gherkinENLexer = createSpyWithStubs("English gherkin lexer instance", {scan: null});
+      gherkinFRLexer = createSpyWithStubs("French gherkin lexer instance", {scan: null});
+      gherkinENLexerConstructor = createSpy("English gherkin lexer constructor").andReturn(gherkinENLexer);
+      gherkinFRLexerConstructor = createSpy("French gherkin lexer constructor").andReturn(gherkinFRLexer);
+      spyOn(Gherkin, 'Lexer').andCallFake(
+        function(language){
+          if(language == 'en') {
+            return gherkinENLexerConstructor;
+          } else if(language == 'fr') {
+            return gherkinFRLexerConstructor;
+          } else {
+            throw "Could not instantiate a parser for this language"
+          }
+        }
+      );
       eventHandlers = createSpy("Parser event handlers");
       spyOn(parser, 'getEventHandlers').andReturn(eventHandlers);
       spyOn(parser, 'setCurrentSourceUri');
@@ -50,7 +61,15 @@ describe("Cucumber.Parser", function () {
 
     it("creates a gherkin lexer for the English language", function () {
       parser.parse();
-      expect(gherkinLexerConstructor).toHaveBeenCalledWith(eventHandlers);
+      expect(Gherkin.Lexer).toHaveBeenCalledWith('en');
+      expect(gherkinENLexerConstructor).toHaveBeenCalledWith(eventHandlers);
+    });
+
+
+    it("creates a gherkin lexer for the French language", function () {
+      parser.parse();
+      expect(Gherkin.Lexer).toHaveBeenCalledWith('fr');
+      expect(gherkinFRLexerConstructor).toHaveBeenCalledWith(eventHandlers);
     });
 
     it("sets the uri of each feature source", function () {
@@ -59,12 +78,16 @@ describe("Cucumber.Parser", function () {
       expect(parser.setCurrentSourceUri).toHaveBeenCalledWith(featureSources[1][0]);
     });
 
-    it("asks the lexer to scan each feature source", function () {
+    it("asks the English lexer to scan the first feature source", function () {
       parser.parse();
-      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources[0][1]);
-      expect(gherkinLexer.scan).toHaveBeenCalledWith(featureSources[1][1]);
+      expect(gherkinENLexer.scan).toHaveBeenCalledWith(featureSources[0][1]);
     });
 
+    it("asks the French lexer to scan the second feature source", function () {
+      parser.parse();
+      expect(gherkinFRLexer.scan).toHaveBeenCalledWith(featureSources[1][1]);
+    });
+    
     it("returns the features root element", function () {
       expect(parser.parse()).toBe(features);
     });
