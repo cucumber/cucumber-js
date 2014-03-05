@@ -20,8 +20,6 @@
 	"jquery": true,
 	"white": true,
 	"globals": {
-		"_": true,
-		"angular": true,
 		"describe": true,
 		"beforeEach": true,
 		"afterEach": true,
