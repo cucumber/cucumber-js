@@ -1,4 +1,4 @@
-  var tag_steps = function() {
+var tagSteps = function() {
   var Given  = When = Then = this.defineStep;
   var World  = require('./cucumber_world').World;
   this.World = World;
@@ -79,8 +79,7 @@
 
   When(/^Cucumber executes scenarios tagged with "([^"]*)" but not with both "([^"]*)" and "([^"]*)"$/, function(tag1, tag2, tag3, callback) {
     this.runFeature({tags: [tag1, '~' + tag2, '~' + tag3]}, callback);
-});
-
-
+  });
 };
-module.exports = tag_steps
+
+module.exports = tagSteps;

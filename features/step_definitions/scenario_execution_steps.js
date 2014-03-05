@@ -1,4 +1,4 @@
-  var scenario_exection_steps = function() {
+var scenarioExectionSteps = function() {
   var Given  = When = Then = this.defineStep;
   var World  = require('./cucumber_world').World;
   this.World = World;
@@ -24,4 +24,4 @@
     callback();
   });
 };
-module.exports = scenario_exection_steps;
+module.exports = scenarioExectionSteps;

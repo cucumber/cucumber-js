@@ -292,7 +292,7 @@ proto.assertScenarioNotReportedAsFailing = function assertScenarioNotReportedAsF
 };
 
 proto.assertPassedStep = function assertPassedStep(stepName) {
-  if (!this.isStepTouched(stepName))      
+  if (!this.isStepTouched(stepName))
     throw(new Error("Expected step \"" + stepName + "\" to have passed."));
 };
 
@@ -401,4 +401,3 @@ proto.indentCode = function indentCode(code, levels) {
 proto.color = require('../../lib/cucumber/util/colors');
 
 exports.World = World;
-
