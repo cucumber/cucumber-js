@@ -35,7 +35,7 @@ describe('Cucumber.Listener.SummaryFormatter', function () {
 
         it('creates a stats journal', function () {
             expect(Cucumber.Listener.StatsJournal).toHaveBeenCalled();
-        })
+        });
     });
 
     describe('hear()', function () {

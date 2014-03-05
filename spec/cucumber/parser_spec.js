@@ -32,7 +32,6 @@ describe('Cucumber.Parser', function () {
     });
 
     describe('parse()', function () {
-        var Gherkin = require('gherkin');
         var gherkinLexer;
         var eventHandlers;
 
@@ -157,7 +156,7 @@ describe('Cucumber.Parser', function () {
     });
 
     describe('handleBackground()', function () {
-        var keyword, name, description, line;
+        var keyword, name, description, line, uri;
         var background;
 
         beforeEach(function () {

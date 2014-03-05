@@ -427,7 +427,7 @@ describe('Cucumber.Listener.PrettyFormatter', function () {
                 ['c', 'cuke', 'cuke.js'],
                 ['cu', 'cuke', 'cucumber']
             ];
-             step = createSpyWithStubs('step', {
+            step = createSpyWithStubs('step', {
                 getKeyword: null,
                 hasDataTable: null,
                 getDataTable: null,

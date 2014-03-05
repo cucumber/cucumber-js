@@ -16,7 +16,7 @@ describe('Cucumber.Cli.Configuration', function () {
         });
         spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
         configuration = Cucumber.Cli.Configuration(argv);
-        context['configuration'] = configuration;
+        context.configuration = configuration;
     });
 
     itBehavesLikeAllCucumberConfigurations(context);
@@ -134,7 +134,6 @@ describe('Cucumber.Cli.Configuration', function () {
         });
 
         describe('when the formatter name is unknown', function () {
-            var formatter;
 
             beforeEach(function () {
                 argumentParser.getFormat.andReturn('blah');
