@@ -1,5 +1,5 @@
 var cucumberSteps = function() {
-  var Given  = When = Then = this.defineStep;
+ var Given  = When = Then = this.defineStep;
   var World  = require('./cucumber_world').World;
   this.World = World;
 
@@ -134,6 +134,7 @@ setTimeout(callback.pending, 10);\
 
   When(/^Cucumber runs the feature$/, function(callback) {
     this.runFeature({}, callback);
+    //callback.pending();
   });
 
   When(/^Cucumber runs the features$/, function(callback) {

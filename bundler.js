@@ -21,7 +21,7 @@ var Bundler = function () {
     self.append("context.cucumberRequire = require;\n");
   self.append("context.Cucumber = require('/cucumber');\ncontext.CucumberHTML = require('cucumber-html/src/main/resources/cucumber/formatter/formatter');\n})(window);");
 
-  return self;
+  return self; 
 };
 
 module.exports = Bundler;
