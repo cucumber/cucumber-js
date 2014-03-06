@@ -12,7 +12,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       getStepDefinitionStart               : 'this.',
       getStepDefinitionInner1              : '(',
       getStepDefinitionInner2              : ', function(',
-      getStepDefinitionEnd                 : ") {\n  // express the regexp above with the code you wish you had\n  callback.pending();\n});\n",
+      getStepDefinitionEnd                 : ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n",
       getContextStepDefinitionFunctionName : 'Given',
       getEventStepDefinitionFunctionName   : 'When',
       getOutcomeStepDefinitionFunctionName : 'Then',
@@ -65,7 +65,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
         pattern      +
         ", function(" +
         parameters +
-        ") {\n  // express the regexp above with the code you wish you had\n  callback.pending();\n});\n";
+        ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n";
       expect(actualSnippet).toBe(expectedSnippet);
     });
   });
@@ -135,7 +135,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       spyOnStub(step, 'getName').andReturn(stepName);
       spyOnStub(step, 'isOutlineStep');
       spyOnStub(Cucumber.Util.RegExp, 'escapeString').andReturn(escapedStepName);
-      spyOn(snippetBuilder, 'parameterizeStepName').andReturn(parameterizedStepName);      
+      spyOn(snippetBuilder, 'parameterizeStepName').andReturn(parameterizedStepName);
     });
 
     it("gets the step name", function() {

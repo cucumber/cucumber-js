@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () {
   var Cucumber                 = requireLib('cucumber');
   var Syntax                   = Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax;
-  var stepDefinitionEndComment = 'express the regexp above with the code you wish you had';
+  var stepDefinitionEndComment = 'Write code here that turns the phrase above into concrete actions';
 
   function testBaseSyntax(syntax) {
 
@@ -143,4 +143,3 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () 
     });
   });
 });
-

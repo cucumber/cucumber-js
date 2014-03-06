@@ -297,7 +297,7 @@ EOF
     params = params.join ", "
     expected_snippet = <<-EOF
 this.#{stepdef_keyword}(/#{stepdef_pattern}/, function (#{params}) {
-  // express the regexp above with the code you wish you had
+  // Write code here that turns the phrase above into concrete actions
   callback.pending();
 });
 EOF
