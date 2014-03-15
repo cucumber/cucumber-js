@@ -136,6 +136,72 @@ Feature: Command line interface
       2 passed
       """
 
+  Scenario: cover all scenarios of a test suite by partitioning
+    Given a file named "features/a.feature" with:
+      """
+      Feature: feature1
+        Scenario:
+          When a step is passing
+
+      Feature: feature2
+        Scenario:
+          When a step is passing
+
+      Feature: feature3
+        Scenario:
+          When a step is passing
+
+      Feature: feature4
+        Scenario:
+          When a step is passing
+
+      Feature: feature5
+        Scenario:
+          When a step is passing
+      """
+    And a file named "step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.When(/^a step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js --part 1/3 -r step_definitions -f pretty features`
+    Then it passes with:
+      """
+      feature1
+      """
+    And it passes with:
+      """
+      feature4
+      """
+    And it passes with:
+      """
+      2 passed
+      """
+    When I run `cucumber.js --part 2/3 -r step_definitions -f pretty features`
+    Then it passes with:
+      """
+      feature2
+      """
+    And it passes with:
+      """
+      feature5
+      """
+    And it passes with:
+      """
+      2 passed
+      """
+    When I run `cucumber.js --part 3/3 -r step_definitions -f pretty features`
+     Then it passes with:
+      """
+      feature3
+      """
+    And it passes with:
+      """
+      1 passed
+      """
+
   Scenario: display Cucumber version
     When I run `cucumber.js --version`
     Then I see the version of Cucumber
