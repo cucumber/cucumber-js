@@ -3,23 +3,20 @@ var Cucumber = require('../lib/cucumber');
 var cli = Cucumber.Cli(process.argv);
 cli.run(function(succeeded) {
   var code = succeeded ? 0 : 1;
-  var exitFunction = function() {
-    process.exit(code);
-  };
 
-  // --- exit after waiting for all pending output ---
-  var waitingIO = false;
-  process.stdout.on('drain', function() {
-    if (waitingIO) {
-      // the kernel buffer is now empty
-      exitFunction();
-    }
+  process.on('exit', function() {
+    process.exit(code);
   });
-  if (process.stdout.write("")) {
-    // no buffer left, exit now:
-    exitFunction();
-  } else {
-    // write() returned false, kernel buffer is not empty yet...
-    waitingIO = true;
+
+  var timeoutId = setTimeout(function () {
+    console.error('Cucumber process timed out after waiting 60 seconds for the node.js event loop to empty.  There may be a resource leak.  Have all resources like database connections and network connections been closed properly?');
+    process.exit(code);    
+  }, 60 * 1000);
+
+  if (timeoutId.unref) {
+    timeoutId.unref();
+  }
+  else {
+    clearTimeout(timeoutId);
   }
 });
