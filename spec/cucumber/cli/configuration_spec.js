@@ -179,9 +179,11 @@ describe("Cucumber.Cli.Configuration", function () {
 
     beforeEach(function () {
       astFilter      = createSpyWithStubs("AST filter");
-      tagFilterRules = createSpy("tag specs");
+      tagFilterRules = [];
+      scenarioByLineFilterRules = createSpy("line specs");
       spyOn(Cucumber.Ast, 'Filter').andReturn(astFilter);
       spyOn(configuration, 'getTagAstFilterRules').andReturn(tagFilterRules);
+      spyOn(configuration, 'getSingleScenarioAstFilterRule').andReturn(scenarioByLineFilterRules);
     });
 
     it("gets the tag filter rules", function () {
