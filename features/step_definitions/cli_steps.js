@@ -62,12 +62,12 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  this.Then(/^it passes with:$/, function(expectedOutput, callback) {
+  this.Then(/^it should pass with:$/, function(expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
     var actualError  = lastRun['error'];
     var actualStderr = lastRun['stderr'];
 
-    if (actualOutput.indexOf(expectedOutput) == -1)
+    if (actualOutput == actualError)
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
                       "Error:\n'" + actualError + "'.\n" +
                       "stderr:\n'" + actualStderr  +"'.");

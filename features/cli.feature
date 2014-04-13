@@ -27,6 +27,34 @@ Feature: Command line interface
 
       """
 
+  Scenario: run a single scenario within feature
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: first scenario
+          When a step is passing
+
+        Scenario: second scenario
+          When a step does not exist
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.When(/^a step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js features/a.feature:2`
+    Then it should pass with:
+      """
+      .
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+
+      """
+
+
   Scenario: run a single feature without step definitions
     Given a file named "features/a.feature" with:
       """
