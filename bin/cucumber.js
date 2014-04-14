@@ -6,7 +6,6 @@ cli.run(function(succeeded) {
     var code = succeeded ? 0 : 1;
 
     process.on('exit', function() {
-        console.log("exiting, succeeded: " + succeeded + " code: " + code);
         process.exit(code);
     });
 
