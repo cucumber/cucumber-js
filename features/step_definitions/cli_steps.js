@@ -68,12 +68,11 @@ var cliSteps = function cliSteps() {
     var actualStderr = lastRun['stderr'];
     
     
-    var cleanString = function (str) {
-      //Strips colour codes and normalise line endings
-                  
+    var cleanString = function (str) {                  
       return str
-      .replace(/\033\[[0-9;]*m/g, '')
-      .replace(/\r\n|\r/g, "\n");
+      .replace(/\033\[[0-9;]*m/g, '')   //Strips colour codes
+      .replace(/\r\n|\r/g, "\n")        //Normalise line endings
+      .replace(/([\n]+)/g, "\n");       //Remove excess lines (not spaces)
     };
     
     actualOutput = cleanString(actualOutput);
