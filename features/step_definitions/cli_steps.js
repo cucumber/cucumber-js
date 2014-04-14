@@ -61,6 +61,27 @@ var cliSteps = function cliSteps() {
            callback();
          });
   });
+  
+  this.When(/^I run `cucumber.js(| .+)` with "([^"]*)" set to "([^"]*)"$/, function (args, envName, envValue,callback) {
+    var initialCwd = process.cwd();
+    process.chdir(tmpDir);
+    var runtimePath = joinPathSegments([baseDir, 'bin', 'cucumber.js']);
+    var command     = "node \"" + runtimePath + "\"" + args;
+    var env         = process.env;
+    
+    env[envName] = envValue;
+    
+    exec(command,
+         {env:env},
+         function (error, stdout, stderr) {
+           lastRun['error']  = error;
+           lastRun['stdout'] = stdout;
+           lastRun['stderr'] = stderr;
+           process.chdir(initialCwd);
+           cleansingNeeded = true;
+           callback();
+         });
+  });
 
   this.Then(/^it should (pass|fail) with:$/, function (passOrFail, expectedOutput, callback) {
     var actualOutput = lastRun['stdout'];
