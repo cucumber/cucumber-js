@@ -62,16 +62,26 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  this.Then(/^it passes with:$/, function(expectedOutput, callback) {
+  this.Then(/^it should (pass|fail) with:$/, function(expectedOutput, passOrFail, callback) {
     var actualOutput = lastRun['stdout'];
     var actualError  = lastRun['error'];
     var actualStderr = lastRun['stderr'];
 
-    if (actualOutput.indexOf(expectedOutput) == -1)
+    if (actualOutput == expectedOutput)
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
                       "Error:\n'" + actualError + "'.\n" +
                       "stderr:\n'" + actualStderr  +"'.");
     callback();
+  });
+
+  this.Then(/^it should exit with code "([^"]*)"$/, function (code, callback) {
+      var actualCode = lastRun['error'] ? lastRun['error'].code : "0";
+
+      if (actualCode != code) {
+          throw new Error("Exit code expected: \"" + code + "\"\nGot: \"" + actualCode + "\"\n");
+      }
+
+      callback();
   });
 
   this.Then(/^it outputs this json:$/, function(expectedOutput, callback) {
