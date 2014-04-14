@@ -68,7 +68,7 @@
     "cucumber-html": "0.2.3",
     "walkdir": "0.0.7",
     "coffee-script": "1.7.1",
-    "pogo": "0.5.1"
+    "pogo": "0.5.1",
     "rimraf": "2.0.2",
     "when": "~2.5.1"
   },
