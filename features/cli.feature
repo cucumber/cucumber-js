@@ -45,8 +45,6 @@ Feature: Command line interface
     When I run `cucumber.js features/a.feature`
     Then it should fail with:
       """
-      F
-
       1 scenario (1 failed)
       1 step (1 failed)
 
@@ -74,8 +72,6 @@ Feature: Command line interface
     When I run `cucumber.js features/a.feature`
     Then it should fail with:
       """
-      F
-
       1 scenario (1 failed)
       1 step (1 failed)
 
@@ -109,8 +105,6 @@ Feature: Command line interface
     When I run `cucumber.js features/a.feature`
     Then it should fail with:
       """
-      F
-
       1 scenario (1 failed)
       1 step (1 failed)
 
