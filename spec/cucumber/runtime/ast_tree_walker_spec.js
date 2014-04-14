@@ -2,13 +2,16 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker", function() {
   var Cucumber = requireLib('cucumber');
-  var treeWalker, features, supportCodeLibrary, listeners;
+  var treeWalker, features, supportCodeLibrary, listeners, supportListeners;
 
   beforeEach(function() {
     features           = createSpyWithStubs("Features AST element", {acceptVisitor: null});
     supportCodeLibrary = createSpy("Support code library");
     listeners          = [createSpy("First listener"), createSpy("Second listener")];
+    supportListeners   = [createSpy("First support listener"), createSpy("Second support listener")];
     spyOnStub(listeners, 'syncForEach').andCallFake(function(cb) { listeners.forEach(cb); });
+    spyOnStub(supportListeners, 'syncForEach').andCallFake(function(cb) { supportListeners.forEach(cb); });
+    spyOnStub(supportCodeLibrary, 'getListeners').andCallFake(function() { return supportListeners; });
     treeWalker         = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners);
   });
 
@@ -164,7 +167,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     var scenario, callback;
 
     beforeEach(function() {
-      scenario = createSpyWithStubs("scenario");
+      scenario = createSpyObj("scenario",['mock']);
+      scenario.payloadType = 'scenario';
       callback = createSpy("Callback");
       spyOnStub(supportCodeLibrary, 'instantiateNewWorld');
     });
@@ -447,7 +451,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       beforeEach(function() {
         wrapper = treeWalker.wrapAfterEventBroadcast(event, callback);
-        spyOn(treeWalker, 'broadcastAfterEvent');;
+        spyOn(treeWalker, 'broadcastAfterEvent');
       });
 
       it("broadcasts an after event with the received callback as callback", function() {
@@ -501,20 +505,33 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
 
   describe("broadcastEvent()", function() {
-    var event, eventName, callback;
+    var event, callback;
 
     beforeEach(function() {
       event    = createSpy("Event");
       callback = createSpy("Callback");
-      spyOn(listeners, 'forEach');
+      spyOnListeners(listeners);
+      spyOnListeners(supportListeners);
     });
+
+    function spyOnListeners(listeners) {
+      spyOn(listeners, 'forEach').andCallFake(function() {
+        var callback = listeners.forEach.mostRecentCall.args[1];
+        callback();
+      });
+    }
 
     it("iterates over the listeners", function() {
       treeWalker.broadcastEvent(event, callback);
-      expect(listeners.forEach).toHaveBeenCalled();
-      expect(listeners.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(listeners.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+      assertListenerCollectionCalled(listeners.forEach);
+      assertListenerCollectionCalled(supportListeners.forEach);
+      expect(supportListeners.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
     });
+
+    function assertListenerCollectionCalled(forEachSpy) {
+      expect(forEachSpy).toHaveBeenCalled();
+      expect(forEachSpy).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+    }
 
     describe("for each listener", function() {
       var userFunction, listener, forEachCallback;

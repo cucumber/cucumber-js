@@ -29,8 +29,13 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getFormatter()", function () {
+    var shouldSnippetsBeInCoffeeScript, formatterOptions;
+
     beforeEach(function () {
+      shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
+      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript};
       spyOnStub(argumentParser, 'getFormat').andReturn("progress");
+      spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript').andReturn(shouldSnippetsBeInCoffeeScript);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
@@ -40,6 +45,11 @@ describe("Cucumber.Cli.Configuration", function () {
     it("gets the formatter name from the argument parser", function () {
       configuration.getFormatter();
       expect(argumentParser.getFormat).toHaveBeenCalled();
+    });
+
+    it("checks whether the step definition snippets should be in CoffeeScript", function () {
+      configuration.getFormatter();
+      expect(argumentParser.shouldSnippetsBeInCoffeeScript).toHaveBeenCalled();
     });
 
     describe("when the formatter name is \"json\"", function () {
@@ -53,7 +63,7 @@ describe("Cucumber.Cli.Configuration", function () {
 
       it("creates a new progress formatter", function () {
         configuration.getFormatter();
-        expect(Cucumber.Listener.JsonFormatter).toHaveBeenCalled();
+        expect(Cucumber.Listener.JsonFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the progress formatter", function () {
@@ -72,7 +82,7 @@ describe("Cucumber.Cli.Configuration", function () {
 
       it("creates a new progress formatter", function () {
         configuration.getFormatter();
-        expect(Cucumber.Listener.ProgressFormatter).toHaveBeenCalled();
+        expect(Cucumber.Listener.ProgressFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the progress formatter", function () {
@@ -91,7 +101,7 @@ describe("Cucumber.Cli.Configuration", function () {
 
       it("creates a new pretty formatter", function () {
         configuration.getFormatter();
-        expect(Cucumber.Listener.PrettyFormatter).toHaveBeenCalled();
+        expect(Cucumber.Listener.PrettyFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the pretty formatter", function () {
@@ -110,7 +120,7 @@ describe("Cucumber.Cli.Configuration", function () {
 
       it("creates a new summary formatter", function () {
         configuration.getFormatter();
-        expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalled();
+        expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the summary formatter", function () {
@@ -265,7 +275,7 @@ describe("Cucumber.Cli.Configuration", function () {
     });
   });
 
-  describe("isVersionRequired()", function () {
+  describe("isVersionRequested()", function () {
     beforeEach(function () {
       spyOnStub(argumentParser, 'isVersionRequested');
     });
@@ -279,6 +289,23 @@ describe("Cucumber.Cli.Configuration", function () {
       var isVersionRequested = createSpy("is version requested?");
       argumentParser.isVersionRequested.andReturn(isVersionRequested);
       expect(configuration.isVersionRequested()).toBe(isVersionRequested);
+    });
+  });
+
+  describe("shouldSnippetsBeInCoffeeScript()", function () {
+    beforeEach(function () {
+      spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript');
+    });
+
+    it("asks the argument parser whether the version was requested or not", function () {
+      configuration.shouldSnippetsBeInCoffeeScript();
+      expect(argumentParser.shouldSnippetsBeInCoffeeScript).toHaveBeenCalled();
+    });
+
+    it("returns the answer from the argument parser", function () {
+      var shouldSnippetsBeInCoffeeScript = createSpy("is version requested?");
+      argumentParser.shouldSnippetsBeInCoffeeScript.andReturn(shouldSnippetsBeInCoffeeScript);
+      expect(configuration.shouldSnippetsBeInCoffeeScript()).toBe(shouldSnippetsBeInCoffeeScript);
     });
   });
 });

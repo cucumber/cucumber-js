@@ -25,3 +25,11 @@ Feature: step definition snippets
       """
     When Cucumber executes the scenario
     Then a "Given" step definition snippet for /^I have some "([^"]*)", "([^"]*)" and "([^"]*)" cucumbers$/ with 3 parameters is suggested
+
+  Scenario: outline steps with examples
+    Given a scenario with:
+      """
+      Given I have <some> cucumbers
+      """
+    When Cucumber executes the scenario
+    Then a "Given" example step definition snippet for /^I have "(.*)" cucumbers$/ with 1 parameters is suggested

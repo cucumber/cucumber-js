@@ -59,11 +59,11 @@ module CucumberJsMappings
   end
 
   def write_asynchronously_failing_mapping_with_message(step_name, message)
-    append_step_definition(step_name, "setTimeout(function() { callback.fail('#{message}');}, 10);")
+    append_step_definition(step_name, "setTimeout(function () { callback.fail('#{message}');}, 10);")
   end
 
   def write_asynchronously_failing_mapping_through_exception_with_message(step_name, message)
-    append_step_definition(step_name, "setTimeout(function() { throw new Error('#{message}');}, 10);")
+    append_step_definition(step_name, "setTimeout(function () { throw new Error('#{message}');}, 10);")
   end
 
   def write_failing_mapping_through_nodejs_callback(step_name)
@@ -83,7 +83,7 @@ EOF
 
   def write_mapping_calling_world_function(step_name)
     step_def = <<-EOF
-this.someFunction(); callback();
+this.someFunction (); callback();
 EOF
     append_step_definition(step_name, step_def)
   end
@@ -147,14 +147,14 @@ EOF
   def write_custom_world_constructor_calling_back_with_explicit_object
     append_support_code "this.World = function CustomWorldConstructor(callback) {
   callback({
-    someFunction: function() { fs.writeFileSync(\"#{EXPLICIT_WORLD_OBJECT_FUNCTION_LOG_FILE}\", \"\")}
+    someFunction: function () { fs.writeFileSync(\"#{EXPLICIT_WORLD_OBJECT_FUNCTION_LOG_FILE}\", \"\")}
   });
 };\n"
   end
 
   def write_world_function
     append_support_code <<-EOF
-this.World.prototype.someFunction = function() {
+this.World.prototype.someFunction = function () {
   fs.writeFileSync("#{WORLD_FUNCTION_LOG_FILE}", "");
 };
 EOF
@@ -176,9 +176,9 @@ EOF
 
     if hook_type == "around"
       append_support_code <<-EOF
-this.#{define_hook}(#{params}function(runScenario) {
+this.#{define_hook}(#{params}function (scenario, runScenario) {
   this.logCycleEvent('#{log_string}-pre');
-  runScenario(function(callback) {
+  runScenario(function (callback) {
     this.logCycleEvent('#{log_string}-post');
     callback();
   });
@@ -186,7 +186,7 @@ this.#{define_hook}(#{params}function(runScenario) {
 EOF
     else
       append_support_code <<-EOF
-this.#{define_hook}(#{params}function(callback) {
+this.#{define_hook}(#{params}function (scenario, callback) {
   this.logCycleEvent('#{log_string}');
   callback();
 });
@@ -296,8 +296,8 @@ EOF
     params << "callback"
     params = params.join ", "
     expected_snippet = <<-EOF
-this.#{stepdef_keyword}(/#{stepdef_pattern}/, function(#{params}) {
-  // express the regexp above with the code you wish you had
+this.#{stepdef_keyword}(/#{stepdef_pattern}/, function (#{params}) {
+  // Write code here that turns the phrase above into concrete actions
   callback.pending();
 });
 EOF
@@ -318,9 +318,13 @@ EOF
 
   def assert_json_output(expected)
     expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
-    expected = JSON(expected).to_s
+    expected = JSON(expected)
     actual   = JSON(all_output)
-    neutralise_error_messages_in_enumerable actual
+
+    neutralise_variable_values_in_json expected
+    neutralise_variable_values_in_json actual
+
+    expected = expected.to_s
     actual   = actual.to_s
     actual.should == expected
   end
@@ -336,7 +340,7 @@ EOF
     params_string = params.join(", ")
     indented_code = indent_code(code).rstrip
     append_support_code <<-EOF
-this.defineStep(/#{step_name}/, function(#{params_string}) {
+this.defineStep(/#{step_name}/, function (#{params_string}) {
   fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
 });
@@ -349,7 +353,7 @@ EOF
   end
 
   def write_main_step_definitions_file
-    append_to_file(STEP_DEFINITIONS_FILE, "var fs = require('fs');\nvar stepDefinitions = function() {\n");
+    append_to_file(STEP_DEFINITIONS_FILE, "var fs = require('fs');\nvar stepDefinitions = function () {\n");
     append_to_file(STEP_DEFINITIONS_FILE, support_code);
     append_to_file(STEP_DEFINITIONS_FILE, "};\nmodule.exports = stepDefinitions;")
   end
@@ -366,7 +370,7 @@ stepDefinitions = () ->
 module.exports = stepDefinitions
 EOF
   end
-  
+
   def write_pogo_script_definition_file
     @mapping_name = "a PogoScript mapping"
     append_to_file POGO_SCRIPT_DEFINITIONS_FILE, <<-EOF
@@ -375,7 +379,7 @@ step definitions () =
     this.define step r/^#{@mapping_name}$/ @(callback)
         fs.write file sync ('#{step_file(@mapping_name)}', '')
         callback()
-  
+
 module.exports = step definitions
 EOF
   end
@@ -383,7 +387,7 @@ EOF
   def write_string_based_pattern_mapping
     @mapping_name = "a mapping + fancy characters"
     append_support_code <<-EOF
-this.defineStep("a mapping + fancy characters", function(callback) {
+this.defineStep("a mapping + fancy characters", function (callback) {
   fs.writeFileSync("#{step_file(@mapping_name)}", "");
   callback();
 });
@@ -393,7 +397,7 @@ EOF
   def write_string_based_pattern_mapping_with_parameters
     @mapping_name = "a string-based mapping with parameters"
     append_support_code <<-EOF
-this.defineStep('a mapping with $word_param "$multi_word_param"', function(p1, p2, callback) {
+this.defineStep('a mapping with $word_param "$multi_word_param"', function (p1, p2, callback) {
   fs.writeFileSync("#{step_file(@mapping_name)}", p1 + "\\n" + p2);
   callback();
 });
@@ -411,17 +415,14 @@ EOF
     "step #{n}"
   end
 
-  def neutralise_error_messages_in_enumerable enumerable
-    if enumerable.is_a? Array
-      enumerable.each do |item|
-        neutralise_error_messages_in_enumerable item if item.respond_to? :each
-      end
-    else
-      enumerable.each do |attr, value|
-        if attr == "error_message"
-          enumerable[attr] = "<error-message>"
-        elsif value.respond_to? :each
-          neutralise_error_messages_in_enumerable value
+  def neutralise_variable_values_in_json json
+    json.each do |item|
+      (item['elements'] || []).each do |element|
+        (element['steps'] || []).each do |step|
+          if step.include? 'result'
+            step['result']['error_message'] = "<error-message>" if step['result'].include? 'error_message'
+            step['result']['duration'] = "<duration>" if step['result'].include? 'duration'
+          end
         end
       end
     end

@@ -8,7 +8,25 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
 
   beforeEach(function() {
     step           = createSpy("step");
-    snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step);
+    syntax         = createSpyWithStubs("step syntax", {
+      getStepDefinitionStart               : 'this.',
+      getStepDefinitionInner1              : '(',
+      getStepDefinitionInner2              : ', function(',
+      getStepDefinitionEnd                 : ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n",
+      getContextStepDefinitionFunctionName : 'Given',
+      getEventStepDefinitionFunctionName   : 'When',
+      getOutcomeStepDefinitionFunctionName : 'Then',
+      getNumberMatchingGroup               : '(\\d+)',
+      getQuotedStringMatchingGroup         : '"([^"]*)"',
+      getOutlineExampleMatchingGroup       : '<([^>]*)>',
+      getFunctionParameterSeparator        : ', ',
+      getStepDefinitionDocString           : 'string',
+      getStepDefinitionDataTable           : 'table',
+      getStepDefinitionCallback            : 'callback',
+      getPatternStart                      : '/^',
+      getPatternEnd                        : '$/'
+    });
+    snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step, syntax);
   });
 
   describe("buildSnippet()", function() {
@@ -47,7 +65,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
         pattern      +
         ", function(" +
         parameters +
-        ") {\n  // express the regexp above with the code you wish you had\n  callback.pending();\n});\n";
+        ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n";
       expect(actualSnippet).toBe(expectedSnippet);
     });
   });
@@ -115,6 +133,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       escapedStepName = createSpy("escaped step name");
       stepName        = createSpy("step name");
       spyOnStub(step, 'getName').andReturn(stepName);
+      spyOnStub(step, 'isOutlineStep');
       spyOnStub(Cucumber.Util.RegExp, 'escapeString').andReturn(escapedStepName);
       spyOn(snippetBuilder, 'parameterizeStepName').andReturn(parameterizedStepName);
     });
@@ -145,7 +164,8 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
 
     beforeEach(function() {
       parameterizedStepName        = createSpy("parameterized step name");
-      parameterizedNumbersStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
+      parameterizedExamplesStepName= createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
+      parameterizedNumbersStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedExamplesStepName});
       stepName                     = createSpyWithStubs("step name", {replace: parameterizedNumbersStepName});
     });
 
@@ -176,6 +196,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
       spyOn(snippetBuilder, 'getStepDefinitionPatternMatchingGroupParameters').andReturn(patternMatchingGroupParameters);
       spyOnStub(step, 'hasDocString');
       spyOnStub(step, 'hasDataTable');
+      spyOnStub(step, 'isOutlineStep');
     });
 
     it("gets the step definition pattern matching group parameters", function() {
@@ -218,9 +239,13 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
   describe("getStepDefinitionPatternMatchingGroupParameters()", function() {
     beforeEach(function() {
       spyOn(snippetBuilder, 'countStepDefinitionPatternMatchingGroups');
+      spyOnStub(step, 'isOutlineStep');
+      spyOnStub(step, 'getName');
+      step.getName.andReturn('stepName');
     });
 
     it("gets the number of step definition pattern matching groups", function() {
+      snippetBuilder.countStepDefinitionPatternMatchingGroups.andReturn(0);
       snippetBuilder.getStepDefinitionPatternMatchingGroupParameters();
       expect(snippetBuilder.countStepDefinitionPatternMatchingGroups).toHaveBeenCalled();
     });

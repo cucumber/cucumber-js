@@ -1,12 +1,61 @@
 # Cucumber.js changelog
 
-## [v0.3.x](https://github.com/cucumber/cucumber-js/compare/v0.3.0...master)
+## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.3.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
 **TBD**
 
+### [v0.4.0](https://github.com/cucumber/cucumber-js/compare/v0.3.3...v0.4.0)
 
+#### New features
+
+* Add support for scenario outlines and examples (close #155) (Ben Van Treese)
+* Add i18n support (close #156) (Lukas Degener)
+
+#### Changed features
+
+* Pass scenario to hooks (Marat Dyatko)
+* Minor change to stepdef snippets (JS) (Julien Biezemans)
+* Make feature id in JSON output replace all spaces (close 127) (Tim Perry)
+* Bump CoffeeScript (close #154) (Gabe Hayes)
+
+#### Documentation, internals and tests
+
+* Add Hook spec example for single-arg function (close #143) (Julien Biezemans)
+* Update README with Hook scenario object doc (Julien Biezemans)
+* Style (Julien Biezemans)
+
+### [v0.3.3](https://github.com/cucumber/cucumber-js/compare/v0.3.2...v0.3.3)
+
+#### New features
+
+* Output step definition snippets in CoffeeScript (John George Wright)
+* Add colors to CLI (Johny Jose)
+
+#### Changed features
+
+* Add durations to JSON formatter (Simon Dean)
+
+#### Documentation, internals and tests
+
+* Bump most dependencies (Julien Biezemans)
+* DRY (Julien Biezemans)
+* Refactor (Julien Biezemans)
+
+### [v0.3.2](https://github.com/cucumber/cucumber-js/compare/v0.3.1...v0.3.2)
+
+#### New features
+
+* Add PogoScript support (Josh Chisholm)
+* Add listener and event handler registration (close #130) (Paul Shannon)
+
+#### Documentation, internals and tests
+
+* Added some nice stats (Aslak Hellesøy)
+* Fix spelling of "GitHub" (Peter Suschlik)
+* Add Code Climate badge to README (Julien Biezemans)
+* Update README.md (Sebastian Schürmann)
 
 ### [v0.3.1](https://github.com/cucumber/cucumber-js/compare/v0.3.0...v0.3.1)
 

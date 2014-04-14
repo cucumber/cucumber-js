@@ -339,6 +339,24 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
   });
 
+  describe("shouldSnippetsBeInCoffeeScript()", function () {
+    var shouldSnippetsBeInCoffeeScript;
+
+    beforeEach(function () {
+      shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in coffee script?");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeInCoffeeScript);
+    });
+
+    it("gets the 'coffee' flag with a falsy default value", function () {
+      argumentParser.shouldSnippetsBeInCoffeeScript();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith("coffee", false);
+    });
+
+    it("returns the flag value", function () {
+      expect(argumentParser.shouldSnippetsBeInCoffeeScript()).toBe(shouldSnippetsBeInCoffeeScript);
+    });
+  });
+
   describe("getOptions() [storeOptions()]", function () {
     var options;
 

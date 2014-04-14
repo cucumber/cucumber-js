@@ -257,6 +257,7 @@ Feature: JSON Formatter
                   "keyword": "Given ",
                   "result": {
                     "error_message": "<error-message>",
+                    "duration": "<duration>",
                     "status": "failed"
                   },
                   "match": {
@@ -309,6 +310,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {
@@ -365,6 +367,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -493,7 +496,7 @@ Feature: JSON Formatter
       """
       [
         {
-          "id": "one-passes one fails",
+          "id": "one-passes-one-fails",
           "name": "one passes one fails",
           "description": "",
           "line": 1,
@@ -502,7 +505,7 @@ Feature: JSON Formatter
           "elements": [
             {
               "name": "This one passes",
-              "id": "one-passes one fails;this-one-passes",
+              "id": "one-passes-one-fails;this-one-passes",
               "line": 3,
               "keyword": "Scenario",
               "description": "",
@@ -513,6 +516,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {
@@ -522,7 +526,7 @@ Feature: JSON Formatter
             },
             {
               "name": "This one fails",
-              "id": "one-passes one fails;this-one-fails",
+              "id": "one-passes-one-fails;this-one-fails",
               "line": 5,
               "keyword": "Scenario",
               "description": "",
@@ -534,6 +538,7 @@ Feature: JSON Formatter
                   "keyword": "Given ",
                   "result": {
                     "error_message": "<error-message>",
+                    "duration": "<duration>",
                     "status": "failed"
                   },
                   "match": {
@@ -599,6 +604,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {
@@ -629,6 +635,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -658,6 +665,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -740,6 +748,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {
@@ -760,6 +769,7 @@ Feature: JSON Formatter
                   "line": 7,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -779,6 +789,7 @@ Feature: JSON Formatter
                   "line": 10,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -808,6 +819,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -827,6 +839,7 @@ Feature: JSON Formatter
                   "line": 7,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -846,6 +859,7 @@ Feature: JSON Formatter
                   "line": 10,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -875,6 +889,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -894,6 +909,7 @@ Feature: JSON Formatter
                   "line": 7,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -913,6 +929,7 @@ Feature: JSON Formatter
                   "line": 10,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -1074,6 +1091,7 @@ Feature: JSON Formatter
                       "content_type": ""
                     },
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -1194,6 +1212,7 @@ Feature: JSON Formatter
                   "line": 5,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -1260,6 +1279,7 @@ Feature: JSON Formatter
                   "line": 5,
                   "keyword": "Given ",
                   "result": {
+                    "duration": "<duration>",
                     "status": "passed"
                   },
                   "match": {}
@@ -1323,7 +1343,10 @@ Feature: JSON Formatter
                     { "cells": ["1", "2", "3"] },
                     { "cells": ["!", "~", "@"] }
                   ],
-                  "result": { "status": "passed" },
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
                   "match": {}
                 }
               ]

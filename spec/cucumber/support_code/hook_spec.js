@@ -30,10 +30,26 @@ describe("Cucumber.SupportCode.Hook", function() {
         hook.appliesToScenario.andReturn(true);
       });
 
-      it("calls the code with the world instance as this", function() {
+      it("calls the code with the world instance as this and pass it the current scenario", function() {
         hook.invokeBesideScenario(scenario, world, callback);
-        expect(code).toHaveBeenCalledWith(callback);
+        expect(code).toHaveBeenCalledWith(scenario, callback);
         expect(code.mostRecentCall.object).toBe(world);
+      });
+
+      describe("when the hook function only accepts one parameter", function () {
+        beforeEach(function () {
+          var codeObservingWrapper = function (callback) {
+            code.apply(this, arguments);
+          };
+          hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
+        });
+
+        it("doesn't pass the current scenario to the hook function", function() {
+          hook.invokeBesideScenario(scenario, world, callback);
+          expect(code).not.toHaveBeenCalledWith(scenario, callback);
+          expect(code).toHaveBeenCalledWith(callback);
+          expect(code.mostRecentCall.object).toBe(world);
+        });
       });
 
       it("does not call back", function() {

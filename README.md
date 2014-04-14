@@ -1,6 +1,8 @@
-# Cucumber.js [![Build Status](https://secure.travis-ci.org/cucumber/cucumber-js.png?branch=master)](http://travis-ci.org/cucumber/cucumber-js) [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js)
+# Cucumber.js
+  [![Build Status](https://travis-ci.org/cucumber/cucumber-js.png?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
+  [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js) [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
 
-[![NPM](https://nodei.co/npm/cucumber.png?stars&downloads)](https://nodei.co/npm/cucumber/) 
+[![NPM](https://nodei.co/npm/cucumber.png?stars&downloads)](https://nodei.co/npm/cucumber/)
 [![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
 
 
@@ -57,7 +59,7 @@ Cucumber.js is still a work in progress. Here is its current status.
     </tr>
     <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature">I18n</a></td>
-      <td>To do</td>
+      <td>Done</td>
     </tr>
     <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature">JSON formatter</a></td>
@@ -69,7 +71,7 @@ Cucumber.js is still a work in progress. Here is its current status.
     </tr>
     <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature">Scenario outlines and examples</a></td>
-      <td>To do</td>
+      <td>Done</td>
     </tr>
     <tr>
       <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature">Stats collector</a></td>
@@ -275,11 +277,12 @@ var myStepDefinitionsWrapper = function () {
   this.Then(/^I should see "(.*)" as the page title$/, function(title, callback) {
     // matching groups are passed as parameters to the step definition
 
-    if (!this.isOnPageWithTitle(title))
-      // You can make steps fail by calling the `fail()` function on the callback:
-      callback.fail(new Error("Expected to be on page with title " + title));
-    else
+    var pageTitle = this.browser.text('title');
+    if (title === pageTitle) {
       callback();
+    } else {
+      callback.fail(new Error("Expected to be on page with title " + title));
+    }
   });
 };
 
@@ -293,11 +296,12 @@ this.Then('I should see "$title" as the page title', function(title, callback) {
   // the above string is converted to the following Regexp by Cucumber:
   // /^I should see "([^"]*)" as the page title$/
 
-  if (!this.isOnPageWithTitle(title))
-    // You can make steps fail by calling the `fail()` function on the callback:
-    callback.fail(new Error("Expected to be on page with title " + title));
-  else
+  var pageTitle = this.browser.text('title');
+  if (title === pageTitle) {
     callback();
+  } else {
+    callback.fail(new Error("Expected to be on page with title " + title));
+  }
 });
 ```
 
@@ -414,6 +418,22 @@ var myHooks = function () {
 
 module.exports = myHooks;
 ```
+
+##### Context data
+
+You can access the scenario currently being run by adding a parameter
+to your function:
+
+``` javascript
+this.Before(function (scenario, callback) {
+  console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+  callback();
+});
+```
+
+See
+[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/ast/scenario.js)
+for more information about the `scenario` object.
 
 ### Run cucumber
 

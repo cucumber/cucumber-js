@@ -6,7 +6,12 @@ task :test => "test:all"
 namespace :test do
 
   desc "Run all tests"
-  task :all => [ "test:rb", "test:js" ]
+  task :all => [ "diagnostics", "test:rb", "test:js" ]
+
+  desc "Display some diagnostics"
+  task :diagnostics do
+    sh %{ bin/cucumber.js -v }
+  end
 
   desc "Run the features through Cucumber (Ruby) and Aruba"
   task :rb do

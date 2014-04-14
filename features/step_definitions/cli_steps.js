@@ -79,19 +79,18 @@ var cliSteps = function cliSteps() {
     var actualError =  lastRun['error'];
     var actualStderr =  lastRun['stderr'];
 
-    try { var actualJson = JSON.parse(actualOutput); }
-    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput); }
+    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir.replace(/\\/g,'/'));
 
-    var errorMessageSubstitute = "Random error message #" + Math.floor(Math.random() * 100000);
-    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir);
-    expectedOutput = expectedOutput.replace(/<error-message>/g, errorMessageSubstitute);
+    try { var actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
+    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput); }
 
     try { var expectedJson = JSON.parse(expectedOutput); }
     catch(err) { throw new Error("Error parsing expected JSON:\n" + expectedOutput); }
 
-    var actualJsonString = JSON.stringify(actualJson, null, 2);
-    actualJsonString = actualJsonString.replace(/("error_message": ")(.+)(",)/g, "$1"+errorMessageSubstitute+"$3");
+    neutraliseVariableValuesInJson(actualJson);
+    neutraliseVariableValuesInJson(expectedJson);
 
+    var actualJsonString = JSON.stringify(actualJson, null, 2);
     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
 
     if (actualJsonString != expectedJsonString)
@@ -118,4 +117,23 @@ var cliSteps = function cliSteps() {
     callback();
   });
 };
+
+var neutraliseVariableValuesInJson = function neutraliseVariableValuesInJson(report) {
+  report.forEach(function (item) {
+    (item.elements || []).forEach(function (element) {
+      (element['steps'] || []).forEach(function (step) {
+        if ('result' in step) {
+          if ('error_message' in step.result) {
+            step.result.error_message = "<error-message>";
+          }
+
+          if ('duration' in step.result) {
+            step.result.duration = "<duration>";
+          }
+        }
+      });
+    });
+  });
+};
+
 module.exports = cliSteps;

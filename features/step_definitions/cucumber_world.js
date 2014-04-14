@@ -164,10 +164,14 @@ proto.addHookWithTags = function (tags, callback) {
   this._addHook({ type: "before", logEvent: "hook", tags: tags }, callback);
 };
 
-proto._addHook = function (options, callback) {
+proto._addHook = function (options, scenario, callback) {
   if (!callback) {
-    callback = options;
-    options = {};
+    if (scenario) {
+      callback = scenario;
+    } else {
+      callback = options;
+      options = {};
+    }
   }
   var type = "before";
   var tags = "";
@@ -175,7 +179,7 @@ proto._addHook = function (options, callback) {
   if (!options.logEvent) options.logEvent = type;
   if (options.tags) tags = '"' + options.tags + '", ';
   var defineHook = (type == 'before' ? 'Before' : 'After');
-  this.stepDefinitions += defineHook + "(" + tags + "function(callback) {\
+  this.stepDefinitions += defineHook + "(" + tags + "function(scenario, callback) {\
   world.logCycleEvent('" + options.logEvent + "');\
   callback();\
 });\n";
@@ -191,7 +195,7 @@ proto._addAroundHook = function (options, callback) {
   var logEvent = "around";
   if (options.tags) tags = '"' + options.tags + '", ';
   if (options.logEvent) logEvent = options.logEvent;
-  this.stepDefinitions += "Around(" + tags + "function(runScenario) {\
+  this.stepDefinitions += "Around(" + tags + "function(scenario, runScenario) {\
   world.logCycleEvent('" + logEvent + "-pre');\
   runScenario(function(callback) {\
   world.logCycleEvent('" + logEvent + "-post');\
@@ -254,27 +258,27 @@ proto.assertPassedFeature = function assertPassedFeature() {
 
 proto.assertPassedFeatures = function assertPassedFeatures() {
   this.assertNoPartialOutput("failed", this.runOutput);
-  this.assertPartialOutput("3 scenarios (3 passed)", this.runOutput);
+  this.assertPartialOutput("3 scenarios ("+this.color.format("passed","3 passed")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertPassedScenario = function assertPassedScenario() {
-  this.assertPartialOutput("1 scenario (1 passed)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("passed","1 passed")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertFailedScenario = function assertFailedScenario() {
-  this.assertPartialOutput("1 scenario (1 failed)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("failed","1 failed")+")", this.runOutput);
   this.assertFailure();
 };
 
 proto.assertPendingScenario = function assertPendingScenario() {
-  this.assertPartialOutput("1 scenario (1 pending)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("pending","1 pending")+")", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertUndefinedScenario = function assertUndefinedScenario() {
-  this.assertPartialOutput("1 scenario (1 undefined)", this.runOutput);
+  this.assertPartialOutput("1 scenario ("+this.color.format("undefined", "1 undefined")+")", this.runOutput);
   this.assertSuccess();
 };
 
@@ -393,5 +397,7 @@ proto.indentCode = function indentCode(code, levels) {
   });
   return indented;
 };
+
+proto.color = require('../../lib/cucumber/util/colors');
 
 exports.World = World;
