@@ -100,7 +100,9 @@ Feature: Command line interface
 	And a file named "features/support/hooks.js" with:
       """
       var hooks = function() {
-        this.AfterFeatures(function () {});
+        this.registerHandler('AfterFeatures', function (event, callback) {
+          callback();
+        });
       };
       module.exports = hooks;
       """
