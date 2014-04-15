@@ -23,6 +23,9 @@ Feature: Pretty Formatter
     Then it should pass with:
       """
       Feature: some feature
+      
+      
+      
         Scenario: I haven't done anything yet
       """
       
@@ -33,12 +36,21 @@ Feature: Pretty Formatter
       Scenario: I haven't done anything yet
           Given I have not defined this step
       """
-    When I run `cucumber.js -f pretty` with "DEBUG_LEVEL" set to "3"
+    
+    Given I set the environment variables to:
+    | variable	  | value |
+	| DEBUG_LEVEL |   3   |
+	
+    When I run `cucumber.js -f pretty`
+    
     Then it should pass with:
       """
       Feature: some feature
-        Scenario: I haven't done anything yet   # features\a.feature:2
-          Given I have not defined this step    # features\a.feature:3
+      
+      
+      
+        Scenario: I haven't done anything yet   # features/a.feature:2
+          Given I have not defined this step    # features/a.feature:3
       """
       
   Scenario: output when debug level is less than 3 should not show file sources
@@ -48,10 +60,18 @@ Feature: Pretty Formatter
       Scenario: I haven't done anything yet
           Given I have not defined this step
       """
-    When I run `cucumber.js -f pretty` with "DEBUG_LEVEL" set to "1"
+
+    Given I set the environment variables to:
+    | variable	  | value |
+	| DEBUG_LEVEL |   1   |
+	
+    When I run `cucumber.js -f pretty`
     Then it should pass with:
       """
       Feature: some feature
+      
+      
+      
         Scenario: I haven't done anything yet
           Given I have not defined this step
       """
