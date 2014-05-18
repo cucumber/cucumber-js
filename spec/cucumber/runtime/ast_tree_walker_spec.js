@@ -54,18 +54,19 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("visitFeatures()", function() {
-    var callback, event;
+    var callback, event, payload;
 
     beforeEach(function() {
       callback = createSpy("Callback");
       event    = createSpy("Event");
+      payload  = {features: features};
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
     it("creates a new event about the features' visit", function() {
       treeWalker.visitFeatures(features, callback);
-      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURES_EVENT_NAME);
+      expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURES_EVENT_NAME, payload);
     });
 
     it("broadcasts the visit of the features", function() {
