@@ -30,7 +30,7 @@ describe("Cucumber.SupportCode.Hook", function() {
         hook.appliesToScenario.andReturn(true);
       });
 
-      it("calls the code with the world instance as this and pass it the current scenario", function() {
+      it("calls the code with the world instance as this and passes it the current scenario", function() {
         hook.invokeBesideScenario(scenario, world, callback);
         expect(code).toHaveBeenCalledWith(scenario, callback);
         expect(code.mostRecentCall.object).toBe(world);

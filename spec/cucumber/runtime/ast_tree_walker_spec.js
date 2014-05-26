@@ -217,30 +217,62 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         worldInstantiationCompletionCallback(world);
         expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalled();
         expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithValueAsNthParameter(scenario, 2);
-        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithValueAsNthParameter(world, 3);
+        expect(supportCodeLibrary.hookUpFunction).toHaveBeenCalledWithValueAsNthParameter(world, 2);
       });
 
       describe("hooked up function", function() {
-        var hookedUpFunction, hookedUpFunctionCallback;
+        var hookedUpFunction, hookedUpFunctionCallback, wrappedScenario;
 
         beforeEach(function() {
           worldInstantiationCompletionCallback(world);
           hookedUpFunction         = supportCodeLibrary.hookUpFunction.mostRecentCall.args[0];
           hookedUpFunctionCallback = createSpy("hooked up function callback");
+          wrappedScenario          = createSpy("wrapped scenario");
+          spyOn(treeWalker, 'wrapScenario').andReturn(wrappedScenario);
           spyOnStub(scenario, 'acceptVisitor');
         });
 
         it("instructs the scenario to accept the tree walker as a visitor", function() {
           hookedUpFunction(hookedUpFunctionCallback);
-          expect(scenario.acceptVisitor).toHaveBeenCalledWith(treeWalker, hookedUpFunctionCallback);
+          expect(scenario.acceptVisitor).toHaveBeenCalled();
+          expect(scenario.acceptVisitor).toHaveBeenCalledWithValueAsNthParameter(treeWalker, 1);
+        });
+
+        it("calls back to the after and around hooks and passes the scenario", function() {
+          hookedUpFunction(hookedUpFunctionCallback);
+          var acceptVisitorCallback = scenario.acceptVisitor.mostRecentCall.args[1];
+          acceptVisitorCallback();
+          expect(hookedUpFunctionCallback).toHaveBeenCalled();
+          expect(hookedUpFunctionCallback).toHaveBeenCalledWithValueAsNthParameter(wrappedScenario, 1);
         });
       });
 
       it("broadcasts the visit of the scenario", function() {
         worldInstantiationCompletionCallback(world);
-        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWith(event, hookedUpScenarioVisit, callback);
+        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalled();
+        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWithValueAsNthParameter(event, 1);
+        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+        expect(treeWalker.broadcastEventAroundUserFunction).toHaveBeenCalledWithValueAsNthParameter(callback, 3);
       });
+
+      describe("on broadcast of the visit of the scenario", function() {
+        var userFunction, userFunctionCallback, wrappedScenario;
+
+        beforeEach(function() {
+          worldInstantiationCompletionCallback(world);
+          userFunction         = treeWalker.broadcastEventAroundUserFunction.mostRecentCall.args[1];
+          userFunctionCallback = createSpy("user function callback");
+          wrappedScenario      = createSpy("wrapped scenario");
+          spyOn(treeWalker, 'wrapScenario').andReturn(wrappedScenario);
+        });
+
+        it("passes the scenario to hooked up function", function() {
+          userFunction(userFunctionCallback);
+          expect(hookedUpScenarioVisit).toHaveBeenCalled();
+          expect(hookedUpScenarioVisit).toHaveBeenCalledWithValueAsNthParameter(wrappedScenario, 1);
+          expect(hookedUpScenarioVisit).toHaveBeenCalledWithValueAsNthParameter(userFunctionCallback, 2);
+        });
+      })
     });
   });
 
@@ -634,6 +666,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("isSkippingSteps() [witnessFailedSteps(), witnessPendingSteps(), witnessUndefinedStep(), witnessNewScenario()]", function() {
+    beforeEach(function() {
+      treeWalker.witnessNewScenario();
+    });
+
     it("returns false when no failed, pending or undefined steps were encountered", function() {
       expect(treeWalker.isSkippingSteps()).toBeFalsy();
     });

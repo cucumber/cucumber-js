@@ -271,23 +271,22 @@ describe("Cucumber.SupportCode.Library", function() {
     });
 
     describe("hookUpFunction()", function() {
-      var userFunction, scenario, world, hookedUpFunction;
+      var userFunction, world, hookedUpFunction;
 
       beforeEach(function() {
         userFunction     = createSpy("user function");
         hookedUpFunction = createSpy("hooked up function");
-        scenario         = createSpy("scenario");
         world            = createSpy("world instance");
         spyOnStub(hooker, 'hookUpFunction').andReturn(hookedUpFunction);
       });
 
       it("hooks up the function with the world instance", function() {
-        library.hookUpFunction(userFunction, scenario, world);
-        expect(hooker.hookUpFunction).toHaveBeenCalledWith(userFunction, scenario, world);
+        library.hookUpFunction(userFunction, world);
+        expect(hooker.hookUpFunction).toHaveBeenCalledWith(userFunction, world);
       });
 
       it("returns the hooked up function", function() {
-        expect(library.hookUpFunction(userFunction, scenario, world)).toBe(hookedUpFunction);
+        expect(library.hookUpFunction(userFunction, world)).toBe(hookedUpFunction);
       });
     });
 
