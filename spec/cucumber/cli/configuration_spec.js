@@ -260,6 +260,23 @@ describe("Cucumber.Cli.Configuration", function () {
     });
   });
 
+  describe("getReportFile()", function () {
+    beforeEach(function () {
+      spyOnStub(argumentParser, "getReportFile");
+    });
+
+    it("asks the argument parser for the report file path", function () {
+      configuration.getReportFile();
+      expect(argumentParser.getReportFile).toHaveBeenCalled();
+    });
+
+    it("returns the answer from the argument parser", function () {
+      var reportFile = createSpy("report file path");
+      argumentParser.getReportFile.andReturn(reportFile);
+      expect(configuration.getReportFile()).toBe(reportFile);
+    });
+  });
+
   describe("isHelpRequired()", function () {
     beforeEach(function () {
       spyOnStub(argumentParser, 'isHelpRequested');
