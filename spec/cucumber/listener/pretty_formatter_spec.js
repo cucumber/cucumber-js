@@ -181,7 +181,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       uri        = "/step-uri";
       maxStepLength = 10;
       line       = 10;
-      step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name, getUri: uri, getLine: line });
+      step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name, hasUri: true, getUri: uri, getLine: line });
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       spyOn(prettyFormatter, 'logDataTable');
@@ -212,9 +212,20 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the step header, indented by two levels", function () {
       prettyFormatter.handleStepResultEvent(event, callback);
-      var text = keyword + name + "\n";
       var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + color.format('comment', "# " + uri.slice(1) + ":" + line) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
+    });
+
+    describe("when the step has no URI", function() {
+      beforeEach(function () {
+        step.hasUri.andReturn(false);
+      });
+
+      it("logs the step header without the URI, indented by two levels", function () {
+        prettyFormatter.handleStepResultEvent(event, callback);
+        var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + "\n";
+        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
+      });
     });
 
     it("checks whether the step result has a data table or not", function () {
@@ -373,7 +384,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logDataTable()", function () {
-    var dataTable, rows;
+    var rows, step, stepResult, dataTable;
 
     beforeEach(function () {
       rows = [
@@ -381,8 +392,9 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
         ["c",   "cuke", "cuke.js"],
         ["cu",  "cuke", "cucumber"]
       ];
+      step       = createSpy("step");
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
-      dataTable = createSpyWithStubs("data table", {raw: rows});
+      dataTable  = createSpyWithStubs("data table", {raw: rows});
       spyOn(prettyFormatter, "logIndented");
     });
 
@@ -400,12 +412,13 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logDocString()", function () {
-    var docString, contents;
+    var contents, step, stepResult, docString;
 
     beforeEach(function () {
-      contents  = "this is a multiline\ndoc string\n\n:-)";
+      contents   = "this is a multiline\ndoc string\n\n:-)";
+      step       = createSpy("step");
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
-      docString = createSpyWithStubs("doc string", {getContents: contents});
+      docString  = createSpyWithStubs("doc string", {getContents: contents});
       spyOn(prettyFormatter, "logIndented");
     });
 

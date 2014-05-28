@@ -30,6 +30,12 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
+  describe("hasUri()", function() {
+    it("returns true", function() {
+      expect(step.hasUri()).toBe(true);
+    });
+  });
+
   describe("getUri()", function() {
     it("returns the URI on which the background starts", function() {
       expect(step.getUri()).toBe(uri);
@@ -733,33 +739,56 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
+  describe("getStepDefinition()", function() {
+    var visitor, stepDefinition, returnValue;
+
+    beforeEach(function() {
+      visitor        = createSpy("visitor");
+      stepDefinition = createSpy("step definition");
+      spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
+      returnValue = step.getStepDefinition(visitor);
+    });
+
+    it("uses the visitor to look up the step definition based on the step string", function() {
+      step.getStepDefinition(visitor);
+      expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
+    });
+
+    it("returns the step definition", function() {
+      expect(returnValue).toBe(stepDefinition);
+    });
+  });
+
   describe("execute()", function() {
-    var stepDefinition, world;
-    var visitor, callback;
+    var stepDefinition, world, scenario, visitor, callback;
 
     beforeEach(function() {
       stepDefinition = createSpy("step definition");
       world          = createSpy("world");
+      scenario       = createSpy("scenario");
       visitor        = createSpy("visitor");
       callback       = createSpy("callback received by execute()");
       spyOnStub(stepDefinition, 'invoke');
-      spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
+      spyOnStub(step, 'getStepDefinition').andReturn(stepDefinition);
       spyOnStub(visitor, 'getWorld').andReturn(world);
+      spyOnStub(visitor, 'getScenario').andReturn(scenario);
+      step.execute(visitor, callback);
     });
 
-    it("looks up the step definition based on the step string", function() {
-      step.execute(visitor, callback);
-      expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
+    it("looks up the step definition", function() {
+      expect(step.getStepDefinition).toHaveBeenCalledWith(visitor);
     });
 
     it("gets the current World instance", function() {
-      step.execute(visitor, callback);
       expect(visitor.getWorld).toHaveBeenCalled();
     });
 
+    it("gets the current scenario", function() {
+      expect(visitor.getScenario).toHaveBeenCalled();
+    });
+
     it("invokes the step definition", function() {
-      step.execute(visitor, callback);
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, callback);
     });
   });
 });

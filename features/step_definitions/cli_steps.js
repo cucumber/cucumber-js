@@ -101,13 +101,16 @@ var cliSteps = function cliSteps() {
     var actualError =  lastRun['error'];
     var actualStderr =  lastRun['stderr'];
 
+    var additionalErrorText = "Error:\n'" + actualError + "'.\n" +
+                              "stderr:\n'" + actualStderr + "'.";
+
     expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir.replace(/\\/g,'/'));
 
     try { var actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
-    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput); }
+    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput + "\n" + additionalErrorText); }
 
     try { var expectedJson = JSON.parse(expectedOutput); }
-    catch(err) { throw new Error("Error parsing expected JSON:\n" + expectedOutput); }
+    catch(err) { throw new Error("Error parsing expected JSON:\n" + expectedOutput + "\n" + additionalErrorText); }
 
     neutraliseVariableValuesInJson(actualJson);
     neutraliseVariableValuesInJson(expectedJson);
@@ -116,9 +119,9 @@ var cliSteps = function cliSteps() {
     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
 
     if (actualJsonString != expectedJsonString)
-      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\nGot:\n'" + actualJsonString + "'.\n" +
-                      "Error:\n'" + actualError + "'.\n" +
-                      "stderr:\n'" + actualStderr  +"'.");
+      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\n" +
+                      "Got:\n'" + actualJsonString + "'.\n" +
+                      additionalErrorText);
     callback();
   });
 
