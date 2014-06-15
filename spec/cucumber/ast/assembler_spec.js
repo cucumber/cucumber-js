@@ -358,12 +358,12 @@ describe("Cucumber.Ast.Assembler", function() {
       scenarioOutline = createSpyWithStubs('scenario', {'buildScenarios': subScenarios});
       scenarioOutline.payload_type = 'scenarioOutline';
 
-      spyOn(assembler, 'insertScenario');
+      spyOn(assembler, 'insertOutlineScenario');
     });
 
     it("it should get the scenarios from the current feature", function () {
       assembler.convertScenarioOutlineToScenarios(scenarioOutline);
-      expect(assembler.insertScenario).toHaveBeenCalledWithValueAsNthParameter(subScenario,1);
+      expect(assembler.insertOutlineScenario).toHaveBeenCalledWithValueAsNthParameter(subScenario,1);
     });
   });
 
