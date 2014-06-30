@@ -101,8 +101,7 @@ addStyleToText(/* ... */) // you can fairly guess this function
 
 This a reminder of the steps maintainers have to follow to release a new version of Cucumber.js.
 
-* Update development status in `README.md`, if relevant
-* Update `History.md`
+* Update `History.md`. `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
 * Bump version in `lib/cucumber.js`
 * Bump version in `package.json`
 * Bump version in `bower.json`
