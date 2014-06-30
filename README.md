@@ -10,129 +10,6 @@
 
 It runs on both Node.js and *modern* web browsers.
 
-## Development status
-
-Cucumber.js is still a work in progress. Here is its current status.
-
-### Cucumber Technology Compatibility Kit
-
-<table>
-  <thead>
-    <tr><th>Feature</th><th>Status</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/core.feature">Core</a> (scenarios, steps, mappings)</td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/background.feature">Background</a></td>
-      <td>Done<sup>1</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/comments.feature">Comments</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/command_line_interface.feature">Command-line interface</a></td>
-      <td>Done<sup>1, 2</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/command_line_options.feature">Command-line options</a></td>
-      <td>Todo<sup>2</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/data_tables.feature">Data tables</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/doc_strings.feature">Doc strings</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature">Failing steps</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature">Hooks</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature">I18n</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature">JSON formatter</a></td>
-      <td>WIP<sup>3</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature">Pretty formatter</a></td>
-      <td>WIP<sup>2</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature">Scenario outlines and examples</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature">Stats collector</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature">Step argument transforms</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/tags.feature">Tags</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/undefined_steps.feature">Undefined steps</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/wire_protocol.feature">Wire protocol</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/world.feature">World</a></td>
-      <td>Done</td>
-    </tr>
-  </tbody>
-</table>
-
-1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
-2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-3. Missing 'matches' attributes. Simple wrapper for *Gherkin*'s `JsonFormatter` pending porting of:
-
-  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/listener/formatter_listener.rb
-  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/formatter/filter_formatter.rb
-
-  in Gherkin itself.
-
-### Cucumber.js-specific features
-
-<table>
-  <thead>
-    <tr><th>Feature</th><th>Status</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/background.feature">Background</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/coffeescript_support.feature">CoffeeScript support</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/cli.feature">Command-line interface</a></td>
-      <td>Done</td>
-    </tr>
-  </tbody>
-</table>
-
-1. Will be certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-
 ## Prerequesites
 
 * [Node.js](http://nodejs.org)
@@ -145,8 +22,6 @@ Cucumber.js is tested on:
 * Firefox
 * Safari
 * Opera
-
-There are plans to have CI builds on browsers too.
 
 ## Usage
 
