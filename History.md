@@ -2,9 +2,33 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.1...master)
 
 **TBD**
+
+### [v0.4.1](https://github.com/cucumber/cucumber-js/compare/v0.4.0...v0.4.1)
+
+#### New features
+
+* Target scenario by line number on CLI (close #168) (Simon Lampen)
+
+#### Fixes
+
+* Ensure no stdout output is lost (Simon Dean)
+* Properly tag scenario outlines (close #195 #197) (Artur Kania)
+
+#### Documentation, internals and tests
+
+* Align snippet comment with Cucumber-Ruby/JVM (close #150) (Julien Biezemans)
+* Update build badge URL on README (Julien Biezemans)
+* Add line number pattern to --help on CLI (Julien Biezemans)
+* Document AfterFeatures event (close #171) (Eddie Loeffen)
+* Include 'features' in *Features events payload (Stanley Shyiko)
+* Try to fix build on Travis (Julien Biezemans)
+* Remove bower as a dev dependency (close #191) (Simon Dean)
+* Remove obsolete Travis trick for Node 0.8 (Julien Biezemans)
+* Remove development status table from README (Julien Biezemans)
+* Help the guy produce changelogs (Julien Biezemans)
 
 ### [v0.4.0](https://github.com/cucumber/cucumber-js/compare/v0.3.3...v0.4.0)
 
