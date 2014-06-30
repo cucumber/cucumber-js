@@ -364,6 +364,37 @@ var myAfterHooks = function () {
 module.exports = myAfterHooks;
 ```
 
+##### After features event
+The *after features event* is emitted once all features have been executed, just before the process exits. It can be used for tasks such as closing your browser after running automated browser tests with [selenium](https://code.google.com/p/selenium/wiki/WebDriverJs) or [phantomjs](http://phantomjs.org/).
+
+note: There are "Before" and "After" events for each of the following: "Features", "Feature", "Scenario", "Step" as well as the standalone events "Background" and "StepResult". e.g. "BeforeScenario".
+
+```javascript
+// features/support/world.js
+var webdriver = require("selenium-webdriver");
+
+var World = function World(callback) {
+    this.driver = new webdriver.Builder().
+      withCapabilities(webdriver.Capabilities.chrome()).
+      build();
+
+    callback();
+}
+
+module.exports = World;
+
+// features/support/after_hooks.js
+var myAfterHooks = function () {
+    this.registerHandler('AfterFeatures', function (event, callback) {
+      this.driver.close();
+      callback();
+    });
+}
+
+module.exports = myAfterHooks;
+```
+
+
 ##### Around hooks
 
 It's also possible to combine both before and after hooks in one single definition with the help of *around hooks*:
