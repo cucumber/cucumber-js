@@ -357,6 +357,24 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
   });
 
+  describe("shouldSnippetsBeShown()", function () {
+    var shouldSnippetsBeShown;
+
+    beforeEach(function () {
+      shouldSnippetsBeShown = createSpy("should snippets be shown?");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeShown);
+    });
+
+    it("gets the 'snippets' flag with a truthy default value", function () {
+      argumentParser.shouldSnippetsBeShown();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith("snippets", true);
+    });
+
+    it("returns the flag value", function () {
+      expect(argumentParser.shouldSnippetsBeShown()).toBe(shouldSnippetsBeShown);
+    });
+  });
+
   describe("getOptions() [storeOptions()]", function () {
     var options;
 
