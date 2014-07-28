@@ -5,10 +5,12 @@ describe("Cucumber.Runtime", function() {
   var configuration;
   var runtime;
   var supportCodeLibrary, listeners;
+  var isStrictRequested;
 
   beforeEach(function() {
+    isStrictRequested = false;
     listeners     = createSpyWithStubs("listener collection", {add: null});
-    configuration = createSpy("configuration");
+    configuration = createSpyWithStubs("configuration", { isStrictRequested: isStrictRequested });
     spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
     runtime       = Cucumber.Runtime(configuration);
   });
@@ -64,7 +66,7 @@ describe("Cucumber.Runtime", function() {
 
     it("creates a new AST tree walker", function() {
       runtime.start(callback);
-      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners);
+      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners, isStrictRequested);
     });
 
     it("tells the AST tree walker to walk", function() {
