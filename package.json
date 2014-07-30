@@ -10,7 +10,11 @@
   ],
   "version": "0.4.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
-  "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
+  "author": {
+    "name": "Julien Biezemans",
+    "email": "jb@jbpros.com",
+    "url": "http://jbpros.net"
+  },
   "contributors": [
     "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
     "Fernando Acorreia <fernandoacorreia@gmail.com>",
@@ -53,8 +57,8 @@
     "url": "git://github.com/cucumber/cucumber-js.git"
   },
   "bugs": {
-    "email": "cukes@googlegroups.com",
-    "url": "http://github.com/cucumber/cucumber-js/issues"
+    "url": "http://github.com/cucumber/cucumber-js/issues",
+    "email": "cukes@googlegroups.com"
   },
   "directories": {
     "lib": "./lib"
@@ -93,5 +97,25 @@
       "url": "http://github.com/cucumber/cucumber.js/LICENSE"
     }
   ],
-  "optionalDependencies": {}
+  "optionalDependencies": {},
+  "_id": "cucumber@0.3.3",
+  "dist": {
+    "shasum": "5c7851bfe1da42778557eb585631ec44123230ca",
+    "tarball": "http://registry.npmjs.org/cucumber/-/cucumber-0.3.3.tgz"
+  },
+  "_from": "cucumber@~0.3.1",
+  "_npmVersion": "1.3.11",
+  "_npmUser": {
+    "name": "jbpros",
+    "email": "jb@jbpros.com"
+  },
+  "maintainers": [
+    {
+      "name": "jbpros",
+      "email": "jb@jbpros.com"
+    }
+  ],
+  "_shasum": "5c7851bfe1da42778557eb585631ec44123230ca",
+  "_resolved": "https://registry.npmjs.org/cucumber/-/cucumber-0.3.3.tgz",
+  "readme": "ERROR: No README data found!"
 }
