@@ -1,3 +1,6 @@
+var fs    = require('fs')
+var path  = require('path');
+
 require('../../support/spec_helper');
 require('../../support/configurations_shared_examples.js');
 
@@ -139,6 +142,26 @@ describe("Cucumber.Cli.Configuration", function () {
         expect(configuration.getFormatter).toThrow();
       });
     });
+
+    describe("when the formatter name is wow.js", function () {
+      var formatter;
+
+      beforeEach(function () {
+        fs.writeFileSync(path.join(process.cwd(), 'spec/wow.js'), 'module.exports=function(){}');
+        argumentParser.getFormat.andReturn("spec/wow.js");
+        spyOnStub(fs, 'existsSync').andReturn(true);
+        configuration.getFormatter();
+      });
+
+      afterEach(function () {
+        fs.unlinkSync(path.join(process.cwd(), 'spec/wow.js'));
+      });
+
+      it("should find file", function () {
+        expect(fs.existsSync.callCount).toBe(1);
+      });
+    });
+
   });
 
 
