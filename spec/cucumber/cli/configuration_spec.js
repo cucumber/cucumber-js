@@ -57,6 +57,7 @@ describe("Cucumber.Cli.Configuration", function () {
     it("checks whether the step definition snippets should be shown", function () {
       configuration.getFormatter();
       expect(argumentParser.shouldSnippetsBeShown).toHaveBeenCalled();
+      expect(argumentParser.shouldSnippetsBeShown.callCount).toBe(1);
     });
 
     describe("when the formatter name is \"json\"", function () {
@@ -326,6 +327,7 @@ describe("Cucumber.Cli.Configuration", function () {
     it("asks the argument parser whether the step definition snippets are shown or not", function () {
       configuration.shouldSnippetsBeShown();
       expect(argumentParser.shouldSnippetsBeShown).toHaveBeenCalled();
+      expect(argumentParser.shouldSnippetsBeShown.callCount).toBe(1);
     });
 
     it("returns the answer from the argument parser", function () {
