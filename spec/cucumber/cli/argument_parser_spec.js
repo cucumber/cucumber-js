@@ -78,6 +78,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME]).toEqual(Boolean);
     });
+
+    it("defines a --no-snippets flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME]).toEqual(Boolean);
+    });
   });
 
   describe("getShortenedOptionDefinitions()", function () {
@@ -110,6 +115,13 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
     });
 
+    it("defines an alias to --no-snippets as -i", function () {
+      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + "no-" + Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME;
+      var aliasName  = Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_SHORT_NAME;
+      var aliasValue = [optionName];
+      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    });
   });
 
   describe("getFeatureFilePaths()", function () {
