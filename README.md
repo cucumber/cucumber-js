@@ -77,20 +77,20 @@ Support files let you setup the environment in which steps will be run, and defi
 
 *World* is a constructor function with utility properties, destined to be used in step definitions:
 
-``` javascript
+```javascript
 // features/support/world.js
+module.exports = function() {
+  var zombie = require('zombie');
+  this.World = function World(callback) {
+    this.browser = new zombie(); // this.browser will be available in step definitions
 
-var zombie = require('zombie');
-var World = function World(callback) {
-  this.browser = new zombie(); // this.browser will be available in step definitions
+    this.visit = function(url, callback) {
+      this.browser.visit(url, callback);
+    };
 
-  this.visit = function(url, callback) {
-    this.browser.visit(url, callback);
+    callback(); // tell Cucumber we're finished and to use 'this' as the world instance
   };
-
-  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
-};
-exports.World = World;
+}
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
