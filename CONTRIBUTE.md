@@ -28,7 +28,7 @@ There are two set of tests resulting from the BDD approach we've been applying t
 
 Run the specs:
 
-    $ node_modules/.bin/jasmine-node spec
+    $ npm i && npm test
 
 ### Features & documentation
 
