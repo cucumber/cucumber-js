@@ -437,9 +437,11 @@ EOF
   end
 
   def normalize_text text
-    text.gsub(/\r\n/, "\n")
+    text.gsub(/\033\[[0-9;]*m/, "")
+      .gsub(/\r\n|\r/, "\n")
       .gsub(/^[\n\s]+/, "")
       .gsub(/[\n\s]+$/, "")
+      .gsub(/\s+\n/, "\n")
   end
 end
 

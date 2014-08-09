@@ -3,7 +3,6 @@ var cliSteps = function cliSteps() {
   var rimraf          = require('rimraf');
   var mkdirp          = require('mkdirp');
   var exec            = require('child_process').exec;
-  var stripAnsi       = require('strip-ansi');
 
   var baseDir         = fs.realpathSync(__dirname + "/../..");
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
@@ -64,33 +63,7 @@ var cliSteps = function cliSteps() {
          });
   });
 
-  this.Then(/^it should (pass|fail) with:$/, function (passOrFail, expectedOutput, callback) {
-    var world = this;
-
-    var actualOutput = world.lastRun['stdout'];
-    var actualError = world.lastRun['error'];
-    var actualStderr = world.lastRun['stderr'];
-    function cleanString(str) {
-      //Strips colour codes and normalise line endings
-
-      return str
-      .replace(/\033\[[0-9;]*m/g, '')
-      .replace(/\r\n|\r/g, "\n");
-    }
-
-    actualOutput = cleanString(actualOutput);
-    expectedOutput = cleanString(expectedOutput);
-
-    if (actualOutput.indexOf(expectedOutput) === -1) {
-      throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.\n" +
-      "Error:\n'" + actualError + "'.\n" +
-      "stderr:\n'" + actualStderr + "'.");
-    }
-
-    callback();
-  });
-
-  this.Then(/^it should exit with code "([^"]*)"$/, function (code, callback) {
+  this.Then(/^the exit status should be ([0-9]+)$/, function (code, callback) {
     var world = this;
 
     var actualCode = world.lastRun['error'] ? world.lastRun['error'].code : "0";
@@ -132,6 +105,8 @@ var cliSteps = function cliSteps() {
     var world = this;
 
     var actualOutput = world.lastRun['stdout'];
+
+    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir.replace(/\\/g,'/'));
 
     actualOutput = normalizeText(actualOutput);
     expectedOutput = normalizeText(expectedOutput);
@@ -183,9 +158,11 @@ var cliSteps = function cliSteps() {
   };
 
   function normalizeText(text) {
-    return stripAnsi(text).replace(/\r\n/g, "\n")
-      .replace(/^[\n\s]+/, "")
-      .replace(/[\n\s]+$/, "");
+    return text.replace(/\033\[[0-9;]*m/g, "")
+      .replace(/\r\n|\r/g, "\n")
+      .replace(/^[\n\s]+/g, "")
+      .replace(/[\n\s]+$/g, "")
+      .replace(/\s+\n/g, "\n");
   }
 
   function getAdditionalErrorText(lastRun) {
