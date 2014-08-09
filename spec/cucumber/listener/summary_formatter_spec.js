@@ -152,7 +152,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       step       = createSpy("step");
       stepResult = createSpyWithStubs("step result", {getStep: step});
-      spyOn(summaryFormatter, 'storeUndefinedStep');
+      spyOn(summaryFormatter, 'storeUndefinedStepResult');
     });
 
     it("gets the step from the step result", function () {
@@ -162,7 +162,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("stores the undefined step", function () {
       summaryFormatter.handleUndefinedStepResult(stepResult);
-      expect(summaryFormatter.storeUndefinedStep).toHaveBeenCalledWith(step);
+      expect(summaryFormatter.storeUndefinedStepResult).toHaveBeenCalledWith(step);
     });
   });
 
@@ -307,7 +307,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
   });
 
-  describe("storeUndefinedStep()", function () {
+  describe("storeUndefinedStepResult()", function () {
     var snippetBuilderSyntax, numberMatchingGroup, snippetBuilder, snippet, step;
 
     beforeEach(function () {
@@ -322,17 +322,17 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     it("creates a new step definition snippet builder", function () {
-      summaryFormatter.storeUndefinedStep(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
       expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetBuilderSyntax);
     });
 
     it("builds the step definition", function () {
-      summaryFormatter.storeUndefinedStep(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
       expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summaryFormatter.storeUndefinedStep(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
       expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });

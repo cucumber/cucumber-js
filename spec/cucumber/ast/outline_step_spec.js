@@ -12,7 +12,7 @@ describe("Cucumber.Ast.OutlineStep", function() {
     step         = Cucumber.Ast.OutlineStep(keyword, name, uri, line);
   });
 
-  describe("IsOutlineStep()", function() {
+  describe("isOutlineStep()", function() {
     it("returns true for an outline step", function() {
       expect(step.isOutlineStep()).toBe(true);
     });

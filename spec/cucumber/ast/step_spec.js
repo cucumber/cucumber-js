@@ -24,7 +24,13 @@ describe("Cucumber.Ast.Step", function() {
     });
   });
 
-  describe("IsOutlineStep()", function() {
+  describe("isHidden()", function() {
+    it("returns false for a non hook step", function() {
+      expect(step.isHidden()).toBe(false);
+    });
+  });
+
+  describe("isOutlineStep()", function() {
     it("returns false for a non outline step", function() {
       expect(step.isOutlineStep()).toBe(false);
     });

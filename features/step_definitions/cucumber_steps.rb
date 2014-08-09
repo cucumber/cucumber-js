@@ -95,3 +95,7 @@ end
 Then /^it outputs this json:$/ do |json|
   assert_json_output json
 end
+
+Then /^it outputs this text:$/ do |json|
+  assert_text_output json
+end

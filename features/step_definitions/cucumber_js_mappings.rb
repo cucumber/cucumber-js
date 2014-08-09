@@ -329,6 +329,14 @@ EOF
     actual.should == expected
   end
 
+  def assert_text_output(expected)
+    expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
+    expected = normalize_text(expected)
+    actual   = normalize_text(all_output)
+
+    actual.should == expected
+  end
+
   def failed_output
     "failed"
   end
@@ -426,6 +434,12 @@ EOF
         end
       end
     end
+  end
+
+  def normalize_text text
+    text.gsub(/\r\n/, "\n")
+      .gsub(/^[\n\s]+/, "")
+      .gsub(/[\n\s]+$/, "")
   end
 end
 
