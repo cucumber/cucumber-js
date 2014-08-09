@@ -13,7 +13,7 @@ describe("Cucumber.Ast.HookStep", function() {
 
   describe("constructor", function() {
     it("inherits from Cucumber.Ast.Step", function() {
-      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, 'scenario', undefined, undefined);
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, undefined, undefined, undefined);
       expect(hookStep).toBe(step);
     });
   });

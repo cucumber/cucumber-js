@@ -47,7 +47,6 @@ Feature: Attachments
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "embeddings": [
@@ -142,7 +141,6 @@ Feature: Attachments
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "embeddings": [
@@ -223,7 +221,6 @@ Feature: Attachments
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "embeddings": [
@@ -248,7 +245,6 @@ Feature: Attachments
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -312,7 +308,6 @@ Feature: Attachments
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -331,7 +326,6 @@ Feature: Attachments
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "embeddings": [
@@ -399,7 +393,6 @@ Feature: Attachments
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "embeddings": [
@@ -487,7 +480,6 @@ Feature: Attachments
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "embeddings": [
@@ -559,7 +551,6 @@ Feature: Attachments
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "duration": "<duration>",

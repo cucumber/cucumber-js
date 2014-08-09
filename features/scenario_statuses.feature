@@ -81,7 +81,6 @@ Feature: Scenario Statuses
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -90,7 +89,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "duration": "<duration>",
@@ -109,7 +107,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -118,7 +115,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -200,7 +196,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -283,7 +278,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -364,7 +358,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -444,7 +437,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -539,7 +531,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "error_message": "fail",
@@ -549,7 +540,6 @@ Feature: Scenario Statuses
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": 319244,

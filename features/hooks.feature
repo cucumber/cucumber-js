@@ -63,7 +63,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -72,7 +71,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "duration": "<duration>",
@@ -91,7 +89,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -100,7 +97,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -161,7 +157,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "error_message": "<error-message>",
@@ -180,7 +175,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -249,7 +243,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -268,7 +261,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "error_message": "<error-message>",
@@ -334,7 +326,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "error_message": "<error-message>",
@@ -419,7 +410,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "error_message": "<error-message>",
@@ -501,7 +491,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "error_message": "<error-message>",
@@ -511,7 +500,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -520,7 +508,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "duration": "<duration>",
@@ -538,7 +525,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -547,7 +533,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -556,7 +541,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -667,7 +651,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
@@ -676,7 +659,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Before ",
                   "result": {
                     "duration": "<duration>",
@@ -695,7 +677,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "After ",
                   "result": {
                     "duration": "<duration>",
@@ -704,7 +685,6 @@ Feature: Environment Hooks
                   "match": {}
                 },
                 {
-                  "name": "scenario",
                   "keyword": "Around ",
                   "result": {
                     "duration": "<duration>",
