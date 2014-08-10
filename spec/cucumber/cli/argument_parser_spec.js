@@ -69,6 +69,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
     });
 
+    it("defines a --strict flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME]).toEqual(Boolean);
+    });
+
     it("defines a --help flag", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
@@ -97,6 +102,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     it("defines an alias to --format as -f", function () {
       var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME;
       var aliasName  = Cucumber.Cli.ArgumentParser.FORMAT_OPTION_SHORT_NAME;
+      var aliasValue = [optionName];
+      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    });
+
+    it("defines an alias to --strict as -s", function () {
+      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME;
+      var aliasName  = Cucumber.Cli.ArgumentParser.STRICT_FLAG_SHORT_NAME;
       var aliasValue = [optionName];
       var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
@@ -300,6 +313,24 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("returns the format", function () {
       expect(argumentParser.getFormat()).toBe(format);
+    });
+  });
+
+  describe("isStrictRequested()", function () {
+    var isStrictRequested;
+
+    beforeEach(function () {
+      isStrictRequested = createSpy("is strict requested?");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isStrictRequested);
+    });
+
+    it("gets the 'strict' flag with a default value", function () {
+      argumentParser.isStrictRequested();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME, Cucumber.Cli.ArgumentParser.DEFAULT_STRICT_FLAG_VALUE);
+    });
+
+    it("returns the flag value", function () {
+      expect(argumentParser.isStrictRequested()).toBe(isStrictRequested);
     });
   });
 
