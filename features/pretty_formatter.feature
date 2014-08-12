@@ -29,7 +29,7 @@ Feature: Pretty Formatter
         Scenario: I haven't done anything yet
       """
       
-  Scenario: output when debug level at least 3 should show file sources
+  Scenario: output without --no-source flag should show file sources
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -37,12 +37,8 @@ Feature: Pretty Formatter
           Given I have not defined this step
       """
     
-    Given I set the environment variables to:
-    | variable	  | value |
-	| DEBUG_LEVEL |   3   |
-	
     When I run `cucumber.js -f pretty`
-    
+	
     Then it should pass with:
       """
       Feature: some feature
@@ -53,7 +49,7 @@ Feature: Pretty Formatter
           Given I have not defined this step    # features/a.feature:3
       """
       
-  Scenario: output when debug level is less than 3 should not show file sources
+  Scenario: output with --no-source flag should not show file sources
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -61,11 +57,7 @@ Feature: Pretty Formatter
           Given I have not defined this step
       """
 
-    Given I set the environment variables to:
-    | variable	  | value |
-	| DEBUG_LEVEL |   1   |
-	
-    When I run `cucumber.js -f pretty`
+    When I run `cucumber.js -f pretty --no-source`
     Then it should pass with:
       """
       Feature: some feature
