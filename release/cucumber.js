@@ -722,6 +722,16 @@ require.define("/cucumber/ast/assembler",function(require,module,exports,__dirna
       }
     },
 
+    insertOutlineScenario: function insertOutlineScenario(scenario, tags) {
+      self.applyCurrentFeatureTagsToElement(scenario);
+      scenario.addTags(tags);
+      self.setCurrentScenarioOrBackground(scenario);
+      if (filter.isElementEnrolled(scenario)) {
+        var currentFeature = self.getCurrentFeature();
+        currentFeature.addFeatureElement(scenario);
+      }
+    },
+
     insertExamples: function insertExamples(examples) {
       var currentScenarioOrBackground = self.getCurrentScenarioOrBackground();
       if (currentScenarioOrBackground.payloadType == 'scenarioOutline')
@@ -743,7 +753,10 @@ require.define("/cucumber/ast/assembler",function(require,module,exports,__dirna
 
     convertScenarioOutlineToScenarios: function convertScenarioOutlineToScenarios(scenario){
         var subScenarios = scenario.buildScenarios();
-        subScenarios.syncForEach(self.insertScenario);
+        var subScenarioTags = scenario.getTags();
+        subScenarios.syncForEach(function (scenario) {
+          self.insertOutlineScenario(scenario, subScenarioTags);
+        });
     },
 
     convertScenarioOutlinesToScenarios: function convertScenarioOutlinesToScenarios(){
@@ -859,7 +872,7 @@ Cucumber.Type                  = require('./cucumber/type');
 Cucumber.Util                  = require('./cucumber/util');
 Cucumber.VolatileConfiguration = require('./cucumber/volatile_configuration');
 
-Cucumber.VERSION               = "0.4.0";
+Cucumber.VERSION               = "0.4.1";
 
 module.exports                 = Cucumber;
 
@@ -2384,7 +2397,8 @@ require.define("/cucumber/runtime/ast_tree_walker",function(require,module,expor
     },
 
     visitFeatures: function visitFeatures(features, callback) {
-      var event = AstTreeWalker.Event(AstTreeWalker.FEATURES_EVENT_NAME);
+      var payload = { features: features };
+      var event   = AstTreeWalker.Event(AstTreeWalker.FEATURES_EVENT_NAME, payload);
       self.broadcastEventAroundUserFunction(
         event,
         function(callback) { features.acceptVisitor(self, callback); },
@@ -4535,7 +4549,7 @@ Syntax.prototype = {
   getQuotedStringMatchingGroup: function() {
     return '"([^"]*)"';
   },
-    
+
   getOutlineExampleMatchingGroup: function() {
     return '(.*)';
   },
@@ -4545,7 +4559,7 @@ Syntax.prototype = {
   },
 
   getStepDefinitionEndComment: function() {
-    return 'express the regexp above with the code you wish you had';
+    return 'Write code here that turns the phrase above into concrete actions';
   }
 };
 
@@ -5738,6 +5752,10 @@ require.define("/cucumber/ast/features",function(require,module,exports,__dirnam
       features.add(feature);
     },
 
+    getFeatures: function getFeatures() {
+      return features;
+    },
+
     getLastFeature: function getLastFeature() {
       return features.getLast();
     },
@@ -5769,6 +5787,7 @@ var Filter = function(rules) {
 };
 Filter.AnyOfTagsRule          = require('./filter/any_of_tags_rule');
 Filter.ElementMatchingTagSpec = require('./filter/element_matching_tag_spec');
+Filter.ScenarioAtLineRule     = require('./filter/only_run_scenario_at_line_rule');
 module.exports = Filter;
 
 });
@@ -5828,6 +5847,28 @@ var ElementMatchingTagSpec = function(tagName) {
 };
 ElementMatchingTagSpec.NEGATION_CHARACTER = '~';
 module.exports = ElementMatchingTagSpec;
+
+});
+
+require.define("/cucumber/ast/filter/only_run_scenario_at_line_rule",function(require,module,exports,__dirname,__filename,process){var ScenarioAtLineRule = function(tags) {
+  var Cucumber = require('../../../cucumber');
+
+  var self = {
+    isSatisfiedByElement: function isSatisfiedByElement(element) {
+      if (element.getUri && element.getLine){
+        var matches = Cucumber.Cli.ArgumentParser.FEATURE_FILENAME_AND_LINENUM_REGEXP.exec(element.getUri());
+        var specifiedLineNum = matches && matches[2];
+        if (specifiedLineNum) {
+          return parseInt(specifiedLineNum) === element.getLine();
+        }
+        return true;
+      }
+      return true;
+    }
+  };
+  return self;
+};
+module.exports = ScenarioAtLineRule;
 
 });
 
@@ -7655,7 +7696,7 @@ Cucumber.Type                  = require('./cucumber/type');
 Cucumber.Util                  = require('./cucumber/util');
 Cucumber.VolatileConfiguration = require('./cucumber/volatile_configuration');
 
-Cucumber.VERSION               = "0.4.0";
+Cucumber.VERSION               = "0.4.1";
 
 module.exports                 = Cucumber;
 

@@ -309,6 +309,73 @@ describe("Cucumber.Ast.Assembler", function() {
     });
   });
 
+  describe("insertOutlineScenario()", function() {
+    var scenario, currentFeature, tags;
+
+    beforeEach(function() {
+      tags = ['@test', '@test1'];
+      scenario       = createSpy("scenario");
+      scenario.addTags = createSpy("addTags");
+      currentFeature = createSpyWithStubs("current feature", {addFeatureElement: null});
+      spyOnStub(filter, 'isElementEnrolled');
+      spyOn(assembler, 'applyCurrentFeatureTagsToElement');
+      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
+      spyOn(assembler, 'setCurrentScenarioOrBackground');
+    });
+
+    it("applies the current feature tags to the scenario", function() {
+      assembler.insertOutlineScenario(scenario);
+      expect(assembler.applyCurrentFeatureTagsToElement).toHaveBeenCalledWith(scenario);
+    });
+
+    it("applies custom tags to the scenario", function() {
+      assembler.insertOutlineScenario(scenario, tags);
+      expect(scenario.addTags).toHaveBeenCalledWith(tags);
+    });
+
+    it("sets the scenario as the current scenario", function() {
+      assembler.insertOutlineScenario(scenario);
+      expect(assembler.setCurrentScenarioOrBackground).toHaveBeenCalledWith(scenario);
+    });
+
+    it("asks the filter if the scenario is enrolled", function() {
+      assembler.insertOutlineScenario(scenario);
+      expect(filter.isElementEnrolled).toHaveBeenCalledWith(scenario);
+    });
+
+    describe("when the scenario is enrolled", function() {
+      beforeEach(function() {
+        filter.isElementEnrolled.andReturn(true);
+      });
+
+      it("gets the current feature", function() {
+        assembler.insertOutlineScenario(scenario);
+        expect(assembler.getCurrentFeature).toHaveBeenCalled();
+      });
+
+      it("adds the scenario to the current feature", function() {
+        assembler.insertOutlineScenario(scenario);
+        expect(currentFeature.addFeatureElement).toHaveBeenCalledWith(scenario);
+      });
+    });
+
+    describe("when the scenario is not enrolled", function() {
+      beforeEach(function() {
+        filter.isElementEnrolled.andReturn(false);
+      });
+
+      it("does not get the current feature", function() {
+        assembler.insertOutlineScenario(scenario);
+        expect(assembler.getCurrentFeature).not.toHaveBeenCalled();
+      });
+
+      it("does not add the scenario to the current feature", function() {
+        assembler.insertOutlineScenario(scenario);
+        expect(currentFeature.addFeatureElement).not.toHaveBeenCalledWith(scenario);
+      });
+    });
+  });
+
   describe("insertStep()", function() {
     var step, currentScenario;
 
@@ -357,13 +424,19 @@ describe("Cucumber.Ast.Assembler", function() {
       subScenarios.add(subScenario);
       scenarioOutline = createSpyWithStubs('scenario', {'buildScenarios': subScenarios});
       scenarioOutline.payload_type = 'scenarioOutline';
+      scenarioOutline.getTags = function () { return '@test'; };
 
-      spyOn(assembler, 'insertScenario');
+      spyOn(assembler, 'insertOutlineScenario');
     });
 
     it("it should get the scenarios from the current feature", function () {
       assembler.convertScenarioOutlineToScenarios(scenarioOutline);
-      expect(assembler.insertScenario).toHaveBeenCalledWithValueAsNthParameter(subScenario,1);
+      expect(assembler.insertOutlineScenario).toHaveBeenCalledWithValueAsNthParameter(subScenario,1);
+    });
+
+    it("it should pass tags from scenario outline to all subscenarios", function () {
+      assembler.convertScenarioOutlineToScenarios(scenarioOutline);
+      expect(assembler.insertOutlineScenario).toHaveBeenCalledWithValueAsNthParameter('@test',2);
     });
   });
 
