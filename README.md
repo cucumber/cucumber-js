@@ -10,129 +10,6 @@
 
 It runs on both Node.js and *modern* web browsers.
 
-## Development status
-
-Cucumber.js is still a work in progress. Here is its current status.
-
-### Cucumber Technology Compatibility Kit
-
-<table>
-  <thead>
-    <tr><th>Feature</th><th>Status</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/core.feature">Core</a> (scenarios, steps, mappings)</td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/background.feature">Background</a></td>
-      <td>Done<sup>1</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/comments.feature">Comments</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/command_line_interface.feature">Command-line interface</a></td>
-      <td>Done<sup>1, 2</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/command_line_options.feature">Command-line options</a></td>
-      <td>Todo<sup>2</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/data_tables.feature">Data tables</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/doc_strings.feature">Doc strings</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/failing_steps.feature">Failing steps</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/hooks.feature">Hooks</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/i18n.feature">I18n</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/json_formatter.feature">JSON formatter</a></td>
-      <td>WIP<sup>3</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/pretty_formatter.feature">Pretty formatter</a></td>
-      <td>WIP<sup>2</sup></td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/scenario_outlines_and_examples.feature">Scenario outlines and examples</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/stats_collector.feature">Stats collector</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/step_argument_transforms.feature">Step argument transforms</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/tags.feature">Tags</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/undefined_steps.feature">Undefined steps</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/wire_protocol.feature">Wire protocol</a></td>
-      <td>To do</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-tck/blob/master/world.feature">World</a></td>
-      <td>Done</td>
-    </tr>
-  </tbody>
-</table>
-
-1. Not certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck) yet.
-2. Considered for removal from [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-3. Missing 'matches' attributes. Simple wrapper for *Gherkin*'s `JsonFormatter` pending porting of:
-
-  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/listener/formatter_listener.rb
-  * https://github.com/cucumber/gherkin/blob/master/lib/gherkin/formatter/filter_formatter.rb
-
-  in Gherkin itself.
-
-### Cucumber.js-specific features
-
-<table>
-  <thead>
-    <tr><th>Feature</th><th>Status</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/background.feature">Background</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/coffeescript_support.feature">CoffeeScript support</a></td>
-      <td>Done</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/cucumber/cucumber-js/blob/master/features/cli.feature">Command-line interface</a></td>
-      <td>Done</td>
-    </tr>
-  </tbody>
-</table>
-
-1. Will be certified by [Cucumber TCK](https://github.com/cucumber/cucumber-tck).
-
 ## Prerequesites
 
 * [Node.js](http://nodejs.org)
@@ -145,8 +22,6 @@ Cucumber.js is tested on:
 * Firefox
 * Safari
 * Opera
-
-There are plans to have CI builds on browsers too.
 
 ## Usage
 
@@ -202,20 +77,20 @@ Support files let you setup the environment in which steps will be run, and defi
 
 *World* is a constructor function with utility properties, destined to be used in step definitions:
 
-``` javascript
+```javascript
 // features/support/world.js
+module.exports = function() {
+  var zombie = require('zombie');
+  this.World = function World(callback) {
+    this.browser = new zombie(); // this.browser will be available in step definitions
 
-var zombie = require('zombie');
-var World = function World(callback) {
-  this.browser = new zombie(); // this.browser will be available in step definitions
+    this.visit = function(url, callback) {
+      this.browser.visit(url, callback);
+    };
 
-  this.visit = function(url, callback) {
-    this.browser.visit(url, callback);
+    callback(); // tell Cucumber we're finished and to use 'this' as the world instance
   };
-
-  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
-};
-exports.World = World;
+}
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
@@ -363,6 +238,37 @@ var myAfterHooks = function () {
 
 module.exports = myAfterHooks;
 ```
+
+##### After features event
+The *after features event* is emitted once all features have been executed, just before the process exits. It can be used for tasks such as closing your browser after running automated browser tests with [selenium](https://code.google.com/p/selenium/wiki/WebDriverJs) or [phantomjs](http://phantomjs.org/).
+
+note: There are "Before" and "After" events for each of the following: "Features", "Feature", "Scenario", "Step" as well as the standalone events "Background" and "StepResult". e.g. "BeforeScenario".
+
+```javascript
+// features/support/world.js
+var webdriver = require("selenium-webdriver");
+
+var World = function World(callback) {
+    this.driver = new webdriver.Builder().
+      withCapabilities(webdriver.Capabilities.chrome()).
+      build();
+
+    callback();
+}
+
+module.exports = World;
+
+// features/support/after_hooks.js
+var myAfterHooks = function () {
+    this.registerHandler('AfterFeatures', function (event, callback) {
+      this.driver.close();
+      callback();
+    });
+}
+
+module.exports = myAfterHooks;
+```
+
 
 ##### Around hooks
 
