@@ -64,6 +64,7 @@ Feature: Environment Hooks
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -72,6 +73,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -90,6 +92,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -98,6 +101,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -158,6 +162,7 @@ Feature: Environment Hooks
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "error_message": "<error-message>",
                     "duration": "<duration>",
@@ -176,6 +181,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -244,6 +250,7 @@ Feature: Environment Hooks
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -262,6 +269,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "error_message": "<error-message>",
                     "duration": "<duration>",
@@ -327,6 +335,7 @@ Feature: Environment Hooks
               "steps": [
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "error_message": "<error-message>",
                     "duration": "<duration>",
@@ -411,6 +420,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "error_message": "<error-message>",
                     "duration": "<duration>",
@@ -492,6 +502,7 @@ Feature: Environment Hooks
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "error_message": "<error-message>",
                     "duration": "<duration>",
@@ -501,6 +512,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -509,6 +521,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -526,6 +539,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -534,6 +548,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -542,6 +557,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -652,6 +668,7 @@ Feature: Environment Hooks
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -660,6 +677,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -678,6 +696,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -686,6 +705,7 @@ Feature: Environment Hooks
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"

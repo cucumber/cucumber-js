@@ -48,6 +48,7 @@ Feature: Attachments
               "steps": [
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "embeddings": [
                       {
@@ -142,6 +143,7 @@ Feature: Attachments
               "steps": [
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "embeddings": [
                       {
@@ -222,6 +224,7 @@ Feature: Attachments
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "embeddings": [
                       {
@@ -246,6 +249,7 @@ Feature: Attachments
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -309,6 +313,7 @@ Feature: Attachments
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -327,6 +332,7 @@ Feature: Attachments
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "embeddings": [
                       {
@@ -394,6 +400,7 @@ Feature: Attachments
               "steps": [
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "embeddings": [
                       {
@@ -481,6 +488,7 @@ Feature: Attachments
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "embeddings": [
                       {
@@ -552,6 +560,7 @@ Feature: Attachments
               "steps": [
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"

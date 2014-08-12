@@ -82,6 +82,7 @@ Feature: Scenario Statuses
               "steps": [
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -90,6 +91,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "Before ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -108,6 +110,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -116,6 +119,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "Around ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -197,6 +201,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -279,6 +284,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -359,6 +365,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -438,6 +445,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
@@ -532,6 +540,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "error_message": "fail",
                     "duration": 351161,
@@ -541,6 +550,7 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
+                  "hidden": true,
                   "result": {
                     "duration": 319244,
                     "status": "passed"

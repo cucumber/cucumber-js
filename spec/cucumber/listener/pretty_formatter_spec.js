@@ -113,6 +113,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     beforeEach(function () {
       keyword  = "scenario-keyword";
       name     = "scenario-name";
+      // Background step assumed to be the longest
       backgroundStepLength = 50;
       var scenarioStepLength = 20;
       var tags = [createSpyWithStubs("tags", {getName: '@tag'})];
@@ -121,7 +122,6 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       var background = createSpy("background");
       scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
       spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").andCallFake(function(element) {
-        // Background step assumed to be the longest
         if (element === background) {
           return backgroundStepLength;
         }
@@ -235,13 +235,14 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       keyword    = "step-keyword ";
       name       = "step-name";
       uri        = "/step-uri";
-      maxStepLength = 10;
+      maxStepLength = 30;
       line       = 10;
       step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name, hasUri: true, getUri: uri, getLine: line });
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
       spyOn(prettyFormatter, 'logDataTable');
       spyOn(prettyFormatter, 'logDocString');
       spyOn(prettyFormatter, 'logIndented');
+      spyOn(prettyFormatter, '_getCurrentMaxStepLength').andReturn(maxStepLength);
     });
 
     it("gets the step keyword", function () {
@@ -258,6 +259,18 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       prettyFormatter.logStepResult(step, stepResult);
       var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + color.format('comment', "# " + uri.slice(1) + ":" + line) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
+    });
+
+    describe("when the step has no name", function() {
+      beforeEach(function () {
+        step.getName.andReturn(undefined);
+      });
+
+      it("logs the step header without the name, indented by two levels", function () {
+        prettyFormatter.logStepResult(step, stepResult);
+        var text = prettyFormatter._pad(keyword, maxStepLength + 10) + color.format('comment', "# " + uri.slice(1) + ":" + line) + "\n";
+        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
+      });
     });
 
     describe("when the step has no URI", function() {

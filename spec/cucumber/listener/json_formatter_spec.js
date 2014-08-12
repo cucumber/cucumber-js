@@ -68,6 +68,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
+        isHidden: false,
         hasDocString: false,
         hasDataTable: false
       });
@@ -140,12 +141,32 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
+        isHidden: false,
         hasDocString: false,
         hasDataTable: false
       });
 
       listener.formatStep(step);
       expect(formatter.step).toHaveBeenCalledWith({ name : 'Step', line : 3, keyword : 'Step'});
+    });
+
+    it("if the step is hidden, adds a hidden attribute to the step properties", function (){
+      var step = createSpyWithStubs("step", {
+        getName: 'Step',
+        getLine: 3,
+        getKeyword: 'Step',
+        isHidden: true,
+        hasDocString: false,
+        hasDataTable: false
+      });
+
+      listener.formatStep(step);
+      expect(formatter.step).toHaveBeenCalledWith({
+        name: 'Step',
+        line: 3,
+        keyword: 'Step',
+        hidden: true
+      });
     });
 
     it("if the step has one, adds a DocString to the step properties", function (){
@@ -159,6 +180,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
+        isHidden: false,
         hasDocString: true,
         hasDataTable: false,
         getDocString: fakeDocString
@@ -190,6 +212,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         getName: 'Step',
         getLine: 3,
         getKeyword: 'Step',
+        isHidden: false,
         hasDocString: false,
         hasDataTable: true,
         getDataTable: fakeDataTable
@@ -254,6 +277,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getName:      'Step',
           getLine:      3,
           getKeyword:   'Step',
+          isHidden:     false,
           hasDocString: false,
           hasDataTable: false
         });
@@ -303,6 +327,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getName:      'Step',
           getLine:      3,
           getKeyword:   'Step',
+          isHidden:     false,
           hasDocString: false,
           hasDataTable: false
         });
@@ -354,6 +379,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getName: 'Step',
           getLine: 3,
           getKeyword: 'Step',
+          isHidden: false,
           hasDocString: false,
           hasDataTable: false
         });
@@ -388,6 +414,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getName:      'Step',
           getLine:      3,
           getKeyword:   'Step',
+          isHidden:     false,
           hasDocString: false,
           hasDataTable: false
         });
@@ -441,6 +468,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getName: 'Step',
           getLine: 3,
           getKeyword: 'Step',
+          isHidden: false,
           hasDocString: false,
           hasDataTable: false
         });
@@ -475,6 +503,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getName: 'Step',
           getLine: 3,
           getKeyword: 'Step',
+          isHidden: false,
           hasDocString: false,
           hasDataTable: false
         });

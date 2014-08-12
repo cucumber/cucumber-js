@@ -160,9 +160,9 @@ var cliSteps = function cliSteps() {
   function normalizeText(text) {
     return text.replace(/\033\[[0-9;]*m/g, "")
       .replace(/\r\n|\r/g, "\n")
-      .replace(/^[\n\s]+/g, "")
-      .replace(/[\n\s]+$/g, "")
-      .replace(/\s+\n/g, "\n");
+      .replace(/^\s+/g, "")
+      .replace(/\s+$/g, "")
+      .replace(/[ \t]+\n/g, "\n");
   }
 
   function getAdditionalErrorText(lastRun) {

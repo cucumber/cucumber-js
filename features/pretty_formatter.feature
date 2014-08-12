@@ -67,3 +67,52 @@ Feature: Pretty Formatter
       1 scenario (1 passed)
       1 step (1 passed)
       """
+
+  Scenario: Failing hook is reported as a failed step
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: I've declared one step and it is passing
+          Given This step is passing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    And a file named "features/support/hooks.js" with:
+      """
+      var hooks = function () {
+        this.Before(function(callback) {
+          callback('Fail');
+        });
+      };
+
+      module.exports = hooks;
+      """
+    When I run `cucumber.js -f pretty`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+
+
+        Scenario: I've declared one step and it is passing   # features/a.feature:3
+          Before
+            Fail
+          Given This step is passing                         # features/a.feature:4
+
+
+      (::) failed steps (::)
+
+      Fail
+
+      Failing scenarios:
+      <current-directory>/features/a.feature:3 # Scenario: I've declared one step and it is passing
+
+      1 scenario (1 failed)
+      2 steps (1 failed, 1 skipped)
+      """
