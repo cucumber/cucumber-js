@@ -350,7 +350,7 @@ this.Around(function (scenario, runScenario) {
 ```
 
 See
-[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/api/scenario.js)
+[Cucumber.Api.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/api/scenario.js)
 for more information about the `scenario` object.
 
 ##### Attachments
