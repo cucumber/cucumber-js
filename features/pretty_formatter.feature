@@ -59,19 +59,28 @@ Feature: Pretty Formatter
       """
       Feature: some feature
       Scenario: I haven't done anything yet
-          Given I have not defined this step
+          Given This step is passing
       """
-    
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
     When I run `cucumber.js -f pretty`
 	
-    Then it should pass with:
+    Then it outputs this text:
       """
       Feature: some feature
       
       
       
         Scenario: I haven't done anything yet   # features/a.feature:2
-          Given I have not defined this step    # features/a.feature:3
+          Given This step is passing            # features/a.feature:3
+
+      1 scenario (1 passed)
+	  1 step (1 passed)
       """
       
   Scenario: output with --no-source flag should not show file sources
@@ -79,18 +88,29 @@ Feature: Pretty Formatter
       """
       Feature: some feature
       Scenario: I haven't done anything yet
-          Given I have not defined this step
+          Given This step is passing
+      """
+     And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
       """
 
     When I run `cucumber.js -f pretty --no-source`
-    Then it should pass with:
+    Then it outputs this text:
       """
       Feature: some feature
       
       
       
         Scenario: I haven't done anything yet
-          Given I have not defined this step
+          Given This step is passing
+
+
+	  1 scenario (1 passed)
+	  1 step (1 passed)
       """
       
       
@@ -131,7 +151,6 @@ Feature: Pretty Formatter
           Before
             Fail
           Given This step is passing                         # features/a.feature:4
-
 
       (::) failed steps (::)
 
