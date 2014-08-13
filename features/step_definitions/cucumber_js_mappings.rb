@@ -178,7 +178,7 @@ EOF
       append_support_code <<-EOF
 this.#{define_hook}(#{params}function (scenario, runScenario) {
   this.logCycleEvent('#{log_string}-pre');
-  runScenario(function (callback) {
+  runScenario(function (scenario, callback) {
     this.logCycleEvent('#{log_string}-post');
     callback();
   });
@@ -329,6 +329,14 @@ EOF
     actual.should == expected
   end
 
+  def assert_text_output(expected)
+    expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
+    expected = normalize_text(expected)
+    actual   = normalize_text(all_output)
+
+    actual.should == expected
+  end
+
   def failed_output
     "failed"
   end
@@ -426,6 +434,14 @@ EOF
         end
       end
     end
+  end
+
+  def normalize_text text
+    text.gsub(/\033\[[0-9;]*m/, "")
+      .gsub(/\r\n|\r/, "\n")
+      .gsub(/^\s+/, "")
+      .gsub(/\s+$/, "")
+      .gsub(/[ \t]+\n/, "\n")
   end
 end
 

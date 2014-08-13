@@ -2,7 +2,6 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Scenario", function() {
   var Cucumber = requireLib('cucumber');
-  var steps;
   var scenario, keyword, name, description, uri, line, lastStep;
 
   beforeEach(function() {
@@ -16,6 +15,7 @@ describe("Cucumber.Ast.Scenario", function() {
     spyOnStub(steps, 'add');
     spyOnStub(steps, 'getLast').andReturn(lastStep);
     spyOn(Cucumber.Type, 'Collection').andReturn(steps);
+
     scenario = Cucumber.Ast.Scenario(keyword, name, description, uri, line);
   });
 

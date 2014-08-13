@@ -2,9 +2,20 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.2...master)
 
 **TBD**
+
+### [v0.4.2](https://github.com/cucumber/cucumber-js/compare/v0.4.1...v0.4.2)
+
+#### New features
+
+* Support attachments (close #189) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Fix world example in main readme (Sam Saccone)
+* Update instructings for running tests (Sam Saccone)
 
 ### [v0.4.1](https://github.com/cucumber/cucumber-js/compare/v0.4.0...v0.4.1)
 

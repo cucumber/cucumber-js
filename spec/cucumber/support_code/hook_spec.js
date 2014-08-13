@@ -2,91 +2,72 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Hook", function() {
   var Cucumber = requireLib('cucumber');
-  var hook, code, options, tags;
+  var hook, code, options, stepDefinition, tags;
 
   beforeEach(function() {
-    code    = createSpy("hook code");
-    options = {};
-    hook    = Cucumber.SupportCode.Hook(code, options);
+    code           = createSpy("hook code");
+    options        = {};
+    stepDefinition = createSpy("step definition");
+    spyOn(Cucumber.SupportCode, 'StepDefinition').andReturn(stepDefinition);
+    hook           = Cucumber.SupportCode.Hook(code, options);
   });
 
-  describe("invokeBesideScenario()", function() {
-    var scenario, world, callback;
+  describe("constructor", function() {
+    it("inherits from Cucumber.SupportCode.StepDefinition", function() {
+      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', code);
+      expect(hook).toBe(stepDefinition);
+    });
+  });
+
+  describe("matchesStepName()", function () {
+    it("returns false", function() {
+      var isMatch = hook.matchesStepName('');
+      expect(isMatch).toBe(false);
+    });
+  });
+
+  describe("buildInvocationParameters()", function() {
+    var step, scenario, callback;
 
     beforeEach(function() {
+      step      = createSpy("world");
       scenario  = createSpy("scenario");
-      world     = createSpy("world");
       callback  = createSpy("callback");
-      spyOn(hook, 'appliesToScenario');
     });
 
-    it("checks whether the hook applies to this scenario or not", function() {
-      hook.invokeBesideScenario(scenario, world, callback);
-      expect(hook.appliesToScenario).toHaveBeenCalledWith(scenario);
-    });
+    describe("when the hook function does not just accept one parameter", function() {
+      var invocationParameters;
 
-    describe("when the hook applies to the scenario ", function() {
-      beforeEach(function() {
-        hook.appliesToScenario.andReturn(true);
+      beforeEach(function () {
+        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
 
-      it("calls the code with the world instance as this and pass it the current scenario", function() {
-        hook.invokeBesideScenario(scenario, world, callback);
-        expect(code).toHaveBeenCalledWith(scenario, callback);
-        expect(code.mostRecentCall.object).toBe(world);
-      });
-
-      describe("when the hook function only accepts one parameter", function () {
-        beforeEach(function () {
-          var codeObservingWrapper = function (callback) {
-            code.apply(this, arguments);
-          };
-          hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
-        });
-
-        it("doesn't pass the current scenario to the hook function", function() {
-          hook.invokeBesideScenario(scenario, world, callback);
-          expect(code).not.toHaveBeenCalledWith(scenario, callback);
-          expect(code).toHaveBeenCalledWith(callback);
-          expect(code.mostRecentCall.object).toBe(world);
-        });
+      it("returns an array containing the scenario and the callback", function() {
+        expect(invocationParameters).toEqual([scenario, callback]);
       });
 
       it("does not call back", function() {
-        hook.invokeBesideScenario(scenario, world, callback);
         expect(callback).not.toHaveBeenCalled();
       });
     });
 
-    describe("when the hook does not apply to the scenario", function() {
-      beforeEach(function() {
-        hook.appliesToScenario.andReturn(false);
+    describe("when the hook function only accepts one parameter", function () {
+      var invocationParameters;
+
+      beforeEach(function () {
+        var codeObservingWrapper = function (callback) {
+          code.apply(this, arguments);
+        };
+        hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
+        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
 
-      it("does not call the code", function() {
-        hook.invokeBesideScenario(scenario, world, callback);
-        expect(code).not.toHaveBeenCalled();
+      it("returns an array containing just the callback", function() {
+        expect(invocationParameters).toEqual([callback]);
       });
 
-      it("calls back directly with a post-scenario around hook", function() {
-        hook.invokeBesideScenario(scenario, world, callback);
-        expect(callback).toHaveBeenCalled();
-        expect(callback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      });
-
-      describe("post-scenario around hook", function() {
-        var postScenarioAroundHook, postScenarioAroundHookCallback;
-
-        beforeEach(function() {
-          hook.invokeBesideScenario(scenario, world, callback);
-          postScenarioAroundHook         = callback.mostRecentCall.args[0];
-          postScenarioAroundHookCallback = createSpy("post-scenario around hook callback");
-        });
-
-        it("passes a callback to replace the post-scenario hook (in case of an around hook)", function() {
-          postScenarioAroundHook(postScenarioAroundHookCallback);
-          expect(postScenarioAroundHookCallback).toHaveBeenCalled();
-        });
+      it("does not call back", function() {
+        expect(callback).not.toHaveBeenCalled();
       });
     });
   });
