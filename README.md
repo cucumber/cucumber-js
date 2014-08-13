@@ -269,7 +269,6 @@ var myAfterHooks = function () {
 module.exports = myAfterHooks;
 ```
 
-
 ##### Around hooks
 
 It's also possible to combine both before and after hooks in one single definition with the help of *around hooks*:
@@ -337,9 +336,91 @@ this.Before(function (scenario, callback) {
 });
 ```
 
+The scenario object can also be used with around hooks:
+
+``` javascript
+this.Around(function (scenario, runScenario) {
+  console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+
+  runScenario(function(callback) {
+    console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+    callback();
+  });
+});
+```
+
 See
-[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/ast/scenario.js)
+[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/api/scenario.js)
 for more information about the `scenario` object.
+
+##### Attachments
+
+You can attach text, images and files to the Cucumber report using the scenario object:
+
+``` javascript
+this.After(function (scenario, callback) {
+  scenario.attach('Some text');
+  callback();
+});
+```
+
+By default, text is saved with a MIME type of `text/plain`.  You can also specify
+a different MIME type:
+
+``` javascript
+this.After(function (scenario, callback) {
+  scenario.attach('{"name": "some JSON"}', 'application/json');
+  callback();
+});
+```
+
+Images and other binary data can be attached using a [stream.Readable](http://nodejs.org/api/stream.html)
+
+``` javascript
+this.After(function (scenario, callback) {
+  if (scenario.isFailed()) {
+    var stream = getScreenshotOfError();
+    scenario.attach(stream, 'image/png', function(err) {
+      callback(err);
+    });
+  }
+  else {
+    callback();
+  }
+});
+```
+
+Images and binary data can also be attached using a [Buffer](http://nodejs.org/api/buffer.html)
+
+``` javascript
+this.After(function (scenario, callback) {
+  if (scenario.isFailed()) {
+    var buffer = getScreenshotOfError();
+    scenario.attach(buffer, 'image/png');
+  }
+  callback();
+});
+```
+
+Here is an example of saving a screenshot using [WebDriver](https://www.npmjs.org/package/selenium-webdriver)
+when a scenario fails
+
+``` javascript
+this.After(function (scenario, callback) {
+  if (scenario.isFailed()) {
+    webDriver.takeScreenshot().then(stream) {
+      scenario.attach(stream, 'image/png', function(err) {
+        callback(err);
+      });
+    }, function(err) {
+      callback(err);
+    });
+  }
+  else {
+    callback();
+  }
+});
+```
 
 ### Run cucumber
 
