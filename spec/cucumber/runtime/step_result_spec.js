@@ -2,11 +2,12 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.StepResult", function() {
   var Cucumber = requireLib('cucumber');
-  var stepResult, step;
+  var stepResult, step, attachments;
 
   beforeEach(function() {
-    step = createSpy("step");
-    stepResult = Cucumber.Runtime.StepResult({ step: step, duration: 123 });
+    step        = createSpy("step");
+    attachments = {};
+    stepResult = Cucumber.Runtime.StepResult({ step: step, duration: 123, attachments: attachments });
   });
 
   it("is not failed", function() {
@@ -38,6 +39,34 @@ describe("Cucumber.Runtime.StepResult", function() {
   describe("getDuration()", function() {
     it("returns the duration passed to the constructor", function() {
       expect(stepResult.getDuration()).toBe(123);
+    });
+  });
+
+  describe("hasAttachments()", function() {
+    describe("when there are no attachments", function() {
+      beforeEach(function() {
+        spyOnStub(attachments, 'length').andReturn(0);
+      });
+
+      it("returns false", function() {
+        expect(stepResult.hasAttachments()).toBeFalsy();
+      });
+    });
+
+    describe("when there are attachments", function() {
+      beforeEach(function() {
+        spyOnStub(attachments, 'length').andReturn(1);
+      });
+
+      it("returns true", function() {
+        expect(stepResult.hasAttachments()).toBeTruthy();
+      });
+    });
+  });
+
+  describe("getAttachments()", function() {
+    it("returns the attachments passed to the constructor", function() {
+      expect(stepResult.getAttachments()).toBe(attachments);
     });
   });
 });

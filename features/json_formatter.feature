@@ -1,6 +1,6 @@
 Feature: JSON Formatter
- In order to simplify processing of Cucumber features and results
- Developers should be able to consume features as JSON
+  In order to simplify processing of Cucumber features and results
+  Developers should be able to consume features as JSON
 
   Scenario: output JSON for a feature with no scenarios
     Given a file named "features/a.feature" with:

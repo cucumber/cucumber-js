@@ -164,14 +164,10 @@ proto.addHookWithTags = function (tags, callback) {
   this._addHook({ type: "before", logEvent: "hook", tags: tags }, callback);
 };
 
-proto._addHook = function (options, scenario, callback) {
+proto._addHook = function (options, callback) {
   if (!callback) {
-    if (scenario) {
-      callback = scenario;
-    } else {
-      callback = options;
-      options = {};
-    }
+    callback = options;
+    options = {};
   }
   var type = "before";
   var tags = "";
@@ -197,7 +193,7 @@ proto._addAroundHook = function (options, callback) {
   if (options.logEvent) logEvent = options.logEvent;
   this.stepDefinitions += "Around(" + tags + "function(scenario, runScenario) {\
   world.logCycleEvent('" + logEvent + "-pre');\
-  runScenario(function(callback) {\
+  runScenario(function(scenario, callback) {\
   world.logCycleEvent('" + logEvent + "-post');\
     callback();\
   });\
