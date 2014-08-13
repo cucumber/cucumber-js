@@ -116,6 +116,11 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/^a step definition that looks like this:$/, function(step, callback) {
+    this.stepDefinitions += step;
+    callback();
+  });
+
   When(/^Cucumber executes the scenario$/, function(callback) {
     this.runFeature({}, callback);
   });
@@ -274,6 +279,15 @@ callback();\
 
   Then(/^the hook is not fired$/, function(callback) {
     this.assertCycleSequenceExcluding('hook');
+    callback();
+  });
+
+  Then(/^step "([^"]*)" invoked "(\d+)" times$/, function(step, count, callback) {
+    if (this.touchedStepsCount(step) == 2) {
+      this.assertSuccess();
+    } else {
+      this.assertFailure();
+    }
     callback();
   });
 };

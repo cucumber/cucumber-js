@@ -96,6 +96,19 @@ proto.isStepTouched = function isStepTouched(pattern) {
   return (this.touchedSteps.indexOf(pattern) >= 0);
 };
 
+proto.touchedStepsCount = function touchedStepsCount(pattern) {
+  var result = 0;
+  var list = this.touchedSteps;
+
+  for (var i = 0; i < list.length; ++i) {
+      if (list[i] == pattern) {
+	  ++result;
+      }
+  }
+
+  return result;
+}
+
 proto.addStringBasedPatternMapping = function addStringBasedPatternMapping() {
   this.mappingName = "/a string-based mapping with fancy characters |\\ ^*-{(})+[a].?";
   this.stepDefinitions += "Given('/a string-based mapping with fancy characters |\\\\ ^*-{(})+[a].?', function(callback) {\
