@@ -34,6 +34,15 @@ describe("Cucumber.Type.Collection", function() {
     });
   });
 
+  describe("clear()", function() {
+    it("empties the item array", function() {
+      var item = createSpy("Collection item");
+      expect(itemArray.length).toEqual(3);
+      collection.clear();
+      expect(itemArray.length).toEqual(0);
+    });
+  });
+
   describe("getLast()", function() {
     it("returns the latest added item from the array", function() {
       var lastItem = createSpy("last item");
@@ -46,7 +55,6 @@ describe("Cucumber.Type.Collection", function() {
     var userFunction, callback, itemCount;
     var processedItems, allItemsProcessedBeforeCallback;
     var delayItemProcessing;
-    var itemArrayCopy;
 
     beforeEach(function() {
       processedItems = [];
@@ -91,7 +99,6 @@ describe("Cucumber.Type.Collection", function() {
     it("does not process the next item until the current one is finished", function() {
       delayItemProcessing = true;
       collection.forEach(userFunction, callback);
-      var callIndex = 0;
       expect(userFunction).toHaveBeenCalledNTimes(1);
       var args = userFunction.mostRecentCall.args;
       expect(args[0]).toBe(itemArray[0]);

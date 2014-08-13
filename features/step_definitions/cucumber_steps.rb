@@ -96,6 +96,7 @@ Then /^it outputs this json:$/ do |json|
   assert_json_output json
 end
 
+<<<<<<< HEAD
 Given /^I set the environment variables to:/ do |table|
   table.hashes.each do |row|
     variable = row['variable'].to_s.upcase
@@ -104,3 +105,10 @@ Given /^I set the environment variables to:/ do |table|
     set_env(variable, value)
   end
 end
+
+
+=======
+Then /^it outputs this text:$/ do |json|
+  assert_text_output json
+end
+>>>>>>> upstream/master

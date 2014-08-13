@@ -17,7 +17,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
   });
 
   describe("handleStepResultEvent()", function () {
-    var event, callback, stepResult;
+    var event, callback, stepResult, step;
 
     beforeEach(function () {
       stepResult = createSpyWithStubs("step result", {
@@ -25,11 +25,14 @@ describe("Cucumber.Listener.StatsJournal", function () {
         isPending:    undefined,
         isFailed:     undefined,
         isSkipped:    undefined,
-        isUndefined:  undefined
+        isUndefined:  undefined,
+        getStep:      undefined
       });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
-      callback   = createSpy("Callback");
+      callback   = createSpy("callback");
+      step       = createSpy("step");
       spyOn(statsJournal, 'handleFailedStepResult');
+      spyOnStub(stepResult, 'getStep').andReturn(step);
     });
 
     it("gets the step result from the event payload", function () {
@@ -50,7 +53,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
       it("handles the successful step result", function () {
         statsJournal.handleStepResultEvent(event, callback);
-        expect(statsJournal.handleSuccessfulStepResult).toHaveBeenCalled();
+        expect(statsJournal.handleSuccessfulStepResult).toHaveBeenCalledWith(step);
       });
     });
 
@@ -134,7 +137,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
             it("handles the undefined step result", function () {
               statsJournal.handleStepResultEvent(event, callback);
-              expect(statsJournal.handleUndefinedStepResult).toHaveBeenCalledWith(stepResult);
+              expect(statsJournal.handleUndefinedStepResult).toHaveBeenCalled();
             });
           });
 
@@ -151,7 +154,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
             it("handles a failed step result", function () {
               statsJournal.handleStepResultEvent(event, callback);
-              expect(statsJournal.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
+              expect(statsJournal.handleFailedStepResult).toHaveBeenCalled();
             });
           });
         });
@@ -165,13 +168,33 @@ describe("Cucumber.Listener.StatsJournal", function () {
   });
 
   describe("handleSuccessfulStepResult()", function () {
+    var step, stepResult;
+
     beforeEach(function () {
+      step       = createSpy("step");
       spyOn(statsJournal, 'witnessPassedStep');
     });
 
-    it("witnesses a passed step", function () {
-      statsJournal.handleSuccessfulStepResult();
-      expect(statsJournal.witnessPassedStep).toHaveBeenCalled();
+    describe("when the step is not hidden", function() {
+      beforeEach(function() {
+        spyOnStub(step, 'isHidden').andReturn(false);
+      });
+
+      it("witnesses a passed step", function () {
+        statsJournal.handleSuccessfulStepResult(step);
+        expect(statsJournal.witnessPassedStep).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the step is hidden", function() {
+      beforeEach(function() {
+        spyOnStub(step, 'isHidden').andReturn(true);
+      });
+
+      it("not not witnesses a passed but hidden step", function () {
+        statsJournal.handleSuccessfulStepResult(step);
+        expect(statsJournal.witnessPassedStep).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -204,47 +227,35 @@ describe("Cucumber.Listener.StatsJournal", function () {
   });
 
   describe("handleUndefinedStepResult()", function () {
-    var stepResult, step;
-
     beforeEach(function () {
-      step       = createSpy("step");
-      stepResult = createSpyWithStubs("step result", {getStep: step});
       spyOn(statsJournal, 'witnessUndefinedStep');
       spyOn(statsJournal, 'markCurrentScenarioAsUndefined');
     });
 
-    it("gets the step from the step result", function () {
-      statsJournal.handleUndefinedStepResult(stepResult);
-      expect(stepResult.getStep).toHaveBeenCalled();
-    });
-
     it("witnesses an undefined step", function () {
-      statsJournal.handleUndefinedStepResult(stepResult);
+      statsJournal.handleUndefinedStepResult();
       expect(statsJournal.witnessUndefinedStep).toHaveBeenCalled();
     });
 
     it("marks the current scenario as undefined", function () {
-      statsJournal.handleUndefinedStepResult(stepResult);
+      statsJournal.handleUndefinedStepResult();
       expect(statsJournal.markCurrentScenarioAsUndefined).toHaveBeenCalled();
     });
   });
 
   describe("handleFailedStepResult()", function () {
-    var stepResult;
-
     beforeEach(function () {
-      stepResult = createSpy("failed step result");
       spyOn(statsJournal, 'witnessFailedStep');
       spyOn(statsJournal, 'markCurrentScenarioAsFailing');
     });
 
     it("witnesses a failed step", function () {
-      statsJournal.handleFailedStepResult(stepResult);
+      statsJournal.handleFailedStepResult();
       expect(statsJournal.witnessFailedStep).toHaveBeenCalled();
     });
 
     it("marks the current scenario as failing", function () {
-      statsJournal.handleFailedStepResult(stepResult);
+      statsJournal.handleFailedStepResult();
       expect(statsJournal.markCurrentScenarioAsFailing).toHaveBeenCalled();
     });
   });

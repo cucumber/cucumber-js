@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.1",
+  "version": "0.4.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -46,7 +46,8 @@
     "Simon Lampen <simonlampen@vinsight.net>",
     "Eddie Loeffen <eddieloeffen@gmail.com>",
     "Stanley Shyiko <stanley.shyiko@gmail.com>",
-    "Artur Kania <kaniartur@gmail.com>"
+    "Artur Kania <kaniartur@gmail.com>",
+    "Sam Saccone <sam@samx.it>"
   ],
   "repository": {
     "type": "git",
