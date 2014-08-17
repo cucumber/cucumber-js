@@ -3,7 +3,7 @@ require('./support/spec_helper');
 describe("Cucumber", function() {
   var Cucumber = requireLib('cucumber');
 
-  var featureSource, supportCodeInitializer, options, configuration;
+  var featureSource, supportCodeInitializer, options, configuration, worldParams;
 
   beforeEach(function() {
     featureSource          = createSpy("feature source");
@@ -16,8 +16,8 @@ describe("Cucumber", function() {
   });
 
   it("creates a volatile configuration with the feature source and support code definition", function() {
-    Cucumber(featureSource, supportCodeInitializer, options);
-    expect(Cucumber.VolatileConfiguration).toHaveBeenCalledWith(featureSource, supportCodeInitializer, options);
+    Cucumber(featureSource, supportCodeInitializer, options, worldParams);
+    expect(Cucumber.VolatileConfiguration).toHaveBeenCalledWith(featureSource, supportCodeInitializer, options, worldParams);
   });
 
   it("creates a Cucumber runtime with the configuration", function() {
@@ -26,6 +26,6 @@ describe("Cucumber", function() {
   });
 
   it("returns the Cucumber runtime", function() {
-    expect(Cucumber(featureSource, supportCodeInitializer, options)).toBe(runtime);
+    expect(Cucumber(featureSource, supportCodeInitializer, options, worldParams)).toBe(runtime);
   });
 });

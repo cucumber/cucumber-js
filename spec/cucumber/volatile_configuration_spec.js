@@ -4,24 +4,24 @@ require('../support/configurations_shared_examples.js');
 describe("Cucumber.VolatileConfiguration", function() {
   var Cucumber = requireLib('cucumber');
 
-  var featureSources, supportCodeInitializer, configuration;
+  var featureSources, supportCodeInitializer, configuration, worldParams;
   var supportCodeLibrary;
   var context = {};
-
   beforeEach(function() {
     supportCodeLibrary       = createSpy("support code library");
     spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
     featureSources            = createSpy("feature source");
     supportCodeInitializer   = createSpy("support code initializer");
-    configuration            = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer);
+    worldParams              = createSpy("world parameters");
+    configuration            = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {}, worldParams);
     context.configuration    = configuration;
   });
 
   itBehavesLikeAllCucumberConfigurations(context);
 
   describe("constructor", function() {
-    it("creates a support code library with the initializer", function() {
-      expect(Cucumber.SupportCode.Library).toHaveBeenCalledWith(supportCodeInitializer);
+    it("creates a support code library with the initializer and recieves the world params", function() {
+      expect(Cucumber.SupportCode.Library).toHaveBeenCalledWith(supportCodeInitializer, worldParams);
     });
   });
 
