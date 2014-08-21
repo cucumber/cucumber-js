@@ -75,6 +75,21 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
+  this.Then(/^it should have written file "([^"]*)", with content:$/, function (fileName, expectedContent, callback) {
+    if (!fs.existsSync(tmpDir + "/" + fileName))
+      throw new Error("Expected file '" + fileName + "' to be written.");
+
+    var actualContent = fs.readFileSync(tmpDir + "/" + fileName).toString();
+
+    actualContent = normalizeText(actualContent);
+    expectedContent = normalizeText(expectedContent);
+
+    if(actualContent !== expectedContent)
+      throw new Error("Expected content of file " + fileName + " to be:\n'" + expectedContent + "'\nGot:\n'" + actualContent + "'.");
+
+    callback();
+  });
+
   this.Then(/^it outputs this json:$/, function(expectedOutput, callback) {
     var world = this;
 
