@@ -100,10 +100,12 @@ It is possible to tell Cucumber to use another object instance than the construc
 
 var zombie = require('zombie');
 var WorldConstructor = function WorldConstructor(callback) {
-  this.browser = new zombie(); // this.browser will be available in step definitions
+
+  var browser = new zombie();
 
   var world = {
-    visit: function(url, callback) {
+    browser: browser,                        // this.browser will be available in step definitions
+    visit: function(url, callback) {         // this.visit will be available in step definitions
       this.browser.visit(url, callback);
     }
   };
