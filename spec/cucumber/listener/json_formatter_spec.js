@@ -14,6 +14,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
     spyOn(formatter, 'background');
     spyOn(formatter, 'scenario');
     spyOn(formatter, 'result');
+    spyOn(formatter, 'embedding');
     spyOn(formatter, 'match');
     spyOn(formatter, 'eof');
     spyOn(formatter, 'done');
@@ -290,7 +291,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getFailureException: false,
           getDuration:         undefined,
           getStep:             step,
-          hasAttachments:      false
+          hasAttachments:      false,
+          getAttachments:      undefined
         });
         fakeEvent = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
@@ -304,19 +306,23 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
       });
 
       describe("when step result has attachments", function() {
-        var embeddings;
-
         beforeEach(function() {
-          embeddings  = createSpy("embeddings");
+          var attachment1 = createSpyWithStubs("first attachment", {getMimeType: "first mime type", getData: "first data"});
+          var attachment2 = createSpyWithStubs("second attachment", {getMimeType: "second mime type", getData: "second data"});
+          var attachments = Cucumber.Type.Collection();
+          attachments.add(attachment1);
+          attachments.add(attachment2);
           stepResult.hasAttachments.andReturn(true);
-          spyOn(listener, 'getEmbeddingsFromStepResult').andReturn(embeddings);
+          stepResult.getAttachments.andReturn(attachments);
         });
 
         it("outputs a step with failed status", function () {
           listener.handleStepResultEvent(fakeEvent, callback);
 
-          expect(listener.getEmbeddingsFromStepResult).toHaveBeenCalledWith(stepResult);
-          expect(formatter.result).toHaveBeenCalledWith({status: 'failed', embeddings: embeddings});
+          expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});
+          expect(formatter.embedding.callCount).toEqual(2);
+          expect(formatter.embedding.argsForCall[0]).toEqual(['first mime type', 'first data']);
+          expect(formatter.embedding.argsForCall[1]).toEqual(['second mime type', 'second data']);
         });
       });
     });
@@ -340,7 +346,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getFailureException: false,
           getDuration:         undefined,
           getStep:             step,
-          hasAttachments:      false
+          hasAttachments:      false,
+          getAttachments:      undefined
         });
         stepResult.isSuccessful.andReturn(true);
         stepResult.getDuration.andReturn(1);
@@ -356,19 +363,23 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
       });
 
       describe("when step result has attachments", function() {
-        var embeddings;
-
         beforeEach(function() {
-          embeddings  = createSpy("embeddings");
+          var attachment1 = createSpyWithStubs("first attachment", {getMimeType: "first mime type", getData: "first data"});
+          var attachment2 = createSpyWithStubs("second attachment", {getMimeType: "second mime type", getData: "second data"});
+          var attachments = Cucumber.Type.Collection();
+          attachments.add(attachment1);
+          attachments.add(attachment2);
           stepResult.hasAttachments.andReturn(true);
-          spyOn(listener, 'getEmbeddingsFromStepResult').andReturn(embeddings);
+          stepResult.getAttachments.andReturn(attachments);
         });
 
         it("outputs a step with passed status", function () {
           listener.handleStepResultEvent(fakeEvent, callback);
 
-          expect(listener.getEmbeddingsFromStepResult).toHaveBeenCalledWith(stepResult);
-          expect(formatter.result).toHaveBeenCalledWith({status: 'passed', duration: 1, embeddings: embeddings});
+          expect(formatter.result).toHaveBeenCalledWith({status: 'passed', duration: 1});
+          expect(formatter.embedding.callCount).toEqual(2);
+          expect(formatter.embedding.argsForCall[0]).toEqual(['first mime type', 'first data']);
+          expect(formatter.embedding.argsForCall[1]).toEqual(['second mime type', 'second data']);
         });
       });
     });
@@ -428,7 +439,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           getFailureException: false,
           getDuration:         undefined,
           getStep:             step,
-          hasAttachments:      false
+          hasAttachments:      false,
+          getAttachments:      undefined
         });
 
         stepResult.isFailed.andReturn(true);
@@ -445,19 +457,23 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
       });
 
       describe("when step result has attachments", function() {
-        var embeddings;
-
         beforeEach(function() {
-          embeddings  = createSpy("embeddings");
+          var attachment1 = createSpyWithStubs("first attachment", {getMimeType: "first mime type", getData: "first data"});
+          var attachment2 = createSpyWithStubs("second attachment", {getMimeType: "second mime type", getData: "second data"});
+          var attachments = Cucumber.Type.Collection();
+          attachments.add(attachment1);
+          attachments.add(attachment2);
           stepResult.hasAttachments.andReturn(true);
-          spyOn(listener, 'getEmbeddingsFromStepResult').andReturn(embeddings);
+          stepResult.getAttachments.andReturn(attachments);
         });
 
         it("outputs a step with failed status", function () {
           listener.handleStepResultEvent(fakeEvent, callback);
 
-          expect(listener.getEmbeddingsFromStepResult).toHaveBeenCalledWith(stepResult);
-          expect(formatter.result).toHaveBeenCalledWith({status: 'failed', duration: 1, embeddings: embeddings});
+          expect(formatter.result).toHaveBeenCalledWith({status: 'failed', duration: 1});
+          expect(formatter.embedding.callCount).toEqual(2);
+          expect(formatter.embedding.argsForCall[0]).toEqual(['first mime type', 'first data']);
+          expect(formatter.embedding.argsForCall[1]).toEqual(['second mime type', 'second data']);
         });
       });
     });
@@ -530,33 +546,6 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         expect(formatter.result).toHaveBeenCalledWith({status: 'undefined'});
         expect(formatter.match).toHaveBeenCalledWith({location: undefined});
       });
-    });
-  });
-
-  describe("getEmbeddingsFromStepResult()", function() {
-    var firstMimeType, secondMimeType, firstData, secondData, firstAttachment, secondAttachment;
-    var attachments, attachmentCollection, stepResult, embeddings;
-
-    beforeEach(function() {
-      firstMimeType        = createSpyWithStubs("first mime type");
-      secondMimeType       = createSpyWithStubs("second mime type");
-      firstData            = createSpyWithStubs("first data");
-      secondData           = createSpyWithStubs("second data");
-      firstAttachment      = createSpyWithStubs("first attachment", {getMimeType: firstMimeType, getData: firstData});
-      secondAttachment     = createSpyWithStubs("second attachment", {getMimeType: secondMimeType, getData: secondData});
-      attachments          = [firstAttachment, secondAttachment]
-      attachmentCollection = createSpyWithStubs("attachments");
-      spyOnStub(attachmentCollection, 'syncForEach').andCallFake(function(cb) { attachments.forEach(cb); });
-      stepResult           = createSpyWithStubs("step result", {getAttachments: attachmentCollection})
-      embeddings           = listener.getEmbeddingsFromStepResult(stepResult);
-    });
-
-    it("gets the attachments from the step result", function() {
-      expect(stepResult.getAttachments).toHaveBeenCalled();
-    });
-
-    it("converts the attachments into embeddings", function() {
-      expect(embeddings).toEqual([{mime_type: firstMimeType, data: firstData}, {mime_type: secondMimeType, data: secondData}]);
     });
   });
 

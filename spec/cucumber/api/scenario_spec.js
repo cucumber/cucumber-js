@@ -156,8 +156,8 @@ describe("Cucumber.Api.Scenario", function() {
               endListener();
             });
 
-            it("instructs the ast tree walker to create an attachment containing the base 64 encoded contents of the stream", function() {
-              expect(astTreeWalker.attach).toHaveBeenCalledWith("Zmlyc3QgY2h1bmtzZWNvbmQgY2h1bms=", mimeType);
+            it("instructs the ast tree walker to create an attachment containing the contents of the stream", function() {
+              expect(astTreeWalker.attach).toHaveBeenCalledWith("first chunksecond chunk", mimeType);
             });
 
             it("calls back", function() {
@@ -179,9 +179,9 @@ describe("Cucumber.Api.Scenario", function() {
         expect(function() { scenario.attach(buffer); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a mimeType"));
       });
 
-      it("instructs the ast tree walker to create an attachment containing the base 64 encoded contents of the buffer", function() {
+      it("instructs the ast tree walker to create an attachment containing the contents of the buffer", function() {
         scenario.attach(buffer, mimeType);
-        expect(astTreeWalker.attach).toHaveBeenCalledWith("ZGF0YQ==", mimeType);
+        expect(astTreeWalker.attach).toHaveBeenCalledWith("data", mimeType);
       });
 
       describe("when provided with a callback", function() {
@@ -224,4 +224,3 @@ describe("Cucumber.Api.Scenario", function() {
     });
   });
 });
-
