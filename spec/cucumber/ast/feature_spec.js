@@ -10,7 +10,11 @@ describe("Cucumber.Ast.Feature", function () {
     scenarioCollection = new Object(); // bare objects because we need .length
                                        // which is not available on jasmine spies
     spyOnStub(scenarioCollection, 'add');
+    spyOnStub(scenarioCollection, 'insert');
+    spyOnStub(scenarioCollection, 'removeAtIndex');
+    spyOnStub(scenarioCollection, 'indexOf');
     spyOnStub(scenarioCollection, 'getLast').andReturn(lastScenario);
+    spyOnStub(scenarioCollection, 'syncForEach');
     spyOnStub(scenarioCollection, 'forEach');
     spyOn(Cucumber.Type, 'Collection').andReturn(scenarioCollection);
     keyword     = createSpy("keyword");
@@ -57,13 +61,13 @@ describe("Cucumber.Ast.Feature", function () {
     });
   });
 
-  describe("getBackground() [addBackground()]", function () {
+  describe("getBackground() [setBackground()]", function () {
     describe("when a background was previously added", function () {
       var background;
 
       beforeEach(function () {
         background = createSpy("background");
-        feature.addBackground(background);
+        feature.setBackground(background);
       });
 
       it("returns the background", function () {
@@ -79,29 +83,24 @@ describe("Cucumber.Ast.Feature", function () {
   });
 
   describe("hasBackground()", function () {
-    it("returns true when a background was added", function () {
+    it("returns true when a background was set", function () {
       var background = createSpy("background");
-      feature.addBackground(background);
+      feature.setBackground(background);
       expect(feature.hasBackground()).toBeTruthy();
     });
 
-    it("returns false when no background was added", function () {
+    it("returns false when no background was set", function () {
       expect(feature.hasBackground()).toBeFalsy();
     });
   });
 
-  describe("addScenario()", function () {
+  describe("addFeatureElement()", function () {
     var scenario, background;
 
     beforeEach(function () {
-      scenario  = createSpyWithStubs("scenario AST element", {setBackground: null});
+      scenario   = createSpyWithStubs("scenario AST element", {setBackground: null});
       background = createSpy("scenario background");
       spyOn(feature, 'getBackground').andReturn(background);
-    });
-
-    it("gets the background", function () {
-      feature.addFeatureElement(scenario);
-      expect(feature.getBackground).toHaveBeenCalled();
     });
 
     it("sets the background on the scenario", function () {
@@ -112,6 +111,122 @@ describe("Cucumber.Ast.Feature", function () {
     it("adds the scenario to the scenarios (collection)", function () {
       feature.addFeatureElement(scenario);
       expect(scenarioCollection.add).toHaveBeenCalledWith(scenario);
+    });
+  });
+
+  describe("insertFeatureElement()", function () {
+    var scenario, background;
+
+    beforeEach(function () {
+      index      = createSpy("index");
+      scenario   = createSpyWithStubs("scenario AST element", {setBackground: null});
+      background = createSpy("scenario background");
+      spyOn(feature, 'getBackground').andReturn(background);
+    });
+
+    it("sets the background on the scenario", function () {
+      feature.insertFeatureElement(index, scenario);
+      expect(scenario.setBackground).toHaveBeenCalledWith(background);
+    });
+
+    it("adds the scenario to the scenarios (collection)", function () {
+      feature.insertFeatureElement(index, scenario);
+      expect(scenarioCollection.insert).toHaveBeenCalledWith(index, scenario);
+    });
+  });
+
+  describe("convertScenarioOutlinesToScenarios()", function() {
+    it ("iterates over the feature elements", function () {
+      feature.convertScenarioOutlinesToScenarios();
+      expect(scenarioCollection.syncForEach).toHaveBeenCalled();
+      expect(scenarioCollection.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+    });
+
+    describe("for each feature element", function () {
+      var userFunction, featureElement;
+
+      beforeEach(function () {
+        feature.convertScenarioOutlinesToScenarios();
+        userFunction   = scenarioCollection.syncForEach.mostRecentCall.args[0];
+        featureElement = createSpyWithStubs("feature element", {isScenarioOutline: null});
+        spyOn(feature, 'convertScenarioOutlineToScenarios');
+      });
+
+      describe("when the feature element is a scenario outline", function() {
+        beforeEach(function() {
+          featureElement.isScenarioOutline.andReturn(true);
+          userFunction(featureElement);
+        });
+
+        it("converts the scenario outline into scenarios", function() {
+          expect(feature.convertScenarioOutlineToScenarios).toHaveBeenCalledWith(featureElement);
+        });
+      });
+
+      describe("when the feature element is not a scenario outline", function() {
+        beforeEach(function() {
+          featureElement.isScenarioOutline.andReturn(false);
+          userFunction(featureElement);
+        });
+
+        it("converts the scenario outline into scenarios", function() {
+          expect(feature.convertScenarioOutlineToScenarios).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
+  describe("convertScenarioOutlineToScenarios()", function() {
+    var scenarios, scenarioOutlineTags, scenarioOutline, scenarioOutlineIndex;
+
+    beforeEach(function() {
+      scenarios            = createSpyWithStubs("scenarios", {syncForEach: null});
+      scenarioOutlineTags  = createSpy("tags");
+      scenarioOutline      = createSpyWithStubs("scenario outline", {buildScenarios: scenarios, getTags: scenarioOutlineTags});
+      scenarioOutlineIndex = 1;
+      scenarioCollection.indexOf.andReturn(scenarioOutlineIndex);
+      feature.convertScenarioOutlineToScenarios(scenarioOutline);
+    });
+
+    it ("builds the scenarios for the scenario outline", function () {
+      expect(scenarioOutline.buildScenarios).toHaveBeenCalled();
+    });
+
+    it ("gets the index of the scenario outline in the scenario collection", function () {
+      expect(scenarioCollection.indexOf).toHaveBeenCalledWith(scenarioOutline);
+    });
+
+    it("removes the scenario outline from the scenario collection", function() {
+      expect(scenarioCollection.removeAtIndex).toHaveBeenCalledWith(scenarioOutlineIndex);
+    });
+
+    it("gets the tags from the scenario outline just once", function() {
+      expect(scenarioOutline.getTags).toHaveBeenCalledNTimes(1);
+    });
+
+    it ("iterates over the scenarios", function () {
+      expect(scenarios.syncForEach).toHaveBeenCalled();
+      expect(scenarios.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+    });
+
+    describe("for each scenario", function () {
+      var userFunction, scenario;
+
+      beforeEach(function () {
+        userFunction   = scenarios.syncForEach.mostRecentCall.args[0];
+        scenario       = createSpyWithStubs("scenario", {addTags: null});
+        index          = 2;
+        spyOn(feature, 'insertFeatureElement');
+        userFunction(scenario, index);
+      });
+
+      it("adds the scenario outline's tags to the scenario", function() {
+        expect(scenario.addTags).toHaveBeenCalledWith(scenarioOutlineTags);
+      });
+
+      it("inserts the scenario into the scenario collection", function() {
+        expect(feature.insertFeatureElement).toHaveBeenCalledWith(scenarioOutlineIndex + index, scenario);
+      });
     });
   });
 
