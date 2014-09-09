@@ -1,12 +1,14 @@
+var http = require('http');
 var connect = require('connect');
-var server  = connect.createServer();
-var port    = process.env.PORT || 9797;
+var serveStatic = require('serve-static');
+
 var Bundler = require('../bundler');
-
-server.use(connect.static(__dirname));
-
 var bundler = Bundler();
-server.use(bundler);
-server.listen(port);
 
+var port    = process.env.PORT || 9797;
+var app = connect();
+app.use(serveStatic(__dirname));
+app.use(bundler);
+
+http.createServer(app).listen(port);
 console.log('Accepting connections on port ' + port + '...');
