@@ -66,7 +66,7 @@
   },
   "dependencies": {
     "browserify": "1.15.5",
-    "coffee-script": "1.7.1",
+    "coffee-script": "1.8.0",
     "cucumber-html": "0.2.3",
     "gherkin": "2.12.2",
     "nopt": "3.0.1",
