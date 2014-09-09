@@ -71,7 +71,7 @@
     "gherkin": "2.12.2",
     "nopt": "3.0.1",
     "pogo": "0.9.4",
-    "underscore": "1.5.2",
+    "underscore": "1.7.0",
     "underscore.string": "2.3.3",
     "walkdir": "0.0.7"
   },
