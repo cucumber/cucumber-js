@@ -2,9 +2,16 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.3...master)
 
 **TBD**
+
+### [v0.4.3](https://github.com/cucumber/cucumber-js/compare/v0.4.2...v0.4.3)
+
+#### Fixes
+
+* Scenario outline fixes (Simon Dean)
+* Correct the embeddings JSON to match other ports of Cucumber (Simon Dean)
 
 ### [v0.4.2](https://github.com/cucumber/cucumber-js/compare/v0.4.1...v0.4.2)
 
