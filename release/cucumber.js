@@ -340,7 +340,11 @@ process.nextTick = (function () {
     ;
 
     if (canSetImmediate) {
-        return window.setImmediate;
+        // Wrap setImmediate in an anonymous function that will call setImmediate with an explicit context to mitigate
+        // an IE-specific issue with function pointers.
+        return function (fn, context) {
+            setImmediate.call(context, fn);
+        };
     }
 
     if (canPost) {
@@ -4365,9 +4369,10 @@ require.define("/cucumber/support_code/library",function(require,module,exports,
 
     instantiateNewWorld: function instantiateNewWorld(callback) {
       var world = new worldConstructor(function (explicitWorld) {
+        // pass a context to nextTick for use by the IE-specific nextTick handler
         process.nextTick(function () { // release the constructor
           callback(explicitWorld || world);
-        });
+        }, explicitWorld || world);
       });
     }
   };
@@ -5771,7 +5776,7 @@ module.exports = DataTable;
 require.define("/cucumber/ast/data_table/row",function(require,module,exports,__dirname,__filename,process){var Row = function(cells, uri, line) {
   var Cucumber = require('../../../cucumber');
 
-  self = {
+  var self = {
     raw: function raw() {
       return cells;
     },
