@@ -152,11 +152,13 @@ describe("Cucumber.Type.Collection", function() {
   describe("syncForEach()", function() {
     var userFunction = createSpy("userFunction");
 
-    it("calls foreach on the array", function() {
-      spyOn(itemArray, 'forEach');
+    it("calls foreach on a copy of the array", function() {
+      var itemsCopy = createSpy("items copy");
+      spyOn(itemArray, 'slice').andReturn(itemsCopy);
+      spyOnStub(itemsCopy, 'forEach');
       collection.syncForEach(userFunction);
-      expect(itemArray.forEach).toHaveBeenCalledWith(userFunction);
+      expect(itemArray.slice).toHaveBeenCalledWith(0);
+      expect(itemsCopy.forEach).toHaveBeenCalledWith(userFunction);
     });
   });
 });
-
