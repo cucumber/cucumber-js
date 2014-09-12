@@ -1,5 +1,6 @@
 rvm: "1.9.2"
 before_install:
+  - npm install -g npm
   - ruby --version
   - gem --version
   - rvm --version
