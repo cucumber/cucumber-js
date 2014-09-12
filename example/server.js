@@ -8,7 +8,10 @@ var bundler = Bundler();
 var port    = process.env.PORT || 9797;
 var app = connect();
 app.use(serveStatic(__dirname));
-app.use(bundler);
+app.use(bundler.middleware);
 
-http.createServer(app).listen(port);
-console.log('Accepting connections on port ' + port + '...');
+console.log('Bundling Cucumber.js...');
+bundler.bundle(function (err, source) {
+  http.createServer(app).listen(port);
+  console.log('Accepting connections on port ' + port + '...');
+});
