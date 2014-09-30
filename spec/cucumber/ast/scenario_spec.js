@@ -55,6 +55,12 @@ describe("Cucumber.Ast.Scenario", function() {
     });
   });
 
+  describe("isScenarioOutline()", function() {
+    it("returns false", function() {
+      expect(scenario.isScenarioOutline()).toBeFalsy();
+    });
+  });
+
   describe("getBackground() [setBackground()]", function() {
     it("returns the background that was set as such", function() {
       var background = createSpy("background");

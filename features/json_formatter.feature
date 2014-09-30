@@ -116,7 +116,6 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-
     When I run `cucumber.js -f json`
     Then it outputs this json:
       """
@@ -179,7 +178,6 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-
     When I run `cucumber.js -f json`
     Then it outputs this json:
       """
@@ -323,7 +321,7 @@ Feature: JSON Formatter
       ]
       """
 
-  Scenario: output JSON for a scenario with a passing step follwed by one that is pending and one that fails
+  Scenario: output JSON for a scenario with a passing step followed by one that is pending and one that fails
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -397,10 +395,10 @@ Feature: JSON Formatter
       ]
       """
 
-  Scenario: output JSON for a scenario with a pending step follwed by one that passes and one that fails
+  Scenario: output JSON for a scenario with a pending step followed by one that passes and one that fails
     Given a file named "features/a.feature" with:
       """
-     Feature: some feature
+      Feature: some feature
 
       Scenario: I've declared one step which is passing, one pending and one failing.
           Given This step is pending
@@ -550,17 +548,18 @@ Feature: JSON Formatter
         }
       ]
       """
+
   Scenario: output JSON for multiple features
     Given a file named "features/a.feature" with:
       """
-     Feature: feature a
+      Feature: feature a
 
       Scenario: This is the first feature
           Given This step is passing
       """
     And a file named "features/b.feature" with:
       """
-     Feature: feature b
+      Feature: feature b
 
       Scenario: This is the second feature
           Given This step is passing
@@ -676,10 +675,11 @@ Feature: JSON Formatter
         }
       ]
       """
+
   Scenario: output JSON for multiple features each with multiple scenarios
     Given a file named "features/a.feature" with:
       """
-     Feature: feature a
+      Feature: feature a
 
       Scenario: This is the feature a scenario one
           Given This step is passing
@@ -692,7 +692,7 @@ Feature: JSON Formatter
       """
     And a file named "features/b.feature" with:
       """
-     Feature: feature b
+      Feature: feature b
 
       Scenario: This is the feature b scenario one
           Given This step is passing
@@ -705,7 +705,7 @@ Feature: JSON Formatter
       """
     And a file named "features/c.feature" with:
       """
-     Feature: feature c
+      Feature: feature c
 
       Scenario: This is the feature c scenario one
           Given This step is passing
@@ -947,7 +947,7 @@ Feature: JSON Formatter
       Feature: some feature
 
       Background:
-          Given This applies to all scenarios
+        Given This applies to all scenarios
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
@@ -1106,13 +1106,13 @@ Feature: JSON Formatter
   Scenario: output JSON for background step with a DocString
     Given a file named "features/a.feature" with:
       """
-            Feature: some feature
+      Feature: some feature
 
-            Background: Background with DocString
-              Given we have this DocString:
-              \"\"\"
-              This is a DocString
-              \"\"\"
+      Background: Background with DocString
+        Given we have this DocString:
+        \"\"\"
+        This is a DocString
+        \"\"\"
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
@@ -1123,39 +1123,39 @@ Feature: JSON Formatter
       """
     When I run `cucumber.js -f json`
     Then it outputs this json:
-    """
-    [
-      {
-        "id": "some-feature",
-        "name": "some feature",
-        "description": "",
-        "line": 1,
-        "keyword": "Feature",
-        "uri": "<current-directory>/features/a.feature",
-        "elements": [
-          {
-            "name": "Background with DocString",
-            "keyword": "Background",
-            "description": "",
-            "type": "background",
-            "line": 3,
-            "steps": [
-              {
-                "name": "we have this DocString:",
-                "line": 4,
-                "keyword": "Given ",
-                "doc_string": {
-                  "value": "This is a DocString",
-                  "line": 5,
-                  "content_type": ""
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature",
+          "elements": [
+            {
+              "name": "Background with DocString",
+              "keyword": "Background",
+              "description": "",
+              "type": "background",
+              "line": 3,
+              "steps": [
+                {
+                  "name": "we have this DocString:",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "doc_string": {
+                    "value": "This is a DocString",
+                    "line": 5,
+                    "content_type": ""
+                  }
                 }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-    """
+              ]
+            }
+          ]
+        }
+      ]
+      """
 
   Scenario: output JSON for a feature with tags
     Given a file named "features/a.feature" with:
@@ -1407,6 +1407,464 @@ Feature: JSON Formatter
                     { "cells": ["1", "2", "3"] },
                     { "cells": ["!", "~", "@"] }
                   ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
+  Scenario: output JSON for a feature with one scenario outline with no examples tables
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario Outline: I've declared one step which passes
+          Given This <instance> step is passing
+      """
+    When I run `cucumber.js -f json`
+    Then it outputs this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature"
+        }
+      ]
+      """
+
+  Scenario: output JSON for a feature with one scenario outline with an examples table with no rows
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario Outline: I've declared one step which passes
+          Given This <instance> step is passing
+
+        Examples:
+          | instance |
+      """
+    When I run `cucumber.js -f json`
+    Then it outputs this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature"
+        }
+      ]
+      """
+
+  Scenario: output JSON for a feature with one scenario outline with an examples table with two rows
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario Outline: I've declared one step which passes
+          Given This <instance> step is passing
+
+        Examples:
+          | instance |
+          | first    |
+          | second   |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This (first|second) step is passing$/, function(instance, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it outputs this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature",
+          "elements": [
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This first step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                }
+              ]
+            },
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This second step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
+  Scenario: output JSON for a feature with one scenario outline with an examples table with two rows and a background
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Background:
+          Given This applies to all scenarios
+
+        Scenario Outline: I've declared one step which passes
+          Given This <instance> step is passing
+
+        Examples:
+          | instance |
+          | first    |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This applies to all scenarios$/, function(callback) { callback(); });
+        this.Given(/^This (first|second) step is passing$/, function(instance, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it outputs this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature",
+          "elements": [
+            {
+              "name": "",
+              "keyword": "Background",
+              "description": "",
+              "type": "background",
+              "line": 2,
+              "steps": [
+                {
+                  "name": "This applies to all scenarios",
+                  "line": 3,
+                  "keyword": "Given "
+                }
+              ]
+            },
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 5,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This applies to all scenarios",
+                  "line": 3,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "name": "This first step is passing",
+                  "line": 6,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
+  Scenario: output JSON for a feature with one scenario outline with two examples tables
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario Outline: I've declared one step which passes
+          Given This <instance> step is passing
+
+        Examples:
+          | instance |
+          | first    |
+
+        Examples:
+          | instance |
+          | second   |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This (first|second) step is passing$/, function(instance, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f json`
+    Then it outputs this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature",
+          "elements": [
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This first step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                }
+              ]
+            },
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "name": "This second step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      """
+
+  Scenario: output JSON for a feature with one scenario outline with an examples table with two rows and before, after and around hooks
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario Outline: I've declared one step which passes
+          Given This <instance> step is passing
+
+        Examples:
+          | instance |
+          | first    |
+          | second   |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This (first|second) step is passing$/, function(instance, callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    And a file named "features/support/hooks.js" with:
+      """
+      var hooks = function () {
+        this.Before(function(callback) {
+          callback();
+        });
+
+        this.After(function(callback) {
+          callback();
+        });
+
+        this.Around(function(runScenario) {
+          runScenario(function(callback) {
+            callback();
+          });
+        });
+      };
+
+      module.exports = hooks;
+      """
+    When I run `cucumber.js -f json`
+    Then it outputs this json:
+      """
+      [
+        {
+          "id": "some-feature",
+          "name": "some feature",
+          "description": "",
+          "line": 1,
+          "keyword": "Feature",
+          "uri": "<current-directory>/features/a.feature",
+          "elements": [
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "keyword": "Around ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "keyword": "Before ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "name": "This first step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "keyword": "After ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "keyword": "Around ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                }
+              ]
+            },
+            {
+              "name": "I've declared one step which passes",
+              "id": "some-feature;i've-declared-one-step-which-passes",
+              "line": 3,
+              "keyword": "Scenario",
+              "description": "",
+              "type": "scenario",
+              "steps": [
+                {
+                  "keyword": "Around ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "keyword": "Before ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "name": "This second step is passing",
+                  "line": 4,
+                  "keyword": "Given ",
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "keyword": "After ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
+                },
+                {
+                  "keyword": "Around ",
+                  "hidden": true,
+                  "result": {
+                    "duration": "<duration>",
+                    "status": "passed"
+                  },
+                  "match": {}
                 }
               ]
             }

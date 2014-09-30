@@ -7,7 +7,7 @@ Feature: Scenario Outlines and Examples
         Background:
           Given a background step
 
-        Scenario Outline: outline
+        Scenario Outline: basic outline
           When a <some> step
           Then i get <result>
         Examples:
@@ -21,7 +21,7 @@ Feature: Scenario Outlines and Examples
     And the step "i get passed" has a passing mapping
     And the step "i get skipped" has a passing mapping
     When Cucumber runs the feature
-    Then the scenario called "outline" is reported as failing
+    Then the scenario called "basic outline" is reported as failing
     And the step "a background step" passes
     And the step "a passing step" passes
     And the step "a failing step" passes
@@ -30,9 +30,9 @@ Feature: Scenario Outlines and Examples
 
   Scenario: Outline with table
     Given the following feature:
-    """
+      """
       Feature: testing scenarios
-        Scenario Outline: outline
+        Scenario Outline: outline with table
           When a table step:
             | first   | second   |
             | <first> | <second> |
@@ -49,9 +49,9 @@ Feature: Scenario Outlines and Examples
 
   Scenario: Outline with doc string
     Given the following feature:
-    """
+      """
       Feature: testing scenarios
-        Scenario Outline: outline
+        Scenario Outline: outline with doc string
           When a doc string step:
             \"\"\"
             I am doc string in <example> example
@@ -64,15 +64,37 @@ Feature: Scenario Outlines and Examples
     And the step "a doc string step:" has a passing mapping that receives a doc string
     When Cucumber runs the feature
     Then the received doc string equals the following:
-    """
-    I am doc string in first example
-    And there are some string
-    """   
-    
-    Scenario Outline: outline
-      When a <some> step
-      Then i get <result>
-    Examples:
-      | some    | result  |
-      | passing | passed  |
-      | failing | skipped |
+      """
+      I am doc string in first example
+      And there are some string
+      """
+
+  Scenario: Several outlines
+    Given the following feature:
+      """
+      Feature: testing scenarios
+        Scenario Outline: scenario outline 1
+          When step <id>
+
+        Examples:
+          | id |
+          | a  |
+          | b  |
+
+        Scenario Outline: scenario outline 2
+          When step <id>
+
+        Examples:
+          | id |
+          | c  |
+          | d  |
+      """
+    And the step "step a" has a passing mapping
+    And the step "step b" has a passing mapping
+    And the step "step c" has a passing mapping
+    And the step "step d" has a passing mapping
+    When Cucumber runs the feature
+    Then the step "step a" passes
+    And the step "step b" passes
+    And the step "step c" passes
+    And the step "step d" passes

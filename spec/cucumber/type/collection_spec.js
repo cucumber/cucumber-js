@@ -8,6 +8,8 @@ describe("Cucumber.Type.Collection", function() {
     itemArray = [1, 2, 3];
     spyOn(itemArray, 'push');
     spyOn(itemArray, 'unshift');
+    spyOn(itemArray, 'splice');
+    spyOn(itemArray, 'indexOf');
     spyOn(global, 'Array').andReturn(itemArray);
     collection = Cucumber.Type.Collection();
   });
@@ -20,15 +22,32 @@ describe("Cucumber.Type.Collection", function() {
 
   describe("add()", function() {
     it("pushes the item onto the end of the item array", function() {
-      var item = createSpy("Collection item");
+      var item = createSpy("collection item");
       collection.add(item);
       expect(itemArray.push).toHaveBeenCalledWith(item);
     });
   });
 
+  describe("insert()", function() {
+    it("inserts an item at a specific index in the item array", function() {
+      var index = createSpy("index in the collection");
+      var item = createSpy("collection item");
+      collection.insert(index, item);
+      expect(itemArray.splice).toHaveBeenCalledWith(index, 0, item);
+    });
+  });
+
+  describe("removeAtIndex()", function() {
+    it("removes an item at a specific index in the item array", function() {
+      var index = createSpy("index in the collection");
+      collection.removeAtIndex(index);
+      expect(itemArray.splice).toHaveBeenCalledWith(index, 1);
+    });
+  });
+
   describe("unshift()", function() {
     it("unshifts the item onto the start of the item array", function() {
-      var item = createSpy("Collection item");
+      var item = createSpy("collection item");
       collection.unshift(item);
       expect(itemArray.unshift).toHaveBeenCalledWith(item);
     });
@@ -36,10 +55,29 @@ describe("Cucumber.Type.Collection", function() {
 
   describe("clear()", function() {
     it("empties the item array", function() {
-      var item = createSpy("Collection item");
+      var item = createSpy("collection item");
       expect(itemArray.length).toEqual(3);
       collection.clear();
       expect(itemArray.length).toEqual(0);
+    });
+  });
+
+  describe("indexOf()", function() {
+    it("gets the index of an item in the item array", function() {
+      var item  = createSpy("collection item");
+      var index = createSpy("index in the collection");
+      itemArray.indexOf.andReturn(index);
+      var actualIndex = collection.indexOf(item);
+      expect(itemArray.indexOf).toHaveBeenCalledWith(item);
+      expect(actualIndex).toBe(index);
+    });
+  });
+
+  describe("getAtIndex()", function() {
+    it("gets the item at a specific index in the item array", function() {
+      expect(collection.getAtIndex(0)).toEqual(1);
+      expect(collection.getAtIndex(1)).toEqual(2);
+      expect(collection.getAtIndex(2)).toEqual(3);
     });
   });
 
@@ -114,11 +152,13 @@ describe("Cucumber.Type.Collection", function() {
   describe("syncForEach()", function() {
     var userFunction = createSpy("userFunction");
 
-    it("calls foreach on the array", function() {
-      spyOn(itemArray, 'forEach');
+    it("calls foreach on a copy of the array", function() {
+      var itemsCopy = createSpy("items copy");
+      spyOn(itemArray, 'slice').andReturn(itemsCopy);
+      spyOnStub(itemsCopy, 'forEach');
       collection.syncForEach(userFunction);
-      expect(itemArray.forEach).toHaveBeenCalledWith(userFunction);
+      expect(itemArray.slice).toHaveBeenCalledWith(0);
+      expect(itemsCopy.forEach).toHaveBeenCalledWith(userFunction);
     });
   });
 });
-
