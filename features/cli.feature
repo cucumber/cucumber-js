@@ -214,3 +214,102 @@ Scenario: run a single failing feature
 
       """
 	And it should exit with code "1"
+
+
+  Scenario: run a single feature without step definitions with the strict mode flag
+    Given a file named "features/a.feature" with:
+    """
+      Feature: some feature
+        Scenario:
+          When a step is undefined
+      """
+    When I run `cucumber.js features/a.feature --strict`
+    Then it should fail with:
+      """
+      U
+
+      1 scenario (1 undefined)
+      1 step (1 undefined)
+
+      You can implement step definitions for undefined steps with these snippets:
+
+      this.When(/^a step is undefined$/, function (callback) {
+        // Write code here that turns the phrase above into concrete actions
+        callback.pending();
+      });
+
+      """
+
+
+  Scenario: run a single feature with a pending step definition with the strict mode flag
+    Given a file named "features/a.feature" with:
+    """
+      Feature: some feature
+        Scenario:
+          When a step is pending
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+    """
+      var cucumberSteps = function() {
+        this.When(/^a step is pending$/, function (callback) { callback.pending(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js features/a.feature --strict`
+    Then it should fail with:
+      """
+      P
+
+      1 scenario (1 pending)
+      1 step (1 pending)
+
+      """
+
+  Scenario: run a single feature without step definitions with the strict mode flag (short flag)
+    Given a file named "features/a.feature" with:
+      """
+        Feature: some feature
+          Scenario:
+            When a step is undefined
+      """
+    When I run `cucumber.js features/a.feature -S`
+    Then it should fail with:
+      """
+      U
+
+      1 scenario (1 undefined)
+      1 step (1 undefined)
+
+      You can implement step definitions for undefined steps with these snippets:
+
+      this.When(/^a step is undefined$/, function (callback) {
+        // Write code here that turns the phrase above into concrete actions
+        callback.pending();
+      });
+
+      """
+
+
+  Scenario: run a single feature with a pending step definition with the strict mode flag (short flag)
+    Given a file named "features/a.feature" with:
+      """
+        Feature: some feature
+          Scenario:
+            When a step is pending
+        """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.When(/^a step is pending$/, function (callback) { callback.pending(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js features/a.feature -S`
+    Then it should fail with:
+      """
+      P
+
+      1 scenario (1 pending)
+      1 step (1 pending)
+
+      """
