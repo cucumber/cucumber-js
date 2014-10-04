@@ -164,6 +164,33 @@ describe("Cucumber.Api.Scenario", function() {
               expect(callback).toHaveBeenCalled();
             });
           });
+
+          describe("when the stream finishes providing data and the data contains non-ASCII characters", function() {
+            var data1, data2, text;
+
+            beforeEach(function() {
+              data1 = [];
+              data2 = [];
+
+              for (var i = 0; i < 256; i++) {
+                data1.push(i);
+                data2.push(i);
+              }
+
+              dataListener(new Buffer(data1));
+              dataListener(new Buffer(data2));
+              text = String.fromCharCode.apply(null, [].concat(data1, data2));
+              endListener();
+            });
+
+            it("instructs the ast tree walker to create an attachment containing the contents of the stream", function() {
+              expect(astTreeWalker.attach).toHaveBeenCalledWith(text, mimeType);
+            });
+
+            it("calls back", function() {
+              expect(callback).toHaveBeenCalled();
+            });
+          });
         })
       });
     }
@@ -203,6 +230,27 @@ describe("Cucumber.Api.Scenario", function() {
           expect(callback).not.toHaveBeenCalled();
         });
       });
+
+     describe("when the data contains non-ASCII characters", function() {
+       var data, buffer, text;
+
+       beforeEach(function() {
+         data = [];
+
+         for (var i = 0; i < 256; i++) {
+           data.push(i);
+         }
+
+         buffer = new Buffer(data);
+         text = String.fromCharCode.apply(null, data);
+         scenario.attach(buffer, mimeType, callback);
+       });
+
+       it("instructs the ast tree walker to create an attachment containing the contents of the buffer", function() {
+         scenario.attach(buffer, mimeType);
+         expect(astTreeWalker.attach).toHaveBeenCalledWith(text, mimeType);
+       });
+     });
     });
 
     describe("when the data is a string", function() {
