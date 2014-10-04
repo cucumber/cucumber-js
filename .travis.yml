@@ -1,6 +1,7 @@
 rvm: "1.9.2"
 before_install:
-  - npm install -g npm
+  - '[ "${TRAVIS_NODE_VERSION}" != "0.8" ] || npm install -g npm@1.4.28'
+  - npm install -g npm@latest
   - ruby --version
   - gem --version
   - rvm --version
