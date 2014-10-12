@@ -174,6 +174,19 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         expect(stepDefinition.buildInvocationParameters.mostRecentCall.args[2]).toBe(codeExecutionCallback);
       });
 
+      describe("when called multiple times for one step", function () {
+        beforeEach(function () {
+          spyOn(codeExecutionCallback, 'fail');          
+        });
+
+        it("failes the step", function () {
+          step.getName = function () { return '';};
+          codeExecutionCallback();
+          codeExecutionCallback();
+          expect(codeExecutionCallback.fail).toHaveBeenCalled();
+        });
+      });
+
       describe("when called without an error", function () {
         beforeEach(function () {
           timestamp = 1;
