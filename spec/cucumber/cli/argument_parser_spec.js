@@ -69,6 +69,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
     });
 
+    it("defines a --error_formatter option to specify the format of errors", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.ERROR_FORMATTER_OPTION_NAME]).toEqual(path);
+    });
+
     it("defines a --help flag", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
@@ -302,6 +307,26 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(argumentParser.getFormat()).toBe(format);
     });
   });
+
+  describe("getErrorFormatter()", function () {
+    var eformat;
+
+    beforeEach(function () {
+      eformat = createSpy("error_formatter")
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(eformat)
+    })
+
+    it("should return full with no arguments", function () {
+      argumentParser.getErrorFormatter();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.ERROR_FORMATTER_OPTION_NAME, 'full');
+    });
+
+    it("returns the format", function () {
+      expect(argumentParser.getFormat()).toBe(eformat);
+    });
+  });
+
+
 
   describe("isHelpRequested()", function () {
     var isHelpRequested;

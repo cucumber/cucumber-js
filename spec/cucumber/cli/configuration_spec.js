@@ -1,9 +1,11 @@
 require('../../support/spec_helper');
 require('../../support/configurations_shared_examples.js');
+fs = require('fs')
+path = require('path')
+var Cucumber = requireLib('cucumber');
+
 
 describe("Cucumber.Cli.Configuration", function () {
-  var Cucumber = requireLib('cucumber');
-
   var argv, configuration;
   var argumentParser;
   var context = {};
