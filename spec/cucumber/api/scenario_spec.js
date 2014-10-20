@@ -135,7 +135,7 @@ describe("Cucumber.Api.Scenario", function() {
             spyOnStub(astTreeWalker, "attach");
 
             scenario.attach(stream, mimeType, callback);
-          })
+          });
 
           it("does not call back straight away", function() {
             expect(callback).not.toHaveBeenCalled();
@@ -200,7 +200,7 @@ describe("Cucumber.Api.Scenario", function() {
 
       beforeEach(function() {
         buffer = new Buffer("data");
-      })
+      });
 
       it("throws an exception when the mimeType argument is missing", function() {
         expect(function() { scenario.attach(buffer); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a mimeType"));
@@ -231,26 +231,46 @@ describe("Cucumber.Api.Scenario", function() {
         });
       });
 
-     describe("when the data contains non-ASCII characters", function() {
-       var data, buffer, text;
+      describe("when the buffer contains an array of bytes", function() {
+        var data, text, buffer;
 
-       beforeEach(function() {
-         data = [];
+        beforeEach(function() {
+          data = [];
 
-         for (var i = 0; i < 256; i++) {
-           data.push(i);
-         }
+          for (var i = 0; i < 256; i++) {
+            data.push(i);
+          }
 
-         buffer = new Buffer(data);
-         text = String.fromCharCode.apply(null, data);
-         scenario.attach(buffer, mimeType, callback);
-       });
+          text = String.fromCharCode.apply(null, data);
+          buffer = new Buffer(data);
+        });
 
-       it("instructs the ast tree walker to create an attachment containing the contents of the buffer", function() {
-         scenario.attach(buffer, mimeType);
-         expect(astTreeWalker.attach).toHaveBeenCalledWith(text, mimeType);
-       });
-     });
+        it("instructs the ast tree walker to create an attachment containing the contents of the buffer", function() {
+          scenario.attach(buffer, mimeType);
+          expect(astTreeWalker.attach).toHaveBeenCalledWith(text, mimeType);
+        });
+      });
+
+      describe("when the buffer contains a UTF-8 encoded string", function() {
+        var data, text, buffer, utf8EncodedText;
+
+        beforeEach(function() {
+          data = [];
+
+          for (var i = 0; i < 512; i++) {
+            data.push(i);
+          }
+
+          text = String.fromCharCode.apply(null, data);
+          buffer = new Buffer(text, 'utf8');
+          utf8EncodedText = new Buffer(text, 'utf8').toString('binary');
+        });
+
+        it("instructs the ast tree walker to create an attachment containing the contents of the buffer", function() {
+          scenario.attach(buffer, mimeType);
+          expect(astTreeWalker.attach).toHaveBeenCalledWith(utf8EncodedText, mimeType);
+        });
+      });
     });
 
     describe("when the data is a string", function() {
@@ -268,6 +288,31 @@ describe("Cucumber.Api.Scenario", function() {
       it("defaults to the plain text mime type when the mimeType argument is missing", function() {
         scenario.attach(data);
         expect(astTreeWalker.attach).toHaveBeenCalledWith(data, "text/plain");
+      });
+
+      describe("when the string is a UTF-8 encoded string", function() {
+        var data, text, utf8EncodedText;
+
+        beforeEach(function() {
+          data = [];
+
+          for (var i = 0; i < 512; i++) {
+            data.push(i);
+          }
+
+          text = String.fromCharCode.apply(null, data);
+          utf8EncodedText = new Buffer(text, 'utf8').toString('binary');
+        });
+
+        it("instructs the ast tree walker to create an attachment containing the string", function() {
+          scenario.attach(text, mimeType);
+          expect(astTreeWalker.attach).toHaveBeenCalledWith(utf8EncodedText, mimeType);
+        });
+
+        it("defaults to the plain text mime type when the mimeType argument is missing", function() {
+          scenario.attach(text);
+          expect(astTreeWalker.attach).toHaveBeenCalledWith(utf8EncodedText, "text/plain");
+        });
       });
     });
   });
