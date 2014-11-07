@@ -105,7 +105,7 @@ This a reminder of the steps maintainers have to follow to release a new version
 * Bump version in `lib/cucumber.js`
 * Bump version in `package.json`
 * Bump version in `bower.json`
-* Compile the bundle with `node scripts/compile-release.js`
+* Compile the bundle with `node scripts/release.js`
 * Add new contributors to `package.json`, if any
 * Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)
 * Tag commit as "v0.1.2" with short description of main changes

@@ -63,11 +63,17 @@ describe("Cucumber.Ast.Examples", function() {
   });
 
   describe("attachDataTableRow [getDataTable()]", function(){
+    var rawRow, row;
+
     beforeEach(function(){
-      examples.attachDataTableRow("row");
+      rawRow = createSpy("raw row");
+      row =    createSpyWithStubs("row", {raw: rawRow})
+      examples.attachDataTableRow(row);
     });
     it("should have an attached data table with a single row", function(){
-      expect(examples.getDataTable().getRows().length()).toBe(1);
+      rawDataTable = examples.getDataTable().raw();
+      expect(rawDataTable.length).toBe(1);
+      expect(rawDataTable[0]).toBe(rawRow);
     })
   })
 

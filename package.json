@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.2",
+  "version": "0.4.4",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -47,7 +47,8 @@
     "Eddie Loeffen <eddieloeffen@gmail.com>",
     "Stanley Shyiko <stanley.shyiko@gmail.com>",
     "Artur Kania <kaniartur@gmail.com>",
-    "Sam Saccone <sam@samx.it>"
+    "Sam Saccone <sam@samx.it>",
+    "Craig Morris <craig.michael.morris@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -62,24 +63,27 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": "0.6 || 0.8 || 0.10 || 0.11"
+    "node": "0.8 || 0.10 || 0.11"
   },
   "dependencies": {
-    "gherkin": "2.12.2",
-    "browserify": "1.15.5",
-    "nopt": "2.1.2",
-    "underscore": "1.5.2",
-    "underscore.string" : "2.3.3",
+    "browserify": "5.11.1",
+    "coffee-script": "1.8.0",
     "cucumber-html": "0.2.3",
-    "walkdir": "0.0.7",
-    "coffee-script": "1.7.1",
-    "pogo": "0.5.1"
+    "gherkin": "2.12.2",
+    "nopt": "3.0.1",
+    "pogo": "0.9.4",
+    "underscore": "1.7.0",
+    "underscore.string": "2.3.3",
+    "walkdir": "0.0.7"
   },
   "devDependencies": {
-    "connect": "2.13.0",
-    "jasmine-node": "1.11.0",
+    "connect": "3.2.0",
+    "jasmine-node": "1.14.5",
     "mkdirp": "0.3.5",
-    "rimraf": "2.2.2"
+    "rimraf": "2.2.8",
+    "serve-static": "1.6.1",
+    "through": "2.3.4",
+    "uglifyify": "2.5.0"
   },
   "scripts": {
     "test": "./bin/cucumber.js && jasmine-node spec"

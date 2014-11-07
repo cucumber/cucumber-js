@@ -1,5 +1,7 @@
 rvm: "1.9.2"
 before_install:
+  - '[ "${TRAVIS_NODE_VERSION}" != "0.8" ] || npm install -g npm@1.4.28'
+  - npm install -g npm@latest
   - ruby --version
   - gem --version
   - rvm --version
@@ -13,7 +15,6 @@ node_js:
   - "0.11"
   - "0.10"
   - "0.8"
-  - "0.6"
 
 matrix:
   allow_failures:
