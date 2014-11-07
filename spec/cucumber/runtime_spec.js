@@ -28,15 +28,17 @@ describe("Cucumber.Runtime", function() {
   });
 
   describe("start()", function() {
-    var features, supportCodeLibrary, callback, astTreeWalker;
+    var features, supportCodeLibrary, callback, astTreeWalker, stackFormat;
 
     beforeEach(function() {
       features           = createSpy("features (AST)");
       supportCodeLibrary = createSpy("support code library");
       astTreeWalker      = createSpyWithStubs("AST tree walker", {walk: null});
       callback           = createSpy("callback");
+      stackFormat        = createSpy("stack format");
       spyOn(runtime, 'getFeatures').andReturn(features);
       spyOn(runtime, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
+      spyOn(runtime, 'getStackSettings').andReturn(stackFormat);
       spyOn(Cucumber.Runtime, 'AstTreeWalker').andReturn(astTreeWalker);
     });
 
@@ -55,6 +57,11 @@ describe("Cucumber.Runtime", function() {
     it("gets the features", function() {
       runtime.start(callback);
       expect(runtime.getFeatures).toHaveBeenCalled();
+    });
+
+    it("reads the stack trace setting", function() {
+      runtime.start(callback);
+      expect(runtime.getStackSettings).toHaveBeenCalled();
     });
 
     it("gets the support code library", function() {
