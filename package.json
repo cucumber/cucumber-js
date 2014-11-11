@@ -1,6 +1,6 @@
 {
-  "name": "cucumber",
-  "description": "The official JavaScript implementation of Cucumber.",
+  "name": "cucumber-sigma",
+  "description": "An unofficial fork of the official JavaScript implementation of Cucumber.",
   "keywords": [
     "testing",
     "bdd",
@@ -9,7 +9,7 @@
     "tests"
   ],
   "version": "0.4.4",
-  "homepage": "http://github.com/cucumber/cucumber-js",
+  "homepage": "http://github.com/i-e-b/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
     "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
@@ -48,15 +48,16 @@
     "Stanley Shyiko <stanley.shyiko@gmail.com>",
     "Artur Kania <kaniartur@gmail.com>",
     "Sam Saccone <sam@samx.it>",
-    "Craig Morris <craig.michael.morris@gmail.com>"
+    "Craig Morris <craig.michael.morris@gmail.com>",
+    "Iain Ballard",
+    "Andrew Benjamin"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/cucumber/cucumber-js.git"
+    "url": "git://github.com/i-e-b/cucumber-js.git"
   },
   "bugs": {
-    "email": "cukes@googlegroups.com",
-    "url": "http://github.com/cucumber/cucumber-js/issues"
+    "url": "http://github.com/i-e-b/cucumber-js/issues"
   },
   "directories": {
     "lib": "./lib"
