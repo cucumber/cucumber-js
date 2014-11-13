@@ -2,9 +2,38 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.4...master)
 
 **TBD**
+
+### [v0.4.4](https://github.com/cucumber/cucumber-js/compare/v0.4.3...v0.4.4)
+
+#### Fixes
+
+* Allow >1 parameter in string step definitions (Craig Morris)
+* Don't skip scenario outlines (close #245) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Bump nopt (Julien Biezemans)
+* Bump coffee-script (Julien Biezemans)
+* Bump pogo (Julien Biezemans)
+* Bump underscore (Julien Biezemans)
+* Bump rimraf (Julien Biezemans)
+* Bump jasmine-node (Julien Biezemans)
+* Bump connect (Julien Biezemans)
+* Rewrite bundling system (close #186) (Julien Biezemans)
+* Rename release script (Julien Biezemans)
+* Upgrade NPM on Travis (Julien Biezemans)
+* Drop Node 0.6 support (Julien Biezemans)
+* Drop Node 0.6 support (manifest) (Julien Biezemans)
+
+### [v0.4.3](https://github.com/cucumber/cucumber-js/compare/v0.4.2...v0.4.3)
+
+#### Fixes
+
+* Scenario outline fixes (Simon Dean)
+* Correct the embeddings JSON to match other ports of Cucumber (Simon Dean)
 
 ### [v0.4.2](https://github.com/cucumber/cucumber-js/compare/v0.4.1...v0.4.2)
 

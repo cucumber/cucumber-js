@@ -74,6 +74,12 @@ proto.runAScenarioCallingMappingWithParameters = function runAScenarioCallingMap
   this.runFeature({}, callback);
 };
 
+proto.runAScenarioCallingMappingWithMultipleParameters = function runAScenarioCallingMappingWithMultipleParameters(callback) {
+  this.expectedMappingArguments = [5, "fresh cucumbers", 2, 'pickled gherkins'];
+  this.addScenario("", 'Given a mapping with ' + this.expectedMappingArguments[0] + ' ' + this.expectedMappingArguments[2] + ' "' + this.expectedMappingArguments[1] + '" "' + this.expectedMappingArguments[3] + '"');
+  this.runFeature({}, callback);
+};
+
 proto.runAScenarioCallingWorldFunction = function runAScenarioCallingWorldFunction(callback) {
   this.addScenario("", "Given a step");
   this.stepDefinitions += "Given(/^a step$/, function(callback) {\
@@ -109,6 +115,15 @@ proto.addStringBasedPatternMappingWithParameters = function addStringBasedPatter
   this.stepDefinitions += "Given('a mapping with $word_param \"$multi_word_param\"', function(p1, p2, callback) {\
   world.logCycleEvent('a string-based mapping');\
   world.actualMappingArguments = [p1, p2];\
+  callback();\
+});";
+};
+
+proto.addStringBasedPatternMappingWithMultipleParameters = function addStringBasedPatternMappingWithMultipleParameters() {
+  this.mappingName = "a string-based mapping with multiple parameters";
+  this.stepDefinitions += "Given('a mapping with $word_param_a $word_param_b \"$multi_word_param_a\" \"$multi_word_param_b\"', function(p1, p2, p3, p4, callback) {\
+  world.logCycleEvent('a string-based mapping with multiple parameters');\
+  world.actualMappingArguments = [p1, p2, p3, p4];\
   callback();\
 });";
 };
@@ -306,6 +321,16 @@ proto.assertPassedMappingWithArguments = function assertPassedMappingWithArgumen
   if (this.actualMappingArguments.length != this.expectedMappingArguments.length ||
       this.actualMappingArguments[0] != this.expectedMappingArguments[0] ||
       this.actualMappingArguments[1] != this.expectedMappingArguments[1])
+    throw(new Error("Expected arguments to be passed to mapping."));
+};
+
+proto.assertPassedMappingWithMultipleArguments = function assertPassedMappingWithMultipleArguments() {
+  this.assertPassedMapping();
+  if (this.actualMappingArguments.length != this.expectedMappingArguments.length ||
+      this.actualMappingArguments[0] != this.expectedMappingArguments[0] ||
+      this.actualMappingArguments[1] != this.expectedMappingArguments[1] ||
+      this.actualMappingArguments[2] != this.expectedMappingArguments[2] ||
+      this.actualMappingArguments[3] != this.expectedMappingArguments[3])
     throw(new Error("Expected arguments to be passed to mapping."));
 };
 

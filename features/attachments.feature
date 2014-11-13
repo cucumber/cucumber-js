@@ -50,16 +50,16 @@ Feature: Attachments
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "image/png",
-                        "data": "ZGF0YQ=="
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "image/png",
+                      "data": "ZGF0YQ=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -145,16 +145,16 @@ Feature: Attachments
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "image/png",
-                        "data": "ZGF0YQ=="
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "image/png",
+                      "data": "ZGF0YQ=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -226,16 +226,16 @@ Feature: Attachments
                   "keyword": "Around ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -334,16 +334,16 @@ Feature: Attachments
                   "keyword": "Around ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 }
               ]
             }
@@ -402,16 +402,16 @@ Feature: Attachments
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -490,16 +490,16 @@ Feature: Attachments
                   "keyword": "After ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 }
               ]
             }
@@ -572,16 +572,16 @@ Feature: Attachments
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 }
               ]
             }
