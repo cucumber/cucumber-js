@@ -161,8 +161,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     it("stores the undefined step", function () {
+      stepResult.AlternateSource = "src";
       summaryFormatter.handleUndefinedStepResult(stepResult);
-      expect(summaryFormatter.storeUndefinedStepResult).toHaveBeenCalledWith(step);
+      expect(summaryFormatter.storeUndefinedStepResult).toHaveBeenCalledWith(step, "src");
     });
   });
 
@@ -332,7 +333,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step/*, snippetBuilderSyntax*/);
       expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });

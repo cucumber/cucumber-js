@@ -7,7 +7,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
   beforeEach(function() {
     features             = createSpyWithStubs("Features AST element", {acceptVisitor: null});
-    supportCodeLibrary   = createSpy("Support code library");
+    supportCodeLibrary   = createSpyWithStubs("Support code library", {lookupStepDefinitionByName:null});
     listeners            = [createSpy("First listener"), createSpy("Second listener")];
     supportListeners     = [createSpy("First support listener"), createSpy("Second support listener")];
     spyOnStub(listeners, 'syncForEach').andCallFake(function(cb) { listeners.forEach(cb); });
@@ -550,7 +550,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     var step, callback, event, payload, sequence;
 
     beforeEach(function() {
-      step     = createSpy("step");
+      step     = createSpyWithStubs("step", {setTags:null});
       callback = createSpy("callback");
       event    = createSpy("Event");
       payload  = {step: step};
@@ -602,7 +602,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
 
       it("processes the step", function() {
         userFunction(userFunctionCallback);
-        expect(treeWalker.processStep).toHaveBeenCalledWith(step, userFunctionCallback);
+        expect(treeWalker.processStep).toHaveBeenCalledWith(step, userFunctionCallback, undefined);
       });
     });
   });
@@ -881,17 +881,18 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("lookupStepDefinitionByName()", function() {
-    var stepName, stepDefinition;
+    var stepName, stepDefinition, tagNames;
 
     beforeEach(function() {
+      tagNames       = [];
       stepName       = createSpy("Step name");
       stepDefinition = createSpy("Step definition");
       spyOnStub(supportCodeLibrary, 'lookupStepDefinitionByName').andReturn(stepDefinition);
     });
 
     it("asks the support code library for the step definition", function() {
-      treeWalker.lookupStepDefinitionByName(stepName);
-      expect(supportCodeLibrary.lookupStepDefinitionByName).toHaveBeenCalledWith(stepName);
+      treeWalker.lookupStepDefinitionByName(stepName, tagNames);
+      expect(supportCodeLibrary.lookupStepDefinitionByName).toHaveBeenCalledWith(stepName, tagNames);
     });
 
     it("returns the step definition returned by the library", function() {
@@ -900,9 +901,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("isStepUndefined()", function() {
-    var step, stepName;
+    var step, stepName, tagNames;
 
     beforeEach(function() {
+      tagNames                = [];
       stepName                = createSpy("name of the step");
       step                    = createSpyWithStubs("step", {getName: stepName});
       spyOnStub(supportCodeLibrary, 'isStepDefinitionNameDefined');
@@ -914,8 +916,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     });
 
     it("asks the support code library whether a step definition is defined for that name", function() {
-      treeWalker.isStepUndefined(step);
-      expect(supportCodeLibrary.isStepDefinitionNameDefined).toHaveBeenCalledWith(stepName);
+      treeWalker.isStepUndefined(step, tagNames);
+      expect(supportCodeLibrary.isStepDefinitionNameDefined).toHaveBeenCalledWith(stepName, tagNames);
     });
 
     describe("when the step definition is defined", function() {
@@ -1246,9 +1248,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("processStep()", function() {
-    var step, callback;
+    var step, callback, tagNames;
 
     beforeEach(function() {
+      tagNames = [];
       step     = createSpy("step");
       callback = createSpy("callback");
       spyOn(treeWalker, 'isStepUndefined');
@@ -1259,8 +1262,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     });
 
     it("checks whether the step is undefined or not", function() {
-      treeWalker.processStep(step, callback);
-      expect(treeWalker.isStepUndefined).toHaveBeenCalledWith(step);
+      treeWalker.processStep(step, callback, tagNames);
+      expect(treeWalker.isStepUndefined).toHaveBeenCalledWith(step, tagNames);
     });
 
     describe("when the step is undefined", function() {
@@ -1270,22 +1273,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       });
 
       it("witnesses an undefined step", function() {
-        treeWalker.processStep(step, callback);
+        treeWalker.processStep(step, callback, tagNames);
         expect(treeWalker.witnessUndefinedStep).toHaveBeenCalled();
       });
 
       it("skips the undefined step", function() {
-        treeWalker.processStep(step, callback);
+        treeWalker.processStep(step, callback, tagNames);
         expect(treeWalker.skipUndefinedStep).toHaveBeenCalledWith(step, callback);
       });
 
       it("does not skip a defined step", function() {
-        treeWalker.processStep(step, callback);
+        treeWalker.processStep(step, callback, tagNames);
         expect(treeWalker.skipStep).not.toHaveBeenCalled();
       });
 
       it("does not execute the step", function() {
-        treeWalker.processStep(step, callback);
+        treeWalker.processStep(step, callback, tagNames);
         expect(treeWalker.executeStep).not.toHaveBeenCalled();
       });
     });
@@ -1296,7 +1299,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       });
 
       it("checks whether the step should be skipped", function() {
-        treeWalker.processStep(step, callback);
+        var tagNames = [];
+        treeWalker.processStep(step, callback, tagNames);
         expect(treeWalker.isSkippingSteps).toHaveBeenCalled();
       });
 
@@ -1392,7 +1396,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     var step, callback, event, undefinedStepResult, payload;
 
     beforeEach(function() {
-      step                = createSpyWithStubs("step AST element");
+      step                = createSpyWithStubs("step AST element", { getName:"name" });
       callback            = createSpy("callback");
       undefinedStepResult = createSpy("undefined step result");
       payload             = {stepResult: undefinedStepResult};

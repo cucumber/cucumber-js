@@ -746,9 +746,10 @@ describe("Cucumber.Ast.Step", function() {
   });
 
   describe("getStepDefinition()", function() {
-    var visitor, stepDefinition, returnValue;
+    var visitor, stepDefinition, returnValue, tags;
 
     beforeEach(function() {
+      tags           = [];
       visitor        = createSpy("visitor");
       stepDefinition = createSpy("step definition");
       spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
@@ -756,8 +757,9 @@ describe("Cucumber.Ast.Step", function() {
     });
 
     it("uses the visitor to look up the step definition based on the step string", function() {
+      step.tags = tags;
       step.getStepDefinition(visitor);
-      expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
+      expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith(name, tags);
     });
 
     it("returns the step definition", function() {

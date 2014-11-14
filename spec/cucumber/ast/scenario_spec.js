@@ -244,8 +244,9 @@ describe("Cucumber.Ast.Scenario", function() {
       });
 
       it("instructs the visitor to visit the step and call back when finished", function() {
+        var tags = []
         userFunction(step, forEachCallback);
-        expect(visitor.visitStep).toHaveBeenCalledWith(step, forEachCallback);
+        expect(visitor.visitStep).toHaveBeenCalledWith(step, forEachCallback, tags);
       });
     });
   });
