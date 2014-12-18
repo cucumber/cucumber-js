@@ -2,9 +2,18 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.4...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.5...master)
 
 **TBD**
+
+
+
+### [v0.4.5](https://github.com/cucumber/cucumber-js/compare/v0.4.4...v0.4.5)
+
+#### Documentation, internals and tests
+
+* Fix issue with npm upgrade on node.js v0.8 (Simon Dean)
+* Use Node domain to handle asynchronous exceptions (Julien Biezemans)
 
 ### [v0.4.4](https://github.com/cucumber/cucumber-js/compare/v0.4.3...v0.4.4)
 
