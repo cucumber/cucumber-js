@@ -16,4 +16,8 @@ itBehavesLikeAllCucumberConfigurations = function itBehavesLikeAllCucumberConfig
   it("supplies the AST filter", function() {
     expect(configuration.getAstFilter).toBeAFunction();
   });
+
+  it("supplies the report file location", function() {
+    expect(configuration.getReportFile).toBeAFunction();
+  });
 }

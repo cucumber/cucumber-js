@@ -4,9 +4,10 @@ describe("Cucumber.Runtime", function() {
   var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
-  var supportCodeLibrary, listeners;
+  var supportCodeLibrary, listeners, fs;
 
   beforeEach(function() {
+    fs            = require("fs");
     listeners     = createSpyWithStubs("listener collection", {add: null});
     configuration = createSpy("configuration");
     spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
@@ -28,16 +29,26 @@ describe("Cucumber.Runtime", function() {
   });
 
   describe("start()", function() {
-    var features, supportCodeLibrary, callback, astTreeWalker;
+    var features, supportCodeLibrary, callback, astTreeWalker, logs;
 
     beforeEach(function() {
       features           = createSpy("features (AST)");
       supportCodeLibrary = createSpy("support code library");
       astTreeWalker      = createSpyWithStubs("AST tree walker", {walk: null});
       callback           = createSpy("callback");
+      logs               = createSpy("formatter logs");
+
+      spyOnStub(listeners, "getLast").andReturn(formatter);
+      spyOnStub(formatter, "getLogs").andReturn(logs);
+      spyOnStub(configuration, 'getReportFile').andReturn(undefined);
+
       spyOn(runtime, 'getFeatures').andReturn(features);
       spyOn(runtime, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
       spyOn(Cucumber.Runtime, 'AstTreeWalker').andReturn(astTreeWalker);
+      spyOn(fs, "writeFileSync");
+      astTreeWalker.walk.andCallFake(function (callback) {
+        callback();
+      });
     });
 
     it("fails when no callback is passed", function() {
@@ -69,7 +80,24 @@ describe("Cucumber.Runtime", function() {
 
     it("tells the AST tree walker to walk", function() {
       runtime.start(callback);
-      expect(astTreeWalker.walk).toHaveBeenCalledWith(callback);
+      expect(astTreeWalker.walk).toHaveBeenCalled();
+    });
+
+    it("does call the callback when finished", function() {
+      runtime.start(callback);
+      expect(callback).toHaveBeenCalled();
+    });
+
+    it("does write to output to file", function () {
+      spyOnStub(configuration, "getReportFile").andReturn("reportFile");
+      runtime.start(callback);
+      expect(fs.writeFileSync).toHaveBeenCalledWith("reportFile", logs);
+    });
+
+    it("does not write to output to file if not specified", function () {
+      spyOnStub(configuration, "getReportFile").andReturn(null);
+      runtime.start(callback);
+      expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
   });
 

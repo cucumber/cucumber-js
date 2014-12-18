@@ -69,6 +69,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
     });
 
+    it("defines a --report flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.REPORT_FILE_OPTION_NAME]).toEqual(String);
+    });
+
     it("defines a --help flag", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
@@ -300,6 +305,24 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("returns the format", function () {
       expect(argumentParser.getFormat()).toBe(format);
+    });
+  });
+
+  describe("getReportFile()", function () {
+    var reportFile;
+
+    beforeEach(function () {
+      reportFile = createSpy("reportFile");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(reportFile);
+    });
+
+    it("gets the reportFile option value", function () {
+      argumentParser.getReportFile();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.REPORT_FILE_OPTION_NAME, null);
+    });
+
+    it("returns the reportFile", function () {
+      expect(argumentParser.getReportFile()).toBe(reportFile);
     });
   });
 

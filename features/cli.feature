@@ -249,3 +249,36 @@ Scenario: run a single failing feature
       1 step (1 failed)
       """
 	And the exit status should be 1
+
+  Scenario: run feature with reporting to file
+    Given a file named "features/a.feature" with:
+    """
+      Feature: some feature
+        Scenario:
+          When a step is passing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+    """
+      var cucumberSteps = function() {
+        this.When(/^a step is passing/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js features/a.feature --report outputFile.txt`
+    Then it outputs this text:
+      """
+      .
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+
+      """
+    And the exit status should be 0
+    And it should have written file "outputFile.txt", with content:
+      """
+      .
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+
+      """

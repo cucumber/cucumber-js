@@ -11,7 +11,7 @@ describe("Cucumber.VolatileConfiguration", function() {
   beforeEach(function() {
     supportCodeLibrary       = createSpy("support code library");
     spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
-    featureSources            = createSpy("feature source");
+    featureSources           = createSpy("feature source");
     supportCodeInitializer   = createSpy("support code initializer");
     configuration            = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer);
     context.configuration    = configuration;
@@ -136,6 +136,20 @@ describe("Cucumber.VolatileConfiguration", function() {
     it("returns the rule", function() {
       var returned = configuration.buildAstFilterRuleFromTagGroupString(tagGroupString);
       expect(returned).toBe(rule);
+    });
+  });
+
+  describe("getReportFile()", function () {
+    var reportFile;
+
+    it("returns 'null' when no report specified", function () {
+      expect(configuration.getReportFile()).toEqual(null);
+    });
+
+    it("returns the specified reports", function () {
+      reportFile = createSpy("report file path");
+      configuration  = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {report: reportFile});
+      expect(configuration.getReportFile()).toEqual(reportFile);
     });
   });
 });
