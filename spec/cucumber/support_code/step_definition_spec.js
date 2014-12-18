@@ -1,3 +1,4 @@
+var domain = require('domain');
 require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.StepDefinition", function () {
@@ -88,21 +89,27 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
   describe("invoke()", function () {
     var step, world, scenario, callback;
+    var stepDomain, domainBoundStepDefinitionCode;
     var parameters, exceptionHandler;
     var timestamp = 0;
 
     beforeEach(function () {
-      step             = createSpy("step");
-      world            = createSpy("world");
-      scenario         = createSpyWithStubs("scenario", {getAttachments: undefined});
-      callback         = createSpy("callback");
-      parameters       = createSpy("code execution parameters");
-      exceptionHandler = createSpy("exception handler");
+      step                          = createSpy("step");
+      world                         = createSpy("world");
+      scenario                      = createSpyWithStubs("scenario", {getAttachments: undefined});
+      callback                      = createSpy("callback");
+      parameters                    = createSpy("code execution parameters");
+      exceptionHandler              = createSpy("exception handler");
+      stepDomain                    = createSpy("step domain");
+      domainBoundStepDefinitionCode = createSpy("domain-bound step definition code");
       spyOn(Cucumber.Util.Exception, 'registerUncaughtExceptionHandler');
       spyOn(stepDefinition, 'buildCodeCallback').andCallFake(function(codeCallback) { return codeCallback} );
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
       spyOn(stepDefinition, 'buildExceptionHandlerToCodeCallback').andReturn(exceptionHandler);
       spyOn(stepDefinitionCode, 'apply');
+      spyOn(domain, 'create').andReturn(stepDomain);
+      spyOnStub(stepDomain, 'bind').andReturn(domainBoundStepDefinitionCode);
+      spyOn(domainBoundStepDefinitionCode, 'apply');
 
       if (process.hrtime) {
         spyOn(process, 'hrtime').andCallFake(function (time) {
@@ -142,14 +149,37 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       expect(codeExecutionCallbackPassedToExceptionHandlerBuilder).toBe(codeExecutionCallbackPassedToParameterBuilder);
     });
 
-    it("registers the exception handler for uncaught exceptions", function () {
+    it("creates a node domain for the step", function () {
       stepDefinition.invoke(step, world, scenario, callback);
-      expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
+      expect(domain.create).toHaveBeenCalled();
     });
 
-    it("calls the step definition code with the parameters and World as 'this'", function () {
+    it("registers the exception handler for uncaught exceptions", function () {
       stepDefinition.invoke(step, world, scenario, callback);
-      expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
+      expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
+    });
+
+    describe("when domain binding is available", function () {
+      it("binds the step definition code to the step domain", function () {
+        stepDefinition.invoke(step, world, scenario, callback);
+        expect(stepDomain.bind).toHaveBeenCalledWith(stepDefinitionCode);
+      });
+
+      it("calls the domain-bound step definition code with the parameters and World as 'this'", function () {
+        stepDefinition.invoke(step, world, scenario, callback);
+        expect(domainBoundStepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
+      });
+    });
+
+    describe("when domain binding is not available (browserify-ed)", function () {
+      beforeEach(function () {
+        stepDomain.bind = void(0);
+      });
+
+      it("calls the step definition code with the parameters and World as 'this'", function () {
+        stepDefinition.invoke(step, world, scenario, callback);
+        expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
+      });
     });
 
     it("builds the code callback", function() {
@@ -191,7 +221,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         });
 
         it("unregisters the exception handler", function () {
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
         it("calls back", function () {
@@ -263,7 +293,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
         it("unregisters the exception handler", function () {
           codeExecutionCallback.pending(pendingReason);
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
         it("calls back", function () {
@@ -304,7 +334,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
         it("unregisters the exception handler", function () {
           codeExecutionCallback.fail(failureReason);
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
         it("calls back", function () {
@@ -322,8 +352,8 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       var failureException;
 
       beforeEach(function () {
-        failureException = createSpy("I am a failing step definition");
-        stepDefinitionCode.apply.andThrow(failureException);
+        failureException = createSpy("failing step definition exception");
+        domainBoundStepDefinitionCode.apply.andThrow(failureException);
       });
 
       it("handles the exception with the exception handler", function () {
