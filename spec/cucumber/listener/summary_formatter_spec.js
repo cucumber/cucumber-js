@@ -996,6 +996,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       // Undefined Step Log buffer is string
       undefinedStepLogBuffer = 'undefinedStepsLogBuffer';
       spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
+      // switch snippet output on
+      options['snippets'] = true;
     });
 
     it("logs a little explanation about the snippets", function () {
