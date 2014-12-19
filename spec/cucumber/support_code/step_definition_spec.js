@@ -89,7 +89,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
   describe("invoke()", function () {
     var step, world, scenario, callback;
-    var stepDomain, domainBoundStepDefinitionCode;
+    var stepDomain;
     var parameters, exceptionHandler;
     var timestamp = 0;
 
@@ -101,15 +101,13 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       parameters                    = createSpy("code execution parameters");
       exceptionHandler              = createSpy("exception handler");
       stepDomain                    = createSpy("step domain");
-      domainBoundStepDefinitionCode = createSpy("domain-bound step definition code");
       spyOn(Cucumber.Util.Exception, 'registerUncaughtExceptionHandler');
       spyOn(stepDefinition, 'buildCodeCallback').andCallFake(function(codeCallback) { return codeCallback} );
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
       spyOn(stepDefinition, 'buildExceptionHandlerToCodeCallback').andReturn(exceptionHandler);
       spyOn(stepDefinitionCode, 'apply');
       spyOn(domain, 'create').andReturn(stepDomain);
-      spyOnStub(stepDomain, 'bind').andReturn(domainBoundStepDefinitionCode);
-      spyOn(domainBoundStepDefinitionCode, 'apply');
+      spyOnStub(stepDomain, 'dispose');
 
       if (process.hrtime) {
         spyOn(process, 'hrtime').andCallFake(function (time) {
@@ -159,27 +157,9 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
     });
 
-    describe("when domain binding is available", function () {
-      it("binds the step definition code to the step domain", function () {
-        stepDefinition.invoke(step, world, scenario, callback);
-        expect(stepDomain.bind).toHaveBeenCalledWith(stepDefinitionCode);
-      });
-
-      it("calls the domain-bound step definition code with the parameters and World as 'this'", function () {
-        stepDefinition.invoke(step, world, scenario, callback);
-        expect(domainBoundStepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
-      });
-    });
-
-    describe("when domain binding is not available (browserify-ed)", function () {
-      beforeEach(function () {
-        stepDomain.bind = void(0);
-      });
-
-      it("calls the step definition code with the parameters and World as 'this'", function () {
-        stepDefinition.invoke(step, world, scenario, callback);
-        expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
-      });
+    it("calls the step definition code with the parameters and World as 'this'", function () {
+      stepDefinition.invoke(step, world, scenario, callback);
+      expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
     });
 
     it("builds the code callback", function() {
@@ -222,6 +202,10 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
         it("unregisters the exception handler", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
+        });
+
+        it ("disposes of the step domain", function () {
+          expect(stepDomain.dispose).toHaveBeenCalled();
         });
 
         it("calls back", function () {
@@ -296,6 +280,11 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
+        it ("disposes of the step domain", function () {
+          codeExecutionCallback.pending(pendingReason);
+          expect(stepDomain.dispose).toHaveBeenCalled();
+        });
+
         it("calls back", function () {
           codeExecutionCallback.pending(pendingReason);
           expect(callback).toHaveBeenCalledWith(pendingStepResult);
@@ -337,6 +326,11 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
+        it ("disposes of the step domain", function () {
+          codeExecutionCallback.fail(failureReason);
+          expect(stepDomain.dispose).toHaveBeenCalled();
+        });
+
         it("calls back", function () {
           codeExecutionCallback.fail(failureReason);
           expect(callback).toHaveBeenCalledWith(failedStepResult);
@@ -353,7 +347,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
       beforeEach(function () {
         failureException = createSpy("failing step definition exception");
-        domainBoundStepDefinitionCode.apply.andThrow(failureException);
+        stepDefinitionCode.apply.andThrow(failureException);
       });
 
       it("handles the exception with the exception handler", function () {
