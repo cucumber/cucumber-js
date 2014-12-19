@@ -204,8 +204,16 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
-        it ("disposes of the step domain", function () {
-          expect(stepDomain.dispose).toHaveBeenCalled();
+        it("disposes of the step domain asynchronously", function () {
+          runs(function () {
+            expect(stepDomain.dispose).not.toHaveBeenCalled();
+          });
+          waitsFor(function () {
+            return stepDomain.dispose.wasCalled;
+          }, "dispose() to have been called", 200);
+          runs(function () {
+            expect(stepDomain.dispose).toHaveBeenCalled();
+          });
         });
 
         it("calls back", function () {
@@ -280,9 +288,17 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
-        it ("disposes of the step domain", function () {
-          codeExecutionCallback.pending(pendingReason);
-          expect(stepDomain.dispose).toHaveBeenCalled();
+        it("disposes of the step domain asynchronously", function () {
+          runs(function () {
+            codeExecutionCallback.pending(pendingReason);
+            expect(stepDomain.dispose).not.toHaveBeenCalled();
+          });
+          waitsFor(function () {
+            return stepDomain.dispose.wasCalled;
+          }, "dispose() to have been called", 200);
+          runs(function () {
+            expect(stepDomain.dispose).toHaveBeenCalled();
+          });
         });
 
         it("calls back", function () {
@@ -326,9 +342,17 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
-        it ("disposes of the step domain", function () {
-          codeExecutionCallback.fail(failureReason);
-          expect(stepDomain.dispose).toHaveBeenCalled();
+        it("disposes of the step domain asynchronously", function () {
+          runs(function () {
+            codeExecutionCallback.fail(failureReason);
+            expect(stepDomain.dispose).not.toHaveBeenCalled();
+          });
+          waitsFor(function () {
+            return stepDomain.dispose.wasCalled;
+          }, "dispose() to have been called", 200);
+          runs(function () {
+            expect(stepDomain.dispose).toHaveBeenCalled();
+          });
         });
 
         it("calls back", function () {
