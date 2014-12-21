@@ -249,21 +249,22 @@ note: There are "Before" and "After" events for each of the following: "Features
 var webdriver = require("selenium-webdriver");
 
 var World = function World(callback) {
-    this.driver = new webdriver.Builder().
-      withCapabilities(webdriver.Capabilities.chrome()).
-      build();
-
-    callback();
+  this.driver = new webdriver.Builder()
+    .withCapabilities(webdriver.Capabilities.chrome())
+    .build();
+  callback();
 }
 
 module.exports = World;
 
 // features/support/after_hooks.js
 var myAfterHooks = function () {
-    this.registerHandler('AfterFeatures', function (event, callback) {
-      this.driver.close();
-      callback();
-    });
+  this.registerHandler('AfterFeatures', function (event, callback) {
+    // clean up!
+    // Be careful, there is no World instance available on `this` here
+    // because all scenarios are done and World instances are long gone.
+    callback();
+  });
 }
 
 module.exports = myAfterHooks;
