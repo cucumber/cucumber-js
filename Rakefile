@@ -6,7 +6,7 @@ task :test => "test:all"
 namespace :test do
 
   desc "Run all tests"
-  task :all => [ "diagnostics", "test:rb", "test:js" ]
+  task :all => [ "diagnostics", "test:js", "test:rb" ]
 
   desc "Display some diagnostics"
   task :diagnostics do

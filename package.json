@@ -86,7 +86,7 @@
     "uglifyify": "2.5.0"
   },
   "scripts": {
-    "test": "./bin/cucumber.js -i && jasmine-node spec"
+    "test": "jasmine-node spec && ./bin/cucumber.js -i"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
