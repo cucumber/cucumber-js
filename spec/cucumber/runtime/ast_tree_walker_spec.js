@@ -940,23 +940,51 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("didAllFeaturesSucceed()", function() {
-    it("returns true when no failure was encountered", function() {
-      expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
+    describe("when strict mode is off", function() {
+      it("returns true when no failure was encountered", function() {
+        expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
+      });
+
+      it("returns false when a failed step was encountered", function() {
+        treeWalker.witnessFailedStep();
+        expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
+      });
+
+      it("returns true when a pending step was encountered", function() {
+        treeWalker.witnessPendingStep();
+        expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
+      });
+
+      it("returns true when an undefined step was encountered", function() {
+        treeWalker.witnessUndefinedStep();
+        expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
+      });
     });
 
-    it("still returns true when a pending step was encountered", function() {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
-    });
+    describe("when strict mode is on", function() {
+      beforeEach(function() {
+        var isStrictMode = true;
+        treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode);
+      });
 
-    it("still returns true when a undefined step was encountered", function() {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
-    });
+      it("returns true when no failure was encountered", function() {
+        expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
+      });
 
-    it("returns false when a failed step was encountered", function() {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
+      it("returns false when a failed step was encountered", function() {
+        treeWalker.witnessFailedStep();
+        expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
+      });
+
+      it("returns false when a pending step was encountered", function() {
+        treeWalker.witnessPendingStep();
+        expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
+      });
+
+      it("returns false when an undefined step was encountered", function() {
+        treeWalker.witnessUndefinedStep();
+        expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
+      });
     });
   });
 
