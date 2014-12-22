@@ -15,7 +15,7 @@ describe("Cucumber.Ast.ScenarioOutline", function() {
     lastStep    = createSpy("last step");
     steps       = createSpy("step collection");
     examples    = createSpy("examples collection");
-    
+
     spyOnStub(steps, 'add');
     spyOnStub(steps, 'getLast').andReturn(lastStep);
 
