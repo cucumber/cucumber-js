@@ -2,11 +2,36 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.5...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.6...master)
 
 **TBD**
 
 
+### [v0.4.6](https://github.com/cucumber/cucumber-js/compare/v0.4.5...v0.4.6)
+
+#### New features
+
+* Add --no-snippets flag to CLI (close #207) (Krispin Schulz)
+* Add strict mode (close #211) (Elwyn)
+* Add strict mode to volatile configuration (close #258) (Jan-Eric Duden)
+
+#### Fixes
+
+* Fix code loader on windows (close #226) (Gary Taylor)
+
+#### Documentation, internals and tests
+
+* Connect to Rubygems through SSL (Julien Biezemans)
+* Use Node domain's enter/exit in stepdefs (Julien Biezemans)
+* Do not display snippets in build (Julien Biezemans)
+* Asynchronously dispose of step domains (Julien Biezemans)
+* Change order of tests in build (Julien Biezemans)
+* Fix tests to run on Windows (close #216) (kostya.misura)
+* Fix registerHandler() example in README (Julien Biezemans)
+* Fix typo in variable name (Julien Biezemans)
+* Fix World property assignment in README example (Julian)
+* Unix EOLs (Julien Biezemans)
+* Ignore .ruby-* (Julien Biezemans)
 
 ### [v0.4.5](https://github.com/cucumber/cucumber-js/compare/v0.4.4...v0.4.5)
 

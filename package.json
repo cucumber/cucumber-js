@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.5",
+  "version": "0.4.6",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -48,7 +48,13 @@
     "Stanley Shyiko <stanley.shyiko@gmail.com>",
     "Artur Kania <kaniartur@gmail.com>",
     "Sam Saccone <sam@samx.it>",
-    "Craig Morris <craig.michael.morris@gmail.com>"
+    "Craig Morris <craig.michael.morris@gmail.com>",
+    "Gary Taylor <gary.taylor@hismessages.com>",
+    "Krispin Schulz <krispin.schulz@blackbridge.com>",
+    "Elwyn <elwyn@L1.co.nz>",
+    "Jan-Eric Duden <jeduden@gmail.com>",
+    "kostya.misura <kostya.misura@gmail.com>",
+    "Julian <microweb10@gmail.com>"
   ],
   "repository": {
     "type": "git",
