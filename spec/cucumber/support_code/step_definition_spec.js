@@ -107,7 +107,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       spyOn(stepDefinition, 'buildExceptionHandlerToCodeCallback').andReturn(exceptionHandler);
       spyOn(stepDefinitionCode, 'apply');
       spyOn(domain, 'create').andReturn(stepDomain);
-      spyOnStub(stepDomain, 'dispose');
 
       if (process.hrtime) {
         spyOn(process, 'hrtime').andCallFake(function (time) {
@@ -204,18 +203,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
-        it("disposes of the step domain asynchronously", function () {
-          runs(function () {
-            expect(stepDomain.dispose).not.toHaveBeenCalled();
-          });
-          waitsFor(function () {
-            return stepDomain.dispose.wasCalled;
-          }, "dispose() to have been called", 200);
-          runs(function () {
-            expect(stepDomain.dispose).toHaveBeenCalled();
-          });
-        });
-
         it("calls back", function () {
           expect(callback).toHaveBeenCalledWith(successfulStepResult);
         });
@@ -288,19 +275,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
-        it("disposes of the step domain asynchronously", function () {
-          runs(function () {
-            codeExecutionCallback.pending(pendingReason);
-            expect(stepDomain.dispose).not.toHaveBeenCalled();
-          });
-          waitsFor(function () {
-            return stepDomain.dispose.wasCalled;
-          }, "dispose() to have been called", 200);
-          runs(function () {
-            expect(stepDomain.dispose).toHaveBeenCalled();
-          });
-        });
-
         it("calls back", function () {
           codeExecutionCallback.pending(pendingReason);
           expect(callback).toHaveBeenCalledWith(pendingStepResult);
@@ -340,19 +314,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         it("unregisters the exception handler", function () {
           codeExecutionCallback.fail(failureReason);
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
-        });
-
-        it("disposes of the step domain asynchronously", function () {
-          runs(function () {
-            codeExecutionCallback.fail(failureReason);
-            expect(stepDomain.dispose).not.toHaveBeenCalled();
-          });
-          waitsFor(function () {
-            return stepDomain.dispose.wasCalled;
-          }, "dispose() to have been called", 200);
-          runs(function () {
-            expect(stepDomain.dispose).toHaveBeenCalled();
-          });
         });
 
         it("calls back", function () {
