@@ -507,9 +507,15 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       beforeEach(function() {
         beforeStep = createSpyWithStubs("before step", {acceptVisitor: undefined});
         callback   = createSpyWithStubs("callback");
+        spyOn(treeWalker, 'witnessHook');
+
         var userFunction = beforeStepCollection.forEach.mostRecentCall.args[0];
 
         userFunction(beforeStep, callback);
+      });
+
+      it("witnesses a hook", function() {
+        expect(treeWalker.witnessHook).toHaveBeenCalled();
       });
 
       it("instructs the before step to accept the tree walker as a visitor", function() {
@@ -551,9 +557,14 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       beforeEach(function() {
         afterStep  = createSpyWithStubs("after step", {acceptVisitor: undefined});
         callback   = createSpyWithStubs("callback");
+        spyOn(treeWalker, 'witnessHook');
         var userFunction = afterStepCollection.forEach.mostRecentCall.args[0];
 
         userFunction(afterStep, callback);
+      });
+
+      it("witnesses a hook", function() {
+        expect(treeWalker.witnessHook).toHaveBeenCalled();
       });
 
       it("instructs the before step to accept the tree walker as a visitor", function() {
