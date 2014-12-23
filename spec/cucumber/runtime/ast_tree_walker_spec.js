@@ -1,8 +1,10 @@
+var domain = require('domain');
 require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker", function() {
   var Cucumber = requireLib('cucumber');
   var beforeStepCollection, afterStepCollection, attachmentCollection, emptyHook;
+  var walkDomain;
   var treeWalker, features, supportCodeLibrary, listeners, supportListeners;
 
   beforeEach(function() {
@@ -10,6 +12,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     supportCodeLibrary   = createSpy("Support code library");
     listeners            = [createSpy("First listener"), createSpy("Second listener")];
     supportListeners     = [createSpy("First support listener"), createSpy("Second support listener")];
+    walkDomain           = createSpy("walk domain");
     spyOnStub(listeners, 'syncForEach').andCallFake(function(cb) { listeners.forEach(cb); });
     spyOnStub(supportListeners, 'syncForEach').andCallFake(function(cb) { supportListeners.forEach(cb); });
     spyOnStub(supportCodeLibrary, 'getListeners').andReturn(supportListeners);
@@ -20,8 +23,12 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
     emptyHook            = createSpy("empty hook");
     spyOn(Cucumber.Type, 'Collection').andReturnSeveral([beforeStepCollection, afterStepCollection, attachmentCollection]);
     spyOn(Cucumber.SupportCode, "Hook").andReturn(emptyHook);
-
+    spyOn(domain, 'create').andReturn(walkDomain);
     treeWalker           = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners);
+  });
+
+  it("creates a domain", function () {
+    expect(domain.create).toHaveBeenCalled();
   });
 
   describe("walk()", function() {
@@ -1223,6 +1230,12 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       it("returns the API scenario", function() {
         expect(returnValue).toBe(apiScenario);
       });
+    });
+  });
+
+  describe("getDomain()", function() {
+    it("returns the walk domain", function() {
+      expect(treeWalker.getDomain()).toBe(walkDomain);
     });
   });
 
