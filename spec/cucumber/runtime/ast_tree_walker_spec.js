@@ -39,6 +39,17 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
       spyOn(treeWalker, 'visitFeatures');
     });
 
+    describe("when the walk domain can be entered", function () {
+      beforeEach(function () {
+        spyOnStub(walkDomain, 'enter');
+      });
+
+      it("enters the domain", function () {
+        treeWalker.walk(callback);
+        expect(walkDomain.enter).toHaveBeenCalled();
+      });
+    });
+
     it("visits all features with a callback", function() {
       treeWalker.walk(callback);
       expect(treeWalker.visitFeatures).
@@ -55,6 +66,17 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
         featuresVisitCallback = treeWalker.visitFeatures.mostRecentCall.args[1];
         featuresResult = createSpy("result of all features");
         spyOn(treeWalker, 'didAllFeaturesSucceed').andReturn(featuresResult);
+      });
+
+      describe("when the walk domain can be exited", function () {
+        beforeEach(function () {
+          spyOnStub(walkDomain, 'exit');
+        });
+
+        it("exits the domain", function () {
+          featuresVisitCallback();
+          expect(walkDomain.exit).toHaveBeenCalled();
+        });
       });
 
       it("checks whether all features were successful", function() {
