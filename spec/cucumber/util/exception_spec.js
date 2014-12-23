@@ -25,11 +25,6 @@ describe("Cucumber.Util.Arguments", function () {
         Cucumber.Util.Exception.registerUncaughtExceptionHandler(exceptionHandler, stepDomain);
         expect(stepDomain.on).toHaveBeenCalledWith(DOMAIN_ERROR_EVENT, exceptionHandler);
       });
-
-      it("enters the domain", function () {
-        Cucumber.Util.Exception.registerUncaughtExceptionHandler(exceptionHandler, stepDomain);
-        expect(stepDomain.enter).toHaveBeenCalledWith();
-      });
     });
 
     describe("without a complete domain (might be browserified domain)", function () {
@@ -84,11 +79,6 @@ describe("Cucumber.Util.Arguments", function () {
       it("unregisters the exception handler to the domain's 'error' event", function () {
         Cucumber.Util.Exception.unregisterUncaughtExceptionHandler(exceptionHandler, stepDomain);
         expect(stepDomain.removeListener).toHaveBeenCalledWith(DOMAIN_ERROR_EVENT, exceptionHandler);
-      });
-
-      it("exits the domain", function () {
-        Cucumber.Util.Exception.unregisterUncaughtExceptionHandler(exceptionHandler, stepDomain);
-        expect(stepDomain.exit).toHaveBeenCalledWith();
       });
     });
 
