@@ -2,10 +2,21 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.6...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.7...master)
 
 **TBD**
 
+
+### [v0.4.7](https://github.com/cucumber/cucumber-js/compare/v0.4.6...v0.4.7)
+
+#### Documentation, internals and tests
+
+* Do not dispose of step domains (Julien Biezemans)
+* Refactor and add debug code (Julien Biezemans)
+* Create a single domain per run (Julien Biezemans)
+* Add missing AstTreeWalker specs (Julien Biezemans)
+* Indent (Julien Biezemans)
+* Spec domain enter/exit in AstTreeWalker (Julien Biezemans)
 
 ### [v0.4.6](https://github.com/cucumber/cucumber-js/compare/v0.4.5...v0.4.6)
 
