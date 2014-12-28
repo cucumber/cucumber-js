@@ -7,7 +7,7 @@ Feature: Scenario Outlines and Examples
         Background:
           Given a background step
 
-        Scenario Outline: basic outline
+        Scenario Outline: A <some> step is followed by <result> steps
           When a <some> step
           Then i get <result>
         Examples:
@@ -21,7 +21,7 @@ Feature: Scenario Outlines and Examples
     And the step "i get passed" has a passing mapping
     And the step "i get skipped" has a passing mapping
     When Cucumber runs the feature
-    Then the scenario called "basic outline" is reported as failing
+    Then the scenario called "A failing step is followed by skipped steps" is reported as failing
     And the step "a background step" passes
     And the step "a passing step" passes
     And the step "a failing step" passes
