@@ -4,8 +4,9 @@
 
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.7...master)
 
-**TBD**
+#### Fixes
 
+* Handle BOM, support hyphenated language codes. (close #144) (Aslak Hellesøy)
 
 ### [v0.4.7](https://github.com/cucumber/cucumber-js/compare/v0.4.6...v0.4.7)
 
