@@ -78,16 +78,6 @@ describe("Cucumber.Parser", function () {
       expect(parser.setCurrentSourceUri).toHaveBeenCalledWith(featureSources[1][0]);
     });
 
-    it("asks the English lexer to scan the first feature source", function () {
-      parser.parse();
-      expect(gherkinENLexer.scan).toHaveBeenCalledWith(featureSources[0][1]);
-    });
-
-    it("asks the French lexer to scan the second feature source", function () {
-      parser.parse();
-      expect(gherkinFRLexer.scan).toHaveBeenCalledWith(featureSources[1][1]);
-    });
-    
     it("returns the features root element", function () {
       expect(parser.parse()).toBe(features);
     });
