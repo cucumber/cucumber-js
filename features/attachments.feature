@@ -19,7 +19,13 @@ Feature: Attachments
       """
       var hooks = function () {
         this.Before(function(scenario, callback) {
-          scenario.attach(new Buffer([100, 97, 116, 97]), 'image/png');
+          var data = [];
+
+          for (var i = 0; i < 256; i++) {
+            data.push(i);
+          }
+
+          scenario.attach(new Buffer(data), 'image/png');
           callback();
         });
       };
@@ -57,7 +63,7 @@ Feature: Attachments
                   "embeddings": [
                     {
                       "mime_type": "image/png",
-                      "data": "ZGF0YQ=="
+                      "data": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w=="
                     }
                   ]
                 },
@@ -98,14 +104,25 @@ Feature: Attachments
       var hooks = function () {
         this.Before(function(scenario, callback) {
           var Stream = require('stream');
-          var versionParts = /v(\d+)\.(\d+)\.(\d+)/.exec(process.version);
-          var major = parseInt(versionParts[0], 10);
-          var minor = parseInt(versionParts[1], 10);
+          var versionParts = process.version.match(/v(\d+)\.(\d+)\.(\d+)/);
+          var major = parseInt(versionParts[1], 10);
+          var minor = parseInt(versionParts[2], 10);
+          var data1 = [];
+          var data2 = [];
+
+          for (var i = 0; i < 128; i++) {
+            data1.push(i);
+          }
+
+          for (var i = 128; i < 256; i++) {
+            data2.push(i);
+          }
 
           if (major > 0 || minor >= 10) {
             var stream = new Stream.Readable();
             stream._read = function() {};
-            stream.push(new Buffer([100, 97, 116, 97]));
+            stream.push(new Buffer(data1));
+            stream.push(new Buffer(data2));
             stream.push(null);
 
             scenario.attach(stream, 'image/png', function(error) {
@@ -113,7 +130,7 @@ Feature: Attachments
             });
           }
           else {
-            scenario.attach(new Buffer([100, 97, 116, 97]), 'image/png');
+            scenario.attach(new Buffer([].concat(data1, data2)), 'image/png');
             callback();
           }
         });
@@ -152,7 +169,7 @@ Feature: Attachments
                   "embeddings": [
                     {
                       "mime_type": "image/png",
-                      "data": "ZGF0YQ=="
+                      "data": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w=="
                     }
                   ]
                 },
