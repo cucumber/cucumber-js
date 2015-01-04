@@ -66,20 +66,18 @@ describe("Cucumber.Cli", function() {
       describe("when the version is requested", function() {
         beforeEach(function() {
           configuration.isVersionRequested.andReturn(true);
+          cli.run(callback);
         });
 
         it("displays the version", function() {
-          cli.run(callback);
           expect(cli.displayVersion).toHaveBeenCalledWith(callback);
         });
 
         it("does not display the help", function() {
-          cli.run(callback);
           expect(cli.displayHelp).not.toHaveBeenCalled();
         });
 
         it("does not run the suite", function() {
-          cli.run(callback);
           expect(cli.runSuiteWithConfiguration).not.toHaveBeenCalled();
         });
       });
@@ -87,20 +85,18 @@ describe("Cucumber.Cli", function() {
       describe("when the version is not requested", function() {
         beforeEach(function() {
           configuration.isVersionRequested.andReturn(false);
+          cli.run(callback);
         });
 
         it("runs the suite", function() {
-          cli.run(callback);
           expect(cli.runSuiteWithConfiguration).toHaveBeenCalledWith(configuration, callback);
         });
 
         it("does not display the help", function() {
-          cli.run(callback);
           expect(cli.displayHelp).not.toHaveBeenCalled();
         });
 
         it("does not display the version", function() {
-          cli.run(callback);
           expect(cli.displayVersion).not.toHaveBeenCalledWith(callback);
         });
       });
@@ -117,25 +113,22 @@ describe("Cucumber.Cli", function() {
       runtime       = createSpyWithStubs("runtime", {start: null, attachListener: null});
       callback      = createSpy("callback");
       spyOn(Cucumber, 'Runtime').andReturn(runtime);
+      cli.runSuiteWithConfiguration(configuration, callback);
     });
 
     it("creates a Cucumber runtime with the CLI configuration", function() {
-      cli.runSuiteWithConfiguration(configuration, callback);
       expect(Cucumber.Runtime).toHaveBeenCalledWith(configuration);
     });
 
     it("gets the formatter from the configuration", function() {
-      cli.runSuiteWithConfiguration(configuration, callback);
       expect(configuration.getFormatter).toHaveBeenCalled();
     });
 
     it("attaches the formatter to the runtime", function() {
-      cli.runSuiteWithConfiguration(configuration, callback);
       expect(runtime.attachListener).toHaveBeenCalledWith(formatter);
     });
 
     it("runs the runtime with the callback", function() {
-      cli.runSuiteWithConfiguration(configuration, callback);
       expect(runtime.start).toHaveBeenCalledWith(callback);
     });
   });
@@ -146,15 +139,14 @@ describe("Cucumber.Cli", function() {
     beforeEach(function() {
       callback = createSpy("callback");
       spyOn(process.stdout, 'write');
+      cli.displayVersion(callback);
     });
 
     it("outputs the version of Cucumber to STDOUT", function() {
-      cli.displayVersion(callback);
       expect(process.stdout.write).toHaveBeenCalledWith(Cucumber.VERSION + "\n");
     });
 
     it("calls back and tells it succeeded", function() {
-      cli.displayVersion(callback);
       expect(callback).toHaveBeenCalledWith(true);
     });
   });
@@ -165,15 +157,14 @@ describe("Cucumber.Cli", function() {
     beforeEach(function() {
       callback = createSpy("callback");
       spyOn(process.stdout, 'write');
+      cli.displayHelp(callback);
     });
 
     it("outputs the usage of Cucumber to STDOUT", function() {
-      cli.displayHelp(callback);
       expect(process.stdout.write).toHaveBeenCalledWithStringMatching("Usage: cucumber.js ");
     });
 
     it("calls back and tells it succeeded", function() {
-      cli.displayHelp(callback);
       expect(callback).toHaveBeenCalledWith(true);
     });
   });
