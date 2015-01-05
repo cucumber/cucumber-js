@@ -98,3 +98,24 @@ Feature: Scenario Outlines and Examples
     And the step "step b" passes
     And the step "step c" passes
     And the step "step d" passes
+
+  Scenario: Data table can switch environment by _env tag
+    Given the following feature:
+      """
+      Feature: testing scenarios
+        Scenario Outline: scenario outline 1
+          When step <id>
+
+        Examples:
+          |_env  | id |
+          |alpha | a  |
+          |beta  | b  |
+          |all   | c  |
+
+      """
+    And the step "step a" has a failing mapping
+    And the step "step b" has a failing mapping
+    And the step "step c" has a passing mapping
+    When Cucumber runs the feature
+    Then the step "step c" passes
+
