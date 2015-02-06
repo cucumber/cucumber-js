@@ -1,12 +1,12 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Ast.ScenarioOutline", function() {
+describe("Cucumber.Ast.ScenarioOutline", function () {
   var Cucumber = requireLib('cucumber');
   var steps;
   var examples;
   var scenarioOutline, keyword, name, description, uri, line, lastStep;
 
-  beforeEach(function() {
+  beforeEach(function () {
     keyword     = createSpy("scenario outline keyword");
     name        = createSpy("scenario outline name");
     description = createSpy("scenario outline description");
@@ -22,25 +22,25 @@ describe("Cucumber.Ast.ScenarioOutline", function() {
     scenarioOutline = Cucumber.Ast.ScenarioOutline(keyword, name, description, uri, line);
   });
 
-  describe("isScenarioOutline()", function() {
-    it("returns true", function() {
+  describe("isScenarioOutline()", function () {
+    it("returns true", function () {
       expect(scenarioOutline.isScenarioOutline()).toBeTruthy();
     });
   });
 
-  describe("getExamples() [addExamples()]", function() {
-    it("returns an empty set when no examples have been set", function() {
+  describe("getExamples() [addExamples()]", function () {
+    it("returns an empty set when no examples have been set", function () {
       expect(scenarioOutline.getExamples().length()).toEqual(0);
     });
 
-    it("returns the examples", function() {
+    it("returns the examples", function () {
       scenarioOutline.addExamples(examples);
       expect(scenarioOutline.getExamples().length()).toEqual(1);
       expect(scenarioOutline.getExamples().getAtIndex(0)).toBe(examples);
     });
 
-    describe("when adding more than 1 set of examples", function() {
-      it("returns all the examples", function() {
+    describe("when adding more than 1 set of examples", function () {
+      it("returns all the examples", function () {
         var examples2 = createSpy("second examples collection");
         scenarioOutline.addExamples(examples);
         scenarioOutline.addExamples(examples2);
@@ -51,14 +51,14 @@ describe("Cucumber.Ast.ScenarioOutline", function() {
     });
   });
 
-  describe("acceptVisitor", function() {
+  describe("acceptVisitor", function () {
     var visitor, callback;
 
-    beforeEach(function() {
+    beforeEach(function () {
       callback = createSpy("Callback");
     });
 
-    it("instructs the visitor to visit the row steps", function() {
+    it("instructs the visitor to visit the row steps", function () {
       scenarioOutline.acceptVisitor(visitor, callback);
       expect(callback).toHaveBeenCalled();
     });

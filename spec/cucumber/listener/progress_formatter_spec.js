@@ -15,7 +15,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("constructor", function () {
-    it("creates a formatter", function() {
+    it("creates a formatter", function () {
       expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 

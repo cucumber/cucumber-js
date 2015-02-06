@@ -71,7 +71,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       spyOn(stepDefinition, 'getPatternRegexp').andReturn(patternRegexp);
     });
 
-    it("gets the pattern regexp", function (){
+    it("gets the pattern regexp", function () {
       stepDefinition.matchesStepName(stepName);
       expect(stepDefinition.getPatternRegexp).toHaveBeenCalled();
     });
@@ -100,7 +100,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       parameters                    = createSpy("code execution parameters");
       exceptionHandler              = createSpy("exception handler");
       spyOn(Cucumber.Util.Exception, 'registerUncaughtExceptionHandler');
-      spyOn(stepDefinition, 'buildCodeCallback').andCallFake(function(codeCallback) { return codeCallback; });
+      spyOn(stepDefinition, 'buildCodeCallback').andCallFake(function (codeCallback) { return codeCallback; });
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
       spyOn(stepDefinition, 'buildExceptionHandlerToCodeCallback').andReturn(exceptionHandler);
       spyOn(stepDefinitionCode, 'apply');
@@ -155,7 +155,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
     });
 
-    it("builds the code callback", function() {
+    it("builds the code callback", function () {
       stepDefinition.invoke(step, world, scenario, stepDomain, callback);
       expect(stepDefinition.buildCodeCallback).toHaveBeenCalled();
       expect(stepDefinition.buildCodeCallback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
@@ -173,7 +173,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         spyOn(Cucumber.Util.Exception, 'unregisterUncaughtExceptionHandler');
       });
 
-      it("is passed to the step definition code", function() {
+      it("is passed to the step definition code", function () {
         expect(stepDefinition.buildInvocationParameters.mostRecentCall.args[2]).toBe(codeExecutionCallback);
       });
 
@@ -336,8 +336,8 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
   });
 
-  describe("buildCodeCallback", function() {
-    it("is just a pass through", function() {
+  describe("buildCodeCallback", function () {
+    it("is just a pass through", function () {
       var callback = createSpy("callback");
       var returnValue = stepDefinition.buildCodeCallback(callback);
       expect(returnValue).toBe(callback);

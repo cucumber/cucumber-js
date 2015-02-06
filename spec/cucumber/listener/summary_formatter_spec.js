@@ -17,7 +17,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("constructor", function () {
-    it("creates a formatter", function() {
+    it("creates a formatter", function () {
       expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 
@@ -480,7 +480,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("tells the visitor to visit the feature and call back when finished", function () {
-        userFunction(failedStepResult);
+        userFunction (failedStepResult);
         expect(summaryFormatter.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
       });
     });

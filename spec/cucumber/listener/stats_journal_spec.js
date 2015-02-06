@@ -175,8 +175,8 @@ describe("Cucumber.Listener.StatsJournal", function () {
       spyOn(statsJournal, 'witnessPassedStep');
     });
 
-    describe("when the step is not hidden", function() {
-      beforeEach(function() {
+    describe("when the step is not hidden", function () {
+      beforeEach(function () {
         spyOnStub(step, 'isHidden').andReturn(false);
       });
 
@@ -186,8 +186,8 @@ describe("Cucumber.Listener.StatsJournal", function () {
       });
     });
 
-    describe("when the step is hidden", function() {
-      beforeEach(function() {
+    describe("when the step is hidden", function () {
+      beforeEach(function () {
         spyOnStub(step, 'isHidden').andReturn(true);
       });
 

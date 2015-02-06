@@ -39,7 +39,7 @@ describe("Cucumber.Parser", function () {
       gherkinENLexerConstructor = createSpy("English gherkin lexer constructor").andReturn(gherkinENLexer);
       gherkinFRLexerConstructor = createSpy("French gherkin lexer constructor").andReturn(gherkinFRLexer);
       spyOn(Gherkin, 'Lexer').andCallFake(
-        function (language){
+        function (language) {
           if (language === 'en') {
             return gherkinENLexerConstructor;
           } else if (language === 'fr') {

@@ -1,10 +1,10 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Runtime.PendingStepResult", function() {
+describe("Cucumber.Runtime.PendingStepResult", function () {
   var Cucumber = requireLib('cucumber');
   var pendingStepResult, step, payload;
 
-  beforeEach(function() {
+  beforeEach(function () {
     pendingStepResult = createSpy("base step result");
     spyOn(Cucumber.Runtime, 'StepResult').andReturn(pendingStepResult);
     step              = createSpy("step");
@@ -12,12 +12,12 @@ describe("Cucumber.Runtime.PendingStepResult", function() {
     pendingStepResult = Cucumber.Runtime.PendingStepResult(payload);
   });
 
-  it("is pending", function() {
+  it("is pending", function () {
     expect(pendingStepResult.isPending()).toBeTruthy();
   });
 
-  describe("constructor", function() {
-    it("instantiates a step result", function() {
+  describe("constructor", function () {
+    it("instantiates a step result", function () {
       expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(payload);
     });
   });
