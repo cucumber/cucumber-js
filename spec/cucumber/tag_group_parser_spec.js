@@ -30,7 +30,7 @@ describe("Cucumber.TagGroupParser", function() {
   });
 
   describe(".getTagGroupsFromStrings()", function() {
-    var tagGroupStrings, getTagGroupsFromStringsFunc;
+    var tagGroups, tagGroupParsers, tagGroupStrings, getTagGroupsFromStringsFunc;
 
     beforeEach(function() {
       getTagGroupsFromStringsFunc = Cucumber.TagGroupParser.getTagGroupsFromStrings;

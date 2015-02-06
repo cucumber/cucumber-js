@@ -135,7 +135,7 @@ describe("Cucumber.Api.Scenario", function() {
             spyOnStub(astTreeWalker, "attach");
 
             scenario.attach(stream, mimeType, callback);
-          })
+          });
 
           it("does not call back straight away", function() {
             expect(callback).not.toHaveBeenCalled();
@@ -164,7 +164,7 @@ describe("Cucumber.Api.Scenario", function() {
               expect(callback).toHaveBeenCalled();
             });
           });
-        })
+        });
       });
     }
 
@@ -173,7 +173,7 @@ describe("Cucumber.Api.Scenario", function() {
 
       beforeEach(function() {
         buffer = new Buffer("data");
-      })
+      });
 
       it("throws an exception when the mimeType argument is missing", function() {
         expect(function() { scenario.attach(buffer); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a mimeType"));
@@ -210,7 +210,7 @@ describe("Cucumber.Api.Scenario", function() {
 
       beforeEach(function() {
         data = "data";
-      })
+      });
 
       it("instructs the ast tree walker to create an attachment containing the string", function() {
         scenario.attach(data, mimeType);

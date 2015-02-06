@@ -184,7 +184,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     var step, stepResult, event, callback;
 
     beforeEach(function() {
-      step       = createSpyWithStubs("step", { isHidden: null })
+      step       = createSpyWithStubs("step", { isHidden: null });
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       callback   = createSpy("callback");

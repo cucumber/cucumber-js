@@ -24,7 +24,7 @@ describe("Cucumber.SupportCode.AroundHook", function() {
 
     beforeEach(function() {
       callback     = createSpy("callback");
-      error        = createSpy("error")
+      error        = createSpy("error");
       postScenarioAroundHookCallback = createSpy("post scenario around hook callback");
       afterHook    = createSpy("after hook");
       hookSpy.andReturn(afterHook);
@@ -38,7 +38,7 @@ describe("Cucumber.SupportCode.AroundHook", function() {
 
     it("does not callback straight away", function() {
       expect(callback).not.toHaveBeenCalled();
-    })
+    });
 
     describe("when calling the code callback", function() {
       var afterStep;

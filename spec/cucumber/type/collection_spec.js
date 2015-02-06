@@ -55,7 +55,6 @@ describe("Cucumber.Type.Collection", function() {
 
   describe("clear()", function() {
     it("empties the item array", function() {
-      var item = createSpy("collection item");
       expect(itemArray.length).toEqual(3);
       collection.clear();
       expect(itemArray.length).toEqual(0);
@@ -104,9 +103,9 @@ describe("Cucumber.Type.Collection", function() {
           callback();
       });
       callback = createSpy("forEach() callback").andCallFake(function() {
-        if (processedItems.length == itemCount)
+        if (processedItems.length === itemCount)
           allItemsProcessedBeforeCallback = true;
-      });;
+      });
       itemCount = itemArray.length;
     });
 

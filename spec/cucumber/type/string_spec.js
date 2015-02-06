@@ -2,7 +2,6 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Type.String", function() {
   var Cucumber = requireLib('cucumber');
-  var string;
 
   it("is an alias of the global String constructor", function() {
     expect(Cucumber.Type.String).toBe(String);

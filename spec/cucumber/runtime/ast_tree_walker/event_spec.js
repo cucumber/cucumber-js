@@ -7,7 +7,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function() {
   });
 
   describe("instance method", function() {
-    var event, name, payload;
+    var event, name, payload, payloadItems;
 
     beforeEach(function() {
       name = "SomeEvent";

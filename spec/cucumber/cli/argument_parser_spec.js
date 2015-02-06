@@ -284,8 +284,6 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getTagGroups()", function () {
-    var _ = require('underscore');
-
     var tagOptionValues, tagGroups;
 
     beforeEach(function () {
@@ -432,7 +430,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getOptionOrDefault()", function () {
-    var optionName, defaultVaue;
+    var optionName, defaultValue;
 
     beforeEach(function () {
       optionName   = "option-name";

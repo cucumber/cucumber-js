@@ -64,7 +64,7 @@ describe("Cucumber.Type.HashDataTable", function() {
   });
 
   describe("createHashesFromKeysAndValueArrays()", function() {
-    var hashes;
+    var hashes, keys, valueArrays;
 
     beforeEach(function() {
       keys        = [createSpy("key 1"), createSpy("key 2")];

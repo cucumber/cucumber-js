@@ -1,4 +1,3 @@
-var domain = require('domain');
 require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.StepDefinition", function () {
@@ -63,7 +62,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
   });
 
   describe("matchesStepName()", function () {
-    var patternRegexp, stepName;
+    var patternRegexp, stepName, matchResult;
 
     beforeEach(function () {
       stepName      = createSpy("step name");
@@ -101,7 +100,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       parameters                    = createSpy("code execution parameters");
       exceptionHandler              = createSpy("exception handler");
       spyOn(Cucumber.Util.Exception, 'registerUncaughtExceptionHandler');
-      spyOn(stepDefinition, 'buildCodeCallback').andCallFake(function(codeCallback) { return codeCallback} );
+      spyOn(stepDefinition, 'buildCodeCallback').andCallFake(function(codeCallback) { return codeCallback; });
       spyOn(stepDefinition, 'buildInvocationParameters').andReturn(parameters);
       spyOn(stepDefinition, 'buildExceptionHandlerToCodeCallback').andReturn(exceptionHandler);
       spyOn(stepDefinitionCode, 'apply');
@@ -346,7 +345,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
   });
 
   describe("buildInvocationParameters()", function () {
-    var patternRegexp, step, stepName, stepAttachment, stepAttachmentContents;
+    var patternRegexp, step, stepName, stepAttachmentContents;
     var matches, scenario, callback;
 
     beforeEach(function () {

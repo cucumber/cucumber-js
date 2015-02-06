@@ -1,3 +1,4 @@
+/* jshint -W117 */
 require('../../support/spec_helper');
 
 describe("Cucumber.Util.Arguments", function () {

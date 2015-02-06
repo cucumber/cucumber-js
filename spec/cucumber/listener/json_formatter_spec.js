@@ -1,8 +1,9 @@
+/* jshint -W106 */
 require('../../support/spec_helper');
 
 describe("Cucumber.Listener.JsonFormatterWrapper", function () {
   var Cucumber = requireLib('cucumber');
-  var listener, failedStepResults;
+  var listener, formatter;
 
   beforeEach(function () {
     spyOn(process.stdout, 'write');
@@ -53,7 +54,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
   describe("handleBackgroundEvent()", function () {
 
-    var parentFeatureEvent, background, step, steps, event, callback;
+    var parentFeatureEvent, feature, background, step, steps, event, callback;
 
     beforeEach(function () {
       feature = createSpyWithStubs("feature", {
@@ -100,7 +101,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
   // Handle Scenario
 
   describe("handleBeforeScenarioEvent()", function () {
-    var parentFeatureEvent, scenario, callback;
+    var event, parentFeatureEvent, feature, scenario, callback;
 
     beforeEach(function () {
       feature = createSpyWithStubs("feature", {
@@ -207,7 +208,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           ['b:1', 'b:2', 'b:3'],
           ['c:1', 'c:2', 'c:3']
         ]
-      })
+      });
       var fakeDataTable = createSpyWithStubs("dataTable", { getContents: fakeContents });
       var step = createSpyWithStubs("step", {
         getName: 'Step',
@@ -294,11 +295,11 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           hasAttachments:      false,
           getAttachments:      undefined
         });
-        fakeEvent = createSpyWithStubs("event", {getPayloadItem: stepResult});
+        event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
 
       it("outputs a step with failed status", function () {
-        listener.handleStepResultEvent(fakeEvent, callback);
+        listener.handleStepResultEvent(event, callback);
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});
@@ -317,7 +318,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
 
         it("outputs a step with failed status", function () {
-          listener.handleStepResultEvent(fakeEvent, callback);
+          listener.handleStepResultEvent(event, callback);
 
           expect(formatter.result).toHaveBeenCalledWith({status: 'failed'});
           expect(formatter.embedding.callCount).toEqual(2);
@@ -351,11 +352,11 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
         stepResult.isSuccessful.andReturn(true);
         stepResult.getDuration.andReturn(1);
-        fakeEvent = createSpyWithStubs("event", {getPayloadItem: stepResult});
+        event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
 
       it("outputs a step with passed status", function (){
-        listener.handleStepResultEvent(fakeEvent, callback);
+        listener.handleStepResultEvent(event, callback);
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'passed', duration: 1});
@@ -374,7 +375,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
 
         it("outputs a step with passed status", function () {
-          listener.handleStepResultEvent(fakeEvent, callback);
+          listener.handleStepResultEvent(event, callback);
 
           expect(formatter.result).toHaveBeenCalledWith({status: 'passed', duration: 1});
           expect(formatter.embedding.callCount).toEqual(2);
@@ -407,11 +408,11 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
 
         stepResult.isPending.andReturn(true);
-        fakeEvent = createSpyWithStubs("event", {getPayloadItem: stepResult});
+        event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
 
       it("outputs a step with pending status where step is pending", function (){
-        listener.handleStepResultEvent(fakeEvent, callback);
+        listener.handleStepResultEvent(event, callback);
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'pending', error_message: undefined});
@@ -445,11 +446,11 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         stepResult.isFailed.andReturn(true);
         stepResult.getDuration.andReturn(1);
-        fakeEvent = createSpyWithStubs("event", {getPayloadItem: stepResult});
+        event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
 
       it("outputs a step with failed status", function (){
-        listener.handleStepResultEvent(fakeEvent, callback);
+        listener.handleStepResultEvent(event, callback);
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'failed', duration: 1});
@@ -468,7 +469,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
 
         it("outputs a step with failed status", function () {
-          listener.handleStepResultEvent(fakeEvent, callback);
+          listener.handleStepResultEvent(event, callback);
 
           expect(formatter.result).toHaveBeenCalledWith({status: 'failed', duration: 1});
           expect(formatter.embedding.callCount).toEqual(2);
@@ -501,11 +502,11 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
 
         stepResult.isSkipped.andReturn(true);
-        fakeEvent      = createSpyWithStubs("event", {getPayloadItem: stepResult});
+        event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
 
       it("outputs a step with skipped status where step should be skipped", function (){
-        listener.handleStepResultEvent(fakeEvent, callback);
+        listener.handleStepResultEvent(event, callback);
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'skipped'});
@@ -536,11 +537,11 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         });
 
         stepResult.isUndefined.andReturn(true);
-        fakeEvent = createSpyWithStubs("event", {getPayloadItem: stepResult});
+        event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
 
       it("outputs a step with undefined status where step is undefined", function () {
-        listener.handleStepResultEvent(fakeEvent, callback);
+        listener.handleStepResultEvent(event, callback);
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'undefined'});

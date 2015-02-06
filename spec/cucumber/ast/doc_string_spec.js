@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.DocString", function() {
   var Cucumber = requireLib('cucumber');
-  var docString, contents, uri, line;
+  var docString, contents, uri, line, contentType;
 
   beforeEach(function() {
     contentType = createSpy("content type");

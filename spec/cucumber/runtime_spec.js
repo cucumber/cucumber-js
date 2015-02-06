@@ -4,7 +4,7 @@ describe("Cucumber.Runtime", function() {
   var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
-  var supportCodeLibrary, listeners;
+  var listeners;
   var isStrictRequested;
 
   beforeEach(function() {

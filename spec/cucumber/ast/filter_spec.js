@@ -50,6 +50,6 @@ describe("Cucumber.Ast.Filter", function() {
 
     it("returns whether the scenario was enrolled or not", function() {
       expect(filter.isElementEnrolled(scenario)).toBe(scenarioEnrolled);
-    })
+    });
   });
 });

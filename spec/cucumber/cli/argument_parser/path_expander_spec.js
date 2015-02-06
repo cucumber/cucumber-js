@@ -13,7 +13,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function() {
       unexpandedPaths = [createSpy("unexpanded path 1"), createSpy("unexpanded path 2")];
       expandedPaths   = [createSpy("expanded path 1-1"), createSpy("expanded path 1-2"), createSpy("expanded path 2-1")];
       expandPathResults = [[expandedPaths[0], expandedPaths[1]], [expandedPaths[2]]];
-      epxandedPathsWithoutDups = createSpy("expanded paths without duplicates");
+      expandedPathsWithoutDups = createSpy("expanded paths without duplicates");
       spyOn(PathExpander, 'expandPathWithRegexp').andReturnSeveral(expandPathResults);
       spyOn(_, 'uniq').andReturn(expandedPathsWithoutDups);
     });
@@ -68,7 +68,6 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function() {
     describe("when the path points to a directory", function() {
       beforeEach(function() {
         stats.isDirectory.andReturn(true);
-        globResults = createSpy("glob results");
       });
 
       it("expands the directory", function() {

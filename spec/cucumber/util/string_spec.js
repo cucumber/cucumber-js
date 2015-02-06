@@ -4,8 +4,6 @@ describe("Cucumber.Util.String", function() {
   var Cucumber = requireLib('cucumber');
 
   describe("count()", function() {
-    var hayStack, needle;
-
     it("returns 0 when the needle is not found", function() {
       var count = Cucumber.Util.String.count("cucumber", "a");
       expect(count).toBe(0);

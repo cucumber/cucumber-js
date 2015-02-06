@@ -292,7 +292,7 @@ describe("Cucumber.Ast.Step", function() {
     beforeEach(function() {
       spyOn(step, 'getDataTable');
       spyOn(step, 'attachDataTable');
-      spyOn(Cucumber.Ast, 'DataTable')
+      spyOn(Cucumber.Ast, 'DataTable');
     });
 
     it("gets the current data table", function() {

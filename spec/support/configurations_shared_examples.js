@@ -1,8 +1,8 @@
-itBehavesLikeAllCucumberConfigurations = function itBehavesLikeAllCucumberConfigurations(context) {
+global.itBehavesLikeAllCucumberConfigurations = function (context) {
   var configuration;
 
   beforeEach(function() {
-    configuration = context['configuration'];
+    configuration = context.configuration;
   });
 
   it("supplies the feature sources", function() {
@@ -16,4 +16,4 @@ itBehavesLikeAllCucumberConfigurations = function itBehavesLikeAllCucumberConfig
   it("supplies the AST filter", function() {
     expect(configuration.getAstFilter).toBeAFunction();
   });
-}
+};

@@ -93,7 +93,7 @@
     "uglifyify": "2.5.0"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib && jasmine-node spec && ./bin/cucumber.js -i"
+    "test": "jshint bundler.js bin lib spec && jasmine-node spec && ./bin/cucumber.js -i"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

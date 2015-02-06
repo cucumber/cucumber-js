@@ -3,12 +3,12 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Feature", function () {
   var Cucumber = requireLib('cucumber');
   var scenarioCollection, lastScenario;
-  var feature, keyword, name, uri, line;
+  var feature, keyword, name, description, uri, line;
 
   beforeEach(function () {
     lastScenario = createSpy("Last scenario");
-    scenarioCollection = new Object(); // bare objects because we need .length
-                                       // which is not available on jasmine spies
+    scenarioCollection = {}; // bare objects because we need .length
+                             // which is not available on jasmine spies
     spyOnStub(scenarioCollection, 'add');
     spyOnStub(scenarioCollection, 'insert');
     spyOnStub(scenarioCollection, 'removeAtIndex');
@@ -78,7 +78,7 @@ describe("Cucumber.Ast.Feature", function () {
     describe("when no background was previousyly added", function () {
       it("returns nothing", function () {
         expect(feature.getBackground()).toBeUndefined();
-      })
+      });
     });
   });
 
@@ -115,7 +115,7 @@ describe("Cucumber.Ast.Feature", function () {
   });
 
   describe("insertFeatureElement()", function () {
-    var scenario, background;
+    var index, scenario, background;
 
     beforeEach(function () {
       index      = createSpy("index");
@@ -210,7 +210,7 @@ describe("Cucumber.Ast.Feature", function () {
     });
 
     describe("for each scenario", function () {
-      var userFunction, scenario;
+      var userFunction, scenario, index;
 
       beforeEach(function () {
         userFunction   = scenarios.syncForEach.mostRecentCall.args[0];

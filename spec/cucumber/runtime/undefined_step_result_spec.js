@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.UndefinedStepResult", function() {
   var Cucumber = requireLib('cucumber');
-  var undefinedStepResult, stepResult, step, payload;;
+  var undefinedStepResult, step, payload;
 
   beforeEach(function() {
     undefinedStepResult = createSpy("base step result");

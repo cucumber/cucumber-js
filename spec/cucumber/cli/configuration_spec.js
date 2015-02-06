@@ -13,7 +13,7 @@ describe("Cucumber.Cli.Configuration", function () {
     argumentParser      = createSpyWithStubs("argument parser", {parse: null});
     spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
     configuration       = Cucumber.Cli.Configuration(argv);
-    context['configuration'] = configuration;
+    context.configuration = configuration;
   });
 
   itBehavesLikeAllCucumberConfigurations(context);
@@ -137,8 +137,6 @@ describe("Cucumber.Cli.Configuration", function () {
     });
 
     describe("when the formatter name is unknown", function () {
-      var formatter;
-
       beforeEach(function () {
         argumentParser.getFormat.andReturn("blah");
       });
@@ -183,7 +181,7 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getAstFilter()", function () {
-    var astFilter, tagFilterRules;
+    var astFilter, tagFilterRules, scenarioByLineFilterRules;
 
     beforeEach(function () {
       astFilter      = createSpyWithStubs("AST filter");

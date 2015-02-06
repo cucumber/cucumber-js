@@ -97,6 +97,8 @@ describe("Cucumber.VolatileConfiguration", function() {
     });
 
     describe("when some tags were specified", function() {
+      var rules;
+
       beforeEach(function() {
         tagGroupStrings = [createSpy("tag group string 1"), createSpy("tag group string 2"), createSpy("tag group string 3")];
         rules           = [createSpy("rule 1"), createSpy("rule 2"), createSpy("rule 3")];

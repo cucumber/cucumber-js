@@ -2,9 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
   var Cucumber                     = requireLib('cucumber');
-  var StepDefinitionSnippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder;
-
-  var snippetBuilder, step;
+  var snippetBuilder, step, syntax;
 
   beforeEach(function() {
     step           = createSpy("step");
@@ -71,8 +69,6 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
   });
 
   describe("buildStepDefinitionFunctionName()", function() {
-    var stepType;
-
     beforeEach(function() {
       spyOnStub(step, 'isOutcomeStep');
       spyOnStub(step, 'isEventStep');
@@ -160,13 +156,13 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
   });
 
   describe("parameterizeStepName()", function() {
-    var stepName, parameterizedNumbersStepName, parameterizedStepName;
+    var stepName, parameterizedNumbersStepName, parameterizedStepName, parameterizedExamplesStepName;
 
     beforeEach(function() {
-      parameterizedStepName        = createSpy("parameterized step name");
-      parameterizedExamplesStepName= createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
-      parameterizedNumbersStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedExamplesStepName});
-      stepName                     = createSpyWithStubs("step name", {replace: parameterizedNumbersStepName});
+      parameterizedStepName         = createSpy("parameterized step name");
+      parameterizedExamplesStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
+      parameterizedNumbersStepName  = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedExamplesStepName});
+      stepName                      = createSpyWithStubs("step name", {replace: parameterizedNumbersStepName});
     });
 
     it("replaces numbers with matching groups", function() {
@@ -273,9 +269,9 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function() {
     var stepDefinitionPattern, numberCount, stringCount, count;
 
     beforeEach(function() {
-      numberCount = Math.floor(Math.random() * 10)
-      stringCount = Math.floor(Math.random() * 10)
-      count       = numberCount + stringCount
+      numberCount = Math.floor(Math.random() * 10);
+      stringCount = Math.floor(Math.random() * 10);
+      count       = numberCount + stringCount;
       stepDefinitionPattern = createSpy("step definition pattern");
       spyOn(snippetBuilder, 'buildStepDefinitionPattern').andReturn(stepDefinitionPattern);
       spyOn(Cucumber.Util.String, 'count').andReturnSeveral([numberCount, stringCount]);

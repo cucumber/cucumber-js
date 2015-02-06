@@ -180,12 +180,12 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("visitBackground()", function() {
-    var background, callback, event, payload;
+    var background, scenario, callback, event, payload;
 
     beforeEach(function() {
-      scenario = createSpyWithStubs("background AST element");
-      callback = createSpy("callback");
-      event    = createSpy("event");
+      scenario = createSpyWithStubs('background AST element');
+      callback = createSpy('callback');
+      event    = createSpy('event');
       payload  = {background: background};
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(event);
       spyOn(treeWalker, 'broadcastEvent');
@@ -1224,7 +1224,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function() {
   });
 
   describe("witnessNewScenario()", function() {
-    var scenario, apiScenario, returnValue;
+    var scenario, apiScenario;
 
     beforeEach(function() {
       scenario    = createSpy("scenario");

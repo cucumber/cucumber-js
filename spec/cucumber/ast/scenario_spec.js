@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Scenario", function() {
   var Cucumber = requireLib('cucumber');
-  var scenario, keyword, name, description, uri, line, lastStep;
+  var scenario, steps, keyword, name, description, uri, line, lastStep;
 
   beforeEach(function() {
     keyword     = createSpy("scenario keyword");
@@ -166,6 +166,8 @@ describe("Cucumber.Ast.Scenario", function() {
     });
 
     describe("when there is a background", function() {
+      var background;
+
       beforeEach(function() {
         backgroundSteps = createSpy("background steps");
         background      = createSpyWithStubs("background", {getSteps: backgroundSteps});

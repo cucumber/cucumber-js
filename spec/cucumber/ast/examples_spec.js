@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.Ast.Examples", function() {
   var Cucumber = requireLib('cucumber');
 
-  var examples, 
+  var examples,
       keyword,
       name,
       description,
@@ -19,7 +19,7 @@ describe("Cucumber.Ast.Examples", function() {
 
     examples = Cucumber.Ast.Examples(keyword,name,description,line);
   });
-  
+
   describe("getKeyword()", function() {
     it("returns the keyword of the examples", function() {
       expect(examples.getKeyword()).toBe(keyword);
@@ -47,7 +47,8 @@ describe("Cucumber.Ast.Examples", function() {
   describe("attachDataTable() [getDataTable()]", function() {
     beforeEach(function(){
       examples.attachDataTable(dataTable);
-    })
+    });
+
     it("returns the data table of the examples", function() {
       expect(examples.getDataTable()).toBe(dataTable);
     });
@@ -56,26 +57,28 @@ describe("Cucumber.Ast.Examples", function() {
   describe("ensureDataTableIsAttached() [getDataTable()]", function() {
     beforeEach(function(){
       examples.ensureDataTableIsAttached();
-    })
+    });
+
     it("returns the data table of the examples", function() {
       expect(examples.getDataTable()).toBeDefined();
     });
   });
 
   describe("attachDataTableRow [getDataTable()]", function(){
-    var rawRow, row;
+    var rawRow, row, rawDataTable;
 
     beforeEach(function(){
       rawRow = createSpy("raw row");
-      row =    createSpyWithStubs("row", {raw: rawRow})
+      row = createSpyWithStubs("row", {raw: rawRow});
       examples.attachDataTableRow(row);
     });
+
     it("should have an attached data table with a single row", function(){
       rawDataTable = examples.getDataTable().raw();
       expect(rawDataTable.length).toBe(1);
       expect(rawDataTable[0]).toBe(rawRow);
-    })
-  })
+    });
+  });
 
   describe("hasDataTable()", function() {
     it("returns false when the examples has no attached data table", function() {

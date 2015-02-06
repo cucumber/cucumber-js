@@ -1,6 +1,23 @@
+/* jshint -W106 */
 var GherkinLexer = require('../../lib/cucumber/gherkin_lexer');
 
 describe("GherkinLexer", function () {
+  function noop() {}
+
+  var handlers = {
+    background:       noop,
+    comment:          noop,
+    doc_string:       noop,
+    eof:              noop,
+    feature:          noop,
+    row:              noop,
+    scenario:         noop,
+    step:             noop,
+    tag:              noop,
+    scenario_outline: noop,
+    examples:         noop
+  };
+
   it("detects hyphenated language in header", function () {
     var l = new GherkinLexer('#language: en-lol\nMISHUN: NO BUGZ', handlers);
     l.scan();
@@ -26,19 +43,3 @@ describe("GherkinLexer", function () {
     l.scan();
   });
 });
-
-function noop() {}
-
-var handlers = {
-  background:       noop,
-  comment:          noop,
-  doc_string:       noop,
-  eof:              noop,
-  feature:          noop,
-  row:              noop,
-  scenario:         noop,
-  step:             noop,
-  tag:              noop,
-  scenario_outline: noop,
-  examples:         noop
-};

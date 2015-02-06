@@ -95,10 +95,11 @@ describe("Cucumber.SupportCode.Library", function() {
       });
 
       // parameterized test
-      for(eventName in Cucumber.Listener.Events) {
+      for (var eventName in Cucumber.Listener.Events) {
         if(!Cucumber.Listener.Events.hasOwnProperty(eventName))
           continue;
 
+        /* jshint -W083 */
         describe(eventName + ' event register handler method', function() {
           beforeEach(function() {
             spyOn(library, 'registerHandler');
@@ -116,6 +117,7 @@ describe("Cucumber.SupportCode.Library", function() {
             expect(library.registerHandler).toHaveBeenCalledWithValueAsNthParameter(handler, 2);
           });
         });
+        /* jshint +W083 */
       }
     });
   });
@@ -232,7 +234,7 @@ describe("Cucumber.SupportCode.Library", function() {
         var listener = createSpy('sample listener');
         library.registerListener(listener);
         expect(listenerCollection.add).toHaveBeenCalledWith(listener);
-      })
+      });
     });
 
     describe('registerHandler()', function() {
@@ -545,7 +547,7 @@ describe("Cucumber.SupportCode.Library", function() {
           it("adds the hook to the collection of matching hooks", function() {
             expect(matchingHookCollection.add).toHaveBeenCalledWith(hook);
           });
-        })
+        });
 
         describe("when the hook does not match the scenario", function() {
           beforeEach(function() {
@@ -556,7 +558,7 @@ describe("Cucumber.SupportCode.Library", function() {
           it("adds the hook to the collection of matching hooks", function() {
             expect(matchingHookCollection.add).not.toHaveBeenCalledWith(hook);
           });
-        })
+        });
       });
     });
   });

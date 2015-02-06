@@ -105,7 +105,7 @@ describe("Cucumber.Ast.DataTable", function() {
   });
 
   describe("hashes", function() {
-    var raw, hashDataTable;
+    var raw, rawHashDataTable, hashDataTable;
 
     beforeEach(function() {
       raw              = createSpy("raw data table");

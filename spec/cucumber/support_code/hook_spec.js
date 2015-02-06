@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Hook", function() {
   var Cucumber = requireLib('cucumber');
-  var hook, code, options, stepDefinition, tags;
+  var hook, code, options, stepDefinition;
 
   beforeEach(function() {
     code           = createSpy("hook code");
@@ -56,13 +56,13 @@ describe("Cucumber.SupportCode.Hook", function() {
 
       beforeEach(function () {
         var codeObservingWrapper = function (callback) {
-          code.apply(this, arguments);
+          code.call(this, callback);
         };
         hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
         invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
 
-      it("returns an array containing just the callback", function() {
+      it("returns an array containing only the callback", function() {
         expect(invocationParameters).toEqual([callback]);
       });
 

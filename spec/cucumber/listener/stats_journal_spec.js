@@ -168,7 +168,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
   });
 
   describe("handleSuccessfulStepResult()", function () {
-    var step, stepResult;
+    var step;
 
     beforeEach(function () {
       step       = createSpy("step");
@@ -299,8 +299,6 @@ describe("Cucumber.Listener.StatsJournal", function () {
     });
 
     describe("when the current scenario failed", function () {
-      var scenario;
-
       beforeEach(function () {
         statsJournal.isCurrentScenarioFailing.andReturn(true);
       });

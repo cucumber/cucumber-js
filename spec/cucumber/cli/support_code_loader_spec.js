@@ -185,10 +185,10 @@ describe("Cucumber.Cli.SupportCodeLoader", function() {
 
     describe("returned wrapper function", function() {
       var initializers, returnedWrapperFunction, supportCodeHelper;
-      var nonInitializerSupportCodeCalled;
+      var nonInitializerSupportCode, nonInitializerSupportCodeCalled;
 
-      beforeEach(function() {
-        nonInitializerSupportCode = { call: function() { nonInitializerSupportCodeCalled = true } };
+      beforeEach(function () {
+        nonInitializerSupportCode = { call: function() { nonInitializerSupportCodeCalled = true; } };
         nonInitializerSupportCodeCalled = false;
         initializers = [
           spyOnModule(paths[0]),

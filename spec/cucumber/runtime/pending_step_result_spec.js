@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.PendingStepResult", function() {
   var Cucumber = requireLib('cucumber');
-  var pendingStepResult, stepResult, step, payload;;
+  var pendingStepResult, step, payload;
 
   beforeEach(function() {
     pendingStepResult = createSpy("base step result");

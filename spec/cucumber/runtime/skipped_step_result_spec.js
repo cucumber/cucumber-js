@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.SkippedStepResult", function() {
   var Cucumber = requireLib('cucumber');
-  var skippedStepResult, stepResult, step, payload;;
+  var skippedStepResult, step, payload;
 
   beforeEach(function() {
     skippedStepResult = createSpy("base step result");
