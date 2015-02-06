@@ -85,6 +85,7 @@
   "devDependencies": {
     "connect": "3.2.0",
     "jasmine-node": "1.14.5",
+    "jshint": "^2.6.0",
     "mkdirp": "0.3.5",
     "rimraf": "2.2.8",
     "serve-static": "1.6.1",
@@ -92,7 +93,7 @@
     "uglifyify": "2.5.0"
   },
   "scripts": {
-    "test": "jasmine-node spec && ./bin/cucumber.js -i"
+    "test": "jshint lib && jasmine-node spec && ./bin/cucumber.js -i"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

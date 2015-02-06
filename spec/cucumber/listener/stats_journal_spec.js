@@ -302,19 +302,12 @@ describe("Cucumber.Listener.StatsJournal", function () {
       var scenario;
 
       beforeEach(function () {
-        scenario = createSpy("scenario");
         statsJournal.isCurrentScenarioFailing.andReturn(true);
-        spyOnStub(event, 'getPayloadItem').andReturn(scenario);
       });
 
       it("witnesses a failed scenario", function () {
         statsJournal.handleAfterScenarioEvent(event, callback);
         expect(statsJournal.witnessFailedScenario).toHaveBeenCalled();
-      });
-
-      it("gets the scenario from the payload", function () {
-        statsJournal.handleAfterScenarioEvent(event, callback);
-        expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
       });
     });
 

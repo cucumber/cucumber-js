@@ -27,10 +27,10 @@ describe("Cucumber.Ast.DataTable", function() {
   });
 
   describe("raw()", function() {
-    var rowArray;
+    var rowArray, rawRows;
 
     beforeEach(function() {
-      var rawRows  = [
+      rawRows  = [
         createSpy("raw row 1"),
         createSpy("raw row 2")
       ];
