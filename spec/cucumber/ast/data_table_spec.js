@@ -104,6 +104,40 @@ describe("Cucumber.Ast.DataTable", function () {
     });
   });
 
+  describe("rowsHash", function () {
+    it("returns a hash of the rows", function () {
+      var rawRows = [
+            ['pig', 'oink'],
+            ['cat', 'meow'],
+          ],
+          rowArray = [
+            createSpyWithStubs("row 1", {raw: rawRows[0]}),
+            createSpyWithStubs("row 2", {raw: rawRows[1]}),
+          ];
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
+      
+      expect(dataTable.rowsHash()).toEqual({pig: 'oink', cat: 'meow'});
+    });
+
+    it("fails if the table doesn't have two columns", function () {
+      var rawRows = [
+            ['one', 'two', 'three'],
+            ['cat', 'dog', 'pig']
+          ],
+          rowArray = [
+            createSpyWithStubs("row 1", {raw: rawRows[0]}),
+            createSpyWithStubs("row 2", {raw: rawRows[1]}),
+          ];
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
+      
+      expect(function () {
+        dataTable.rowsHash();
+      }).toThrow();
+    });
+  });
+
   describe("hashes", function () {
     var raw, rawHashDataTable, hashDataTable;
 
