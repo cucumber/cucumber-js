@@ -12,12 +12,12 @@ It runs on both Node.js and *modern* web browsers.
 
 ## Prerequesites
 
-* [Node.js](http://nodejs.org)
+* [Node.js](http://nodejs.org) or [IO.js](https://iojs.org)
 * [NPM](http://npmjs.org)
 
 Cucumber.js is tested on:
 
-* Node.js 0.8 and 0.10 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
+* Node.js 0.8, Node.js 0.10, IO.js (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
