@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.7",
+  "version": "0.4.8",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -54,7 +54,9 @@
     "Elwyn <elwyn@L1.co.nz>",
     "Jan-Eric Duden <jeduden@gmail.com>",
     "kostya.misura <kostya.misura@gmail.com>",
-    "Julian <microweb10@gmail.com>"
+    "Julian <microweb10@gmail.com>",
+    "nebehr <thorgeir@tut.by>",
+    "Jesse Harlin <harlinjesse@gmail.com>"
   ],
   "repository": {
     "type": "git",

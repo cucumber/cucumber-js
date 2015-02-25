@@ -2,11 +2,32 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.7...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.8...master)
+
+### [v0.4.8](https://github.com/cucumber/cucumber-js/compare/v0.4.7...v0.4.8)
+
+#### New features
+
+* Support IO.js (Sam Saccone)
+* Support Node.js 0.12 (Julien Biezemans)
 
 #### Fixes
 
-* Handle BOM, support hyphenated language codes. (close #144) (Aslak Hellesøy)
+* Handle BOM and fix regexp for hyphenated languages (close #144) (Aslak Hellesøy)
+* Fix attachment clean up in hooks (close #282) (nebehr)
+
+#### Documentation, internals and tests
+
+* More thorough specs for GherkinLexer. Fix build? (Aslak Hellesøy)
+* Add jshintrc (Jesse Harlin)
+* Hint lib/ (Julien Biezemans)
+* Hint bundler and bin (Julien Biezemans)
+* Hint spec/ (Julien Biezemans)
+* Be consistent in anonymous function syntax (Julien Biezemans)
+* Use named functions for all constructors (Julien Biezemans)
+* Indent (Julien Biezemans)
+* Add more diagnostics to build (Julien Biezemans)
+* Remove unnecessary spaces in shell commands (Julien Biezemans)
 
 ### [v0.4.7](https://github.com/cucumber/cucumber-js/compare/v0.4.6...v0.4.7)
 
