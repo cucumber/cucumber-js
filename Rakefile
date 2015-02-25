@@ -10,20 +10,20 @@ namespace :test do
 
   desc "Display some diagnostics"
   task :diagnostics do
-    sh %{ node --version }
-    sh %{ ruby --version }
-    sh %{ gem --version }
-    sh %{ bin/cucumber.js --version }
+    sh %{node --version}
+    sh %{ruby --version}
+    sh %{gem --version}
+    sh %{bin/cucumber.js --version}
   end
 
   desc "Run the features through Cucumber (Ruby) and Aruba"
   task :rb do
-    sh %{ cucumber -p quiet }
+    sh %{cucumber -p quiet}
   end
 
   desc "Run the features through Cucumber.js and the specs through Jasmine-node"
   task :js do
-    sh %{ npm test }
+    sh %{npm test}
   end
 
 end
