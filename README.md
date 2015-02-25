@@ -17,7 +17,7 @@ It runs on both Node.js and *modern* web browsers.
 
 Cucumber.js is tested on:
 
-* Node.js 0.8, Node.js 0.10, IO.js (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
+* Node.js 0.8, 0.10, 0.11, 0.12 and IO.js (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
