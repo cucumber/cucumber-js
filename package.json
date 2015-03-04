@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.6",
+  "version": "0.4.8",
   "homepage": "http://github.com/i-e-b/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -72,7 +72,7 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": "0.8 || 0.10 || 0.11 || 0.12"
+    "node": "0.8 || 0.10 || 0.11 || 0.12 || >= 1.0"
   },
   "dependencies": {
     "browserify": "5.11.1",
