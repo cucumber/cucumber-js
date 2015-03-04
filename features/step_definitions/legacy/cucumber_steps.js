@@ -229,7 +229,7 @@ var stepDefinitions = function() {
   };
 
   function _normalizeString(string) {
-    return string.replace(/\s+$/, '').replace(/\n\n/g, "\n");
+    return string.replace(/\s+$/, '').replace(/\r\n/g, "\n").replace(/\n\n/g, "\n");
   };
 
   function printInsideFeatureError(error) {

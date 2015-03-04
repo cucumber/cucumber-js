@@ -12,12 +12,12 @@ It runs on both Node.js and *modern* web browsers.
 
 ## Prerequesites
 
-* [Node.js](http://nodejs.org)
+* [Node.js](http://nodejs.org) or [IO.js](https://iojs.org)
 * [NPM](http://npmjs.org)
 
 Cucumber.js is tested on:
 
-* Node.js 0.8 and 0.10 (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
+* Node.js 0.8, 0.10, 0.11, 0.12 and IO.js (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
@@ -100,10 +100,12 @@ It is possible to tell Cucumber to use another object instance than the construc
 
 var zombie = require('zombie');
 var WorldConstructor = function WorldConstructor(callback) {
-  this.browser = new zombie(); // this.browser will be available in step definitions
+
+  var browser = new zombie();
 
   var world = {
-    visit: function(url, callback) {
+    browser: browser,                        // this.browser will be available in step definitions
+    visit: function(url, callback) {         // this.visit will be available in step definitions
       this.browser.visit(url, callback);
     }
   };
@@ -240,6 +242,7 @@ module.exports = myAfterHooks;
 ```
 
 ##### After features event
+
 The *after features event* is emitted once all features have been executed, just before the process exits. It can be used for tasks such as closing your browser after running automated browser tests with [selenium](https://code.google.com/p/selenium/wiki/WebDriverJs) or [phantomjs](http://phantomjs.org/).
 
 note: There are "Before" and "After" events for each of the following: "Features", "Feature", "Scenario", "Step" as well as the standalone events "Background" and "StepResult". e.g. "BeforeScenario".
@@ -249,21 +252,22 @@ note: There are "Before" and "After" events for each of the following: "Features
 var webdriver = require("selenium-webdriver");
 
 var World = function World(callback) {
-    this.driver = new webdriver.Builder().
-      withCapabilities(webdriver.Capabilities.chrome()).
-      build();
-
-    callback();
+  this.driver = new webdriver.Builder()
+    .withCapabilities(webdriver.Capabilities.chrome())
+    .build();
+  callback();
 }
 
 module.exports = World;
 
 // features/support/after_hooks.js
 var myAfterHooks = function () {
-    this.registerHandler('AfterFeatures', function (event, callback) {
-      this.driver.close();
-      callback();
-    });
+  this.registerHandler('AfterFeatures', function (event, callback) {
+    // clean up!
+    // Be careful, there is no World instance available on `this` here
+    // because all scenarios are done and World instances are long gone.
+    callback();
+  });
 }
 
 module.exports = myAfterHooks;

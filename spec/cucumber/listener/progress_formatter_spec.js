@@ -15,7 +15,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("constructor", function () {
-    it("creates a formatter", function() {
+    it("creates a formatter", function () {
       expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 
@@ -229,10 +229,10 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("handleUndefinedStepResult()", function () {
-    var stepResult, step;
+    var step;
 
     beforeEach(function () {
-      step       = createSpy("step");
+      step = createSpy("step");
     });
 
     it("logs the undefined step character", function () {
@@ -255,7 +255,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   });
 
   describe("handleAfterFeaturesEvent()", function () {
-    var features, summaryLogs, callback;
+    var event, summaryLogs, callback;
 
     beforeEach(function () {
       event       = createSpy("event");

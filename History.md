@@ -2,9 +2,76 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.4...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.8...master)
 
-**TBD**
+### [v0.4.8](https://github.com/cucumber/cucumber-js/compare/v0.4.7...v0.4.8)
+
+#### New features
+
+* Support IO.js (Sam Saccone)
+* Support Node.js 0.12 (Julien Biezemans)
+
+#### Fixes
+
+* Handle BOM and fix regexp for hyphenated languages (close #144) (Aslak Hellesøy)
+* Fix attachment clean up in hooks (close #282) (nebehr)
+
+#### Documentation, internals and tests
+
+* More thorough specs for GherkinLexer. Fix build? (Aslak Hellesøy)
+* Add jshintrc (Jesse Harlin)
+* Hint lib/ (Julien Biezemans)
+* Hint bundler and bin (Julien Biezemans)
+* Hint spec/ (Julien Biezemans)
+* Be consistent in anonymous function syntax (Julien Biezemans)
+* Use named functions for all constructors (Julien Biezemans)
+* Indent (Julien Biezemans)
+* Add more diagnostics to build (Julien Biezemans)
+* Remove unnecessary spaces in shell commands (Julien Biezemans)
+
+### [v0.4.7](https://github.com/cucumber/cucumber-js/compare/v0.4.6...v0.4.7)
+
+#### Documentation, internals and tests
+
+* Do not dispose of step domains (Julien Biezemans)
+* Refactor and add debug code (Julien Biezemans)
+* Create a single domain per run (Julien Biezemans)
+* Add missing AstTreeWalker specs (Julien Biezemans)
+* Indent (Julien Biezemans)
+* Spec domain enter/exit in AstTreeWalker (Julien Biezemans)
+
+### [v0.4.6](https://github.com/cucumber/cucumber-js/compare/v0.4.5...v0.4.6)
+
+#### New features
+
+* Add --no-snippets flag to CLI (close #207) (Krispin Schulz)
+* Add strict mode (close #211) (Elwyn)
+* Add strict mode to volatile configuration (close #258) (Jan-Eric Duden)
+
+#### Fixes
+
+* Fix code loader on windows (close #226) (Gary Taylor)
+
+#### Documentation, internals and tests
+
+* Connect to Rubygems through SSL (Julien Biezemans)
+* Use Node domain's enter/exit in stepdefs (Julien Biezemans)
+* Do not display snippets in build (Julien Biezemans)
+* Asynchronously dispose of step domains (Julien Biezemans)
+* Change order of tests in build (Julien Biezemans)
+* Fix tests to run on Windows (close #216) (kostya.misura)
+* Fix registerHandler() example in README (Julien Biezemans)
+* Fix typo in variable name (Julien Biezemans)
+* Fix World property assignment in README example (Julian)
+* Unix EOLs (Julien Biezemans)
+* Ignore .ruby-* (Julien Biezemans)
+
+### [v0.4.5](https://github.com/cucumber/cucumber-js/compare/v0.4.4...v0.4.5)
+
+#### Documentation, internals and tests
+
+* Fix issue with npm upgrade on node.js v0.8 (Simon Dean)
+* Use Node domain to handle asynchronous exceptions (Julien Biezemans)
 
 ### [v0.4.4](https://github.com/cucumber/cucumber-js/compare/v0.4.3...v0.4.4)
 

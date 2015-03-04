@@ -224,7 +224,7 @@ Scenario: run a single failing feature
       };
       module.exports = cucumberSteps;
       """
-	And a file named "features/support/hooks.js" with:
+    And a file named "features/support/hooks.js" with:
       """
       var hooks = function() {
         this.registerHandler('AfterFeatures', function (event, callback) {
@@ -248,4 +248,4 @@ Scenario: run a single failing feature
       1 scenario (1 failed)
       1 step (1 failed)
       """
-	And the exit status should be 1
+    And the exit status should be 1

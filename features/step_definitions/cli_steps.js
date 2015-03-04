@@ -66,7 +66,7 @@ var cliSteps = function cliSteps() {
   this.Then(/^the exit status should be ([0-9]+)$/, function (code, callback) {
     var world = this;
 
-    var actualCode = world.lastRun['error'] ? world.lastRun['error'].code : "0";
+    var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
 
     if (actualCode != code) {
       throw new Error("Exit code expected: \"" + code + "\"\nGot: \"" + actualCode + "\"\n");
