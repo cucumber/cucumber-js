@@ -3,40 +3,6 @@ var through = require('through');
 var browserify = require('browserify');
 var exorcist = require('exorcist');
 
-function Bundler(bundlePath) {
-  var mapPath = bundlePath + '.map';
-  var source;
-
-  var self = {
-    bundle: function (callback) {
-      var _callback = callback;
-      callback = function (err) {
-        if (_callback) _callback(err);
-        _callback = null;
-      };
-
-      var operation = browserify({debug: true, standalone: 'Cucumber'})
-          .transform({global: true}, fixGherkinLexers)
-          .transform({global:true}, 'uglifyify')
-          .exclude('./lib/cucumber/cli') // TODO: doesn't work, fix this
-          .require('./bundle-main', { expose: 'cucumber' })
-          .bundle()
-          .pipe(exorcist(mapPath))
-          .pipe(fs.createWriteStream(bundlePath, 'utf8'));
-
-      operation.on('error', function (err) {
-        callback(err);
-      });
-
-      operation.on('finish', function () {
-        callback();
-      });
-    }
-  };
-
-  return self;
-}
-
 function fixGherkinLexers(file) {
   var data = '';
 
@@ -68,6 +34,39 @@ function fixGherkinLexers(file) {
   }
 
   return through(write, end);
+}
+
+function Bundler(bundlePath) {
+  var mapPath = bundlePath + '.map';
+
+  var self = {
+    bundle: function (callback) {
+      var _callback = callback;
+      callback = function (err) {
+        if (_callback) _callback(err);
+        _callback = null;
+      };
+
+      var operation = browserify({debug: true, standalone: 'Cucumber'})
+          .transform({global: true}, fixGherkinLexers)
+          .transform({global:true}, 'uglifyify')
+          .exclude('./lib/cucumber/cli') // TODO: doesn't work, fix this
+          .require('./bundle-main', { expose: 'cucumber' })
+          .bundle()
+          .pipe(exorcist(mapPath))
+          .pipe(fs.createWriteStream(bundlePath, 'utf8'));
+
+      operation.on('error', function (err) {
+        callback(err);
+      });
+
+      operation.on('finish', function () {
+        callback();
+      });
+    }
+  };
+
+  return self;
 }
 
 module.exports = Bundler;
