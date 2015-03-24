@@ -83,7 +83,8 @@
     "pogo": "0.9.4",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
-    "walkdir": "0.0.7"
+    "walkdir": "0.0.7",
+    "source-map" : "0.4.2"
   },
   "devDependencies": {
     "connect": "3.2.0",
