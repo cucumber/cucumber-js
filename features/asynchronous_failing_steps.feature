@@ -1,5 +1,7 @@
+@featureTag @ft2
 Feature: Asynchronous failing steps
 
+  @scentag
   Scenario: see asynchronously failing scenarios
     Given the following feature:
       """

@@ -10,7 +10,7 @@ describe("Cucumber.Runtime", function () {
   beforeEach(function () {
     isStrictRequested = false;
     listeners     = createSpyWithStubs("listener collection", {add: null});
-    configuration = createSpyWithStubs("configuration", { isStrictRequested: isStrictRequested });
+    configuration = createSpyWithStubs("configuration", { isStrictRequested: isStrictRequested, findStepDef:false });
     spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
     runtime       = Cucumber.Runtime(configuration);
   });
