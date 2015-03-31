@@ -28,6 +28,8 @@ Feature: Scenario Statuses
           error = "Expected isPending to be false";
         else if (scenario.isUndefined() !== false)
           error = "Expected isUndefined to be false";
+        else if (scenario.getException() !== null)
+          error = "Expected exception to be null";
         else
           error = null;
 
@@ -160,6 +162,8 @@ Feature: Scenario Statuses
             error = "Expected isPending to be false";
           else if (scenario.isUndefined() !== false)
             error = "Expected isUndefined to be false";
+          else if (scenario.getException() !== null)
+            error = "Expected exception to be null";
           else
             error = null;
 
@@ -242,6 +246,8 @@ Feature: Scenario Statuses
             error = "Expected isPending to be false";
           else if (scenario.isUndefined() !== false)
             error = "Expected isUndefined to be false";
+          else if (scenario.getException() !== "Fail")
+            error = "Expected exception to be 'Fail'";
           else
             error = null;
 
@@ -325,6 +331,8 @@ Feature: Scenario Statuses
             error = "Expected isPending to be true";
           else if (scenario.isUndefined() !== false)
             error = "Expected isUndefined to be false";
+          else if (scenario.getException() !== null)
+            error = "Expected exception to be null";
           else
             error = null;
 
@@ -405,6 +413,8 @@ Feature: Scenario Statuses
             error = "Expected isPending to be false";
           else if (scenario.isUndefined() !== true)
             error = "Expected isUndefined to be true";
+          else if (scenario.getException() !== null)
+            error = "Expected exception to be null";
           else
             error = null;
 
