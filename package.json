@@ -1,6 +1,6 @@
 {
-  "name": "cucumber",
-  "description": "The official JavaScript implementation of Cucumber.",
+  "name": "cucumber-sigma",
+  "description": "An unofficial fork of the official JavaScript implementation of Cucumber.",
   "keywords": [
     "testing",
     "bdd",
@@ -8,8 +8,8 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.7",
-  "homepage": "http://github.com/cucumber/cucumber-js",
+  "version": "0.4.16",
+  "homepage": "http://github.com/i-e-b/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
     "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
@@ -48,22 +48,31 @@
     "Stanley Shyiko <stanley.shyiko@gmail.com>",
     "Artur Kania <kaniartur@gmail.com>",
     "Sam Saccone <sam@samx.it>",
-    "Craig Morris <craig.michael.morris@gmail.com>"
+    "Craig Morris <craig.michael.morris@gmail.com>",
+    "Gary Taylor <gary.taylor@hismessages.com>",
+    "Krispin Schulz <krispin.schulz@blackbridge.com>",
+    "Elwyn <elwyn@L1.co.nz>",
+    "Jan-Eric Duden <jeduden@gmail.com>",
+    "kostya.misura <kostya.misura@gmail.com>",
+    "Julian <microweb10@gmail.com>",
+    "nebehr <thorgeir@tut.by>",
+    "Jesse Harlin <harlinjesse@gmail.com>",
+    "Iain Ballard",
+    "Andrew Benjamin"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/cucumber/cucumber-js.git"
+    "url": "git://github.com/i-e-b/cucumber-js.git"
   },
   "bugs": {
-    "email": "cukes@googlegroups.com",
-    "url": "http://github.com/cucumber/cucumber-js/issues"
+    "url": "http://github.com/i-e-b/cucumber-js/issues"
   },
   "directories": {
     "lib": "./lib"
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": "0.8 || 0.10 || 0.11"
+    "node": "0.8 || 0.10 || 0.11 || 0.12 || >= 1.0.0"
   },
   "dependencies": {
     "browserify": "5.11.1",
@@ -74,19 +83,22 @@
     "pogo": "0.9.4",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
-    "walkdir": "0.0.7"
+    "walkdir": "0.0.7",
+    "source-map" : "0.4.2"
   },
   "devDependencies": {
     "connect": "3.2.0",
     "jasmine-node": "1.14.5",
+    "jshint": "^2.6.0",
     "mkdirp": "0.3.5",
     "rimraf": "2.2.8",
     "serve-static": "1.6.1",
     "through": "2.3.4",
-    "uglifyify": "2.5.0"
+    "uglifyify": "2.5.0",
+    "exorcist": "^0.1.6"
   },
   "scripts": {
-    "test": "./bin/cucumber.js && jasmine-node spec"
+    "test": "jshint bundler.js bin lib spec && jasmine-node spec && ./bin/cucumber.js -i"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

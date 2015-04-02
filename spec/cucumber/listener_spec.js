@@ -1,10 +1,10 @@
 require('../support/spec_helper');
 
-describe("Cucumber.Listener", function() {
+describe("Cucumber.Listener", function () {
   var Cucumber = requireLib('cucumber');
   var listener;
 
-  beforeEach(function() {
+  beforeEach(function () {
     listener = Cucumber.Listener();
   });
 
@@ -110,7 +110,7 @@ describe("Cucumber.Listener", function() {
       expect(event.getName).toHaveBeenCalled();
     });
 
-    it("calls buildHandlerName", function() {
+    it("calls buildHandlerName", function () {
       listener.buildHandlerNameForEvent(event);
       expect(buildHandlerName).toHaveBeenCalled();
     });
@@ -149,7 +149,7 @@ describe("Cucumber.Listener", function() {
     });
   });
 
-  describe("buildHandlerName", function() {
+  describe("buildHandlerName", function () {
     it("returns the name of the event with prefix 'handle' and suffix 'Event'", function () {
       var eventName = "shortName";
       var expected = "handle" + eventName + "Event";
@@ -158,22 +158,22 @@ describe("Cucumber.Listener", function() {
     });
   });
 
-  describe("setHandlerForEvent", function() {
+  describe("setHandlerForEvent", function () {
     var shortName = "anEventName";
-    var handler = function(){};
+    var handler = function () {};
     var buildHandlerName;
 
-    beforeEach(function() {
+    beforeEach(function () {
       buildHandlerName = spyOn(listener, "buildHandlerName").andCallThrough();
       listener.setHandlerForEvent(shortName, handler);
     });
 
-    it("attaches the function as a property to itself", function() {
+    it("attaches the function as a property to itself", function () {
       var expectedKey = Cucumber.Listener.EVENT_HANDLER_NAME_PREFIX + shortName + Cucumber.Listener.EVENT_HANDLER_NAME_SUFFIX;
       expect(listener[expectedKey]).toBe(handler);
     });
 
-    it("calls buildHandlerName", function() {
+    it("calls buildHandlerName", function () {
       expect(buildHandlerName).toHaveBeenCalled();
     });
   });

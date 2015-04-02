@@ -69,6 +69,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
     });
 
+    it("defines a --strict flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME]).toEqual(Boolean);
+    });
+
     it("defines a --help flag", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
@@ -77,6 +82,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     it("defines a --version flag", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME]).toEqual(Boolean);
+    });
+
+    it("defines a --no-snippets flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME]).toEqual(Boolean);
     });
   });
 
@@ -102,6 +112,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
     });
 
+    it("defines an alias to --strict as -s", function () {
+      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME;
+      var aliasName  = Cucumber.Cli.ArgumentParser.STRICT_FLAG_SHORT_NAME;
+      var aliasValue = [optionName];
+      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    });
+
     it("defines an alias to --help as -h", function () {
       var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME;
       var aliasName  = Cucumber.Cli.ArgumentParser.HELP_FLAG_SHORT_NAME;
@@ -110,6 +128,13 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
     });
 
+    it("defines an alias to --no-snippets as -i", function () {
+      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + "no-" + Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME;
+      var aliasName  = Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_SHORT_NAME;
+      var aliasValue = [optionName];
+      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    });
   });
 
   describe("getFeatureFilePaths()", function () {
@@ -259,8 +284,6 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getTagGroups()", function () {
-    var _ = require('underscore');
-
     var tagOptionValues, tagGroups;
 
     beforeEach(function () {
@@ -300,6 +323,24 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("returns the format", function () {
       expect(argumentParser.getFormat()).toBe(format);
+    });
+  });
+
+  describe("isStrictRequested()", function () {
+    var isStrictRequested;
+
+    beforeEach(function () {
+      isStrictRequested = createSpy("is strict requested?");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isStrictRequested);
+    });
+
+    it("gets the 'strict' flag with a default value", function () {
+      argumentParser.isStrictRequested();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME, Cucumber.Cli.ArgumentParser.DEFAULT_STRICT_FLAG_VALUE);
+    });
+
+    it("returns the flag value", function () {
+      expect(argumentParser.isStrictRequested()).toBe(isStrictRequested);
     });
   });
 
@@ -357,6 +398,24 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
   });
 
+  describe("shouldSnippetsBeShown()", function () {
+    var shouldSnippetsBeShown;
+
+    beforeEach(function () {
+      shouldSnippetsBeShown = createSpy("should snippets be shown?");
+      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeShown);
+    });
+
+    it("gets the 'snippets' flag with a truthy default value", function () {
+      argumentParser.shouldSnippetsBeShown();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith("snippets", true);
+    });
+
+    it("returns the flag value", function () {
+      expect(argumentParser.shouldSnippetsBeShown()).toBe(shouldSnippetsBeShown);
+    });
+  });
+
   describe("getOptions() [storeOptions()]", function () {
     var options;
 
@@ -371,7 +430,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getOptionOrDefault()", function () {
-    var optionName, defaultVaue;
+    var optionName, defaultValue;
 
     beforeEach(function () {
       optionName   = "option-name";

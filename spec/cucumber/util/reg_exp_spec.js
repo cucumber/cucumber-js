@@ -1,68 +1,68 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Util.RegExp", function() {
+describe("Cucumber.Util.RegExp", function () {
   var Cucumber = requireLib('cucumber');
 
-  describe("escapeString()", function() {
+  describe("escapeString()", function () {
     var escapeString = Cucumber.Util.RegExp.escapeString;
 
-    it("escapes dashes", function() {
+    it("escapes dashes", function () {
       expect(escapeString("-")).toBe("\\-");
     });
 
-    it("escapes square brackets", function() {
+    it("escapes square brackets", function () {
       expect(escapeString("[]")).toBe("\\[\\]");
     });
 
-    it("escapes curly brackets", function() {
+    it("escapes curly brackets", function () {
       expect(escapeString("{}")).toBe("\\{\\}");
     });
 
-    it("escapes parentheses", function() {
+    it("escapes parentheses", function () {
       expect(escapeString("()")).toBe("\\(\\)");
     });
 
-    it("escapes asterisks", function() {
+    it("escapes asterisks", function () {
       expect(escapeString("*")).toBe("\\*");
     });
 
-    it("escapes plusses", function() {
+    it("escapes plusses", function () {
       expect(escapeString("+")).toBe("\\+");
     });
 
-    it("escapes question marks", function() {
+    it("escapes question marks", function () {
       expect(escapeString("?")).toBe("\\?");
     });
 
-    it("escapes dots", function() {
+    it("escapes dots", function () {
       expect(escapeString(".")).toBe("\\.");
     });
 
-    it("escapes backslashes", function() {
+    it("escapes backslashes", function () {
       expect(escapeString("\\")).toBe("\\\\");
     });
 
-    it("escapes carets", function() {
+    it("escapes carets", function () {
       expect(escapeString("^")).toBe("\\^");
     });
 
-    it("escapes dollar signs", function() {
+    it("escapes dollar signs", function () {
       expect(escapeString("$")).toBe("\\$");
     });
 
-    it("escapes pipes", function() {
+    it("escapes pipes", function () {
       expect(escapeString("|")).toBe("\\|");
     });
 
-    it("escapes hashes", function() {
+    it("escapes hashes", function () {
       expect(escapeString("#")).toBe("\\#");
     });
 
-    it("escapes new lines", function() {
+    it("escapes new lines", function () {
       expect(escapeString("\n")).toBe("\\\n");
     });
 
-    it("escapes forward slashes", function() {
+    it("escapes forward slashes", function () {
       expect(escapeString("/")).toBe("\\/");
     });
   });

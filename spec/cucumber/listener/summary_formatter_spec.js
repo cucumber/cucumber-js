@@ -14,11 +14,10 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
     spyOn(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
     summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
-    color = Cucumber.Util.ConsoleColor;
   });
 
   describe("constructor", function () {
-    it("creates a formatter", function() {
+    it("creates a formatter", function () {
       expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 
@@ -32,7 +31,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("creates a stats journal", function () {
       expect(Cucumber.Listener.StatsJournal).toHaveBeenCalled();
-    })
+    });
   });
 
   describe("hear()", function () {
@@ -276,7 +275,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("storeFailedScenario()", function () {
-    var failedScenario, name, uri, line;
+    var failedScenario, name, uri, line, string;
 
     beforeEach(function () {
       name           = "some failed scenario";
@@ -373,9 +372,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logSummary()", function () {
-    var scenarioCount, passedScenarioCount, failedScenarioCount;
-    var stepCount, passedStepCount;
-
     beforeEach(function () {
       spyOn(summaryFormatter, 'logScenariosSummary');
       spyOn(summaryFormatter, 'logStepsSummary');
@@ -475,7 +471,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("for each failed step result", function () {
-      var userFunction, failedStep, forEachCallback;
+      var userFunction, failedStepResult;
 
       beforeEach(function () {
         summaryFormatter.logFailedStepResults();
@@ -485,7 +481,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("tells the visitor to visit the feature and call back when finished", function () {
-        userFunction(failedStepResult);
+        userFunction (failedStepResult);
         expect(summaryFormatter.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
       });
     });
@@ -549,7 +545,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logScenariosSummary()", function () {
-    var scenarioCount, passedScenarioCount, pendingScenarioCount, failedScenarioCount;
+    var scenarioCount, passedScenarioCount, undefinedScenarioCount, pendingScenarioCount, failedScenarioCount;
 
     beforeEach(function () {
       scenarioCount          = 12;
@@ -735,7 +731,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logStepsSummary()", function () {
-    var stepCount, passedStepCount, failedStepCount, skippedStepCount, pendingStepCount;
+    var stepCount, passedStepCount, failedStepCount, skippedStepCount, undefinedStepCount, pendingStepCount;
 
     beforeEach(function () {
       stepCount          = 34;
@@ -997,11 +993,14 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       // Undefined Step Log buffer is string
       undefinedStepLogBuffer = 'undefinedStepsLogBuffer';
       spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
+      // switch snippet output on
+      options.snippets = true;
     });
 
     it("logs a little explanation about the snippets", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      expect(summaryFormatter.log).toHaveBeenCalledWith(color.format('pending', "\nYou can implement step definitions for undefined steps with these snippets:\n\n"));
+      var expectedString = Cucumber.Util.ConsoleColor.format('pending', "\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+      expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
 
     it("gets the undefined steps log buffer", function () {
@@ -1011,7 +1010,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs the undefined steps", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      expect(summaryFormatter.log).toHaveBeenCalledWith(color.format('pending', undefinedStepLogBuffer));
+      var expectedString = Cucumber.Util.ConsoleColor.format('pending', undefinedStepLogBuffer);
+      expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
   });
 });
