@@ -93,7 +93,7 @@ Then /^I see the help of Cucumber$/ do
 end
 
 Then /^it outputs this json:$/ do |json|
-  assert_json_output json
+  assert_json_output json.to_s
 end
 
 Then /^it outputs this text:$/ do |json|
