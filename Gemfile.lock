@@ -25,6 +25,7 @@ GEM
       guard (>= 0.4)
     json (1.7.5)
     listen (0.5.3)
+    rake (10.4.2)
     rspec (2.11.0)
       rspec-core (~> 2.11.0)
       rspec-expectations (~> 2.11.0)
@@ -40,4 +41,6 @@ PLATFORMS
 
 DEPENDENCIES
   aruba (= 0.4.11)
+  cucumber (< 2.0.0)
   guard-jasmine-node (= 0.0.5)
+  rake (= 10.4.2)
