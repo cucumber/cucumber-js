@@ -318,7 +318,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("gets the format option value", function () {
       argumentParser.getFormat();
-      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME, 'progress');
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME, 'pretty');
     });
 
     it("returns the format", function () {

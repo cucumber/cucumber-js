@@ -19,7 +19,7 @@ Feature: Strict mode
     };
     module.exports = cucumberSteps;
     """
-    When I run `cucumber.js features/a.feature --strict`
+    When I run `cucumber.js -f progress features/a.feature --strict`
     Then it outputs this text:
     """
     .
@@ -31,7 +31,7 @@ Feature: Strict mode
     And the exit status should be 0
 
   Scenario: Fail scenario with undefined step with --strict
-    When I run `cucumber.js features/a.feature --strict`
+    When I run `cucumber.js -f progress features/a.feature --strict`
     Then it outputs this text:
     """
     U
@@ -57,7 +57,7 @@ Feature: Strict mode
     };
     module.exports = cucumberSteps;
     """
-    When I run `cucumber.js features/a.feature --strict`
+    When I run `cucumber.js -f progress features/a.feature --strict`
     Then it outputs this text:
     """
     P
@@ -68,7 +68,7 @@ Feature: Strict mode
     And the exit status should be 1
 
   Scenario: Fail scenario with undefined step with -S
-    When I run `cucumber.js features/a.feature -S`
+    When I run `cucumber.js -f progress features/a.feature -S`
     Then it outputs this text:
     """
     U
@@ -94,7 +94,7 @@ Feature: Strict mode
     };
     module.exports = cucumberSteps;
     """
-    When I run `cucumber.js features/a.feature -S`
+    When I run `cucumber.js -f progress features/a.feature -S`
     Then it outputs this text:
     """
     P
