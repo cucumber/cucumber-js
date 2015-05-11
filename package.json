@@ -1,6 +1,6 @@
 {
-  "name": "cucumber",
-  "description": "The official JavaScript implementation of Cucumber.",
+  "name": "cucumber-sigma",
+  "description": "An unofficial fork of the official JavaScript implementation of Cucumber.",
   "keywords": [
     "testing",
     "bdd",
@@ -8,8 +8,8 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.8",
-  "homepage": "http://github.com/cucumber/cucumber-js",
+  "version": "0.4.16",
+  "homepage": "http://github.com/i-e-b/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
     "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
@@ -56,15 +56,16 @@
     "kostya.misura <kostya.misura@gmail.com>",
     "Julian <microweb10@gmail.com>",
     "nebehr <thorgeir@tut.by>",
-    "Jesse Harlin <harlinjesse@gmail.com>"
+    "Jesse Harlin <harlinjesse@gmail.com>",
+    "Iain Ballard",
+    "Andrew Benjamin"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/cucumber/cucumber-js.git"
+    "url": "git://github.com/i-e-b/cucumber-js.git"
   },
   "bugs": {
-    "email": "cukes@googlegroups.com",
-    "url": "http://github.com/cucumber/cucumber-js/issues"
+    "url": "http://github.com/i-e-b/cucumber-js/issues"
   },
   "directories": {
     "lib": "./lib"
@@ -82,7 +83,8 @@
     "pogo": "0.9.4",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
-    "walkdir": "0.0.7"
+    "walkdir": "0.0.7",
+    "source-map" : "0.4.2"
   },
   "devDependencies": {
     "connect": "3.2.0",

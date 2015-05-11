@@ -7,11 +7,11 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
   var supportCodeLoader, supportCodeFilePaths, primeSupportCodeFilePaths, secondarySupportCodeFilePaths;
   var supportCodeInitializer, supportCodeLibrary;
 
-  beforeEach(function () {
-    supportCodeFilePaths          = [createSpyWithStubs("first secondary support code file path",  {match: false}),
-                                     createSpyWithStubs("first prime support code file path",      {match: true}),
-                                     createSpyWithStubs("second prime support code file path",     {match: true}),
-                                     createSpyWithStubs("second secondary support code file path", {match: false})];
+  beforeEach(function() {
+    supportCodeFilePaths          = [createSpyWithStubs("first secondary support code file path",  {match: false, replace:false}),
+                                     createSpyWithStubs("first prime support code file path",      {match: true, replace:false}),
+                                     createSpyWithStubs("second prime support code file path",     {match: true, replace:false}),
+                                     createSpyWithStubs("second secondary support code file path", {match: false, replace:false})];
     primeSupportCodeFilePaths     = [supportCodeFilePaths[1], supportCodeFilePaths[2]];
     secondarySupportCodeFilePaths = [supportCodeFilePaths[0], supportCodeFilePaths[3]];
     supportCodeLoader             = Cucumber.Cli.SupportCodeLoader(supportCodeFilePaths);
@@ -110,7 +110,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
 
     it("builds the support code initializer from the paths", function () {
       supportCodeLoader.getPrimeSupportCodeInitializer();
-      expect(supportCodeLoader.buildSupportCodeInitializerFromPaths).toHaveBeenCalledWith(primeSupportCodeFilePaths);
+      expect(supportCodeLoader.buildSupportCodeInitializerFromPaths).toHaveBeenCalledWith(primeSupportCodeFilePaths, "primary");
     });
 
     it("returns the support code initializer built from the paths", function () {
@@ -147,7 +147,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
 
     it("builds the support code initializer from the paths", function () {
       supportCodeLoader.getSecondarySupportCodeInitializer();
-      expect(supportCodeLoader.buildSupportCodeInitializerFromPaths).toHaveBeenCalledWith(secondarySupportCodeFilePaths);
+      expect(supportCodeLoader.buildSupportCodeInitializerFromPaths).toHaveBeenCalledWith(secondarySupportCodeFilePaths, "secondary");
     });
 
     it("returns the support code initializer built from the paths", function () {
