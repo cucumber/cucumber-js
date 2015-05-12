@@ -86,14 +86,15 @@
   },
   "devDependencies": {
     "connect": "3.2.0",
+    "exorcist": "^0.1.6",
     "jasmine-node": "1.14.5",
     "jshint": "^2.6.0",
     "mkdirp": "0.3.5",
     "rimraf": "2.2.8",
     "serve-static": "1.6.1",
+    "tape": "^4.0.0",
     "through": "2.3.4",
-    "uglifyify": "2.5.0",
-    "exorcist": "^0.1.6"
+    "uglifyify": "2.5.0"
   },
   "scripts": {
     "test": "jshint bundler.js bin lib spec && jasmine-node spec && bin/cucumber.js -f progress -i"
