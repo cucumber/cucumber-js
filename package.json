@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.8",
+  "version": "0.4.9",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -94,7 +94,8 @@
     "serve-static": "1.6.1",
     "tape": "^4.0.0",
     "through": "2.3.4",
-    "uglifyify": "2.5.0"
+    "uglifyify": "2.5.0",
+    "tape": "4.0.0"
   },
   "scripts": {
     "test": "jshint bundler.js bin lib spec && jasmine-node spec && bin/cucumber.js -f progress -i"
