@@ -1,4 +1,6 @@
 # Cucumber.js
+
+[![Join the chat at https://gitter.im/cucumber/cucumber-js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
   [![Build Status](https://travis-ci.org/cucumber/cucumber-js.png?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
   [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js) [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
 
