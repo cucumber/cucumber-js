@@ -1,3 +1,4 @@
+// vim: noai:ts=2:sw=2
 require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Library", function () {
@@ -142,10 +143,11 @@ describe("Cucumber.SupportCode.Library", function () {
         stepName = createSpy("Step name");
       });
 
-      it("asks each step definition in the library if they match the step name", function () {
-        library.lookupStepDefinitionByName(stepName);
-        stepDefinitions.forEach(function (stepDefinition) {
-          expect(stepDefinition.matchesStepName).toHaveBeenCalledWith(stepName);
+      it("asks each step definition in the library if they match the step name", function() {
+        var tagNames = [];
+        library.lookupStepDefinitionByName(stepName, tagNames);
+        stepDefinitions.forEach(function(stepDefinition) {
+          expect(stepDefinition.matchesStepName).toHaveBeenCalledWith(stepName, tagNames);
         });
       });
 
@@ -164,9 +166,10 @@ describe("Cucumber.SupportCode.Library", function () {
         spyOn(library, 'lookupStepDefinitionByName');
       });
 
-      it("looks up the step definition by the name", function () {
-        library.isStepDefinitionNameDefined(name);
-        expect(library.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
+      it("looks up the step definition by the name", function() {
+        var tagNames = [];
+        library.isStepDefinitionNameDefined(name, tagNames);
+        expect(library.lookupStepDefinitionByName).toHaveBeenCalledWith(name, tagNames);
       });
 
       describe("when a step definition is found", function () {
@@ -204,9 +207,12 @@ describe("Cucumber.SupportCode.Library", function () {
         spyOnStub(stepDefinitionCollection, 'add');
       });
 
-      it("creates a step definition with the name and code", function () {
+      it("creates a step definition with the name and code, using the global last code path and type", function() {
+        // this is horrible
+        global.CUKE_LAST_CODE_PATH = "uri";
+        global.CUKE_SUPPORT_CODE_TYPE = "type";
         library.defineStep(name, code);
-        expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, code);
+        expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, code, "uri", "type");
       });
 
       it("adds the step definition to the step collection", function () {

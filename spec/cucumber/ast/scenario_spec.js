@@ -245,9 +245,10 @@ describe("Cucumber.Ast.Scenario", function () {
         forEachCallback = createSpy("forEach() callback");
       });
 
-      it("instructs the visitor to visit the step and call back when finished", function () {
-        userFunction (step, forEachCallback);
-        expect(visitor.visitStep).toHaveBeenCalledWith(step, forEachCallback);
+      it("instructs the visitor to visit the step and call back when finished", function() {
+        var tags = [];
+        userFunction(step, forEachCallback);
+        expect(visitor.visitStep).toHaveBeenCalledWith(step, forEachCallback, tags);
       });
     });
   });

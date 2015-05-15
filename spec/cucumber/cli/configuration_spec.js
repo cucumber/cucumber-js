@@ -10,7 +10,7 @@ describe("Cucumber.Cli.Configuration", function () {
 
   beforeEach(function () {
     argv                = createSpy("arguments (argv)");
-    argumentParser      = createSpyWithStubs("argument parser", {parse: null});
+    argumentParser      = createSpyWithStubs("argument parser", {parse: null, getBreakOnSupportCodeLoaded:null});
     spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
     configuration       = Cucumber.Cli.Configuration(argv);
     context.configuration = configuration;
