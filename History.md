@@ -2,7 +2,26 @@
 
 ## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.8...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.9...master)
+
+### [v0.4.9](https://github.com/cucumber/cucumber-js/compare/v0.4.8...v0.4.9)
+
+#### New features
+
+* Make pretty formatter the default (Julien Biezemans)
+* Filter stack traces (close #157) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Separate source map from bundle (Julien Biezemans)
+* Hint (Julien Biezemans)
+* Fix misspelling io.js (Sonny Piers)
+* Add 0.12 to supported engines in NPM manifest (Julien Biezemans)
+* Fix test script to be more portable (Sam Saccone)
+* Force Cucumber <2 for now (Julien Biezemans)
+* Bump Cucumber gem to 2.0.0 (Julien Biezemans)
+* Explicitly require json module in Ruby stepdefs (Julien Biezemans)
+* Add CLI help section for --backtrace (Julien Biezemans)
 
 ### [v0.4.8](https://github.com/cucumber/cucumber-js/compare/v0.4.7...v0.4.8)
 
