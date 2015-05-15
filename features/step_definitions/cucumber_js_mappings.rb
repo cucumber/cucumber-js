@@ -1,3 +1,5 @@
+require 'json'
+
 module CucumberJsMappings
   STEP_DEFINITIONS_FILE                   = "features/step_definitions/cucumber_steps.js"
   COFFEE_SCRIPT_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.coffee"
