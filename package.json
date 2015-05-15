@@ -78,8 +78,10 @@
     "coffee-script": "1.8.0",
     "cucumber-html": "0.2.3",
     "gherkin": "2.12.2",
+    "hide-stack-frames-from": "^1.0.0",
     "nopt": "3.0.1",
     "pogo": "0.9.4",
+    "stack-chain": "^1.3.1",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
     "walkdir": "0.0.7"

@@ -78,11 +78,12 @@ describe("Cucumber.VolatileConfiguration", function () {
 
   describe("isStrictMode()",function () {
 		it("is false if strict option is not specified",function () {
-			configuration		= Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {});
+			configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {});
 			expect(configuration.isStrictMode()).toEqual(false);
 		});
+
 		it("is true if strict option is set",function () {
-			configuration		= Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {strict:true});
+			configuration	= Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {strict:true});
 			expect(configuration.isStrictMode()).toEqual(true);
 		});
 	});
@@ -149,6 +150,23 @@ describe("Cucumber.VolatileConfiguration", function () {
     it("returns the rule", function () {
       var returned = configuration.buildAstFilterRuleFromTagGroupString(tagGroupString);
       expect(returned).toBe(rule);
+    });
+  });
+
+  describe("shouldFilterStackTraces", function () {
+    it("returns true by default", function () {
+      configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {});
+			expect(configuration.shouldFilterStackTraces()).toBeTruthy();
+    });
+
+    it("returns false when the backtrace option is truthy", function () {
+      configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, { backtrace: true });
+			expect(configuration.shouldFilterStackTraces()).toBeFalsy();
+    });
+
+    it("returns true when the backtrace option is falsy", function () {
+      configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, { backtrace: false});
+			expect(configuration.shouldFilterStackTraces()).toBeTruthy();
     });
   });
 });

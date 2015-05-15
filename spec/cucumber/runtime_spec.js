@@ -10,8 +10,10 @@ describe("Cucumber.Runtime", function () {
   beforeEach(function () {
     isStrictRequested = false;
     listeners     = createSpyWithStubs("listener collection", {add: null});
-    configuration = createSpyWithStubs("configuration", { isStrictRequested: isStrictRequested });
+    configuration = createSpyWithStubs("configuration", { isStrictRequested: isStrictRequested, shouldFilterStackTraces: true });
     spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
+    spyOn(Cucumber.Runtime.StackTraceFilter, 'filter');
+    spyOn(Cucumber.Runtime.StackTraceFilter, 'unfilter');
     runtime       = Cucumber.Runtime(configuration);
   });
 
@@ -69,9 +71,51 @@ describe("Cucumber.Runtime", function () {
       expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners, isStrictRequested);
     });
 
+    describe("when stack traces should be filtered", function () {
+      beforeEach(function () {
+        configuration.shouldFilterStackTraces.andReturn(true);
+      });
+
+      it("activates the stack trace filter", function () {
+        runtime.start(callback);
+        expect(Cucumber.Runtime.StackTraceFilter.filter).toHaveBeenCalled();
+      });
+    });
+
+    describe("when stack traces should be unfiltered", function () {
+      beforeEach(function () {
+        configuration.shouldFilterStackTraces.andReturn(false);
+      });
+
+      it("does not activate the stack trace filter", function () {
+        runtime.start(callback);
+        expect(Cucumber.Runtime.StackTraceFilter.filter).not.toHaveBeenCalled();
+      });
+    });
+
     it("tells the AST tree walker to walk", function () {
       runtime.start(callback);
-      expect(astTreeWalker.walk).toHaveBeenCalledWith(callback);
+      expect(astTreeWalker.walk).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+    });
+
+    describe("when the AST tree walker is done walking", function () {
+      var walkCallback, walkResults;
+
+      beforeEach(function () {
+        runtime.start(callback);
+        walkCallback = astTreeWalker.walk.mostRecentCall.args[0];
+        walkResults = createSpy("AST tree walker results");
+      });
+
+      it("deactivates the stack trace filter", function () {
+        walkCallback(walkResults);
+        expect(Cucumber.Runtime.StackTraceFilter.unfilter).toHaveBeenCalled();
+      });
+
+      it("calls back", function () {
+        walkCallback(walkResults);
+        expect(callback).toHaveBeenCalledWith(walkResults);
+      });
     });
   });
 
