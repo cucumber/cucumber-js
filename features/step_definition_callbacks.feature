@@ -1,6 +1,6 @@
-Feature: Node.js-like callback failures
+Feature: Step definition callbacks
 
-  Scenario: fail with single-parameter error
+  Scenario: fail with single-parameter error (Node.js style)
     Given a scenario with:
       """
       When I divide 10 by 0
