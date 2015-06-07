@@ -20,3 +20,9 @@ Feature: Step definition callbacks
     When Cucumber executes that mapping
     Then the mapping is run
     And the scenario fails
+
+  Scenario: succeed synchronously
+    Given a passing synchronous mapping
+    When Cucumber executes that mapping
+    Then the mapping is run
+    And the scenario passes

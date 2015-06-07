@@ -27,6 +27,11 @@ Given(/^a failing promise-based mapping$/) do
   write_failing_promise_mapping(@mapping_name)
 end
 
+Given /^a passing synchronous mapping$/ do
+  @mapping_name = "passing synchronous stepdef"
+  write_passing_synchronous_mapping(@mapping_name)
+end
+
 Given /^the step "([^"]*)" has an asynchronous pending mapping$/ do |step_name|
   write_asynchronous_pending_mapping(step_name)
 end

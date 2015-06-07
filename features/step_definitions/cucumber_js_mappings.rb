@@ -56,6 +56,10 @@ module CucumberJsMappings
     append_step_definition(step_name, "return { then: function (ok, ko) { ko(new Error('Error from promise stepdef')) } }", [], false)
   end
 
+  def write_passing_synchronous_mapping(step_name)
+    append_step_definition(step_name, "// no-op, no callback", [], false)
+  end
+
   def write_failing_mapping(step_name)
     write_failing_mapping_with_message(step_name, "I was supposed to fail.")
   end

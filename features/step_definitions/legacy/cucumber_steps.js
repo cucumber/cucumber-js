@@ -79,8 +79,6 @@ var stepDefinitions = function() {
       for(var i = 0; i < arguments.length - 1; i++) {
         _recordedStepParameters.push(arguments[i]);
       };
-      var callback = arguments[arguments.length - 1];
-      callback();
     };
     _addStepDefinition(WHEN_KEYWORD, name, content);
     callback();
