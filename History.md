@@ -1,8 +1,23 @@
 # Cucumber.js changelog
 
-## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
+## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.9...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
+
+### [v0.5.0](https://github.com/cucumber/cucumber-js/compare/v0.4.9...v0.5.0)
+
+#### New features
+
+* Support promises from step definitions (Will Farrell)
+* Support synchronous step definitions (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove irrelevant feature file (Julien Biezemans)
+* Reorganise callback feature (Julien Biezemans)
+* Remove unused dependency (Julien Biezemans)
+* Document new step definition styles (Julien Biezemans)
+* Make step definitions synchronous in example app (Julien Biezemans)
 
 ### [v0.4.9](https://github.com/cucumber/cucumber-js/compare/v0.4.8...v0.4.9)
 
