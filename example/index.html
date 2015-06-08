@@ -62,22 +62,18 @@ this.World.prototype.incrementBy = function(number) {
 
 var Given = When = Then = this.defineStep;
 
-Given(/^a variable set to (\d+)$/, function(number, callback) {
+Given(/^a variable set to (\d+)$/, function(number) {
   this.setTo(number);
-  callback();
 });
 
-When(/^I increment the variable by (\d+)$/, function(number, callback) {
+When(/^I increment the variable by (\d+)$/, function(number) {
   this.incrementBy(number);
-  callback();
 });
 
-Then(/^the variable should contain (\d+)$/, function(number, callback) {
+Then(/^the variable should contain (\d+)$/, function(number) {
   if (this.variable != parseInt(number))
-    callback.fail(new Error('Variable should contain ' + number +
-      ' but it contains ' + this.variable + '.'));
-  else
-    callback();
+    throw new Error('Variable should contain ' + number +
+      ' but it contains ' + this.variable + '.');
 });</textarea>
 
     <h2>Output</h2>
