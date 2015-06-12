@@ -79,9 +79,8 @@ Support files let you setup the environment in which steps will be run, and defi
 
 ```javascript
 // features/support/world.js
-module.exports = function () {
-  var zombie = require('zombie');
-  this.World = function World(callback) {
+var zombie = require('zombie');
+function World(callback) {
     this.browser = new zombie(); // this.browser will be available in step definitions
 
     this.visit = function (url, callback) {
@@ -91,6 +90,7 @@ module.exports = function () {
     callback(); // tell Cucumber we're finished and to use 'this' as the world instance
   };
 }
+module.exports.World = World;
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
@@ -99,7 +99,7 @@ It is possible to tell Cucumber to use another object instance than the construc
 // features/support/world.js
 
 var zombie = require('zombie');
-var WorldConstructor = function WorldConstructor(callback) {
+function WorldFactory(callback) {
 
   var browser = new zombie();
 
@@ -112,7 +112,7 @@ var WorldConstructor = function WorldConstructor(callback) {
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 };
-exports.World = WorldConstructor;
+exports.World = WorldFactory;
 ```
 
 #### Step Definitions
