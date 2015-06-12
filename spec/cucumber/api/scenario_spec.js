@@ -87,7 +87,7 @@ describe("Cucumber.Api.Scenario", function () {
   });
 
   describe("getException()", function () {
-    it("returns exception which broken the scenario", function () {
+    it("returns the exception raised when running the scenario", function () {
       expect(scenario.getException()).toBe(scenarioGetFailureException);
     });
   });
