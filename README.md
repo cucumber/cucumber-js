@@ -8,7 +8,7 @@
 [![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
 
 
-*Cucumber*, the [popular Behaviour-Driven Development tool](http://cukes.info), brought to your JavaScript stack.
+*Cucumber*, the [popular Behaviour-Driven Development tool](http://cucumber.io), brought to your JavaScript stack.
 
 It runs on both Node.js and *modern* web browsers.
 
@@ -501,4 +501,4 @@ See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.
 * Twitter: [@cucumber_js](https://twitter.com/#!/cucumber_js/)
 * IRC: [#cucumber](http://webchat.freenode.net?channels=cucumber&uio=d4) on Freenode
 * Google Groups: [cukes](https://groups.google.com/group/cukes)
-* [cukes.info](http://cukes.info)
+* [cucumber.io](http://cucumber.io)
