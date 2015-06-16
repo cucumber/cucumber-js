@@ -2,7 +2,24 @@
 
 ## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.1...master)
+
+### [v0.5.1](https://github.com/cucumber/cucumber-js/compare/v0.5.0...v0.5.1)
+
+#### New features
+
+* Support placeholders in scenario outlines (chrismilleruk)
+* Add failure exception to scenario object (Mateusz Derks)
+
+#### Documentation, internals and tests
+
+* Fix World example in README (Julien Biezemans)
+* Remove moot `version` property from bower.json (Kevin Kirsche)
+* Remove obsolete release instruction for bower (Julien Biezemans)
+* Add Gitter badge (Julien Biezemans)
+* Rephrase spec example (Julien Biezemans)
+* Add documentation for attachments (Simon Dean)
+* Fix name of Cucumber.Api.Scenario in README (Simon Dean)
 
 ### [v0.5.0](https://github.com/cucumber/cucumber-js/compare/v0.4.9...v0.5.0)
 
