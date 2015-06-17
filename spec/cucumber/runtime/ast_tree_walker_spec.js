@@ -651,7 +651,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     var stepResult, callback, event, payload;
 
     beforeEach(function () {
-      stepResult = createSpyWithStubs("Step result", {isFailed: undefined, isPending: undefined});
+      stepResult = createSpyWithStubs("Step result", {isFailed: undefined, isPending: undefined, getFailureException: null});
       callback   = createSpy("Callback");
       event      = createSpy("Event");
       payload    = {stepResult: stepResult};
@@ -682,7 +682,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       it("witnesses a failed step", function () {
         treeWalker.visitStepResult(stepResult, callback);
-        expect(treeWalker.witnessFailedStep).toHaveBeenCalled();
+        expect(treeWalker.witnessFailedStep).toHaveBeenCalledWith(stepResult.getFailureException());
       });
     });
 

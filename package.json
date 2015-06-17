@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.4.8",
+  "version": "0.5.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -56,7 +56,13 @@
     "kostya.misura <kostya.misura@gmail.com>",
     "Julian <microweb10@gmail.com>",
     "nebehr <thorgeir@tut.by>",
-    "Jesse Harlin <harlinjesse@gmail.com>"
+    "Jesse Harlin <harlinjesse@gmail.com>",
+    "Sonny Piers <sonny@fastmail.net>",
+    "Will Farrell <will@mojotech.com>",
+    "Kevin Kirsche <Kev.Kirsche+GitHub@gmail.com>",
+    "chrismilleruk <chrismilleruk@gmail.com>",
+    "Mateusz Derks <mateusz.derks@schibsted.pl>"
+
   ],
   "repository": {
     "type": "git",
@@ -80,6 +86,7 @@
     "gherkin": "2.12.2",
     "nopt": "3.0.1",
     "pogo": "0.9.4",
+    "stack-chain": "^1.3.1",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
     "walkdir": "0.0.7"
@@ -96,7 +103,7 @@
     "exorcist": "^0.1.6"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib spec && jasmine-node spec && ./bin/cucumber.js -i"
+    "test": "jshint bundler.js bin lib spec && jasmine-node spec && bin/cucumber.js -f progress -i"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

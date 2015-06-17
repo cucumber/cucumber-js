@@ -335,4 +335,21 @@ describe("Cucumber.Cli.Configuration", function () {
     });
   });
 
+  describe("shouldFilterStackTraces()", function () {
+    beforeEach(function () {
+      spyOnStub(argumentParser, 'shouldFilterStackTraces');
+    });
+
+    it("asks the argument parser whether the stack traces are filtered", function () {
+      configuration.shouldFilterStackTraces();
+      expect(argumentParser.shouldFilterStackTraces).toHaveBeenCalled();
+    });
+
+    it("tells whether the stack traces are filtered or not", function () {
+      var shouldStackTracesBeFiltered = createSpy("filter stack traces?");
+      argumentParser.shouldFilterStackTraces.andReturn(shouldStackTracesBeFiltered);
+      expect(configuration.shouldFilterStackTraces()).toBe(shouldStackTracesBeFiltered);
+    });
+  });
+
 });

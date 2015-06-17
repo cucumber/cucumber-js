@@ -1,3 +1,5 @@
+require 'json'
+
 module CucumberJsMappings
   STEP_DEFINITIONS_FILE                   = "features/step_definitions/cucumber_steps.js"
   COFFEE_SCRIPT_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.coffee"
@@ -44,6 +46,18 @@ module CucumberJsMappings
 
   def write_asynchronous_pending_mapping(step_name)
     append_step_definition(step_name, "setTimeout(callback.pending, 10);")
+  end
+
+  def write_passing_promise_mapping(step_name)
+    append_step_definition(step_name, "return { then: function (ok, ko) { ok() } }", [], false)
+  end
+
+  def write_failing_promise_mapping(step_name)
+    append_step_definition(step_name, "return { then: function (ok, ko) { ko(new Error('Error from promise stepdef')) } }", [], false)
+  end
+
+  def write_passing_synchronous_mapping(step_name)
+    append_step_definition(step_name, "// no-op, no callback", [], false)
   end
 
   def write_failing_mapping(step_name)
@@ -343,8 +357,8 @@ EOF
 
   protected
 
-  def append_step_definition(step_name, code, params = [])
-    params.push("callback");
+  def append_step_definition(step_name, code, params = [], callback = true)
+    params.push("callback") if callback
     params_string = params.join(", ")
     indented_code = indent_code(code).rstrip
     append_support_code <<-EOF

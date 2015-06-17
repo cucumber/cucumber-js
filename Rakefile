@@ -14,6 +14,7 @@ namespace :test do
     sh %{ruby --version}
     sh %{gem --version}
     sh %{bin/cucumber.js --version}
+    sh %{cucumber --version}
   end
 
   desc "Run the features through Cucumber (Ruby) and Aruba"

@@ -236,14 +236,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         });
       });
 
-      it("supplies a function to the step to let it claim its pendingness", function () {
-        expect(codeExecutionCallback.pending).toBeAFunction ();
-      });
-
-      it("supplies a function to the step to let it fail asynchronously", function () {
-        expect(codeExecutionCallback.fail).toBeAFunction ();
-      });
-
       describe("pending()", function () {
         var pendingReason, pendingStepResult;
 
@@ -332,6 +324,19 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       it("handles the exception with the exception handler", function () {
         stepDefinition.invoke(step, world, scenario, callback);
         expect(exceptionHandler).toHaveBeenCalledWith(failureException);
+      });
+    });
+
+    describe("when the step definition is synchronous (no callback, no promise)", function () {
+      xit("calls the code callback without error");
+    });
+
+    describe("when the step definition returns a promise", function () {
+      describe("when the promise resolves", function () {
+        xit("calls the code callback without error");
+      });
+      describe("when the promise is rejected", function () {
+        xit("calls the code callback with an error");
       });
     });
   });

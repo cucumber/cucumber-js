@@ -88,6 +88,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME]).toEqual(Boolean);
     });
+
+    it("defines a --backtrace flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_NAME]).toEqual(Boolean);
+    });
   });
 
   describe("getShortenedOptionDefinitions()", function () {
@@ -131,6 +136,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     it("defines an alias to --no-snippets as -i", function () {
       var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + "no-" + Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME;
       var aliasName  = Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_SHORT_NAME;
+      var aliasValue = [optionName];
+      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    });
+
+    it("defines an alias to --backtrace as -b", function () {
+      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_NAME;
+      var aliasName  = Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_SHORT_NAME;
       var aliasValue = [optionName];
       var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
@@ -318,7 +331,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("gets the format option value", function () {
       argumentParser.getFormat();
-      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME, 'progress');
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME, 'pretty');
     });
 
     it("returns the format", function () {
@@ -413,6 +426,27 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("returns the flag value", function () {
       expect(argumentParser.shouldSnippetsBeShown()).toBe(shouldSnippetsBeShown);
+    });
+  });
+
+  describe("shouldFilterStackTraces()", function () {
+    beforeEach(function () {
+      spyOn(argumentParser, 'getOptionOrDefault');
+    });
+
+    it("gets the 'backtrace' flag with a falsy default value", function () {
+      argumentParser.shouldFilterStackTraces();
+      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith("backtrace", false);
+    });
+
+    it("returns true when the backtrace flag isn't set", function () {
+      argumentParser.getOptionOrDefault.andReturn(false);
+      expect(argumentParser.shouldFilterStackTraces()).toBeTruthy();
+    });
+
+    it("returns false when the backtrace flag is set", function () {
+      argumentParser.getOptionOrDefault.andReturn(true);
+      expect(argumentParser.shouldFilterStackTraces()).toBeFalsy();
     });
   });
 

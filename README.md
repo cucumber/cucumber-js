@@ -1,12 +1,14 @@
 # Cucumber.js
   [![Build Status](https://travis-ci.org/cucumber/cucumber-js.png?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
-  [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js) [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
+  [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js)
+  [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
+  [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![NPM](https://nodei.co/npm/cucumber.png?stars&downloads)](https://nodei.co/npm/cucumber/)
 [![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
 
 
-*Cucumber*, the [popular Behaviour-Driven Development tool](http://cukes.info), brought to your JavaScript stack.
+*Cucumber*, the [popular Behaviour-Driven Development tool](http://cucumber.io), brought to your JavaScript stack.
 
 It runs on both Node.js and *modern* web browsers.
 
@@ -79,18 +81,18 @@ Support files let you setup the environment in which steps will be run, and defi
 
 ```javascript
 // features/support/world.js
-module.exports = function() {
-  var zombie = require('zombie');
-  this.World = function World(callback) {
+var zombie = require('zombie');
+function World(callback) {
     this.browser = new zombie(); // this.browser will be available in step definitions
 
-    this.visit = function(url, callback) {
+    this.visit = function (url, callback) {
       this.browser.visit(url, callback);
     };
 
     callback(); // tell Cucumber we're finished and to use 'this' as the world instance
   };
 }
+module.exports.World = World;
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
@@ -99,20 +101,20 @@ It is possible to tell Cucumber to use another object instance than the construc
 // features/support/world.js
 
 var zombie = require('zombie');
-var WorldConstructor = function WorldConstructor(callback) {
+function WorldFactory(callback) {
 
   var browser = new zombie();
 
   var world = {
     browser: browser,                        // this.browser will be available in step definitions
-    visit: function(url, callback) {         // this.visit will be available in step definitions
+    visit: function (url, callback) {         // this.visit will be available in step definitions
       this.browser.visit(url, callback);
     }
   };
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 };
-exports.World = WorldConstructor;
+exports.World = WorldFactory;
 ```
 
 #### Step Definitions
@@ -130,10 +132,10 @@ Step definitions are run when steps match their name. `this` is an instance of `
 ``` javascript
 // features/step_definitions/myStepDefinitions.js
 
-var myStepDefinitionsWrapper = function () {
+module.exports = function () {
   this.World = require("../support/world.js").World; // overwrite default World constructor
 
-  this.Given(/^I am on the Cucumber.js GitHub repository$/, function(callback) {
+  this.Given(/^I am on the Cucumber.js GitHub repository$/, function (callback) {
     // Express the regexp above with the code you wish you had.
     // `this` is set to a new this.World instance.
     // i.e. you may use this.browser to execute the step:
@@ -144,14 +146,14 @@ var myStepDefinitionsWrapper = function () {
     // be executed by Cucumber.
   });
 
-  this.When(/^I go to the README file$/, function(callback) {
+  this.When(/^I go to the README file$/, function (callback) {
     // Express the regexp above with the code you wish you had. Call callback() at the end
     // of the step, or callback.pending() if the step is not yet implemented:
 
     callback.pending();
   });
 
-  this.Then(/^I should see "(.*)" as the page title$/, function(title, callback) {
+  this.Then(/^I should see "(.*)" as the page title$/, function (title, callback) {
     // matching groups are passed as parameters to the step definition
 
     var pageTitle = this.browser.text('title');
@@ -162,14 +164,41 @@ var myStepDefinitionsWrapper = function () {
     }
   });
 };
-
-module.exports = myStepDefinitionsWrapper;
 ```
+
+##### Promises
+
+Instead of Node.js-style callbacks, promises can be returned by step definitions:
+
+``` javascript
+this.Given(/^I am on the Cucumber.js GitHub repository$/, function () {
+  // Notice how `callback` is omitted from the parameters
+  return this.visit('http://github.com/cucumber/cucumber-js');
+
+  // A promise, returned by zombie.js's `visit` method is returned to Cucumber.
+});
+```
+
+Simply omit the last `callback` parameter and return the promise.
+
+##### Synchronous step definitions
+
+Often, asynchronous behaviour is not needed in step definitions. Simply omit the callback parameter, do not return anything and Cucumber will treat the step definition function as synchronous:
+
+``` javascript
+this.Given(/^I add one Cucumber$/, function () {
+  // Notice how `callback` is omitted from the parameters
+  this.cucumberCount += 1;
+});
+
+```
+
+##### Strings instead of regular expressions
 
 It is also possible to use simple strings instead of regexps as step definition patterns:
 
 ```javascript
-this.Then('I should see "$title" as the page title', function(title, callback) {
+this.Then('I should see "$title" as the page title', function (title, callback) {
   // the above string is converted to the following Regexp by Cucumber:
   // /^I should see "([^"]*)" as the page title$/
 
@@ -196,7 +225,7 @@ To run something before every scenario, use before hooks:
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before(function(callback) {
+  this.Before(function (callback) {
     // Just like inside step definitions, "this" is set to a World instance.
     // It's actually the same instance the current scenario step definitions
     // will receive.
@@ -224,7 +253,7 @@ The *before hook* counterpart is the *after hook*. It's similar in shape but is 
 // features/support/after_hooks.js
 
 var myAfterHooks = function () {
-  this.After(function(callback) {
+  this.After(function (callback) {
     // Again, "this" is set to the World instance the scenario just finished
     // playing with.
 
@@ -273,7 +302,6 @@ var myAfterHooks = function () {
 module.exports = myAfterHooks;
 ```
 
-
 ##### Around hooks
 
 It's also possible to combine both before and after hooks in one single definition with the help of *around hooks*:
@@ -281,8 +309,8 @@ It's also possible to combine both before and after hooks in one single definiti
 ```javascript
 // features/support/advanced_hooks.js
 
-myAroundHooks = function() {
-  this.Around(function(runScenario) {
+myAroundHooks = function () {
+  this.Around(function (runScenario) {
     // "this" is - as always - an instance of World promised to the scenario.
 
     // First do the "before scenario" tasks:
@@ -293,7 +321,7 @@ myAroundHooks = function() {
     // When the "before" duty is finished, tell Cucumber to execute the scenario
     // and pass a function to be called when the scenario is finished:
 
-    runScenario(function(callback) {
+    runScenario(function (callback) {
       // Now, we can do our "after scenario" stuff:
 
       this.emptyDatabase();
@@ -316,7 +344,7 @@ Hooks can be conditionally elected for execution based on the tags of the scenar
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before("@foo", "@bar,@baz", function(callback) {
+  this.Before("@foo", "@bar,@baz", function (callback) {
     // This hook will be executed before scenarios tagged with @foo and either
     // @bar or @baz.
 
@@ -341,9 +369,91 @@ this.Before(function (scenario, callback) {
 });
 ```
 
+The scenario object can also be used with around hooks:
+
+``` javascript
+this.Around(function (scenario, runScenario) {
+  console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+
+  runScenario(function(callback) {
+    console.log(scenario.getName(), "(" + scenario.getUri() + ":" + scenario.getLine() + ")");
+    callback();
+  });
+});
+```
+
 See
-[Cucumber.Ast.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/ast/scenario.js)
+[Cucumber.Api.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/api/scenario.js)
 for more information about the `scenario` object.
+
+##### Attachments
+
+You can attach text, images and files to the Cucumber report using the scenario object:
+
+``` javascript
+this.After(function (scenario, callback) {
+  scenario.attach('Some text');
+  callback();
+});
+```
+
+By default, text is saved with a MIME type of `text/plain`.  You can also specify
+a different MIME type:
+
+``` javascript
+this.After(function (scenario, callback) {
+  scenario.attach('{"name": "some JSON"}', 'application/json');
+  callback();
+});
+```
+
+Images and other binary data can be attached using a [stream.Readable](http://nodejs.org/api/stream.html)
+
+``` javascript
+this.After(function (scenario, callback) {
+  if (scenario.isFailed()) {
+    var stream = getScreenshotOfError();
+    scenario.attach(stream, 'image/png', function(err) {
+      callback(err);
+    });
+  }
+  else {
+    callback();
+  }
+});
+```
+
+Images and binary data can also be attached using a [Buffer](http://nodejs.org/api/buffer.html)
+
+``` javascript
+this.After(function (scenario, callback) {
+  if (scenario.isFailed()) {
+    var buffer = getScreenshotOfError();
+    scenario.attach(buffer, 'image/png');
+  }
+  callback();
+});
+```
+
+Here is an example of saving a screenshot using [WebDriver](https://www.npmjs.org/package/selenium-webdriver)
+when a scenario fails
+
+``` javascript
+this.After(function (scenario, callback) {
+  if (scenario.isFailed()) {
+    webDriver.takeScreenshot().then(stream) {
+      scenario.attach(stream, 'image/png', function(err) {
+        callback(err);
+      });
+    }, function(err) {
+      callback(err);
+    });
+  }
+  else {
+    callback();
+  }
+});
+```
 
 ### Run cucumber
 
@@ -391,4 +501,4 @@ See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.
 * Twitter: [@cucumber_js](https://twitter.com/#!/cucumber_js/)
 * IRC: [#cucumber](http://webchat.freenode.net?channels=cucumber&uio=d4) on Freenode
 * Google Groups: [cukes](https://groups.google.com/group/cukes)
-* [cukes.info](http://cukes.info)
+* [cucumber.io](http://cucumber.io)

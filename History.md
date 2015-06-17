@@ -1,8 +1,59 @@
 # Cucumber.js changelog
 
-## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
+## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.8...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.1...master)
+
+### [v0.5.1](https://github.com/cucumber/cucumber-js/compare/v0.5.0...v0.5.1)
+
+#### New features
+
+* Support placeholders in scenario outlines (chrismilleruk)
+* Add failure exception to scenario object (Mateusz Derks)
+
+#### Documentation, internals and tests
+
+* Fix World example in README (Julien Biezemans)
+* Remove moot `version` property from bower.json (Kevin Kirsche)
+* Remove obsolete release instruction for bower (Julien Biezemans)
+* Add Gitter badge (Julien Biezemans)
+* Rephrase spec example (Julien Biezemans)
+* Add documentation for attachments (Simon Dean)
+* Fix name of Cucumber.Api.Scenario in README (Simon Dean)
+
+### [v0.5.0](https://github.com/cucumber/cucumber-js/compare/v0.4.9...v0.5.0)
+
+#### New features
+
+* Support promises from step definitions (Will Farrell)
+* Support synchronous step definitions (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove irrelevant feature file (Julien Biezemans)
+* Reorganise callback feature (Julien Biezemans)
+* Remove unused dependency (Julien Biezemans)
+* Document new step definition styles (Julien Biezemans)
+* Make step definitions synchronous in example app (Julien Biezemans)
+
+### [v0.4.9](https://github.com/cucumber/cucumber-js/compare/v0.4.8...v0.4.9)
+
+#### New features
+
+* Make pretty formatter the default (Julien Biezemans)
+* Filter stack traces (close #157) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Separate source map from bundle (Julien Biezemans)
+* Hint (Julien Biezemans)
+* Fix misspelling io.js (Sonny Piers)
+* Add 0.12 to supported engines in NPM manifest (Julien Biezemans)
+* Fix test script to be more portable (Sam Saccone)
+* Force Cucumber <2 for now (Julien Biezemans)
+* Bump Cucumber gem to 2.0.0 (Julien Biezemans)
+* Explicitly require json module in Ruby stepdefs (Julien Biezemans)
+* Add CLI help section for --backtrace (Julien Biezemans)
 
 ### [v0.4.8](https://github.com/cucumber/cucumber-js/compare/v0.4.7...v0.4.8)
 

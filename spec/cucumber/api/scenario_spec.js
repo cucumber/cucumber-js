@@ -3,7 +3,7 @@ var Stream = require('stream');
 
 describe("Cucumber.Api.Scenario", function () {
   var Cucumber = requireLib('cucumber');
-  var scenarioFailed, scenarioPending, scenarioSuccessful, scenarioUndefined, attachments, astTreeWalker;
+  var scenarioFailed, scenarioPending, scenarioSuccessful, scenarioUndefined, scenarioGetFailureException, attachments, astTreeWalker;
   var keyword, name, description, uri, line, tags, astScenario;
   var scenario;
 
@@ -12,8 +12,9 @@ describe("Cucumber.Api.Scenario", function () {
     scenarioPending    = createSpy("scenario pending");
     scenarioSuccessful = createSpy("scenario successful");
     scenarioUndefined  = createSpy("scenario undefined");
+    scenarioGetFailureException  = createSpy("scenario get exception");
     attachments        = createSpy("attachments");
-    astTreeWalker      = createSpyWithStubs("ast scenario", { isScenarioFailed: scenarioFailed, isScenarioPending: scenarioPending, isScenarioSuccessful: scenarioSuccessful, isScenarioUndefined: scenarioUndefined, getAttachments: attachments, attach: undefined });
+    astTreeWalker      = createSpyWithStubs("ast scenario", { isScenarioFailed: scenarioFailed, isScenarioPending: scenarioPending, isScenarioSuccessful: scenarioSuccessful, isScenarioUndefined: scenarioUndefined, getFailureException: scenarioGetFailureException, getAttachments: attachments, attach: undefined });
     keyword            = createSpy("scenario keyword");
     name               = createSpy("scenario name");
     description        = createSpy("scenario description");
@@ -82,6 +83,12 @@ describe("Cucumber.Api.Scenario", function () {
   describe("isUndefined()", function () {
     it("returns whether the scenario is undefined", function () {
       expect(scenario.isUndefined()).toBe(scenarioUndefined);
+    });
+  });
+
+  describe("getException()", function () {
+    it("returns the exception raised when running the scenario", function () {
+      expect(scenario.getException()).toBe(scenarioGetFailureException);
     });
   });
 
