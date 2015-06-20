@@ -23,6 +23,10 @@ Given /^a mapping with a string-based pattern and parameters$/ do
   write_string_based_pattern_mapping_with_parameters
 end
 
+Given /^a promise-based mapping with implicit parameters$/ do
+  write_promise_string_based_pattern_mapping_with_implicit_parameters
+end
+
 Given(/^a promise-based mapping$/) do
   @mapping_name = "passing promise stepdef"
   write_passing_promise_mapping(@mapping_name)
