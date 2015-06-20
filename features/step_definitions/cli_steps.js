@@ -162,7 +162,8 @@ var cliSteps = function cliSteps() {
       .replace(/\r\n|\r/g, "\n")
       .replace(/^\s+/g, "")
       .replace(/\s+$/g, "")
-      .replace(/[ \t]+\n/g, "\n");
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\\/g, "/");
   }
 
   function getAdditionalErrorText(lastRun) {
