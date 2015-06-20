@@ -75,7 +75,7 @@ describe("Cucumber.Ast.Feature", function () {
       });
     });
 
-    describe("when no background was previousyly added", function () {
+    describe("when no background was previously added", function () {
       it("returns nothing", function () {
         expect(feature.getBackground()).toBeUndefined();
       });
@@ -227,6 +227,12 @@ describe("Cucumber.Ast.Feature", function () {
       it("inserts the scenario into the scenario collection", function () {
         expect(feature.insertFeatureElement).toHaveBeenCalledWith(scenarioOutlineIndex + index, scenario);
       });
+    });
+  });
+
+  describe("getFeatureElements()", function() {
+    it("gets the feature elements collection", function () {
+      expect(feature.getFeatureElements().getLast()).toBe(lastScenario);
     });
   });
 
