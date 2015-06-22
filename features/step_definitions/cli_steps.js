@@ -43,7 +43,7 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  this.When(/^I run `cucumber.js(| .+)`$/, function(args, callback) {
+  this.When(/^I run cucumber.js with `(| .+)`$/, function(args, callback) {
     var world = this;
 
     var initialCwd = process.cwd();

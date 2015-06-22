@@ -7,7 +7,7 @@ Feature: JSON Formatter
       """
       Feature: some feature
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -29,7 +29,7 @@ Feature: JSON Formatter
 
       Scenario: I havn't done anything yet
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -62,7 +62,7 @@ Feature: JSON Formatter
       Scenario: I've declared one step but not yet defined it
           Given I have not defined this step
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -116,7 +116,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -178,7 +178,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -229,7 +229,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -283,7 +283,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -340,7 +340,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -414,7 +414,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -489,7 +489,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -578,7 +578,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json features/a.feature features/b.feature features/c.feature`
+    When I run cucumber.js with `-f json features/a.feature features/b.feature features/c.feature`
     Then it outputs this json:
       """
       [
@@ -723,7 +723,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json features/a.feature features/b.feature features/c.feature`
+    When I run cucumber.js with `-f json features/a.feature features/b.feature features/c.feature`
     Then it outputs this json:
       """
       [
@@ -956,7 +956,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1011,7 +1011,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1060,7 +1060,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1121,7 +1121,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1173,7 +1173,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1240,7 +1240,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1313,7 +1313,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1378,7 +1378,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1423,7 +1423,7 @@ Feature: JSON Formatter
         Scenario Outline: I've declared one step which passes
           Given This <instance> step is passing
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1449,7 +1449,7 @@ Feature: JSON Formatter
         Examples:
           | instance |
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1484,7 +1484,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1563,7 +1563,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1647,7 +1647,7 @@ Feature: JSON Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -1744,7 +1744,7 @@ Feature: JSON Formatter
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [

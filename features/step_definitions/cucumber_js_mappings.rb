@@ -20,12 +20,12 @@ module CucumberJsMappings
 
   def run_feature
     write_main_step_definitions_file
-    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
+    run_simple "node #{cucumber_bin} #{FEATURE_FILE}", false
   end
 
   def run_feature_with_tags *tag_groups
     write_main_step_definitions_file
-    command = "#{cucumber_bin} #{FEATURE_FILE}"
+    command = "node #{cucumber_bin} #{FEATURE_FILE}"
     tag_groups.each do |tag_group|
       command += " --tags #{tag_group}"
     end
@@ -332,8 +332,9 @@ EOF
 
   def assert_json_output(expected)
     expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
-    expected = JSON(expected)
-    actual   = JSON(all_output)
+
+    expected = JSON(normalize_text(expected))
+    actual   = JSON(normalize_text(all_output))
 
     neutralise_variable_values_in_json expected
     neutralise_variable_values_in_json actual
@@ -456,6 +457,7 @@ EOF
       .gsub(/^\s+/, "")
       .gsub(/\s+$/, "")
       .gsub(/[ \t]+\n/, "\n")
+      .gsub(/\\+/, "/")
   end
 end
 
