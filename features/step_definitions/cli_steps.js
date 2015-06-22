@@ -43,13 +43,13 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  this.When(/^I run `cucumber.js(| .+)`$/, function(args, callback) {
+  this.When(/^I run cucumber.js with `(|.+)`$/, function(args, callback) {
     var world = this;
 
     var initialCwd = process.cwd();
     process.chdir(tmpDir);
     var runtimePath = joinPathSegments([baseDir, 'bin', 'cucumber.js']);
-    var command     = "node \"" + runtimePath + "\"" + args;
+    var command     = "node \"" + runtimePath + "\" " + args;
     exec(command,
          function (error, stdout, stderr) {
            world.lastRun = {

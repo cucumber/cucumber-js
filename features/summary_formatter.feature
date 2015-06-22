@@ -7,7 +7,7 @@ Feature: Summary Formatter
       """
       Feature: some feature
       """
-    When I run `cucumber.js -f summary`
+    When I run cucumber.js with `-f summary`
     Then it outputs this text:
       """
       0 scenarios
@@ -49,7 +49,7 @@ Feature: Summary Formatter
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f summary`
+    When I run cucumber.js with `-f summary`
     Then it outputs this text:
       """
       1 scenario (1 passed)

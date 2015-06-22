@@ -17,7 +17,7 @@ Feature: Command line interface
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f progress features/a.feature`
+    When I run cucumber.js with `-f progress features/a.feature`
     Then it outputs this text:
       """
       .
@@ -45,7 +45,7 @@ Feature: Command line interface
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f progress features/a.feature:2`
+    When I run cucumber.js with `-f progress features/a.feature:2`
     Then it outputs this text:
       """
       .
@@ -63,7 +63,7 @@ Feature: Command line interface
         Scenario:
           When a step is undefined
       """
-    When I run `cucumber.js -f progress features/a.feature`
+    When I run cucumber.js with `-f progress features/a.feature`
     Then it outputs this text:
       """
       U
@@ -94,7 +94,7 @@ Feature: Command line interface
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f progress features/a.feature -r step_definitions/cucumber_steps.js`
+    When I run cucumber.js with `-f progress features/a.feature -r step_definitions/cucumber_steps.js`
     Then it outputs this text:
       """
       .
@@ -119,7 +119,7 @@ Feature: Command line interface
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f progress features/a.feature -r step_definitions`
+    When I run cucumber.js with `-f progress features/a.feature -r step_definitions`
     Then it outputs this text:
       """
       .
@@ -131,17 +131,17 @@ Feature: Command line interface
     And the exit status should be 0
 
   Scenario: display Cucumber version
-    When I run `cucumber.js --version`
+    When I run cucumber.js with `--version`
     Then I see the version of Cucumber
     And the exit status should be 0
 
   Scenario: display help
-    When I run `cucumber.js --help`
+    When I run cucumber.js with `--help`
     Then I see the help of Cucumber
     And the exit status should be 0
 
   Scenario: display help (short flag)
-    When I run `cucumber.js -h`
+    When I run cucumber.js with `-h`
     Then I see the help of Cucumber
     And the exit status should be 0
 
@@ -159,7 +159,7 @@ Scenario: run a single failing feature
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f progress features/a.feature`
+    When I run cucumber.js with `-f progress features/a.feature`
     Then it outputs this text:
       """
       F
@@ -193,7 +193,7 @@ Scenario: run a single failing feature
 	And a file named "features/support/hooks.js" with:
       """
       """
-    When I run `cucumber.js -f progress features/a.feature`
+    When I run cucumber.js with `-f progress features/a.feature`
     Then it outputs this text:
       """
       F
@@ -233,7 +233,7 @@ Scenario: run a single failing feature
       };
       module.exports = hooks;
       """
-    When I run `cucumber.js -f progress features/a.feature`
+    When I run cucumber.js with `-f progress features/a.feature`
     Then it outputs this text:
       """
       F

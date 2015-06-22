@@ -1,6 +1,12 @@
 # This file contains step definitions which are relevant to
 # Cucumber.js feature suite only.
 
+require 'aruba/api'
+
+When /^I run cucumber\.js with `([^`]*)`$/ do |cmd|
+  run_simple("node ../../bin/cucumber.js #{unescape(cmd)}", false)
+end
+
 Given /^a mapping written in CoffeeScript$/ do
   write_coffee_script_definition_file
 end
