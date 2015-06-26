@@ -63,7 +63,7 @@ Feature: Core feature elements execution
     Then the feature should have run successfully      
 
   Scenario: Steps accepting parameters
-    Given a step definition matching /^I call a step with "(.*)"$/ recording its parameters
+    Given a step definition matching /^I call a step with "([^"]*)"$/ recording its parameters
     And a step definition matching /^I call a step with "(.*)", "(.*)" and "(.*)"$/ recording its parameters
     And a step definition matching /^the (\d+)(?:st|nd|rd) received parameter should be "(.*)"$/ checking a recorded parameter
     When I run the following feature:
