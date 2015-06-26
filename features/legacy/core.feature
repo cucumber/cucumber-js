@@ -3,6 +3,9 @@ Feature: Core feature elements execution
   As a developer
   I want Cucumber to run core feature elements
 
+  Background:
+    Given no existing steps
+
   Scenario: Simple flat steps
     Given a step definition matching /^a step passes$/
     When I run the following feature:
