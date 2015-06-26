@@ -362,7 +362,7 @@ EOF
     params_string = params.join(", ")
     indented_code = indent_code(code).rstrip
     append_support_code <<-EOF
-this.defineStep(/#{step_name}/, function (#{params_string}) {
+this.defineStep(/^#{step_name}$/, function (#{params_string}) {
   fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
 });
