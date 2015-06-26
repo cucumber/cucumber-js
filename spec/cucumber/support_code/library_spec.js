@@ -127,9 +127,9 @@ describe("Cucumber.SupportCode.Library", function () {
 
     beforeEach(function () {
       stepDefinitions = [
-        createSpyWithStubs("First step definition",  {matchesStepName:false}),
-        createSpyWithStubs("Second step definition", {matchesStepName:false}),
-        createSpyWithStubs("Third step definition",  {matchesStepName:false})
+        createSpyWithStubs("First step definition",  {matchesStepName:false, getPatternRegexp: /first expression/}),
+        createSpyWithStubs("Second step definition", {matchesStepName:false, getPatternRegexp: /second expression/}),
+        createSpyWithStubs("Third step definition",  {matchesStepName:false, getPatternRegexp: /third expression/})
       ];
       spyOnStub(stepDefinitionCollection, 'syncForEach').andCallFake(function (cb) { stepDefinitions.forEach(cb); });
       library = Cucumber.SupportCode.Library(rawSupportCode);
@@ -153,6 +153,22 @@ describe("Cucumber.SupportCode.Library", function () {
         var matchingStepDefinition = stepDefinitions[1];
         matchingStepDefinition.matchesStepName.andReturn(true);
         expect(library.lookupStepDefinitionByName(stepName)).toBe(matchingStepDefinition);
+      });
+
+      it("throws when step definition is ambiguous", function() {
+          stepDefinitions.forEach(function(stepDefinition) {
+            stepDefinition.matchesStepName.andReturn(true);
+            stepDefinition.getPatternRegexp.andReturn(/ambiguous expression/);
+          });
+        expect(function() {
+          library.lookupStepDefinitionByName(stepName);
+        }).toThrow('ambiguous step definition, matches /ambiguous expression/, /ambiguous expression/, /ambiguous expression/');
+      });
+
+      it("does not throw when there is no matching step definition", function() {
+        expect(function() {
+          library.lookupStepDefinitionByName(stepName);
+        }).not.toThrow();
       });
     });
 
