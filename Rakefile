@@ -13,7 +13,7 @@ namespace :test do
     sh %{node --version}
     sh %{ruby --version}
     sh %{gem --version}
-    sh %{bin/cucumber.js --version}
+    sh %{node bin/cucumber.js --version}
     sh %{cucumber --version}
   end
 

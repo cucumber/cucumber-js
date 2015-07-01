@@ -62,7 +62,7 @@ Feature: Scenario Statuses
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -173,7 +173,7 @@ Feature: Scenario Statuses
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -257,7 +257,7 @@ Feature: Scenario Statuses
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -342,7 +342,7 @@ Feature: Scenario Statuses
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -424,7 +424,7 @@ Feature: Scenario Statuses
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -510,7 +510,7 @@ Feature: Scenario Statuses
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
