@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.5.1",
+  "version": "0.5.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -61,8 +61,10 @@
     "Will Farrell <will@mojotech.com>",
     "Kevin Kirsche <Kev.Kirsche+GitHub@gmail.com>",
     "chrismilleruk <chrismilleruk@gmail.com>",
-    "Mateusz Derks <mateusz.derks@schibsted.pl>"
-
+    "Mateusz Derks <mateusz.derks@schibsted.pl>",
+    "Mark Amery <markamery@btinternet.com>",
+    "Artem Repko <roby-boby@ukr.net>",
+    "zs-zs <zsolt.zsigmondi@hotmail.com>"
   ],
   "repository": {
     "type": "git",

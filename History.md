@@ -2,7 +2,28 @@
 
 ## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.2...master)
+
+### [v0.5.2](https://github.com/cucumber/cucumber-js/compare/v0.5.1...v0.5.2)
+
+#### New features
+
+* Add rowsHash method to data tables (Mark Amery)
+
+#### Documentation, internals and tests
+
+* Remove CLI resource leak timeout (Julien Biezemans)
+* Point to cucumber.io instead of cukes.info (Julien Biezemans)
+* Fix mixed tabs and spaces (Mark Amery)
+* Use hexadecimal values for console colours (Julien Biezemans)
+* Update walkdir module to 0.0.10 (Artem Repko)
+* Fix ruby tests on Windows (zs-zs)
+* Fix npm test to run on Windows (zs-zs)
+* Normalize OS-specific path separators in output assertions (zs-zs)
+* Relax check for promises in step definitions (zs-zs)
+* Add Ast.Feature.getFeatureElements() (Mark Derbecker)
+* Add Util.Collection.sort() (Mark Derbecker)
+* Add waffle.io badge (Julien Biezemans)
 
 ### [v0.5.1](https://github.com/cucumber/cucumber-js/compare/v0.5.0...v0.5.1)
 
