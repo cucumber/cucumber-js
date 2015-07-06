@@ -9,18 +9,18 @@
 [![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
 
 
-*Cucumber*, the [popular Behaviour-Driven Development tool](http://cucumber.io), brought to your JavaScript stack.
+*Cucumber*, the [popular Behaviour-Driven Development tool](https://cucumber.io), brought to your JavaScript stack.
 
 It runs on both Node.js and *modern* web browsers.
 
 ## Prerequesites
 
-* [Node.js](http://nodejs.org) or [io.js](https://iojs.org)
-* [NPM](http://npmjs.org)
+* [Node.js](https://nodejs.org) or [io.js](https://iojs.org)
+* [NPM](https://www.npmjs.com)
 
 Cucumber.js is tested on:
 
-* Node.js 0.8, 0.10, 0.11, 0.12 and io.js (see [CI builds](http://travis-ci.org/#!/cucumber/cucumber-js))
+* Node.js 0.8, 0.10, 0.11, 0.12 and io.js (see [CI builds](https://travis-ci.org/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
@@ -141,7 +141,7 @@ module.exports = function () {
     // `this` is set to a new this.World instance.
     // i.e. you may use this.browser to execute the step:
 
-    this.visit('http://github.com/cucumber/cucumber-js', callback);
+    this.visit('https://github.com/cucumber/cucumber-js', callback);
 
     // The callback is passed to visit() so that when the job's finished, the next step can
     // be executed by Cucumber.
@@ -174,7 +174,7 @@ Instead of Node.js-style callbacks, promises can be returned by step definitions
 ``` javascript
 this.Given(/^I am on the Cucumber.js GitHub repository$/, function () {
   // Notice how `callback` is omitted from the parameters
-  return this.visit('http://github.com/cucumber/cucumber-js');
+  return this.visit('https://github.com/cucumber/cucumber-js');
 
   // A promise, returned by zombie.js's `visit` method is returned to Cucumber.
 });
@@ -408,7 +408,7 @@ this.After(function (scenario, callback) {
 });
 ```
 
-Images and other binary data can be attached using a [stream.Readable](http://nodejs.org/api/stream.html)
+Images and other binary data can be attached using a [stream.Readable](https://nodejs.org/api/stream.html)
 
 ``` javascript
 this.After(function (scenario, callback) {
@@ -424,7 +424,7 @@ this.After(function (scenario, callback) {
 });
 ```
 
-Images and binary data can also be attached using a [Buffer](http://nodejs.org/api/buffer.html)
+Images and binary data can also be attached using a [Buffer](https://nodejs.org/api/buffer.html)
 
 ``` javascript
 this.After(function (scenario, callback) {
@@ -436,7 +436,7 @@ this.After(function (scenario, callback) {
 });
 ```
 
-Here is an example of saving a screenshot using [WebDriver](https://www.npmjs.org/package/selenium-webdriver)
+Here is an example of saving a screenshot using [WebDriver](https://www.npmjs.com/package/selenium-webdriver)
 when a scenario fails
 
 ``` javascript
@@ -499,7 +499,7 @@ See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.
 
 ## Help & support
 
-* Twitter: [@cucumber_js](https://twitter.com/#!/cucumber_js/)
+* Twitter: [@cucumber_js](https://twitter.com/cucumber_js/)
 * IRC: [#cucumber](http://webchat.freenode.net?channels=cucumber&uio=d4) on Freenode
 * Google Groups: [cukes](https://groups.google.com/group/cukes)
-* [cucumber.io](http://cucumber.io)
+* Website: [cucumber.io](https://cucumber.io)
