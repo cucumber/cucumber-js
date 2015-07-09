@@ -93,7 +93,7 @@ function World(callback) {
     callback(); // tell Cucumber we're finished and to use 'this' as the world instance
   };
 }
-module.exports.World = World;
+module.exports = World;
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
@@ -115,7 +115,7 @@ function WorldFactory(callback) {
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 };
-exports.World = WorldFactory;
+module.exports = WorldFactory;
 ```
 
 #### Step Definitions
