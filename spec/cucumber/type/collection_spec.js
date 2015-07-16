@@ -5,7 +5,7 @@ describe("Cucumber.Type.Collection", function () {
   var collection, itemArray;
 
   beforeEach(function () {
-    itemArray = [1, 2, 3];
+    itemArray = [3, 1, 2];
     spyOn(itemArray, 'push');
     spyOn(itemArray, 'unshift');
     spyOn(itemArray, 'splice');
@@ -74,9 +74,9 @@ describe("Cucumber.Type.Collection", function () {
 
   describe("getAtIndex()", function () {
     it("gets the item at a specific index in the item array", function () {
-      expect(collection.getAtIndex(0)).toEqual(1);
-      expect(collection.getAtIndex(1)).toEqual(2);
-      expect(collection.getAtIndex(2)).toEqual(3);
+      expect(collection.getAtIndex(0)).toEqual(3);
+      expect(collection.getAtIndex(1)).toEqual(1);
+      expect(collection.getAtIndex(2)).toEqual(2);
     });
   });
 
@@ -158,6 +158,18 @@ describe("Cucumber.Type.Collection", function () {
       collection.syncForEach(userFunction);
       expect(itemArray.slice).toHaveBeenCalledWith(0);
       expect(itemsCopy.forEach).toHaveBeenCalledWith(userFunction);
+    });
+  });
+
+  describe("sort()", function () {
+    it("sorts the array", function () {
+      var sorted = collection.sort(function(a, b) {
+        return a > b;
+      });
+
+      expect(sorted.shift()).toEqual(1);
+      expect(sorted.shift()).toEqual(2);
+      expect(sorted.shift()).toEqual(3);
     });
   });
 });

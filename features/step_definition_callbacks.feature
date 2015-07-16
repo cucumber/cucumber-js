@@ -26,3 +26,9 @@ Feature: Step definition callbacks
     When Cucumber executes that mapping
     Then the mapping is run
     And the scenario passes
+
+  Scenario: succeed with promise if implicit parameters
+    Given a promise-based mapping with implicit parameters
+    When Cucumber executes a scenario that passes arguments to that mapping
+    Then the mapping is run
+    And the scenario passes

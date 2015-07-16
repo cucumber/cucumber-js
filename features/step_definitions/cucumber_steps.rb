@@ -1,6 +1,12 @@
 # This file contains step definitions which are relevant to
 # Cucumber.js feature suite only.
 
+require 'aruba/api'
+
+When /^I run cucumber\.js with `([^`]*)`$/ do |cmd|
+  run_simple("node ../../bin/cucumber.js #{unescape(cmd)}", false)
+end
+
 Given /^a mapping written in CoffeeScript$/ do
   write_coffee_script_definition_file
 end
@@ -15,6 +21,10 @@ end
 
 Given /^a mapping with a string-based pattern and parameters$/ do
   write_string_based_pattern_mapping_with_parameters
+end
+
+Given /^a promise-based mapping with implicit parameters$/ do
+  write_promise_string_based_pattern_mapping_with_implicit_parameters
 end
 
 Given(/^a promise-based mapping$/) do
