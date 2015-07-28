@@ -1330,6 +1330,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       spyOn(treeWalker, 'isSkippingSteps');
       spyOn(treeWalker, 'executeStep');
       spyOn(treeWalker, 'skipStep');
+      spyOn(treeWalker, 'isDryRun');
     });
 
     it("checks whether the step is undefined or not", function () {
@@ -1413,6 +1414,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         it("does not skip an undefined step", function () {
           treeWalker.processStep(step, callback);
           expect(treeWalker.skipUndefinedStep).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the steps are skipped in dry Run mode", function () {
+        beforeEach(function () {
+          treeWalker.isDryRun.andReturn(true);
+        });
+
+        it("skips the step", function () {
+          treeWalker.processStep(step, callback);
+          expect(treeWalker.skipStep).toHaveBeenCalledWith(step, callback);
+        });
+
+        it("does not execute the step", function () {
+          treeWalker.processStep(step, callback);
+          expect(treeWalker.executeStep).not.toHaveBeenCalled();
         });
       });
     });
