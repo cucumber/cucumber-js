@@ -93,7 +93,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
     beforeEach(function () {
       step                          = createSpy("step");
-      world                         = createSpy("world");
+      world                         = createSpyWithStubs("world", {timeout: undefined});
       scenario                      = createSpyWithStubs("scenario", {getAttachments: undefined});
       stepDomain                    = createSpy("stepDomain");
       callback                      = createSpy("callback");
