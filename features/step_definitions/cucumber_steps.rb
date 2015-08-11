@@ -124,3 +124,7 @@ end
 Then /^it outputs this text:$/ do |json|
   assert_text_output json
 end
+
+Then /^the output includes the text:$/ do |text|
+  assert_partial_output text, all_output
+end
