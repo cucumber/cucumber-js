@@ -214,6 +214,12 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 
 `'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)"$/`.
 
+##### Timeouts
+
+By default, asynchronous steps timeout after 10 seconds.
+This can be modified globally by setting `defaultTimeout` on the instantiated world object.
+This can also be modified on a step by step basis by calling `this.timeout(milliseconds)` while in a step.
+
 #### Hooks
 
 Hooks can be used to prepare and clean the environment before and after each scenario is executed.
