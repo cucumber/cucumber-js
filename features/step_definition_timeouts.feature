@@ -1,3 +1,4 @@
+@ruby-only
 Feature: Step definition timeouts
 
   Background:

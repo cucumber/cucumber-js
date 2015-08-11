@@ -105,7 +105,7 @@
     "exorcist": "^0.1.6"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib spec && jasmine-node spec && node bin/cucumber.js -f progress -i"
+    "test": "jshint bundler.js bin lib spec && jasmine-node spec && node bin/cucumber.js -f progress -i -t ~@ruby-only"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
