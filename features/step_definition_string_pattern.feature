@@ -20,4 +20,4 @@ Feature: step definitions with string pattern
     When Cucumber executes a scenario that passes multiple arguments to that mapping
     Then the feature passes
     And the mapping is run
-    And the mapping receives the multipple arguments
+    And the mapping receives the multiple arguments

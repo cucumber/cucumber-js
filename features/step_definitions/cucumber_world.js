@@ -76,7 +76,7 @@ proto.runAScenarioCallingMappingWithParameters = function runAScenarioCallingMap
 
 proto.runAScenarioCallingMappingWithMultipleParameters = function runAScenarioCallingMappingWithMultipleParameters(callback) {
   this.expectedMappingArguments = [5, "fresh cucumbers", 2, 'pickled gherkins'];
-  this.addScenario("", 'Given a mapping with ' + this.expectedMappingArguments[0] + ' ' + this.expectedMappingArguments[2] + ' "' + this.expectedMappingArguments[1] + '" "' + this.expectedMappingArguments[3] + '"');
+  this.addScenario("", 'Given a mapping with ' + this.expectedMappingArguments[0] + ' "' + this.expectedMappingArguments[1] + '" and ' + this.expectedMappingArguments[2] + ' "' + this.expectedMappingArguments[3] + '"');
   this.runFeature({}, callback);
 };
 
@@ -121,7 +121,7 @@ proto.addStringBasedPatternMappingWithParameters = function addStringBasedPatter
 
 proto.addStringBasedPatternMappingWithMultipleParameters = function addStringBasedPatternMappingWithMultipleParameters() {
   this.mappingName = "a string-based mapping with multiple parameters";
-  this.stepDefinitions += "Given('a mapping with $word_param_a $word_param_b \"$multi_word_param_a\" \"$multi_word_param_b\"', function(p1, p2, p3, p4, callback) {\
+  this.stepDefinitions += "Given('a mapping with $word_param_a \"$multi_word_param_a\" and $word_param_b \"$multi_word_param_b\"', function(p1, p2, p3, p4, callback) {\
   world.logCycleEvent('a string-based mapping with multiple parameters');\
   world.actualMappingArguments = [p1, p2, p3, p4];\
   callback();\

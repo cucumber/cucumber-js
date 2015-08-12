@@ -1,1 +1,5 @@
-quiet: -f progress --no-snippets
+<% common = "-r cucumber-tck -r ruby_features --strict" %>
+
+default: ruby_features <%= common %>
+compliance: cucumber-tck <%= common %>
+quiet: -f progress
