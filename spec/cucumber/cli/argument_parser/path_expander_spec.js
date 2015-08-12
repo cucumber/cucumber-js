@@ -40,7 +40,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
     var path, regexp, stats, realPath, pathsFromExpandedDirectory;
 
     beforeEach(function () {
-      path       = createSpy("path");
+      path       = "relative/path:1";
       regexp     = createSpy("regexp");
       stats      = createSpyWithStubs("path stats", {isDirectory: null});
       spyOn(fs, 'statSync').andReturn(stats);
@@ -50,9 +50,9 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
       spyOn(PathExpander, 'expandDirectoryWithRegexp').andReturn(pathsFromExpandedDirectory);
     });
 
-    it("synchronously gets the absolute representation of the path", function () {
+    it("synchronously gets the absolute representation of the path after stripping line numbers", function () {
       PathExpander.expandPathWithRegexp(path);
-      expect(fs.realpathSync).toHaveBeenCalledWith(path);
+      expect(fs.realpathSync).toHaveBeenCalledWith('relative/path');
     });
 
     it("synchronously stats the path", function () {
