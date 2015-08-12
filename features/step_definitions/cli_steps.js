@@ -106,8 +106,6 @@ var cliSteps = function cliSteps() {
 
     var actualOutput = world.lastRun['stdout'];
 
-    expectedOutput = expectedOutput.replace(/<current-directory>/g, tmpDir.replace(/\\/g,'/'));
-
     actualOutput = normalizeText(actualOutput);
     expectedOutput = normalizeText(expectedOutput);
 
