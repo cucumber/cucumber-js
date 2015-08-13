@@ -39,13 +39,13 @@ describe("Cucumber.Parser", function () {
       gherkinENLexerConstructor = createSpy("English gherkin lexer constructor").andReturn(gherkinENLexer);
       gherkinFRLexerConstructor = createSpy("French gherkin lexer constructor").andReturn(gherkinFRLexer);
       spyOn(Gherkin, 'Lexer').andCallFake(
-        function(language){
-          if(language == 'en') {
+        function (language) {
+          if (language === 'en') {
             return gherkinENLexerConstructor;
-          } else if(language == 'fr') {
+          } else if (language === 'fr') {
             return gherkinFRLexerConstructor;
           } else {
-            throw "Could not instantiate a parser for this language"
+            throw new Error('Could not instantiate a parser for this language (' + language + ')');
           }
         }
       );
@@ -78,16 +78,6 @@ describe("Cucumber.Parser", function () {
       expect(parser.setCurrentSourceUri).toHaveBeenCalledWith(featureSources[1][0]);
     });
 
-    it("asks the English lexer to scan the first feature source", function () {
-      parser.parse();
-      expect(gherkinENLexer.scan).toHaveBeenCalledWith(featureSources[0][1]);
-    });
-
-    it("asks the French lexer to scan the second feature source", function () {
-      parser.parse();
-      expect(gherkinFRLexer.scan).toHaveBeenCalledWith(featureSources[1][1]);
-    });
-    
     it("returns the features root element", function () {
       expect(parser.parse()).toBe(features);
     });
@@ -112,72 +102,76 @@ describe("Cucumber.Parser", function () {
     it("provides a 'feature' handler", function () {
       spyOn(parser, 'handleFeature');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['feature']).toBe(parser.handleFeature);
+      expect(eventHandlers.feature).toBe(parser.handleFeature);
     });
 
     it("provides a 'background' handler", function () {
       spyOn(parser, 'handleBackground');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['background']).toBe(parser.handleBackground);
+      expect(eventHandlers.background).toBe(parser.handleBackground);
     });
 
     it("provides a 'scenario' handler", function () {
       spyOn(parser, 'handleScenario');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['scenario']).toBe(parser.handleScenario);
+      expect(eventHandlers.scenario).toBe(parser.handleScenario);
     });
 
     it("provides a 'step' handler", function () {
       spyOn(parser, 'handleStep');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['step']).toBe(parser.handleStep);
+      expect(eventHandlers.step).toBe(parser.handleStep);
     });
 
     it("provides a 'doc_string' handler", function () {
       spyOn(parser, 'handleDocString');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['doc_string']).toBe(parser.handleDocString);
+      /* jshint -W106 */
+      expect(eventHandlers.doc_string).toBe(parser.handleDocString);
+      /* jshint +W106 */
     });
 
     it("provides a 'eof' handler", function () {
       spyOn(parser, 'handleEof');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['eof']).toBe(parser.handleEof);
+      expect(eventHandlers.eof).toBe(parser.handleEof);
     });
 
     it("provides a 'comment' handler", function () {
       spyOn(parser, 'handleComment');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['comment']).toBe(parser.handleComment);
+      expect(eventHandlers.comment).toBe(parser.handleComment);
     });
 
     it("provides a 'row' handler", function () {
       spyOn(parser, 'handleDataTableRow');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['row']).toBe(parser.handleDataTableRow);
+      expect(eventHandlers.row).toBe(parser.handleDataTableRow);
     });
 
     it("provides a 'tag' handler", function () {
       spyOn(parser, 'handleTag');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['tag']).toBe(parser.handleTag);
+      expect(eventHandlers.tag).toBe(parser.handleTag);
     });
 
     it("provides a 'scenario_outline' handler", function () {
       spyOn(parser, 'handleScenarioOutline');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['scenario_outline']).toBe(parser.handleScenarioOutline);
+      /* jshint -W106 */
+      expect(eventHandlers.scenario_outline).toBe(parser.handleScenarioOutline);
+      /* jshint +W106 */
     });
 
     it("provides an 'examples' handler", function () {
       spyOn(parser, 'handleExamples');
       eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers['examples']).toBe(parser.handleExamples);
+      expect(eventHandlers.examples).toBe(parser.handleExamples);
     });
   });
 
   describe("handleBackground()", function () {
-    var keyword, name, description, line;
+    var keyword, name, description, uri, line;
     var background;
 
     beforeEach(function () {
@@ -382,7 +376,7 @@ describe("Cucumber.Parser", function () {
   });
 
   describe("handleTag()", function () {
-    var name, uri, line;
+    var name, uri, line, tag;
 
     beforeEach(function () {
       name = createSpy("tag name");

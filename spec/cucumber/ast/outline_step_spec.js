@@ -1,10 +1,10 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Ast.OutlineStep", function() {
+describe("Cucumber.Ast.OutlineStep", function () {
   var Cucumber = requireLib('cucumber');
   var step, keyword, name, uri, line;
 
-  beforeEach(function() {
+  beforeEach(function () {
     name         = createSpy("name");
     keyword      = createSpy("keyword");
     uri          = createSpy("uri");
@@ -12,8 +12,8 @@ describe("Cucumber.Ast.OutlineStep", function() {
     step         = Cucumber.Ast.OutlineStep(keyword, name, uri, line);
   });
 
-  describe("isOutlineStep()", function() {
-    it("returns true for an outline step", function() {
+  describe("isOutlineStep()", function () {
+    it("returns true for an outline step", function () {
       expect(step.isOutlineStep()).toBe(true);
     });
   });

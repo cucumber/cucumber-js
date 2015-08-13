@@ -13,7 +13,7 @@ describe('Cucumber.Listener.Events', function () {
       }
     });
 
-    it("is defined", function() {
+    it("is defined", function () {
         expect(events).toBeDefined();
     });
   });

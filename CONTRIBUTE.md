@@ -104,7 +104,6 @@ This a reminder of the steps maintainers have to follow to release a new version
 * Update `History.md`. `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
 * Bump version in `lib/cucumber.js`
 * Bump version in `package.json`
-* Bump version in `bower.json`
 * Compile the bundle with `node scripts/release.js`
 * Add new contributors to `package.json`, if any
 * Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)

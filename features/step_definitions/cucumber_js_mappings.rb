@@ -1,3 +1,5 @@
+require 'json'
+
 module CucumberJsMappings
   STEP_DEFINITIONS_FILE                   = "features/step_definitions/cucumber_steps.js"
   COFFEE_SCRIPT_DEFINITIONS_FILE          = "features/step_definitions/cucumber_steps.coffee"
@@ -18,12 +20,12 @@ module CucumberJsMappings
 
   def run_feature
     write_main_step_definitions_file
-    run_simple "#{cucumber_bin} #{FEATURE_FILE}", false
+    run_simple "node #{cucumber_bin} #{FEATURE_FILE}", false
   end
 
   def run_feature_with_tags *tag_groups
     write_main_step_definitions_file
-    command = "#{cucumber_bin} #{FEATURE_FILE}"
+    command = "node #{cucumber_bin} #{FEATURE_FILE}"
     tag_groups.each do |tag_group|
       command += " --tags #{tag_group}"
     end
@@ -44,6 +46,18 @@ module CucumberJsMappings
 
   def write_asynchronous_pending_mapping(step_name)
     append_step_definition(step_name, "setTimeout(callback.pending, 10);")
+  end
+
+  def write_passing_promise_mapping(step_name)
+    append_step_definition(step_name, "return { then: function (ok, ko) { ok() } }", [], false)
+  end
+
+  def write_failing_promise_mapping(step_name)
+    append_step_definition(step_name, "return { then: function (ok, ko) { ko(new Error('Error from promise stepdef')) } }", [], false)
+  end
+
+  def write_passing_synchronous_mapping(step_name)
+    append_step_definition(step_name, "// no-op, no callback", [], false)
   end
 
   def write_failing_mapping(step_name)
@@ -318,8 +332,9 @@ EOF
 
   def assert_json_output(expected)
     expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
-    expected = JSON(expected)
-    actual   = JSON(all_output)
+
+    expected = JSON(normalize_text(expected))
+    actual   = JSON(normalize_text(all_output))
 
     neutralise_variable_values_in_json expected
     neutralise_variable_values_in_json actual
@@ -343,8 +358,8 @@ EOF
 
   protected
 
-  def append_step_definition(step_name, code, params = [])
-    params.push("callback");
+  def append_step_definition(step_name, code, params = [], callback = true)
+    params.push("callback") if callback
     params_string = params.join(", ")
     indented_code = indent_code(code).rstrip
     append_support_code <<-EOF
@@ -412,6 +427,18 @@ this.defineStep('a mapping with $word_param "$multi_word_param"', function (p1, 
 EOF
   end
 
+  def write_promise_string_based_pattern_mapping_with_implicit_parameters
+    @mapping_name = "a promise string-based mapping with implicit parameters"
+    append_support_code <<-EOF
+this.defineStep('a mapping with $word_param "$multi_word_param"', function () {
+  var p1 = arguments[0],
+      p2 = arguments[1];
+  fs.writeFileSync("#{step_file(@mapping_name)}", p1 + "\\n" + p2);
+  return { next: function(ok, ko) { ok(); } };
+});
+EOF
+  end
+
   def get_file_contents(file_path)
     file_realpath = File.expand_path(file_path, File.dirname(__FILE__))
     File.open(file_realpath, 'rb') do |f|
@@ -442,6 +469,7 @@ EOF
       .gsub(/^\s+/, "")
       .gsub(/\s+$/, "")
       .gsub(/[ \t]+\n/, "\n")
+      .gsub(/\\+/, "/")
   end
 end
 

@@ -13,7 +13,7 @@ describe("Cucumber.Cli.Configuration", function () {
     argumentParser      = createSpyWithStubs("argument parser", {parse: null});
     spyOn(Cucumber.Cli, 'ArgumentParser').andReturn(argumentParser);
     configuration       = Cucumber.Cli.Configuration(argv);
-    context['configuration'] = configuration;
+    context.configuration = configuration;
   });
 
   itBehavesLikeAllCucumberConfigurations(context);
@@ -29,14 +29,16 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getFormatter()", function () {
-    var shouldSnippetsBeInCoffeeScript, formatterOptions;
+    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource;
 
     beforeEach(function () {
       shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
+      shouldSnippetsBeShown = createSpy("should snippets be shown?");
       shouldShowSource               = createSpy("should source uris be visible?");
-      formatterOptions               = { coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, showSource: shouldShowSource };
+      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown, showSource: shouldShowSource};
       spyOnStub(argumentParser, 'getFormat').andReturn("progress");
       spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript').andReturn(shouldSnippetsBeInCoffeeScript);
+      spyOnStub(argumentParser, 'shouldSnippetsBeShown').andReturn(shouldSnippetsBeShown);
       spyOnStub(argumentParser, 'shouldShowSource').andReturn(shouldShowSource);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
@@ -57,6 +59,12 @@ describe("Cucumber.Cli.Configuration", function () {
     it("checks whether the source uris should be shown", function () {
         configuration.getFormatter();
         expect(argumentParser.shouldShowSource).toHaveBeenCalled();
+    });
+
+    it("checks whether the step definition snippets should be shown", function () {
+      configuration.getFormatter();
+      expect(argumentParser.shouldSnippetsBeShown).toHaveBeenCalled();
+      expect(argumentParser.shouldSnippetsBeShown.callCount).toBe(1);
     });
 
     describe("when the formatter name is \"json\"", function () {
@@ -136,8 +144,6 @@ describe("Cucumber.Cli.Configuration", function () {
     });
 
     describe("when the formatter name is unknown", function () {
-      var formatter;
-
       beforeEach(function () {
         argumentParser.getFormat.andReturn("blah");
       });
@@ -182,7 +188,7 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getAstFilter()", function () {
-    var astFilter, tagFilterRules;
+    var astFilter, tagFilterRules, scenarioByLineFilterRules;
 
     beforeEach(function () {
       astFilter      = createSpyWithStubs("AST filter");
@@ -306,15 +312,51 @@ describe("Cucumber.Cli.Configuration", function () {
       spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript');
     });
 
-    it("asks the argument parser whether the version was requested or not", function () {
+    it("asks the argument parser whether the step definition snippets are in Coffeescript or not", function () {
       configuration.shouldSnippetsBeInCoffeeScript();
       expect(argumentParser.shouldSnippetsBeInCoffeeScript).toHaveBeenCalled();
     });
 
     it("returns the answer from the argument parser", function () {
-      var shouldSnippetsBeInCoffeeScript = createSpy("is version requested?");
+      var shouldSnippetsBeInCoffeeScript = createSpy("step definitions in CS?");
       argumentParser.shouldSnippetsBeInCoffeeScript.andReturn(shouldSnippetsBeInCoffeeScript);
       expect(configuration.shouldSnippetsBeInCoffeeScript()).toBe(shouldSnippetsBeInCoffeeScript);
     });
   });
+
+  describe("shouldSnippetsBeShown()", function () {
+    beforeEach(function () {
+      spyOnStub(argumentParser, 'shouldSnippetsBeShown');
+    });
+
+    it("asks the argument parser whether the step definition snippets are shown or not", function () {
+      configuration.shouldSnippetsBeShown();
+      expect(argumentParser.shouldSnippetsBeShown).toHaveBeenCalled();
+      expect(argumentParser.shouldSnippetsBeShown.callCount).toBe(1);
+    });
+
+    it("returns the answer from the argument parser", function () {
+      var shouldSnippetsBeShown = createSpy("show step definitions?");
+      argumentParser.shouldSnippetsBeShown.andReturn(shouldSnippetsBeShown);
+      expect(configuration.shouldSnippetsBeShown()).toBe(shouldSnippetsBeShown);
+    });
+  });
+
+  describe("shouldFilterStackTraces()", function () {
+    beforeEach(function () {
+      spyOnStub(argumentParser, 'shouldFilterStackTraces');
+    });
+
+    it("asks the argument parser whether the stack traces are filtered", function () {
+      configuration.shouldFilterStackTraces();
+      expect(argumentParser.shouldFilterStackTraces).toHaveBeenCalled();
+    });
+
+    it("tells whether the stack traces are filtered or not", function () {
+      var shouldStackTracesBeFiltered = createSpy("filter stack traces?");
+      argumentParser.shouldFilterStackTraces.andReturn(shouldStackTracesBeFiltered);
+      expect(configuration.shouldFilterStackTraces()).toBe(shouldStackTracesBeFiltered);
+    });
+  });
+
 });

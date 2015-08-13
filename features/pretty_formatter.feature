@@ -7,7 +7,7 @@ Feature: Pretty Formatter
       """
       Feature: some feature
       """
-    When I run `cucumber.js -f pretty`
+    When I run cucumber.js with `-f pretty`
     Then it outputs this text:
       """
       Feature: some feature
@@ -53,7 +53,7 @@ Feature: Pretty Formatter
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f pretty`
+    When I run cucumber.js with `-f pretty`
     Then it outputs this text:
       """
       Feature: some feature
@@ -93,7 +93,7 @@ Feature: Pretty Formatter
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f pretty`
+    When I run cucumber.js with `-f pretty`
     Then it outputs this text:
       """
       Feature: some feature

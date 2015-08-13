@@ -162,6 +162,14 @@ callback();\
 });\n";
     this.runFeature({}, callback);
   });
+  
+  When(/^the data table is passed to a step mapping that converts it to a hash$/, function(callback) {
+    this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
+world.dataTableLog = dataTable.rowsHash();\
+callback();\
+});\n";
+    this.runFeature({}, callback);
+  });
 
   When(/^the data table is passed to a step mapping that gets the row arrays without the header$/, function(callback) {
     this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
