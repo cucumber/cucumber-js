@@ -1,45 +1,35 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Ast.DataTable", function() {
+describe("Cucumber.Ast.DataTable", function () {
   var Cucumber = requireLib('cucumber');
 
-  var dataTable, rows;
+  var dataTable;
 
-  beforeEach(function() {
-    rows = Cucumber.Type.Collection();
-    spyOn(Cucumber.Type, 'Collection').andReturn(rows);
+  beforeEach(function () {
     dataTable = Cucumber.Ast.DataTable();
   });
 
-  describe("constructor", function() {
-    it("creates a new collection to store rows", function() {
-      expect(Cucumber.Type.Collection).toHaveBeenCalledWith();
-    });
-  });
-
-  describe("attachRow()", function() {
+  describe("attachRow() [getRows]", function () {
     var row;
 
-    beforeEach(function() {
-      spyOnStub(rows, 'add');
-    });
-
-    it("adds the row to the row collection", function() {
+    it("adds the row to the row collection", function () {
       dataTable.attachRow(row);
-      expect(rows.add).toHaveBeenCalledWith(row);
+      var rows = dataTable.getRows();
+      expect(rows.length()).toBe(1);
+      expect(rows.getAtIndex(0)).toBe(row);
     });
   });
 
-  describe("getContents()", function() {
-    it("returns the data table itself", function() {
+  describe("getContents()", function () {
+    it("returns the data table itself", function () {
       expect(dataTable.getContents()).toBe(dataTable);
     });
   });
 
-  describe("raw()", function() {
-    var rowArray;
+  describe("raw()", function () {
+    var rowArray, rawRows;
 
-    beforeEach(function() {
+    beforeEach(function () {
       rawRows  = [
         createSpy("raw row 1"),
         createSpy("raw row 2")
@@ -48,24 +38,19 @@ describe("Cucumber.Ast.DataTable", function() {
         createSpyWithStubs("row 1", {raw: rawRows[0]}),
         createSpyWithStubs("row 2", {raw: rawRows[1]})
       ];
-      rows.add(rowArray[0]);
-      rows.add(rowArray[1]);
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
     });
 
-    it("gets the raw representation of the row", function() {
-      dataTable.raw();
-      expect(rowArray[0].raw).toHaveBeenCalled();
-      expect(rowArray[1].raw).toHaveBeenCalled();
-    });
-
-    it("returns the raw representations in an array", function() {
+    it("returns the raw representations in an array", function () {
       expect(dataTable.raw()).toEqual(rawRows);
     });
   });
 
-  describe("rows()", function() {
-    var rowArray;
-    beforeEach(function() {
+  describe("rows()", function () {
+    var rawRows, rowArray;
+
+    beforeEach(function () {
       rawRows = [
         createSpy("raw row 1"),
         createSpy("raw row 2")];
@@ -73,22 +58,90 @@ describe("Cucumber.Ast.DataTable", function() {
         createSpyWithStubs("row 1", {raw: rawRows[0]}),
         createSpyWithStubs("row 2", {raw: rawRows[1]})
       ];
-      rows.add(rowArray[0]);
-      rows.add(rowArray[1]);
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
     });
 
-    it("gets the raw representation of the row without the header", function() {
-      dataTable.rows();
+    it("gets the raw representation of the row without the header", function () {
+      var actualRows = dataTable.rows();
       expect(rowArray[1].raw).toHaveBeenCalled();
       expect(rowArray[0].raw).not.toHaveBeenCalled();
+      expect(actualRows).toEqual([rawRows[1]]);
     });
   });
 
+  describe("getRows()", function () {
+    var rowArray;
 
-  describe("hashes", function() {
-    var raw, hashDataTable;
+    beforeEach(function () {
+      rowArray = [
+        createSpyWithStubs("row 1"),
+        createSpyWithStubs("row 2")
+      ];
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
+    });
 
-    beforeEach(function() {
+    it("gets the raw representation of the rows, including the header", function () {
+      var actualRows = dataTable.getRows();
+      expect(actualRows.length()).toEqual(2);
+      expect(actualRows.getAtIndex(0)).toEqual(rowArray[0]);
+      expect(actualRows.getAtIndex(1)).toEqual(rowArray[1]);
+    });
+
+    it("returns a new row collection every time", function () {
+      var actualRows1 = dataTable.getRows();
+      expect(actualRows1.length()).toEqual(2);
+      expect(actualRows1.getAtIndex(0)).toEqual(rowArray[0]);
+      expect(actualRows1.getAtIndex(1)).toEqual(rowArray[1]);
+
+      var actualRows2 = dataTable.getRows();
+      expect(actualRows2.length()).toEqual(2);
+      expect(actualRows2.getAtIndex(0)).toEqual(rowArray[0]);
+      expect(actualRows2.getAtIndex(1)).toEqual(rowArray[1]);
+
+      expect(actualRows2).toNotBe(actualRows1);
+    });
+  });
+
+  describe("rowsHash", function () {
+    it("returns a hash of the rows", function () {
+      var rawRows = [
+            ['pig', 'oink'],
+            ['cat', 'meow'],
+          ],
+          rowArray = [
+            createSpyWithStubs("row 1", {raw: rawRows[0]}),
+            createSpyWithStubs("row 2", {raw: rawRows[1]}),
+          ];
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
+      
+      expect(dataTable.rowsHash()).toEqual({pig: 'oink', cat: 'meow'});
+    });
+
+    it("fails if the table doesn't have two columns", function () {
+      var rawRows = [
+            ['one', 'two', 'three'],
+            ['cat', 'dog', 'pig']
+          ],
+          rowArray = [
+            createSpyWithStubs("row 1", {raw: rawRows[0]}),
+            createSpyWithStubs("row 2", {raw: rawRows[1]}),
+          ];
+      dataTable.attachRow(rowArray[0]);
+      dataTable.attachRow(rowArray[1]);
+      
+      expect(function () {
+        dataTable.rowsHash();
+      }).toThrow();
+    });
+  });
+
+  describe("hashes", function () {
+    var raw, rawHashDataTable, hashDataTable;
+
+    beforeEach(function () {
       raw              = createSpy("raw data table");
       rawHashDataTable = createSpy("raw hash data table");
       hashDataTable    = createSpyWithStubs("hash data table", {raw: rawHashDataTable});
@@ -96,22 +149,22 @@ describe("Cucumber.Ast.DataTable", function() {
       spyOn(Cucumber.Type, 'HashDataTable').andReturn(hashDataTable);
     });
 
-    it("gets the raw representation of the data table", function() {
+    it("gets the raw representation of the data table", function () {
       dataTable.hashes();
       expect(dataTable.raw).toHaveBeenCalled();
     });
 
-    it("creates a hash data table based on the raw representation", function() {
+    it("creates a hash data table based on the raw representation", function () {
       dataTable.hashes();
       expect(Cucumber.Type.HashDataTable).toHaveBeenCalledWith(raw);
     });
 
-    it("gets the raw representation of the hash data table", function() {
+    it("gets the raw representation of the hash data table", function () {
       dataTable.hashes();
       expect(hashDataTable.raw).toHaveBeenCalled();
     });
 
-    it("returns the raw hash data table", function() {
+    it("returns the raw hash data table", function () {
       expect(dataTable.hashes()).toBe(rawHashDataTable);
     });
   });

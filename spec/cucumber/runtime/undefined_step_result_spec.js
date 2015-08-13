@@ -1,10 +1,10 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Runtime.UndefinedStepResult", function() {
+describe("Cucumber.Runtime.UndefinedStepResult", function () {
   var Cucumber = requireLib('cucumber');
-  var undefinedStepResult, stepResult, step, payload;;
+  var undefinedStepResult, step, payload;
 
-  beforeEach(function() {
+  beforeEach(function () {
     undefinedStepResult = createSpy("base step result");
     spyOn(Cucumber.Runtime, 'StepResult').andReturn(undefinedStepResult);
     step                = createSpy("step");
@@ -12,12 +12,12 @@ describe("Cucumber.Runtime.UndefinedStepResult", function() {
     undefinedStepResult = Cucumber.Runtime.UndefinedStepResult(payload);
   });
 
-  it("is undefined", function() {
+  it("is undefined", function () {
     expect(undefinedStepResult.isUndefined()).toBeTruthy();
   });
 
-  describe("constructor", function() {
-    it("instantiates a step result", function() {
+  describe("constructor", function () {
+    it("instantiates a step result", function () {
       expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith(payload);
     });
   });

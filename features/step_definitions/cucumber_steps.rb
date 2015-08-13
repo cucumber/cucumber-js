@@ -1,6 +1,12 @@
 # This file contains step definitions which are relevant to
 # Cucumber.js feature suite only.
 
+require 'aruba/api'
+
+When /^I run cucumber\.js with `([^`]*)`$/ do |cmd|
+  run_simple("node ../../bin/cucumber.js #{unescape(cmd)}", false)
+end
+
 Given /^a mapping written in CoffeeScript$/ do
   write_coffee_script_definition_file
 end
@@ -15,6 +21,25 @@ end
 
 Given /^a mapping with a string-based pattern and parameters$/ do
   write_string_based_pattern_mapping_with_parameters
+end
+
+Given /^a promise-based mapping with implicit parameters$/ do
+  write_promise_string_based_pattern_mapping_with_implicit_parameters
+end
+
+Given(/^a promise-based mapping$/) do
+  @mapping_name = "passing promise stepdef"
+  write_passing_promise_mapping(@mapping_name)
+end
+
+Given(/^a failing promise-based mapping$/) do
+  @mapping_name = "failing promise stepdef"
+  write_failing_promise_mapping(@mapping_name)
+end
+
+Given /^a passing synchronous mapping$/ do
+  @mapping_name = "passing synchronous stepdef"
+  write_passing_synchronous_mapping(@mapping_name)
 end
 
 Given /^the step "([^"]*)" has an asynchronous pending mapping$/ do |step_name|
@@ -41,7 +66,7 @@ Given /^an around hook tagged with "([^"]*)"$/ do |tag|
   write_passing_hook :type => "around", :tags => [tag], :log_cycle_event_as => "hook"
 end
 
-When /^Cucumber executes a scenario using that mapping$/ do
+When /^Cucumber executes (?:a scenario using )?that mapping$/ do
   write_feature <<-EOF
 Feature:
   Scenario:
@@ -93,7 +118,7 @@ Then /^I see the help of Cucumber$/ do
 end
 
 Then /^it outputs this json:$/ do |json|
-  assert_json_output json
+  assert_json_output json.to_s
 end
 
 Given /^I set the environment variables to:/ do |table|

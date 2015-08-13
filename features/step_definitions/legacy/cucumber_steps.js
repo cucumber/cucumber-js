@@ -79,8 +79,6 @@ var stepDefinitions = function() {
       for(var i = 0; i < arguments.length - 1; i++) {
         _recordedStepParameters.push(arguments[i]);
       };
-      var callback = arguments[arguments.length - 1];
-      callback();
     };
     _addStepDefinition(WHEN_KEYWORD, name, content);
     callback();
@@ -229,7 +227,7 @@ var stepDefinitions = function() {
   };
 
   function _normalizeString(string) {
-    return string.replace(/\s+$/, '').replace(/\n\n/g, "\n");
+    return string.replace(/\s+$/, '').replace(/\r\n/g, "\n").replace(/\n\n/g, "\n");
   };
 
   function printInsideFeatureError(error) {

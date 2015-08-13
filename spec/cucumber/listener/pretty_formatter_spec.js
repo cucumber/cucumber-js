@@ -16,7 +16,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("constructor", function () {
-    it("creates a formatter", function() {
+    it("creates a formatter", function () {
       expect(Cucumber.Listener.Formatter).toHaveBeenCalledWith(options);
     });
 
@@ -95,7 +95,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(prettyFormatter.log).toHaveBeenCalledWith(text);
     });
 
-    it("logs the feature description", function() {
+    it("logs the feature description", function () {
       prettyFormatter.handleBeforeFeatureEvent(event, callback);
       var text = description + "\n\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text,1);
@@ -121,7 +121,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       var uri = "scenario-uri";
       var background = createSpy("background");
       scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
-      spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").andCallFake(function(element) {
+      spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").andCallFake(function (element) {
         if (element === background) {
           return backgroundStepLength;
         }
@@ -183,8 +183,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   describe("handleStepResultEvent()", function () {
     var step, stepResult, event, callback;
 
-    beforeEach(function() {
-      step       = createSpyWithStubs("step", { isHidden: null })
+    beforeEach(function () {
+      step       = createSpyWithStubs("step", { isHidden: null });
       stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       callback   = createSpy("callback");
@@ -196,16 +196,16 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
-    describe("when step result is not hidden", function() {
-      it("calls logStepResult() as the step is not hidden", function() {
+    describe("when step result is not hidden", function () {
+      it("calls logStepResult() as the step is not hidden", function () {
         spyOnStub(step, 'isHidden').andReturn(false);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
     });
 
-    describe("when step result is hidden and has not failed", function() {
-      it("does not call logStepResult() to keep the step hidden", function() {
+    describe("when step result is hidden and has not failed", function () {
+      it("does not call logStepResult() to keep the step hidden", function () {
         spyOnStub(step, 'isHidden').andReturn(true);
         spyOnStub(stepResult, 'isFailed').andReturn(false);
         prettyFormatter.handleStepResultEvent(event, callback);
@@ -213,8 +213,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       });
     });
 
-    describe("when step result is hidden and has failed", function() {
-      it("calls logStepResult() to log the failure even though the step is supposed to be hidden", function() {
+    describe("when step result is hidden and has failed", function () {
+      it("calls logStepResult() to log the failure even though the step is supposed to be hidden", function () {
         spyOnStub(step, 'isHidden').andReturn(true);
         spyOnStub(stepResult, 'isFailed').andReturn(true);
         prettyFormatter.handleStepResultEvent(event, callback);
@@ -261,7 +261,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
     });
 
-    describe("when the step has no name", function() {
+    describe("when the step has no name", function () {
       beforeEach(function () {
         step.getName.andReturn(undefined);
       });
@@ -273,7 +273,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       });
     });
 
-    describe("when the step has no URI", function() {
+    describe("when the step has no URI", function () {
       beforeEach(function () {
         step.hasUri.andReturn(false);
       });
@@ -536,27 +536,27 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     });
   });
 
-  describe("determineMaxStepLengthForElement()", function() {
+  describe("determineMaxStepLengthForElement()", function () {
     var steps, element;
 
-    beforeEach(function() {
+    beforeEach(function () {
       steps = Cucumber.Type.Collection();
       element = createSpyWithStubs("element", { getSteps: steps });
     });
 
-    it("returns zero when there are no steps", function() {
+    it("returns zero when there are no steps", function () {
       var maxStepLength = prettyFormatter.determineMaxStepLengthForElement(element);
       expect(maxStepLength).toEqual(0);
     });
 
-    it("returns the combined length of a step's keyword and name when there is one step", function() {
+    it("returns the combined length of a step's keyword and name when there is one step", function () {
       var step = createSpyWithStubs("step", { getKeyword: 'step-keyword', getName: 'step-name' });
       steps.add(step);
       var maxStepLength = prettyFormatter.determineMaxStepLengthForElement(element);
       expect(maxStepLength).toEqual(21);
     });
 
-    it("returns the maximum length of all the steps", function() {
+    it("returns the maximum length of all the steps", function () {
       var step = createSpyWithStubs("step", { getKeyword: 'step-keyword', getName: 'step-name' });
       var step2 = createSpyWithStubs("step", { getKeyword: 'step-keyword-2', getName: 'step-name-2' });
       steps.add(step);

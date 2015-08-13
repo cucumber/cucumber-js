@@ -23,10 +23,16 @@
     When I increment the variable by 1
     Then the variable should contain 2
 
-  Scenario: much more complex stuff
-    Given a variable set to 100
-    When I increment the variable by 6
-    Then the variable should contain 106</textarea>
+  Scenario Outline: much more complex stuff (e.g. <var> + <increment> = <result> )
+    Given a variable set to <var>
+    When I increment the variable by <increment>
+    Then the variable should contain <result>
+
+    Examples:
+      | var | increment | result |
+      | 100 |         5 |    105 |
+      |  99 |      1234 |   1333 |
+      |  12 |         5 |     18 |</textarea>
     <h2>Step definitions</h2>
     <textarea id="step-definitions">///// Your World /////
 
@@ -56,22 +62,18 @@ this.World.prototype.incrementBy = function(number) {
 
 var Given = When = Then = this.defineStep;
 
-Given(/^a variable set to (\d+)$/, function(number, callback) {
+Given(/^a variable set to (\d+)$/, function(number) {
   this.setTo(number);
-  callback();
 });
 
-When(/^I increment the variable by (\d+)$/, function(number, callback) {
+When(/^I increment the variable by (\d+)$/, function(number) {
   this.incrementBy(number);
-  callback();
 });
 
-Then(/^the variable should contain (\d+)$/, function(number, callback) {
+Then(/^the variable should contain (\d+)$/, function(number) {
   if (this.variable != parseInt(number))
-    callback.fail(new Error('Variable should contain ' + number +
-      ' but it contains ' + this.variable + '.'));
-  else
-    callback();
+    throw new Error('Variable should contain ' + number +
+      ' but it contains ' + this.variable + '.');
 });</textarea>
 
     <h2>Output</h2>

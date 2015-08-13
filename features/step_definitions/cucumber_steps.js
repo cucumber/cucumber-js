@@ -71,6 +71,11 @@ setTimeout(callback.pending, 10);\
     callback();
   });
 
+  Given(/^a mapping with a string-based pattern and multiple parameters$/, function(callback) {
+    this.addStringBasedPatternMappingWithMultipleParameters();
+    callback();
+  });
+
   Given(/^the following feature:$/, function(feature, callback) {
     this.featureSource = feature;
     callback();
@@ -128,6 +133,10 @@ setTimeout(callback.pending, 10);\
     this.runAScenarioCallingMappingWithParameters(callback);
   });
 
+  this.When(/^Cucumber executes a scenario that passes multiple arguments to that mapping$/, function(callback) {
+    this.runAScenarioCallingMappingWithMultipleParameters(callback);
+  });
+
   When(/^Cucumber executes a scenario that calls a function on the explicit World object$/, function(callback) {
     this.runAScenarioCallingWorldFunction(callback);
   });
@@ -149,6 +158,14 @@ setTimeout(callback.pending, 10);\
   When(/^the data table is passed to a step mapping that converts it to key\/value pairs$/, function(callback) {
     this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
 world.dataTableLog = dataTable.hashes();\
+callback();\
+});\n";
+    this.runFeature({}, callback);
+  });
+  
+  When(/^the data table is passed to a step mapping that converts it to a hash$/, function(callback) {
+    this.stepDefinitions += "When(/^a step with data table:$/, function(dataTable, callback) {\
+world.dataTableLog = dataTable.rowsHash();\
 callback();\
 });\n";
     this.runFeature({}, callback);
@@ -209,6 +226,11 @@ callback();\
 
   Then(/^the mapping receives the arguments$/, function(callback) {
     this.assertPassedMappingWithArguments();
+    callback();
+  });
+
+  Then(/^the mapping receives the multiple arguments$/, function(callback) {
+    this.assertPassedMappingWithMultipleArguments();
     callback();
   });
 

@@ -43,13 +43,13 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  this.When(/^I run `cucumber.js(| .+)`$/, function(args, callback) {
+  this.When(/^I run cucumber.js with `(|.+)`$/, function(args, callback) {
     var world = this;
 
     var initialCwd = process.cwd();
     process.chdir(tmpDir);
     var runtimePath = joinPathSegments([baseDir, 'bin', 'cucumber.js']);
-    var command     = "node \"" + runtimePath + "\"" + args;
+    var command     = "node \"" + runtimePath + "\" " + args;
     exec(command,
          function (error, stdout, stderr) {
            world.lastRun = {
@@ -66,7 +66,7 @@ var cliSteps = function cliSteps() {
   this.Then(/^the exit status should be ([0-9]+)$/, function (code, callback) {
     var world = this;
 
-    var actualCode = world.lastRun['error'] ? world.lastRun['error'].code : "0";
+    var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
 
     if (actualCode != code) {
       throw new Error("Exit code expected: \"" + code + "\"\nGot: \"" + actualCode + "\"\n");
@@ -162,7 +162,8 @@ var cliSteps = function cliSteps() {
       .replace(/\r\n|\r/g, "\n")
       .replace(/^\s+/g, "")
       .replace(/\s+$/g, "")
-      .replace(/[ \t]+\n/g, "\n");
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\\/g, "/");
   }
 
   function getAdditionalErrorText(lastRun) {

@@ -1,11 +1,11 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Ast.Features", function() {
+describe("Cucumber.Ast.Features", function () {
   var Cucumber = requireLib('cucumber');
   var featureCollection, lastFeature;
   var features;
 
-  beforeEach(function() {
+  beforeEach(function () {
     lastFeature       = createSpy("Last feature");
     featureCollection = createSpy("Feature collection");
     spyOnStub(featureCollection, 'forEach');
@@ -13,66 +13,66 @@ describe("Cucumber.Ast.Features", function() {
     features = Cucumber.Ast.Features();
   });
 
-  describe("constructor", function() {
-    it("creates a new collection to store features", function() {
+  describe("constructor", function () {
+    it("creates a new collection to store features", function () {
       expect(Cucumber.Type.Collection).toHaveBeenCalledWith();
     });
   });
 
-  describe("addFeature()", function() {
-    beforeEach(function() {
+  describe("addFeature()", function () {
+    beforeEach(function () {
       spyOnStub(featureCollection, 'add');
     });
 
-    it("adds the feature to the features (collection)", function() {
+    it("adds the feature to the features (collection)", function () {
       var feature = createSpy("feature AST element");
       features.addFeature(feature);
       expect(featureCollection.add).toHaveBeenCalledWith(feature);
     });
   });
 
-  describe("getLastFeature()", function() {
-    beforeEach(function() {
+  describe("getLastFeature()", function () {
+    beforeEach(function () {
       spyOnStub(featureCollection, 'getLast').andReturn(lastFeature);
     });
 
-    it("gets the last feature from the collection", function() {
+    it("gets the last feature from the collection", function () {
       features.getLastFeature();
       expect(featureCollection.getLast).toHaveBeenCalled();
     });
 
-    it("returns that last feature from the collection", function() {
+    it("returns that last feature from the collection", function () {
       expect(features.getLastFeature()).toBe(lastFeature);
     });
   });
 
-  describe("acceptVisitor()", function() {
+  describe("acceptVisitor()", function () {
     var visitor, callback;
 
-    beforeEach(function() {
+    beforeEach(function () {
       visitor  = createSpyWithStubs("A visitor", {visitFeature: null});
       callback = createSpy("Callback");
     });
 
-    it("iterates over the features with a user function and the callback", function() {
+    it("iterates over the features with a user function and the callback", function () {
       features.acceptVisitor(visitor, callback);
       expect(featureCollection.forEach).toHaveBeenCalled();
       expect(featureCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
       expect(featureCollection.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
     });
 
-    describe("for each feature", function() {
+    describe("for each feature", function () {
       var userFunction, feature, forEachCallback;
 
-      beforeEach(function() {
+      beforeEach(function () {
         features.acceptVisitor(visitor, callback);
         userFunction    = featureCollection.forEach.mostRecentCall.args[0];
         feature         = createSpy("A feature from the collection");
         forEachCallback = createSpy("forEach() callback");
       });
 
-      it("tells the visitor to visit the feature and call back when finished", function() {
-        userFunction(feature, forEachCallback);
+      it("tells the visitor to visit the feature and call back when finished", function () {
+        userFunction (feature, forEachCallback);
         expect(visitor.visitFeature).toHaveBeenCalledWith(feature, forEachCallback);
       });
     });

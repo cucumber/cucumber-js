@@ -1,10 +1,178 @@
 # Cucumber.js changelog
 
-## [v0.4.x](https://github.com/cucumber/cucumber-js/compare/v0.4.0...master)
+## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.4.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.2...master)
 
-**TBD**
+### [v0.5.2](https://github.com/cucumber/cucumber-js/compare/v0.5.1...v0.5.2)
+
+#### New features
+
+* Add rowsHash method to data tables (Mark Amery)
+
+#### Documentation, internals and tests
+
+* Remove CLI resource leak timeout (Julien Biezemans)
+* Point to cucumber.io instead of cukes.info (Julien Biezemans)
+* Fix mixed tabs and spaces (Mark Amery)
+* Use hexadecimal values for console colours (Julien Biezemans)
+* Update walkdir module to 0.0.10 (Artem Repko)
+* Fix ruby tests on Windows (zs-zs)
+* Fix npm test to run on Windows (zs-zs)
+* Normalize OS-specific path separators in output assertions (zs-zs)
+* Relax check for promises in step definitions (zs-zs)
+* Add Ast.Feature.getFeatureElements() (Mark Derbecker)
+* Add Util.Collection.sort() (Mark Derbecker)
+* Add waffle.io badge (Julien Biezemans)
+
+### [v0.5.1](https://github.com/cucumber/cucumber-js/compare/v0.5.0...v0.5.1)
+
+#### New features
+
+* Support placeholders in scenario outlines (chrismilleruk)
+* Add failure exception to scenario object (Mateusz Derks)
+
+#### Documentation, internals and tests
+
+* Fix World example in README (Julien Biezemans)
+* Remove moot `version` property from bower.json (Kevin Kirsche)
+* Remove obsolete release instruction for bower (Julien Biezemans)
+* Add Gitter badge (Julien Biezemans)
+* Rephrase spec example (Julien Biezemans)
+* Add documentation for attachments (Simon Dean)
+* Fix name of Cucumber.Api.Scenario in README (Simon Dean)
+
+### [v0.5.0](https://github.com/cucumber/cucumber-js/compare/v0.4.9...v0.5.0)
+
+#### New features
+
+* Support promises from step definitions (Will Farrell)
+* Support synchronous step definitions (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Remove irrelevant feature file (Julien Biezemans)
+* Reorganise callback feature (Julien Biezemans)
+* Remove unused dependency (Julien Biezemans)
+* Document new step definition styles (Julien Biezemans)
+* Make step definitions synchronous in example app (Julien Biezemans)
+
+### [v0.4.9](https://github.com/cucumber/cucumber-js/compare/v0.4.8...v0.4.9)
+
+#### New features
+
+* Make pretty formatter the default (Julien Biezemans)
+* Filter stack traces (close #157) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Separate source map from bundle (Julien Biezemans)
+* Hint (Julien Biezemans)
+* Fix misspelling io.js (Sonny Piers)
+* Add 0.12 to supported engines in NPM manifest (Julien Biezemans)
+* Fix test script to be more portable (Sam Saccone)
+* Force Cucumber <2 for now (Julien Biezemans)
+* Bump Cucumber gem to 2.0.0 (Julien Biezemans)
+* Explicitly require json module in Ruby stepdefs (Julien Biezemans)
+* Add CLI help section for --backtrace (Julien Biezemans)
+
+### [v0.4.8](https://github.com/cucumber/cucumber-js/compare/v0.4.7...v0.4.8)
+
+#### New features
+
+* Support IO.js (Sam Saccone)
+* Support Node.js 0.12 (Julien Biezemans)
+
+#### Fixes
+
+* Handle BOM and fix regexp for hyphenated languages (close #144) (Aslak Hellesøy)
+* Fix attachment clean up in hooks (close #282) (nebehr)
+
+#### Documentation, internals and tests
+
+* More thorough specs for GherkinLexer. Fix build? (Aslak Hellesøy)
+* Add jshintrc (Jesse Harlin)
+* Hint lib/ (Julien Biezemans)
+* Hint bundler and bin (Julien Biezemans)
+* Hint spec/ (Julien Biezemans)
+* Be consistent in anonymous function syntax (Julien Biezemans)
+* Use named functions for all constructors (Julien Biezemans)
+* Indent (Julien Biezemans)
+* Add more diagnostics to build (Julien Biezemans)
+* Remove unnecessary spaces in shell commands (Julien Biezemans)
+
+### [v0.4.7](https://github.com/cucumber/cucumber-js/compare/v0.4.6...v0.4.7)
+
+#### Documentation, internals and tests
+
+* Do not dispose of step domains (Julien Biezemans)
+* Refactor and add debug code (Julien Biezemans)
+* Create a single domain per run (Julien Biezemans)
+* Add missing AstTreeWalker specs (Julien Biezemans)
+* Indent (Julien Biezemans)
+* Spec domain enter/exit in AstTreeWalker (Julien Biezemans)
+
+### [v0.4.6](https://github.com/cucumber/cucumber-js/compare/v0.4.5...v0.4.6)
+
+#### New features
+
+* Add --no-snippets flag to CLI (close #207) (Krispin Schulz)
+* Add strict mode (close #211) (Elwyn)
+* Add strict mode to volatile configuration (close #258) (Jan-Eric Duden)
+
+#### Fixes
+
+* Fix code loader on windows (close #226) (Gary Taylor)
+
+#### Documentation, internals and tests
+
+* Connect to Rubygems through SSL (Julien Biezemans)
+* Use Node domain's enter/exit in stepdefs (Julien Biezemans)
+* Do not display snippets in build (Julien Biezemans)
+* Asynchronously dispose of step domains (Julien Biezemans)
+* Change order of tests in build (Julien Biezemans)
+* Fix tests to run on Windows (close #216) (kostya.misura)
+* Fix registerHandler() example in README (Julien Biezemans)
+* Fix typo in variable name (Julien Biezemans)
+* Fix World property assignment in README example (Julian)
+* Unix EOLs (Julien Biezemans)
+* Ignore .ruby-* (Julien Biezemans)
+
+### [v0.4.5](https://github.com/cucumber/cucumber-js/compare/v0.4.4...v0.4.5)
+
+#### Documentation, internals and tests
+
+* Fix issue with npm upgrade on node.js v0.8 (Simon Dean)
+* Use Node domain to handle asynchronous exceptions (Julien Biezemans)
+
+### [v0.4.4](https://github.com/cucumber/cucumber-js/compare/v0.4.3...v0.4.4)
+
+#### Fixes
+
+* Allow >1 parameter in string step definitions (Craig Morris)
+* Don't skip scenario outlines (close #245) (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Bump nopt (Julien Biezemans)
+* Bump coffee-script (Julien Biezemans)
+* Bump pogo (Julien Biezemans)
+* Bump underscore (Julien Biezemans)
+* Bump rimraf (Julien Biezemans)
+* Bump jasmine-node (Julien Biezemans)
+* Bump connect (Julien Biezemans)
+* Rewrite bundling system (close #186) (Julien Biezemans)
+* Rename release script (Julien Biezemans)
+* Upgrade NPM on Travis (Julien Biezemans)
+* Drop Node 0.6 support (Julien Biezemans)
+* Drop Node 0.6 support (manifest) (Julien Biezemans)
+
+### [v0.4.3](https://github.com/cucumber/cucumber-js/compare/v0.4.2...v0.4.3)
+
+#### Fixes
+
+* Scenario outline fixes (Simon Dean)
+* Correct the embeddings JSON to match other ports of Cucumber (Simon Dean)
 
 ### [v0.4.2](https://github.com/cucumber/cucumber-js/compare/v0.4.1...v0.4.2)
 

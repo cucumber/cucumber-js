@@ -168,15 +168,15 @@ describe("Cucumber.Listener.StatsJournal", function () {
   });
 
   describe("handleSuccessfulStepResult()", function () {
-    var step, stepResult;
+    var step;
 
     beforeEach(function () {
       step       = createSpy("step");
       spyOn(statsJournal, 'witnessPassedStep');
     });
 
-    describe("when the step is not hidden", function() {
-      beforeEach(function() {
+    describe("when the step is not hidden", function () {
+      beforeEach(function () {
         spyOnStub(step, 'isHidden').andReturn(false);
       });
 
@@ -186,8 +186,8 @@ describe("Cucumber.Listener.StatsJournal", function () {
       });
     });
 
-    describe("when the step is hidden", function() {
-      beforeEach(function() {
+    describe("when the step is hidden", function () {
+      beforeEach(function () {
         spyOnStub(step, 'isHidden').andReturn(true);
       });
 
@@ -299,22 +299,13 @@ describe("Cucumber.Listener.StatsJournal", function () {
     });
 
     describe("when the current scenario failed", function () {
-      var scenario;
-
       beforeEach(function () {
-        scenario = createSpy("scenario");
         statsJournal.isCurrentScenarioFailing.andReturn(true);
-        spyOnStub(event, 'getPayloadItem').andReturn(scenario);
       });
 
       it("witnesses a failed scenario", function () {
         statsJournal.handleAfterScenarioEvent(event, callback);
         expect(statsJournal.witnessFailedScenario).toHaveBeenCalled();
-      });
-
-      it("gets the scenario from the payload", function () {
-        statsJournal.handleAfterScenarioEvent(event, callback);
-        expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
       });
     });
 

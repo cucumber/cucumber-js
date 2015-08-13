@@ -26,7 +26,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -50,16 +50,16 @@ Feature: Attachments
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "image/png",
-                        "data": "ZGF0YQ=="
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "image/png",
+                      "data": "ZGF0YQ=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -121,7 +121,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -145,16 +145,16 @@ Feature: Attachments
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "image/png",
-                        "data": "ZGF0YQ=="
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "image/png",
+                      "data": "ZGF0YQ=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -202,7 +202,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -226,16 +226,16 @@ Feature: Attachments
                   "keyword": "Around ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -291,7 +291,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -334,16 +334,16 @@ Feature: Attachments
                   "keyword": "Around ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 }
               ]
             }
@@ -378,7 +378,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -402,16 +402,16 @@ Feature: Attachments
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 },
                 {
                   "name": "This step is passing",
@@ -456,7 +456,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -490,16 +490,16 @@ Feature: Attachments
                   "keyword": "After ",
                   "hidden": true,
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 }
               ]
             }
@@ -538,7 +538,7 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run `cucumber.js -f json`
+    When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
       [
@@ -572,16 +572,16 @@ Feature: Attachments
                   "line": 4,
                   "keyword": "Given ",
                   "result": {
-                    "embeddings": [
-                      {
-                        "mime_type": "text/plain",
-                        "data": "text"
-                      }
-                    ],
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {},
+                  "embeddings": [
+                    {
+                      "mime_type": "text/plain",
+                      "data": "dGV4dA=="
+                    }
+                  ]
                 }
               ]
             }

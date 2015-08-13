@@ -14,3 +14,10 @@ Feature: step definitions with string pattern
     Then the feature passes
     And the mapping is run
     And the mapping receives the arguments
+
+  Scenario: step definition with string-based pattern and multiple parameters
+    Given a mapping with a string-based pattern and multiple parameters
+    When Cucumber executes a scenario that passes multiple arguments to that mapping
+    Then the feature passes
+    And the mapping is run
+    And the mapping receives the multipple arguments
