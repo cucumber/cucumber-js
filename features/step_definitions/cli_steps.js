@@ -3,6 +3,7 @@ var cliSteps = function cliSteps() {
   var rimraf          = require('rimraf');
   var mkdirp          = require('mkdirp');
   var exec            = require('child_process').exec;
+  var path            = require('path');
 
   var baseDir         = fs.realpathSync(__dirname + "/../..");
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
@@ -43,11 +44,24 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  this.When(/^I run cucumber.js with `(|.+)`$/, function(args, callback) {
+  this.Given(/^a directory named "(.*)"$/, function(filePath, callback) {
+    cleanseIfNeeded();
+    var absoluteFilePath = tmpPath(filePath);
+    mkdirp(absoluteFilePath, 0755, function(err) {
+      if (err) { throw new Error(err); }
+      callback()
+    });
+  });
+
+  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)? with `(|.+)`$/, function(dir, args, callback) {
     var world = this;
 
     var initialCwd = process.cwd();
-    process.chdir(tmpDir);
+    var runCwd = tmpDir;
+    if (dir) {
+      runCwd = path.join(tmpDir, dir)
+    }
+    process.chdir(runCwd);
     var runtimePath = joinPathSegments([baseDir, 'bin', 'cucumber.js']);
     var command     = "node \"" + runtimePath + "\" " + args;
     exec(command,
