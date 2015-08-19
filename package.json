@@ -102,7 +102,7 @@
     "serve-static": "1.6.1",
     "through": "2.3.4",
     "uglifyify": "2.5.0",
-    "exorcist": "^0.1.6"
+    "exorcist": "0.4.0"
   },
   "scripts": {
     "test": "jshint bundler.js bin lib spec && jasmine-node spec && node bin/cucumber.js -f progress -i"
