@@ -97,7 +97,7 @@
     "connect": "3.4.0",
     "jasmine-node": "1.14.5",
     "jshint": "^2.6.0",
-    "mkdirp": "0.3.5",
+    "mkdirp": "0.5.1",
     "rimraf": "2.4.2",
     "serve-static": "1.10.0",
     "through": "2.3.8",
