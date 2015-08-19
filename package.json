@@ -96,7 +96,7 @@
   "devDependencies": {
     "connect": "3.4.0",
     "jasmine-node": "1.14.5",
-    "jshint": "^2.6.0",
+    "jshint": "2.8.0",
     "mkdirp": "0.5.1",
     "rimraf": "2.4.2",
     "serve-static": "1.10.0",
