@@ -38,7 +38,7 @@ Feature: Failed scenarios
 
   Scenario: from nested features directory
     Given a directory named "features/nested"
-    When I run cucumber.js from the "features/nested" directory with `../.. -f progress`
+    When I run cucumber.js from the "features/nested" directory with `../a.feature -f progress`
     Then it outputs this text:
       """
       F
