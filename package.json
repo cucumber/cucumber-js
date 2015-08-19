@@ -101,7 +101,7 @@
     "rimraf": "2.2.8",
     "serve-static": "1.6.1",
     "through": "2.3.4",
-    "uglifyify": "2.5.0",
+    "uglifyify": "3.0.1",
     "exorcist": "0.4.0"
   },
   "scripts": {
