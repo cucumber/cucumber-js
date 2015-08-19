@@ -2,6 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.PrettyFormatter", function () {
   var Cucumber = requireLib('cucumber');
+  var path     = require('path');
   var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, color;
 
   beforeEach(function () {
@@ -108,17 +109,18 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("handleBeforeScenarioEvent()", function () {
-    var event, scenario, keyword, name, backgroundStepLength, callback;
+    var event, scenario, keyword, name, backgroundStepLength, callback, relativeUri;
 
     beforeEach(function () {
       keyword  = "scenario-keyword";
       name     = "scenario-name";
+      relativeUri = "scenario-uri";
       // Background step assumed to be the longest
       backgroundStepLength = 50;
       var scenarioStepLength = 20;
       var tags = [createSpyWithStubs("tags", {getName: '@tag'})];
       var line = 10;
-      var uri = "scenario-uri";
+      var uri = path.join(process.cwd(), relativeUri);
       var background = createSpy("background");
       scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
       spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").andCallFake(function (element) {
@@ -151,7 +153,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the scenario header, indented by one level", function () {
       prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      var text = color.format('tag', "@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + color.format('comment', "# " + scenario.getUri().slice(1) + ":" + scenario.getLine()) + "\n";
+      var text = color.format('tag', "@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + color.format('comment', "# " + relativeUri + ":" + scenario.getLine()) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 1);
     });
 
@@ -229,12 +231,13 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logStepResult()", function () {
-    var stepResult, keyword, name, uri, maxStepLength, line, step;
+    var stepResult, keyword, name, relativeUri, maxStepLength, line, step;
 
     beforeEach(function () {
       keyword    = "step-keyword ";
       name       = "step-name";
-      uri        = "/step-uri";
+      relativeUri = "step-uri";;
+      var uri = path.join(process.cwd(), relativeUri);
       maxStepLength = 30;
       line       = 10;
       step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name, hasUri: true, getUri: uri, getLine: line });
@@ -257,7 +260,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the step header, indented by two levels", function () {
       prettyFormatter.logStepResult(step, stepResult);
-      var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + color.format('comment', "# " + uri.slice(1) + ":" + line) + "\n";
+      var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + color.format('comment', "# " + relativeUri + ":" + line) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
     });
 
@@ -268,7 +271,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it("logs the step header without the name, indented by two levels", function () {
         prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword, maxStepLength + 10) + color.format('comment', "# " + uri.slice(1) + ":" + line) + "\n";
+        var text = prettyFormatter._pad(keyword, maxStepLength + 10) + color.format('comment', "# " + relativeUri + ":" + line) + "\n";
         expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
       });
     });
