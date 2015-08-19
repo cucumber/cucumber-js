@@ -236,7 +236,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     beforeEach(function () {
       keyword    = "step-keyword ";
       name       = "step-name";
-      relativeUri = "step-uri";;
+      relativeUri = "step-uri";
       var uri = path.join(process.cwd(), relativeUri);
       maxStepLength = 30;
       line       = 10;
