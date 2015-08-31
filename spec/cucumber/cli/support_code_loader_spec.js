@@ -14,7 +14,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
                                      createSpyWithStubs("second secondary support code file path", {match: false})];
     primeSupportCodeFilePaths     = [supportCodeFilePaths[1], supportCodeFilePaths[2]];
     secondarySupportCodeFilePaths = [supportCodeFilePaths[0], supportCodeFilePaths[3]];
-    supportCodeLoader             = Cucumber.Cli.SupportCodeLoader(supportCodeFilePaths);
+    supportCodeLoader             = Cucumber.Cli.SupportCodeLoader(supportCodeFilePaths, []);
   });
 
   describe("getSupportCodeLibrary()", function () {

@@ -208,12 +208,14 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getSupportCodeLibrary()", function () {
-    var supportCodeFilePaths, supportCodeLoader, supportCodeLibrary;
+    var compilerModules, supportCodeFilePaths, supportCodeLoader, supportCodeLibrary;
 
     beforeEach(function () {
+      compilerModules      = createSpy("compiler modules");
       supportCodeFilePaths = createSpy("support code file paths");
       supportCodeLoader    = createSpy("support code loader");
       supportCodeLibrary   = createSpy("support code library");
+      spyOnStub(argumentParser, 'getCompilerModules').andReturn(compilerModules);
       spyOnStub(argumentParser, 'getSupportCodeFilePaths').andReturn(supportCodeFilePaths);
       spyOn(Cucumber.Cli, 'SupportCodeLoader').andReturn(supportCodeLoader);
       spyOnStub(supportCodeLoader, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
@@ -224,9 +226,9 @@ describe("Cucumber.Cli.Configuration", function () {
       expect(argumentParser.getSupportCodeFilePaths).toHaveBeenCalled();
     });
 
-    it("creates a support code loader for those paths", function () {
+    it("creates a support code loader for those paths and compiler modules", function () {
       configuration.getSupportCodeLibrary();
-      expect(Cucumber.Cli.SupportCodeLoader).toHaveBeenCalledWith(supportCodeFilePaths);
+      expect(Cucumber.Cli.SupportCodeLoader).toHaveBeenCalledWith(supportCodeFilePaths, compilerModules);
     });
 
     it("gets the support code library from the support code loader", function () {
