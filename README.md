@@ -84,14 +84,13 @@ Support files let you setup the environment in which steps will be run, and defi
 // features/support/world.js
 var zombie = require('zombie');
 function World(callback) {
-    this.browser = new zombie(); // this.browser will be available in step definitions
+  this.browser = new zombie(); // this.browser will be available in step definitions
 
-    this.visit = function (url, callback) {
-      this.browser.visit(url, callback);
-    };
-
-    callback(); // tell Cucumber we're finished and to use 'this' as the world instance
+  this.visit = function (url, callback) {
+    this.browser.visit(url, callback);
   };
+
+  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
 }
 module.exports.World = World;
 ```
@@ -114,7 +113,7 @@ function WorldFactory(callback) {
   };
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
-};
+}
 exports.World = WorldFactory;
 ```
 
