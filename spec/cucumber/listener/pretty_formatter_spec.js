@@ -5,7 +5,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, color;
 
   beforeEach(function () {
-    options             = createSpy("options");
+    options             = createSpyWithStubs("options", {showSource: true});
     formatter           = createSpyWithStubs("formatter", {log: null});
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summary formatter");

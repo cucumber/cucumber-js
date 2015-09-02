@@ -121,6 +121,15 @@ Then /^it outputs this json:$/ do |json|
   assert_json_output json.to_s
 end
 
+Given /^I set the environment variables to:/ do |table|
+  table.hashes.each do |row|
+    variable = row['variable'].to_s.upcase
+    value = row['value'].to_s
+
+    set_env(variable, value)
+  end
+end
+
 Then /^it outputs this text:$/ do |json|
   assert_text_output json
 end

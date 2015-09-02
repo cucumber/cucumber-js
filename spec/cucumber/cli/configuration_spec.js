@@ -29,15 +29,17 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getFormatter()", function () {
-    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown;
+    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource;
 
     beforeEach(function () {
       shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
-      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown};
+      shouldShowSource               = createSpy("should source uris be visible?");
+      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown, showSource: shouldShowSource};
       spyOnStub(argumentParser, 'getFormat').andReturn("progress");
       spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript').andReturn(shouldSnippetsBeInCoffeeScript);
       spyOnStub(argumentParser, 'shouldSnippetsBeShown').andReturn(shouldSnippetsBeShown);
+      spyOnStub(argumentParser, 'shouldShowSource').andReturn(shouldShowSource);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
@@ -52,6 +54,11 @@ describe("Cucumber.Cli.Configuration", function () {
     it("checks whether the step definition snippets should be in CoffeeScript", function () {
       configuration.getFormatter();
       expect(argumentParser.shouldSnippetsBeInCoffeeScript).toHaveBeenCalled();
+    });
+      
+    it("checks whether the source uris should be shown", function () {
+        configuration.getFormatter();
+        expect(argumentParser.shouldShowSource).toHaveBeenCalled();
     });
 
     it("checks whether the step definition snippets should be shown", function () {
