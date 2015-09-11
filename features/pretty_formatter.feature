@@ -111,7 +111,7 @@ Feature: Pretty Formatter
       Fail
 
       Failing scenarios:
-      <current-directory>/features/a.feature:3 # Scenario: I've declared one step and it is passing
+      features/a.feature:3 # Scenario: I've declared one step and it is passing
 
       1 scenario (1 failed)
       2 steps (1 failed, 1 skipped)

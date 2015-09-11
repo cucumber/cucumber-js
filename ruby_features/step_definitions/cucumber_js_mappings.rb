@@ -345,7 +345,6 @@ EOF
   end
 
   def assert_text_output(expected)
-    expected.gsub!(/<current-directory>/, File.join(Dir.pwd, current_dir))
     expected = normalize_text(expected)
     actual   = normalize_text(all_output)
 

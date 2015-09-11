@@ -20,7 +20,7 @@ It runs on both Node.js and *modern* web browsers.
 
 Cucumber.js is tested on:
 
-* Node.js 0.8, 0.10, 0.11, 0.12 and io.js (see [CI builds](https://travis-ci.org/cucumber/cucumber-js))
+* Node.js 4.x, 0.12, 0.10, 0.8 and io.js (see [CI builds](https://travis-ci.org/cucumber/cucumber-js))
 * Google Chrome
 * Firefox
 * Safari
@@ -84,14 +84,13 @@ Support files let you setup the environment in which steps will be run, and defi
 // features/support/world.js
 var zombie = require('zombie');
 function World(callback) {
-    this.browser = new zombie(); // this.browser will be available in step definitions
+  this.browser = new zombie(); // this.browser will be available in step definitions
 
-    this.visit = function (url, callback) {
-      this.browser.visit(url, callback);
-    };
-
-    callback(); // tell Cucumber we're finished and to use 'this' as the world instance
+  this.visit = function (url, callback) {
+    this.browser.visit(url, callback);
   };
+
+  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
 }
 module.exports.World = World;
 ```
@@ -114,7 +113,7 @@ function WorldFactory(callback) {
   };
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
-};
+}
 exports.World = WorldFactory;
 ```
 
