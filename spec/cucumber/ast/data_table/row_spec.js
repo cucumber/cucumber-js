@@ -6,15 +6,22 @@ describe("Cucumber.Ast.Feature", function () {
   var row, cells, uri, line;
 
   beforeEach(function () {
-    cells = createSpy("cells");
+    cells = ['a', 'b', '1'];
     uri   = createSpy("uri");
     line  = createSpy("line");
     row   = Cucumber.Ast.DataTable.Row(cells, uri, line);
   });
 
   describe("raw()", function () {
-    it("returns the cells", function () {
-      expect(row.raw()).toBe(cells);
+    it("returns a copy of the cells", function () {
+      expect(row.raw()).not.toBe(cells);
+      expect(row.raw()).toEqual(['a', 'b', '1']);
+    });
+  });
+
+  describe("getLine()", function () {
+    it("returns the line number", function () {
+      expect(row.getLine()).toBe(line);
     });
   });
 });

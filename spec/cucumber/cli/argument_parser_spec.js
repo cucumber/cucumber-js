@@ -5,46 +5,166 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   var path     = require('path');
   var nopt;
 
-  var argumentParser, argv;
+  var argumentParser, argv, slicedArgv;
 
   beforeEach(function () {
     nopt           = spyOnModule('nopt'); // stubbed BEFORE ArgumentParser() is called.
-    argv           = createSpy("arguments (argv)");
+    slicedArgv     = createSpy("sliced arguments");
+    argv           = createSpyWithStubs("arguments (argv)", {slice: slicedArgv});
     argumentParser = Cucumber.Cli.ArgumentParser(argv);
   });
 
   describe("parse()", function () {
-    var knownOptionDefinitions, shortenedOptionDefinitions;
+    var expandedArgs, options;
+
+    beforeEach(function () {
+      expandedArgs = createSpy("expanded arguments");
+      options = createSpy("options");
+      spyOn(argumentParser, 'getExpandedArgs').andReturn(expandedArgs);
+      spyOn(argumentParser, 'argsToOptions').andReturn(options);
+      spyOn(argumentParser, 'storeOptions');
+    });
+
+    it("removes the leading args from argv", function () {
+      argumentParser.parse();
+      expect(argv.slice).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.NUMBER_OF_LEADING_ARGS_TO_SLICE);
+    });
+
+    it("gets the expanded argv", function () {
+      argumentParser.parse();
+      expect(argumentParser.getExpandedArgs).toHaveBeenCalledWith(slicedArgv);
+    });
+
+    it("gets the options", function () {
+      argumentParser.parse();
+      expect(argumentParser.argsToOptions).toHaveBeenCalledWith(expandedArgs);
+    });
+
+    it("stores the expanded options", function () {
+      argumentParser.parse();
+      expect(argumentParser.storeOptions).toHaveBeenCalledWith(options);
+    });
+  });
+
+  describe("argsToOptions()", function (){
+    var knownOptionDefinitions, shortenedOptionDefinitions, args;
     var options;
 
     beforeEach(function () {
       knownOptionDefinitions     = createSpy("known option definitions");
       shortenedOptionDefinitions = createSpy("shortened option definitions");
+      args                       = createSpy("arguments");
       options                    = createSpy("parsed options");
       nopt.andReturn(options);
       spyOn(argumentParser, 'getKnownOptionDefinitions').andReturn(knownOptionDefinitions);
       spyOn(argumentParser, 'getShortenedOptionDefinitions').andReturn(shortenedOptionDefinitions);
-      spyOn(argumentParser, 'storeOptions');
     });
 
     it("gets the known option definitions", function () {
-      argumentParser.parse();
+      argumentParser.argsToOptions(args);
       expect(argumentParser.getKnownOptionDefinitions).toHaveBeenCalled();
     });
 
     it("gets the shortened option definitions", function () {
-      argumentParser.parse();
+      argumentParser.argsToOptions(args);
       expect(argumentParser.getShortenedOptionDefinitions).toHaveBeenCalled();
     });
 
-    it("gets the options from nopt based on the definitions and argv", function () {
-      argumentParser.parse();
-      expect(nopt).toHaveBeenCalledWith(knownOptionDefinitions, shortenedOptionDefinitions, argv, Cucumber.Cli.ArgumentParser.NUMBER_OF_LEADING_ARGS_TO_SLICE);
+    it("gets the options from nopt based on the definitions and args", function () {
+      argumentParser.argsToOptions(args);
+      expect(nopt).toHaveBeenCalledWith(knownOptionDefinitions, shortenedOptionDefinitions, args, 0);
     });
 
-    it("stores the options", function () {
-      argumentParser.parse();
-      expect(argumentParser.storeOptions).toHaveBeenCalledWith(options);
+    it("returns the parsed options", function () {
+      expect(argumentParser.argsToOptions(args)).toEqual(options);
+    });
+  });
+
+  describe("getExpandedArgs()", function () {
+    var options, profileDefinitions, unexpandedArgs;
+
+    beforeEach(function () {
+      unexpandedArgs = ['unexpanded', 'args'];
+    });
+
+    describe("no profile specified", function () {
+      beforeEach(function () {
+        spyOn(argumentParser, 'argsToOptions').andReturn({});
+      });
+
+      describe("without default profile", function () {
+        beforeEach(function () {
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn({});
+        });
+
+        it("returns the unexpanded args", function () {
+          expect(argumentParser.getExpandedArgs(unexpandedArgs)).toEqual(unexpandedArgs);
+        });
+      });
+
+      describe("with default profile", function () {
+        beforeEach(function () {
+          profileDefinitions = {
+            'default': 'default args'
+          };
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+        });
+
+        it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
+          expect(argumentParser.getExpandedArgs(unexpandedArgs)).toEqual(['default', 'args'].concat(unexpandedArgs));
+        });
+      });
+    });
+
+    describe("single profile specified", function () {
+      beforeEach(function () {
+        options = {};
+        options[Cucumber.Cli.ArgumentParser.PROFILE_OPTION_NAME] = ['profileName'];
+        spyOn(argumentParser, 'argsToOptions').andReturn(options);
+      });
+
+      describe("profile is not defined", function () {
+        beforeEach(function () {
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn({});
+        });
+
+        it("throws an error", function () {
+          expect(function(){
+            argumentParser.getExpandedArgs(unexpandedArgs);
+          }).toThrow();
+        });
+      });
+
+      describe("profile is defined", function () {
+        beforeEach(function () {
+          profileDefinitions = {
+            'profileName': 'profile args'
+          };
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+        });
+
+        it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
+          expect(argumentParser.getExpandedArgs(unexpandedArgs)).toEqual(['profile', 'args'].concat(unexpandedArgs));
+        });
+      });
+    });
+
+    describe("multiple profiles specified", function () {
+      beforeEach(function () {
+        options = {};
+        options[Cucumber.Cli.ArgumentParser.PROFILE_OPTION_NAME] = ['profileA', 'profileB'];
+        profileDefinitions = {
+          'profileA': 'profileA args',
+          'profileB': 'profileB args'
+        };
+        spyOn(argumentParser, 'argsToOptions').andReturn(options);
+        spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+      });
+
+      it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
+        var expandedArgs = ['profileA', 'args', 'profileB', 'args'].concat(unexpandedArgs);
+        expect(argumentParser.getExpandedArgs(unexpandedArgs)).toEqual(expandedArgs);
+      });
     });
   });
 

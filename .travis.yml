@@ -12,18 +12,8 @@ script: "rake"
 language: node_js
 
 node_js:
+  - "4"
   - "0.12"
-  - "0.11"
   - "0.10"
   - "0.8"
   - "iojs"
-
-matrix:
-  allow_failures:
-    - node_js: "0.11"
-
-notifications:
-  email:
-    - jb@jbpros.com
-  irc:
-    - "irc.freenode.org#cucumber"
