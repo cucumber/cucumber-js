@@ -79,7 +79,7 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": "0.8 || 0.10 || 0.11 || 0.12 || >= 1.0.0"
+    "node": ">=0.8"
   },
   "dependencies": {
     "browserify": "5.11.1",
