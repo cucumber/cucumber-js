@@ -2,7 +2,44 @@
 
 ## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.3...master)
+
+### [v0.5.3](https://github.com/cucumber/cucumber-js/compare/v0.5.2...v0.5.3)
+
+#### New features
+
+* Add support for profiles (Charles Rudolph)
+
+#### Changed features
+
+* Allow for multiple instances of placeholder (Charles Rudolph)
+* Print relative paths in summary output (Charles Rudolph)
+
+#### Fixes
+
+* Remove duplicate line number from output (Charles Rudolph)
+* Return clone of array from DataTable.Row.raw() (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Update various urls (Dale Gardner)
+* Bump CoffeeScript (Julien Biezemans)
+* Bump PogoScript (Julien Biezemans)
+* Bump underscore (Julien Biezemans)
+* Bump underscore.string (Julien Biezemans)
+* Bump stack-chain (Julien Biezemans)
+* Bump nopt (Julien Biezemans)
+* Bump connect (Julien Biezemans)
+* Bump exorcist (Julien Biezemans)
+* Bump uglifyify (Julien Biezemans)
+* Bump through (Julien Biezemans)
+* Bump serve-static (Julien Biezemans)
+* Bump rimraf (Julien Biezemans)
+* Bump mkdirp (Julien Biezemans)
+* Bump jshint (Julien Biezemans)
+* Remove extra bracket in README example (Julien Biezemans)
+* Officially support Node.js 4.x (Julien Biezemans)
+* Use a profile for own build (Julien Biezemans)
 
 ### [v0.5.2](https://github.com/cucumber/cucumber-js/compare/v0.5.1...v0.5.2)
 
