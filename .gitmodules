@@ -1,3 +1,0 @@
-[submodule "features/cucumber-tck"]
-	path = features/cucumber-tck
-	url = git://github.com/cucumber/cucumber-tck.git

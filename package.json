@@ -107,7 +107,10 @@
     "exorcist": "0.4.0"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib spec && jasmine-node spec && node bin/cucumber.js -p build"
+    "feature-test": "node bin/cucumber.js -f progress",
+    "lint": "jshint bundler.js bin lib spec",
+    "unit-test": "jasmine-node spec",
+    "test": "npm run lint && npm run unit-test && npm run feature-test"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

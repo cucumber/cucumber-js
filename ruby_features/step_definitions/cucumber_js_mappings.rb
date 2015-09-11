@@ -133,13 +133,13 @@ EOF
   end
 
   def write_calculator_code
-    rpn_calculator_code = get_file_contents('../support/rpn_calculator.js')
+    rpn_calculator_code = get_file_contents('../support/compliance/rpn_calculator.js')
     create_dir 'features/support'
     write_file 'features/support/rpn_calculator.js', rpn_calculator_code
   end
 
   def write_mappings_for_calculator
-    calculator_steps = get_file_contents('./calculator_steps.js')
+    calculator_steps = get_file_contents('../support/compliance/calculator_steps.js')
     write_file 'features/step_definitions/calculator_steps.js', calculator_steps
     append_support_code <<-EOF
 var RpnCalculator   = require('../support/rpn_calculator');

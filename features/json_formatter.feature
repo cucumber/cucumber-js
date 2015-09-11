@@ -213,7 +213,6 @@ Feature: JSON Formatter
       ]
       """
 
-  @wip
   Scenario: output JSON for a feature with one scenario with failing step
     Given a file named "features/a.feature" with:
       """

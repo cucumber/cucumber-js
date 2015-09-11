@@ -6,7 +6,7 @@ task :test => "test:all"
 namespace :test do
 
   desc "Run all tests"
-  task :all => [ "diagnostics", "test:js", "test:rb" ]
+  task :all => [ "diagnostics", "test:js", "test:rb", "test:rb_compliance" ]
 
   desc "Display some diagnostics"
   task :diagnostics do
@@ -19,12 +19,17 @@ namespace :test do
 
   desc "Run the features through Cucumber (Ruby) and Aruba"
   task :rb do
-    sh %{cucumber -p quiet}
+    sh %{cucumber -p default -p quiet}
   end
 
   desc "Run the features through Cucumber.js and the specs through Jasmine-node"
   task :js do
     sh %{npm test}
+  end
+
+  desc "Run the compliance features through Cucumber (Ruby) and Aruba"
+  task :rb_compliance do
+    sh %{cucumber -p compliance -p quiet}
   end
 
 end

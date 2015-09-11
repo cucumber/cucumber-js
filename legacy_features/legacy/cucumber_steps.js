@@ -1,4 +1,4 @@
-var Cucumber = require('../../../lib/cucumber');
+var Cucumber = require('../../lib/cucumber');
 
 var stepDefinitions = function() {
   var Given = When = Then = this.defineStep;

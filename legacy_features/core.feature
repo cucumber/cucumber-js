@@ -60,7 +60,7 @@ Feature: Core feature elements execution
           And I call a watched step
           Then the watched step should have been called 3 times
       """
-    Then the feature should have run successfully      
+    Then the feature should have run successfully
 
   Scenario: Steps accepting parameters
     Given a step definition matching /^I call a step with "(.*)"$/ recording its parameters
@@ -103,7 +103,7 @@ Feature: Core feature elements execution
             \"\"\"
           Then the 1st received parameter should be "Cucumber"
           And the 2nd received parameter should be "The cucumber (Cucumis sativus) is a widely cultivated plant in the gourd family Cucurbitaceae."
-      
+
         Scenario: Matching group and multiline DocString
           When I call a step with "Cucumber" and the following text:
             \"\"\"

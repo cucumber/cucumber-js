@@ -12,7 +12,6 @@ Feature: Asynchronous failing steps
     When Cucumber runs the feature
     Then the scenario called "a failing scenario" is reported as failing
 
-  @untestable-on-self
   Scenario: see asynchronously failing scenarios with exception
     Given the following feature:
       """

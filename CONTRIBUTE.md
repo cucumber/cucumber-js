@@ -38,7 +38,7 @@ The official way of running them is through Cucumber-ruby and Aruba. Ruby and Bu
 
     $ git submodule update --init
     $ bundle
-    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber features/cucumber-tck -r features
+    $ rm -rf doc; ARUBA_REPORT_DIR=doc cucumber -p compliance
 
 *Note*: you need the *bcat* and *rdiscount* gems in order to use the `ARUBA_REPORT_DIR` environment variable. Install it with `gem install bcat rdiscount`.
 
@@ -46,13 +46,10 @@ You can then open the generated documentation:
 
     $ open doc/features/cucumber-tck/*.html # might open a lot of files ;)
 
-In addition to that, Cucumber.js is able to run the features for itself too:
+There are a few other Cucumber.js-dependent features. Some are written in javascript and some are written in ruby. Run them with:
 
-    $ ./bin/cucumber.js features/cucumber-tck -r features
-
-There are a few other Cucumber.js-dependent features. Execute everything:
-
-    $ ./bin/cucumber.js
+    $ ./bin/cucumber.js   # runs features written in javascript
+    $ cucumber            # runs features written in ruby
 
 ### Rake
 
