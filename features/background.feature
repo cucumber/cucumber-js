@@ -7,44 +7,41 @@ Feature: Background
   Hooks.
 
   Scenario: One scenario and a background
-    Given the following feature:
+    Given a file named "features/background.feature" with:
       """
-      Feature: testing scenarios
+      Feature: a feature
         Background:
           Given a background step
 
-        Scenario:
+        Scenario: a scenario
           When a scenario step
       """
-    And the step "a background step" has a passing mapping
-    And the step "a scenario step" has a passing mapping
-    When Cucumber runs the feature
-    Then the feature passes
-    And the step "a background step" passes
-    And the step "a scenario step" passes
+    When I run cucumber.js with `-f json`
+    Then the scenario "a scenario" has the steps
+      | STEP              |
+      | a background step |
+      | a scenario step   |
 
   Scenario: Two scenarios and a background
-    Given the following feature:
+    Given a file named "features/background.feature" with:
       """
-      Feature: testing scenarios
+      Feature: a feature
         Background:
           Given a background step
 
-        Scenario:
+        Scenario: a scenario
           When a scenario step
 
-        Scenario:
-          When a second scenario step
+        Scenario: another scenario
+          When another scenario step
       """
-    And the step "a background step" has a passing mapping
-    And the step "a scenario step" has a passing mapping
-    And the step "a second scenario step" has a passing mapping
-    When Cucumber runs the feature
-    Then the feature passes
-    # todo: ensure the background step is called twice
-    And the step "a background step" passes
-    And the step "a scenario step" passes
-    And the step "a second scenario step" passes
-
-  # TODO: failing background steps, failing scenario steps...
+    When I run cucumber.js with `-f json`
+    Then the scenario "a scenario" has the steps
+      | STEP              |
+      | a background step |
+      | a scenario step   |
+    Then the scenario "another scenario" has the steps
+      | STEP                  |
+      | a background step     |
+      | another scenario step |
 
