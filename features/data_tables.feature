@@ -26,7 +26,7 @@ Feature: Data Tables
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: rows
     Given a file named "features/passing_steps.feature" with:
@@ -57,7 +57,7 @@ Feature: Data Tables
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: rowHash
     Given a file named "features/passing_steps.feature" with:
@@ -85,7 +85,7 @@ Feature: Data Tables
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: hashes
     Given a file named "features/passing_steps.feature" with:
@@ -116,4 +116,4 @@ Feature: Data Tables
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes

@@ -20,8 +20,8 @@ Feature: Transpiler support
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a passing step" has status passed
+    When I run cucumber.js with `--strict`
+    Then it passes
 
   Scenario: pogoscript
     Given a file named "features/step_definitions/passing_steps.pogo" with:
@@ -32,5 +32,5 @@ Feature: Transpiler support
 
       module.exports = step definitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a passing step" has status passed
+    When I run cucumber.js with `--strict`
+    Then it passes

@@ -18,7 +18,7 @@ Feature: step definitions with string pattern
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: parameter
     Given a file named "features/passing_steps.feature" with:
@@ -40,7 +40,7 @@ Feature: step definitions with string pattern
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: multiple parameters
     Given a file named "features/passing_steps.feature" with:
@@ -62,7 +62,7 @@ Feature: step definitions with string pattern
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: multiple word parameter
     Given a file named "features/passing_steps.feature" with:
@@ -84,4 +84,4 @@ Feature: step definitions with string pattern
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `--strict`
-    Then the exit status should be 0
+    Then it passes
