@@ -5,5 +5,8 @@ var Bundler = require('../bundler')
 var bundlePath = path.join(__dirname, '..', 'release', 'cucumber.js');
 var bundler = Bundler(bundlePath);
 bundler.bundle(function (err) {
-  console.log(bundlePath, "written.");
+  if (err)
+    console.error(err)
+  else
+    console.log(bundlePath, "written.");
 });
