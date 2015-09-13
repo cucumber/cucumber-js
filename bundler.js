@@ -47,22 +47,18 @@ function Bundler(bundlePath) {
         _callback = null;
       };
 
-      var operation = browserify({debug: true, standalone: 'Cucumber'})
-          .transform({global: true}, fixGherkinLexers)
-          .transform({global:true}, 'uglifyify')
-          .exclude('./lib/cucumber/cli') // TODO: doesn't work, fix this
-          .require('./bundle-main', { expose: 'cucumber' })
-          .bundle()
-          .pipe(exorcist(mapPath))
-          .pipe(fs.createWriteStream(bundlePath, 'utf8'));
-
-      operation.on('error', function (err) {
-        callback(err);
-      });
-
-      operation.on('finish', function () {
-        callback();
-      });
+      browserify({debug: true, standalone: 'Cucumber'})
+        .transform({global: true}, fixGherkinLexers)
+        // Disabled for now due to https://github.com/AndreasMadsen/stack-chain/issues/5
+        //.transform({global:true}, 'uglifyify')
+        .require('./bundle-main', { expose: 'cucumber' })
+        .bundle()
+        .on('error', callback)
+        .pipe(exorcist(mapPath))
+        .on('error', callback)
+        .pipe(fs.createWriteStream(bundlePath, 'utf8'))
+        .on('error', callback)
+        .on('finish', callback);
     }
   };
 
