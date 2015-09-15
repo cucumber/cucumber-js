@@ -260,7 +260,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the step header, indented by two levels", function () {
       prettyFormatter.logStepResult(step, stepResult);
-      var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + colors.comment("# " + relativeUri + ":" + line) + "\n";
+      var text = prettyFormatter._pad(keyword + name, maxStepLength + 1) + colors.comment("# " + relativeUri + ":" + line) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
     });
 
@@ -271,7 +271,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it("logs the step header without the name, indented by two levels", function () {
         prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword, maxStepLength + 10) + colors.comment("# " + relativeUri + ":" + line) + "\n";
+        var text = prettyFormatter._pad(keyword, maxStepLength + 1) + colors.comment("# " + relativeUri + ":" + line) + "\n";
         expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
       });
     });
@@ -283,7 +283,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it("logs the step header without the URI, indented by two levels", function () {
         prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + "\n";
+        var text = prettyFormatter._pad(keyword + name, maxStepLength + 1) + "\n";
         expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
       });
     });
