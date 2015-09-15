@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.Listener.PrettyFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var path     = require('path');
-  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, color;
+  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, colors;
 
   beforeEach(function () {
     options             = createSpyWithStubs("options", {showSource: true});
@@ -13,7 +13,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
     spyOn(Cucumber.Listener, 'SummaryFormatter').andReturn(summaryFormatter);
     prettyFormatter = Cucumber.Listener.PrettyFormatter(options);
-    color = Cucumber.Util.ConsoleColor;
+    colors = Cucumber.Util.Colors;
   });
 
   describe("constructor", function () {
@@ -92,7 +92,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the feature header", function () {
       prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      var text = color.format('tag', '@tag') + "\n" +keyword + ": " + name + "\n";
+      var text = colors.tag('@tag') + "\n" +keyword + ": " + name + "\n";
       expect(prettyFormatter.log).toHaveBeenCalledWith(text);
     });
 
@@ -153,7 +153,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the scenario header, indented by one level", function () {
       prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      var text = color.format('tag', "@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + color.format('comment', "# " + relativeUri + ":" + scenario.getLine()) + "\n";
+      var text = colors.tag("@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + colors.comment("# " + relativeUri + ":" + scenario.getLine()) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 1);
     });
 
@@ -260,7 +260,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("logs the step header, indented by two levels", function () {
       prettyFormatter.logStepResult(step, stepResult);
-      var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + color.format('comment', "# " + relativeUri + ":" + line) + "\n";
+      var text = prettyFormatter._pad(keyword + name, maxStepLength + 1) + colors.comment("# " + relativeUri + ":" + line) + "\n";
       expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
     });
 
@@ -271,7 +271,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it("logs the step header without the name, indented by two levels", function () {
         prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword, maxStepLength + 10) + color.format('comment', "# " + relativeUri + ":" + line) + "\n";
+        var text = prettyFormatter._pad(keyword, maxStepLength + 1) + colors.comment("# " + relativeUri + ":" + line) + "\n";
         expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
       });
     });
@@ -283,7 +283,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it("logs the step header without the URI, indented by two levels", function () {
         prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword + name, maxStepLength + 10) + "\n";
+        var text = prettyFormatter._pad(keyword + name, maxStepLength + 1) + "\n";
         expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
       });
     });

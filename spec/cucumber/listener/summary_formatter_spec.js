@@ -1001,7 +1001,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs a little explanation about the snippets", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      var expectedString = Cucumber.Util.ConsoleColor.format('pending', "\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+      var expectedString = Cucumber.Util.Colors.pending("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
       expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
 
@@ -1012,7 +1012,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs the undefined steps", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      var expectedString = Cucumber.Util.ConsoleColor.format('pending', undefinedStepLogBuffer);
+      var expectedString = Cucumber.Util.Colors.pending(undefinedStepLogBuffer);
       expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
   });
