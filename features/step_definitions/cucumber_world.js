@@ -1,3 +1,5 @@
+var colors  = require('colors/safe')
+
 var World = function(callback) {
   this.touchedSteps    = [];
   this.featureSource   = "";
@@ -43,12 +45,12 @@ proto.runFeaturesWithSupportCodeSource = function runFeaturesWithSupportCodeSour
   try {
     cucumber.start(function(succeeded) {
       world.runSucceeded = succeeded;
-      world.runOutput    = formatter.getLogs();
+      world.runOutput    = colors.strip(formatter.getLogs());
       Cucumber.Debug.notice(world.runOutput, 'cucumber output', 5);
       callback();
     });
   } catch(e) {
-    world.runOutput += e.toString();
+    world.runOutput += colors.strip(e.toString());
     Cucumber.Debug.notice(world.runOutput, 'cucumber output', 5);
     callback();
   }
@@ -269,27 +271,27 @@ proto.assertPassedFeature = function assertPassedFeature() {
 
 proto.assertPassedFeatures = function assertPassedFeatures() {
   this.assertNoPartialOutput("failed", this.runOutput);
-  this.assertPartialOutput("3 scenarios ("+this.color.format("passed","3 passed")+")", this.runOutput);
+  this.assertPartialOutput("3 scenarios (3 passed)", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertPassedScenario = function assertPassedScenario() {
-  this.assertPartialOutput("1 scenario ("+this.color.format("passed","1 passed")+")", this.runOutput);
+  this.assertPartialOutput("1 scenario (1 passed)", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertFailedScenario = function assertFailedScenario() {
-  this.assertPartialOutput("1 scenario ("+this.color.format("failed","1 failed")+")", this.runOutput);
+  this.assertPartialOutput("1 scenario (1 failed)", this.runOutput);
   this.assertFailure();
 };
 
 proto.assertPendingScenario = function assertPendingScenario() {
-  this.assertPartialOutput("1 scenario ("+this.color.format("pending","1 pending")+")", this.runOutput);
+  this.assertPartialOutput("1 scenario (1 pending)", this.runOutput);
   this.assertSuccess();
 };
 
 proto.assertUndefinedScenario = function assertUndefinedScenario() {
-  this.assertPartialOutput("1 scenario ("+this.color.format("undefined", "1 undefined")+")", this.runOutput);
+  this.assertPartialOutput("1 scenario (1 undefined)", this.runOutput);
   this.assertSuccess();
 };
 
@@ -418,7 +420,5 @@ proto.indentCode = function indentCode(code, levels) {
   });
   return indented;
 };
-
-proto.color = require('../../lib/cucumber/util/colors');
 
 exports.World = World;
