@@ -544,7 +544,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logScenariosSummary()", function () {
-    var scenarioCount, passedScenarioCount, undefinedScenarioCount, pendingScenarioCount, failedScenarioCount;
+    var scenarioCount, passedScenarioCount, undefinedScenarioCount, pendingScenarioCount, failedScenarioCount, skippedScenarioCount;
 
     beforeEach(function () {
       scenarioCount          = 12;
@@ -552,11 +552,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       undefinedScenarioCount = 17;
       pendingScenarioCount   = 7;
       failedScenarioCount    = 15;
+      skippedScenarioCount   = 10;
       spyOnStub(statsJournal, 'getScenarioCount').andReturn(scenarioCount);
       spyOnStub(statsJournal, 'getPassedScenarioCount').andReturn(passedScenarioCount);
       spyOnStub(statsJournal, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
       spyOnStub(statsJournal, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
       spyOnStub(statsJournal, 'getFailedScenarioCount').andReturn(failedScenarioCount);
+      spyOnStub(statsJournal, 'getSkippedScenarioCount').andReturn(skippedScenarioCount);
     });
 
     it("gets the number of scenarios", function () {
