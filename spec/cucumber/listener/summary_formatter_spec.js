@@ -274,13 +274,16 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("storeFailedScenario()", function () {
-    var failedScenario, name, uri, line, string;
+    var path = require('path');
+
+    var failedScenario, name, relativeUri, uri, line, string;
 
     beforeEach(function () {
       name           = "some failed scenario";
-      uri            = "/path/to/some.feature";
+      relativeUri    = "path/to/some.feature";
+      uri            = path.join(process.cwd(), relativeUri);
       line           = "123";
-      string         = uri + ":" + line + " # Scenario: " + name;
+      string         = relativeUri + ":" + line + " # Scenario: " + name;
       failedScenario = createSpyWithStubs("failedScenario", {getName: name, getUri: uri, getLine: line});
       spyOn(summaryFormatter, 'appendStringToFailedScenarioLogBuffer');
     });

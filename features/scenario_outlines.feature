@@ -28,6 +28,20 @@ Feature: Scenario Outlines and Examples
     And the step "i get passed" passes
     And the step "i get skipped" is skipped
 
+  Scenario: outline with placeholder twice in one line
+    Given the following feature:
+      """
+      Feature: testing scenario outline
+        Scenario Outline: outline
+          Given a <type> step with <type> values
+        Examples:
+          | type    |
+          | passing |
+      """
+    And the step "a passing step with passing values" has a passing mapping
+    When Cucumber runs the feature
+    Then the step "a passing step with passing values" passes
+
   Scenario: Outline with table
     Given the following feature:
       """
