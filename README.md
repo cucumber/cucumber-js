@@ -455,6 +455,12 @@ this.After(function (scenario, callback) {
 });
 ```
 
+### Transpilers
+
+Step definitions and support files can be written in other languages that transpile to javascript.
+This done with the CLI option `--compiler <file_extension>:<module_name>`. For Coffeescript 1.10.0,
+this is done with `--compiler coffee:coffee-script/register`.
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
