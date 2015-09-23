@@ -116,3 +116,32 @@ Feature: Pretty Formatter
       1 scenario (1 failed)
       2 steps (1 failed, 1 skipped)
       """
+
+  Scenario: output with --no-source flag should not show file sources
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: I haven't done anything yet
+          Given This step is passing
+      """
+     And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run `cucumber.js -f pretty --no-source`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+
+
+        Scenario: I haven't done anything yet
+          Given This step is passing
+
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+      """
