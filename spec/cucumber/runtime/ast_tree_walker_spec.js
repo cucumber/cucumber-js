@@ -1415,6 +1415,26 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
           expect(treeWalker.skipUndefinedStep).not.toHaveBeenCalled();
         });
       });
+
+      describe("when the steps are skipped in dry Run mode", function () {
+        beforeEach(function () {
+          var dryrun = true,
+              isStrictMode = false;
+          treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode, dryrun);
+          spyOn(treeWalker, 'processDryRunStep');
+          spyOn(treeWalker, 'executeStep');
+        });
+
+        it("skips the step", function () {
+          treeWalker.processStep(step, callback);
+          expect(treeWalker.processDryRunStep).toHaveBeenCalledWith(step, callback);
+        });
+
+        it("does not execute the step", function () {
+          treeWalker.processStep(step, callback);
+          expect(treeWalker.executeStep).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 
