@@ -74,7 +74,7 @@ Feature: Example feature
 
 ### Support Files
 
-Support files let you setup the environment in which steps will be run, and define step definitions. Both JavaScript (`.js`) and CoffeeScript (`.coffee`) source files are supported.
+Support files let you setup the environment in which steps will be run, and define step definitions.
 
 #### World
 
@@ -458,7 +458,7 @@ this.After(function (scenario, callback) {
 ### Transpilers
 
 Step definitions and support files can be written in other languages that transpile to javascript.
-This done with the CLI option `--compiler <file_extension>:<module_name>`. For Coffeescript 1.10.0,
+This done with the CLI option `--compiler <file_extension>:<module_name>`. For CoffeeScript 1.10.0,
 this is done with `--compiler coffee:coffee-script/register`.
 
 ### Run cucumber
