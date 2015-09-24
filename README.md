@@ -457,9 +457,31 @@ this.After(function (scenario, callback) {
 
 ### Transpilers
 
-Step definitions and support files can be written in other languages that transpile to javascript.
-This done with the CLI option `--compiler <file_extension>:<module_name>`. For CoffeeScript 1.10.0,
-this is done with `--compiler coffee:coffee-script/register`.
+Step definitions and support files can be written in other languages that transpile to javascript. This done with the CLI option `--compiler <file_extension>:<module_name>`.
+
+#### CoffeeScript
+
+Install the [coffee-script](https://www.npmjs.com/package/coffee-script) NPM package and invoke Cucumber with `--compiler coffee:coffee-script/register`.
+
+#### TypeScript
+
+Install the [typescript-node](https://www.npmjs.com/package/typescript-node) NPM package and invoke Cucumber with `--compiler ts:typescript-node/register`.
+
+As usual, all your step definition and support files must export a function to be run by Cucumber. This is how it is done in TS:
+
+
+```typescript
+declare var module: any;
+module.exports = function () {
+  this.Given(/.*/, function () {
+    // ...
+  })
+}
+```
+
+#### PogoScript
+
+Install the [pogo](https://www.npmjs.com/package/pogo) NPM package and invoke Cucumber with `--compiler pogo:pogo`.
 
 ### Run cucumber
 
