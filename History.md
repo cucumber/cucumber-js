@@ -1,8 +1,28 @@
 # Cucumber.js changelog
 
-## [v0.5.x](https://github.com/cucumber/cucumber-js/compare/v0.5.0...master)
+## [v0.6.x](https://github.com/cucumber/cucumber-js/compare/v0.6.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.5.3...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.6.0...master)
+
+### [v0.6.0](https://github.com/cucumber/cucumber-js/compare/v0.5.3...v0.6.0)
+
+#### New features
+
+* Add --no-source to hide uris (Eddie Loeffen)
+* Add dry run capability (Karthik Viswanath)
+* Introduce --compiler CLI option (Charles Rudolph)
+
+#### Documentation, internals and tests
+
+* Stop IRC and email notifications from Travis (Julien Biezemans)
+* Remove Node.js 0.11 explicit support (Julien Biezemans)
+* Use basic for loop for array iterations (Charles Rudolph)
+* Bump browserify (Charles Rudolph)
+* Add CLI help for --profile (Charles Rudolph)
+* Use colors library (Charles Rudolph)
+* Improve --compiler help (Julien Biezemans)
+* Fix loading of external compiler modules (Julien Biezemans)
+* Document a few common compiler usages (Julien Biezemans)
 
 ### [v0.5.3](https://github.com/cucumber/cucumber-js/compare/v0.5.2...v0.5.3)
 
