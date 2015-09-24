@@ -380,12 +380,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getSupportCodeFilePaths", function () {
-    var unexpandedSupportCodeFilePaths, expandedSupportCodePaths;
+    var unexpandedSupportCodeFilePaths, compilerExtensions, expandedSupportCodePaths;
 
     beforeEach(function () {
       unexpandedSupportCodeFilePaths = createSpy("unexpanded support code file paths");
+      compilerExtensions             = createSpy("compiler extensions");
       expandedSupportCodePaths       = createSpy("expanded support code file paths");
       spyOn(argumentParser, 'getUnexpandedSupportCodeFilePaths').andReturn(unexpandedSupportCodeFilePaths);
+      spyOn(argumentParser, 'getCompilerExtensions').andReturn(compilerExtensions);
       spyOn(Cucumber.Cli.ArgumentParser.SupportCodePathExpander, 'expandPaths').andReturn(expandedSupportCodePaths);
     });
 
@@ -396,7 +398,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("asks the support code file expander to expand the paths", function () {
       argumentParser.getSupportCodeFilePaths();
-      expect(Cucumber.Cli.ArgumentParser.SupportCodePathExpander.expandPaths).toHaveBeenCalledWith(unexpandedSupportCodeFilePaths);
+      expect(Cucumber.Cli.ArgumentParser.SupportCodePathExpander.expandPaths).toHaveBeenCalledWith(unexpandedSupportCodeFilePaths, ['js'].concat(compilerExtensions));
     });
 
     it("returns the expanded support code paths", function () {
