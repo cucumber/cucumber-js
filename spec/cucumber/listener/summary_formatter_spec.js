@@ -280,7 +280,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     beforeEach(function () {
       name           = "some failed scenario";
-      relativeUri    = "path/to/some.feature";
+      relativeUri    = path.normalize("path/to/some.feature");
       uri            = path.join(process.cwd(), relativeUri);
       line           = "123";
       string         = relativeUri + ":" + line + " # Scenario: " + name;
