@@ -38,20 +38,11 @@ Install globally with:
 $ npm install -g cucumber
 ```
 
-OR
+Install as a development dependency of your application with:
 
-You may also define cucumber.js as a development dependency of your application by including it in a package.json file.
-
-``` json
-// package.json
-
-{ "devDependencies" : {
-    "cucumber": "latest"
-  }
-}
+``` shell
+$ npm install --save-dev cucumber
 ```
-
-Then install with `npm install --dev`
 
 
 ### Features
@@ -505,7 +496,7 @@ And require specific step definitions and support code files with the --require 
 $ cucumber.js features/my_feature.feature --require features/step_definitions/my_step_definitions.js
 ```
 
-If you installed Cucumber locally or with `npm install --dev`, you'll need to specify the path to the binary:
+If you installed Cucumber locally or with `npm install --save-dev`, you'll need to specify the path to the binary:
 
 ``` shell
 $ ./node_modules/.bin/cucumber.js
