@@ -38,20 +38,11 @@ Install globally with:
 $ npm install -g cucumber
 ```
 
-OR
+Install as a development dependency of your application with:
 
-You may also define cucumber.js as a development dependency of your application by including it in a package.json file.
-
-``` json
-// package.json
-
-{ "devDependencies" : {
-    "cucumber": "latest"
-  }
-}
+``` shell
+$ npm install --save-dev cucumber
 ```
-
-Then install with `npm install --dev`
 
 
 ### Features
@@ -74,7 +65,7 @@ Feature: Example feature
 
 ### Support Files
 
-Support files let you setup the environment in which steps will be run, and define step definitions. Both JavaScript (`.js`) and CoffeeScript (`.coffee`) source files are supported.
+Support files let you setup the environment in which steps will be run, and define step definitions.
 
 #### World
 
@@ -92,7 +83,10 @@ function World(callback) {
 
   callback(); // tell Cucumber we're finished and to use 'this' as the world instance
 }
-module.exports.World = World;
+
+module.exports = function() {
+  this.World = World;
+};
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
@@ -114,7 +108,10 @@ function WorldFactory(callback) {
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 }
-exports.World = WorldFactory;
+
+module.exports = function() {
+  this.World = World;
+};
 ```
 
 #### Step Definitions
@@ -133,11 +130,9 @@ Step definitions are run when steps match their name. `this` is an instance of `
 // features/step_definitions/myStepDefinitions.js
 
 module.exports = function () {
-  this.World = require("../support/world.js").World; // overwrite default World constructor
-
   this.Given(/^I am on the Cucumber.js GitHub repository$/, function (callback) {
     // Express the regexp above with the code you wish you had.
-    // `this` is set to a new this.World instance.
+    // `this` is set to a World instance.
     // i.e. you may use this.browser to execute the step:
 
     this.visit('https://github.com/cucumber/cucumber-js', callback);
@@ -277,18 +272,6 @@ The *after features event* is emitted once all features have been executed, just
 note: There are "Before" and "After" events for each of the following: "Features", "Feature", "Scenario", "Step" as well as the standalone events "Background" and "StepResult". e.g. "BeforeScenario".
 
 ```javascript
-// features/support/world.js
-var webdriver = require("selenium-webdriver");
-
-var World = function World(callback) {
-  this.driver = new webdriver.Builder()
-    .withCapabilities(webdriver.Capabilities.chrome())
-    .build();
-  callback();
-}
-
-module.exports = World;
-
 // features/support/after_hooks.js
 var myAfterHooks = function () {
   this.registerHandler('AfterFeatures', function (event, callback) {
@@ -455,6 +438,34 @@ this.After(function (scenario, callback) {
 });
 ```
 
+### Transpilers
+
+Step definitions and support files can be written in other languages that transpile to javascript. This done with the CLI option `--compiler <file_extension>:<module_name>`.
+
+#### CoffeeScript
+
+Install the [coffee-script](https://www.npmjs.com/package/coffee-script) NPM package and invoke Cucumber with `--compiler coffee:coffee-script/register`.
+
+#### TypeScript
+
+Install the [typescript-node](https://www.npmjs.com/package/typescript-node) NPM package and invoke Cucumber with `--compiler ts:typescript-node/register`.
+
+As usual, all your step definition and support files must export a function to be run by Cucumber. This is how it is done in TS:
+
+
+```typescript
+declare var module: any;
+module.exports = function () {
+  this.Given(/.*/, function () {
+    // ...
+  })
+}
+```
+
+#### PogoScript
+
+Install the [pogo](https://www.npmjs.com/package/pogo) NPM package and invoke Cucumber with `--compiler pogo:pogo`.
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
@@ -477,7 +488,7 @@ And require specific step definitions and support code files with the --require 
 $ cucumber.js features/my_feature.feature --require features/step_definitions/my_step_definitions.js
 ```
 
-If you installed Cucumber locally or with `npm install --dev`, you'll need to specify the path to the binary:
+If you installed Cucumber locally or with `npm install --save-dev`, you'll need to specify the path to the binary:
 
 ``` shell
 $ ./node_modules/.bin/cucumber.js

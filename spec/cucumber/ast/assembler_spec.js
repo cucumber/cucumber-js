@@ -386,12 +386,18 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       currentFeature = createSpyWithStubs("current feature", {convertScenarioOutlinesToScenarios:  null});
       spyOn(assembler, 'tryEnrollingSuggestedFeature');
-      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
     });
 
     it("tries to convert scenario outlines to scenarios if any", function () {
+      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
       assembler.finish();
       expect(currentFeature.convertScenarioOutlinesToScenarios).toHaveBeenCalled();
+    });
+
+    it("doesn't try to convert scenario outlines to scenarios if there is no current feature", function () {
+      spyOn(assembler, 'getCurrentFeature').andReturn(null);
+      assembler.finish();
+      expect(currentFeature.convertScenarioOutlinesToScenarios).not.toHaveBeenCalled();
     });
 
     it("tries to enroll the suggested feature, if any", function () {

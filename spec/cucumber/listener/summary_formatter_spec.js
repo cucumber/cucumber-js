@@ -280,7 +280,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     beforeEach(function () {
       name           = "some failed scenario";
-      relativeUri    = "path/to/some.feature";
+      relativeUri    = path.normalize("path/to/some.feature");
       uri            = path.join(process.cwd(), relativeUri);
       line           = "123";
       string         = relativeUri + ":" + line + " # Scenario: " + name;
@@ -457,7 +457,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     beforeEach(function () {
       failedScenarioLogBuffer = createSpy("failed scenario log buffer");
-      spyOnStub(failedStepResults, 'syncForEach');
+      spyOnStub(failedStepResults, 'forEach');
       spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
     });
 
@@ -468,8 +468,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("iterates synchronously over the failed step results", function () {
       summaryFormatter.logFailedStepResults();
-      expect(failedStepResults.syncForEach).toHaveBeenCalled();
-      expect(failedStepResults.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(failedStepResults.forEach).toHaveBeenCalled();
+      expect(failedStepResults.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each failed step result", function () {
@@ -477,7 +477,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         summaryFormatter.logFailedStepResults();
-        userFunction     = failedStepResults.syncForEach.mostRecentCall.args[0];
+        userFunction     = failedStepResults.forEach.mostRecentCall.args[0];
         failedStepResult = createSpy("failed step result");
         spyOn(summaryFormatter, 'logFailedStepResult');
       });
