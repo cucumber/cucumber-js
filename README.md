@@ -83,7 +83,10 @@ function World(callback) {
 
   callback(); // tell Cucumber we're finished and to use 'this' as the world instance
 }
-module.exports.World = World;
+
+module.exports = function() {
+  this.World = World;
+};
 ```
 
 It is possible to tell Cucumber to use another object instance than the constructor:
@@ -105,7 +108,10 @@ function WorldFactory(callback) {
 
   callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 }
-exports.World = WorldFactory;
+
+module.exports = function() {
+  this.World = World;
+};
 ```
 
 #### Step Definitions
@@ -124,11 +130,9 @@ Step definitions are run when steps match their name. `this` is an instance of `
 // features/step_definitions/myStepDefinitions.js
 
 module.exports = function () {
-  this.World = require("../support/world.js").World; // overwrite default World constructor
-
   this.Given(/^I am on the Cucumber.js GitHub repository$/, function (callback) {
     // Express the regexp above with the code you wish you had.
-    // `this` is set to a new this.World instance.
+    // `this` is set to a World instance.
     // i.e. you may use this.browser to execute the step:
 
     this.visit('https://github.com/cucumber/cucumber-js', callback);
@@ -268,18 +272,6 @@ The *after features event* is emitted once all features have been executed, just
 note: There are "Before" and "After" events for each of the following: "Features", "Feature", "Scenario", "Step" as well as the standalone events "Background" and "StepResult". e.g. "BeforeScenario".
 
 ```javascript
-// features/support/world.js
-var webdriver = require("selenium-webdriver");
-
-var World = function World(callback) {
-  this.driver = new webdriver.Builder()
-    .withCapabilities(webdriver.Capabilities.chrome())
-    .build();
-  callback();
-}
-
-module.exports = World;
-
 // features/support/after_hooks.js
 var myAfterHooks = function () {
   this.registerHandler('AfterFeatures', function (event, callback) {
