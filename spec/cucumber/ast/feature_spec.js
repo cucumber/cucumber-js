@@ -14,8 +14,8 @@ describe("Cucumber.Ast.Feature", function () {
     spyOnStub(scenarioCollection, 'removeAtIndex');
     spyOnStub(scenarioCollection, 'indexOf');
     spyOnStub(scenarioCollection, 'getLast').andReturn(lastScenario);
-    spyOnStub(scenarioCollection, 'syncForEach');
     spyOnStub(scenarioCollection, 'forEach');
+    spyOnStub(scenarioCollection, 'asyncForEach');
     spyOn(Cucumber.Type, 'Collection').andReturn(scenarioCollection);
     keyword     = createSpy("keyword");
     name        = createSpy("name");
@@ -138,8 +138,8 @@ describe("Cucumber.Ast.Feature", function () {
   describe("convertScenarioOutlinesToScenarios()", function () {
     it ("iterates over the feature elements", function () {
       feature.convertScenarioOutlinesToScenarios();
-      expect(scenarioCollection.syncForEach).toHaveBeenCalled();
-      expect(scenarioCollection.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(scenarioCollection.forEach).toHaveBeenCalled();
+      expect(scenarioCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each feature element", function () {
@@ -147,7 +147,7 @@ describe("Cucumber.Ast.Feature", function () {
 
       beforeEach(function () {
         feature.convertScenarioOutlinesToScenarios();
-        userFunction   = scenarioCollection.syncForEach.mostRecentCall.args[0];
+        userFunction   = scenarioCollection.forEach.mostRecentCall.args[0];
         featureElement = createSpyWithStubs("feature element", {isScenarioOutline: null});
         spyOn(feature, 'convertScenarioOutlineToScenarios');
       });
@@ -180,7 +180,7 @@ describe("Cucumber.Ast.Feature", function () {
     var scenarios, scenarioOutlineTags, scenarioOutline, scenarioOutlineIndex;
 
     beforeEach(function () {
-      scenarios            = createSpyWithStubs("scenarios", {syncForEach: null});
+      scenarios            = createSpyWithStubs("scenarios", {forEach: null});
       scenarioOutlineTags  = createSpy("tags");
       scenarioOutline      = createSpyWithStubs("scenario outline", {buildScenarios: scenarios, getTags: scenarioOutlineTags});
       scenarioOutlineIndex = 1;
@@ -205,15 +205,15 @@ describe("Cucumber.Ast.Feature", function () {
     });
 
     it ("iterates over the scenarios", function () {
-      expect(scenarios.syncForEach).toHaveBeenCalled();
-      expect(scenarios.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(scenarios.forEach).toHaveBeenCalled();
+      expect(scenarios.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each scenario", function () {
       var userFunction, scenario, index;
 
       beforeEach(function () {
-        userFunction   = scenarios.syncForEach.mostRecentCall.args[0];
+        userFunction   = scenarios.forEach.mostRecentCall.args[0];
         scenario       = createSpyWithStubs("scenario", {addTags: null});
         index          = 2;
         spyOn(feature, 'insertFeatureElement');
@@ -380,24 +380,24 @@ describe("Cucumber.Ast.Feature", function () {
 
     it ("iterates over the scenarios with a user function and the callback", function () {
       feature.instructVisitorToVisitScenarios(visitor, callback);
-      expect(scenarioCollection.forEach).toHaveBeenCalled();
-      expect(scenarioCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(scenarioCollection.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+      expect(scenarioCollection.asyncForEach).toHaveBeenCalled();
+      expect(scenarioCollection.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(scenarioCollection.asyncForEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
     });
 
     describe("for each scenario", function () {
-      var userFunction, scenario, forEachCallback;
+      var userFunction, scenario, asyncForEachCallback;
 
       beforeEach(function () {
         feature.instructVisitorToVisitScenarios(visitor, callback);
-        userFunction    = scenarioCollection.forEach.mostRecentCall.args[0];
+        userFunction    = scenarioCollection.asyncForEach.mostRecentCall.args[0];
         scenario        = createSpy("A scenario from the collection");
-        forEachCallback = createSpy("forEach() callback");
+        asyncForEachCallback = createSpy("asyncForEachCallback() callback");
       });
 
       it("tells the visitor to visit the scenario and call back when finished", function () {
-        userFunction (scenario, forEachCallback);
-        expect(visitor.visitScenario).toHaveBeenCalledWith(scenario, forEachCallback);
+        userFunction (scenario, asyncForEachCallback);
+        expect(visitor.visitScenario).toHaveBeenCalledWith(scenario, asyncForEachCallback);
       });
     });
   });

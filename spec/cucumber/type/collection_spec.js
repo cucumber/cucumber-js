@@ -88,7 +88,7 @@ describe("Cucumber.Type.Collection", function () {
     });
   });
 
-  describe("forEach()", function () {
+  describe("asyncForEach()", function () {
     var userFunction, callback, itemCount;
     var processedItems, allItemsProcessedBeforeCallback;
     var delayItemProcessing;
@@ -97,12 +97,12 @@ describe("Cucumber.Type.Collection", function () {
       processedItems = [];
       allItemsProcessedBeforeCallback = false;
       delayItemProcessing = false;
-      userFunction = createSpy("forEach() user function").andCallFake(function (item, callback) {
+      userFunction = createSpy("asyncForEach() user function").andCallFake(function (item, callback) {
         processedItems.push(item);
         if (!delayItemProcessing)
           callback();
       });
-      callback = createSpy("forEach() callback").andCallFake(function () {
+      callback = createSpy("asyncForEach() callback").andCallFake(function () {
         if (processedItems.length === itemCount)
           allItemsProcessedBeforeCallback = true;
       });
@@ -110,7 +110,7 @@ describe("Cucumber.Type.Collection", function () {
     });
 
     it("calls the user function on each item in the array with a callback", function () {
-      collection.forEach(userFunction, callback);
+      collection.asyncForEach(userFunction, callback);
       var callIndex = 0;
       expect(userFunction).toHaveBeenCalledNTimes(3);
       itemArray.forEach(function (item) {
@@ -120,22 +120,22 @@ describe("Cucumber.Type.Collection", function () {
       });
     });
 
-    it("calls the forEach() callback when all items have been processed and called their user function callback", function () {
-      collection.forEach(userFunction, callback);
+    it("calls the asyncForEach() callback when all items have been processed and called their user function callback", function () {
+      collection.asyncForEach(userFunction, callback);
       expect(callback).toHaveBeenCalled();
       expect(allItemsProcessedBeforeCallback).toBeTruthy();
     });
 
-    it("does not call the forEach() callback if not all items are processed", function () {
+    it("does not call the asyncForEach() callback if not all items are processed", function () {
       delayItemProcessing = true;
-      collection.forEach(userFunction, callback);
+      collection.asyncForEach(userFunction, callback);
       expect(allItemsProcessedBeforeCallback).toBeFalsy();
       expect(callback).not.toHaveBeenCalled();
     });
 
     it("does not process the next item until the current one is finished", function () {
       delayItemProcessing = true;
-      collection.forEach(userFunction, callback);
+      collection.asyncForEach(userFunction, callback);
       expect(userFunction).toHaveBeenCalledNTimes(1);
       var args = userFunction.mostRecentCall.args;
       expect(args[0]).toBe(itemArray[0]);
@@ -143,19 +143,19 @@ describe("Cucumber.Type.Collection", function () {
 
     it("does not modify the original array", function () {
       var originalArray = itemArray.slice(0);
-      collection.forEach(userFunction, callback);
+      collection.asyncForEach(userFunction, callback);
       expect(itemArray).toEqual(originalArray);
     });
   });
 
-  describe("syncForEach()", function () {
+  describe("forEach()", function () {
     var userFunction = createSpy("userFunction");
 
     it("calls foreach on a copy of the array", function () {
       var itemsCopy = createSpy("items copy");
       spyOn(itemArray, 'slice').andReturn(itemsCopy);
       spyOnStub(itemsCopy, 'forEach');
-      collection.syncForEach(userFunction);
+      collection.forEach(userFunction);
       expect(itemArray.slice).toHaveBeenCalledWith(0);
       expect(itemsCopy.forEach).toHaveBeenCalledWith(userFunction);
     });
