@@ -54,7 +54,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
   describe("handleBackgroundEvent()", function () {
 
-    var parentFeatureEvent, feature, background, step, steps, event, callback;
+    var parentFeatureEvent, feature, background, step1, step2, steps, event, callback;
 
     beforeEach(function () {
       feature = createSpyWithStubs("feature", {
@@ -66,15 +66,25 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         getTags: false
       });
       parentFeatureEvent = createSpyWithStubs("event", {getPayloadItem: feature});
-      step = createSpyWithStubs("step", {
-        getName: 'Step',
+      step1 = createSpyWithStubs("step", {
+        getName: 'Step 1',
         getLine: 3,
         getKeyword: 'Step',
         isHidden: false,
         hasDocString: false,
         hasDataTable: false
       });
-      steps = [step];
+      step2 = createSpyWithStubs("step", {
+        getName: 'Step 2',
+        getLine: 4,
+        getKeyword: 'Step',
+        isHidden: false,
+        hasDocString: false,
+        hasDataTable: false
+      });
+      steps = new Cucumber.Type.Collection();
+      steps.add(step1);
+      steps.add(step2);
       background = createSpyWithStubs("background", {
         getKeyword: 'Background',
         getName: 'A Name',
@@ -95,6 +105,16 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         type: 'background',
         line: 3
       });
+    });
+
+    it("formats each step", function () {
+      spyOn(listener, "formatStep");
+
+      listener.handleBackgroundEvent(event, callback);
+
+      expect(listener.formatStep.calls.length).toBe(2);
+      expect(listener.formatStep).toHaveBeenCalledWith(step1);
+      expect(listener.formatStep).toHaveBeenCalledWith(step2);
     });
   });
 
