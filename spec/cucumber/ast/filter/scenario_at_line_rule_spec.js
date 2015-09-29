@@ -8,7 +8,7 @@ describe("Cucumber.Ast.Filter.ScenarioAtLineRule", function () {
 
   beforeEach(function () {
     suppliedPaths = ["supplied/path:1", "supplied/path:2", "other/supplied/path"];
-    spyOn(fs, 'realpathSync').andReturn('/real/path');
+    spyOn(fs, 'realpathSync').and.returnValue('/real/path');
   });
 
   it('gets the real path of any supplied paths with line numbers', function(){
