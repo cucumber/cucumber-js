@@ -29,7 +29,7 @@
     "createSpyObj": true,
     "createEmittingSpy": true,
     "spyOnModule": true,
-    "spyOnModuleandReturn": true,
+    "spyOnModuleAndReturn": true,
     "itBehavesLikeAllCucumberConfigurations": true
   }
 }

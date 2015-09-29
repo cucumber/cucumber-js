@@ -109,7 +109,7 @@
     "uglifyify": "3.0.1"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib spec && jasmine-node spec && node bin/cucumber.js -p build"
+    "test": "jshint bundler.js bin lib spec && jasmine && node bin/cucumber.js -p build"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
