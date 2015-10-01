@@ -210,7 +210,7 @@ proto._addAroundHook = function (options, callback) {
   if (options.logEvent) logEvent = options.logEvent;
   this.stepDefinitions += "Around(" + tags + "function(scenario, runScenario) {\
   world.logCycleEvent('" + logEvent + "-pre');\
-  runScenario(function(scenario, callback) {\
+  runScenario(null, function(callback) {\
   world.logCycleEvent('" + logEvent + "-post');\
     callback();\
   });\
