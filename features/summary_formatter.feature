@@ -41,7 +41,7 @@ Feature: Summary Formatter
         });
 
         this.Around(function(scenario, runScenario) {
-          runScenario(function(scenario, callback) {
+          runScenario(null, function(callback) {
             callback();
           });
         });

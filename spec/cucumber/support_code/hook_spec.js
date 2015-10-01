@@ -33,15 +33,36 @@ describe("Cucumber.SupportCode.Hook", function () {
       step      = createSpy("world");
       scenario  = createSpy("scenario");
       callback  = createSpy("callback");
-      invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
+
     });
 
-    it("returns an array containing the scenario and the callback", function () {
-      expect(invocationParameters).toEqual([scenario, callback]);
+    describe('with no options', function() {
+      beforeEach(function () {
+        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
+      });
+
+      it("returns an array containing the scenario and the callback", function () {
+        expect(invocationParameters).toEqual([scenario, callback]);
+      });
+
+      it("does not call back", function () {
+        expect(callback).not.toHaveBeenCalled();
+      });
     });
 
-    it("does not call back", function () {
-      expect(callback).not.toHaveBeenCalled();
+    describe('with noScenario option', function() {
+      beforeEach(function () {
+        hook                 = Cucumber.SupportCode.Hook(code, {noScenario: true});
+        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
+      });
+
+      it("returns an array containing the scenario and the callback", function () {
+        expect(invocationParameters).toEqual([callback]);
+      });
+
+      it("does not call back", function () {
+        expect(callback).not.toHaveBeenCalled();
+      });
     });
   });
 

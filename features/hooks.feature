@@ -25,17 +25,17 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function (scenario, callback) {
-          callback()
+        this.Before(function(scenario, callback) {
+          callback();
         });
 
-        this.After(function (scenario, callback) {
-          callback()
+        this.After(function(scenario, callback) {
+          callback();
         });
 
-        this.Around(function (scenario, runScenario) {
-          runScenario(function (scenario, callback) {
-            callback()
+        this.Around(function(scenario, runScenario) {
+          runScenario(null, function(callback) {
+            callback();
           });
         });
       };
@@ -133,8 +133,8 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Around(function(runScenario) {
-          <fail_approach>
+        this.Around(function(scenario, runScenario) {
+          runScenario('Fail', function(callback) { callback(); });
         });
       };
 
@@ -194,10 +194,6 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach                                            |
-    | runScenario('Fail', function(callback) { callback(); }); |
-    | runScenario.fail();                                      |
 
   Scenario Outline: Failing around hook (post scenario) fails the scenario
     Given a file named "features/a.feature" with:
@@ -217,10 +213,10 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Around(function(runScenario) {
+        this.Around(function(scenario, runScenario) {
           // no-op
 
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             <fail_approach>
           });
         });
@@ -464,7 +460,7 @@ Feature: Environment Hooks
         });
 
         this.Around(function(scenario, runScenario) {
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -630,7 +626,7 @@ Feature: Environment Hooks
           else
             error = null;
 
-          runScenario(error, function(scenario, callback) {
+          runScenario(error, function(callback) {
             var world = this;
             var error;
 
