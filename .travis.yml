@@ -1,6 +1,3 @@
-before_install:
-  - npm install -g npm@latest
-
 cache:
   directories:
     - $HOME/node_modules
