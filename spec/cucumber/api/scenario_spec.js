@@ -1,5 +1,4 @@
 require('../../support/spec_helper');
-var Stream = require('stream');
 
 describe("Cucumber.Api.Scenario", function () {
   var Cucumber = requireLib('cucumber');
