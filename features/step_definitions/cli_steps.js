@@ -5,6 +5,7 @@ var cliSteps = function cliSteps() {
   var mkdirp          = require('mkdirp');
   var exec            = require('child_process').exec;
   var path            = require('path');
+  var colors          = require('colors/safe')
 
   var baseDir         = fs.realpathSync(__dirname + "/../..");
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
@@ -70,7 +71,7 @@ var cliSteps = function cliSteps() {
          function (error, stdout, stderr) {
            world.lastRun = {
              error:  error,
-             stdout: stdout,
+             stdout: colors.strip(stdout),
              stderr: stderr
            };
            process.chdir(initialCwd);

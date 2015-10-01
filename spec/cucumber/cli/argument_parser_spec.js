@@ -194,6 +194,11 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME]).toEqual(Boolean);
     });
 
+    it("defines a --dry-run flag", function () {
+      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.DRY_RUN_FLAG_NAME]).toEqual(Boolean);
+    });
+
     it("defines a --help flag", function () {
       var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
@@ -240,6 +245,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     it("defines an alias to --strict as -s", function () {
       var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME;
       var aliasName  = Cucumber.Cli.ArgumentParser.STRICT_FLAG_SHORT_NAME;
+      var aliasValue = [optionName];
+      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    });
+
+    it("defines an alias to --dry-run as -d", function () {
+      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.DRY_RUN_FLAG_NAME;
+      var aliasName  = Cucumber.Cli.ArgumentParser.DRY_RUN_FLAG_SHORT_NAME;
       var aliasValue = [optionName];
       var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
@@ -367,12 +380,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getSupportCodeFilePaths", function () {
-    var unexpandedSupportCodeFilePaths, expandedSupportCodePaths;
+    var unexpandedSupportCodeFilePaths, compilerExtensions, expandedSupportCodePaths;
 
     beforeEach(function () {
       unexpandedSupportCodeFilePaths = createSpy("unexpanded support code file paths");
+      compilerExtensions             = createSpy("compiler extensions");
       expandedSupportCodePaths       = createSpy("expanded support code file paths");
       spyOn(argumentParser, 'getUnexpandedSupportCodeFilePaths').andReturn(unexpandedSupportCodeFilePaths);
+      spyOn(argumentParser, 'getCompilerExtensions').andReturn(compilerExtensions);
       spyOn(Cucumber.Cli.ArgumentParser.SupportCodePathExpander, 'expandPaths').andReturn(expandedSupportCodePaths);
     });
 
@@ -383,7 +398,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("asks the support code file expander to expand the paths", function () {
       argumentParser.getSupportCodeFilePaths();
-      expect(Cucumber.Cli.ArgumentParser.SupportCodePathExpander.expandPaths).toHaveBeenCalledWith(unexpandedSupportCodeFilePaths);
+      expect(Cucumber.Cli.ArgumentParser.SupportCodePathExpander.expandPaths).toHaveBeenCalledWith(unexpandedSupportCodeFilePaths, ['js'].concat(compilerExtensions));
     });
 
     it("returns the expanded support code paths", function () {

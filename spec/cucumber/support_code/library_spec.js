@@ -131,7 +131,7 @@ describe("Cucumber.SupportCode.Library", function () {
         createSpyWithStubs("Second step definition", {matchesStepName:false}),
         createSpyWithStubs("Third step definition",  {matchesStepName:false})
       ];
-      spyOnStub(stepDefinitionCollection, 'syncForEach').andCallFake(function (cb) { stepDefinitions.forEach(cb); });
+      spyOnStub(stepDefinitionCollection, 'forEach').andCallFake(function (cb) { stepDefinitions.forEach(cb); });
       library = Cucumber.SupportCode.Library(rawSupportCode);
     });
 
@@ -508,7 +508,7 @@ describe("Cucumber.SupportCode.Library", function () {
       var hookCollection, scenario, matchingHookCollection, returnValue;
 
       beforeEach(function () {
-        hookCollection         = createSpyWithStubs("hook collection", {syncForEach: undefined});
+        hookCollection         = createSpyWithStubs("hook collection", {forEach: undefined});
         scenario               = createSpy("scenario");
         matchingHookCollection = createSpyWithStubs("matching hook collection", {add: undefined});
         collectionSpy.andReturn(matchingHookCollection);
@@ -517,8 +517,8 @@ describe("Cucumber.SupportCode.Library", function () {
       });
 
       it("iterates over the hooks", function () {
-        expect(hookCollection.syncForEach).toHaveBeenCalled();
-        expect(hookCollection.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+        expect(hookCollection.forEach).toHaveBeenCalled();
+        expect(hookCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
       });
 
       it("returns the matching hooks", function () {
@@ -526,22 +526,22 @@ describe("Cucumber.SupportCode.Library", function () {
       });
 
       describe("for each hook in the collection", function () {
-        var hook, syncForEachUserFunction;
+        var hook, forEachUserFunction;
 
         beforeEach(function () {
           hook = createSpyWithStubs("hook", {appliesToScenario: undefined});
-          syncForEachUserFunction = hookCollection.syncForEach.mostRecentCall.args[0];
+          forEachUserFunction = hookCollection.forEach.mostRecentCall.args[0];
         });
 
         it("checks whether the hook applies to the scenario", function () {
-          syncForEachUserFunction (hook);
+          forEachUserFunction (hook);
           expect(hook.appliesToScenario).toHaveBeenCalledWith(scenario);
         });
 
         describe("when the hook matches the scenario", function () {
           beforeEach(function () {
             spyOnStub(hook, "appliesToScenario").andReturn(true);
-            syncForEachUserFunction (hook);
+            forEachUserFunction (hook);
           });
 
           it("adds the hook to the collection of matching hooks", function () {
@@ -552,7 +552,7 @@ describe("Cucumber.SupportCode.Library", function () {
         describe("when the hook does not match the scenario", function () {
           beforeEach(function () {
             spyOnStub(hook, "appliesToScenario").andReturn(false);
-            syncForEachUserFunction (hook);
+            forEachUserFunction (hook);
           });
 
           it("adds the hook to the collection of matching hooks", function () {

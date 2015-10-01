@@ -13,12 +13,12 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     listeners            = [createSpy("First listener"), createSpy("Second listener")];
     supportListeners     = [createSpy("First support listener"), createSpy("Second support listener")];
     walkDomain           = createSpy("walk domain");
-    spyOnStub(listeners, 'syncForEach').andCallFake(function (cb) { listeners.forEach(cb); });
-    spyOnStub(supportListeners, 'syncForEach').andCallFake(function (cb) { supportListeners.forEach(cb); });
+    spyOnStub(listeners, 'forEach').andCallFake(function (cb) { listeners.forEach(cb); });
+    spyOnStub(supportListeners, 'forEach').andCallFake(function (cb) { supportListeners.forEach(cb); });
     spyOnStub(supportCodeLibrary, 'getListeners').andReturn(supportListeners);
 
-    beforeStepCollection = createSpyWithStubs("before step collection", {add: undefined, unshift: undefined, clear: undefined, forEach: undefined});
-    afterStepCollection  = createSpyWithStubs("after step collection", {add: undefined, unshift: undefined, clear: undefined, forEach: undefined});
+    beforeStepCollection = createSpyWithStubs("before step collection", {add: undefined, unshift: undefined, clear: undefined, asyncForEach: undefined});
+    afterStepCollection  = createSpyWithStubs("after step collection", {add: undefined, unshift: undefined, clear: undefined, asyncForEach: undefined});
     attachmentCollection = createSpyWithStubs("attachment collection", {add: undefined, unshift: undefined, clear: undefined, forEach: undefined});
     emptyHook            = createSpy("empty hook");
     spyOn(Cucumber.Type, 'Collection').andReturnSeveral([beforeStepCollection, afterStepCollection, attachmentCollection]);
@@ -337,7 +337,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     beforeEach(function () {
       scenario    = createSpy("scenario");
       aroundHooks = createSpy("around hooks");
-      spyOnStub(aroundHooks, "syncForEach");
+      spyOnStub(aroundHooks, "forEach");
       spyOnStub(supportCodeLibrary, 'lookupAroundHooksByScenario').andReturn(aroundHooks);
 
       treeWalker.createBeforeAndAfterStepsForAroundHooks(scenario);
@@ -348,8 +348,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("iterates over the around hooks", function () {
-      expect(aroundHooks.syncForEach).toHaveBeenCalled();
-      expect(aroundHooks.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(aroundHooks.forEach).toHaveBeenCalled();
+      expect(aroundHooks.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each around hook", function () {
@@ -359,10 +359,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         aroundHook = createSpyWithStubs("around hook", {setAfterStep: undefined});
         beforeStep = createSpyWithStubs("before step", {setHook: undefined});
         afterStep  = createSpyWithStubs("after step", {setHook: undefined});
-        var syncForEachCallback = aroundHooks.syncForEach.mostRecentCall.args[0];
+        var forEachCallback = aroundHooks.forEach.mostRecentCall.args[0];
         spyOn(Cucumber.Ast, "HookStep").andReturnSeveral([beforeStep, afterStep]);
 
-        syncForEachCallback(aroundHook);
+        forEachCallback(aroundHook);
       });
 
       it("creates a before step and an after step", function () {
@@ -399,7 +399,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     beforeEach(function () {
       scenario    = createSpy("scenario");
       beforeHooks = createSpy("before hooks");
-      spyOnStub(beforeHooks, "syncForEach");
+      spyOnStub(beforeHooks, "forEach");
       spyOnStub(supportCodeLibrary, 'lookupBeforeHooksByScenario').andReturn(beforeHooks);
 
       treeWalker.createBeforeStepsForBeforeHooks(scenario);
@@ -410,8 +410,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("iterates over the before hooks", function () {
-      expect(beforeHooks.syncForEach).toHaveBeenCalled();
-      expect(beforeHooks.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(beforeHooks.forEach).toHaveBeenCalled();
+      expect(beforeHooks.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each before hook", function () {
@@ -420,10 +420,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       beforeEach(function () {
         beforeHook = createSpyWithStubs("before hook");
         beforeStep = createSpyWithStubs("before step", {setHook: undefined});
-        var syncForEachCallback = beforeHooks.syncForEach.mostRecentCall.args[0];
+        var forEachCallback = beforeHooks.forEach.mostRecentCall.args[0];
         spyOn(Cucumber.Ast, "HookStep").andReturn(beforeStep);
 
-        syncForEachCallback(beforeHook);
+        forEachCallback(beforeHook);
       });
 
       it("creates a before step", function () {
@@ -446,7 +446,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     beforeEach(function () {
       scenario   = createSpy("scenario");
       afterHooks = createSpy("after hooks");
-      spyOnStub(afterHooks, "syncForEach");
+      spyOnStub(afterHooks, "forEach");
       spyOnStub(supportCodeLibrary, 'lookupAfterHooksByScenario').andReturn(afterHooks);
 
       treeWalker.createAfterStepsForAfterHooks(scenario);
@@ -457,8 +457,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("iterates over the after hooks", function () {
-      expect(afterHooks.syncForEach).toHaveBeenCalled();
-      expect(afterHooks.syncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(afterHooks.forEach).toHaveBeenCalled();
+      expect(afterHooks.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each after hook", function () {
@@ -467,10 +467,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       beforeEach(function () {
         afterHook = createSpyWithStubs("after hook");
         afterStep = createSpyWithStubs("after step", {setHook: undefined});
-        var syncForEachCallback = afterHooks.syncForEach.mostRecentCall.args[0];
+        var forEachCallback = afterHooks.forEach.mostRecentCall.args[0];
         spyOn(Cucumber.Ast, "HookStep").andReturn(afterStep);
 
-        syncForEachCallback(afterHook);
+        forEachCallback(afterHook);
       });
 
       it("creates a after step", function () {
@@ -497,8 +497,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("iterates over the before steps", function () {
-      expect(beforeStepCollection.forEach).toHaveBeenCalled();
-      expect(beforeStepCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(beforeStepCollection.asyncForEach).toHaveBeenCalled();
+      expect(beforeStepCollection.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each before step", function () {
@@ -509,7 +509,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         callback   = createSpyWithStubs("callback");
         spyOn(treeWalker, 'witnessHook');
 
-        var userFunction = beforeStepCollection.forEach.mostRecentCall.args[0];
+        var userFunction = beforeStepCollection.asyncForEach.mostRecentCall.args[0];
 
         userFunction (beforeStep, callback);
       });
@@ -527,8 +527,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
     describe("when it has finished iterating over the before steps", function () {
       beforeEach(function () {
-        var forEachCallback = beforeStepCollection.forEach.mostRecentCall.args[1];
-        forEachCallback();
+        var asyncForEachCallback = beforeStepCollection.asyncForEach.mostRecentCall.args[1];
+        asyncForEachCallback();
       });
 
       it("calls back", function () {
@@ -547,8 +547,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("iterates over the after steps", function () {
-      expect(afterStepCollection.forEach).toHaveBeenCalled();
-      expect(afterStepCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(afterStepCollection.asyncForEach).toHaveBeenCalled();
+      expect(afterStepCollection.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
 
     describe("for each after step", function () {
@@ -558,7 +558,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         afterStep  = createSpyWithStubs("after step", {acceptVisitor: undefined});
         callback   = createSpyWithStubs("callback");
         spyOn(treeWalker, 'witnessHook');
-        var userFunction = afterStepCollection.forEach.mostRecentCall.args[0];
+        var userFunction = afterStepCollection.asyncForEach.mostRecentCall.args[0];
 
         userFunction (afterStep, callback);
       });
@@ -576,8 +576,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
     describe("when it has finished iterating over the after steps", function () {
       beforeEach(function () {
-        var forEachCallback = afterStepCollection.forEach.mostRecentCall.args[1];
-        forEachCallback();
+        var asyncForEachCallback = afterStepCollection.asyncForEach.mostRecentCall.args[1];
+        asyncForEachCallback();
       });
 
       it("calls back", function () {
@@ -872,37 +872,37 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     function spyOnListeners(listeners) {
-      spyOn(listeners, 'forEach').andCallFake(function () {
-        var callback = listeners.forEach.mostRecentCall.args[1];
+      spyOnStub(listeners, 'asyncForEach').andCallFake(function () {
+        var callback = listeners.asyncForEach.mostRecentCall.args[1];
         callback();
       });
     }
 
     it("iterates over the listeners", function () {
       treeWalker.broadcastEvent(event, callback);
-      assertListenerCollectionCalled(listeners.forEach);
-      assertListenerCollectionCalled(supportListeners.forEach);
-      expect(supportListeners.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+      assertListenerCollectionCalled(listeners.asyncForEach);
+      assertListenerCollectionCalled(supportListeners.asyncForEach);
+      expect(supportListeners.asyncForEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
     });
 
-    function assertListenerCollectionCalled(forEachSpy) {
-      expect(forEachSpy).toHaveBeenCalled();
-      expect(forEachSpy).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+    function assertListenerCollectionCalled(asyncForEachSpy) {
+      expect(asyncForEachSpy).toHaveBeenCalled();
+      expect(asyncForEachSpy).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     }
 
     describe("for each listener", function () {
-      var userFunction, listener, forEachCallback;
+      var userFunction, listener, asyncForEachCallback;
 
       beforeEach(function () {
         listener        = createSpyWithStubs("Listener", {hear:null});
-        forEachCallback = createSpy("forEach() callback");
+        asyncForEachCallback = createSpy("asyncForEach() callback");
         treeWalker.broadcastEvent(event, callback);
-        userFunction = listeners.forEach.mostRecentCall.args[0];
+        userFunction = listeners.asyncForEach.mostRecentCall.args[0];
       });
 
       it("tells the listener about the event and calls back when finished", function () {
-        userFunction (listener, forEachCallback);
-        expect(listener.hear).toHaveBeenCalledWith(event, forEachCallback);
+        userFunction (listener, asyncForEachCallback);
+        expect(listener.hear).toHaveBeenCalledWith(event, asyncForEachCallback);
       });
     });
   });
@@ -1413,6 +1413,26 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         it("does not skip an undefined step", function () {
           treeWalker.processStep(step, callback);
           expect(treeWalker.skipUndefinedStep).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when the steps are skipped in dry Run mode", function () {
+        beforeEach(function () {
+          var dryrun = true,
+              isStrictMode = false;
+          treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode, dryrun);
+          spyOn(treeWalker, 'processDryRunStep');
+          spyOn(treeWalker, 'executeStep');
+        });
+
+        it("skips the step", function () {
+          treeWalker.processStep(step, callback);
+          expect(treeWalker.processDryRunStep).toHaveBeenCalledWith(step, callback);
+        });
+
+        it("does not execute the step", function () {
+          treeWalker.processStep(step, callback);
+          expect(treeWalker.executeStep).not.toHaveBeenCalled();
         });
       });
     });

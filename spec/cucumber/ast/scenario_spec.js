@@ -225,29 +225,29 @@ describe("Cucumber.Ast.Scenario", function () {
       visitor  = createSpyWithStubs("visitor", {visitStep: null});
       callback = createSpy("callback");
       steps    = createSpy("steps");
-      spyOnStub(steps, 'forEach');
+      spyOnStub(steps, 'asyncForEach');
    });
 
     it("iterates over the steps with a user function", function () {
       scenario.instructVisitorToVisitSteps(visitor, steps, callback);
-      expect(steps.forEach).toHaveBeenCalled();
-      expect(steps.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(steps.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+      expect(steps.asyncForEach).toHaveBeenCalled();
+      expect(steps.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(steps.asyncForEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
     });
 
     describe("for each step", function () {
-      var userFunction, step, forEachCallback;
+      var userFunction, step, asyncForEachCallback;
 
       beforeEach(function () {
         scenario.instructVisitorToVisitSteps(visitor, steps, callback);
-        userFunction    = steps.forEach.mostRecentCall.args[0];
+        userFunction    = steps.asyncForEach.mostRecentCall.args[0];
         step            = createSpy("a step");
-        forEachCallback = createSpy("forEach() callback");
+        asyncForEachCallback = createSpy("asyncForEach() callback");
       });
 
       it("instructs the visitor to visit the step and call back when finished", function () {
-        userFunction (step, forEachCallback);
-        expect(visitor.visitStep).toHaveBeenCalledWith(step, forEachCallback);
+        userFunction (step, asyncForEachCallback);
+        expect(visitor.visitStep).toHaveBeenCalledWith(step, asyncForEachCallback);
       });
     });
   });
