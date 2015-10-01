@@ -25,17 +25,17 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
-          callback();
+        this.Before(function (scenario, callback) {
+          callback()
         });
 
-        this.After(function(callback) {
-          callback();
+        this.After(function (scenario, callback) {
+          callback()
         });
 
-        this.Around(function(runScenario) {
-          runScenario(function(callback) {
-            callback();
+        this.Around(function (scenario, runScenario) {
+          runScenario(function (scenario, callback) {
+            callback()
           });
         });
       };
@@ -306,7 +306,7 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           <fail_approach>
         });
       };
@@ -381,7 +381,7 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           <fail_approach>
         });
       };
@@ -603,7 +603,7 @@ Feature: Environment Hooks
       var hooks = function () {
         this.World = require("../support/world.js").World;
 
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           var world = this;
 
           if (!world.isWorld())
@@ -612,7 +612,7 @@ Feature: Environment Hooks
             callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           var world = this;
 
           if (!world.isWorld())
@@ -621,7 +621,7 @@ Feature: Environment Hooks
             callback();
         });
 
-        this.Around(function(runScenario) {
+        this.Around(function(scenario, runScenario) {
           var world = this;
           var error;
 
@@ -630,7 +630,7 @@ Feature: Environment Hooks
           else
             error = null;
 
-          runScenario(error, function(callback) {
+          runScenario(error, function(scenario, callback) {
             var world = this;
             var error;
 

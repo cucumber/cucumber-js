@@ -27,48 +27,21 @@ describe("Cucumber.SupportCode.Hook", function () {
   });
 
   describe("buildInvocationParameters()", function () {
-    var step, scenario, callback;
+    var step, scenario, callback, invocationParameters;
 
     beforeEach(function () {
       step      = createSpy("world");
       scenario  = createSpy("scenario");
       callback  = createSpy("callback");
+      invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
     });
 
-    describe("when the hook function does not just accept one parameter", function () {
-      var invocationParameters;
-
-      beforeEach(function () {
-        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
-      });
-
-      it("returns an array containing the scenario and the callback", function () {
-        expect(invocationParameters).toEqual([scenario, callback]);
-      });
-
-      it("does not call back", function () {
-        expect(callback).not.toHaveBeenCalled();
-      });
+    it("returns an array containing the scenario and the callback", function () {
+      expect(invocationParameters).toEqual([scenario, callback]);
     });
 
-    describe("when the hook function only accepts one parameter", function () {
-      var invocationParameters;
-
-      beforeEach(function () {
-        var codeObservingWrapper = function (callback) {
-          code.call(this, callback);
-        };
-        hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
-        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
-      });
-
-      it("returns an array containing only the callback", function () {
-        expect(invocationParameters).toEqual([callback]);
-      });
-
-      it("does not call back", function () {
-        expect(callback).not.toHaveBeenCalled();
-      });
+    it("does not call back", function () {
+      expect(callback).not.toHaveBeenCalled();
     });
   });
 
