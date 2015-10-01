@@ -115,7 +115,7 @@ Feature: Environment Hooks
       ]
       """
 
-  Scenario Outline: Failing around hook (pre scenario) fails the scenario
+  Scenario: Failing around hook (pre scenario) fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
