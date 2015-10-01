@@ -87,7 +87,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
   });
 
   describe("invoke()", function () {
-    var step, world, scenario, stepDomain, callback;
+    var step, world, scenario, callback;
     var parameters, exceptionHandler;
     var timestamp = 0;
 
@@ -95,7 +95,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       step                          = createSpy("step");
       world                         = createSpy("world");
       scenario                      = createSpyWithStubs("scenario", {getAttachments: undefined});
-      stepDomain                    = createSpy("stepDomain");
       callback                      = createSpy("callback");
       parameters                    = createSpy("code execution parameters");
       exceptionHandler              = createSpy("exception handler");
@@ -127,7 +126,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
 
     it("builds the step invocation parameters", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, callback);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalled();
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(step, 1);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(scenario, 2);
@@ -135,28 +134,26 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
 
     it("builds an exception handler for the code callback", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, callback);
       expect(stepDefinition.buildExceptionHandlerToCodeCallback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
 
       var codeExecutionCallbackPassedToParameterBuilder = stepDefinition.buildInvocationParameters.mostRecentCall.args[2];
       var codeExecutionCallbackPassedToExceptionHandlerBuilder = stepDefinition.buildExceptionHandlerToCodeCallback.mostRecentCall.args[0];
-      var domainPassedToExceptionHandlerBuilder = stepDefinition.buildExceptionHandlerToCodeCallback.mostRecentCall.args[1];
       expect(codeExecutionCallbackPassedToExceptionHandlerBuilder).toBe(codeExecutionCallbackPassedToParameterBuilder);
-      expect(domainPassedToExceptionHandlerBuilder).toBe(stepDomain);
     });
 
     it("registers the exception handler for uncaught exceptions", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
-      expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
+      stepDefinition.invoke(step, world, scenario, callback);
+      expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
     });
 
     it("calls the step definition code with the parameters and World as 'this'", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, callback);
       expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
     });
 
     it("builds the code callback", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, callback);
       expect(stepDefinition.buildCodeCallback).toHaveBeenCalled();
       expect(stepDefinition.buildCodeCallback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
@@ -165,7 +162,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       var codeExecutionCallback, successfulStepResult, attachments;
 
       beforeEach(function () {
-        stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+        stepDefinition.invoke(step, world, scenario, callback);
         codeExecutionCallback = stepDefinition.buildCodeCallback.mostRecentCall.args[0];
         successfulStepResult  = createSpy("successful step result");
         attachments           = createSpy("attachments");
@@ -194,7 +191,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         });
 
         it("unregisters the exception handler", function () {
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
         });
 
         it("calls back", function () {
@@ -258,7 +255,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
         it("unregisters the exception handler", function () {
           codeExecutionCallback.pending(pendingReason);
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
         });
 
         it("calls back", function () {
@@ -299,7 +296,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
         it("unregisters the exception handler", function () {
           codeExecutionCallback.fail(failureReason);
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
         });
 
         it("calls back", function () {
@@ -433,12 +430,11 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
   });
 
   describe("buildExceptionHandlerToCodeCallback()", function () {
-    var codeCallback, exceptionHandler, stepDomain;
+    var codeCallback, exceptionHandler;
 
     beforeEach(function () {
       codeCallback = createSpyWithStubs("code callback", {fail: null});
-      stepDomain = createSpy("step domain");
-      exceptionHandler = stepDefinition.buildExceptionHandlerToCodeCallback(codeCallback, stepDomain);
+      exceptionHandler = stepDefinition.buildExceptionHandlerToCodeCallback(codeCallback);
     });
 
     it("returns an exception handler", function () {
