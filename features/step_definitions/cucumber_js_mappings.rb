@@ -192,7 +192,7 @@ EOF
       append_support_code <<-EOF
 this.#{define_hook}(#{params}function (scenario, runScenario) {
   this.logCycleEvent('#{log_string}-pre');
-  runScenario(function (scenario, callback) {
+  runScenario(null, function (callback) {
     this.logCycleEvent('#{log_string}-post');
     callback();
   });
