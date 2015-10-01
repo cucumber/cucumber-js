@@ -27,7 +27,7 @@ Feature: Around hook interface
         this.Around(function (scenario, runScenario) {
           setTimeout(function() {
             runScenario(new Error('my error'), function() {});
-          })
+          });
         });
       };
 
@@ -45,7 +45,7 @@ Feature: Around hook interface
         this.Around(function (scenario, runScenario) {
           setTimeout(function() {
             throw new Error('my error');
-          };
+          });
         });
       };
 
@@ -121,7 +121,7 @@ Feature: Around hook interface
             setTimeout(function() {
               callback(new Error('my error'));
             });
-          }):
+          });
         });
       };
 
