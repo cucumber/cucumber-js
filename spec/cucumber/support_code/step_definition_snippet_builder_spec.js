@@ -10,7 +10,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
       getStepDefinitionStart               : 'this.',
       getStepDefinitionInner1              : '(',
       getStepDefinitionInner2              : ', function (',
-      getStepDefinitionEnd                 : ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n",
+      getStepDefinitionEnd                 : ") {\n  // Write code here that turns the phrase above into concrete actions\n});\n",
       getContextStepDefinitionFunctionName : 'Given',
       getEventStepDefinitionFunctionName   : 'When',
       getOutcomeStepDefinitionFunctionName : 'Then',
@@ -63,7 +63,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
         pattern      +
         ", function (" +
         parameters +
-        ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n";
+        ") {\n  // Write code here that turns the phrase above into concrete actions\n});\n";
       expect(actualSnippet).toBe(expectedSnippet);
     });
   });

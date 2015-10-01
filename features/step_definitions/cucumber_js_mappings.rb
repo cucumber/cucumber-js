@@ -41,11 +41,7 @@ module CucumberJsMappings
   end
 
   def write_pending_mapping(step_name)
-    append_step_definition(step_name, "callback.pending();")
-  end
-
-  def write_asynchronous_pending_mapping(step_name)
-    append_step_definition(step_name, "setTimeout(callback.pending, 10);")
+    append_step_definition(step_name)
   end
 
   def write_passing_promise_mapping(step_name)
@@ -73,7 +69,7 @@ module CucumberJsMappings
   end
 
   def write_asynchronously_failing_mapping_with_message(step_name, message)
-    append_step_definition(step_name, "setTimeout(function () { callback.fail('#{message}');}, 10);")
+    append_step_definition(step_name, "setTimeout(function () { callback('#{message}');}, 10);")
   end
 
   def write_asynchronously_failing_mapping_through_exception_with_message(step_name, message)
@@ -310,10 +306,11 @@ EOF
     params << "callback"
     params = params.join ", "
     expected_snippet = <<-EOF
-this.#{stepdef_keyword}(/#{stepdef_pattern}/, function (#{params}) {
+this.#{stepdef_keyword}(/#{stepdef_pattern}/) //, function (#{params}) {
   // Write code here that turns the phrase above into concrete actions
-  callback.pending();
-});
+  // Use the callback or return a promise for asynchronous code
+  // Remove the callback for synchronous code
+// });
 EOF
     assert_partial_output(expected_snippet, all_output)
   end
@@ -357,16 +354,20 @@ EOF
 
   protected
 
-  def append_step_definition(step_name, code, params = [], callback = true)
-    params.push("callback") if callback
-    params_string = params.join(", ")
-    indented_code = indent_code(code).rstrip
-    append_support_code <<-EOF
+  def append_step_definition(step_name, code = nil, params = [], callback = true)
+    if code
+      params.push("callback") if callback
+      params_string = params.join(", ")
+      indented_code = indent_code(code).rstrip
+      append_support_code <<-EOF
 this.defineStep(/#{step_name}/, function (#{params_string}) {
   fs.writeFileSync("#{step_file(step_name)}", "");
 #{indented_code}
 });
 EOF
+    else
+      append_support_code "this.defineStep(/#{step_name}/);\n"
+    end
   end
 
   def append_support_code(code)

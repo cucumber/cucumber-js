@@ -41,10 +41,11 @@ Feature: Strict mode
 
     You can implement step definitions for undefined steps with these snippets:
 
-    this.Given(/^this step passes$/, function (callback) {
+    this.Given(/^this step passes$/) //, function (callback) {
       // Write code here that turns the phrase above into concrete actions
-      callback.pending();
-    });
+      // Use the callback or return a promise for asynchronous code
+      // Remove the callback for synchronous code
+    // });
     """
     And the exit status should be 1
 
@@ -53,7 +54,7 @@ Feature: Strict mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
     var cucumberSteps = function() {
-      this.Given(/^this step passes$/, function(callback) { callback.pending(); });
+      this.Given(/^this step passes$/)
     };
     module.exports = cucumberSteps;
     """
@@ -78,10 +79,11 @@ Feature: Strict mode
 
     You can implement step definitions for undefined steps with these snippets:
 
-    this.Given(/^this step passes$/, function (callback) {
+    this.Given(/^this step passes$/) //, function (callback) {
       // Write code here that turns the phrase above into concrete actions
-      callback.pending();
-    });
+      // Use the callback or return a promise for asynchronous code
+      // Remove the callback for synchronous code
+    // });
     """
     And the exit status should be 1
 
@@ -90,7 +92,7 @@ Feature: Strict mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
     var cucumberSteps = function() {
-      this.Given(/^this step passes$/, function(callback) { callback.pending(); });
+      this.Given(/^this step passes$/)
     };
     module.exports = cucumberSteps;
     """

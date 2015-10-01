@@ -32,7 +32,7 @@ var cucumberSteps = function() {
   Given(/^the step "([^"]*)" has a mapping asynchronously failing with the message "([^"]*)"$/, function(stepName, message, callback) {
     this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
   world.touchStep(\"" + stepName + "\");\
-  setTimeout(function() {callback.fail(new Error('" + message + "'));}, 10);\
+  setTimeout(function() {callback(new Error('" + message + "'));}, 10);\
 });\n";
     callback();
   });
@@ -46,18 +46,7 @@ var cucumberSteps = function() {
   });
 
   Given(/^the step "([^"]*)" has a pending mapping$/, function(stepName, callback) {
-    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
-  world.touchStep(\"" + stepName + "\");\
-  callback.pending('I am pending.');\
-});\n";
-    callback();
-  });
-
-  Given(/^the step "([^"]*)" has an asynchronous pending mapping$/, function(stepName, callback) {
-    this.stepDefinitions += "Given(/^" + stepName + "$/, function(callback) {\
-world.touchStep(\"" + stepName + "\");\
-setTimeout(callback.pending, 10);\
-});\n";
+    this.stepDefinitions += "Given(/^" + stepName + "$/)\n";
     callback();
   });
 

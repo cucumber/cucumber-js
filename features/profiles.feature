@@ -67,9 +67,10 @@ Feature: default command line arguments
 
       You can implement step definitions for undefined steps with these snippets:
 
-      @Given /^a undefined step$/, (callback) ->
+      @Given /^a undefined step$/ #, (callback) ->
         # Write code here that turns the phrase above into concrete actions
-        callback.pending()
+        # Use the callback or return a promise for asynchronous code
+        # Remove the callback for synchronous code
       """
 
   Scenario: overriding the default profile

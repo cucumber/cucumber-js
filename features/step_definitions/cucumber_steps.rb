@@ -42,10 +42,6 @@ Given /^a passing synchronous mapping$/ do
   write_passing_synchronous_mapping(@mapping_name)
 end
 
-Given /^the step "([^"]*)" has an asynchronous pending mapping$/ do |step_name|
-  write_asynchronous_pending_mapping(step_name)
-end
-
 Given /^the step "([^"]*)" has a mapping asynchronously failing with the message "([^"]*)"$/ do |step_name, message|
   write_asynchronously_failing_mapping_with_message(step_name, message)
 end

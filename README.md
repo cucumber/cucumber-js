@@ -141,12 +141,10 @@ module.exports = function () {
     // be executed by Cucumber.
   });
 
-  this.When(/^I go to the README file$/, function (callback) {
-    // Express the regexp above with the code you wish you had. Call callback() at the end
-    // of the step, or callback.pending() if the step is not yet implemented:
+  this.When(/^I go to the README file$/)
+    // To mark the step as pending, don't provide a function
+    // Optionally pass a string with the pending reason as the second parameter
 
-    callback.pending();
-  });
 
   this.Then(/^I should see "(.*)" as the page title$/, function (title, callback) {
     // matching groups are passed as parameters to the step definition
@@ -155,7 +153,7 @@ module.exports = function () {
     if (title === pageTitle) {
       callback();
     } else {
-      callback.fail(new Error("Expected to be on page with title " + title));
+      callback(new Error("Expected to be on page with title " + title));
     }
   });
 };
@@ -201,7 +199,7 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
   if (title === pageTitle) {
     callback();
   } else {
-    callback.fail(new Error("Expected to be on page with title " + title));
+    callback(new Error("Expected to be on page with title " + title));
   }
 });
 ```
