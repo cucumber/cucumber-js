@@ -119,11 +119,5 @@
     "cucumber-js": "./bin/cucumber.js",
     "cucumberjs": "./bin/cucumber.js"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/cucumber/cucumber.js/LICENSE"
-    }
-  ],
-  "optionalDependencies": {}
+  "license": "MIT"
 }
