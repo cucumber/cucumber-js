@@ -117,7 +117,7 @@ Feature: Around hook interface
       """
       hooks = function() {
         this.Around(function (scenario, runScenario) {
-          runScenario(null, function() {
+          runScenario(null, function(callback) {
             setTimeout(function() {
               callback(new Error('my error'));
             });

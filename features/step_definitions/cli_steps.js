@@ -85,7 +85,9 @@ var cliSteps = function cliSteps() {
     var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
 
     if (actualCode != code) {
-      throw new Error("Exit code expected: \"" + code + "\"\nGot: \"" + actualCode + "\"\n");
+      throw new Error("Exit code expected: \"" + code + "\"\n" +
+                      "Got: \"" + actualCode + "\"\n" +
+                      "Output:" + world.lastRun.stdout + "\n");
     }
 
     callback();
