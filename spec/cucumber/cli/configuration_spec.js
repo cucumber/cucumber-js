@@ -1,3 +1,6 @@
+var fs    = require('fs');
+var path  = require('path');
+
 require('../../support/spec_helper');
 require('../../support/configurations_shared_examples.js');
 
@@ -149,6 +152,37 @@ describe("Cucumber.Cli.Configuration", function () {
       });
 
       it("throws an exceptions", function () {
+        expect(configuration.getFormatter).toThrow();
+      });
+    });
+
+    describe("when the formatter name is foo_formatter.js", function () {
+      var formatter;
+
+      beforeEach(function () {
+        fs.writeFileSync(path.join(process.cwd(), 'foo_formatter.js'),
+          'module.exports = function FooFormatter(options, Cucumber) { return {isFooFormatter: true}; };');
+        argumentParser.getFormat.andReturn("foo_formatter.js");
+        spyOnStub(fs, 'existsSync').andReturn(true);
+        formatter = configuration.getFormatter();
+      });
+
+      afterEach(function () {
+        fs.unlinkSync(path.join(process.cwd(), 'foo_formatter.js'));
+      });
+
+      it("should find file", function () {
+        expect(fs.existsSync.callCount).toBe(1);
+      });
+
+      it("should require foo_formatter.js and return a FooFormatter", function () {
+        expect(formatter.isFooFormatter).toBe(true);
+      });
+    });
+
+    describe("when a custom formatter can not be found", function () {
+      it("should throw an exception", function () {
+        argumentParser.getFormat.andReturn("unknown_formatter.js");
         expect(configuration.getFormatter).toThrow();
       });
     });

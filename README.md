@@ -496,6 +496,26 @@ $ ./node_modules/.bin/cucumber.js
 
 **Note to Windows users:** invoke Cucumber.js with `cucumber-js` instead of `cucumber.js`. The latter is causing the operating system to invoke JScript instead of Node.js, because of the so-called file extension.
 
+#### Formatters
+
+Use --format to specify the formatter.
+
+``` shell
+$ cucumber.js --format=json
+```
+
+Cucumber.js provides progress (the default), summary, JSON and pretty
+formatters.
+
+You can also specify a custom formatter by providing the path to a file
+implementing the formatter:
+
+``` shell
+$ cucumber.js --format=/path/to/my_formatter.js
+```
+
+Paths should be absolute or relative to the current working directory.
+
 ### Examples
 
 A few example apps are available for you to browse:
