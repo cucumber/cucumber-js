@@ -469,6 +469,7 @@ EOF
       .gsub(/\s+$/, "")
       .gsub(/[ \t]+\n/, "\n")
       .gsub(/\\+/, "/")
+      .gsub(/\d+m\d{2}\.\d{3}s/, '<duration-stat>')
   end
 end
 
