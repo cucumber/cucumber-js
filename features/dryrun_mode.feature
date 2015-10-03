@@ -25,7 +25,7 @@ Feature: Dryrun mode
 
       1 scenario (1 skipped)
       1 step (1 skipped)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -44,7 +44,7 @@ Feature: Dryrun mode
 
       1 scenario (1 skipped)
       1 step (1 skipped)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -56,6 +56,7 @@ Feature: Dryrun mode
 
       1 scenario (1 undefined)
       1 step (1 undefined)
+      <duration-stat>
 
       You can implement step definitions for undefined steps with these snippets:
 
@@ -74,7 +75,7 @@ Feature: Dryrun mode
 
       1 scenario (1 skipped)
       1 step (1 skipped)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -93,6 +94,7 @@ Feature: Dryrun mode
 
       1 scenario (1 skipped)
       1 step (1 skipped)
+      <duration-stat>
       """
 
   Scenario: Skipped scenario with defined step with -d
@@ -110,6 +112,6 @@ Feature: Dryrun mode
 
       1 scenario (1 skipped)
       1 step (1 skipped)
-
+      <duration-stat>
       """
     And the exit status should be 0

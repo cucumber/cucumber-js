@@ -12,6 +12,7 @@ Feature: Summary Formatter
       """
       0 scenarios
       0 steps
+      <duration-stat>
       """
 
   Scenario: Summary formatter hides around, before and after hooks
@@ -54,4 +55,5 @@ Feature: Summary Formatter
       """
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """

@@ -26,6 +26,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
         isFailed:     undefined,
         isSkipped:    undefined,
         isUndefined:  undefined,
+        getDuration:  undefined,
         getStep:      undefined
       });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});

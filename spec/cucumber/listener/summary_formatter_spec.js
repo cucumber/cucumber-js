@@ -8,7 +8,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     options              = createSpy("options");
     formatter            = createSpyWithStubs("formatter", {log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
-    statsJournal         = createSpy("stats journal");
+    statsJournal         = createSpyWithStubs("stats journal", {getDuration: null});
     failedStepResults    = createSpy("failed steps");
     spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
     spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
