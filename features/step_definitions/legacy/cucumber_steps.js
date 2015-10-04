@@ -12,6 +12,11 @@ var stepDefinitions = function() {
   var _recordedStepParameters;
   var _stepCallCount;
 
+  Given(/^no existing steps$/, function(callback) {
+    _stepDefs = [];
+    callback();
+  });
+
   // Creates a Given, When or Then step definition that does nothing and pass all the time.
   //
   // Matching groups:
