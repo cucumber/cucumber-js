@@ -9,7 +9,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     formatter            = createSpyWithStubs("formatter", {log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
-    failedStepResults    = createSpy("failed steps");
+    failedStepResults    = createSpyObj("failed steps", ["length"]);
+    failedStepResults.length.and.returnValue(0);
     spyOn(Cucumber.Type, 'Collection').and.returnValue(failedStepResults);
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
     spyOn(Cucumber.Listener, 'StatsJournal').and.returnValue(statsJournal);
@@ -69,10 +70,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     var event, callback, stepResult;
 
     beforeEach(function () {
-      stepResult = createSpyWithStubs("step result", {
-        isUndefined:  undefined,
-        isFailed:     undefined
-      });
+      stepResult = createSpyWithStubs("step result", {getStatus: undefined});
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
       spyOn(summaryFormatter, 'handleFailedStepResult');
@@ -83,14 +81,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
-    it("checks whether the step was undefined", function () {
-      summaryFormatter.handleStepResultEvent(event, callback);
-      expect(stepResult.isUndefined).toHaveBeenCalled();
-    });
-
     describe("when the step was undefined", function () {
       beforeEach(function () {
-        stepResult.isUndefined.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
         spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
@@ -100,42 +93,14 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
     });
 
-    describe("when the step was not undefined", function () {
+    describe("when the step failed", function () {
       beforeEach(function () {
-        stepResult.isUndefined.and.returnValue(false);
-        spyOn(summaryFormatter, 'handleUndefinedStepResult');
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
       });
 
-      it("does not handle an undefined step result", function () {
+      it("handles the failed step result", function () {
         summaryFormatter.handleStepResultEvent(event, callback);
-        expect(summaryFormatter.handleUndefinedStepResult).not.toHaveBeenCalled();
-      });
-
-      it("checks whether the step failed", function () {
-        summaryFormatter.handleStepResultEvent(event, callback);
-        expect(stepResult.isFailed).toHaveBeenCalled();
-      });
-
-      describe("when the step failed", function () {
-        beforeEach(function () {
-          stepResult.isFailed.and.returnValue(true);
-        });
-
-        it("handles the failed step result", function () {
-          summaryFormatter.handleStepResultEvent(event, callback);
-          expect(summaryFormatter.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
-        });
-      });
-
-      describe("when the step did not fail", function () {
-        beforeEach(function () {
-          stepResult.isFailed.and.returnValue(false);
-        });
-
-        it("handles the failed step result", function () {
-          summaryFormatter.handleStepResultEvent(event, callback);
-          expect(summaryFormatter.handleFailedStepResult).not.toHaveBeenCalled();
-        });
+        expect(summaryFormatter.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
 
@@ -387,14 +352,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       spyOnStub(statsJournal, 'logUndefinedStepSnippets');
     });
 
-    it("checks whether there are failed steps or not", function () {
-      summaryFormatter.logSummary();
-      expect(statsJournal.witnessedAnyFailedStep).toHaveBeenCalled();
-    });
-
     describe("when there are failed steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.and.returnValue(true);
+        var name           = "some failed scenario";
+        var uri            = "some uri";
+        var line           = "123";
+        var failedScenario = createSpyWithStubs("failedScenario", {getName: name, getUri: uri, getLine: line});
+        summaryFormatter.storeFailedScenario(failedScenario);
       });
 
       it("logs the failed steps", function () {
@@ -404,10 +368,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are no failed steps", function () {
-      beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.and.returnValue(false);
-      });
-
       it("does not log failed steps", function () {
         summaryFormatter.logSummary();
         expect(summaryFormatter.logFailedStepResults).not.toHaveBeenCalled();
@@ -424,14 +384,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(summaryFormatter.logStepsSummary).toHaveBeenCalled();
     });
 
-    it("checks whether there are undefined steps or not", function () {
-      summaryFormatter.logSummary();
-      expect(statsJournal.witnessedAnyUndefinedStep).toHaveBeenCalled();
-    });
-
     describe("when there are undefined steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.and.returnValue(true);
+        var step = createSpyWithStubs("step");
+        var snippet = createSpy("step definition snippet");
+        var snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
+        spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
+        summaryFormatter.storeUndefinedStepResult(step);
       });
 
       it("logs the undefined step snippets", function () {
@@ -441,10 +400,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are no undefined steps", function () {
-      beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.and.returnValue(false);
-      });
-
       it("does not log the undefined step snippets", function () {
         summaryFormatter.logSummary();
         expect(summaryFormatter.logUndefinedStepSnippets).not.toHaveBeenCalled();
