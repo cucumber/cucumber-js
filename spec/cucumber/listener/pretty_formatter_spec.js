@@ -10,8 +10,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     formatter           = createSpyWithStubs("formatter", {log: null});
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summary formatter");
-    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
-    spyOn(Cucumber.Listener, 'SummaryFormatter').andReturn(summaryFormatter);
+    spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
+    spyOn(Cucumber.Listener, 'SummaryFormatter').and.returnValue(summaryFormatter);
     prettyFormatter = Cucumber.Listener.PrettyFormatter(options);
     colors = Cucumber.Util.Colors;
   });
@@ -26,7 +26,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     });
 
     it("creates a summaryFormatter", function () {
-      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith({logToConsole: false});
+      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(jasmine.objectContaining({logToConsole: false}));
     });
   });
 
@@ -51,7 +51,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       beforeEach(function () {
         prettyFormatter.hear(event, callback);
-        summaryFormatterCallback = summaryFormatter.hear.mostRecentCall.args[1];
+        summaryFormatterCallback = summaryFormatter.hear.calls.mostRecent().args[1];
       });
 
       it("tells the formatter to listen to the event", function () {
@@ -123,7 +123,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       var uri = path.join(process.cwd(), relativeUri);
       var background = createSpy("background");
       scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
-      spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").andCallFake(function (element) {
+      spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").and.callFake(function (element) {
         if (element === background) {
           return backgroundStepLength;
         }
@@ -200,7 +200,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is not hidden", function () {
       it("calls logStepResult() as the step is not hidden", function () {
-        spyOnStub(step, 'isHidden').andReturn(false);
+        spyOnStub(step, 'isHidden').and.returnValue(false);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -208,8 +208,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has not failed", function () {
       it("does not call logStepResult() to keep the step hidden", function () {
-        spyOnStub(step, 'isHidden').andReturn(true);
-        spyOnStub(stepResult, 'isFailed').andReturn(false);
+        spyOnStub(step, 'isHidden').and.returnValue(true);
+        spyOnStub(stepResult, 'isFailed').and.returnValue(false);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).not.toHaveBeenCalled();
       });
@@ -217,8 +217,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has failed", function () {
       it("calls logStepResult() to log the failure even though the step is supposed to be hidden", function () {
-        spyOnStub(step, 'isHidden').andReturn(true);
-        spyOnStub(stepResult, 'isFailed').andReturn(true);
+        spyOnStub(step, 'isHidden').and.returnValue(true);
+        spyOnStub(stepResult, 'isFailed').and.returnValue(true);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -245,7 +245,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       spyOn(prettyFormatter, 'logDataTable');
       spyOn(prettyFormatter, 'logDocString');
       spyOn(prettyFormatter, 'logIndented');
-      spyOn(prettyFormatter, '_getCurrentMaxStepLength').andReturn(maxStepLength);
+      spyOn(prettyFormatter, '_getCurrentMaxStepLength').and.returnValue(maxStepLength);
     });
 
     it("gets the step keyword", function () {
@@ -266,7 +266,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when the step has no name", function () {
       beforeEach(function () {
-        step.getName.andReturn(undefined);
+        step.getName.and.returnValue(undefined);
       });
 
       it("logs the step header without the name, indented by two levels", function () {
@@ -278,7 +278,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when the step has no URI", function () {
       beforeEach(function () {
-        step.hasUri.andReturn(false);
+        step.hasUri.and.returnValue(false);
       });
 
       it("logs the step header without the URI, indented by two levels", function () {
@@ -298,8 +298,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       beforeEach(function () {
         dataTable = createSpy("data table");
-        step.hasDataTable.andReturn(true);
-        step.getDataTable.andReturn(dataTable);
+        step.hasDataTable.and.returnValue(true);
+        step.getDataTable.and.returnValue(dataTable);
       });
 
       it("gets the data table", function () {
@@ -315,7 +315,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when the step has no data table", function () {
       beforeEach(function () {
-        step.hasDataTable.andReturn(false);
+        step.hasDataTable.and.returnValue(false);
       });
 
       it("does no get the data table", function () {
@@ -339,8 +339,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       beforeEach(function () {
         docString = createSpy("doc string");
-        step.hasDocString.andReturn(true);
-        step.getDocString.andReturn(docString);
+        step.hasDocString.and.returnValue(true);
+        step.getDocString.and.returnValue(docString);
       });
 
       it("gets the doc string", function () {
@@ -356,7 +356,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when the step has no doc string", function () {
       beforeEach(function () {
-        step.hasDocString.andReturn(false);
+        step.hasDocString.and.returnValue(false);
       });
 
       it("does not get the doc string", function () {
@@ -380,8 +380,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       beforeEach(function () {
         exception = createSpy("exception");
-        stepResult.isFailed.andReturn(true);
-        spyOnStub(stepResult, 'getFailureException').andReturn(exception);
+        stepResult.isFailed.and.returnValue(true);
+        spyOnStub(stepResult, 'getFailureException').and.returnValue(exception);
       });
 
       it("gets the failure exception", function () {
@@ -400,7 +400,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       it("logs the failure itself when there no stack, indented by three levels", function () {
         exception = "exception text";
         var text  = exception + "\n";
-        stepResult.getFailureException.andReturn(exception);
+        stepResult.getFailureException.and.returnValue(exception);
         prettyFormatter.logStepResult(step, stepResult);
         expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
       });
@@ -414,7 +414,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       event    = createSpy("event");
       callback = createSpy("callback");
       summary  = createSpy("summary logs");
-      spyOnStub(summaryFormatter, 'getLogs').andReturn(summary);
+      spyOnStub(summaryFormatter, 'getLogs').and.returnValue(summary);
     });
 
     it("gets the summary from the summaryFormatter", function () {
@@ -495,7 +495,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       text     = createSpy("text");
       level    = createSpy("level");
       indented = createSpy("indented text");
-      spyOn(prettyFormatter, 'indent').andReturn(indented);
+      spyOn(prettyFormatter, 'indent').and.returnValue(indented);
     });
 
     it("indents the text", function () {

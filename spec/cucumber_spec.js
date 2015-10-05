@@ -11,8 +11,8 @@ describe("Cucumber", function () {
     options                = createSpy("other options");
     configuration          = createSpy("volatile configuration");
     runtime                = createSpy("Cucumber runtime");
-    spyOn(Cucumber, 'VolatileConfiguration').andReturn(configuration);
-    spyOn(Cucumber, 'Runtime').andReturn(runtime);
+    spyOn(Cucumber, 'VolatileConfiguration').and.returnValue(configuration);
+    spyOn(Cucumber, 'Runtime').and.returnValue(runtime);
   });
 
   it("creates a volatile configuration with the feature source and support code definition", function () {

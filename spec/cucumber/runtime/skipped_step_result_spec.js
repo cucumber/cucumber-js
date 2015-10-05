@@ -6,7 +6,7 @@ describe("Cucumber.Runtime.SkippedStepResult", function () {
 
   beforeEach(function () {
     skippedStepResult = createSpy("base step result");
-    spyOn(Cucumber.Runtime, 'StepResult').andReturn(skippedStepResult);
+    spyOn(Cucumber.Runtime, 'StepResult').and.returnValue(skippedStepResult);
     step              = createSpy("step");
     payload           = {step: step};
     skippedStepResult = Cucumber.Runtime.SkippedStepResult(payload);

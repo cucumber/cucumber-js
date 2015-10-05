@@ -21,9 +21,9 @@ describe("Cucumber.Type.HashDataTable", function () {
       hashKeys        = createSpy("hash keys");
       hashValueArrays = createSpy("hash value arrays");
       hashes          = createSpy("hashes");
-      spyOn(hashDataTable, 'getHashKeys').andReturn(hashKeys);
-      spyOn(hashDataTable, 'getHashValueArrays').andReturn(hashValueArrays);
-      spyOn(hashDataTable, 'createHashesFromKeysAndValueArrays').andReturn(hashes);
+      spyOn(hashDataTable, 'getHashKeys').and.returnValue(hashKeys);
+      spyOn(hashDataTable, 'getHashValueArrays').and.returnValue(hashValueArrays);
+      spyOn(hashDataTable, 'createHashesFromKeysAndValueArrays').and.returnValue(hashes);
     });
 
     it("gets the keys of the hashes", function () {
@@ -70,7 +70,7 @@ describe("Cucumber.Type.HashDataTable", function () {
       keys        = [createSpy("key 1"), createSpy("key 2")];
       valueArrays = [createSpy("value array 1"), createSpy("value array 2")];
       hashes      = [createSpy("first hash"), createSpy("second hash")];
-      spyOn(hashDataTable, 'createHashFromKeysAndValues').andReturnSeveral(hashes);
+      spyOn(hashDataTable, 'createHashFromKeysAndValues').and.returnValues.apply(null, hashes);
     });
 
     it("creates a hash for each keys/values", function () {
