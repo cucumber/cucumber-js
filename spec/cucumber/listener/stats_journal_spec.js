@@ -263,7 +263,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
       it("returns false", function () {
         expect(statsJournal.witnessedAnyFailedStep()).toBeFalsy();
       });
-    })
+    });
 
     describe("with a failed step", function () {
       beforeEach(function (callback){
@@ -282,7 +282,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
       it("returns false", function () {
         expect(statsJournal.witnessedAnyUndefinedStep()).toBeFalsy();
       });
-    })
+    });
 
     describe("with an undefined step", function () {
       beforeEach(function (callback){
