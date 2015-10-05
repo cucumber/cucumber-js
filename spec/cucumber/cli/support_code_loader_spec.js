@@ -21,8 +21,8 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
     beforeEach(function () {
       supportCodeInitializer  = createSpy("support code initializer function");
       supportCodeLibrary      = createSpy("support code library");
-      spyOn(supportCodeLoader, 'getSupportCodeInitializer').andReturn(supportCodeInitializer);
-      spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
+      spyOn(supportCodeLoader, 'getSupportCodeInitializer').and.returnValue(supportCodeInitializer);
+      spyOn(Cucumber.SupportCode, 'Library').and.returnValue(supportCodeLibrary);
     });
 
     it("gets the support code initializer function", function () {
@@ -46,8 +46,8 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
     beforeEach(function () {
       primeSupportCodeInitializer     = createSpy("prime support code initializer");
       secondarySupportCodeInitializer = createSpy("secondary support code initializer");
-      spyOn(supportCodeLoader, 'getPrimeSupportCodeInitializer').andReturn(primeSupportCodeInitializer);
-      spyOn(supportCodeLoader, 'getSecondarySupportCodeInitializer').andReturn(secondarySupportCodeInitializer);
+      spyOn(supportCodeLoader, 'getPrimeSupportCodeInitializer').and.returnValue(primeSupportCodeInitializer);
+      spyOn(supportCodeLoader, 'getSecondarySupportCodeInitializer').and.returnValue(secondarySupportCodeInitializer);
     });
 
     it("gets the prime support code", function () {
@@ -79,7 +79,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
 
       it("calls the prime support code with the support code helper as 'this'", function () {
         initializerFunction.call(supportCodeHelper);
-        expect(primeSupportCodeInitializer.mostRecentCall.object).toBe(supportCodeHelper);
+        expect(primeSupportCodeInitializer.calls.mostRecent().object).toBe(supportCodeHelper);
       });
 
       it("calls the secondary support code", function () {
@@ -89,7 +89,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
 
       it("calls the secondary support code with the support code helper as 'this'", function () {
         initializerFunction.call(supportCodeHelper);
-        expect(secondarySupportCodeInitializer.mostRecentCall.object).toBe(supportCodeHelper);
+        expect(secondarySupportCodeInitializer.calls.mostRecent().object).toBe(supportCodeHelper);
       });
     });
   });
@@ -99,8 +99,8 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
 
     beforeEach(function () {
       primeSupportCodeInitializer = createSpy("prime support code initializer");
-      spyOn(supportCodeLoader, 'getPrimeSupportCodeFilePaths').andReturn(primeSupportCodeFilePaths);
-      spyOn(supportCodeLoader, 'buildSupportCodeInitializerFromPaths').andReturn(primeSupportCodeInitializer);
+      spyOn(supportCodeLoader, 'getPrimeSupportCodeFilePaths').and.returnValue(primeSupportCodeFilePaths);
+      spyOn(supportCodeLoader, 'buildSupportCodeInitializerFromPaths').and.returnValue(primeSupportCodeInitializer);
     });
 
     it("gets the prime support code file paths", function () {
@@ -136,8 +136,8 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
 
     beforeEach(function () {
       secondarySupportCodeInitializer = createSpy("secondary support code initializer");
-      spyOn(supportCodeLoader, 'getSecondarySupportCodeFilePaths').andReturn(secondarySupportCodeFilePaths);
-      spyOn(supportCodeLoader, 'buildSupportCodeInitializerFromPaths').andReturn(secondarySupportCodeInitializer);
+      spyOn(supportCodeLoader, 'getSecondarySupportCodeFilePaths').and.returnValue(secondarySupportCodeFilePaths);
+      spyOn(supportCodeLoader, 'buildSupportCodeInitializerFromPaths').and.returnValue(secondarySupportCodeInitializer);
     });
 
     it("gets the secondary support code file paths", function () {
@@ -221,7 +221,7 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
       it("calls each initializer function with the support code helper as 'this'", function () {
         returnedWrapperFunction.call(supportCodeHelper);
         initializers.forEach(function (initializer) {
-          expect(initializer.mostRecentCall.object).toBe(supportCodeHelper);
+          expect(initializer.calls.mostRecent().object).toBe(supportCodeHelper);
         });
       });
     });

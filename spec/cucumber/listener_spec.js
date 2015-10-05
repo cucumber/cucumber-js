@@ -27,8 +27,8 @@ describe("Cucumber.Listener", function () {
     describe("when there is a handler for that event", function () {
       beforeEach(function () {
         eventHandler = createSpy("Event handler (function)");
-        listener.hasHandlerForEvent.andReturn(true);
-        listener.getHandlerForEvent.andReturn(eventHandler);
+        listener.hasHandlerForEvent.and.returnValue(true);
+        listener.getHandlerForEvent.and.returnValue(eventHandler);
       });
 
       it("gets the handler for that event", function () {
@@ -49,7 +49,7 @@ describe("Cucumber.Listener", function () {
 
     describe("when there are no handlers for that event", function () {
       beforeEach(function () {
-        listener.hasHandlerForEvent.andReturn(false);
+        listener.hasHandlerForEvent.and.returnValue(false);
       });
 
       it("calls back", function () {
@@ -70,7 +70,7 @@ describe("Cucumber.Listener", function () {
     beforeEach(function () {
       event            = createSpy("Event");
       eventHandlerName = createSpy("event handler name");
-      spyOn(listener, 'buildHandlerNameForEvent').andReturn(eventHandlerName);
+      spyOn(listener, 'buildHandlerNameForEvent').and.returnValue(eventHandlerName);
     });
 
     it("builds the name of the handler for that event", function () {
@@ -124,7 +124,7 @@ describe("Cucumber.Listener", function () {
       event            = createSpy("event");
       eventHandlerName = 'handleSomeEvent';
       eventHandler     = createSpy("event handler");
-      spyOn(listener, 'buildHandlerNameForEvent').andReturn(eventHandlerName);
+      spyOn(listener, 'buildHandlerNameForEvent').and.returnValue(eventHandlerName);
     });
 
     it("gets the name of the handler for the event", function () {
@@ -164,7 +164,7 @@ describe("Cucumber.Listener", function () {
     var buildHandlerName;
 
     beforeEach(function () {
-      buildHandlerName = spyOn(listener, "buildHandlerName").andCallThrough();
+      buildHandlerName = spyOn(listener, "buildHandlerName").and.callThrough();
       listener.setHandlerForEvent(shortName, handler);
     });
 

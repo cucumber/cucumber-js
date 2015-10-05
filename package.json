@@ -96,10 +96,10 @@
   },
   "devDependencies": {
     "browserify": "11.1.0",
-    "connect": "3.4.0",
     "coffee-script": "1.10.0",
+    "connect": "3.4.0",
     "exorcist": "0.4.0",
-    "jasmine-node": "1.14.5",
+    "jasmine": "^2.3.2",
     "jshint": "2.8.0",
     "mkdirp": "0.5.1",
     "pogo": "0.10.0",
@@ -112,7 +112,7 @@
     "feature-test": "./bin/cucumber.js -p build",
     "lint": "jshint bundler.js bin lib spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
-    "unit-test": "jasmine-node spec"
+    "unit-test": "jasmine"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

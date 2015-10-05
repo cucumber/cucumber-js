@@ -6,7 +6,7 @@ describe("Cucumber.Runtime.FailedStepResult", function () {
 
   beforeEach(function () {
     stepResult       = createSpy("base step result");
-    spyOn(Cucumber.Runtime, 'StepResult').andReturn(stepResult);
+    spyOn(Cucumber.Runtime, 'StepResult').and.returnValue(stepResult);
     step             = createSpy("step");
     failureException = createSpy("failure exception");
     payload          = { step: step, failureException: failureException };

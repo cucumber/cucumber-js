@@ -124,7 +124,7 @@ describe("Cucumber.Api.Scenario", function () {
         var dataListener, endListener;
 
         beforeEach(function () {
-          spyOnStub(stream, "on").andCallFake(function (event, listener) {
+          spyOnStub(stream, "on").and.callFake(function (event, listener) {
             if (event === "data") {
               dataListener = listener;
             }
@@ -145,11 +145,11 @@ describe("Cucumber.Api.Scenario", function () {
         });
 
         it("listens for the data event on the stream", function () {
-          expect(dataListener).toBeAFunction ();
+          expect(dataListener).toBeAFunction();
         });
 
         it("listens for the end event on the stream", function () {
-          expect(endListener).toBeAFunction ();
+          expect(endListener).toBeAFunction();
         });
 
         describe("when the stream finishes providing data", function () {

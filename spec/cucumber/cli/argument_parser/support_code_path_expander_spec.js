@@ -11,7 +11,7 @@ describe("Cucumber.Cli.ArgumentParser.SupportCodePathExpander", function () {
     beforeEach(function () {
       paths         = createSpy("unexpanded paths");
       expandedPaths = createSpy("expanded paths");
-      spyOn(PathExpander, 'expandPathsWithRegexp').andReturn(expandedPaths);
+      spyOn(PathExpander, 'expandPathsWithRegexp').and.returnValue(expandedPaths);
     });
 
     it("asks the path expander to expand the paths with the glob matching the extensions", function () {
