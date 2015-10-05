@@ -35,7 +35,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function () {
 
       beforeEach(function () {
         preEvent = createSpy("Pre-event (before)");
-        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(preEvent);
+        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').and.returnValue(preEvent);
       });
 
       it("creates a new event with the before prefix prepended to the event name and the same payload", function () {
@@ -54,7 +54,7 @@ describe("Cucumber.Runtime.AstTreeWalker.Event", function () {
 
       beforeEach(function () {
         postEvent = createSpy("Post-event (after)");
-        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').andReturn(postEvent);
+        spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').and.returnValue(postEvent);
       });
 
       it("creates a new event with the after prefix prepended to the event name and the same payload", function () {

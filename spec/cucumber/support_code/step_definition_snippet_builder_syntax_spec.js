@@ -106,7 +106,7 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () 
     describe('getStepDefinitionEnd()', function () {
       var str = ") {\n  // line1\n  // line2\n// });\n";
       it('returns the function body', function () {
-        spyOn(syntax, 'getStepDefinitionComments').andReturn(['line1', 'line2']);
+        spyOn(syntax, 'getStepDefinitionComments').and.returnValue(['line1', 'line2']);
         expect(syntax.getStepDefinitionEnd()).toBe(str);
       });
     });
@@ -138,7 +138,7 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () 
     describe('getStepDefinitionEnd()', function () {
       var str = ") ->\n  # line1\n  # line2\n";
       it('returns the function body', function () {
-        spyOn(syntax, 'getStepDefinitionComments').andReturn(['line1', 'line2']);
+        spyOn(syntax, 'getStepDefinitionComments').and.returnValue(['line1', 'line2']);
         expect(syntax.getStepDefinitionEnd()).toBe(str);
       });
     });

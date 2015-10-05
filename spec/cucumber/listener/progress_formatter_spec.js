@@ -9,8 +9,8 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
     formatter           = createSpyWithStubs("formatter", {log: null});
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summaryFormatter");
-    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
-    spyOn(Cucumber.Listener, 'SummaryFormatter').andReturn(summaryFormatter);
+    spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
+    spyOn(Cucumber.Listener, 'SummaryFormatter').and.returnValue(summaryFormatter);
     progressFormatter = Cucumber.Listener.ProgressFormatter(options);
   });
 
@@ -24,7 +24,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
     });
 
     it("creates a summary formatter", function () {
-      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith({logToConsole: false});
+      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(jasmine.objectContaining({logToConsole: false}));
     });
   });
 
@@ -49,7 +49,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
       beforeEach(function () {
         progressFormatter.hear(event, callback);
-        summaryFormatterCallback = summaryFormatter.hear.mostRecentCall.args[1];
+        summaryFormatterCallback = summaryFormatter.hear.calls.mostRecent().args[1];
       });
 
       it("tells the formatter to listen to the event", function () {
@@ -87,7 +87,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
     describe("when the step passed", function () {
       beforeEach(function () {
-        stepResult.isSuccessful.andReturn(true);
+        stepResult.isSuccessful.and.returnValue(true);
         spyOn(progressFormatter, 'handleSuccessfulStepResult');
       });
 
@@ -99,7 +99,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
     describe("when the step did not pass", function () {
       beforeEach(function () {
-        stepResult.isSuccessful.andReturn(false);
+        stepResult.isSuccessful.and.returnValue(false);
         spyOn(progressFormatter, 'handleSuccessfulStepResult');
       });
 
@@ -115,7 +115,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
       describe("when the step was pending", function () {
         beforeEach(function () {
-          stepResult.isPending.andReturn(true);
+          stepResult.isPending.and.returnValue(true);
           spyOn(progressFormatter, 'handlePendingStepResult');
         });
 
@@ -127,7 +127,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
       describe("when the step was not pending", function () {
         beforeEach(function () {
-          stepResult.isPending.andReturn(false);
+          stepResult.isPending.and.returnValue(false);
           spyOn(progressFormatter, 'handlePendingStepResult');
         });
 
@@ -143,7 +143,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
         describe("when the step was skipped", function () {
           beforeEach(function () {
-            stepResult.isSkipped.andReturn(true);
+            stepResult.isSkipped.and.returnValue(true);
             spyOn(progressFormatter, 'handleSkippedStepResult');
           });
 
@@ -155,7 +155,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
         describe("when the step was not skipped", function () {
           beforeEach(function () {
-            stepResult.isSkipped.andReturn(false);
+            stepResult.isSkipped.and.returnValue(false);
             spyOn(progressFormatter, 'handleSkippedStepResult');
           });
 
@@ -171,7 +171,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
           describe("when the step was undefined", function () {
             beforeEach(function () {
-              stepResult.isUndefined.andReturn(true);
+              stepResult.isUndefined.and.returnValue(true);
               spyOn(progressFormatter, 'handleUndefinedStepResult');
             });
 
@@ -183,7 +183,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
           describe("when the step was not undefined", function () {
             beforeEach(function () {
-              stepResult.isUndefined.andReturn(false);
+              stepResult.isUndefined.and.returnValue(false);
               spyOn(progressFormatter, 'handleUndefinedStepResult');
             });
 
@@ -261,7 +261,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
       event       = createSpy("event");
       callback    = createSpy("callback");
       summaryLogs = createSpy("summary logs");
-      spyOnStub(summaryFormatter, 'getLogs').andReturn(summaryLogs);
+      spyOnStub(summaryFormatter, 'getLogs').and.returnValue(summaryLogs);
     });
 
     it("gets the summary", function () {
