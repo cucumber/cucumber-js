@@ -10,9 +10,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
     failedStepResults    = createSpy("failed steps");
-    spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
-    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
-    spyOn(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
+    spyOn(Cucumber.Type, 'Collection').and.returnValue(failedStepResults);
+    spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
+    spyOn(Cucumber.Listener, 'StatsJournal').and.returnValue(statsJournal);
     summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
   });
 
@@ -55,7 +55,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         summaryFormatter.hear(event, callback);
-        statsJournalCallback = statsJournal.hear.mostRecentCall.args[1];
+        statsJournalCallback = statsJournal.hear.calls.mostRecent().args[1];
       });
 
       it("tells the formatter to listen to the event", function () {
@@ -90,7 +90,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when the step was undefined", function () {
       beforeEach(function () {
-        stepResult.isUndefined.andReturn(true);
+        stepResult.isUndefined.and.returnValue(true);
         spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
@@ -102,7 +102,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when the step was not undefined", function () {
       beforeEach(function () {
-        stepResult.isUndefined.andReturn(false);
+        stepResult.isUndefined.and.returnValue(false);
         spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
@@ -118,7 +118,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when the step failed", function () {
         beforeEach(function () {
-          stepResult.isFailed.andReturn(true);
+          stepResult.isFailed.and.returnValue(true);
         });
 
         it("handles the failed step result", function () {
@@ -129,7 +129,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when the step did not fail", function () {
         beforeEach(function () {
-          stepResult.isFailed.andReturn(false);
+          stepResult.isFailed.and.returnValue(false);
         });
 
         it("handles the failed step result", function () {
@@ -198,9 +198,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         scenario = createSpy("scenario");
-        statsJournal.isCurrentScenarioFailing.andReturn(true);
+        statsJournal.isCurrentScenarioFailing.and.returnValue(true);
         spyOn(summaryFormatter, 'storeFailedScenario');
-        spyOnStub(event, 'getPayloadItem').andReturn(scenario);
+        spyOnStub(event, 'getPayloadItem').and.returnValue(scenario);
       });
 
       it("gets the scenario from the payload", function () {
@@ -216,7 +216,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when the current scenario did not fail", function () {
       beforeEach(function () {
-        statsJournal.isCurrentScenarioFailing.andReturn(false);
+        statsJournal.isCurrentScenarioFailing.and.returnValue(false);
         spyOn(summaryFormatter, 'storeFailedScenario');
         spyOnStub(event, 'getPayloadItem');
       });
@@ -318,9 +318,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       step           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
-      spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
+      spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
       spyOn(summaryFormatter, 'appendStringToUndefinedStepLogBuffer');
-      spyOn(summaryFormatter, 'getStepDefinitionSyntax').andReturn(snippetBuilderSyntax);
+      spyOn(summaryFormatter, 'getStepDefinitionSyntax').and.returnValue(snippetBuilderSyntax);
     });
 
     it("creates a new step definition snippet builder", function () {
@@ -394,7 +394,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are failed steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.andReturn(true);
+        statsJournal.witnessedAnyFailedStep.and.returnValue(true);
       });
 
       it("logs the failed steps", function () {
@@ -405,7 +405,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are no failed steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.andReturn(false);
+        statsJournal.witnessedAnyFailedStep.and.returnValue(false);
       });
 
       it("does not log failed steps", function () {
@@ -431,7 +431,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are undefined steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.andReturn(true);
+        statsJournal.witnessedAnyUndefinedStep.and.returnValue(true);
       });
 
       it("logs the undefined step snippets", function () {
@@ -442,7 +442,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are no undefined steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.andReturn(false);
+        statsJournal.witnessedAnyUndefinedStep.and.returnValue(false);
       });
 
       it("does not log the undefined step snippets", function () {
@@ -458,7 +458,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       failedScenarioLogBuffer = createSpy("failed scenario log buffer");
       spyOnStub(failedStepResults, 'forEach');
-      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
+      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').and.returnValue(failedScenarioLogBuffer);
     });
 
     it("logs a failed steps header", function () {
@@ -477,7 +477,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         summaryFormatter.logFailedStepResults();
-        userFunction     = failedStepResults.forEach.mostRecentCall.args[0];
+        userFunction     = failedStepResults.forEach.calls.mostRecent().args[0];
         failedStepResult = createSpy("failed step result");
         spyOn(summaryFormatter, 'logFailedStepResult');
       });
@@ -682,7 +682,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       // Undefined Step Log buffer is string
       undefinedStepLogBuffer = 'undefinedStepsLogBuffer';
-      spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
+      spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').and.returnValue(undefinedStepLogBuffer);
       // switch snippet output on
       options.snippets = true;
     });

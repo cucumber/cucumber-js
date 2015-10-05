@@ -10,7 +10,7 @@ describe("Cucumber.VolatileConfiguration", function () {
 
   beforeEach(function () {
     supportCodeLibrary       = createSpy("support code library");
-    spyOn(Cucumber.SupportCode, 'Library').andReturn(supportCodeLibrary);
+    spyOn(Cucumber.SupportCode, 'Library').and.returnValue(supportCodeLibrary);
     featureSources            = createSpy("feature source");
     supportCodeInitializer   = createSpy("support code initializer");
     configuration            = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer);
@@ -51,8 +51,8 @@ describe("Cucumber.VolatileConfiguration", function () {
     beforeEach(function () {
       astFilter      = createSpyWithStubs("AST filter");
       tagFilterRules = createSpy("tag specs");
-      spyOn(Cucumber.Ast, 'Filter').andReturn(astFilter);
-      spyOn(configuration, 'getTagAstFilterRules').andReturn(tagFilterRules);
+      spyOn(Cucumber.Ast, 'Filter').and.returnValue(astFilter);
+      spyOn(configuration, 'getTagAstFilterRules').and.returnValue(tagFilterRules);
     });
 
     it("gets the tag filter rules", function () {
@@ -104,7 +104,7 @@ describe("Cucumber.VolatileConfiguration", function () {
         tagGroupStrings = [createSpy("tag group string 1"), createSpy("tag group string 2"), createSpy("tag group string 3")];
         rules           = [createSpy("rule 1"), createSpy("rule 2"), createSpy("rule 3")];
         configuration   = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {tags: tagGroupStrings});
-        spyOn(configuration, 'buildAstFilterRuleFromTagGroupString').andReturnSeveral(rules);
+        spyOn(configuration, 'buildAstFilterRuleFromTagGroupString').and.returnValues.apply(null, rules);
       });
 
       it("builds the filter rule based on the tags", function () {
@@ -128,8 +128,8 @@ describe("Cucumber.VolatileConfiguration", function () {
       tagGroup       = createSpy("tag group");
       tagGroupParser = createSpyWithStubs("tag group parser", {parse: tagGroup});
       rule           = createSpy("rule");
-      spyOn(Cucumber, 'TagGroupParser').andReturn(tagGroupParser);
-      spyOn(Cucumber.Ast.Filter, 'AnyOfTagsRule').andReturn(rule);
+      spyOn(Cucumber, 'TagGroupParser').and.returnValue(tagGroupParser);
+      spyOn(Cucumber.Ast.Filter, 'AnyOfTagsRule').and.returnValue(rule);
     });
 
     it("instantiates a tag group parser", function () {

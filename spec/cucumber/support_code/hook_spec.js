@@ -8,7 +8,7 @@ describe("Cucumber.SupportCode.Hook", function () {
     code           = createSpy("hook code");
     options        = {};
     stepDefinition = createSpy("step definition");
-    spyOn(Cucumber.SupportCode, 'StepDefinition').andReturn(stepDefinition);
+    spyOn(Cucumber.SupportCode, 'StepDefinition').and.returnValue(stepDefinition);
     hook           = Cucumber.SupportCode.Hook(code, options);
   });
 
@@ -79,7 +79,7 @@ describe("Cucumber.SupportCode.Hook", function () {
       scenarioEnrolled = createSpy("scenario enrolled?");
       astFilter        = createSpyWithStubs("AST filter", { isElementEnrolled: scenarioEnrolled });
       scenario         = createSpy("scenario");
-      spyOn(hook, 'getAstFilter').andReturn(astFilter);
+      spyOn(hook, 'getAstFilter').and.returnValue(astFilter);
     });
 
     it("gets the AST filter", function () {
@@ -108,9 +108,9 @@ describe("Cucumber.SupportCode.Hook", function () {
       hook      = Cucumber.SupportCode.Hook(code, options);
       rules     = [createSpy("rule 1"), createSpy("rule 2")];
       astFilter = createSpy("AST filter");
-      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').andReturn(tagGroups);
-      spyOn(Cucumber.Ast, 'Filter').andReturn(astFilter);
-      spyOnStub(Cucumber.Ast.Filter, 'AnyOfTagsRule').andReturnSeveral(rules);
+      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').and.returnValue(tagGroups);
+      spyOn(Cucumber.Ast, 'Filter').and.returnValue(astFilter);
+      spyOnStub(Cucumber.Ast.Filter, 'AnyOfTagsRule').and.returnValues.apply(null, rules);
 
     });
 
