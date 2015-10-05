@@ -20,7 +20,7 @@ describe("Cucumber.Cli.FeatureSourceLoader", function () {
       featureSources      = [createSpy("feature source 1"), createSpy("feature source 2")];
       namedFeatureSources = [[featureFilePaths[0], featureSources[0]],
                              [featureFilePaths[1], featureSources[1]]];
-      spyOn(fs, 'readFileSync').andReturnSeveral(featureSources);
+      spyOn(fs, 'readFileSync').and.returnValues.apply(null, featureSources);
     });
 
     it("gets the source from each feature file", function () {

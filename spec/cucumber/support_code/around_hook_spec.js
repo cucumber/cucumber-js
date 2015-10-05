@@ -8,7 +8,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
     code       = createSpy("hook code");
     options    = {};
     hook       = createSpy("hook");
-    hookSpy    = spyOn(Cucumber.SupportCode, 'Hook').andReturn(hook);
+    hookSpy    = spyOn(Cucumber.SupportCode, 'Hook').and.returnValue(hook);
     aroundHook = Cucumber.SupportCode.AroundHook(code, options);
   });
 
@@ -27,7 +27,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
       error        = createSpy("error");
       postScenarioCallback = createSpy("post scenario callback");
       afterHook    = createSpy("after hook");
-      hookSpy.andReturn(afterHook);
+      hookSpy.and.returnValue(afterHook);
 
       codeCallback = aroundHook.buildCodeCallback(callback);
     });

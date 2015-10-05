@@ -16,7 +16,7 @@ describe("Cucumber.Cli", function () {
     beforeEach(function () {
       configuration = createSpyWithStubs("CLI configuration", {isVersionRequested: false, isHelpRequested: false});
       callback      = createSpy("callback");
-      spyOn(Cucumber.Cli, 'Configuration').andReturn(configuration);
+      spyOn(Cucumber.Cli, 'Configuration').and.returnValue(configuration);
       spyOn(cli, 'displayHelp');
       spyOn(cli, 'displayVersion');
       spyOn(cli, 'runSuiteWithConfiguration');
@@ -34,7 +34,7 @@ describe("Cucumber.Cli", function () {
 
     describe("when the help is requested", function () {
       beforeEach(function () {
-        configuration.isHelpRequested.andReturn(true);
+        configuration.isHelpRequested.and.returnValue(true);
       });
 
       it("displays the help", function () {
@@ -55,7 +55,7 @@ describe("Cucumber.Cli", function () {
 
     describe("when the help is not requested", function () {
       beforeEach(function () {
-        configuration.isHelpRequested.andReturn(false);
+        configuration.isHelpRequested.and.returnValue(false);
       });
 
       it("checks whether the version is requested or not", function () {
@@ -65,7 +65,7 @@ describe("Cucumber.Cli", function () {
 
       describe("when the version is requested", function () {
         beforeEach(function () {
-          configuration.isVersionRequested.andReturn(true);
+          configuration.isVersionRequested.and.returnValue(true);
         });
 
         it("displays the version", function () {
@@ -86,7 +86,7 @@ describe("Cucumber.Cli", function () {
 
       describe("when the version is not requested", function () {
         beforeEach(function () {
-          configuration.isVersionRequested.andReturn(false);
+          configuration.isVersionRequested.and.returnValue(false);
         });
 
         it("runs the suite", function () {
@@ -116,7 +116,7 @@ describe("Cucumber.Cli", function () {
       configuration = createSpyWithStubs("CLI configuration", {getFormatter: formatter});
       runtime       = createSpyWithStubs("runtime", {start: null, attachListener: null});
       callback      = createSpy("callback");
-      spyOn(Cucumber, 'Runtime').andReturn(runtime);
+      spyOn(Cucumber, 'Runtime').and.returnValue(runtime);
     });
 
     it("creates a Cucumber runtime with the CLI configuration", function () {

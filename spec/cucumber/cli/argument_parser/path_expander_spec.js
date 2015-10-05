@@ -14,8 +14,8 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
       expandedPaths   = [createSpy("expanded path 1-1"), createSpy("expanded path 1-2"), createSpy("expanded path 2-1")];
       expandPathResults = [[expandedPaths[0], expandedPaths[1]], [expandedPaths[2]]];
       expandedPathsWithoutDups = createSpy("expanded paths without duplicates");
-      spyOn(PathExpander, 'expandPathWithRegexp').andReturnSeveral(expandPathResults);
-      spyOn(_, 'uniq').andReturn(expandedPathsWithoutDups);
+      spyOn(PathExpander, 'expandPathWithRegexp').and.returnValues.apply(null, expandPathResults);
+      spyOn(_, 'uniq').and.returnValue(expandedPathsWithoutDups);
     });
 
     it("expands each path", function () {
@@ -43,11 +43,11 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
       path       = "relative/path:1";
       regexp     = createSpy("regexp");
       stats      = createSpyWithStubs("path stats", {isDirectory: null});
-      spyOn(fs, 'statSync').andReturn(stats);
+      spyOn(fs, 'statSync').and.returnValue(stats);
       realPath   = "/real/path";
-      spyOn(fs, 'realpathSync').andReturn(realPath);
+      spyOn(fs, 'realpathSync').and.returnValue(realPath);
       pathsFromExpandedDirectory = createSpy("paths from expanded directory");
-      spyOn(PathExpander, 'expandDirectoryWithRegexp').andReturn(pathsFromExpandedDirectory);
+      spyOn(PathExpander, 'expandDirectoryWithRegexp').and.returnValue(pathsFromExpandedDirectory);
     });
 
     it("synchronously gets the absolute representation of the path after stripping line numbers", function () {
@@ -67,7 +67,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
 
     describe("when the path points to a directory", function () {
       beforeEach(function () {
-        stats.isDirectory.andReturn(true);
+        stats.isDirectory.and.returnValue(true);
       });
 
       it("expands the directory", function () {
@@ -82,7 +82,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
 
     describe("when the path does not point to a directory", function () {
       beforeEach(function () {
-        stats.isDirectory.andReturn(false);
+        stats.isDirectory.and.returnValue(false);
       });
 
       it("returns an array with the absolute path as its only item", function () {
@@ -99,7 +99,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
       directory  = createSpy("directory");
       regexp     = createSpyWithStubs("regexp", {test: null});
       innerPaths = [createSpy("inner path 1"), createSpy("inner path 2"), createSpy("inner path 3")];
-      spyOn(walkdir, 'sync').andReturn(innerPaths);
+      spyOn(walkdir, 'sync').and.returnValue(innerPaths);
     });
 
     it("recursively finds the directory inner paths", function () {
@@ -115,7 +115,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
     });
 
     it("returns the paths that matched", function () {
-      regexp.test.andReturnSeveral([true, false, true]);
+      regexp.test.and.returnValues.apply(null, [true, false, true]);
       var paths = PathExpander.expandDirectoryWithRegexp(directory, regexp);
       expect(paths).toEqual([innerPaths[0], innerPaths[2]]);
     });

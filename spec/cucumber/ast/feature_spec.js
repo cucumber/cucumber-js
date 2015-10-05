@@ -13,10 +13,10 @@ describe("Cucumber.Ast.Feature", function () {
     spyOnStub(scenarioCollection, 'insert');
     spyOnStub(scenarioCollection, 'removeAtIndex');
     spyOnStub(scenarioCollection, 'indexOf');
-    spyOnStub(scenarioCollection, 'getLast').andReturn(lastScenario);
+    spyOnStub(scenarioCollection, 'getLast').and.returnValue(lastScenario);
     spyOnStub(scenarioCollection, 'forEach');
     spyOnStub(scenarioCollection, 'asyncForEach');
-    spyOn(Cucumber.Type, 'Collection').andReturn(scenarioCollection);
+    spyOn(Cucumber.Type, 'Collection').and.returnValue(scenarioCollection);
     keyword     = createSpy("keyword");
     name        = createSpy("name");
     description = createSpy("description");
@@ -100,7 +100,7 @@ describe("Cucumber.Ast.Feature", function () {
     beforeEach(function () {
       scenario   = createSpyWithStubs("scenario AST element", {setBackground: null});
       background = createSpy("scenario background");
-      spyOn(feature, 'getBackground').andReturn(background);
+      spyOn(feature, 'getBackground').and.returnValue(background);
     });
 
     it("sets the background on the scenario", function () {
@@ -121,7 +121,7 @@ describe("Cucumber.Ast.Feature", function () {
       index      = createSpy("index");
       scenario   = createSpyWithStubs("scenario AST element", {setBackground: null});
       background = createSpy("scenario background");
-      spyOn(feature, 'getBackground').andReturn(background);
+      spyOn(feature, 'getBackground').and.returnValue(background);
     });
 
     it("sets the background on the scenario", function () {
@@ -147,14 +147,14 @@ describe("Cucumber.Ast.Feature", function () {
 
       beforeEach(function () {
         feature.convertScenarioOutlinesToScenarios();
-        userFunction   = scenarioCollection.forEach.mostRecentCall.args[0];
+        userFunction   = scenarioCollection.forEach.calls.mostRecent().args[0];
         featureElement = createSpyWithStubs("feature element", {isScenarioOutline: null});
         spyOn(feature, 'convertScenarioOutlineToScenarios');
       });
 
       describe("when the feature element is a scenario outline", function () {
         beforeEach(function () {
-          featureElement.isScenarioOutline.andReturn(true);
+          featureElement.isScenarioOutline.and.returnValue(true);
           userFunction (featureElement);
         });
 
@@ -165,7 +165,7 @@ describe("Cucumber.Ast.Feature", function () {
 
       describe("when the feature element is not a scenario outline", function () {
         beforeEach(function () {
-          featureElement.isScenarioOutline.andReturn(false);
+          featureElement.isScenarioOutline.and.returnValue(false);
           userFunction (featureElement);
         });
 
@@ -184,7 +184,7 @@ describe("Cucumber.Ast.Feature", function () {
       scenarioOutlineTags  = createSpy("tags");
       scenarioOutline      = createSpyWithStubs("scenario outline", {buildScenarios: scenarios, getTags: scenarioOutlineTags});
       scenarioOutlineIndex = 1;
-      scenarioCollection.indexOf.andReturn(scenarioOutlineIndex);
+      scenarioCollection.indexOf.and.returnValue(scenarioOutlineIndex);
       feature.convertScenarioOutlineToScenarios(scenarioOutline);
     });
 
@@ -201,7 +201,7 @@ describe("Cucumber.Ast.Feature", function () {
     });
 
     it("gets the tags from the scenario outline just once", function () {
-      expect(scenarioOutline.getTags).toHaveBeenCalledNTimes(1);
+      expect(scenarioOutline.getTags).toHaveBeenCalledTimes(1);
     });
 
     it ("iterates over the scenarios", function () {
@@ -213,7 +213,7 @@ describe("Cucumber.Ast.Feature", function () {
       var userFunction, scenario, index;
 
       beforeEach(function () {
-        userFunction   = scenarios.forEach.mostRecentCall.args[0];
+        userFunction   = scenarios.forEach.calls.mostRecent().args[0];
         scenario       = createSpyWithStubs("scenario", {addTags: null});
         index          = 2;
         spyOn(feature, 'insertFeatureElement');
@@ -258,17 +258,17 @@ describe("Cucumber.Ast.Feature", function () {
     });
 
     it("is falsy when there are 0 scenarios", function () {
-      scenarioCollection.length.andReturn(0);
+      scenarioCollection.length.and.returnValue(0);
       expect(feature.hasFeatureElements()).toBeFalsy();
     });
 
     it("is truthy when there is 1 scenario", function () {
-      scenarioCollection.length.andReturn(1);
+      scenarioCollection.length.and.returnValue(1);
       expect(feature.hasFeatureElements()).toBeTruthy();
     });
 
     it("is truthy when there are more than 1 scenarios", function () {
-      scenarioCollection.length.andReturn(2);
+      scenarioCollection.length.and.returnValue(2);
       expect(feature.hasFeatureElements()).toBeTruthy();
     });
   });
@@ -309,7 +309,7 @@ describe("Cucumber.Ast.Feature", function () {
 
       beforeEach(function () {
         feature.acceptVisitor(visitor, callback);
-        featureStepsVisitCallback = feature.instructVisitorToVisitBackground.mostRecentCall.args[1];
+        featureStepsVisitCallback = feature.instructVisitorToVisitBackground.calls.mostRecent().args[1];
       });
 
       it("instructs the visitor to visit the feature steps", function () {
@@ -338,8 +338,8 @@ describe("Cucumber.Ast.Feature", function () {
 
       beforeEach(function () {
         background = createSpy("background");
-        feature.hasBackground.andReturn(true);
-        spyOn(feature, 'getBackground').andReturn(background);
+        feature.hasBackground.and.returnValue(true);
+        spyOn(feature, 'getBackground').and.returnValue(background);
       });
 
       it("gets the background", function () {
@@ -360,7 +360,7 @@ describe("Cucumber.Ast.Feature", function () {
 
     describe("when there is no background", function () {
       beforeEach(function () {
-        feature.hasBackground.andReturn(false);
+        feature.hasBackground.and.returnValue(false);
       });
 
       it("calls back", function () {
@@ -390,7 +390,7 @@ describe("Cucumber.Ast.Feature", function () {
 
       beforeEach(function () {
         feature.instructVisitorToVisitScenarios(visitor, callback);
-        userFunction    = scenarioCollection.asyncForEach.mostRecentCall.args[0];
+        userFunction    = scenarioCollection.asyncForEach.calls.mostRecent().args[0];
         scenario        = createSpy("A scenario from the collection");
         asyncForEachCallback = createSpy("asyncForEachCallback() callback");
       });

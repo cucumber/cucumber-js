@@ -20,8 +20,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       expandedArgs = createSpy("expanded arguments");
       options = createSpy("options");
-      spyOn(argumentParser, 'getExpandedArgs').andReturn(expandedArgs);
-      spyOn(argumentParser, 'argsToOptions').andReturn(options);
+      spyOn(argumentParser, 'getExpandedArgs').and.returnValue(expandedArgs);
+      spyOn(argumentParser, 'argsToOptions').and.returnValue(options);
       spyOn(argumentParser, 'storeOptions');
     });
 
@@ -55,9 +55,9 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       shortenedOptionDefinitions = createSpy("shortened option definitions");
       args                       = createSpy("arguments");
       options                    = createSpy("parsed options");
-      nopt.andReturn(options);
-      spyOn(argumentParser, 'getKnownOptionDefinitions').andReturn(knownOptionDefinitions);
-      spyOn(argumentParser, 'getShortenedOptionDefinitions').andReturn(shortenedOptionDefinitions);
+      nopt.and.returnValue(options);
+      spyOn(argumentParser, 'getKnownOptionDefinitions').and.returnValue(knownOptionDefinitions);
+      spyOn(argumentParser, 'getShortenedOptionDefinitions').and.returnValue(shortenedOptionDefinitions);
     });
 
     it("gets the known option definitions", function () {
@@ -89,12 +89,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     describe("no profile specified", function () {
       beforeEach(function () {
-        spyOn(argumentParser, 'argsToOptions').andReturn({});
+        spyOn(argumentParser, 'argsToOptions').and.returnValue({});
       });
 
       describe("without default profile", function () {
         beforeEach(function () {
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn({});
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue({});
         });
 
         it("returns the unexpanded args", function () {
@@ -107,7 +107,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
           profileDefinitions = {
             'default': 'default args'
           };
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue(profileDefinitions);
         });
 
         it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
@@ -120,12 +120,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       beforeEach(function () {
         options = {};
         options[Cucumber.Cli.ArgumentParser.PROFILE_OPTION_NAME] = ['profileName'];
-        spyOn(argumentParser, 'argsToOptions').andReturn(options);
+        spyOn(argumentParser, 'argsToOptions').and.returnValue(options);
       });
 
       describe("profile is not defined", function () {
         beforeEach(function () {
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn({});
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue({});
         });
 
         it("throws an error", function () {
@@ -140,7 +140,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
           profileDefinitions = {
             'profileName': 'profile args'
           };
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue(profileDefinitions);
         });
 
         it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
@@ -157,8 +157,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
           'profileA': 'profileA args',
           'profileB': 'profileB args'
         };
-        spyOn(argumentParser, 'argsToOptions').andReturn(options);
-        spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+        spyOn(argumentParser, 'argsToOptions').and.returnValue(options);
+        spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue(profileDefinitions);
       });
 
       it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
@@ -292,8 +292,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       unexpandedFeaturePaths = createSpy("unexpanded feature paths");
       expandedFeaturePaths   = createSpy("expanded feature paths");
-      spyOn(argumentParser, 'getUnexpandedFeaturePaths').andReturn(unexpandedFeaturePaths);
-      spyOn(Cucumber.Cli.ArgumentParser.FeaturePathExpander, 'expandPaths').andReturn(expandedFeaturePaths);
+      spyOn(argumentParser, 'getUnexpandedFeaturePaths').and.returnValue(unexpandedFeaturePaths);
+      spyOn(Cucumber.Cli.ArgumentParser.FeaturePathExpander, 'expandPaths').and.returnValue(expandedFeaturePaths);
     });
 
     it("gets the unexpanded feature file paths", function () {
@@ -321,7 +321,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
                                                   {replace: featureDirectoryPaths[0]}),
                                createSpyWithStubs("second feature path",
                                                   {replace: featureDirectoryPaths[1]})];
-      spyOn(argumentParser, 'getFeatureFilePaths').andReturn(featureFilePaths);
+      spyOn(argumentParser, 'getFeatureFilePaths').and.returnValue(featureFilePaths);
     });
 
     it("gets the feature file paths", function () {
@@ -346,7 +346,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       options   = { argv: { remain: [] } };
-      spyOn(argumentParser, 'getOptions').andReturn(options);
+      spyOn(argumentParser, 'getOptions').and.returnValue(options);
     });
 
     it("gets the options", function () {
@@ -359,7 +359,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
         remaining = [createSpy("remaining command-line argument")];
         remaining.length = 1;
         options   = { argv: { remain: remaining } };
-        argumentParser.getOptions.andReturn(options);
+        argumentParser.getOptions.and.returnValue(options);
       });
 
       it("returns the remaining command-line arguments", function () {
@@ -370,7 +370,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     describe("when there are no remaining command-line arguments", function () {
       beforeEach(function () {
         options   = { argv: { remain: [] } };
-        argumentParser.getOptions.andReturn(options);
+        argumentParser.getOptions.and.returnValue(options);
       });
 
       it("returns the default 'features' sub-directory path", function () {
@@ -386,9 +386,9 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       unexpandedSupportCodeFilePaths = createSpy("unexpanded support code file paths");
       compilerExtensions             = createSpy("compiler extensions");
       expandedSupportCodePaths       = createSpy("expanded support code file paths");
-      spyOn(argumentParser, 'getUnexpandedSupportCodeFilePaths').andReturn(unexpandedSupportCodeFilePaths);
-      spyOn(argumentParser, 'getCompilerExtensions').andReturn(compilerExtensions);
-      spyOn(Cucumber.Cli.ArgumentParser.SupportCodePathExpander, 'expandPaths').andReturn(expandedSupportCodePaths);
+      spyOn(argumentParser, 'getUnexpandedSupportCodeFilePaths').and.returnValue(unexpandedSupportCodeFilePaths);
+      spyOn(argumentParser, 'getCompilerExtensions').and.returnValue(compilerExtensions);
+      spyOn(Cucumber.Cli.ArgumentParser.SupportCodePathExpander, 'expandPaths').and.returnValue(expandedSupportCodePaths);
     });
 
     it("gets the unexpanded support code file paths", function () {
@@ -412,8 +412,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       featureDirectoryPaths          = createSpy("paths to directories in which features lie");
       unexpandedSupportCodeFilePaths = createSpy("unexpanded support code file paths");
-      spyOn(argumentParser, 'getFeatureDirectoryPaths').andReturn(featureDirectoryPaths);
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(unexpandedSupportCodeFilePaths);
+      spyOn(argumentParser, 'getFeatureDirectoryPaths').and.returnValue(featureDirectoryPaths);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(unexpandedSupportCodeFilePaths);
     });
 
     it("gets the directories in which the features lie", function () {
@@ -437,8 +437,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       tagOptionValues = createSpy("tag option values");
       tagGroups       = createSpy("tag groups");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(tagOptionValues);
-      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').andReturn(tagGroups);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(tagOptionValues);
+      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').and.returnValue(tagGroups);
     });
 
     it("gets the tag option values", function () {
@@ -461,7 +461,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       format = createSpy("format");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(format);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(format);
     });
 
     it("gets the format option value", function () {
@@ -479,7 +479,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       isStrictRequested = createSpy("is strict requested?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isStrictRequested);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(isStrictRequested);
     });
 
     it("gets the 'strict' flag with a default value", function () {
@@ -497,7 +497,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       isHelpRequested = createSpy("is help requested?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isHelpRequested);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(isHelpRequested);
     });
 
     it("gets the 'help' flag with a default value", function () {
@@ -515,7 +515,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       isVersionRequested = createSpy("is version requested?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isVersionRequested);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(isVersionRequested);
     });
 
     it("gets the 'version' flag with a default value", function () {
@@ -533,7 +533,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in coffee script?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeInCoffeeScript);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(shouldSnippetsBeInCoffeeScript);
     });
 
     it("gets the 'coffee' flag with a falsy default value", function () {
@@ -551,7 +551,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeShown);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(shouldSnippetsBeShown);
     });
 
     it("gets the 'snippets' flag with a truthy default value", function () {
@@ -575,12 +575,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
 
     it("returns true when the backtrace flag isn't set", function () {
-      argumentParser.getOptionOrDefault.andReturn(false);
+      argumentParser.getOptionOrDefault.and.returnValue(false);
       expect(argumentParser.shouldFilterStackTraces()).toBeTruthy();
     });
 
     it("returns false when the backtrace flag is set", function () {
-      argumentParser.getOptionOrDefault.andReturn(true);
+      argumentParser.getOptionOrDefault.and.returnValue(true);
       expect(argumentParser.shouldFilterStackTraces()).toBeFalsy();
     });
   });
@@ -604,7 +604,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       optionName   = "option-name";
       defaultValue = createSpy("default option value");
-      spyOn(argumentParser, 'getOptions').andReturn({});
+      spyOn(argumentParser, 'getOptions').and.returnValue({});
     });
 
     it("gets the options", function () {
@@ -619,7 +619,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
         options             = {};
         optionValue         = createSpy("option value");
         options[optionName] = optionValue;
-        argumentParser.getOptions.andReturn(options);
+        argumentParser.getOptions.and.returnValue(options);
       });
 
       it("returns the option value", function () {

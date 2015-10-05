@@ -13,8 +13,8 @@ describe("Cucumber.Ast.Scenario", function () {
     lastStep    = createSpy("last step");
     steps       = createSpy("step collection");
     spyOnStub(steps, 'add');
-    spyOnStub(steps, 'getLast').andReturn(lastStep);
-    spyOn(Cucumber.Type, 'Collection').andReturn(steps);
+    spyOnStub(steps, 'getLast').and.returnValue(lastStep);
+    spyOn(Cucumber.Type, 'Collection').and.returnValue(steps);
 
     scenario = Cucumber.Ast.Scenario(keyword, name, description, uri, line);
   });
@@ -75,7 +75,7 @@ describe("Cucumber.Ast.Scenario", function () {
     beforeEach(function () {
       step = createSpyWithStubs("step AST element", {setPreviousStep: null});
       lastStep = createSpy("last step");
-      spyOn(scenario, 'getLastStep').andReturn(lastStep);
+      spyOn(scenario, 'getLastStep').and.returnValue(lastStep);
     });
 
     it("gets the last step", function () {
@@ -141,7 +141,7 @@ describe("Cucumber.Ast.Scenario", function () {
 
       beforeEach(function () {
         scenario.acceptVisitor(visitor, callback);
-        backgroundStepsVisitCallback = scenario.instructVisitorToVisitBackgroundSteps.mostRecentCall.args[1];
+        backgroundStepsVisitCallback = scenario.instructVisitorToVisitBackgroundSteps.calls.mostRecent().args[1];
       });
 
       it("instructs the visitor to visit the scenario steps", function () {
@@ -171,7 +171,7 @@ describe("Cucumber.Ast.Scenario", function () {
       beforeEach(function () {
         backgroundSteps = createSpy("background steps");
         background      = createSpyWithStubs("background", {getSteps: backgroundSteps});
-        scenario.getBackground.andReturn(background);
+        scenario.getBackground.and.returnValue(background);
         spyOn(scenario, 'instructVisitorToVisitSteps');
       });
 
@@ -193,7 +193,7 @@ describe("Cucumber.Ast.Scenario", function () {
 
     describe("when there is no background", function () {
       beforeEach(function () {
-        scenario.getBackground.andReturn(undefined);
+        scenario.getBackground.and.returnValue(undefined);
       });
 
       it("calls back", function () {
@@ -240,7 +240,7 @@ describe("Cucumber.Ast.Scenario", function () {
 
       beforeEach(function () {
         scenario.instructVisitorToVisitSteps(visitor, steps, callback);
-        userFunction    = steps.asyncForEach.mostRecentCall.args[0];
+        userFunction    = steps.asyncForEach.calls.mostRecent().args[0];
         step            = createSpy("a step");
         asyncForEachCallback = createSpy("asyncForEach() callback");
       });

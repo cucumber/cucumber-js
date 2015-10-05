@@ -7,7 +7,7 @@ describe("Cucumber.Listener.Formatter", function () {
   beforeEach(function () {
     var Formatter = Cucumber.Listener.Formatter;
     listener = createSpy("listener");
-    spyOn(Cucumber, 'Listener').andReturn(listener);
+    spyOn(Cucumber, 'Listener').and.returnValue(listener);
     Cucumber.Listener.Formatter = Formatter;
     formatter = Cucumber.Listener.Formatter();
   });
