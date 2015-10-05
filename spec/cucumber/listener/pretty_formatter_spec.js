@@ -187,7 +187,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     beforeEach(function () {
       step       = createSpyWithStubs("step", { isHidden: null });
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
+      stepResult = createSpyWithStubs("step result", { getStep: step, getStatus: undefined });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       callback   = createSpy("callback");
       spyOnStub(prettyFormatter, 'logStepResult');
@@ -200,7 +200,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is not hidden", function () {
       it("calls logStepResult() as the step is not hidden", function () {
-        spyOnStub(step, 'isHidden').and.returnValue(false);
+        step.isHidden.and.returnValue(false);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -208,8 +208,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has not failed", function () {
       it("does not call logStepResult() to keep the step hidden", function () {
-        spyOnStub(step, 'isHidden').and.returnValue(true);
-        spyOnStub(stepResult, 'isFailed').and.returnValue(false);
+        step.isHidden.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.PASSED);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).not.toHaveBeenCalled();
       });
@@ -217,8 +217,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has failed", function () {
       it("calls logStepResult() to log the failure even though the step is supposed to be hidden", function () {
-        spyOnStub(step, 'isHidden').and.returnValue(true);
-        spyOnStub(stepResult, 'isFailed').and.returnValue(true);
+        step.isHidden.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -241,11 +241,12 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       maxStepLength = 30;
       line       = 10;
       step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name, hasUri: true, getUri: uri, getLine: line });
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
+      stepResult = createSpyWithStubs("step result", { getStep: step, getStatus: undefined });
       spyOn(prettyFormatter, 'logDataTable');
       spyOn(prettyFormatter, 'logDocString');
       spyOn(prettyFormatter, 'logIndented');
       spyOn(prettyFormatter, '_getCurrentMaxStepLength').and.returnValue(maxStepLength);
+      spyOnStub(prettyFormatter, "applyColor").and.callFake(function (stepResult, str) { return str; });
     });
 
     it("gets the step keyword", function () {
@@ -372,7 +373,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     it("checks whether the step result is failed or not", function () {
       prettyFormatter.logStepResult(step, stepResult);
-      expect(stepResult.isFailed).toHaveBeenCalled();
+      expect(stepResult.getStatus).toHaveBeenCalled();
     });
 
     describe("when the step failed", function () {
@@ -380,7 +381,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       beforeEach(function () {
         exception = createSpy("exception");
-        stepResult.isFailed.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
         spyOnStub(stepResult, 'getFailureException').and.returnValue(exception);
       });
 
@@ -448,9 +449,10 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
         ["cu",  "cuke", "cucumber"]
       ];
       step       = createSpy("step");
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
+      stepResult = createSpyWithStubs("step result", { getStep: step, getStatus: Cucumber.Status.PASSED });
       dataTable  = createSpyWithStubs("data table", {raw: rows});
       spyOn(prettyFormatter, "logIndented");
+      spyOnStub(prettyFormatter, "applyColor").and.callFake(function (stepResult, str) { return str; });
     });
 
     it("gets the rows from the table", function () {
@@ -472,9 +474,10 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     beforeEach(function () {
       contents   = "this is a multiline\ndoc string\n\n:-)";
       step       = createSpy("step");
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
+      stepResult = createSpyWithStubs("step result", { getStep: step, getStatus: Cucumber.Status.PASSED });
       docString  = createSpyWithStubs("doc string", {getContents: contents});
       spyOn(prettyFormatter, "logIndented");
+      spyOnStub(prettyFormatter, "applyColor").and.callFake(function (stepResult, str) { return str; });
     });
 
     it("gets the contents of the doc string", function () {

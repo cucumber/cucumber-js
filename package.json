@@ -95,6 +95,7 @@
     "walkdir": "0.0.10"
   },
   "devDependencies": {
+    "async": "^1.4.2",
     "browserify": "11.1.0",
     "coffee-script": "1.10.0",
     "connect": "3.4.0",
