@@ -6,7 +6,7 @@ describe("Cucumber.Runtime.UndefinedStepResult", function () {
 
   beforeEach(function () {
     undefinedStepResult = createSpy("base step result");
-    spyOn(Cucumber.Runtime, 'StepResult').andReturn(undefinedStepResult);
+    spyOn(Cucumber.Runtime, 'StepResult').and.returnValue(undefinedStepResult);
     step                = createSpy("step");
     payload             = {step: step};
     undefinedStepResult = Cucumber.Runtime.UndefinedStepResult(payload);
