@@ -211,7 +211,7 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 #### Hooks
 
 Hooks can be used to prepare and clean the environment before and after each scenario is executed.
-Hooks can be use callbacks, return promises, or be synchronous.
+Hooks can use callbacks, return promises, or be synchronous.
 The first argument to hooks is always the current scenario. See
 [Cucumber.Api.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/api/scenario.js)
 for more information.
