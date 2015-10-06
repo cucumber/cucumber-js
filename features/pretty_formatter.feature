@@ -131,7 +131,7 @@ Feature: Pretty Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run `cucumber.js -f pretty --no-source`
+    When I run cucumber.js with `-f pretty --no-source`
     Then it outputs this text:
       """
       Feature: some feature

@@ -1,3 +1,6 @@
+common = '--strict'
+
 module.exports = {
-  build: '--format progress --no-snippets'
+  build: common + ' -f progress',
+  'default': common
 };

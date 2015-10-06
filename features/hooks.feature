@@ -1,12 +1,5 @@
 Feature: Environment Hooks
 
-  # The following scenario is a regression test for special "around" hooks which
-  # deserve a bit more of attention.
-  Scenario: Tagged around hook with untagged scenario
-    Given an around hook tagged with "@foo"
-    When Cucumber executes a scenario with no tags
-    Then the hook is not fired
-
   Scenario: Hooks are steps
     Given a file named "features/a.feature" with:
       """
@@ -35,6 +28,13 @@ Feature: Environment Hooks
 
         this.Around(function(scenario, runScenario) {
           runScenario(null, function(callback) {
+            callback();
+          });
+        });
+
+        // This should not run
+        this.Around("@foo", function(runScenario) {
+          runScenario(function(callback) {
             callback();
           });
         });
