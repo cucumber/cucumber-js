@@ -10,9 +10,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
     failedStepResults    = createSpy("failed steps");
-    spyOn(Cucumber.Type, 'Collection').andReturn(failedStepResults);
-    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
-    spyOn(Cucumber.Listener, 'StatsJournal').andReturn(statsJournal);
+    spyOn(Cucumber.Type, 'Collection').and.returnValue(failedStepResults);
+    spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
+    spyOn(Cucumber.Listener, 'StatsJournal').and.returnValue(statsJournal);
     summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
   });
 
@@ -55,7 +55,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         summaryFormatter.hear(event, callback);
-        statsJournalCallback = statsJournal.hear.mostRecentCall.args[1];
+        statsJournalCallback = statsJournal.hear.calls.mostRecent().args[1];
       });
 
       it("tells the formatter to listen to the event", function () {
@@ -90,7 +90,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when the step was undefined", function () {
       beforeEach(function () {
-        stepResult.isUndefined.andReturn(true);
+        stepResult.isUndefined.and.returnValue(true);
         spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
@@ -102,7 +102,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when the step was not undefined", function () {
       beforeEach(function () {
-        stepResult.isUndefined.andReturn(false);
+        stepResult.isUndefined.and.returnValue(false);
         spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
@@ -118,7 +118,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when the step failed", function () {
         beforeEach(function () {
-          stepResult.isFailed.andReturn(true);
+          stepResult.isFailed.and.returnValue(true);
         });
 
         it("handles the failed step result", function () {
@@ -129,7 +129,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when the step did not fail", function () {
         beforeEach(function () {
-          stepResult.isFailed.andReturn(false);
+          stepResult.isFailed.and.returnValue(false);
         });
 
         it("handles the failed step result", function () {
@@ -198,9 +198,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         scenario = createSpy("scenario");
-        statsJournal.isCurrentScenarioFailing.andReturn(true);
+        statsJournal.isCurrentScenarioFailing.and.returnValue(true);
         spyOn(summaryFormatter, 'storeFailedScenario');
-        spyOnStub(event, 'getPayloadItem').andReturn(scenario);
+        spyOnStub(event, 'getPayloadItem').and.returnValue(scenario);
       });
 
       it("gets the scenario from the payload", function () {
@@ -216,7 +216,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when the current scenario did not fail", function () {
       beforeEach(function () {
-        statsJournal.isCurrentScenarioFailing.andReturn(false);
+        statsJournal.isCurrentScenarioFailing.and.returnValue(false);
         spyOn(summaryFormatter, 'storeFailedScenario');
         spyOnStub(event, 'getPayloadItem');
       });
@@ -318,9 +318,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       step           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
-      spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').andReturn(snippetBuilder);
+      spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
       spyOn(summaryFormatter, 'appendStringToUndefinedStepLogBuffer');
-      spyOn(summaryFormatter, 'getStepDefinitionSyntax').andReturn(snippetBuilderSyntax);
+      spyOn(summaryFormatter, 'getStepDefinitionSyntax').and.returnValue(snippetBuilderSyntax);
     });
 
     it("creates a new step definition snippet builder", function () {
@@ -395,7 +395,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are failed steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.andReturn(true);
+        statsJournal.witnessedAnyFailedStep.and.returnValue(true);
       });
 
       it("logs the failed steps", function () {
@@ -406,7 +406,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are no failed steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.andReturn(false);
+        statsJournal.witnessedAnyFailedStep.and.returnValue(false);
       });
 
       it("does not log failed steps", function () {
@@ -437,7 +437,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are undefined steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.andReturn(true);
+        statsJournal.witnessedAnyUndefinedStep.and.returnValue(true);
       });
 
       it("logs the undefined step snippets", function () {
@@ -448,7 +448,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are no undefined steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.andReturn(false);
+        statsJournal.witnessedAnyUndefinedStep.and.returnValue(false);
       });
 
       it("does not log the undefined step snippets", function () {
@@ -464,7 +464,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       failedScenarioLogBuffer = createSpy("failed scenario log buffer");
       spyOnStub(failedStepResults, 'forEach');
-      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').andReturn(failedScenarioLogBuffer);
+      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').and.returnValue(failedScenarioLogBuffer);
     });
 
     it("logs a failed steps header", function () {
@@ -483,7 +483,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       beforeEach(function () {
         summaryFormatter.logFailedStepResults();
-        userFunction     = failedStepResults.forEach.mostRecentCall.args[0];
+        userFunction     = failedStepResults.forEach.calls.mostRecent().args[0];
         failedStepResult = createSpy("failed step result");
         spyOn(summaryFormatter, 'logFailedStepResult');
       });
@@ -562,12 +562,12 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       pendingScenarioCount   = 7;
       failedScenarioCount    = 15;
       skippedScenarioCount   = 10;
-      spyOnStub(statsJournal, 'getScenarioCount').andReturn(scenarioCount);
-      spyOnStub(statsJournal, 'getPassedScenarioCount').andReturn(passedScenarioCount);
-      spyOnStub(statsJournal, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
-      spyOnStub(statsJournal, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
-      spyOnStub(statsJournal, 'getFailedScenarioCount').andReturn(failedScenarioCount);
-      spyOnStub(statsJournal, 'getSkippedScenarioCount').andReturn(skippedScenarioCount);
+      spyOnStub(statsJournal, 'getScenarioCount').and.returnValue(scenarioCount);
+      spyOnStub(statsJournal, 'getPassedScenarioCount').and.returnValue(passedScenarioCount);
+      spyOnStub(statsJournal, 'getUndefinedScenarioCount').and.returnValue(undefinedScenarioCount);
+      spyOnStub(statsJournal, 'getPendingScenarioCount').and.returnValue(pendingScenarioCount);
+      spyOnStub(statsJournal, 'getFailedScenarioCount').and.returnValue(failedScenarioCount);
+      spyOnStub(statsJournal, 'getSkippedScenarioCount').and.returnValue(skippedScenarioCount);
     });
 
     it("gets the number of scenarios", function () {
@@ -576,7 +576,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are no scenarios", function () {
-      beforeEach(function () { statsJournal.getScenarioCount.andReturn(0); });
+      beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(0); });
 
       it("logs 0 scenarios", function () {
         summaryFormatter.logScenariosSummary();
@@ -590,10 +590,10 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are scenarios", function () {
-      beforeEach(function () { statsJournal.getScenarioCount.andReturn(12); });
+      beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(12); });
 
       describe("when there is one scenario", function () {
-        beforeEach(function () { statsJournal.getScenarioCount.andReturn(1); });
+        beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(1); });
 
         it("logs one scenario", function () {
           summaryFormatter.logScenariosSummary();
@@ -602,7 +602,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are 2 or more scenarios", function () {
-        beforeEach(function () { statsJournal.getScenarioCount.andReturn(2); });
+        beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(2); });
 
         it("logs two or more scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -616,7 +616,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are no failed scenarios", function () {
-        beforeEach(function () { statsJournal.getFailedScenarioCount.andReturn(0); });
+        beforeEach(function () { statsJournal.getFailedScenarioCount.and.returnValue(0); });
 
         it("does not log failed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -625,7 +625,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there is one failed scenario", function () {
-        beforeEach(function () { statsJournal.getFailedScenarioCount.andReturn(1); });
+        beforeEach(function () { statsJournal.getFailedScenarioCount.and.returnValue(1); });
 
         it("logs a failed scenario", function () {
           summaryFormatter.logScenariosSummary();
@@ -634,7 +634,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are two or more failed scenarios", function () {
-        beforeEach(function () { statsJournal.getFailedScenarioCount.andReturn(2); });
+        beforeEach(function () { statsJournal.getFailedScenarioCount.and.returnValue(2); });
 
         it("logs the number of failed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -648,7 +648,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are no undefined scenarios", function () {
-        beforeEach(function () { statsJournal.getUndefinedScenarioCount.andReturn(0); });
+        beforeEach(function () { statsJournal.getUndefinedScenarioCount.and.returnValue(0); });
 
         it("does not log passed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -657,7 +657,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there is one undefined scenario", function () {
-        beforeEach(function () { statsJournal.getUndefinedScenarioCount.andReturn(1); });
+        beforeEach(function () { statsJournal.getUndefinedScenarioCount.and.returnValue(1); });
 
         it("logs one undefined scenario", function () {
           summaryFormatter.logScenariosSummary();
@@ -666,7 +666,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are two or more undefined scenarios", function () {
-        beforeEach(function () { statsJournal.getUndefinedScenarioCount.andReturn(2); });
+        beforeEach(function () { statsJournal.getUndefinedScenarioCount.and.returnValue(2); });
 
         it("logs the undefined scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -680,7 +680,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are no pending scenarios", function () {
-        beforeEach(function () { statsJournal.getPendingScenarioCount.andReturn(0); });
+        beforeEach(function () { statsJournal.getPendingScenarioCount.and.returnValue(0); });
 
         it("does not log passed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -689,7 +689,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there is one pending scenario", function () {
-        beforeEach(function () { statsJournal.getPendingScenarioCount.andReturn(1); });
+        beforeEach(function () { statsJournal.getPendingScenarioCount.and.returnValue(1); });
 
         it("logs one pending scenario", function () {
           summaryFormatter.logScenariosSummary();
@@ -698,7 +698,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are two or more pending scenarios", function () {
-        beforeEach(function () { statsJournal.getPendingScenarioCount.andReturn(2); });
+        beforeEach(function () { statsJournal.getPendingScenarioCount.and.returnValue(2); });
 
         it("logs the pending scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -712,7 +712,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are no passed scenarios", function () {
-        beforeEach(function () { statsJournal.getPassedScenarioCount.andReturn(0); });
+        beforeEach(function () { statsJournal.getPassedScenarioCount.and.returnValue(0); });
 
         it("does not log passed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -721,7 +721,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there is one passed scenario", function () {
-        beforeEach(function () { statsJournal.getPassedScenarioCount.andReturn(1); });
+        beforeEach(function () { statsJournal.getPassedScenarioCount.and.returnValue(1); });
 
         it("logs 1 passed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -730,7 +730,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       describe("when there are two or more passed scenarios", function () {
-        beforeEach(function () { statsJournal.getPassedScenarioCount.andReturn(2); });
+        beforeEach(function () { statsJournal.getPassedScenarioCount.and.returnValue(2); });
 
         it("logs the number of passed scenarios", function () {
           summaryFormatter.logScenariosSummary();
@@ -750,12 +750,12 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       skippedStepCount   = 5;
       undefinedStepCount = 4;
       pendingStepCount   = 2;
-      spyOnStub(statsJournal, 'getStepCount').andReturn(stepCount);
-      spyOnStub(statsJournal, 'getPassedStepCount').andReturn(passedStepCount);
-      spyOnStub(statsJournal, 'getFailedStepCount').andReturn(failedStepCount);
-      spyOnStub(statsJournal, 'getSkippedStepCount').andReturn(skippedStepCount);
-      spyOnStub(statsJournal, 'getUndefinedStepCount').andReturn(undefinedStepCount);
-      spyOnStub(statsJournal, 'getPendingStepCount').andReturn(pendingStepCount);
+      spyOnStub(statsJournal, 'getStepCount').and.returnValue(stepCount);
+      spyOnStub(statsJournal, 'getPassedStepCount').and.returnValue(passedStepCount);
+      spyOnStub(statsJournal, 'getFailedStepCount').and.returnValue(failedStepCount);
+      spyOnStub(statsJournal, 'getSkippedStepCount').and.returnValue(skippedStepCount);
+      spyOnStub(statsJournal, 'getUndefinedStepCount').and.returnValue(undefinedStepCount);
+      spyOnStub(statsJournal, 'getPendingStepCount').and.returnValue(pendingStepCount);
     });
 
     it("gets the number of steps", function () {
@@ -765,7 +765,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are no steps", function () {
       beforeEach(function () {
-        statsJournal.getStepCount.andReturn(0);
+        statsJournal.getStepCount.and.returnValue(0);
       });
 
       it("logs 0 steps", function () {
@@ -780,11 +780,11 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are steps", function () {
-      beforeEach(function () { statsJournal.getStepCount.andReturn(13); });
+      beforeEach(function () { statsJournal.getStepCount.and.returnValue(13); });
 
       describe("when there is one step", function () {
         beforeEach(function () {
-          statsJournal.getStepCount.andReturn(1);
+          statsJournal.getStepCount.and.returnValue(1);
         });
 
         it("logs 1 step", function () {
@@ -795,7 +795,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are two or more steps", function () {
         beforeEach(function () {
-          statsJournal.getStepCount.andReturn(2);
+          statsJournal.getStepCount.and.returnValue(2);
         });
 
         it("logs the number of steps", function () {
@@ -811,7 +811,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are no failed steps", function () {
         beforeEach(function () {
-          statsJournal.getFailedStepCount.andReturn(0);
+          statsJournal.getFailedStepCount.and.returnValue(0);
         });
 
         it("does not log failed steps", function () {
@@ -822,7 +822,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is one failed step", function () {
         beforeEach(function () {
-          statsJournal.getFailedStepCount.andReturn(1);
+          statsJournal.getFailedStepCount.and.returnValue(1);
         });
 
         it("logs one failed step", function () {
@@ -833,7 +833,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is two or more failed steps", function () {
         beforeEach(function () {
-          statsJournal.getFailedStepCount.andReturn(2);
+          statsJournal.getFailedStepCount.and.returnValue(2);
         });
 
         it("logs the number of failed steps", function () {
@@ -849,7 +849,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are no undefined steps", function () {
         beforeEach(function () {
-          statsJournal.getUndefinedStepCount.andReturn(0);
+          statsJournal.getUndefinedStepCount.and.returnValue(0);
         });
 
         it("does not log undefined steps", function () {
@@ -860,7 +860,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is one undefined step", function () {
         beforeEach(function () {
-          statsJournal.getUndefinedStepCount.andReturn(1);
+          statsJournal.getUndefinedStepCount.and.returnValue(1);
         });
 
         it("logs one undefined steps", function () {
@@ -871,7 +871,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are two or more undefined steps", function () {
         beforeEach(function () {
-          statsJournal.getUndefinedStepCount.andReturn(2);
+          statsJournal.getUndefinedStepCount.and.returnValue(2);
         });
 
         it("logs the number of undefined steps", function () {
@@ -887,7 +887,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are no pending steps", function () {
         beforeEach(function () {
-          statsJournal.getPendingStepCount.andReturn(0);
+          statsJournal.getPendingStepCount.and.returnValue(0);
         });
 
         it("does not log pending steps", function () {
@@ -898,7 +898,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is one pending step", function () {
         beforeEach(function () {
-          statsJournal.getPendingStepCount.andReturn(1);
+          statsJournal.getPendingStepCount.and.returnValue(1);
         });
 
         it("logs one pending steps", function () {
@@ -909,7 +909,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are two or more pending steps", function () {
         beforeEach(function () {
-          statsJournal.getPendingStepCount.andReturn(2);
+          statsJournal.getPendingStepCount.and.returnValue(2);
         });
 
         it("logs the number of pending steps", function () {
@@ -925,7 +925,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are no skipped steps", function () {
         beforeEach(function () {
-          statsJournal.getSkippedStepCount.andReturn(0);
+          statsJournal.getSkippedStepCount.and.returnValue(0);
         });
 
         it("does not log skipped steps", function () {
@@ -936,7 +936,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is one skipped step", function () {
         beforeEach(function () {
-          statsJournal.getSkippedStepCount.andReturn(1);
+          statsJournal.getSkippedStepCount.and.returnValue(1);
         });
 
         it("logs one skipped steps", function () {
@@ -947,7 +947,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are two or more skipped steps", function () {
         beforeEach(function () {
-          statsJournal.getSkippedStepCount.andReturn(2);
+          statsJournal.getSkippedStepCount.and.returnValue(2);
         });
 
         it("logs the number of skipped steps", function () {
@@ -963,7 +963,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there are no passed steps", function () {
         beforeEach(function () {
-          statsJournal.getPassedStepCount.andReturn(0);
+          statsJournal.getPassedStepCount.and.returnValue(0);
         });
 
         it("does not log passed steps", function () {
@@ -974,7 +974,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is one passed step", function () {
         beforeEach(function () {
-          statsJournal.getPassedStepCount.andReturn(1);
+          statsJournal.getPassedStepCount.and.returnValue(1);
         });
 
         it("logs one passed step", function () {
@@ -985,7 +985,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
       describe("when there is two or more passed steps", function () {
         beforeEach(function () {
-          statsJournal.getPassedStepCount.andReturn(2);
+          statsJournal.getPassedStepCount.and.returnValue(2);
         });
 
         it("logs the number of passed steps", function () {
@@ -1037,7 +1037,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       // Undefined Step Log buffer is string
       undefinedStepLogBuffer = 'undefinedStepsLogBuffer';
-      spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').andReturn(undefinedStepLogBuffer);
+      spyOn(summaryFormatter, 'getUndefinedStepLogBuffer').and.returnValue(undefinedStepLogBuffer);
       // switch snippet output on
       options.snippets = true;
     });
