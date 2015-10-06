@@ -1,35 +1,89 @@
 Feature: step definition snippets
 
-  Scenario: escape regexp special characters
-    Given a scenario with:
+  Scenario Outline: escape regexp special characters
+    Given a file named "features/special.feature" with:
       """
-      Given I am a happy veggie \o/
-      When I type -[]{}()*+?.\^$|#/
+      Feature: a feature
+        Scenario: a scenario
+          Given a step with <character>
       """
-    When Cucumber executes the scenario
-    Then a "Given" step definition snippet for /^I am a happy veggie \\o\/$/ is suggested
-    Then a "When" step definition snippet for /^I type \-\[\]\{\}\(\)\*\+\?\.\\\^\$\|\#\/$/ is suggested
+    When I run cucumber-js
+    Then it suggests a "Given" step definition snippet for:
+       """
+       /^a step with \<character>$/
+       """
 
-  Scenario: step matching groups
-    Given a scenario with:
-      """
-      Given I have 5 "kekiri" cucumbers
-      """
-    When Cucumber executes the scenario
-    Then a "Given" step definition snippet for /^I have (\d+) "([^"]*)" cucumbers$/ with 2 parameters is suggested
+    Examples:
+      | character |
+      | -         |
+      | [         |
+      | ]         |
+      | {         |
+      | }         |
+      | (         |
+      | )         |
+      | *         |
+      | +         |
+      | ?         |
+      | .         |
+      | \         |
+      | /         |
+      | ^         |
+      | $         |
+      | #         |
 
-  Scenario: multiple matching groups
-    Given a scenario with:
+  Scenario: numbers
+    Given a file named "features/number.feature" with:
       """
-      Given I have some "hekiri", "wild" and "regular" cucumbers
+      Feature: a feature
+        Scenario: a scenario
+          Given a step numbered 5
       """
-    When Cucumber executes the scenario
-    Then a "Given" step definition snippet for /^I have some "([^"]*)", "([^"]*)" and "([^"]*)" cucumbers$/ with 3 parameters is suggested
+    When I run cucumber-js
+    Then it suggests a "Given" step definition snippet with 1 parameter for:
+      """
+      /^a step numbered (/d+)$/
+      """
 
-  Scenario: outline steps with examples
-    Given a scenario with:
+  Scenario: quoted strings
+    Given a file named "features/number.feature" with:
       """
-      Given I have <some> cucumbers
+      Feature: a feature
+        Scenario: a scenario
+          Given a step with "quotes"
       """
-    When Cucumber executes the scenario
-    Then a "Given" example step definition snippet for /^I have "(.*)" cucumbers$/ with 1 parameters is suggested
+    When I run cucumber-js
+    Then it suggests a "Given" step definition snippet with 1 parameter for:
+      """
+      /^a step with "([^"]*)"$/
+      """
+
+  Scenario: multiple quoted strings
+    Given a file named "features/number.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a step with "quotes" and "more quotes"
+      """
+    When I run cucumber-js
+    Then it suggests a "Given" step definition snippet with 2 parameters for:
+      """
+      /^a step with "([^"]*)" and "([^"]*)"$/
+      """
+
+  Scenario: placeholders in scenario outlines
+    Given a file named "features/number.feature" with:
+      """
+      Feature: a feature
+        Scenario Outline: a scenario
+          Given a step with a <placeholder>
+
+        Examples:
+          | placeholder |
+          | cucumbers   |
+      """
+    When I run cucumber-js
+    Then it suggests a "Given" step definition snippet with 1 parameter named "placeholder" for:
+      """
+      /^a step with a (.*)$/
+      """

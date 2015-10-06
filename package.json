@@ -82,7 +82,7 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "dependencies": {
     "colors": "1.1.2",
