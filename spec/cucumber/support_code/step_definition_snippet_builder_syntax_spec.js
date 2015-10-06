@@ -3,6 +3,7 @@ require('../../support/spec_helper');
 describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () {
   var Cucumber                 = requireLib('cucumber');
   var Syntax                   = Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax;
+  var stepDefinitionEndComment = 'Write code here that turns the phrase above into concrete actions';
 
   function testBaseSyntax(syntax) {
 
@@ -72,9 +73,9 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () 
       });
     });
 
-    describe('getStepDefinitionComments()', function () {
-      it('returns an array of lines', function () {
-        expect(syntax.getStepDefinitionComments().constructor).toBe(Array);
+    describe('getStepDefinitionEndComment()', function () {
+      it('returns "' + stepDefinitionEndComment + '"', function () {
+        expect(syntax.getStepDefinitionEndComment()).toBe(stepDefinitionEndComment);
       });
     });
 
@@ -98,15 +99,14 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () 
     });
 
     describe('getStepDefinitionInner2()', function () {
-      it('returns ") //, function ("', function () {
-        expect(syntax.getStepDefinitionInner2()).toBe(') //, function (');
+      it('returns ", function ("', function () {
+        expect(syntax.getStepDefinitionInner2()).toBe(', function (');
       });
     });
 
     describe('getStepDefinitionEnd()', function () {
-      var str = ") {\n  // line1\n  // line2\n// });\n";
-      it('returns the function body', function () {
-        spyOn(syntax, 'getStepDefinitionComments').and.returnValue(['line1', 'line2']);
+      var str = ") {\n  // " + stepDefinitionEndComment + "\n  callback.pending();\n});\n";
+      it('returns "' + str + '"', function () {
         expect(syntax.getStepDefinitionEnd()).toBe(str);
       });
     });
@@ -130,15 +130,14 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax', function () 
     });
 
     describe('getStepDefinitionInner2()', function () {
-      it('returns " #, ("', function () {
-        expect(syntax.getStepDefinitionInner2()).toBe(' #, (');
+      it('returns ", ("', function () {
+        expect(syntax.getStepDefinitionInner2()).toBe(', (');
       });
     });
 
     describe('getStepDefinitionEnd()', function () {
-      var str = ") ->\n  # line1\n  # line2\n";
-      it('returns the function body', function () {
-        spyOn(syntax, 'getStepDefinitionComments').and.returnValue(['line1', 'line2']);
+      var str = ") ->\n  # " + stepDefinitionEndComment + "\n  callback.pending()\n";
+      it('returns "' + str + '"', function () {
         expect(syntax.getStepDefinitionEnd()).toBe(str);
       });
     });

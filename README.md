@@ -141,9 +141,12 @@ module.exports = function () {
     // be executed by Cucumber.
   });
 
-  this.When(/^I go to the README file$/)
-    // To mark the step as pending, don't provide a function
-    // Optionally pass a string with the pending reason as the second parameter
+  this.When(/^I go to the README file$/, function (callback) {
+    // Express the regexp above with the code you wish you had. Call callback() at the end
+    // of the step, or callback.pending() if the step is not yet implemented:
+
+    callback.pending();
+  });
 
 
   this.Then(/^I should see "(.*)" as the page title$/, function (title, callback) {
