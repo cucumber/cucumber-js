@@ -82,7 +82,7 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "dependencies": {
     "colors": "1.1.2",
@@ -109,7 +109,10 @@
     "uglifyify": "3.0.1"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib spec && jasmine && node bin/cucumber.js -p build"
+    "feature-test": "./bin/cucumber.js -p build",
+    "lint": "jshint bundler.js bin lib spec",
+    "test": "npm run lint && npm run unit-test && npm run feature-test",
+    "unit-test": "jasmine"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

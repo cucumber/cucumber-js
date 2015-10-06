@@ -1,4 +1,5 @@
 var cliSteps = function cliSteps() {
+  var assert          = require('assert');
   var fs              = require('fs');
   var rimraf          = require('rimraf');
   var mkdirp          = require('mkdirp');
@@ -79,13 +80,24 @@ var cliSteps = function cliSteps() {
          });
   });
 
+  this.Then(/^it passes$/, function () {
+    var world = this;
+
+    if (world.lastRun.error) {
+      throw new Error("Expected last run to pass but it failed\n" +
+                      "Output:\n" + normalizeText(world.lastRun['stdout']));
+    }
+  });
+
   this.Then(/^the exit status should be ([0-9]+)$/, function (code, callback) {
     var world = this;
 
     var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
 
     if (actualCode != code) {
-      throw new Error("Exit code expected: \"" + code + "\"\nGot: \"" + actualCode + "\"\n");
+      throw new Error("Exit code expected: \"" + code + "\"\n" +
+                      "Got: \"" + actualCode + "\"\n" +
+                      "Output:\n" + normalizeText(world.lastRun['stdout']));
     }
 
     callback();
@@ -151,6 +163,37 @@ var cliSteps = function cliSteps() {
     if (actualOutput.indexOf(expectedOutput) == -1)
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\nGot:\n'" + actualOutput + "'.");
     callback();
+  });
+
+  this.Then(/^it suggests a "([^"]*)" step definition snippet(?: with (\d+) parameters?(?: named "([^"]*)")?)? for:$/, function (step, parameterCount, parameterName, regExp) {
+    var world = this;
+
+    parameters = []
+    if (parameterName) {
+      parameters.push(parameterName);
+    }
+    else if (parameterCount) {
+      var count = parseInt(parameterCount);
+      for (var i = 1; i <= count; i ++) {
+        parameters.push('arg' + i);
+      }
+    }
+    parameters.push('callback');
+
+    expectedOutput = 'this.' + step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n' +
+                     '  // Write code here that turns the phrase above into concrete actions\n' +
+                     '  callback.pending();\n' +
+                     '});'
+
+    var actualOutput = this.lastRun['stdout'];
+
+    actualOutput = normalizeText(actualOutput);
+    expectedOutput = normalizeText(expectedOutput);
+
+    if (actualOutput.indexOf(expectedOutput) === -1)
+      throw new Error("Expected output to include the following:\n'" + expectedOutput + "'\n" +
+                      "Got:\n'" + actualOutput+ "'.\n" +
+                      getAdditionalErrorText(world.lastRun));
   });
 
   function neutraliseVariableValuesInJson(report) {
