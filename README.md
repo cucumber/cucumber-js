@@ -148,7 +148,6 @@ module.exports = function () {
     callback.pending();
   });
 
-
   this.Then(/^I should see "(.*)" as the page title$/, function (title, callback) {
     // matching groups are passed as parameters to the step definition
 
