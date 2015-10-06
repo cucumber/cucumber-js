@@ -55,7 +55,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
     describe("when the step has a duration", function () {
       beforeEach(function () {
-        stepResult.getDuration.andReturn(5);
+        stepResult.getDuration.and.returnValue(5);
       });
 
       it("adds the step duration to the total duration", function () {

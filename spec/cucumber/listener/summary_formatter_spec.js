@@ -999,7 +999,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   describe("logDuration()", function () {
     describe('with duration less than a second', function (){
       beforeEach(function () {
-        spyOnStub(statsJournal, 'getDuration').andReturn(1e6);
+        spyOnStub(statsJournal, 'getDuration').and.returnValue(1e6);
       });
 
       it("logs the duration", function () {
@@ -1010,7 +1010,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe('with duration that is a few seconds', function (){
       beforeEach(function () {
-        spyOnStub(statsJournal, 'getDuration').andReturn(12345 * 1e6);
+        spyOnStub(statsJournal, 'getDuration').and.returnValue(12345 * 1e6);
       });
 
       it("logs the duration", function () {
@@ -1021,7 +1021,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe('with duration that is a few minutes', function (){
       beforeEach(function () {
-        spyOnStub(statsJournal, 'getDuration').andReturn(12 * 60 * 1e9 + 34567 * 1e6);
+        spyOnStub(statsJournal, 'getDuration').and.returnValue(12 * 60 * 1e9 + 34567 * 1e6);
       });
 
       it("logs the duration", function () {
