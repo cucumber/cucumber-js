@@ -27,17 +27,16 @@ describe("Cucumber.SupportCode.Hook", function () {
   });
 
   describe("buildInvocationParameters()", function () {
-    var step, scenario, callback;
+    var step, scenario, callback, invocationParameters;
 
     beforeEach(function () {
       step      = createSpy("world");
       scenario  = createSpy("scenario");
       callback  = createSpy("callback");
+
     });
 
-    describe("when the hook function does not just accept one parameter", function () {
-      var invocationParameters;
-
+    describe('with no options', function() {
       beforeEach(function () {
         invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
@@ -51,18 +50,13 @@ describe("Cucumber.SupportCode.Hook", function () {
       });
     });
 
-    describe("when the hook function only accepts one parameter", function () {
-      var invocationParameters;
-
+    describe('with noScenario option', function() {
       beforeEach(function () {
-        var codeObservingWrapper = function (callback) {
-          code.call(this, callback);
-        };
-        hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
+        hook                 = Cucumber.SupportCode.Hook(code, {noScenario: true});
         invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
 
-      it("returns an array containing only the callback", function () {
+      it("returns an array containing the scenario and the callback", function () {
         expect(invocationParameters).toEqual([callback]);
       });
 
