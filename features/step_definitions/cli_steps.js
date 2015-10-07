@@ -145,6 +145,21 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
+  this.Then(/^the output contains the text:$/, function(expectedOutput, callback) {
+    var world = this;
+
+    var actualOutput = world.lastRun['stdout'];
+
+    actualOutput = normalizeText(actualOutput);
+    expectedOutput = normalizeText(expectedOutput);
+
+    if (actualOutput.indexOf(expectedOutput) === -1)
+      throw new Error("Expected output to contain the following:\n'" + expectedOutput + "'\n" +
+                      "Got:\n'" + actualOutput+ "'.\n" +
+                      getAdditionalErrorText(world.lastRun));
+    callback();
+  });
+
   this.Then(/^I see the version of Cucumber$/, function(callback) {
     var world = this;
 
