@@ -8,8 +8,8 @@ describe("Cucumber.Ast.Features", function () {
   beforeEach(function () {
     lastFeature       = createSpy("Last feature");
     featureCollection = createSpy("Feature collection");
-    spyOnStub(featureCollection, 'forEach');
-    spyOn(Cucumber.Type, 'Collection').andReturn(featureCollection);
+    spyOnStub(featureCollection, 'asyncForEach');
+    spyOn(Cucumber.Type, 'Collection').and.returnValue(featureCollection);
     features = Cucumber.Ast.Features();
   });
 
@@ -33,7 +33,7 @@ describe("Cucumber.Ast.Features", function () {
 
   describe("getLastFeature()", function () {
     beforeEach(function () {
-      spyOnStub(featureCollection, 'getLast').andReturn(lastFeature);
+      spyOnStub(featureCollection, 'getLast').and.returnValue(lastFeature);
     });
 
     it("gets the last feature from the collection", function () {
@@ -56,24 +56,24 @@ describe("Cucumber.Ast.Features", function () {
 
     it("iterates over the features with a user function and the callback", function () {
       features.acceptVisitor(visitor, callback);
-      expect(featureCollection.forEach).toHaveBeenCalled();
-      expect(featureCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(featureCollection.forEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+      expect(featureCollection.asyncForEach).toHaveBeenCalled();
+      expect(featureCollection.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
+      expect(featureCollection.asyncForEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
     });
 
     describe("for each feature", function () {
-      var userFunction, feature, forEachCallback;
+      var userFunction, feature, asyncForEachCallback;
 
       beforeEach(function () {
         features.acceptVisitor(visitor, callback);
-        userFunction    = featureCollection.forEach.mostRecentCall.args[0];
+        userFunction    = featureCollection.asyncForEach.calls.mostRecent().args[0];
         feature         = createSpy("A feature from the collection");
-        forEachCallback = createSpy("forEach() callback");
+        asyncForEachCallback = createSpy("asyncForEach() callback");
       });
 
       it("tells the visitor to visit the feature and call back when finished", function () {
-        userFunction (feature, forEachCallback);
-        expect(visitor.visitFeature).toHaveBeenCalledWith(feature, forEachCallback);
+        userFunction (feature, asyncForEachCallback);
+        expect(visitor.visitFeature).toHaveBeenCalledWith(feature, asyncForEachCallback);
       });
     });
   });

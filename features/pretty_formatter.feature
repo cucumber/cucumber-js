@@ -116,3 +116,73 @@ Feature: Pretty Formatter
       1 scenario (1 failed)
       2 steps (1 failed, 1 skipped)
       """
+
+  Scenario: output with --no-source flag should not show file sources
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: I haven't done anything yet
+          Given This step is passing
+      """
+     And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run cucumber.js with `-f pretty --no-source`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+
+
+        Scenario: I haven't done anything yet
+          Given This step is passing
+
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+      """
+
+  Scenario: Pretty formatter with doc strings
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario: some scenario
+          Given a basic step
+          And a step with a doc string
+            \"\"\"
+            my doc string
+            \"\"\"
+          And a basic step
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^a basic step$/, function() { });
+        this.Given(/^a step with a doc string$/, function(str) { });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run cucumber.js with `-f pretty`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+
+
+        Scenario: some scenario        # features/a.feature:3
+          Given a basic step           # features/a.feature:4
+          And a step with a doc string # features/a.feature:5
+            \"\"\"
+            my doc string
+            \"\"\"
+          And a basic step             # features/a.feature:9
+
+
+      1 scenario (1 passed)
+      3 steps (3 passed)
+      """

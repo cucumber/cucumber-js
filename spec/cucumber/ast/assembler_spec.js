@@ -106,7 +106,7 @@ describe("Cucumber.Ast.Assembler", function () {
       element     = createSpyWithStubs("AST element", {addInheritedTags: null});
       featureTags = createSpy("feature tags");
       feature     = createSpyWithStubs("current feature", {getTags: featureTags});
-      spyOn(assembler, 'getCurrentFeature').andReturn(feature);
+      spyOn(assembler, 'getCurrentFeature').and.returnValue(feature);
     });
 
     it("gets the current feature", function () {
@@ -131,7 +131,7 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       element      = createSpyWithStubs("any AST element accepting tags", {addTags: null});
       revealedTags = createSpy("revealed tags");
-      spyOn(assembler, 'revealTags').andReturn(revealedTags);
+      spyOn(assembler, 'revealTags').and.returnValue(revealedTags);
     });
 
     it("reveals the tags", function () {
@@ -151,7 +151,7 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       background     = createSpy("background");
       currentFeature = createSpyWithStubs("current feature", {setBackground: null});
-      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
+      spyOn(assembler, 'getCurrentFeature').and.returnValue(currentFeature);
       spyOn(assembler, 'setCurrentFeatureElement');
     });
 
@@ -209,7 +209,7 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       dataTableRow = createSpy("data table row");
       currentStep  = createSpyWithStubs("current step", {attachDataTableRow: null});
-      spyOn(assembler, 'getCurrentStep').andReturn(currentStep);
+      spyOn(assembler, 'getCurrentStep').and.returnValue(currentStep);
     });
 
     it("gets the current step", function () {
@@ -229,7 +229,7 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       docString = createSpy("data table row");
       currentStep  = createSpyWithStubs("current step", {attachDocString: null});
-      spyOn(assembler, 'getCurrentStep').andReturn(currentStep);
+      spyOn(assembler, 'getCurrentStep').and.returnValue(currentStep);
     });
 
     it("gets the current step", function () {
@@ -252,7 +252,7 @@ describe("Cucumber.Ast.Assembler", function () {
       spyOnStub(filter, 'isElementEnrolled');
       spyOn(assembler, 'applyStashedTagsToElement');
       spyOn(assembler, 'applyCurrentFeatureTagsToElement');
-      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
+      spyOn(assembler, 'getCurrentFeature').and.returnValue(currentFeature);
       spyOn(assembler, 'setCurrentFeatureElement');
     });
 
@@ -278,7 +278,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
     describe("when the scenario is enrolled", function () {
       beforeEach(function () {
-        filter.isElementEnrolled.andReturn(true);
+        filter.isElementEnrolled.and.returnValue(true);
       });
 
       it("gets the current feature", function () {
@@ -294,7 +294,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
     describe("when the scenario is not enrolled", function () {
       beforeEach(function () {
-        filter.isElementEnrolled.andReturn(false);
+        filter.isElementEnrolled.and.returnValue(false);
       });
 
       it("does not get the current feature", function () {
@@ -315,7 +315,7 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       examples              = createSpy("examples");
       currentFeatureElement = createSpyWithStubs("current feature element", {isScenarioOutline: true, addExamples: null});
-      spyOn(assembler, 'getCurrentFeatureElement').andReturn(currentFeatureElement);
+      spyOn(assembler, 'getCurrentFeatureElement').and.returnValue(currentFeatureElement);
       spyOn(assembler, 'setCurrentStep');
     });
 
@@ -331,7 +331,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
     describe("when the current feature element is not a scenario outline", function () {
       beforeEach(function () {
-        currentFeatureElement.isScenarioOutline.andReturn(false);
+        currentFeatureElement.isScenarioOutline.and.returnValue(false);
       });
 
       it("throws an error", function () {
@@ -346,7 +346,7 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       step                  = createSpy("step");
       currentFeatureElement = createSpyWithStubs("current feature element", {addStep: null});
-      spyOn(assembler, 'getCurrentFeatureElement').andReturn(currentFeatureElement);
+      spyOn(assembler, 'getCurrentFeatureElement').and.returnValue(currentFeatureElement);
       spyOn(assembler, 'setCurrentStep');
     });
 
@@ -386,12 +386,18 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       currentFeature = createSpyWithStubs("current feature", {convertScenarioOutlinesToScenarios:  null});
       spyOn(assembler, 'tryEnrollingSuggestedFeature');
-      spyOn(assembler, 'getCurrentFeature').andReturn(currentFeature);
     });
 
     it("tries to convert scenario outlines to scenarios if any", function () {
+      spyOn(assembler, 'getCurrentFeature').and.returnValue(currentFeature);
       assembler.finish();
       expect(currentFeature.convertScenarioOutlinesToScenarios).toHaveBeenCalled();
+    });
+
+    it("doesn't try to convert scenario outlines to scenarios if there is no current feature", function () {
+      spyOn(assembler, 'getCurrentFeature').and.returnValue(null);
+      assembler.finish();
+      expect(currentFeature.convertScenarioOutlinesToScenarios).not.toHaveBeenCalled();
     });
 
     it("tries to enroll the suggested feature, if any", function () {
@@ -422,7 +428,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
       describe("when the feature has scenarios", function () {
         beforeEach(function () {
-          feature.hasFeatureElements.andReturn(true);
+          feature.hasFeatureElements.and.returnValue(true);
         });
 
         it("is truthy", function () {
@@ -433,7 +439,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
       describe("when the feature has got no scenarios", function () {
         beforeEach(function () {
-          feature.hasFeatureElements.andReturn(false);
+          feature.hasFeatureElements.and.returnValue(false);
         });
 
         it("asks the filter is the feature should be enrolled", function () {
@@ -442,13 +448,13 @@ describe("Cucumber.Ast.Assembler", function () {
         });
 
         it("is truthy when the filter tells the feature should be enrolled", function () {
-          filter.isElementEnrolled.andReturn(true);
+          filter.isElementEnrolled.and.returnValue(true);
           var enrollable = assembler.isSuggestedFeatureEnrollable();
           expect(enrollable).toBeTruthy();
         });
 
         it("is falsy when the filter tells the feature should be enrolled", function () {
-          filter.isElementEnrolled.andReturn(false);
+          filter.isElementEnrolled.and.returnValue(false);
           var enrollable = assembler.isSuggestedFeatureEnrollable();
           expect(enrollable).toBeFalsy();
         });
@@ -469,7 +475,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
     describe("when the suggested feature is enrollable", function () {
       beforeEach(function () {
-        assembler.isSuggestedFeatureEnrollable.andReturn(true);
+        assembler.isSuggestedFeatureEnrollable.and.returnValue(true);
       });
 
       it("enrols the suggested feature", function () {
@@ -480,7 +486,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
     describe("when the suggested feature is not enrollable (or there is no suggested feature yet)", function () {
       beforeEach(function () {
-        assembler.isSuggestedFeatureEnrollable.andReturn(false);
+        assembler.isSuggestedFeatureEnrollable.and.returnValue(false);
       });
 
       it("enrols the suggested feature", function () {

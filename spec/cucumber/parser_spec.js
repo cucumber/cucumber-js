@@ -13,8 +13,8 @@ describe("Cucumber.Parser", function () {
       ["(feature:2)", createSpyWithStubs('second feature source', {toString:"# language: fr\nsecond feature source"})]
     ];
     astAssembler   = createSpy("AST assembler");
-    spyOn(Cucumber.Ast, 'Features').andReturn(features);
-    spyOn(Cucumber.Ast, 'Assembler').andReturn(astAssembler);
+    spyOn(Cucumber.Ast, 'Features').and.returnValue(features);
+    spyOn(Cucumber.Ast, 'Assembler').and.returnValue(astAssembler);
     parser = Cucumber.Parser(featureSources, astFilter);
   });
 
@@ -36,9 +36,9 @@ describe("Cucumber.Parser", function () {
     beforeEach(function () {
       gherkinENLexer = createSpyWithStubs("English gherkin lexer instance", {scan: null});
       gherkinFRLexer = createSpyWithStubs("French gherkin lexer instance", {scan: null});
-      gherkinENLexerConstructor = createSpy("English gherkin lexer constructor").andReturn(gherkinENLexer);
-      gherkinFRLexerConstructor = createSpy("French gherkin lexer constructor").andReturn(gherkinFRLexer);
-      spyOn(Gherkin, 'Lexer').andCallFake(
+      gherkinENLexerConstructor = createSpy("English gherkin lexer constructor").and.returnValue(gherkinENLexer);
+      gherkinFRLexerConstructor = createSpy("French gherkin lexer constructor").and.returnValue(gherkinFRLexer);
+      spyOn(Gherkin, 'Lexer').and.callFake(
         function (language) {
           if (language === 'en') {
             return gherkinENLexerConstructor;
@@ -50,7 +50,7 @@ describe("Cucumber.Parser", function () {
         }
       );
       eventHandlers = createSpy("Parser event handlers");
-      spyOn(parser, 'getEventHandlers').andReturn(eventHandlers);
+      spyOn(parser, 'getEventHandlers').and.returnValue(eventHandlers);
       spyOn(parser, 'setCurrentSourceUri');
     });
 
@@ -181,8 +181,8 @@ describe("Cucumber.Parser", function () {
       uri            = createSpy("uri");
       line           = createSpy("line number");
       background     = createSpyWithStubs("background AST element");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast, 'Background').andReturn(background);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast, 'Background').and.returnValue(background);
       spyOnStub(astAssembler, 'insertBackground');
     });
 
@@ -218,8 +218,8 @@ describe("Cucumber.Parser", function () {
       uri         = createSpy("uri");
       line        = createSpy("line number");
       docString   = createSpy("DocString AST element");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast, 'DocString').andReturn(docString);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast, 'DocString').and.returnValue(docString);
       spyOnStub(astAssembler, 'insertDocString');
     });
 
@@ -261,8 +261,8 @@ describe("Cucumber.Parser", function () {
       uri         = createSpy("uri");
       line        = createSpy("Line number");
       feature     = createSpyWithStubs("Feature AST element");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast, 'Feature').andReturn(feature);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast, 'Feature').and.returnValue(feature);
       spyOnStub(astAssembler, 'insertFeature');
     });
 
@@ -291,8 +291,8 @@ describe("Cucumber.Parser", function () {
       cells        = createSpy("data table cells");
       uri          = createSpy("uri");
       line         = createSpy("line");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast.DataTable, 'Row').andReturn(dataTableRow);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast.DataTable, 'Row').and.returnValue(dataTableRow);
       spyOnStub(astAssembler, 'insertDataTableRow');
     });
 
@@ -323,8 +323,8 @@ describe("Cucumber.Parser", function () {
       uri         = createSpy("uri");
       line        = createSpy("Line number");
       scenario    = createSpyWithStubs("Scenario AST element");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast, 'Scenario').andReturn(scenario);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast, 'Scenario').and.returnValue(scenario);
       spyOnStub(astAssembler, 'insertScenario');
     });
 
@@ -354,8 +354,8 @@ describe("Cucumber.Parser", function () {
       uri             = createSpy("uri");
       line            = createSpy("line number");
       step            = createSpy("step AST element");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast, 'Step').andReturn(step);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast, 'Step').and.returnValue(step);
       spyOnStub(astAssembler, 'insertStep');
     });
 
@@ -383,8 +383,8 @@ describe("Cucumber.Parser", function () {
       uri  = createSpy("uri");
       line = createSpy("line number");
       tag  = createSpy("tag AST element");
-      spyOn(parser, 'getCurrentSourceUri').andReturn(uri);
-      spyOn(Cucumber.Ast, 'Tag').andReturn(tag);
+      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
+      spyOn(Cucumber.Ast, 'Tag').and.returnValue(tag);
       spyOnStub(astAssembler, 'insertTag');
     });
 

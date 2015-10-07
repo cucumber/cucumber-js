@@ -6,7 +6,7 @@ describe("Cucumber.Runtime.PendingStepResult", function () {
 
   beforeEach(function () {
     pendingStepResult = createSpy("base step result");
-    spyOn(Cucumber.Runtime, 'StepResult').andReturn(pendingStepResult);
+    spyOn(Cucumber.Runtime, 'StepResult').and.returnValue(pendingStepResult);
     step              = createSpy("step");
     payload           = {step: step};
     pendingStepResult = Cucumber.Runtime.PendingStepResult(payload);

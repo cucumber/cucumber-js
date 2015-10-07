@@ -1,6 +1,6 @@
-common = '--tag ~@ruby-only'
+common = '--strict'
 
 module.exports = {
-  build: '--format progress --no-snippets ' + common,
+  build: common + ' -f progress',
   'default': common
 };

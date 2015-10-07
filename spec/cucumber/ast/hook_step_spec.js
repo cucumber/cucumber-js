@@ -7,7 +7,7 @@ describe("Cucumber.Ast.HookStep", function () {
   beforeEach(function () {
     keyword  = createSpy("keyword");
     step     = createSpy("step");
-    spyOn(Cucumber.Ast, 'Step').andReturn(step);
+    spyOn(Cucumber.Ast, 'Step').and.returnValue(step);
     hookStep = Cucumber.Ast.HookStep(keyword);
   });
 

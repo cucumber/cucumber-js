@@ -20,8 +20,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       expandedArgs = createSpy("expanded arguments");
       options = createSpy("options");
-      spyOn(argumentParser, 'getExpandedArgs').andReturn(expandedArgs);
-      spyOn(argumentParser, 'argsToOptions').andReturn(options);
+      spyOn(argumentParser, 'getExpandedArgs').and.returnValue(expandedArgs);
+      spyOn(argumentParser, 'argsToOptions').and.returnValue(options);
       spyOn(argumentParser, 'storeOptions');
     });
 
@@ -55,9 +55,9 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       shortenedOptionDefinitions = createSpy("shortened option definitions");
       args                       = createSpy("arguments");
       options                    = createSpy("parsed options");
-      nopt.andReturn(options);
-      spyOn(argumentParser, 'getKnownOptionDefinitions').andReturn(knownOptionDefinitions);
-      spyOn(argumentParser, 'getShortenedOptionDefinitions').andReturn(shortenedOptionDefinitions);
+      nopt.and.returnValue(options);
+      spyOn(argumentParser, 'getKnownOptionDefinitions').and.returnValue(knownOptionDefinitions);
+      spyOn(argumentParser, 'getShortenedOptionDefinitions').and.returnValue(shortenedOptionDefinitions);
     });
 
     it("gets the known option definitions", function () {
@@ -89,12 +89,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     describe("no profile specified", function () {
       beforeEach(function () {
-        spyOn(argumentParser, 'argsToOptions').andReturn({});
+        spyOn(argumentParser, 'argsToOptions').and.returnValue({});
       });
 
       describe("without default profile", function () {
         beforeEach(function () {
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn({});
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue({});
         });
 
         it("returns the unexpanded args", function () {
@@ -107,7 +107,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
           profileDefinitions = {
             'default': 'default args'
           };
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue(profileDefinitions);
         });
 
         it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
@@ -120,12 +120,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       beforeEach(function () {
         options = {};
         options[Cucumber.Cli.ArgumentParser.PROFILE_OPTION_NAME] = ['profileName'];
-        spyOn(argumentParser, 'argsToOptions').andReturn(options);
+        spyOn(argumentParser, 'argsToOptions').and.returnValue(options);
       });
 
       describe("profile is not defined", function () {
         beforeEach(function () {
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn({});
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue({});
         });
 
         it("throws an error", function () {
@@ -140,7 +140,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
           profileDefinitions = {
             'profileName': 'profile args'
           };
-          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+          spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue(profileDefinitions);
         });
 
         it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
@@ -157,8 +157,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
           'profileA': 'profileA args',
           'profileB': 'profileB args'
         };
-        spyOn(argumentParser, 'argsToOptions').andReturn(options);
-        spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').andReturn(profileDefinitions);
+        spyOn(argumentParser, 'argsToOptions').and.returnValue(options);
+        spyOn(Cucumber.Cli.ArgumentParser.ProfileDefinitionLoader, 'getDefinitions').and.returnValue(profileDefinitions);
       });
 
       it("returns the profile args split by whitespace concatenated with the unexpanded args", function () {
@@ -168,107 +168,115 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
   });
 
+  /* jshint sub: true */
   describe("getKnownOptionDefinitions()", function () {
+    var knownOptionDefinitions;
+
+    beforeEach(function () {
+      knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+    });
+
     it("returns a hash", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(typeof(knownOptionDefinitions)).toBe('object');
     });
 
-    it("defines a --require option to accept paths", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_NAME]).toEqual([path, Array]);
+    it("defines a repeatable --require option", function () {
+      expect(knownOptionDefinitions['require']).toEqual([path, Array]);
     });
 
-    it("defines a --tags option to include and exclude tags", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.TAGS_OPTION_NAME]).toEqual([String, Array]);
+    it("defines a repeatable --tags option", function () {
+      expect(knownOptionDefinitions['tags']).toEqual([String, Array]);
     });
 
-    it("defines a --format option to specify the format", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
+    it("defines a repeatable --profile option", function () {
+      expect(knownOptionDefinitions['profile']).toEqual([String, Array]);
+    });
+
+    it("defines a repeatable --compiler option", function () {
+      expect(knownOptionDefinitions['compiler']).toEqual([String, Array]);
+    });
+
+    it("defines a --format option", function () {
+      expect(knownOptionDefinitions['format']).toEqual(String);
     });
 
     it("defines a --strict flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['strict']).toEqual(Boolean);
+    });
+
+    it("defines a --dry-run flag", function () {
+      expect(knownOptionDefinitions['dry-run']).toEqual(Boolean);
     });
 
     it("defines a --help flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['help']).toEqual(Boolean);
     });
 
     it("defines a --version flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['version']).toEqual(Boolean);
     });
 
-    it("defines a --no-snippets flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME]).toEqual(Boolean);
+    it("defines a --snippets flag", function () {
+      expect(knownOptionDefinitions['snippets']).toEqual(Boolean);
     });
 
     it("defines a --backtrace flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['backtrace']).toEqual(Boolean);
     });
   });
 
   describe("getShortenedOptionDefinitions()", function () {
+    var shortenedOptionDefinitions;
+
+    beforeEach(function () {
+      shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+    });
+
     it("returns a hash", function () {
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(typeof(shortenedOptionDefinitions)).toBe('object');
     });
 
-    it("defines an alias to --require as -r", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -r as an alias to --require", function () {
+      expect(shortenedOptionDefinitions['r']).toEqual(['--require']);
     });
 
-    it("defines an alias to --format as -f", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.FORMAT_OPTION_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -f as an alias to --format", function () {
+      expect(shortenedOptionDefinitions['f']).toEqual(['--format']);
     });
 
-    it("defines an alias to --strict as -s", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.STRICT_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -p as an alias to --profile", function () {
+      expect(shortenedOptionDefinitions['p']).toEqual(['--profile']);
     });
 
-    it("defines an alias to --help as -h", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.HELP_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -S as an alias to --strict", function () {
+      expect(shortenedOptionDefinitions['S']).toEqual(['--strict']);
     });
 
-    it("defines an alias to --no-snippets as -i", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + "no-" + Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -d as an alias to --dry-run", function () {
+      expect(shortenedOptionDefinitions['d']).toEqual(['--dry-run']);
     });
 
-    it("defines an alias to --backtrace as -b", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -h as an alias to --help", function () {
+      expect(shortenedOptionDefinitions['h']).toEqual(['--help']);
+    });
+
+    it("defines -t as an alias to --tags", function () {
+      expect(shortenedOptionDefinitions['t']).toEqual(['--tags']);
+    });
+
+    it("defines -v as an alias to --version", function () {
+      expect(shortenedOptionDefinitions['v']).toEqual(['--version']);
+    });
+
+    it("defines -i as an alias to --no-snippets", function () {
+      expect(shortenedOptionDefinitions['i']).toEqual(['--no-snippets']);
+    });
+
+    it("defines -b as an alias to --backtrace", function () {
+      expect(shortenedOptionDefinitions['b']).toEqual(['--backtrace']);
     });
   });
+  /* jshint sub: false */
 
   describe("getFeatureFilePaths()", function () {
     var Cucumber = requireLib('cucumber');
@@ -279,8 +287,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       unexpandedFeaturePaths = createSpy("unexpanded feature paths");
       expandedFeaturePaths   = createSpy("expanded feature paths");
-      spyOn(argumentParser, 'getUnexpandedFeaturePaths').andReturn(unexpandedFeaturePaths);
-      spyOn(Cucumber.Cli.ArgumentParser.FeaturePathExpander, 'expandPaths').andReturn(expandedFeaturePaths);
+      spyOn(argumentParser, 'getUnexpandedFeaturePaths').and.returnValue(unexpandedFeaturePaths);
+      spyOn(Cucumber.Cli.ArgumentParser.FeaturePathExpander, 'expandPaths').and.returnValue(expandedFeaturePaths);
     });
 
     it("gets the unexpanded feature file paths", function () {
@@ -308,7 +316,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
                                                   {replace: featureDirectoryPaths[0]}),
                                createSpyWithStubs("second feature path",
                                                   {replace: featureDirectoryPaths[1]})];
-      spyOn(argumentParser, 'getFeatureFilePaths').andReturn(featureFilePaths);
+      spyOn(argumentParser, 'getFeatureFilePaths').and.returnValue(featureFilePaths);
     });
 
     it("gets the feature file paths", function () {
@@ -333,7 +341,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       options   = { argv: { remain: [] } };
-      spyOn(argumentParser, 'getOptions').andReturn(options);
+      spyOn(argumentParser, 'getOptions').and.returnValue(options);
     });
 
     it("gets the options", function () {
@@ -346,7 +354,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
         remaining = [createSpy("remaining command-line argument")];
         remaining.length = 1;
         options   = { argv: { remain: remaining } };
-        argumentParser.getOptions.andReturn(options);
+        argumentParser.getOptions.and.returnValue(options);
       });
 
       it("returns the remaining command-line arguments", function () {
@@ -357,7 +365,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     describe("when there are no remaining command-line arguments", function () {
       beforeEach(function () {
         options   = { argv: { remain: [] } };
-        argumentParser.getOptions.andReturn(options);
+        argumentParser.getOptions.and.returnValue(options);
       });
 
       it("returns the default 'features' sub-directory path", function () {
@@ -367,13 +375,15 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getSupportCodeFilePaths", function () {
-    var unexpandedSupportCodeFilePaths, expandedSupportCodePaths;
+    var unexpandedSupportCodeFilePaths, compilerExtensions, expandedSupportCodePaths;
 
     beforeEach(function () {
       unexpandedSupportCodeFilePaths = createSpy("unexpanded support code file paths");
+      compilerExtensions             = createSpy("compiler extensions");
       expandedSupportCodePaths       = createSpy("expanded support code file paths");
-      spyOn(argumentParser, 'getUnexpandedSupportCodeFilePaths').andReturn(unexpandedSupportCodeFilePaths);
-      spyOn(Cucumber.Cli.ArgumentParser.SupportCodePathExpander, 'expandPaths').andReturn(expandedSupportCodePaths);
+      spyOn(argumentParser, 'getUnexpandedSupportCodeFilePaths').and.returnValue(unexpandedSupportCodeFilePaths);
+      spyOn(argumentParser, 'getCompilerExtensions').and.returnValue(compilerExtensions);
+      spyOn(Cucumber.Cli.ArgumentParser.SupportCodePathExpander, 'expandPaths').and.returnValue(expandedSupportCodePaths);
     });
 
     it("gets the unexpanded support code file paths", function () {
@@ -383,7 +393,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("asks the support code file expander to expand the paths", function () {
       argumentParser.getSupportCodeFilePaths();
-      expect(Cucumber.Cli.ArgumentParser.SupportCodePathExpander.expandPaths).toHaveBeenCalledWith(unexpandedSupportCodeFilePaths);
+      expect(Cucumber.Cli.ArgumentParser.SupportCodePathExpander.expandPaths).toHaveBeenCalledWith(unexpandedSupportCodeFilePaths, ['js'].concat(compilerExtensions));
     });
 
     it("returns the expanded support code paths", function () {
@@ -397,8 +407,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       featureDirectoryPaths          = createSpy("paths to directories in which features lie");
       unexpandedSupportCodeFilePaths = createSpy("unexpanded support code file paths");
-      spyOn(argumentParser, 'getFeatureDirectoryPaths').andReturn(featureDirectoryPaths);
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(unexpandedSupportCodeFilePaths);
+      spyOn(argumentParser, 'getFeatureDirectoryPaths').and.returnValue(featureDirectoryPaths);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(unexpandedSupportCodeFilePaths);
     });
 
     it("gets the directories in which the features lie", function () {
@@ -422,8 +432,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       tagOptionValues = createSpy("tag option values");
       tagGroups       = createSpy("tag groups");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(tagOptionValues);
-      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').andReturn(tagGroups);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(tagOptionValues);
+      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').and.returnValue(tagGroups);
     });
 
     it("gets the tag option values", function () {
@@ -446,7 +456,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       format = createSpy("format");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(format);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(format);
     });
 
     it("gets the format option value", function () {
@@ -464,7 +474,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       isStrictRequested = createSpy("is strict requested?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isStrictRequested);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(isStrictRequested);
     });
 
     it("gets the 'strict' flag with a default value", function () {
@@ -482,7 +492,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       isHelpRequested = createSpy("is help requested?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isHelpRequested);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(isHelpRequested);
     });
 
     it("gets the 'help' flag with a default value", function () {
@@ -500,7 +510,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       isVersionRequested = createSpy("is version requested?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(isVersionRequested);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(isVersionRequested);
     });
 
     it("gets the 'version' flag with a default value", function () {
@@ -518,7 +528,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in coffee script?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeInCoffeeScript);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(shouldSnippetsBeInCoffeeScript);
     });
 
     it("gets the 'coffee' flag with a falsy default value", function () {
@@ -536,7 +546,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
-      spyOn(argumentParser, 'getOptionOrDefault').andReturn(shouldSnippetsBeShown);
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(shouldSnippetsBeShown);
     });
 
     it("gets the 'snippets' flag with a truthy default value", function () {
@@ -560,12 +570,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
 
     it("returns true when the backtrace flag isn't set", function () {
-      argumentParser.getOptionOrDefault.andReturn(false);
+      argumentParser.getOptionOrDefault.and.returnValue(false);
       expect(argumentParser.shouldFilterStackTraces()).toBeTruthy();
     });
 
     it("returns false when the backtrace flag is set", function () {
-      argumentParser.getOptionOrDefault.andReturn(true);
+      argumentParser.getOptionOrDefault.and.returnValue(true);
       expect(argumentParser.shouldFilterStackTraces()).toBeFalsy();
     });
   });
@@ -589,7 +599,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     beforeEach(function () {
       optionName   = "option-name";
       defaultValue = createSpy("default option value");
-      spyOn(argumentParser, 'getOptions').andReturn({});
+      spyOn(argumentParser, 'getOptions').and.returnValue({});
     });
 
     it("gets the options", function () {
@@ -604,7 +614,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
         options             = {};
         optionValue         = createSpy("option value");
         options[optionName] = optionValue;
-        argumentParser.getOptions.andReturn(options);
+        argumentParser.getOptions.and.returnValue(options);
       });
 
       it("returns the option value", function () {
