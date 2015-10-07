@@ -785,26 +785,6 @@ describe("Cucumber.Ast.Step", function () {
       step.execute(visitor, callback);
     });
 
-    it("looks up the step definition", function () {
-      expect(step.getStepDefinition).toHaveBeenCalledWith(visitor);
-    });
-
-    it("gets the current World instance", function () {
-      expect(visitor.getWorld).toHaveBeenCalled();
-    });
-
-    it("gets the current scenario", function () {
-      expect(visitor.getScenario).toHaveBeenCalled();
-    });
-
-    it("gets the current domain", function () {
-      expect(visitor.getDomain).toHaveBeenCalled();
-    });
-
-    it("gets the current domain", function () {
-      expect(visitor.getDefaultTimeout).toHaveBeenCalled();
-    });
-
     it("invokes the step definition", function () {
       expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, domain, defaultTimeout, callback);
     });
