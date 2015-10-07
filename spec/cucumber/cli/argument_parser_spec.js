@@ -168,120 +168,115 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
   });
 
+  /* jshint sub: true */
   describe("getKnownOptionDefinitions()", function () {
+    var knownOptionDefinitions;
+
+    beforeEach(function () {
+      knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
+    });
+
     it("returns a hash", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
       expect(typeof(knownOptionDefinitions)).toBe('object');
     });
 
-    it("defines a --require option to accept paths", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_NAME]).toEqual([path, Array]);
+    it("defines a repeatable --require option", function () {
+      expect(knownOptionDefinitions['require']).toEqual([path, Array]);
     });
 
-    it("defines a --tags option to include and exclude tags", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.TAGS_OPTION_NAME]).toEqual([String, Array]);
+    it("defines a repeatable --tags option", function () {
+      expect(knownOptionDefinitions['tags']).toEqual([String, Array]);
     });
 
-    it("defines a --format option to specify the format", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME]).toEqual(String);
+    it("defines a repeatable --profile option", function () {
+      expect(knownOptionDefinitions['profile']).toEqual([String, Array]);
+    });
+
+    it("defines a repeatable --compiler option", function () {
+      expect(knownOptionDefinitions['compiler']).toEqual([String, Array]);
+    });
+
+    it("defines a --format option", function () {
+      expect(knownOptionDefinitions['format']).toEqual(String);
     });
 
     it("defines a --strict flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['strict']).toEqual(Boolean);
     });
 
     it("defines a --dry-run flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.DRY_RUN_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['dry-run']).toEqual(Boolean);
     });
 
     it("defines a --help flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['help']).toEqual(Boolean);
     });
 
     it("defines a --version flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.VERSION_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['version']).toEqual(Boolean);
     });
 
-    it("defines a --no-snippets flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME]).toEqual(Boolean);
+    it("defines a --snippets flag", function () {
+      expect(knownOptionDefinitions['snippets']).toEqual(Boolean);
     });
 
     it("defines a --backtrace flag", function () {
-      var knownOptionDefinitions = argumentParser.getKnownOptionDefinitions();
-      expect(knownOptionDefinitions[Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_NAME]).toEqual(Boolean);
+      expect(knownOptionDefinitions['backtrace']).toEqual(Boolean);
     });
   });
 
   describe("getShortenedOptionDefinitions()", function () {
+    var shortenedOptionDefinitions;
+
+    beforeEach(function () {
+      shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
+    });
+
     it("returns a hash", function () {
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
       expect(typeof(shortenedOptionDefinitions)).toBe('object');
     });
 
-    it("defines an alias to --require as -r", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.REQUIRE_OPTION_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -r as an alias to --require", function () {
+      expect(shortenedOptionDefinitions['r']).toEqual(['--require']);
     });
 
-    it("defines an alias to --format as -f", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.FORMAT_OPTION_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -f as an alias to --format", function () {
+      expect(shortenedOptionDefinitions['f']).toEqual(['--format']);
     });
 
-    it("defines an alias to --strict as -s", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.STRICT_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.STRICT_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -p as an alias to --profile", function () {
+      expect(shortenedOptionDefinitions['p']).toEqual(['--profile']);
     });
 
-    it("defines an alias to --dry-run as -d", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.DRY_RUN_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.DRY_RUN_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -S as an alias to --strict", function () {
+      expect(shortenedOptionDefinitions['S']).toEqual(['--strict']);
     });
 
-    it("defines an alias to --help as -h", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.HELP_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.HELP_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -d as an alias to --dry-run", function () {
+      expect(shortenedOptionDefinitions['d']).toEqual(['--dry-run']);
     });
 
-    it("defines an alias to --no-snippets as -i", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + "no-" + Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.SNIPPETS_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -h as an alias to --help", function () {
+      expect(shortenedOptionDefinitions['h']).toEqual(['--help']);
     });
 
-    it("defines an alias to --backtrace as -b", function () {
-      var optionName = Cucumber.Cli.ArgumentParser.LONG_OPTION_PREFIX + Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_NAME;
-      var aliasName  = Cucumber.Cli.ArgumentParser.BACKTRACE_FLAG_SHORT_NAME;
-      var aliasValue = [optionName];
-      var shortenedOptionDefinitions = argumentParser.getShortenedOptionDefinitions();
-      expect(shortenedOptionDefinitions[aliasName]).toEqual(aliasValue);
+    it("defines -t as an alias to --tags", function () {
+      expect(shortenedOptionDefinitions['t']).toEqual(['--tags']);
+    });
+
+    it("defines -v as an alias to --version", function () {
+      expect(shortenedOptionDefinitions['v']).toEqual(['--version']);
+    });
+
+    it("defines -i as an alias to --no-snippets", function () {
+      expect(shortenedOptionDefinitions['i']).toEqual(['--no-snippets']);
+    });
+
+    it("defines -b as an alias to --backtrace", function () {
+      expect(shortenedOptionDefinitions['b']).toEqual(['--backtrace']);
     });
   });
+  /* jshint sub: false */
 
   describe("getFeatureFilePaths()", function () {
     var Cucumber = requireLib('cucumber');

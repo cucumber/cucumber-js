@@ -766,35 +766,25 @@ describe("Cucumber.Ast.Step", function () {
   });
 
   describe("execute()", function () {
-    var stepDefinition, world, scenario, visitor, callback;
+    var stepDefinition, world, scenario, defaultTimeout, visitor, callback;
 
     beforeEach(function () {
       stepDefinition = createSpy("step definition");
       world          = createSpy("world");
       scenario       = createSpy("scenario");
+      defaultTimeout = createSpy("defaultTimeout");
       visitor        = createSpy("visitor");
       callback       = createSpy("callback received by execute()");
       spyOnStub(stepDefinition, 'invoke');
       spyOnStub(step, 'getStepDefinition').and.returnValue(stepDefinition);
       spyOnStub(visitor, 'getWorld').and.returnValue(world);
       spyOnStub(visitor, 'getScenario').and.returnValue(scenario);
+      spyOnStub(visitor, 'getDefaultTimeout').and.returnValue(defaultTimeout);
       step.execute(visitor, callback);
     });
 
-    it("looks up the step definition", function () {
-      expect(step.getStepDefinition).toHaveBeenCalledWith(visitor);
-    });
-
-    it("gets the current World instance", function () {
-      expect(visitor.getWorld).toHaveBeenCalled();
-    });
-
-    it("gets the current scenario", function () {
-      expect(visitor.getScenario).toHaveBeenCalled();
-    });
-
     it("invokes the step definition", function () {
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, defaultTimeout, callback);
     });
   });
 });

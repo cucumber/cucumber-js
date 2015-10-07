@@ -14,7 +14,7 @@ describe("Cucumber.SupportCode.Hook", function () {
 
   describe("constructor", function () {
     it("inherits from Cucumber.SupportCode.StepDefinition", function () {
-      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', code);
+      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', {}, code);
       expect(hook).toBe(stepDefinition);
     });
   });
