@@ -208,6 +208,35 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 
 `'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)"$/`.
 
+##### Timeouts
+
+By default, asynchronous hooks and steps timeout after 5000 milliseconds.
+This can be modified globally with:
+
+```js
+// features/support/env.js
+
+var configure = function () {
+  this.setDefaultTimeout(60 * 1000);
+};
+
+module.exports = configure;
+```
+
+A specific step's timeout can be set with:
+
+```js
+// features/step_definitions/my_steps.js
+
+var mySteps = function () {
+  this.Given(/^a slow step$/, {timeout: 60 * 1000}, function(callback) {
+    // Does some slow browser/filesystem/network actions
+  });
+};
+
+module.exports = mySteps;
+```
+
 #### Hooks
 
 Hooks can be used to prepare and clean the environment before and after each scenario is executed.

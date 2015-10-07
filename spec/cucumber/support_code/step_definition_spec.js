@@ -8,7 +8,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     pattern            = createSpyWithStubs("pattern", {test: null});
     stepDefinitionCode = createSpy("step definition code");
     spyOn(global, 'RegExp');
-    stepDefinition = Cucumber.SupportCode.StepDefinition(pattern, stepDefinitionCode);
+    stepDefinition = Cucumber.SupportCode.StepDefinition(pattern, {}, stepDefinitionCode);
   });
 
   describe("getPatternRegexp()", function () {
@@ -87,7 +87,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
   });
 
   describe("invoke()", function () {
-    var step, world, scenario, stepDomain, callback;
+    var step, world, scenario, stepDomain, defaultTimeout, callback;
     var parameters, exceptionHandler;
     var timestamp = 0;
 
@@ -96,6 +96,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       world                         = createSpy("world");
       scenario                      = createSpyWithStubs("scenario", {getAttachments: undefined});
       stepDomain                    = createSpy("stepDomain");
+      defaultTimeout                = 5 * 1000;
       callback                      = createSpy("callback");
       parameters                    = createSpy("code execution parameters");
       exceptionHandler              = createSpy("exception handler");
@@ -127,7 +128,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
 
     it("builds the step invocation parameters", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalled();
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(step, 1);
       expect(stepDefinition.buildInvocationParameters).toHaveBeenCalledWithValueAsNthParameter(scenario, 2);
@@ -135,7 +136,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
 
     it("builds an exception handler for the code callback", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
       expect(stepDefinition.buildExceptionHandlerToCodeCallback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
 
       var codeExecutionCallbackPassedToParameterBuilder = stepDefinition.buildInvocationParameters.calls.mostRecent().args[2];
@@ -146,17 +147,17 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     });
 
     it("registers the exception handler for uncaught exceptions", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
       expect(Cucumber.Util.Exception.registerUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
     });
 
     it("calls the step definition code with the parameters and World as 'this'", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
       expect(stepDefinitionCode.apply).toHaveBeenCalledWith(world, parameters);
     });
 
     it("builds the code callback", function () {
-      stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+      stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
       expect(stepDefinition.buildCodeCallback).toHaveBeenCalled();
       expect(stepDefinition.buildCodeCallback).toHaveBeenCalledWithAFunctionAsNthParameter(1);
     });
@@ -165,7 +166,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       var codeExecutionCallback, successfulStepResult, attachments;
 
       beforeEach(function () {
-        stepDefinition.invoke(step, world, scenario, stepDomain, callback);
+        stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
         codeExecutionCallback = stepDefinition.buildCodeCallback.calls.mostRecent().args[0];
         successfulStepResult  = createSpy("successful step result");
         attachments           = createSpy("attachments");
