@@ -213,7 +213,7 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 By default, asynchronous hooks and steps timeout after 5000 milliseconds.
 This can be modified globally with:
 
-```
+```js
 // features/support/env.js
 
 var configure = function () {
@@ -225,7 +225,7 @@ module.exports = configure;
 
 A specific step's timeout can be set with:
 
-```
+```js
 // features/step_definitions/my_steps.js
 
 var mySteps = function () {
