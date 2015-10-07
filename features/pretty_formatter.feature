@@ -189,4 +189,5 @@ Feature: Pretty Formatter
 
       1 scenario (1 passed)
       3 steps (3 passed)
+      <duration-stat>
       """
