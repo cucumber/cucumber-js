@@ -26,6 +26,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
         isFailed:     undefined,
         isSkipped:    undefined,
         isUndefined:  undefined,
+        getDuration:  undefined,
         getStep:      undefined
       });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
@@ -43,6 +44,24 @@ describe("Cucumber.Listener.StatsJournal", function () {
     it("checks whether the step was successful or not", function () {
       statsJournal.handleStepResultEvent(event, callback);
       expect(stepResult.isSuccessful).toHaveBeenCalled();
+    });
+
+    describe("when the step does not has a duration", function () {
+      it("does not change the total duration", function () {
+        statsJournal.handleStepResultEvent(event, callback);
+        expect(statsJournal.getDuration()).toEqual(0);
+      });
+    });
+
+    describe("when the step has a duration", function () {
+      beforeEach(function () {
+        stepResult.getDuration.and.returnValue(5);
+      });
+
+      it("adds the step duration to the total duration", function () {
+        statsJournal.handleStepResultEvent(event, callback);
+        expect(statsJournal.getDuration()).toEqual(5);
+      });
     });
 
     describe("when the step passed", function () {

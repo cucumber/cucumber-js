@@ -16,6 +16,7 @@ Feature: Pretty Formatter
 
       0 scenarios
       0 steps
+      <duration-stat>
       """
 
   Scenario: Pretty formatter hides around, before and after hooks
@@ -66,6 +67,7 @@ Feature: Pretty Formatter
 
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
 
   Scenario: Failing hook is reported as a failed step
@@ -115,6 +117,7 @@ Feature: Pretty Formatter
 
       1 scenario (1 failed)
       2 steps (1 failed, 1 skipped)
+      <duration-stat>
       """
 
   Scenario: output with --no-source flag should not show file sources
@@ -144,6 +147,7 @@ Feature: Pretty Formatter
 
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
 
   Scenario: Pretty formatter with doc strings
@@ -185,4 +189,5 @@ Feature: Pretty Formatter
 
       1 scenario (1 passed)
       3 steps (3 passed)
+      <duration-stat>
       """
