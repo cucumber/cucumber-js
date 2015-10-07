@@ -18,23 +18,23 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           callback();
         });
 
-        this.Around(function(runScenario) {
-          runScenario(function(callback) {
+        this.Around(function(scenario, runScenario) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
 
         // This should not run
         this.Around("@foo", function(runScenario) {
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -133,8 +133,8 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Around(function(runScenario) {
-          runScenario('Fail', function(callback) { callback(); });
+        this.Around(function(scenario, runScenario) {
+          runScenario('Failure', function(callback) { callback(); });
         });
       };
 
@@ -213,10 +213,10 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Around(function(runScenario) {
+        this.Around(function(scenario, runScenario) {
           // no-op
 
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             callback('Fail');
           });
         });
@@ -298,7 +298,7 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           callback('Fail');
         });
       };
@@ -369,7 +369,7 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           callback('Fail');
         });
       };
@@ -442,13 +442,13 @@ Feature: Environment Hooks
       """
       var hooks = function () {
         this.Around(function(scenario, runScenario) {
-          runScenario("fail", function(callback) {
+          runScenario("failure", function(callback) {
             callback();
           });
         });
 
         this.Around(function(scenario, runScenario) {
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -587,7 +587,7 @@ Feature: Environment Hooks
       var hooks = function () {
         this.World = require("../support/world.js").World;
 
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           var world = this;
 
           if (!world.isWorld())
@@ -596,7 +596,7 @@ Feature: Environment Hooks
             callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           var world = this;
 
           if (!world.isWorld())
@@ -605,7 +605,7 @@ Feature: Environment Hooks
             callback();
         });
 
-        this.Around(function(runScenario) {
+        this.Around(function(scenario, runScenario) {
           var world = this;
           var error;
 
