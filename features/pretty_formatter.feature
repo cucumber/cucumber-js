@@ -149,3 +149,44 @@ Feature: Pretty Formatter
       1 step (1 passed)
       <duration-stat>
       """
+
+  Scenario: Pretty formatter with doc strings
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario: some scenario
+          Given a basic step
+          And a step with a doc string
+            \"\"\"
+            my doc string
+            \"\"\"
+          And a basic step
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^a basic step$/, function() { });
+        this.Given(/^a step with a doc string$/, function(str) { });
+      };
+      module.exports = cucumberSteps;
+      """
+    When I run cucumber.js with `-f pretty`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+
+
+        Scenario: some scenario        # features/a.feature:3
+          Given a basic step           # features/a.feature:4
+          And a step with a doc string # features/a.feature:5
+            \"\"\"
+            my doc string
+            \"\"\"
+          And a basic step             # features/a.feature:9
+
+
+      1 scenario (1 passed)
+      3 steps (3 passed)
+      """

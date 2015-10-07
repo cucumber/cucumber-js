@@ -74,7 +74,7 @@ Feature: step definitions with string pattern
     And a file named "features/step_definitions/passing_steps.js" with:
       """
       stepDefinitions = function() {
-        this.When('a "$multi_word_type"', function(type, callback){
+        this.When('a "$multi_word_type"', function(type){
           if (type !== 'passing step') {
             throw new Error('wrong type');
           }
