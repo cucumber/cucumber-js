@@ -1,5 +1,4 @@
 require('../../support/spec_helper');
-var Stream = require('stream');
 
 describe("Cucumber.Api.Scenario", function () {
   var Cucumber = requireLib('cucumber');
@@ -106,74 +105,70 @@ describe("Cucumber.Api.Scenario", function () {
       callback = createSpy("callback");
     });
 
-    // Stream.Readable is only available in node.js v0.10 and higher so
-    // do not test in node.js v0.6 and v0.8
-    if (Stream.Readable) {
-      describe("when the data is a stream.Readable", function () {
-        var stream;
+    describe("when the data is a stream.Readable", function () {
+      var stream;
+
+      beforeEach(function () {
+        stream = {pipe: function () {}};
+      });
+
+      it("throws an exception when the mimeType argument is missing", function () {
+        expect(function () { scenario.attach(stream); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a mimeType"));
+      });
+
+      it("throws an exception when the callback argument is missing", function () {
+        expect(function () { scenario.attach(stream, mimeType); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a callback when data is a stream.Readable"));
+      });
+
+      describe("when it reads the stream", function () {
+        var dataListener, endListener;
 
         beforeEach(function () {
-          stream = {pipe: function () {}};
+          spyOnStub(stream, "on").and.callFake(function (event, listener) {
+            if (event === "data") {
+              dataListener = listener;
+            }
+            else if (event === "end") {
+              endListener = listener;
+            }
+            else {
+              throw new Error("Unrecognised event " + event);
+            }
+          });
+          spyOnStub(astTreeWalker, "attach");
+
+          scenario.attach(stream, mimeType, callback);
         });
 
-        it("throws an exception when the mimeType argument is missing", function () {
-          expect(function () { scenario.attach(stream); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a mimeType"));
+        it("does not call back straight away", function () {
+          expect(callback).not.toHaveBeenCalled();
         });
 
-        it("throws an exception when the callback argument is missing", function () {
-          expect(function () { scenario.attach(stream, mimeType); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a callback when data is a stream.Readable"));
+        it("listens for the data event on the stream", function () {
+          expect(dataListener).toBeAFunction();
         });
 
-        describe("when it reads the stream", function () {
-          var dataListener, endListener;
+        it("listens for the end event on the stream", function () {
+          expect(endListener).toBeAFunction();
+        });
 
+        describe("when the stream finishes providing data", function () {
           beforeEach(function () {
-            spyOnStub(stream, "on").andCallFake(function (event, listener) {
-              if (event === "data") {
-                dataListener = listener;
-              }
-              else if (event === "end") {
-                endListener = listener;
-              }
-              else {
-                throw new Error("Unrecognised event " + event);
-              }
-            });
-            spyOnStub(astTreeWalker, "attach");
-
-            scenario.attach(stream, mimeType, callback);
+            dataListener(new Buffer("first chunk"));
+            dataListener(new Buffer("second chunk"));
+            endListener();
           });
 
-          it("does not call back straight away", function () {
-            expect(callback).not.toHaveBeenCalled();
+          it("instructs the ast tree walker to create an attachment containing the contents of the stream", function () {
+            expect(astTreeWalker.attach).toHaveBeenCalledWith("first chunksecond chunk", mimeType);
           });
 
-          it("listens for the data event on the stream", function () {
-            expect(dataListener).toBeAFunction ();
-          });
-
-          it("listens for the end event on the stream", function () {
-            expect(endListener).toBeAFunction ();
-          });
-
-          describe("when the stream finishes providing data", function () {
-            beforeEach(function () {
-              dataListener(new Buffer("first chunk"));
-              dataListener(new Buffer("second chunk"));
-              endListener();
-            });
-
-            it("instructs the ast tree walker to create an attachment containing the contents of the stream", function () {
-              expect(astTreeWalker.attach).toHaveBeenCalledWith("first chunksecond chunk", mimeType);
-            });
-
-            it("calls back", function () {
-              expect(callback).toHaveBeenCalled();
-            });
+          it("calls back", function () {
+            expect(callback).toHaveBeenCalled();
           });
         });
       });
-    }
+    });
 
     describe("when the data is a Buffer", function () {
       var buffer;

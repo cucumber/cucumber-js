@@ -14,8 +14,8 @@ describe("Cucumber.Ast.Background", function () {
     lastStep    = createSpy("Last step");
     steps       = createSpy("Step collection");
     spyOnStub(steps, 'add');
-    spyOnStub(steps, 'getLast').andReturn(lastStep);
-    spyOn(Cucumber.Type, 'Collection').andReturn(steps);
+    spyOnStub(steps, 'getLast').and.returnValue(lastStep);
+    spyOn(Cucumber.Type, 'Collection').and.returnValue(steps);
     background = Cucumber.Ast.Background(keyword, name, description, uri, line);
   });
 
@@ -61,7 +61,7 @@ describe("Cucumber.Ast.Background", function () {
     beforeEach(function () {
       step = createSpyWithStubs("step AST element", {setPreviousStep: null});
       lastStep = createSpy("last step");
-      spyOn(background, 'getLastStep').andReturn(lastStep);
+      spyOn(background, 'getLastStep').and.returnValue(lastStep);
     });
 
     it("gets the last step", function () {

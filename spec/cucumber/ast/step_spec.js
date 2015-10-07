@@ -120,8 +120,8 @@ describe("Cucumber.Ast.Step", function () {
 
       beforeEach(function () {
         docString = createSpy("doc string");
-        step.hasDocString.andReturn(true);
-        spyOn(step, 'getDocString').andReturn(docString);
+        step.hasDocString.and.returnValue(true);
+        spyOn(step, 'getDocString').and.returnValue(docString);
       });
 
       it("gets the attached doc string", function () {
@@ -136,7 +136,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when no doc string is attached", function () {
       beforeEach(function () {
-        step.hasDocString.andReturn(false);
+        step.hasDocString.and.returnValue(false);
       });
 
       it("checks whether a data table is attached", function () {
@@ -149,8 +149,8 @@ describe("Cucumber.Ast.Step", function () {
 
         beforeEach(function () {
           dataTable = createSpy("data table");
-          step.hasDataTable.andReturn(true);
-          spyOn(step, 'getDataTable').andReturn(dataTable);
+          step.hasDataTable.and.returnValue(true);
+          spyOn(step, 'getDataTable').and.returnValue(dataTable);
         });
 
         it("gets the data table", function () {
@@ -187,7 +187,7 @@ describe("Cucumber.Ast.Step", function () {
       beforeEach(function () {
         attachmentContents = createSpy("step attachment contents");
         attachment         = createSpyWithStubs("step attachment", {getContents: attachmentContents});
-        step.getAttachment.andReturn(attachment);
+        step.getAttachment.and.returnValue(attachment);
       });
 
       it("gets the attachment contents", function () {
@@ -220,7 +220,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when there is a doc string attached", function () {
       beforeEach(function () {
-        step.hasDocString.andReturn(true);
+        step.hasDocString.and.returnValue(true);
       });
 
       it("is truthy", function () {
@@ -230,7 +230,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when there is no doc string attached", function () {
       beforeEach(function () {
-        step.hasDocString.andReturn(false);
+        step.hasDocString.and.returnValue(false);
       });
 
       it("checks whether the step has a data table attached or not", function () {
@@ -240,7 +240,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when there is a data table attached", function () {
         beforeEach(function () {
-          step.hasDataTable.andReturn(true);
+          step.hasDataTable.and.returnValue(true);
         });
 
         it("is truthy", function () {
@@ -250,7 +250,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when there is no data table attached", function () {
         beforeEach(function () {
-          step.hasDataTable.andReturn(false);
+          step.hasDataTable.and.returnValue(false);
         });
 
         it("is truthy", function () {
@@ -267,7 +267,7 @@ describe("Cucumber.Ast.Step", function () {
       row       = createSpy("data table row");
       dataTable = createSpyWithStubs("data table", {attachRow: null});
       spyOn(step, 'ensureDataTableIsAttached');
-      spyOn(step, 'getDataTable').andReturn(dataTable);
+      spyOn(step, 'getDataTable').and.returnValue(dataTable);
     });
 
     it("ensures there is a data table attached already", function () {
@@ -303,8 +303,8 @@ describe("Cucumber.Ast.Step", function () {
     describe("when there is no data table yet", function () {
       beforeEach(function () {
         dataTable = createSpy("new data table");
-        step.getDataTable.andReturn(undefined);
-        Cucumber.Ast.DataTable.andReturn(dataTable);
+        step.getDataTable.and.returnValue(undefined);
+        Cucumber.Ast.DataTable.and.returnValue(dataTable);
       });
 
       it("creates a new data table", function () {
@@ -321,7 +321,7 @@ describe("Cucumber.Ast.Step", function () {
     describe("when there is a data table already", function () {
       beforeEach(function () {
         dataTable = createSpy("existing data table");
-        step.getDataTable.andReturn(dataTable);
+        step.getDataTable.and.returnValue(dataTable);
       });
 
       it("does not create a new data table", function () {
@@ -377,13 +377,13 @@ describe("Cucumber.Ast.Step", function () {
     });
 
     it("is truthy when the keyword is an outcome step keyword", function () {
-      step.hasOutcomeStepKeyword.andReturn(true);
+      step.hasOutcomeStepKeyword.and.returnValue(true);
       expect(step.isOutcomeStep()).toBeTruthy();
     });
 
     describe("when the keyword is not an outcome step keyword", function () {
       beforeEach(function () {
-        step.hasOutcomeStepKeyword.andReturn(false);
+        step.hasOutcomeStepKeyword.and.returnValue(false);
       });
 
       it("checks whether the keyword is repeating an outcome step", function () {
@@ -392,7 +392,7 @@ describe("Cucumber.Ast.Step", function () {
       });
 
       it("it is true when the step is repeating an outcome step", function () {
-        step.isRepeatingOutcomeStep.andReturn(true);
+        step.isRepeatingOutcomeStep.and.returnValue(true);
         expect(step.isOutcomeStep()).toBeTruthy();
       });
     });
@@ -410,13 +410,13 @@ describe("Cucumber.Ast.Step", function () {
     });
 
     it("is truthy when the keyword is an event step keyword", function () {
-      step.hasEventStepKeyword.andReturn(true);
+      step.hasEventStepKeyword.and.returnValue(true);
       expect(step.isEventStep()).toBeTruthy();
     });
 
     describe("when the keyword is not an event step keyword", function () {
       beforeEach(function () {
-        step.hasEventStepKeyword.andReturn(false);
+        step.hasEventStepKeyword.and.returnValue(false);
       });
 
       it("checks whether the keyword is repeating an event step", function () {
@@ -425,7 +425,7 @@ describe("Cucumber.Ast.Step", function () {
       });
 
       it("it is true when the step is repeating an event step", function () {
-        step.isRepeatingEventStep.andReturn(true);
+        step.isRepeatingEventStep.and.returnValue(true);
         expect(step.isEventStep()).toBeTruthy();
       });
     });
@@ -466,7 +466,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when the keyword is a repeating keyword", function () {
       beforeEach(function () {
-        step.hasRepeatStepKeyword.andReturn(true);
+        step.hasRepeatStepKeyword.and.returnValue(true);
       });
 
       it("checks whether the preceding step is an outcome step", function () {
@@ -476,7 +476,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the step is preceded by an outcome step", function () {
         beforeEach(function () {
-          step.isPrecededByOutcomeStep.andReturn(true);
+          step.isPrecededByOutcomeStep.and.returnValue(true);
         });
 
         it("returns true", function () {
@@ -486,7 +486,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the step is not preceded by an outcome step", function () {
         beforeEach(function () {
-          step.isPrecededByOutcomeStep.andReturn(false);
+          step.isPrecededByOutcomeStep.and.returnValue(false);
         });
 
         it("returns false", function () {
@@ -497,7 +497,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when the keyword is not a repeating keyword", function () {
       beforeEach(function () {
-        step.hasRepeatStepKeyword.andReturn(false);
+        step.hasRepeatStepKeyword.and.returnValue(false);
       });
 
       it("does not check whether the preceding step is an outcome step", function () {
@@ -524,7 +524,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when the keyword is a repeating keyword", function () {
       beforeEach(function () {
-        step.hasRepeatStepKeyword.andReturn(true);
+        step.hasRepeatStepKeyword.and.returnValue(true);
       });
 
       it("checks whether the preceding step is an event step", function () {
@@ -534,7 +534,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the step is preceded by an event step", function () {
         beforeEach(function () {
-          step.isPrecededByEventStep.andReturn(true);
+          step.isPrecededByEventStep.and.returnValue(true);
         });
 
         it("returns true", function () {
@@ -544,7 +544,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the step is not preceded by an event step", function () {
         beforeEach(function () {
-          step.isPrecededByEventStep.andReturn(false);
+          step.isPrecededByEventStep.and.returnValue(false);
         });
 
         it("returns false", function () {
@@ -555,7 +555,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when the keyword is not a repeating keyword", function () {
       beforeEach(function () {
-        step.hasRepeatStepKeyword.andReturn(false);
+        step.hasRepeatStepKeyword.and.returnValue(false);
       });
 
       it("does not check whether the preceding step is an event step", function () {
@@ -602,7 +602,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when there are no previous steps", function () {
       beforeEach(function () {
-        step.hasPreviousStep.andReturn(false);
+        step.hasPreviousStep.and.returnValue(false);
       });
 
       it("is falsy", function () {
@@ -614,9 +614,9 @@ describe("Cucumber.Ast.Step", function () {
       var previousStep;
 
       beforeEach(function () {
-        step.hasPreviousStep.andReturn(true);
+        step.hasPreviousStep.and.returnValue(true);
         previousStep = createSpyWithStubs("previous step", {isOutcomeStep: null});
-        spyOn(step, 'getPreviousStep').andReturn(previousStep);
+        spyOn(step, 'getPreviousStep').and.returnValue(previousStep);
       });
 
       it("gets the previous step", function () {
@@ -631,7 +631,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the previous step is an outcome step", function () {
         beforeEach(function () {
-          previousStep.isOutcomeStep.andReturn(true);
+          previousStep.isOutcomeStep.and.returnValue(true);
         });
 
         it("is truthy", function () {
@@ -641,7 +641,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the previous step is not an outcome step", function () {
         beforeEach(function () {
-          previousStep.isOutcomeStep.andReturn(false);
+          previousStep.isOutcomeStep.and.returnValue(false);
         });
 
         it("is falsy", function () {
@@ -663,7 +663,7 @@ describe("Cucumber.Ast.Step", function () {
 
     describe("when there are no previous steps", function () {
       beforeEach(function () {
-        step.hasPreviousStep.andReturn(false);
+        step.hasPreviousStep.and.returnValue(false);
       });
 
       it("is falsy", function () {
@@ -675,9 +675,9 @@ describe("Cucumber.Ast.Step", function () {
       var previousStep;
 
       beforeEach(function () {
-        step.hasPreviousStep.andReturn(true);
+        step.hasPreviousStep.and.returnValue(true);
         previousStep = createSpyWithStubs("previous step", {isEventStep: null});
-        spyOn(step, 'getPreviousStep').andReturn(previousStep);
+        spyOn(step, 'getPreviousStep').and.returnValue(previousStep);
       });
 
       it("gets the previous step", function () {
@@ -692,7 +692,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the previous step is an event step", function () {
         beforeEach(function () {
-          previousStep.isEventStep.andReturn(true);
+          previousStep.isEventStep.and.returnValue(true);
         });
 
         it("is truthy", function () {
@@ -702,7 +702,7 @@ describe("Cucumber.Ast.Step", function () {
 
       describe("when the previous step is not an event step", function () {
         beforeEach(function () {
-          previousStep.isEventStep.andReturn(false);
+          previousStep.isEventStep.and.returnValue(false);
         });
 
         it("is falsy", function () {
@@ -735,7 +735,7 @@ describe("Cucumber.Ast.Step", function () {
       beforeEach(function () {
         step.acceptVisitor(visitor, callback);
         stepResult = createSpy("Step execution result");
-        executeCallback = step.execute.mostRecentCall.args[1];
+        executeCallback = step.execute.calls.mostRecent().args[1];
       });
 
       it("tells the visitor to visit the step result", function () {
@@ -751,7 +751,7 @@ describe("Cucumber.Ast.Step", function () {
     beforeEach(function () {
       visitor        = createSpy("visitor");
       stepDefinition = createSpy("step definition");
-      spyOnStub(visitor, 'lookupStepDefinitionByName').andReturn(stepDefinition);
+      spyOnStub(visitor, 'lookupStepDefinitionByName').and.returnValue(stepDefinition);
       returnValue = step.getStepDefinition(visitor);
     });
 
@@ -766,41 +766,27 @@ describe("Cucumber.Ast.Step", function () {
   });
 
   describe("execute()", function () {
-    var stepDefinition, world, scenario, domain, visitor, callback;
+    var stepDefinition, world, scenario, domain, defaultTimeout, visitor, callback;
 
     beforeEach(function () {
       stepDefinition = createSpy("step definition");
       world          = createSpy("world");
       scenario       = createSpy("scenario");
       domain         = createSpy("domain");
+      defaultTimeout = createSpy("defaultTimeout");
       visitor        = createSpy("visitor");
       callback       = createSpy("callback received by execute()");
       spyOnStub(stepDefinition, 'invoke');
-      spyOnStub(step, 'getStepDefinition').andReturn(stepDefinition);
-      spyOnStub(visitor, 'getWorld').andReturn(world);
-      spyOnStub(visitor, 'getScenario').andReturn(scenario);
-      spyOnStub(visitor, 'getDomain').andReturn(domain);
+      spyOnStub(step, 'getStepDefinition').and.returnValue(stepDefinition);
+      spyOnStub(visitor, 'getWorld').and.returnValue(world);
+      spyOnStub(visitor, 'getScenario').and.returnValue(scenario);
+      spyOnStub(visitor, 'getDomain').and.returnValue(domain);
+      spyOnStub(visitor, 'getDefaultTimeout').and.returnValue(defaultTimeout);
       step.execute(visitor, callback);
     });
 
-    it("looks up the step definition", function () {
-      expect(step.getStepDefinition).toHaveBeenCalledWith(visitor);
-    });
-
-    it("gets the current World instance", function () {
-      expect(visitor.getWorld).toHaveBeenCalled();
-    });
-
-    it("gets the current scenario", function () {
-      expect(visitor.getScenario).toHaveBeenCalled();
-    });
-
-    it("gets the current domain", function () {
-      expect(visitor.getDomain).toHaveBeenCalled();
-    });
-
     it("invokes the step definition", function () {
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, domain, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, domain, defaultTimeout, callback);
     });
   });
 });

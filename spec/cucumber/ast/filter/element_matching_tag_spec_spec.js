@@ -34,8 +34,8 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
 
     describe("when the spec tag is expected on the element", function () {
       beforeEach(function () {
-        spec.isExpectingTag.andReturn(true);
-        spyOn(_, 'any').andReturn(matchingElement);
+        spec.isExpectingTag.and.returnValue(true);
+        spyOn(_, 'any').and.returnValue(matchingElement);
       });
 
       it("checks whether any of the element tags match the spec tag", function () {
@@ -50,8 +50,8 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
 
     describe("when the spec tag is not expected on the element", function () {
       beforeEach(function () {
-        spec.isExpectingTag.andReturn(false);
-        spyOn(_, 'all').andReturn(matchingElement);
+        spec.isExpectingTag.and.returnValue(false);
+        spyOn(_, 'all').and.returnValue(matchingElement);
       });
 
       it("checks whether any of the element tags match the spec tag", function () {
@@ -85,12 +85,12 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
 
     describe("when the spec expects the tag to be present on the element", function () {
       beforeEach(function () {
-        spec.isExpectingTag.andReturn(true);
+        spec.isExpectingTag.and.returnValue(true);
       });
 
       describe("when the tag names are identical", function () {
         beforeEach(function () {
-          checkedTag.getName.andReturn(tagName);
+          checkedTag.getName.and.returnValue(tagName);
         });
 
         it("is truthy", function () {
@@ -100,7 +100,7 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
 
       describe("when the tag names are different", function () {
         beforeEach(function () {
-          checkedTag.getName.andReturn("@obscure_tag");
+          checkedTag.getName.and.returnValue("@obscure_tag");
         });
 
         it("is falsy", function () {
@@ -113,12 +113,12 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
       beforeEach(function () {
         tagName = "tag";
         spec    = Cucumber.Ast.Filter.ElementMatchingTagSpec("~" + tagName);
-        spyOn(spec, 'isExpectingTag').andReturn(false);
+        spyOn(spec, 'isExpectingTag').and.returnValue(false);
       });
 
       describe("when the tag names are identical", function () {
         beforeEach(function () {
-          checkedTag.getName.andReturn(tagName);
+          checkedTag.getName.and.returnValue(tagName);
         });
 
         it("is truthy", function () {
@@ -128,7 +128,7 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
 
       describe("when the tag names are different", function () {
         beforeEach(function () {
-          checkedTag.getName.andReturn("@obscure_tag");
+          checkedTag.getName.and.returnValue("@obscure_tag");
         });
 
         it("is falsy", function () {

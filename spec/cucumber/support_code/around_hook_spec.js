@@ -8,7 +8,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
     code       = createSpy("hook code");
     options    = {};
     hook       = createSpy("hook");
-    hookSpy    = spyOn(Cucumber.SupportCode, 'Hook').andReturn(hook);
+    hookSpy    = spyOn(Cucumber.SupportCode, 'Hook').and.returnValue(hook);
     aroundHook = Cucumber.SupportCode.AroundHook(code, options);
   });
 
@@ -20,14 +20,14 @@ describe("Cucumber.SupportCode.AroundHook", function () {
   });
 
   describe("buildCodeCallback() [setAfterStep()]", function () {
-    var callback, error, postScenarioAroundHookCallback, afterHook, codeCallback;
+    var callback, error, postScenarioCallback, afterHook, codeCallback;
 
     beforeEach(function () {
       callback     = createSpy("callback");
       error        = createSpy("error");
-      postScenarioAroundHookCallback = createSpy("post scenario around hook callback");
+      postScenarioCallback = createSpy("post scenario callback");
       afterHook    = createSpy("after hook");
-      hookSpy.andReturn(afterHook);
+      hookSpy.and.returnValue(afterHook);
 
       codeCallback = aroundHook.buildCodeCallback(callback);
     });
@@ -48,27 +48,9 @@ describe("Cucumber.SupportCode.AroundHook", function () {
         aroundHook.setAfterStep(afterStep);
       });
 
-      describe("with the post scenario callback", function () {
-        beforeEach(function () {
-          codeCallback(postScenarioAroundHookCallback);
-        });
-
-        it("calls back", function () {
-          expect(callback).toHaveBeenCalledWith(undefined);
-        });
-
-        it("creates an after hook", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioAroundHookCallback, {});
-        });
-
-        it("assigns the after hook to the after step", function () {
-          expect(afterStep.setHook).toHaveBeenCalledWith(afterHook);
-        });
-      });
-
       describe("with no error and the post scenario callback", function () {
         beforeEach(function () {
-          codeCallback(null, postScenarioAroundHookCallback);
+          codeCallback(null, postScenarioCallback);
         });
 
         it("calls back", function () {
@@ -76,11 +58,28 @@ describe("Cucumber.SupportCode.AroundHook", function () {
         });
 
         it("creates an after hook", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioAroundHookCallback, {});
+          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioCallback, {noScenario: true});
         });
 
         it("assigns the after hook to the after step", function () {
           expect(afterStep.setHook).toHaveBeenCalledWith(afterHook);
+        });
+      });
+
+      describe("with an error and no post scenario callback", function () {
+        var error;
+
+        beforeEach(function () {
+          error = createSpy("error");
+          codeCallback(error);
+        });
+
+        it("calls back", function () {
+          expect(callback).toHaveBeenCalledWith(error);
+        });
+
+        it("does not assign an after hook to the after step", function () {
+          expect(afterStep.setHook).not.toHaveBeenCalled();
         });
       });
 
@@ -89,7 +88,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
 
         beforeEach(function () {
           error = createSpy("error");
-          codeCallback(error, postScenarioAroundHookCallback);
+          codeCallback(error, postScenarioCallback);
         });
 
         it("calls back", function () {
@@ -97,7 +96,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
         });
 
         it("creates an after hook", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioAroundHookCallback, {});
+          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioCallback, {noScenario: true});
         });
 
         it("assigns the after hook to the after step", function () {

@@ -1,23 +1,58 @@
-Feature: World constructor callback with object
-  It is possible for the World constructor function to tell Cucumber
-  to use another object than itself as the World instance:
+Feature: World
 
-    this.World = function WorldConstructor(callback) {
-      var myCustomWorld = { dance: function() { /* ... */ } };
-      callback(myCustomWorld); // tell Cucumber to use myCustomWorld
-                               // as the world object.
-    };
+  Scenario: World constructor
+    Given a file named "features/world.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a step
+      """
+    And a file named "features/step_definitions/world_steps.js" with:
+      """
+      var assert = require('assert');
 
-  If no parameter is passed to the callback, the WorldConstructor
-  instance will be used by Cucumber:
+      var stepDefinitions = function() {
+        this.Given(/^a step$/, function() {
+          var world = this;
+          assert(world.implicit);
+        });
 
-    this.World = function WorldConstructor(callback) {
-      var myCustomWorld = {};
-      callback(); // could have been written `callback(this);`
-    };
+        this.World = function WorldConstructor(callback) {
+          this.implicit = true;
+          callback();
+        };
+      };
 
-  Scenario: scenario calling function on explicit world instance
-    Given a custom World constructor calling back with an explicit object
-    When Cucumber executes a scenario that calls a function on the explicit World object
-    Then the feature passes
-    And the explicit World object function should have been called
+      module.exports = stepDefinitions;
+      """
+    When I run cucumber.js with `--strict`
+    Then the exit status should be 0
+
+
+  Scenario: World is explicit object
+    Given a file named "features/world.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a step
+      """
+    And a file named "features/step_definitions/world_steps.js" with:
+      """
+      var assert = require('assert');
+
+      var stepDefinitions = function() {
+        this.Given(/^a step$/, function() {
+          var world = this;
+          assert(world.explicit);
+        });
+
+        this.World = function WorldConstructor(callback) {
+          var myCustomWorld = { explicit: true };
+          callback(myCustomWorld);
+        };
+      };
+
+      module.exports = stepDefinitions;
+      """
+    When I run cucumber.js with `--strict`
+    Then the exit status should be 0

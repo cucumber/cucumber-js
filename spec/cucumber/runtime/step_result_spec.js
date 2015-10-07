@@ -45,7 +45,7 @@ describe("Cucumber.Runtime.StepResult", function () {
   describe("hasAttachments()", function () {
     describe("when there are no attachments", function () {
       beforeEach(function () {
-        spyOnStub(attachments, 'length').andReturn(0);
+        spyOnStub(attachments, 'length').and.returnValue(0);
       });
 
       it("returns false", function () {
@@ -55,7 +55,7 @@ describe("Cucumber.Runtime.StepResult", function () {
 
     describe("when there are attachments", function () {
       beforeEach(function () {
-        spyOnStub(attachments, 'length').andReturn(1);
+        spyOnStub(attachments, 'length').and.returnValue(1);
       });
 
       it("returns true", function () {

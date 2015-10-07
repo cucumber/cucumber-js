@@ -7,7 +7,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
   beforeEach(function () {
     var StatsJournal   = Cucumber.Listener.StatsJournal;
     listener           = createSpyWithStubs("listener");
-    spyOn(Cucumber, 'Listener').andReturn(listener);
+    spyOn(Cucumber, 'Listener').and.returnValue(listener);
     Cucumber.Listener.StatsJournal = StatsJournal;
     statsJournal = Cucumber.Listener.StatsJournal();
   });
@@ -26,13 +26,14 @@ describe("Cucumber.Listener.StatsJournal", function () {
         isFailed:     undefined,
         isSkipped:    undefined,
         isUndefined:  undefined,
+        getDuration:  undefined,
         getStep:      undefined
       });
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("callback");
       step       = createSpy("step");
       spyOn(statsJournal, 'handleFailedStepResult');
-      spyOnStub(stepResult, 'getStep').andReturn(step);
+      spyOnStub(stepResult, 'getStep').and.returnValue(step);
     });
 
     it("gets the step result from the event payload", function () {
@@ -45,9 +46,27 @@ describe("Cucumber.Listener.StatsJournal", function () {
       expect(stepResult.isSuccessful).toHaveBeenCalled();
     });
 
+    describe("when the step does not has a duration", function () {
+      it("does not change the total duration", function () {
+        statsJournal.handleStepResultEvent(event, callback);
+        expect(statsJournal.getDuration()).toEqual(0);
+      });
+    });
+
+    describe("when the step has a duration", function () {
+      beforeEach(function () {
+        stepResult.getDuration.and.returnValue(5);
+      });
+
+      it("adds the step duration to the total duration", function () {
+        statsJournal.handleStepResultEvent(event, callback);
+        expect(statsJournal.getDuration()).toEqual(5);
+      });
+    });
+
     describe("when the step passed", function () {
       beforeEach(function () {
-        stepResult.isSuccessful.andReturn(true);
+        stepResult.isSuccessful.and.returnValue(true);
         spyOn(statsJournal, 'handleSuccessfulStepResult');
       });
 
@@ -59,7 +78,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
     describe("when the step did not pass", function () {
       beforeEach(function () {
-        stepResult.isSuccessful.andReturn(false);
+        stepResult.isSuccessful.and.returnValue(false);
         spyOn(statsJournal, 'handleSuccessfulStepResult');
       });
 
@@ -75,7 +94,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
       describe("when the step was pending", function () {
         beforeEach(function () {
-          stepResult.isPending.andReturn(true);
+          stepResult.isPending.and.returnValue(true);
           spyOn(statsJournal, 'handlePendingStepResult');
         });
 
@@ -87,7 +106,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
       describe("when the step was not pending", function () {
         beforeEach(function () {
-          stepResult.isPending.andReturn(false);
+          stepResult.isPending.and.returnValue(false);
           spyOn(statsJournal, 'handlePendingStepResult');
         });
 
@@ -103,7 +122,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
         describe("when the step was skipped", function () {
           beforeEach(function () {
-            stepResult.isSkipped.andReturn(true);
+            stepResult.isSkipped.and.returnValue(true);
             spyOn(statsJournal, 'handleSkippedStepResult');
           });
 
@@ -115,7 +134,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
         describe("when the step was not skipped", function () {
           beforeEach(function () {
-            stepResult.isSkipped.andReturn(false);
+            stepResult.isSkipped.and.returnValue(false);
             spyOn(statsJournal, 'handleSkippedStepResult');
           });
 
@@ -131,7 +150,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
           describe("when the step was undefined", function () {
             beforeEach(function () {
-              stepResult.isUndefined.andReturn(true);
+              stepResult.isUndefined.and.returnValue(true);
               spyOn(statsJournal, 'handleUndefinedStepResult');
             });
 
@@ -143,7 +162,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
           describe("when the step was not undefined", function () {
             beforeEach(function () {
-              stepResult.isUndefined.andReturn(false);
+              stepResult.isUndefined.and.returnValue(false);
               spyOn(statsJournal, 'handleUndefinedStepResult');
             });
 
@@ -177,7 +196,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
     describe("when the step is not hidden", function () {
       beforeEach(function () {
-        spyOnStub(step, 'isHidden').andReturn(false);
+        spyOnStub(step, 'isHidden').and.returnValue(false);
       });
 
       it("witnesses a passed step", function () {
@@ -188,7 +207,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
     describe("when the step is hidden", function () {
       beforeEach(function () {
-        spyOnStub(step, 'isHidden').andReturn(true);
+        spyOnStub(step, 'isHidden').and.returnValue(true);
       });
 
       it("not not witnesses a passed but hidden step", function () {
@@ -300,7 +319,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
     describe("when the current scenario failed", function () {
       beforeEach(function () {
-        statsJournal.isCurrentScenarioFailing.andReturn(true);
+        statsJournal.isCurrentScenarioFailing.and.returnValue(true);
       });
 
       it("witnesses a failed scenario", function () {
@@ -311,7 +330,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
     describe("when the current scenario did not fail", function () {
       beforeEach(function () {
-        statsJournal.isCurrentScenarioFailing.andReturn(false);
+        statsJournal.isCurrentScenarioFailing.and.returnValue(false);
         spyOn(statsJournal, 'isCurrentScenarioUndefined');
       });
 
@@ -322,7 +341,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
       describe("when the current scenario is undefined", function () {
         beforeEach(function () {
-          statsJournal.isCurrentScenarioUndefined.andReturn(true);
+          statsJournal.isCurrentScenarioUndefined.and.returnValue(true);
         });
 
         it("witnesses an undefined scenario", function () {
@@ -333,7 +352,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
       describe("when the current scenario is not undefined", function () {
         beforeEach(function () {
-          statsJournal.isCurrentScenarioUndefined.andReturn(false);
+          statsJournal.isCurrentScenarioUndefined.and.returnValue(false);
           spyOn(statsJournal, 'isCurrentScenarioPending');
         });
 
@@ -344,7 +363,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
         describe("when the current scenario is pending", function () {
           beforeEach(function () {
-            statsJournal.isCurrentScenarioPending.andReturn(true);
+            statsJournal.isCurrentScenarioPending.and.returnValue(true);
           });
 
           it("witnesses a pending scenario", function () {
@@ -355,7 +374,7 @@ describe("Cucumber.Listener.StatsJournal", function () {
 
         describe("when the current scenario is not pending (passed)", function () {
           beforeEach(function () {
-            statsJournal.isCurrentScenarioPending.andReturn(false);
+            statsJournal.isCurrentScenarioPending.and.returnValue(false);
           });
 
           it("witnesses a passed scenario", function () {
@@ -432,10 +451,10 @@ describe("Cucumber.Listener.StatsJournal", function () {
       undefinedScenarioCount = Math.floor(Math.random()*11) + 1;
       pendingScenarioCount   = Math.floor(Math.random()*11) + 1;
       failedScenarioCount    = Math.floor(Math.random()*11) + 1;
-      spyOn(statsJournal, 'getPassedScenarioCount').andReturn(passedScenarioCount);
-      spyOn(statsJournal, 'getUndefinedScenarioCount').andReturn(undefinedScenarioCount);
-      spyOn(statsJournal, 'getPendingScenarioCount').andReturn(pendingScenarioCount);
-      spyOn(statsJournal, 'getFailedScenarioCount').andReturn(failedScenarioCount);
+      spyOn(statsJournal, 'getPassedScenarioCount').and.returnValue(passedScenarioCount);
+      spyOn(statsJournal, 'getUndefinedScenarioCount').and.returnValue(undefinedScenarioCount);
+      spyOn(statsJournal, 'getPendingScenarioCount').and.returnValue(pendingScenarioCount);
+      spyOn(statsJournal, 'getFailedScenarioCount').and.returnValue(failedScenarioCount);
     });
 
     it("gets the number of passed scenarios", function () {
@@ -478,11 +497,11 @@ describe("Cucumber.Listener.StatsJournal", function () {
         skippedStepCount   +
         pendingStepCount   +
         failedStepCount;
-      spyOn(statsJournal, 'getPassedStepCount').andReturn(passedStepCount);
-      spyOn(statsJournal, 'getUndefinedStepCount').andReturn(undefinedStepCount);
-      spyOn(statsJournal, 'getSkippedStepCount').andReturn(skippedStepCount);
-      spyOn(statsJournal, 'getPendingStepCount').andReturn(pendingStepCount);
-      spyOn(statsJournal, 'getFailedStepCount').andReturn(failedStepCount);
+      spyOn(statsJournal, 'getPassedStepCount').and.returnValue(passedStepCount);
+      spyOn(statsJournal, 'getUndefinedStepCount').and.returnValue(undefinedStepCount);
+      spyOn(statsJournal, 'getSkippedStepCount').and.returnValue(skippedStepCount);
+      spyOn(statsJournal, 'getPendingStepCount').and.returnValue(pendingStepCount);
+      spyOn(statsJournal, 'getFailedStepCount').and.returnValue(failedStepCount);
     });
 
     it("gets the number of passed steps", function () {

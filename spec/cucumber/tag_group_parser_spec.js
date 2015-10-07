@@ -39,7 +39,7 @@ describe("Cucumber.TagGroupParser", function () {
       tagGroupParsers             = [createSpyWithStubs("first tag group parser", {parse: tagGroups[0]}),
                                      createSpyWithStubs("second tag group parser", {parse: tagGroups[1]}),
                                      createSpyWithStubs("third tag group parser", {parse: tagGroups[2]})];
-      spyOn(Cucumber, 'TagGroupParser').andReturnSeveral(tagGroupParsers);
+      spyOn(Cucumber, 'TagGroupParser').and.returnValues.apply(null, tagGroupParsers);
     });
 
     it("creates a TagGroupParser instance for each tag group string", function () {

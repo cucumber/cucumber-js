@@ -1,12 +1,5 @@
 Feature: Environment Hooks
 
-  # The following scenario is a regression test for special "around" hooks which
-  # deserve a bit more of attention.
-  Scenario: Tagged around hook with untagged scenario
-    Given an around hook tagged with "@foo"
-    When Cucumber executes a scenario with no tags
-    Then the hook is not fired
-
   Scenario: Hooks are steps
     Given a file named "features/a.feature" with:
       """
@@ -25,16 +18,23 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           callback();
         });
 
-        this.Around(function(runScenario) {
-          runScenario(function(callback) {
+        this.Around(function(scenario, runScenario) {
+          runScenario(null, function(callback) {
+            callback();
+          });
+        });
+
+        // This should not run
+        this.Around("@foo", function(runScenario) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -115,7 +115,7 @@ Feature: Environment Hooks
       ]
       """
 
-  Scenario Outline: Failing around hook (pre scenario) fails the scenario
+  Scenario: Failing around hook (pre scenario) fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -133,8 +133,8 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Around(function(runScenario) {
-          <fail_approach>
+        this.Around(function(scenario, runScenario) {
+          runScenario('Failure', function(callback) { callback(); });
         });
       };
 
@@ -194,12 +194,8 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach                                            |
-    | runScenario('Fail', function(callback) { callback(); }); |
-    | runScenario.fail();                                      |
 
-  Scenario Outline: Failing around hook (post scenario) fails the scenario
+  Scenario: Failing around hook (post scenario) fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -217,11 +213,11 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Around(function(runScenario) {
+        this.Around(function(scenario, runScenario) {
           // no-op
 
-          runScenario(function(callback) {
-            <fail_approach>
+          runScenario(null, function(callback) {
+            callback('Fail');
           });
         });
       };
@@ -283,12 +279,8 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach     |
-    | callback('Fail'); |
-    | callback.fail();  |
 
-  Scenario Outline: Failing before hook fails the scenario
+  Scenario: Failing before hook fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -306,8 +298,8 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
-          <fail_approach>
+        this.Before(function(scenario, callback) {
+          callback('Fail');
         });
       };
 
@@ -358,12 +350,8 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach     |
-    | callback('Fail'); |
-    | callback.fail();  |
 
-  Scenario Outline: Failing after hook fails the scenario
+  Scenario: Failing after hook fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -381,8 +369,8 @@ Feature: Environment Hooks
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.After(function(callback) {
-          <fail_approach>
+        this.After(function(scenario, callback) {
+          callback('Fail');
         });
       };
 
@@ -434,10 +422,6 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach     |
-    | callback('Fail'); |
-    | callback.fail();  |
 
   Scenario: Hooks still execute after a failure
     Given a file named "features/a.feature" with:
@@ -458,13 +442,13 @@ Feature: Environment Hooks
       """
       var hooks = function () {
         this.Around(function(scenario, runScenario) {
-          runScenario("fail", function(callback) {
+          runScenario("failure", function(callback) {
             callback();
           });
         });
 
         this.Around(function(scenario, runScenario) {
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -603,7 +587,7 @@ Feature: Environment Hooks
       var hooks = function () {
         this.World = require("../support/world.js").World;
 
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           var world = this;
 
           if (!world.isWorld())
@@ -612,7 +596,7 @@ Feature: Environment Hooks
             callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           var world = this;
 
           if (!world.isWorld())
@@ -621,7 +605,7 @@ Feature: Environment Hooks
             callback();
         });
 
-        this.Around(function(runScenario) {
+        this.Around(function(scenario, runScenario) {
           var world = this;
           var error;
 

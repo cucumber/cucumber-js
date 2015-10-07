@@ -32,6 +32,7 @@ Feature: Failed scenarios
 
       1 scenario (1 failed)
       1 step (1 failed)
+      <duration-stat>
       """
     And the exit status should be 1
 
@@ -52,5 +53,6 @@ Feature: Failed scenarios
 
       1 scenario (1 failed)
       1 step (1 failed)
+      <duration-stat>
       """
     And the exit status should be 1

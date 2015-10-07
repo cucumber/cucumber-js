@@ -17,7 +17,7 @@ describe("Cucumber.Ast.ScenarioOutline", function () {
     examples    = createSpy("examples collection");
 
     spyOnStub(steps, 'add');
-    spyOnStub(steps, 'getLast').andReturn(lastStep);
+    spyOnStub(steps, 'getLast').and.returnValue(lastStep);
 
     scenarioOutline = Cucumber.Ast.ScenarioOutline(keyword, name, description, uri, line);
   });

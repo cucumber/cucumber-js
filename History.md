@@ -1,8 +1,37 @@
 # Cucumber.js changelog
 
-## [v0.6.x](https://github.com/cucumber/cucumber-js/compare/v0.6.0...master)
+## [v0.7.x](https://github.com/cucumber/cucumber-js/compare/v0.7.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.6.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.7.0...master)
+
+### [v0.7.0](https://github.com/cucumber/cucumber-js/compare/v0.6.0...v0.7.0)
+
+#### New features
+
+* Time out steps that take too long (Charles Rudolph)
+* Print execution time (Charles Rudolph)
+
+#### Changed features
+
+* Remove callback.fail() (Charles Rudolph)
+* Update hooks interface (Charles Rudolph)
+
+#### Fixes
+
+* Don't try to handle empty features (Julien Biezemans)
+* Fix unpredictable nopt behavior (Charles Rudolph)
+* Fix pretty formatter step indentation after doc string (Charles Rudolph)
+
+#### Documentation, internals and tests
+
+* Rename Collection functions: forEach/syncForEach -> asyncForEach/forEach (Charles Rudolph)
+* Simplify installation instructions (Charles Rudolph)
+* Fix spec on Windows (Marcel Hoyer)
+* Simplify World examples in README (Charles Rudolph)
+* Update license in package.json (Charles Rudolph)
+* Convert test framework from jasmine-node to jasmine (Charles Rudolph)
+* Separate test output (Charles Rudolph)
+* Remove ruby, legacy features, cucumber-tck (Charles Rudolph)
 
 ### [v0.6.0](https://github.com/cucumber/cucumber-js/compare/v0.5.3...v0.6.0)
 
