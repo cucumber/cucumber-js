@@ -34,7 +34,7 @@ Feature: Environment Hooks
 
         // This should not run
         this.Around("@foo", function(runScenario) {
-          runScenario(function(callback) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -134,7 +134,7 @@ Feature: Environment Hooks
       """
       var hooks = function () {
         this.Around(function(scenario, runScenario) {
-          runScenario('Fail', function(callback) { callback(); });
+          runScenario('Failure', function(callback) { callback(); });
         });
       };
 
@@ -195,7 +195,7 @@ Feature: Environment Hooks
       ]
       """
 
-  Scenario Outline: Failing around hook (post scenario) fails the scenario
+  Scenario: Failing around hook (post scenario) fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -217,7 +217,7 @@ Feature: Environment Hooks
           // no-op
 
           runScenario(null, function(callback) {
-            <fail_approach>
+            callback('Fail');
           });
         });
       };
@@ -279,12 +279,8 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach     |
-    | callback('Fail'); |
-    | callback.fail();  |
 
-  Scenario Outline: Failing before hook fails the scenario
+  Scenario: Failing before hook fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -303,7 +299,7 @@ Feature: Environment Hooks
       """
       var hooks = function () {
         this.Before(function(scenario, callback) {
-          <fail_approach>
+          callback('Fail');
         });
       };
 
@@ -354,12 +350,8 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach     |
-    | callback('Fail'); |
-    | callback.fail();  |
 
-  Scenario Outline: Failing after hook fails the scenario
+  Scenario: Failing after hook fails the scenario
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -378,7 +370,7 @@ Feature: Environment Hooks
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          <fail_approach>
+          callback('Fail');
         });
       };
 
@@ -430,10 +422,6 @@ Feature: Environment Hooks
         }
       ]
       """
-  Examples:
-    | fail_approach     |
-    | callback('Fail'); |
-    | callback.fail();  |
 
   Scenario: Hooks still execute after a failure
     Given a file named "features/a.feature" with:
@@ -454,7 +442,7 @@ Feature: Environment Hooks
       """
       var hooks = function () {
         this.Around(function(scenario, runScenario) {
-          runScenario("fail", function(callback) {
+          runScenario("failure", function(callback) {
             callback();
           });
         });

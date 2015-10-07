@@ -181,7 +181,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       describe("when called without an error", function () {
         beforeEach(function () {
           timestamp = 1;
-          spyOn(codeExecutionCallback, 'fail');
           spyOnStub(scenario, 'getAttachments').and.returnValue(attachments);
           codeExecutionCallback();
         });
@@ -202,38 +201,41 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(callback).toHaveBeenCalledWith(successfulStepResult);
         });
 
-        it("does not fail", function () {
-          expect(codeExecutionCallback.fail).not.toHaveBeenCalled();
-        });
-
         afterEach(function () {
           timestamp = 0;
         });
       });
 
       describe("when called with an error", function () {
-        var error;
+        var error, failedStepResult;
 
         beforeEach(function () {
-          error = createSpy("error");
-          spyOn(codeExecutionCallback, 'fail');
+          timestamp = 1;
+          error             = createSpy("error");
+          failedStepResult  = createSpy("failed step result");
+          spyOnStub(scenario, "getAttachments").and.returnValue(attachments);
+          spyOn(Cucumber.Runtime, 'FailedStepResult').and.returnValue(failedStepResult);
           codeExecutionCallback(error);
         });
 
-        it("does not create a successful step result", function () {
-          expect(Cucumber.Runtime.SuccessfulStepResult).not.toHaveBeenCalled();
+        it("gets the attachments from the scenario", function () {
+          expect(scenario.getAttachments).toHaveBeenCalled();
         });
 
-        it("does not unregister the exception handler", function () {
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).not.toHaveBeenCalled();
+        it("creates a failing step result", function () {
+          expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: error, duration: 1e6, attachments: attachments});
         });
 
-        it("does not call back", function () {
-          expect(callback).not.toHaveBeenCalled();
+        it("unregisters the exception handler", function () {
+          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
-        it("fails", function () {
-          expect(codeExecutionCallback.fail).toHaveBeenCalledWith(error);
+        it("calls back", function () {
+          expect(callback).toHaveBeenCalledWith(failedStepResult);
+        });
+
+        afterEach(function () {
+          timestamp = 0;
         });
       });
 
@@ -265,51 +267,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         it("calls back", function () {
           codeExecutionCallback.pending(pendingReason);
           expect(callback).toHaveBeenCalledWith(pendingStepResult);
-        });
-      });
-
-      describe("fail()", function () {
-        var failureReason, failedStepResult;
-
-        beforeEach(function () {
-          timestamp = 1;
-          failureReason     = createSpy("failure reason");
-          failedStepResult  = createSpy("failed step result");
-          spyOnStub(scenario, "getAttachments").and.returnValue(attachments);
-          spyOn(Cucumber.Runtime, 'FailedStepResult').and.returnValue(failedStepResult);
-        });
-
-        it("gets the attachments from the scenario", function () {
-          codeExecutionCallback.fail(failureReason);
-          expect(scenario.getAttachments).toHaveBeenCalled();
-        });
-
-        it("creates a failing step result", function () {
-          codeExecutionCallback.fail(failureReason);
-          expect(Cucumber.Runtime.FailedStepResult).toHaveBeenCalledWith({step: step, failureException: failureReason, duration: 1e6, attachments: attachments});
-        });
-
-        describe("when no failure reason is given", function () {
-          it("creates a failing step result with a generic step failure exception", function () {
-            codeExecutionCallback.fail();
-            var payload = Cucumber.Runtime.FailedStepResult.calls.mostRecent().args[0];
-            expect(payload.step).toBe(step);
-            expect(payload.failureException).toBeAnInstanceOf(Error);
-          });
-        });
-
-        it("unregisters the exception handler", function () {
-          codeExecutionCallback.fail(failureReason);
-          expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
-        });
-
-        it("calls back", function () {
-          codeExecutionCallback.fail(failureReason);
-          expect(callback).toHaveBeenCalledWith(failedStepResult);
-        });
-
-        afterEach(function () {
-          timestamp = 0;
         });
       });
     });
@@ -437,7 +394,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
     var codeCallback, exceptionHandler, stepDomain;
 
     beforeEach(function () {
-      codeCallback = createSpyWithStubs("code callback", {fail: null});
+      codeCallback = createSpy("code callback");
       stepDomain = createSpy("step domain");
       exceptionHandler = stepDefinition.buildExceptionHandlerToCodeCallback(codeCallback, stepDomain);
     });
@@ -455,7 +412,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
       it("calls back as a failure with the exception", function () {
         exceptionHandler(exception);
-        expect(codeCallback.fail).toHaveBeenCalledWith(exception);
+        expect(codeCallback).toHaveBeenCalledWith(exception);
       });
     });
   });

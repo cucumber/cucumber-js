@@ -32,6 +32,7 @@ Feature: default command line arguments
       """
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
 
   Scenario Outline: specifying a profile
@@ -42,6 +43,7 @@ Feature: default command line arguments
 
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
 
     Examples:
@@ -64,6 +66,7 @@ Feature: default command line arguments
 
       1 scenario (1 undefined)
       2 steps (1 undefined, 1 passed)
+      <duration-stat>
 
       You can implement step definitions for undefined steps with these snippets:
 
@@ -86,4 +89,5 @@ Feature: default command line arguments
 
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """

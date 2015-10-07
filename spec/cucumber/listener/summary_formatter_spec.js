@@ -377,6 +377,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       spyOn(summaryFormatter, 'logScenariosSummary');
       spyOn(summaryFormatter, 'logStepsSummary');
+      spyOn(summaryFormatter, 'logDuration');
       spyOn(summaryFormatter, 'logFailedStepResults');
       spyOn(summaryFormatter, 'logUndefinedStepSnippets');
       spyOnStub(statsJournal, 'witnessedAnyFailedStep');
@@ -422,6 +423,11 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     it("logs the steps summary", function () {
       summaryFormatter.logSummary();
       expect(summaryFormatter.logStepsSummary).toHaveBeenCalled();
+    });
+
+    it("logs the duration", function () {
+      summaryFormatter.logSummary();
+      expect(summaryFormatter.logDuration).toHaveBeenCalled();
     });
 
     it("checks whether there are undefined steps or not", function () {
@@ -986,6 +992,41 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
           summaryFormatter.logStepsSummary();
           expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 passed/);
         });
+      });
+    });
+  });
+
+  describe("logDuration()", function () {
+    describe('with duration less than a second', function (){
+      beforeEach(function () {
+        spyOnStub(statsJournal, 'getDuration').and.returnValue(1e6);
+      });
+
+      it("logs the duration", function () {
+        summaryFormatter.logDuration();
+        expect(summaryFormatter.log).toHaveBeenCalledWith('0m00.001s\n');
+      });
+    });
+
+    describe('with duration that is a few seconds', function (){
+      beforeEach(function () {
+        spyOnStub(statsJournal, 'getDuration').and.returnValue(12345 * 1e6);
+      });
+
+      it("logs the duration", function () {
+        summaryFormatter.logDuration();
+        expect(summaryFormatter.log).toHaveBeenCalledWith('0m12.345s\n');
+      });
+    });
+
+    describe('with duration that is a few minutes', function (){
+      beforeEach(function () {
+        spyOnStub(statsJournal, 'getDuration').and.returnValue(12 * 60 * 1e9 + 34567 * 1e6);
+      });
+
+      it("logs the duration", function () {
+        summaryFormatter.logDuration();
+        expect(summaryFormatter.log).toHaveBeenCalledWith('12m34.567s\n');
       });
     });
   });
