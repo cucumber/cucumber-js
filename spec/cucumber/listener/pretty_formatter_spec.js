@@ -3,11 +3,13 @@ require('../../support/spec_helper');
 describe("Cucumber.Listener.PrettyFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var path     = require('path');
-  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, colors;
+  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, colors, logged;
 
   beforeEach(function () {
-    options             = createSpyWithStubs("options", {showSource: true});
-    formatter           = createSpyWithStubs("formatter", {log: null});
+    options             = createSpy("options");
+    formatter           = createSpyWithStubs("formatter");
+    logged              = '';
+    spyOnStub(formatter, 'log').and.callFake(function (text) { logged += text; });
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summary formatter");
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
@@ -62,105 +64,153 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("handleBeforeFeatureEvent()", function () {
-    var event, feature, keyword, name, description, callback;
+    var event, feature, callback;
 
     beforeEach(function () {
-      keyword  = "feature-keyword";
-      name     = "feature-name";
-      description = "feature-description";
-      var tags = [createSpyWithStubs("tags", {getName: '@tag'})];
-      feature  = createSpyWithStubs("feature", { getKeyword: keyword, getName: name, getDescription: description, getTags: tags });
-      event    = createSpyWithStubs("event", { getPayloadItem: feature });
+      feature = createSpyWithStubs("feature", {
+        getKeyword: "feature-keyword",
+        getName: "feature-name",
+        getDescription: '',
+        getTags: []
+      });
+      event = createSpyWithStubs("event", { getPayloadItem: feature });
       callback = createSpy("callback");
-      spyOn(prettyFormatter, 'logIndented');
     });
 
-    it("gets the feature from the event payload", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(event.getPayloadItem).toHaveBeenCalledWith('feature');
+    describe('no tags or description', function () {
+      beforeEach(function (){
+        prettyFormatter.handleBeforeFeatureEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        expect(logged).toEqual('feature-keyword: feature-name\n\n');
+      });
+
+      it("calls back", function () {
+        expect(callback).toHaveBeenCalled();
+      });
     });
 
-    it("gets the feature keyword", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(feature.getKeyword).toHaveBeenCalled();
+    describe('with tags', function () {
+      beforeEach(function (){
+        feature.getTags.and.returnValue([
+          createSpyWithStubs("tag1", {getName: '@tag1'}),
+          createSpyWithStubs("tag2", {getName: '@tag2'})
+        ]);
+        prettyFormatter.handleBeforeFeatureEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          colors.cyan('@tag1 @tag2') + '\n' +
+          'feature-keyword: feature-name' + '\n\n';
+        expect(logged).toEqual(expected);
+      });
     });
 
-    it("gets the feature name", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(feature.getName).toHaveBeenCalled();
-    });
+    describe('with feature description', function () {
+      beforeEach(function (){
+        feature.getDescription.and.returnValue('line1\nline2');
+        prettyFormatter.handleBeforeFeatureEvent(event, callback);
+      });
 
-    it("logs the feature header", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      var text = colors.tag('@tag') + "\n" +keyword + ": " + name + "\n";
-      expect(prettyFormatter.log).toHaveBeenCalledWith(text);
-    });
+      it('logs the keyword and name', function () {
+        var expected =
+          'feature-keyword: feature-name' + '\n\n' +
+          '  line1' + '\n' +
+          '  line2' + '\n\n';
 
-    it("logs the feature description", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      var text = description + "\n\n";
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text,1);
-    });
-
-    it("calls back", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+        expect(logged).toEqual(expected);
+      });
     });
   });
 
   describe("handleBeforeScenarioEvent()", function () {
-    var event, scenario, keyword, name, backgroundStepLength, callback, relativeUri;
+    var event, scenario, callback;
 
     beforeEach(function () {
-      keyword  = "scenario-keyword";
-      name     = "scenario-name";
-      relativeUri = "scenario-uri";
-      // Background step assumed to be the longest
-      backgroundStepLength = 50;
-      var scenarioStepLength = 20;
-      var tags = [createSpyWithStubs("tags", {getName: '@tag'})];
-      var line = 10;
-      var uri = path.join(process.cwd(), relativeUri);
-      var background = createSpy("background");
-      scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
-      spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").and.callFake(function (element) {
-        if (element === background) {
-          return backgroundStepLength;
-        }
-        else if (element === scenario) {
-          return scenarioStepLength;
-        }
+      scenario = createSpyWithStubs("scenario", {
+        getKeyword: "scenario-keyword",
+        getName: "scenario-name",
+        getUri: path.join(process.cwd(), "scenario-uri"),
+        getLine: 1,
+        getBackground: undefined,
+        getOwnTags: [],
+        getSteps: []
       });
-      event    = createSpyWithStubs("event", { getPayloadItem: scenario });
-      spyOn(prettyFormatter, 'logIndented');
+      event = createSpyWithStubs("event", { getPayloadItem: scenario });
       callback = createSpy("callback");
     });
 
-    it("gets the scenario from the event payload", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
+    describe('no tags, not showing source', function () {
+      beforeEach(function (){
+        prettyFormatter.handleBeforeScenarioEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        expect(logged).toEqual('  scenario-keyword: scenario-name\n');
+      });
+
+      it("calls back", function () {
+        expect(callback).toHaveBeenCalled();
+      });
     });
 
-    it("gets the scenario keyword", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(scenario.getKeyword).toHaveBeenCalled();
+    describe('with tags', function () {
+      beforeEach(function (){
+        scenario.getOwnTags.and.returnValue([
+          createSpyWithStubs("tag1", {getName: '@tag1'}),
+          createSpyWithStubs("tag2", {getName: '@tag2'})
+        ]);
+        prettyFormatter.handleBeforeScenarioEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          '  ' + colors.cyan('@tag1 @tag2') + '\n' +
+          '  scenario-keyword: scenario-name' + '\n';
+        expect(logged).toEqual(expected);
+      });
     });
 
-    it("gets the scenario name", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(scenario.getName).toHaveBeenCalled();
+    describe('showing source', function () {
+      beforeEach(function (){
+        prettyFormatter = Cucumber.Listener.PrettyFormatter({showSource: true});
+        prettyFormatter.handleBeforeScenarioEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          '  scenario-keyword: scenario-name ' + colors.gray('# scenario-uri:1') + '\n';
+        expect(logged).toEqual(expected);
+      });
     });
 
-    it("logs the scenario header, indented by one level", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      var text = colors.tag("@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + colors.comment("# " + relativeUri + ":" + scenario.getLine()) + "\n";
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 1);
-    });
+    // it("gets the scenario from the event payload", function () {
+    //   prettyFormatter.handleBeforeScenarioEvent(event, callback);
+    //   expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
+    // });
 
-    it("calls back", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
-    });
+    // it("gets the scenario keyword", function () {
+    //   prettyFormatter.handleBeforeScenarioEvent(event, callback);
+    //   expect(scenario.getKeyword).toHaveBeenCalled();
+    // });
+
+    // it("gets the scenario name", function () {
+    //   prettyFormatter.handleBeforeScenarioEvent(event, callback);
+    //   expect(scenario.getName).toHaveBeenCalled();
+    // });
+
+    // it("logs the scenario header, indented by one level", function () {
+    //   prettyFormatter.handleBeforeScenarioEvent(event, callback);
+    //   var text = colors.tag("@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + colors.comment("# " + relativeUri + ":" + scenario.getLine()) + "\n";
+    //   expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 1);
+    // });
+
+    // it("calls back", function () {
+    //   prettyFormatter.handleBeforeScenarioEvent(event, callback);
+    //   expect(callback).toHaveBeenCalled();
+    // });
   });
 
   describe("handleAfterScenarioEvent()", function () {
@@ -420,11 +470,6 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     it("gets the summary from the summaryFormatter", function () {
       prettyFormatter.handleAfterFeaturesEvent(event, callback);
       expect(summaryFormatter.getLogs).toHaveBeenCalled();
-    });
-
-    it("logs one line feed", function () {
-      prettyFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(prettyFormatter.log).toHaveBeenCalledWith("\n");
     });
 
     it("logs the summary", function () {
