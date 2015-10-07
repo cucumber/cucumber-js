@@ -12,8 +12,6 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
       0 scenarios
       0 steps
       """
@@ -58,11 +56,8 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: I've declared one step which passes   # features/a.feature:3
           Given This step is passing                    # features/a.feature:4
-
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -98,13 +93,10 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: I've declared one step and it is passing   # features/a.feature:3
           Before
             Fail
           Given This step is passing                         # features/a.feature:4
-
 
       (::) failed steps (::)
 
@@ -136,11 +128,8 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: I haven't done anything yet
           Given This step is passing
-
 
       1 scenario (1 passed)
       1 step (1 passed)
