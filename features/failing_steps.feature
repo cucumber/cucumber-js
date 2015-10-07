@@ -54,36 +54,6 @@ Feature: Failing steps
     When I run cucumber.js with `-f json`
     Then the step "a failing step" has status failed with "my error"
 
-  Scenario: asynchronous - executing callback.fail)
-    Given a file named "features/step_definitions/failing_steps.js" with:
-      """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(callback){
-          setTimeout(callback.fail);
-        });
-      };
-
-      module.exports = stepDefinitions
-      """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "Step failure"
-
-  Scenario: asynchronous (executing callback.fail with error)
-    Given a file named "features/step_definitions/failing_steps.js" with:
-      """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(callback){
-          setTimeout(function(){
-            callback.fail(new Error('my error'));
-          });
-        });
-      };
-
-      module.exports = stepDefinitions
-      """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "my error"
-
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """

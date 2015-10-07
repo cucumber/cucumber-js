@@ -155,7 +155,7 @@ module.exports = function () {
     if (title === pageTitle) {
       callback();
     } else {
-      callback.fail(new Error("Expected to be on page with title " + title));
+      callback(new Error("Expected to be on page with title " + title));
     }
   });
 };
@@ -201,7 +201,7 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
   if (title === pageTitle) {
     callback();
   } else {
-    callback.fail(new Error("Expected to be on page with title " + title));
+    callback(new Error("Expected to be on page with title " + title));
   }
 });
 ```
