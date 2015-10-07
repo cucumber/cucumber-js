@@ -12,6 +12,7 @@ Feature: Summary Formatter
       """
       0 scenarios
       0 steps
+      <duration-stat>
       """
 
   Scenario: Summary formatter hides around, before and after hooks
@@ -32,16 +33,16 @@ Feature: Summary Formatter
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           callback();
         });
 
-        this.Around(function(runScenario) {
-          runScenario(function(callback) {
+        this.Around(function(scenario, runScenario) {
+          runScenario(null, function(callback) {
             callback();
           });
         });
@@ -54,4 +55,5 @@ Feature: Summary Formatter
       """
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """

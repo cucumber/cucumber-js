@@ -26,7 +26,7 @@ Feature: Strict mode
 
     1 scenario (1 passed)
     1 step (1 passed)
-
+    <duration-stat>
     """
     And the exit status should be 0
 
@@ -38,6 +38,7 @@ Feature: Strict mode
 
     1 scenario (1 undefined)
     1 step (1 undefined)
+    <duration-stat>
 
     You can implement step definitions for undefined steps with these snippets:
 
@@ -64,6 +65,7 @@ Feature: Strict mode
 
     1 scenario (1 pending)
     1 step (1 pending)
+    <duration-stat>
     """
     And the exit status should be 1
 
@@ -75,6 +77,7 @@ Feature: Strict mode
 
     1 scenario (1 undefined)
     1 step (1 undefined)
+    <duration-stat>
 
     You can implement step definitions for undefined steps with these snippets:
 
@@ -101,5 +104,6 @@ Feature: Strict mode
 
     1 scenario (1 pending)
     1 step (1 pending)
+    <duration-stat>
     """
     And the exit status should be 1

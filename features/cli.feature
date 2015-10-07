@@ -24,7 +24,7 @@ Feature: Command line interface
 
       1 scenario (1 passed)
       1 step (1 passed)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -52,7 +52,7 @@ Feature: Command line interface
 
       1 scenario (1 passed)
       1 step (1 passed)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -70,6 +70,7 @@ Feature: Command line interface
 
       1 scenario (1 undefined)
       1 step (1 undefined)
+      <duration-stat>
 
       You can implement step definitions for undefined steps with these snippets:
 
@@ -101,7 +102,7 @@ Feature: Command line interface
 
       1 scenario (1 passed)
       1 step (1 passed)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -126,7 +127,7 @@ Feature: Command line interface
 
       1 scenario (1 passed)
       1 step (1 passed)
-
+      <duration-stat>
       """
     And the exit status should be 0
 
@@ -173,6 +174,7 @@ Scenario: run a single failing feature
 
       1 scenario (1 failed)
       1 step (1 failed)
+      <duration-stat>
       """
 	And the exit status should be 1
 
@@ -207,6 +209,7 @@ Scenario: run a single failing feature
 
       1 scenario (1 failed)
       1 step (1 failed)
+      <duration-stat>
       """
 	And the exit status should be 1
 
@@ -247,5 +250,6 @@ Scenario: run a single failing feature
 
       1 scenario (1 failed)
       1 step (1 failed)
+      <duration-stat>
       """
     And the exit status should be 1

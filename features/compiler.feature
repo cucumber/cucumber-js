@@ -28,7 +28,7 @@ Feature: compilers
 
       1 scenario (1 passed)
       1 step (1 passed)
-
+      <duration-stat>
       """
 
   Scenario: Pogoscript step definition
@@ -47,5 +47,5 @@ Feature: compilers
 
       1 scenario (1 passed)
       1 step (1 passed)
-
+      <duration-stat>
       """
