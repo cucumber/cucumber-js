@@ -181,7 +181,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name', function () {
         var expected =
-          '  scenario-keyword: scenario-name ' + colors.gray('# scenario-uri:1') + '\n';
+          '  scenario-keyword: scenario-name   ' + colors.gray('# scenario-uri:1') + '\n';
         expect(logged).toEqual(expected);
       });
     });
