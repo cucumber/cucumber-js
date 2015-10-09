@@ -2,18 +2,15 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Api.Scenario", function () {
   var Cucumber = requireLib('cucumber');
-  var scenarioFailed, scenarioPending, scenarioSuccessful, scenarioUndefined, scenarioGetFailureException, attachments, astTreeWalker;
+  var scenarioStatus, scenarioFailureException, attachments, astTreeWalker;
   var keyword, name, description, uri, line, tags, astScenario;
   var scenario;
 
   beforeEach(function () {
-    scenarioFailed     = createSpy("scenario failed");
-    scenarioPending    = createSpy("scenario pending");
-    scenarioSuccessful = createSpy("scenario successful");
-    scenarioUndefined  = createSpy("scenario undefined");
-    scenarioGetFailureException  = createSpy("scenario get exception");
+    scenarioStatus     = createSpy("scenario status");
+    scenarioFailureException = createSpy("scenario failure exception");
     attachments        = createSpy("attachments");
-    astTreeWalker      = createSpyWithStubs("ast scenario", { isScenarioFailed: scenarioFailed, isScenarioPending: scenarioPending, isScenarioSuccessful: scenarioSuccessful, isScenarioUndefined: scenarioUndefined, getFailureException: scenarioGetFailureException, getAttachments: attachments, attach: undefined });
+    astTreeWalker      = createSpyWithStubs("ast scenario", { getScenarioStatus: scenarioStatus, getScenarioFailureException: scenarioFailureException, getAttachments: attachments, attach: undefined });
     keyword            = createSpy("scenario keyword");
     name               = createSpy("scenario name");
     description        = createSpy("scenario description");
@@ -61,33 +58,15 @@ describe("Cucumber.Api.Scenario", function () {
     });
   });
 
-  describe("isSuccessful()", function () {
-    it("returns whether the scenario is successful", function () {
-      expect(scenario.isSuccessful()).toBe(scenarioSuccessful);
-    });
-  });
-
-  describe("isFailed()", function () {
-    it("returns whether the scenario has failed", function () {
-      expect(scenario.isFailed()).toBe(scenarioFailed);
-    });
-  });
-
-  describe("isPending()", function () {
-    it("returns whether the scenario is pending", function () {
-      expect(scenario.isPending()).toBe(scenarioPending);
-    });
-  });
-
-  describe("isUndefined()", function () {
-    it("returns whether the scenario is undefined", function () {
-      expect(scenario.isUndefined()).toBe(scenarioUndefined);
+  describe("getStatus()", function () {
+    it("returns the scenario status", function () {
+      expect(scenario.getStatus()).toBe(scenarioStatus);
     });
   });
 
   describe("getException()", function () {
     it("returns the exception raised when running the scenario", function () {
-      expect(scenario.getException()).toBe(scenarioGetFailureException);
+      expect(scenario.getException()).toBe(scenarioFailureException);
     });
   });
 

@@ -212,22 +212,20 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       });
 
       describe("when called with an error", function () {
-        var failureReason, failedStepResult;
+        var failureReason;
 
         beforeEach(function () {
           timestamp = 1;
-          failureReason     = createSpy("failure reason");
-          failedStepResult  = createSpy("failed step result");
-          spyOnStub(scenario, "getAttachments").and.returnValue(attachments);
+          spyOnStub(scenario, 'getAttachments').and.returnValue(attachments);
+          failureReason = 'an error';
+          codeExecutionCallback(failureReason);
         });
 
         it("gets the attachments from the scenario", function () {
-          codeExecutionCallback.fail(failureReason);
           expect(scenario.getAttachments).toHaveBeenCalled();
         });
 
         it("creates a failing step result", function () {
-          codeExecutionCallback.fail(failureReason);
           expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
             step: step,
             failureException: failureReason,
@@ -237,22 +235,11 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           });
         });
 
-        describe("when no failure reason is given", function () {
-          it("creates a failing step result with a generic step failure exception", function () {
-            codeExecutionCallback.fail();
-            var payload = Cucumber.Runtime.StepResult.calls.mostRecent().args[0];
-            expect(payload.step).toBe(step);
-            expect(payload.failureException).toBeAnInstanceOf(Error);
-          });
-        });
-
         it("unregisters the exception handler", function () {
-          codeExecutionCallback.fail(failureReason);
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler, stepDomain);
         });
 
         it("calls back", function () {
-          codeExecutionCallback.fail(failureReason);
           expect(callback).toHaveBeenCalledWith(stepResult);
         });
 

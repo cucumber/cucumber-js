@@ -20,18 +20,9 @@ Feature: Scenario Statuses
       function checkScenarioStatuses(scenario) {
         var error;
 
-        if (scenario.isSuccessful() !== true)
-          error = "Expected isSuccessful to be true";
-        else if (scenario.isFailed() !== false)
-          error = "Expected isFailed to be false";
-        else if (scenario.isPending() !== false)
-          error = "Expected isPending to be false";
-        else if (scenario.isUndefined() !== false)
-          error = "Expected isUndefined to be false";
-        else if (scenario.getException() !== null)
-          error = "Expected exception to be null";
-        else
-          error = null;
+        if (scenario.getStatus() !== 'passed') {
+          error = "Expected scenario status to be passed";
+        }
 
         return error;
       }
@@ -154,18 +145,11 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          if (scenario.isSuccessful() !== true)
-            error = "Expected isSuccessful to be true";
-          else if (scenario.isFailed() !== false)
-            error = "Expected isFailed to be false";
-          else if (scenario.isPending() !== false)
-            error = "Expected isPending to be false";
-          else if (scenario.isUndefined() !== false)
-            error = "Expected isUndefined to be false";
-          else if (scenario.getException() !== null)
-            error = "Expected exception to be null";
-          else
-            error = null;
+          var error;
+
+          if (scenario.getStatus() !== 'passed') {
+            error = "Expected status to be passed";
+          }
 
           callback(error);
         });
@@ -238,18 +222,12 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          if (scenario.isSuccessful() !== false)
-            error = "Expected isSuccessful to be false";
-          else if (scenario.isFailed() !== true)
-            error = "Expected isFailed to be true";
-          else if (scenario.isPending() !== false)
-            error = "Expected isPending to be false";
-          else if (scenario.isUndefined() !== false)
-            error = "Expected isUndefined to be false";
+          var error;
+
+          if (scenario.getStatus() !== 'failed')
+            error = "Expected status to be failed";
           else if (scenario.getException() !== "Fail")
             error = "Expected exception to be 'Fail'";
-          else
-            error = null;
 
           callback(error);
         });
@@ -323,18 +301,11 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          if (scenario.isSuccessful() !== false)
-            error = "Expected isSuccessful to be false";
-          else if (scenario.isFailed() !== false)
-            error = "Expected isFailed to be false";
-          else if (scenario.isPending() !== true)
-            error = "Expected isPending to be true";
-          else if (scenario.isUndefined() !== false)
-            error = "Expected isUndefined to be false";
-          else if (scenario.getException() !== null)
-            error = "Expected exception to be null";
-          else
-            error = null;
+          var error;
+
+          if (scenario.getStatus() !== 'pending') {
+            error = "Expected status to be pending";
+          }
 
           callback(error);
         });
@@ -405,18 +376,11 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          if (scenario.isSuccessful() !== false)
-            error = "Expected isSuccessful to be false";
-          else if (scenario.isFailed() !== false)
-            error = "Expected isFailed to be false";
-          else if (scenario.isPending() !== false)
-            error = "Expected isPending to be false";
-          else if (scenario.isUndefined() !== true)
-            error = "Expected isUndefined to be true";
-          else if (scenario.getException() !== null)
-            error = "Expected exception to be null";
-          else
-            error = null;
+          var error;
+
+          if (scenario.getStatus() !== 'undefined') {
+            error = "Expected status to be undefined";
+          }
 
           callback(error);
         });
@@ -458,111 +422,6 @@ Feature: Scenario Statuses
                   "hidden": true,
                   "result": {
                     "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
-
-  Scenario: Simultaneous statuses
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Scenario: I've declared one step and it is undefined
-          Given This step is pending
-          And This step is undefined
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    And a file named "features/support/hooks.js" with:
-      """
-      var hooks = function () {
-        this.After(function(scenario, callback) {
-          if (scenario.isSuccessful() !== false)
-            error = "Expected isSuccessful to be false";
-          else if (scenario.isFailed() !== true)
-            error = "Expected isFailed to be true";
-          else if (scenario.isPending() !== true)
-            error = "Expected isPending to be true";
-          else if (scenario.isUndefined() !== true)
-            error = "Expected isUndefined to be true";
-          else
-            error = null;
-
-          callback(error);
-        });
-
-        this.After(function(scenario, callback) {
-          callback("fail");
-        });
-      };
-
-      module.exports = hooks;
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I've declared one step and it is undefined",
-              "id": "some-feature;i've-declared-one-step-and-it-is-undefined",
-              "line": 3,
-              "keyword": "Scenario",
-              "description": "",
-              "type": "scenario",
-              "steps": [
-                {
-                  "name": "This step is pending",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "result": {
-                    "status": "pending"
-                  },
-                  "match": {}
-                },
-                {
-                  "name": "This step is undefined",
-                  "line": 5,
-                  "keyword": "And ",
-                  "result": {
-                    "status": "undefined"
-                  },
-                  "match": {}
-                },
-                {
-                  "keyword": "After ",
-                  "hidden": true,
-                  "result": {
-                    "error_message": "fail",
-                    "duration": 351161,
-                    "status": "failed"
-                  },
-                  "match": {}
-                },
-                {
-                  "keyword": "After ",
-                  "hidden": true,
-                  "result": {
-                    "duration": 319244,
                     "status": "passed"
                   },
                   "match": {}

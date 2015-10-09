@@ -657,6 +657,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       payload    = {stepResult: stepResult};
       spyOn(treeWalker, 'broadcastEvent');
       spyOn(Cucumber.Runtime.AstTreeWalker, 'Event').and.returnValue(event);
+      treeWalker.witnessNewScenario();
     });
 
     it("creates a new event about the step result", function () {
@@ -667,30 +668,6 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     it("broadcasts the visit of the step result and the step result itself", function () {
       treeWalker.visitStepResult(stepResult, callback);
       expect(treeWalker.broadcastEvent).toHaveBeenCalledWith(event, callback);
-    });
-
-    describe("when the step failed", function () {
-      beforeEach(function () {
-        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
-        spyOn(treeWalker, 'witnessFailedStep');
-      });
-
-      it("witnesses a failed step", function () {
-        treeWalker.visitStepResult(stepResult, callback);
-        expect(treeWalker.witnessFailedStep).toHaveBeenCalledWith(stepResult.getFailureException());
-      });
-    });
-
-    describe("when the step was pending", function () {
-      beforeEach(function () {
-        stepResult.getStatus.and.returnValue(Cucumber.Status.PENDING);
-        spyOn(treeWalker, 'witnessPendingStep');
-      });
-
-      it("witnesses a pending step", function () {
-        treeWalker.visitStepResult(stepResult, callback);
-        expect(treeWalker.witnessPendingStep).toHaveBeenCalled();
-      });
     });
 
     it("does not call back by itself", function () {
@@ -954,16 +931,19 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       });
 
       it("returns false when a failed step was encountered", function () {
+        treeWalker.witnessNewScenario();
         treeWalker.witnessFailedStep();
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
 
       it("returns true when a pending step was encountered", function () {
+        treeWalker.witnessNewScenario();
         treeWalker.witnessPendingStep();
         expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
       });
 
       it("returns true when an undefined step was encountered", function () {
+        treeWalker.witnessNewScenario();
         treeWalker.witnessUndefinedStep();
         expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
       });
@@ -971,6 +951,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
     describe("when strict mode is on", function () {
       beforeEach(function () {
+        Cucumber.Type.Collection.and.returnValues.apply(null, [beforeStepCollection, afterStepCollection, attachmentCollection]);
         var isStrictMode = true;
         treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode);
       });
@@ -980,171 +961,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       });
 
       it("returns false when a failed step was encountered", function () {
+        treeWalker.witnessNewScenario();
         treeWalker.witnessFailedStep();
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
 
       it("returns false when a pending step was encountered", function () {
+        treeWalker.witnessNewScenario();
         treeWalker.witnessPendingStep();
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
 
       it("returns false when an undefined step was encountered", function () {
+        treeWalker.witnessNewScenario();
         treeWalker.witnessUndefinedStep();
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
-    });
-  });
-
-  describe("isScenarioSuccessful()", function () {
-    beforeEach(function () {
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-    });
-
-    it("returns true when no failed, pending or undefined step was encountered", function () {
-      expect(treeWalker.isScenarioSuccessful()).toBeTruthy();
-    });
-
-    it("returns false when a pending step was encountered", function () {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.isScenarioSuccessful()).toBeFalsy();
-    });
-
-    it("returns false when a undefined step was encountered", function () {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.isScenarioSuccessful()).toBeFalsy();
-    });
-
-    it("returns false when a failed step was encountered", function () {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.isScenarioSuccessful()).toBeFalsy();
-    });
-
-    it("still returns true when a pending step was encountered but not in the current scenario", function () {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.isScenarioSuccessful()).toBeFalsy();
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isScenarioSuccessful()).toBeTruthy();
-    });
-
-    it("still returns true when a undefined step was encountered but not in the current scenario", function () {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.isScenarioSuccessful()).toBeFalsy();
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isScenarioSuccessful()).toBeTruthy();
-    });
-
-    it("still returns true when a failing step was encountered but not in the current scenario", function () {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.isScenarioSuccessful()).toBeFalsy();
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isScenarioSuccessful()).toBeTruthy();
-    });
-  });
-
-  describe("isScenarioFailed()", function () {
-    beforeEach(function () {
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-    });
-
-    it("returns false when no failed step was encountered", function () {
-      expect(treeWalker.isScenarioFailed()).toBeFalsy();
-    });
-
-    it("still returns false when a pending step was encountered", function () {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.isScenarioFailed()).toBeFalsy();
-    });
-
-    it("still returns false when a undefined step was encountered", function () {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.isScenarioFailed()).toBeFalsy();
-    });
-
-    it("returns true when a failed step was encountered", function () {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.isScenarioFailed()).toBeTruthy();
-    });
-
-    it("still returns false when a failing step was encountered but not in the current scenario", function () {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.isScenarioFailed()).toBeTruthy();
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isScenarioFailed()).toBeFalsy();
-    });
-  });
-
-  describe("isScenarioPending()", function () {
-    beforeEach(function () {
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-    });
-
-    it("returns false when no pending step was encountered", function () {
-      expect(treeWalker.isScenarioPending()).toBeFalsy();
-    });
-
-    it("returns true when a pending step was encountered", function () {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.isScenarioPending()).toBeTruthy();
-    });
-
-    it("still returns false when a undefined step was encountered", function () {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.isScenarioPending()).toBeFalsy();
-    });
-
-    it("still returns false when a failed step was encountered", function () {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.isScenarioPending()).toBeFalsy();
-    });
-
-    it("still returns false when a pending step was encountered but not in the current scenario", function () {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.isScenarioPending()).toBeTruthy();
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isScenarioPending()).toBeFalsy();
-    });
-  });
-
-  describe("isScenarioUndefined()", function () {
-    beforeEach(function () {
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-    });
-
-    it("returns false when no undefined step was encountered", function () {
-      expect(treeWalker.isScenarioUndefined()).toBeFalsy();
-    });
-
-    it("still returns false when a pending step was encountered", function () {
-      treeWalker.witnessPendingStep();
-      expect(treeWalker.isScenarioUndefined()).toBeFalsy();
-    });
-
-    it("returns true when a undefined step was encountered", function () {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.isScenarioUndefined()).toBeTruthy();
-    });
-
-    it("still returns false when a failed step was encountered", function () {
-      treeWalker.witnessFailedStep();
-      expect(treeWalker.isScenarioUndefined()).toBeFalsy();
-    });
-
-    it("still returns false when a undefined step was encountered but not in the current scenario", function () {
-      treeWalker.witnessUndefinedStep();
-      expect(treeWalker.isScenarioUndefined()).toBeTruthy();
-      var scenario = createSpy("scenario");
-      treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isScenarioUndefined()).toBeFalsy();
     });
   });
 
