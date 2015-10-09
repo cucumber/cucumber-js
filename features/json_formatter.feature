@@ -225,7 +225,7 @@ Feature: JSON Formatter
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is failing$/, function(callback) { callback.fail(); });
+        this.Given(/^This step is failing$/, function(callback) { callback('fail'); });
       };
       module.exports = cucumberSteps;
       """
@@ -336,7 +336,7 @@ Feature: JSON Formatter
       var cucumberSteps = function() {
         this.Given(/^This step is passing$/, function(callback) { callback(); });
         this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
-        this.Given(/^This step fails but will be skipped$/, function(callback) { callback.fail(); });
+        this.Given(/^This step fails but will be skipped$/, function(callback) { callback('fail'); });
       };
       module.exports = cucumberSteps;
       """
@@ -410,7 +410,7 @@ Feature: JSON Formatter
       var cucumberSteps = function() {
         this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
         this.Given(/^This step is passing but will be skipped$/, function(callback) { callback(); });
-        this.Given(/^This step fails but will be skipped$/, function(callback) { callback.fail(); });
+        this.Given(/^This step fails but will be skipped$/, function(callback) { callback('fail'); });
       };
       module.exports = cucumberSteps;
       """
@@ -485,7 +485,7 @@ Feature: JSON Formatter
       """
       var cucumberSteps = function() {
         this.Given(/^This step is passing$/, function(callback) { callback(); });
-        this.Given(/^This step is failing$/, function(callback) { callback.fail(); });
+        this.Given(/^This step is failing$/, function(callback) { callback('fail'); });
       };
       module.exports = cucumberSteps;
       """
@@ -1007,7 +1007,7 @@ Feature: JSON Formatter
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This applies to all scenarios but fails$/, function(callback) { callback.fail(); });
+        this.Given(/^This applies to all scenarios but fails$/, function(callback) { callback('fail'); });
       };
       module.exports = cucumberSteps;
       """
@@ -1727,16 +1727,16 @@ Feature: JSON Formatter
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.Before(function(callback) {
+        this.Before(function(scenario, callback) {
           callback();
         });
 
-        this.After(function(callback) {
+        this.After(function(scenario, callback) {
           callback();
         });
 
-        this.Around(function(runScenario) {
-          runScenario(function(callback) {
+        this.Around(function(scenario, runScenario) {
+          runScenario(null, function(callback) {
             callback();
           });
         });

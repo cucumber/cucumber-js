@@ -98,7 +98,8 @@ var cliSteps = function cliSteps() {
     if (actualCode != code) {
       throw new Error("Exit code expected: \"" + code + "\"\n" +
                       "Got: \"" + actualCode + "\"\n" +
-                      "Output:\n" + normalizeText(world.lastRun['stdout']));
+                      "Output:\n" + normalizeText(world.lastRun.stdout) + "\n" +
+                                    normalizeText(world.lastRun.stderr) + "\n");
     }
 
     callback();
@@ -141,6 +142,21 @@ var cliSteps = function cliSteps() {
 
     if (actualOutput != expectedOutput)
       throw new Error("Expected output to match the following:\n'" + expectedOutput + "'\n" +
+                      "Got:\n'" + actualOutput+ "'.\n" +
+                      getAdditionalErrorText(world.lastRun));
+    callback();
+  });
+
+  this.Then(/^the output contains the text:$/, function(expectedOutput, callback) {
+    var world = this;
+
+    var actualOutput = world.lastRun['stdout'];
+
+    actualOutput = normalizeText(actualOutput);
+    expectedOutput = normalizeText(expectedOutput);
+
+    if (actualOutput.indexOf(expectedOutput) === -1)
+      throw new Error("Expected output to contain the following:\n'" + expectedOutput + "'\n" +
                       "Got:\n'" + actualOutput+ "'.\n" +
                       getAdditionalErrorText(world.lastRun));
     callback();
@@ -222,7 +238,8 @@ var cliSteps = function cliSteps() {
       .replace(/^\s+/g, "")
       .replace(/\s+$/g, "")
       .replace(/[ \t]+\n/g, "\n")
-      .replace(/\\/g, "/");
+      .replace(/\\/g, "/")
+      .replace(/\d+m\d{2}\.\d{3}s/, '<duration-stat>');
   }
 
   function getAdditionalErrorText(lastRun) {

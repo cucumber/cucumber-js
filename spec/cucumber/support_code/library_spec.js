@@ -204,14 +204,35 @@ describe("Cucumber.SupportCode.Library", function () {
         spyOnStub(stepDefinitionCollection, 'add');
       });
 
-      it("creates a step definition with the name and code", function () {
-        library.defineStep(name, code);
-        expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, code);
+      describe('without options', function () {
+        beforeEach(function () {
+          library.defineStep(name, code);
+        });
+
+        it("creates a step definition with the name, empty options, and code", function () {
+          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, {}, code);
+        });
+
+        it("adds the step definition to the step collection", function () {
+          expect(stepDefinitionCollection.add).toHaveBeenCalledWith(stepDefinition);
+        });
       });
 
-      it("adds the step definition to the step collection", function () {
-        library.defineStep(name, code);
-        expect(stepDefinitionCollection.add).toHaveBeenCalledWith(stepDefinition);
+      describe('with options', function () {
+        var options;
+
+        beforeEach(function () {
+          options = {some: 'data'};
+          library.defineStep(name, options, code);
+        });
+
+        it("creates a step definition with the name, options, and code", function () {
+          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, options, code);
+        });
+
+        it("adds the step definition to the step collection", function () {
+          expect(stepDefinitionCollection.add).toHaveBeenCalledWith(stepDefinition);
+        });
       });
     });
   });
