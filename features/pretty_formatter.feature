@@ -108,10 +108,6 @@ Feature: Pretty Formatter
           Given This step is passing                         # features/a.feature:4
 
 
-      (::) failed steps (::)
-
-      Fail
-
       Failing scenarios:
       features/a.feature:3 # Scenario: I've declared one step and it is passing
 
