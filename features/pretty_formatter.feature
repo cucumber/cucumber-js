@@ -165,8 +165,6 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: some scenario        # features/a.feature:3
           Given a basic step           # features/a.feature:4
           And a step with a doc string # features/a.feature:5
@@ -174,7 +172,6 @@ Feature: Pretty Formatter
             my doc string
             \"\"\"
           And a basic step             # features/a.feature:9
-
 
       1 scenario (1 passed)
       3 steps (3 passed)

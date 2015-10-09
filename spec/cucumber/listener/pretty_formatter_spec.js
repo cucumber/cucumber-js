@@ -255,7 +255,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logStepResult()", function () {
-    var stepResult, keyword, name, relativeUri, maxStepLength, line, step;
+    var stepResult, step;
 
     beforeEach(function () {
       step = createSpyWithStubs("step", {
@@ -270,12 +270,13 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
         hasUri: true
       });
       stepResult = createSpyWithStubs("step result", {
+        getFailureException: null,
         getStep: step,
         isFailed: null,
         isPending: null,
+        isSkipped: null,
         isSuccessful: null,
-        isUndefined: null,
-        isSkipped: null
+        isUndefined: null
       });
     });
 
@@ -283,7 +284,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       beforeEach(function () {
         stepResult.isSuccessful.and.returnValue(true);
         prettyFormatter.logStepResult(step, stepResult);
-      })
+      });
 
       it('logs the keyword and name', function () {
         var expected =
@@ -296,7 +297,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       beforeEach(function () {
         stepResult.isPending.and.returnValue(true);
         prettyFormatter.logStepResult(step, stepResult);
-      })
+      });
 
       it('logs the keyword and name', function () {
         var expected =
@@ -309,7 +310,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       beforeEach(function () {
         stepResult.isSkipped.and.returnValue(true);
         prettyFormatter.logStepResult(step, stepResult);
-      })
+      });
 
       it('logs the keyword and name', function () {
         var expected =
@@ -322,7 +323,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       beforeEach(function () {
         stepResult.isUndefined.and.returnValue(true);
         prettyFormatter.logStepResult(step, stepResult);
-      })
+      });
 
       it('logs the keyword and name', function () {
         var expected =
@@ -331,7 +332,34 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       });
     });
 
+    describe("failed step", function () {
+      beforeEach(function () {
+        stepResult.isFailed.and.returnValue(true);
+        stepResult.getFailureException.and.returnValue({stack: 'stack error\n  stacktrace1\n  stacktrace2'});
+        prettyFormatter.logStepResult(step, stepResult);
+      });
+
+      it('logs the keyword and name and failure', function () {
+        var expected =
+          '    ' + colors.red('step-keyword step-name') + '\n' +
+          '      stack error' + '\n' +
+          '        stacktrace1' + '\n' +
+          '        stacktrace2' + '\n';
+        expect(logged).toEqual(expected);
+      });
+    });
+
     describe("without name", function () {
+      beforeEach(function () {
+        step.getName.and.returnValue(undefined);
+        prettyFormatter.logStepResult(step, stepResult);
+      });
+
+      it('logs the keyword', function () {
+        var expected =
+          '    step-keyword' + '\n';
+        expect(logged).toEqual(expected);
+      });
 
     });
 
@@ -349,15 +377,48 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     });
 
     describe("with data table", function () {
+      beforeEach(function() {
+        var rows = [
+          ["cuk", "cuke", "cukejs"],
+          ["c",   "cuke", "cuke.js"],
+          ["cu",  "cuke", "cucumber"]
+        ];
+        var dataTable = createSpyWithStubs("data table", {raw: rows});
+        step.getDataTable.and.returnValue(dataTable);
+        step.hasDataTable.and.returnValue(true);
+        prettyFormatter.logStepResult(step, stepResult);
+      });
 
+      it('logs the keyword and name and data table', function () {
+        var expected =
+          '    step-keyword step-name' + '\n' +
+          '      | cuk | cuke | cukejs   |' + '\n' +
+          '      | c   | cuke | cuke.js  |' + '\n' +
+          '      | cu  | cuke | cucumber |' + '\n';
+        expect(logged).toEqual(expected);
+      });
     });
 
     describe("with doc string", function () {
+      beforeEach(function () {
+        var contents = "this is a multiline\ndoc string\n\n:-)";
+        var docString = createSpyWithStubs("doc string", {getContents: contents});
+        step.getDocString.and.returnValue(docString);
+        step.hasDocString.and.returnValue(true);
+        prettyFormatter.logStepResult(step, stepResult);
+      });
 
-    });
-
-    describe("with failure exceptions", function () {
-
+      it('logs the keyword and name and doc string', function () {
+        var expected =
+          '    step-keyword step-name' + '\n' +
+          '      """' + '\n' +
+          '      this is a multiline' + '\n' +
+          '      doc string' + '\n' +
+          '\n' +
+          '      :-)' + '\n' +
+          '      """' + '\n';
+        expect(logged).toEqual(expected);
+      });
     });
   });
 
