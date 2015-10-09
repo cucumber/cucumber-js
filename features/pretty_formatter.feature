@@ -116,12 +116,8 @@ Feature: Pretty Formatter
       features/a.feature:3 # Scenario: I've declared one step and it is passing
 
       1 scenario (1 failed)
-<<<<<<< HEAD
       1 step (1 skipped)
-=======
-      2 steps (1 failed, 1 skipped)
       <duration-stat>
->>>>>>> master
       """
 
   Scenario: output with --no-source flag should not show file sources
