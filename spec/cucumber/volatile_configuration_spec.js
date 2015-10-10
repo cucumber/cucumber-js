@@ -76,15 +76,15 @@ describe("Cucumber.VolatileConfiguration", function () {
     });
   });
 
-  describe("isStrictMode()",function () {
+  describe("isStrictRequested()",function () {
 		it("is false if strict option is not specified",function () {
 			configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {});
-			expect(configuration.isStrictMode()).toEqual(false);
+			expect(configuration.isStrictRequested()).toEqual(false);
 		});
 
 		it("is true if strict option is set",function () {
 			configuration	= Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {strict:true});
-			expect(configuration.isStrictMode()).toEqual(true);
+			expect(configuration.isStrictRequested()).toEqual(true);
 		});
 	});
 
