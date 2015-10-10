@@ -925,6 +925,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
   });
 
   describe("didAllFeaturesSucceed()", function () {
+    beforeEach(function () {
+      spyOnStub(treeWalker, 'broadcastEvent');
+    })
+
     describe("when strict mode is off", function () {
       it("returns true when no failure was encountered", function () {
         expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
@@ -932,13 +936,15 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       it("returns false when a failed step was encountered", function () {
         treeWalker.witnessNewScenario();
-        treeWalker.witnessFailedStep();
+        var stepResult = createSpyWithStubs('step result', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
+        treeWalker.visitStepResult(stepResult, function() {});
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
 
       it("returns true when a pending step was encountered", function () {
         treeWalker.witnessNewScenario();
-        treeWalker.witnessPendingStep();
+        var stepResult = createSpyWithStubs('step result', {getStatus: Cucumber.Status.PENDING});
+        treeWalker.visitStepResult(stepResult, function() {});
         expect(treeWalker.didAllFeaturesSucceed()).toBeTruthy();
       });
 
@@ -954,6 +960,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         Cucumber.Type.Collection.and.returnValues.apply(null, [beforeStepCollection, afterStepCollection, attachmentCollection]);
         var isStrictMode = true;
         treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode);
+        spyOnStub(treeWalker, 'broadcastEvent');
       });
 
       it("returns true when no failure was encountered", function () {
@@ -962,13 +969,15 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       it("returns false when a failed step was encountered", function () {
         treeWalker.witnessNewScenario();
-        treeWalker.witnessFailedStep();
+        var stepResult = createSpyWithStubs('step result', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
+        treeWalker.visitStepResult(stepResult, function() {});
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
 
       it("returns false when a pending step was encountered", function () {
         treeWalker.witnessNewScenario();
-        treeWalker.witnessPendingStep();
+        var stepResult = createSpyWithStubs('step result', {getStatus: Cucumber.Status.PENDING});
+        treeWalker.visitStepResult(stepResult, function() {});
         expect(treeWalker.didAllFeaturesSucceed()).toBeFalsy();
       });
 
