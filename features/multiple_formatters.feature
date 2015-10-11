@@ -1,6 +1,6 @@
 Feature: Multiple Formatter
 
-  Scenario: Pretty formatter hides around, before and after hooks
+  Scenario: Ability to specify multiple formatters
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
