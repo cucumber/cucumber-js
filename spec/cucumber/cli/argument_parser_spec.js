@@ -457,7 +457,7 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     beforeEach(function () {
       formats = ['progress', 'summary', 'pretty:path/to/file'];
-      fd = createSpy('fd')
+      fd = createSpy('fd');
       stream = createSpy('stream');
       spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(formats);
       spyOn(fs, 'openSync').and.returnValue(fd);
