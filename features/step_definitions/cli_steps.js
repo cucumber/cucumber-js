@@ -89,12 +89,11 @@ var cliSteps = function cliSteps() {
     }
   });
 
-  this.Then(/^the exit status should be ([0-9]+)$/, function (code, callback) {
+  this.Then(/^the exit status should be ([0-9]+|non-zero)$/, function (code, callback) {
     var world = this;
 
     var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
-
-    if (actualCode != code) {
+    if ((code === 'non-zero' && actualCode != "0") || actualCode != code) {
       throw new Error("Exit code expected: \"" + code + "\"\n" +
                       "Got: \"" + actualCode + "\"\n" +
                       "Output:\n" + normalizeText(world.lastRun.stdout) + "\n" +

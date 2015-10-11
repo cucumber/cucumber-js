@@ -44,4 +44,4 @@ Feature: Multiple Formatters
       """
       ENOENT
       """
-    And the exit status should be 1
+    And the exit status should be non-zero
