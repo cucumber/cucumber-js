@@ -55,9 +55,12 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       shortenedOptionDefinitions = createSpy("shortened option definitions");
       args                       = createSpy("arguments");
       options                    = createSpy("parsed options");
+      options.argv               = createSpy("argv");
+      options.argv.remain        = createSpy("remain");
       nopt.and.returnValue(options);
       spyOn(argumentParser, 'getKnownOptionDefinitions').and.returnValue(knownOptionDefinitions);
       spyOn(argumentParser, 'getShortenedOptionDefinitions').and.returnValue(shortenedOptionDefinitions);
+      spyOn(argumentParser, 'processRemainingOptions').and.returnValue(options);
     });
 
     it("gets the known option definitions", function () {
