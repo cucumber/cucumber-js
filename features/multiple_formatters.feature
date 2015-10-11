@@ -1,6 +1,6 @@
 Feature: Multiple Formatter
 
-  Scenario: Ability to specify multiple formatters
+  Background:
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -15,6 +15,8 @@ Feature: Multiple Formatter
       };
       module.exports = cucumberSteps;
       """
+
+  Scenario: Ability to specify multiple formatters
     When I run cucumber.js with `-f progress -f pretty:pretty.txt`
     Then it outputs this text:
       """
@@ -35,3 +37,11 @@ Feature: Multiple Formatter
       1 step (1 passed)
       <duration-stat>
       """
+
+  Scenario: Invalid path
+    When I run cucumber.js with `-f progress -f pretty:invalid/pretty.txt`
+    Then the error output contains the text:
+      """
+      ENOENT
+      """
+    And the exit status should be 1

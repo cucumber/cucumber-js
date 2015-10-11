@@ -145,10 +145,10 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
-  this.Then(/^the output contains the text:$/, function(expectedOutput, callback) {
+  this.Then(/^the (error )?output contains the text:$/, function(error, expectedOutput, callback) {
     var world = this;
 
-    var actualOutput = world.lastRun['stdout'];
+    var actualOutput = error ? world.lastRun['stderr'] : world.lastRun['stdout'];
 
     actualOutput = normalizeText(actualOutput);
     expectedOutput = normalizeText(expectedOutput);
