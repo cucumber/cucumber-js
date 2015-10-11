@@ -208,6 +208,16 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 
 `'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)"$/`.
 
+##### Data Table
+
+When steps have a data table, they are passed an object `table` with the methods:
+- `hashes`: returns an array of objects where each row is converted to an object (column header is key)
+- `raw`: returns the entire table as a 2-D array
+- `rows`: similar to raw but does not pass the first row (useful when the first row is table headers)
+- `rowsHash`: returns an object where each row corresponds to an entry (first column is key, second column is value)
+
+See this [feature](/features/data_table.feature) for examples
+
 ##### Timeouts
 
 By default, asynchronous hooks and steps timeout after 5000 milliseconds.
