@@ -6,7 +6,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
   beforeEach(function () {
     options              = {};
-    formatter            = createSpyWithStubs("formatter", {log: null});
+    formatter            = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
     failedStepResults    = createSpy("failed steps");
@@ -252,9 +252,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(summaryFormatter.logSummary).toHaveBeenCalled();
     });
 
-    it("calls back", function () {
+    it("calls finish with the callback", function () {
       summaryFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+      expect(summaryFormatter.finish).toHaveBeenCalledWith(callback);
     });
   });
 

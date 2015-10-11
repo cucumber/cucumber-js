@@ -160,6 +160,21 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
+  this.Then(/^the file "([^"]*)" has the text:$/, function (filePath, expectedContent, callback) {
+    var absoluteFilePath = tmpPath(filePath);
+    fs.readFile(absoluteFilePath, 'utf8', function (err, content){
+      if (err) { return callback(err); }
+
+      actualContent = normalizeText(content);
+      expectedContent = normalizeText(expectedContent);
+
+      if (actualContent != expectedContent)
+        throw new Error("Expected " + filePath + " to have content matching:\n'" + expectedContent + "'\n" +
+                        "Got:\n'" + actualContent + "'.\n");
+      callback();
+    })
+  });
+
   this.Then(/^I see the version of Cucumber$/, function(callback) {
     var world = this;
 

@@ -3,6 +3,7 @@ require('../../support/spec_helper');
 describe("Cucumber.Cli.ArgumentParser", function () {
   var Cucumber = requireLib('cucumber');
   var path     = require('path');
+  var fs       = require('fs');
   var nopt;
 
   var argumentParser, argv, slicedArgv;
@@ -196,8 +197,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions['compiler']).toEqual([String, Array]);
     });
 
-    it("defines a --format option", function () {
-      expect(knownOptionDefinitions['format']).toEqual(String);
+    it("defines a repeatable --format option", function () {
+      expect(knownOptionDefinitions['format']).toEqual([String, Array]);
     });
 
     it("defines a --strict flag", function () {
@@ -451,21 +452,22 @@ describe("Cucumber.Cli.ArgumentParser", function () {
     });
   });
 
-  describe("getFormat()", function () {
-    var format;
+  describe("getFormats()", function () {
+    var formats, stream;
 
     beforeEach(function () {
-      format = createSpy("format");
-      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(format);
+      formats = ['progress', 'summary', 'pretty:path/to/file'];
+      stream = createSpy('stream');
+      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(formats);
+      spyOn(fs, 'createWriteStream').and.returnValue(stream);
     });
 
-    it("gets the format option value", function () {
-      argumentParser.getFormat();
-      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith(Cucumber.Cli.ArgumentParser.FORMAT_OPTION_NAME, 'pretty');
-    });
-
-    it("returns the format", function () {
-      expect(argumentParser.getFormat()).toBe(format);
+    it("returns the formats", function () {
+      expect(argumentParser.getFormats()).toEqual([
+        {stream: process.stdout, type: 'summary'},
+        {stream: stream, type: 'pretty'},
+      ]);
+      expect(fs.createWriteStream).toHaveBeenCalledWith('path/to/file');
     });
   });
 
