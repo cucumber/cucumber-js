@@ -453,12 +453,14 @@ describe("Cucumber.Cli.ArgumentParser", function () {
   });
 
   describe("getFormats()", function () {
-    var formats, stream;
+    var formats, fd, stream;
 
     beforeEach(function () {
       formats = ['progress', 'summary', 'pretty:path/to/file'];
+      fd = createSpy('fd')
       stream = createSpy('stream');
       spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(formats);
+      spyOn(fs, 'openSync').and.returnValue(fd);
       spyOn(fs, 'createWriteStream').and.returnValue(stream);
     });
 
@@ -467,7 +469,8 @@ describe("Cucumber.Cli.ArgumentParser", function () {
         {stream: process.stdout, type: 'summary'},
         {stream: stream, type: 'pretty'},
       ]);
-      expect(fs.createWriteStream).toHaveBeenCalledWith('path/to/file');
+      expect(fs.openSync).toHaveBeenCalledWith('path/to/file', 'w');
+      expect(fs.createWriteStream).toHaveBeenCalledWith(null, {fd: fd});
     });
   });
 
