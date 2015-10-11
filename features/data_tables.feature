@@ -59,7 +59,7 @@ Feature: Data Tables
     When I run cucumber.js with `--strict`
     Then it passes
 
-  Scenario: rowHash
+  Scenario: rowsHash
     Given a file named "features/passing_steps.feature" with:
       """
       Feature: a feature

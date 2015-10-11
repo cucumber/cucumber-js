@@ -210,11 +210,13 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 
 ##### Data Table
 
-When steps have a data table, they are passed an object with the methods:
-- `hashes`: returns an array of objects where each row is converted to an object (column header is the key)
-- `raw`: returns the entire table as a 2-D array
-- `rows`: similar to raw but does not pass the first row (use when the table has column headers)
-- `rowsHash`: returns an object where each row corresponds to an entry (first column is the key, second column is the value)
+When steps have a data table, they are passed an object with methods that can be used to access the data.
+- methods for tables with column headers
+  - `hashes`: returns an array of objects where each row is converted to an object (column header is the key)
+  - `rows`: returns the table as a 2-D array, without the column headers
+- methods for tables without column headers
+  - `raw`: returns the entire table as a 2-D array
+  - `rowsHash`: returns an object where each row corresponds to an entry (first column is the key, second column is the value)
 
 See this [feature](/features/data_tables.feature) for examples
 
