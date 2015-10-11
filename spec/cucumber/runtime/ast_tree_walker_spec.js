@@ -14,6 +14,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     supportListeners     = [createSpy("First support listener"), createSpy("Second support listener")];
     walkDomain           = createSpy("walk domain");
     options              = {};
+    spyOnStub(listeners, 'asyncForEach');
     spyOnStub(listeners, 'forEach').and.callFake(function (cb) { listeners.forEach(cb); });
     spyOnStub(supportListeners, 'forEach').and.callFake(function (cb) { supportListeners.forEach(cb); });
     spyOnStub(supportCodeLibrary, 'getListeners').and.returnValue(supportListeners);
@@ -151,7 +152,9 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     describe("when failing fast and a failure has already been encountered", function () {
       beforeEach(function() {
         options.failFast = true;
-        treeWalker.witnessFailedStep('a failure');
+        treeWalker.witnessNewScenario();
+        var stepResult = createSpyWithStubs('stepResult', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
+        treeWalker.visitStepResult(stepResult);
         treeWalker.visitFeature(feature, callback);
       });
 
@@ -231,7 +234,9 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     describe("when failing fast and a failure has already been encountered", function () {
       beforeEach(function() {
         options.failFast = true;
-        treeWalker.witnessFailedStep('a failure');
+        treeWalker.witnessNewScenario();
+        var stepResult = createSpyWithStubs('stepResult', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
+        treeWalker.visitStepResult(stepResult);
         treeWalker.visitScenario(scenario, callback);
       });
 
@@ -1122,12 +1127,14 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("returns true when a failed step was encountered", function () {
-      treeWalker.witnessFailedStep();
+      var stepResult = createSpyWithStubs('stepResult', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
+      treeWalker.visitStepResult(stepResult);
       expect(treeWalker.isSkippingSteps()).toBeTruthy();
     });
 
     it("returns true when a pending step was encountered", function () {
-      treeWalker.witnessPendingStep();
+      var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+      treeWalker.visitStepResult(stepResult);
       expect(treeWalker.isSkippingSteps()).toBeTruthy();
     });
 
@@ -1137,14 +1144,16 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("returns false when a failed step was encountered but not in the current scenario", function () {
-      treeWalker.witnessFailedStep();
+      var stepResult = createSpyWithStubs('stepResult', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
+      treeWalker.visitStepResult(stepResult);
       var scenario = createSpy("scenario");
       treeWalker.witnessNewScenario(scenario);
       expect(treeWalker.isSkippingSteps()).toBeFalsy();
     });
 
     it("returns false when a pending step was encountered but not in the current scenario", function () {
-      treeWalker.witnessPendingStep();
+      var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+      treeWalker.visitStepResult(stepResult);
       var scenario = createSpy("scenario");
       treeWalker.witnessNewScenario(scenario);
       expect(treeWalker.isSkippingSteps()).toBeFalsy();
