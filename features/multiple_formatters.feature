@@ -1,4 +1,4 @@
-Feature: Multiple Formatter
+Feature: Multiple Formatters
 
   Background:
     Given a file named "features/a.feature" with:
