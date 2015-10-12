@@ -105,7 +105,9 @@ Feature: After hook interface
       """
       hooks = function() {
         this.After(function(scenario, callback){
-          then: function(onResolve, onReject) {}
+          return {
+            then: function(onResolve, onReject) {}
+          };
         });
       };
 

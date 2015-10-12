@@ -103,7 +103,9 @@ Feature: Before hook interface
       """
       hooks = function() {
         this.Before(function(scenario, callback){
-          then: function(onResolve, onReject) {}
+          return {
+            then: function(onResolve, onReject) {}
+          };
         });
       };
 
