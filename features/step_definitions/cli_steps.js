@@ -92,8 +92,8 @@ var cliSteps = function cliSteps() {
   this.Then(/^the exit status should be ([0-9]+|non-zero)$/, function (code, callback) {
     var world = this;
 
-    var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
-    var ok = (code === 'non-zero' && actualCode !== "0") || actualCode === code;
+    var actualCode = world.lastRun.error ? world.lastRun.error.code : 0;
+    var ok = (code === 'non-zero' && actualCode !== 0) || actualCode === parseInt(code);
 
     if (!ok) {
       throw new Error("Exit code expected: \"" + code + "\"\n" +
