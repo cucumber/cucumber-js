@@ -8,6 +8,30 @@ Feature: Failing steps
           Given a failing step
       """
 
+  Scenario: too few arguments
+    Given a file named "features/step_definitions/failing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.When(/^a (.*) step$/, function(){});
+      };
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `-f json`
+    Then the step "a failing step" has status failed with "definition has 0 arguments, should have 1 or 2"
+
+  Scenario: too many arguments
+    Given a file named "features/step_definitions/failing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.When(/^a failing step$/, function(arg1, arg2){});
+      };
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `-f json`
+    Then the step "a failing step" has status failed with "definition has 2 arguments, should have 0 or 1"
+
   Scenario: synchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
@@ -54,11 +78,27 @@ Feature: Failing steps
     When I run cucumber.js with `-f json`
     Then the step "a failing step" has status failed with "my error"
 
-  Scenario: promise - throws
+  Scenario: asynchronous - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       stepDefinitions = function() {
         this.When(/^a failing step$/, function(callback){
+          return {
+            then: function(resolve, reject) {}
+          };
+        });
+      };
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `-f json`
+    Then the step "a failing step" has status failed with "definition takes a callback and returns a promise"
+
+  Scenario: promise - throws
+    Given a file named "features/step_definitions/failing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.When(/^a failing step$/, function(){
           return {
             then: function(resolve, reject) {
               setTimeout(function(){
@@ -78,7 +118,7 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       stepDefinitions = function() {
-        this.When(/^a failing step$/, function(callback){
+        this.When(/^a failing step$/, function(){
           return {
             then: function(resolve, reject) {
               setTimeout(function(){

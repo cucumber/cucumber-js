@@ -100,6 +100,20 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 1
 
+  Scenario: callback - returning a promise
+    Given a file named "features/step_definitions/failing_steps.js" with:
+      """
+      hooks = function() {
+        this.After(function(scenario, callback){
+          then: function(onResolve, onReject) {}
+        });
+      };
+
+      module.exports = hooks
+      """
+    When I run cucumber.js with `-f json`
+    And the exit status should be 1
+
   Scenario: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
