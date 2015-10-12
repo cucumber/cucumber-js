@@ -3,7 +3,7 @@ var hooks = function hooks() {
   var tmp = require('tmp');
 
   this.Before(function () {
-    var tmpObject = tmp.dirSync({unsafeCleanup: true})
+    var tmpObject = tmp.dirSync({unsafeCleanup: true});
     this.tmpDir = fs.realpathSync(tmpObject.name);
   });
 };

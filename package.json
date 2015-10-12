@@ -113,7 +113,7 @@
   },
   "scripts": {
     "feature-test": "./bin/cucumber.js -p build",
-    "lint": "jshint bundler.js bin lib spec",
+    "lint": "jshint bundler.js bin lib features spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
     "unit-test": "jasmine"
   },
