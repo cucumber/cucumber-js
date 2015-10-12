@@ -9,7 +9,7 @@ var cliSteps = function cliSteps() {
 
   var executablePath = path.join(__dirname, '..', '..', 'bin', 'cucumber.js');
 
-  this.When(/^I run cucumber.js(?: from the '([^']*)' directory)?(?: with `(|.+)`)?$/, function(dir, args, callback) {
+  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, function(dir, args, callback) {
     args = args || '';
     var world = this;
     var cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir;
@@ -84,7 +84,7 @@ var cliSteps = function cliSteps() {
                       'Got:\n' + actualOutput);
   });
 
-  this.Then(/^it suggests a '([^']*)' step definition snippet(?: with (\d+) parameters?(?: named '([^']*)')?)? for:$/, function (step, parameterCount, parameterName, regExp) {
+  this.Then(/^it suggests a "([^"]*)" step definition snippet(?: with (\d+) parameters?(?: named "([^"]*)")?)? for:$/, function (step, parameterCount, parameterName, regExp) {
     var parameters = [];
     if (parameterName) {
       parameters.push(parameterName);
