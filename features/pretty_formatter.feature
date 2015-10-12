@@ -12,8 +12,6 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
       0 scenarios
       0 steps
       <duration-stat>
@@ -59,11 +57,8 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: I've declared one step which passes   # features/a.feature:3
           Given This step is passing                    # features/a.feature:4
-
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -100,17 +95,10 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: I've declared one step and it is passing   # features/a.feature:3
           Before
             Fail
           Given This step is passing                         # features/a.feature:4
-
-
-      (::) failed steps (::)
-
-      Fail
 
       Failing scenarios:
       features/a.feature:3 # Scenario: I've declared one step and it is passing
@@ -139,11 +127,8 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: I haven't done anything yet
           Given This step is passing
-
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -176,8 +161,6 @@ Feature: Pretty Formatter
       """
       Feature: some feature
 
-
-
         Scenario: some scenario        # features/a.feature:3
           Given a basic step           # features/a.feature:4
           And a step with a doc string # features/a.feature:5
@@ -185,7 +168,6 @@ Feature: Pretty Formatter
             my doc string
             \"\"\"
           And a basic step             # features/a.feature:9
-
 
       1 scenario (1 passed)
       3 steps (3 passed)

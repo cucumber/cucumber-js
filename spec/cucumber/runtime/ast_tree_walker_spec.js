@@ -3,13 +3,14 @@ require('../../support/spec_helper');
 describe("Cucumber.Runtime.AstTreeWalker", function () {
   var Cucumber = requireLib('cucumber');
   var beforeStepCollection, afterStepCollection, attachmentCollection, emptyHook;
-  var treeWalker, features, supportCodeLibrary, listeners, supportListeners;
+  var treeWalker, features, supportCodeLibrary, listeners, supportListeners, options;
 
   beforeEach(function () {
     features             = createSpyWithStubs("Features AST element", {acceptVisitor: null});
     supportCodeLibrary   = createSpy("Support code library");
     listeners            = [createSpy("First listener"), createSpy("Second listener")];
     supportListeners     = [createSpy("First support listener"), createSpy("Second support listener")];
+    options              = {};
     spyOnStub(listeners, 'forEach').and.callFake(function (cb) { listeners.forEach(cb); });
     spyOnStub(supportListeners, 'forEach').and.callFake(function (cb) { supportListeners.forEach(cb); });
     spyOnStub(supportCodeLibrary, 'getListeners').and.returnValue(supportListeners);
@@ -20,7 +21,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     emptyHook            = createSpy("empty hook");
     spyOn(Cucumber.Type, 'Collection').and.returnValues(beforeStepCollection, afterStepCollection, attachmentCollection);
     spyOn(Cucumber.SupportCode, "Hook").and.returnValue(emptyHook);
-    treeWalker           = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners);
+    treeWalker           = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, options);
   });
 
   describe("walk()", function () {
@@ -117,6 +118,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       spyOn(treeWalker, 'broadcastEventAroundUserFunction');
     });
 
+    describe("when failing fast and a failure has already been encountered", function () {
+      beforeEach(function() {
+        options.failFast = true;
+        treeWalker.witnessFailedStep('a failure');
+        treeWalker.visitFeature(feature, callback);
+      });
+
+      it('calls back', function () {
+        expect(callback).toHaveBeenCalled();
+      });
+
+      it('does not broadcast the visit of the feature', function () {
+        expect(treeWalker.broadcastEventAroundUserFunction).not.toHaveBeenCalled();
+      });
+    });
+
     it("creates a new event about the feature' visit", function () {
       treeWalker.visitFeature(feature, callback);
       expect(Cucumber.Runtime.AstTreeWalker.Event).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.FEATURE_EVENT_NAME, payload);
@@ -179,6 +196,22 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       scenario = createSpyObj("scenario",['mock']);
       callback = createSpy("Callback");
       spyOnStub(supportCodeLibrary, 'instantiateNewWorld');
+    });
+
+    describe("when failing fast and a failure has already been encountered", function () {
+      beforeEach(function() {
+        options.failFast = true;
+        treeWalker.witnessFailedStep('a failure');
+        treeWalker.visitScenario(scenario, callback);
+      });
+
+      it('calls back', function () {
+        expect(callback).toHaveBeenCalled();
+      });
+
+      it('does not instantiate a new World instance', function () {
+        expect(supportCodeLibrary.instantiateNewWorld).not.toHaveBeenCalled();
+      });
     });
 
     it("instantiates a new World instance asynchronously", function () {
@@ -973,8 +1006,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
     describe("when strict mode is on", function () {
       beforeEach(function () {
-        var isStrictMode = true;
-        treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode);
+        options.strict = true;
       });
 
       it("returns true when no failure was encountered", function () {
@@ -1382,11 +1414,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       describe("when the steps are skipped in dry Run mode", function () {
         beforeEach(function () {
-          var dryrun = true,
-              isStrictMode = false;
-          treeWalker = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictMode, dryrun);
+          options.dryRun = true;
           spyOn(treeWalker, 'processDryRunStep');
-          spyOn(treeWalker, 'executeStep');
         });
 
         it("skips the step", function () {

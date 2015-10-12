@@ -5,7 +5,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   var formatter, formatterHearMethod, summaryFormatter, statsJournal, failedStepResults, options;
 
   beforeEach(function () {
-    options              = createSpy("options");
+    options              = {};
     formatter            = createSpyWithStubs("formatter", {log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
@@ -380,12 +380,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       spyOn(summaryFormatter, 'logDuration');
       spyOn(summaryFormatter, 'logFailedStepResults');
       spyOn(summaryFormatter, 'logUndefinedStepSnippets');
+      spyOn(summaryFormatter, 'logFailedScenarios');
       spyOnStub(statsJournal, 'witnessedAnyFailedStep');
       spyOnStub(statsJournal, 'witnessedAnyUndefinedStep');
-      spyOnStub(statsJournal, 'logFailedStepResults');
-      spyOnStub(statsJournal, 'logScenariosSummary');
-      spyOnStub(statsJournal, 'logStepsSummary');
-      spyOnStub(statsJournal, 'logUndefinedStepSnippets');
     });
 
     it("checks whether there are failed steps or not", function () {
@@ -401,6 +398,22 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       it("logs the failed steps", function () {
         summaryFormatter.logSummary();
         expect(summaryFormatter.logFailedStepResults).toHaveBeenCalled();
+      });
+
+      it("logs the failed scenarions", function () {
+        summaryFormatter.logSummary();
+        expect(summaryFormatter.logFailedScenarios).toHaveBeenCalled();
+      });
+
+      describe("when hiding failed steps", function () {
+        beforeEach(function () {
+          options.hideFailedStepResults = true;
+        });
+
+        it("does not log the failed steps", function () {
+          summaryFormatter.logSummary();
+          expect(summaryFormatter.logFailedStepResults).not.toHaveBeenCalled();
+        });
       });
     });
 
@@ -459,12 +472,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logFailedStepResults()", function () {
-    var failedScenarioLogBuffer;
-
     beforeEach(function () {
-      failedScenarioLogBuffer = createSpy("failed scenario log buffer");
       spyOnStub(failedStepResults, 'forEach');
-      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').and.returnValue(failedScenarioLogBuffer);
     });
 
     it("logs a failed steps header", function () {
@@ -492,26 +501,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
         userFunction (failedStepResult);
         expect(summaryFormatter.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
       });
-    });
-
-    it("logs a failed scenarios header", function () {
-      summaryFormatter.logFailedStepResults();
-      expect(summaryFormatter.log).toHaveBeenCalledWith("Failing scenarios:\n");
-    });
-
-    it("gets the failed scenario details from its log buffer", function () {
-      summaryFormatter.logFailedStepResults();
-      expect(summaryFormatter.getFailedScenarioLogBuffer).toHaveBeenCalled();
-    });
-
-    it("logs the failed scenario details", function () {
-      summaryFormatter.logFailedStepResults();
-      expect(summaryFormatter.log).toHaveBeenCalledWith(failedScenarioLogBuffer);
-    });
-
-    it("logs a line break", function () {
-      summaryFormatter.logFailedStepResults();
-      expect(summaryFormatter.log).toHaveBeenCalledWith("\n");
     });
   });
 
@@ -549,6 +538,32 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     it("logs two line breaks", function () {
       summaryFormatter.logFailedStepResult(stepResult);
       expect(summaryFormatter.log).toHaveBeenCalledWith("\n\n");
+    });
+  });
+
+  describe("logFailedScenarios()", function () {
+    var failedScenarioLogBuffer;
+
+    beforeEach(function () {
+      failedScenarioLogBuffer = createSpy("failed scenario log buffer");
+      spyOn(summaryFormatter, 'getFailedScenarioLogBuffer').and.returnValue(failedScenarioLogBuffer);
+      summaryFormatter.logFailedScenarios();
+    });
+
+    it("logs a failed scenarios header", function () {
+      expect(summaryFormatter.log).toHaveBeenCalledWith("Failing scenarios:\n");
+    });
+
+    it("gets the failed scenario details from its log buffer", function () {
+      expect(summaryFormatter.getFailedScenarioLogBuffer).toHaveBeenCalled();
+    });
+
+    it("logs the failed scenario details", function () {
+      expect(summaryFormatter.log).toHaveBeenCalledWith(failedScenarioLogBuffer);
+    });
+
+    it("logs a line break", function () {
+      expect(summaryFormatter.log).toHaveBeenCalledWith("\n");
     });
   });
 
