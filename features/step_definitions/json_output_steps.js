@@ -1,6 +1,24 @@
 var jsonOutputSteps = function jsonOutputSteps() {
   var assert = require('assert');
 
+  var helpers = require('../support/helpers');
+  var getAdditionalErrorText = helpers.getAdditionalErrorText;
+
+  function findScenario(features, predicate){
+    var found = null;
+    features.forEach(function(feature) {
+      feature.elements.forEach(function(element, index){
+        if (element.type === 'scenario' && predicate(element, index)){
+          found = element;
+        }
+      });
+    });
+    if (found === null){
+      throw new Error('Could not find scenario matching predicate');
+    }
+    return found;
+  }
+
   function findStep(features, scenarioPredicate, stepPredicate){
     var scenario = findScenario(features, scenarioPredicate);
     var found = null
@@ -15,20 +33,45 @@ var jsonOutputSteps = function jsonOutputSteps() {
     return found;
   }
 
-  function findScenario(features, predicate, errorMessage){
-    var found = null;
-    features.forEach(function(feature) {
-      feature.elements.forEach(function(element, index){
-        if (element.type === 'scenario' && predicate(element, index)){
-          found = element;
-        }
+  function neutraliseVariableValuesInJson(report) {
+    report.forEach(function (item) {
+      (item.elements || []).forEach(function (element) {
+        (element['steps'] || []).forEach(function (step) {
+          if ('result' in step) {
+            if ('error_message' in step.result) {
+              step.result.error_message = "<error-message>";
+            }
+
+            if ('duration' in step.result) {
+              step.result.duration = "<duration>";
+            }
+          }
+        });
       });
     });
-    if (found === null){
-      throw new Error('Could not find scenario matching predicate');
-    }
-    return found;
-  }
+  };
+
+  this.Then(/^it outputs this json:$/, function(expectedOutput) {
+    var actualOutput = this.lastRun['stdout'];
+    expectedOutput = expectedOutput.replace(/<current-directory>/g, this.tmpDir.replace(/\\/g,'/'));
+
+    try { var actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
+    catch(err) { throw new Error("Error parsing actual JSON:\n" + actualOutput + "\n" + getAdditionalErrorText(world.lastRun)); }
+
+    try { var expectedJson = JSON.parse(expectedOutput); }
+    catch(err) { throw new Error("Error parsing expected JSON:\n" + expectedOutput + "\n" + getAdditionalErrorText(world.lastRun)); }
+
+    neutraliseVariableValuesInJson(actualJson);
+    neutraliseVariableValuesInJson(expectedJson);
+
+    var actualJsonString = JSON.stringify(actualJson, null, 2);
+    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
+
+    if (actualJsonString != expectedJsonString)
+      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\n" +
+                      "Got:\n'" + actualJsonString + "'.\n" +
+                      getAdditionalErrorText(this.lastRun));
+  });
 
   this.Then(/^it runs (\d+) scenarios$/, function (count) {
     var features = JSON.parse(this.lastRun.stdout);

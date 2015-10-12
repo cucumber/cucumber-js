@@ -101,13 +101,14 @@
     "coffee-script": "1.10.0",
     "connect": "3.4.0",
     "exorcist": "0.4.0",
+    "fs-extra": "^0.24.0",
     "jasmine": "^2.3.2",
     "jshint": "2.8.0",
-    "mkdirp": "0.5.1",
     "pogo": "0.10.0",
     "rimraf": "2.4.3",
     "serve-static": "1.10.0",
     "through": "2.3.8",
+    "tmp": "0.0.28",
     "uglifyify": "3.0.1"
   },
   "scripts": {
