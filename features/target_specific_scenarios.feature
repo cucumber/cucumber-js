@@ -1,7 +1,7 @@
-Feature: Command line interface
-  In order to run cucumber in different contexts
-  As a person who wants to run features
-  I want to run Cucumber on the command line
+Feature: Target specific scenarios
+  As a developer running features
+  I want an easy way to run specific scenarios
+  So that I don't waste time running my whole test suite when I don't need to
 
   Background:
     Given a file named "features/a.feature" with:
@@ -24,7 +24,7 @@ Feature: Command line interface
       module.exports = cucumberSteps;
       """
 
-  Scenario: run a single scenario within feature
+  Scenario: run a single scenario
     When I run cucumber.js with `-f progress features/a.feature:2`
     Then it outputs this text:
       """
@@ -36,7 +36,7 @@ Feature: Command line interface
       """
     And the exit status should be 0
 
-  Scenario: run a multiple scenario within feature
+  Scenario: run a multiple scenario
     When I run cucumber.js with `-f progress features/a.feature:2:5`
     Then it outputs this text:
       """
