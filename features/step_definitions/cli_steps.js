@@ -55,7 +55,7 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, function(dir, args, callback) {
+  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
     args = args || ''
     var world = this;
 
