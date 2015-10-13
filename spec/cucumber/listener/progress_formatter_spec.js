@@ -7,7 +7,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
   beforeEach(function () {
     options             = createSpy("options");
-    formatter           = createSpyWithStubs("formatter", {log: null});
+    formatter           = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summaryFormatter");
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
@@ -213,9 +213,9 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
       expect(progressFormatter.log).toHaveBeenCalledWith(summaryLogs);
     });
 
-    it("calls back", function () {
+    it("calls finish with the callback", function () {
       progressFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+      expect(progressFormatter.finish).toHaveBeenCalledWith(callback);
     });
   });
 });

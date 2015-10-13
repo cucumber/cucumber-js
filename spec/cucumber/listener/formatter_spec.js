@@ -38,30 +38,17 @@ describe("Cucumber.Listener.Formatter", function () {
       expect(formatter.getLogs()).toBe(loggedBuffer);
     });
 
-    it("outputs the logged string to STDOUT by default", function () {
-        formatter.log(logged);
-        expect(process.stdout.write).toHaveBeenCalledWith(logged);
-    });
+    describe("when asked to output to a stream", function () {
+      var stream;
 
-    describe("when asked to output to STDOUT", function () {
       beforeEach(function () {
-        formatter = Cucumber.Listener.Formatter({logToConsole: true});
+        stream = createSpyWithStubs('stream', {write: null});
+        formatter = Cucumber.Listener.Formatter({stream: stream});
       });
 
-      it("outputs the logged string to STDOUT", function () {
+      it("outputs the logged string to the stream", function () {
         formatter.log(logged);
-        expect(process.stdout.write).toHaveBeenCalledWith(logged);
-      });
-    });
-
-    describe("when asked to not output to STDOUT", function () {
-      beforeEach(function () {
-        formatter = Cucumber.Listener.Formatter({logToConsole: false});
-      });
-
-      it("does not output anything to STDOUT", function () {
-        formatter.log(logged);
-        expect(process.stdout.write).not.toHaveBeenCalledWith(logged);
+        expect(stream.write).toHaveBeenCalledWith(logged);
       });
     });
 

@@ -28,15 +28,16 @@ describe("Cucumber.Cli.Configuration", function () {
     });
   });
 
-  describe("getFormatter()", function () {
-    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource;
+  describe("getFormatters()", function () {
+    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream;
 
     beforeEach(function () {
+      stream = createSpy('stream');
       shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
       shouldShowSource               = createSpy("should source uris be visible?");
-      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown, showSource: shouldShowSource};
-      spyOnStub(argumentParser, 'getFormat').and.returnValue("progress");
+      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown, showSource: shouldShowSource, stream: stream};
+      spyOnStub(argumentParser, 'getFormats').and.returnValue([]);
       spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript').and.returnValue(shouldSnippetsBeInCoffeeScript);
       spyOnStub(argumentParser, 'shouldSnippetsBeShown').and.returnValue(shouldSnippetsBeShown);
       spyOnStub(argumentParser, 'shouldShowSource').and.returnValue(shouldShowSource);
@@ -46,42 +47,22 @@ describe("Cucumber.Cli.Configuration", function () {
       spyOn(Cucumber.Listener, 'SummaryFormatter');
     });
 
-    it("gets the formatter name from the argument parser", function () {
-      configuration.getFormatter();
-      expect(argumentParser.getFormat).toHaveBeenCalled();
-    });
-
-    it("checks whether the step definition snippets should be in CoffeeScript", function () {
-      configuration.getFormatter();
-      expect(argumentParser.shouldSnippetsBeInCoffeeScript).toHaveBeenCalled();
-    });
-
-    it("checks whether the source uris should be shown", function () {
-        configuration.getFormatter();
-        expect(argumentParser.shouldShowSource).toHaveBeenCalled();
-    });
-
-    it("checks whether the step definition snippets should be shown", function () {
-      configuration.getFormatter();
-      expect(argumentParser.shouldSnippetsBeShown).toHaveBeenCalledTimes(1);
-    });
-
     describe("when the formatter name is \"json\"", function () {
       var formatter;
 
       beforeEach(function () {
-        argumentParser.getFormat.and.returnValue("json");
+        argumentParser.getFormats.and.returnValue([{type: "json", stream: stream}]);
         formatter = createSpy("formatter");
         Cucumber.Listener.JsonFormatter.and.returnValue(formatter);
       });
 
-      it("creates a new progress formatter", function () {
-        configuration.getFormatter();
+      it("creates a new json formatter", function () {
+        configuration.getFormatters();
         expect(Cucumber.Listener.JsonFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
-      it("returns the progress formatter", function () {
-        expect(configuration.getFormatter()).toBe(formatter);
+      it("returns the json formatter", function () {
+        expect(configuration.getFormatters()).toEqual([formatter]);
       });
     });
 
@@ -89,18 +70,18 @@ describe("Cucumber.Cli.Configuration", function () {
       var formatter;
 
       beforeEach(function () {
-        argumentParser.getFormat.and.returnValue("progress");
+        argumentParser.getFormats.and.returnValue([{type: "progress", stream: stream}]);
         formatter = createSpy("formatter");
         Cucumber.Listener.ProgressFormatter.and.returnValue(formatter);
       });
 
       it("creates a new progress formatter", function () {
-        configuration.getFormatter();
+        configuration.getFormatters();
         expect(Cucumber.Listener.ProgressFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the progress formatter", function () {
-        expect(configuration.getFormatter()).toBe(formatter);
+        expect(configuration.getFormatters()).toEqual([formatter]);
       });
     });
 
@@ -108,18 +89,18 @@ describe("Cucumber.Cli.Configuration", function () {
       var formatter;
 
       beforeEach(function () {
-        argumentParser.getFormat.and.returnValue("pretty");
+        argumentParser.getFormats.and.returnValue([{type: "pretty", stream: stream}]);
         formatter = createSpy("formatter");
         Cucumber.Listener.PrettyFormatter.and.returnValue(formatter);
       });
 
       it("creates a new pretty formatter", function () {
-        configuration.getFormatter();
+        configuration.getFormatters();
         expect(Cucumber.Listener.PrettyFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the pretty formatter", function () {
-        expect(configuration.getFormatter()).toBe(formatter);
+        expect(configuration.getFormatters()).toEqual([formatter]);
       });
     });
 
@@ -127,28 +108,28 @@ describe("Cucumber.Cli.Configuration", function () {
       var formatter;
 
       beforeEach(function () {
-        argumentParser.getFormat.and.returnValue("summary");
+        argumentParser.getFormats.and.returnValue([{type: "summary", stream: stream}]);
         formatter = createSpy("formatter");
         Cucumber.Listener.SummaryFormatter.and.returnValue(formatter);
       });
 
       it("creates a new summary formatter", function () {
-        configuration.getFormatter();
+        configuration.getFormatters();
         expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(formatterOptions);
       });
 
       it("returns the summary formatter", function () {
-        expect(configuration.getFormatter()).toBe(formatter);
+        expect(configuration.getFormatters()).toEqual([formatter]);
       });
     });
 
     describe("when the formatter name is unknown", function () {
       beforeEach(function () {
-        argumentParser.getFormat.and.returnValue("blah");
+        argumentParser.getFormats.and.returnValue([{type: "blah", stream: stream}]);
       });
 
       it("throws an exceptions", function () {
-        expect(configuration.getFormatter).toThrow();
+        expect(configuration.getFormatters).toThrow();
       });
     });
   });

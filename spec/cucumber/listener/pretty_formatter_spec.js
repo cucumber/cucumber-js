@@ -7,7 +7,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
   beforeEach(function () {
     options             = createSpy("options");
-    formatter           = createSpyWithStubs("formatter");
+    formatter           = createSpyWithStubs("formatter", {finish: null});
     logged              = '';
     spyOnStub(formatter, 'log').and.callFake(function (text) { logged += text; });
     formatterHearMethod = spyOnStub(formatter, 'hear');
@@ -436,9 +436,9 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(prettyFormatter.log).toHaveBeenCalledWith(summary);
     });
 
-    it("calls back", function () {
+    it("calls finish with the callback", function () {
       prettyFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+      expect(prettyFormatter.finish).toHaveBeenCalledWith(callback);
     });
   });
 
