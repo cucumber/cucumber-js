@@ -57,7 +57,7 @@ var jsonOutputSteps = function jsonOutputSteps() {
       throw new Error("Expected '" + name + "' to have status '" + status + "', but it had status: " +
                       step.result.status);
     }
-    if (errorMessage && step.result.error_message.indexOf(errorMessage) === -1) {
+    if (errorMessage && step.result.error_message.indexOf('Error: ' + errorMessage) === -1) {
       throw new Error("Expected '" + name + "' to have an error_message containing '" +
                       errorMessage + "'\n" + "Got:\n" + step.result.error_message);
     }

@@ -20,6 +20,24 @@ Feature: Before hook interface
       module.exports = stepDefinitions
       """
 
+  Scenario: too many arguments
+    Given a file named "features/support/hooks.js" with:
+      """
+      assert = require('assert');
+
+      hooks = function() {
+        this.Before(function (arg1, arg2, arg3) {});
+      };
+
+      module.exports = hooks
+      """
+    When I run cucumber.js
+    And the exit status should be 1
+    And the output contains the text:
+      """
+      hook has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
+      """
+
   Scenario: synchronous
     Given a file named "features/support/hooks.js" with:
       """
@@ -113,6 +131,10 @@ Feature: Before hook interface
       """
     When I run cucumber.js with `-f json`
     And the exit status should be 1
+    And the output contains the text:
+      """
+      hook accepts a callback and returns a promise
+      """
 
   Scenario: promise resolves
     Given a file named "features/support/hooks.js" with:

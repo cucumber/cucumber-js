@@ -18,7 +18,7 @@ Feature: Failing steps
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "definition has 0 arguments, should have 1 or 2"
+    Then the step "a failing step" has status failed with "step definition has 0 arguments, should have 1 (if synchronous or returning a promise) or 2 (if accepting a callback)"
 
   Scenario: too many arguments
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -30,7 +30,7 @@ Feature: Failing steps
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "definition has 2 arguments, should have 0 or 1"
+    Then the step "a failing step" has status failed with "step definition has 2 arguments, should have 0 (if synchronous or returning a promise) or 1 (if accepting a callback)"
 
   Scenario: synchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -92,7 +92,7 @@ Feature: Failing steps
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "definition takes a callback and returns a promise"
+    Then the step "a failing step" has status failed with "step definition accepts a callback and returns a promise"
 
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
