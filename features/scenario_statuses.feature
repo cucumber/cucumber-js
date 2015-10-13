@@ -20,9 +20,18 @@ Feature: Scenario Statuses
       function checkScenarioStatuses(scenario) {
         var error;
 
-        if (scenario.getStatus() !== 'passed') {
-          error = "Expected scenario status to be passed";
-        }
+        if (scenario.isSuccessful() !== true)
+          error = "Expected isSuccessful to be true";
+        else if (scenario.isFailed() !== false)
+          error = "Expected isFailed to be false";
+        else if (scenario.isPending() !== false)
+          error = "Expected isPending to be false";
+        else if (scenario.isUndefined() !== false)
+          error = "Expected isUndefined to be false";
+        else if (scenario.getException() !== null)
+          error = "Expected exception to be null";
+        else
+          error = null;
 
         return error;
       }
@@ -145,11 +154,18 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          var error;
-
-          if (scenario.getStatus() !== 'passed') {
-            error = "Expected status to be passed";
-          }
+          if (scenario.isSuccessful() !== true)
+            error = "Expected isSuccessful to be true";
+          else if (scenario.isFailed() !== false)
+            error = "Expected isFailed to be false";
+          else if (scenario.isPending() !== false)
+            error = "Expected isPending to be false";
+          else if (scenario.isUndefined() !== false)
+            error = "Expected isUndefined to be false";
+          else if (scenario.getException() !== null)
+            error = "Expected exception to be null";
+          else
+            error = null;
 
           callback(error);
         });
@@ -222,12 +238,18 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          var error;
-
-          if (scenario.getStatus() !== 'failed')
-            error = "Expected status to be failed";
+          if (scenario.isSuccessful() !== false)
+            error = "Expected isSuccessful to be false";
+          else if (scenario.isFailed() !== true)
+            error = "Expected isFailed to be true";
+          else if (scenario.isPending() !== false)
+            error = "Expected isPending to be false";
+          else if (scenario.isUndefined() !== false)
+            error = "Expected isUndefined to be false";
           else if (scenario.getException() !== "Fail")
             error = "Expected exception to be 'Fail'";
+          else
+            error = null;
 
           callback(error);
         });
@@ -301,11 +323,18 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          var error;
-
-          if (scenario.getStatus() !== 'pending') {
-            error = "Expected status to be pending";
-          }
+          if (scenario.isSuccessful() !== false)
+            error = "Expected isSuccessful to be false";
+          else if (scenario.isFailed() !== false)
+            error = "Expected isFailed to be false";
+          else if (scenario.isPending() !== true)
+            error = "Expected isPending to be true";
+          else if (scenario.isUndefined() !== false)
+            error = "Expected isUndefined to be false";
+          else if (scenario.getException() !== null)
+            error = "Expected exception to be null";
+          else
+            error = null;
 
           callback(error);
         });
@@ -376,11 +405,18 @@ Feature: Scenario Statuses
       """
       var hooks = function () {
         this.After(function(scenario, callback) {
-          var error;
-
-          if (scenario.getStatus() !== 'undefined') {
-            error = "Expected status to be undefined";
-          }
+          if (scenario.isSuccessful() !== false)
+            error = "Expected isSuccessful to be false";
+          else if (scenario.isFailed() !== false)
+            error = "Expected isFailed to be false";
+          else if (scenario.isPending() !== false)
+            error = "Expected isPending to be false";
+          else if (scenario.isUndefined() !== true)
+            error = "Expected isUndefined to be true";
+          else if (scenario.getException() !== null)
+            error = "Expected exception to be null";
+          else
+            error = null;
 
           callback(error);
         });

@@ -2,15 +2,14 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Api.Scenario", function () {
   var Cucumber = requireLib('cucumber');
-  var scenarioStatus, scenarioFailureException, attachments, astTreeWalker;
+  var scenarioFailureException, attachments, astTreeWalker;
   var keyword, name, description, uri, line, tags, astScenario;
   var scenario;
 
   beforeEach(function () {
-    scenarioStatus     = createSpy("scenario status");
-    scenarioFailureException = createSpy("scenario failure exception");
+    scenarioFailureException = createSpy("scenario get exception");
     attachments        = createSpy("attachments");
-    astTreeWalker      = createSpyWithStubs("ast scenario", { getScenarioStatus: scenarioStatus, getScenarioFailureException: scenarioFailureException, getAttachments: attachments, attach: undefined });
+    astTreeWalker      = createSpyWithStubs("ast scenario", { getScenarioStatus: null, getScenarioFailureException: scenarioFailureException, getAttachments: attachments, attach: undefined });
     keyword            = createSpy("scenario keyword");
     name               = createSpy("scenario name");
     description        = createSpy("scenario description");
@@ -58,9 +57,93 @@ describe("Cucumber.Api.Scenario", function () {
     });
   });
 
-  describe("getStatus()", function () {
-    it("returns the scenario status", function () {
-      expect(scenario.getStatus()).toBe(scenarioStatus);
+  describe("isSuccessful()", function () {
+    describe('scenario passed', function () {
+      beforeEach(function() {
+        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.PASSED);
+      });
+
+      it("returns true", function () {
+        expect(scenario.isSuccessful()).toEqual(true);
+      });
+    });
+
+    describe('scenario did not pass', function () {
+      it("returns false", function () {
+        expect(scenario.isSuccessful()).toEqual(false);
+      });
+    });
+  });
+
+  describe("isFailed()", function () {
+    describe('scenario failed', function () {
+      beforeEach(function() {
+        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.FAILED);
+      });
+
+      it("returns true", function () {
+        expect(scenario.isFailed()).toEqual(true);
+      });
+    });
+
+    describe('scenario did not fail', function () {
+      it("returns false", function () {
+        expect(scenario.isFailed()).toEqual(false);
+      });
+    });
+  });
+
+  describe("isPending()", function () {
+    describe('scenario is pending', function () {
+      beforeEach(function() {
+        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.PENDING);
+      });
+
+      it("returns true", function () {
+        expect(scenario.isPending()).toEqual(true);
+      });
+    });
+
+    describe('scenario is not pending', function () {
+      it("returns false", function () {
+        expect(scenario.isPending()).toEqual(false);
+      });
+    });
+  });
+
+  describe("isUndefined()", function () {
+    describe('scenario is undefined', function () {
+      beforeEach(function() {
+        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.UNDEFINED);
+      });
+
+      it("returns true", function () {
+        expect(scenario.isUndefined()).toEqual(true);
+      });
+    });
+
+    describe('scenario is not undefined', function () {
+      it("returns false", function () {
+        expect(scenario.isUndefined()).toEqual(false);
+      });
+    });
+  });
+
+  describe("isSkipped()", function () {
+    describe('scenario is skipped', function () {
+      beforeEach(function() {
+        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.SKIPPED);
+      });
+
+      it("returns true", function () {
+        expect(scenario.isSkipped()).toEqual(true);
+      });
+    });
+
+    describe('scenario is not skipped', function () {
+      it("returns false", function () {
+        expect(scenario.isSkipped()).toEqual(false);
+      });
     });
   });
 
