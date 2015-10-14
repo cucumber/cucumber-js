@@ -2,10 +2,12 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.ProgressFormatter", function () {
   var Cucumber = requireLib('cucumber');
+  var colors = require('colors/safe');
+  colors.enabled = true;
   var formatter, formatterHearMethod, summaryFormatter, progressFormatter, options;
 
   beforeEach(function () {
-    options             = createSpy("options");
+    options             = {useColors: true};
     formatter           = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summaryFormatter");
@@ -24,7 +26,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
     });
 
     it("creates a summary formatter", function () {
-      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(jasmine.objectContaining({logToConsole: false}));
+      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalled();
     });
   });
 
@@ -210,21 +212,21 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
   describe("handleSuccessfulStepResult()", function () {
     it("logs the passing step character", function () {
       progressFormatter.handleSuccessfulStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PASSED_STEP_CHARACTER);
+      expect(progressFormatter.log).toHaveBeenCalledWith(colors.green('.'));
     });
   });
 
   describe("handlePendingStepResult()", function () {
     it("logs the pending step character", function () {
       progressFormatter.handlePendingStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.PENDING_STEP_CHARACTER);
+      expect(progressFormatter.log).toHaveBeenCalledWith(colors.yellow('P'));
     });
   });
 
   describe("handleSkippedStepResult()", function () {
     it("logs the skipped step character", function () {
       progressFormatter.handleSkippedStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.SKIPPED_STEP_CHARACTER);
+      expect(progressFormatter.log).toHaveBeenCalledWith(colors.cyan('-'));
     });
   });
 
@@ -237,7 +239,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
     it("logs the undefined step character", function () {
       progressFormatter.handleUndefinedStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.UNDEFINED_STEP_CHARACTER);
+      expect(progressFormatter.log).toHaveBeenCalledWith(colors.yellow('U'));
     });
   });
 
@@ -250,7 +252,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
 
     it("logs the failed step character", function () {
       progressFormatter.handleFailedStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(Cucumber.Listener.ProgressFormatter.FAILED_STEP_CHARACTER);
+      expect(progressFormatter.log).toHaveBeenCalledWith(colors.red('F'));
     });
   });
 

@@ -3,10 +3,12 @@ require('../../support/spec_helper');
 describe("Cucumber.Listener.PrettyFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var path     = require('path');
-  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, colors, logged;
+  var colors   = require('colors/safe');
+  colors.enabled = true;
+  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, logged;
 
   beforeEach(function () {
-    options             = createSpy("options");
+    options             = {useColors: true};
     formatter           = createSpyWithStubs("formatter", {finish: null});
     logged              = '';
     spyOnStub(formatter, 'log').and.callFake(function (text) { logged += text; });
@@ -15,7 +17,6 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
     spyOn(Cucumber.Listener, 'SummaryFormatter').and.returnValue(summaryFormatter);
     prettyFormatter = Cucumber.Listener.PrettyFormatter(options);
-    colors = Cucumber.Util.Colors;
   });
 
   describe("constructor", function () {
@@ -28,7 +29,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     });
 
     it("creates a summaryFormatter", function () {
-      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(jasmine.objectContaining({logToConsole: false}));
+      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalled();
     });
   });
 
@@ -175,7 +176,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe('showing source', function () {
       beforeEach(function (){
-        prettyFormatter = Cucumber.Listener.PrettyFormatter({showSource: true});
+        options.showSource = true;
         prettyFormatter.handleBeforeScenarioEvent(event, callback);
       });
 
@@ -365,7 +366,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("showing source", function () {
       beforeEach(function() {
-        prettyFormatter = Cucumber.Listener.PrettyFormatter({showSource: true});
+        options.showSource = true;
         prettyFormatter.logStepResult(step, stepResult);
       });
 
