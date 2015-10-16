@@ -142,34 +142,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
         });
       });
 
-<<<<<<< HEAD
-    it("calls back", function () {
-      progressFormatter.handleStepResultEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
-    });
-  });
-
-  describe("handleSuccessfulStepResult()", function () {
-    it("logs the passing step character", function () {
-      progressFormatter.handleSuccessfulStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(colors.green('.'));
-    });
-  });
-
-  describe("handlePendingStepResult()", function () {
-    it("logs the pending step character", function () {
-      progressFormatter.handlePendingStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(colors.yellow('P'));
-    });
-  });
-
-  describe("handleSkippedStepResult()", function () {
-    it("logs the skipped step character", function () {
-      progressFormatter.handleSkippedStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(colors.cyan('-'));
-    });
-  });
-=======
       describe("when the step is pending", function () {
         beforeEach(function () {
           stepResult.getStatus.and.returnValue(Cucumber.Status.PENDING);
@@ -184,7 +156,6 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
           expect(callback).toHaveBeenCalled();
         });
       });
->>>>>>> master
 
       describe("when the step was skipped", function () {
         beforeEach(function () {
@@ -196,18 +167,10 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
           expect(progressFormatter.log).toHaveBeenCalledWith(colors.cyan('-'));
         });
 
-<<<<<<< HEAD
-    it("logs the undefined step character", function () {
-      progressFormatter.handleUndefinedStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(colors.yellow('U'));
-    });
-  });
-=======
         it("calls back", function () {
           expect(callback).toHaveBeenCalled();
         });
       });
->>>>>>> master
 
       describe("when the step was undefined", function () {
         beforeEach(function () {
@@ -219,16 +182,10 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
           expect(progressFormatter.log).toHaveBeenCalledWith(colors.yellow('U'));
         });
 
-<<<<<<< HEAD
-    it("logs the failed step character", function () {
-      progressFormatter.handleFailedStepResult();
-      expect(progressFormatter.log).toHaveBeenCalledWith(colors.red('F'));
-=======
         it("calls back", function () {
           expect(callback).toHaveBeenCalled();
         });
       });
->>>>>>> master
     });
   });
 
