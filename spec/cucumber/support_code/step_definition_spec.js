@@ -289,7 +289,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       });
 
       it("handles the exception with the exception handler", function () {
-        stepDefinition.invoke(step, world, scenario, stepDomain, defaultTimeout, callback);
+        stepDefinition.invoke(step, world, scenario, defaultTimeout, callback);
         expect(exceptionHandler).toHaveBeenCalledWith(failureException);
       });
     });
