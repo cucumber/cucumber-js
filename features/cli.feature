@@ -28,34 +28,6 @@ Feature: Command line interface
       """
     And the exit status should be 0
 
-  Scenario: run a single scenario within feature
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-        Scenario: first scenario
-          When a step is passing
-
-        Scenario: second scenario
-          When a step does not exist
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.When(/^a step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    When I run cucumber.js with `-f progress features/a.feature:2`
-    Then it outputs this text:
-      """
-      .
-
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
-    And the exit status should be 0
-
   Scenario: run a single feature without step definitions
     Given a file named "features/a.feature" with:
       """
