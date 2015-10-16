@@ -17,7 +17,7 @@ describe("Cucumber.Cli.Configuration", function () {
   itBehavesLikeAllCucumberConfigurations(context);
 
   describe("getFormatters()", function () {
-    var formatterOptions;
+    var formatter, formatterOptions;
 
     beforeEach(function () {
       var shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
@@ -36,14 +36,12 @@ describe("Cucumber.Cli.Configuration", function () {
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
       spyOn(Cucumber.Listener, 'SummaryFormatter');
+      formatter = createSpy("formatter");
     });
 
     describe("when the formatter name is \"json\"", function () {
-      var formatter;
-
       beforeEach(function () {
         options.format = ['json'];
-        formatter = createSpy("formatter");
         Cucumber.Listener.JsonFormatter.and.returnValue(formatter);
       });
 
@@ -58,11 +56,8 @@ describe("Cucumber.Cli.Configuration", function () {
     });
 
     describe("when the formatter name is \"progress\"", function () {
-      var formatter;
-
       beforeEach(function () {
         options.format = ['progress'];
-        formatter = createSpy("formatter");
         Cucumber.Listener.ProgressFormatter.and.returnValue(formatter);
       });
 
@@ -77,11 +72,8 @@ describe("Cucumber.Cli.Configuration", function () {
     });
 
     describe("when the formatter name is \"pretty\"", function () {
-      var formatter;
-
       beforeEach(function () {
         options.format = ['pretty'];
-        formatter = createSpy("formatter");
         Cucumber.Listener.PrettyFormatter.and.returnValue(formatter);
       });
 
@@ -96,11 +88,8 @@ describe("Cucumber.Cli.Configuration", function () {
     });
 
     describe("when the formatter name is \"summary\"", function () {
-      var formatter;
-
       beforeEach(function () {
         options.format = ['summary'];
-        formatter = createSpy("formatter");
         Cucumber.Listener.SummaryFormatter.and.returnValue(formatter);
       });
 
@@ -126,7 +115,6 @@ describe("Cucumber.Cli.Configuration", function () {
         spyOn(fs, 'createWriteStream').and.returnValue(stream);
 
         options.format = ['json:path/to/file'];
-        formatter = createSpy("formatter");
         Cucumber.Listener.JsonFormatter.and.returnValue(formatter);
       });
 
