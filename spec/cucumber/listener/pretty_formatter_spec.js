@@ -211,7 +211,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     beforeEach(function () {
       step       = createSpyWithStubs("step", { isHidden: null });
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
+      stepResult = createSpyWithStubs("step result", { getStep: step, getStatus: undefined });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       callback   = createSpy("callback");
       spyOnStub(prettyFormatter, 'logStepResult');
@@ -224,7 +224,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is not hidden", function () {
       it("calls logStepResult() as the step is not hidden", function () {
-        spyOnStub(step, 'isHidden').and.returnValue(false);
+        step.isHidden.and.returnValue(false);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -232,8 +232,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has not failed", function () {
       it("does not call logStepResult() to keep the step hidden", function () {
-        spyOnStub(step, 'isHidden').and.returnValue(true);
-        spyOnStub(stepResult, 'isFailed').and.returnValue(false);
+        step.isHidden.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.PASSED);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).not.toHaveBeenCalled();
       });
@@ -241,8 +241,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has failed", function () {
       it("calls logStepResult() to log the failure even though the step is supposed to be hidden", function () {
-        spyOnStub(step, 'isHidden').and.returnValue(true);
-        spyOnStub(stepResult, 'isFailed').and.returnValue(true);
+        step.isHidden.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -272,17 +272,12 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       stepResult = createSpyWithStubs("step result", {
         getFailureException: null,
         getStep: step,
-        isFailed: null,
-        isPending: null,
-        isSkipped: null,
-        isSuccessful: null,
-        isUndefined: null
+        getStatus: Cucumber.Status.PASSED
       });
     });
 
     describe("passing step", function () {
       beforeEach(function () {
-        stepResult.isSuccessful.and.returnValue(true);
         prettyFormatter.logStepResult(step, stepResult);
       });
 
@@ -295,7 +290,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("pending step", function () {
       beforeEach(function () {
-        stepResult.isPending.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.PENDING);
         prettyFormatter.logStepResult(step, stepResult);
       });
 
@@ -308,7 +303,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("skipped step", function () {
       beforeEach(function () {
-        stepResult.isSkipped.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.SKIPPED);
         prettyFormatter.logStepResult(step, stepResult);
       });
 
@@ -321,7 +316,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("undefined step", function () {
       beforeEach(function () {
-        stepResult.isUndefined.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
         prettyFormatter.logStepResult(step, stepResult);
       });
 
@@ -334,7 +329,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("failed step", function () {
       beforeEach(function () {
-        stepResult.isFailed.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
         stepResult.getFailureException.and.returnValue({stack: 'stack error\n  stacktrace1\n  stacktrace2'});
         prettyFormatter.logStepResult(step, stepResult);
       });
@@ -357,10 +352,9 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword', function () {
         var expected =
-          '    step-keyword' + '\n';
-        expect(logged).toEqual(expected);
+          '    step-keyword ' + '\n';
+        expect(colors.strip(logged)).toEqual(expected);
       });
-
     });
 
     describe("showing source", function () {
@@ -371,8 +365,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name', function () {
         var expected =
-          '    step-keyword step-name' + colors.gray('# step-uri:1') + '\n';
-        expect(logged).toEqual(expected);
+          '    step-keyword step-name# step-uri:1' + '\n';
+        expect(colors.strip(logged)).toEqual(expected);
       });
     });
 
@@ -395,7 +389,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
           '      | cuk | cuke | cukejs   |' + '\n' +
           '      | c   | cuke | cuke.js  |' + '\n' +
           '      | cu  | cuke | cucumber |' + '\n';
-        expect(logged).toEqual(expected);
+        expect(colors.strip(logged)).toEqual(expected);
       });
     });
 
@@ -417,7 +411,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
           '\n' +
           '      :-)' + '\n' +
           '      """' + '\n';
-        expect(logged).toEqual(expected);
+        expect(colors.strip(logged)).toEqual(expected);
       });
     });
   });
