@@ -505,7 +505,7 @@ Built-in formatters
 * json - prints the feature as JSON
 * summary - prints a summary only, after all scenarios were executed
 
-#### Tag
+#### Tags
 
 Use `--tags <EXPRESSION>` to run specific features or scenarios.
 
@@ -521,7 +521,7 @@ This done with the CLI option `--compiler <file_extension>:<module_name>`.
 Below are some examples
 
 * [CoffeeScript](https://www.npmjs.com/package/coffee-script): `--compiler coffee:coffee-script/register`
-* [TypeScript](https://www.npmjs.com/package/typescript-node): `--compiler ts:typescript-node/register`
+* [TypeScript](https://www.npmjs.com/package/ts-node): `--compiler ts:ts-node/register`
 * [Pogo](https://www.npmjs.com/package/pogo): `--compiler pogo:pogo`
 
 ### Examples
