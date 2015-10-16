@@ -104,7 +104,7 @@ Feature: Pretty Formatter
       features/a.feature:3 # Scenario: I've declared one step and it is passing
 
       1 scenario (1 failed)
-      2 steps (1 failed, 1 skipped)
+      1 step (1 skipped)
       <duration-stat>
       """
 

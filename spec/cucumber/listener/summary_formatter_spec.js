@@ -6,10 +6,11 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
   beforeEach(function () {
     options              = {};
-    formatter            = createSpyWithStubs("formatter", {log: null});
+    formatter            = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
-    failedStepResults    = createSpy("failed steps");
+    failedStepResults    = createSpyObj("failed steps", ["length"]);
+    failedStepResults.length.and.returnValue(0);
     spyOn(Cucumber.Type, 'Collection').and.returnValue(failedStepResults);
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
     spyOn(Cucumber.Listener, 'StatsJournal').and.returnValue(statsJournal);
@@ -69,10 +70,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     var event, callback, stepResult;
 
     beforeEach(function () {
-      stepResult = createSpyWithStubs("step result", {
-        isUndefined:  undefined,
-        isFailed:     undefined
-      });
+      stepResult = createSpyWithStubs("step result", {getStatus: undefined});
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
       spyOn(summaryFormatter, 'handleFailedStepResult');
@@ -83,14 +81,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
-    it("checks whether the step was undefined", function () {
-      summaryFormatter.handleStepResultEvent(event, callback);
-      expect(stepResult.isUndefined).toHaveBeenCalled();
-    });
-
     describe("when the step was undefined", function () {
       beforeEach(function () {
-        stepResult.isUndefined.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
         spyOn(summaryFormatter, 'handleUndefinedStepResult');
       });
 
@@ -100,42 +93,14 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
     });
 
-    describe("when the step was not undefined", function () {
+    describe("when the step failed", function () {
       beforeEach(function () {
-        stepResult.isUndefined.and.returnValue(false);
-        spyOn(summaryFormatter, 'handleUndefinedStepResult');
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
       });
 
-      it("does not handle an undefined step result", function () {
+      it("handles the failed step result", function () {
         summaryFormatter.handleStepResultEvent(event, callback);
-        expect(summaryFormatter.handleUndefinedStepResult).not.toHaveBeenCalled();
-      });
-
-      it("checks whether the step failed", function () {
-        summaryFormatter.handleStepResultEvent(event, callback);
-        expect(stepResult.isFailed).toHaveBeenCalled();
-      });
-
-      describe("when the step failed", function () {
-        beforeEach(function () {
-          stepResult.isFailed.and.returnValue(true);
-        });
-
-        it("handles the failed step result", function () {
-          summaryFormatter.handleStepResultEvent(event, callback);
-          expect(summaryFormatter.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
-        });
-      });
-
-      describe("when the step did not fail", function () {
-        beforeEach(function () {
-          stepResult.isFailed.and.returnValue(false);
-        });
-
-        it("handles the failed step result", function () {
-          summaryFormatter.handleStepResultEvent(event, callback);
-          expect(summaryFormatter.handleFailedStepResult).not.toHaveBeenCalled();
-        });
+        expect(summaryFormatter.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
 
@@ -252,9 +217,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(summaryFormatter.logSummary).toHaveBeenCalled();
     });
 
-    it("calls back", function () {
+    it("calls finish with the callback", function () {
       summaryFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+      expect(summaryFormatter.finish).toHaveBeenCalledWith(callback);
     });
   });
 
@@ -385,14 +350,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       spyOnStub(statsJournal, 'witnessedAnyUndefinedStep');
     });
 
-    it("checks whether there are failed steps or not", function () {
-      summaryFormatter.logSummary();
-      expect(statsJournal.witnessedAnyFailedStep).toHaveBeenCalled();
-    });
-
     describe("when there are failed steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.and.returnValue(true);
+        var name           = "some failed scenario";
+        var uri            = "some uri";
+        var line           = "123";
+        var failedScenario = createSpyWithStubs("failedScenario", {getName: name, getUri: uri, getLine: line});
+        summaryFormatter.storeFailedScenario(failedScenario);
       });
 
       it("logs the failed steps", function () {
@@ -418,10 +382,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are no failed steps", function () {
-      beforeEach(function () {
-        statsJournal.witnessedAnyFailedStep.and.returnValue(false);
-      });
-
       it("does not log failed steps", function () {
         summaryFormatter.logSummary();
         expect(summaryFormatter.logFailedStepResults).not.toHaveBeenCalled();
@@ -443,14 +403,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(summaryFormatter.logDuration).toHaveBeenCalled();
     });
 
-    it("checks whether there are undefined steps or not", function () {
-      summaryFormatter.logSummary();
-      expect(statsJournal.witnessedAnyUndefinedStep).toHaveBeenCalled();
-    });
-
     describe("when there are undefined steps", function () {
       beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.and.returnValue(true);
+        var step = createSpyWithStubs("step");
+        var snippet = createSpy("step definition snippet");
+        var snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
+        spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
+        summaryFormatter.storeUndefinedStepResult(step);
       });
 
       it("logs the undefined step snippets", function () {
@@ -460,10 +419,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     describe("when there are no undefined steps", function () {
-      beforeEach(function () {
-        statsJournal.witnessedAnyUndefinedStep.and.returnValue(false);
-      });
-
       it("does not log the undefined step snippets", function () {
         summaryFormatter.logSummary();
         expect(summaryFormatter.logUndefinedStepSnippets).not.toHaveBeenCalled();
@@ -567,446 +522,132 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
   });
 
-  describe("logScenariosSummary()", function () {
-    var scenarioCount, passedScenarioCount, undefinedScenarioCount, pendingScenarioCount, failedScenarioCount, skippedScenarioCount;
+  describe("logCountSummary()", function () {
+    var counts;
 
     beforeEach(function () {
-      scenarioCount          = 12;
-      passedScenarioCount    = 9;
-      undefinedScenarioCount = 17;
-      pendingScenarioCount   = 7;
-      failedScenarioCount    = 15;
-      skippedScenarioCount   = 10;
-      spyOnStub(statsJournal, 'getScenarioCount').and.returnValue(scenarioCount);
-      spyOnStub(statsJournal, 'getPassedScenarioCount').and.returnValue(passedScenarioCount);
-      spyOnStub(statsJournal, 'getUndefinedScenarioCount').and.returnValue(undefinedScenarioCount);
-      spyOnStub(statsJournal, 'getPendingScenarioCount').and.returnValue(pendingScenarioCount);
-      spyOnStub(statsJournal, 'getFailedScenarioCount').and.returnValue(failedScenarioCount);
-      spyOnStub(statsJournal, 'getSkippedScenarioCount').and.returnValue(skippedScenarioCount);
+      counts = {
+        failed: 0,
+        passed: 0,
+        pending: 0,
+        skipped: 0,
+        undefined: 0
+      };
     });
 
-    it("gets the number of scenarios", function () {
-      summaryFormatter.logScenariosSummary();
-      expect(statsJournal.getScenarioCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no scenarios", function () {
-      beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(0); });
-
-      it("logs 0 scenarios", function () {
-        summaryFormatter.logScenariosSummary();
-        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/0 scenarios/);
-      });
-
-      it("does not log any details", function () {
-        summaryFormatter.logScenariosSummary();
-        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
-      });
-    });
-
-    describe("when there are scenarios", function () {
-      beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(12); });
-
-      describe("when there is one scenario", function () {
-        beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(1); });
-
-        it("logs one scenario", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 scenario([^s]|$)/);
-        });
-      });
-
-      describe("when there are 2 or more scenarios", function () {
-        beforeEach(function () { statsJournal.getScenarioCount.and.returnValue(2); });
-
-        it("logs two or more scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 scenarios/);
-        });
-      });
-
-      it("gets the number of failed scenarios", function () {
-        summaryFormatter.logScenariosSummary();
-        expect(statsJournal.getFailedScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no failed scenarios", function () {
-        beforeEach(function () { statsJournal.getFailedScenarioCount.and.returnValue(0); });
-
-        it("does not log failed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/failed/);
-        });
-      });
-
-      describe("when there is one failed scenario", function () {
-        beforeEach(function () { statsJournal.getFailedScenarioCount.and.returnValue(1); });
-
-        it("logs a failed scenario", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 failed/);
-        });
-      });
-
-      describe("when there are two or more failed scenarios", function () {
-        beforeEach(function () { statsJournal.getFailedScenarioCount.and.returnValue(2); });
-
-        it("logs the number of failed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 failed/);
-        });
-      });
-
-      it("gets the number of undefined scenarios", function () {
-        summaryFormatter.logScenariosSummary();
-        expect(statsJournal.getUndefinedScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no undefined scenarios", function () {
-        beforeEach(function () { statsJournal.getUndefinedScenarioCount.and.returnValue(0); });
-
-        it("does not log passed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
-        });
-      });
-
-      describe("when there is one undefined scenario", function () {
-        beforeEach(function () { statsJournal.getUndefinedScenarioCount.and.returnValue(1); });
-
-        it("logs one undefined scenario", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
-        });
-      });
-
-      describe("when there are two or more undefined scenarios", function () {
-        beforeEach(function () { statsJournal.getUndefinedScenarioCount.and.returnValue(2); });
-
-        it("logs the undefined scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
-        });
-      });
-
-      it("gets the number of pending scenarios", function () {
-        summaryFormatter.logScenariosSummary();
-        expect(statsJournal.getPendingScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no pending scenarios", function () {
-        beforeEach(function () { statsJournal.getPendingScenarioCount.and.returnValue(0); });
-
-        it("does not log passed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/pending/);
-        });
-      });
-
-      describe("when there is one pending scenario", function () {
-        beforeEach(function () { statsJournal.getPendingScenarioCount.and.returnValue(1); });
-
-        it("logs one pending scenario", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 pending/);
-        });
-      });
-
-      describe("when there are two or more pending scenarios", function () {
-        beforeEach(function () { statsJournal.getPendingScenarioCount.and.returnValue(2); });
-
-        it("logs the pending scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 pending/);
-        });
-      });
-
-      it("gets the number of passed scenarios", function () {
-        summaryFormatter.logScenariosSummary();
-        expect(statsJournal.getPassedScenarioCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no passed scenarios", function () {
-        beforeEach(function () { statsJournal.getPassedScenarioCount.and.returnValue(0); });
-
-        it("does not log passed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/passed/);
-        });
-      });
-
-      describe("when there is one passed scenario", function () {
-        beforeEach(function () { statsJournal.getPassedScenarioCount.and.returnValue(1); });
-
-        it("logs 1 passed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 passed/);
-        });
-      });
-
-      describe("when there are two or more passed scenarios", function () {
-        beforeEach(function () { statsJournal.getPassedScenarioCount.and.returnValue(2); });
-
-        it("logs the number of passed scenarios", function () {
-          summaryFormatter.logScenariosSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 passed/);
-        });
-      });
-    });
-  });
-
-  describe("logStepsSummary()", function () {
-    var stepCount, passedStepCount, failedStepCount, skippedStepCount, undefinedStepCount, pendingStepCount;
-
-    beforeEach(function () {
-      stepCount          = 34;
-      passedStepCount    = 31;
-      failedStepCount    = 7;
-      skippedStepCount   = 5;
-      undefinedStepCount = 4;
-      pendingStepCount   = 2;
-      spyOnStub(statsJournal, 'getStepCount').and.returnValue(stepCount);
-      spyOnStub(statsJournal, 'getPassedStepCount').and.returnValue(passedStepCount);
-      spyOnStub(statsJournal, 'getFailedStepCount').and.returnValue(failedStepCount);
-      spyOnStub(statsJournal, 'getSkippedStepCount').and.returnValue(skippedStepCount);
-      spyOnStub(statsJournal, 'getUndefinedStepCount').and.returnValue(undefinedStepCount);
-      spyOnStub(statsJournal, 'getPendingStepCount').and.returnValue(pendingStepCount);
-    });
-
-    it("gets the number of steps", function () {
-      summaryFormatter.logStepsSummary();
-      expect(statsJournal.getStepCount).toHaveBeenCalled();
-    });
-
-    describe("when there are no steps", function () {
+    describe("when the total is 0", function () {
       beforeEach(function () {
-        statsJournal.getStepCount.and.returnValue(0);
+        summaryFormatter.logCountSummary('item', counts);
       });
 
-      it("logs 0 steps", function () {
-        summaryFormatter.logStepsSummary();
-        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/0 steps/);
+      it("logs 0 items", function () {
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/0 items/);
       });
 
       it("does not log any details", function () {
-        summaryFormatter.logStepsSummary();
         expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/\(.*\)/);
       });
     });
 
-    describe("when there are steps", function () {
-      beforeEach(function () { statsJournal.getStepCount.and.returnValue(13); });
-
-      describe("when there is one step", function () {
-        beforeEach(function () {
-          statsJournal.getStepCount.and.returnValue(1);
-        });
-
-        it("logs 1 step", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 step/);
-        });
+    describe("when the total is 1", function () {
+      beforeEach(function () {
+        counts.passed = 1;
+        summaryFormatter.logCountSummary('item', counts);
       });
 
-      describe("when there are two or more steps", function () {
-        beforeEach(function () {
-          statsJournal.getStepCount.and.returnValue(2);
-        });
+      it("logs 1 item", function () {
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 item/);
+      });
+    });
 
-        it("logs the number of steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 steps/);
-        });
+    describe("when the total is 2", function () {
+      beforeEach(function () {
+        counts.passed = 2;
+        summaryFormatter.logCountSummary('item', counts);
       });
 
-      it("gets the number of failed steps", function () {
-        summaryFormatter.logStepsSummary();
-        expect(statsJournal.getFailedStepCount).toHaveBeenCalled();
+      it("logs 2 items", function () {
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 items/);
       });
+    });
 
-      describe("when there are no failed steps", function () {
-        beforeEach(function () {
-          statsJournal.getFailedStepCount.and.returnValue(0);
-        });
-
-        it("does not log failed steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/failed/);
-        });
+    describe("when there are no failed items", function () {
+      it("does not log failed items", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/failed/);
       });
+    });
 
-      describe("when there is one failed step", function () {
-        beforeEach(function () {
-          statsJournal.getFailedStepCount.and.returnValue(1);
-        });
+    describe("when there is one failed item", function () {
+      beforeEach(function () { counts.failed = 1; });
 
-        it("logs one failed step", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 failed/);
-        });
+      it("logs a failed item", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 failed/);
       });
+    });
 
-      describe("when there is two or more failed steps", function () {
-        beforeEach(function () {
-          statsJournal.getFailedStepCount.and.returnValue(2);
-        });
-
-        it("logs the number of failed steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 failed/);
-        });
+    describe("when there are no passed items", function () {
+      it("does not log passed items", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/passed/);
       });
+    });
 
-      it("gets the number of undefined steps", function () {
-        summaryFormatter.logStepsSummary();
-        expect(statsJournal.getUndefinedStepCount).toHaveBeenCalled();
+    describe("when there is one passed item", function () {
+      beforeEach(function () { counts.passed = 1; });
+
+      it("logs a passed item", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 passed/);
       });
+    });
 
-      describe("when there are no undefined steps", function () {
-        beforeEach(function () {
-          statsJournal.getUndefinedStepCount.and.returnValue(0);
-        });
-
-        it("does not log undefined steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
-        });
+    describe("when there are no pending items", function () {
+      it("does not log pending items", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/pending/);
       });
+    });
 
-      describe("when there is one undefined step", function () {
-        beforeEach(function () {
-          statsJournal.getUndefinedStepCount.and.returnValue(1);
-        });
+    describe("when there is one pending item", function () {
+      beforeEach(function () { counts.pending = 1; });
 
-        it("logs one undefined steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
-        });
+      it("logs a pending item", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 pending/);
       });
+    });
 
-      describe("when there are two or more undefined steps", function () {
-        beforeEach(function () {
-          statsJournal.getUndefinedStepCount.and.returnValue(2);
-        });
-
-        it("logs the number of undefined steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 undefined/);
-        });
+    describe("when there are no skipped items", function () {
+      it("does not log skipped items", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
       });
+    });
 
-      it("gets the number of pending steps", function () {
-        summaryFormatter.logStepsSummary();
-        expect(statsJournal.getPendingStepCount).toHaveBeenCalled();
+    describe("when there is one skipped item", function () {
+      beforeEach(function () { counts.skipped = 1; });
+
+      it("logs a skipped item", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
       });
+    });
 
-      describe("when there are no pending steps", function () {
-        beforeEach(function () {
-          statsJournal.getPendingStepCount.and.returnValue(0);
-        });
-
-        it("does not log pending steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/pending/);
-        });
+    describe("when there are no undefined items", function () {
+      it("does not log undefined items", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/undefined/);
       });
+    });
 
-      describe("when there is one pending step", function () {
-        beforeEach(function () {
-          statsJournal.getPendingStepCount.and.returnValue(1);
-        });
+    describe("when there is one undefined item", function () {
+      beforeEach(function () { counts.undefined = 1; });
 
-        it("logs one pending steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 pending/);
-        });
-      });
-
-      describe("when there are two or more pending steps", function () {
-        beforeEach(function () {
-          statsJournal.getPendingStepCount.and.returnValue(2);
-        });
-
-        it("logs the number of pending steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 pending/);
-        });
-      });
-
-      it("gets the number of skipped steps", function () {
-        summaryFormatter.logStepsSummary();
-        expect(statsJournal.getSkippedStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no skipped steps", function () {
-        beforeEach(function () {
-          statsJournal.getSkippedStepCount.and.returnValue(0);
-        });
-
-        it("does not log skipped steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/skipped/);
-        });
-      });
-
-      describe("when there is one skipped step", function () {
-        beforeEach(function () {
-          statsJournal.getSkippedStepCount.and.returnValue(1);
-        });
-
-        it("logs one skipped steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 skipped/);
-        });
-      });
-
-      describe("when there are two or more skipped steps", function () {
-        beforeEach(function () {
-          statsJournal.getSkippedStepCount.and.returnValue(2);
-        });
-
-        it("logs the number of skipped steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 skipped/);
-        });
-      });
-
-      it("gets the number of passed steps", function () {
-        summaryFormatter.logStepsSummary();
-        expect(statsJournal.getPassedStepCount).toHaveBeenCalled();
-      });
-
-      describe("when there are no passed steps", function () {
-        beforeEach(function () {
-          statsJournal.getPassedStepCount.and.returnValue(0);
-        });
-
-        it("does not log passed steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).not.toHaveBeenCalledWithStringMatching(/passed/);
-        });
-      });
-
-      describe("when there is one passed step", function () {
-        beforeEach(function () {
-          statsJournal.getPassedStepCount.and.returnValue(1);
-        });
-
-        it("logs one passed step", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 passed/);
-        });
-      });
-
-      describe("when there is two or more passed steps", function () {
-        beforeEach(function () {
-          statsJournal.getPassedStepCount.and.returnValue(2);
-        });
-
-        it("logs the number of passed steps", function () {
-          summaryFormatter.logStepsSummary();
-          expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/2 passed/);
-        });
+      it("logs a undefined item", function () {
+        summaryFormatter.logCountSummary('item', counts);
+        expect(summaryFormatter.log).toHaveBeenCalledWithStringMatching(/1 undefined/);
       });
     });
   });

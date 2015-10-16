@@ -38,7 +38,7 @@ Feature: Passing steps
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
       stepDefinitions = function() {
-        this.When(/^a passing step$/, function(callback){
+        this.When(/^a passing step$/, function(){
           return {
             then: function(resolve, reject) {
               setTimeout(resolve);

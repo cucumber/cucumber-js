@@ -5,7 +5,8 @@ var cliSteps = function cliSteps() {
   var mkdirp          = require('mkdirp');
   var exec            = require('child_process').exec;
   var path            = require('path');
-  var colors          = require('colors/safe')
+  var colors          = require('colors/safe');
+  var assert          = require('assert');
 
   var baseDir         = fs.realpathSync(__dirname + "/../..");
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
@@ -55,7 +56,7 @@ var cliSteps = function cliSteps() {
     });
   });
 
-  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, function(dir, args, callback) {
+  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
     args = args || ''
     var world = this;
 
@@ -89,12 +90,13 @@ var cliSteps = function cliSteps() {
     }
   });
 
-  this.Then(/^the exit status should be ([0-9]+)$/, function (code, callback) {
+  this.Then(/^the exit status should be ([0-9]+|non-zero)$/, function (code, callback) {
     var world = this;
 
-    var actualCode = world.lastRun.error ? world.lastRun.error.code : "0";
+    var actualCode = world.lastRun.error ? world.lastRun.error.code : 0;
+    var ok = (code === 'non-zero' && actualCode !== 0) || actualCode === parseInt(code);
 
-    if (actualCode != code) {
+    if (!ok) {
       throw new Error("Exit code expected: \"" + code + "\"\n" +
                       "Got: \"" + actualCode + "\"\n" +
                       "Output:\n" + normalizeText(world.lastRun.stdout) + "\n" +
@@ -123,10 +125,11 @@ var cliSteps = function cliSteps() {
     var actualJsonString = JSON.stringify(actualJson, null, 2);
     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
 
-    if (actualJsonString != expectedJsonString)
-      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\n" +
-                      "Got:\n'" + actualJsonString + "'.\n" +
-                      getAdditionalErrorText(world.lastRun));
+    var message = "Expected output to match the following:\n'" + expectedJsonString + "'\n" +
+                  "Got:\n'" + actualJsonString + "'.\n" +
+                  getAdditionalErrorText(world.lastRun);
+
+    assert.deepEqual(actualJson, expectedJson, message);
     callback();
   });
 
@@ -145,10 +148,10 @@ var cliSteps = function cliSteps() {
     callback();
   });
 
-  this.Then(/^the output contains the text:$/, function(expectedOutput, callback) {
+  this.Then(/^the (error )?output contains the text:$/, function(error, expectedOutput, callback) {
     var world = this;
 
-    var actualOutput = world.lastRun['stdout'];
+    var actualOutput = error ? world.lastRun['stderr'] : world.lastRun['stdout'];
 
     actualOutput = normalizeText(actualOutput);
     expectedOutput = normalizeText(expectedOutput);
@@ -158,6 +161,21 @@ var cliSteps = function cliSteps() {
                       "Got:\n'" + actualOutput+ "'.\n" +
                       getAdditionalErrorText(world.lastRun));
     callback();
+  });
+
+  this.Then(/^the file "([^"]*)" has the text:$/, function (filePath, expectedContent, callback) {
+    var absoluteFilePath = tmpPath(filePath);
+    fs.readFile(absoluteFilePath, 'utf8', function (err, content){
+      if (err) { return callback(err); }
+
+      actualContent = normalizeText(content);
+      expectedContent = normalizeText(expectedContent);
+
+      if (actualContent != expectedContent)
+        throw new Error("Expected " + filePath + " to have content matching:\n'" + expectedContent + "'\n" +
+                        "Got:\n'" + actualContent + "'.\n");
+      callback();
+    })
   });
 
   this.Then(/^I see the version of Cucumber$/, function(callback) {
