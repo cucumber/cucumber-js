@@ -1,9 +1,9 @@
-require('../../../support/spec_helper');
+require('../../support/spec_helper');
 
-describe("Cucumber.Cli.ArgumentParser.FeaturePathExpander", function () {
+describe("Cucumber.Cli.FeaturePathExpander", function () {
   var Cucumber            = requireLib('cucumber');
-  var FeaturePathExpander = Cucumber.Cli.ArgumentParser.FeaturePathExpander;
-  var PathExpander        = Cucumber.Cli.ArgumentParser.PathExpander;
+  var FeaturePathExpander = Cucumber.Cli.FeaturePathExpander;
+  var PathExpander        = Cucumber.Cli.PathExpander;
 
   describe("expandPaths", function () {
     var paths, expandedPaths;

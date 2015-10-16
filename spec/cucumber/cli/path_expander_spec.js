@@ -1,7 +1,7 @@
-require('../../../support/spec_helper');
+require('../../support/spec_helper');
 
 describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
-  var PathExpander = requireLib('cucumber').Cli.ArgumentParser.PathExpander;
+  var PathExpander = requireLib('cucumber').Cli.PathExpander;
 
   describe("expandPathsWithRegexp", function () {
     var _ = require('underscore');
