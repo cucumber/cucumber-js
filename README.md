@@ -482,18 +482,11 @@ $ ./node_modules/.bin/cucumber.js
   * `$ cucumber.js features/my_feature.feature`
 * Specify a scenario by its line number
   * `$ cucumber.js features/my_feature.feature:3`
+* Use [Tags](#tags)
 
 #### Requiring support files
 
-Run Cucumber.js with `--require <FILE|DIR>` to require files before executing the features.
-If not used, all "*.js" files (and other extensions specifed by `--compiler`) that are siblings
-or below the features will be loaded automatically. Automatic
-loading is disabled when this option is specified, and all loading becomes explicit.
-Files under directories named "support" are always loaded first
-
-#### Requiring support files
-
-Run Cucumber.js with `--require <FILE|DIR>` to require files before executing the features.
+Use `--require <FILE|DIR>` to require files before executing the features.
 If not used, all "*.js" files (and other extensions specifed by `--compiler`) that are siblings
 or below the features will be loaded automatically. Automatic
 loading is disabled when this option is specified, and all loading becomes explicit.
@@ -501,7 +494,7 @@ Files under directories named "support" are always loaded first
 
 #### Formatters
 
-Run Cucumber.js with `--format <TYPE[:PATH]>` to format the output.
+Use `--format <TYPE[:PATH]>` to specify the format of the output.
 If PATH is not supplied, the formatter prints to stdout.
 If PATH is supplied, it prints to the given file.
 If multiple formats are specified with the same output, only the last is used.
@@ -512,9 +505,9 @@ Built-in formatters
 * json - prints the feature as JSON
 * summary - prints a summary only, after all scenarios were executed
 
-#### Tag Expressions
+#### Tag
 
-Run Cucumber.js with `--tags <EXPRESSION>` to run tagged features or scenarios.
+Use `--tags <EXPRESSION>` to run specific features or scenarios.
 
 * `--tag @dev`: tagged with @dev
 * `--tag ~@dev`: NOT tagged with `@dev`
