@@ -458,34 +458,6 @@ var myAfterHooks = function () {
 module.exports = myAfterHooks;
 ```
 
-### Transpilers
-
-Step definitions and support files can be written in other languages that transpile to javascript. This done with the CLI option `--compiler <file_extension>:<module_name>`.
-
-#### CoffeeScript
-
-Install the [coffee-script](https://www.npmjs.com/package/coffee-script) NPM package and invoke Cucumber with `--compiler coffee:coffee-script/register`.
-
-#### TypeScript
-
-Install the [typescript-node](https://www.npmjs.com/package/typescript-node) NPM package and invoke Cucumber with `--compiler ts:typescript-node/register`.
-
-As usual, all your step definition and support files must export a function to be run by Cucumber. This is how it is done in TS:
-
-
-```typescript
-declare var module: any;
-module.exports = function () {
-  this.Given(/.*/, function () {
-    // ...
-  })
-}
-```
-
-#### PogoScript
-
-Install the [pogo](https://www.npmjs.com/package/pogo) NPM package and invoke Cucumber with `--compiler pogo:pogo`.
-
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
@@ -496,25 +468,68 @@ If you installed cucumber.js globally, you may run it with:
 $ cucumber.js
 ```
 
-You may specify the features to run:
-
-``` shell
-$ cucumber.js features/my_feature.feature
-```
-
-And require specific step definitions and support code files with the --require option:
-
-``` shell
-$ cucumber.js features/my_feature.feature --require features/step_definitions/my_step_definitions.js
-```
-
-If you installed Cucumber locally or with `npm install --save-dev`, you'll need to specify the path to the binary:
+If you installed Cucumber locally, you may need to specify the path to the binary:
 
 ``` shell
 $ ./node_modules/.bin/cucumber.js
 ```
 
 **Note to Windows users:** invoke Cucumber.js with `cucumber-js` instead of `cucumber.js`. The latter is causing the operating system to invoke JScript instead of Node.js, because of the so-called file extension.
+
+#### Running specific features
+
+* Specify a feature file
+  * `$ cucumber.js features/my_feature.feature`
+* Specify a scenario by its line number
+  * `$ cucumber.js features/my_feature.feature:3`
+
+#### Requiring support files
+
+Run Cucumber.js with `--require <FILE|DIR>` to require files before executing the features.
+If not used, all "*.js" files (and other extensions specifed by `--compiler`) that are siblings
+or below the features will be loaded automatically. Automatic
+loading is disabled when this option is specified, and all loading becomes explicit.
+Files under directories named "support" are always loaded first
+
+#### Requiring support files
+
+Run Cucumber.js with `--require <FILE|DIR>` to require files before executing the features.
+If not used, all "*.js" files (and other extensions specifed by `--compiler`) that are siblings
+or below the features will be loaded automatically. Automatic
+loading is disabled when this option is specified, and all loading becomes explicit.
+Files under directories named "support" are always loaded first
+
+#### Formatters
+
+Run Cucumber.js with `--format <TYPE[:PATH]>` to format the output.
+If PATH is not supplied, the formatter prints to stdout.
+If PATH is supplied, it prints to the given file.
+If multiple formats are specified with the same output, only the last is used.
+
+Built-in formatters
+* pretty - prints the feature as is (default)
+* progress - prints one character per scenario
+* json - prints the feature as JSON
+* summary - prints a summary only, after all scenarios were executed
+
+#### Tag Expressions
+
+Run Cucumber.js with `--tags <EXPRESSION>` to run tagged features or scenarios.
+
+* `--tag @dev`: tagged with @dev
+* `--tag ~@dev`: NOT tagged with `@dev`
+* `--tags @foo,@bar`: tagged with `@foo` OR `bar`
+* `--tags @foo --tags @bar`: tagged with `@foo` AND `bar`
+
+#### Transpilers
+
+Step definitions and support files can be written in other languages that transpile to javascript.
+This done with the CLI option `--compiler <file_extension>:<module_name>`.
+Below are some examples
+
+* [CoffeeScript](https://www.npmjs.com/package/coffee-script): `--compiler coffee:coffee-script/register`
+* [TypeScript](https://www.npmjs.com/package/typescript-node): `--compiler ts:typescript-node/register`
+* [Pogo](https://www.npmjs.com/package/pogo): `--compiler pogo:pogo`
 
 ### Examples
 
