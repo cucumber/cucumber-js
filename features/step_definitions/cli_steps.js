@@ -5,7 +5,8 @@ var cliSteps = function cliSteps() {
   var mkdirp          = require('mkdirp');
   var exec            = require('child_process').exec;
   var path            = require('path');
-  var colors          = require('colors/safe')
+  var colors          = require('colors/safe');
+  var assert          = require('assert');
 
   var baseDir         = fs.realpathSync(__dirname + "/../..");
   var tmpDir          = baseDir + "/tmp/cucumber-js-sandbox";
@@ -124,10 +125,11 @@ var cliSteps = function cliSteps() {
     var actualJsonString = JSON.stringify(actualJson, null, 2);
     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
 
-    if (actualJsonString != expectedJsonString)
-      throw new Error("Expected output to match the following:\n'" + expectedJsonString + "'\n" +
-                      "Got:\n'" + actualJsonString + "'.\n" +
-                      getAdditionalErrorText(world.lastRun));
+    var message = "Expected output to match the following:\n'" + expectedJsonString + "'\n" +
+                  "Got:\n'" + actualJsonString + "'.\n" +
+                  getAdditionalErrorText(world.lastRun);
+
+    assert.deepEqual(actualJson, expectedJson, message);
     callback();
   });
 
