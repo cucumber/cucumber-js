@@ -36,7 +36,7 @@ Feature: Target specific scenarios
       """
     And the exit status should be 0
 
-  Scenario: run a multiple scenario
+  Scenario: run multiple scenarios
     When I run cucumber.js with `-f progress features/a.feature:2:5`
     Then it outputs this text:
       """
