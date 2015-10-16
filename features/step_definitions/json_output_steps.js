@@ -70,10 +70,11 @@ var jsonOutputSteps = function jsonOutputSteps() {
     var actualJsonString = JSON.stringify(actualJson, null, 2);
     var expectedJsonString = JSON.stringify(expectedJson, null, 2);
 
-    if (actualJsonString !== expectedJsonString)
-      throw new Error('Expected output to match the following:\n' + expectedJsonString + '\n' +
-                      'Got:\n' + actualJsonString + '.\n' +
-                      getAdditionalErrorText(this.lastRun));
+    var message = "Expected output to match the following:\n'" + expectedJsonString + "'\n" +
+                  "Got:\n'" + actualJsonString + "'.\n" +
+                  getAdditionalErrorText(world.lastRun);
+
+    assert.deepEqual(actualJson, expectedJson, message);
   });
 
   this.Then(/^it runs (\d+) scenarios$/, function (count) {
