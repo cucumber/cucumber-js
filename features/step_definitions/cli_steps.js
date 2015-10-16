@@ -9,8 +9,8 @@ var cliSteps = function cliSteps() {
 
   var executablePath = path.join(__dirname, '..', '..', 'bin', 'cucumber.js');
 
-  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, function(dir, args, callback) {
-    args = args || '';
+  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
+    args = args || ''
     var world = this;
     var cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir;
 
