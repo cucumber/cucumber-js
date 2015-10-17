@@ -29,18 +29,26 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getFormatters()", function () {
-    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream;
+    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream, useColors;
 
     beforeEach(function () {
       stream = createSpy('stream');
       shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
-      shouldShowSource               = createSpy("should source uris be visible?");
-      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown, showSource: shouldShowSource, stream: stream};
+      shouldShowSource = createSpy("should source uris be visible?");
+      useColors = createSpy("use colors");
+      formatterOptions = {
+        coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript,
+        snippets: shouldSnippetsBeShown,
+        showSource: shouldShowSource,
+        stream: stream,
+        useColors: useColors
+      };
       spyOnStub(argumentParser, 'getFormats').and.returnValue([]);
       spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript').and.returnValue(shouldSnippetsBeInCoffeeScript);
       spyOnStub(argumentParser, 'shouldSnippetsBeShown').and.returnValue(shouldSnippetsBeShown);
       spyOnStub(argumentParser, 'shouldShowSource').and.returnValue(shouldShowSource);
+      spyOnStub(argumentParser, 'shouldUseColors').and.returnValue(useColors);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');

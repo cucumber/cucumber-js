@@ -2,10 +2,12 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.SummaryFormatter", function () {
   var Cucumber = requireLib('cucumber');
+  var colors = require('colors/safe');
+  colors.enabled = true;
   var formatter, formatterHearMethod, summaryFormatter, statsJournal, failedStepResults, options;
 
   beforeEach(function () {
-    options              = {};
+    options              = {useColors: true};
     formatter            = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
@@ -700,7 +702,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs a little explanation about the snippets", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      var expectedString = Cucumber.Util.Colors.pending("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+      var expectedString = colors.yellow("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
       expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
 
@@ -711,7 +713,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs the undefined steps", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      var expectedString = Cucumber.Util.Colors.pending(undefinedStepLogBuffer);
+      var expectedString = colors.yellow(undefinedStepLogBuffer);
       expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
   });

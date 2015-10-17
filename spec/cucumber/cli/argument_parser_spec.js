@@ -209,6 +209,10 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions['dry-run']).toEqual(Boolean);
     });
 
+    it("defines a --colors flag", function () {
+      expect(knownOptionDefinitions['colors']).toEqual(Boolean);
+    });
+
     it("defines a --help flag", function () {
       expect(knownOptionDefinitions['help']).toEqual(Boolean);
     });
