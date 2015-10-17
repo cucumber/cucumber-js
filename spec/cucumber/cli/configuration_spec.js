@@ -29,18 +29,26 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getFormatters()", function () {
-    var snippetSyntax, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream;
+    var snippetSyntax, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream, useColors;
 
     beforeEach(function () {
       stream = createSpy('stream');
       snippetSyntax = createSpy("snippet syntax");
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
       shouldShowSource = createSpy("should source uris be visible?");
-      formatterOptions = {snippetSyntax: snippetSyntax, snippets: shouldSnippetsBeShown, showSource: shouldShowSource, stream: stream};
+      useColors = createSpy("use colors");
+      formatterOptions = {
+        snippetSyntax: snippetSyntax,
+        snippets: shouldSnippetsBeShown,
+        showSource: shouldShowSource,
+        stream: stream,
+        useColors: useColors
+      };
       spyOnStub(argumentParser, 'getFormats').and.returnValue([]);
       spyOnStub(argumentParser, 'getSnippetSyntax').and.returnValue(snippetSyntax);
       spyOnStub(argumentParser, 'shouldSnippetsBeShown').and.returnValue(shouldSnippetsBeShown);
       spyOnStub(argumentParser, 'shouldShowSource').and.returnValue(shouldShowSource);
+      spyOnStub(argumentParser, 'shouldUseColors').and.returnValue(useColors);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
