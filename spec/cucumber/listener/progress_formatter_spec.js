@@ -25,7 +25,7 @@ describe("Cucumber.Listener.ProgressFormatter", function () {
     });
 
     it("creates a summary formatter", function () {
-      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith(jasmine.objectContaining({logToConsole: false}));
+      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalled();
     });
   });
 
