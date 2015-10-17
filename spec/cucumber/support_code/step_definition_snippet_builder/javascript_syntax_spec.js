@@ -13,6 +13,6 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilder.JavaScriptSyntax', f
         '  callback.pending();' + '\n' +
         '});' + '\n';
       expect(actual).toEqual(expected);
-    })
+    });
   });
 });

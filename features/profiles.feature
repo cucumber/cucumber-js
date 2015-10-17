@@ -22,7 +22,7 @@ Feature: default command line arguments
       module.exports = {
         'default': '-f summary',
         progress: '-f progress',
-        'coffee-snippets': '--coffee'
+        'no-snippets': '-i'
       };
       """
 
@@ -59,7 +59,7 @@ Feature: default command line arguments
           Given a passing step
           And a undefined step
       """
-    When I run cucumber-js with `-p progress -p coffee-snippets`
+    When I run cucumber-js with `-p progress -p no-snippets`
     Then it outputs this text:
       """
       .U
@@ -67,12 +67,6 @@ Feature: default command line arguments
       1 scenario (1 undefined)
       2 steps (1 undefined, 1 passed)
       <duration-stat>
-
-      You can implement step definitions for undefined steps with these snippets:
-
-      @Given /^a undefined step$/, (callback) ->
-        # Write code here that turns the phrase above into concrete actions
-        callback.pending()
       """
 
   Scenario: overriding the default profile
