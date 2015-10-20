@@ -15,10 +15,11 @@ Feature: step definition snippets custom syntax
       function CoffeeScriptSyntax() {
         return {
           build: function build (functionName, pattern, parameters, comment) {
+            var callbackName = parameters[parameters.length - 1];
             var snippet =
               '@' + functionName + ' ' + pattern + ', (' + parameters.join(', ') + ') -> ' + '\n' +
               '  # ' + comment + '\n' +
-              '  callback.pending()' + '\n' +
+              '  ' + callbackName + '.pending()' + '\n' +
               '\n';
             return snippet;
           }
