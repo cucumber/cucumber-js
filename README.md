@@ -492,8 +492,8 @@ Undefined steps snippets are printed in javascript by default.
 Custom snippet snytaxes can be used with `--snippet-syntax <FILE>`.
 See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
 
-If you build a custom snippet syntax, please add the keywords `cucumber` and `snippets` 
-so snippet syntaxes can be found by searching [npm](https://www.npmjs.com/).
+If you build a custom snippet syntax, please add the keywords `cucumber` and `snippets`,
+so snippet syntaxes can be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
 
 ### Run cucumber
 
