@@ -20,9 +20,9 @@ Feature: default command line arguments
     And a file named "cucumber.js" with:
       """
       module.exports = {
-        'default': '-f summary',
-        progress: '-f progress',
-        'no-snippets': '-i'
+        'default': '--format summary',
+        minimal: '--no-snippets',
+        progress: '--format progress'
       };
       """
 
@@ -59,7 +59,7 @@ Feature: default command line arguments
           Given a passing step
           And a undefined step
       """
-    When I run cucumber-js with `-p progress -p no-snippets`
+    When I run cucumber-js with `-p progress -p minimal`
     Then it outputs this text:
       """
       .U
