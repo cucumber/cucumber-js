@@ -486,6 +486,18 @@ module.exports = function () {
 
 Install the [pogo](https://www.npmjs.com/package/pogo) NPM package and invoke Cucumber with `--compiler pogo:pogo`.
 
+### Custom Snippet Syntax
+
+Undefined steps snippets are printed in javascript by default.
+Custom snippet snytaxes can be used with `--snippet-syntax <FILE>`.
+See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
+
+##### Building a custom snippet syntax
+
+* See the [JavaScript syntax](/lib/cucumber/support_code/step_definition_snippet_builder/javascript_syntax.js) for an example. Please open an issue if you need more information.
+* Please add the keywords `cucumber` and `snippets` to your package,
+so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.

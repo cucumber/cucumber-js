@@ -277,31 +277,30 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("storeUndefinedStepResult()", function () {
-    var snippetBuilderSyntax, numberMatchingGroup, snippetBuilder, snippet, step;
+    var snippetSyntax, snippetBuilder, snippet, step;
 
     beforeEach(function () {
-      numberMatchingGroup  = createSpy("snippet number matching group");
-      snippetBuilderSyntax = createSpyWithStubs("snippet builder syntax", {getNumberMatchingGroup: numberMatchingGroup});
+      snippetSyntax  = createSpyWithStubs("snippet syntax");
       step           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
       spyOn(summaryFormatter, 'appendStringToUndefinedStepLogBuffer');
-      spyOn(summaryFormatter, 'getStepDefinitionSyntax').and.returnValue(snippetBuilderSyntax);
+      options.snippetSyntax = snippetSyntax;
     });
 
     it("creates a new step definition snippet builder", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
-      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step);
+      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetSyntax);
     });
 
     it("builds the step definition", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step);
       expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step);
       expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });
