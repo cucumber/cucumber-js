@@ -20,22 +20,25 @@ describe("Cucumber.Cli.Configuration", function () {
     var formatter, formatterOptions;
 
     beforeEach(function () {
-      var shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
       var shouldSnippetsBeShown = createSpy("should snippets be shown?");
       var shouldShowSource = createSpy("should source uris be visible?");
+      var shouldUseColors = createSpy("use colors");
+      var snippetSyntax = createSpy("snippet syntax");
       formatterOptions = {
-        coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript,
         snippets: shouldSnippetsBeShown,
+        snippetSyntax: snippetSyntax,
         showSource: shouldShowSource,
-        stream: process.stdout
+        stream: process.stdout,
+        useColors: shouldUseColors
       };
-      options.coffee = shouldSnippetsBeInCoffeeScript;
       options.snippets = shouldSnippetsBeShown;
       options.source = shouldShowSource;
+      options.colors = shouldUseColors;
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
       spyOn(Cucumber.Listener, 'SummaryFormatter');
+      spyOn(Cucumber.SupportCode.StepDefinitionSnippetBuilder, 'JavaScriptSyntax').and.returnValue(snippetSyntax);
       formatter = createSpy("formatter");
     });
 

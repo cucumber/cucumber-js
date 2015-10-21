@@ -3,10 +3,11 @@ require('../../support/spec_helper');
 describe("Cucumber.Listener.ProgressFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var colors = require('colors/safe');
+  colors.enabled = true;
   var formatter, formatterHearMethod, summaryFormatter, progressFormatter, options;
 
   beforeEach(function () {
-    options             = createSpy("options");
+    options             = {useColors: true};
     formatter           = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summaryFormatter");

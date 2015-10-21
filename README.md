@@ -524,6 +524,18 @@ Below are some examples
 * [TypeScript](https://www.npmjs.com/package/ts-node): `--compiler ts:ts-node/register`
 * [Pogo](https://www.npmjs.com/package/pogo): `--compiler pogo:pogo`
 
+### Custom Snippet Syntax
+
+Undefined steps snippets are printed in javascript by default.
+Custom snippet snytaxes can be used with `--snippet-syntax <FILE>`.
+See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
+
+##### Building a custom snippet syntax
+
+* See the [JavaScript syntax](/lib/cucumber/support_code/step_definition_snippet_builder/javascript_syntax.js) for an example. Please open an issue if you need more information.
+* Please add the keywords `cucumber` and `snippets` to your package,
+so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
+
 ### Examples
 
 A few example apps are available for you to browse:
