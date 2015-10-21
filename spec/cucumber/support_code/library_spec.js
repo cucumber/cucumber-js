@@ -3,14 +3,11 @@ require('../../support/spec_helper');
 describe("Cucumber.SupportCode.Library", function () {
   var Cucumber = requireLib('cucumber');
   var library, rawSupportCode;
-  var worldConstructor;
   var listenerCollection, stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection;
   var collectionSpy;
 
   beforeEach(function () {
     rawSupportCode           = createSpy("Raw support code");
-    worldConstructor         = createSpy("world constructor");
-    spyOn(Cucumber.SupportCode, 'WorldConstructor').and.returnValue(worldConstructor);
     listenerCollection       = createSpy("listener collection");
     stepDefinitionCollection = createSpy("step definition collection");
     aroundHookCollection     = createSpy("around hook collection");
@@ -30,10 +27,6 @@ describe("Cucumber.SupportCode.Library", function () {
 
     it("executes the raw support code", function () {
       expect(rawSupportCode).toHaveBeenCalled();
-    });
-
-    it("creates a new World constructor", function () {
-      expect(Cucumber.SupportCode.WorldConstructor).toHaveBeenCalled();
     });
 
     it("executes the raw support code with a support code helper as 'this'", function () {
@@ -83,15 +76,15 @@ describe("Cucumber.SupportCode.Library", function () {
       });
 
       it("exposes the World constructor", function () {
-        expect(supportCodeHelper.World).toBe(worldConstructor);
+        expect(supportCodeHelper.World).toBeAFunction();
       });
 
       it("exposes a method to register a listener", function () {
-        expect(supportCodeHelper.registerListener).toBeAFunction ();
+        expect(supportCodeHelper.registerListener).toBeAFunction();
       });
 
       it("exposes a method to register a handler", function () {
-        expect(supportCodeHelper.registerHandler).toBeAFunction ();
+        expect(supportCodeHelper.registerHandler).toBeAFunction();
       });
 
       // parameterized test
@@ -590,78 +583,16 @@ describe("Cucumber.SupportCode.Library", function () {
     });
 
     describe("instantiateNewWorld()", function () {
-      var worldInstance, callback;
-
-      beforeEach(function () {
-        worldInstance = null;
-        worldConstructor.and.callFake(function (callback) {
-          worldInstance = this;
-          if (callback)
-            callback();
-        });
-        callback = createSpy("callback");
-      });
-
-      it("creates a new instance of the World and give it a callback", function () {
-        library.instantiateNewWorld(callback);
-        expect(worldConstructor).toHaveBeenCalled();
-        expect(worldConstructor).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-        expect(worldInstance.constructor).toBe(worldConstructor);
-      });
-
-      describe("world constructor callback", function () {
-        var worldConstructorCompletionCallback;
-
-        beforeEach(function () {
-          library.instantiateNewWorld(callback);
-          worldConstructorCompletionCallback = worldConstructor.calls.mostRecent().args[0];
-          spyOn(process, 'nextTick');
-        });
-
-        it("registers a function for the next tick (to get out of the constructor call)", function () {
-          worldConstructorCompletionCallback();
-          expect(process.nextTick).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-        });
-
-        describe("next tick registered function", function () {
-          var nextTickFunction;
-
-          describe("when the world constructor called back without any argument", function () {
-            beforeEach(function () {
-              worldConstructorCompletionCallback();
-              nextTickFunction = process.nextTick.calls.mostRecent().args[0];
-            });
-
-            it("calls back with the world instance", function () {
-              nextTickFunction ();
-              expect(callback).toHaveBeenCalledWith(worldInstance);
-            });
-          });
-
-          describe("when the world constructor called back with an explicit world object", function () {
-            var explicitWorld;
-
-            beforeEach(function () {
-              explicitWorld = createSpy("explicit world object");
-              worldConstructorCompletionCallback(explicitWorld);
-              nextTickFunction = process.nextTick.calls.mostRecent().args[0];
-            });
-
-            it("calls back with the world instance", function () {
-              nextTickFunction ();
-              expect(callback).toHaveBeenCalledWith(explicitWorld);
-            });
-          });
-
+      it("creates a new instance of the World", function () {
+        library.instantiateNewWorld(function (world) {
+          expect(typeof world).toBe('object');
         });
       });
     });
 
     describe("when the default World constructor is replaced by a custom one", function () {
       it("instantiates a custom World", function (done) {
-        var customWorldConstructor = function (callback) {
-          callback();
-        };
+        var customWorldConstructor = function () {};
         rawSupportCode             = function () { this.World = customWorldConstructor; };
         library                    = Cucumber.SupportCode.Library(rawSupportCode);
 

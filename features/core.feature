@@ -73,9 +73,8 @@ Feature: Core feature elements execution
       var assert = require('assert');
 
       var cucumberSteps = function() {
-        this.World = function (callback) {
+        this.World = function () {
           this.count = 0;
-          callback()
         };
 
         this.When(/^I call a watched step$/, function() {
@@ -110,9 +109,8 @@ Feature: Core feature elements execution
       var assert = require('assert');
 
       var cucumberSteps = function() {
-        this.World = function (callback) {
+        this.World = function () {
           this.parameters = {};
-          callback()
         };
 
         this.When(/^I call a step with "(.*)"$/, function(arg) {
