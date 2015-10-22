@@ -70,7 +70,7 @@ This a reminder of the steps maintainers have to follow to release a new version
 * Compile the bundle with `node scripts/release.js`
 * Add new contributors to `package.json`, if any
 * Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)
-* Tag commit as "v0.1.2" with short description of main changes
+* Tag commit as "v0.1.2" with a description of the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
 * Push to main repo on GitHub
 * Wait for build to go green
 * Publish to NPM
