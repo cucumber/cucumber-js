@@ -116,7 +116,8 @@
     "feature-test": "./bin/cucumber.js -p build",
     "lint": "jshint bin bundler.js features lib spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
-    "unit-test": "jasmine"
+    "unit-test": "jasmine",
+    "build-release": "node ./scripts/release.js"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
