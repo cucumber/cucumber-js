@@ -1,8 +1,43 @@
 # Cucumber.js changelog
 
-## [v0.7.x](https://github.com/cucumber/cucumber-js/compare/v0.7.0...master)
+## [v0.8.x](https://github.com/cucumber/cucumber-js/compare/v0.8.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.7.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.8.0...master)
+
+### [v0.8.0](https://github.com/cucumber/cucumber-js/compare/v0.7.0...v0.8.0)
+
+#### Breaking changes
+
+* Add strict function length checking to hooks and step definitions (Charlie Rudolph)
+* Make World constructors strictly synchronous (Julien Biezemans)
+
+#### New features
+
+* Add cli option to fail fast (Charlie Rudolph)
+* Add cli for specifying multiple formatters (Charlie Rudolph)
+* Add support for passing multiple line numbers (Charlie Rudolph)
+* Add ability to disable colors (Charlie Rudolph)
+* Add support for custom snippet syntaxes (Charlie Rudolph)
+
+#### Changed features
+
+* Hide errors in pretty formatter summary (Charlie Rudolph)
+* Remove unnecessary whitespaces in pretty formatter output (Charlie Rudolph)
+
+#### Fixes
+
+* Properly ask configurations for strict mode (Julien Biezemans)
+
+#### Documentation, internals and tests
+
+* Document data table interface (Charlie Rudolph)
+* Refactor: statuses (Charlie Rudolph)
+* Refactor: cleanup step definitions (Charlie Rudolph)
+* Cleanup: remove log to console from listeners (Charlie Rudolph)
+* Use svg badges (Charlie Rudolph)
+* Rename CONTRIBUTE.md to CONTRIBUTING.md (Julien Biezemans)
+* Require maintainers to document API changes in release tag descriptions (Julien Biezemans)
+* Add build-release NPM script (Julien Biezemans)
 
 ### [v0.7.0](https://github.com/cucumber/cucumber-js/compare/v0.6.0...v0.7.0)
 

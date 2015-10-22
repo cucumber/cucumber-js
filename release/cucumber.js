@@ -12,17 +12,18 @@ Cucumber.Debug                 = require('./cucumber/debug'); // Untested namesp
 Cucumber.Listener              = require('./cucumber/listener');
 Cucumber.Parser                = require('./cucumber/parser');
 Cucumber.Runtime               = require('./cucumber/runtime');
+Cucumber.Status                = require('./cucumber/status');
 Cucumber.SupportCode           = require('./cucumber/support_code');
 Cucumber.TagGroupParser        = require('./cucumber/tag_group_parser');
 Cucumber.Type                  = require('./cucumber/type');
 Cucumber.Util                  = require('./cucumber/util');
 Cucumber.VolatileConfiguration = require('./cucumber/volatile_configuration');
 
-Cucumber.VERSION               = '0.7.0';
+Cucumber.VERSION               = '0.8.0';
 
 module.exports                 = Cucumber;
 
-},{"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":23,"./cucumber/debug":24,"./cucumber/listener":27,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/support_code":47,"./cucumber/tag_group_parser":55,"./cucumber/type":56,"./cucumber/util":60,"./cucumber/volatile_configuration":66}],2:[function(require,module,exports){
+},{"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":23,"./cucumber/debug":24,"./cucumber/listener":27,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":43,"./cucumber/support_code":44,"./cucumber/tag_group_parser":51,"./cucumber/type":52,"./cucumber/util":56,"./cucumber/volatile_configuration":62}],2:[function(require,module,exports){
 var Api        = {};
 Api.Scenario   = require('./api/scenario');
 module.exports = Api;
@@ -30,6 +31,8 @@ module.exports = Api;
 },{"./api/scenario":3}],3:[function(require,module,exports){
 (function (Buffer){
 function Scenario(astTreeWalker, astScenario) {
+  var Cucumber = require('../../cucumber');
+
   function isStream(value) {
     return value && typeof value === 'object' && typeof value.pipe === 'function';
   }
@@ -41,12 +44,12 @@ function Scenario(astTreeWalker, astScenario) {
     getUri:         function getUri()         { return astScenario.getUri(); },
     getLine:        function getLine()        { return astScenario.getLine(); },
     getTags:        function getTags()        { return astScenario.getTags(); },
-    isSuccessful:   function isSuccessful()   { return astTreeWalker.isScenarioSuccessful(); },
-    isFailed:       function isFailed()       { return astTreeWalker.isScenarioFailed(); },
-    isPending:      function isPending()      { return astTreeWalker.isScenarioPending(); },
-    isUndefined:    function isUndefined()    { return astTreeWalker.isScenarioUndefined(); },
-    isSkipped:      function isSkipped()      { return astTreeWalker.isScenarioSkipped(); },
-    getException:   function getException()   { return astTreeWalker.getFailureException(); },
+    isSuccessful:   function isSuccessful()   { return astTreeWalker.getScenarioStatus() === Cucumber.Status.PASSED; },
+    isFailed:       function isFailed()       { return astTreeWalker.getScenarioStatus() === Cucumber.Status.FAILED; },
+    isPending:      function isPending()      { return astTreeWalker.getScenarioStatus() === Cucumber.Status.PENDING; },
+    isUndefined:    function isUndefined()    { return astTreeWalker.getScenarioStatus() === Cucumber.Status.UNDEFINED; },
+    isSkipped:      function isSkipped()      { return astTreeWalker.getScenarioStatus() === Cucumber.Status.SKIPPED; },
+    getException:   function getException()   { return astTreeWalker.getScenarioFailureException(); },
     getAttachments: function getAttachments() { return astTreeWalker.getAttachments(); },
 
     attach: function attach(data, mimeType, callback) {
@@ -98,7 +101,7 @@ module.exports = Scenario;
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],4:[function(require,module,exports){
+},{"../../cucumber":1,"buffer":65}],4:[function(require,module,exports){
 var Ast             = {};
 Ast.Assembler       = require('./ast/assembler');
 Ast.Background      = require('./ast/background');
@@ -367,7 +370,7 @@ DataTable.Row  = require('./data_table/row');
 
 module.exports = DataTable;
 
-},{"../../cucumber":1,"./data_table/row":8,"underscore":294}],8:[function(require,module,exports){
+},{"../../cucumber":1,"./data_table/row":8,"underscore":290}],8:[function(require,module,exports){
 function Row(cells, uri, line) {
   var self = {
     raw: function raw() {
@@ -630,7 +633,7 @@ Filter.ScenarioAtLineRule     = require('./filter/scenario_at_line_rule');
 
 module.exports = Filter;
 
-},{"./filter/any_of_tags_rule":14,"./filter/element_matching_tag_spec":15,"./filter/scenario_at_line_rule":16,"underscore":294}],14:[function(require,module,exports){
+},{"./filter/any_of_tags_rule":14,"./filter/element_matching_tag_spec":15,"./filter/scenario_at_line_rule":16,"underscore":290}],14:[function(require,module,exports){
 var _ = require('underscore');
 
 function AnyOfTagsRule(tags) {
@@ -650,7 +653,7 @@ function AnyOfTagsRule(tags) {
 
 module.exports = AnyOfTagsRule;
 
-},{"../../../cucumber":1,"underscore":294}],15:[function(require,module,exports){
+},{"../../../cucumber":1,"underscore":290}],15:[function(require,module,exports){
 var _ = require('underscore');
 
 function ElementMatchingTagSpec(tagName) {
@@ -689,7 +692,7 @@ ElementMatchingTagSpec.NEGATION_CHARACTER = '~';
 
 module.exports = ElementMatchingTagSpec;
 
-},{"underscore":294}],16:[function(require,module,exports){
+},{"underscore":290}],16:[function(require,module,exports){
 function ScenarioAtLineRule(suppliedPaths) {
   var Cucumber = require('../../../cucumber');
   var fs = require('fs');
@@ -698,13 +701,15 @@ function ScenarioAtLineRule(suppliedPaths) {
   var mapping = {};
   suppliedPaths.forEach(function(path){
     var matches = Cucumber.Cli.ArgumentParser.FEATURE_FILENAME_AND_LINENUM_REGEXP.exec(path);
-    var specifiedLineNum = matches && matches[2];
-    if (specifiedLineNum) {
+    var specifiedLineNums = matches && matches[2];
+    if (specifiedLineNums) {
       var realPath = fs.realpathSync(matches[1]);
       if (!mapping[realPath]) {
         mapping[realPath] = [];
       }
-      mapping[realPath].push(parseInt(specifiedLineNum));
+      specifiedLineNums.split(':').forEach(function (lineNum) {
+        mapping[realPath].push(parseInt(lineNum));
+      });
     }
   });
 
@@ -725,7 +730,7 @@ function ScenarioAtLineRule(suppliedPaths) {
 
 module.exports = ScenarioAtLineRule;
 
-},{"../../../cucumber":1,"fs":67,"underscore":294}],17:[function(require,module,exports){
+},{"../../../cucumber":1,"fs":63,"underscore":290}],17:[function(require,module,exports){
 function HookStep(keyword) {
   var Cucumber = require('../../cucumber');
   var self = Cucumber.Ast.Step(keyword, HookStep.NAME, HookStep.UNDEFINED_URI, HookStep.UNDEFINED_LINE);
@@ -1252,7 +1257,7 @@ module.exports          = Debug;
 
 }).call(this,require('_process'))
 
-},{"./debug/simple_ast_listener":25,"_process":79}],25:[function(require,module,exports){
+},{"./debug/simple_ast_listener":25,"_process":75}],25:[function(require,module,exports){
 function SimpleAstListener(options) {
   var logs                        = '';
   var failed                      = false;
@@ -1266,8 +1271,8 @@ function SimpleAstListener(options) {
     if (indentation)
       message = indent(message, indentation);
     logs = logs + message + '\n';
-    if (options.logToConsole)
-      console.log(message);
+    if (options.stream)
+      options.stream.write(message);
     if (typeof(options.logToFunction) === 'function')
       options.logToFunction (message);
   }
@@ -1382,7 +1387,7 @@ function GherkinLexer(content, gherkinListener) {
 
 module.exports = GherkinLexer;
 
-},{"gherkin":164}],27:[function(require,module,exports){
+},{"gherkin":160}],27:[function(require,module,exports){
 function Listener() {
   var self = {
     hear: function hear(event, callback) {
@@ -1451,8 +1456,6 @@ function Formatter(options) {
 
   if (!options)
     options = {};
-  if (options.logToConsole === undefined)
-    options.logToConsole = true;
 
   var logs = '';
 
@@ -1460,10 +1463,17 @@ function Formatter(options) {
 
   self.log = function log(string) {
     logs += string;
-    if (options.logToConsole)
-      process.stdout.write(string);
+    if (options.stream)
+      options.stream.write(string);
     if (typeof(options.logToFunction) === 'function')
       options.logToFunction(string);
+  };
+
+  self.finish = function finish(callback) {
+    if (options.stream && options.stream !== process.stdout)
+      options.stream.end(callback);
+    else
+      callback();
   };
 
   self.getLogs = function getLogs() {
@@ -1477,7 +1487,7 @@ module.exports = Formatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":79}],30:[function(require,module,exports){
+},{"../../cucumber":1,"_process":75}],30:[function(require,module,exports){
 /* jshint -W106 */
 function JsonFormatter(options) {
   var Cucumber             = require('../../cucumber');
@@ -1609,39 +1619,25 @@ function JsonFormatter(options) {
     self.formatStep(step);
 
     var stepOutput = {};
-    var resultStatus;
     var attachments;
 
-    if (stepResult.isSuccessful()) {
-      resultStatus = 'passed';
+    var status = stepResult.getStatus();
+    stepOutput.status = status;
+
+    if (status === Cucumber.Status.PASSED || status === Cucumber.Status.FAILED) {
       if (stepResult.hasAttachments()) {
         attachments = stepResult.getAttachments();
       }
       stepOutput.duration = stepResult.getDuration();
     }
-    else if (stepResult.isPending()) {
-      resultStatus = 'pending';
-      stepOutput.error_message = undefined;
-    }
-    else if (stepResult.isSkipped()) {
-      resultStatus = 'skipped';
-    }
-    else if (stepResult.isUndefined()) {
-      resultStatus = 'undefined';
-    }
-    else {
-      resultStatus = 'failed';
+
+    if (status === Cucumber.Status.FAILED) {
       var failureMessage = stepResult.getFailureException();
       if (failureMessage) {
         stepOutput.error_message = (failureMessage.stack || failureMessage);
       }
-      if (stepResult.hasAttachments()) {
-        attachments = stepResult.getAttachments();
-      }
-      stepOutput.duration = stepResult.getDuration();
     }
 
-    stepOutput.status = resultStatus;
     gherkinJsonFormatter.result(stepOutput);
     gherkinJsonFormatter.match({location: undefined});
     if (attachments) {
@@ -1655,7 +1651,7 @@ function JsonFormatter(options) {
   self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
     gherkinJsonFormatter.eof();
     gherkinJsonFormatter.done();
-    callback();
+    self.finish(callback);
   };
 
   return self;
@@ -1663,20 +1659,21 @@ function JsonFormatter(options) {
 
 module.exports = JsonFormatter;
 
-},{"../../cucumber":1,"gherkin/lib/gherkin/formatter/json_formatter":165}],31:[function(require,module,exports){
+},{"../../cucumber":1,"gherkin/lib/gherkin/formatter/json_formatter":161}],31:[function(require,module,exports){
 (function (process){
 function PrettyFormatter(options) {
   var Cucumber         = require('../../cucumber');
   var path             = require('path');
 
-  var colors           = Cucumber.Util.Colors;
+  var colors           = Cucumber.Util.Colors(options.useColors);
   var self             = Cucumber.Listener.Formatter(options);
   var summaryFormatter = Cucumber.Listener.SummaryFormatter({
-    coffeeScriptSnippets: options.coffeeScriptSnippets,
     snippets: options.snippets,
-    logToConsole: false
+    snippetSyntax: options.snippetSyntax,
+    hideFailedStepResults: true,
+    useColors: options.useColors
   });
-  var currentMaxStepLength = 0;
+  var uriCommentIndex = 0;
 
   var parentHear = self.hear;
   self.hear = function hear(event, callback) {
@@ -1687,41 +1684,51 @@ function PrettyFormatter(options) {
 
   self.handleBeforeFeatureEvent = function handleBeforeFeatureEvent(event, callback) {
     var feature = event.getPayloadItem('feature');
-    var tags = feature.getTags();
-    var tagNames = [];
-    for (var idx = 0; idx < tags.length; idx++) {
-      tagNames.push(tags[idx].getName());
+    var source = '';
+
+    var tagsSource = self.formatTags(feature.getTags());
+    if (tagsSource) {
+      source = tagsSource + '\n';
     }
-    var source = colors.tag(tagNames.join(' ')) + '\n' + feature.getKeyword() + ': ' + feature.getName() + '\n';
+
+    var identifier = feature.getKeyword() + ': ' + feature.getName();
+    source += identifier;
+
+    var description = feature.getDescription();
+    if (description) {
+      source += '\n\n' + self.indent(description, 1);
+    }
+
+    source += '\n\n';
+
     self.log(source);
-    self.logIndented(feature.getDescription() + '\n\n', 1);
     callback();
   };
 
   self.handleBeforeScenarioEvent = function handleBeforeScenarioEvent(event, callback) {
     var scenario = event.getPayloadItem('scenario');
-    var tags = scenario.getOwnTags();
-    var tagNames = [];
-    for (var idx = 0; idx < tags.length; idx++) {
-      tagNames.push(tags[idx].getName());
-    }
-    var tagSource = colors.tag(tagNames.join(' ')) + '\n';
-    var source = scenario.getKeyword() + ': ' + scenario.getName();
-    var lineLengths = [source.length, self.determineMaxStepLengthForElement(scenario)];
-    if (scenario.getBackground() !== undefined) {
-      lineLengths.push(self.determineMaxStepLengthForElement(scenario.getBackground()));
-    }
-    lineLengths.sort(function (a,b) { return b-a; });
-    currentMaxStepLength = lineLengths[0];
+    var source = '';
 
-    source = tagSource + self._pad(source, currentMaxStepLength + 3);
+    var tagsSource = self.formatTags(scenario.getOwnTags());
+    if (tagsSource) {
+      source = tagsSource + '\n';
+    }
 
+    var identifier = scenario.getKeyword() + ': ' + scenario.getName();
     if (options.showSource) {
-      source += colors.comment('# ' + path.relative(process.cwd(), scenario.getUri()) + ':' + scenario.getLine());
-    }
+      var lineLengths = [identifier.length, self.determineMaxStepLengthForElement(scenario)];
+      if (scenario.getBackground() !== undefined) {
+        lineLengths.push(self.determineMaxStepLengthForElement(scenario.getBackground()));
+      }
+      uriCommentIndex = Math.max.apply(null, lineLengths) + 1;
 
-    source += '\n';
+      identifier = self._pad(identifier, uriCommentIndex + 2) +
+                   colors.comment('# ' + path.relative(process.cwd(), scenario.getUri()) + ':' + scenario.getLine());
+    }
+    source += identifier;
+
     self.logIndented(source, 1);
+    self.log('\n');
     callback();
   };
 
@@ -1730,82 +1737,88 @@ function PrettyFormatter(options) {
     callback();
   };
 
-  self.applyColor = function (stepResult, source) {
-    if (stepResult.isFailed()) source = colors.failed(source);
-    else if (stepResult.isPending()) source = colors.pending(source);
-    else if (stepResult.isSkipped()) source = colors.skipped(source);
-    else if (stepResult.isSuccessful()) source = colors.passed(source);
-    else if (stepResult.isUndefined()) source = colors.undefined(source);
-    return source;
+  self.applyColor = function applyColor (stepResult, source) {
+    var status = stepResult.getStatus();
+    return colors[status](source);
   };
 
   self.handleStepResultEvent = function handleStepResultEvent(event, callback) {
     var stepResult = event.getPayloadItem('stepResult');
     var step = stepResult.getStep();
-    if (!step.isHidden() || stepResult.isFailed()) {
+    if (!step.isHidden() || stepResult.getStatus() === Cucumber.Status.FAILED) {
       self.logStepResult(step, stepResult);
     }
     callback();
   };
 
-  self.logStepResult = function logStepResult(step, stepResult) {
-    var source = step.getKeyword() + (step.getName() || '');
-    source = self._pad(source, self._getCurrentMaxStepLength() + 1);
-    source = self.applyColor(stepResult, source);
-
-    if (options.showSource && step.hasUri()) {
-      source += colors.comment('# ' + path.relative(process.cwd(), step.getUri()) + ':' + step.getLine());
+  self.formatTags = function formatTags(tags) {
+    if (tags.length === 0) {
+      return '';
     }
 
-    source += '\n';
-    self.logIndented(source, 2);
+    var tagNames = tags.map(function (tag) {
+      return tag.getName();
+    });
+
+    return colors.tag(tagNames.join(' '));
+  };
+
+  self.logStepResult = function logStepResult(step, stepResult) {
+    var identifier = step.getKeyword() + (step.getName() || '');
+
+    if (options.showSource && step.hasUri()) {
+      identifier = self._pad(identifier, uriCommentIndex);
+      identifier += colors.comment('# ' + path.relative(process.cwd(), step.getUri()) + ':' + step.getLine());
+    }
+
+    identifier = self.applyColor(stepResult, identifier);
+    self.logIndented(identifier, 2);
+    self.log('\n');
 
     if (step.hasDataTable()) {
       var dataTable = step.getDataTable();
-      self.logDataTable(stepResult, dataTable);
+      var dataTableSource = self.formatDataTable(stepResult, dataTable);
+      self.logIndented(dataTableSource, 3);
     }
 
     if (step.hasDocString()) {
       var docString = step.getDocString();
-      self.logDocString(stepResult, docString);
+      var docStringSource = self.formatDocString(stepResult, docString);
+      self.logIndented(docStringSource, 3);
     }
 
-    if (stepResult.isFailed()) {
+    if (stepResult.getStatus() === Cucumber.Status.FAILED) {
       var failure            = stepResult.getFailureException();
       var failureDescription = failure.stack || failure;
-      self.logIndented(failureDescription + '\n', 3);
+      self.logIndented(failureDescription, 3);
+      self.log('\n');
     }
   };
 
   self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
     var summaryLogs = summaryFormatter.getLogs();
-    self.log('\n');
     self.log(summaryLogs);
-    callback();
+    self.finish(callback);
   };
 
-  self.logDataTable = function logDataTable(stepResult, dataTable) {
+  self.formatDataTable = function formatDataTable(stepResult, dataTable) {
     var rows         = dataTable.raw();
     var columnWidths = self._determineColumnWidthsFromRows(rows);
-    var rowCount     = rows.length;
-    var columnCount  = columnWidths.length;
-    for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-      var cells = rows[rowIndex];
-      var line = '|';
-      for (var columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-        var cell        = cells[columnIndex];
+    var source = '';
+    rows.forEach(function (row) {
+      source += '|';
+      row.forEach(function (cell, columnIndex) {
         var columnWidth = columnWidths[columnIndex];
-        line += ' ' + self.applyColor(stepResult, self._pad(cell, columnWidth)) + ' |';
-      }
-      line += '\n';
-      self.logIndented(line, 3);
-    }
+        source += ' ' + self.applyColor(stepResult, self._pad(cell, columnWidth)) + ' |';
+      });
+      source += '\n';
+    });
+    return source;
   };
 
-  self.logDocString = function logDocString(stepResult, docString) {
+  self.formatDocString = function formatDocString(stepResult, docString) {
     var contents = '"""\n' + docString.getContents() + '\n"""';
-    contents = self.applyColor(stepResult, contents) + '\n';
-    self.logIndented(contents, 3);
+    return self.applyColor(stepResult, contents) + '\n';
   };
 
   self.logIndented = function logIndented(text, level) {
@@ -1850,10 +1863,6 @@ function PrettyFormatter(options) {
     return columnWidths;
   };
 
-  self._getCurrentMaxStepLength = function _getCurrentMaxStepLength() {
-    return currentMaxStepLength;
-  };
-
   self._pad = function _pad(text, width) {
     var padded = '' + text;
     while (padded.length < width) {
@@ -1869,19 +1878,20 @@ module.exports = PrettyFormatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":79,"path":78}],32:[function(require,module,exports){
-var colors = require('../util/colors');
-
+},{"../../cucumber":1,"_process":75,"path":74}],32:[function(require,module,exports){
 function ProgressFormatter(options) {
   var Cucumber = require('../../cucumber');
+
   if (!options)
     options = {};
 
+  var colors = Cucumber.Util.Colors(options.useColors);
+
   var self             = Cucumber.Listener.Formatter(options);
   var summaryFormatter = Cucumber.Listener.SummaryFormatter({
-    coffeeScriptSnippets: options.coffeeScriptSnippets,
     snippets: options.snippets,
-    logToConsole: false
+    snippetSyntax: options.snippetSyntax,
+    useColors: options.useColors
   });
 
   var parentHear = self.hear;
@@ -1891,78 +1901,60 @@ function ProgressFormatter(options) {
     });
   };
 
+  var characters = {};
+  characters[Cucumber.Status.FAILED] = 'F';
+  characters[Cucumber.Status.PASSED] = '.';
+  characters[Cucumber.Status.PENDING] = 'P';
+  characters[Cucumber.Status.SKIPPED] = '-';
+  characters[Cucumber.Status.UNDEFINED] = 'U';
+
   self.handleStepResultEvent = function handleStepResult(event, callback) {
     var stepResult = event.getPayloadItem('stepResult');
-    if (stepResult.isSuccessful())
-      self.handleSuccessfulStepResult();
-    else if (stepResult.isPending())
-      self.handlePendingStepResult();
-    else if (stepResult.isSkipped())
-      self.handleSkippedStepResult();
-    else if (stepResult.isUndefined())
-      self.handleUndefinedStepResult();
-    else
-      self.handleFailedStepResult();
+    var status = stepResult.getStatus();
+    var step = stepResult.getStep();
+    if (!step.isHidden() || status === Cucumber.Status.FAILED) {
+      var character = colors[status](characters[status]);
+      self.log(character);
+    }
     callback();
-  };
-
-  self.handleSuccessfulStepResult = function handleSuccessfulStepResult() {
-    self.log(ProgressFormatter.PASSED_STEP_CHARACTER);
-  };
-
-  self.handlePendingStepResult = function handlePendingStepResult() {
-    self.log(ProgressFormatter.PENDING_STEP_CHARACTER);
-  };
-
-  self.handleSkippedStepResult = function handleSkippedStepResult() {
-    self.log(ProgressFormatter.SKIPPED_STEP_CHARACTER);
-  };
-
-  self.handleUndefinedStepResult = function handleUndefinedStepResult() {
-    self.log(ProgressFormatter.UNDEFINED_STEP_CHARACTER);
-  };
-
-  self.handleFailedStepResult = function handleFailedStepResult() {
-    self.log(ProgressFormatter.FAILED_STEP_CHARACTER);
   };
 
   self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
     var summaryLogs = summaryFormatter.getLogs();
     self.log('\n\n');
     self.log(summaryLogs);
-    callback();
+    self.finish(callback);
   };
 
   return self;
 }
 
-ProgressFormatter.PASSED_STEP_CHARACTER    = colors.passed('.');
-ProgressFormatter.SKIPPED_STEP_CHARACTER   = colors.skipped('-');
-ProgressFormatter.UNDEFINED_STEP_CHARACTER = colors.undefined('U');
-ProgressFormatter.PENDING_STEP_CHARACTER   = colors.pending('P');
-ProgressFormatter.FAILED_STEP_CHARACTER    = colors.failed('F');
-
 module.exports = ProgressFormatter;
 
-},{"../../cucumber":1,"../util/colors":62}],33:[function(require,module,exports){
+},{"../../cucumber":1}],33:[function(require,module,exports){
 function StatsJournal(options) {
   var Cucumber = require('../../cucumber');
+  var _ = require('underscore');
 
-  var passedScenarioCount      = 0;
-  var undefinedScenarioCount   = 0;
-  var pendingScenarioCount     = 0;
-  var failedScenarioCount      = 0;
-  var skippedScenarioCount     = 0;
-  var passedStepCount          = 0;
-  var failedStepCount          = 0;
-  var skippedStepCount         = 0;
-  var undefinedStepCount       = 0;
-  var pendingStepCount         = 0;
-  var currentScenarioFailing   = false;
-  var currentScenarioUndefined = false;
-  var currentScenarioPending   = false;
-  var currentScenarioSkipped   = false;
-  var duration                 = 0;
+  function getCountsObject () {
+    var statuses = [
+      Cucumber.Status.FAILED,
+      Cucumber.Status.PASSED,
+      Cucumber.Status.PENDING,
+      Cucumber.Status.SKIPPED,
+      Cucumber.Status.UNDEFINED
+    ];
+    var counts = {};
+    statuses.forEach(function (status) {
+      counts[status] = 0;
+    });
+    return counts;
+  }
+
+  var scenarioResult;
+  var scenarioCounts = getCountsObject();
+  var stepCounts = getCountsObject();
+  var duration = 0;
 
   if (!options)
     options = {};
@@ -1970,7 +1962,12 @@ function StatsJournal(options) {
   var self = Cucumber.Listener();
 
   self.handleBeforeScenarioEvent = function handleBeforeScenarioEvent(event, callback) {
-    self.prepareBeforeScenario();
+    scenarioResult = Cucumber.Runtime.ScenarioResult();
+    callback();
+  };
+
+  self.handleAfterScenarioEvent = function handleAfterScenarioEvent(event, callback) {
+    scenarioCounts[scenarioResult.getStatus()] += 1;
     callback();
   };
 
@@ -1980,209 +1977,29 @@ function StatsJournal(options) {
     if (stepDuration) {
       duration += stepDuration;
     }
+
+    var status = stepResult.getStatus();
     var step = stepResult.getStep();
-    if (stepResult.isSuccessful())
-      self.handleSuccessfulStepResult(step);
-    else if (stepResult.isPending())
-      self.handlePendingStepResult();
-    else if (stepResult.isUndefined())
-      self.handleUndefinedStepResult();
-    else if (stepResult.isSkipped())
-      self.handleSkippedStepResult();
-    else
-      self.handleFailedStepResult();
-    callback();
-  };
 
-  self.handleSuccessfulStepResult = function handleSuccessfulStepResult(step) {
-    if (!step.isHidden())
-      self.witnessPassedStep();
-  };
-
-  self.handlePendingStepResult = function handlePendingStepResult() {
-    self.witnessPendingStep();
-    self.markCurrentScenarioAsPending();
-  };
-
-  self.handleSkippedStepResult = function handleSkippedStepResult() {
-    self.witnessSkippedStep();
-    self.markCurrentScenarioAsSkipped();
-  };
-
-  self.handleUndefinedStepResult = function handleUndefinedStepResult() {
-    self.witnessUndefinedStep();
-    self.markCurrentScenarioAsUndefined();
-  };
-
-  self.handleFailedStepResult = function handleFailedStepResult() {
-    self.witnessFailedStep();
-    self.markCurrentScenarioAsFailing();
-  };
-
-  self.handleAfterScenarioEvent = function handleAfterScenarioEvent(event, callback) {
-    if (self.isCurrentScenarioSkipped()) {
-      self.witnessSkippedScenario();
-    } else if (self.isCurrentScenarioFailing()) {
-      self.witnessFailedScenario();
-    } else if (self.isCurrentScenarioUndefined()) {
-      self.witnessUndefinedScenario();
-    } else if (self.isCurrentScenarioPending()) {
-      self.witnessPendingScenario();
-    } else {
-      self.witnessPassedScenario();
+    if (!step.isHidden()) {
+      stepCounts[status] += 1;
     }
+
+    scenarioResult.witnessStepResult(stepResult);
+
     callback();
-  };
-
-  self.prepareBeforeScenario = function prepareBeforeScenario() {
-    currentScenarioFailing   = false;
-    currentScenarioPending   = false;
-    currentScenarioUndefined = false;
-    currentScenarioSkipped   = false;
-  };
-
-  self.markCurrentScenarioAsFailing = function markCurrentScenarioAsFailing() {
-    currentScenarioFailing = true;
-    currentScenarioSkipped = false;
-  };
-
-  self.markCurrentScenarioAsUndefined = function markCurrentScenarioAsUndefined() {
-    currentScenarioUndefined = true;
-    currentScenarioSkipped   = false;
-  };
-
-  self.markCurrentScenarioAsPending = function markCurrentScenarioAsPending() {
-    currentScenarioPending = true;
-    currentScenarioSkipped = false;
-  };
-
-  self.markCurrentScenarioAsSkipped = function markCurrentScenarioAsSkipped() {
-    var isScenarioSkipped = !(currentScenarioFailing || currentScenarioPending || currentScenarioUndefined);
-    currentScenarioSkipped = isScenarioSkipped;
   };
 
   self.isCurrentScenarioFailing = function isCurrentScenarioFailing() {
-    return currentScenarioFailing;
+    return scenarioResult.getStatus() === Cucumber.Status.FAILED;
   };
 
-  self.isCurrentScenarioUndefined = function isCurrentScenarioUndefined() {
-    return currentScenarioUndefined;
+  self.getScenarioCounts = function getScenarioCounts() {
+    return _.clone(scenarioCounts);
   };
 
-  self.isCurrentScenarioPending = function isCurrentScenarioPending() {
-    return currentScenarioPending;
-  };
-
-  self.isCurrentScenarioSkipped = function isCurrentScenarioSkipped() {
-    return currentScenarioSkipped;
-  };
-
-  self.witnessPassedScenario = function witnessPassedScenario() {
-    passedScenarioCount++;
-  };
-
-  self.witnessUndefinedScenario = function witnessUndefinedScenario() {
-    undefinedScenarioCount++;
-  };
-
-  self.witnessPendingScenario = function witnessPendingScenario() {
-    pendingScenarioCount++;
-  };
-
-  self.witnessFailedScenario = function witnessFailedScenario() {
-    failedScenarioCount++;
-  };
-
-  self.witnessSkippedScenario = function witnessSkippedScenario() {
-    skippedScenarioCount++;
-  };
-
-  self.witnessPassedStep = function witnessPassedStep() {
-    passedStepCount++;
-  };
-
-  self.witnessUndefinedStep = function witnessUndefinedStep() {
-    undefinedStepCount++;
-  };
-
-  self.witnessPendingStep = function witnessPendingStep() {
-    pendingStepCount++;
-  };
-
-  self.witnessFailedStep = function witnessFailedStep() {
-    failedStepCount++;
-  };
-
-  self.witnessSkippedStep = function witnessSkippedStep() {
-    skippedStepCount++;
-  };
-
-  self.getScenarioCount = function getScenarioCount() {
-    var scenarioCount =
-      self.getPassedScenarioCount()    +
-      self.getUndefinedScenarioCount() +
-      self.getPendingScenarioCount()   +
-      self.getFailedScenarioCount()    +
-      self.getSkippedScenarioCount();
-    return scenarioCount;
-  };
-
-  self.getPassedScenarioCount = function getPassedScenarioCount() {
-    return passedScenarioCount;
-  };
-
-  self.getUndefinedScenarioCount = function getUndefinedScenarioCount() {
-    return undefinedScenarioCount;
-  };
-
-  self.getPendingScenarioCount = function getPendingScenarioCount() {
-    return pendingScenarioCount;
-  };
-
-  self.getFailedScenarioCount = function getFailedScenarioCount() {
-    return failedScenarioCount;
-  };
-
-  self.getSkippedScenarioCount = function getSkippedScenarioCount() {
-    return skippedScenarioCount;
-  };
-
-  self.getStepCount = function getStepCount() {
-    var stepCount =
-      self.getPassedStepCount()    +
-      self.getUndefinedStepCount() +
-      self.getSkippedStepCount()   +
-      self.getPendingStepCount()   +
-      self.getFailedStepCount();
-    return stepCount;
-  };
-
-  self.getPassedStepCount = function getPassedStepCount() {
-    return passedStepCount;
-  };
-
-  self.getPendingStepCount = function getPendingStepCount() {
-    return pendingStepCount;
-  };
-
-  self.getFailedStepCount = function getFailedStepCount() {
-    return failedStepCount;
-  };
-
-  self.getSkippedStepCount = function getSkippedStepCount() {
-    return skippedStepCount;
-  };
-
-  self.getUndefinedStepCount = function getUndefinedStepCount() {
-    return undefinedStepCount;
-  };
-
-  self.witnessedAnyFailedStep = function witnessedAnyFailedStep() {
-    return failedStepCount > 0;
-  };
-
-  self.witnessedAnyUndefinedStep = function witnessedAnyUndefinedStep() {
-    return undefinedStepCount > 0;
+  self.getStepCounts = function getStepCounts() {
+    return _.clone(stepCounts);
   };
 
   self.getDuration = function getDuration() {
@@ -2192,24 +2009,28 @@ function StatsJournal(options) {
   return self;
 }
 
-StatsJournal.EVENT_HANDLER_NAME_PREFIX = 'handle';
-StatsJournal.EVENT_HANDLER_NAME_SUFFIX = 'Event';
-
 module.exports = StatsJournal;
 
-},{"../../cucumber":1}],34:[function(require,module,exports){
+},{"../../cucumber":1,"underscore":290}],34:[function(require,module,exports){
 (function (process){
 function SummaryFormatter(options) {
   var Cucumber = require('../../cucumber');
   var Duration = require('duration');
   var path     = require('path');
-
+  var _        = require('underscore');
 
   var failedScenarioLogBuffer = '';
   var undefinedStepLogBuffer  = '';
   var failedStepResults       = Cucumber.Type.Collection();
   var statsJournal            = Cucumber.Listener.StatsJournal();
-  var colors                  = Cucumber.Util.Colors;
+  var colors                  = Cucumber.Util.Colors(options.useColors);
+  var statusReportOrder = [
+    Cucumber.Status.FAILED,
+    Cucumber.Status.UNDEFINED,
+    Cucumber.Status.PENDING,
+    Cucumber.Status.SKIPPED,
+    Cucumber.Status.PASSED
+  ];
 
   var self = Cucumber.Listener.Formatter(options);
 
@@ -2222,9 +2043,10 @@ function SummaryFormatter(options) {
 
   self.handleStepResultEvent = function handleStepResult(event, callback) {
     var stepResult = event.getPayloadItem('stepResult');
-    if (stepResult.isUndefined()) {
+    var status = stepResult.getStatus();
+    if (status === Cucumber.Status.UNDEFINED) {
       self.handleUndefinedStepResult(stepResult);
-    } else if (stepResult.isFailed()) {
+    } else if (status === Cucumber.Status.FAILED) {
       self.handleFailedStepResult(stepResult);
     }
     callback();
@@ -2249,7 +2071,7 @@ function SummaryFormatter(options) {
 
   self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
     self.logSummary();
-    callback();
+    self.finish(callback);
   };
 
   self.storeFailedStepResult = function storeFailedStepResult(failedStepResult) {
@@ -2264,14 +2086,9 @@ function SummaryFormatter(options) {
   };
 
   self.storeUndefinedStepResult = function storeUndefinedStepResult(step) {
-    var snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step, self.getStepDefinitionSyntax());
+    var snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step, options.snippetSyntax);
     var snippet        = snippetBuilder.buildSnippet();
     self.appendStringToUndefinedStepLogBuffer(snippet);
-  };
-
-  self.getStepDefinitionSyntax = function getStepDefinitionSyntax() {
-    var syntax = options.coffeeScriptSnippets ? 'CoffeeScript' : 'JavaScript';
-    return new Cucumber.SupportCode.StepDefinitionSnippetBuilderSyntax[syntax]();
   };
 
   self.appendStringToFailedScenarioLogBuffer = function appendStringToFailedScenarioLogBuffer(string) {
@@ -2292,12 +2109,16 @@ function SummaryFormatter(options) {
   };
 
   self.logSummary = function logSummary() {
-    if (statsJournal.witnessedAnyFailedStep())
-      self.logFailedStepResults();
+    if (failedScenarioLogBuffer) {
+      if (!options.hideFailedStepResults) {
+        self.logFailedStepResults();
+      }
+      self.logFailedScenarios();
+    }
     self.logScenariosSummary();
     self.logStepsSummary();
     self.logDuration();
-    if (statsJournal.witnessedAnyUndefinedStep())
+    if (undefinedStepLogBuffer)
       self.logUndefinedStepSnippets();
   };
 
@@ -2306,6 +2127,9 @@ function SummaryFormatter(options) {
     failedStepResults.forEach(function (stepResult) {
       self.logFailedStepResult(stepResult);
     });
+  };
+
+  self.logFailedScenarios = function logFailedScenarios() {
     self.log('Failing scenarios:\n');
     var failedScenarios = self.getFailedScenarioLogBuffer();
     self.log(failedScenarios);
@@ -2320,55 +2144,11 @@ function SummaryFormatter(options) {
   };
 
   self.logScenariosSummary = function logScenariosSummary() {
-    var scenarioCount          = statsJournal.getScenarioCount();
-    var passedScenarioCount    = statsJournal.getPassedScenarioCount();
-    var undefinedScenarioCount = statsJournal.getUndefinedScenarioCount();
-    var pendingScenarioCount   = statsJournal.getPendingScenarioCount();
-    var failedScenarioCount    = statsJournal.getFailedScenarioCount();
-    var skippedScenarioCount   = statsJournal.getSkippedScenarioCount();
-    var details                = [];
-
-    self.log(scenarioCount + ' scenario' + (scenarioCount !== 1 ? 's' : ''));
-    if (scenarioCount > 0 ) {
-      if (failedScenarioCount > 0)
-        details.push(colors.failed(failedScenarioCount + ' failed'));
-      if (undefinedScenarioCount > 0)
-        details.push(colors.undefined(undefinedScenarioCount + ' undefined'));
-      if (pendingScenarioCount > 0)
-        details.push(colors.pending(pendingScenarioCount + ' pending'));
-      if (skippedScenarioCount > 0)
-        details.push(colors.skipped(skippedScenarioCount + ' skipped'));
-      if (passedScenarioCount > 0)
-        details.push(colors.passed(passedScenarioCount + ' passed'));
-      self.log(' (' + details.join(', ') + ')');
-    }
-    self.log('\n');
+    self.logCountSummary('scenario', statsJournal.getScenarioCounts());
   };
 
   self.logStepsSummary = function logStepsSummary() {
-    var stepCount          = statsJournal.getStepCount();
-    var passedStepCount    = statsJournal.getPassedStepCount();
-    var undefinedStepCount = statsJournal.getUndefinedStepCount();
-    var skippedStepCount   = statsJournal.getSkippedStepCount();
-    var pendingStepCount   = statsJournal.getPendingStepCount();
-    var failedStepCount    = statsJournal.getFailedStepCount();
-    var details            = [];
-
-    self.log(stepCount + ' step' + (stepCount !== 1 ? 's' : ''));
-    if (stepCount > 0) {
-      if (failedStepCount > 0)
-        details.push(colors.failed(failedStepCount + ' failed'));
-      if (undefinedStepCount > 0)
-        details.push(colors.undefined(undefinedStepCount + ' undefined'));
-      if (pendingStepCount > 0)
-        details.push(colors.pending(pendingStepCount + ' pending'));
-      if (skippedStepCount > 0)
-        details.push(colors.skipped(skippedStepCount + ' skipped'));
-      if (passedStepCount > 0)
-        details.push(colors.passed(passedStepCount + ' passed'));
-      self.log(' (' + details.join(', ') + ')');
-    }
-    self.log('\n');
+    self.logCountSummary('step', statsJournal.getStepCounts());
   };
 
   self.logDuration = function logDuration() {
@@ -2391,6 +2171,23 @@ function SummaryFormatter(options) {
     }
   };
 
+  self.logCountSummary = function logCountSummary (type, counts) {
+    var total = _.reduce(counts, function(memo, value){
+      return memo + value;
+    });
+
+    self.log(total + ' ' + type + (total !== 1 ? 's' : ''));
+    if (total > 0) {
+      var details = [];
+      statusReportOrder.forEach(function (status) {
+        if (counts[status] > 0)
+          details.push(colors[status](counts[status] + ' ' + status));
+      });
+      self.log(' (' + details.join(', ') + ')');
+    }
+    self.log('\n');
+  };
+
   return self;
 }
 
@@ -2398,7 +2195,7 @@ module.exports = SummaryFormatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":79,"duration":132,"path":78}],35:[function(require,module,exports){
+},{"../../cucumber":1,"_process":75,"duration":128,"path":74,"underscore":290}],35:[function(require,module,exports){
 function Parser(featureSources, astFilter) {
   var GherkinLexer = require('./gherkin_lexer');
   var Cucumber     = require('../cucumber');
@@ -2528,16 +2325,16 @@ function Runtime(configuration) {
     start: function start(callback) {
       if (typeof(callback) !== 'function')
         throw new Error(Runtime.START_MISSING_CALLBACK_ERROR);
-      var isStrictRequested;
-      try {
-        isStrictRequested    = configuration.isStrictRequested();
-      } catch(e) {
-        isStrictRequested    = false;
-      }
-      var isDryRunRequested  = configuration.isDryRunRequested && configuration.isDryRunRequested();
-      var features           = self.getFeatures();
+
+      var features = self.getFeatures();
       var supportCodeLibrary = self.getSupportCodeLibrary();
-      var astTreeWalker      = Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, isStrictRequested, isDryRunRequested);
+      var options = {
+        dryRun: configuration.isDryRunRequested && configuration.isDryRunRequested(),
+        failFast: configuration.isFailFastRequested && configuration.isFailFastRequested(),
+        strict: configuration.isStrictRequested && configuration.isStrictRequested()
+      };
+
+      var astTreeWalker = Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, options);
 
       if (configuration.shouldFilterStackTraces())
         Runtime.StackTraceFilter.filter();
@@ -2570,21 +2367,17 @@ function Runtime(configuration) {
 
 Runtime.START_MISSING_CALLBACK_ERROR = 'Cucumber.Runtime.start() expects a callback';
 Runtime.AstTreeWalker                = require('./runtime/ast_tree_walker');
-Runtime.StepResult                   = require('./runtime/step_result');
-Runtime.SuccessfulStepResult         = require('./runtime/successful_step_result');
-Runtime.PendingStepResult            = require('./runtime/pending_step_result');
-Runtime.FailedStepResult             = require('./runtime/failed_step_result');
-Runtime.SkippedStepResult            = require('./runtime/skipped_step_result');
-Runtime.UndefinedStepResult          = require('./runtime/undefined_step_result');
 Runtime.Attachment                   = require('./runtime/attachment');
+Runtime.ScenarioResult               = require('./runtime/scenario_result');
 Runtime.StackTraceFilter             = require('./runtime/stack_trace_filter');
+Runtime.StepResult                   = require('./runtime/step_result');
 
 module.exports = Runtime;
 
-},{"../cucumber":1,"./runtime/ast_tree_walker":37,"./runtime/attachment":39,"./runtime/failed_step_result":40,"./runtime/pending_step_result":41,"./runtime/skipped_step_result":42,"./runtime/stack_trace_filter":43,"./runtime/step_result":44,"./runtime/successful_step_result":45,"./runtime/undefined_step_result":46}],37:[function(require,module,exports){
+},{"../cucumber":1,"./runtime/ast_tree_walker":37,"./runtime/attachment":39,"./runtime/scenario_result":40,"./runtime/stack_trace_filter":41,"./runtime/step_result":42}],37:[function(require,module,exports){
 var domain = require('domain');
 
-function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryRun) {
+function AstTreeWalker(features, supportCodeLibrary, listeners, options) {
   var Cucumber = require('../../cucumber');
 
   var world;
@@ -2593,7 +2386,7 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
   var beforeSteps = Cucumber.Type.Collection();
   var afterSteps = Cucumber.Type.Collection();
   var attachments = Cucumber.Type.Collection();
-  var apiScenario, scenarioSuccessful, scenarioFailed, scenarioPending, scenarioUndefined, scenarioSkipped,scenarioFailureException;
+  var apiScenario, scenarioResult;
   var walkDomain = domain.create();
   walkDomain.id = 'domain-' + Date.now();
 
@@ -2620,6 +2413,9 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
     },
 
     visitFeature: function visitFeature(feature, callback) {
+      if (!allFeaturesSucceeded && options.failFast) {
+        return callback();
+      }
       var payload = { feature: feature };
       var event   = AstTreeWalker.Event(AstTreeWalker.FEATURE_EVENT_NAME, payload);
       self.broadcastEventAroundUserFunction(
@@ -2636,6 +2432,9 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
  	  },
 
     visitScenario: function visitScenario(scenario, callback) {
+      if (!allFeaturesSucceeded && options.failFast) {
+        return callback();
+      }
       supportCodeLibrary.instantiateNewWorld(function (world) {
         self.setWorld(world);
         self.witnessNewScenario(scenario);
@@ -2717,10 +2516,11 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
     },
 
     visitStepResult: function visitStepResult(stepResult, callback) {
-      if (stepResult.isFailed())
-        self.witnessFailedStep(stepResult.getFailureException());
-      else if (stepResult.isPending())
-        self.witnessPendingStep();
+      scenarioResult.witnessStepResult(stepResult);
+      var status = stepResult.getStatus();
+      if (status === Cucumber.Status.FAILED || (options.strict && (status === Cucumber.Status.PENDING))) {
+        allFeaturesSucceeded = false;
+      }
       var payload = { stepResult: stepResult };
       var event   = AstTreeWalker.Event(AstTreeWalker.STEP_RESULT_EVENT_NAME, payload);
       self.broadcastEvent(event, callback);
@@ -2793,28 +2593,12 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
       return allFeaturesSucceeded;
     },
 
-    isScenarioSuccessful: function isScenarioSuccessful() {
-      return scenarioSuccessful;
+    getScenarioStatus: function getScenarioStatus() {
+      return scenarioResult.getStatus();
     },
 
-    isScenarioFailed: function isScenarioFailed() {
-      return scenarioFailed;
-    },
-
-    isScenarioPending: function isScenarioPending() {
-      return scenarioPending;
-    },
-
-    isScenarioUndefined: function isScenarioUndefined() {
-      return scenarioUndefined;
-    },
-
-    isScenarioSkipped: function isScenarioSkipped() {
-      return scenarioSkipped;
-    },
-
-    getFailureException: function getFailureException() {
-      return scenarioFailureException;
+    getScenarioFailureException: function getScenarioFailureException() {
+      return scenarioResult.getFailureException();
     },
 
     attach: function attach(data, mimeType) {
@@ -2833,51 +2617,26 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
       attachments.clear();
     },
 
-    witnessFailedStep: function witnessFailedStep(failureException) {
-      allFeaturesSucceeded = false;
-      scenarioSuccessful  = false;
-      scenarioFailed      = true;
-      scenarioFailureException = failureException;
-    },
-
-    witnessPendingStep: function witnessPendingStep() {
-      if (strictMode) {
-        allFeaturesSucceeded = false;
-      }
-      scenarioSuccessful = false;
-      scenarioPending    = true;
-    },
-
     witnessUndefinedStep: function witnessUndefinedStep() {
-      if (strictMode) {
+      if (options.strict) {
         allFeaturesSucceeded = false;
       }
-      scenarioSuccessful = false;
-      scenarioUndefined  = true;
+      scenarioResult.witnessStepStatus(Cucumber.Status.UNDEFINED);
     },
 
     witnessSkippedStep: function witnessSkippedStep() {
-      if (scenarioSuccessful) {
-        scenarioSuccessful = false;
-        scenarioSkipped    = true;
-      }
+      scenarioResult.witnessStepStatus(Cucumber.Status.SKIPPED);
     },
 
     witnessNewScenario: function witnessNewScenario(scenario) {
-      apiScenario        = Cucumber.Api.Scenario(self, scenario);
-      scenarioSuccessful = true;
-      scenarioFailed     = false;
-      scenarioPending    = false;
-      scenarioUndefined  = false;
-      scenarioSkipped    = false;
-
-      scenarioFailureException = null;
+      apiScenario    = Cucumber.Api.Scenario(self, scenario);
+      scenarioResult = Cucumber.Runtime.ScenarioResult();
       beforeSteps.clear();
       afterSteps.clear();
     },
 
     processDryRunStep: function processDryRunStep(step, callback) {
-      if (strictMode && self.isStepUndefined(step)) {
+      if (options.strict && self.isStepUndefined(step)) {
         self.witnessUndefinedStep();
         self.skipUndefinedStep(step, callback);
       } else {
@@ -2895,11 +2654,11 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
     },
 
     isSkippingSteps: function isSkippingSteps() {
-      return !scenarioSuccessful;
+      return self.getScenarioStatus() !== Cucumber.Status.PASSED;
     },
 
     processStep: function processStep(step, callback) {
-      if (dryRun) {
+      if (options.dryRun) {
         self.processDryRunStep(step, callback);
       } else if (self.isStepUndefined(step)) {
         self.witnessUndefinedStep();
@@ -2916,14 +2675,14 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, strictMode, dryR
     },
 
     skipStep: function skipStep(step, callback) {
-      var skippedStepResult = Cucumber.Runtime.SkippedStepResult({step: step});
+      var skippedStepResult = Cucumber.Runtime.StepResult({step: step, status: Cucumber.Status.SKIPPED});
       var payload           = { stepResult: skippedStepResult };
       var event             = AstTreeWalker.Event(AstTreeWalker.STEP_RESULT_EVENT_NAME, payload);
       self.broadcastEvent(event, callback);
     },
 
     skipUndefinedStep: function skipUndefinedStep(step, callback) {
-      var undefinedStepResult = Cucumber.Runtime.UndefinedStepResult({step: step});
+      var undefinedStepResult = Cucumber.Runtime.StepResult({step: step, status: Cucumber.Status.UNDEFINED});
       var payload = { stepResult: undefinedStepResult };
       var event   = AstTreeWalker.Event(AstTreeWalker.STEP_RESULT_EVENT_NAME, payload);
       self.broadcastEvent(event, callback);
@@ -2950,7 +2709,7 @@ AstTreeWalker.Event                               = require('./ast_tree_walker/e
 
 module.exports = AstTreeWalker;
 
-},{"../../cucumber":1,"./ast_tree_walker/event":38,"domain":73}],38:[function(require,module,exports){
+},{"../../cucumber":1,"./ast_tree_walker/event":38,"domain":69}],38:[function(require,module,exports){
 function Event(name, payload) {
   var AstTreeWalker = require('../ast_tree_walker');
 
@@ -3009,49 +2768,56 @@ function Attachment(payload) {
 module.exports = Attachment;
 
 },{}],40:[function(require,module,exports){
-function FailedStepResult(payload) {
+function ScenarioResult() {
   var Cucumber = require('../../cucumber');
 
-  var self = Cucumber.Runtime.StepResult(payload);
+  var status = Cucumber.Status.PASSED;
+  var failureException = null;
 
-  self.isFailed = function isFailed() { return true; };
+  var shouldUpdateStatus = function shouldUpdateStatus(stepStatus) {
+    switch (stepStatus) {
+      case Cucumber.Status.FAILED:
+        return true;
+      case Cucumber.Status.PENDING:
+      case Cucumber.Status.SKIPPED:
+        return status === Cucumber.Status.PASSED;
+      case Cucumber.Status.UNDEFINED:
+        return status !== Cucumber.Status.FAILED;
+      default:
+        return false;
+    }
+  };
 
-  self.getFailureException = function getFailureException() {
-    return payload.failureException;
+  var self = {
+    getFailureException: function getFailureException() {
+      return failureException;
+    },
+
+    getStatus: function getStatus() {
+      return status;
+    },
+
+    witnessStepResult: function witnessStepResult(stepResult) {
+      var stepStatus = stepResult.getStatus();
+      self.witnessStepStatus(stepStatus);
+      if (stepStatus === Cucumber.Status.FAILED) {
+        failureException = stepResult.getFailureException();
+      }
+    },
+
+    witnessStepStatus: function witnessStepWithStatis(stepStatus) {
+      if (shouldUpdateStatus(stepStatus)) {
+        status = stepStatus;
+      }
+    }
   };
 
   return self;
 }
 
-module.exports = FailedStepResult;
+module.exports = ScenarioResult;
 
 },{"../../cucumber":1}],41:[function(require,module,exports){
-function PendingStepResult(payload) {
-  var Cucumber = require('../../cucumber');
-
-  var self = Cucumber.Runtime.StepResult(payload);
-
-  self.isPending = function isPending() { return true; };
-
-  return self;
-}
-
-module.exports = PendingStepResult;
-
-},{"../../cucumber":1}],42:[function(require,module,exports){
-function SkippedStepResult(payload) {
-  var Cucumber = require('../../cucumber');
-
-  var self = Cucumber.Runtime.StepResult(payload);
-
-  self.isSkipped = function isSkipped() { return true; };
-
-  return self;
-}
-
-module.exports = SkippedStepResult;
-
-},{"../../cucumber":1}],43:[function(require,module,exports){
 (function (__dirname){
 var path = require('path');
 var chain = require('stack-chain');
@@ -3079,29 +2845,31 @@ module.exports = {
 
 }).call(this,"/lib/cucumber/runtime")
 
-},{"path":78,"stack-chain":224}],44:[function(require,module,exports){
+},{"path":74,"stack-chain":220}],42:[function(require,module,exports){
 function StepResult(payload) {
   var self = {
-    isFailed:     function isFailed()     { return false; },
-    isPending:    function isPending()    { return false; },
-    isSkipped:    function isSkipped()    { return false; },
-    isSuccessful: function isSuccessful() { return false; },
-    isUndefined:  function isUndefined()  { return false; },
-
-    getStep: function getStep() {
-      return payload.step;
+    getAttachments: function getAttachments() {
+      return payload.attachments;
     },
 
     getDuration: function getDuration() {
       return payload.duration;
     },
 
-    hasAttachments: function hasAttachments() {
-      return payload.attachments.length() > 0;
+    getFailureException: function getFailureException() {
+      return payload.failureException;
     },
 
-    getAttachments: function getAttachments() {
-      return payload.attachments;
+    getStep: function getStep() {
+      return payload.step;
+    },
+
+    getStatus: function getStatus() {
+      return payload.status;
+    },
+
+    hasAttachments: function hasAttachments() {
+      return payload.attachments.length() > 0;
     }
   };
 
@@ -3110,43 +2878,27 @@ function StepResult(payload) {
 
 module.exports = StepResult;
 
-},{}],45:[function(require,module,exports){
-function SuccessfulStepResult(payload) {
-  var Cucumber = require('../../cucumber');
+},{}],43:[function(require,module,exports){
+var Status = {};
 
-  var self = Cucumber.Runtime.StepResult(payload);
+Status.FAILED = 'failed';
+Status.PENDING = 'pending';
+Status.PASSED = 'passed';
+Status.SKIPPED = 'skipped';
+Status.UNDEFINED = 'undefined';
 
-  self.isSuccessful = function isSuccessful() { return true; };
+module.exports = Status;
 
-  return self;
-}
+},{}],44:[function(require,module,exports){
+var SupportCode                          = {};
+SupportCode.Hook                         = require('./support_code/hook');
+SupportCode.AroundHook                   = require('./support_code/around_hook');
+SupportCode.Library                      = require('./support_code/library');
+SupportCode.StepDefinition               = require('./support_code/step_definition');
+SupportCode.StepDefinitionSnippetBuilder = require('./support_code/step_definition_snippet_builder');
+module.exports                           = SupportCode;
 
-module.exports = SuccessfulStepResult;
-
-},{"../../cucumber":1}],46:[function(require,module,exports){
-function UndefinedStepResult(payload) {
-  var Cucumber = require('../../cucumber');
-
-  var self = Cucumber.Runtime.StepResult(payload);
-
-  self.isUndefined = function isUndefined() { return true; };
-
-  return self;
-}
-
-module.exports = UndefinedStepResult;
-
-},{"../../cucumber":1}],47:[function(require,module,exports){
-var SupportCode                                = {};
-SupportCode.Hook                               = require('./support_code/hook');
-SupportCode.AroundHook                         = require('./support_code/around_hook');
-SupportCode.Library                            = require('./support_code/library');
-SupportCode.StepDefinition                     = require('./support_code/step_definition');
-SupportCode.StepDefinitionSnippetBuilder       = require('./support_code/step_definition_snippet_builder');
-SupportCode.StepDefinitionSnippetBuilderSyntax = require('./support_code/step_definition_snippet_builder_syntax');
-SupportCode.WorldConstructor                   = require('./support_code/world_constructor');
-module.exports                                 = SupportCode;
-},{"./support_code/around_hook":48,"./support_code/hook":49,"./support_code/library":50,"./support_code/step_definition":51,"./support_code/step_definition_snippet_builder":52,"./support_code/step_definition_snippet_builder_syntax":53,"./support_code/world_constructor":54}],48:[function(require,module,exports){
+},{"./support_code/around_hook":45,"./support_code/hook":46,"./support_code/library":47,"./support_code/step_definition":48,"./support_code/step_definition_snippet_builder":49}],45:[function(require,module,exports){
 function AroundHook(code, options) {
   var Cucumber = require('../../cucumber');
   var self = Cucumber.SupportCode.Hook(code, options);
@@ -3174,7 +2926,7 @@ function AroundHook(code, options) {
 
 module.exports = AroundHook;
 
-},{"../../cucumber":1}],49:[function(require,module,exports){
+},{"../../cucumber":1}],46:[function(require,module,exports){
 function Hook(code, options) {
   var _ = require('underscore');
 
@@ -3209,6 +2961,24 @@ function Hook(code, options) {
     return astFilter;
   };
 
+  self.validCodeLengths = function validCodeLengths (parameters) {
+    var valid = [parameters.length - 1, parameters.length];
+    if (!options.noScenario) {
+      valid.unshift(parameters.length - 2);
+    }
+    return valid;
+  };
+
+  self.invalidCodeLengthMessage = function invalidCodeLengthMessage() {
+    var syncOrPromiseLength = options.noScenario ? '0' : '0 or 1';
+    var callbackLength = options.noScenario ? '1' : '2';
+    return self.buildInvalidCodeLengthMessage(syncOrPromiseLength, callbackLength);
+  };
+
+  self.getType = function getType () {
+    return 'hook';
+  };
+
   return self;
 }
 
@@ -3216,8 +2986,7 @@ Hook.EMPTY_PATTERN = '';
 
 module.exports = Hook;
 
-},{"../../cucumber":1,"underscore":294}],50:[function(require,module,exports){
-(function (process){
+},{"../../cucumber":1,"underscore":290}],47:[function(require,module,exports){
 function Library(supportCodeDefinition) {
   var Cucumber = require('../../cucumber');
 
@@ -3226,7 +2995,7 @@ function Library(supportCodeDefinition) {
   var aroundHooks      = Cucumber.Type.Collection();
   var beforeHooks      = Cucumber.Type.Collection();
   var afterHooks       = Cucumber.Type.Collection();
-  var WorldConstructor = Cucumber.SupportCode.WorldConstructor();
+  var World            = function World() {};
   var defaultTimeout   = 5 * 1000;
 
   function appendEventHandlers(supportCodeHelper, library) {
@@ -3331,11 +3100,8 @@ function Library(supportCodeDefinition) {
     },
 
     instantiateNewWorld: function instantiateNewWorld(callback) {
-      var world = new WorldConstructor(function (explicitWorld) {
-        process.nextTick(function () { // release the constructor
-          callback(explicitWorld || world);
-        });
-      });
+      var world = new World();
+      callback(world);
     },
 
     getDefaultTimeout: function getDefaultTimeout() {
@@ -3358,21 +3124,19 @@ function Library(supportCodeDefinition) {
     registerListener  : self.registerListener,
     registerHandler   : self.registerHandler,
     setDefaultTimeout : self.setDefaultTimeout,
-    World             : WorldConstructor
+    World             : World
   };
 
   appendEventHandlers(supportCodeHelper, self);
   supportCodeDefinition.call(supportCodeHelper);
-  WorldConstructor = supportCodeHelper.World;
+  World = supportCodeHelper.World;
 
   return self;
 }
 
 module.exports = Library;
 
-}).call(this,require('_process'))
-
-},{"../../cucumber":1,"_process":79}],51:[function(require,module,exports){
+},{"../../cucumber":1}],48:[function(require,module,exports){
 (function (process){
 function StepDefinition(pattern, options, code) {
   var Cucumber = require('../../cucumber');
@@ -3439,29 +3203,27 @@ function StepDefinition(pattern, options, code) {
         var stepResultData = {
           step: step,
           duration: durationInNanoseconds(start),
-          attachments: scenario.getAttachments()
+          attachments: scenario.getAttachments(),
+          status: (error ? Cucumber.Status.FAILED : Cucumber.Status.PASSED)
         };
 
-        var stepResult;
         if (error) {
           stepResultData.failureException = error || new Error(StepDefinition.UNKNOWN_STEP_FAILURE_MESSAGE);
-          stepResult = Cucumber.Runtime.FailedStepResult(stepResultData);
-        } else {
-          stepResult = Cucumber.Runtime.SuccessfulStepResult(stepResultData);
         }
 
+        var stepResult = Cucumber.Runtime.StepResult(stepResultData);
         finish(stepResult);
       });
 
       codeCallback.pending = function pending(reason) {
         Cucumber.Debug.notice('stepdef calling back (via callback.pending())\n', 'Cucumber.SupportCode.StepDefinition', 5);
-        var stepResultData = {
+        var pendingStepResult = Cucumber.Runtime.StepResult({
           step: step,
           pendingReason: reason,
-          attachments: scenario.getAttachments()
-        };
-        var stepResult = Cucumber.Runtime.PendingStepResult(stepResultData);
-        finish(stepResult);
+          attachments: scenario.getAttachments(),
+          status: Cucumber.Status.PENDING
+        });
+        finish(pendingStepResult);
       };
 
       var parameters      = self.buildInvocationParameters(step, scenario, codeCallback);
@@ -3482,19 +3244,28 @@ function StepDefinition(pattern, options, code) {
 
       Cucumber.Util.Exception.registerUncaughtExceptionHandler(handleException, stepDomain);
 
+      var validCodeLengths = self.validCodeLengths(parameters);
+      if (validCodeLengths.indexOf(code.length) === -1) {
+        return codeCallback(new Error(self.invalidCodeLengthMessage(parameters)));
+      }
+
+      initializeTimeout();
+
+      var result;
       try {
-        var result = code.apply(world, parameters);
-        var callbackOmitted = code.length < parameters.length;
-        if (result && typeof result.then === 'function') {
-          result.then(onPromiseFulfilled, onPromiseRejected);
-          initializeTimeout();
-        } else if (callbackOmitted) {
-          codeCallback();
-        } else {
-          initializeTimeout();
-        }
+        result = code.apply(world, parameters);
       } catch (exception) {
-        handleException(exception);
+        return handleException(exception);
+      }
+
+      var callbackInterface = code.length === parameters.length;
+      var promiseInterface = result && typeof result.then === 'function';
+      if (callbackInterface && promiseInterface) {
+        codeCallback(new Error(self.getType() + ' accepts a callback and returns a promise'));
+      } else if (promiseInterface) {
+        result.then(onPromiseFulfilled, onPromiseRejected);
+      } else if (!callbackInterface) {
+        codeCallback();
       }
     },
 
@@ -3522,6 +3293,24 @@ function StepDefinition(pattern, options, code) {
         codeCallback(exception);
       };
       return exceptionHandler;
+    },
+
+    validCodeLengths: function validCodeLengths (parameters) {
+      return [parameters.length - 1, parameters.length];
+    },
+
+    invalidCodeLengthMessage: function invalidCodeLengthMessage(parameters) {
+      return self.buildInvalidCodeLengthMessage(parameters.length - 1, parameters.length);
+    },
+
+    buildInvalidCodeLengthMessage: function buildInvalidCodeLengthMessage(syncOrPromiseLength, callbackLength) {
+      return self.getType() + ' has ' + code.length + ' arguments' +
+          ', should have ' + syncOrPromiseLength + ' (if synchronous or returning a promise)' +
+          ' or '  + callbackLength + ' (if accepting a callback)';
+    },
+
+    getType: function getType () {
+      return 'step definition';
     }
   };
   return self;
@@ -3541,9 +3330,18 @@ module.exports = StepDefinition;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":79}],52:[function(require,module,exports){
+},{"../../cucumber":1,"_process":75}],49:[function(require,module,exports){
 var _  = require('underscore');
 _.str = require('underscore.string');
+
+var NUMBER_PATTERN        = /\d+/gi;
+var NUMBER_MATCHING_GROUP = '(\\d+)';
+
+var QUOTED_STRING_PATTERN        = /"[^"]*"/gi;
+var QUOTED_STRING_MATCHING_GROUP = '"([^"]*)"';
+
+var OUTLINE_STRING_PATTERN        = /<[^>]*>/gi;
+var OUTLINE_STRING_MATCHING_GROUP = '(.*)';
 
 function StepDefinitionSnippetBuilder(step, syntax) {
   var Cucumber = require('../../cucumber');
@@ -3553,48 +3351,35 @@ function StepDefinitionSnippetBuilder(step, syntax) {
       var functionName = self.buildStepDefinitionFunctionName();
       var pattern      = self.buildStepDefinitionPattern();
       var parameters   = self.buildStepDefinitionParameters();
-      var snippet =
-          syntax.getStepDefinitionStart()  +
-          functionName                     +
-          syntax.getStepDefinitionInner1() +
-          pattern                          +
-          syntax.getStepDefinitionInner2() +
-          parameters                       +
-          syntax.getStepDefinitionEnd();
-      return snippet;
+      var comment      = 'Write code here that turns the phrase above into concrete actions';
+      return syntax.build(functionName, pattern, parameters, comment);
     },
 
     buildStepDefinitionFunctionName: function buildStepDefinitionFunctionName() {
-      var functionName;
       if (step.isOutcomeStep())
-        functionName = syntax.getOutcomeStepDefinitionFunctionName();
+        return 'Then';
       else if (step.isEventStep())
-        functionName = syntax.getEventStepDefinitionFunctionName();
+        return 'When';
       else
-        functionName = syntax.getContextStepDefinitionFunctionName();
-      return functionName;
+        return 'Given';
     },
 
     buildStepDefinitionPattern: function buildStepDefinitionPattern() {
       var stepName              = step.isOutlineStep() ? step.getOriginalStep().getName() : step.getName();
       var escapedStepName       = Cucumber.Util.RegExp.escapeString(stepName);
       var parameterizedStepName = self.parameterizeStepName(escapedStepName);
-      var pattern               =
-          syntax.getPatternStart() +
-          parameterizedStepName +
-          syntax.getPatternEnd();
+      var pattern               = '/^' + parameterizedStepName + '$/';
       return pattern;
     },
 
     buildStepDefinitionParameters: function buildStepDefinitionParameters() {
       var parameters = self.getStepDefinitionPatternMatchingGroupParameters();
       if (step.hasDocString())
-        parameters = parameters.concat([syntax.getStepDefinitionDocString()]);
+        parameters.push('string');
       else if (step.hasDataTable())
-        parameters = parameters.concat([syntax.getStepDefinitionDataTable()]);
-      var parametersAndCallback = parameters.concat([syntax.getStepDefinitionCallback()]);
-      var parameterString = parametersAndCallback.join(syntax.getFunctionParameterSeparator());
-      return parameterString;
+        parameters.push('table');
+      parameters.push('callback');
+      return parameters;
     },
 
     getStepDefinitionPatternMatchingGroupParameters: function getStepDefinitionPatternMatchingGroupParameters() {
@@ -3605,7 +3390,7 @@ function StepDefinitionSnippetBuilder(step, syntax) {
         parameters.push('arg' + offset);
       });
       var stepName = step.isOutlineStep() ? step.getOriginalStep().getName() : step.getName();
-      var outlineParams = stepName.match(StepDefinitionSnippetBuilder.OUTLINE_STRING_PATTERN);
+      var outlineParams = stepName.match(OUTLINE_STRING_PATTERN);
       function cleanParam(param) {
         return _.str.camelize(param.substr(1,param.length - 2));
       }
@@ -3615,8 +3400,8 @@ function StepDefinitionSnippetBuilder(step, syntax) {
 
     countStepDefinitionPatternMatchingGroups: function countStepDefinitionPatternMatchingGroups() {
       var stepDefinitionPattern    = self.buildStepDefinitionPattern();
-      var numberMatchingGroupCount = Cucumber.Util.String.count(stepDefinitionPattern, syntax.getNumberMatchingGroup());
-      var quotedStringMatchingGroupCount = Cucumber.Util.String.count(stepDefinitionPattern, syntax.getQuotedStringMatchingGroup());
+      var numberMatchingGroupCount = Cucumber.Util.String.count(stepDefinitionPattern, NUMBER_MATCHING_GROUP);
+      var quotedStringMatchingGroupCount = Cucumber.Util.String.count(stepDefinitionPattern, QUOTED_STRING_MATCHING_GROUP);
       var count = numberMatchingGroupCount + quotedStringMatchingGroupCount;
       return count;
     },
@@ -3624,133 +3409,37 @@ function StepDefinitionSnippetBuilder(step, syntax) {
     parameterizeStepName: function parameterizeStepName(stepName) {
       var parameterizedStepName =
           stepName
-          .replace(StepDefinitionSnippetBuilder.NUMBER_PATTERN, syntax.getNumberMatchingGroup())
-          .replace(StepDefinitionSnippetBuilder.QUOTED_STRING_PATTERN, syntax.getQuotedStringMatchingGroup())
-          .replace(StepDefinitionSnippetBuilder.OUTLINE_STRING_PATTERN, syntax.getOutlineExampleMatchingGroup());
+          .replace(NUMBER_PATTERN, NUMBER_MATCHING_GROUP)
+          .replace(QUOTED_STRING_PATTERN, QUOTED_STRING_MATCHING_GROUP)
+          .replace(OUTLINE_STRING_PATTERN, OUTLINE_STRING_MATCHING_GROUP);
       return parameterizedStepName;
     }
   };
   return self;
 }
 
-StepDefinitionSnippetBuilder.NUMBER_PATTERN         = /\d+/gi;
-StepDefinitionSnippetBuilder.QUOTED_STRING_PATTERN  = /"[^"]*"/gi;
-StepDefinitionSnippetBuilder.OUTLINE_STRING_PATTERN = /<[^>]*>/gi;
+StepDefinitionSnippetBuilder.JavaScriptSyntax = require('./step_definition_snippet_builder/javascript_syntax');
 
 module.exports = StepDefinitionSnippetBuilder;
 
-},{"../../cucumber":1,"underscore":294,"underscore.string":249}],53:[function(require,module,exports){
-var _ = require('underscore');
-
-function Syntax() {}
-function JavaScriptSyntax() {}
-function CoffeeScriptSyntax() {}
-
-Syntax.prototype = {
-  getStepDefinitionDocString: function () {
-    return 'string';
-  },
-
-  getStepDefinitionDataTable: function () {
-    return 'table';
-  },
-
-  getStepDefinitionCallback: function () {
-    return 'callback';
-  },
-
-  getPatternStart: function () {
-    return '/^';
-  },
-
-  getPatternEnd: function () {
-    return '$/';
-  },
-
-  getContextStepDefinitionFunctionName: function () {
-    return 'Given';
-  },
-
-  getEventStepDefinitionFunctionName: function () {
-    return 'When';
-  },
-
-  getOutcomeStepDefinitionFunctionName: function () {
-    return 'Then';
-  },
-
-  getNumberMatchingGroup: function () {
-    return '(\\d+)';
-  },
-
-  getQuotedStringMatchingGroup: function () {
-    return '"([^"]*)"';
-  },
-
-  getOutlineExampleMatchingGroup: function () {
-    return '(.*)';
-  },
-
-  getFunctionParameterSeparator: function () {
-    return ', ';
-  },
-
-  getStepDefinitionEndComment: function () {
-    return 'Write code here that turns the phrase above into concrete actions';
-  }
-};
-
-JavaScriptSyntax.prototype = {
-  getStepDefinitionStart: function () {
-    return 'this.';
-  },
-
-  getStepDefinitionInner1: function () {
-    return '(';
-  },
-
-  getStepDefinitionInner2: function () {
-    return ', function (';
-  },
-
-  getStepDefinitionEnd: function () {
-    return ') {\n  // ' + this.getStepDefinitionEndComment() + '\n  callback.pending();\n});\n';
-  },
-};
-_.extend(JavaScriptSyntax.prototype, Syntax.prototype);
-
-CoffeeScriptSyntax.prototype = {
-  getStepDefinitionStart: function () {
-    return '@';
-  },
-
-  getStepDefinitionInner1: function () {
-    return ' ';
-  },
-
-  getStepDefinitionInner2: function () {
-    return ', (';
-  },
-
-  getStepDefinitionEnd: function () {
-    return ') ->\n  # ' + this.getStepDefinitionEndComment() + '\n  callback.pending()\n';
-  }
-};
-_.extend(CoffeeScriptSyntax.prototype, Syntax.prototype);
-
-exports.JavaScript   = JavaScriptSyntax;
-exports.CoffeeScript = CoffeeScriptSyntax;
-
-},{"underscore":294}],54:[function(require,module,exports){
-function WorldConstructor() {
-  return function World(callback) {
-    callback();
+},{"../../cucumber":1,"./step_definition_snippet_builder/javascript_syntax":50,"underscore":290,"underscore.string":245}],50:[function(require,module,exports){
+function JavaScriptSyntax() {
+  return {
+    build: function build (functionName, pattern, parameters, comment) {
+      var callbackName = parameters[parameters.length - 1];
+      var snippet =
+        'this.' + functionName + '(' + pattern + ', function (' + parameters.join(', ') + ') {' + '\n' +
+        '  // ' + comment + '\n' +
+        '  ' + callbackName + '.pending();' + '\n' +
+        '});' + '\n';
+      return snippet;
+    }
   };
 }
 
-module.exports = WorldConstructor;
+module.exports = JavaScriptSyntax;
 
-},{}],55:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 var _ = require('underscore');
 
 function TagGroupParser(tagGroupString) {
@@ -3779,14 +3468,14 @@ TagGroupParser.TAG_SEPARATOR = ',';
 
 module.exports = TagGroupParser;
 
-},{"../cucumber":1,"underscore":294}],56:[function(require,module,exports){
+},{"../cucumber":1,"underscore":290}],52:[function(require,module,exports){
 var Type           = {};
 Type.Collection    = require('./type/collection');
 Type.HashDataTable = require('./type/hash_data_table');
 Type.String        = require('./type/string');
 module.exports     = Type;
 
-},{"./type/collection":57,"./type/hash_data_table":58,"./type/string":59}],57:[function(require,module,exports){
+},{"./type/collection":53,"./type/hash_data_table":54,"./type/string":55}],53:[function(require,module,exports){
 function Collection() {
   var items = [];
 
@@ -3883,7 +3572,7 @@ function Collection() {
 
 module.exports = Collection;
 
-},{}],58:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 function HashDataTable(rawArray) {
   var self = {
     raw: function raw() {
@@ -3926,7 +3615,7 @@ function HashDataTable(rawArray) {
 
 module.exports = HashDataTable;
 
-},{}],59:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 if (!String.prototype.trim) {
   String.prototype.trim = function () {
     return this.replace(/^\s+|\s+$/g,'');
@@ -3935,7 +3624,7 @@ if (!String.prototype.trim) {
 
 module.exports = String;
 
-},{}],60:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var Util       = {};
 Util.Arguments = require('./util/arguments');
 Util.Exception = require('./util/exception');
@@ -3944,31 +3633,32 @@ Util.String    = require('./util/string');
 Util.Colors    = require('./util/colors');
 module.exports = Util;
 
-},{"./util/arguments":61,"./util/colors":62,"./util/exception":63,"./util/reg_exp":64,"./util/string":65}],61:[function(require,module,exports){
+},{"./util/arguments":57,"./util/colors":58,"./util/exception":59,"./util/reg_exp":60,"./util/string":61}],57:[function(require,module,exports){
 function Arguments(argumentsObject) {
   return Array.prototype.slice.call(argumentsObject);
 }
 
 module.exports = Arguments;
 
-},{}],62:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 var colors = require('colors/safe');
 
-colors.enabled = true;
+function Colors (useColors) {
+  colors.enabled = useColors;
+  return {
+    comment: colors.grey,
+    failed: colors.red,
+    passed: colors.green,
+    pending: colors.yellow,
+    skipped: colors.cyan,
+    tag: colors.cyan,
+    undefined: colors.yellow
+  };
+}
 
-colors.setTheme({
-  'comment'   : 'grey',
-  'failed'    : 'red',
-  'passed'    : 'green',
-  'pending'   : 'yellow',
-  'skipped'   : 'cyan',
-  'tag'       : 'cyan',
-  'undefined' : 'yellow'
-});
+module.exports = Colors;
 
-module.exports = colors;
-
-},{"colors/safe":119}],63:[function(require,module,exports){
+},{"colors/safe":115}],59:[function(require,module,exports){
 (function (process){
 /* jshint -W117 */
 var Debug = require('../debug');
@@ -4001,7 +3691,7 @@ module.exports = Exception;
 
 }).call(this,require('_process'))
 
-},{"../debug":24,"_process":79}],64:[function(require,module,exports){
+},{"../debug":24,"_process":75}],60:[function(require,module,exports){
 var _RegExp = {
   escapeString: function escapeString(string) {
     var escaped = string.replace(_RegExp.ESCAPE_PATTERN, _RegExp.ESCAPE_REPLACEMENT);
@@ -4013,7 +3703,7 @@ _RegExp.ESCAPE_PATTERN     = /[-[\]{}()*+?.\\^$|#\n\/]/g;
 _RegExp.ESCAPE_REPLACEMENT = '\\$&';
 module.exports = _RegExp;
 
-},{}],65:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var _String = {
   count: function count(hayStack, needle) {
     var splitHayStack = hayStack.split(needle);
@@ -4022,7 +3712,7 @@ var _String = {
 };
 module.exports = _String;
 
-},{}],66:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 function VolatileConfiguration(features, supportCodeInitializer, options) {
   var Cucumber = require('../cucumber');
   var supportCodeLibrary = Cucumber.SupportCode.Library(supportCodeInitializer);
@@ -4033,7 +3723,7 @@ function VolatileConfiguration(features, supportCodeInitializer, options) {
   var backtrace = !!options.backtrace;
 
   var self = {
-    isStrictMode: function isStrictMode() {
+    isStrictRequested: function isStrictRequested() {
       return strictMode;
     },
 
@@ -4083,11 +3773,11 @@ VolatileConfiguration.FEATURE_SOURCE_NAME = '(feature)';
 
 module.exports = VolatileConfiguration;
 
-},{"../cucumber":1}],67:[function(require,module,exports){
+},{"../cucumber":1}],63:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],68:[function(require,module,exports){
+},{"dup":23}],64:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],69:[function(require,module,exports){
+},{"dup":23}],65:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5636,7 +5326,7 @@ function blitBuffer (src, dst, offset, length) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":70,"ieee754":71,"is-array":72}],70:[function(require,module,exports){
+},{"base64-js":66,"ieee754":67,"is-array":68}],66:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -5762,7 +5452,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],71:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -5848,7 +5538,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],72:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 
 /**
  * isArray
@@ -5883,7 +5573,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],73:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5951,7 +5641,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":74}],74:[function(require,module,exports){
+},{"events":70}],70:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6254,7 +5944,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],75:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -6279,7 +5969,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],76:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /**
  * Determine if an object is Buffer
  *
@@ -6298,12 +5988,12 @@ module.exports = function (obj) {
     ))
 }
 
-},{}],77:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],78:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6532,7 +6222,7 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this,require('_process'))
 
-},{"_process":79}],79:[function(require,module,exports){
+},{"_process":75}],75:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -6625,7 +6315,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],80:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.3.2 by @mathias */
 ;(function(root) {
@@ -7160,7 +6850,7 @@ process.umask = function() { return 0; };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],81:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -7246,7 +6936,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],82:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -7333,16 +7023,16 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],83:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":81,"./encode":82}],84:[function(require,module,exports){
+},{"./decode":77,"./encode":78}],80:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":85}],85:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":81}],81:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -7426,7 +7116,7 @@ function forEach (xs, f) {
   }
 }
 
-},{"./_stream_readable":87,"./_stream_writable":89,"core-util-is":90,"inherits":75,"process-nextick-args":91}],86:[function(require,module,exports){
+},{"./_stream_readable":83,"./_stream_writable":85,"core-util-is":86,"inherits":71,"process-nextick-args":87}],82:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -7455,7 +7145,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":88,"core-util-is":90,"inherits":75}],87:[function(require,module,exports){
+},{"./_stream_transform":84,"core-util-is":86,"inherits":71}],83:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8419,7 +8109,7 @@ function indexOf (xs, x) {
 
 }).call(this,require('_process'))
 
-},{"./_stream_duplex":85,"_process":79,"buffer":69,"core-util-is":90,"events":74,"inherits":75,"isarray":77,"process-nextick-args":91,"string_decoder/":107,"util":68}],88:[function(require,module,exports){
+},{"./_stream_duplex":81,"_process":75,"buffer":65,"core-util-is":86,"events":70,"inherits":71,"isarray":73,"process-nextick-args":87,"string_decoder/":103,"util":64}],84:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -8618,7 +8308,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":85,"core-util-is":90,"inherits":75}],89:[function(require,module,exports){
+},{"./_stream_duplex":81,"core-util-is":86,"inherits":71}],85:[function(require,module,exports){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, cb), and it'll handle all
 // the drain event emission and buffering.
@@ -9140,7 +8830,7 @@ function endWritable(stream, state, cb) {
   state.ended = true;
 }
 
-},{"./_stream_duplex":85,"buffer":69,"core-util-is":90,"events":74,"inherits":75,"process-nextick-args":91,"util-deprecate":92}],90:[function(require,module,exports){
+},{"./_stream_duplex":81,"buffer":65,"core-util-is":86,"events":70,"inherits":71,"process-nextick-args":87,"util-deprecate":88}],86:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9251,7 +8941,7 @@ function objectToString(o) {
 }
 }).call(this,{"isBuffer":require("/Users/jbpros/Projects/cucumber-js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js")})
 
-},{"/Users/jbpros/Projects/cucumber-js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":76}],91:[function(require,module,exports){
+},{"/Users/jbpros/Projects/cucumber-js/node_modules/browserify/node_modules/insert-module-globals/node_modules/is-buffer/index.js":72}],87:[function(require,module,exports){
 (function (process){
 'use strict';
 module.exports = nextTick;
@@ -9269,7 +8959,7 @@ function nextTick(fn) {
 
 }).call(this,require('_process'))
 
-},{"_process":79}],92:[function(require,module,exports){
+},{"_process":75}],88:[function(require,module,exports){
 (function (global){
 
 /**
@@ -9341,10 +9031,10 @@ function config (name) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],93:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":86}],94:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":82}],90:[function(require,module,exports){
 var Stream = (function (){
   try {
     return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
@@ -9358,13 +9048,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":85,"./lib/_stream_passthrough.js":86,"./lib/_stream_readable.js":87,"./lib/_stream_transform.js":88,"./lib/_stream_writable.js":89}],95:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":81,"./lib/_stream_passthrough.js":82,"./lib/_stream_readable.js":83,"./lib/_stream_transform.js":84,"./lib/_stream_writable.js":85}],91:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":88}],96:[function(require,module,exports){
+},{"./lib/_stream_transform.js":84}],92:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":89}],97:[function(require,module,exports){
+},{"./lib/_stream_writable.js":85}],93:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9493,7 +9183,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":74,"inherits":75,"readable-stream/duplex.js":84,"readable-stream/passthrough.js":93,"readable-stream/readable.js":94,"readable-stream/transform.js":95,"readable-stream/writable.js":96}],98:[function(require,module,exports){
+},{"events":70,"inherits":71,"readable-stream/duplex.js":80,"readable-stream/passthrough.js":89,"readable-stream/readable.js":90,"readable-stream/transform.js":91,"readable-stream/writable.js":92}],94:[function(require,module,exports){
 var ClientRequest = require('./lib/request')
 var extend = require('xtend')
 var statusCodes = require('builtin-status-codes')
@@ -9568,7 +9258,7 @@ http.METHODS = [
 	'UNLOCK',
 	'UNSUBSCRIBE'
 ]
-},{"./lib/request":100,"builtin-status-codes":102,"url":108,"xtend":109}],99:[function(require,module,exports){
+},{"./lib/request":96,"builtin-status-codes":98,"url":104,"xtend":105}],95:[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableByteStream)
 
@@ -9613,7 +9303,7 @@ xhr = null // Help gc
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],100:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (process,global,Buffer){
 // var Base64 = require('Base64')
 var capability = require('./capability')
@@ -9896,7 +9586,7 @@ var unsafeHeaders = [
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
 
-},{"./capability":99,"./response":101,"_process":79,"buffer":69,"foreach":103,"indexof":104,"inherits":75,"object-keys":105,"stream":97}],101:[function(require,module,exports){
+},{"./capability":95,"./response":97,"_process":75,"buffer":65,"foreach":99,"indexof":100,"inherits":71,"object-keys":101,"stream":93}],97:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var foreach = require('foreach')
@@ -10074,7 +9764,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
 
-},{"./capability":99,"_process":79,"buffer":69,"foreach":103,"inherits":75,"stream":97}],102:[function(require,module,exports){
+},{"./capability":95,"_process":75,"buffer":65,"foreach":99,"inherits":71,"stream":93}],98:[function(require,module,exports){
 module.exports = {
   "100": "Continue",
   "101": "Switching Protocols",
@@ -10135,7 +9825,7 @@ module.exports = {
   "511": "Network Authentication Required"
 }
 
-},{}],103:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -10159,7 +9849,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],104:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -10170,7 +9860,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],105:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 'use strict';
 
 // modified from https://github.com/es-shims/es5-shim
@@ -10294,7 +9984,7 @@ keysShim.shim = function shimObjectKeys() {
 
 module.exports = keysShim;
 
-},{"./isArguments":106}],106:[function(require,module,exports){
+},{"./isArguments":102}],102:[function(require,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -10313,7 +10003,7 @@ module.exports = function isArguments(value) {
 	return isArgs;
 };
 
-},{}],107:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -10536,7 +10226,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":69}],108:[function(require,module,exports){
+},{"buffer":65}],104:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11245,7 +10935,7 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":80,"querystring":83}],109:[function(require,module,exports){
+},{"punycode":76,"querystring":79}],105:[function(require,module,exports){
 module.exports = extend
 
 function extend() {
@@ -11264,7 +10954,7 @@ function extend() {
     return target
 }
 
-},{}],110:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -11452,7 +11142,7 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":111,"./custom/zalgo":112,"./maps/america":113,"./maps/rainbow":114,"./maps/random":115,"./maps/zebra":116,"./styles":117,"./system/supports-colors":118}],111:[function(require,module,exports){
+},{"./custom/trap":107,"./custom/zalgo":108,"./maps/america":109,"./maps/rainbow":110,"./maps/random":111,"./maps/zebra":112,"./styles":113,"./system/supports-colors":114}],107:[function(require,module,exports){
 module['exports'] = function runTheTrap (text, options) {
   var result = "";
   text = text || "Run the trap, drop the bass";
@@ -11499,7 +11189,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 }
 
-},{}],112:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -11605,7 +11295,7 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text, options);
 }
 
-},{}],113:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function() {
@@ -11618,7 +11308,7 @@ module['exports'] = (function() {
     }
   }
 })();
-},{"../colors":110}],114:[function(require,module,exports){
+},{"../colors":106}],110:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -11633,7 +11323,7 @@ module['exports'] = (function () {
 })();
 
 
-},{"../colors":110}],115:[function(require,module,exports){
+},{"../colors":106}],111:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -11642,13 +11332,13 @@ module['exports'] = (function () {
     return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
   };
 })();
-},{"../colors":110}],116:[function(require,module,exports){
+},{"../colors":106}],112:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = function (letter, i, exploded) {
   return i % 2 === 0 ? letter : colors.inverse(letter);
 };
-},{"../colors":110}],117:[function(require,module,exports){
+},{"../colors":106}],113:[function(require,module,exports){
 /*
 The MIT License (MIT)
 
@@ -11726,7 +11416,7 @@ Object.keys(codes).forEach(function (key) {
   style.open = '\u001b[' + val[0] + 'm';
   style.close = '\u001b[' + val[1] + 'm';
 });
-},{}],118:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -11791,7 +11481,7 @@ module.exports = (function () {
 })();
 }).call(this,require('_process'))
 
-},{"_process":79}],119:[function(require,module,exports){
+},{"_process":75}],115:[function(require,module,exports){
 //
 // Remark: Requiring this file will use the "safe" colors API which will not touch String.prototype
 //
@@ -11801,7 +11491,7 @@ module.exports = (function () {
 //
 var colors = require('./lib/colors');
 module['exports'] = colors;
-},{"./lib/colors":110}],120:[function(require,module,exports){
+},{"./lib/colors":106}],116:[function(require,module,exports){
 (function (process){
 /*!
  * connect
@@ -12089,7 +11779,7 @@ function getProtohost(url) {
 
 }).call(this,require('_process'))
 
-},{"_process":79,"debug":121,"events":74,"finalhandler":124,"http":98,"parseurl":129,"utils-merge":130}],121:[function(require,module,exports){
+},{"_process":75,"debug":117,"events":70,"finalhandler":120,"http":94,"parseurl":125,"utils-merge":126}],117:[function(require,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -12259,7 +11949,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":122}],122:[function(require,module,exports){
+},{"./debug":118}],118:[function(require,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -12458,7 +12148,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":123}],123:[function(require,module,exports){
+},{"ms":119}],119:[function(require,module,exports){
 /**
  * Helpers.
  */
@@ -12585,7 +12275,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],124:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 (function (process,Buffer){
 /*!
  * finalhandler
@@ -12741,7 +12431,7 @@ function send(req, res, status, body) {
 
 }).call(this,require('_process'),require("buffer").Buffer)
 
-},{"_process":79,"buffer":69,"debug":121,"escape-html":125,"http":98,"on-finished":126,"unpipe":128}],125:[function(require,module,exports){
+},{"_process":75,"buffer":65,"debug":117,"escape-html":121,"http":94,"on-finished":122,"unpipe":124}],121:[function(require,module,exports){
 /*!
  * escape-html
  * Copyright(c) 2012-2013 TJ Holowaychuk
@@ -12772,7 +12462,7 @@ function escapeHtml(html) {
     .replace(/>/g, '&gt;');
 }
 
-},{}],126:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 (function (process){
 /*!
  * on-finished
@@ -12973,7 +12663,7 @@ function patchAssignSocket(res, callback) {
 
 }).call(this,require('_process'))
 
-},{"_process":79,"ee-first":127}],127:[function(require,module,exports){
+},{"_process":75,"ee-first":123}],123:[function(require,module,exports){
 /*!
  * ee-first
  * Copyright(c) 2014 Jonathan Ong
@@ -13070,7 +12760,7 @@ function listener(event, done) {
   }
 }
 
-},{}],128:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 /*!
  * unpipe
  * Copyright(c) 2015 Douglas Christopher Wilson
@@ -13141,7 +12831,7 @@ function unpipe(stream) {
   }
 }
 
-},{}],129:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 /*!
  * parseurl
  * Copyright(c) 2014 Jonathan Ong
@@ -13279,7 +12969,7 @@ function fresh(url, parsedUrl) {
     && parsedUrl._raw === url
 }
 
-},{"url":108}],130:[function(require,module,exports){
+},{"url":104}],126:[function(require,module,exports){
 /**
  * Merge object b with object a.
  *
@@ -13304,7 +12994,7 @@ exports = module.exports = function(a, b){
   return a;
 };
 
-},{}],131:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 var CucumberHTML = {};
 
 CucumberHTML.DOMFormatter = function(rootNode) {
@@ -13534,7 +13224,7 @@ if (typeof module !== 'undefined') {
   define([], function() { return CucumberHTML; });
 }
 
-},{}],132:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 'use strict';
 
 var d           = require('d')
@@ -13714,7 +13404,7 @@ Duration.prototype = Object.create(Object.prototype, {
 	})
 });
 
-},{"d":133,"es5-ext/date/#/copy":134,"es5-ext/date/#/days-in-month":135,"es5-ext/date/#/floor-day":136,"es5-ext/date/#/floor-month":137,"es5-ext/date/#/floor-year":138,"es5-ext/date/valid-date":140,"es5-ext/number/#/pad":144,"es5-ext/number/to-integer":145,"es5-ext/number/to-pos-integer":146,"es5-ext/string/format-method":163}],133:[function(require,module,exports){
+},{"d":129,"es5-ext/date/#/copy":130,"es5-ext/date/#/days-in-month":131,"es5-ext/date/#/floor-day":132,"es5-ext/date/#/floor-month":133,"es5-ext/date/#/floor-year":134,"es5-ext/date/valid-date":136,"es5-ext/number/#/pad":140,"es5-ext/number/to-integer":141,"es5-ext/number/to-pos-integer":142,"es5-ext/string/format-method":159}],129:[function(require,module,exports){
 'use strict';
 
 var assign        = require('es5-ext/object/assign')
@@ -13779,14 +13469,14 @@ d.gs = function (dscr, get, set/*, options*/) {
 	return !options ? desc : assign(normalizeOpts(options), desc);
 };
 
-},{"es5-ext/object/assign":147,"es5-ext/object/is-callable":150,"es5-ext/object/normalize-options":154,"es5-ext/string/#/contains":156}],134:[function(require,module,exports){
+},{"es5-ext/object/assign":143,"es5-ext/object/is-callable":146,"es5-ext/object/normalize-options":150,"es5-ext/string/#/contains":152}],130:[function(require,module,exports){
 'use strict';
 
 var getTime = Date.prototype.getTime;
 
 module.exports = function () { return new Date(getTime.call(this)); };
 
-},{}],135:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 'use strict';
 
 var getMonth = Date.prototype.getMonth;
@@ -13805,7 +13495,7 @@ module.exports = function () {
 	}
 };
 
-},{}],136:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 'use strict';
 
 var setHours = Date.prototype.setHours;
@@ -13815,7 +13505,7 @@ module.exports = function () {
 	return this;
 };
 
-},{}],137:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 'use strict';
 
 var floorDay = require('./floor-day');
@@ -13825,7 +13515,7 @@ module.exports = function () {
 	return this;
 };
 
-},{"./floor-day":136}],138:[function(require,module,exports){
+},{"./floor-day":132}],134:[function(require,module,exports){
 'use strict';
 
 var floorMonth = require('./floor-month');
@@ -13835,7 +13525,7 @@ module.exports = function () {
 	return this;
 };
 
-},{"./floor-month":137}],139:[function(require,module,exports){
+},{"./floor-month":133}],135:[function(require,module,exports){
 'use strict';
 
 var toString = Object.prototype.toString
@@ -13846,7 +13536,7 @@ module.exports = function (x) {
 	return (x && ((x instanceof Date) || (toString.call(x) === id))) || false;
 };
 
-},{}],140:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 'use strict';
 
 var isDate = require('./is-date');
@@ -13856,14 +13546,14 @@ module.exports = function (x) {
 	return x;
 };
 
-},{"./is-date":139}],141:[function(require,module,exports){
+},{"./is-date":135}],137:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? Math.sign
 	: require('./shim');
 
-},{"./is-implemented":142,"./shim":143}],142:[function(require,module,exports){
+},{"./is-implemented":138,"./shim":139}],138:[function(require,module,exports){
 'use strict';
 
 module.exports = function () {
@@ -13872,7 +13562,7 @@ module.exports = function () {
 	return ((sign(10) === 1) && (sign(-20) === -1));
 };
 
-},{}],143:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 'use strict';
 
 module.exports = function (value) {
@@ -13881,7 +13571,7 @@ module.exports = function (value) {
 	return (value > 0) ? 1 : -1;
 };
 
-},{}],144:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 'use strict';
 
 var pad      = require('../../string/#/pad')
@@ -13898,7 +13588,7 @@ module.exports = function (length/*, precision*/) {
 		'0', length + (precision ? (1 + precision) : 0));
 };
 
-},{"../../string/#/pad":159,"../to-pos-integer":146}],145:[function(require,module,exports){
+},{"../../string/#/pad":155,"../to-pos-integer":142}],141:[function(require,module,exports){
 'use strict';
 
 var sign = require('../math/sign')
@@ -13912,7 +13602,7 @@ module.exports = function (value) {
 	return sign(value) * floor(abs(value));
 };
 
-},{"../math/sign":141}],146:[function(require,module,exports){
+},{"../math/sign":137}],142:[function(require,module,exports){
 'use strict';
 
 var toInteger = require('./to-integer')
@@ -13921,14 +13611,14 @@ var toInteger = require('./to-integer')
 
 module.exports = function (value) { return max(0, toInteger(value)); };
 
-},{"./to-integer":145}],147:[function(require,module,exports){
+},{"./to-integer":141}],143:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? Object.assign
 	: require('./shim');
 
-},{"./is-implemented":148,"./shim":149}],148:[function(require,module,exports){
+},{"./is-implemented":144,"./shim":145}],144:[function(require,module,exports){
 'use strict';
 
 module.exports = function () {
@@ -13939,7 +13629,7 @@ module.exports = function () {
 	return (obj.foo + obj.bar + obj.trzy) === 'razdwatrzy';
 };
 
-},{}],149:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 'use strict';
 
 var keys  = require('../keys')
@@ -13963,21 +13653,21 @@ module.exports = function (dest, src/*, …srcn*/) {
 	return dest;
 };
 
-},{"../keys":151,"../valid-value":155}],150:[function(require,module,exports){
+},{"../keys":147,"../valid-value":151}],146:[function(require,module,exports){
 // Deprecated
 
 'use strict';
 
 module.exports = function (obj) { return typeof obj === 'function'; };
 
-},{}],151:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? Object.keys
 	: require('./shim');
 
-},{"./is-implemented":152,"./shim":153}],152:[function(require,module,exports){
+},{"./is-implemented":148,"./shim":149}],148:[function(require,module,exports){
 'use strict';
 
 module.exports = function () {
@@ -13987,7 +13677,7 @@ module.exports = function () {
 	} catch (e) { return false; }
 };
 
-},{}],153:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 'use strict';
 
 var keys = Object.keys;
@@ -13996,7 +13686,7 @@ module.exports = function (object) {
 	return keys(object == null ? object : Object(object));
 };
 
-},{}],154:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 'use strict';
 
 var forEach = Array.prototype.forEach, create = Object.create;
@@ -14015,7 +13705,7 @@ module.exports = function (options/*, …options*/) {
 	return result;
 };
 
-},{}],155:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 'use strict';
 
 module.exports = function (value) {
@@ -14023,14 +13713,14 @@ module.exports = function (value) {
 	return value;
 };
 
-},{}],156:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? String.prototype.contains
 	: require('./shim');
 
-},{"./is-implemented":157,"./shim":158}],157:[function(require,module,exports){
+},{"./is-implemented":153,"./shim":154}],153:[function(require,module,exports){
 'use strict';
 
 var str = 'razdwatrzy';
@@ -14040,7 +13730,7 @@ module.exports = function () {
 	return ((str.contains('dwa') === true) && (str.contains('foo') === false));
 };
 
-},{}],158:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 'use strict';
 
 var indexOf = String.prototype.indexOf;
@@ -14049,7 +13739,7 @@ module.exports = function (searchString/*, position*/) {
 	return indexOf.call(this, searchString, arguments[1]) > -1;
 };
 
-},{}],159:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 'use strict';
 
 var toInteger = require('../../number/to-integer')
@@ -14069,14 +13759,14 @@ module.exports = function (fill/*, length*/) {
 	return self + (((sLength + length) >= 0) ? '' : fill.slice(length + sLength));
 };
 
-},{"../../number/to-integer":145,"../../object/valid-value":155,"./repeat":160}],160:[function(require,module,exports){
+},{"../../number/to-integer":141,"../../object/valid-value":151,"./repeat":156}],156:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? String.prototype.repeat
 	: require('./shim');
 
-},{"./is-implemented":161,"./shim":162}],161:[function(require,module,exports){
+},{"./is-implemented":157,"./shim":158}],157:[function(require,module,exports){
 'use strict';
 
 var str = 'foo';
@@ -14086,7 +13776,7 @@ module.exports = function () {
 	return (str.repeat(2) === 'foofoo');
 };
 
-},{}],162:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 // Thanks: http://www.2ality.com/2014/01/efficient-string-repeat.html
 
 'use strict';
@@ -14110,7 +13800,7 @@ module.exports = function (count) {
 	return result;
 };
 
-},{"../../../number/to-integer":145,"../../../object/valid-value":155}],163:[function(require,module,exports){
+},{"../../../number/to-integer":141,"../../../object/valid-value":151}],159:[function(require,module,exports){
 'use strict';
 
 var isCallable = require('../object/is-callable')
@@ -14136,7 +13826,7 @@ module.exports = function (fmap) {
 	};
 };
 
-},{"../object/is-callable":150,"../object/valid-value":155}],164:[function(require,module,exports){
+},{"../object/is-callable":146,"../object/valid-value":151}],160:[function(require,module,exports){
 (function (__dirname){
 require("./gherkin/lexer/ar");
 require("./gherkin/lexer/bg");
@@ -14219,7 +13909,7 @@ module.exports.connect = function(path) {
 
 }).call(this,"/node_modules/gherkin/lib")
 
-},{"./gherkin/lexer/ar":166,"./gherkin/lexer/bg":167,"./gherkin/lexer/bm":168,"./gherkin/lexer/ca":169,"./gherkin/lexer/cs":170,"./gherkin/lexer/cy_gb":171,"./gherkin/lexer/da":172,"./gherkin/lexer/de":173,"./gherkin/lexer/el":174,"./gherkin/lexer/en":175,"./gherkin/lexer/en_au":176,"./gherkin/lexer/en_lol":177,"./gherkin/lexer/en_old":178,"./gherkin/lexer/en_pirate":179,"./gherkin/lexer/en_scouse":180,"./gherkin/lexer/en_tx":181,"./gherkin/lexer/eo":182,"./gherkin/lexer/es":183,"./gherkin/lexer/et":184,"./gherkin/lexer/fa":185,"./gherkin/lexer/fi":186,"./gherkin/lexer/fr":187,"./gherkin/lexer/gl":188,"./gherkin/lexer/he":189,"./gherkin/lexer/hi":190,"./gherkin/lexer/hr":191,"./gherkin/lexer/hu":192,"./gherkin/lexer/id":193,"./gherkin/lexer/is":194,"./gherkin/lexer/it":195,"./gherkin/lexer/ja":196,"./gherkin/lexer/kn":197,"./gherkin/lexer/ko":198,"./gherkin/lexer/lt":199,"./gherkin/lexer/lu":200,"./gherkin/lexer/lv":201,"./gherkin/lexer/nl":202,"./gherkin/lexer/no":203,"./gherkin/lexer/pa":204,"./gherkin/lexer/pl":205,"./gherkin/lexer/pt":206,"./gherkin/lexer/ro":207,"./gherkin/lexer/ru":208,"./gherkin/lexer/sk":209,"./gherkin/lexer/sr_cyrl":210,"./gherkin/lexer/sr_latn":211,"./gherkin/lexer/sv":212,"./gherkin/lexer/th":213,"./gherkin/lexer/tl":214,"./gherkin/lexer/tr":215,"./gherkin/lexer/tt":216,"./gherkin/lexer/uk":217,"./gherkin/lexer/uz":218,"./gherkin/lexer/vi":219,"./gherkin/lexer/zh_cn":220,"./gherkin/lexer/zh_tw":221,"connect":120}],165:[function(require,module,exports){
+},{"./gherkin/lexer/ar":162,"./gherkin/lexer/bg":163,"./gherkin/lexer/bm":164,"./gherkin/lexer/ca":165,"./gherkin/lexer/cs":166,"./gherkin/lexer/cy_gb":167,"./gherkin/lexer/da":168,"./gherkin/lexer/de":169,"./gherkin/lexer/el":170,"./gherkin/lexer/en":171,"./gherkin/lexer/en_au":172,"./gherkin/lexer/en_lol":173,"./gherkin/lexer/en_old":174,"./gherkin/lexer/en_pirate":175,"./gherkin/lexer/en_scouse":176,"./gherkin/lexer/en_tx":177,"./gherkin/lexer/eo":178,"./gherkin/lexer/es":179,"./gherkin/lexer/et":180,"./gherkin/lexer/fa":181,"./gherkin/lexer/fi":182,"./gherkin/lexer/fr":183,"./gherkin/lexer/gl":184,"./gherkin/lexer/he":185,"./gherkin/lexer/hi":186,"./gherkin/lexer/hr":187,"./gherkin/lexer/hu":188,"./gherkin/lexer/id":189,"./gherkin/lexer/is":190,"./gherkin/lexer/it":191,"./gherkin/lexer/ja":192,"./gherkin/lexer/kn":193,"./gherkin/lexer/ko":194,"./gherkin/lexer/lt":195,"./gherkin/lexer/lu":196,"./gherkin/lexer/lv":197,"./gherkin/lexer/nl":198,"./gherkin/lexer/no":199,"./gherkin/lexer/pa":200,"./gherkin/lexer/pl":201,"./gherkin/lexer/pt":202,"./gherkin/lexer/ro":203,"./gherkin/lexer/ru":204,"./gherkin/lexer/sk":205,"./gherkin/lexer/sr_cyrl":206,"./gherkin/lexer/sr_latn":207,"./gherkin/lexer/sv":208,"./gherkin/lexer/th":209,"./gherkin/lexer/tl":210,"./gherkin/lexer/tr":211,"./gherkin/lexer/tt":212,"./gherkin/lexer/uk":213,"./gherkin/lexer/uz":214,"./gherkin/lexer/vi":215,"./gherkin/lexer/zh_cn":216,"./gherkin/lexer/zh_tw":217,"connect":116}],161:[function(require,module,exports){
 // This is a straight port of json_formatter.rb
 var JSONFormatter = function(io) {
     var feature_hashes = [];
@@ -14378,7 +14068,7 @@ var JSONFormatter = function(io) {
 
 module.exports = JSONFormatter;
 
-},{}],166:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/ar.js.rl" */
@@ -15622,7 +15312,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],167:[function(require,module,exports){
+},{"buffer":65}],163:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/bg.js.rl" */
@@ -17078,7 +16768,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],168:[function(require,module,exports){
+},{"buffer":65}],164:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/bm.js.rl" */
@@ -18402,7 +18092,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],169:[function(require,module,exports){
+},{"buffer":65}],165:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/ca.js.rl" */
@@ -19786,7 +19476,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],170:[function(require,module,exports){
+},{"buffer":65}],166:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/cs.js.rl" */
@@ -21106,7 +20796,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],171:[function(require,module,exports){
+},{"buffer":65}],167:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/cy_gb.js.rl" */
@@ -22212,7 +21902,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],172:[function(require,module,exports){
+},{"buffer":65}],168:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/da.js.rl" */
@@ -23334,7 +23024,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],173:[function(require,module,exports){
+},{"buffer":65}],169:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/de.js.rl" */
@@ -24574,7 +24264,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],174:[function(require,module,exports){
+},{"buffer":65}],170:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/el.js.rl" */
@@ -26276,7 +25966,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],175:[function(require,module,exports){
+},{"buffer":65}],171:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en.js.rl" */
@@ -27506,7 +27196,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],176:[function(require,module,exports){
+},{"buffer":65}],172:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en_au.js.rl" */
@@ -29066,7 +28756,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],177:[function(require,module,exports){
+},{"buffer":65}],173:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en_lol.js.rl" */
@@ -30074,7 +29764,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],178:[function(require,module,exports){
+},{"buffer":65}],174:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en_old.js.rl" */
@@ -31185,7 +30875,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],179:[function(require,module,exports){
+},{"buffer":65}],175:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en_pirate.js.rl" */
@@ -32469,7 +32159,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],180:[function(require,module,exports){
+},{"buffer":65}],176:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en_scouse.js.rl" */
@@ -33905,7 +33595,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],181:[function(require,module,exports){
+},{"buffer":65}],177:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/en_tx.js.rl" */
@@ -34995,7 +34685,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],182:[function(require,module,exports){
+},{"buffer":65}],178:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/eo.js.rl" */
@@ -36064,7 +35754,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],183:[function(require,module,exports){
+},{"buffer":65}],179:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/es.js.rl" */
@@ -37278,7 +36968,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],184:[function(require,module,exports){
+},{"buffer":65}],180:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/et.js.rl" */
@@ -38342,7 +38032,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],185:[function(require,module,exports){
+},{"buffer":65}],181:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/fa.js.rl" */
@@ -39630,7 +39320,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],186:[function(require,module,exports){
+},{"buffer":65}],182:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/fi.js.rl" */
@@ -40673,7 +40363,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],187:[function(require,module,exports){
+},{"buffer":65}],183:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/fr.js.rl" */
@@ -41975,7 +41665,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],188:[function(require,module,exports){
+},{"buffer":65}],184:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/gl.js.rl" */
@@ -43166,7 +42856,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],189:[function(require,module,exports){
+},{"buffer":65}],185:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/he.js.rl" */
@@ -44358,7 +44048,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],190:[function(require,module,exports){
+},{"buffer":65}],186:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/hi.js.rl" */
@@ -45991,7 +45681,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],191:[function(require,module,exports){
+},{"buffer":65}],187:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/hr.js.rl" */
@@ -47131,7 +46821,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],192:[function(require,module,exports){
+},{"buffer":65}],188:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/hu.js.rl" */
@@ -48323,7 +48013,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],193:[function(require,module,exports){
+},{"buffer":65}],189:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/id.js.rl" */
@@ -49360,7 +49050,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],194:[function(require,module,exports){
+},{"buffer":65}],190:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/is.js.rl" */
@@ -50554,7 +50244,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],195:[function(require,module,exports){
+},{"buffer":65}],191:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/it.js.rl" */
@@ -51714,7 +51404,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],196:[function(require,module,exports){
+},{"buffer":65}],192:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/ja.js.rl" */
@@ -53206,7 +52896,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],197:[function(require,module,exports){
+},{"buffer":65}],193:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/kn.js.rl" */
@@ -54952,7 +54642,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],198:[function(require,module,exports){
+},{"buffer":65}],194:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/ko.js.rl" */
@@ -56128,7 +55818,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],199:[function(require,module,exports){
+},{"buffer":65}],195:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/lt.js.rl" */
@@ -57247,7 +56937,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],200:[function(require,module,exports){
+},{"buffer":65}],196:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/lu.js.rl" */
@@ -58453,7 +58143,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],201:[function(require,module,exports){
+},{"buffer":65}],197:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/lv.js.rl" */
@@ -59693,7 +59383,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],202:[function(require,module,exports){
+},{"buffer":65}],198:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/nl.js.rl" */
@@ -60882,7 +60572,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],203:[function(require,module,exports){
+},{"buffer":65}],199:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/no.js.rl" */
@@ -62016,7 +61706,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],204:[function(require,module,exports){
+},{"buffer":65}],200:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/pa.js.rl" */
@@ -63942,7 +63632,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],205:[function(require,module,exports){
+},{"buffer":65}],201:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/pl.js.rl" */
@@ -65473,7 +65163,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],206:[function(require,module,exports){
+},{"buffer":65}],202:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/pt.js.rl" */
@@ -66977,7 +66667,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],207:[function(require,module,exports){
+},{"buffer":65}],203:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/ro.js.rl" */
@@ -68215,7 +67905,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],208:[function(require,module,exports){
+},{"buffer":65}],204:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/ru.js.rl" */
@@ -70055,7 +69745,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],209:[function(require,module,exports){
+},{"buffer":65}],205:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/sk.js.rl" */
@@ -71581,7 +71271,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],210:[function(require,module,exports){
+},{"buffer":65}],206:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/sr_cyrl.js.rl" */
@@ -73458,7 +73148,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],211:[function(require,module,exports){
+},{"buffer":65}],207:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/sr_latn.js.rl" */
@@ -74826,7 +74516,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],212:[function(require,module,exports){
+},{"buffer":65}],208:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/sv.js.rl" */
@@ -75970,7 +75660,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],213:[function(require,module,exports){
+},{"buffer":65}],209:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/th.js.rl" */
@@ -78536,7 +78226,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],214:[function(require,module,exports){
+},{"buffer":65}],210:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/tl.js.rl" */
@@ -80336,7 +80026,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],215:[function(require,module,exports){
+},{"buffer":65}],211:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/tr.js.rl" */
@@ -81502,7 +81192,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],216:[function(require,module,exports){
+},{"buffer":65}],212:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/tt.js.rl" */
@@ -83219,7 +82909,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],217:[function(require,module,exports){
+},{"buffer":65}],213:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/uk.js.rl" */
@@ -84939,7 +84629,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],218:[function(require,module,exports){
+},{"buffer":65}],214:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/uz.js.rl" */
@@ -86389,7 +86079,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],219:[function(require,module,exports){
+},{"buffer":65}],215:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/vi.js.rl" */
@@ -87661,7 +87351,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],220:[function(require,module,exports){
+},{"buffer":65}],216:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/zh_cn.js.rl" */
@@ -88793,7 +88483,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],221:[function(require,module,exports){
+},{"buffer":65}],217:[function(require,module,exports){
 (function (Buffer){
 
 /* line 1 "ragel/i18n/zh_tw.js.rl" */
@@ -89919,7 +89609,7 @@ if (typeof define !== 'undefined') {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":69}],222:[function(require,module,exports){
+},{"buffer":65}],218:[function(require,module,exports){
 // Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -89968,7 +89658,7 @@ module.exports = function FormatStackTrace(error, frames) {
   return lines.join("\n");
 };
 
-},{}],223:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 module.exports={
   "name": "stack-chain",
   "description": "API for combining call site modifiers",
@@ -90026,7 +89716,7 @@ module.exports={
   "readme": "ERROR: No README data found!"
 }
 
-},{}],224:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 (function (global){
 
 // use a already existing formater or fallback to the default v8 formater
@@ -90234,7 +89924,7 @@ Object.defineProperty(Error.prototype, 'callSite', {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./format.js":222,"./package.json":223}],225:[function(require,module,exports){
+},{"./format.js":218,"./package.json":219}],221:[function(require,module,exports){
 var trim = require('./trim');
 var decap = require('./decapitalize');
 
@@ -90250,7 +89940,7 @@ module.exports = function camelize(str, decapitalize) {
   }
 };
 
-},{"./decapitalize":234,"./trim":286}],226:[function(require,module,exports){
+},{"./decapitalize":230,"./trim":282}],222:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function capitalize(str, lowercaseRest) {
@@ -90260,14 +89950,14 @@ module.exports = function capitalize(str, lowercaseRest) {
   return str.charAt(0).toUpperCase() + remainingChars;
 };
 
-},{"./helper/makeString":244}],227:[function(require,module,exports){
+},{"./helper/makeString":240}],223:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function chars(str) {
   return makeString(str).split('');
 };
 
-},{"./helper/makeString":244}],228:[function(require,module,exports){
+},{"./helper/makeString":240}],224:[function(require,module,exports){
 module.exports = function chop(str, step) {
   if (str == null) return [];
   str = String(str);
@@ -90275,7 +89965,7 @@ module.exports = function chop(str, step) {
   return step > 0 ? str.match(new RegExp('.{1,' + step + '}', 'g')) : [str];
 };
 
-},{}],229:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 var capitalize = require('./capitalize');
 var camelize = require('./camelize');
 var makeString = require('./helper/makeString');
@@ -90285,14 +89975,14 @@ module.exports = function classify(str) {
   return capitalize(camelize(str.replace(/[\W_]/g, ' ')).replace(/\s/g, ''));
 };
 
-},{"./camelize":225,"./capitalize":226,"./helper/makeString":244}],230:[function(require,module,exports){
+},{"./camelize":221,"./capitalize":222,"./helper/makeString":240}],226:[function(require,module,exports){
 var trim = require('./trim');
 
 module.exports = function clean(str) {
   return trim(str).replace(/\s\s+/g, ' ');
 };
 
-},{"./trim":286}],231:[function(require,module,exports){
+},{"./trim":282}],227:[function(require,module,exports){
 
 var makeString = require('./helper/makeString');
 
@@ -90316,7 +90006,7 @@ module.exports = function cleanDiacritics(str) {
   });
 };
 
-},{"./helper/makeString":244}],232:[function(require,module,exports){
+},{"./helper/makeString":240}],228:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function(str, substr) {
@@ -90328,14 +90018,14 @@ module.exports = function(str, substr) {
   return str.split(substr).length - 1;
 };
 
-},{"./helper/makeString":244}],233:[function(require,module,exports){
+},{"./helper/makeString":240}],229:[function(require,module,exports){
 var trim = require('./trim');
 
 module.exports = function dasherize(str) {
   return trim(str).replace(/([A-Z])/g, '-$1').replace(/[-_\s]+/g, '-').toLowerCase();
 };
 
-},{"./trim":286}],234:[function(require,module,exports){
+},{"./trim":282}],230:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function decapitalize(str) {
@@ -90343,7 +90033,7 @@ module.exports = function decapitalize(str) {
   return str.charAt(0).toLowerCase() + str.slice(1);
 };
 
-},{"./helper/makeString":244}],235:[function(require,module,exports){
+},{"./helper/makeString":240}],231:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 function getIndent(str) {
@@ -90373,7 +90063,7 @@ module.exports = function dedent(str, pattern) {
   return str.replace(reg, '');
 };
 
-},{"./helper/makeString":244}],236:[function(require,module,exports){
+},{"./helper/makeString":240}],232:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var toPositive = require('./helper/toPositive');
 
@@ -90388,7 +90078,7 @@ module.exports = function endsWith(str, ends, position) {
   return position >= 0 && str.indexOf(ends, position) === position;
 };
 
-},{"./helper/makeString":244,"./helper/toPositive":246}],237:[function(require,module,exports){
+},{"./helper/makeString":240,"./helper/toPositive":242}],233:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var escapeChars = require('./helper/escapeChars');
 var reversedEscapeChars = {};
@@ -90408,7 +90098,7 @@ module.exports = function escapeHTML(str) {
   });
 };
 
-},{"./helper/escapeChars":241,"./helper/makeString":244}],238:[function(require,module,exports){
+},{"./helper/escapeChars":237,"./helper/makeString":240}],234:[function(require,module,exports){
 module.exports = function() {
   var result = {};
 
@@ -90420,7 +90110,7 @@ module.exports = function() {
   return result;
 };
 
-},{}],239:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 var makeString = require('./makeString');
 
 module.exports = function adjacent(str, direction) {
@@ -90431,7 +90121,7 @@ module.exports = function adjacent(str, direction) {
   return str.slice(0, -1) + String.fromCharCode(str.charCodeAt(str.length - 1) + direction);
 };
 
-},{"./makeString":244}],240:[function(require,module,exports){
+},{"./makeString":240}],236:[function(require,module,exports){
 var escapeRegExp = require('./escapeRegExp');
 
 module.exports = function defaultToWhiteSpace(characters) {
@@ -90443,7 +90133,7 @@ module.exports = function defaultToWhiteSpace(characters) {
     return '[' + escapeRegExp(characters) + ']';
 };
 
-},{"./escapeRegExp":242}],241:[function(require,module,exports){
+},{"./escapeRegExp":238}],237:[function(require,module,exports){
 /* We're explicitly defining the list of entities we want to escape.
 nbsp is an HTML entity, but we don't want to escape all space characters in a string, hence its omission in this map.
 
@@ -90464,14 +90154,14 @@ var escapeChars = {
 
 module.exports = escapeChars;
 
-},{}],242:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 var makeString = require('./makeString');
 
 module.exports = function escapeRegExp(str) {
   return makeString(str).replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
 };
 
-},{"./makeString":244}],243:[function(require,module,exports){
+},{"./makeString":240}],239:[function(require,module,exports){
 /*
 We're explicitly defining the list of entities that might see in escape HTML strings
 */
@@ -90492,7 +90182,7 @@ var htmlEntities = {
 
 module.exports = htmlEntities;
 
-},{}],244:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 /**
  * Ensure some object is a coerced to a string
  **/
@@ -90501,7 +90191,7 @@ module.exports = function makeString(object) {
   return '' + object;
 };
 
-},{}],245:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 module.exports = function strRepeat(str, qty){
   if (qty < 1) return '';
   var result = '';
@@ -90512,12 +90202,12 @@ module.exports = function strRepeat(str, qty){
   return result;
 };
 
-},{}],246:[function(require,module,exports){
+},{}],242:[function(require,module,exports){
 module.exports = function toPositive(number) {
   return number < 0 ? 0 : (+number || 0);
 };
 
-},{}],247:[function(require,module,exports){
+},{}],243:[function(require,module,exports){
 var capitalize = require('./capitalize');
 var underscored = require('./underscored');
 var trim = require('./trim');
@@ -90526,7 +90216,7 @@ module.exports = function humanize(str) {
   return capitalize(trim(underscored(str).replace(/_id$/, '').replace(/_/g, ' ')));
 };
 
-},{"./capitalize":226,"./trim":286,"./underscored":288}],248:[function(require,module,exports){
+},{"./capitalize":222,"./trim":282,"./underscored":284}],244:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function include(str, needle) {
@@ -90534,7 +90224,7 @@ module.exports = function include(str, needle) {
   return makeString(str).indexOf(needle) !== -1;
 };
 
-},{"./helper/makeString":244}],249:[function(require,module,exports){
+},{"./helper/makeString":240}],245:[function(require,module,exports){
 //  Underscore.string
 //  (c) 2010 Esa-Matti Suuronen <esa-matti aet suuronen dot org>
 //  Underscore.string is freely distributable under the terms of the MIT license.
@@ -90674,21 +90364,21 @@ for (var key in prototypeMethods) prototype2method(prototypeMethods[key]);
 
 module.exports = s;
 
-},{"./camelize":225,"./capitalize":226,"./chars":227,"./chop":228,"./classify":229,"./clean":230,"./cleanDiacritics":231,"./count":232,"./dasherize":233,"./decapitalize":234,"./dedent":235,"./endsWith":236,"./escapeHTML":237,"./exports":238,"./helper/escapeRegExp":242,"./humanize":247,"./include":248,"./insert":250,"./isBlank":251,"./join":252,"./levenshtein":253,"./lines":254,"./lpad":255,"./lrpad":256,"./ltrim":257,"./naturalCmp":258,"./numberFormat":259,"./pad":260,"./pred":261,"./prune":262,"./quote":263,"./repeat":264,"./replaceAll":265,"./reverse":266,"./rpad":267,"./rtrim":268,"./slugify":269,"./splice":270,"./sprintf":271,"./startsWith":272,"./strLeft":273,"./strLeftBack":274,"./strRight":275,"./strRightBack":276,"./stripTags":277,"./succ":278,"./surround":279,"./swapCase":280,"./titleize":281,"./toBoolean":282,"./toNumber":283,"./toSentence":284,"./toSentenceSerial":285,"./trim":286,"./truncate":287,"./underscored":288,"./unescapeHTML":289,"./unquote":290,"./vsprintf":291,"./words":292,"./wrap":293}],250:[function(require,module,exports){
+},{"./camelize":221,"./capitalize":222,"./chars":223,"./chop":224,"./classify":225,"./clean":226,"./cleanDiacritics":227,"./count":228,"./dasherize":229,"./decapitalize":230,"./dedent":231,"./endsWith":232,"./escapeHTML":233,"./exports":234,"./helper/escapeRegExp":238,"./humanize":243,"./include":244,"./insert":246,"./isBlank":247,"./join":248,"./levenshtein":249,"./lines":250,"./lpad":251,"./lrpad":252,"./ltrim":253,"./naturalCmp":254,"./numberFormat":255,"./pad":256,"./pred":257,"./prune":258,"./quote":259,"./repeat":260,"./replaceAll":261,"./reverse":262,"./rpad":263,"./rtrim":264,"./slugify":265,"./splice":266,"./sprintf":267,"./startsWith":268,"./strLeft":269,"./strLeftBack":270,"./strRight":271,"./strRightBack":272,"./stripTags":273,"./succ":274,"./surround":275,"./swapCase":276,"./titleize":277,"./toBoolean":278,"./toNumber":279,"./toSentence":280,"./toSentenceSerial":281,"./trim":282,"./truncate":283,"./underscored":284,"./unescapeHTML":285,"./unquote":286,"./vsprintf":287,"./words":288,"./wrap":289}],246:[function(require,module,exports){
 var splice = require('./splice');
 
 module.exports = function insert(str, i, substr) {
   return splice(str, i, 0, substr);
 };
 
-},{"./splice":270}],251:[function(require,module,exports){
+},{"./splice":266}],247:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function isBlank(str) {
   return (/^\s*$/).test(makeString(str));
 };
 
-},{"./helper/makeString":244}],252:[function(require,module,exports){
+},{"./helper/makeString":240}],248:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var slice = [].slice;
 
@@ -90699,7 +90389,7 @@ module.exports = function join() {
   return args.join(makeString(separator));
 };
 
-},{"./helper/makeString":244}],253:[function(require,module,exports){
+},{"./helper/makeString":240}],249:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 /**
@@ -90753,27 +90443,27 @@ module.exports = function levenshtein(str1, str2) {
   return nextCol;
 };
 
-},{"./helper/makeString":244}],254:[function(require,module,exports){
+},{"./helper/makeString":240}],250:[function(require,module,exports){
 module.exports = function lines(str) {
   if (str == null) return [];
   return String(str).split(/\r\n?|\n/);
 };
 
-},{}],255:[function(require,module,exports){
+},{}],251:[function(require,module,exports){
 var pad = require('./pad');
 
 module.exports = function lpad(str, length, padStr) {
   return pad(str, length, padStr);
 };
 
-},{"./pad":260}],256:[function(require,module,exports){
+},{"./pad":256}],252:[function(require,module,exports){
 var pad = require('./pad');
 
 module.exports = function lrpad(str, length, padStr) {
   return pad(str, length, padStr, 'both');
 };
 
-},{"./pad":260}],257:[function(require,module,exports){
+},{"./pad":256}],253:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var defaultToWhiteSpace = require('./helper/defaultToWhiteSpace');
 var nativeTrimLeft = String.prototype.trimLeft;
@@ -90785,7 +90475,7 @@ module.exports = function ltrim(str, characters) {
   return str.replace(new RegExp('^' + characters + '+'), '');
 };
 
-},{"./helper/defaultToWhiteSpace":240,"./helper/makeString":244}],258:[function(require,module,exports){
+},{"./helper/defaultToWhiteSpace":236,"./helper/makeString":240}],254:[function(require,module,exports){
 module.exports = function naturalCmp(str1, str2) {
   if (str1 == str2) return 0;
   if (!str1) return -1;
@@ -90816,7 +90506,7 @@ module.exports = function naturalCmp(str1, str2) {
   return str1 < str2 ? -1 : 1;
 };
 
-},{}],259:[function(require,module,exports){
+},{}],255:[function(require,module,exports){
 module.exports = function numberFormat(number, dec, dsep, tsep) {
   if (isNaN(number) || number == null) return '';
 
@@ -90830,7 +90520,7 @@ module.exports = function numberFormat(number, dec, dsep, tsep) {
   return fnums.replace(/(\d)(?=(?:\d{3})+$)/g, '$1' + tsep) + decimals;
 };
 
-},{}],260:[function(require,module,exports){
+},{}],256:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var strRepeat = require('./helper/strRepeat');
 
@@ -90858,14 +90548,14 @@ module.exports = function pad(str, length, padStr, type) {
   }
 };
 
-},{"./helper/makeString":244,"./helper/strRepeat":245}],261:[function(require,module,exports){
+},{"./helper/makeString":240,"./helper/strRepeat":241}],257:[function(require,module,exports){
 var adjacent = require('./helper/adjacent');
 
 module.exports = function succ(str) {
   return adjacent(str, -1);
 };
 
-},{"./helper/adjacent":239}],262:[function(require,module,exports){
+},{"./helper/adjacent":235}],258:[function(require,module,exports){
 /**
  * _s.prune: a more elegant version of truncate
  * prune extra chars, never leaving a half-chopped word.
@@ -90894,14 +90584,14 @@ module.exports = function prune(str, length, pruneStr) {
   return (template + pruneStr).length > str.length ? str : str.slice(0, template.length) + pruneStr;
 };
 
-},{"./helper/makeString":244,"./rtrim":268}],263:[function(require,module,exports){
+},{"./helper/makeString":240,"./rtrim":264}],259:[function(require,module,exports){
 var surround = require('./surround');
 
 module.exports = function quote(str, quoteChar) {
   return surround(str, quoteChar || '"');
 };
 
-},{"./surround":279}],264:[function(require,module,exports){
+},{"./surround":275}],260:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var strRepeat = require('./helper/strRepeat');
 
@@ -90918,7 +90608,7 @@ module.exports = function repeat(str, qty, separator) {
   return repeat.join(separator);
 };
 
-},{"./helper/makeString":244,"./helper/strRepeat":245}],265:[function(require,module,exports){
+},{"./helper/makeString":240,"./helper/strRepeat":241}],261:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function replaceAll(str, find, replace, ignorecase) {
@@ -90928,21 +90618,21 @@ module.exports = function replaceAll(str, find, replace, ignorecase) {
   return makeString(str).replace(reg, replace);
 };
 
-},{"./helper/makeString":244}],266:[function(require,module,exports){
+},{"./helper/makeString":240}],262:[function(require,module,exports){
 var chars = require('./chars');
 
 module.exports = function reverse(str) {
   return chars(str).reverse().join('');
 };
 
-},{"./chars":227}],267:[function(require,module,exports){
+},{"./chars":223}],263:[function(require,module,exports){
 var pad = require('./pad');
 
 module.exports = function rpad(str, length, padStr) {
   return pad(str, length, padStr, 'right');
 };
 
-},{"./pad":260}],268:[function(require,module,exports){
+},{"./pad":256}],264:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var defaultToWhiteSpace = require('./helper/defaultToWhiteSpace');
 var nativeTrimRight = String.prototype.trimRight;
@@ -90954,7 +90644,7 @@ module.exports = function rtrim(str, characters) {
   return str.replace(new RegExp(characters + '+$'), '');
 };
 
-},{"./helper/defaultToWhiteSpace":240,"./helper/makeString":244}],269:[function(require,module,exports){
+},{"./helper/defaultToWhiteSpace":236,"./helper/makeString":240}],265:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var defaultToWhiteSpace = require('./helper/defaultToWhiteSpace');
 var trim = require('./trim');
@@ -90965,7 +90655,7 @@ module.exports = function slugify(str) {
   return trim(dasherize(cleanDiacritics(str).replace(/[^\w\s-]/g, '-').toLowerCase()), '-');
 };
 
-},{"./cleanDiacritics":231,"./dasherize":233,"./helper/defaultToWhiteSpace":240,"./helper/makeString":244,"./trim":286}],270:[function(require,module,exports){
+},{"./cleanDiacritics":227,"./dasherize":229,"./helper/defaultToWhiteSpace":236,"./helper/makeString":240,"./trim":282}],266:[function(require,module,exports){
 var chars = require('./chars');
 
 module.exports = function splice(str, i, howmany, substr) {
@@ -90974,7 +90664,7 @@ module.exports = function splice(str, i, howmany, substr) {
   return arr.join('');
 };
 
-},{"./chars":227}],271:[function(require,module,exports){
+},{"./chars":223}],267:[function(require,module,exports){
 // sprintf() for JavaScript 0.7-beta1
 // http://www.diveintojavascript.com/projects/javascript-sprintf
 //
@@ -91100,7 +90790,7 @@ var sprintf = (function() {
 
 module.exports = sprintf;
 
-},{"./helper/strRepeat":245}],272:[function(require,module,exports){
+},{"./helper/strRepeat":241}],268:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var toPositive = require('./helper/toPositive');
 
@@ -91111,7 +90801,7 @@ module.exports = function startsWith(str, starts, position) {
   return str.lastIndexOf(starts, position) === position;
 };
 
-},{"./helper/makeString":244,"./helper/toPositive":246}],273:[function(require,module,exports){
+},{"./helper/makeString":240,"./helper/toPositive":242}],269:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function strLeft(str, sep) {
@@ -91121,7 +90811,7 @@ module.exports = function strLeft(str, sep) {
   return~ pos ? str.slice(0, pos) : str;
 };
 
-},{"./helper/makeString":244}],274:[function(require,module,exports){
+},{"./helper/makeString":240}],270:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function strLeftBack(str, sep) {
@@ -91131,7 +90821,7 @@ module.exports = function strLeftBack(str, sep) {
   return~ pos ? str.slice(0, pos) : str;
 };
 
-},{"./helper/makeString":244}],275:[function(require,module,exports){
+},{"./helper/makeString":240}],271:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function strRight(str, sep) {
@@ -91141,7 +90831,7 @@ module.exports = function strRight(str, sep) {
   return~ pos ? str.slice(pos + sep.length, str.length) : str;
 };
 
-},{"./helper/makeString":244}],276:[function(require,module,exports){
+},{"./helper/makeString":240}],272:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function strRightBack(str, sep) {
@@ -91151,26 +90841,26 @@ module.exports = function strRightBack(str, sep) {
   return~ pos ? str.slice(pos + sep.length, str.length) : str;
 };
 
-},{"./helper/makeString":244}],277:[function(require,module,exports){
+},{"./helper/makeString":240}],273:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function stripTags(str) {
   return makeString(str).replace(/<\/?[^>]+>/g, '');
 };
 
-},{"./helper/makeString":244}],278:[function(require,module,exports){
+},{"./helper/makeString":240}],274:[function(require,module,exports){
 var adjacent = require('./helper/adjacent');
 
 module.exports = function succ(str) {
   return adjacent(str, 1);
 };
 
-},{"./helper/adjacent":239}],279:[function(require,module,exports){
+},{"./helper/adjacent":235}],275:[function(require,module,exports){
 module.exports = function surround(str, wrapper) {
   return [wrapper, str, wrapper].join('');
 };
 
-},{}],280:[function(require,module,exports){
+},{}],276:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function swapCase(str) {
@@ -91179,7 +90869,7 @@ module.exports = function swapCase(str) {
   });
 };
 
-},{"./helper/makeString":244}],281:[function(require,module,exports){
+},{"./helper/makeString":240}],277:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function titleize(str) {
@@ -91188,7 +90878,7 @@ module.exports = function titleize(str) {
   });
 };
 
-},{"./helper/makeString":244}],282:[function(require,module,exports){
+},{"./helper/makeString":240}],278:[function(require,module,exports){
 var trim = require('./trim');
 
 function boolMatch(s, matchers) {
@@ -91210,7 +90900,7 @@ module.exports = function toBoolean(str, trueValues, falseValues) {
   if (boolMatch(str, falseValues || ["false", "0"])) return false;
 };
 
-},{"./trim":286}],283:[function(require,module,exports){
+},{"./trim":282}],279:[function(require,module,exports){
 var trim = require('./trim');
 
 module.exports = function toNumber(num, precision) {
@@ -91219,7 +90909,7 @@ module.exports = function toNumber(num, precision) {
   return Math.round(num * factor) / factor;
 };
 
-},{"./trim":286}],284:[function(require,module,exports){
+},{"./trim":282}],280:[function(require,module,exports){
 var rtrim = require('./rtrim');
 
 module.exports = function toSentence(array, separator, lastSeparator, serial) {
@@ -91233,14 +90923,14 @@ module.exports = function toSentence(array, separator, lastSeparator, serial) {
   return a.length ? a.join(separator) + lastSeparator + lastMember : lastMember;
 };
 
-},{"./rtrim":268}],285:[function(require,module,exports){
+},{"./rtrim":264}],281:[function(require,module,exports){
 var toSentence = require('./toSentence');
 
 module.exports = function toSentenceSerial(array, sep, lastSep) {
   return toSentence(array, sep, lastSep, true);
 };
 
-},{"./toSentence":284}],286:[function(require,module,exports){
+},{"./toSentence":280}],282:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var defaultToWhiteSpace = require('./helper/defaultToWhiteSpace');
 var nativeTrim = String.prototype.trim;
@@ -91252,7 +90942,7 @@ module.exports = function trim(str, characters) {
   return str.replace(new RegExp('^' + characters + '+|' + characters + '+$', 'g'), '');
 };
 
-},{"./helper/defaultToWhiteSpace":240,"./helper/makeString":244}],287:[function(require,module,exports){
+},{"./helper/defaultToWhiteSpace":236,"./helper/makeString":240}],283:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 
 module.exports = function truncate(str, length, truncateStr) {
@@ -91262,14 +90952,14 @@ module.exports = function truncate(str, length, truncateStr) {
   return str.length > length ? str.slice(0, length) + truncateStr : str;
 };
 
-},{"./helper/makeString":244}],288:[function(require,module,exports){
+},{"./helper/makeString":240}],284:[function(require,module,exports){
 var trim = require('./trim');
 
 module.exports = function underscored(str) {
   return trim(str).replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/[-\s]+/g, '_').toLowerCase();
 };
 
-},{"./trim":286}],289:[function(require,module,exports){
+},{"./trim":282}],285:[function(require,module,exports){
 var makeString = require('./helper/makeString');
 var htmlEntities = require('./helper/htmlEntities');
 
@@ -91289,7 +90979,7 @@ module.exports = function unescapeHTML(str) {
   });
 };
 
-},{"./helper/htmlEntities":243,"./helper/makeString":244}],290:[function(require,module,exports){
+},{"./helper/htmlEntities":239,"./helper/makeString":240}],286:[function(require,module,exports){
 module.exports = function unquote(str, quoteChar) {
   quoteChar = quoteChar || '"';
   if (str[0] === quoteChar && str[str.length - 1] === quoteChar)
@@ -91297,7 +90987,7 @@ module.exports = function unquote(str, quoteChar) {
   else return str;
 };
 
-},{}],291:[function(require,module,exports){
+},{}],287:[function(require,module,exports){
 var sprintf = require('./sprintf');
 
 module.exports = function vsprintf(fmt, argv) {
@@ -91305,7 +90995,7 @@ module.exports = function vsprintf(fmt, argv) {
   return sprintf.apply(null, argv);
 };
 
-},{"./sprintf":271}],292:[function(require,module,exports){
+},{"./sprintf":267}],288:[function(require,module,exports){
 var isBlank = require('./isBlank');
 var trim = require('./trim');
 
@@ -91314,7 +91004,7 @@ module.exports = function words(str, delimiter) {
   return trim(str, delimiter).split(delimiter || /\s+/);
 };
 
-},{"./isBlank":251,"./trim":286}],293:[function(require,module,exports){
+},{"./isBlank":247,"./trim":282}],289:[function(require,module,exports){
 // Wrap
 // wraps a string by a certain width
 
@@ -91415,7 +91105,7 @@ module.exports = function wrap(str, options){
 		return result;
 	}
 };
-},{"./helper/makeString":244}],294:[function(require,module,exports){
+},{"./helper/makeString":240}],290:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -92972,6 +92662,6 @@ module.exports = require('./lib/cucumber');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./lib/cucumber":1,"cucumber-html":131}]},{},[])("cucumber")
+},{"./lib/cucumber":1,"cucumber-html":127}]},{},[])("cucumber")
 });
 //# sourceMappingURL=cucumber.js.map
