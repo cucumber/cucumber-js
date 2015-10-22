@@ -538,7 +538,7 @@ A few example apps are available for you to browse:
 
 ## Contribute
 
-See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.md).
+See [CONTRIBUTING](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTING.md).
 
 ## Help & support
 
