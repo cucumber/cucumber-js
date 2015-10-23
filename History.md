@@ -2,7 +2,14 @@
 
 ## [v0.8.x](https://github.com/cucumber/cucumber-js/compare/v0.8.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.8.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.8.1...master)
+
+### [v0.8.1](https://github.com/cucumber/cucumber-js/compare/v0.8.0...v0.8.1)
+
+#### Documentation, internals and tests
+
+* Update World constructor documentation (Charlie Rudolph)
+* Remove badges from README.md (Charlie Rudolph)
 
 ### [v0.8.0](https://github.com/cucumber/cucumber-js/compare/v0.7.0...v0.8.0)
 
