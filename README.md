@@ -75,39 +75,12 @@ Support files let you setup the environment in which steps will be run, and defi
 ```javascript
 // features/support/world.js
 var zombie = require('zombie');
-function World(callback) {
+function World() {
   this.browser = new zombie(); // this.browser will be available in step definitions
 
   this.visit = function (url, callback) {
     this.browser.visit(url, callback);
   };
-
-  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
-}
-
-module.exports = function() {
-  this.World = World;
-};
-```
-
-It is possible to tell Cucumber to use another object instance than the constructor:
-
-``` javascript
-// features/support/world.js
-
-var zombie = require('zombie');
-function WorldFactory(callback) {
-
-  var browser = new zombie();
-
-  var world = {
-    browser: browser,                        // this.browser will be available in step definitions
-    visit: function (url, callback) {         // this.visit will be available in step definitions
-      this.browser.visit(url, callback);
-    }
-  };
-
-  callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 }
 
 module.exports = function() {
