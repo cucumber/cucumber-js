@@ -39,6 +39,28 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
         expect(scenarioResult.getFailureException()).toBe(failureException);
       });
     });
+
+    describe('after a pending step', function () {
+      beforeEach(function () {
+        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        scenarioResult.witnessStepResult(stepResult);
+      });
+
+      it('has a status of pending', function() {
+        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.PENDING);
+      });
+    });
+
+    describe('after an undefined step', function () {
+      beforeEach(function () {
+        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
+        scenarioResult.witnessStepResult(stepResult);
+      });
+
+      it('has a status of undefined', function() {
+        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.UNDEFINED);
+      });
+    });
   });
 
   describe('after a failing step', function () {
@@ -73,7 +95,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
       });
     });
 
-    describe('after a undefined step', function () {
+    describe('after an undefined step', function () {
       beforeEach(function () {
         var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
         scenarioResult.witnessStepResult(stepResult);
@@ -120,8 +142,8 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
         scenarioResult.witnessStepResult(stepResult);
       });
 
-      it('has a status of undefined', function() {
-        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.UNDEFINED);
+      it('has a status of pending', function() {
+        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.PENDING);
       });
     });
 
@@ -147,6 +169,17 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
       expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.UNDEFINED);
     });
 
+    describe('after a pending step', function () {
+      beforeEach(function () {
+        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        scenarioResult.witnessStepResult(stepResult);
+      });
+
+      it('has a status of undefined', function() {
+        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.UNDEFINED);
+      });
+    });
+
     describe('after a skipped step', function () {
       beforeEach(function () {
         var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.SKIPPED});
@@ -169,14 +202,25 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
       expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
     });
 
-    describe('after a undefined step', function () {
+    describe('after a pending step', function () {
+      beforeEach(function () {
+        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        scenarioResult.witnessStepResult(stepResult);
+      });
+
+      it('has a status of skipped', function() {
+        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+      });
+    });
+
+    describe('after an undefined step', function () {
       beforeEach(function () {
         var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
         scenarioResult.witnessStepResult(stepResult);
       });
 
-      it('has a status of undefined', function() {
-        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.UNDEFINED);
+      it('has a status of skipped', function() {
+        expect(scenarioResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
       });
     });
   });

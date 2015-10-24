@@ -179,8 +179,8 @@ describe("Cucumber.Listener.StatsJournal", function () {
       expect(counts[Cucumber.Status.UNDEFINED]).toEqual(1);
     });
 
-    it('records a undefined scenario', function() {
-      expect(statsJournal.getScenarioCounts()[Cucumber.Status.UNDEFINED]).toEqual(1);
+    it('records a pending scenario', function() {
+      expect(statsJournal.getScenarioCounts()[Cucumber.Status.PENDING]).toEqual(1);
     });
   });
 
@@ -215,8 +215,8 @@ describe("Cucumber.Listener.StatsJournal", function () {
       expect(counts[Cucumber.Status.UNDEFINED]).toEqual(1);
     });
 
-    it('records a undefined scenario', function() {
-      expect(statsJournal.getScenarioCounts()[Cucumber.Status.UNDEFINED]).toEqual(1);
+    it('records a skipped scenario', function() {
+      expect(statsJournal.getScenarioCounts()[Cucumber.Status.SKIPPED]).toEqual(1);
     });
   });
 });
