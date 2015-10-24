@@ -1,13 +1,9 @@
 # Cucumber.js
-  [![Build Status](https://travis-ci.org/cucumber/cucumber-js.png?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
-  [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js)
-  [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
-  [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-  [![Stories on waffle.io](https://badge.waffle.io/cucumber/cucumber-js.png?label=prioritized&title=Prioritized)](https://waffle.io/cucumber/cucumber-js)
 
-[![NPM](https://nodei.co/npm/cucumber.png?stars&downloads)](https://nodei.co/npm/cucumber/)
-[![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
-
+[![Build Status](https://travis-ci.org/cucumber/cucumber-js.svg?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
+[![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
+[![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.svg)](https://codeclimate.com/github/cucumber/cucumber-js)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 *Cucumber*, the [popular Behaviour-Driven Development tool](https://cucumber.io), brought to your JavaScript stack.
 
@@ -74,39 +70,12 @@ Support files let you setup the environment in which steps will be run, and defi
 ```javascript
 // features/support/world.js
 var zombie = require('zombie');
-function World(callback) {
+function World() {
   this.browser = new zombie(); // this.browser will be available in step definitions
 
   this.visit = function (url, callback) {
     this.browser.visit(url, callback);
   };
-
-  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
-}
-
-module.exports = function() {
-  this.World = World;
-};
-```
-
-It is possible to tell Cucumber to use another object instance than the constructor:
-
-``` javascript
-// features/support/world.js
-
-var zombie = require('zombie');
-function WorldFactory(callback) {
-
-  var browser = new zombie();
-
-  var world = {
-    browser: browser,                        // this.browser will be available in step definitions
-    visit: function (url, callback) {         // this.visit will be available in step definitions
-      this.browser.visit(url, callback);
-    }
-  };
-
-  callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 }
 
 module.exports = function() {
@@ -486,6 +455,18 @@ module.exports = function () {
 
 Install the [pogo](https://www.npmjs.com/package/pogo) NPM package and invoke Cucumber with `--compiler pogo:pogo`.
 
+### Custom Snippet Syntax
+
+Undefined steps snippets are printed in javascript by default.
+Custom snippet snytaxes can be used with `--snippet-syntax <FILE>`.
+See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
+
+##### Building a custom snippet syntax
+
+* See the [JavaScript syntax](/lib/cucumber/support_code/step_definition_snippet_builder/javascript_syntax.js) for an example. Please open an issue if you need more information.
+* Please add the keywords `cucumber` and `snippets` to your package,
+so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
+
 ### Run cucumber
 
 Cucumber.js includes a binary file to execute the features.
@@ -525,7 +506,7 @@ A few example apps are available for you to browse:
 
 ## Contribute
 
-See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.md).
+See [CONTRIBUTING](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTING.md).
 
 ## Help & support
 

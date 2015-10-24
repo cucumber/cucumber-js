@@ -572,12 +572,10 @@ Feature: Environment Hooks
       """
     And a file named "features/support/world.js" with:
       """
-      var WorldConstructor = function WorldConstructor(callback) {
-        var world = {
+      var WorldConstructor = function WorldConstructor() {
+        return {
           isWorld: function() { return true; }
         };
-
-        callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
       };
 
       module.exports.World = WorldConstructor;

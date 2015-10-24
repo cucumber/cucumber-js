@@ -2,10 +2,12 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.SummaryFormatter", function () {
   var Cucumber = requireLib('cucumber');
+  var colors = require('colors/safe');
+  colors.enabled = true;
   var formatter, formatterHearMethod, summaryFormatter, statsJournal, failedStepResults, options;
 
   beforeEach(function () {
-    options              = {};
+    options              = {useColors: true};
     formatter            = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
@@ -275,31 +277,30 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("storeUndefinedStepResult()", function () {
-    var snippetBuilderSyntax, numberMatchingGroup, snippetBuilder, snippet, step;
+    var snippetSyntax, snippetBuilder, snippet, step;
 
     beforeEach(function () {
-      numberMatchingGroup  = createSpy("snippet number matching group");
-      snippetBuilderSyntax = createSpyWithStubs("snippet builder syntax", {getNumberMatchingGroup: numberMatchingGroup});
+      snippetSyntax  = createSpyWithStubs("snippet syntax");
       step           = createSpy("step");
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
       spyOn(summaryFormatter, 'appendStringToUndefinedStepLogBuffer');
-      spyOn(summaryFormatter, 'getStepDefinitionSyntax').and.returnValue(snippetBuilderSyntax);
+      options.snippetSyntax = snippetSyntax;
     });
 
     it("creates a new step definition snippet builder", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
-      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step);
+      expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetSyntax);
     });
 
     it("builds the step definition", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step);
       expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summaryFormatter.storeUndefinedStepResult(step, snippetBuilderSyntax);
+      summaryFormatter.storeUndefinedStepResult(step);
       expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });
@@ -700,7 +701,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs a little explanation about the snippets", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      var expectedString = Cucumber.Util.Colors.pending("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
+      var expectedString = colors.yellow("\nYou can implement step definitions for undefined steps with these snippets:\n\n");
       expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
 
@@ -711,7 +712,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("logs the undefined steps", function () {
       summaryFormatter.logUndefinedStepSnippets();
-      var expectedString = Cucumber.Util.Colors.pending(undefinedStepLogBuffer);
+      var expectedString = colors.yellow(undefinedStepLogBuffer);
       expect(summaryFormatter.log).toHaveBeenCalledWith(expectedString);
     });
   });

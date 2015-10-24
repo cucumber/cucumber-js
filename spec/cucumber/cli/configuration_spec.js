@@ -29,18 +29,26 @@ describe("Cucumber.Cli.Configuration", function () {
   });
 
   describe("getFormatters()", function () {
-    var shouldSnippetsBeInCoffeeScript, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream;
+    var snippetSyntax, formatterOptions, shouldSnippetsBeShown, shouldShowSource, stream, useColors;
 
     beforeEach(function () {
       stream = createSpy('stream');
-      shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in CS?");
+      snippetSyntax = createSpy("snippet syntax");
       shouldSnippetsBeShown = createSpy("should snippets be shown?");
-      shouldShowSource               = createSpy("should source uris be visible?");
-      formatterOptions               = {coffeeScriptSnippets: shouldSnippetsBeInCoffeeScript, snippets: shouldSnippetsBeShown, showSource: shouldShowSource, stream: stream};
+      shouldShowSource = createSpy("should source uris be visible?");
+      useColors = createSpy("use colors");
+      formatterOptions = {
+        snippetSyntax: snippetSyntax,
+        snippets: shouldSnippetsBeShown,
+        showSource: shouldShowSource,
+        stream: stream,
+        useColors: useColors
+      };
       spyOnStub(argumentParser, 'getFormats').and.returnValue([]);
-      spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript').and.returnValue(shouldSnippetsBeInCoffeeScript);
+      spyOnStub(argumentParser, 'getSnippetSyntax').and.returnValue(snippetSyntax);
       spyOnStub(argumentParser, 'shouldSnippetsBeShown').and.returnValue(shouldSnippetsBeShown);
       spyOnStub(argumentParser, 'shouldShowSource').and.returnValue(shouldShowSource);
+      spyOnStub(argumentParser, 'shouldUseColors').and.returnValue(useColors);
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
       spyOn(Cucumber.Listener, 'PrettyFormatter');
@@ -286,23 +294,6 @@ describe("Cucumber.Cli.Configuration", function () {
       var isVersionRequested = createSpy("is version requested?");
       argumentParser.isVersionRequested.and.returnValue(isVersionRequested);
       expect(configuration.isVersionRequested()).toBe(isVersionRequested);
-    });
-  });
-
-  describe("shouldSnippetsBeInCoffeeScript()", function () {
-    beforeEach(function () {
-      spyOnStub(argumentParser, 'shouldSnippetsBeInCoffeeScript');
-    });
-
-    it("asks the argument parser whether the step definition snippets are in Coffeescript or not", function () {
-      configuration.shouldSnippetsBeInCoffeeScript();
-      expect(argumentParser.shouldSnippetsBeInCoffeeScript).toHaveBeenCalled();
-    });
-
-    it("returns the answer from the argument parser", function () {
-      var shouldSnippetsBeInCoffeeScript = createSpy("step definitions in CS?");
-      argumentParser.shouldSnippetsBeInCoffeeScript.and.returnValue(shouldSnippetsBeInCoffeeScript);
-      expect(configuration.shouldSnippetsBeInCoffeeScript()).toBe(shouldSnippetsBeInCoffeeScript);
     });
   });
 

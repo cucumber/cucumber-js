@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.7.0",
+  "version": "0.8.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -116,7 +116,8 @@
     "feature-test": "./bin/cucumber.js -p build",
     "lint": "jshint bin bundler.js features lib spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
-    "unit-test": "jasmine"
+    "unit-test": "jasmine",
+    "build-release": "node ./scripts/release.js"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

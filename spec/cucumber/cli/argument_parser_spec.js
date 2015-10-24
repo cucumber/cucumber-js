@@ -209,6 +209,10 @@ describe("Cucumber.Cli.ArgumentParser", function () {
       expect(knownOptionDefinitions['dry-run']).toEqual(Boolean);
     });
 
+    it("defines a --colors flag", function () {
+      expect(knownOptionDefinitions['colors']).toEqual(Boolean);
+    });
+
     it("defines a --help flag", function () {
       expect(knownOptionDefinitions['help']).toEqual(Boolean);
     });
@@ -525,24 +529,6 @@ describe("Cucumber.Cli.ArgumentParser", function () {
 
     it("returns the flag value", function () {
       expect(argumentParser.isVersionRequested()).toBe(isVersionRequested);
-    });
-  });
-
-  describe("shouldSnippetsBeInCoffeeScript()", function () {
-    var shouldSnippetsBeInCoffeeScript;
-
-    beforeEach(function () {
-      shouldSnippetsBeInCoffeeScript = createSpy("should snippets be in coffee script?");
-      spyOn(argumentParser, 'getOptionOrDefault').and.returnValue(shouldSnippetsBeInCoffeeScript);
-    });
-
-    it("gets the 'coffee' flag with a falsy default value", function () {
-      argumentParser.shouldSnippetsBeInCoffeeScript();
-      expect(argumentParser.getOptionOrDefault).toHaveBeenCalledWith("coffee", false);
-    });
-
-    it("returns the flag value", function () {
-      expect(argumentParser.shouldSnippetsBeInCoffeeScript()).toBe(shouldSnippetsBeInCoffeeScript);
     });
   });
 
