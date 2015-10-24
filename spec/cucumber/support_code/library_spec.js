@@ -3,17 +3,16 @@ require('../../support/spec_helper');
 describe("Cucumber.SupportCode.Library", function () {
   var Cucumber = requireLib('cucumber');
   var library, rawSupportCode;
-  var listenerCollection, stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection;
+  var stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection;
   var collectionSpy;
 
   beforeEach(function () {
     rawSupportCode           = createSpy("Raw support code");
-    listenerCollection       = createSpy("listener collection");
     stepDefinitionCollection = createSpy("step definition collection");
     aroundHookCollection     = createSpy("around hook collection");
     beforeHookCollection     = createSpy("before hook collection");
     afterHookCollection      = createSpy("after hook collection");
-    collectionSpy            = spyOn(Cucumber.Type, 'Collection').and.returnValues.apply(null, [listenerCollection, stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection]);
+    collectionSpy            = spyOn(Cucumber.Type, 'Collection').and.returnValues(stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection);
   });
 
   describe("constructor", function () {
@@ -22,7 +21,7 @@ describe("Cucumber.SupportCode.Library", function () {
     });
 
     it("creates a collection of step definitions", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalledTimes(5);
+      expect(Cucumber.Type.Collection).toHaveBeenCalledTimes(4);
     });
 
     it("executes the raw support code", function () {
@@ -232,22 +231,27 @@ describe("Cucumber.SupportCode.Library", function () {
 
   describe('Listener Support', function () {
     beforeEach(function () {
-      spyOnStub(listenerCollection, 'add');
       library = Cucumber.SupportCode.Library(rawSupportCode);
     });
 
     describe('getListeners()', function () {
-      it("returns a listener collection", function () {
-        var listeners = library.getListeners();
-        expect(listeners).toBeDefined();
+      describe('without any listeners registered', function () {
+        it("returns an empty array", function () {
+          expect(library.getListeners()).toEqual([]);
+        });
       });
-    });
 
-    describe("registerListener()", function () {
-      it("adds the listener to the listener collection", function () {
-        var listener = createSpy('sample listener');
-        library.registerListener(listener);
-        expect(listenerCollection.add).toHaveBeenCalledWith(listener);
+      describe('with a listeners registered', function () {
+        var listener;
+
+        beforeEach(function () {
+          listener = createSpy('sample listener');
+          library.registerListener(listener);
+        });
+
+        it("returns the registered listeners", function () {
+          expect(library.getListeners()).toEqual([listener]);
+        });
       });
     });
 
@@ -259,6 +263,7 @@ describe("Cucumber.SupportCode.Library", function () {
         handler = createSpy('sampleHandler');
         listener = createSpyWithStubs("listener",  {setHandlerForEvent: null});
         spyOn(Cucumber, 'Listener').and.returnValue(listener);
+        spyOn(library, 'registerListener');
         library.registerHandler(eventName, handler);
       });
 
@@ -267,8 +272,8 @@ describe("Cucumber.SupportCode.Library", function () {
         expect(listener.setHandlerForEvent).toHaveBeenCalledWithValueAsNthParameter(handler, 2);
       });
 
-      it("adds the listener to the listener collection", function () {
-        expect(listenerCollection.add).toHaveBeenCalled();
+      it("registers the listener", function () {
+        expect(library.registerListener).toHaveBeenCalledWith(listener);
       });
     });
   });

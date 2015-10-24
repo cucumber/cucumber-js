@@ -4,38 +4,21 @@ describe("Cucumber.Runtime", function () {
   var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
-  var listeners;
   var isDryRunRequested, isFailFastRequested, isStrictRequested;
 
   beforeEach(function () {
     isStrictRequested = false;
     isDryRunRequested = false;
     isFailFastRequested = false;
-    listeners     = createSpyWithStubs("listener collection", {add: null});
     configuration = createSpyWithStubs("configuration", {
       isDryRunRequested: isDryRunRequested,
       isFailFastRequested: isFailFastRequested,
       isStrictRequested: isStrictRequested,
       shouldFilterStackTraces: true
     });
-    spyOn(Cucumber.Type, 'Collection').and.returnValue(listeners);
     spyOn(Cucumber.Runtime.StackTraceFilter, 'filter');
     spyOn(Cucumber.Runtime.StackTraceFilter, 'unfilter');
     runtime       = Cucumber.Runtime(configuration);
-  });
-
-  describe("constructor", function () {
-    it("creates a listener collection", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalled();
-    });
-  });
-
-  describe("attachListener()", function () {
-    it("adds the listener to the listener collection", function () {
-      var listener = createSpy("AST tree listener");
-      runtime.attachListener(listener);
-      expect(listeners.add).toHaveBeenCalledWith(listener);
-    });
   });
 
   describe("start()", function () {
@@ -80,7 +63,26 @@ describe("Cucumber.Runtime", function () {
         failFast: isFailFastRequested,
         strict: isStrictRequested
       };
-      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners, options);
+      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, [], options);
+    });
+
+    describe("when listeners are attached", function () {
+      var listener;
+
+      beforeEach(function () {
+        listener = createSpy('listener');
+        runtime.attachListener(listener);
+      });
+
+      it("passes the listener to the AST tree walker", function () {
+        runtime.start(callback);
+        var options = {
+          dryRun: isDryRunRequested,
+          failFast: isFailFastRequested,
+          strict: isStrictRequested
+        };
+        expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, [listener], options);
+      });
     });
 
     describe("when stack traces should be filtered", function () {
