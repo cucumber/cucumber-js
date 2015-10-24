@@ -4,16 +4,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var colors = require('colors/safe');
   colors.enabled = true;
-  var formatter, formatterHearMethod, summaryFormatter, statsJournal, failedStepResults, options;
+  var formatter, formatterHearMethod, summaryFormatter, statsJournal, options;
 
   beforeEach(function () {
     options              = {useColors: true};
     formatter            = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
     statsJournal         = createSpy("stats journal");
-    failedStepResults    = createSpyObj("failed steps", ["length"]);
-    failedStepResults.length.and.returnValue(0);
-    spyOn(Cucumber.Type, 'Collection').and.returnValue(failedStepResults);
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
     spyOn(Cucumber.Listener, 'StatsJournal').and.returnValue(statsJournal);
     summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
@@ -26,10 +23,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("extends the formatter", function () {
       expect(summaryFormatter).toBe(formatter);
-    });
-
-    it("creates a collection to store the failed steps", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalled();
     });
 
     it("creates a stats journal", function () {
@@ -227,16 +220,34 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
 
   describe("storeFailedStepResult()", function () {
-    var failedStepResult;
+    var failureException, stepResult;
 
     beforeEach(function () {
-      failedStepResult = createSpy("failed step result");
-      spyOnStub(failedStepResults, 'add');
+      spyOn(summaryFormatter, 'appendStringToFailedStepResultLogBuffer');
     });
 
-    it("adds the result to the failed step result collection", function () {
-      summaryFormatter.storeFailedStepResult(failedStepResult);
-      expect(failedStepResults.add).toHaveBeenCalledWith(failedStepResult);
+    describe("when the failure exception has a stack", function () {
+      beforeEach(function () {
+        failureException = {stack: 'failure exception stack'};
+        stepResult       = createSpyWithStubs("failed step result", { getFailureException: failureException });
+      });
+
+      it("appends the stack to the failed step results log buffer", function () {
+        summaryFormatter.storeFailedStepResult(stepResult);
+        expect(summaryFormatter.appendStringToFailedStepResultLogBuffer).toHaveBeenCalledWith('failure exception stack');
+      });
+    });
+
+    describe("when the failure exception has no stack", function () {
+      beforeEach(function () {
+        failureException = 'failure exception';
+        stepResult       = createSpyWithStubs("failed step result", { getFailureException: failureException });
+      });
+
+      it("appends the expception to the failed step results log buffer", function () {
+        summaryFormatter.storeFailedStepResult(stepResult);
+        expect(summaryFormatter.appendStringToFailedStepResultLogBuffer).toHaveBeenCalledWith('failure exception');
+      });
     });
   });
 
@@ -428,72 +439,20 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logFailedStepResults()", function () {
-    beforeEach(function () {
-      spyOnStub(failedStepResults, 'forEach');
-    });
-
-    it("logs a failed steps header", function () {
-      summaryFormatter.logFailedStepResults();
-      expect(summaryFormatter.log).toHaveBeenCalledWith("(::) failed steps (::)\n\n");
-    });
-
-    it("iterates synchronously over the failed step results", function () {
-      summaryFormatter.logFailedStepResults();
-      expect(failedStepResults.forEach).toHaveBeenCalled();
-      expect(failedStepResults.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-    });
-
-    describe("for each failed step result", function () {
-      var userFunction, failedStepResult;
-
-      beforeEach(function () {
-        summaryFormatter.logFailedStepResults();
-        userFunction     = failedStepResults.forEach.calls.mostRecent().args[0];
-        failedStepResult = createSpy("failed step result");
-        spyOn(summaryFormatter, 'logFailedStepResult');
-      });
-
-      it("tells the visitor to visit the feature and call back when finished", function () {
-        userFunction (failedStepResult);
-        expect(summaryFormatter.logFailedStepResult).toHaveBeenCalledWith(failedStepResult);
-      });
-    });
-  });
-
-  describe("logFailedStepResult()", function () {
-    var stepResult, failureException;
+    var failedStepResultLogBuffer;
 
     beforeEach(function () {
-      failureException = createSpy('caught exception');
-      stepResult       = createSpyWithStubs("failed step result", { getFailureException: failureException });
+      failedStepResultLogBuffer = "failed step result log buffer";
+      spyOn(summaryFormatter, 'getFailedStepResultLogBuffer').and.returnValue(failedStepResultLogBuffer);
+      summaryFormatter.logFailedStepResults();
     });
 
-    it("gets the failure exception from the step result", function () {
-      summaryFormatter.logFailedStepResult(stepResult);
-      expect(stepResult.getFailureException).toHaveBeenCalled();
+    it("logs a failed step results header", function () {
+      expect(summaryFormatter.log).toHaveBeenCalledWith('(::) failed steps (::)\n\n');
     });
 
-    describe("when the failure exception has a stack", function () {
-      beforeEach(function () {
-        failureException.stack = createSpy('failure exception stack');
-      });
-
-      it("logs the stack", function () {
-        summaryFormatter.logFailedStepResult(stepResult);
-        expect(summaryFormatter.log).toHaveBeenCalledWith(failureException.stack);
-      });
-    });
-
-    describe("when the failure exception has no stack", function () {
-      it("logs the exception itself", function () {
-        summaryFormatter.logFailedStepResult(stepResult);
-        expect(summaryFormatter.log).toHaveBeenCalledWith(failureException);
-      });
-    });
-
-    it("logs two line breaks", function () {
-      summaryFormatter.logFailedStepResult(stepResult);
-      expect(summaryFormatter.log).toHaveBeenCalledWith("\n\n");
+    it("logs the failed step results details", function () {
+      expect(summaryFormatter.log).toHaveBeenCalledWith(failedStepResultLogBuffer);
     });
   });
 
