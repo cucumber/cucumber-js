@@ -3,8 +3,8 @@ Feature: Ambiguous Steps
   Scenario:
     Given a file named "features/a.feature" with:
       """
-      Feature: Missing
-        Scenario: Missing
+      Feature:
+        Scenario:
           Given a ambiguous step
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
