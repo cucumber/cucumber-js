@@ -1,13 +1,9 @@
 # Cucumber.js
-  [![Build Status](https://travis-ci.org/cucumber/cucumber-js.png?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
-  [![Dependencies](https://david-dm.org/cucumber/cucumber-js.png)](https://david-dm.org/cucumber/cucumber-js)
-  [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.png)](https://codeclimate.com/github/cucumber/cucumber-js)
-  [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-  [![Stories on waffle.io](https://badge.waffle.io/cucumber/cucumber-js.png?label=prioritized&title=Prioritized)](https://waffle.io/cucumber/cucumber-js)
 
-[![NPM](https://nodei.co/npm/cucumber.png?stars&downloads)](https://nodei.co/npm/cucumber/)
-[![NPM](https://nodei.co/npm-dl/cucumber.png)](https://nodei.co/npm/cucumber/)
-
+[![Build Status](https://travis-ci.org/cucumber/cucumber-js.svg?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
+[![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
+[![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.svg)](https://codeclimate.com/github/cucumber/cucumber-js)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 *Cucumber*, the [popular Behaviour-Driven Development tool](https://cucumber.io), brought to your JavaScript stack.
 
@@ -74,39 +70,12 @@ Support files let you setup the environment in which steps will be run, and defi
 ```javascript
 // features/support/world.js
 var zombie = require('zombie');
-function World(callback) {
+function World() {
   this.browser = new zombie(); // this.browser will be available in step definitions
 
   this.visit = function (url, callback) {
     this.browser.visit(url, callback);
   };
-
-  callback(); // tell Cucumber we're finished and to use 'this' as the world instance
-}
-
-module.exports = function() {
-  this.World = World;
-};
-```
-
-It is possible to tell Cucumber to use another object instance than the constructor:
-
-``` javascript
-// features/support/world.js
-
-var zombie = require('zombie');
-function WorldFactory(callback) {
-
-  var browser = new zombie();
-
-  var world = {
-    browser: browser,                        // this.browser will be available in step definitions
-    visit: function (url, callback) {         // this.visit will be available in step definitions
-      this.browser.visit(url, callback);
-    }
-  };
-
-  callback(world); // tell Cucumber we're finished and to use our world object instead of 'this'
 }
 
 module.exports = function() {
@@ -545,7 +514,7 @@ A few example apps are available for you to browse:
 
 ## Contribute
 
-See [CONTRIBUTE](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTE.md).
+See [CONTRIBUTING](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTING.md).
 
 ## Help & support
 
