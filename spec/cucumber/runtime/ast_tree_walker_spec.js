@@ -560,6 +560,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         beforeStep = createSpyWithStubs("before step", {acceptVisitor: undefined});
         callback   = createSpyWithStubs("callback");
         spyOn(treeWalker, 'witnessHook');
+        spyOn(treeWalker, 'executeHookStep');
 
         var userFunction = beforeStepCollection.asyncForEach.calls.mostRecent().args[0];
 
@@ -570,10 +571,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         expect(treeWalker.witnessHook).toHaveBeenCalled();
       });
 
-      it("instructs the before step to accept the tree walker as a visitor", function () {
-        expect(beforeStep.acceptVisitor).toHaveBeenCalled();
-        expect(beforeStep.acceptVisitor).toHaveBeenCalledWithValueAsNthParameter(treeWalker, 1);
-        expect(beforeStep.acceptVisitor).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      it("executes the hook step", function () {
+        expect(treeWalker.executeHookStep).toHaveBeenCalledWith(beforeStep, jasmine.any(Function));
       });
     });
 
@@ -610,6 +609,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         afterStep  = createSpyWithStubs("after step", {acceptVisitor: undefined});
         callback   = createSpyWithStubs("callback");
         spyOn(treeWalker, 'witnessHook');
+        spyOn(treeWalker, 'executeHookStep');
+
         var userFunction = afterStepCollection.asyncForEach.calls.mostRecent().args[0];
 
         userFunction (afterStep, callback);
@@ -619,10 +620,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         expect(treeWalker.witnessHook).toHaveBeenCalled();
       });
 
-      it("instructs the before step to accept the tree walker as a visitor", function () {
-        expect(afterStep.acceptVisitor).toHaveBeenCalled();
-        expect(afterStep.acceptVisitor).toHaveBeenCalledWithValueAsNthParameter(treeWalker, 1);
-        expect(afterStep.acceptVisitor).toHaveBeenCalledWithAFunctionAsNthParameter(2);
+      it("executes the hook step", function () {
+        expect(treeWalker.executeHookStep).toHaveBeenCalledWith(afterStep, jasmine.any(Function));
       });
     });
 

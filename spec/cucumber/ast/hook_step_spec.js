@@ -30,7 +30,7 @@ describe("Cucumber.Ast.HookStep", function () {
     });
   });
 
-  describe("getStepDefinition() [setHook()]", function () {
+  describe("getHook() [setHook()]", function () {
     var hook;
 
     beforeEach(function () {
@@ -39,7 +39,7 @@ describe("Cucumber.Ast.HookStep", function () {
 
     it("returns the hook instance set with setHook()", function () {
       hookStep.setHook(hook);
-      expect(hookStep.getStepDefinition()).toBe(hook);
+      expect(hookStep.getHook()).toBe(hook);
     });
   });
 });
