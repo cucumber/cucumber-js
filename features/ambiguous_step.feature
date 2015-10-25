@@ -24,10 +24,10 @@ Feature: Ambiguous Steps
       1 step (1 ambiguous)
       <duration-stat>
 
-      The following step definitions are ambiguous
+      The following steps have multiple matching definitions:
 
       "a ambiguous step" matches:
-        /^a ambiguous step$/ # step_definitions/cucumber_steps.js:2
-        /^a (.*) step$/      # step_definitions/cucumber_steps.js:3
+      /^a ambiguous step$/ # features/step_definitions/cucumber_steps.js:2
+      /^a (.*) step$/      # features/step_definitions/cucumber_steps.js:3
       """
     And the exit status should be 0

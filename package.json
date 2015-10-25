@@ -86,6 +86,8 @@
     "node": ">=0.10"
   },
   "dependencies": {
+    "callsite": "^1.0.0",
+    "cli-table": "^0.3.1",
     "colors": "1.1.2",
     "cucumber-html": "0.2.3",
     "duration": "^0.2.0",
