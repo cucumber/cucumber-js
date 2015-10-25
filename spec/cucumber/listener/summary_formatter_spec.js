@@ -271,7 +271,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     beforeEach(function () {
       snippetSyntax  = createSpyWithStubs("snippet syntax");
       step           = createSpy("step");
-      stepResult     = createSpyWithStubs("step result", {getStep: step})
+      stepResult     = createSpyWithStubs("step result", {getStep: step});
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);

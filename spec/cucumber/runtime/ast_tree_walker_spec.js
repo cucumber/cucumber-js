@@ -1035,7 +1035,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
   });
 
   describe("processStep()", function () {
-    var step, callback;
+    var name, step, callback;
 
     beforeEach(function () {
       name = 'step name';
@@ -1045,17 +1045,17 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       spyOn(treeWalker, 'isSkippingSteps');
       spyOn(treeWalker, 'executeStep');
       spyOn(treeWalker, 'skipStep');
-      spyOnStub(supportCodeLibrary, 'lookupStepDefinitionByName').and.returnValue([]);
+      spyOnStub(supportCodeLibrary, 'lookupStepDefinitionsByName').and.returnValue([]);
     });
 
     it("looks up the step definitions", function () {
       treeWalker.processStep(step, callback);
-      expect(supportCodeLibrary.lookupStepDefinitionByName).toHaveBeenCalledWith('step name');
+      expect(supportCodeLibrary.lookupStepDefinitionsByName).toHaveBeenCalledWith('step name');
     });
 
     describe("when the step is undefined", function () {
       beforeEach(function () {
-        supportCodeLibrary.lookupStepDefinitionByName.and.returnValue([]);
+        supportCodeLibrary.lookupStepDefinitionsByName.and.returnValue([]);
       });
 
       it("skips the undefined step", function () {
@@ -1079,7 +1079,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       beforeEach(function () {
         stepDefinition = createSpy('step definition');
-        supportCodeLibrary.lookupStepDefinitionByName.and.returnValue([stepDefinition]);
+        supportCodeLibrary.lookupStepDefinitionsByName.and.returnValue([stepDefinition]);
       });
 
       describe("when the steps are skipped", function () {
@@ -1148,7 +1148,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
   });
 
   describe("executeStep()", function () {
-    var step, callback;
+    var step, stepDefinition, callback, world, scenario, defaultTimeout;
 
     beforeEach(function () {
       step = createSpy("step");
@@ -1178,7 +1178,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         stepResult = createSpy('step result');
         spyOn(treeWalker, 'visitStepResult');
         var invokeCallback = stepDefinition.invoke.calls.mostRecent().args[5];
-        invokeCallback(stepResult)
+        invokeCallback(stepResult);
       });
 
       it("creates a new skipped step result", function () {
