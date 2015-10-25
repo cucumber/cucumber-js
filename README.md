@@ -427,7 +427,7 @@ var myAfterHooks = function () {
 module.exports = myAfterHooks;
 ```
 
-### Run cucumber
+### CLI
 
 Cucumber.js includes a binary file to execute the features.
 
