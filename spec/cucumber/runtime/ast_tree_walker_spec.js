@@ -3,7 +3,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker", function () {
   var Cucumber = requireLib('cucumber');
-  var beforeStepCollection, afterStepCollection, attachmentCollection, emptyHook;
+  var beforeStepCollection, afterStepCollection, emptyHook;
   var walkDomain;
   var treeWalker, features, supportCodeLibrary, listeners, supportListeners, options;
 
@@ -24,9 +24,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
     beforeStepCollection = createSpyWithStubs("before step collection", {add: undefined, unshift: undefined, clear: undefined, asyncForEach: undefined});
     afterStepCollection  = createSpyWithStubs("after step collection", {add: undefined, unshift: undefined, clear: undefined, asyncForEach: undefined});
-    attachmentCollection = createSpyWithStubs("attachment collection", {add: undefined, unshift: undefined, clear: undefined, forEach: undefined});
-    emptyHook            = createSpy("empty hook");
-    spyOn(Cucumber.Type, 'Collection').and.returnValues(beforeStepCollection, afterStepCollection, attachmentCollection);
+    spyOn(Cucumber.Type, 'Collection').and.returnValues(beforeStepCollection, afterStepCollection);
     spyOn(Cucumber.SupportCode, "Hook").and.returnValue(emptyHook);
     spyOn(domain, 'create').and.returnValue(walkDomain);
     treeWalker           = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, options);
@@ -965,29 +963,18 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("adds the attachment to the collection", function () {
-      expect(attachmentCollection.add).toHaveBeenCalledWith(attachment);
-    });
-  });
-
-  describe("getAttachments()", function () {
-    var returnValue;
-
-    beforeEach(function () {
-      returnValue = treeWalker.getAttachments();
-    });
-
-    it("returns the attachments", function () {
-      expect(returnValue).toBe(attachmentCollection);
+      expect(treeWalker.getAttachments()).toEqual([attachment]);
     });
   });
 
   describe("witnessNewStep()", function () {
     beforeEach(function () {
+      treeWalker.attach('123');
       treeWalker.witnessNewStep();
     });
 
     it("clears the attachments", function () {
-      expect(attachmentCollection.clear).toHaveBeenCalled();
+      expect(treeWalker.getAttachments()).toEqual([]);
     });
   });
 
