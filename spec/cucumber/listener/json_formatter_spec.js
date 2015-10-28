@@ -305,9 +305,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         beforeEach(function () {
           var attachment1 = createSpyWithStubs("first attachment", {getMimeType: "first mime type", getData: "first data"});
           var attachment2 = createSpyWithStubs("second attachment", {getMimeType: "second mime type", getData: "second data"});
-          var attachments = Cucumber.Type.Collection();
-          attachments.add(attachment1);
-          attachments.add(attachment2);
+          var attachments = [attachment1, attachment2];
           stepResult.hasAttachments.and.returnValue(true);
           stepResult.getAttachments.and.returnValue(attachments);
         });
@@ -386,9 +384,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
         beforeEach(function () {
           var attachment1 = createSpyWithStubs("first attachment", {getMimeType: "first mime type", getData: "first data"});
           var attachment2 = createSpyWithStubs("second attachment", {getMimeType: "second mime type", getData: "second data"});
-          var attachments = Cucumber.Type.Collection();
-          attachments.add(attachment1);
-          attachments.add(attachment2);
+          var attachments = [attachment1, attachment2];
           stepResult.hasAttachments.and.returnValue(true);
           stepResult.getAttachments.and.returnValue(attachments);
         });

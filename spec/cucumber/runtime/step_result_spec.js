@@ -6,7 +6,7 @@ describe("Cucumber.Runtime.StepResult", function () {
 
   beforeEach(function () {
     step        = createSpy("step");
-    attachments = {};
+    attachments = [];
     failureException = new Error('some error');
     status = Cucumber.Status.PASSED;
     stepResult = Cucumber.Runtime.StepResult({
@@ -44,10 +44,6 @@ describe("Cucumber.Runtime.StepResult", function () {
 
   describe("hasAttachments()", function () {
     describe("when there are no attachments", function () {
-      beforeEach(function () {
-        spyOnStub(attachments, 'length').and.returnValue(0);
-      });
-
       it("returns false", function () {
         expect(stepResult.hasAttachments()).toBeFalsy();
       });
@@ -55,7 +51,7 @@ describe("Cucumber.Runtime.StepResult", function () {
 
     describe("when there are attachments", function () {
       beforeEach(function () {
-        spyOnStub(attachments, 'length').and.returnValue(1);
+        attachments.push(1);
       });
 
       it("returns true", function () {
