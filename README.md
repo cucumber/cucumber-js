@@ -342,13 +342,11 @@ Hooks can be conditionally elected for execution based on the tags of the scenar
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before("@foo", "@bar,@baz", function (scenario, callback) {
+  this.Before("@foo", "@bar,@baz", function (scenario) {
     // This hook will be executed before scenarios tagged with @foo and either
     // @bar or @baz.
 
     // ...
-
-    callback();
   });
 };
 
@@ -360,9 +358,8 @@ module.exports = myHooks;
 You can attach text, images and files to the Cucumber report using the scenario object:
 
 ``` javascript
-this.After(function (scenario, callback) {
+this.After(function (scenario) {
   scenario.attach('Some text');
-  callback();
 });
 ```
 
@@ -370,13 +367,12 @@ By default, text is saved with a MIME type of `text/plain`.  You can also specif
 a different MIME type:
 
 ``` javascript
-this.After(function (scenario, callback) {
+this.After(function (scenario) {
   scenario.attach('{"name": "some JSON"}', 'application/json');
-  callback();
 });
 ```
 
-Images and other binary data can be attached using a [stream.Readable](https://nodejs.org/api/stream.html)
+Images and other binary data can be attached using a [stream.Readable](https://nodejs.org/api/stream.html). In that case, passing a callback to `attach()` becomes mandatory:
 
 ``` javascript
 this.After(function (scenario, callback) {
@@ -392,28 +388,25 @@ this.After(function (scenario, callback) {
 });
 ```
 
-Images and binary data can also be attached using a [Buffer](https://nodejs.org/api/buffer.html)
+Images and binary data can also be attached using a [Buffer](https://nodejs.org/api/buffer.html):
 
 ``` javascript
-this.After(function (scenario, callback) {
+this.After(function (scenario) {
   if (scenario.isFailed()) {
     var buffer = getScreenshotOfError();
     scenario.attach(buffer, 'image/png');
   }
-  callback();
 });
 ```
 
 Here is an example of saving a screenshot using [WebDriver](https://www.npmjs.com/package/selenium-webdriver)
-when a scenario fails
+when a scenario fails:
 
 ``` javascript
 this.After(function (scenario, callback) {
   if (scenario.isFailed()) {
     webDriver.takeScreenshot().then(stream) {
-      scenario.attach(stream, 'image/png', function(err) {
-        callback(err);
-      });
+      scenario.attach(stream, 'image/png', callback);
     }, function(err) {
       callback(err);
     });
