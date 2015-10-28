@@ -78,7 +78,7 @@ function World() {
   };
 }
 
-// Use Before hook to perform async tasks
+// Should you need asynchronous operations when World is intantiated (i.e. before every scenario), use a hook with a callback or returning a promise (see Hooks below for more information):
 function Before(callback) {
   var server = require('http').createServer();
   server.listen(8080, callback);
@@ -242,7 +242,7 @@ To run something before every scenario, use before hooks:
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before(function (scenario, callback) {
+  this.Before(function (scenario) {
     // Just like inside step definitions, "this" is set to a World instance.
     // It's actually the same instance the current scenario step definitions
     // will receive.
@@ -253,13 +253,27 @@ var myHooks = function () {
 
     this.bootFullTextSearchServer();
     this.createSomeUsers();
-
-    // Don't forget to tell Cucumber when you're done:
-    callback();
   });
 };
 
 module.exports = myHooks;
+```
+
+If you need to run asynchronous code, simply accept a callback in your hook function and run it when you're done:
+
+``` javascript
+this.Before(function (scenario, callback) {
+  this.createUsers(callback);
+});
+```
+
+Or return a promise:
+
+```javascript
+this.Before(function (scenario) {
+  // assuming this.createUsers returns a promise:
+  return this.createUsers();
+});
 ```
 
 ##### After hooks
@@ -270,7 +284,7 @@ The *before hook* counterpart is the *after hook*. It's similar in shape but is 
 // features/support/after_hooks.js
 
 var myAfterHooks = function () {
-  this.After(function (scenario, callback) {
+  this.After(function (scenario) {
     // Again, "this" is set to the World instance the scenario just finished
     // playing with.
 
@@ -278,9 +292,6 @@ var myAfterHooks = function () {
 
     this.emptyDatabase();
     this.shutdownFullTextSearchServer();
-
-    // Release control:
-    callback();
   });
 };
 
@@ -309,20 +320,19 @@ myAroundHooks = function () {
     // The first argument to runScenario is the error, if any, of the before tasks
     // The second argument is a function which performs the after tasks
     //   it can use callbacks, return a promise or be synchronous
-    runScenario(null, function (callback) {
+    runScenario(null, function () {
       // Now, we can do our "after scenario" stuff:
 
       this.emptyDatabase();
       this.shutdownFullTextSearchServer();
-
-      // Tell Cucumber we're done:
-      callback();
     });
   });
 };
 
 module.exports = myAroundHooks;
 ```
+
+As with `Before` and `After` hooks, `Around` hooks functions (both pre- and post-scenario functions) can accept a callback or return a promise if you need asynchronous operations.
 
 ##### Tagged hooks
 
