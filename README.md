@@ -78,8 +78,15 @@ function World() {
   };
 }
 
+// Use Before hook to perform async tasks
+function Before(callback) {
+  var server = require('http').createServer();
+  server.listen(8080, callback);
+}
+
 module.exports = function() {
   this.World = World;
+  this.Before = Before;
 };
 ```
 
