@@ -766,13 +766,12 @@ describe("Cucumber.Ast.Step", function () {
   });
 
   describe("execute()", function () {
-    var stepDefinition, world, scenario, domain, defaultTimeout, visitor, callback;
+    var stepDefinition, world, scenario, defaultTimeout, visitor, callback;
 
     beforeEach(function () {
       stepDefinition = createSpy("step definition");
       world          = createSpy("world");
       scenario       = createSpy("scenario");
-      domain         = createSpy("domain");
       defaultTimeout = createSpy("defaultTimeout");
       visitor        = createSpy("visitor");
       callback       = createSpy("callback received by execute()");
@@ -780,13 +779,12 @@ describe("Cucumber.Ast.Step", function () {
       spyOnStub(step, 'getStepDefinition').and.returnValue(stepDefinition);
       spyOnStub(visitor, 'getWorld').and.returnValue(world);
       spyOnStub(visitor, 'getScenario').and.returnValue(scenario);
-      spyOnStub(visitor, 'getDomain').and.returnValue(domain);
       spyOnStub(visitor, 'getDefaultTimeout').and.returnValue(defaultTimeout);
       step.execute(visitor, callback);
     });
 
     it("invokes the step definition", function () {
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, domain, defaultTimeout, callback);
+      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, defaultTimeout, callback);
     });
   });
 });
