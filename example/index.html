@@ -38,7 +38,9 @@
 
 // Provide a custom World constructor. It's optional, a default one is supplied.
 this.World = function(callback) {
-  callback();
+  if (typeof callback === 'function') {
+    callback();
+  }
 };
 
 // Define your World!
