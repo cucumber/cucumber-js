@@ -78,8 +78,15 @@ function World() {
   };
 }
 
+// Should you need asynchronous operations when World is intantiated (i.e. before every scenario), use a hook with a callback or returning a promise (see Hooks below for more information):
+function Before(callback) {
+  var server = require('http').createServer();
+  server.listen(8080, callback);
+}
+
 module.exports = function() {
   this.World = World;
+  this.Before = Before;
 };
 ```
 
@@ -235,7 +242,7 @@ To run something before every scenario, use before hooks:
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before(function (scenario, callback) {
+  this.Before(function (scenario) {
     // Just like inside step definitions, "this" is set to a World instance.
     // It's actually the same instance the current scenario step definitions
     // will receive.
@@ -246,13 +253,27 @@ var myHooks = function () {
 
     this.bootFullTextSearchServer();
     this.createSomeUsers();
-
-    // Don't forget to tell Cucumber when you're done:
-    callback();
   });
 };
 
 module.exports = myHooks;
+```
+
+If you need to run asynchronous code, simply accept a callback in your hook function and run it when you're done:
+
+``` javascript
+this.Before(function (scenario, callback) {
+  this.createUsers(callback);
+});
+```
+
+Or return a promise:
+
+```javascript
+this.Before(function (scenario) {
+  // assuming this.createUsers returns a promise:
+  return this.createUsers();
+});
 ```
 
 ##### After hooks
@@ -263,7 +284,7 @@ The *before hook* counterpart is the *after hook*. It's similar in shape but is 
 // features/support/after_hooks.js
 
 var myAfterHooks = function () {
-  this.After(function (scenario, callback) {
+  this.After(function (scenario) {
     // Again, "this" is set to the World instance the scenario just finished
     // playing with.
 
@@ -271,9 +292,6 @@ var myAfterHooks = function () {
 
     this.emptyDatabase();
     this.shutdownFullTextSearchServer();
-
-    // Release control:
-    callback();
   });
 };
 
@@ -302,20 +320,19 @@ myAroundHooks = function () {
     // The first argument to runScenario is the error, if any, of the before tasks
     // The second argument is a function which performs the after tasks
     //   it can use callbacks, return a promise or be synchronous
-    runScenario(null, function (callback) {
+    runScenario(null, function () {
       // Now, we can do our "after scenario" stuff:
 
       this.emptyDatabase();
       this.shutdownFullTextSearchServer();
-
-      // Tell Cucumber we're done:
-      callback();
     });
   });
 };
 
 module.exports = myAroundHooks;
 ```
+
+As with `Before` and `After` hooks, `Around` hooks functions (both pre- and post-scenario functions) can accept a callback or return a promise if you need asynchronous operations.
 
 ##### Tagged hooks
 
@@ -325,13 +342,11 @@ Hooks can be conditionally elected for execution based on the tags of the scenar
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before("@foo", "@bar,@baz", function (scenario, callback) {
+  this.Before("@foo", "@bar,@baz", function (scenario) {
     // This hook will be executed before scenarios tagged with @foo and either
     // @bar or @baz.
 
     // ...
-
-    callback();
   });
 };
 
@@ -343,9 +358,8 @@ module.exports = myHooks;
 You can attach text, images and files to the Cucumber report using the scenario object:
 
 ``` javascript
-this.After(function (scenario, callback) {
+this.After(function (scenario) {
   scenario.attach('Some text');
-  callback();
 });
 ```
 
@@ -353,13 +367,12 @@ By default, text is saved with a MIME type of `text/plain`.  You can also specif
 a different MIME type:
 
 ``` javascript
-this.After(function (scenario, callback) {
+this.After(function (scenario) {
   scenario.attach('{"name": "some JSON"}', 'application/json');
-  callback();
 });
 ```
 
-Images and other binary data can be attached using a [stream.Readable](https://nodejs.org/api/stream.html)
+Images and other binary data can be attached using a [stream.Readable](https://nodejs.org/api/stream.html). In that case, passing a callback to `attach()` becomes mandatory:
 
 ``` javascript
 this.After(function (scenario, callback) {
@@ -375,28 +388,25 @@ this.After(function (scenario, callback) {
 });
 ```
 
-Images and binary data can also be attached using a [Buffer](https://nodejs.org/api/buffer.html)
+Images and binary data can also be attached using a [Buffer](https://nodejs.org/api/buffer.html):
 
 ``` javascript
-this.After(function (scenario, callback) {
+this.After(function (scenario) {
   if (scenario.isFailed()) {
     var buffer = getScreenshotOfError();
     scenario.attach(buffer, 'image/png');
   }
-  callback();
 });
 ```
 
 Here is an example of saving a screenshot using [WebDriver](https://www.npmjs.com/package/selenium-webdriver)
-when a scenario fails
+when a scenario fails:
 
 ``` javascript
 this.After(function (scenario, callback) {
   if (scenario.isFailed()) {
     webDriver.takeScreenshot().then(stream) {
-      scenario.attach(stream, 'image/png', function(err) {
-        callback(err);
-      });
+      scenario.attach(stream, 'image/png', callback);
     }, function(err) {
       callback(err);
     });

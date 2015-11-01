@@ -285,6 +285,12 @@ describe("Cucumber.Api.Scenario", function () {
         scenario.attach(data);
         expect(astTreeWalker.attach).toHaveBeenCalledWith(data, "text/plain");
       });
+
+      it("calls back if a callback is given", function () {
+        var callback = createSpy();
+        scenario.attach(data, null, callback);
+        expect(callback).toHaveBeenCalled();
+      });
     });
   });
 });

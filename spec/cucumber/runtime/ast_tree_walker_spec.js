@@ -1,10 +1,8 @@
-var domain = require('domain');
 require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.AstTreeWalker", function () {
   var Cucumber = requireLib('cucumber');
   var beforeStepCollection, afterStepCollection, emptyHook;
-  var walkDomain;
   var treeWalker, features, supportCodeLibrary, listeners, supportListeners, options;
 
   var createListener = function createListener(name) {
@@ -18,7 +16,6 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     supportCodeLibrary   = createSpy("Support code library");
     listeners            = [createListener("First listener"), createListener("Second listener")];
     supportListeners     = [createListener("First support listener"), createListener("Second support listener")];
-    walkDomain           = createSpy("walk domain");
     options              = {};
     spyOnStub(supportCodeLibrary, 'getListeners').and.returnValue(supportListeners);
 
@@ -26,12 +23,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     afterStepCollection  = createSpyWithStubs("after step collection", {add: undefined, unshift: undefined, clear: undefined, asyncForEach: undefined});
     spyOn(Cucumber.Type, 'Collection').and.returnValues(beforeStepCollection, afterStepCollection);
     spyOn(Cucumber.SupportCode, "Hook").and.returnValue(emptyHook);
-    spyOn(domain, 'create').and.returnValue(walkDomain);
     treeWalker           = Cucumber.Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, options);
-  });
-
-  it("creates a domain", function () {
-    expect(domain.create).toHaveBeenCalled();
   });
 
   describe("walk()", function () {
@@ -40,17 +32,6 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     beforeEach(function () {
       callback = createSpy("Callback");
       spyOn(treeWalker, 'visitFeatures');
-    });
-
-    describe("when the walk domain can be entered", function () {
-      beforeEach(function () {
-        spyOnStub(walkDomain, 'enter');
-      });
-
-      it("enters the domain", function () {
-        treeWalker.walk(callback);
-        expect(walkDomain.enter).toHaveBeenCalled();
-      });
     });
 
     it("visits all features with a callback", function () {
@@ -67,17 +48,6 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       beforeEach(function () {
         treeWalker.walk(callback);
         featuresVisitCallback = treeWalker.visitFeatures.calls.mostRecent().args[1];
-      });
-
-      describe("when the walk domain can be exited", function () {
-        beforeEach(function () {
-          spyOnStub(walkDomain, 'exit');
-        });
-
-        it("exits the domain", function () {
-          featuresVisitCallback();
-          expect(walkDomain.exit).toHaveBeenCalled();
-        });
       });
 
       describe("features are successful", function () {
@@ -410,7 +380,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         beforeStep = createSpyWithStubs("before step", {setHook: undefined});
         afterStep  = createSpyWithStubs("after step", {setHook: undefined});
         var forEachCallback = aroundHooks.forEach.calls.mostRecent().args[0];
-        spyOn(Cucumber.Ast, "HookStep").and.returnValues.apply(null, [beforeStep, afterStep]);
+        spyOn(Cucumber.Ast, "HookStep").and.returnValues(beforeStep, afterStep);
 
         forEachCallback(aroundHook);
       });
@@ -1018,12 +988,6 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       it("returns the API scenario", function () {
         expect(returnValue).toBe(apiScenario);
       });
-    });
-  });
-
-  describe("getDomain()", function () {
-    it("returns the walk domain", function () {
-      expect(treeWalker.getDomain()).toBe(walkDomain);
     });
   });
 
