@@ -11,7 +11,7 @@ describe("Cucumber.Ast.Filter.AnyOfTagsRule", function () {
   });
 
   describe("isSatisfiedByElement()", function () {
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     var element, satisfyingElement;
 

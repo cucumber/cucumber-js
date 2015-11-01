@@ -4,7 +4,7 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
   var PathExpander = requireLib('cucumber').Cli.PathExpander;
 
   describe("expandPathsWithRegexp", function () {
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     var unexpandedPaths, regexp, expandedPaths, expandPathResults, expandedPathsWithoutDups;
 

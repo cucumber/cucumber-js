@@ -11,7 +11,7 @@ describe("Cucumber.Ast.Filter", function () {
   });
 
   describe("isElementEnrolled()", function () {
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     var scenario, scenarioEnrolled;
 
