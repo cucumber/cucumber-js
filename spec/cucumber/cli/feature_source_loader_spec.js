@@ -26,7 +26,7 @@ describe("Cucumber.Cli.FeatureSourceLoader", function () {
     it("gets the source from each feature file", function () {
       featureSourceLoader.getSources();
       featureFilePaths.forEach(function (featureFilePath) {
-        expect(fs.readFileSync).toHaveBeenCalledWith(featureFilePath);
+        expect(fs.readFileSync).toHaveBeenCalledWith(featureFilePath, 'utf8');
       });
     });
 

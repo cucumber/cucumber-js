@@ -9,20 +9,6 @@ function fixGherkinLexers(file) {
   function write (buf) { data += buf; }
 
   function end () {
-    var path = __dirname + '/node_modules/gherkin/lib';
-    var lexersPath = path + '/gherkin/lexer';
-    if (file === path + '/gherkin.js') {
-      // Patch gherkin so that all lexers are available statically:
-      var bufferPrefix = '';
-      var dirFiles = fs.readdirSync(lexersPath);
-      dirFiles.forEach(function (dirFile) {
-        var matches = dirFile.match(/^(.*)\.js$/);
-        if (matches && !dirFile.match(/\.min\.js$/)) {
-          bufferPrefix += 'require("./gherkin/lexer/' + matches[1] + '");\n';
-        }
-      });
-      data = bufferPrefix + data;
-    }
     var ignoredFiles = [
       __dirname + '/lib/cucumber/cli.js'
     ];

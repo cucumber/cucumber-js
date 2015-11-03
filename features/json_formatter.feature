@@ -14,10 +14,11 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature"
+          "uri": "<current-directory>/features/a.feature",
+          "elements": []
         }
       ]
       """
@@ -36,7 +37,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -46,8 +47,9 @@ Feature: JSON Formatter
               "id": "some-feature;i-havn't-done-anything-yet",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
-              "type": "scenario"
+              "tags": [],
+              "type": "scenario",
+              "steps": []
             }
           ]
         }
@@ -69,7 +71,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri":"<current-directory>/features/a.feature",
@@ -79,7 +81,7 @@ Feature: JSON Formatter
               "id": "some-feature;i've-declared-one-step-but-not-yet-defined-it",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -90,7 +92,7 @@ Feature: JSON Formatter
                   {
                     "status":"undefined"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -123,7 +125,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -133,7 +135,7 @@ Feature: JSON Formatter
               "id": "some-feature;one-pending-step-and-two-following-steps-which-will-be-skipped",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -143,8 +145,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "undefined"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 },
                 {
                   "name": "this step should be skipped",
@@ -153,8 +154,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -185,7 +185,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri":"<current-directory>/features/a.feature",
@@ -195,7 +195,7 @@ Feature: JSON Formatter
               "id": "some-feature;i've-declared-one-step-which-is-pending",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -203,8 +203,7 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": { "status": "pending" },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -236,7 +235,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri":"<current-directory>/features/a.feature",
@@ -246,7 +245,7 @@ Feature: JSON Formatter
               "id": "some-feature;i've-declared-one-step-but-it-is-failing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -258,8 +257,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -290,7 +288,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri":"<current-directory>/features/a.feature",
@@ -300,7 +298,7 @@ Feature: JSON Formatter
               "id": "some-feature;i've-declared-one-step-which-passes",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -311,8 +309,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -347,7 +344,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -357,7 +354,7 @@ Feature: JSON Formatter
               "id": "some-feature;i've-declared-one-step-which-is-passing,-one-pending-and-one-failing.",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -368,7 +365,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is pending",
@@ -377,7 +374,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "pending"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step fails but will be skipped",
@@ -386,7 +383,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -421,7 +418,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -431,7 +428,7 @@ Feature: JSON Formatter
               "id": "some-feature;i've-declared-one-step-which-is-passing,-one-pending-and-one-failing.",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -441,8 +438,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "pending"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing but will be skipped",
@@ -451,8 +447,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 },
                 {
                   "name": "This step fails but will be skipped",
@@ -461,8 +456,7 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -496,7 +490,7 @@ Feature: JSON Formatter
         {
           "id": "one-passes-one-fails",
           "name": "one passes one fails",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -506,7 +500,7 @@ Feature: JSON Formatter
               "id": "one-passes-one-fails;this-one-passes",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -517,8 +511,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             },
@@ -527,7 +520,7 @@ Feature: JSON Formatter
               "id": "one-passes-one-fails;this-one-fails",
               "line": 5,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -539,8 +532,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -585,7 +577,7 @@ Feature: JSON Formatter
         {
           "id": "feature-a",
           "name": "feature a",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -595,7 +587,7 @@ Feature: JSON Formatter
               "id": "feature-a;this-is-the-first-feature",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -606,8 +598,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             }
@@ -616,7 +607,7 @@ Feature: JSON Formatter
         {
           "id": "feature-b",
           "name": "feature b",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/b.feature",
@@ -626,7 +617,7 @@ Feature: JSON Formatter
               "id": "feature-b;this-is-the-second-feature",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -637,7 +628,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -646,7 +637,7 @@ Feature: JSON Formatter
         {
           "id": "feature-c",
           "name": "feature c",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/c.feature",
@@ -656,7 +647,7 @@ Feature: JSON Formatter
               "id": "feature-c;this-is-the-third-feature",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -667,7 +658,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -730,7 +721,7 @@ Feature: JSON Formatter
         {
           "id": "feature-a",
           "name": "feature a",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -740,7 +731,7 @@ Feature: JSON Formatter
               "id": "feature-a;this-is-the-feature-a-scenario-one",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -751,8 +742,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {
-                  }
+                  "arguments": []
                 }
               ]
             },
@@ -761,7 +751,7 @@ Feature: JSON Formatter
               "id": "feature-a;this-is-the-feature-a-scenario-two",
               "line": 6,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -772,7 +762,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
@@ -781,7 +771,7 @@ Feature: JSON Formatter
               "id": "feature-a;this-is-the-feature-a-scenario-three",
               "line": 9,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -792,7 +782,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -801,7 +791,7 @@ Feature: JSON Formatter
         {
           "id": "feature-b",
           "name": "feature b",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/b.feature",
@@ -811,7 +801,7 @@ Feature: JSON Formatter
               "id": "feature-b;this-is-the-feature-b-scenario-one",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -822,7 +812,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
@@ -831,7 +821,7 @@ Feature: JSON Formatter
               "id": "feature-b;this-is-the-feature-b-scenario-two",
               "line": 6,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -842,7 +832,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
@@ -851,7 +841,7 @@ Feature: JSON Formatter
               "id": "feature-b;this-is-the-feature-b-scenario-three",
               "line": 9,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -862,7 +852,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -871,7 +861,7 @@ Feature: JSON Formatter
         {
           "id": "feature-c",
           "name": "feature c",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/c.feature",
@@ -881,7 +871,7 @@ Feature: JSON Formatter
               "id": "feature-c;this-is-the-feature-c-scenario-one",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -892,7 +882,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
@@ -901,7 +891,7 @@ Feature: JSON Formatter
               "id": "feature-c;this-is-the-feature-c-scenario-two",
               "line": 6,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -912,7 +902,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
@@ -921,7 +911,7 @@ Feature: JSON Formatter
               "id": "feature-c;this-is-the-feature-c-scenario-three",
               "line": 9,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -932,108 +922,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
-
-  Scenario: output JSON for a feature with a background
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Background:
-        Given This applies to all scenarios
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This applies to all scenarios$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "",
-              "keyword": "Background",
-              "description": "",
-              "type": "background",
-              "line": 3,
-              "steps": [
-                {
-                  "name": "This applies to all scenarios",
-                  "line": 4,
-                  "keyword": "Given "
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
-
-  Scenario: output JSON for a feature with a failing background
-
-    Since the background step is re-evaluated for each scenario that
-    is where the result of the step is currently recorded in the JSON
-    output.
-
-    If the background is being re-evaluated for each scenario then it
-    would be misleading to only output the result for the first time
-    it was evaluated.
-
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Background:
-          Given This applies to all scenarios but fails
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This applies to all scenarios but fails$/, function(callback) { callback('fail'); });
-      };
-      module.exports = cucumberSteps;
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "",
-              "keyword": "Background",
-              "description": "",
-              "type": "background",
-              "line": 3,
-              "steps": [
-                {
-                  "name": "This applies to all scenarios but fails",
-                  "line": 4,
-                  "keyword": "Given "
+                  "arguments": []
                 }
               ]
             }
@@ -1067,7 +956,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -1077,78 +966,23 @@ Feature: JSON Formatter
               "id": "some-feature;scenario-with-docstring",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
                   "name": "we have this DocString:",
                   "line": 4,
                   "keyword": "Given ",
-                  "doc_string":
-                    {
-                      "value": "This is a DocString",
-                      "line": 5,
-                      "content_type": ""
-                    },
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
-
-  Scenario: output JSON for background step with a DocString
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Background: Background with DocString
-        Given we have this DocString:
-        \"\"\"
-        This is a DocString
-        \"\"\"
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^we have this DocString:$/, function(string, callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "Background with DocString",
-              "keyword": "Background",
-              "description": "",
-              "type": "background",
-              "line": 3,
-              "steps": [
-                {
-                  "name": "we have this DocString:",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "doc_string": {
-                    "value": "This is a DocString",
-                    "line": 5,
-                    "content_type": ""
-                  }
+                  "arguments": [
+                    {
+                      "line": 5,
+                      "content": "This is a DocString"
+                    }
+                  ]
                 }
               ]
             }
@@ -1180,7 +1014,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 2,
           "keyword": "Feature",
           "tags": [
@@ -1204,7 +1038,20 @@ Feature: JSON Formatter
               "id": "some-feature;this-scenario-has-no-tags",
               "line": 4,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [
+                {
+                  "name": "@alpha",
+                  "line": 1
+                },
+                {
+                  "name": "@beta",
+                  "line": 1
+                },
+                {
+                  "name": "@gamma",
+                  "line": 1
+                }
+              ],
               "type": "scenario",
               "steps": [
                 {
@@ -1215,7 +1062,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -1247,7 +1094,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -1257,7 +1104,7 @@ Feature: JSON Formatter
               "id": "some-feature;this-scenario-has-tags",
               "line": 4,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "tags": [
                 {
@@ -1282,7 +1129,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -1320,7 +1167,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -1330,136 +1177,31 @@ Feature: JSON Formatter
               "id": "some-feature;this-scenario-contains-a-step-with-a-table",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
                   "name": "This table:",
                   "line": 4,
                   "keyword": "Given ",
-                  "rows": [
-                    { "cells": ["col 1", "col 2", "col 3" ] },
-                    { "cells": ["one", "two", "three"] },
-                    { "cells": ["1", "2", "3"] },
-                    { "cells": ["!", "~", "@"] }
-                  ],
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
-
-  Scenario: output JSON for background with table
-
-    Rows do not appear to support line attribute yet.
-
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Background:
-        Given This table:
-          |col 1|col 2|col 3|
-          |one  |two  |three|
-          |1    |2    |3    |
-          |!    |~    |@    |
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This table:$/, function(table, callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "",
-              "keyword": "Background",
-              "description": "",
-              "type": "background",
-              "line": 3,
-              "steps": [
-                {
-                  "name": "This table:",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "rows": [
-                    { "cells": ["col 1", "col 2", "col 3"] },
-                    { "cells": ["one", "two", "three"] },
-                    { "cells": ["1", "2", "3"] },
-                    { "cells": ["!", "~", "@"] }
+                  "arguments": [
+                    {
+                      "rows": [
+                        { "cells": ["col 1", "col 2", "col 3" ] },
+                        { "cells": ["one", "two", "three"] },
+                        { "cells": ["1", "2", "3"] },
+                        { "cells": ["!", "~", "@"] }
+                      ]
+                    }
                   ]
                 }
               ]
             }
           ]
-        }
-      ]
-      """
-
-  Scenario: output JSON for a feature with one scenario outline with no examples tables
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-        Scenario Outline: I've declared one step which passes
-          Given This <instance> step is passing
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature"
-        }
-      ]
-      """
-
-  Scenario: output JSON for a feature with one scenario outline with an examples table with no rows
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-        Scenario Outline: I've declared one step which passes
-          Given This <instance> step is passing
-
-        Examples:
-          | instance |
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "description": "",
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature"
         }
       ]
       """
@@ -1491,7 +1233,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -1499,40 +1241,40 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 8,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
                   "name": "This first step is passing",
-                  "line": 4,
+                  "line": 8,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 9,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
                   "name": "This second step is passing",
-                  "line": 4,
+                  "line": 9,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -1570,31 +1312,17 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
           "elements": [
             {
-              "name": "",
-              "keyword": "Background",
-              "description": "",
-              "type": "background",
-              "line": 2,
-              "steps": [
-                {
-                  "name": "This applies to all scenarios",
-                  "line": 3,
-                  "keyword": "Given "
-                }
-              ]
-            },
-            {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 5,
+              "line": 10,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -1605,17 +1333,17 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This first step is passing",
-                  "line": 6,
+                  "line": 10,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -1654,7 +1382,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -1662,40 +1390,40 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 8,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
                   "name": "This first step is passing",
-                  "line": 4,
+                  "line": 8,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 12,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
                   "name": "This second step is passing",
-                  "line": 4,
+                  "line": 12,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -1751,7 +1479,7 @@ Feature: JSON Formatter
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -1759,9 +1487,9 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 8,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -1771,7 +1499,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Before ",
@@ -1780,17 +1508,17 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This first step is passing",
-                  "line": 4,
+                  "line": 8,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -1799,7 +1527,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -1808,16 +1536,16 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             },
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 9,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -1827,7 +1555,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Before ",
@@ -1836,17 +1564,17 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This second step is passing",
-                  "line": 4,
+                  "line": 9,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -1855,7 +1583,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -1864,7 +1592,7 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }

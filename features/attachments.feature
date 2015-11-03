@@ -33,7 +33,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -43,7 +43,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -53,7 +53,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "image/png",
@@ -69,7 +69,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -128,7 +128,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -138,7 +138,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -148,7 +148,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "image/png",
@@ -164,7 +164,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -209,7 +209,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -219,7 +219,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -229,7 +229,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
@@ -245,7 +245,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -254,7 +254,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -298,7 +298,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -308,7 +308,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -318,7 +318,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -328,7 +328,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -337,7 +337,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
@@ -385,7 +385,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -395,7 +395,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -405,7 +405,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
@@ -421,7 +421,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -463,7 +463,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -473,7 +473,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -484,7 +484,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -493,7 +493,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
@@ -545,7 +545,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -555,7 +555,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -565,7 +565,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -575,7 +575,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "arguments": [],
                   "embeddings": [
                     {
                       "mime_type": "text/plain",

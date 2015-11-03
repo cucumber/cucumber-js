@@ -69,7 +69,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -79,7 +79,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -89,7 +89,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Before ",
@@ -98,7 +98,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -108,7 +108,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -117,7 +117,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -126,7 +126,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -180,7 +180,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -190,7 +190,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -201,7 +201,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -210,7 +210,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -264,7 +264,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -274,7 +274,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-failing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -286,7 +286,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -295,7 +295,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -349,7 +349,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -359,7 +359,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-pending",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -369,7 +369,7 @@ Feature: Scenario Statuses
                   "result": {
                     "status": "pending"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -378,7 +378,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -431,7 +431,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -441,7 +441,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-undefined",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -451,7 +451,7 @@ Feature: Scenario Statuses
                   "result": {
                     "status": "undefined"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -460,7 +460,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }

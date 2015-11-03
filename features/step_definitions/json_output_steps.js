@@ -1,8 +1,6 @@
 var jsonOutputSteps = function jsonOutputSteps() {
   var assert = require('assert');
-
-  var helpers = require('../support/helpers');
-  var getAdditionalErrorText = helpers.getAdditionalErrorText;
+  var jsonDiff = require('json-diff');
 
   function findScenario(features, predicate){
     var found = null;
@@ -59,20 +57,15 @@ var jsonOutputSteps = function jsonOutputSteps() {
     var expectedJson;
 
     try { actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
-    catch(err) { throw new Error('Error parsing actual JSON:\n' + actualOutput + '\n' + getAdditionalErrorText(this.lastRun)); }
+    catch(err) { throw new Error('Error parsing actual JSON:\n' + actualOutput + '\n' + err); }
 
     try { expectedJson = JSON.parse(expectedOutput); }
-    catch(err) { throw new Error('Error parsing expected JSON:\n' + expectedOutput + '\n' + getAdditionalErrorText(this.lastRun)); }
+    catch(err) { throw new Error('Error parsing expected JSON:\n' + expectedOutput + '\n' + err); }
 
     neutraliseVariableValuesInJson(actualJson);
     neutraliseVariableValuesInJson(expectedJson);
 
-    var actualJsonString = JSON.stringify(actualJson, null, 2);
-    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
-
-    var message = 'Expected output to match the following:\n' + expectedJsonString + '\n' +
-                  'Got:\n' + actualJsonString + '.\n' +
-                  getAdditionalErrorText(this.lastRun);
+    var message = jsonDiff.diffString(expectedJson, actualJson);
 
     assert.deepEqual(actualJson, expectedJson, message);
   });
@@ -127,7 +120,7 @@ var jsonOutputSteps = function jsonOutputSteps() {
     }, function(step) {
       return step.name === name;
     });
-    assert.equal(step.doc_string.value, docString);
+    assert.equal(step.arguments[0].content, docString);
   });
 
   this.Then(/^the (first|second) scenario has the step "([^"]*)" with the table$/, function (cardinal, name, table) {
@@ -138,10 +131,10 @@ var jsonOutputSteps = function jsonOutputSteps() {
     }, function(step) {
       return step.name === name;
     });
-    var expected = table.raw().map(function(row) {
+    var expected = table.raw().map(function (row) {
       return {cells: row};
     });
-    assert.deepEqual(step.rows, expected);
+    assert.deepEqual(step.arguments[0].rows, expected);
   });
 
   this.Then(/^the (first|second) scenario has the name "([^"]*)"$/, function (cardinal, name) {

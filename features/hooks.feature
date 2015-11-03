@@ -49,7 +49,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -59,7 +59,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -69,7 +69,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Before ",
@@ -78,7 +78,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -88,7 +88,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -97,7 +97,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -106,7 +106,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -147,7 +147,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -157,7 +157,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -168,7 +168,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -177,7 +177,7 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -186,7 +186,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -231,7 +231,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -241,7 +241,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -251,7 +251,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -261,7 +261,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -271,7 +271,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -312,7 +312,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -322,7 +322,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -333,7 +333,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -342,7 +342,7 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -383,7 +383,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -393,7 +393,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -404,7 +404,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -414,7 +414,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -471,7 +471,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -481,7 +481,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -492,7 +492,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -501,7 +501,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Before ",
@@ -510,7 +510,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -519,7 +519,7 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -528,7 +528,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -537,7 +537,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -546,7 +546,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }
@@ -635,7 +635,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -645,7 +645,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -655,7 +655,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Before ",
@@ -664,7 +664,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "name": "This step is passing",
@@ -674,7 +674,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -683,7 +683,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 },
                 {
                   "keyword": "Around ",
@@ -692,7 +692,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "arguments": []
                 }
               ]
             }

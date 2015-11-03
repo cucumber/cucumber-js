@@ -137,13 +137,12 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
   });
 
   describe("parameterizeStepName()", function () {
-    var stepName, parameterizedNumbersStepName, parameterizedStepName, parameterizedExamplesStepName;
+    var stepName, parameterizedNumbersStepName, parameterizedStepName;
 
     beforeEach(function () {
-      parameterizedStepName         = createSpy("parameterized step name");
-      parameterizedExamplesStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
-      parameterizedNumbersStepName  = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedExamplesStepName});
-      stepName                      = createSpyWithStubs("step name", {replace: parameterizedNumbersStepName});
+      parameterizedStepName        = createSpy("parameterized step name");
+      parameterizedNumbersStepName = createSpyWithStubs("step name with parameterized numbers", {replace: parameterizedStepName});
+      stepName                     = createSpyWithStubs("step name", {replace: parameterizedNumbersStepName});
     });
 
     it("replaces numbers with matching groups", function () {
@@ -171,24 +170,12 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
     beforeEach(function () {
       patternMatchingGroupParameters = ['some', 'stepdef', 'parameters'];
       spyOn(snippetBuilder, 'getStepDefinitionPatternMatchingGroupParameters').and.returnValue(patternMatchingGroupParameters);
-      spyOnStub(step, 'hasDocString');
-      spyOnStub(step, 'hasDataTable');
-      spyOnStub(step, 'isOutlineStep');
+      spyOnStub(step, 'getArguments').and.returnValue([]);
     });
 
     it("gets the step definition pattern matching group parameters", function () {
       snippetBuilder.buildStepDefinitionParameters();
       expect(snippetBuilder.getStepDefinitionPatternMatchingGroupParameters).toHaveBeenCalled();
-    });
-
-    it("checks whether the step has a doc string attached or not", function () {
-      snippetBuilder.buildStepDefinitionParameters();
-      expect(step.hasDocString).toHaveBeenCalled();
-    });
-
-    it("checks whether the step has a data table attached or not", function () {
-      snippetBuilder.buildStepDefinitionParameters();
-      expect(step.hasDataTable).toHaveBeenCalled();
     });
 
     it("returns the parameters and a callback joined", function () {
@@ -198,7 +185,8 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
     describe("when there is a doc string", function () {
       it("returns the parameters, an additional 'string' parameter and a callback joined", function () {
-        step.hasDocString.and.returnValue(true);
+        var docStringArgument = createSpyWithStubs('doc string', {getType: 'DocString'});
+        step.getArguments.and.returnValue([docStringArgument]);
         var parameters = patternMatchingGroupParameters.concat(['string', 'callback']);
         expect(snippetBuilder.buildStepDefinitionParameters()).toEqual(parameters);
       });
@@ -206,7 +194,8 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
     describe("when there is a data table", function () {
       it("returns the parameters, an additional 'table' parameter and a callback joined", function () {
-        step.hasDataTable.and.returnValue(true);
+        var dataTableArgument = createSpyWithStubs('data table', {getType: 'DataTable'});
+        step.getArguments.and.returnValue([dataTableArgument]);
         var parameters = patternMatchingGroupParameters.concat(['table', 'callback']);
         expect(snippetBuilder.buildStepDefinitionParameters()).toEqual(parameters);
       });

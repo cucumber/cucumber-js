@@ -136,7 +136,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
         getUri: path.join(process.cwd(), "scenario-uri"),
         getLine: 1,
         getBackground: undefined,
-        getOwnTags: [],
+        getTags: [],
         getSteps: []
       });
       event = createSpyWithStubs("event", { getPayloadItem: scenario });
@@ -159,7 +159,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe('with tags', function () {
       beforeEach(function (){
-        scenario.getOwnTags.and.returnValue([
+        scenario.getTags.and.returnValue([
           createSpyWithStubs("tag1", {getName: '@tag1'}),
           createSpyWithStubs("tag2", {getName: '@tag2'})
         ]);
@@ -260,14 +260,11 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     beforeEach(function () {
       step = createSpyWithStubs("step", {
-        getDataTable: null,
-        getDocString: null,
+        getArguments: [],
         getLine: 1,
         getKeyword: "step-keyword ",
         getName: "step-name",
         getUri: path.join(process.cwd(), "step-uri"),
-        hasDataTable: null,
-        hasDocString: null,
         hasUri: true
       });
       stepResult = createSpyWithStubs("step result", {
@@ -378,9 +375,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
           ["c",   "cuke", "cuke.js"],
           ["cu",  "cuke", "cucumber"]
         ];
-        var dataTable = createSpyWithStubs("data table", {raw: rows});
-        step.getDataTable.and.returnValue(dataTable);
-        step.hasDataTable.and.returnValue(true);
+        var dataTable = createSpyWithStubs("data table", {getType: 'DataTable', raw: rows});
+        step.getArguments.and.returnValue([dataTable]);
         prettyFormatter.logStepResult(step, stepResult);
       });
 
@@ -396,10 +392,9 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("with doc string", function () {
       beforeEach(function () {
-        var contents = "this is a multiline\ndoc string\n\n:-)";
-        var docString = createSpyWithStubs("doc string", {getContents: contents});
-        step.getDocString.and.returnValue(docString);
-        step.hasDocString.and.returnValue(true);
+        var content = "this is a multiline\ndoc string\n\n:-)";
+        var docString = createSpyWithStubs("doc string", {getType: 'DocString', getContent: content});
+        step.getArguments.and.returnValue([docString]);
         prettyFormatter.logStepResult(step, stepResult);
       });
 

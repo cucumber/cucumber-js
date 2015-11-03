@@ -131,7 +131,7 @@ Feature: After hook interface
 
       module.exports = hooks
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     And the exit status should be 1
     And the output contains the text:
       """

@@ -2,31 +2,25 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Tag", function () {
   var Cucumber = requireLib('cucumber');
-
-  var tag, name, uri, line;
+  var tag;
 
   beforeEach(function () {
-    name = createSpy("name");
-    uri  = createSpy("uri");
-    line = createSpy("line");
-    tag  = Cucumber.Ast.Tag(name, uri, line);
+    var tagData = {
+      location: {line: 1},
+      name: 'name'
+    };
+    tag = Cucumber.Ast.Tag(tagData);
   });
 
   describe("getName()", function () {
-    it("returns the name of the tag", function () {
-      expect(tag.getName()).toBe(name);
-    });
-  });
-
-  describe("getUri()", function () {
-    it("returns the URI on which the background starts", function () {
-      expect(tag.getUri()).toBe(uri);
+    it("returns the name", function () {
+      expect(tag.getName()).toEqual('name');
     });
   });
 
   describe("getLine()", function () {
-    it("returns the line on which the DocString starts", function () {
-      expect(tag.getLine()).toBe(line);
+    it("returns the line", function () {
+      expect(tag.getLine()).toEqual(1);
     });
   });
 });
