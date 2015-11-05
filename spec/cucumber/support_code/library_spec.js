@@ -104,14 +104,14 @@ describe("Cucumber.SupportCode.Library", function () {
   });
 
   describe('Step Definitions', function () {
-    describe("lookupStepDefinitionByName()", function () {
+    describe("lookupStepDefinitionsByName()", function () {
       var stepName, stepDefinition1, stepDefinition2, stepDefinition3;
 
       beforeEach(function () {
         stepName = 'step name';
         stepDefinition1 = createSpyWithStubs("step definition 1", {matchesStepName: false});
         stepDefinition2 = createSpyWithStubs("step definition 2", {matchesStepName: true});
-        stepDefinition3 = createSpyWithStubs("step definition 3", {matchesStepName: false});
+        stepDefinition3 = createSpyWithStubs("step definition 3", {matchesStepName: true});
         spyOn(Cucumber.SupportCode, 'StepDefinition').and.returnValues(stepDefinition1, stepDefinition2, stepDefinition3);
         library.defineStep();
         library.defineStep();
@@ -119,52 +119,15 @@ describe("Cucumber.SupportCode.Library", function () {
       });
 
       it("checks whether each step defintion matches the step name", function () {
-        library.lookupStepDefinitionByName(stepName);
+        library.lookupStepDefinitionsByName(stepName);
         expect(stepDefinition1.matchesStepName).toHaveBeenCalledWith(stepName);
         expect(stepDefinition2.matchesStepName).toHaveBeenCalledWith(stepName);
         expect(stepDefinition3.matchesStepName).toHaveBeenCalledWith(stepName);
       });
 
       it("returns the matching hooks", function () {
-        var result = library.lookupStepDefinitionByName(stepName);
-        expect(result).toEqual(stepDefinition2);
-      });
-    });
-
-    describe("isStepDefinitionNameDefined()", function () {
-      var name;
-
-      beforeEach(function () {
-        name = createSpy("step name");
-        spyOn(library, 'lookupStepDefinitionByName');
-      });
-
-      it("looks up the step definition by the name", function () {
-        library.isStepDefinitionNameDefined(name);
-        expect(library.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
-      });
-
-      describe("when a step definition is found", function () {
-        var stepDefinition;
-
-        beforeEach(function () {
-          stepDefinition = createSpy("step definition");
-          library.lookupStepDefinitionByName.and.returnValue(stepDefinition);
-        });
-
-        it("returns true", function () {
-          expect(library.isStepDefinitionNameDefined(name)).toBeTruthy();
-        });
-      });
-
-      describe("when no step definition is found", function () {
-        beforeEach(function () {
-          library.lookupStepDefinitionByName.and.returnValue(undefined);
-        });
-
-        it("returns false", function () {
-          expect(library.isStepDefinitionNameDefined(name)).toBeFalsy();
-        });
+        var result = library.lookupStepDefinitionsByName(stepName);
+        expect(result).toEqual([stepDefinition2, stepDefinition3]);
       });
     });
 
@@ -184,7 +147,7 @@ describe("Cucumber.SupportCode.Library", function () {
         });
 
         it("creates a step definition with the name, empty options, and code", function () {
-          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, {}, code);
+          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, {}, code, jasmine.any(String), jasmine.any(Number));
         });
       });
 
@@ -197,7 +160,7 @@ describe("Cucumber.SupportCode.Library", function () {
         });
 
         it("creates a step definition with the name, options, and code", function () {
-          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, options, code);
+          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, options, code, jasmine.any(String), jasmine.any(Number));
         });
       });
     });

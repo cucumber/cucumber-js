@@ -113,17 +113,17 @@ Feature: Core feature elements execution
           this.parameters = {};
         };
 
-        this.When(/^I call a step with "(.*)"$/, function(arg) {
+        this.When(/^I call a step with "([^"]*)"$/, function(arg) {
           this.parameters['1'] = arg;
         });
 
-        this.When(/^I call a step with "(.*)", "(.*)" and "(.*)"$/, function(arg1, arg2, arg3) {
+        this.When(/^I call a step with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(arg1, arg2, arg3) {
           this.parameters['1'] = arg1;
           this.parameters['2'] = arg2;
           this.parameters['3'] = arg3;
         })
 
-        this.Then(/^the (\d+)(?:st|nd|rd) received parameter should be "(.*)"$/, function(index, arg){
+        this.Then(/^the (\d+)(?:st|nd|rd) received parameter should be "([^"]*)"$/, function(index, arg){
           assert.equal(this.parameters[index], arg);
         });
       };
