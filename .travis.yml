@@ -1,6 +1,3 @@
-before_install:
-  - npm install -g npm@latest
-
 cache:
   directories:
     - $HOME/node_modules
@@ -8,6 +5,7 @@ cache:
 language: node_js
 
 node_js:
+  - "5"
   - "4"
   - "0.12"
   - "0.10"

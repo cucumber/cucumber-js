@@ -39,16 +39,12 @@
         case 'StepResult':
           var result;
           var stepResult = event.getPayloadItem('stepResult');
-          if (stepResult.isSuccessful()) {
-            result = {status: 'passed'};
-          } else if (stepResult.isPending()) {
-            result = {status: 'pending'};
-          } else if (stepResult.isUndefined() || stepResult.isSkipped()) {
-            result = {status:'skipped'};
-          } else {
+          if (stepResult.getStatus() === Cucumber.Status.FAILED) {
             var error = stepResult.getFailureException();
             var errorMessage = error.stack || error;
             result = {status: 'failed', error_message: errorMessage};
+          } else {
+            result = {status: stepResult.getStatus()};
           }
           formatter.match({uri:'report.feature', step: {line: currentStep.getLine()}});
           formatter.result(result);
