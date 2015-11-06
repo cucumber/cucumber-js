@@ -1039,7 +1039,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
         it("skips the step", function () {
           treeWalker.processStep(step, callback);
-          expect(treeWalker.skipStep).toHaveBeenCalledWith(step, callback);
+          expect(treeWalker.skipStep).toHaveBeenCalledWith(step, stepDefinition, callback);
         });
 
         it("does not skip an undefined step", function () {
@@ -1081,7 +1081,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
         it("skips the step", function () {
           treeWalker.processStep(step, callback);
-          expect(treeWalker.skipStep).toHaveBeenCalledWith(step, callback);
+          expect(treeWalker.skipStep).toHaveBeenCalledWith(step, stepDefinition, callback);
         });
 
         it("does not skip an undefined step", function () {
@@ -1140,20 +1140,25 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     var step, callback, skippedStepResult;
 
     beforeEach(function () {
-      step              = createSpyWithStubs("step AST element");
-      callback          = createSpy("callback");
+      step = createSpyWithStubs("step AST element");
+      stepDefinition = createSpy('step definition')
+      callback = createSpy("callback");
       skippedStepResult = createSpy("skipped step result");
       spyOn(Cucumber.Runtime, 'StepResult').and.returnValue(skippedStepResult);
       spyOn(treeWalker, 'visitStepResult');
     });
 
     it("creates a new skipped step result", function () {
-      treeWalker.skipStep(step, callback);
-      expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({step: step, status: Cucumber.Status.SKIPPED});
+      treeWalker.skipStep(step, stepDefinition, callback);
+      expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
+        step: step,
+        stepDefinition: stepDefinition,
+        status: Cucumber.Status.SKIPPED
+      });
     });
 
     it("visits the skipped step result", function () {
-      treeWalker.skipStep(step, callback);
+      treeWalker.skipStep(step, stepDefinition, callback);
       expect(treeWalker.visitStepResult).toHaveBeenCalledWith(skippedStepResult, callback);
     });
   });

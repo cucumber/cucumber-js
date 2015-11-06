@@ -30,37 +30,30 @@ describe("Cucumber.SupportCode.Library", function () {
 
       it("exposes a method to define Around hooks", function () {
         expect(supportCodeHelper.Around).toBeAFunction ();
-        expect(supportCodeHelper.Around).toBe(library.defineAroundHook);
       });
 
       it("exposes a method to define Before hooks", function () {
         expect(supportCodeHelper.Before).toBeAFunction ();
-        expect(supportCodeHelper.Before).toBe(library.defineBeforeHook);
       });
 
       it("exposes a method to define After hooks", function () {
         expect(supportCodeHelper.After).toBeAFunction ();
-        expect(supportCodeHelper.After).toBe(library.defineAfterHook);
       });
 
       it("exposes a method to define Given steps", function () {
         expect(supportCodeHelper.Given).toBeAFunction ();
-        expect(supportCodeHelper.Given).toBe(library.defineStep);
       });
 
       it("exposes a method to define When steps", function () {
         expect(supportCodeHelper.When).toBeAFunction ();
-        expect(supportCodeHelper.When).toBe(library.defineStep);
       });
 
       it("exposes a method to define Then steps", function () {
         expect(supportCodeHelper.Then).toBeAFunction ();
-        expect(supportCodeHelper.Then).toBe(library.defineStep);
       });
 
       it("exposes a method to define any step", function () {
         expect(supportCodeHelper.defineStep).toBeAFunction ();
-        expect(supportCodeHelper.defineStep).toBe(library.defineStep);
       });
 
       it("exposes the World constructor", function () {
