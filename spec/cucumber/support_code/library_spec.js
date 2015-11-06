@@ -274,6 +274,7 @@ describe("Cucumber.SupportCode.Library", function () {
 
       it("exposes a method to define any step", function () {
         expect(supportCodeHelper.defineStep).toBeAFunction ();
+        expect(supportCodeHelper.defineStep).toBe(library.defineStep);
       });
 
       it("exposes the World constructor", function () {
