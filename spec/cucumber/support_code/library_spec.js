@@ -253,10 +253,6 @@ describe("Cucumber.SupportCode.Library", function () {
         });
       });
 
-      it("exposes a method to define After hooks", function () {
-        expect(supportCodeHelper.After).toBeAFunction ();
-      });
-
       it("exposes a method to define Given steps", function () {
         expect(supportCodeHelper.Given).toBeAFunction ();
         expect(supportCodeHelper.Given).toBe(supportCodeHelper.defineStep);
