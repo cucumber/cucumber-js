@@ -256,23 +256,25 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logStepResult()", function () {
-    var stepResult, step;
+    var stepResult, step, stepDefinition;
 
     beforeEach(function () {
+      stepDefinition = createSpyWithStubs("step definition", {
+        getLine: 1,
+        getUri: path.join(process.cwd(), 'step-definition-uri')
+      });
       step = createSpyWithStubs("step", {
         getDataTable: null,
         getDocString: null,
-        getLine: 1,
         getKeyword: "step-keyword ",
         getName: "step-name",
-        getUri: path.join(process.cwd(), "step-uri"),
         hasDataTable: null,
         hasDocString: null,
-        hasUri: true
       });
       stepResult = createSpyWithStubs("step result", {
         getFailureException: null,
         getStep: step,
+        getStepDefinition: stepDefinition,
         getStatus: Cucumber.Status.PASSED
       });
     });
@@ -366,7 +368,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name', function () {
         var expected =
-          '    step-keyword step-name# step-uri:1' + '\n';
+          '    step-keyword step-name# step-definition-uri:1' + '\n';
         expect(colors.strip(logged)).toEqual(expected);
       });
     });
