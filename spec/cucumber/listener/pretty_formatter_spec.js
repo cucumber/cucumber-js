@@ -256,7 +256,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logStepResult()", function () {
-    var stepResult, step;
+    var stepResult, step, stepDefinition;
 
     beforeEach(function () {
       stepDefinition = createSpyWithStubs("step definition", {

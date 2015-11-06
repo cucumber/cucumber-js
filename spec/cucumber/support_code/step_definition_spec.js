@@ -189,6 +189,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         it("creates a successful step result", function () {
           expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
             step: step,
+            stepDefinition: stepDefinition,
             duration: 1e6,
             attachments: attachments,
             status: Cucumber.Status.PASSED
@@ -225,6 +226,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
         it("creates a failing step result", function () {
           expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
             step: step,
+            stepDefinition: stepDefinition,
             failureException: failureReason,
             duration: 1e6,
             attachments: attachments,
@@ -262,6 +264,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           codeExecutionCallback.pending(pendingReason);
           expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
             step: step,
+            stepDefinition: stepDefinition,
             pendingReason: pendingReason,
             attachments: attachments,
             status: Cucumber.Status.PENDING
@@ -291,19 +294,6 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       it("handles the exception with the exception handler", function () {
         stepDefinition.invoke(step, world, scenario, defaultTimeout, callback);
         expect(exceptionHandler).toHaveBeenCalledWith(failureException);
-      });
-    });
-
-    describe("when the step definition is synchronous (no callback, no promise)", function () {
-      xit("calls the code callback without error");
-    });
-
-    describe("when the step definition returns a promise", function () {
-      describe("when the promise resolves", function () {
-        xit("calls the code callback without error");
-      });
-      describe("when the promise is rejected", function () {
-        xit("calls the code callback with an error");
       });
     });
   });

@@ -1137,11 +1137,11 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
   });
 
   describe("skipStep()", function () {
-    var step, callback, skippedStepResult;
+    var step, stepDefinition, callback, skippedStepResult;
 
     beforeEach(function () {
       step = createSpyWithStubs("step AST element");
-      stepDefinition = createSpy('step definition')
+      stepDefinition = createSpy('step definition');
       callback = createSpy("callback");
       skippedStepResult = createSpy("skipped step result");
       spyOn(Cucumber.Runtime, 'StepResult').and.returnValue(skippedStepResult);
