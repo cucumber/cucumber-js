@@ -78,17 +78,12 @@ function World() {
   };
 }
 
-// Should you need asynchronous operations when World is intantiated (i.e. before every scenario), use a hook with a callback or returning a promise (see Hooks below for more information):
-function Before(callback) {
-  var server = require('http').createServer();
-  server.listen(8080, callback);
-}
-
 module.exports = function() {
   this.World = World;
-  this.Before = Before;
 };
 ```
+
+If you need to perform operations before/after every scenario, use [hooks](#hooks).
 
 #### Step Definitions
 
