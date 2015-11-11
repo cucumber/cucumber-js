@@ -3,60 +3,100 @@ Feature: Rerun Formatter
   In order to allow users to easily run only the failing scenarios
   Users can save the rerun formatter's output to a file and pass it as an argument on the next run
 
-  Scenario: rerun
+  Scenario: one scenario failing
     Given a file named "features/a.feature" with:
       """
-      Feature:
-        Scenario: Failing
+      Feature: A
+        Scenario: 1
+          Given a passing step
+
+        Scenario: 2
           Given a failing step
 
-        Scenario: Passing
+        Scenario: 3
+          Given a failing step
+      """
+    Given a file named "features/b.feature" with:
+      """
+      Feature: B
+        Scenario: 4
           Given a passing step
+
+        Scenario: 5
+          Given a failing step
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.When(/^a failing step$/, function() { throw 'fail' });
         this.When(/^a passing step$/, function() { });
+        this.When(/^a failing step$/, function() { throw 'fail' });
       };
       module.exports = cucumberSteps;
       """
     When I run cucumber.js with `-f rerun:@rerun.txt`
     Then it outputs this text:
       """
-      Feature:
+      Feature: A
 
-        Scenario: Failing      # features/a.feature:2
-          Given a failing step # features/a.feature:3
+        Scenario: 1            # features/a.feature:2
+          Given a passing step # features/step_definitions/cucumber_steps.js:2
+
+        Scenario: 2            # features/a.feature:5
+          Given a failing step # features/step_definitions/cucumber_steps.js:3
             fail
 
-        Scenario: Passing      # features/a.feature:5
-          Given a passing step # features/a.feature:6
+        Scenario: 3            # features/a.feature:8
+          Given a failing step # features/step_definitions/cucumber_steps.js:3
+            fail
+
+      Feature: B
+
+        Scenario: 4            # features/b.feature:2
+          Given a passing step # features/step_definitions/cucumber_steps.js:2
+
+        Scenario: 5            # features/b.feature:5
+          Given a failing step # features/step_definitions/cucumber_steps.js:3
+            fail
 
       Failing scenarios:
-      features/a.feature:2 # Scenario: Failing
+      features/a.feature:5 # Scenario: 2
+      features/a.feature:8 # Scenario: 3
+      features/b.feature:5 # Scenario: 5
 
-      2 scenarios (1 failed, 1 passed)
-      2 steps (1 failed, 1 passed)
+      5 scenarios (3 failed, 2 passed)
+      5 steps (3 failed, 2 passed)
       <duration-stat>
       """
     And the file "@rerun.txt" has the text:
       """
-      features/a.feature:2
+      features/a.feature:5:8
+      features/b.feature:5
       """
     When I run cucumber.js with `@rerun.txt`
     Then it outputs this text:
       """
-      Feature:
+      Feature: A
 
-        Scenario: Failing      # features/a.feature:2
-          Given a failing step # features/a.feature:3
+        Scenario: 2            # features/a.feature:5
+          Given a failing step # features/step_definitions/cucumber_steps.js:3
+            fail
+
+        Scenario: 3            # features/a.feature:8
+          Given a failing step # features/step_definitions/cucumber_steps.js:3
+            fail
+
+      Feature: B
+
+        Scenario: 5            # features/b.feature:5
+          Given a failing step # features/step_definitions/cucumber_steps.js:3
             fail
 
       Failing scenarios:
-      features/a.feature:2 # Scenario: Failing
+      features/a.feature:5 # Scenario: 2
+      features/a.feature:8 # Scenario: 3
+      features/b.feature:5 # Scenario: 5
 
-      1 scenario (1 failed)
-      1 step (1 failed)
+      3 scenarios (3 failed)
+      3 steps (3 failed)
       <duration-stat>
       """
