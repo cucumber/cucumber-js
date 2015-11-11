@@ -2,19 +2,21 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Hook", function () {
   var Cucumber = requireLib('cucumber');
-  var hook, code, options, stepDefinition;
+  var hook, code, options, uri, line, stepDefinition;
 
   beforeEach(function () {
-    code           = createSpy("hook code");
-    options        = {};
+    code = createSpy("hook code");
+    options = {};
+    uri = 'uri';
+    line = 1;
     stepDefinition = createSpy("step definition");
     spyOn(Cucumber.SupportCode, 'StepDefinition').and.returnValue(stepDefinition);
-    hook           = Cucumber.SupportCode.Hook(code, options);
+    hook = Cucumber.SupportCode.Hook(code, options, uri, line);
   });
 
   describe("constructor", function () {
     it("inherits from Cucumber.SupportCode.StepDefinition", function () {
-      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', {}, code);
+      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', {}, code, uri, line);
       expect(hook).toBe(stepDefinition);
     });
   });

@@ -1,8 +1,31 @@
 # Cucumber.js changelog
 
-## [v0.8.x](https://github.com/cucumber/cucumber-js/compare/v0.8.0...master)
+## [v0.9.x](https://github.com/cucumber/cucumber-js/compare/v0.9.0...master)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.8.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.0...master)
+
+### [0.9.0](https://github.com/cucumber/cucumber-js/compare/v0.8.1...v0.9.0)
+
+#### Breaking changes
+
+* catch ambiguous step definitions (Charlie Rudolph)
+* remove use of domain (Charlie Rudolph)
+
+#### New Features
+
+* pretty formatter: source shows step definition location (Charlie Rudolph)
+* support node 5 (Charlie Rudolph)
+
+#### Fixes
+
+* Fix `Api.Scenario#attach` callback handling (Julien Biezemans)
+
+#### Documentation
+
+* Add async example to README (Artem Bronitsky)
+* Document hooks sync/async protocols (Julien Biezemans)
+* Remove useless callbacks in documentation (Julien Biezemans)
+* Fix browser example (Karine Pires)
 
 ### [v0.8.1](https://github.com/cucumber/cucumber-js/compare/v0.8.0...v0.8.1)
 
