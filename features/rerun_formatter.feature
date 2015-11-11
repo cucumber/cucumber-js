@@ -3,7 +3,7 @@ Feature: Rerun Formatter
   In order to allow users to easily run only the failing scenarios
   Users can save the rerun formatter's output to a file and pass it as an argument on the next run
 
-  Scenario: one scenario failing
+  Background:
     Given a file named "features/a.feature" with:
       """
       Feature: A
@@ -16,7 +16,7 @@ Feature: Rerun Formatter
         Scenario: 3
           Given a failing step
       """
-    Given a file named "features/b.feature" with:
+    And a file named "features/b.feature" with:
       """
       Feature: B
         Scenario: 4
@@ -25,7 +25,7 @@ Feature: Rerun Formatter
         Scenario: 5
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
         this.When(/^a passing step$/, function() { });
@@ -33,7 +33,32 @@ Feature: Rerun Formatter
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber.js with `-f rerun:@rerun.txt`
+    And a file named "cucumber.js" with:
+      """
+      module.exports = {
+        'default': '--format rerun:@rerun.txt',
+      };
+      """
+
+  Scenario: passing
+    When I run cucumber.js with `features/a.feature:2`
+    Then it outputs this text:
+      """
+      Feature: A
+
+        Scenario: 1            # features/a.feature:2
+          Given a passing step # features/step_definitions/cucumber_steps.js:2
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+      <duration-stat>
+      """
+    And the file "@rerun.txt" has the text:
+      """
+      """
+
+  Scenario: multiple scenarios failing
+    When I run cucumber.js
     Then it outputs this text:
       """
       Feature: A
