@@ -1499,7 +1499,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 8,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",
@@ -1519,7 +1519,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 9,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",
@@ -1592,7 +1592,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 5,
+              "line": 10,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",
@@ -1662,7 +1662,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 8,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",
@@ -1682,7 +1682,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 12,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",
@@ -1759,7 +1759,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 8,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",
@@ -1815,7 +1815,7 @@ Feature: JSON Formatter
             {
               "name": "I've declared one step which passes",
               "id": "some-feature;i've-declared-one-step-which-passes",
-              "line": 3,
+              "line": 9,
               "keyword": "Scenario",
               "description": "",
               "type": "scenario",

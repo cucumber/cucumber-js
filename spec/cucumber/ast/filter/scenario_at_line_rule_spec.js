@@ -25,20 +25,22 @@ describe("Cucumber.Ast.Filter.ScenarioAtLineRule", function () {
     });
 
     it("returns true if the uri and line match a supplied path", function(){
-      element = createSpyWithStubs("element", {getUri: '/real/path', getLine: 1});
+      element = createSpyWithStubs("element", {getUri: '/real/path', getLine: 1, getScenarioOutlineLine: null});
       expect(rule.isSatisfiedByElement(element)).toBe(true);
+    });
 
-      element = createSpyWithStubs("element", {getUri: '/real/path', getLine: 2});
+    it("returns true if the uri and scenario outline line match a supplied path", function(){
+      element = createSpyWithStubs("element", {getUri: '/real/path', getLine: 4, getScenarioOutlineLine: 2});
       expect(rule.isSatisfiedByElement(element)).toBe(true);
     });
 
     it("returns false if the uri matches but the line does not", function(){
-      element = createSpyWithStubs("element", {getUri: '/real/path', getLine: 3});
+      element = createSpyWithStubs("element", {getUri: '/real/path', getLine: 3, getScenarioOutlineLine: null});
       expect(rule.isSatisfiedByElement(element)).toBe(false);
     });
 
     it("returns false if the uri matches a supplied path that didn't specify a line", function(){
-      element = createSpyWithStubs("element", {getUri: '/other/real/path', getLine: 1});
+      element = createSpyWithStubs("element", {getUri: '/other/real/path', getLine: 1, getScenarioOutlineLine: null});
       expect(rule.isSatisfiedByElement(element)).toBe(true);
     });
   });

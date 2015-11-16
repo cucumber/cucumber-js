@@ -67,7 +67,10 @@ Feature: Target specific scenarios
     When I run cucumber.js with `features/a.feature:13`
     Then it outputs this text:
       """
-      .
+      Feature: some feature
+
+        Scenario Outline: third scenario   # features/a.feature:13
+          When a step is passing           # features/a.feature:9
 
       1 scenario (1 passed)
       1 step (1 passed)
