@@ -57,15 +57,15 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        @b
+        @b @c
         Scenario Outline: second scenario   # features/a.feature:13
           When a step is passing            # features/step_definitions/cucumber_steps.js:2
 
-        @b
+        @b @c
         Scenario Outline: second scenario   # features/a.feature:14
           When a step is pending            # features/step_definitions/cucumber_steps.js:3
 
-        @b
+        @b @d
         Scenario Outline: second scenario   # features/a.feature:19
           When a step is undefined
 
