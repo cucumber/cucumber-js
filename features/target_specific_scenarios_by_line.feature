@@ -1,6 +1,6 @@
 Feature: Target specific scenarios
   As a developer running features
-  I want an easy way to run specific scenarios
+  I want an easy way to run specific scenarios by line
   So that I don't waste time running my whole test suite when I don't need to
 
   Background:
