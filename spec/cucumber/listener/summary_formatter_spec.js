@@ -68,7 +68,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       stepResult = createSpyWithStubs("step result", {getStatus: undefined});
       event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
       callback   = createSpy("Callback");
-      spyOn(summaryFormatter, 'handleFailedStepResult');
     });
 
     it("gets the step result from the event payload", function () {
@@ -76,66 +75,45 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
-    describe("when the step was undefined", function () {
+    describe("when the step was ambiguous", function () {
       beforeEach(function () {
-        stepResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
-        spyOn(summaryFormatter, 'handleUndefinedStepResult');
+        stepResult.getStatus.and.returnValue(Cucumber.Status.AMBIGUOUS);
+        spyOn(summaryFormatter, 'storeAmbiguousStepResult');
       });
 
       it("handles the undefined step result", function () {
         summaryFormatter.handleStepResultEvent(event, callback);
-        expect(summaryFormatter.handleUndefinedStepResult).toHaveBeenCalledWith(stepResult);
+        expect(summaryFormatter.storeAmbiguousStepResult).toHaveBeenCalledWith(stepResult);
+      });
+    });
+
+    describe("when the step was undefined", function () {
+      beforeEach(function () {
+        stepResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
+        spyOn(summaryFormatter, 'storeUndefinedStepResult');
+      });
+
+      it("handles the undefined step result", function () {
+        summaryFormatter.handleStepResultEvent(event, callback);
+        expect(summaryFormatter.storeUndefinedStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
 
     describe("when the step failed", function () {
       beforeEach(function () {
         stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
+        spyOn(summaryFormatter, 'storeFailedStepResult');
       });
 
       it("handles the failed step result", function () {
         summaryFormatter.handleStepResultEvent(event, callback);
-        expect(summaryFormatter.handleFailedStepResult).toHaveBeenCalledWith(stepResult);
+        expect(summaryFormatter.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
 
     it("calls back", function () {
       summaryFormatter.handleStepResultEvent(event, callback);
       expect(callback).toHaveBeenCalled();
-    });
-  });
-
-  describe("handleUndefinedStepResult()", function () {
-    var stepResult, step;
-
-    beforeEach(function () {
-      step       = createSpy("step");
-      stepResult = createSpyWithStubs("step result", {getStep: step});
-      spyOn(summaryFormatter, 'storeUndefinedStepResult');
-    });
-
-    it("gets the step from the step result", function () {
-      summaryFormatter.handleUndefinedStepResult(stepResult);
-      expect(stepResult.getStep).toHaveBeenCalled();
-    });
-
-    it("stores the undefined step", function () {
-      summaryFormatter.handleUndefinedStepResult(stepResult);
-      expect(summaryFormatter.storeUndefinedStepResult).toHaveBeenCalledWith(step);
-    });
-  });
-
-  describe("handleFailedStepResult()", function () {
-    var stepResult;
-
-    beforeEach(function () {
-      stepResult = createSpy("failed step result");
-      spyOn(summaryFormatter, 'storeFailedStepResult');
-    });
-
-    it("stores the failed step result", function () {
-      summaryFormatter.handleFailedStepResult(stepResult);
-      expect(summaryFormatter.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
     });
   });
 
@@ -288,11 +266,12 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("storeUndefinedStepResult()", function () {
-    var snippetSyntax, snippetBuilder, snippet, step;
+    var snippetSyntax, snippetBuilder, snippet, step, stepResult;
 
     beforeEach(function () {
       snippetSyntax  = createSpyWithStubs("snippet syntax");
       step           = createSpy("step");
+      stepResult     = createSpyWithStubs("step result", {getStep: step});
       snippet        = createSpy("step definition snippet");
       snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
       spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
@@ -301,17 +280,17 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
 
     it("creates a new step definition snippet builder", function () {
-      summaryFormatter.storeUndefinedStepResult(step);
+      summaryFormatter.storeUndefinedStepResult(stepResult);
       expect(Cucumber.SupportCode.StepDefinitionSnippetBuilder).toHaveBeenCalledWith(step, snippetSyntax);
     });
 
     it("builds the step definition", function () {
-      summaryFormatter.storeUndefinedStepResult(step);
+      summaryFormatter.storeUndefinedStepResult(stepResult);
       expect(snippetBuilder.buildSnippet).toHaveBeenCalled();
     });
 
     it("appends the snippet to the undefined step log buffer", function () {
-      summaryFormatter.storeUndefinedStepResult(step);
+      summaryFormatter.storeUndefinedStepResult(stepResult);
       expect(summaryFormatter.appendStringToUndefinedStepLogBuffer).toHaveBeenCalledWith(snippet);
     });
   });
@@ -417,11 +396,12 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are undefined steps", function () {
       beforeEach(function () {
-        var step = createSpyWithStubs("step");
+        var step = createSpy("step");
+        var stepResult = createSpy("step result", {getStep: step});
         var snippet = createSpy("step definition snippet");
         var snippetBuilder = createSpyWithStubs("snippet builder", {buildSnippet: snippet});
         spyOn(Cucumber.SupportCode, 'StepDefinitionSnippetBuilder').and.returnValue(snippetBuilder);
-        summaryFormatter.storeUndefinedStepResult(step);
+        summaryFormatter.storeUndefinedStepResult(stepResult);
       });
 
       it("logs the undefined step snippets", function () {

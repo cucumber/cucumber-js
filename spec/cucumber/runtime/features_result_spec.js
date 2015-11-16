@@ -35,6 +35,17 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
+    describe('after an ambiguous step', function () {
+      beforeEach(function () {
+        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.AMBIGUOUS});
+        featuresResult.witnessStepResult(stepResult);
+      });
+
+      it('is not successful', function() {
+        expect(featuresResult.isSuccessful()).toEqual(false);
+      });
+    });
+
     describe('after a pending step', function () {
       beforeEach(function () {
         var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
@@ -81,6 +92,17 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
     describe('after a failing step', function () {
       beforeEach(function () {
         var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.FAILED});
+        featuresResult.witnessStepResult(stepResult);
+      });
+
+      it('is not successful', function() {
+        expect(featuresResult.isSuccessful()).toEqual(false);
+      });
+    });
+
+    describe('after an ambiguous step', function () {
+      beforeEach(function () {
+        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.AMBIGUOUS});
         featuresResult.witnessStepResult(stepResult);
       });
 
