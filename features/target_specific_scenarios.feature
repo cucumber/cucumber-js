@@ -31,13 +31,13 @@ Feature: Target specific scenarios
       """
 
   Scenario: run a single scenario
-    When I run cucumber.js with `--no-source features/a.feature:2`
+    When I run cucumber.js with `features/a.feature:2`
     Then it outputs this text:
       """
       Feature: some feature
 
-        Scenario: first scenario
-          When a step is passing
+        Scenario: first scenario   # features/a.feature:2
+          When a step is passing   # features/step_definitions/cucumber_steps.js:2
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -46,16 +46,16 @@ Feature: Target specific scenarios
     And the exit status should be 0
 
   Scenario: run a single scenario outline
-    When I run cucumber.js with `--no-source features/a.feature:8`
+    When I run cucumber.js with `features/a.feature:8`
     Then it outputs this text:
       """
       Feature: some feature
 
-        Scenario Outline: third scenario
-          When a step is passing
+        Scenario Outline: third scenario   # features/a.feature:13
+          When a step is passing           # features/step_definitions/cucumber_steps.js:2
 
-        Scenario Outline: third scenario
-          When a step is pending
+        Scenario Outline: third scenario   # features/a.feature:14
+          When a step is pending           # features/step_definitions/cucumber_steps.js:3
 
       2 scenarios (1 pending, 1 passed)
       2 steps (1 pending, 1 passed)
@@ -70,7 +70,7 @@ Feature: Target specific scenarios
       Feature: some feature
 
         Scenario Outline: third scenario   # features/a.feature:13
-          When a step is passing           # features/a.feature:9
+          When a step is passing           # features/step_definitions/cucumber_steps.js:2
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -85,10 +85,10 @@ Feature: Target specific scenarios
       Feature: some feature
 
         Scenario: first scenario   # features/a.feature:2
-          When a step is passing   # features/a.feature:3
+          When a step is passing   # features/step_definitions/cucumber_steps.js:2
 
         Scenario: second scenario   # features/a.feature:5
-          When a step is passing    # features/a.feature:6
+          When a step is passing    # features/step_definitions/cucumber_steps.js:2
 
       2 scenarios (2 passed)
       2 steps (2 passed)
