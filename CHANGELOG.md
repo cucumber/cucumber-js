@@ -1,8 +1,19 @@
-# Cucumber.js changelog
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.1...master)
 
-## [v0.9.x](https://github.com/cucumber/cucumber-js/compare/v0.9.0...master)
+### [0.9.1](https://github.com/cucumber/cucumber-js/compare/v0.9.0...v0.9.1)
 
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.0...master)
+#### New Features
+
+* Add rerun formatter (Charlie Rudolph)
+
+#### Fixes
+
+* Add ability to execute scenario outline example (Charlie Rudolph)
+* Support tags on scenario outline examples (Charlie Rudolph)
+
+#### Documentation
+
+* Fix invalid hook documentation (Charlie Rudolph)
 
 ### [0.9.0](https://github.com/cucumber/cucumber-js/compare/v0.8.1...v0.9.0)
 
