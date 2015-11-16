@@ -6,7 +6,7 @@ describe("Cucumber.Ast.Assembler", function () {
 
   beforeEach(function () {
     features  = createSpy("features");
-    filter    = createSpy("filter");
+    filter    = createSpyWithStubs("filter", {isElementEnrolled: null});
     assembler = Cucumber.Ast.Assembler(features, filter);
   });
 
@@ -249,7 +249,6 @@ describe("Cucumber.Ast.Assembler", function () {
     beforeEach(function () {
       scenario       = createSpy("scenario");
       currentFeature = createSpyWithStubs("current feature", {addFeatureElement: null});
-      spyOnStub(filter, 'isElementEnrolled');
       spyOn(assembler, 'applyStashedTagsToElement');
       spyOn(assembler, 'applyCurrentFeatureTagsToElement');
       spyOn(assembler, 'getCurrentFeature').and.returnValue(currentFeature);
@@ -271,41 +270,14 @@ describe("Cucumber.Ast.Assembler", function () {
       expect(assembler.setCurrentFeatureElement).toHaveBeenCalledWith(scenario);
     });
 
-    it("asks the filter if the scenario is enrolled", function () {
+    it("gets the current feature", function () {
       assembler.insertScenario(scenario);
-      expect(filter.isElementEnrolled).toHaveBeenCalledWith(scenario);
+      expect(assembler.getCurrentFeature).toHaveBeenCalled();
     });
 
-    describe("when the scenario is enrolled", function () {
-      beforeEach(function () {
-        filter.isElementEnrolled.and.returnValue(true);
-      });
-
-      it("gets the current feature", function () {
-        assembler.insertScenario(scenario);
-        expect(assembler.getCurrentFeature).toHaveBeenCalled();
-      });
-
-      it("adds the scenario to the current feature", function () {
-        assembler.insertScenario(scenario);
-        expect(currentFeature.addFeatureElement).toHaveBeenCalledWith(scenario);
-      });
-    });
-
-    describe("when the scenario is not enrolled", function () {
-      beforeEach(function () {
-        filter.isElementEnrolled.and.returnValue(false);
-      });
-
-      it("does not get the current feature", function () {
-        assembler.insertScenario(scenario);
-        expect(assembler.getCurrentFeature).not.toHaveBeenCalled();
-      });
-
-      it("does not add the scenario to the current feature", function () {
-        assembler.insertScenario(scenario);
-        expect(currentFeature.addFeatureElement).not.toHaveBeenCalledWith(scenario);
-      });
+    it("adds the scenario to the current feature", function () {
+      assembler.insertScenario(scenario);
+      expect(currentFeature.addFeatureElement).toHaveBeenCalledWith(scenario);
     });
   });
 
@@ -384,7 +356,10 @@ describe("Cucumber.Ast.Assembler", function () {
     var currentFeature;
 
     beforeEach(function () {
-      currentFeature = createSpyWithStubs("current feature", {convertScenarioOutlinesToScenarios:  null});
+      currentFeature = createSpyWithStubs("current feature", {
+        convertScenarioOutlinesToScenarios:  null,
+        filterScenarios: null
+      });
       spyOn(assembler, 'tryEnrollingSuggestedFeature');
     });
 
@@ -392,6 +367,12 @@ describe("Cucumber.Ast.Assembler", function () {
       spyOn(assembler, 'getCurrentFeature').and.returnValue(currentFeature);
       assembler.finish();
       expect(currentFeature.convertScenarioOutlinesToScenarios).toHaveBeenCalled();
+    });
+
+    it("filters the scenarios", function () {
+      spyOn(assembler, 'getCurrentFeature').and.returnValue(currentFeature);
+      assembler.finish();
+      expect(currentFeature.filterScenarios).toHaveBeenCalledWith(filter.isElementEnrolled);
     });
 
     it("doesn't try to convert scenario outlines to scenarios if there is no current feature", function () {
