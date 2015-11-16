@@ -200,10 +200,6 @@ describe("Cucumber.Ast.Feature", function () {
       expect(scenarioCollection.removeAtIndex).toHaveBeenCalledWith(scenarioOutlineIndex);
     });
 
-    it("gets the tags from the scenario outline just once", function () {
-      expect(scenarioOutline.getTags).toHaveBeenCalledTimes(1);
-    });
-
     it ("iterates over the scenarios", function () {
       expect(scenarios.forEach).toHaveBeenCalled();
       expect(scenarios.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
@@ -218,10 +214,6 @@ describe("Cucumber.Ast.Feature", function () {
         index          = 2;
         spyOn(feature, 'insertFeatureElement');
         userFunction (scenario, index);
-      });
-
-      it("adds the scenario outline's tags to the scenario", function () {
-        expect(scenario.addTags).toHaveBeenCalledWith(scenarioOutlineTags);
       });
 
       it("inserts the scenario into the scenario collection", function () {
