@@ -285,7 +285,7 @@ describe("Cucumber.Ast.Assembler", function () {
     var examples, currentFeatureElement;
 
     beforeEach(function () {
-      examples              = createSpy("examples");
+      examples              = createSpyWithStubs("examples", {setTags: null});
       currentFeatureElement = createSpyWithStubs("current feature element", {isScenarioOutline: true, addExamples: null});
       spyOn(assembler, 'getCurrentFeatureElement').and.returnValue(currentFeatureElement);
       spyOn(assembler, 'setCurrentStep');
