@@ -130,5 +130,9 @@
     "cucumber-js": "./bin/cucumber.js",
     "cucumberjs": "./bin/cucumber.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "bin/",
+    "lib/"
+  ]
 }
