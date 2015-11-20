@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -70,7 +70,8 @@
     "Karthik Viswanath <karthik.viswanath-contractor@adp.com>",
     "Marcel Hoyer <mhoyer@pixelplastic.de>",
     "Artem Bronitsky <quex@yandex.ru>",
-    "Karine Pires <karine.pires@alterway.fr>"
+    "Karine Pires <karine.pires@alterway.fr>",
+    "Rick Lee-Morlang <rick@lee-morlang.com>"
   ],
   "repository": {
     "type": "git",

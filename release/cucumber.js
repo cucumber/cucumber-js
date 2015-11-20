@@ -23,7 +23,7 @@ Cucumber.VERSION               = require('../package.json').version;
 
 module.exports                 = Cucumber;
 
-},{"../package.json":243,"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":23,"./cucumber/debug":24,"./cucumber/listener":27,"./cucumber/parser":36,"./cucumber/runtime":37,"./cucumber/status":45,"./cucumber/support_code":46,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":58,"./cucumber/volatile_configuration":65}],2:[function(require,module,exports){
+},{"../package.json":244,"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":23,"./cucumber/debug":24,"./cucumber/listener":27,"./cucumber/parser":36,"./cucumber/runtime":37,"./cucumber/status":45,"./cucumber/support_code":46,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":58,"./cucumber/volatile_configuration":65}],2:[function(require,module,exports){
 var Api        = {};
 Api.Scenario   = require('./api/scenario');
 module.exports = Api;
@@ -2954,7 +2954,7 @@ module.exports = {
 
 }).call(this,"/lib/cucumber/runtime")
 
-},{"path":75,"stack-chain":242}],44:[function(require,module,exports){
+},{"path":75,"stack-chain":241}],44:[function(require,module,exports){
 function StepResult(payload) {
   var self = {
     getAmbiguousStepDefinitions: function getAmbiguousStepDefinitions() {
@@ -102950,64 +102950,110 @@ module.exports = function FormatStackTrace(error, frames) {
 };
 
 },{}],241:[function(require,module,exports){
+(function (global){
+// If a another copy (same version or not) of stack-chain exists it will result
+// in wrong stack traces (most likely dublicate callSites).
+if (global._stackChain) {
+  // In case the version match, we can simply return the first initialized copy
+  if (global._stackChain.version === require('./package.json').version) {
+    module.exports = global._stackChain;
+  }
+  // The version don't match, this is really bad. Lets just throw
+  else {
+    throw new Error('Conflicting version of stack-chain found');
+  }
+}
+// Yay, no other stack-chain copy exists, yet :/
+else {
+  module.exports = global._stackChain = require('./stack-chain');
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./package.json":242,"./stack-chain":243}],242:[function(require,module,exports){
 module.exports={
-  "name": "stack-chain",
-  "description": "API for combining call site modifiers",
-  "version": "1.3.3",
-  "author": {
-    "name": "Andreas Madsen",
-    "email": "amwebdk@gmail.com"
-  },
-  "main": "./stack-chain.js",
-  "scripts": {
-    "test": "tap ./test/simple"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/AndreasMadsen/stack-chain.git"
-  },
-  "keywords": [
-    "stack",
-    "chain",
-    "trace",
-    "call site",
-    "concat",
-    "format"
+  "_args": [
+    [
+      "stack-chain@1.3.5",
+      "/Users/charlesrudolph/projects/open_source/cucumber-js"
+    ]
   ],
-  "devDependencies": {
-    "tap": "0.4.x"
+  "_from": "stack-chain@1.3.5",
+  "_id": "stack-chain@1.3.5",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/stack-chain",
+  "_nodeVersion": "5.0.0",
+  "_npmUser": {
+    "email": "amwebdk@gmail.com",
+    "name": "andreasmadsen"
   },
-  "license": "MIT",
-  "gitHead": "d3e7d1f63ce47e98ced5cebb2d85e7984df412a5",
+  "_npmVersion": "3.3.6",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "stack-chain",
+    "raw": "stack-chain@1.3.5",
+    "rawSpec": "1.3.5",
+    "scope": null,
+    "spec": "1.3.5",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/stack-chain/-/stack-chain-1.3.5.tgz",
+  "_shasum": "02a64a5fe92250d41984d55961a3b2d466a14d8a",
+  "_shrinkwrap": null,
+  "_spec": "stack-chain@1.3.5",
+  "_where": "/Users/charlesrudolph/projects/open_source/cucumber-js",
+  "author": {
+    "email": "amwebdk@gmail.com",
+    "name": "Andreas Madsen"
+  },
   "bugs": {
     "url": "https://github.com/AndreasMadsen/stack-chain/issues"
   },
-  "homepage": "https://github.com/AndreasMadsen/stack-chain#readme",
-  "_id": "stack-chain@1.3.3",
-  "_shasum": "f29669162bd3e3435733337101bbdaea1cde831a",
-  "_from": "stack-chain@1.3.3",
-  "_npmVersion": "2.13.3",
-  "_nodeVersion": "3.1.0",
-  "_npmUser": {
-    "name": "andreasmadsen",
-    "email": "amwebdk@gmail.com"
+  "dependencies": {},
+  "description": "API for combining call site modifiers",
+  "devDependencies": {
+    "tap": "2.x.x",
+    "uglify-js": "2.5.x"
   },
+  "directories": {},
+  "dist": {
+    "shasum": "02a64a5fe92250d41984d55961a3b2d466a14d8a",
+    "tarball": "http://registry.npmjs.org/stack-chain/-/stack-chain-1.3.5.tgz"
+  },
+  "gitHead": "e51a7b2e0f0d1c79b1c4c7962dc53abbeef48e9e",
+  "homepage": "https://github.com/AndreasMadsen/stack-chain#readme",
+  "keywords": [
+    "call site",
+    "chain",
+    "concat",
+    "format",
+    "stack",
+    "trace"
+  ],
+  "license": "MIT",
   "maintainers": [
     {
       "name": "andreasmadsen",
       "email": "amwebdk@gmail.com"
     }
   ],
-  "dist": {
-    "shasum": "f29669162bd3e3435733337101bbdaea1cde831a",
-    "tarball": "http://registry.npmjs.org/stack-chain/-/stack-chain-1.3.3.tgz"
+  "name": "stack-chain",
+  "optionalDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/AndreasMadsen/stack-chain.git"
   },
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/stack-chain/-/stack-chain-1.3.3.tgz"
+  "scripts": {
+    "test": "tap ./test/simple"
+  },
+  "version": "1.3.5"
 }
 
-},{}],242:[function(require,module,exports){
-(function (global){
+},{}],243:[function(require,module,exports){
 
 // use a already existing formater or fallback to the default v8 formater
 var defaultFormater = require('./format.js');
@@ -103043,24 +103089,6 @@ stackChain.prototype.callSite = function collectCallSites(options) {
 };
 
 var chain = new stackChain();
-
-// If a another copy (same version or not) of stack-chain exists it will result
-// in wrong stack traces (most likely dublicate callSites).
-if (global._stackChain) {
-  // In case the version match, we can simply return the first initialized copy
-  if (global._stackChain.version === chain.version) {
-    module.exports = global._stackChain;
-    return; // Prevents V8 and Error extentions from being set again
-  }
-  // The version don't match, this is really bad. Lets just throw
-  else {
-    throw new Error('Conflicting version of stack-chain found');
-  }
-}
-// Yay, no other stack-chain copy exists, yet :/
-else {
-  module.exports = global._stackChain = chain;
-}
 
 function TraceModifier() {
   this._modifiers = [];
@@ -103145,9 +103173,11 @@ function prepareStackTrace(error, originalFrames) {
   frames = frames.slice(0, Error.stackTraceLimit);
 
   // Set the callSite property
-  // But only if it havn't been explicitly set, otherwise
-  // error.stack would have unintended side effects
-  if (Object.getOwnPropertyDescriptor(error, "callSite") === undefined) {
+  // But only if it hasn't been explicitly set, otherwise
+  // error.stack would have unintended side effects. Check also for
+  // non-extensible/sealed objects, such as those from Google's Closure Library
+  if (Object.isExtensible(error) &&
+      (Object.getOwnPropertyDescriptor(error, "callSite") === undefined)) {
     error.callSite = {
       original: originalFrames,
       mutated: frames
@@ -103212,9 +103242,9 @@ Object.defineProperty(Error.prototype, 'callSite', {
   configurable: true
 });
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+module.exports = chain;
 
-},{"./format.js":240,"./package.json":241}],243:[function(require,module,exports){
+},{"./format.js":240,"./package.json":242}],244:[function(require,module,exports){
 module.exports={
   "name": "cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
@@ -103225,7 +103255,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -103287,7 +103317,8 @@ module.exports={
     "Karthik Viswanath <karthik.viswanath-contractor@adp.com>",
     "Marcel Hoyer <mhoyer@pixelplastic.de>",
     "Artem Bronitsky <quex@yandex.ru>",
-    "Karine Pires <karine.pires@alterway.fr>"
+    "Karine Pires <karine.pires@alterway.fr>",
+    "Rick Lee-Morlang <rick@lee-morlang.com>"
   ],
   "repository": {
     "type": "git",
@@ -103314,7 +103345,7 @@ module.exports={
     "duration": "^0.2.0",
     "gherkin": "2.12.2",
     "lodash": "^3.10.1",
-    "stack-chain": "1.3.3",
+    "stack-chain": "1.3.5",
     "walkdir": "0.0.10"
   },
   "devDependencies": {

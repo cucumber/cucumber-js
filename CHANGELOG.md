@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.2...master)
+
+### [0.9.2](https://github.com/cucumber/cucumber-js/compare/v0.9.1...v0.9.2)
+
+#### New Features
+
+* Bump stack-chain (Rick Lee-Morlang)
 
 ### [0.9.1](https://github.com/cucumber/cucumber-js/compare/v0.9.0...v0.9.1)
 
