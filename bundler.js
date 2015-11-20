@@ -39,30 +39,26 @@ function fixGherkinLexers(file) {
 function Bundler(bundlePath) {
   var mapPath = bundlePath + '.map';
 
-  var self = {
-    bundle: function (callback) {
-      var _callback = callback;
-      callback = function (err) {
-        if (_callback) _callback(err);
-        _callback = null;
-      };
+  this.bundle = function (callback) {
+    var _callback = callback;
+    callback = function (err) {
+      if (_callback) _callback(err);
+      _callback = null;
+    };
 
-      browserify({debug: true, standalone: 'Cucumber'})
-        .transform({global: true}, fixGherkinLexers)
-        // Disabled for now due to https://github.com/AndreasMadsen/stack-chain/issues/5
-        //.transform({global:true}, 'uglifyify')
-        .require('./bundle-main', { expose: 'cucumber' })
-        .bundle()
-        .on('error', callback)
-        .pipe(exorcist(mapPath))
-        .on('error', callback)
-        .pipe(fs.createWriteStream(bundlePath, 'utf8'))
-        .on('error', callback)
-        .on('finish', callback);
-    }
+    browserify({debug: true, standalone: 'Cucumber'})
+      .transform({global: true}, fixGherkinLexers)
+      // Disabled for now due to https://github.com/AndreasMadsen/stack-chain/issues/5
+      //.transform({global:true}, 'uglifyify')
+      .require('./bundle-main', { expose: 'cucumber' })
+      .bundle()
+      .on('error', callback)
+      .pipe(exorcist(mapPath))
+      .on('error', callback)
+      .pipe(fs.createWriteStream(bundlePath, 'utf8'))
+      .on('error', callback)
+      .on('finish', callback);
   };
-
-  return self;
 }
 
 module.exports = Bundler;

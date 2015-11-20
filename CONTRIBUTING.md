@@ -62,14 +62,19 @@ addStyleToText(/* ... */) // you can fairly guess this function
 
 ## Release checklist
 
-This a reminder of the steps maintainers have to follow to release a new version of Cucumber.js.
+Perform the following steps on a feature branch.
 
-* Update `CHANGELOG.md`. `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
-* Bump version in `package.json`
+* Update `CHANGELOG.md`
+  * Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
+  * `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
+* Update `package.json`
+  * bump version
+  * add new contributors, if any
+    * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD`
 * Compile the bundle with `npm run build-release`
-* Add new contributors to `package.json`, if any
-* Commit those changes as "*Release 0.1.2*" (where *0.1.2* is the actual version, of course)
-* Tag commit as "v0.1.2" with a description of the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
-* Push to main repo on GitHub
-* Wait for build to go green
+
+Review the changes, if everything looks good, squash merge into master.
+
+* commit message should have the format "Release 0.1.2" (replacing *0.1.2* with the actual version)
+* Tag commit as "v0.1.2"
 * Publish to NPM
