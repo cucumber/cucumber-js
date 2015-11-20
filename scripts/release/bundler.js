@@ -2,14 +2,16 @@ var fs = require('fs');
 var through = require('through');
 var browserify = require('browserify');
 var exorcist = require('exorcist');
+var path = require('path');
 
 function fixGherkinLexers(file) {
   var data = '';
+  var projectRoot = path.resolve(__dirname, '..', '..');
 
   function write (buf) { data += buf; }
 
   function end () {
-    var path = __dirname + '/node_modules/gherkin/lib';
+    var path = projectRoot + '/node_modules/gherkin/lib';
     var lexersPath = path + '/gherkin/lexer';
     if (file === path + '/gherkin.js') {
       // Patch gherkin so that all lexers are available statically:
@@ -24,7 +26,7 @@ function fixGherkinLexers(file) {
       data = bufferPrefix + data;
     }
     var ignoredFiles = [
-      __dirname + '/lib/cucumber/cli.js'
+      projectRoot + '/lib/cucumber/cli.js'
     ];
     if (ignoredFiles.indexOf(file) > -1) {
       data = '';
@@ -46,11 +48,13 @@ function Bundler(bundlePath) {
       _callback = null;
     };
 
+    var main = path.join(__dirname, 'bundle-main');
+
     browserify({debug: true, standalone: 'Cucumber'})
       .transform({global: true}, fixGherkinLexers)
       // Disabled for now due to https://github.com/AndreasMadsen/stack-chain/issues/5
       //.transform({global:true}, 'uglifyify')
-      .require('./bundle-main', { expose: 'cucumber' })
+      .require(main, { expose: 'cucumber' })
       .bundle()
       .on('error', callback)
       .pipe(exorcist(mapPath))
