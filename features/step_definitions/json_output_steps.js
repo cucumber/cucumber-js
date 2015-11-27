@@ -82,6 +82,21 @@ var jsonOutputSteps = function jsonOutputSteps() {
     assert.equal(parseInt(count), features[0].elements.length);
   });
 
+  this.Then(/^it runs the scenario "([^"]*)"$/, function (scenarioName) {
+    var features = JSON.parse(this.lastRun.stdout);
+    assert.equal(1, features.length);
+    assert.equal(1, features[0].elements.length);
+    assert.equal(features[0].elements[0].name, scenarioName);
+  });
+
+  this.Then(/^it runs the scenarios "([^"]*)" and "([^"]*)"$/, function (scenarioName1, scenarioName2) {
+    var features = JSON.parse(this.lastRun.stdout);
+    assert.equal(1, features.length);
+    assert.equal(2, features[0].elements.length);
+    assert.equal(features[0].elements[0].name, scenarioName1);
+    assert.equal(features[0].elements[1].name, scenarioName2);
+  });
+
   this.Then(/^the scenario "([^"]*)" has the steps$/, function (name, table) {
     var features = JSON.parse(this.lastRun.stdout);
     var scenario = findScenario(features, function(element) {
