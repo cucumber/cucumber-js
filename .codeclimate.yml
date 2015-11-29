@@ -1,8 +1,13 @@
 engines:
   eslint:
     enabled: true
-
 ratings:
   paths:
   - bin/**
   - lib/**
+exclude_paths:
+- features/**/*
+- spec/**/*
+- example/**/*
+- release/**/*
+- scripts/**/*
