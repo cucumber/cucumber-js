@@ -2,32 +2,20 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.StepResult", function () {
   var Cucumber = requireLib('cucumber');
-  var stepResult, step, attachments;
+  var stepResult, step, attachments, failureException, status;
 
   beforeEach(function () {
     step        = createSpy("step");
-    attachments = {};
-    stepResult = Cucumber.Runtime.StepResult({ step: step, duration: 123, attachments: attachments });
-  });
-
-  it("is not failed", function () {
-    expect(stepResult.isFailed()).toBeFalsy();
-  });
-
-  it("is not pending", function () {
-    expect(stepResult.isPending()).toBeFalsy();
-  });
-
-  it("is not skipped", function () {
-    expect(stepResult.isSkipped()).toBeFalsy();
-  });
-
-  it("is not successful", function () {
-    expect(stepResult.isSuccessful()).toBeFalsy();
-  });
-
-  it("is not undefined", function () {
-    expect(stepResult.isUndefined()).toBeFalsy();
+    attachments = [];
+    failureException = new Error('some error');
+    status = Cucumber.Status.PASSED;
+    stepResult = Cucumber.Runtime.StepResult({
+      step: step,
+      duration: 123,
+      attachments: attachments,
+      status: status,
+      failureException: failureException
+    });
   });
 
   describe("getStep()", function () {
@@ -42,12 +30,20 @@ describe("Cucumber.Runtime.StepResult", function () {
     });
   });
 
+  describe("getStatus()", function () {
+    it("returns the step passed to the constructor", function () {
+      expect(stepResult.getStatus()).toBe(status);
+    });
+  });
+
+  describe("getFailureException()", function () {
+    it("returns the step passed to the constructor", function () {
+      expect(stepResult.getFailureException()).toBe(failureException);
+    });
+  });
+
   describe("hasAttachments()", function () {
     describe("when there are no attachments", function () {
-      beforeEach(function () {
-        spyOnStub(attachments, 'length').andReturn(0);
-      });
-
       it("returns false", function () {
         expect(stepResult.hasAttachments()).toBeFalsy();
       });
@@ -55,7 +51,7 @@ describe("Cucumber.Runtime.StepResult", function () {
 
     describe("when there are attachments", function () {
       beforeEach(function () {
-        spyOnStub(attachments, 'length').andReturn(1);
+        attachments.push(1);
       });
 
       it("returns true", function () {

@@ -3,17 +3,20 @@ require('../../support/spec_helper');
 describe("Cucumber.Listener.PrettyFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var path     = require('path');
-  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, colors;
+  var colors   = require('colors/safe');
+  colors.enabled = true;
+  var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, logged;
 
   beforeEach(function () {
-    options             = createSpyWithStubs("options", {showSource: true});
-    formatter           = createSpyWithStubs("formatter", {log: null});
+    options             = {useColors: true};
+    formatter           = createSpyWithStubs("formatter", {finish: null});
+    logged              = '';
+    spyOnStub(formatter, 'log').and.callFake(function (text) { logged += text; });
     formatterHearMethod = spyOnStub(formatter, 'hear');
     summaryFormatter    = createSpy("summary formatter");
-    spyOn(Cucumber.Listener, 'Formatter').andReturn(formatter);
-    spyOn(Cucumber.Listener, 'SummaryFormatter').andReturn(summaryFormatter);
+    spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
+    spyOn(Cucumber.Listener, 'SummaryFormatter').and.returnValue(summaryFormatter);
     prettyFormatter = Cucumber.Listener.PrettyFormatter(options);
-    colors = Cucumber.Util.Colors;
   });
 
   describe("constructor", function () {
@@ -26,7 +29,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
     });
 
     it("creates a summaryFormatter", function () {
-      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalledWith({logToConsole: false});
+      expect(Cucumber.Listener.SummaryFormatter).toHaveBeenCalled();
     });
   });
 
@@ -51,7 +54,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       beforeEach(function () {
         prettyFormatter.hear(event, callback);
-        summaryFormatterCallback = summaryFormatter.hear.mostRecentCall.args[1];
+        summaryFormatterCallback = summaryFormatter.hear.calls.mostRecent().args[1];
       });
 
       it("tells the formatter to listen to the event", function () {
@@ -62,104 +65,126 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("handleBeforeFeatureEvent()", function () {
-    var event, feature, keyword, name, description, callback;
+    var event, feature, callback;
 
     beforeEach(function () {
-      keyword  = "feature-keyword";
-      name     = "feature-name";
-      description = "feature-description";
-      var tags = [createSpyWithStubs("tags", {getName: '@tag'})];
-      feature  = createSpyWithStubs("feature", { getKeyword: keyword, getName: name, getDescription: description, getTags: tags });
-      event    = createSpyWithStubs("event", { getPayloadItem: feature });
+      feature = createSpyWithStubs("feature", {
+        getKeyword: "feature-keyword",
+        getName: "feature-name",
+        getDescription: '',
+        getTags: []
+      });
+      event = createSpyWithStubs("event", { getPayloadItem: feature });
       callback = createSpy("callback");
-      spyOn(prettyFormatter, 'logIndented');
     });
 
-    it("gets the feature from the event payload", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(event.getPayloadItem).toHaveBeenCalledWith('feature');
+    describe('no tags or description', function () {
+      beforeEach(function (){
+        prettyFormatter.handleBeforeFeatureEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        expect(logged).toEqual('feature-keyword: feature-name\n\n');
+      });
+
+      it("calls back", function () {
+        expect(callback).toHaveBeenCalled();
+      });
     });
 
-    it("gets the feature keyword", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(feature.getKeyword).toHaveBeenCalled();
+    describe('with tags', function () {
+      beforeEach(function (){
+        feature.getTags.and.returnValue([
+          createSpyWithStubs("tag1", {getName: '@tag1'}),
+          createSpyWithStubs("tag2", {getName: '@tag2'})
+        ]);
+        prettyFormatter.handleBeforeFeatureEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          colors.cyan('@tag1 @tag2') + '\n' +
+          'feature-keyword: feature-name' + '\n\n';
+        expect(logged).toEqual(expected);
+      });
     });
 
-    it("gets the feature name", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(feature.getName).toHaveBeenCalled();
-    });
+    describe('with feature description', function () {
+      beforeEach(function (){
+        feature.getDescription.and.returnValue('line1\nline2');
+        prettyFormatter.handleBeforeFeatureEvent(event, callback);
+      });
 
-    it("logs the feature header", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      var text = colors.tag('@tag') + "\n" +keyword + ": " + name + "\n";
-      expect(prettyFormatter.log).toHaveBeenCalledWith(text);
-    });
+      it('logs the keyword and name', function () {
+        var expected =
+          'feature-keyword: feature-name' + '\n\n' +
+          '  line1' + '\n' +
+          '  line2' + '\n\n';
 
-    it("logs the feature description", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      var text = description + "\n\n";
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text,1);
-    });
-
-    it("calls back", function () {
-      prettyFormatter.handleBeforeFeatureEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+        expect(logged).toEqual(expected);
+      });
     });
   });
 
   describe("handleBeforeScenarioEvent()", function () {
-    var event, scenario, keyword, name, backgroundStepLength, callback, relativeUri;
+    var event, scenario, callback;
 
     beforeEach(function () {
-      keyword  = "scenario-keyword";
-      name     = "scenario-name";
-      relativeUri = "scenario-uri";
-      // Background step assumed to be the longest
-      backgroundStepLength = 50;
-      var scenarioStepLength = 20;
-      var tags = [createSpyWithStubs("tags", {getName: '@tag'})];
-      var line = 10;
-      var uri = path.join(process.cwd(), relativeUri);
-      var background = createSpy("background");
-      scenario = createSpyWithStubs("scenario", { getKeyword: keyword, getName: name, getUri: uri, getLine: line, getBackground: background, getOwnTags: tags });
-      spyOnStub(prettyFormatter, "determineMaxStepLengthForElement").andCallFake(function (element) {
-        if (element === background) {
-          return backgroundStepLength;
-        }
-        else if (element === scenario) {
-          return scenarioStepLength;
-        }
+      scenario = createSpyWithStubs("scenario", {
+        getKeyword: "scenario-keyword",
+        getName: "scenario-name",
+        getUri: path.join(process.cwd(), "scenario-uri"),
+        getLine: 1,
+        getBackground: undefined,
+        getOwnTags: [],
+        getSteps: []
       });
-      event    = createSpyWithStubs("event", { getPayloadItem: scenario });
-      spyOn(prettyFormatter, 'logIndented');
+      event = createSpyWithStubs("event", { getPayloadItem: scenario });
       callback = createSpy("callback");
     });
 
-    it("gets the scenario from the event payload", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
+    describe('no tags, not showing source', function () {
+      beforeEach(function (){
+        prettyFormatter.handleBeforeScenarioEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        expect(logged).toEqual('  scenario-keyword: scenario-name\n');
+      });
+
+      it("calls back", function () {
+        expect(callback).toHaveBeenCalled();
+      });
     });
 
-    it("gets the scenario keyword", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(scenario.getKeyword).toHaveBeenCalled();
+    describe('with tags', function () {
+      beforeEach(function (){
+        scenario.getOwnTags.and.returnValue([
+          createSpyWithStubs("tag1", {getName: '@tag1'}),
+          createSpyWithStubs("tag2", {getName: '@tag2'})
+        ]);
+        prettyFormatter.handleBeforeScenarioEvent(event, callback);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          '  ' + colors.cyan('@tag1 @tag2') + '\n' +
+          '  scenario-keyword: scenario-name' + '\n';
+        expect(logged).toEqual(expected);
+      });
     });
 
-    it("gets the scenario name", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(scenario.getName).toHaveBeenCalled();
-    });
+    describe('showing source', function () {
+      beforeEach(function (){
+        options.showSource = true;
+        prettyFormatter.handleBeforeScenarioEvent(event, callback);
+      });
 
-    it("logs the scenario header, indented by one level", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      var text = colors.tag("@tag") + "\n" + prettyFormatter._pad(keyword + ": " + name, backgroundStepLength + 3) + colors.comment("# " + relativeUri + ":" + scenario.getLine()) + "\n";
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 1);
-    });
-
-    it("calls back", function () {
-      prettyFormatter.handleBeforeScenarioEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
+      it('logs the keyword and name', function () {
+        var expected =
+          '  scenario-keyword: scenario-name   ' + colors.gray('# scenario-uri:1') + '\n';
+        expect(logged).toEqual(expected);
+      });
     });
   });
 
@@ -187,7 +212,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     beforeEach(function () {
       step       = createSpyWithStubs("step", { isHidden: null });
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null });
+      stepResult = createSpyWithStubs("step result", { getStep: step, getStatus: undefined });
       event      = createSpyWithStubs("event", { getPayloadItem: stepResult });
       callback   = createSpy("callback");
       spyOnStub(prettyFormatter, 'logStepResult');
@@ -200,7 +225,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is not hidden", function () {
       it("calls logStepResult() as the step is not hidden", function () {
-        spyOnStub(step, 'isHidden').andReturn(false);
+        step.isHidden.and.returnValue(false);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -208,8 +233,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has not failed", function () {
       it("does not call logStepResult() to keep the step hidden", function () {
-        spyOnStub(step, 'isHidden').andReturn(true);
-        spyOnStub(stepResult, 'isFailed').andReturn(false);
+        step.isHidden.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.PASSED);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).not.toHaveBeenCalled();
       });
@@ -217,8 +242,8 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
     describe("when step result is hidden and has failed", function () {
       it("calls logStepResult() to log the failure even though the step is supposed to be hidden", function () {
-        spyOnStub(step, 'isHidden').andReturn(true);
-        spyOnStub(stepResult, 'isFailed').andReturn(true);
+        step.isHidden.and.returnValue(true);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
         prettyFormatter.handleStepResultEvent(event, callback);
         expect(prettyFormatter.logStepResult).toHaveBeenCalledWith(step, stepResult);
       });
@@ -231,178 +256,165 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logStepResult()", function () {
-    var stepResult, keyword, name, relativeUri, maxStepLength, line, step;
+    var stepResult, step, stepDefinition;
 
     beforeEach(function () {
-      keyword    = "step-keyword ";
-      name       = "step-name";
-      relativeUri = "step-uri";
-      var uri = path.join(process.cwd(), relativeUri);
-      maxStepLength = 30;
-      line       = 10;
-      step       = createSpyWithStubs("step", { getKeyword: keyword, hasDataTable: null, getDataTable: null, hasDocString: null, getDocString: null, getName: name, hasUri: true, getUri: uri, getLine: line });
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
-      spyOn(prettyFormatter, 'logDataTable');
-      spyOn(prettyFormatter, 'logDocString');
-      spyOn(prettyFormatter, 'logIndented');
-      spyOn(prettyFormatter, '_getCurrentMaxStepLength').andReturn(maxStepLength);
+      stepDefinition = createSpyWithStubs("step definition", {
+        getLine: 1,
+        getUri: path.join(process.cwd(), 'step-definition-uri')
+      });
+      step = createSpyWithStubs("step", {
+        getDataTable: null,
+        getDocString: null,
+        getKeyword: "step-keyword ",
+        getName: "step-name",
+        hasDataTable: null,
+        hasDocString: null,
+      });
+      stepResult = createSpyWithStubs("step result", {
+        getFailureException: null,
+        getStep: step,
+        getStepDefinition: stepDefinition,
+        getStatus: Cucumber.Status.PASSED
+      });
     });
 
-    it("gets the step keyword", function () {
-      prettyFormatter.logStepResult(step, stepResult);
-      expect(step.getKeyword).toHaveBeenCalled();
-    });
-
-    it("gets the step name", function () {
-      prettyFormatter.logStepResult(step, stepResult);
-      expect(step.getName).toHaveBeenCalled();
-    });
-
-    it("logs the step header, indented by two levels", function () {
-      prettyFormatter.logStepResult(step, stepResult);
-      var text = prettyFormatter._pad(keyword + name, maxStepLength + 1) + colors.comment("# " + relativeUri + ":" + line) + "\n";
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
-    });
-
-    describe("when the step has no name", function () {
+    describe("passing step", function () {
       beforeEach(function () {
-        step.getName.andReturn(undefined);
+        prettyFormatter.logStepResult(step, stepResult);
       });
 
-      it("logs the step header without the name, indented by two levels", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword, maxStepLength + 1) + colors.comment("# " + relativeUri + ":" + line) + "\n";
-        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
+      it('logs the keyword and name', function () {
+        var expected =
+          '    ' + colors.green('step-keyword step-name') + '\n';
+        expect(logged).toEqual(expected);
       });
     });
 
-    describe("when the step has no URI", function () {
+    describe("pending step", function () {
       beforeEach(function () {
-        step.hasUri.andReturn(false);
-      });
-
-      it("logs the step header without the URI, indented by two levels", function () {
+        stepResult.getStatus.and.returnValue(Cucumber.Status.PENDING);
         prettyFormatter.logStepResult(step, stepResult);
-        var text = prettyFormatter._pad(keyword + name, maxStepLength + 1) + "\n";
-        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 2);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          '    ' + colors.yellow('step-keyword step-name') + '\n';
+        expect(logged).toEqual(expected);
       });
     });
 
-    it("checks whether the step result has a data table or not", function () {
-      prettyFormatter.logStepResult(step, stepResult);
-      expect(step.hasDataTable).toHaveBeenCalled();
-    });
-
-    describe("when the step has a data table", function () {
-      var dataTable;
-
+    describe("skipped step", function () {
       beforeEach(function () {
-        dataTable = createSpy("data table");
-        step.hasDataTable.andReturn(true);
-        step.getDataTable.andReturn(dataTable);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.SKIPPED);
+        prettyFormatter.logStepResult(step, stepResult);
       });
 
-      it("gets the data table", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(step.getDataTable).toHaveBeenCalled();
-      });
-
-      it("logs the data table", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(prettyFormatter.logDataTable).toHaveBeenCalledWith(stepResult, dataTable);
+      it('logs the keyword and name', function () {
+        var expected =
+          '    ' + colors.cyan('step-keyword step-name') + '\n';
+        expect(logged).toEqual(expected);
       });
     });
 
-    describe("when the step has no data table", function () {
+    describe("undefined step", function () {
       beforeEach(function () {
-        step.hasDataTable.andReturn(false);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
+        prettyFormatter.logStepResult(step, stepResult);
       });
 
-      it("does no get the data table", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(step.getDataTable).not.toHaveBeenCalled();
-      });
-
-      it("does not log the data table", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(prettyFormatter.logDataTable).not.toHaveBeenCalled();
+      it('logs the keyword and name', function () {
+        var expected =
+          '    ' + colors.yellow('step-keyword step-name') + '\n';
+        expect(logged).toEqual(expected);
       });
     });
 
-    it("checks whether the step result has a doc string or not", function () {
-      prettyFormatter.logStepResult(step, stepResult);
-      expect(step.hasDocString).toHaveBeenCalled();
-    });
-
-    describe("when the step has a doc string", function () {
-      var docString;
-
+    describe("failed step", function () {
       beforeEach(function () {
-        docString = createSpy("doc string");
-        step.hasDocString.andReturn(true);
-        step.getDocString.andReturn(docString);
+        stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
+        stepResult.getFailureException.and.returnValue({stack: 'stack error\n  stacktrace1\n  stacktrace2'});
+        prettyFormatter.logStepResult(step, stepResult);
       });
 
-      it("gets the doc string", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(step.getDocString).toHaveBeenCalled();
-      });
-
-      it("logs the doc string", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(prettyFormatter.logDocString).toHaveBeenCalledWith(stepResult, docString);
+      it('logs the keyword and name and failure', function () {
+        var expected =
+          '    ' + colors.red('step-keyword step-name') + '\n' +
+          '      stack error' + '\n' +
+          '        stacktrace1' + '\n' +
+          '        stacktrace2' + '\n';
+        expect(logged).toEqual(expected);
       });
     });
 
-    describe("when the step has no doc string", function () {
+    describe("without name", function () {
       beforeEach(function () {
-        step.hasDocString.andReturn(false);
+        step.getName.and.returnValue(undefined);
+        prettyFormatter.logStepResult(step, stepResult);
       });
 
-      it("does not get the doc string", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(step.getDocString).not.toHaveBeenCalled();
-      });
-
-      it("logs the doc string", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(prettyFormatter.logDocString).not.toHaveBeenCalled();
+      it('logs the keyword', function () {
+        var expected =
+          '    step-keyword ' + '\n';
+        expect(colors.strip(logged)).toEqual(expected);
       });
     });
 
-    it("checks whether the step result is failed or not", function () {
-      prettyFormatter.logStepResult(step, stepResult);
-      expect(stepResult.isFailed).toHaveBeenCalled();
+    describe("showing source", function () {
+      beforeEach(function() {
+        options.showSource = true;
+        prettyFormatter.logStepResult(step, stepResult);
+      });
+
+      it('logs the keyword and name', function () {
+        var expected =
+          '    step-keyword step-name# step-definition-uri:1' + '\n';
+        expect(colors.strip(logged)).toEqual(expected);
+      });
     });
 
-    describe("when the step failed", function () {
-      var exception;
+    describe("with data table", function () {
+      beforeEach(function() {
+        var rows = [
+          ["cuk", "cuke", "cukejs"],
+          ["c",   "cuke", "cuke.js"],
+          ["cu",  "cuke", "cucumber"]
+        ];
+        var dataTable = createSpyWithStubs("data table", {raw: rows});
+        step.getDataTable.and.returnValue(dataTable);
+        step.hasDataTable.and.returnValue(true);
+        prettyFormatter.logStepResult(step, stepResult);
+      });
 
+      it('logs the keyword and name and data table', function () {
+        var expected =
+          '    step-keyword step-name' + '\n' +
+          '      | cuk | cuke | cukejs   |' + '\n' +
+          '      | c   | cuke | cuke.js  |' + '\n' +
+          '      | cu  | cuke | cucumber |' + '\n';
+        expect(colors.strip(logged)).toEqual(expected);
+      });
+    });
+
+    describe("with doc string", function () {
       beforeEach(function () {
-        exception = createSpy("exception");
-        stepResult.isFailed.andReturn(true);
-        spyOnStub(stepResult, 'getFailureException').andReturn(exception);
+        var contents = "this is a multiline\ndoc string\n\n:-)";
+        var docString = createSpyWithStubs("doc string", {getContents: contents});
+        step.getDocString.and.returnValue(docString);
+        step.hasDocString.and.returnValue(true);
+        prettyFormatter.logStepResult(step, stepResult);
       });
 
-      it("gets the failure exception", function () {
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(stepResult.getFailureException).toHaveBeenCalled();
-      });
-
-      it("logs the failure stack when there is one, indented by three levels", function () {
-        var stack  = "failure stack";
-        var text = stack + "\n";
-        exception.stack = stack;
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
-      });
-
-      it("logs the failure itself when there no stack, indented by three levels", function () {
-        exception = "exception text";
-        var text  = exception + "\n";
-        stepResult.getFailureException.andReturn(exception);
-        prettyFormatter.logStepResult(step, stepResult);
-        expect(prettyFormatter.logIndented).toHaveBeenCalledWith(text, 3);
+      it('logs the keyword and name and doc string', function () {
+        var expected =
+          '    step-keyword step-name' + '\n' +
+          '      """' + '\n' +
+          '      this is a multiline' + '\n' +
+          '      doc string' + '\n' +
+          '\n' +
+          '      :-)' + '\n' +
+          '      """' + '\n';
+        expect(colors.strip(logged)).toEqual(expected);
       });
     });
   });
@@ -414,7 +426,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       event    = createSpy("event");
       callback = createSpy("callback");
       summary  = createSpy("summary logs");
-      spyOnStub(summaryFormatter, 'getLogs').andReturn(summary);
+      spyOnStub(summaryFormatter, 'getLogs').and.returnValue(summary);
     });
 
     it("gets the summary from the summaryFormatter", function () {
@@ -422,69 +434,14 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       expect(summaryFormatter.getLogs).toHaveBeenCalled();
     });
 
-    it("logs one line feed", function () {
-      prettyFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(prettyFormatter.log).toHaveBeenCalledWith("\n");
-    });
-
     it("logs the summary", function () {
       prettyFormatter.handleAfterFeaturesEvent(event, callback);
       expect(prettyFormatter.log).toHaveBeenCalledWith(summary);
     });
 
-    it("calls back", function () {
+    it("calls finish with the callback", function () {
       prettyFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
-    });
-  });
-
-  describe("logDataTable()", function () {
-    var rows, step, stepResult, dataTable;
-
-    beforeEach(function () {
-      rows = [
-        ["cuk", "cuke", "cukejs"],
-        ["c",   "cuke", "cuke.js"],
-        ["cu",  "cuke", "cucumber"]
-      ];
-      step       = createSpy("step");
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
-      dataTable  = createSpyWithStubs("data table", {raw: rows});
-      spyOn(prettyFormatter, "logIndented");
-    });
-
-    it("gets the rows from the table", function () {
-      prettyFormatter.logDataTable(stepResult, dataTable);
-      expect(dataTable.raw).toHaveBeenCalled();
-    });
-
-    it("logs the lines with padding, indented by 3 levels", function () {
-      prettyFormatter.logDataTable(stepResult, dataTable);
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith("| cuk | cuke | cukejs   |\n", 3);
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith("| c   | cuke | cuke.js  |\n", 3);
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith("| cu  | cuke | cucumber |\n", 3);
-    });
-  });
-
-  describe("logDocString()", function () {
-    var contents, step, stepResult, docString;
-
-    beforeEach(function () {
-      contents   = "this is a multiline\ndoc string\n\n:-)";
-      step       = createSpy("step");
-      stepResult = createSpyWithStubs("step result", { getStep: step, isFailed: null, isPending: null, isSuccessful: null, isUndefined: null, isSkipped: null });
-      docString  = createSpyWithStubs("doc string", {getContents: contents});
-      spyOn(prettyFormatter, "logIndented");
-    });
-
-    it("gets the contents of the doc string", function () {
-      prettyFormatter.logDocString(stepResult, docString);
-      expect(docString.getContents).toHaveBeenCalled();
-    });
-
-    it("logs the contents of the doc string, with a 3-level indentation", function () {
-      prettyFormatter.logDocString(stepResult, docString);
-      expect(prettyFormatter.logIndented).toHaveBeenCalledWith('"""\n' + contents + '\n"""\n', 3);
+      expect(prettyFormatter.finish).toHaveBeenCalledWith(callback);
     });
   });
 
@@ -495,7 +452,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       text     = createSpy("text");
       level    = createSpy("level");
       indented = createSpy("indented text");
-      spyOn(prettyFormatter, 'indent').andReturn(indented);
+      spyOn(prettyFormatter, 'indent').and.returnValue(indented);
     });
 
     it("indents the text", function () {

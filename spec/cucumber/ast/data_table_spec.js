@@ -100,7 +100,7 @@ describe("Cucumber.Ast.DataTable", function () {
       expect(actualRows2.getAtIndex(0)).toEqual(rowArray[0]);
       expect(actualRows2.getAtIndex(1)).toEqual(rowArray[1]);
 
-      expect(actualRows2).toNotBe(actualRows1);
+      expect(actualRows2).not.toBe(actualRows1);
     });
   });
 
@@ -116,7 +116,7 @@ describe("Cucumber.Ast.DataTable", function () {
           ];
       dataTable.attachRow(rowArray[0]);
       dataTable.attachRow(rowArray[1]);
-      
+
       expect(dataTable.rowsHash()).toEqual({pig: 'oink', cat: 'meow'});
     });
 
@@ -131,7 +131,7 @@ describe("Cucumber.Ast.DataTable", function () {
           ];
       dataTable.attachRow(rowArray[0]);
       dataTable.attachRow(rowArray[1]);
-      
+
       expect(function () {
         dataTable.rowsHash();
       }).toThrow();
@@ -145,8 +145,8 @@ describe("Cucumber.Ast.DataTable", function () {
       raw              = createSpy("raw data table");
       rawHashDataTable = createSpy("raw hash data table");
       hashDataTable    = createSpyWithStubs("hash data table", {raw: rawHashDataTable});
-      spyOn(dataTable, 'raw').andReturn(raw);
-      spyOn(Cucumber.Type, 'HashDataTable').andReturn(hashDataTable);
+      spyOn(dataTable, 'raw').and.returnValue(raw);
+      spyOn(Cucumber.Type, 'HashDataTable').and.returnValue(hashDataTable);
     });
 
     it("gets the raw representation of the data table", function () {

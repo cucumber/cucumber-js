@@ -4,33 +4,21 @@ describe("Cucumber.Runtime", function () {
   var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
-  var listeners;
-  var isStrictRequested;
-  var isDryRunRequested;
+  var isDryRunRequested, isFailFastRequested, isStrictRequested;
 
   beforeEach(function () {
     isStrictRequested = false;
     isDryRunRequested = false;
-    listeners     = createSpyWithStubs("listener collection", {add: null});
-    configuration = createSpyWithStubs("configuration", { isDryRunRequested: isDryRunRequested, isStrictRequested: isStrictRequested, shouldFilterStackTraces: true });
-    spyOn(Cucumber.Type, 'Collection').andReturn(listeners);
+    isFailFastRequested = false;
+    configuration = createSpyWithStubs("configuration", {
+      isDryRunRequested: isDryRunRequested,
+      isFailFastRequested: isFailFastRequested,
+      isStrictRequested: isStrictRequested,
+      shouldFilterStackTraces: true
+    });
     spyOn(Cucumber.Runtime.StackTraceFilter, 'filter');
     spyOn(Cucumber.Runtime.StackTraceFilter, 'unfilter');
     runtime       = Cucumber.Runtime(configuration);
-  });
-
-  describe("constructor", function () {
-    it("creates a listener collection", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalled();
-    });
-  });
-
-  describe("attachListener()", function () {
-    it("adds the listener to the listener collection", function () {
-      var listener = createSpy("AST tree listener");
-      runtime.attachListener(listener);
-      expect(listeners.add).toHaveBeenCalledWith(listener);
-    });
   });
 
   describe("start()", function () {
@@ -41,9 +29,9 @@ describe("Cucumber.Runtime", function () {
       supportCodeLibrary = createSpy("support code library");
       astTreeWalker      = createSpyWithStubs("AST tree walker", {walk: null});
       callback           = createSpy("callback");
-      spyOn(runtime, 'getFeatures').andReturn(features);
-      spyOn(runtime, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
-      spyOn(Cucumber.Runtime, 'AstTreeWalker').andReturn(astTreeWalker);
+      spyOn(runtime, 'getFeatures').and.returnValue(features);
+      spyOn(runtime, 'getSupportCodeLibrary').and.returnValue(supportCodeLibrary);
+      spyOn(Cucumber.Runtime, 'AstTreeWalker').and.returnValue(astTreeWalker);
     });
 
     it("fails when no callback is passed", function () {
@@ -70,12 +58,36 @@ describe("Cucumber.Runtime", function () {
 
     it("creates a new AST tree walker", function () {
       runtime.start(callback);
-      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, listeners, isStrictRequested, isDryRunRequested);
+      var options = {
+        dryRun: isDryRunRequested,
+        failFast: isFailFastRequested,
+        strict: isStrictRequested
+      };
+      expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, [], options);
+    });
+
+    describe("when listeners are attached", function () {
+      var listener;
+
+      beforeEach(function () {
+        listener = createSpy('listener');
+        runtime.attachListener(listener);
+      });
+
+      it("passes the listener to the AST tree walker", function () {
+        runtime.start(callback);
+        var options = {
+          dryRun: isDryRunRequested,
+          failFast: isFailFastRequested,
+          strict: isStrictRequested
+        };
+        expect(Cucumber.Runtime.AstTreeWalker).toHaveBeenCalledWith(features, supportCodeLibrary, [listener], options);
+      });
     });
 
     describe("when stack traces should be filtered", function () {
       beforeEach(function () {
-        configuration.shouldFilterStackTraces.andReturn(true);
+        configuration.shouldFilterStackTraces.and.returnValue(true);
       });
 
       it("activates the stack trace filter", function () {
@@ -86,7 +98,7 @@ describe("Cucumber.Runtime", function () {
 
     describe("when stack traces should be unfiltered", function () {
       beforeEach(function () {
-        configuration.shouldFilterStackTraces.andReturn(false);
+        configuration.shouldFilterStackTraces.and.returnValue(false);
       });
 
       it("does not activate the stack trace filter", function () {
@@ -105,7 +117,7 @@ describe("Cucumber.Runtime", function () {
 
       beforeEach(function () {
         runtime.start(callback);
-        walkCallback = astTreeWalker.walk.mostRecentCall.args[0];
+        walkCallback = astTreeWalker.walk.calls.mostRecent().args[0];
         walkResults = createSpy("AST tree walker results");
       });
 
@@ -129,9 +141,9 @@ describe("Cucumber.Runtime", function () {
       astFilter      = createSpy("AST filter");
       features       = createSpy("features (AST)");
       parser         = createSpyWithStubs("parser", {parse: features});
-      spyOnStub(configuration, 'getFeatureSources').andReturn(featureSources);
-      spyOnStub(configuration, 'getAstFilter').andReturn(astFilter);
-      spyOn(Cucumber, 'Parser').andReturn(parser);
+      spyOnStub(configuration, 'getFeatureSources').and.returnValue(featureSources);
+      spyOnStub(configuration, 'getAstFilter').and.returnValue(astFilter);
+      spyOn(Cucumber, 'Parser').and.returnValue(parser);
     });
 
     it("gets the feature sources from the configuration", function () {
@@ -164,7 +176,7 @@ describe("Cucumber.Runtime", function () {
 
     beforeEach(function () {
       supportCodeLibrary = createSpy("support code library");
-      spyOnStub(configuration, 'getSupportCodeLibrary').andReturn(supportCodeLibrary);
+      spyOnStub(configuration, 'getSupportCodeLibrary').and.returnValue(supportCodeLibrary);
     });
 
     it("gets the support code library from the configuration", function () {

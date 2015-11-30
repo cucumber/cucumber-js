@@ -6,37 +6,22 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
   beforeEach(function () {
     step           = createSpy("step");
-    syntax         = createSpyWithStubs("step syntax", {
-      getStepDefinitionStart               : 'this.',
-      getStepDefinitionInner1              : '(',
-      getStepDefinitionInner2              : ', function (',
-      getStepDefinitionEnd                 : ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n",
-      getContextStepDefinitionFunctionName : 'Given',
-      getEventStepDefinitionFunctionName   : 'When',
-      getOutcomeStepDefinitionFunctionName : 'Then',
-      getNumberMatchingGroup               : '(\\d+)',
-      getQuotedStringMatchingGroup         : '"([^"]*)"',
-      getOutlineExampleMatchingGroup       : '<([^>]*)>',
-      getFunctionParameterSeparator        : ', ',
-      getStepDefinitionDocString           : 'string',
-      getStepDefinitionDataTable           : 'table',
-      getStepDefinitionCallback            : 'callback',
-      getPatternStart                      : '/^',
-      getPatternEnd                        : '$/'
-    });
+    syntax         = createSpyWithStubs("step syntax", {build: null});
     snippetBuilder = Cucumber.SupportCode.StepDefinitionSnippetBuilder(step, syntax);
   });
 
   describe("buildSnippet()", function () {
-    var functionName, pattern, parameters;
+    var functionName, pattern, parameters, snippet;
 
     beforeEach(function () {
       functionName   = "defineSomeStep";
       pattern        = "/^some step pattern$/";
-      parameters     = "some, parameters, and, the, callback";
-      spyOn(snippetBuilder, 'buildStepDefinitionFunctionName').andReturn(functionName);
-      spyOn(snippetBuilder, 'buildStepDefinitionPattern').andReturn(pattern);
-      spyOn(snippetBuilder, 'buildStepDefinitionParameters').andReturn(parameters);
+      parameters     = ['some', 'parameters', 'and', 'the', 'callback'];
+      snippet        = 'snippet';
+      spyOn(snippetBuilder, 'buildStepDefinitionFunctionName').and.returnValue(functionName);
+      spyOn(snippetBuilder, 'buildStepDefinitionPattern').and.returnValue(pattern);
+      spyOn(snippetBuilder, 'buildStepDefinitionParameters').and.returnValue(parameters);
+      syntax.build.and.returnValue(snippet);
     });
 
     it("builds the step definition's function name", function () {
@@ -54,17 +39,13 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
       expect(snippetBuilder.buildStepDefinitionParameters).toHaveBeenCalled();
     });
 
+    it("builds the snippet in the given syntax", function () {
+      snippetBuilder.buildSnippet();
+      expect(syntax.build).toHaveBeenCalledWith(functionName, pattern, parameters, jasmine.any(String));
+    });
+
     it("returns the snippet", function () {
-      var actualSnippet   = snippetBuilder.buildSnippet();
-      var expectedSnippet =
-        "this."      +
-        functionName +
-        "("          +
-        pattern      +
-        ", function (" +
-        parameters +
-        ") {\n  // Write code here that turns the phrase above into concrete actions\n  callback.pending();\n});\n";
-      expect(actualSnippet).toBe(expectedSnippet);
+      expect(snippetBuilder.buildSnippet()).toBe(snippet);
     });
   });
 
@@ -81,7 +62,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
     describe("when the step is a context step", function () {
       beforeEach(function () {
-        step.isOutcomeStep.andReturn(true);
+        step.isOutcomeStep.and.returnValue(true);
       });
 
       it("returns the outcome step definition function name", function () {
@@ -91,7 +72,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
     describe("when the step is not a context step", function () {
       beforeEach(function () {
-        step.isOutcomeStep.andReturn(false);
+        step.isOutcomeStep.and.returnValue(false);
       });
 
       it("checks whether the step is an event step", function () {
@@ -101,7 +82,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
       describe("when the step is an event step", function () {
         beforeEach(function () {
-          step.isEventStep.andReturn(true);
+          step.isEventStep.and.returnValue(true);
         });
 
         it("returns the event step definition function name", function () {
@@ -111,7 +92,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
       describe("when the step is not an event step", function () {
         beforeEach(function () {
-          step.isEventStep.andReturn(false);
+          step.isEventStep.and.returnValue(false);
         });
 
         it("returns the context step definition function name", function () {
@@ -128,10 +109,10 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
       parameterizedStepName = "step name-" + (Math.random()*10);
       escapedStepName = createSpy("escaped step name");
       stepName        = createSpy("step name");
-      spyOnStub(step, 'getName').andReturn(stepName);
+      spyOnStub(step, 'getName').and.returnValue(stepName);
       spyOnStub(step, 'isOutlineStep');
-      spyOnStub(Cucumber.Util.RegExp, 'escapeString').andReturn(escapedStepName);
-      spyOn(snippetBuilder, 'parameterizeStepName').andReturn(parameterizedStepName);
+      spyOnStub(Cucumber.Util.RegExp, 'escapeString').and.returnValue(escapedStepName);
+      spyOn(snippetBuilder, 'parameterizeStepName').and.returnValue(parameterizedStepName);
     });
 
     it("gets the step name", function () {
@@ -189,7 +170,7 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
 
     beforeEach(function () {
       patternMatchingGroupParameters = ['some', 'stepdef', 'parameters'];
-      spyOn(snippetBuilder, 'getStepDefinitionPatternMatchingGroupParameters').andReturn(patternMatchingGroupParameters);
+      spyOn(snippetBuilder, 'getStepDefinitionPatternMatchingGroupParameters').and.returnValue(patternMatchingGroupParameters);
       spyOnStub(step, 'hasDocString');
       spyOnStub(step, 'hasDataTable');
       spyOnStub(step, 'isOutlineStep');
@@ -211,23 +192,23 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
     });
 
     it("returns the parameters and a callback joined", function () {
-      var parameters = patternMatchingGroupParameters.concat(['callback']).join(', ');
-      expect(snippetBuilder.buildStepDefinitionParameters()).toBe(parameters);
+      var parameters = patternMatchingGroupParameters.concat(['callback']);
+      expect(snippetBuilder.buildStepDefinitionParameters()).toEqual(parameters);
     });
 
     describe("when there is a doc string", function () {
       it("returns the parameters, an additional 'string' parameter and a callback joined", function () {
-        step.hasDocString.andReturn(true);
-        var parameters = patternMatchingGroupParameters.concat(['string', 'callback']).join(', ');
-        expect(snippetBuilder.buildStepDefinitionParameters()).toBe(parameters);
+        step.hasDocString.and.returnValue(true);
+        var parameters = patternMatchingGroupParameters.concat(['string', 'callback']);
+        expect(snippetBuilder.buildStepDefinitionParameters()).toEqual(parameters);
       });
     });
 
     describe("when there is a data table", function () {
       it("returns the parameters, an additional 'table' parameter and a callback joined", function () {
-        step.hasDataTable.andReturn(true);
-        var parameters = patternMatchingGroupParameters.concat(['table', 'callback']).join(', ');
-        expect(snippetBuilder.buildStepDefinitionParameters()).toBe(parameters);
+        step.hasDataTable.and.returnValue(true);
+        var parameters = patternMatchingGroupParameters.concat(['table', 'callback']);
+        expect(snippetBuilder.buildStepDefinitionParameters()).toEqual(parameters);
       });
     });
   });
@@ -237,29 +218,29 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
       spyOn(snippetBuilder, 'countStepDefinitionPatternMatchingGroups');
       spyOnStub(step, 'isOutlineStep');
       spyOnStub(step, 'getName');
-      step.getName.andReturn('stepName');
+      step.getName.and.returnValue('stepName');
     });
 
     it("gets the number of step definition pattern matching groups", function () {
-      snippetBuilder.countStepDefinitionPatternMatchingGroups.andReturn(0);
+      snippetBuilder.countStepDefinitionPatternMatchingGroups.and.returnValue(0);
       snippetBuilder.getStepDefinitionPatternMatchingGroupParameters();
       expect(snippetBuilder.countStepDefinitionPatternMatchingGroups).toHaveBeenCalled();
     });
 
     it("returns an empty array when there are no matching groups", function () {
-      snippetBuilder.countStepDefinitionPatternMatchingGroups.andReturn(0);
+      snippetBuilder.countStepDefinitionPatternMatchingGroups.and.returnValue(0);
       var parameters = snippetBuilder.getStepDefinitionPatternMatchingGroupParameters();
       expect(parameters).toEqual([]);
     });
 
     it("returns one parameter when there is one matching group", function () {
-      snippetBuilder.countStepDefinitionPatternMatchingGroups.andReturn(1);
+      snippetBuilder.countStepDefinitionPatternMatchingGroups.and.returnValue(1);
       var parameters = snippetBuilder.getStepDefinitionPatternMatchingGroupParameters();
       expect(parameters).toEqual(['arg1']);
     });
 
     it("returns two joined parameters when there are two matching groups", function () {
-      snippetBuilder.countStepDefinitionPatternMatchingGroups.andReturn(2);
+      snippetBuilder.countStepDefinitionPatternMatchingGroups.and.returnValue(2);
       var parameters = snippetBuilder.getStepDefinitionPatternMatchingGroupParameters();
       expect(parameters).toEqual(['arg1', 'arg2']);
     });
@@ -273,8 +254,8 @@ describe("Cucumber.SupportCode.StepDefinitionSnippetBuilder", function () {
       stringCount = Math.floor(Math.random() * 10);
       count       = numberCount + stringCount;
       stepDefinitionPattern = createSpy("step definition pattern");
-      spyOn(snippetBuilder, 'buildStepDefinitionPattern').andReturn(stepDefinitionPattern);
-      spyOn(Cucumber.Util.String, 'count').andReturnSeveral([numberCount, stringCount]);
+      spyOn(snippetBuilder, 'buildStepDefinitionPattern').and.returnValue(stepDefinitionPattern);
+      spyOn(Cucumber.Util.String, 'count').and.returnValues.apply(null, [numberCount, stringCount]);
     });
 
     it("builds the step definition pattern", function () {

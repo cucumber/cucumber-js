@@ -3,78 +3,269 @@ require('../../support/spec_helper');
 describe("Cucumber.SupportCode.Library", function () {
   var Cucumber = requireLib('cucumber');
   var library, rawSupportCode;
-  var worldConstructor;
-  var listenerCollection, stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection;
-  var collectionSpy;
 
   beforeEach(function () {
-    rawSupportCode           = createSpy("Raw support code");
-    worldConstructor         = createSpy("world constructor");
-    spyOn(Cucumber.SupportCode, 'WorldConstructor').andReturn(worldConstructor);
-    listenerCollection       = createSpy("listener collection");
-    stepDefinitionCollection = createSpy("step definition collection");
-    aroundHookCollection     = createSpy("around hook collection");
-    beforeHookCollection     = createSpy("before hook collection");
-    afterHookCollection      = createSpy("after hook collection");
-    collectionSpy            = spyOn(Cucumber.Type, 'Collection').andReturnSeveral([listenerCollection, stepDefinitionCollection, aroundHookCollection, beforeHookCollection, afterHookCollection]);
+    rawSupportCode = createSpy("Raw support code");
   });
 
   describe("constructor", function () {
     beforeEach(function () {
+      spyOn(Cucumber.SupportCode, 'AroundHook');
+      spyOn(Cucumber.SupportCode, 'Hook');
+      spyOn(Cucumber.SupportCode, 'StepDefinition');
       library = Cucumber.SupportCode.Library(rawSupportCode);
-    });
-
-    it("creates a collection of step definitions", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalledNTimes(5);
     });
 
     it("executes the raw support code", function () {
       expect(rawSupportCode).toHaveBeenCalled();
     });
 
-    it("creates a new World constructor", function () {
-      expect(Cucumber.SupportCode.WorldConstructor).toHaveBeenCalled();
-    });
-
     it("executes the raw support code with a support code helper as 'this'", function () {
-      expect(rawSupportCode.mostRecentCall.object).toBeDefined();
+      expect(rawSupportCode.calls.mostRecent().object).toBeDefined();
     });
 
     describe("code support helper", function () {
       var supportCodeHelper;
 
       beforeEach(function () {
-        supportCodeHelper = rawSupportCode.mostRecentCall.object;
+        supportCodeHelper = rawSupportCode.calls.mostRecent().object;
       });
 
-      it("exposes a method to define Around hooks", function () {
-        expect(supportCodeHelper.Around).toBeAFunction ();
-        expect(supportCodeHelper.Around).toBe(library.defineAroundHook);
+      describe("Around", function() {
+        var code, aroundHook;
+
+        beforeEach(function () {
+          code       = createSpy("hook code");
+          aroundHook = createSpy("around hook");
+          Cucumber.SupportCode.AroundHook.and.returnValue(aroundHook);
+        });
+
+        describe("with no tag groups", function () {
+          beforeEach(function() {
+            supportCodeHelper.Around(code);
+          });
+
+          it("creates a around hook with the code", function () {
+            expect(Cucumber.SupportCode.AroundHook).toHaveBeenCalledWith(code, {tags: []}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with a tag group", function () {
+          var tagGroup;
+
+          beforeEach(function () {
+            tagGroup = createSpy("tag group");
+            supportCodeHelper.Around(tagGroup, code);
+          });
+
+          it("creates a around hook with the code", function () {
+            expect(Cucumber.SupportCode.AroundHook).toHaveBeenCalledWith(code, {tags: [tagGroup]}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with multiple tag groups", function () {
+          var tagGroup1, tagGroup2;
+
+          beforeEach(function () {
+            tagGroup1 = createSpy("tag group 1");
+            tagGroup2 = createSpy("tag group 2");
+            supportCodeHelper.Around(tagGroup1, tagGroup2, code);
+          });
+
+          it("creates a around hook with the code", function () {
+            expect(Cucumber.SupportCode.AroundHook).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("lookupAroundHooksByScenario()", function () {
+          var scenario, aroundHook1, aroundHook2, aroundHook3;
+
+          beforeEach(function () {
+            scenario = createSpy('scenario');
+            aroundHook1 = createSpyWithStubs("around hook 1", {appliesToScenario: true});
+            aroundHook2 = createSpyWithStubs("around hook 2", {appliesToScenario: false});
+            aroundHook3 = createSpyWithStubs("around hook 3", {appliesToScenario: true});
+            Cucumber.SupportCode.AroundHook.and.returnValues(aroundHook1, aroundHook2, aroundHook3);
+            supportCodeHelper.Around();
+            supportCodeHelper.Around();
+            supportCodeHelper.Around();
+          });
+
+          it("checks whether each around hook applies to the scenario", function () {
+            library.lookupAroundHooksByScenario(scenario);
+            expect(aroundHook1.appliesToScenario).toHaveBeenCalledWith(scenario);
+            expect(aroundHook2.appliesToScenario).toHaveBeenCalledWith(scenario);
+            expect(aroundHook3.appliesToScenario).toHaveBeenCalledWith(scenario);
+          });
+
+          it("returns the matching hooks", function () {
+            var result = library.lookupAroundHooksByScenario(scenario);
+            expect(result).toEqual([aroundHook1, aroundHook3]);
+          });
+        });
       });
 
-      it("exposes a method to define Before hooks", function () {
-        expect(supportCodeHelper.Before).toBeAFunction ();
-        expect(supportCodeHelper.Before).toBe(library.defineBeforeHook);
+      describe("Before", function () {
+        var code, hook;
+
+        beforeEach(function () {
+          code = createSpy("hook code");
+          hook = createSpy("hook");
+          Cucumber.SupportCode.Hook.and.returnValue(hook);
+        });
+
+        describe("with no tag groups", function () {
+          beforeEach(function () {
+            supportCodeHelper.Before(code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: []}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with a tag group", function () {
+          var tagGroup;
+
+          beforeEach(function () {
+            tagGroup = createSpy("tag group");
+            supportCodeHelper.Before(tagGroup, code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup]}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with multiple tag groups", function () {
+          var tagGroup1, tagGroup2;
+
+          beforeEach(function () {
+            tagGroup1 = createSpy("tag group 1");
+            tagGroup2 = createSpy("tag group 2");
+            supportCodeHelper.Before(tagGroup1, tagGroup2, code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("lookupBeforeHooksByScenario()", function () {
+          var scenario, beforeHook1, beforeHook2, beforeHook3;
+
+          beforeEach(function () {
+            scenario = createSpy('scenario');
+            beforeHook1 = createSpyWithStubs("before hook 1", {appliesToScenario: true});
+            beforeHook2 = createSpyWithStubs("before hook 2", {appliesToScenario: false});
+            beforeHook3 = createSpyWithStubs("before hook 3", {appliesToScenario: true});
+            Cucumber.SupportCode.Hook.and.returnValues(beforeHook1, beforeHook2, beforeHook3);
+            supportCodeHelper.Before();
+            supportCodeHelper.Before();
+            supportCodeHelper.Before();
+          });
+
+          it("checks whether each before hook applies to the scenario", function () {
+            library.lookupBeforeHooksByScenario(scenario);
+            expect(beforeHook1.appliesToScenario).toHaveBeenCalledWith(scenario);
+            expect(beforeHook2.appliesToScenario).toHaveBeenCalledWith(scenario);
+            expect(beforeHook3.appliesToScenario).toHaveBeenCalledWith(scenario);
+          });
+
+          it("returns the matching hooks", function () {
+            var result = library.lookupBeforeHooksByScenario(scenario);
+            expect(result).toEqual([beforeHook1, beforeHook3]);
+          });
+        });
       });
 
-      it("exposes a method to define After hooks", function () {
-        expect(supportCodeHelper.After).toBeAFunction ();
-        expect(supportCodeHelper.After).toBe(library.defineAfterHook);
+      describe("After", function () {
+        var code, hook;
+
+        beforeEach(function () {
+          code = createSpy("hook code");
+          hook = createSpy("hook");
+          Cucumber.SupportCode.Hook.and.returnValue(hook);
+        });
+
+        describe("with no tag groups", function () {
+          beforeEach(function () {
+            supportCodeHelper.After(code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: []}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with a tag group", function () {
+          var tagGroup;
+
+          beforeEach(function () {
+            tagGroup = createSpy("tag group");
+            supportCodeHelper.After(tagGroup, code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup]}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with multiple tag groups", function () {
+          var tagGroup1, tagGroup2;
+
+          beforeEach(function () {
+            tagGroup1 = createSpy("tag group 1");
+            tagGroup2 = createSpy("tag group 2");
+            supportCodeHelper.After(tagGroup1, tagGroup2, code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("lookupAfterHooksByScenario()", function () {
+          var scenario, afterHook1, afterHook2, afterHook3;
+
+          beforeEach(function () {
+            scenario = createSpy('scenario');
+            afterHook1 = createSpyWithStubs("after hook 1", {appliesToScenario: true});
+            afterHook2 = createSpyWithStubs("after hook 2", {appliesToScenario: false});
+            afterHook3 = createSpyWithStubs("after hook 3", {appliesToScenario: true});
+            Cucumber.SupportCode.Hook.and.returnValues(afterHook1, afterHook2, afterHook3);
+            supportCodeHelper.After();
+            supportCodeHelper.After();
+            supportCodeHelper.After();
+          });
+
+          it("checks whether each after hook applies to the scenario", function () {
+            library.lookupAfterHooksByScenario(scenario);
+            expect(afterHook1.appliesToScenario).toHaveBeenCalledWith(scenario);
+            expect(afterHook2.appliesToScenario).toHaveBeenCalledWith(scenario);
+            expect(afterHook3.appliesToScenario).toHaveBeenCalledWith(scenario);
+          });
+
+          it("returns the matching hooks", function () {
+            var result = library.lookupAfterHooksByScenario(scenario);
+            expect(result).toEqual([afterHook1, afterHook3]);
+          });
+        });
       });
 
       it("exposes a method to define Given steps", function () {
         expect(supportCodeHelper.Given).toBeAFunction ();
-        expect(supportCodeHelper.Given).toBe(library.defineStep);
+        expect(supportCodeHelper.Given).toBe(supportCodeHelper.defineStep);
       });
 
       it("exposes a method to define When steps", function () {
         expect(supportCodeHelper.When).toBeAFunction ();
-        expect(supportCodeHelper.When).toBe(library.defineStep);
+        expect(supportCodeHelper.Given).toBe(supportCodeHelper.defineStep);
       });
 
       it("exposes a method to define Then steps", function () {
         expect(supportCodeHelper.Then).toBeAFunction ();
-        expect(supportCodeHelper.Then).toBe(library.defineStep);
+        expect(supportCodeHelper.Given).toBe(supportCodeHelper.defineStep);
       });
 
       it("exposes a method to define any step", function () {
@@ -83,15 +274,15 @@ describe("Cucumber.SupportCode.Library", function () {
       });
 
       it("exposes the World constructor", function () {
-        expect(supportCodeHelper.World).toBe(worldConstructor);
+        expect(supportCodeHelper.World).toBeAFunction();
       });
 
       it("exposes a method to register a listener", function () {
-        expect(supportCodeHelper.registerListener).toBeAFunction ();
+        expect(supportCodeHelper.registerListener).toBeAFunction();
       });
 
       it("exposes a method to register a handler", function () {
-        expect(supportCodeHelper.registerHandler).toBeAFunction ();
+        expect(supportCodeHelper.registerHandler).toBeAFunction();
       });
 
       // parameterized test
@@ -123,73 +314,30 @@ describe("Cucumber.SupportCode.Library", function () {
   });
 
   describe('Step Definitions', function () {
-    var stepDefinitions;
-
-    beforeEach(function () {
-      stepDefinitions = [
-        createSpyWithStubs("First step definition",  {matchesStepName:false}),
-        createSpyWithStubs("Second step definition", {matchesStepName:false}),
-        createSpyWithStubs("Third step definition",  {matchesStepName:false})
-      ];
-      spyOnStub(stepDefinitionCollection, 'forEach').andCallFake(function (cb) { stepDefinitions.forEach(cb); });
-      library = Cucumber.SupportCode.Library(rawSupportCode);
-    });
-
-    describe("lookupStepDefinitionByName()", function () {
-      var stepName;
+    describe("lookupStepDefinitionsByName()", function () {
+      var stepName, stepDefinition1, stepDefinition2, stepDefinition3;
 
       beforeEach(function () {
-        stepName = createSpy("Step name");
+        stepName = 'step name';
+        stepDefinition1 = createSpyWithStubs("step definition 1", {matchesStepName: false});
+        stepDefinition2 = createSpyWithStubs("step definition 2", {matchesStepName: true});
+        stepDefinition3 = createSpyWithStubs("step definition 3", {matchesStepName: true});
+        spyOn(Cucumber.SupportCode, 'StepDefinition').and.returnValues(stepDefinition1, stepDefinition2, stepDefinition3);
+        library.defineStep();
+        library.defineStep();
+        library.defineStep();
       });
 
-      it("asks each step definition in the library if they match the step name", function () {
-        library.lookupStepDefinitionByName(stepName);
-        stepDefinitions.forEach(function (stepDefinition) {
-          expect(stepDefinition.matchesStepName).toHaveBeenCalledWith(stepName);
-        });
+      it("checks whether each step defintion matches the step name", function () {
+        library.lookupStepDefinitionsByName(stepName);
+        expect(stepDefinition1.matchesStepName).toHaveBeenCalledWith(stepName);
+        expect(stepDefinition2.matchesStepName).toHaveBeenCalledWith(stepName);
+        expect(stepDefinition3.matchesStepName).toHaveBeenCalledWith(stepName);
       });
 
-      it("returns the step definition that matches the name", function () {
-        var matchingStepDefinition = stepDefinitions[1];
-        matchingStepDefinition.matchesStepName.andReturn(true);
-        expect(library.lookupStepDefinitionByName(stepName)).toBe(matchingStepDefinition);
-      });
-    });
-
-    describe("isStepDefinitionNameDefined()", function () {
-      var name;
-
-      beforeEach(function () {
-        name = createSpy("step name");
-        spyOn(library, 'lookupStepDefinitionByName');
-      });
-
-      it("looks up the step definition by the name", function () {
-        library.isStepDefinitionNameDefined(name);
-        expect(library.lookupStepDefinitionByName).toHaveBeenCalledWith(name);
-      });
-
-      describe("when a step definition is found", function () {
-        var stepDefinition;
-
-        beforeEach(function () {
-          stepDefinition = createSpy("step definition");
-          library.lookupStepDefinitionByName.andReturn(stepDefinition);
-        });
-
-        it("returns true", function () {
-          expect(library.isStepDefinitionNameDefined(name)).toBeTruthy();
-        });
-      });
-
-      describe("when no step definition is found", function () {
-        beforeEach(function () {
-          library.lookupStepDefinitionByName.andReturn(undefined);
-        });
-
-        it("returns false", function () {
-          expect(library.isStepDefinitionNameDefined(name)).toBeFalsy();
-        });
+      it("returns the matching hooks", function () {
+        var result = library.lookupStepDefinitionsByName(stepName);
+        expect(result).toEqual([stepDefinition2, stepDefinition3]);
       });
     });
 
@@ -200,40 +348,57 @@ describe("Cucumber.SupportCode.Library", function () {
         name           = createSpy("step definition name");
         code           = createSpy("step definition code");
         stepDefinition = createSpy("step definition");
-        spyOn(Cucumber.SupportCode, 'StepDefinition').andReturn(stepDefinition);
-        spyOnStub(stepDefinitionCollection, 'add');
+        spyOn(Cucumber.SupportCode, 'StepDefinition').and.returnValue(stepDefinition);
       });
 
-      it("creates a step definition with the name and code", function () {
-        library.defineStep(name, code);
-        expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, code);
+      describe('without options', function () {
+        beforeEach(function () {
+          library.defineStep(name, code);
+        });
+
+        it("creates a step definition with the name, empty options, and code", function () {
+          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, {}, code, jasmine.any(String), jasmine.any(Number));
+        });
       });
 
-      it("adds the step definition to the step collection", function () {
-        library.defineStep(name, code);
-        expect(stepDefinitionCollection.add).toHaveBeenCalledWith(stepDefinition);
+      describe('with options', function () {
+        var options;
+
+        beforeEach(function () {
+          options = {some: 'data'};
+          library.defineStep(name, options, code);
+        });
+
+        it("creates a step definition with the name, options, and code", function () {
+          expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith(name, options, code, jasmine.any(String), jasmine.any(Number));
+        });
       });
     });
   });
 
   describe('Listener Support', function () {
     beforeEach(function () {
-      spyOnStub(listenerCollection, 'add');
       library = Cucumber.SupportCode.Library(rawSupportCode);
     });
 
     describe('getListeners()', function () {
-      it("returns a listener collection", function () {
-        var listeners = library.getListeners();
-        expect(listeners).toBeDefined();
+      describe('without any listeners registered', function () {
+        it("returns an empty array", function () {
+          expect(library.getListeners()).toEqual([]);
+        });
       });
-    });
 
-    describe("registerListener()", function () {
-      it("adds the listener to the listener collection", function () {
-        var listener = createSpy('sample listener');
-        library.registerListener(listener);
-        expect(listenerCollection.add).toHaveBeenCalledWith(listener);
+      describe('with a listeners registered', function () {
+        var listener;
+
+        beforeEach(function () {
+          listener = createSpy('sample listener');
+          library.registerListener(listener);
+        });
+
+        it("returns the registered listeners", function () {
+          expect(library.getListeners()).toEqual([listener]);
+        });
       });
     });
 
@@ -244,7 +409,8 @@ describe("Cucumber.SupportCode.Library", function () {
         eventName = 'eventName';
         handler = createSpy('sampleHandler');
         listener = createSpyWithStubs("listener",  {setHandlerForEvent: null});
-        spyOn(Cucumber, 'Listener').andReturn(listener);
+        spyOn(Cucumber, 'Listener').and.returnValue(listener);
+        spyOn(library, 'registerListener');
         library.registerHandler(eventName, handler);
       });
 
@@ -253,312 +419,8 @@ describe("Cucumber.SupportCode.Library", function () {
         expect(listener.setHandlerForEvent).toHaveBeenCalledWithValueAsNthParameter(handler, 2);
       });
 
-      it("adds the listener to the listener collection", function () {
-        expect(listenerCollection.add).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('Hook Methods', function () {
-    beforeEach(function () {
-      library = Cucumber.SupportCode.Library(rawSupportCode);
-    });
-
-    describe("defineAroundHook()", function () {
-      var code, aroundHook;
-
-      beforeEach(function () {
-        code       = createSpy("hook code");
-        aroundHook = createSpy("around hook");
-        spyOn(Cucumber.SupportCode, 'AroundHook').andReturn(aroundHook);
-        spyOnStub(aroundHookCollection, 'add');
-      });
-
-      describe("define around hook", function () {
-        beforeEach(function () {
-          library.defineAroundHook(code);
-        });
-
-        it("creates a around hook with the code", function () {
-          expect(Cucumber.SupportCode.AroundHook).toHaveBeenCalledWith(code, {tags: []});
-        });
-
-        it("adds the around hook to the around hook collection", function () {
-          expect(aroundHookCollection.add).toHaveBeenCalledWith(aroundHook);
-        });
-      });
-
-      describe("define around hook with a tag group", function () {
-        var tagGroup;
-
-        beforeEach(function () {
-          tagGroup = createSpy("tag group");
-          library.defineAroundHook(tagGroup, code);
-        });
-
-        it("creates a around hook with the code", function () {
-          expect(Cucumber.SupportCode.AroundHook).toHaveBeenCalledWith(code, {tags: [tagGroup]});
-        });
-
-        it("adds the around hook to the around hook collection", function () {
-          expect(aroundHookCollection.add).toHaveBeenCalledWith(aroundHook);
-        });
-      });
-
-      describe("define around hook with tag groups", function () {
-        var tagGroup1, tagGroup2;
-
-        beforeEach(function () {
-          tagGroup1 = createSpy("tag group 1");
-          tagGroup2 = createSpy("tag group 2");
-          library.defineAroundHook(tagGroup1, tagGroup2, code);
-        });
-
-        it("creates a around hook with the code", function () {
-          expect(Cucumber.SupportCode.AroundHook).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]});
-        });
-
-        it("adds the around hook to the around hook collection", function () {
-          expect(aroundHookCollection.add).toHaveBeenCalledWith(aroundHook);
-        });
-      });
-    });
-
-    describe("defineBeforeHook()", function () {
-      var code, hook;
-
-      beforeEach(function () {
-        code = createSpy("hook code");
-        hook = createSpy("hook");
-        spyOn(Cucumber.SupportCode, 'Hook').andReturn(hook);
-        spyOnStub(beforeHookCollection, 'add');
-      });
-
-      describe("define before hook", function () {
-        beforeEach(function () {
-          library.defineBeforeHook(code);
-        });
-
-        it("creates a before hook with the code", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: []});
-        });
-
-        it("adds the before hook to the before hook collection", function () {
-          expect(beforeHookCollection.add).toHaveBeenCalledWith(hook);
-        });
-      });
-
-      describe("define before hook with a tag group", function () {
-        var tagGroup;
-
-        beforeEach(function () {
-          tagGroup = createSpy("tag group");
-          library.defineBeforeHook(tagGroup, code);
-        });
-
-        it("creates a before hook with the code", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup]});
-        });
-
-        it("adds the before hook to the before hook collection", function () {
-          expect(beforeHookCollection.add).toHaveBeenCalledWith(hook);
-        });
-      });
-
-      describe("define before hook with tag groups", function () {
-        var tagGroup1, tagGroup2;
-
-        beforeEach(function () {
-          tagGroup1 = createSpy("tag group 1");
-          tagGroup2 = createSpy("tag group 2");
-          library.defineBeforeHook(tagGroup1, tagGroup2, code);
-        });
-
-        it("creates a before hook with the code", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]});
-        });
-
-        it("adds the before hook to the before hook collection", function () {
-          expect(beforeHookCollection.add).toHaveBeenCalledWith(hook);
-        });
-      });
-    });
-
-    describe("defineAfterHook()", function () {
-      var code, hook;
-
-      beforeEach(function () {
-        code = createSpy("hook code");
-        hook = createSpy("hook");
-        spyOn(Cucumber.SupportCode, 'Hook').andReturn(hook);
-        spyOnStub(afterHookCollection, 'add');
-      });
-
-      describe("define after hook", function () {
-        beforeEach(function () {
-          library.defineAfterHook(code);
-        });
-
-        it("creates a after hook with the code", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: []});
-        });
-
-        it("adds the after hook to the after hook collection", function () {
-          expect(afterHookCollection.add).toHaveBeenCalledWith(hook);
-        });
-      });
-
-      describe("define after hook with a tag group", function () {
-        var tagGroup;
-
-        beforeEach(function () {
-          tagGroup = createSpy("tag group");
-          library.defineAfterHook(tagGroup, code);
-        });
-
-        it("creates a after hook with the code", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup]});
-        });
-
-        it("adds the after hook to the after hook collection", function () {
-          expect(afterHookCollection.add).toHaveBeenCalledWith(hook);
-        });
-      });
-
-      describe("define after hook with tag groups", function () {
-        var tagGroup1, tagGroup2;
-
-        beforeEach(function () {
-          tagGroup1 = createSpy("tag group 1");
-          tagGroup2 = createSpy("tag group 2");
-          library.defineAfterHook(tagGroup1, tagGroup2, code);
-        });
-
-        it("creates a after hook with the code", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: [tagGroup1, tagGroup2]});
-        });
-
-        it("adds the after hook to the after hook collection", function () {
-          expect(afterHookCollection.add).toHaveBeenCalledWith(hook);
-        });
-      });
-    });
-
-    describe("lookupAroundHooksByScenario()", function () {
-      var returnValue, scenario, matchingHooks;
-
-      beforeEach(function () {
-        scenario      = createSpy("scenario");
-        matchingHooks = createSpy("hooks");
-        spyOn(library, "lookupHooksByScenario").andReturn(matchingHooks);
-
-        returnValue = library.lookupAroundHooksByScenario(scenario);
-      });
-
-      it("looks up the around hooks by scenario", function () {
-        expect(library.lookupHooksByScenario).toHaveBeenCalledWith(aroundHookCollection, scenario);
-      });
-
-      it("returns the matching hooks", function () {
-        expect(returnValue).toBe(matchingHooks);
-      });
-    });
-
-    describe("lookupBeforeHooksByScenario()", function () {
-      var returnValue, scenario, matchingHooks;
-
-      beforeEach(function () {
-        scenario      = createSpy("scenario");
-        matchingHooks = createSpy("hooks");
-        spyOn(library, "lookupHooksByScenario").andReturn(matchingHooks);
-
-        returnValue = library.lookupBeforeHooksByScenario(scenario);
-      });
-
-      it("looks up the around hooks by scenario", function () {
-        expect(library.lookupHooksByScenario).toHaveBeenCalledWith(beforeHookCollection, scenario);
-      });
-
-      it("returns the matching hooks", function () {
-        expect(returnValue).toBe(matchingHooks);
-      });
-    });
-
-    describe("lookupAfterHooksByScenario()", function () {
-      var returnValue, scenario, matchingHooks;
-
-      beforeEach(function () {
-        scenario      = createSpy("scenario");
-        matchingHooks = createSpy("hooks");
-        spyOn(library, "lookupHooksByScenario").andReturn(matchingHooks);
-
-        returnValue = library.lookupAfterHooksByScenario(scenario);
-      });
-
-      it("looks up the around hooks by scenario", function () {
-        expect(library.lookupHooksByScenario).toHaveBeenCalledWith(afterHookCollection, scenario);
-      });
-
-      it("returns the matching hooks", function () {
-        expect(returnValue).toBe(matchingHooks);
-      });
-    });
-
-    describe("lookupHooksByScenario()", function () {
-      var hookCollection, scenario, matchingHookCollection, returnValue;
-
-      beforeEach(function () {
-        hookCollection         = createSpyWithStubs("hook collection", {forEach: undefined});
-        scenario               = createSpy("scenario");
-        matchingHookCollection = createSpyWithStubs("matching hook collection", {add: undefined});
-        collectionSpy.andReturn(matchingHookCollection);
-
-        returnValue = library.lookupHooksByScenario(hookCollection, scenario);
-      });
-
-      it("iterates over the hooks", function () {
-        expect(hookCollection.forEach).toHaveBeenCalled();
-        expect(hookCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      });
-
-      it("returns the matching hooks", function () {
-        expect(returnValue).toBe(matchingHookCollection);
-      });
-
-      describe("for each hook in the collection", function () {
-        var hook, forEachUserFunction;
-
-        beforeEach(function () {
-          hook = createSpyWithStubs("hook", {appliesToScenario: undefined});
-          forEachUserFunction = hookCollection.forEach.mostRecentCall.args[0];
-        });
-
-        it("checks whether the hook applies to the scenario", function () {
-          forEachUserFunction (hook);
-          expect(hook.appliesToScenario).toHaveBeenCalledWith(scenario);
-        });
-
-        describe("when the hook matches the scenario", function () {
-          beforeEach(function () {
-            spyOnStub(hook, "appliesToScenario").andReturn(true);
-            forEachUserFunction (hook);
-          });
-
-          it("adds the hook to the collection of matching hooks", function () {
-            expect(matchingHookCollection.add).toHaveBeenCalledWith(hook);
-          });
-        });
-
-        describe("when the hook does not match the scenario", function () {
-          beforeEach(function () {
-            spyOnStub(hook, "appliesToScenario").andReturn(false);
-            forEachUserFunction (hook);
-          });
-
-          it("adds the hook to the collection of matching hooks", function () {
-            expect(matchingHookCollection.add).not.toHaveBeenCalledWith(hook);
-          });
-        });
+      it("registers the listener", function () {
+        expect(library.registerListener).toHaveBeenCalledWith(listener);
       });
     });
   });
@@ -569,94 +431,22 @@ describe("Cucumber.SupportCode.Library", function () {
     });
 
     describe("instantiateNewWorld()", function () {
-      var worldInstance, callback;
-
-      beforeEach(function () {
-        worldInstance = null;
-        worldConstructor.andCallFake(function (callback) {
-          worldInstance = this;
-          if (callback)
-            callback();
-        });
-        callback = createSpy("callback");
-      });
-
-      it("creates a new instance of the World and give it a callback", function () {
-        library.instantiateNewWorld(callback);
-        expect(worldConstructor).toHaveBeenCalled();
-        expect(worldConstructor).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-        expect(worldInstance.constructor).toBe(worldConstructor);
-      });
-
-      describe("world constructor callback", function () {
-        var worldConstructorCompletionCallback;
-
-        beforeEach(function () {
-          library.instantiateNewWorld(callback);
-          worldConstructorCompletionCallback = worldConstructor.mostRecentCall.args[0];
-          spyOn(process, 'nextTick');
-        });
-
-        it("registers a function for the next tick (to get out of the constructor call)", function () {
-          worldConstructorCompletionCallback();
-          expect(process.nextTick).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-        });
-
-        describe("next tick registered function", function () {
-          var nextTickFunction;
-
-          describe("when the world constructor called back without any argument", function () {
-            beforeEach(function () {
-              worldConstructorCompletionCallback();
-              nextTickFunction = process.nextTick.mostRecentCall.args[0];
-            });
-
-            it("calls back with the world instance", function () {
-              nextTickFunction ();
-              expect(callback).toHaveBeenCalledWith(worldInstance);
-            });
-          });
-
-          describe("when the world constructor called back with an explicit world object", function () {
-            var explicitWorld;
-
-            beforeEach(function () {
-              explicitWorld = createSpy("explicit world object");
-              worldConstructorCompletionCallback(explicitWorld);
-              nextTickFunction = process.nextTick.mostRecentCall.args[0];
-            });
-
-            it("calls back with the world instance", function () {
-              nextTickFunction ();
-              expect(callback).toHaveBeenCalledWith(explicitWorld);
-            });
-          });
-
+      it("creates a new instance of the World", function () {
+        library.instantiateNewWorld(function (world) {
+          expect(typeof world).toBe('object');
         });
       });
     });
 
     describe("when the default World constructor is replaced by a custom one", function () {
-      it("instantiates a custom World", function () {
-        var worldInstance;
-        var worldReady             = false;
-        var customWorldConstructor = function (callback) {
-          callback();
-        };
+      it("instantiates a custom World", function (done) {
+        var customWorldConstructor = function () {};
         rawSupportCode             = function () { this.World = customWorldConstructor; };
         library                    = Cucumber.SupportCode.Library(rawSupportCode);
 
-        runs(function () {
-          library.instantiateNewWorld(function (world) {
-            worldInstance = world;
-            worldReady = true;
-          });
-        });
-        waitsFor(function () {
-          return worldReady;
-        }, "world instance constructor", 300);
-        runs(function () {
-          expect(worldInstance.constructor).toBe(customWorldConstructor);
+        library.instantiateNewWorld(function (world) {
+          expect(world.constructor).toBe(customWorldConstructor);
+          done();
         });
       });
     });

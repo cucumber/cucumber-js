@@ -1,8 +1,0 @@
-.DS_Store
-node_modules
-*~
-.#*
-.rvmrc
-doc/
-tmp/
-Procfile

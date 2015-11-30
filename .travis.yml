@@ -1,19 +1,14 @@
-rvm: "1.9.2"
-before_install:
-  - '[ "${TRAVIS_NODE_VERSION}" != "0.8" ] || npm install -g npm@1.4.28'
-  - npm install -g npm@latest
-  - ruby --version
-  - gem --version
-  - rvm --version
-  - bundle install
-
-script: "rake"
+cache:
+  directories:
+    - $HOME/node_modules
 
 language: node_js
 
 node_js:
+  - "5"
   - "4"
   - "0.12"
   - "0.10"
-  - "0.8"
   - "iojs"
+
+sudo: false

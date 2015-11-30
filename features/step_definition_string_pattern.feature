@@ -2,22 +2,86 @@ Feature: step definitions with string pattern
   Some people don't like Regexps as step definition patterns.
   Cucumber also supports string-based patterns.
 
-  Scenario: step definition with string-based pattern
-    Given a mapping with a string-based pattern
-    When Cucumber executes a scenario using that mapping
-    Then the feature passes
-    And the mapping is run
+  Scenario: simple
+    Given a file named "features/passing_steps.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a passing step
+      """
+    And a file named "features/step_definitions/passing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.Given('a passing step', function(){});
+      };
 
-  Scenario: step definition with string-based pattern and parameters
-    Given a mapping with a string-based pattern and parameters
-    When Cucumber executes a scenario that passes arguments to that mapping
-    Then the feature passes
-    And the mapping is run
-    And the mapping receives the arguments
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `--strict`
+    Then it passes
 
-  Scenario: step definition with string-based pattern and multiple parameters
-    Given a mapping with a string-based pattern and multiple parameters
-    When Cucumber executes a scenario that passes multiple arguments to that mapping
-    Then the feature passes
-    And the mapping is run
-    And the mapping receives the multipple arguments
+  Scenario: parameter
+    Given a file named "features/passing_steps.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a passing step
+      """
+    And a file named "features/step_definitions/passing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.When('a $type step', function(type){
+          if (type !== 'passing') {
+            throw new Error('wrong type');
+          }
+        });
+      };
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `--strict`
+    Then it passes
+
+  Scenario: multiple parameters
+    Given a file named "features/passing_steps.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a passing step
+      """
+    And a file named "features/step_definitions/passing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.When('a $type $object', function(type, object){
+          if (type !== 'passing' && object !== 'step') {
+            throw new Error('wrong type');
+          }
+        });
+      };
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `--strict`
+    Then it passes
+
+  Scenario: multiple word parameter
+    Given a file named "features/passing_steps.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a "passing step"
+      """
+    And a file named "features/step_definitions/passing_steps.js" with:
+      """
+      stepDefinitions = function() {
+        this.When('a "$multi_word_type"', function(type){
+          if (type !== 'passing step') {
+            throw new Error('wrong type');
+          }
+        });
+      };
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `--strict`
+    Then it passes

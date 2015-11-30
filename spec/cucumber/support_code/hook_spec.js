@@ -2,19 +2,21 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.Hook", function () {
   var Cucumber = requireLib('cucumber');
-  var hook, code, options, stepDefinition;
+  var hook, code, options, uri, line, stepDefinition;
 
   beforeEach(function () {
-    code           = createSpy("hook code");
-    options        = {};
+    code = createSpy("hook code");
+    options = {};
+    uri = 'uri';
+    line = 1;
     stepDefinition = createSpy("step definition");
-    spyOn(Cucumber.SupportCode, 'StepDefinition').andReturn(stepDefinition);
-    hook           = Cucumber.SupportCode.Hook(code, options);
+    spyOn(Cucumber.SupportCode, 'StepDefinition').and.returnValue(stepDefinition);
+    hook = Cucumber.SupportCode.Hook(code, options, uri, line);
   });
 
   describe("constructor", function () {
     it("inherits from Cucumber.SupportCode.StepDefinition", function () {
-      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', code);
+      expect(Cucumber.SupportCode.StepDefinition).toHaveBeenCalledWith('', {}, code, uri, line);
       expect(hook).toBe(stepDefinition);
     });
   });
@@ -27,17 +29,16 @@ describe("Cucumber.SupportCode.Hook", function () {
   });
 
   describe("buildInvocationParameters()", function () {
-    var step, scenario, callback;
+    var step, scenario, callback, invocationParameters;
 
     beforeEach(function () {
       step      = createSpy("world");
       scenario  = createSpy("scenario");
       callback  = createSpy("callback");
+
     });
 
-    describe("when the hook function does not just accept one parameter", function () {
-      var invocationParameters;
-
+    describe('with no options', function() {
       beforeEach(function () {
         invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
@@ -51,18 +52,13 @@ describe("Cucumber.SupportCode.Hook", function () {
       });
     });
 
-    describe("when the hook function only accepts one parameter", function () {
-      var invocationParameters;
-
+    describe('with noScenario option', function() {
       beforeEach(function () {
-        var codeObservingWrapper = function (callback) {
-          code.call(this, callback);
-        };
-        hook = Cucumber.SupportCode.Hook(codeObservingWrapper, options);
+        hook                 = Cucumber.SupportCode.Hook(code, {noScenario: true});
         invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
       });
 
-      it("returns an array containing only the callback", function () {
+      it("returns an array containing the scenario and the callback", function () {
         expect(invocationParameters).toEqual([callback]);
       });
 
@@ -79,7 +75,7 @@ describe("Cucumber.SupportCode.Hook", function () {
       scenarioEnrolled = createSpy("scenario enrolled?");
       astFilter        = createSpyWithStubs("AST filter", { isElementEnrolled: scenarioEnrolled });
       scenario         = createSpy("scenario");
-      spyOn(hook, 'getAstFilter').andReturn(astFilter);
+      spyOn(hook, 'getAstFilter').and.returnValue(astFilter);
     });
 
     it("gets the AST filter", function () {
@@ -108,9 +104,9 @@ describe("Cucumber.SupportCode.Hook", function () {
       hook      = Cucumber.SupportCode.Hook(code, options);
       rules     = [createSpy("rule 1"), createSpy("rule 2")];
       astFilter = createSpy("AST filter");
-      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').andReturn(tagGroups);
-      spyOn(Cucumber.Ast, 'Filter').andReturn(astFilter);
-      spyOnStub(Cucumber.Ast.Filter, 'AnyOfTagsRule').andReturnSeveral(rules);
+      spyOn(Cucumber.TagGroupParser, 'getTagGroupsFromStrings').and.returnValue(tagGroups);
+      spyOn(Cucumber.Ast, 'Filter').and.returnValue(astFilter);
+      spyOnStub(Cucumber.Ast.Filter, 'AnyOfTagsRule').and.returnValues.apply(null, rules);
 
     });
 

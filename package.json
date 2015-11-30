@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.6.0",
+  "version": "0.9.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -67,7 +67,11 @@
     "zs-zs <zsolt.zsigmondi@hotmail.com>",
     "Dale Gardner <dalegardner@live.com>",
     "Charles Rudolph <charles.rudolph@originate.com>",
-    "Karthik Viswanath <karthik.viswanath-contractor@adp.com>"
+    "Karthik Viswanath <karthik.viswanath-contractor@adp.com>",
+    "Marcel Hoyer <mhoyer@pixelplastic.de>",
+    "Artem Bronitsky <quex@yandex.ru>",
+    "Karine Pires <karine.pires@alterway.fr>",
+    "Rick Lee-Morlang <rick@lee-morlang.com>"
   ],
   "repository": {
     "type": "git",
@@ -82,45 +86,53 @@
   },
   "main": "./lib/cucumber",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "dependencies": {
+    "callsite": "^1.0.0",
+    "camel-case": "^1.2.0",
+    "cli-table": "^0.3.1",
     "colors": "1.1.2",
+    "commander": "^2.9.0",
     "cucumber-html": "0.2.3",
+    "duration": "^0.2.0",
     "gherkin": "2.12.2",
-    "nopt": "3.0.4",
-    "stack-chain": "1.3.3",
-    "underscore": "1.8.3",
-    "underscore.string": "3.2.2",
+    "lodash": "^3.10.1",
+    "stack-chain": "1.3.5",
     "walkdir": "0.0.10"
   },
   "devDependencies": {
+    "async": "^1.5.0",
     "browserify": "11.1.0",
-    "connect": "3.4.0",
     "coffee-script": "1.10.0",
+    "connect": "3.4.0",
     "exorcist": "0.4.0",
-    "jasmine-node": "1.14.5",
+    "fs-extra": "^0.26.0",
+    "jasmine": "^2.3.2",
     "jshint": "2.8.0",
-    "mkdirp": "0.5.1",
     "pogo": "0.10.0",
     "rimraf": "2.4.3",
     "serve-static": "1.10.0",
     "through": "2.3.8",
+    "tmp": "0.0.28",
     "uglifyify": "3.0.1"
   },
   "scripts": {
-    "test": "jshint bundler.js bin lib spec && jasmine-node spec && node bin/cucumber.js -p build"
+    "feature-test": "./bin/cucumber.js -p build",
+    "lint": "jshint bin features lib scripts spec",
+    "test": "npm run lint && npm run unit-test && npm run feature-test",
+    "unit-test": "jasmine",
+    "prebuild-release": "npm install",
+    "build-release": "node ./scripts/release.js"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
     "cucumber-js": "./bin/cucumber.js",
     "cucumberjs": "./bin/cucumber.js"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/cucumber/cucumber.js/LICENSE"
-    }
-  ],
-  "optionalDependencies": {}
+  "license": "MIT",
+  "files": [
+    "bin/",
+    "lib/"
+  ]
 }

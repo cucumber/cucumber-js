@@ -11,14 +11,14 @@ describe("Cucumber.Ast.Filter.AnyOfTagsRule", function () {
   });
 
   describe("isSatisfiedByElement()", function () {
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     var element, satisfyingElement;
 
     beforeEach(function () {
       element           = createSpy("element");
       satisfyingElement = createSpy("whether the element is satisfying");
-      spyOn(_, 'any').andReturn(satisfyingElement);
+      spyOn(_, 'any').and.returnValue(satisfyingElement);
     });
 
     it("looks for a tag matching some condition", function () {
@@ -36,8 +36,8 @@ describe("Cucumber.Ast.Filter.AnyOfTagsRule", function () {
         tag          = createSpy("tag");
         spec         = createSpyWithStubs("element matching tag spec", {isMatching: matchingSpec});
         rule.isSatisfiedByElement(element);
-        everyTagConditionFunc = _.any.mostRecentCall.args[1];
-        spyOn(Cucumber.Ast.Filter, 'ElementMatchingTagSpec').andReturn(spec);
+        everyTagConditionFunc = _.any.calls.mostRecent().args[1];
+        spyOn(Cucumber.Ast.Filter, 'ElementMatchingTagSpec').and.returnValue(spec);
       });
 
       it("instantiates an element matching tag spec", function () {

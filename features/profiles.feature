@@ -20,9 +20,9 @@ Feature: default command line arguments
     And a file named "cucumber.js" with:
       """
       module.exports = {
-        'default': '-f summary',
-        progress: '-f progress',
-        'coffee-snippets': '--coffee'
+        'default': '--format summary',
+        minimal: '--no-snippets',
+        progress: '--format progress'
       };
       """
 
@@ -32,6 +32,7 @@ Feature: default command line arguments
       """
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
 
   Scenario Outline: specifying a profile
@@ -42,6 +43,7 @@ Feature: default command line arguments
 
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
 
     Examples:
@@ -57,19 +59,14 @@ Feature: default command line arguments
           Given a passing step
           And a undefined step
       """
-    When I run cucumber-js with `-p progress -p coffee-snippets`
+    When I run cucumber-js with `-p progress -p minimal`
     Then it outputs this text:
       """
       .U
 
       1 scenario (1 undefined)
       2 steps (1 undefined, 1 passed)
-
-      You can implement step definitions for undefined steps with these snippets:
-
-      @Given /^a undefined step$/, (callback) ->
-        # Write code here that turns the phrase above into concrete actions
-        callback.pending()
+      <duration-stat>
       """
 
   Scenario: overriding the default profile
@@ -78,12 +75,10 @@ Feature: default command line arguments
       """
       Feature: some feature
 
-
-
         Scenario: some scenario   # features/a.feature:2
-          Given a passing step    # features/a.feature:3
-
+          Given a passing step    # features/step_definitions/cucumber_steps.js:2
 
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
