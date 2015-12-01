@@ -432,22 +432,19 @@ describe("Cucumber.SupportCode.Library", function () {
 
     describe("instantiateNewWorld()", function () {
       it("creates a new instance of the World", function () {
-        library.instantiateNewWorld(function (world) {
-          expect(typeof world).toBe('object');
-        });
+        var world = library.instantiateNewWorld();
+        expect(typeof world).toBe('object');
       });
     });
 
     describe("when the default World constructor is replaced by a custom one", function () {
-      it("instantiates a custom World", function (done) {
+      it("instantiates a custom World", function () {
         var customWorldConstructor = function () {};
         rawSupportCode             = function () { this.World = customWorldConstructor; };
         library                    = Cucumber.SupportCode.Library(rawSupportCode);
 
-        library.instantiateNewWorld(function (world) {
-          expect(world.constructor).toBe(customWorldConstructor);
-          done();
-        });
+        var world = library.instantiateNewWorld();
+        expect(world.constructor).toBe(customWorldConstructor);
       });
     });
   });
