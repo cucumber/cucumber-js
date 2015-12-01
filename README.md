@@ -22,6 +22,11 @@ Cucumber.js is tested on:
 * Safari
 * Opera
 
+To run in a browser:
+
+* execute `$ node example/server.js`
+* visit `http://localhost:9797` in your browser
+
 ## Usage
 
 ### Install
