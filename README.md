@@ -502,6 +502,7 @@ Below are some examples
 * [CoffeeScript](https://www.npmjs.com/package/coffee-script): `--compiler coffee:coffee-script/register`
 * [TypeScript](https://www.npmjs.com/package/ts-node): `--compiler ts:ts-node/register`
 * [Pogo](https://www.npmjs.com/package/pogo): `--compiler pogo:pogo`
+* [LiveScript](http://livescript.net): `--compiler ls:livescript`
 
 ### Custom Snippet Syntax
 
