@@ -503,7 +503,7 @@ As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) 
 ### Custom Snippet Syntax
 
 Undefined steps snippets are printed in javascript by default.
-Custom snippet snytaxes can be used with `--snippet-syntax <FILE>`.
+Custom snippet syntaxes can be used with `--snippet-syntax <FILE>`.
 See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
 
 ##### Building a custom snippet syntax
