@@ -78,9 +78,7 @@ function World() {
   };
 }
 
-module.exports = function() {
-  this.World = World;
-};
+exports.World = World;
 ```
 
 If you need to perform operations before/after every scenario, use [hooks](#hooks).
