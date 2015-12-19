@@ -578,50 +578,30 @@ Feature: Environment Hooks
         };
       };
 
-      module.exports.World = WorldConstructor;
+      module.exports = function() {
+        this.World = WorldConstructor;
+      };  
       """
     And a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
-        this.World = require("../support/world.js").World;
-
-        this.Before(function(scenario, callback) {
-          var world = this;
-
-          if (!world.isWorld())
-            callback("Expected this to be world");
-          else
-            callback();
+        this.Before(function(scenario) {
+          if (!this.isWorld())
+            throw Error("Expected this to be world");
         });
 
-        this.After(function(scenario, callback) {
-          var world = this;
-
-          if (!world.isWorld())
-            callback("Expected this to be world");
-          else
-            callback();
+        this.After(function(scenario) {
+          if (!this.isWorld())
+            throw Error("Expected this to be world");
         });
 
         this.Around(function(scenario, runScenario) {
-          var world = this;
-          var error;
+          if (!this.isWorld())
+            throw Error("Expected this to be world");
 
-          if (!world.isWorld())
-            error = "Expected this to be world";
-          else
-            error = null;
-
-          runScenario(error, function(callback) {
-            var world = this;
-            var error;
-
-            if (!world.isWorld())
-              error = "Expected this to be world";
-            else
-              error = null;
-
-            callback(error);
+          runScenario(null, function() {
+            if (!this.isWorld())
+              throw Error("Expected this to be world")
           });
         });
       };
