@@ -4,15 +4,13 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var colors = require('colors/safe');
   colors.enabled = true;
-  var formatter, formatterHearMethod, summaryFormatter, statsJournal, options;
+  var formatter, formatterHearMethod, summaryFormatter, options;
 
   beforeEach(function () {
     options              = {useColors: true};
     formatter            = createSpyWithStubs("formatter", {finish: null, log: null});
     formatterHearMethod  = spyOnStub(formatter, 'hear');
-    statsJournal         = createSpy("stats journal");
     spyOn(Cucumber.Listener, 'Formatter').and.returnValue(formatter);
-    spyOn(Cucumber.Listener, 'StatsJournal').and.returnValue(statsJournal);
     summaryFormatter = Cucumber.Listener.SummaryFormatter(options);
   });
 
@@ -23,41 +21,6 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     it("extends the formatter", function () {
       expect(summaryFormatter).toBe(formatter);
-    });
-
-    it("creates a stats journal", function () {
-      expect(Cucumber.Listener.StatsJournal).toHaveBeenCalled();
-    });
-  });
-
-  describe("hear()", function () {
-    var event, callback;
-
-    beforeEach(function () {
-      event    = createSpy("event");
-      callback = createSpy("callback");
-      spyOnStub(statsJournal, 'hear');
-    });
-
-    it("tells the stats journal to listen to the event", function () {
-      summaryFormatter.hear(event, callback);
-      expect(statsJournal.hear).toHaveBeenCalled();
-      expect(statsJournal.hear).toHaveBeenCalledWithValueAsNthParameter(event, 1);
-      expect(statsJournal.hear).toHaveBeenCalledWithAFunctionAsNthParameter(2);
-    });
-
-    describe("stats journal callback", function () {
-      var statsJournalCallback;
-
-      beforeEach(function () {
-        summaryFormatter.hear(event, callback);
-        statsJournalCallback = statsJournal.hear.calls.mostRecent().args[1];
-      });
-
-      it("tells the formatter to listen to the event", function () {
-        statsJournalCallback();
-        expect(formatterHearMethod).toHaveBeenCalledWith(event, callback);
-      });
     });
   });
 
@@ -117,85 +80,64 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
     });
   });
 
-  describe("handleAfterScenarioEvent()", function () {
-    var event, callback;
+  describe("handleScenarioResultEvent()", function () {
+    var scenario, scenarioResult, event, callback;
 
     beforeEach(function () {
-      event    = createSpy("event");
+      scenario = createSpy("scenario");
+      scenarioResult = createSpyWithStubs("scenario result", {getScenario: scenario, getStatus: undefined});
+      event = createSpyWithStubs("event", {getPayloadItem: scenarioResult});
       callback = createSpy("callback");
-      spyOnStub(statsJournal, 'isCurrentScenarioFailing');
-    });
-
-    it("checks whether the current scenario failed", function () {
-      summaryFormatter.handleAfterScenarioEvent(event, callback);
-      expect(statsJournal.isCurrentScenarioFailing).toHaveBeenCalled();
+      spyOn(summaryFormatter, 'storeFailedScenario');
     });
 
     describe("when the current scenario failed", function () {
-      var scenario;
-
       beforeEach(function () {
-        scenario = createSpy("scenario");
-        statsJournal.isCurrentScenarioFailing.and.returnValue(true);
-        spyOn(summaryFormatter, 'storeFailedScenario');
-        spyOnStub(event, 'getPayloadItem').and.returnValue(scenario);
-      });
-
-      it("gets the scenario from the payload", function () {
-        summaryFormatter.handleAfterScenarioEvent(event, callback);
-        expect(event.getPayloadItem).toHaveBeenCalledWith('scenario');
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
+        summaryFormatter.handleScenarioResultEvent(event, callback);
       });
 
       it("stores the failed scenario", function () {
-        summaryFormatter.handleAfterScenarioEvent(event, callback);
         expect(summaryFormatter.storeFailedScenario).toHaveBeenCalledWith(scenario);
       });
     });
 
     describe("when the current scenario did not fail", function () {
       beforeEach(function () {
-        statsJournal.isCurrentScenarioFailing.and.returnValue(false);
-        spyOn(summaryFormatter, 'storeFailedScenario');
-        spyOnStub(event, 'getPayloadItem');
-      });
-
-      it("does not get the scenario from the payload", function () {
-        summaryFormatter.handleAfterScenarioEvent(event, callback);
-        expect(event.getPayloadItem).not.toHaveBeenCalled();
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.PASSED);
+        summaryFormatter.handleScenarioResultEvent(event, callback);
       });
 
       it("does not store the failed scenario", function () {
-        summaryFormatter.handleAfterScenarioEvent(event, callback);
         expect(summaryFormatter.storeFailedScenario).not.toHaveBeenCalled();
       });
     });
 
     it("calls back", function () {
-      summaryFormatter.handleAfterScenarioEvent(event, callback);
+      summaryFormatter.handleScenarioResultEvent(event, callback);
       expect(callback).toHaveBeenCalled();
     });
   });
 
-  describe("handleAfterFeaturesEvent()", function () {
-    var callback, event;
+  describe("handleFeaturesResultEvent()", function () {
+    var featuresResult, callback, event;
 
     beforeEach(function () {
+      featuresResult = createSpy("features result");
+      event = createSpyWithStubs("event", {getPayloadItem: featuresResult});
       callback = createSpy("callback");
-      event    = createSpy("event");
       spyOn(summaryFormatter, 'logSummary');
+      summaryFormatter.handleFeaturesResultEvent(event, callback);
     });
 
     it("logs the summary", function () {
-      summaryFormatter.handleAfterFeaturesEvent(event, callback);
-      expect(summaryFormatter.logSummary).toHaveBeenCalled();
+      expect(summaryFormatter.logSummary).toHaveBeenCalledWith(featuresResult);
     });
 
     it("calls finish with the callback", function () {
-      summaryFormatter.handleAfterFeaturesEvent(event, callback);
       expect(summaryFormatter.finish).toHaveBeenCalledWith(callback);
     });
   });
-
 
   describe("storeFailedStepResult()", function () {
     var failureException, stepResult;
@@ -330,15 +272,16 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logSummary()", function () {
+    var featuresResult;
+
     beforeEach(function () {
+      featuresResult = createSpy('features result');
       spyOn(summaryFormatter, 'logScenariosSummary');
       spyOn(summaryFormatter, 'logStepsSummary');
       spyOn(summaryFormatter, 'logDuration');
       spyOn(summaryFormatter, 'logFailedStepResults');
       spyOn(summaryFormatter, 'logUndefinedStepSnippets');
       spyOn(summaryFormatter, 'logFailedScenarios');
-      spyOnStub(statsJournal, 'witnessedAnyFailedStep');
-      spyOnStub(statsJournal, 'witnessedAnyUndefinedStep');
     });
 
     describe("when there are failed steps", function () {
@@ -351,12 +294,12 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("logs the failed steps", function () {
-        summaryFormatter.logSummary();
+        summaryFormatter.logSummary(featuresResult);
         expect(summaryFormatter.logFailedStepResults).toHaveBeenCalled();
       });
 
       it("logs the failed scenarions", function () {
-        summaryFormatter.logSummary();
+        summaryFormatter.logSummary(featuresResult);
         expect(summaryFormatter.logFailedScenarios).toHaveBeenCalled();
       });
 
@@ -366,7 +309,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
         });
 
         it("does not log the failed steps", function () {
-          summaryFormatter.logSummary();
+          summaryFormatter.logSummary(featuresResult);
           expect(summaryFormatter.logFailedStepResults).not.toHaveBeenCalled();
         });
       });
@@ -374,24 +317,24 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
 
     describe("when there are no failed steps", function () {
       it("does not log failed steps", function () {
-        summaryFormatter.logSummary();
+        summaryFormatter.logSummary(featuresResult);
         expect(summaryFormatter.logFailedStepResults).not.toHaveBeenCalled();
       });
     });
 
     it("logs the scenarios summary", function () {
-      summaryFormatter.logSummary();
-      expect(summaryFormatter.logScenariosSummary).toHaveBeenCalled();
+      summaryFormatter.logSummary(featuresResult);
+      expect(summaryFormatter.logScenariosSummary).toHaveBeenCalledWith(featuresResult);
     });
 
     it("logs the steps summary", function () {
-      summaryFormatter.logSummary();
-      expect(summaryFormatter.logStepsSummary).toHaveBeenCalled();
+      summaryFormatter.logSummary(featuresResult);
+      expect(summaryFormatter.logStepsSummary).toHaveBeenCalledWith(featuresResult);
     });
 
     it("logs the duration", function () {
-      summaryFormatter.logSummary();
-      expect(summaryFormatter.logDuration).toHaveBeenCalled();
+      summaryFormatter.logSummary(featuresResult);
+      expect(summaryFormatter.logDuration).toHaveBeenCalledWith(featuresResult);
     });
 
     describe("when there are undefined steps", function () {
@@ -405,14 +348,14 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("logs the undefined step snippets", function () {
-        summaryFormatter.logSummary();
+        summaryFormatter.logSummary(featuresResult);
         expect(summaryFormatter.logUndefinedStepSnippets).toHaveBeenCalled();
       });
     });
 
     describe("when there are no undefined steps", function () {
       it("does not log the undefined step snippets", function () {
-        summaryFormatter.logSummary();
+        summaryFormatter.logSummary(featuresResult);
         expect(summaryFormatter.logUndefinedStepSnippets).not.toHaveBeenCalled();
       });
     });
@@ -593,35 +536,41 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("logDuration()", function () {
+    var featuresResult;
+
+    beforeEach(function () {
+      featuresResult = createSpyWithStubs('features result', {getDuration: null});
+    });
+
     describe('with duration less than a second', function (){
       beforeEach(function () {
-        spyOnStub(statsJournal, 'getDuration').and.returnValue(1e6);
+        featuresResult.getDuration.and.returnValue(1e6);
       });
 
       it("logs the duration", function () {
-        summaryFormatter.logDuration();
+        summaryFormatter.logDuration(featuresResult);
         expect(summaryFormatter.log).toHaveBeenCalledWith('0m00.001s\n');
       });
     });
 
     describe('with duration that is a few seconds', function (){
       beforeEach(function () {
-        spyOnStub(statsJournal, 'getDuration').and.returnValue(12345 * 1e6);
+        featuresResult.getDuration.and.returnValue(12345 * 1e6);
       });
 
       it("logs the duration", function () {
-        summaryFormatter.logDuration();
+        summaryFormatter.logDuration(featuresResult);
         expect(summaryFormatter.log).toHaveBeenCalledWith('0m12.345s\n');
       });
     });
 
     describe('with duration that is a few minutes', function (){
       beforeEach(function () {
-        spyOnStub(statsJournal, 'getDuration').and.returnValue(12 * 60 * 1e9 + 34567 * 1e6);
+        featuresResult.getDuration.and.returnValue(12 * 60 * 1e9 + 34567 * 1e6);
       });
 
       it("logs the duration", function () {
-        summaryFormatter.logDuration();
+        summaryFormatter.logDuration(featuresResult);
         expect(summaryFormatter.log).toHaveBeenCalledWith('12m34.567s\n');
       });
     });

@@ -13,10 +13,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       expect(featuresResult.isSuccessful()).toEqual(true);
     });
 
-    describe('after a passing step', function () {
+    describe('after a passing scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PASSED});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PASSED});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is successful', function() {
@@ -24,10 +24,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after a failing step', function () {
+    describe('after a failing scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.FAILED});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.FAILED});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is not successful', function() {
@@ -35,10 +35,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after an ambiguous step', function () {
+    describe('after an ambiguous scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.AMBIGUOUS});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.AMBIGUOUS});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is not successful', function() {
@@ -46,10 +46,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after a pending step', function () {
+    describe('after a pending scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PENDING});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is not successful', function() {
@@ -59,8 +59,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after an undefined step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.UNDEFINED});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is not successful', function() {
@@ -78,10 +78,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       expect(featuresResult.isSuccessful()).toEqual(true);
     });
 
-    describe('after a passing step', function () {
+    describe('after a passing scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PASSED});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PASSING});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is successful', function() {
@@ -89,10 +89,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after a failing step', function () {
+    describe('after a failing scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.FAILED});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.FAILED});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is not successful', function() {
@@ -100,10 +100,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after an ambiguous step', function () {
+    describe('after an ambiguous scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.AMBIGUOUS});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.AMBIGUOUS});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is not successful', function() {
@@ -111,10 +111,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after a pending step', function () {
+    describe('after a pending scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PENDING});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is successful', function() {
@@ -122,10 +122,10 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
       });
     });
 
-    describe('after an undefined step', function () {
+    describe('after an undefined scenario', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
-        featuresResult.witnessStepResult(stepResult);
+        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.UNDEFINED});
+        featuresResult.witnessScenarioResult(scenarioResult);
       });
 
       it('is successful', function() {
