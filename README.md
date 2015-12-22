@@ -59,7 +59,7 @@ Feature: Example feature
     Then I should see "Usage" as the page title
 ```
 
-### Support Files
+### Support files
 
 Support files let you setup the environment in which steps will be run, and define step definitions.
 
@@ -85,7 +85,7 @@ module.exports = function() {
 
 If you need to perform operations before/after every scenario, use [hooks](#hooks).
 
-#### Step Definitions
+#### Step definitions
 
 Step definitions are the glue between features written in Gherkin and the actual *SUT* (*system under test*). They are written in JavaScript.
 
@@ -179,7 +179,7 @@ this.Then('I should see "$title" as the page title', function (title, callback) 
 
 `'I have $count "$string"'` would translate to `/^I have (.*) "([^"]*)"$/`.
 
-##### Data Table
+##### Data table
 
 When steps have a data table, they are passed an object with methods that can be used to access the data.
 
@@ -500,7 +500,7 @@ To do this use the CLI option `--compiler <file_extension>:<module_name>`.
 Running `require("<module_name>")`, should make it possible to require files with the given extension.
 As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--compiler coffee:coffee-script/register`.
 
-### Custom Snippet Syntax
+### Custom snippet syntax
 
 Undefined steps snippets are printed in javascript by default.
 Custom snippet syntaxes can be used with `--snippet-syntax <FILE>`.
