@@ -46,7 +46,7 @@ $ npm install --save-dev cucumber
 Features are written with the [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin)
 
 ``` gherkin
-# features/myFeature.feature
+# features/my_feature.feature
 
 Feature: Example feature
   As a user of cucumber.js
@@ -98,7 +98,7 @@ Those wrappers are run before executing the feature suite. `this` is an object h
 Step definitions are run when steps match their name. `this` is an instance of `World`.
 
 ``` javascript
-// features/step_definitions/myStepDefinitions.js
+// features/step_definitions/my_step_definitions.js
 
 module.exports = function () {
   this.Given(/^I am on the Cucumber.js GitHub repository$/, function (callback) {
@@ -152,7 +152,7 @@ Simply omit the last `callback` parameter and return the promise.
 Often, asynchronous behaviour is not needed in step definitions. Simply omit the callback parameter, do not return anything and Cucumber will treat the step definition function as synchronous:
 
 ``` javascript
-this.Given(/^I add one Cucumber$/, function () {
+this.Given(/^I add one cucumber$/, function () {
   // Notice how `callback` is omitted from the parameters
   this.cucumberCount += 1;
 });
