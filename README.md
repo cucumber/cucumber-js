@@ -22,6 +22,13 @@ Cucumber.js is tested on:
 * Safari
 * Opera
 
+To see an example of `cucumber-js` in a browser:
+
+* clone the repository
+* `$ npm install`
+* `$ node example/server.js`
+* visit `http://localhost:9797`
+
 ## Usage
 
 ### Install

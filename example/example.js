@@ -92,7 +92,6 @@
   };
 
   $(function() {
-    Gherkin = { Lexer: function() { return Lexer; } };
     $('#run-feature').click(runFeature);
     $('#errors-container').hide();
   });
