@@ -87,7 +87,7 @@ If you need to perform operations before/after every scenario, use [hooks](#hook
 
 #### Step definitions
 
-Step definitions are the glue between features written in Gherkin and the actual *SUT* (*system under test*). They are written in JavaScript.
+Step definitions are the glue between features written in Gherkin and the actual system under test. They are written in JavaScript.
 
 All step definitions will run with `this` set to what is known as the *[World](https://github.com/cucumber/cucumber/wiki/A-Whole-New-World)* in Cucumber. It's an object exposing useful methods, helpers and variables to your step definitions. A new instance of `World` is created before each scenario.
 
