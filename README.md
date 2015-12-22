@@ -49,8 +49,8 @@ Features are written with the [Gherkin syntax](https://github.com/cucumber/cucum
 # features/my_feature.feature
 
 Feature: Example feature
-  As a user of cucumber.js
-  I want to have documentation on cucumber
+  As a user of Cucumber.js
+  I want to have documentation on Cucumber
   So that I can concentrate on building awesome applications
 
   Scenario: Reading documentation
@@ -436,7 +436,7 @@ module.exports = myAfterHooks;
 
 Cucumber.js includes a binary file to execute the features.
 
-If you installed cucumber.js globally, you may run it with:
+If you installed Cucumber.js globally, you may run it with:
 
 ``` shell
 $ cucumber.js
