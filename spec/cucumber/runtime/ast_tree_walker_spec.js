@@ -645,12 +645,26 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         treeWalker.visitStep(step, callback);
         userFunction         = treeWalker.broadcastEventAroundUserFunction.calls.mostRecent().args[1];
         userFunctionCallback = createSpy("user function callback");
-        spyOn(treeWalker, 'processStep');
+        spyOn(process, 'nextTick');
+        userFunction (userFunctionCallback);
       });
 
-      it("processes the step", function () {
-        userFunction (userFunctionCallback);
-        expect(treeWalker.processStep).toHaveBeenCalledWith(step, userFunctionCallback);
+      it('calls process.nextTick', function () {
+        expect(process.nextTick).toHaveBeenCalled();
+      });
+
+      describe("on next tick", function () {
+        var nextTickCallback;
+
+        beforeEach(function () {
+          nextTickCallback = process.nextTick.calls.mostRecent().args[0];
+          spyOn(treeWalker, 'processStep');
+        });
+
+        it("processes the step", function () {
+          nextTickCallback();
+          expect(treeWalker.processStep).toHaveBeenCalledWith(step, userFunctionCallback);
+        });
       });
     });
   });
