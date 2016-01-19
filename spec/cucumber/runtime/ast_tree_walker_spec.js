@@ -650,7 +650,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       it("processes the step", function () {
         userFunction (userFunctionCallback);
-        expect(process.nextTick).toHaveBeenCalledWith(treeWalker.processStep, step, userFunctionCallback);
+        expect(process.nextTick).toHaveBeenCalled();
       });
     });
   });
