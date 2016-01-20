@@ -3,65 +3,55 @@ require('../../support/spec_helper');
 describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
   var PathExpander = requireLib('cucumber').Cli.PathExpander;
 
-  describe("expandPathsWithRegexp", function () {
-    var _ = require('lodash');
-
-    var unexpandedPaths, regexp, expandedPaths, expandPathResults, expandedPathsWithoutDups;
+  describe("expandPathsWithExtensions", function () {
+    var unexpandedPaths, extensions, expandedPaths;
 
     beforeEach(function () {
-      regexp          = createSpy("glob string");
+      extensions      = createSpy("extensions");
       unexpandedPaths = [createSpy("unexpanded path 1"), createSpy("unexpanded path 2")];
       expandedPaths   = [createSpy("expanded path 1-1"), createSpy("expanded path 1-2"), createSpy("expanded path 2-1")];
-      expandPathResults = [[expandedPaths[0], expandedPaths[1]], [expandedPaths[2]]];
-      expandedPathsWithoutDups = createSpy("expanded paths without duplicates");
-      spyOn(PathExpander, 'expandPathWithRegexp').and.returnValues.apply(null, expandPathResults);
-      spyOn(_, 'uniq').and.returnValue(expandedPathsWithoutDups);
+      spyOn(PathExpander, 'expandPathWithExtensions').and.returnValues([expandedPaths[0], expandedPaths[1]], [expandedPaths[1], expandedPaths[2]]);
     });
 
     it("expands each path", function () {
-      PathExpander.expandPathsWithRegexp(unexpandedPaths, regexp);
+      PathExpander.expandPathsWithExtensions(unexpandedPaths, extensions);
       unexpandedPaths.forEach(function (unexpandedPath) {
-        expect(PathExpander.expandPathWithRegexp).toHaveBeenCalledWith(unexpandedPath, regexp);
+        expect(PathExpander.expandPathWithExtensions).toHaveBeenCalledWith(unexpandedPath, extensions);
       });
     });
 
-    it("removes duplicate expanded paths", function () {
-      PathExpander.expandPathsWithRegexp(unexpandedPaths);
-      expect(_.uniq).toHaveBeenCalledWith(expandedPaths);
-    });
-
-    it("returns the expanded paths", function () {
-      expect(PathExpander.expandPathsWithRegexp(unexpandedPaths)).toEqual(expandedPathsWithoutDups);
+    it("returns the expanded paths without duplicates", function () {
+      expect(PathExpander.expandPathsWithExtensions(unexpandedPaths)).toEqual(expandedPaths);
     });
   });
 
-  describe("expandPathWithRegexp()", function () {
+  describe("expandPathWithExtensions()", function () {
     var fs   = require('fs');
-    var path, regexp, stats, realPath, pathsFromExpandedDirectory;
+    var path, extensions, stats, realPath, pathsFromExpandedDirectory;
 
     beforeEach(function () {
-      path       = "relative/path:1";
-      regexp     = createSpy("regexp");
+      path       = "relative/path";
+      extensions = createSpy("extensions");
       stats      = createSpyWithStubs("path stats", {isDirectory: null});
       spyOn(fs, 'statSync').and.returnValue(stats);
       realPath   = "/real/path";
       spyOn(fs, 'realpathSync').and.returnValue(realPath);
       pathsFromExpandedDirectory = createSpy("paths from expanded directory");
-      spyOn(PathExpander, 'expandDirectoryWithRegexp').and.returnValue(pathsFromExpandedDirectory);
+      spyOn(PathExpander, 'expandDirectoryWithExtensions').and.returnValue(pathsFromExpandedDirectory);
     });
 
-    it("synchronously gets the absolute representation of the path after stripping line numbers", function () {
-      PathExpander.expandPathWithRegexp(path);
+    it("synchronously gets the absolute representation of the path after", function () {
+      PathExpander.expandPathWithExtensions(path, extensions);
       expect(fs.realpathSync).toHaveBeenCalledWith('relative/path');
     });
 
     it("synchronously stats the path", function () {
-      PathExpander.expandPathWithRegexp(path);
+      PathExpander.expandPathWithExtensions(path, extensions);
       expect(fs.statSync).toHaveBeenCalledWith(realPath);
     });
 
     it("checks whether the path points to a directory or not", function () {
-      PathExpander.expandPathWithRegexp(path);
+      PathExpander.expandPathWithExtensions(path, extensions);
       expect(stats.isDirectory).toHaveBeenCalled();
     });
 
@@ -71,12 +61,12 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
       });
 
       it("expands the directory", function () {
-        PathExpander.expandPathWithRegexp(path, regexp);
-        expect(PathExpander.expandDirectoryWithRegexp).toHaveBeenCalledWith(realPath, regexp);
+        PathExpander.expandPathWithExtensions(path, extensions);
+        expect(PathExpander.expandDirectoryWithExtensions).toHaveBeenCalledWith(realPath, extensions);
       });
 
       it("returns the paths expanded from the directory", function () {
-        expect(PathExpander.expandPathWithRegexp(path)).toBe(pathsFromExpandedDirectory);
+        expect(PathExpander.expandPathWithExtensions(path, extensions)).toBe(pathsFromExpandedDirectory);
       });
     });
 
@@ -86,38 +76,43 @@ describe("Cucumber.Cli.ArgumentParser.PathExpander", function () {
       });
 
       it("returns an array with the absolute path as its only item", function () {
-        expect(PathExpander.expandPathWithRegexp(path)).toEqual([realPath]);
+        expect(PathExpander.expandPathWithExtensions(path, extensions)).toEqual([realPath]);
       });
     });
   });
 
-  describe("expandDirectoryWithRegexp()", function () {
-    var walkdir = require('walkdir');
-    var directory, regexp, innerPaths;
+  describe("expandDirectoryWithExtensions()", function () {
+    var glob = require('glob');
+    var directory, extensions, innerPaths;
 
     beforeEach(function () {
-      directory  = createSpy("directory");
-      regexp     = createSpyWithStubs("regexp", {test: null});
+      directory  = "path/to/directory";
+      extensions = ['js'];
       innerPaths = [createSpy("inner path 1"), createSpy("inner path 2"), createSpy("inner path 3")];
-      spyOn(walkdir, 'sync').and.returnValue(innerPaths);
+      spyOn(glob, 'sync').and.returnValue(innerPaths);
     });
 
-    it("recursively finds the directory inner paths", function () {
-      PathExpander.expandDirectoryWithRegexp(directory, regexp);
-      expect(walkdir.sync).toHaveBeenCalledWith(directory);
+    it("returns the glob result", function () {
+      var paths = PathExpander.expandDirectoryWithExtensions(directory, extensions);
+      expect(paths).toEqual(innerPaths);
     });
 
-    it("tests the regexp against each inner path", function () {
-      PathExpander.expandDirectoryWithRegexp(directory, regexp);
-      expect(regexp.test).toHaveBeenCalledWith(innerPaths[0]);
-      expect(regexp.test).toHaveBeenCalledWith(innerPaths[1]);
-      expect(regexp.test).toHaveBeenCalledWith(innerPaths[2]);
+    describe('one extension', function() {
+      it("calls glob with the proper pattern", function () {
+        PathExpander.expandDirectoryWithExtensions(directory, extensions);
+        expect(glob.sync).toHaveBeenCalledWith("path/to/directory/**/*.js");
+      });
     });
 
-    it("returns the paths that matched", function () {
-      regexp.test.and.returnValues.apply(null, [true, false, true]);
-      var paths = PathExpander.expandDirectoryWithRegexp(directory, regexp);
-      expect(paths).toEqual([innerPaths[0], innerPaths[2]]);
+    describe('multiple extension', function() {
+      beforeEach(function () {
+        extensions = ['js', 'coffee'];
+      });
+
+      it("calls glob with the proper pattern", function () {
+        PathExpander.expandDirectoryWithExtensions(directory, extensions);
+        expect(glob.sync).toHaveBeenCalledWith("path/to/directory/**/*.{js,coffee}");
+      });
     });
   });
 });

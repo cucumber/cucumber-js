@@ -9,14 +9,14 @@ describe("Cucumber.Cli.FeaturePathExpander", function () {
     var paths, expandedPaths;
 
     beforeEach(function () {
-      paths         = createSpy("unexpanded paths");
+      paths         = ['a', 'b:1'];
       expandedPaths = createSpy("expanded paths");
-      spyOn(PathExpander, 'expandPathsWithRegexp').and.returnValue(expandedPaths);
+      spyOn(PathExpander, 'expandPathsWithExtensions').and.returnValue(expandedPaths);
     });
 
     it("asks the path expander to expand the paths with the glob matching feature files", function () {
       FeaturePathExpander.expandPaths(paths);
-      expect(PathExpander.expandPathsWithRegexp).toHaveBeenCalledWith(paths, FeaturePathExpander.FEATURE_FILES_IN_DIR_REGEXP);
+      expect(PathExpander.expandPathsWithExtensions).toHaveBeenCalledWith(['a', 'b'], ['feature']);
     });
 
     it("returns the expanded paths", function () {
