@@ -452,7 +452,7 @@ $ cucumber.js
 If you installed Cucumber locally, you may need to specify the path to the executable:
 
 ``` shell
-$ ./node_modules/bin/cucumber.js
+$ ./node_modules/.bin/cucumber.js
 ```
 
 **Note to Windows users:** invoke Cucumber.js with `cucumber-js` instead of `cucumber.js`. The latter is causing the operating system to invoke JScript instead of Node.js, because of the file extension.
