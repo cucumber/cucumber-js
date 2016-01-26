@@ -441,7 +441,7 @@ module.exports = myAfterHooks;
 
 ### CLI
 
-Cucumber.js includes a binary file to execute the features.
+Cucumber.js includes a executable file to run the features.
 
 If you installed Cucumber.js globally, you may run it with:
 
@@ -449,7 +449,7 @@ If you installed Cucumber.js globally, you may run it with:
 $ cucumber.js
 ```
 
-If you installed Cucumber locally, you may need to specify the path to the binary:
+If you installed Cucumber locally, you may need to specify the path to the executable:
 
 ``` shell
 $ ./node_modules/.bin/cucumber.js
