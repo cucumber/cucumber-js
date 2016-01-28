@@ -52,8 +52,7 @@ function Bundler(bundlePath) {
 
     browserify({debug: true, standalone: 'Cucumber'})
       .transform({global: true}, fixGherkinLexers)
-      // Disabled for now due to https://github.com/AndreasMadsen/stack-chain/issues/5
-      //.transform({global:true}, 'uglifyify')
+      .transform({global: true}, 'uglifyify')
       .require(main, { expose: 'cucumber' })
       .bundle()
       .on('error', callback)
