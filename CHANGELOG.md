@@ -1,5 +1,11 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.3...master)
 
+### [0.9.4](https://github.com/cucumber/cucumber-js/compare/v0.9.3...v0.9.4) (2016-01-28)
+
+#### Bug Fixes
+
+* Publish release folder to npm  (Charlie Rudolph)
+
 ### [0.9.3](https://github.com/cucumber/cucumber-js/compare/v0.9.2...v0.9.3) (2016-01-27)
 
 #### New Features

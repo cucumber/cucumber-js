@@ -1301,16 +1301,6 @@ function SimpleAstListener(options) {
   if (!options)
     options = {};
 
-  function log(message, indentation) {
-    if (indentation)
-      message = indent(message, indentation);
-    logs = logs + message + '\n';
-    if (options.stream)
-      options.stream.write(message);
-    if (typeof(options.logToFunction) === 'function')
-      options.logToFunction (message);
-  }
-
   function indent(text, indentation) {
     var indented;
     text.split('\n').forEach(function (line) {
@@ -1319,6 +1309,16 @@ function SimpleAstListener(options) {
       indented = (typeof(indented) === 'undefined' ? line : indented + '\n' + line);
     });
     return indented;
+  }
+
+  function log(message, indentation) {
+    if (indentation)
+      message = indent(message, indentation);
+    logs = logs + message + '\n';
+    if (options.stream)
+      options.stream.write(message);
+    if (typeof(options.logToFunction) === 'function')
+      options.logToFunction (message);
   }
 
   var self = {
@@ -2670,16 +2670,16 @@ function AstTreeWalker(features, supportCodeLibrary, listeners, options) {
     },
 
     broadcastEvent: function broadcastEvent(event, callback) {
-      function onRuntimeListenersComplete() {
-        var listeners = supportCodeLibrary.getListeners();
-        broadcastToListeners(listeners, callback);
-      }
-
       function broadcastToListeners(listeners, callback) {
         var iterator = function (listener, callback) {
           listener.hear(event, callback);
         };
         Cucumber.Util.asyncForEach(listeners, iterator, callback);
+      }
+
+      function onRuntimeListenersComplete() {
+        var listeners = supportCodeLibrary.getListeners();
+        broadcastToListeners(listeners, callback);
       }
 
       broadcastToListeners(listeners, onRuntimeListenersComplete);
@@ -2814,6 +2814,14 @@ module.exports = AstTreeWalker;
 function Event(name, payload) {
   var AstTreeWalker = require('../ast_tree_walker');
 
+  function buildBeforeEventName(eventName) {
+    return AstTreeWalker.BEFORE_EVENT_NAME_PREFIX + eventName;
+  }
+
+  function buildAfterEventName(eventName) {
+    return AstTreeWalker.AFTER_EVENT_NAME_PREFIX + eventName;
+  }
+
   var self = {
     getName: function getName() {
       return name;
@@ -2842,14 +2850,6 @@ function Event(name, payload) {
       return afterEventName === name;
     }
   };
-
-  function buildBeforeEventName(eventName) {
-    return AstTreeWalker.BEFORE_EVENT_NAME_PREFIX + eventName;
-  }
-
-  function buildAfterEventName(eventName) {
-    return AstTreeWalker.AFTER_EVENT_NAME_PREFIX + eventName;
-  }
 
   return self;
 }
@@ -3140,6 +3140,12 @@ function Library(supportCodeDefinition) {
   var World            = function World() {};
   var defaultTimeout   = 5 * 1000;
 
+  function createEventListenerMethod(library, eventName) {
+    return function (handler) {
+      library.registerHandler(eventName, handler);
+    };
+  }
+
   function appendEventHandlers(supportCodeHelper, library) {
     var Cucumber = require('../../cucumber');
     var events = Cucumber.Listener.Events;
@@ -3150,12 +3156,6 @@ function Library(supportCodeDefinition) {
         supportCodeHelper[eventName] = createEventListenerMethod(library, eventName);
       }
     }
-  }
-
-  function createEventListenerMethod(library, eventName) {
-    return function (handler) {
-      library.registerHandler(eventName, handler);
-    };
   }
 
   var self = {
@@ -3320,6 +3320,7 @@ function StepDefinition(pattern, options, code, uri, line) {
     invoke: function invoke(step, world, scenario, defaultTimeout, callback) {
       var start = time();
       var timeoutId;
+      var handleException;
 
       var finish = function finish(result) {
         Cucumber.Debug.notice('cleaning up after step\n', 'Cucumber.SupportCode.StepDefinition', 5);
@@ -3361,8 +3362,8 @@ function StepDefinition(pattern, options, code, uri, line) {
         finish(pendingStepResult);
       };
 
-      var parameters      = self.buildInvocationParameters(step, scenario, codeCallback);
-      var handleException = self.buildExceptionHandlerToCodeCallback(codeCallback);
+      var parameters = self.buildInvocationParameters(step, scenario, codeCallback);
+      handleException = self.buildExceptionHandlerToCodeCallback(codeCallback);
 
       function onPromiseFulfilled() { codeCallback(); }
       function onPromiseRejected(error) {
@@ -3660,17 +3661,13 @@ function Collection() {
 
       function iterate() {
         if (itemsCopy.length > 0) {
-          processItem();
+          var item = itemsCopy.shift();
+          userFunction(item, function () {
+            iterate();
+          });
         } else {
           callback();
         }
-      }
-
-      function processItem() {
-        var item = itemsCopy.shift();
-        userFunction(item, function () {
-          iterate();
-        });
       }
 
       iterate();
@@ -3790,17 +3787,13 @@ var asyncForEach = function asyncForEach(items, userFunction, callback) {
 
   function iterate() {
     if (itemsCopy.length > 0) {
-      processItem();
+      var item = itemsCopy.shift();
+      userFunction(item, function () {
+        iterate();
+      });
     } else {
       callback();
     }
-  }
-
-  function processItem() {
-    var item = itemsCopy.shift();
-    userFunction(item, function () {
-      iterate();
-    });
   }
 
   iterate();
@@ -105406,7 +105399,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "0.9.3",
+  "version": "0.9.4",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -105495,31 +105488,31 @@ module.exports={
     "callsite": "^1.0.0",
     "camel-case": "^1.2.0",
     "cli-table": "^0.3.1",
-    "colors": "1.1.2",
+    "colors": "^1.1.2",
     "commander": "^2.9.0",
-    "cucumber-html": "0.2.3",
+    "cucumber-html": "^0.2.3",
     "duration": "^0.2.0",
-    "gherkin": "2.12.2",
+    "gherkin": "^2.12.2",
     "glob": "^6.0.4",
     "lodash": "^4.0.0",
-    "stack-chain": "1.3.5"
+    "stack-chain": "^1.3.5"
   },
   "devDependencies": {
     "async": "^1.5.0",
-    "browserify": "11.1.0",
-    "coffee-script": "1.10.0",
-    "connect": "3.4.0",
-    "exorcist": "0.4.0",
+    "browserify": "^11.1.0",
+    "coffee-script": "^1.10.0",
+    "connect": "^3.4.0",
+    "exorcist": "^0.4.0",
     "fs-extra": "^0.26.0",
     "jasmine": "^2.3.2",
     "jquery": "^2.1.4",
-    "jshint": "2.8.0",
-    "pogo": "0.10.0",
-    "rimraf": "2.4.3",
-    "serve-static": "1.10.0",
-    "through": "2.3.8",
+    "jshint": "^2.9.1",
+    "pogo": "^0.10.0",
+    "rimraf": "^2.4.3",
+    "serve-static": "^1.10.0",
+    "through": "^2.3.8",
     "tmp": "0.0.28",
-    "uglifyify": "3.0.1"
+    "uglifyify": "^3.0.1"
   },
   "scripts": {
     "feature-test": "./bin/cucumber.js -p build",
@@ -105537,7 +105530,8 @@ module.exports={
   "license": "MIT",
   "files": [
     "bin/",
-    "lib/"
+    "lib/",
+    "release/"
   ]
 }
 

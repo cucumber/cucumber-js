@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.9.3",
+  "version": "0.9.4",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -139,6 +139,7 @@
   "license": "MIT",
   "files": [
     "bin/",
-    "lib/"
+    "lib/",
+    "release/"
   ]
 }
