@@ -495,8 +495,8 @@ Built-in formatters
 
 Use `--tags <EXPRESSION>` to run specific features or scenarios.
 
-* `--tag @dev`: tagged with @dev
-* `--tag ~@dev`: NOT tagged with `@dev`
+* `--tags @dev`: tagged with @dev
+* `--tags ~@dev`: NOT tagged with `@dev`
 * `--tags @foo,@bar`: tagged with `@foo` OR `bar`
 * `--tags @foo --tags @bar`: tagged with `@foo` AND `bar`
 
