@@ -92,6 +92,8 @@ module.exports = function() {
 
 If you need to perform operations before/after every scenario, use [hooks](#hooks).
 
+**Breaking Change:** The World constructor is now strictly synchronous and does not receive a callback from Cucumber anymore... This is a breaking change that was introduced in release *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*
+
 #### Step definitions
 
 Step definitions are the glue between features written in Gherkin and the actual system under test. They are written in JavaScript.
