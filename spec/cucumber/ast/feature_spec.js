@@ -86,11 +86,11 @@ describe("Cucumber.Ast.Feature", function () {
     it("returns true when a background was set", function () {
       var background = createSpy("background");
       feature.setBackground(background);
-      expect(feature.hasBackground()).toBeTruthy();
+      expect(feature.hasBackground()).toBe(true);
     });
 
     it("returns false when no background was set", function () {
-      expect(feature.hasBackground()).toBeFalsy();
+      expect(feature.hasBackground()).toBe(false);
     });
   });
 

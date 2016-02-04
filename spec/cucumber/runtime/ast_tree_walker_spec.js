@@ -941,25 +941,25 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
     });
 
     it("returns false when no failed, pending or undefined steps were encountered", function () {
-      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+      expect(treeWalker.isSkippingSteps()).toBe(false);
     });
 
     it("returns true when a failed step was encountered", function () {
       var stepResult = createSpyWithStubs('stepResult', {getFailureException: null, getStatus: Cucumber.Status.FAILED});
       treeWalker.visitStepResult(stepResult, function () {});
-      expect(treeWalker.isSkippingSteps()).toBeTruthy();
+      expect(treeWalker.isSkippingSteps()).toBe(true);
     });
 
     it("returns true when a pending step was encountered", function () {
       var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
       treeWalker.visitStepResult(stepResult, function () {});
-      expect(treeWalker.isSkippingSteps()).toBeTruthy();
+      expect(treeWalker.isSkippingSteps()).toBe(true);
     });
 
     it("returns true when a undefined step was encountered", function () {
       var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
       treeWalker.visitStepResult(stepResult, function () {});
-      expect(treeWalker.isSkippingSteps()).toBeTruthy();
+      expect(treeWalker.isSkippingSteps()).toBe(true);
     });
 
     it("returns false when a failed step was encountered but not in the current scenario", function () {
@@ -967,7 +967,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       treeWalker.visitStepResult(stepResult, function () {});
       var scenario = createSpy("scenario");
       treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+      expect(treeWalker.isSkippingSteps()).toBe(false);
     });
 
     it("returns false when a pending step was encountered but not in the current scenario", function () {
@@ -975,7 +975,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       treeWalker.visitStepResult(stepResult, function () {});
       var scenario = createSpy("scenario");
       treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+      expect(treeWalker.isSkippingSteps()).toBe(false);
     });
 
     it("returns false when a undefined step was encountered but not in the current scenario", function () {
@@ -983,7 +983,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
       treeWalker.visitStepResult(stepResult, function () {});
       var scenario = createSpy("scenario");
       treeWalker.witnessNewScenario(scenario);
-      expect(treeWalker.isSkippingSteps()).toBeFalsy();
+      expect(treeWalker.isSkippingSteps()).toBe(false);
     });
   });
 

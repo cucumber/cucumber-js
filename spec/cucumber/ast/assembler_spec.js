@@ -428,16 +428,16 @@ describe("Cucumber.Ast.Assembler", function () {
           expect(filter.isElementEnrolled).toHaveBeenCalledWith(feature);
         });
 
-        it("is truthy when the filter tells the feature should be enrolled", function () {
+        it("is true when the filter tells the feature should be enrolled", function () {
           filter.isElementEnrolled.and.returnValue(true);
           var enrollable = assembler.isSuggestedFeatureEnrollable();
-          expect(enrollable).toBeTruthy();
+          expect(enrollable).toBe(true);
         });
 
-        it("is falsy when the filter tells the feature should be enrolled", function () {
+        it("is false when the filter tells the feature should be enrolled", function () {
           filter.isElementEnrolled.and.returnValue(false);
           var enrollable = assembler.isSuggestedFeatureEnrollable();
-          expect(enrollable).toBeFalsy();
+          expect(enrollable).toBe(false);
         });
       });
     });
@@ -484,7 +484,7 @@ describe("Cucumber.Ast.Assembler", function () {
       feature = createSpyWithStubs("suggested feature", {hasFeatureElements: true});
       spyOnStub(features, 'addFeature');
       assembler.suggestFeature(feature);
-      expect(assembler.isSuggestedFeatureEnrollable()).toBeTruthy();
+      expect(assembler.isSuggestedFeatureEnrollable()).toBe(true);
     });
 
     it("adds the feature to the root features", function () {
