@@ -60,7 +60,9 @@ addStyleToText(/* ... */) // you can fairly guess this function
 
 ** WORK IN PROGRESS **
 
-## Release checklist
+## Release process
+
+_The following is a checklist for maintainers when preparing a new release_
 
 Perform the following steps on a feature branch.
 
