@@ -20,13 +20,13 @@ describe("Cucumber.Ast.HookStep", function () {
 
   describe("isHidden()", function () {
     it("returns true for a hook step", function () {
-      expect(hookStep.isHidden()).toBeTruthy();
+      expect(hookStep.isHidden()).toBe(true);
     });
   });
 
   describe("hasUri()", function () {
     it("returns false as hook steps do not have URIs", function () {
-      expect(hookStep.hasUri()).toBeFalsy();
+      expect(hookStep.hasUri()).toBe(false);
     });
   });
 

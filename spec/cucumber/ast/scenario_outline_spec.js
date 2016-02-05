@@ -24,7 +24,7 @@ describe("Cucumber.Ast.ScenarioOutline", function () {
 
   describe("isScenarioOutline()", function () {
     it("returns true", function () {
-      expect(scenarioOutline.isScenarioOutline()).toBeTruthy();
+      expect(scenarioOutline.isScenarioOutline()).toBe(true);
     });
   });
 

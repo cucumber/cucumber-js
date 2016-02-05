@@ -58,11 +58,11 @@ describe("Cucumber.Ast.Step", function () {
     it("returns true when a previous step was set", function () {
       var previousStep = createSpy("previous step");
       step.setPreviousStep(previousStep);
-      expect(step.hasPreviousStep()).toBeTruthy();
+      expect(step.hasPreviousStep()).toBe(true);
     });
 
     it("returns false when no previous step was set", function () {
-      expect(step.hasPreviousStep()).toBeFalsy();
+      expect(step.hasPreviousStep()).toBe(false);
     });
   });
 
@@ -393,7 +393,7 @@ describe("Cucumber.Ast.Step", function () {
 
       it("it is true when the step is repeating an outcome step", function () {
         step.isRepeatingOutcomeStep.and.returnValue(true);
-        expect(step.isOutcomeStep()).toBeTruthy();
+        expect(step.isOutcomeStep()).toBe(true);
       });
     });
   });
@@ -480,7 +480,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns true", function () {
-          expect(step.isRepeatingOutcomeStep()).toBeTruthy();
+          expect(step.isRepeatingOutcomeStep()).toBe(true);
         });
       });
 
@@ -490,7 +490,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns false", function () {
-          expect(step.isRepeatingOutcomeStep()).toBeFalsy();
+          expect(step.isRepeatingOutcomeStep()).toBe(false);
         });
       });
     });
@@ -506,7 +506,7 @@ describe("Cucumber.Ast.Step", function () {
       });
 
       it("returns false", function () {
-        expect(step.isRepeatingOutcomeStep()).toBeFalsy();
+        expect(step.isRepeatingOutcomeStep()).toBe(false);
       });
     });
   });
@@ -538,7 +538,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns true", function () {
-          expect(step.isRepeatingEventStep()).toBeTruthy();
+          expect(step.isRepeatingEventStep()).toBe(true);
         });
       });
 
@@ -548,7 +548,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns false", function () {
-          expect(step.isRepeatingEventStep()).toBeFalsy();
+          expect(step.isRepeatingEventStep()).toBe(false);
         });
       });
     });
@@ -564,7 +564,7 @@ describe("Cucumber.Ast.Step", function () {
       });
 
       it("returns false", function () {
-        expect(step.isRepeatingEventStep()).toBeFalsy();
+        expect(step.isRepeatingEventStep()).toBe(false);
       });
     });
   });
@@ -572,21 +572,21 @@ describe("Cucumber.Ast.Step", function () {
   describe("hasRepeatStepKeyword()", function () {
     it("returns true when the keyword is 'And '", function () {
       step = Cucumber.Ast.Step('And ', name, line);
-      expect(step.hasRepeatStepKeyword()).toBeTruthy();
+      expect(step.hasRepeatStepKeyword()).toBe(true);
     });
 
     it("returns true when the keyword is 'But '", function () {
       step = Cucumber.Ast.Step('But ', name, line);
-      expect(step.hasRepeatStepKeyword()).toBeTruthy();
+      expect(step.hasRepeatStepKeyword()).toBe(true);
     });
 
     it("returns true when the keyword is '* '", function () {
       step = Cucumber.Ast.Step('* ', name, line);
-      expect(step.hasRepeatStepKeyword()).toBeTruthy();
+      expect(step.hasRepeatStepKeyword()).toBe(true);
     });
 
     it("returns false when the keyword is not 'And ' nor 'But '", function () {
-      expect(step.hasRepeatStepKeyword()).toBeFalsy();
+      expect(step.hasRepeatStepKeyword()).toBe(false);
     });
   });
 

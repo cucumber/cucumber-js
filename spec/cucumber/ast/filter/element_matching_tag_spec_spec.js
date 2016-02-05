@@ -111,8 +111,8 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
           checkedTag.getName.and.returnValue(tagName);
         });
 
-        it("is truthy", function () {
-          expect(spec.isTagSatisfying(checkedTag)).toBeFalsy();
+        it("returns false", function () {
+          expect(spec.isTagSatisfying(checkedTag)).toBe(false);
         });
       });
 
@@ -121,8 +121,8 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
           checkedTag.getName.and.returnValue("@obscure_tag");
         });
 
-        it("is falsy", function () {
-          expect(spec.isTagSatisfying(checkedTag)).toBeTruthy();
+        it("returns true", function () {
+          expect(spec.isTagSatisfying(checkedTag)).toBe(true);
         });
       });
     });
