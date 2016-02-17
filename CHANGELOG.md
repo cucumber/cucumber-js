@@ -1,5 +1,15 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.3...master)
 
+### [0.9.5](https://github.com/cucumber/cucumber-js/compare/v0.9.4...v0.9.5) (2016-02-16)
+
+#### Bug Fixes
+
+* Fix rerun formatter output (Charlie Rudolph)
+
+#### New Features
+
+* Allow rerun file to be in subfolder (Charlie Rudolph)
+
 ### [0.9.4](https://github.com/cucumber/cucumber-js/compare/v0.9.3...v0.9.4) (2016-01-28)
 
 #### Bug Fixes
