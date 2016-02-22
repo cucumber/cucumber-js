@@ -354,11 +354,10 @@ You can attach text, images and files to the Cucumber report using the scenario 
 
 ``` javascript
 this.After(function (scenario) {
-  scenario.attach('Some text');
+  scenario.attach('Some text', 'text/plain');
 });
 ```
-
-By default, text is saved with a MIME type of `text/plain`.  You can also specify
+Text can be attached by specifying MIME type as `text/plain`. You can also specify
 a different MIME type:
 
 ``` javascript
@@ -400,8 +399,9 @@ when a scenario fails:
 ``` javascript
 this.After(function (scenario, callback) {
   if (scenario.isFailed()) {
-    webDriver.takeScreenshot().then(stream) {
-      scenario.attach(stream, 'image/png', callback);
+    driver.takeScreenshot().then(function (stream) {
+      var bufferStream = new Buffer(stream, 'base64').toString('binary');
+      scenario.attach(bufferStream, 'image/png', callback);
     }, function(err) {
       callback(err);
     });
