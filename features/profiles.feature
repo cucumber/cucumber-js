@@ -21,7 +21,7 @@ Feature: default command line arguments
       """
       module.exports = {
         'default': '--format summary',
-        minimal: '--no-snippets',
+        dry: '--dry-run',
         progress: '--format progress'
       };
       """
@@ -52,20 +52,13 @@ Feature: default command line arguments
       | --profile |
 
   Scenario: specifying multiple profiles
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-        Scenario: some scenario
-          Given a passing step
-          And a undefined step
-      """
-    When I run cucumber-js with `-p progress -p minimal`
+    When I run cucumber-js with `-p dry -p progress`
     Then it outputs this text:
       """
-      .U
+      -
 
-      1 scenario (1 undefined)
-      2 steps (1 undefined, 1 passed)
+      1 scenario (1 skipped)
+      1 step (1 skipped)
       <duration-stat>
       """
 
@@ -75,8 +68,8 @@ Feature: default command line arguments
       """
       Feature: some feature
 
-        Scenario: some scenario   # features/a.feature:2
-          Given a passing step    # features/step_definitions/cucumber_steps.js:2
+        Scenario: some scenario
+          Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)

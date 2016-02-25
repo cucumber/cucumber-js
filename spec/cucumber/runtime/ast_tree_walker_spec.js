@@ -402,8 +402,8 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       beforeEach(function () {
         aroundHook = createSpyWithStubs("around hook", {setAfterStep: undefined});
-        beforeStep = createSpyWithStubs("before step", {setHook: undefined});
-        afterStep  = createSpyWithStubs("after step", {setHook: undefined});
+        beforeStep = createSpyWithStubs("before step", {setHook: undefined, setScenario: null});
+        afterStep  = createSpyWithStubs("after step", {setHook: undefined, setScenario: null});
         var forEachCallback = aroundHooks.forEach.calls.mostRecent().args[0];
         spyOn(Cucumber.Ast, "HookStep").and.returnValues(beforeStep, afterStep);
 
@@ -416,12 +416,20 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
         expect(Cucumber.Ast.HookStep.calls.argsFor(1)).toEqual([Cucumber.Runtime.AstTreeWalker.AROUND_STEP_KEYWORD]);
       });
 
+      it("sets the scenario as the before step's scenario", function () {
+        expect(beforeStep.setScenario).toHaveBeenCalledWith(scenario);
+      });
+
       it("sets the around hook as the before step's hook", function () {
         expect(beforeStep.setHook).toHaveBeenCalledWith(aroundHook);
       });
 
       it("adds the before step to the before step collection", function () {
         expect(beforeStepCollection.add).toHaveBeenCalledWith(beforeStep);
+      });
+
+      it("sets the scenario as the after step's scenario", function () {
+        expect(afterStep.setScenario).toHaveBeenCalledWith(scenario);
       });
 
       it("sets the empty hook as the after step's hook", function () {
@@ -464,7 +472,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       beforeEach(function () {
         beforeHook = createSpyWithStubs("before hook");
-        beforeStep = createSpyWithStubs("before step", {setHook: undefined});
+        beforeStep = createSpyWithStubs("before step", {setHook: undefined, setScenario: null});
         var forEachCallback = beforeHooks.forEach.calls.mostRecent().args[0];
         spyOn(Cucumber.Ast, "HookStep").and.returnValue(beforeStep);
 
@@ -473,6 +481,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       it("creates a before step", function () {
         expect(Cucumber.Ast.HookStep).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.BEFORE_STEP_KEYWORD);
+      });
+
+      it("sets the scenario as the before step's scenario", function () {
+        expect(beforeStep.setScenario).toHaveBeenCalledWith(scenario);
       });
 
       it("sets the before hook as the before step's hook", function () {
@@ -511,7 +523,7 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       beforeEach(function () {
         afterHook = createSpyWithStubs("after hook");
-        afterStep = createSpyWithStubs("after step", {setHook: undefined});
+        afterStep = createSpyWithStubs("after step", {setHook: undefined, setScenario: null});
         var forEachCallback = afterHooks.forEach.calls.mostRecent().args[0];
         spyOn(Cucumber.Ast, "HookStep").and.returnValue(afterStep);
 
@@ -520,6 +532,10 @@ describe("Cucumber.Runtime.AstTreeWalker", function () {
 
       it("creates a after step", function () {
         expect(Cucumber.Ast.HookStep).toHaveBeenCalledWith(Cucumber.Runtime.AstTreeWalker.AFTER_STEP_KEYWORD);
+      });
+
+      it("sets the scenario as the after step's scenario", function () {
+        expect(afterStep.setScenario).toHaveBeenCalledWith(scenario);
       });
 
       it("sets the after hook as the after step's hook", function () {

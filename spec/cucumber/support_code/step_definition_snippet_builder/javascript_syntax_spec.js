@@ -11,7 +11,7 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilder.JavaScriptSyntax', f
         'this.functionName(/^pattern$/, function (arg1, arg2, callback) {' + '\n' +
         '  // comment' + '\n' +
         '  callback.pending();' + '\n' +
-        '});' + '\n';
+        '});';
       expect(actual).toEqual(expected);
     });
   });

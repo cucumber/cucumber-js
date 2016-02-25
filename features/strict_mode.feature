@@ -32,22 +32,7 @@ Feature: Strict mode
 
   Scenario: Fail scenario with undefined step with --strict
     When I run cucumber.js with `-f progress features/a.feature --strict`
-    Then it outputs this text:
-    """
-    U
-
-    1 scenario (1 undefined)
-    1 step (1 undefined)
-    <duration-stat>
-
-    You can implement step definitions for undefined steps with these snippets:
-
-    this.Given(/^this step passes$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
-    });
-    """
-    And the exit status should be 1
+    Then the exit status should be 1
 
 
   Scenario: Fail Scenario with pending step with --strict
@@ -59,34 +44,11 @@ Feature: Strict mode
     module.exports = cucumberSteps;
     """
     When I run cucumber.js with `-f progress features/a.feature --strict`
-    Then it outputs this text:
-    """
-    P
-
-    1 scenario (1 pending)
-    1 step (1 pending)
-    <duration-stat>
-    """
-    And the exit status should be 1
+    Then the exit status should be 1
 
   Scenario: Fail scenario with undefined step with -S
     When I run cucumber.js with `-f progress features/a.feature -S`
-    Then it outputs this text:
-    """
-    U
-
-    1 scenario (1 undefined)
-    1 step (1 undefined)
-    <duration-stat>
-
-    You can implement step definitions for undefined steps with these snippets:
-
-    this.Given(/^this step passes$/, function (callback) {
-      // Write code here that turns the phrase above into concrete actions
-      callback.pending();
-    });
-    """
-    And the exit status should be 1
+    Then the exit status should be 1
 
 
   Scenario: Fail Scenario with pending step with -S
@@ -98,12 +60,4 @@ Feature: Strict mode
     module.exports = cucumberSteps;
     """
     When I run cucumber.js with `-f progress features/a.feature -S`
-    Then it outputs this text:
-    """
-    P
-
-    1 scenario (1 pending)
-    1 step (1 pending)
-    <duration-stat>
-    """
-    And the exit status should be 1
+    Then the exit status should be 1
