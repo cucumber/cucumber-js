@@ -208,7 +208,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       beforeEach(function () {
         var stepDefintion = createSpyWithStubs('step defintion', {getPattern: 'a', getUri: 'path/to/stepDefintion', getLine: 3});
         var failureException = {stack: 'failure exception stack'};
-        var stepResult = createSpyWithStubs("failed step result", {getFailureException: failureException, getStepDefinition: stepDefintion, getStep: step});
+        var stepResult = createSpyWithStubs("failed step result", {getFailureException: failureException, getStatus: Cucumber.Status.FAILED, getStepDefinition: stepDefintion, getStep: step});
         summaryFormatter.storeFailedStepResult(stepResult);
       });
 
@@ -229,7 +229,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       beforeEach(function () {
         var stepDefinition1 = createSpyWithStubs('step definition', {getPattern: 'pattern 1', getUri: 'path/to/stepDefinition1', getLine: 3});
         var stepDefinition2 = createSpyWithStubs('step definition', {getPattern: 'longer pattern 2', getUri: 'path/to/stepDefinition2', getLine: 4});
-        var stepResult = createSpyWithStubs("step result", {getAmbiguousStepDefinitions: [stepDefinition1, stepDefinition2], getStep: step, getStepDefinition: null});
+        var stepResult = createSpyWithStubs("step result", {getAmbiguousStepDefinitions: [stepDefinition1, stepDefinition2], getStatus: Cucumber.Status.AMBIGUOUS, getStep: step, getStepDefinition: null});
         summaryFormatter.storeAmbiguousStepResult(stepResult);
       });
 
