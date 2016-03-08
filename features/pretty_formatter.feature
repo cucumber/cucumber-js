@@ -100,7 +100,7 @@ Feature: Pretty Formatter
 
       Failures:
 
-      1) Scenario: I've declared one step and it is passing # features/a.feature:3
+      1) Scenario: I've declared one step and it is passing - features/a.feature:3
          Step: Before
          Step Definition: features/support/hooks.js:2
          Message:

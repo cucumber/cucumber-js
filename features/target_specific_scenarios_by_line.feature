@@ -59,8 +59,8 @@ Feature: Target specific scenarios
 
       Warnings:
 
-      1) Scenario: third scenario # features/a.feature:14
-         Step: When a step is pending # features/a.feature:9
+      1) Scenario: third scenario - features/a.feature:14
+         Step: When a step is pending - features/a.feature:9
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            Pending

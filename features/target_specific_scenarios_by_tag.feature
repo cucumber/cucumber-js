@@ -71,14 +71,14 @@ Feature: Target specific scenarios
 
       Warnings:
 
-      1) Scenario: second scenario # features/a.feature:14
-         Step: When a step is pending # features/a.feature:8
+      1) Scenario: second scenario - features/a.feature:14
+         Step: When a step is pending - features/a.feature:8
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            Pending
 
-      2) Scenario: second scenario # features/a.feature:19
-         Step: When a step is undefined # features/a.feature:8
+      2) Scenario: second scenario - features/a.feature:19
+         Step: When a step is undefined - features/a.feature:8
          Message:
            Undefined. Implement with the following snippet:
              this.When(/^a step is (.*)$/, function (status, callback) {
@@ -108,8 +108,8 @@ Feature: Target specific scenarios
 
       Warnings:
 
-      1) Scenario: second scenario # features/a.feature:14
-         Step: When a step is pending # features/a.feature:8
+      1) Scenario: second scenario - features/a.feature:14
+         Step: When a step is pending - features/a.feature:8
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            Pending

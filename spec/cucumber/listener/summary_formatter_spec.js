@@ -216,8 +216,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
         summaryFormatter.logFailures();
         expect(summaryFormatter.log).toHaveBeenCalledWith('Failures:\n\n');
         var expected =
-          '1) Scenario: scenarioName ' + colors.gray('# path/to/scenario:1') + '\n' +
-          '   Step: stepKeyword stepName ' + colors.gray('# path/to/step:2') + '\n' +
+          '1) Scenario: ' + colors.bold('scenarioName') + ' - ' + colors.gray('path/to/scenario:1') + '\n' +
+          '   Step: ' + colors.bold('stepKeyword stepName') + ' - ' + colors.gray('path/to/step:2') + '\n' +
           '   Step Definition: ' + colors.gray('path/to/stepDefintion:3') + '\n' +
           '   Message:' + '\n' +
           '     ' + colors.red('failure exception stack') + '\n\n';
@@ -237,8 +237,8 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
         summaryFormatter.logFailures();
         expect(summaryFormatter.log).toHaveBeenCalledWith('Failures:\n\n');
         var expected =
-          '1) Scenario: scenarioName ' + colors.gray('# path/to/scenario:1') + '\n' +
-          '   Step: stepKeyword stepName ' + colors.gray('# path/to/step:2') + '\n' +
+          '1) Scenario: ' + colors.bold('scenarioName') + ' - ' + colors.gray('path/to/scenario:1') + '\n' +
+          '   Step: ' + colors.bold('stepKeyword stepName') + ' - ' + colors.gray('path/to/step:2') + '\n' +
           '   Message:' + '\n' +
           '     ' + colors.red('Multiple step definitions match:' + '\n' +
           '       pattern 1        - path/to/stepDefinition1:3' + '\n' +

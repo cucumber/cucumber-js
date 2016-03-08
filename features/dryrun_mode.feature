@@ -56,8 +56,8 @@ Feature: Dryrun mode
 
       Warnings:
 
-      1) Scenario: Missing # features/a.feature:2
-         Step: Given this step passes # features/a.feature:3
+      1) Scenario: Missing - features/a.feature:2
+         Step: Given this step passes - features/a.feature:3
          Message:
            Undefined. Implement with the following snippet:
              this.Given(/^this step passes$/, function (callback) {
@@ -79,8 +79,8 @@ Feature: Dryrun mode
 
       Warnings:
 
-      1) Scenario: Missing # features/a.feature:2
-         Step: Given this step passes # features/a.feature:3
+      1) Scenario: Missing - features/a.feature:2
+         Step: Given this step passes - features/a.feature:3
          Message:
            Undefined. Implement with the following snippet:
              this.Given(/^this step passes$/, function (callback) {

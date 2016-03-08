@@ -25,8 +25,8 @@ Feature: Failed scenarios
 
       Failures:
 
-      1) Scenario: some scenario # features/a.feature:2
-         Step: When a step is failing # features/a.feature:3
+      1) Scenario: some scenario - features/a.feature:2
+         Step: When a step is failing - features/a.feature:3
          Step Definition: features/step_definitions/cucumber_steps.js:2
          Message:
            forced error
@@ -47,8 +47,8 @@ Feature: Failed scenarios
 
       Failures:
 
-      1) Scenario: some scenario # ../a.feature:2
-         Step: When a step is failing # ../a.feature:3
+      1) Scenario: some scenario - ../a.feature:2
+         Step: When a step is failing - ../a.feature:3
          Step Definition: ../step_definitions/cucumber_steps.js:2
          Message:
            forced error

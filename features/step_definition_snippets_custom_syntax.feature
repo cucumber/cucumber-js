@@ -37,8 +37,8 @@ Feature: step definition snippets custom syntax
 
       Warnings:
 
-      1) Scenario: a scenario # features/undefined.feature:2
-         Step: Given an undefined step # features/undefined.feature:3
+      1) Scenario: a scenario - features/undefined.feature:2
+         Step: Given an undefined step - features/undefined.feature:3
          Message:
            Undefined. Implement with the following snippet:
              @Given /^an undefined step$/, (callback) ->

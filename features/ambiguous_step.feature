@@ -22,8 +22,8 @@ Feature: Ambiguous Steps
 
       Failures:
 
-      1) Scenario: a scenario name # features/a.feature:2
-         Step: Given a ambiguous step # features/a.feature:3
+      1) Scenario: a scenario name - features/a.feature:2
+         Step: Given a ambiguous step - features/a.feature:3
          Message:
            Multiple step definitions match:
              /^a ambiguous step$/ - features/step_definitions/cucumber_steps.js:2

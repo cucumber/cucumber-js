@@ -82,20 +82,20 @@ Feature: Rerun Formatter
 
       Failures:
 
-      1) Scenario: 2 # features/a.feature:5
-         Step: Given a failing step # features/a.feature:6
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
 
-      2) Scenario: 3 # features/a.feature:8
-         Step: Given a failing step # features/a.feature:9
+      2) Scenario: 3 - features/a.feature:8
+         Step: Given a failing step - features/a.feature:9
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
 
-      3) Scenario: 5 # features/b.feature:5
-         Step: Given a failing step # features/b.feature:6
+      3) Scenario: 5 - features/b.feature:5
+         Step: Given a failing step - features/b.feature:6
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
@@ -127,20 +127,20 @@ Feature: Rerun Formatter
 
       Failures:
 
-      1) Scenario: 2 # features/a.feature:5
-         Step: Given a failing step # features/a.feature:6
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
 
-      2) Scenario: 3 # features/a.feature:8
-         Step: Given a failing step # features/a.feature:9
+      2) Scenario: 3 - features/a.feature:8
+         Step: Given a failing step - features/a.feature:9
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
 
-      3) Scenario: 5 # features/b.feature:5
-         Step: Given a failing step # features/b.feature:6
+      3) Scenario: 5 - features/b.feature:5
+         Step: Given a failing step - features/b.feature:6
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail

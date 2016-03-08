@@ -38,8 +38,8 @@ Feature: Rerun Formatter
 
       Failures:
 
-      1) Scenario: 2 # features/a.feature:5
-         Step: Given a failing step # features/a.feature:6
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
@@ -59,8 +59,8 @@ Feature: Rerun Formatter
 
       Failures:
 
-      1) Scenario: 2 # features/a.feature:5
-         Step: Given a failing step # features/a.feature:6
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
          Step Definition: features/step_definitions/cucumber_steps.js:3
          Message:
            fail
