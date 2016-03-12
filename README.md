@@ -154,6 +154,8 @@ this.Given(/^I am on the Cucumber.js GitHub repository$/, function () {
 
 Simply omit the last `callback` parameter and return the promise.
 
+If the promise resolves to the string `'pending'`, the step will be marked as pending.
+
 ##### Synchronous step definitions
 
 Often, asynchronous behaviour is not needed in step definitions. Simply omit the callback parameter, do not return anything and Cucumber will treat the step definition function as synchronous:
@@ -165,6 +167,8 @@ this.Given(/^I add one cucumber$/, function () {
 });
 
 ```
+
+If the step returns the string `'pending'`, the step will be marked as pending.
 
 ##### Strings instead of regular expressions
 
