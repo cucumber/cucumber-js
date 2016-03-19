@@ -2,6 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Feature", function () {
   var Cucumber = requireLib('cucumber');
+  var Gherkin = require('Gherkin')
   var feature, scenario1, scenario2, tag1, tag2;
 
   beforeEach(function () {
@@ -34,6 +35,64 @@ describe("Cucumber.Ast.Feature", function () {
       expect(Cucumber.Ast.Tag).toHaveBeenCalledWith({tag2: 'data'});
     });
   });
+
+  describe('findStepByLine()', function() {
+    describe('from a background', function() {
+      beforeEach(function() {
+        var source =
+          'Feature: Foo\n' +
+          '  Background:\n' +
+          '    Given a\n' +
+          '  Scenario: Bar\n' +
+          '    Then b\n';
+        var featureData = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(featureData, []);
+      });
+
+      it('returns the ast step', function() {
+        var astStep = feature.findStepByLine(3);
+        expect(astStep).not.toBeUndefined();
+        expect(astStep.keyword).toEqual('Given ');
+      });
+    });
+
+    describe('from a scenario', function() {
+      beforeEach(function() {
+        var source =
+          'Feature: Foo\n' +
+          '  Scenario: Bar\n' +
+          '    Then b\n';
+        var featureData = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(featureData, []);
+      });
+
+      it('returns the ast step', function() {
+        var astStep = feature.findStepByLine(3);
+        expect(astStep).not.toBeUndefined();
+        expect(astStep.keyword).toEqual('Then ');
+      });
+    });
+
+    describe('from a scenario outline', function() {
+      beforeEach(function() {
+        var source =
+          'Feature: Foo\n' +
+          '  Scenario Outline: Bar\n' +
+          '    When <what>\n' +
+          '  Examples:\n' +
+          '    | what |\n' +
+          '    | b    |';
+        var featureData = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(featureData, []);
+      });
+
+      it('returns the ast step', function() {
+        var astStep = feature.findStepByLine(3);
+        expect(astStep).not.toBeUndefined();
+        expect(astStep.keyword).toEqual('When ');
+      });
+    });
+  })
 
   describe("getKeyword()", function () {
     it("returns the keyword of the feature", function () {

@@ -1,6 +1,8 @@
 var jsonOutputSteps = function jsonOutputSteps() {
   var assert = require('assert');
   var jsonDiff = require('json-diff');
+  var helpers = require('../support/helpers');
+  var normalizeText = helpers.normalizeText;
 
   function findScenario(features, predicate){
     var found = null;
@@ -71,6 +73,12 @@ var jsonOutputSteps = function jsonOutputSteps() {
   });
 
   this.Then(/^it runs (\d+) scenarios$/, function (count) {
+    if (this.lastRun.error) {
+      throw new Error('Expected last run to pass but it failed\n' +
+                      'Output:\n' + normalizeText(this.lastRun.stdout) + '\n' +
+                      'Error:\n' + normalizeText(this.lastRun.stderr));
+    }
+
     var features = JSON.parse(this.lastRun.stdout);
     assert.equal(parseInt(count), features[0].elements.length);
   });
