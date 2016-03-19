@@ -2,19 +2,21 @@ require('../../support/spec_helper');
 
 describe("Cucumber.SupportCode.AroundHook", function () {
   var Cucumber = requireLib('cucumber');
-  var aroundHook, code, options, hook, hookSpy;
+  var aroundHook, code, options, uri, line, hook, hookSpy;
 
   beforeEach(function () {
-    code       = createSpy("hook code");
-    options    = {};
-    hook       = createSpy("hook");
-    hookSpy    = spyOn(Cucumber.SupportCode, 'Hook').and.returnValue(hook);
-    aroundHook = Cucumber.SupportCode.AroundHook(code, options);
+    code = createSpy("hook code");
+    options = {};
+    uri = 'uri';
+    line = 1;
+    hook = createSpy("hook");
+    hookSpy = spyOn(Cucumber.SupportCode, 'Hook').and.returnValue(hook);
+    aroundHook = Cucumber.SupportCode.AroundHook(code, options, uri, line);
   });
 
   describe("constructor", function () {
     it("inherits from Cucumber.SupportCode.Hook", function () {
-      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, options);
+      expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, options, uri, line);
       expect(aroundHook).toBe(hook);
     });
   });
@@ -58,7 +60,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
         });
 
         it("creates an after hook", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioCallback, {noScenario: true});
+          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioCallback, {noScenario: true}, uri, line);
         });
 
         it("assigns the after hook to the after step", function () {
@@ -96,7 +98,7 @@ describe("Cucumber.SupportCode.AroundHook", function () {
         });
 
         it("creates an after hook", function () {
-          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioCallback, {noScenario: true});
+          expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(postScenarioCallback, {noScenario: true}, uri, line);
         });
 
         it("assigns the after hook to the after step", function () {

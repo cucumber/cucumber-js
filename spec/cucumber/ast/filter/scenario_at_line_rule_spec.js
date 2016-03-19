@@ -27,7 +27,9 @@ describe("Cucumber.Ast.Filter.ScenarioAtLineRule", function () {
     it("returns true if the uri and line match a supplied path", function(){
       element = createSpyWithStubs("element", {getUri: '/real/path', getLines: [1]});
       expect(rule.isSatisfiedByElement(element)).toBe(true);
+    });
 
+    it("returns true if the uri and scenario outline line match a supplied path", function(){
       element = createSpyWithStubs("element", {getUri: '/real/path', getLines: [2]});
       expect(rule.isSatisfiedByElement(element)).toBe(true);
     });

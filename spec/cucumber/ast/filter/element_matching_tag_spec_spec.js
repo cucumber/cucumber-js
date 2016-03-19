@@ -22,25 +22,15 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
       spyOn(spec, 'isExpectingTag');
     });
 
-    it("gets the element tags", function () {
-      spec.isMatching(element);
-      expect(element.getTags).toHaveBeenCalled();
-    });
-
-    it("checks whether the spec tag is expected or not", function () {
-      spec.isMatching(element);
-      expect(spec.isExpectingTag).toHaveBeenCalled();
-    });
-
     describe("when the spec tag is expected on the element", function () {
       beforeEach(function () {
         spec.isExpectingTag.and.returnValue(true);
-        spyOn(_, 'any').and.returnValue(matchingElement);
+        spyOn(_, 'some').and.returnValue(matchingElement);
       });
 
       it("checks whether any of the element tags match the spec tag", function () {
         spec.isMatching(element);
-        expect(_.any).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
+        expect(_.some).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
       });
 
       it("returns whether the element matched or not", function () {
@@ -51,12 +41,12 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
     describe("when the spec tag is not expected on the element", function () {
       beforeEach(function () {
         spec.isExpectingTag.and.returnValue(false);
-        spyOn(_, 'all').and.returnValue(matchingElement);
+        spyOn(_, 'every').and.returnValue(matchingElement);
       });
 
       it("checks whether any of the element tags match the spec tag", function () {
         spec.isMatching(element);
-        expect(_.all).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
+        expect(_.every).toHaveBeenCalledWith(elementTags, spec.isTagSatisfying);
       });
 
       it("returns whether the element matched or not", function () {
@@ -121,8 +111,8 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
           checkedTag.getName.and.returnValue(tagName);
         });
 
-        it("is truthy", function () {
-          expect(spec.isTagSatisfying(checkedTag)).toBeFalsy();
+        it("returns false", function () {
+          expect(spec.isTagSatisfying(checkedTag)).toBe(false);
         });
       });
 
@@ -131,8 +121,8 @@ describe("Cucumber.Ast.Filter.ElementMatchingTagSpec", function () {
           checkedTag.getName.and.returnValue("@obscure_tag");
         });
 
-        it("is falsy", function () {
-          expect(spec.isTagSatisfying(checkedTag)).toBeTruthy();
+        it("returns true", function () {
+          expect(spec.isTagSatisfying(checkedTag)).toBe(true);
         });
       });
     });

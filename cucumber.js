@@ -1,6 +1,6 @@
-common = '--strict'
+common = '--strict --format rerun:@rerun.txt'
 
 module.exports = {
-  build: common + ' -f progress',
+  build: common + ' --format progress',
   'default': common
 };

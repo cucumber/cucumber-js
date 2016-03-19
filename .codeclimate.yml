@@ -1,0 +1,16 @@
+engines:
+  eslint:
+    enabled: true
+
+exclude_paths:
+- cucumber.js
+- example/**/*
+- features/**/*
+- release/**/*
+- scripts/**/*
+- spec/**/*
+
+ratings:
+  paths:
+  - bin/**
+  - lib/**

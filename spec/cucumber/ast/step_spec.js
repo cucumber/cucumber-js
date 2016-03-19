@@ -48,11 +48,11 @@ describe("Cucumber.Ast.Step", function () {
     it("returns true when a previous step was set", function () {
       var previousStep = createSpy("previous step");
       step.setPreviousStep(previousStep);
-      expect(step.hasPreviousStep()).toBeTruthy();
+      expect(step.hasPreviousStep()).toBe(true);
     });
 
     it("returns false when no previous step was set", function () {
-      expect(step.hasPreviousStep()).toBeFalsy();
+      expect(step.hasPreviousStep()).toBe(false);
     });
   });
 
@@ -92,7 +92,7 @@ describe("Cucumber.Ast.Step", function () {
 
       it("it is true when the step is repeating an outcome step", function () {
         step.isRepeatingOutcomeStep.and.returnValue(true);
-        expect(step.isOutcomeStep()).toBeTruthy();
+        expect(step.isOutcomeStep()).toBe(true);
       });
     });
   });
@@ -179,7 +179,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns true", function () {
-          expect(step.isRepeatingOutcomeStep()).toBeTruthy();
+          expect(step.isRepeatingOutcomeStep()).toBe(true);
         });
       });
 
@@ -189,7 +189,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns false", function () {
-          expect(step.isRepeatingOutcomeStep()).toBeFalsy();
+          expect(step.isRepeatingOutcomeStep()).toBe(false);
         });
       });
     });
@@ -205,7 +205,7 @@ describe("Cucumber.Ast.Step", function () {
       });
 
       it("returns false", function () {
-        expect(step.isRepeatingOutcomeStep()).toBeFalsy();
+        expect(step.isRepeatingOutcomeStep()).toBe(false);
       });
     });
   });
@@ -237,7 +237,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns true", function () {
-          expect(step.isRepeatingEventStep()).toBeTruthy();
+          expect(step.isRepeatingEventStep()).toBe(true);
         });
       });
 
@@ -247,7 +247,7 @@ describe("Cucumber.Ast.Step", function () {
         });
 
         it("returns false", function () {
-          expect(step.isRepeatingEventStep()).toBeFalsy();
+          expect(step.isRepeatingEventStep()).toBe(false);
         });
       });
     });
@@ -263,7 +263,7 @@ describe("Cucumber.Ast.Step", function () {
       });
 
       it("returns false", function () {
-        expect(step.isRepeatingEventStep()).toBeFalsy();
+        expect(step.isRepeatingEventStep()).toBe(false);
       });
     });
   });
@@ -285,7 +285,7 @@ describe("Cucumber.Ast.Step", function () {
     });
 
     it("returns false when the keyword is not 'And ' nor 'But '", function () {
-      expect(step.hasRepeatStepKeyword()).toBeFalsy();
+      expect(step.hasRepeatStepKeyword()).toBe(false);
     });
   });
 
@@ -408,82 +408,6 @@ describe("Cucumber.Ast.Step", function () {
           expect(step.isPrecededByEventStep()).toBeFalsy();
         });
       });
-    });
-  });
-
-  describe("acceptVisitor()", function () {
-    var visitor, callback;
-
-    beforeEach(function () {
-      visitor  = createSpyWithStubs("Visitor", {visitStepResult: null});
-      callback = createSpy("Callback");
-      spyOn(step, 'execute');
-    });
-
-    it("executes the step with a callback", function () {
-      step.acceptVisitor(visitor, callback);
-      expect(step.execute).toHaveBeenCalled();
-      expect(step.execute).toHaveBeenCalledWithValueAsNthParameter(visitor, 1);
-      expect(step.execute).toHaveBeenCalledWithAFunctionAsNthParameter(2);
-    });
-
-    describe("after the step was executed", function () {
-      var executeCallback;
-      var stepResult;
-
-      beforeEach(function () {
-        step.acceptVisitor(visitor, callback);
-        stepResult = createSpy("Step execution result");
-        executeCallback = step.execute.calls.mostRecent().args[1];
-      });
-
-      it("tells the visitor to visit the step result", function () {
-        executeCallback(stepResult);
-        expect(visitor.visitStepResult).toHaveBeenCalledWith(stepResult, callback);
-      });
-    });
-  });
-
-  describe("getStepDefinition()", function () {
-    var visitor, stepDefinition, returnValue;
-
-    beforeEach(function () {
-      visitor        = createSpy("visitor");
-      stepDefinition = createSpy("step definition");
-      spyOnStub(visitor, 'lookupStepDefinitionByName').and.returnValue(stepDefinition);
-      returnValue = step.getStepDefinition(visitor);
-    });
-
-    it("uses the visitor to look up the step definition based on the step string", function () {
-      step.getStepDefinition(visitor);
-      expect(visitor.lookupStepDefinitionByName).toHaveBeenCalledWith('text');
-    });
-
-    it("returns the step definition", function () {
-      expect(returnValue).toBe(stepDefinition);
-    });
-  });
-
-  describe("execute()", function () {
-    var stepDefinition, world, scenario, defaultTimeout, visitor, callback;
-
-    beforeEach(function () {
-      stepDefinition = createSpy("step definition");
-      world          = createSpy("world");
-      scenario       = createSpy("scenario");
-      defaultTimeout = createSpy("defaultTimeout");
-      visitor        = createSpy("visitor");
-      callback       = createSpy("callback received by execute()");
-      spyOnStub(stepDefinition, 'invoke');
-      spyOnStub(step, 'getStepDefinition').and.returnValue(stepDefinition);
-      spyOnStub(visitor, 'getWorld').and.returnValue(world);
-      spyOnStub(visitor, 'getScenario').and.returnValue(scenario);
-      spyOnStub(visitor, 'getDefaultTimeout').and.returnValue(defaultTimeout);
-      step.execute(visitor, callback);
-    });
-
-    it("invokes the step definition", function () {
-      expect(stepDefinition.invoke).toHaveBeenCalledWith(step, world, scenario, defaultTimeout, callback);
     });
   });
 });

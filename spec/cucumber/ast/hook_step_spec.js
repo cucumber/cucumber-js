@@ -20,17 +20,17 @@ describe("Cucumber.Ast.HookStep", function () {
 
   describe("isHidden()", function () {
     it("returns true for a hook step", function () {
-      expect(hookStep.isHidden()).toBeTruthy();
+      expect(hookStep.isHidden()).toBe(true);
     });
   });
 
   describe("hasUri()", function () {
     it("returns false as hook steps do not have URIs", function () {
-      expect(hookStep.hasUri()).toBeFalsy();
+      expect(hookStep.hasUri()).toBe(false);
     });
   });
 
-  describe("getStepDefinition() [setHook()]", function () {
+  describe("getHook() [setHook()]", function () {
     var hook;
 
     beforeEach(function () {
@@ -39,7 +39,7 @@ describe("Cucumber.Ast.HookStep", function () {
 
     it("returns the hook instance set with setHook()", function () {
       hookStep.setHook(hook);
-      expect(hookStep.getStepDefinition()).toBe(hook);
+      expect(hookStep.getHook()).toBe(hook);
     });
   });
 });

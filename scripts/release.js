@@ -1,12 +1,11 @@
-var path    = require('path');
-var fs      = require('fs');
-var Bundler = require('../bundler')
+var path = require('path');
+var Bundler = require('./release/bundler');
 
 var bundlePath = path.join(__dirname, '..', 'release', 'cucumber.js');
-var bundler = Bundler(bundlePath);
+var bundler = new Bundler(bundlePath);
 bundler.bundle(function (err) {
-  if (err)
-    console.error(err)
-  else
-    console.log(bundlePath, "written.");
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
 });

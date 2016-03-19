@@ -256,9 +256,13 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   });
 
   describe("logStepResult()", function () {
-    var stepResult, step;
+    var stepResult, step, stepDefinition;
 
     beforeEach(function () {
+      stepDefinition = createSpyWithStubs("step definition", {
+        getLine: 1,
+        getUri: path.join(process.cwd(), 'step-definition-uri')
+      });
       step = createSpyWithStubs("step", {
         getArguments: [],
         getLine: 1,
@@ -270,6 +274,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
       stepResult = createSpyWithStubs("step result", {
         getFailureException: null,
         getStep: step,
+        getStepDefinition: stepDefinition,
         getStatus: Cucumber.Status.PASSED
       });
     });
@@ -363,7 +368,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name', function () {
         var expected =
-          '    step-keyword step-name# step-uri:1' + '\n';
+          '    step-keyword step-name# step-definition-uri:1' + '\n';
         expect(colors.strip(logged)).toEqual(expected);
       });
     });

@@ -11,17 +11,17 @@ describe("Cucumber.Cli.SupportCodePathExpander", function () {
     beforeEach(function () {
       paths         = createSpy("unexpanded paths");
       expandedPaths = createSpy("expanded paths");
-      spyOn(PathExpander, 'expandPathsWithRegexp').and.returnValue(expandedPaths);
+      spyOn(PathExpander, 'expandPathsWithExtensions').and.returnValue(expandedPaths);
     });
 
     it("asks the path expander to expand the paths with the glob matching the extensions", function () {
       SupportCodePathExpander.expandPaths(paths, ['js']);
-      expect(PathExpander.expandPathsWithRegexp).toHaveBeenCalledWith(paths, /\.(js)$/);
+      expect(PathExpander.expandPathsWithExtensions).toHaveBeenCalledWith(paths, ['js']);
     });
 
     it("asks the path expander to expand the paths with the glob matching the extensions (with a compiler)", function () {
       SupportCodePathExpander.expandPaths(paths, ['js', 'coffee']);
-      expect(PathExpander.expandPathsWithRegexp).toHaveBeenCalledWith(paths, /\.(js|coffee)$/);
+      expect(PathExpander.expandPathsWithExtensions).toHaveBeenCalledWith(paths, ['js', 'coffee']);
     });
 
     it("returns the expanded paths", function () {

@@ -1,6 +1,6 @@
 Feature: Fail fast
 
-  Using the `--fast-fast` flag ends the suite after the first failure
+  Using the `--fail-fast` flag ends the suite after the first failure
 
   Scenario: --fail-fast
     Given a file named "features/a.feature" with:
@@ -26,7 +26,7 @@ Feature: Fail fast
       Feature:
 
         Scenario: Failing      # features/a.feature:2
-          Given a failing step # features/a.feature:3
+          Given a failing step # features/step_definitions/cucumber_steps.js:2
             fail
 
       Failing scenarios:

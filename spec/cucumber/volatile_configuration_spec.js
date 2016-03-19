@@ -156,17 +156,17 @@ describe("Cucumber.VolatileConfiguration", function () {
   describe("shouldFilterStackTraces", function () {
     it("returns true by default", function () {
       configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, {});
-			expect(configuration.shouldFilterStackTraces()).toBeTruthy();
+			expect(configuration.shouldFilterStackTraces()).toBe(true);
     });
 
-    it("returns false when the backtrace option is truthy", function () {
+    it("returns false when the backtrace option is true", function () {
       configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, { backtrace: true });
-			expect(configuration.shouldFilterStackTraces()).toBeFalsy();
+			expect(configuration.shouldFilterStackTraces()).toBe(false);
     });
 
-    it("returns true when the backtrace option is falsy", function () {
+    it("returns true when the backtrace option is false", function () {
       configuration = Cucumber.VolatileConfiguration(featureSources, supportCodeInitializer, { backtrace: false});
-			expect(configuration.shouldFilterStackTraces()).toBeTruthy();
+			expect(configuration.shouldFilterStackTraces()).toBe(true);
     });
   });
 });

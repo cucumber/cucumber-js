@@ -85,13 +85,13 @@ describe("Cucumber.Listener", function () {
       });
 
       it("returns true", function () {
-        expect(listener.hasHandlerForEvent(event)).toBeTruthy();
+        expect(listener.hasHandlerForEvent(event)).toBe(true);
       });
     });
 
     describe("when the handler does not exist", function () {
       it("returns false", function () {
-        expect(listener.hasHandlerForEvent(event)).toBeFalsy();
+        expect(listener.hasHandlerForEvent(event)).toBe(false);
       });
     });
   });
