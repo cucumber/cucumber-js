@@ -315,7 +315,7 @@ Feature: Scenario Statuses
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
+        this.Given(/^This step is pending$/, function(callback) { callback(null, 'pending'); });
       };
       module.exports = cucumberSteps;
       """

@@ -100,7 +100,7 @@ var cliSteps = function cliSteps() {
     var expectedOutput =
       'this.' + step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n' +
       '  // Write code here that turns the phrase above into concrete actions\n' +
-      '  callback.pending();\n' +
+      '  callback(null, \'pending\');\n' +
       '});';
 
     var actualOutput = this.lastRun.stdout;
