@@ -37,16 +37,6 @@ Feature: Scenario Statuses
       }
 
       var hooks = function () {
-        this.Around(function(scenario, runScenario) {
-          var error = checkScenarioStatuses(scenario);
-
-          runScenario(error, function(callback) {
-            var error = checkScenarioStatuses(scenario);
-
-            callback(error);
-          });
-        });
-
         this.Before(function(scenario, callback) {
           var error = checkScenarioStatuses(scenario);
 
@@ -83,15 +73,6 @@ Feature: Scenario Statuses
               "type": "scenario",
               "steps": [
                 {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
-                {
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
@@ -112,15 +93,6 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
-                {
-                  "keyword": "Around ",
                   "hidden": true,
                   "result": {
                     "duration": "<duration>",
