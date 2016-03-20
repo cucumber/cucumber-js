@@ -62,7 +62,7 @@ Feature: Dryrun mode
 
       this.Given(/^this step passes$/, function (callback) {
         // Write code here that turns the phrase above into concrete actions
-        callback.pending();
+        callback(null, 'pending');
       });
       """
     And the exit status should be 1
@@ -81,7 +81,7 @@ Feature: Dryrun mode
 
       this.Given(/^this step passes$/, function (callback) {
         // Write code here that turns the phrase above into concrete actions
-        callback.pending();
+        callback(null, 'pending');
       });
       """
     And the exit status should be 0
