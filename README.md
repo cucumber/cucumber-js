@@ -9,7 +9,7 @@
 
 It runs on both Node.js and *modern* web browsers.
 
-## Prerequesites
+## Prerequisites
 
 * [Node.js](https://nodejs.org) or [io.js](https://iojs.org)
 * [NPM](https://www.npmjs.com)
