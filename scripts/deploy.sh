@@ -7,7 +7,6 @@ npm run build-release
 rsync -a release/ example/
 mkdir -p example/jquery/dist
 cp node_modules/jquery/dist/jquery.min.js example/jquery/dist/jquery.min.js
-rm example/server.js
 
 # Publish to gh-pages
 cd example
