@@ -60,6 +60,7 @@ Feature: Dryrun mode
          Step: Given this step passes - features/a.feature:3
          Message:
            Undefined. Implement with the following snippet:
+
              this.Given(/^this step passes$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
@@ -83,6 +84,7 @@ Feature: Dryrun mode
          Step: Given this step passes - features/a.feature:3
          Message:
            Undefined. Implement with the following snippet:
+
              this.Given(/^this step passes$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');

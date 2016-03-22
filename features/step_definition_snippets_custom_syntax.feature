@@ -41,6 +41,7 @@ Feature: step definition snippets custom syntax
          Step: Given an undefined step - features/undefined.feature:3
          Message:
            Undefined. Implement with the following snippet:
+
              @Given /^an undefined step$/, (callback) ->
                # Write code here that turns the phrase above into concrete actions
                callback null, 'pending'

@@ -81,6 +81,7 @@ Feature: Target specific scenarios
          Step: When a step is undefined - features/a.feature:8
          Message:
            Undefined. Implement with the following snippet:
+
              this.When(/^a step is (.*)$/, function (status, callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
