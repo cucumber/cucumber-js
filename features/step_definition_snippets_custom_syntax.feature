@@ -19,7 +19,7 @@ Feature: step definition snippets custom syntax
             var snippet =
               '@' + functionName + ' ' + pattern + ', (' + parameters.join(', ') + ') -> ' + '\n' +
               '  # ' + comment + '\n' +
-              '  ' + callbackName + '.pending()';
+              '  ' + callbackName + " null, 'pending'";
             return snippet;
           }
         };
@@ -43,7 +43,7 @@ Feature: step definition snippets custom syntax
            Undefined. Implement with the following snippet:
              @Given /^an undefined step$/, (callback) ->
                # Write code here that turns the phrase above into concrete actions
-               callback.pending()
+               callback null, 'pending'
 
       1 scenario (1 undefined)
       1 step (1 undefined)

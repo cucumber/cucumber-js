@@ -39,7 +39,7 @@ Feature: Strict mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
     var cucumberSteps = function() {
-      this.Given(/^this step passes$/, function(callback) { callback.pending(); });
+      this.Given(/^this step passes$/, function(callback) { callback(null, 'pending'); });
     };
     module.exports = cucumberSteps;
     """
@@ -55,7 +55,7 @@ Feature: Strict mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
     var cucumberSteps = function() {
-      this.Given(/^this step passes$/, function(callback) { callback.pending(); });
+      this.Given(/^this step passes$/, function(callback) { callback(null, 'pending'); });
     };
     module.exports = cucumberSteps;
     """

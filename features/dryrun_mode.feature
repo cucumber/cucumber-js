@@ -62,7 +62,7 @@ Feature: Dryrun mode
            Undefined. Implement with the following snippet:
              this.Given(/^this step passes$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
-               callback.pending();
+               callback(null, 'pending');
              });
 
       1 scenario (1 undefined)
@@ -85,7 +85,7 @@ Feature: Dryrun mode
            Undefined. Implement with the following snippet:
              this.Given(/^this step passes$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
-               callback.pending();
+               callback(null, 'pending');
              });
 
       1 scenario (1 undefined)

@@ -174,7 +174,7 @@ Feature: JSON Formatter
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
+        this.Given(/^This step is pending$/, function(callback) { callback(null, 'pending'); });
       };
       module.exports = cucumberSteps;
       """
@@ -335,7 +335,7 @@ Feature: JSON Formatter
       """
       var cucumberSteps = function() {
         this.Given(/^This step is passing$/, function(callback) { callback(); });
-        this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
+        this.Given(/^This step is pending$/, function(callback) { callback(null, 'pending'); });
         this.Given(/^This step fails but will be skipped$/, function(callback) { callback('fail'); });
       };
       module.exports = cucumberSteps;
@@ -408,7 +408,7 @@ Feature: JSON Formatter
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
+        this.Given(/^This step is pending$/, function(callback) { callback(null, 'pending'); });
         this.Given(/^This step is passing but will be skipped$/, function(callback) { callback(); });
         this.Given(/^This step fails but will be skipped$/, function(callback) { callback('fail'); });
       };
@@ -1704,7 +1704,7 @@ Feature: JSON Formatter
       ]
       """
 
-  Scenario: output JSON for a feature with one scenario outline with an examples table with two rows and before, after and around hooks
+  Scenario: output JSON for a feature with one scenario outline with an examples table with two rows and before and after hooks
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -1734,12 +1734,6 @@ Feature: JSON Formatter
         this.After(function(scenario, callback) {
           callback();
         });
-
-        this.Around(function(scenario, runScenario) {
-          runScenario(null, function(callback) {
-            callback();
-          });
-        });
       };
 
       module.exports = hooks;
@@ -1764,15 +1758,6 @@ Feature: JSON Formatter
               "description": "",
               "type": "scenario",
               "steps": [
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
                 {
                   "keyword": "Before ",
                   "hidden": true,
@@ -1800,15 +1785,6 @@ Feature: JSON Formatter
                     "status": "passed"
                   },
                   "match": {}
-                },
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
                 }
               ]
             },
@@ -1820,15 +1796,6 @@ Feature: JSON Formatter
               "description": "",
               "type": "scenario",
               "steps": [
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
                 {
                   "keyword": "Before ",
                   "hidden": true,
@@ -1850,15 +1817,6 @@ Feature: JSON Formatter
                 },
                 {
                   "keyword": "After ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
-                {
-                  "keyword": "Around ",
                   "hidden": true,
                   "result": {
                     "duration": "<duration>",

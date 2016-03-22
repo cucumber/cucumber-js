@@ -1,6 +1,6 @@
 Feature: Fail fast
 
-  Using the `--fast-fast` flag ends the suite after the first failure
+  Using the `--fail-fast` flag ends the suite after the first failure
 
   Scenario: --fail-fast
     Given a file named "features/a.feature" with:

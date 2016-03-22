@@ -9,7 +9,7 @@
 
 It runs on both Node.js and *modern* web browsers.
 
-## Prerequesites
+## Prerequisites
 
 * [Node.js](https://nodejs.org) or [io.js](https://iojs.org)
 * [NPM](https://www.npmjs.com)
@@ -92,6 +92,8 @@ module.exports = function() {
 
 If you need to perform operations before/after every scenario, use [hooks](#hooks).
 
+**Breaking Change:** The World constructor is now strictly synchronous and does not receive a callback from Cucumber anymore... This is a breaking change that was introduced in release *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*
+
 #### Step definitions
 
 Step definitions are the glue between features written in Gherkin and the actual system under test. They are written in JavaScript.
@@ -121,9 +123,9 @@ module.exports = function () {
 
   this.When(/^I go to the README file$/, function (callback) {
     // Express the regexp above with the code you wish you had. Call callback() at the end
-    // of the step, or callback.pending() if the step is not yet implemented:
+    // of the step, or callback(null, 'pending') if the step is not yet implemented:
 
-    callback.pending();
+    callback(null, 'pending');
   });
 
   this.Then(/^I should see "(.*)" as the page title$/, function (title, callback) {
@@ -154,6 +156,8 @@ this.Given(/^I am on the Cucumber.js GitHub repository$/, function () {
 
 Simply omit the last `callback` parameter and return the promise.
 
+If the promise resolves to the string `'pending'`, the step will be marked as pending.
+
 ##### Synchronous step definitions
 
 Often, asynchronous behaviour is not needed in step definitions. Simply omit the callback parameter, do not return anything and Cucumber will treat the step definition function as synchronous:
@@ -165,6 +169,8 @@ this.Given(/^I add one cucumber$/, function () {
 });
 
 ```
+
+If the step returns the string `'pending'`, the step will be marked as pending.
 
 ##### Strings instead of regular expressions
 

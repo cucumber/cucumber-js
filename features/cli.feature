@@ -48,7 +48,7 @@ Feature: Command line interface
            Undefined. Implement with the following snippet:
              this.When(/^a step is undefined$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
-               callback.pending();
+               callback(null, 'pending');
              });
 
       1 scenario (1 undefined)

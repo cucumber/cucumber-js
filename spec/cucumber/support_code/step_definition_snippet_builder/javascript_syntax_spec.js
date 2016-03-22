@@ -10,7 +10,7 @@ describe('Cucumber.SupportCode.StepDefinitionSnippetBuilder.JavaScriptSyntax', f
       var expected =
         'this.functionName(/^pattern$/, function (arg1, arg2, callback) {' + '\n' +
         '  // comment' + '\n' +
-        '  callback.pending();' + '\n' +
+        '  callback(null, \'pending\');' + '\n' +
         '});';
       expect(actual).toEqual(expected);
     });

@@ -37,16 +37,6 @@ Feature: Scenario Statuses
       }
 
       var hooks = function () {
-        this.Around(function(scenario, runScenario) {
-          var error = checkScenarioStatuses(scenario);
-
-          runScenario(error, function(callback) {
-            var error = checkScenarioStatuses(scenario);
-
-            callback(error);
-          });
-        });
-
         this.Before(function(scenario, callback) {
           var error = checkScenarioStatuses(scenario);
 
@@ -83,15 +73,6 @@ Feature: Scenario Statuses
               "type": "scenario",
               "steps": [
                 {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
-                {
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
@@ -112,15 +93,6 @@ Feature: Scenario Statuses
                 },
                 {
                   "keyword": "After ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "match": {}
-                },
-                {
-                  "keyword": "Around ",
                   "hidden": true,
                   "result": {
                     "duration": "<duration>",
@@ -315,7 +287,7 @@ Feature: Scenario Statuses
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is pending$/, function(callback) { callback.pending(); });
+        this.Given(/^This step is pending$/, function(callback) { callback(null, 'pending'); });
       };
       module.exports = cucumberSteps;
       """

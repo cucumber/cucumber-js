@@ -30,7 +30,7 @@ Feature: Target specific scenarios
       """
       var cucumberSteps = function() {
         this.When(/^a step is passing$/, function() { });
-        this.When(/^a step is pending$/, function(callback) { callback.pending() });
+        this.When(/^a step is pending$/, function(callback) { callback(null, 'pending') });
       };
       module.exports = cucumberSteps;
       """
@@ -83,7 +83,7 @@ Feature: Target specific scenarios
            Undefined. Implement with the following snippet:
              this.When(/^a step is (.*)$/, function (status, callback) {
                // Write code here that turns the phrase above into concrete actions
-               callback.pending();
+               callback(null, 'pending');
              });
 
       3 scenarios (1 undefined, 1 pending, 1 passed)

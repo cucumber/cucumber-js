@@ -17,7 +17,7 @@ Feature: Pretty Formatter
       <duration-stat>
       """
 
-  Scenario: Pretty formatter hides around, before and after hooks
+  Scenario: Pretty formatter hides before and after hooks
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -41,12 +41,6 @@ Feature: Pretty Formatter
 
         this.After(function(scenario, callback) {
           callback();
-        });
-
-        this.Around(function(scenario, runScenario) {
-          runScenario(null, function(callback) {
-            callback();
-          });
         });
       };
 

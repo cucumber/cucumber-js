@@ -25,7 +25,7 @@ Feature: Target specific scenarios
       """
       var cucumberSteps = function() {
         this.When(/^a step is passing$/, function() { });
-        this.When(/^a step is pending$/, function(callback) { callback.pending() });
+        this.When(/^a step is pending$/, function(callback) { callback(null, 'pending') });
       };
       module.exports = cucumberSteps;
       """
