@@ -30,8 +30,8 @@ Feature: Multiple Formatters
       """
       Feature: some feature
 
-        Scenario: I've declared one step which passes   # features/a.feature:3
-          Given This step is passing                    # features/step_definitions/cucumber_steps.js:2
+        Scenario: I've declared one step which passes
+          Given This step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
