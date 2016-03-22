@@ -36,8 +36,8 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        Scenario: first scenario   # features/a.feature:2
-          When a step is passing   # features/step_definitions/cucumber_steps.js:2
+        Scenario: first scenario
+          When a step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -51,11 +51,19 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        Scenario Outline: third scenario   # features/a.feature:13
-          When a step is passing           # features/step_definitions/cucumber_steps.js:2
+        Scenario Outline: third scenario
+          When a step is passing
 
-        Scenario Outline: third scenario   # features/a.feature:14
-          When a step is pending           # features/step_definitions/cucumber_steps.js:3
+        Scenario Outline: third scenario
+          When a step is pending
+
+      Warnings:
+
+      1) Scenario: third scenario - features/a.feature:14
+         Step: When a step is pending - features/a.feature:9
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           Pending
 
       2 scenarios (1 pending, 1 passed)
       2 steps (1 pending, 1 passed)
@@ -69,8 +77,8 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        Scenario Outline: third scenario   # features/a.feature:13
-          When a step is passing           # features/step_definitions/cucumber_steps.js:2
+        Scenario Outline: third scenario
+          When a step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -84,11 +92,11 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        Scenario: first scenario   # features/a.feature:2
-          When a step is passing   # features/step_definitions/cucumber_steps.js:2
+        Scenario: first scenario
+          When a step is passing
 
-        Scenario: second scenario   # features/a.feature:5
-          When a step is passing    # features/step_definitions/cucumber_steps.js:2
+        Scenario: second scenario
+          When a step is passing
 
       2 scenarios (2 passed)
       2 steps (2 passed)

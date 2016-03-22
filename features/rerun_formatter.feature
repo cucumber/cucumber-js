@@ -46,8 +46,8 @@ Feature: Rerun Formatter
       """
       Feature: A
 
-        Scenario: 1            # features/a.feature:2
-          Given a passing step # features/step_definitions/cucumber_steps.js:2
+        Scenario: 1
+          Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -63,30 +63,42 @@ Feature: Rerun Formatter
       """
       Feature: A
 
-        Scenario: 1            # features/a.feature:2
-          Given a passing step # features/step_definitions/cucumber_steps.js:2
+        Scenario: 1
+          Given a passing step
 
-        Scenario: 2            # features/a.feature:5
-          Given a failing step # features/step_definitions/cucumber_steps.js:3
-            fail
+        Scenario: 2
+          Given a failing step
 
-        Scenario: 3            # features/a.feature:8
-          Given a failing step # features/step_definitions/cucumber_steps.js:3
-            fail
+        Scenario: 3
+          Given a failing step
 
       Feature: B
 
-        Scenario: 4            # features/b.feature:2
-          Given a passing step # features/step_definitions/cucumber_steps.js:2
+        Scenario: 4
+          Given a passing step
 
-        Scenario: 5            # features/b.feature:5
-          Given a failing step # features/step_definitions/cucumber_steps.js:3
-            fail
+        Scenario: 5
+          Given a failing step
 
-      Failing scenarios:
-      features/a.feature:5 # Scenario: 2
-      features/a.feature:8 # Scenario: 3
-      features/b.feature:5 # Scenario: 5
+      Failures:
+
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
+
+      2) Scenario: 3 - features/a.feature:8
+         Step: Given a failing step - features/a.feature:9
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
+
+      3) Scenario: 5 - features/b.feature:5
+         Step: Given a failing step - features/b.feature:6
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
 
       5 scenarios (3 failed, 2 passed)
       5 steps (3 failed, 2 passed)
@@ -102,24 +114,36 @@ Feature: Rerun Formatter
       """
       Feature: A
 
-        Scenario: 2            # features/a.feature:5
-          Given a failing step # features/step_definitions/cucumber_steps.js:3
-            fail
+        Scenario: 2
+          Given a failing step
 
-        Scenario: 3            # features/a.feature:8
-          Given a failing step # features/step_definitions/cucumber_steps.js:3
-            fail
+        Scenario: 3
+          Given a failing step
 
       Feature: B
 
-        Scenario: 5            # features/b.feature:5
-          Given a failing step # features/step_definitions/cucumber_steps.js:3
-            fail
+        Scenario: 5
+          Given a failing step
 
-      Failing scenarios:
-      features/a.feature:5 # Scenario: 2
-      features/a.feature:8 # Scenario: 3
-      features/b.feature:5 # Scenario: 5
+      Failures:
+
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
+
+      2) Scenario: 3 - features/a.feature:8
+         Step: Given a failing step - features/a.feature:9
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
+
+      3) Scenario: 5 - features/b.feature:5
+         Step: Given a failing step - features/b.feature:6
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
 
       3 scenarios (3 failed)
       3 steps (3 failed)
