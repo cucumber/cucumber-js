@@ -101,7 +101,7 @@
     "commander": "^2.9.0",
     "cucumber-html": "^0.2.3",
     "duration": "^0.2.0",
-    "gherkin": "^3.2.0",
+    "gherkin": "git+ssh://git@github.com:cucumber/gherkin-javascript#4b0082c33d87b6746e4d2ef687eb33bb8fb3d9d2",
     "glob": "^7.0.0",
     "lodash": "^4.0.0",
     "stack-chain": "^1.3.5"
