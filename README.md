@@ -309,17 +309,33 @@ module.exports = myAfterHooks;
 
 ##### Tagged hooks
 
-Hooks can be conditionally elected for execution based on the tags of the scenario.
+Hooks can be conditionally selected for execution based on the tags of the scenario.
 
 ``` javascript
 // features/support/hooks.js (this path is just a suggestion)
 
 var myHooks = function () {
-  this.Before("@foo", "@bar,@baz", function (scenario) {
+  this.Before({tags: ["@foo", "@bar,@baz"]}, function (scenario) {
     // This hook will be executed before scenarios tagged with @foo and either
     // @bar or @baz.
 
     // ...
+  });
+};
+
+module.exports = myHooks;
+```
+
+##### Hook timeouts
+
+Hooks timeout the same as steps and a specific hooks's timeout can be set with:
+
+```js
+// features/step_definitions/hooks.js
+
+var myHooks = function () {
+  this.Before({timeout: 60 * 1000}, function (scenario) {
+    // Does some slow initialization
   });
 };
 
