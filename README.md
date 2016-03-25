@@ -307,42 +307,6 @@ var myAfterHooks = function () {
 module.exports = myAfterHooks;
 ```
 
-##### Around hooks
-
-It's also possible to combine both before and after hooks in one single definition with the help of *around hooks*:
-
-```javascript
-// features/support/advanced_hooks.js
-
-myAroundHooks = function () {
-  this.Around(function (scenario, runScenario) {
-    // "this" is - as always - an instance of World promised to the scenario.
-
-    // First do the "before scenario" tasks:
-
-    this.bootFullTextSearchServer();
-    this.createSomeUsers();
-
-    // When the "before" duty is finished, tell Cucumber to execute the scenario
-    // and pass a function to be called when the scenario is finished:
-
-    // The first argument to runScenario is the error, if any, of the before tasks
-    // The second argument is a function which performs the after tasks
-    //   it can use callbacks, return a promise or be synchronous
-    runScenario(null, function () {
-      // Now, we can do our "after scenario" stuff:
-
-      this.emptyDatabase();
-      this.shutdownFullTextSearchServer();
-    });
-  });
-};
-
-module.exports = myAroundHooks;
-```
-
-As with `Before` and `After` hooks, `Around` hooks functions (both pre- and post-scenario functions) can accept a callback or return a promise if you need asynchronous operations.
-
 ##### Tagged hooks
 
 Hooks can be conditionally elected for execution based on the tags of the scenario.
