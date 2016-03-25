@@ -27,7 +27,7 @@ Feature: Environment Hooks
         });
 
         // This should not run
-        this.After("@foo", function(scenario, callback) {
+        this.After({tags: ["@foo"]}, function(scenario, callback) {
           callback();
         });
       };
