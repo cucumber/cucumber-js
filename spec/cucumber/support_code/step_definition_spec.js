@@ -248,36 +248,38 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       });
 
       describe("pending()", function () {
-        var pendingReason;
-
         beforeEach(function () {
-          pendingReason     = createSpy("pending reason");
+          timestamp = 1;
           spyOnStub(scenario, "getAttachments").and.returnValue(attachments);
         });
 
+        afterEach(function () {
+          timestamp = 0;
+        });
+
         it("gets the attachments from the scenario", function () {
-          codeExecutionCallback.pending(pendingReason);
+          codeExecutionCallback(null, 'pending');
           expect(scenario.getAttachments).toHaveBeenCalled();
         });
 
         it("creates a pending step result", function () {
-          codeExecutionCallback.pending(pendingReason);
+          codeExecutionCallback(null, 'pending');
           expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
             step: step,
             stepDefinition: stepDefinition,
-            pendingReason: pendingReason,
+            duration: 1e6,
             attachments: attachments,
             status: Cucumber.Status.PENDING
           });
         });
 
         it("unregisters the exception handler", function () {
-          codeExecutionCallback.pending(pendingReason);
+          codeExecutionCallback(null, 'pending');
           expect(Cucumber.Util.Exception.unregisterUncaughtExceptionHandler).toHaveBeenCalledWith(exceptionHandler);
         });
 
         it("calls back", function () {
-          codeExecutionCallback.pending(pendingReason);
+          codeExecutionCallback(null, 'pending');
           expect(callback).toHaveBeenCalledWith(stepResult);
         });
       });

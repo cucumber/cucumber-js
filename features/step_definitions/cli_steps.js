@@ -97,12 +97,7 @@ var cliSteps = function cliSteps() {
     }
     parameters.push('callback');
 
-    var expectedOutput =
-      'this.' + step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n' +
-      '  // Write code here that turns the phrase above into concrete actions\n' +
-      '  callback.pending();\n' +
-      '});';
-
+    var expectedOutput = 'this.' + step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n';
     var actualOutput = this.lastRun.stdout;
 
     actualOutput = normalizeText(actualOutput);

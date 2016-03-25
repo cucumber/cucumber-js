@@ -12,3 +12,10 @@ node_js:
   - "iojs"
 
 sudo: false
+
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    branch: master
+    node: "5"

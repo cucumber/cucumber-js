@@ -4,19 +4,6 @@ Before anything else, thank you. Thank you for taking some of your precious time
 
 This guide will help you get started with Cucumber.js's development environment. You'll also find the set of rules you're expected to follow in order to submit improvements and fixes to Cucumber.js.
 
-## Get started
-
-After forking and cloning the repository, install the required dependencies:
-
-    $ cd <path/to/cucumber-js>
-    $ npm link
-
-## Play
-
-    $ node example/server.js
-
-Then go to [localhost:9797](http://localhost:9797/) to see the little web demo.
-
 ## Tests
 
 There are two set of tests resulting from the BDD approach we've been applying to Cucumber.js from the beginning.

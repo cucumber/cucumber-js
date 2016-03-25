@@ -36,12 +36,13 @@ Feature: Rerun Formatter
       """
       .F
 
-      (::) failed steps (::)
+      Failures:
 
-      fail
-
-      Failing scenarios:
-      features/a.feature:5 # Scenario: 2
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
 
       2 scenarios (1 failed, 1 passed)
       2 steps (1 failed, 1 passed)
@@ -56,12 +57,13 @@ Feature: Rerun Formatter
       """
       F
 
-      (::) failed steps (::)
+      Failures:
 
-      fail
-
-      Failing scenarios:
-      features/a.feature:5 # Scenario: 2
+      1) Scenario: 2 - features/a.feature:5
+         Step: Given a failing step - features/a.feature:6
+         Step Definition: features/step_definitions/cucumber_steps.js:3
+         Message:
+           fail
 
       1 scenario (1 failed)
       1 step (1 failed)

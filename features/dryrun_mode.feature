@@ -54,16 +54,21 @@ Feature: Dryrun mode
       """
       U
 
+      Warnings:
+
+      1) Scenario: Missing - features/a.feature:2
+         Step: Given this step passes - features/a.feature:3
+         Message:
+           Undefined. Implement with the following snippet:
+
+             this.Given(/^this step passes$/, function (callback) {
+               // Write code here that turns the phrase above into concrete actions
+               callback(null, 'pending');
+             });
+
       1 scenario (1 undefined)
       1 step (1 undefined)
       <duration-stat>
-
-      You can implement step definitions for undefined steps with these snippets:
-
-      this.Given(/^this step passes$/, function (callback) {
-        // Write code here that turns the phrase above into concrete actions
-        callback.pending();
-      });
       """
     And the exit status should be 1
 
@@ -73,16 +78,21 @@ Feature: Dryrun mode
       """
       U
 
+      Warnings:
+
+      1) Scenario: Missing - features/a.feature:2
+         Step: Given this step passes - features/a.feature:3
+         Message:
+           Undefined. Implement with the following snippet:
+
+             this.Given(/^this step passes$/, function (callback) {
+               // Write code here that turns the phrase above into concrete actions
+               callback(null, 'pending');
+             });
+
       1 scenario (1 undefined)
       1 step (1 undefined)
       <duration-stat>
-
-      You can implement step definitions for undefined steps with these snippets:
-
-      this.Given(/^this step passes$/, function (callback) {
-        // Write code here that turns the phrase above into concrete actions
-        callback.pending();
-      });
       """
     And the exit status should be 0
 

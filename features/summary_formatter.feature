@@ -15,7 +15,7 @@ Feature: Summary Formatter
       <duration-stat>
       """
 
-  Scenario: Summary formatter hides around, before and after hooks
+  Scenario: Summary formatter hides before and after hooks
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -39,12 +39,6 @@ Feature: Summary Formatter
 
         this.After(function(scenario, callback) {
           callback();
-        });
-
-        this.Around(function(scenario, runScenario) {
-          runScenario(null, function(callback) {
-            callback();
-          });
         });
       };
 

@@ -5,8 +5,8 @@ var serveStatic = require('serve-static');
 
 var port = process.env.PORT || 9797;
 var app = connect();
-app.use(serveStatic(__dirname));
-app.use(serveStatic(path.join(__dirname, '..', 'node_modules')));
+app.use(serveStatic(path.join(__dirname, '..', 'example')));
+app.use(serveStatic(path.join(__dirname, '..', 'node_modules', 'ansi_up')));
 app.use(serveStatic(path.join(__dirname, '..', 'release')));
 
 http.createServer(app).listen(port);
