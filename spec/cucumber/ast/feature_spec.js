@@ -18,8 +18,8 @@ describe("Cucumber.Ast.Feature", function () {
       uri: 'uri'
     };
 
-    scenario1 = createSpy('scenario 1');
-    scenario2 = createSpy('scenario 2');
+    scenario1 = createSpyWithStubs('scenario 1', {setFeature: null});
+    scenario2 = createSpyWithStubs('scenario 2', {setFeature: null});
     var scenarios = [scenario1, scenario2];
 
     tag1 = createSpy('tag 1');
@@ -36,7 +36,7 @@ describe("Cucumber.Ast.Feature", function () {
     });
   });
 
-  describe('getStepKeywordByLine()', function() {
+  describe('getStepKeywordByLines()', function() {
     describe('from a background', function() {
       beforeEach(function() {
         var source =
@@ -50,7 +50,7 @@ describe("Cucumber.Ast.Feature", function () {
       });
 
       it('returns the keyword', function() {
-        expect(feature.getStepKeywordByLine(3)).toEqual('Given ');
+        expect(feature.getStepKeywordByLines([3])).toEqual('Given ');
       });
     });
 
@@ -65,7 +65,7 @@ describe("Cucumber.Ast.Feature", function () {
       });
 
       it('returns the keyword', function() {
-        expect(feature.getStepKeywordByLine(3)).toEqual('Then ');
+        expect(feature.getStepKeywordByLines([3])).toEqual('Then ');
       });
     });
 
@@ -83,7 +83,7 @@ describe("Cucumber.Ast.Feature", function () {
       });
 
       it('returns the keyword', function() {
-        expect(feature.getStepKeywordByLine(3)).toEqual('When ');
+        expect(feature.getStepKeywordByLines([3])).toEqual('When ');
       });
     });
   });

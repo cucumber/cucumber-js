@@ -2,16 +2,19 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Step", function () {
   var Cucumber = requireLib('cucumber');
-  var step;
+  var step, feature;
 
   beforeEach(function () {
     var stepData = {
-      keyword: 'keyword',
       locations: [{line: 1}, {line: 2}],
       text: 'text',
       path: 'path'
     };
     step = Cucumber.Ast.Step(stepData);
+
+    feature = createSpyWithStubs('feature', {getStepKeywordByLines: 'keyword'});
+    var scenario = createSpyWithStubs('scenario', {getFeature: feature});
+    step.setScenario(scenario);
   });
 
   describe("getKeyword()", function () {
@@ -39,8 +42,14 @@ describe("Cucumber.Ast.Step", function () {
   });
 
   describe("getLine()", function () {
-    it("returns the line number on which the step lies", function () {
-      expect(step.getLine()).toEqual(1);
+    it("returns the last line number", function () {
+      expect(step.getLine()).toEqual(2);
+    });
+  });
+
+  describe("getLines()", function () {
+    it("returns all the line numbers", function () {
+      expect(step.getLines()).toEqual([1, 2]);
     });
   });
 
@@ -132,7 +141,7 @@ describe("Cucumber.Ast.Step", function () {
 
   describe("hasOutcomeStepKeyword()", function () {
     it("returns true when the keyword is 'Then '", function () {
-      step = Cucumber.Ast.Step({keyword: 'Then '});
+      feature.getStepKeywordByLines.and.returnValue('Then ');
       expect(step.hasOutcomeStepKeyword()).toBeTruthy();
     });
 
@@ -143,7 +152,7 @@ describe("Cucumber.Ast.Step", function () {
 
   describe("hasEventStepKeyword()", function () {
     it("returns true when the keyword is 'When '", function () {
-      step = Cucumber.Ast.Step({keyword: 'When '});
+      feature.getStepKeywordByLines.and.returnValue('When ');
       expect(step.hasEventStepKeyword()).toBeTruthy();
     });
 
@@ -270,17 +279,17 @@ describe("Cucumber.Ast.Step", function () {
 
   describe("hasRepeatStepKeyword()", function () {
     it("returns true when the keyword is 'And '", function () {
-      step = Cucumber.Ast.Step({keyword: 'And '});
+      feature.getStepKeywordByLines.and.returnValue('And ');
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
     it("returns true when the keyword is 'But '", function () {
-      step = Cucumber.Ast.Step({keyword: 'But '});
+      feature.getStepKeywordByLines.and.returnValue('But ');
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
     it("returns true when the keyword is '* '", function () {
-      step = Cucumber.Ast.Step({keyword: '* '});
+      feature.getStepKeywordByLines.and.returnValue('* ');
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 

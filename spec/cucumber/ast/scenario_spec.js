@@ -7,10 +7,8 @@ describe("Cucumber.Ast.Scenario", function () {
   beforeEach(function () {
     var scenarioData = {
       description: 'description',
-      keyword: 'keyword',
-      locations: [{line: 1}, {line: 2}],
+      locations: [{path: 'path', line: 1}, {line: 2}],
       name: 'name',
-      path: 'path',
       steps: [
         {step1: 'data'},
         {step2: 'data'}
@@ -21,8 +19,8 @@ describe("Cucumber.Ast.Scenario", function () {
       ]
     };
 
-    step1 = createSpyWithStubs('step 1', {setPreviousStep: null});
-    step2 = createSpyWithStubs('step 2', {setPreviousStep: null});
+    step1 = createSpyWithStubs('step 1', {setPreviousStep: null, setScenario: null});
+    step2 = createSpyWithStubs('step 2', {setPreviousStep: null, setScenario: null});
     spyOn(Cucumber.Ast, 'Step').and.returnValues(step1, step2);
 
     tag1 = createSpy('tag 1');
@@ -34,10 +32,13 @@ describe("Cucumber.Ast.Scenario", function () {
 
   describe("constructor", function () {
     it('creates steps', function () {
-      expect(Cucumber.Ast.Step).toHaveBeenCalledWith({step1: 'data', uri: 'path'});
-      expect(Cucumber.Ast.Step).toHaveBeenCalledWith({step2: 'data', uri: 'path'});
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith({step1: 'data'});
       expect(step1.setPreviousStep).toHaveBeenCalledWith(undefined);
+      expect(step1.setScenario).toHaveBeenCalledWith(scenario);
+
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith({step2: 'data'});
       expect(step2.setPreviousStep).toHaveBeenCalledWith(step1);
+      expect(step2.setScenario).toHaveBeenCalledWith(scenario);
     });
 
     it('creates tags', function () {
@@ -47,6 +48,13 @@ describe("Cucumber.Ast.Scenario", function () {
   });
 
   describe("getKeyword()", function () {
+    var feature;
+
+    beforeEach(function() {
+      feature = createSpyWithStubs('feature', {getScenarioKeyword: 'keyword'});
+      scenario.setFeature(feature);
+    });
+
     it("returns the keyword of the scenario", function () {
       expect(scenario.getKeyword()).toEqual('keyword');
     });
