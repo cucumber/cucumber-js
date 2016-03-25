@@ -17,5 +17,5 @@ deploy:
   provider: script
   script: scripts/deploy.sh
   on:
-    branch: cr-deploy
+    branch: master
     node: "5"
