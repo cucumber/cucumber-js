@@ -33,7 +33,7 @@ Feature: After hook interface
     And the exit status should be 1
     And the output contains the text:
       """
-      hook has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
+      hook definition has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
       """
 
   Scenario: synchronous
