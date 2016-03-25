@@ -135,7 +135,7 @@ Feature: After hook interface
     And the exit status should be 1
     And the output contains the text:
       """
-      hook accepts a callback and returns a promise
+      hook definition accepts a callback and returns a promise
       """
 
   Scenario: promise resolves
