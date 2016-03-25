@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Feature", function () {
   var Cucumber = requireLib('cucumber');
-  var Gherkin = require('Gherkin')
+  var Gherkin = require('Gherkin');
   var feature, scenario1, scenario2, tag1, tag2;
 
   beforeEach(function () {
@@ -36,7 +36,7 @@ describe("Cucumber.Ast.Feature", function () {
     });
   });
 
-  describe('findStepByLine()', function() {
+  describe('getStepKeywordByLine()', function() {
     describe('from a background', function() {
       beforeEach(function() {
         var source =
@@ -49,10 +49,8 @@ describe("Cucumber.Ast.Feature", function () {
         feature = Cucumber.Ast.Feature(featureData, []);
       });
 
-      it('returns the ast step', function() {
-        var astStep = feature.findStepByLine(3);
-        expect(astStep).not.toBeUndefined();
-        expect(astStep.keyword).toEqual('Given ');
+      it('returns the keyword', function() {
+        expect(feature.getStepKeywordByLine(3)).toEqual('Given ');
       });
     });
 
@@ -66,10 +64,8 @@ describe("Cucumber.Ast.Feature", function () {
         feature = Cucumber.Ast.Feature(featureData, []);
       });
 
-      it('returns the ast step', function() {
-        var astStep = feature.findStepByLine(3);
-        expect(astStep).not.toBeUndefined();
-        expect(astStep.keyword).toEqual('Then ');
+      it('returns the keyword', function() {
+        expect(feature.getStepKeywordByLine(3)).toEqual('Then ');
       });
     });
 
@@ -86,13 +82,11 @@ describe("Cucumber.Ast.Feature", function () {
         feature = Cucumber.Ast.Feature(featureData, []);
       });
 
-      it('returns the ast step', function() {
-        var astStep = feature.findStepByLine(3);
-        expect(astStep).not.toBeUndefined();
-        expect(astStep.keyword).toEqual('When ');
+      it('returns the keyword', function() {
+        expect(feature.getStepKeywordByLine(3)).toEqual('When ');
       });
     });
-  })
+  });
 
   describe("getKeyword()", function () {
     it("returns the keyword of the feature", function () {

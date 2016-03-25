@@ -10,17 +10,7 @@ Feature: JSON Formatter
     When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": []
-        }
-      ]
+      []
       """
 
   Scenario: output JSON for a feature with one undefined scenario
@@ -33,27 +23,7 @@ Feature: JSON Formatter
     When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I havn't done anything yet",
-              "id": "some-feature;i-havn't-done-anything-yet",
-              "line": 3,
-              "keyword": "Scenario",
-              "tags": [],
-              "type": "scenario",
-              "steps": []
-            }
-          ]
-        }
-      ]
+      []
       """
 
   Scenario: output JSON for a feature with one scenario with one undefined step
@@ -1248,7 +1218,7 @@ Feature: JSON Formatter
               "steps": [
                 {
                   "name": "This first step is passing",
-                  "line": 8,
+                  "line": 4,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
@@ -1268,7 +1238,7 @@ Feature: JSON Formatter
               "steps": [
                 {
                   "name": "This second step is passing",
-                  "line": 9,
+                  "line": 4,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
@@ -1337,7 +1307,7 @@ Feature: JSON Formatter
                 },
                 {
                   "name": "This first step is passing",
-                  "line": 10,
+                  "line": 6,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
@@ -1397,7 +1367,7 @@ Feature: JSON Formatter
               "steps": [
                 {
                   "name": "This first step is passing",
-                  "line": 8,
+                  "line": 4,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
@@ -1417,7 +1387,7 @@ Feature: JSON Formatter
               "steps": [
                 {
                   "name": "This second step is passing",
-                  "line": 12,
+                  "line": 4,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
@@ -1497,7 +1467,7 @@ Feature: JSON Formatter
                 },
                 {
                   "name": "This first step is passing",
-                  "line": 8,
+                  "line": 4,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",
@@ -1535,7 +1505,7 @@ Feature: JSON Formatter
                 },
                 {
                   "name": "This second step is passing",
-                  "line": 9,
+                  "line": 4,
                   "keyword": "Given ",
                   "result": {
                     "duration": "<duration>",

@@ -82,7 +82,7 @@ Feature: Target specific scenarios
          Message:
            Undefined. Implement with the following snippet:
 
-             this.When(/^a step is (.*)$/, function (status, callback) {
+             this.When(/^a step is undefined$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });

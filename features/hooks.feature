@@ -282,28 +282,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-<<<<<<< HEAD
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "error_message": "<error-message>",
-                    "duration": "<duration>",
-                    "status": "failed"
-                  },
-                  "arguments": []
-                },
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": []
-                },
-                {
-=======
->>>>>>> master
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
@@ -329,29 +307,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-<<<<<<< HEAD
                   "arguments": []
-                },
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": []
-                },
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": []
-=======
-                  "match": {}
->>>>>>> master
                 }
               ]
             }
@@ -424,18 +380,6 @@ Feature: Environment Hooks
               "type": "scenario",
               "steps": [
                 {
-<<<<<<< HEAD
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": []
-                },
-                {
-=======
->>>>>>> master
                   "keyword": "Before ",
                   "hidden": true,
                   "result": {
@@ -461,20 +405,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-<<<<<<< HEAD
                   "arguments": []
-                },
-                {
-                  "keyword": "Around ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": []
-=======
-                  "match": {}
->>>>>>> master
                 }
               ]
             }
