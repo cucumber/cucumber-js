@@ -2,10 +2,9 @@
 
 set -e
 
-# Build
-npm run build-release
+# Copy resources
 rsync -a release/ example/
-rsync node_modules/jquery/dist/jquery.min.js example/jquery.min.js
+cp node_modules/ansi_up/ansi_up.js example/
 
 # Publish to gh-pages
 cd example
