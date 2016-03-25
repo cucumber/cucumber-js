@@ -20,19 +20,13 @@ describe("Cucumber.Cli.Configuration", function () {
     var formatter, formatterOptions;
 
     beforeEach(function () {
-      var shouldSnippetsBeShown = createSpy("should snippets be shown?");
-      var shouldShowSource = createSpy("should source uris be visible?");
       var shouldUseColors = createSpy("use colors");
       var snippetSyntax = createSpy("snippet syntax");
       formatterOptions = {
-        snippets: shouldSnippetsBeShown,
         snippetSyntax: snippetSyntax,
-        showSource: shouldShowSource,
         stream: process.stdout,
         useColors: shouldUseColors
       };
-      options.snippets = shouldSnippetsBeShown;
-      options.source = shouldShowSource;
       options.colors = shouldUseColors;
       spyOn(Cucumber.Listener, 'JsonFormatter');
       spyOn(Cucumber.Listener, 'ProgressFormatter');
