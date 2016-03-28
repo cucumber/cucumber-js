@@ -116,7 +116,7 @@ var jsonOutputSteps = function jsonOutputSteps() {
       return step.name === name;
     });
     assert.equal(step.result.status, status);
-    if (errorMessage && step.result.error_message.indexOf('Error: ' + errorMessage) === -1) {
+    if (errorMessage && step.result.error_message.indexOf(errorMessage) === -1) {
       throw new Error('Expected "' + name + '" to have an error_message containing "' +
                       errorMessage + '"\n' + 'Got:\n' + step.result.error_message);
     }
