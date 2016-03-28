@@ -21,50 +21,16 @@ describe("Cucumber.SupportCode.Hook", function () {
     });
   });
 
-  describe("matchesStepName()", function () {
-    it("returns false", function () {
-      var isMatch = hook.matchesStepName('');
-      expect(isMatch).toBe(false);
-    });
-  });
-
   describe("buildInvocationParameters()", function () {
-    var step, scenario, callback, invocationParameters;
+    var step, scenario;
 
     beforeEach(function () {
-      step      = createSpy("world");
-      scenario  = createSpy("scenario");
-      callback  = createSpy("callback");
-
+      step = createSpy("step");
+      scenario = createSpy("scenario");
     });
 
-    describe('with no options', function() {
-      beforeEach(function () {
-        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
-      });
-
-      it("returns an array containing the scenario and the callback", function () {
-        expect(invocationParameters).toEqual([scenario, callback]);
-      });
-
-      it("does not call back", function () {
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('with noScenario option', function() {
-      beforeEach(function () {
-        hook                 = Cucumber.SupportCode.Hook(code, {noScenario: true});
-        invocationParameters = hook.buildInvocationParameters(step, scenario, callback);
-      });
-
-      it("returns an array containing the scenario and the callback", function () {
-        expect(invocationParameters).toEqual([callback]);
-      });
-
-      it("does not call back", function () {
-        expect(callback).not.toHaveBeenCalled();
-      });
+    it("returns an array containing the scenario", function () {
+      expect(hook.buildInvocationParameters(step, scenario)).toEqual([scenario]);
     });
   });
 
@@ -92,7 +58,6 @@ describe("Cucumber.SupportCode.Hook", function () {
       expect(hook.appliesToScenario(scenario)).toBe(scenarioEnrolled);
     });
   });
-
 
   describe("getAstFilter()", function () {
     var tags, tagGroups, rules, astFilter;

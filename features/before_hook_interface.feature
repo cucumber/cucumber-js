@@ -35,7 +35,7 @@ Feature: Before hook interface
     And the exit status should be 1
     And the output contains the text:
       """
-      hook definition has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
+      function has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
       """
 
   Scenario: synchronous
@@ -133,7 +133,7 @@ Feature: Before hook interface
     And the exit status should be 1
     And the output contains the text:
       """
-      hook definition accepts a callback and returns a promise
+      function accepts a callback and returns a promise
       """
 
   Scenario: promise resolves
