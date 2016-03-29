@@ -125,8 +125,10 @@
   },
   "scripts": {
     "feature-test": "./bin/cucumber.js -p build",
+    "feature-test-es5": "./bin/cucumber.js -p build -p es5",
     "lint": "jshint bin features lib scripts spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
+    "test-es5": "npm run lint && npm run unit-test && npm run feature-test-es5",
     "unit-test": "jasmine",
     "prebuild-release": "npm install",
     "build-release": "node ./scripts/release.js"
