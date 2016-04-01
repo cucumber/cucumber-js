@@ -1,12 +1,12 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.1...master)
 
-### [0.10.1](https://github.com/cucumber/cucumber-js/compare/v0.10.1...v0.10.0) (2016-04-01)
+### [0.10.1](https://github.com/cucumber/cucumber-js/compare/v0.10.0...v0.10.1) (2016-04-01)
 
 #### New Features
 
 * Support generators for hooks/step definitions (Ádám Gólya)
 
-### [0.10.0](https://github.com/cucumber/cucumber-js/compare/v0.10.0...v0.9.5) (2016-04-01)
+### [0.10.0](https://github.com/cucumber/cucumber-js/compare/v0.9.5...v0.10.0) (2016-04-01)
 
 #### Breaking changes
 
