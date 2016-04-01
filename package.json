@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.9.5",
+  "version": "0.10.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -76,7 +76,10 @@
     "Miika Hänninen <miika.hanninen@gmail.com>",
     "Kevin Goslar <kevin.goslar@gmail.com>",
     "John Krull <astrom.flux@gmail.com>",
-    "Maxim Koretskiy <mr.green.tv@gmail.com>"
+    "Maxim Koretskiy <mr.green.tv@gmail.com>",
+    "seantdg <sm.davis@gmx.com>",
+    "Marc Burton <marc.burton@first-utility.com>",
+    "Jonathan Kim <jkimbo@gmail.com>"
   ],
   "repository": {
     "type": "git",
