@@ -1,4 +1,33 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.9.3...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.0...master)
+
+### [0.10.0](https://github.com/cucumber/cucumber-js/compare/v0.10.0...v0.9.5) (2016-02-16)
+
+#### Breaking changes
+
+* removed around hooks (Charlie Rudolph)
+  * how to update: use separate before and after hooks. If this is not sufficient, please create an issue.
+
+* updated pending step interface (Charlie Rudolph)
+  * how to update: change `callback.pending()` to `callback(null, 'pending')` or use one of the new pending step interfaces
+
+* updated tagged hook interface (Charlie Rudolph)
+  * how to update:
+
+    ```javascript
+    this.Before('@tagA', function() { ... })
+    // becomes
+    this.Before({tags: ['@tagA']}, function() { ... })
+
+    this.Before('@tagA', '@tagB,@tagC', function() { ... })
+    // becomes
+    this.Before({tags: ['@tagA', '@tagB,@tagC']}, function() { ... })
+    ```
+
+
+#### New Features
+
+* support hook specific timeouts (Charlie Rudolph)
+* reworked formatter error reporting (Charlie Rudolph)
 
 ### [0.9.5](https://github.com/cucumber/cucumber-js/compare/v0.9.4...v0.9.5) (2016-02-16)
 
