@@ -1,5 +1,6 @@
 var jsonOutputSteps = function jsonOutputSteps() {
   var assert = require('assert');
+  var jsonDiff = require('json-diff');
 
   var helpers = require('../support/helpers');
   var getAdditionalErrorText = helpers.getAdditionalErrorText;
@@ -67,12 +68,8 @@ var jsonOutputSteps = function jsonOutputSteps() {
     neutraliseVariableValuesInJson(actualJson);
     neutraliseVariableValuesInJson(expectedJson);
 
-    var actualJsonString = JSON.stringify(actualJson, null, 2);
-    var expectedJsonString = JSON.stringify(expectedJson, null, 2);
-
-    var message = 'Expected output to match the following:\n' + expectedJsonString + '\n' +
-                  'Got:\n' + actualJsonString + '.\n' +
-                  getAdditionalErrorText(this.lastRun);
+    var diff = jsonDiff.diffString(expectedJson, actualJson);
+    var message = diff + '\n' + getAdditionalErrorText(this.lastRun);
 
     assert.deepEqual(actualJson, expectedJson, message);
   });
