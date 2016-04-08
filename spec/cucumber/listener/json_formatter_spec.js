@@ -267,7 +267,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
   });
 
   describe("handleStepResultEvent()", function () {
-    var event, callback, step, stepResult;
+    var event, callback, step, stepDefinition, stepResult;
 
     beforeEach(function () {
       callback = createSpy("Callback");
@@ -283,12 +283,17 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           hasDocString: false,
           hasDataTable: false
         });
+        stepDefinition = createSpyWithStubs("stepResult", {
+          getUri: 'path/to/stepDef',
+          getLine: 4
+        });
         stepResult = createSpyWithStubs("stepResult", {
-          getStatus:           Cucumber.Status.PASSED,
-          getDuration:         1,
-          getStep:             step,
-          hasAttachments:      false,
-          getAttachments:      undefined
+          getStatus: Cucumber.Status.PASSED,
+          getDuration: 1,
+          getStep: step,
+          getStepDefinition: stepDefinition,
+          hasAttachments: false,
+          getAttachments: undefined
         });
         event = createSpyWithStubs("event", {getPayloadItem: stepResult});
       });
@@ -298,7 +303,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'passed', duration: 1});
-        expect(formatter.match).toHaveBeenCalledWith({location: undefined});
+        expect(formatter.match).toHaveBeenCalledWith({location: 'path/to/stepDef:4'});
       });
 
       describe("when step result has attachments", function () {
@@ -332,9 +337,15 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           hasDataTable: false
         });
 
+        stepDefinition = createSpyWithStubs("stepResult", {
+          getUri: 'path/to/stepDef',
+          getLine: 4
+        });
+
         stepResult = createSpyWithStubs("stepResult", {
-          getStatus:           Cucumber.Status.PENDING,
-          getStep:             step
+          getStatus: Cucumber.Status.PENDING,
+          getStep: step,
+          getStepDefinition: stepDefinition
         });
 
         event = createSpyWithStubs("event", {getPayloadItem: stepResult});
@@ -345,7 +356,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'pending'});
-        expect(formatter.match).toHaveBeenCalledWith({location: undefined});
+        expect(formatter.match).toHaveBeenCalledWith({location: 'path/to/stepDef:4'});
       });
     });
 
@@ -360,13 +371,19 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           hasDataTable: false
         });
 
+        stepDefinition = createSpyWithStubs("stepResult", {
+          getUri: 'path/to/stepDef',
+          getLine: 4
+        });
+
         stepResult = createSpyWithStubs("stepResult", {
-          getStatus:           Cucumber.Status.FAILED,
+          getStatus: Cucumber.Status.FAILED,
           getFailureException: false,
-          getDuration:         1,
-          getStep:             step,
-          hasAttachments:      false,
-          getAttachments:      undefined
+          getDuration: 1,
+          getStep: step,
+          getStepDefinition: stepDefinition,
+          hasAttachments: false,
+          getAttachments: undefined
         });
 
         event = createSpyWithStubs("event", {getPayloadItem: stepResult});
@@ -377,7 +394,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'failed', duration: 1});
-        expect(formatter.match).toHaveBeenCalledWith({location: undefined});
+        expect(formatter.match).toHaveBeenCalledWith({location: 'path/to/stepDef:4'});
       });
 
       describe("when step result has attachments", function () {
@@ -411,9 +428,15 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
           hasDataTable: false
         });
 
+        stepDefinition = createSpyWithStubs("stepResult", {
+          getUri: 'path/to/stepDef',
+          getLine: 4
+        });
+
         stepResult = createSpyWithStubs("stepResult", {
           getStatus: Cucumber.Status.SKIPPED,
-          getStep:   step
+          getStep: step,
+          getStepDefinition: stepDefinition
         });
 
         event = createSpyWithStubs("event", {getPayloadItem: stepResult});
@@ -424,7 +447,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'skipped'});
-        expect(formatter.match).toHaveBeenCalledWith({location: undefined});
+        expect(formatter.match).toHaveBeenCalledWith({location: 'path/to/stepDef:4'});
       });
     });
 
@@ -441,7 +464,8 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         stepResult = createSpyWithStubs("stepResult", {
           getStatus: Cucumber.Status.UNDEFINED,
-          getStep:   step
+          getStep: step,
+          getStepDefinition: null
         });
 
         event = createSpyWithStubs("event", {getPayloadItem: stepResult});
@@ -452,7 +476,7 @@ describe("Cucumber.Listener.JsonFormatterWrapper", function () {
 
         expect(formatter.step).toHaveBeenCalledWith({name: 'Step', line: 3, keyword: 'Step'});
         expect(formatter.result).toHaveBeenCalledWith({status: 'undefined'});
-        expect(formatter.match).toHaveBeenCalledWith({location: undefined});
+        expect(formatter.match).not.toHaveBeenCalled();
       });
     });
   });

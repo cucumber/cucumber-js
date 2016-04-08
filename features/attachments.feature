@@ -53,7 +53,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  },
                   "embeddings": [
                     {
                       "mime_type": "image/png",
@@ -69,7 +71,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -148,7 +152,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  },
                   "embeddings": [
                     {
                       "mime_type": "image/png",
@@ -164,7 +170,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -226,7 +234,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  },
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
@@ -242,7 +252,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -305,7 +317,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -314,7 +328,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  },
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
@@ -386,7 +402,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {}
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This step is passing",
@@ -396,7 +414,9 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "match": {},
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  },
                   "embeddings": [
                     {
                       "mime_type": "text/plain",
