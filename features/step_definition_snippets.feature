@@ -87,3 +87,17 @@ Feature: step definition snippets
       """
       /^a step with a (.*)$/
       """
+
+  Scenario: background step
+    Given a file named "features/background.feature" with:
+      """
+      Feature: a feature
+        Background:
+          Given  a step with "quotes"
+        Scenario: a scenario
+      """
+    When I run cucumber-js
+    Then it suggests a "Given" step definition snippet with 1 parameter for:
+      """
+      /^a step with "([^"]*)"$/
+      """
