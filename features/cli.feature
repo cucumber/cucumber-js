@@ -4,7 +4,7 @@ Feature: Command line interface
   I want to run Cucumber on the command line
 
   Scenario: run with no features directory
-    When I run cucumber.js with `features`
+    When I run cucumber.js with `-f summary`
     Then the error output contains the text:
     """
     No such file or directory - features. You can use `cucumber --init` to get started.
@@ -12,10 +12,10 @@ Feature: Command line interface
 
   Scenario: run a nonexistant feature file
     Given a directory named "features" 
-    When I run cucumber.js with `features/a.feature`
+    When I run cucumber.js with `-f summary features/a.feature`
     Then the error output contains the text:
     """
-    No such file or directory - a.feature
+    No such file or directory - features/a.feature. You can use `cucumber --init` to get started.
     """
 
   Scenario: run a single feature

@@ -1,7 +1,7 @@
 require('../../support/spec_helper');
 
 describe('Cucumber.Cli.ProjectInitializer', function () {
-  describe('createSaneDefaultProject()', function () {
+  describe('createDefaultProject()', function () {
     var Cucumber = requireLib('cucumber');  
     var fsExtra = require('fs-extra'); 
     
@@ -12,12 +12,12 @@ describe('Cucumber.Cli.ProjectInitializer', function () {
     });
       
     it("creates the features/support directory", function () {
-        Cucumber.Cli.ProjectInitializer.createSaneDefaultProject();
+        Cucumber.Cli.ProjectInitializer.createDefaultProject();
         expect(fsExtra.mkdirsSync).toHaveBeenCalledWith('/tmp/features/support');
     });
     
     it("creates the features/step_definitions directory", function () {
-        Cucumber.Cli.ProjectInitializer.createSaneDefaultProject();
+        Cucumber.Cli.ProjectInitializer.createDefaultProject();
         expect(fsExtra.mkdirsSync).toHaveBeenCalledWith('/tmp/features/step_definitions'); 
     }); 
   });
