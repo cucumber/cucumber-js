@@ -526,6 +526,7 @@ A few example apps are available for you to browse:
 
 * [Rails app serving features in the browser](https://github.com/jbpros/cucumber-js-example)
 * [Express.js app running features in the cli](https://github.com/olivoil/NodeBDD)
+* [Running Cucumber tests on BrowserStack](https://github.com/browserstack/cucumber-js-browserstack)
 
 ## Contribute
 
