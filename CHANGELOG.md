@@ -1,4 +1,14 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.2...master)
+
+### [0.10.2](https://github.com/cucumber/cucumber-js/compare/v0.10.1...v0.10.2) (2016-04-07)
+
+#### New Features
+
+* Add match location to JSON formatter output (Charlie Rudolph)
+
+#### Bug Fixes
+
+* Undefined background step (Scott Deakin)
 
 ### [0.10.1](https://github.com/cucumber/cucumber-js/compare/v0.10.0...v0.10.1) (2016-04-01)
 
