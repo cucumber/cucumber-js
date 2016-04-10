@@ -2,7 +2,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Feature", function () {
   var Cucumber = requireLib('cucumber');
-  var Gherkin = require('Gherkin');
+  var Gherkin = require('gherkin');
   var feature, scenario1, scenario2, tag1, tag2;
 
   beforeEach(function () {
