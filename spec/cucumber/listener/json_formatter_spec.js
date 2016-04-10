@@ -135,6 +135,7 @@ describe("Cucumber.Listener.JsonFormatter", function () {
             getFailureException: null,
             getStatus: Cucumber.Status.PASSED,
             getStep: step,
+            getStepDefinition: null,
             hasAttachments: false,
             getAttachments: []
           });
@@ -299,6 +300,31 @@ describe("Cucumber.Listener.JsonFormatter", function () {
               {data: 'Zmlyc3QgZGF0YQ==', mime_type: 'first mime type'},
               {data: 'c2Vjb25kIGRhdGE=', mime_type: 'second mime type'}
             ]);
+          });
+        });
+
+        describe("with a step definition", function () {
+          beforeEach(function (){
+            var stepDefinition = createSpyWithStubs('step definition', {
+              getLine: 2,
+              getUri: 'path/to/stepDef'
+            });
+            stepResult.getStepDefinition.and.returnValue(stepDefinition);
+            jsonFormatter.handleStepResultEvent(event, callback);
+            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
+          });
+
+          it("calls back", function () {
+            expect(callback).toHaveBeenCalled();
+          });
+
+          it("outputs the step with a match attribute", function () {
+            expect(jsonFormatter.log).toHaveBeenCalled();
+            var json = jsonFormatter.log.calls.mostRecent().args[0];
+            var features = JSON.parse(json);
+            expect(features[0].elements[0].steps[0].match).toEqual({
+              location: 'path/to/stepDef:2'
+            });
           });
         });
       });

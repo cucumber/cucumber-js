@@ -45,8 +45,8 @@ describe("Cucumber.Ast.Feature", function () {
           '    Given a\n' +
           '  Scenario: Bar\n' +
           '    Then b\n';
-        var featureData = new Gherkin.Parser().parse(source);
-        feature = Cucumber.Ast.Feature(featureData, []);
+        var gherkinDocument = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
       });
 
       it('returns the keyword', function() {
@@ -60,8 +60,8 @@ describe("Cucumber.Ast.Feature", function () {
           'Feature: Foo\n' +
           '  Scenario: Bar\n' +
           '    Then b\n';
-        var featureData = new Gherkin.Parser().parse(source);
-        feature = Cucumber.Ast.Feature(featureData, []);
+        var gherkinDocument = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
       });
 
       it('returns the keyword', function() {
@@ -78,8 +78,8 @@ describe("Cucumber.Ast.Feature", function () {
           '  Examples:\n' +
           '    | what |\n' +
           '    | b    |';
-        var featureData = new Gherkin.Parser().parse(source);
-        feature = Cucumber.Ast.Feature(featureData, []);
+        var gherkinDocument = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
       });
 
       it('returns the keyword', function() {

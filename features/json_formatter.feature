@@ -58,8 +58,7 @@ Feature: JSON Formatter
                   "name":"I have not defined this step",
                   "line":4,
                   "keyword":"Given ",
-                  "result":
-                  {
+                  "result": {
                     "status":"undefined"
                   },
                   "arguments": []
@@ -124,7 +123,10 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -173,7 +175,10 @@ Feature: JSON Formatter
                   "line": 4,
                   "keyword": "Given ",
                   "result": { "status": "pending" },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -227,7 +232,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -279,7 +287,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -335,7 +346,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "name": "This step is pending",
@@ -344,7 +358,10 @@ Feature: JSON Formatter
                   "result": {
                     "status": "pending"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:3"
+                  }
                 },
                 {
                   "name": "This step fails but will be skipped",
@@ -353,7 +370,10 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:4"
+                  }
                 }
               ]
             }
@@ -408,7 +428,10 @@ Feature: JSON Formatter
                   "result": {
                     "status": "pending"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "name": "This step is passing but will be skipped",
@@ -417,7 +440,10 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:3"
+                  }
                 },
                 {
                   "name": "This step fails but will be skipped",
@@ -426,7 +452,10 @@ Feature: JSON Formatter
                   "result": {
                     "status": "skipped"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:4"
+                  }
                 }
               ]
             }
@@ -481,7 +510,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -502,7 +534,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:3"
+                  }
                 }
               ]
             }
@@ -568,7 +603,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -598,7 +636,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -628,7 +669,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -712,7 +756,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -732,7 +779,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -752,7 +802,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -782,7 +835,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -802,7 +858,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -822,7 +881,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -852,7 +914,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -872,7 +937,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -892,7 +960,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -952,7 +1023,10 @@ Feature: JSON Formatter
                       "line": 5,
                       "content": "This is a DocString"
                     }
-                  ]
+                  ],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -1032,7 +1106,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -1099,7 +1176,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -1167,7 +1247,10 @@ Feature: JSON Formatter
                         { "cells": ["!", "~", "@"] }
                       ]
                     }
-                  ]
+                  ],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -1224,7 +1307,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -1244,7 +1330,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -1303,7 +1392,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "name": "This first step is passing",
@@ -1313,7 +1405,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:3"
+                  }
                 }
               ]
             }
@@ -1373,7 +1468,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             },
@@ -1393,7 +1491,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -1463,7 +1564,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This first step is passing",
@@ -1473,7 +1577,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -1482,7 +1589,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:6"
+                  }
                 }
               ]
             },
@@ -1501,7 +1611,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This second step is passing",
@@ -1511,7 +1624,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -1520,7 +1636,10 @@ Feature: JSON Formatter
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:6"
+                  }
                 }
               ]
             }

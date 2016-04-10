@@ -29,7 +29,7 @@ Feature: Step definition timeouts
     When I run cucumber.js with `--strict`
     Then the output contains the text:
       """
-      Error: hook timed out after 500 milliseconds
+      function timed out after 500 milliseconds
       """
     And the exit status should be 1
 
@@ -58,6 +58,6 @@ Feature: Step definition timeouts
     When I run cucumber.js with `--strict`
     Then the output contains the text:
       """
-      Error: hook timed out after 500 milliseconds
+      function timed out after 500 milliseconds
       """
     Then the exit status should be 1

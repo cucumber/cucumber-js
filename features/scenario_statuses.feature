@@ -79,7 +79,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:21"
+                  }
                 },
                 {
                   "name": "This step is passing",
@@ -89,7 +92,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -98,7 +104,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:27"
+                  }
                 }
               ]
             }
@@ -173,7 +182,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -182,7 +194,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 }
               ]
             }
@@ -258,7 +273,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -267,7 +285,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 }
               ]
             }
@@ -341,7 +362,10 @@ Feature: Scenario Statuses
                   "result": {
                     "status": "pending"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -350,7 +374,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 }
               ]
             }
@@ -432,7 +459,10 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 }
               ]
             }

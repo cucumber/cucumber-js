@@ -173,6 +173,16 @@ this.Given(/^I add one cucumber$/, function () {
 
 If the step returns the string `'pending'`, the step will be marked as pending.
 
+##### Generators (ES6)
+
+If your language supports generator functions, you can define step definitions with generator functions
+
+```javascript
+this.When(/^I add one cucumber$/, function *() {
+  this.cucumberCount += yield 1;
+});
+```
+
 ##### Strings instead of regular expressions
 
 It is also possible to use simple strings instead of regexps as step definition patterns:

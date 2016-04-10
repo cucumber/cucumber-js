@@ -1,7 +1,9 @@
 var jsonOutputSteps = function jsonOutputSteps() {
   var assert = require('assert');
   var jsonDiff = require('json-diff');
+
   var helpers = require('../support/helpers');
+  var getAdditionalErrorText = helpers.getAdditionalErrorText;
   var normalizeText = helpers.normalizeText;
 
   function findScenario(features, predicate){
@@ -57,19 +59,20 @@ var jsonOutputSteps = function jsonOutputSteps() {
 
     var actualJson;
     var expectedJson;
+    var errorSuffix = '\n' + getAdditionalErrorText(this.lastRun);
 
     try { actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
-    catch(err) { throw new Error('Error parsing actual JSON:\n' + actualOutput + '\n' + err); }
+    catch(err) { throw new Error('Error parsing actual JSON:\n' + actualOutput + '\n' + err + errorSuffix); }
 
     try { expectedJson = JSON.parse(expectedOutput); }
-    catch(err) { throw new Error('Error parsing expected JSON:\n' + expectedOutput + '\n' + err); }
+    catch(err) { throw new Error('Error parsing expected JSON:\n' + expectedOutput + '\n' + err + errorSuffix); }
 
     neutraliseVariableValuesInJson(actualJson);
     neutraliseVariableValuesInJson(expectedJson);
 
-    var message = jsonDiff.diffString(expectedJson, actualJson);
+    var diff = jsonDiff.diffString(expectedJson, actualJson);
 
-    assert.deepEqual(actualJson, expectedJson, message);
+    assert.deepEqual(actualJson, expectedJson, diff + errorSuffix);
   });
 
   this.Then(/^it runs (\d+) scenarios$/, function (count) {
@@ -117,7 +120,7 @@ var jsonOutputSteps = function jsonOutputSteps() {
       return step.name === name;
     });
     assert.equal(step.result.status, status);
-    if (errorMessage && step.result.error_message.indexOf('Error: ' + errorMessage) === -1) {
+    if (errorMessage && step.result.error_message.indexOf(errorMessage) === -1) {
       throw new Error('Expected "' + name + '" to have an error_message containing "' +
                       errorMessage + '"\n' + 'Got:\n' + step.result.error_message);
     }

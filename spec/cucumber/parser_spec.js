@@ -20,6 +20,7 @@ describe("Cucumber.Parser", function () {
   });
 
   describe("parse()", function () {
+    var gherkinDocument1, gherkinDocument2;
     var feature1Data, feature2Data, pickle1Data, pickle2Data, pickle3Data, pickle4Data;
     var feature1, feature2, scenario1, scenario2, scenario3, scenario4;
     var result;
@@ -29,6 +30,8 @@ describe("Cucumber.Parser", function () {
       feature2 = createSpy('feature2');
       feature1Data = {feature1: 'data'};
       feature2Data = {feature2: 'data'};
+      gherkinDocument1 = {feature: feature1Data};
+      gherkinDocument2 = {feature: feature2Data};
       pickle1Data = {pickle1: 'data'};
       pickle2Data = {pickle2: 'data'};
       pickle3Data = {pickle3: 'data'};
@@ -37,7 +40,7 @@ describe("Cucumber.Parser", function () {
       scenario2 = createSpy('scenario2');
       scenario3 = createSpy('scenario3');
       scenario4 = createSpy('scenario4');
-      gherkinParser.parse.and.returnValues(feature1Data, feature2Data);
+      gherkinParser.parse.and.returnValues(gherkinDocument1, gherkinDocument2);
       gherkinCompiler.compile.and.returnValues([pickle1Data, pickle2Data], [pickle3Data, pickle4Data]);
       spyOnStub(Cucumber.Ast, 'Scenario').and.returnValues(scenario1, scenario2, scenario3, scenario4);
       spyOnStub(Cucumber.Ast, 'Feature').and.returnValues(feature1, feature2);
@@ -51,8 +54,8 @@ describe("Cucumber.Parser", function () {
     });
 
     it("compiles the feature data", function () {
-      expect(gherkinCompiler.compile).toHaveBeenCalledWith(feature1Data, 'first feature uri');
-      expect(gherkinCompiler.compile).toHaveBeenCalledWith(feature2Data, 'second feature uri');
+      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument1, 'first feature uri');
+      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument2, 'second feature uri');
     });
 
     it("creates the scenarios", function () {

@@ -61,7 +61,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This step is passing",
@@ -71,7 +74,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -80,7 +86,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:6"
+                  }
                 }
               ]
             }
@@ -142,7 +151,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This step is passing",
@@ -151,7 +163,10 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 }
               ]
             }
@@ -213,7 +228,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -223,7 +241,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 }
               ]
             }
@@ -289,7 +310,10 @@ Feature: Environment Hooks
                     "error_message": "<error-message>",
                     "status": "failed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This step is passing",
@@ -298,7 +322,10 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -307,7 +334,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:6"
+                  }
                 }
               ]
             }
@@ -386,7 +416,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:2"
+                  }
                 },
                 {
                   "name": "This step is passing",
@@ -396,7 +429,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
+                  }
                 },
                 {
                   "keyword": "After ",
@@ -405,7 +441,10 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
-                  "arguments": []
+                  "arguments": [],
+                  "match": {
+                    "location": "<current-directory>/features/support/hooks.js:7"
+                  }
                 }
               ]
             }

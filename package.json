@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.9.5",
+  "version": "0.10.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -76,7 +76,12 @@
     "Miika Hänninen <miika.hanninen@gmail.com>",
     "Kevin Goslar <kevin.goslar@gmail.com>",
     "John Krull <astrom.flux@gmail.com>",
-    "Maxim Koretskiy <mr.green.tv@gmail.com>"
+    "Maxim Koretskiy <mr.green.tv@gmail.com>",
+    "seantdg <sm.davis@gmx.com>",
+    "Marc Burton <marc.burton@first-utility.com>",
+    "Jonathan Kim <jkimbo@gmail.com>",
+    "Ádám Gólya <adam.golya@lab.coop>",
+    "Scott Deakin <scott.deakin@kantar.com>"
   ],
   "repository": {
     "type": "git",
@@ -94,15 +99,18 @@
     "node": ">=0.10"
   },
   "dependencies": {
+    "base-64": "^0.1.0",
     "callsite": "^1.0.0",
     "camel-case": "^1.2.0",
     "cli-table": "^0.3.1",
+    "co": "^4.6.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "cucumber-html": "^0.2.3",
     "duration": "^0.2.0",
-    "gherkin": "git+ssh://git@github.com:cucumber/gherkin-javascript#4b0082c33d87b6746e4d2ef687eb33bb8fb3d9d2",
+    "gherkin": "^4.0.0",
     "glob": "^7.0.0",
+    "is-generator": "^1.0.2",
     "lodash": "^4.0.0",
     "stack-chain": "^1.3.5"
   },
@@ -117,17 +125,19 @@
     "jasmine": "^2.3.2",
     "jshint": "^2.9.1",
     "json-diff": "^0.3.1",
-    "pogo": "0.10.0",
-    "rimraf": "2.4.3",
-    "serve-static": "1.10.0",
-    "through": "2.3.8",
+    "pogo": "^0.10.0",
+    "rimraf": "^2.4.3",
+    "serve-static": "^1.10.0",
+    "through": "^2.3.8",
     "tmp": "0.0.28",
     "uglifyify": "^3.0.1"
   },
   "scripts": {
     "feature-test": "./bin/cucumber.js -p build",
+    "feature-test-es5": "./bin/cucumber.js -p build -p es5",
     "lint": "jshint bin features lib scripts spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
+    "test-es5": "npm run lint && npm run unit-test && npm run feature-test-es5",
     "unit-test": "jasmine",
     "prebuild-release": "npm install",
     "build-release": "node ./scripts/release.js"
