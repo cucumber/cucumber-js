@@ -141,3 +141,34 @@ Feature: Pretty Formatter
       3 steps (3 passed)
       <duration-stat>
       """
+
+  Scenario: pretty formatter with data table
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario: some scenario
+          Given a table:
+          | foo\nbar    |bar |   baz |
+          | foo\nbar       |bar |   baz\nfoo |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      module.exports = function() {
+        this.Given(/^a table:$/, function(table) { });
+      };
+      """
+    When I run cucumber.js with `-f pretty`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+        Scenario: some scenario
+          Given a table:
+            | foo\nbar | bar | baz      |
+            | foo\nbar | bar | baz\nfoo |
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+      <duration-stat>
+      """

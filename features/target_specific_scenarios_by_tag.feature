@@ -51,6 +51,22 @@ Feature: Target specific scenarios
       """
     And the exit status should be 0
 
+  Scenario: filter out scenarios with ~
+    When I run cucumber.js with `--tags ~@b`
+    Then it outputs this text:
+      """
+      Feature: some feature
+
+        @a
+        Scenario: first scenario
+          When a step is passing
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+      <duration-stat>
+      """
+    And the exit status should be 0
+
   Scenario: run a single scenario outline
     When I run cucumber.js with `--tags @b`
     Then it outputs this text:

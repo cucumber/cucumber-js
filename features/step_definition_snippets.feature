@@ -42,7 +42,7 @@ Feature: step definition snippets
     When I run cucumber-js
     Then it suggests a "Given" step definition snippet with 1 parameter for:
       """
-      /^a step numbered (/d+)$/
+      /^a step numbered (\d+)$/
       """
 
   Scenario: quoted strings
