@@ -150,7 +150,7 @@ Feature: Pretty Formatter
         Scenario: some scenario
           Given a table:
           | foo\nbar    |bar |   baz |
-          | foo\nbar       |bar |   baz\nfoo |
+          | foo\nbar\n\nbaz\n\\boo       |bar |   baz\nfoo |
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
@@ -165,8 +165,8 @@ Feature: Pretty Formatter
 
         Scenario: some scenario
           Given a table:
-            | foo\nbar | bar | baz      |
-            | foo\nbar | bar | baz\nfoo |
+            | foo\nbar               | bar | baz      |
+            | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
 
       1 scenario (1 passed)
       1 step (1 passed)
