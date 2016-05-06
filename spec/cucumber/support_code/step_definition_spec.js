@@ -149,13 +149,10 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       });
 
       describe("with error", function () {
-        var failureReason;
-
         beforeEach(function () {
-          failureReason = createSpy('failure reason');
           spyOnStub(scenario, 'getAttachments').and.returnValue(attachments);
           var runCallback = Cucumber.Util.run.calls.mostRecent().args[4];
-          runCallback(failureReason);
+          runCallback('failure reason');
         });
 
         it("gets the attachments from the scenario", function () {
@@ -166,7 +163,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
             step: step,
             stepDefinition: stepDefinition,
-            failureException: failureReason,
+            failureException: 'failure reason',
             duration: jasmine.any(Number),
             attachments: attachments,
             status: Cucumber.Status.FAILED
