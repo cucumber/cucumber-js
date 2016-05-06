@@ -26,6 +26,10 @@ We've put a demo of Cucumber.js to [run in your browser](http://cucumber.github.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for info on contributing to Cucumber.js.
 
+## Code of Conduct
+
+Everyone interacting in this codebase and issue tracker is expected to follow the Cucumber [code of conduct](https://github.com/cucumber/cucumber/blob/master/CODE_OF_CONDUCT.md).
+
 ## Install
 
 ### Node
