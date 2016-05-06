@@ -17,7 +17,12 @@ Feature: Handling step errors
           cb(unusualErrorObject);
         });
         this.Given('I reject a promise', function () {
-          return Promise.reject(unusualErrorObject);
+          // For compatibility with node 0.10 and to avoid adding a
+          // dependency, we use the fact that Cucumber.js considers
+          // anything with a "then" member function to be a Promise
+          return { then: function(onResolved, onRejected) {
+            onRejected(unusualErrorObject);
+          }};
         });
       };
       """
