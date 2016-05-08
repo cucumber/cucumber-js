@@ -1,5 +1,5 @@
-Feature: Fake Time
-  Background:
+Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
+  Background: Before and After hooks to enable faking time.
     Given a file named "features/support/hooks.js" with:
     """
     var sinon = require('sinon');
@@ -53,7 +53,6 @@ Feature: Fake Time
 
 
   Scenario: faked time doesn't trigger the test runner timeout
-
     Given a file named "features/passing_steps.feature" with:
       """
       Feature: a feature
@@ -90,10 +89,10 @@ Feature: Fake Time
       """
       Feature: a feature
         @fakedTime
-        Scenario: a scenario
+        Scenario: triggers the fakedTime before/after hooks
           Given a faked time step
 
-        Scenario: a scenario
+        Scenario: using real time
           Given a real time step
       """
 
