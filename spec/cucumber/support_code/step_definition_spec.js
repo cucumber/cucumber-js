@@ -149,29 +149,50 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       });
 
       describe("with error", function () {
+        var runCallback;
         beforeEach(function () {
           spyOnStub(scenario, 'getAttachments').and.returnValue(attachments);
-          var runCallback = Cucumber.Util.run.calls.mostRecent().args[4];
-          runCallback('failure reason');
+          runCallback = Cucumber.Util.run.calls.mostRecent().args[4];
         });
+        describe("of string type", function () {
+          beforeEach(function () {
+            runCallback('failure reason');
+          });
 
-        it("gets the attachments from the scenario", function () {
-          expect(scenario.getAttachments).toHaveBeenCalled();
-        });
+          it("gets the attachments from the scenario", function () {
+            expect(scenario.getAttachments).toHaveBeenCalled();
+          });
 
-        it("creates a failing step result", function () {
-          expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
-            step: step,
-            stepDefinition: stepDefinition,
-            failureException: 'failure reason',
-            duration: jasmine.any(Number),
-            attachments: attachments,
-            status: Cucumber.Status.FAILED
+          it("creates a failing step result", function () {
+            expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
+              step: step,
+              stepDefinition: stepDefinition,
+              failureException: 'failure reason',
+              duration: jasmine.any(Number),
+              attachments: attachments,
+              status: Cucumber.Status.FAILED
+            });
+          });
+
+          it("calls back", function () {
+            expect(callback).toHaveBeenCalledWith(stepResult);
           });
         });
 
-        it("calls back", function () {
-          expect(callback).toHaveBeenCalledWith(stepResult);
+        describe("of non-serializable type", function () {
+          it("creates a failing step result with a string for failureException", function () {
+            var nonSerializableErrorObject = {};
+            nonSerializableErrorObject.member = nonSerializableErrorObject;
+            runCallback(nonSerializableErrorObject);
+            expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
+              step: step,
+              stepDefinition: stepDefinition,
+              failureException: jasmine.any(String),
+              duration: jasmine.any(Number),
+              attachments: attachments,
+              status: Cucumber.Status.FAILED
+            });
+          });
         });
       });
 
