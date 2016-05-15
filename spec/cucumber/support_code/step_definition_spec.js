@@ -155,8 +155,9 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
           runCallback = Cucumber.Util.run.calls.mostRecent().args[4];
         });
         describe("of string type", function () {
+          var failureReason = "failure reason";
           beforeEach(function () {
-            runCallback('failure reason');
+            runCallback(failureReason);
           });
 
           it("gets the attachments from the scenario", function () {
@@ -167,7 +168,7 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
             expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
               step: step,
               stepDefinition: stepDefinition,
-              failureException: 'failure reason',
+              failureException: failureReason,
               duration: jasmine.any(Number),
               attachments: attachments,
               status: Cucumber.Status.FAILED
@@ -188,6 +189,21 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
               step: step,
               stepDefinition: stepDefinition,
               failureException: jasmine.any(String),
+              duration: jasmine.any(Number),
+              attachments: attachments,
+              status: Cucumber.Status.FAILED
+            });
+          });
+        });
+
+        describe("of Error type", function () {
+          it("creates a failing step result with the Error for failureException", function () {
+            var testError = new Error("Test Error");
+            runCallback(testError);
+            expect(Cucumber.Runtime.StepResult).toHaveBeenCalledWith({
+              step: step,
+              stepDefinition: stepDefinition,
+              failureException: testError,
               duration: jasmine.any(Number),
               attachments: attachments,
               status: Cucumber.Status.FAILED
