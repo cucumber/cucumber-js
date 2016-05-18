@@ -29,6 +29,23 @@ var cliSteps = function cliSteps() {
       callback();
     });
   });
+
+  this.Then(/^the file "([^"]*)" contains the text:$/, function (filePath, expectedContent, callback) {
+    var absoluteFilePath = path.join(this.tmpDir, filePath);
+    fs.readFile(absoluteFilePath, 'utf8', function (err, content){
+      if (err) { return callback(err); }
+      var normalizedContent = normalizeText(content);
+      var normalizedExpectedContent = normalizeText(expectedContent);
+      if (normalizedContent.indexOf(normalizedExpectedContent) === -1) {
+        callback(new Error('Expected file "' + filePath + '" to contain the following:\n' +
+          expectedContent + '\n' +
+          'Got:\n' +
+          content + '\n'));
+      } else {
+        callback();
+      }
+    });
+  });
 };
 
 module.exports = cliSteps;
