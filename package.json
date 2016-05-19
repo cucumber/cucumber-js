@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "0.10.2",
+  "version": "0.10.3",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -81,7 +81,8 @@
     "Marc Burton <marc.burton@first-utility.com>",
     "Jonathan Kim <jkimbo@gmail.com>",
     "Ádám Gólya <adam.golya@lab.coop>",
-    "Scott Deakin <scott.deakin@kantar.com>"
+    "Scott Deakin <scott.deakin@kantar.com>",
+    "efokschaner <eddyaod@gmail.com>"
   ],
   "repository": {
     "type": "git",
