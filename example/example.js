@@ -11,8 +11,6 @@ function runFeature() {
 
   var prettyFormatterOptions = {
     logToFunction: function(data) {
-      data = data.replace(/ /g, '&nbsp;&nbsp;');
-      data = data.replace(/\n/g, '<br/>');
       data = ansi_up.ansi_to_html(data);
       $output.append(data);
       $output.scrollTop($output.prop("scrollHeight"));
@@ -28,7 +26,7 @@ function runFeature() {
     cucumber.start(function() {});
   } catch(err) {
     var errorContainer = $('<div>')
-    errorContainer.addClass('error');
+    errorContainer.addClass('error').text(err.stack);
     $output.append(errorContainer);
   };
 };
