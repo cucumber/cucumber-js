@@ -1,5 +1,11 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.4...master)
 
+### [1.0.0](https://github.com/cucumber/cucumber-js/compare/v0.10.4...v1.0.0) (2016-05-30)
+
+#### Bug Fixes
+
+* Escape all instances of special characters in example / data table  (Charlie Rudolph)
+
 ### [0.10.4](https://github.com/cucumber/cucumber-js/compare/v0.10.3...v0.10.4) (2016-05-30)
 
 #### New Features
