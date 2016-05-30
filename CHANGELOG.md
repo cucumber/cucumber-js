@@ -1,4 +1,17 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.4...master)
+
+### [0.10.4](https://github.com/cucumber/cucumber-js/compare/v0.10.3...v0.10.4) (2016-05-30)
+
+#### New Features
+
+* Allow time to be faked by utilities such as `sinon.useFakeTimers` (John McLaughlin)
+
+### [0.10.3](https://github.com/cucumber/cucumber-js/compare/v0.10.2...v0.10.3) (2016-05-19)
+
+#### Bug Fixes
+
+* Escape newlines in table cells in pretty formatter (Julien Biezemans)
+* Fix handling of unusual error objects (efokschaner)
 
 ### [0.10.2](https://github.com/cucumber/cucumber-js/compare/v0.10.1...v0.10.2) (2016-04-07)
 
