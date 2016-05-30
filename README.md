@@ -3,51 +3,44 @@
 [![Build Status](https://travis-ci.org/cucumber/cucumber-js.svg?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
 [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.svg)](https://codeclimate.com/github/cucumber/cucumber-js)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cucumber/cucumber-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-*Cucumber*, the [popular Behaviour-Driven Development tool](https://cucumber.io), brought to your JavaScript stack.
+[Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
+written in plain language, they can be read by anyone on your team. Because they can be
+read by anyone, you can use them to help improve communication, collaboration and trust on
+your team.
 
-It runs on both Node.js and *modern* web browsers.
+Cucumber.js is the JavaScript implementation of Cucumber and runs on both Node.js and *modern* web browsers.
 
-## Prerequisites
+## Try it now
 
-* [Node.js](https://nodejs.org) or [io.js](https://iojs.org)
-* [NPM](https://www.npmjs.com)
+We've put a demo of Cucumber.js to [run in your browser](http://cucumber.github.io/cucumber-js/). Why don't you give it a try before anything else?
 
-Cucumber.js is tested on:
+## Help & support
 
-* Node.js 5, 4, 0.12, 0.10, and io.js (see [CI builds](https://travis-ci.org/cucumber/cucumber-js))
-* Google Chrome
-* Firefox
-* Safari
-* Opera
+* Chat: [Gitter](https://gitter.im/cucumber/cucumber-js)
+* Google Groups: [cukes](https://groups.google.com/group/cukes)
+* Website: [cucumber.io](https://cucumber.io)
+* Twitter: [@cucumberbdd](https://twitter.com/cucumberbdd/)
 
-See an example of `cucumber-js` in a browser [here](http://cucumber.github.io/cucumber-js/)
-or run it locally by following these steps:
+## Contributing
 
-* clone the repository
-* `$ npm install`
-* `$ node scripts/server.js`
-* visit `http://localhost:9797`
+See [CONTRIBUTING.md](CONTRIBUTING.md) for info on contributing to Cucumber.js.
 
-## Usage
+## Install
 
-### Install
+### Node
 
 Cucumber.js is available as an npm module.
 
-Install globally with:
-
 ``` shell
-$ npm install -g cucumber
+$ npm install cucumber
 ```
 
-Install as a development dependency of your application with:
+### Browser
 
-``` shell
-$ npm install --save-dev cucumber
-```
+* Grab the latest browserified code from the [release](/release) folder
 
+## Usage
 
 ### Features
 
@@ -519,21 +512,3 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 * See the [JavaScript syntax](/lib/cucumber/support_code/step_definition_snippet_builder/javascript_syntax.js) for an example. Please open an issue if you need more information.
 * Please add the keywords `cucumber` and `snippets` to your package,
 so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
-
-### Examples
-
-A few example apps are available for you to browse:
-
-* [Rails app serving features in the browser](https://github.com/jbpros/cucumber-js-example)
-* [Express.js app running features in the cli](https://github.com/olivoil/NodeBDD)
-
-## Contribute
-
-See [CONTRIBUTING](https://github.com/cucumber/cucumber-js/blob/master/CONTRIBUTING.md).
-
-## Help & support
-
-* Twitter: [@cucumber_js](https://twitter.com/cucumber_js/)
-* IRC: [#cucumber](http://webchat.freenode.net?channels=cucumber&uio=d4) on Freenode
-* Google Groups: [cukes](https://groups.google.com/group/cukes)
-* Website: [cucumber.io](https://cucumber.io)
