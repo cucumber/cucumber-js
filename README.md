@@ -465,7 +465,7 @@ $ ./node_modules/.bin/cucumber.js
 #### Requiring support files
 
 Use `--require <FILE|DIR>` to require files before executing the features.
-If not used, all "*.js" files (and other extensions specifed by `--compiler`) that are siblings
+If not used, all `*.js` files (and other extensions specifed by `--compiler`) that are siblings
 or below the features will be loaded automatically. Automatic
 loading is disabled when this option is specified, and all loading becomes explicit.
 Files under directories named "support" are always loaded first
@@ -507,12 +507,12 @@ Undefined steps snippets are printed in javascript by default.
 Custom snippet syntaxes can be used with `--snippet-syntax <FILE>`.
 See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
 
-### Profiles
-
-In order to store and reuse commonly used CLI options, you can add a `cucumber.js` file to your project root directory. The file should export an object where the key is the profile name and the value is a string of CLI options. The profile can be applied with `-p <NAME>` or `--profile <NAME>`. This will prepend the profile's CLI options to the ones provided by the command line. Multiple profiles can be specified at a time. If no profile is specified and a profile named `default` exists, it will be applied.
-
 ##### Building a custom snippet syntax
 
 * See the [JavaScript syntax](/lib/cucumber/support_code/step_definition_snippet_builder/javascript_syntax.js) for an example. Please open an issue if you need more information.
 * Please add the keywords `cucumber` and `snippets` to your package,
 so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
+
+### Profiles
+
+In order to store and reuse commonly used CLI options, you can add a `cucumber.js` file to your project root directory. The file should export an object where the key is the profile name and the value is a string of CLI options. The profile can be applied with `-p <NAME>` or `--profile <NAME>`. This will prepend the profile's CLI options to the ones provided by the command line. Multiple profiles can be specified at a time. If no profile is specified and a profile named `default` exists, it will be applied.
