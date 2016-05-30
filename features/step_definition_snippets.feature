@@ -26,7 +26,7 @@ Feature: step definition snippets
       | +         |
       | ?         |
       | .         |
-      | \         |
+      | \\        |
       | /         |
       | ^         |
       | $         |
@@ -71,30 +71,14 @@ Feature: step definition snippets
       /^a step with "([^"]*)" and "([^"]*)"$/
       """
 
-  Scenario: placeholders in scenario outlines
-    Given a file named "features/number.feature" with:
-      """
-      Feature: a feature
-        Scenario Outline: a scenario
-          Given a step with a <placeholder>
-
-        Examples:
-          | placeholder |
-          | cucumbers   |
-      """
-    When I run cucumber-js
-    Then it suggests a "Given" step definition snippet with 1 parameter named "placeholder" for:
-      """
-      /^a step with a (.*)$/
-      """
-
   Scenario: background step
     Given a file named "features/background.feature" with:
       """
       Feature: a feature
         Background:
-          Given  a step with "quotes"
+          Given a step with "quotes"
         Scenario: a scenario
+          Given a passing step
       """
     When I run cucumber-js
     Then it suggests a "Given" step definition snippet with 1 parameter for:

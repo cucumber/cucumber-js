@@ -246,23 +246,14 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
 
     beforeEach(function () {
       stepName = createSpy("step name to match");
-      matches = createSpyWithStubs("matches", {shift: null, push: null});
+      matches = ['full match', 'arg1', 'arg2'];
       patternRegexp = createSpyWithStubs("pattern regexp", {test: matches});
       stepAttachmentContents = createSpy("step attachment contents");
       step = createSpyWithStubs("step", {hasAttachment: null, getName: stepName, getAttachmentContents: stepAttachmentContents});
       scenario = createSpy("scenario");
       spyOn(stepDefinition, 'getPatternRegexp').and.returnValue(patternRegexp);
       spyOnStub(patternRegexp, 'exec').and.returnValue(matches);
-    });
-
-    it("gets the step name", function () {
-      stepDefinition.buildInvocationParameters(step, scenario);
-      expect(step.getName).toHaveBeenCalled();
-    });
-
-    it("gets the pattern regexp", function () {
-      stepDefinition.buildInvocationParameters(step, scenario);
-      expect(stepDefinition.getPatternRegexp).toHaveBeenCalled();
+      spyOnStub(step, 'getArguments').and.returnValue([]);
     });
 
     it("executes the pattern regexp against the step name", function () {
@@ -270,45 +261,35 @@ describe("Cucumber.SupportCode.StepDefinition", function () {
       expect(patternRegexp.exec).toHaveBeenCalledWith(stepName);
     });
 
-    it("removes the whole matched string of the regexp result array (to only keep matching groups)", function () {
-      stepDefinition.buildInvocationParameters(step, scenario);
-      expect(matches.shift).toHaveBeenCalled();
+    it("returns the arg", function () {
+      var result = stepDefinition.buildInvocationParameters(step, scenario);
+      expect(result).toEqual(['arg1', 'arg2']);
     });
 
-    it("checks whether the step has an attachment or not", function () {
-      stepDefinition.buildInvocationParameters(step, scenario);
-      expect(step.hasAttachment).toHaveBeenCalled();
-    });
-
-    describe("when the step has an attachment", function () {
+    describe("when the step has an doc string argument", function () {
       beforeEach(function () {
-        step.hasAttachment.and.returnValue(true);
+        var docStringArgument = createSpyWithStubs('doc string', {getContent: 'doc string content', getType: 'DocString'});
+        step.getArguments.and.returnValue([docStringArgument]);
       });
 
-      it("gets the attachment contents", function () {
-        stepDefinition.buildInvocationParameters(step, scenario);
-        expect(step.getAttachmentContents).toHaveBeenCalled();
-      });
-
-      it("adds the attachment contents to the parameter array", function () {
-        stepDefinition.buildInvocationParameters(step, scenario);
-        expect(matches.push).toHaveBeenCalledWith(stepAttachmentContents);
+      it("adds the doc string content as an argument", function () {
+        var result = stepDefinition.buildInvocationParameters(step, scenario);
+        expect(result).toEqual(['arg1', 'arg2', 'doc string content']);
       });
     });
 
-    describe("when the step has no attachment", function () {
+    describe("when the step has an doc string argument", function () {
+      var dataTableArgument;
+
       beforeEach(function () {
-        step.hasAttachment.and.returnValue(false);
+        dataTableArgument = createSpyWithStubs('data table', {getType: 'DataTable'});
+        step.getArguments.and.returnValue([dataTableArgument]);
       });
 
-      it("does not get the attachment contents", function () {
-        stepDefinition.buildInvocationParameters(step, scenario);
-        expect(step.getAttachmentContents).not.toHaveBeenCalled();
+      it("adds the data table as an argument", function () {
+        var result = stepDefinition.buildInvocationParameters(step, scenario);
+        expect(result).toEqual(['arg1', 'arg2', dataTableArgument]);
       });
-    });
-
-    it("returns the parameters", function () {
-      expect(stepDefinition.buildInvocationParameters(step, scenario)).toBe(matches);
     });
   });
 

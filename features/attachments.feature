@@ -33,7 +33,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -43,7 +43,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -53,6 +53,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   },
@@ -71,6 +72,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -132,7 +134,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -142,7 +144,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -152,6 +154,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   },
@@ -170,6 +173,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -214,7 +218,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -224,7 +228,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -234,6 +238,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   },
@@ -252,6 +257,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -296,7 +302,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -306,7 +312,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -317,6 +323,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -328,6 +335,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   },
@@ -382,7 +390,7 @@ Feature: Attachments
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -392,7 +400,7 @@ Feature: Attachments
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -402,6 +410,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -414,6 +423,7 @@ Feature: Attachments
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   },

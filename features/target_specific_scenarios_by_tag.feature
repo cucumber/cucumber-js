@@ -74,15 +74,15 @@ Feature: Target specific scenarios
       Feature: some feature
 
         @b @c
-        Scenario Outline: second scenario
+        Scenario: second scenario
           When a step is passing
 
         @b @c
-        Scenario Outline: second scenario
+        Scenario: second scenario
           When a step is pending
 
         @b @d
-        Scenario Outline: second scenario
+        Scenario: second scenario
           When a step is undefined
 
       Warnings:
@@ -98,7 +98,7 @@ Feature: Target specific scenarios
          Message:
            Undefined. Implement with the following snippet:
 
-             this.When(/^a step is (.*)$/, function (status, callback) {
+             this.When(/^a step is undefined$/, function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });
@@ -116,11 +116,11 @@ Feature: Target specific scenarios
       Feature: some feature
 
         @b @c
-        Scenario Outline: second scenario
+        Scenario: second scenario
           When a step is passing
 
         @b @c
-        Scenario Outline: second scenario
+        Scenario: second scenario
           When a step is pending
 
       Warnings:

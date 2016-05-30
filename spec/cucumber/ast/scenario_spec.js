@@ -2,126 +2,91 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Scenario", function () {
   var Cucumber = requireLib('cucumber');
-  var scenario, steps, keyword, name, description, uri, line, lastStep;
+  var scenario, step1, step2, tag1, tag2;
 
   beforeEach(function () {
-    keyword     = createSpy("scenario keyword");
-    name        = createSpy("scenario name");
-    description = createSpy("scenario description");
-    uri         = createSpy("uri");
-    line        = createSpy("starting scenario line number");
-    lastStep    = createSpy("last step");
-    steps       = createSpy("step collection");
-    spyOnStub(steps, 'add');
-    spyOnStub(steps, 'getLast').and.returnValue(lastStep);
-    spyOn(Cucumber.Type, 'Collection').and.returnValue(steps);
+    var scenarioData = {
+      description: 'description',
+      locations: [{path: 'path', line: 1}, {line: 2}],
+      name: 'name',
+      steps: [
+        {step1: 'data'},
+        {step2: 'data'}
+      ],
+      tags: [
+        {tag1: 'data'},
+        {tag2: 'data'}
+      ]
+    };
 
-    scenario = Cucumber.Ast.Scenario(keyword, name, description, uri, line);
+    step1 = createSpyWithStubs('step 1', {setPreviousStep: null, setScenario: null});
+    step2 = createSpyWithStubs('step 2', {setPreviousStep: null, setScenario: null});
+    spyOn(Cucumber.Ast, 'Step').and.returnValues(step1, step2);
+
+    tag1 = createSpy('tag 1');
+    tag2 = createSpy('tag 2');
+    spyOn(Cucumber.Ast, 'Tag').and.returnValues(tag1, tag2);
+
+    scenario = Cucumber.Ast.Scenario(scenarioData);
   });
 
   describe("constructor", function () {
-    it("creates a new collection to store steps", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalled();
+    it('creates steps', function () {
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith({step1: 'data'});
+      expect(step1.setPreviousStep).toHaveBeenCalledWith(undefined);
+      expect(step1.setScenario).toHaveBeenCalledWith(scenario);
+
+      expect(Cucumber.Ast.Step).toHaveBeenCalledWith({step2: 'data'});
+      expect(step2.setPreviousStep).toHaveBeenCalledWith(step1);
+      expect(step2.setScenario).toHaveBeenCalledWith(scenario);
+    });
+
+    it('creates tags', function () {
+      expect(Cucumber.Ast.Tag).toHaveBeenCalledWith({tag1: 'data'});
+      expect(Cucumber.Ast.Tag).toHaveBeenCalledWith({tag2: 'data'});
     });
   });
 
   describe("getKeyword()", function () {
+    var feature;
+
+    beforeEach(function() {
+      feature = createSpyWithStubs('feature', {getScenarioKeyword: 'keyword'});
+      scenario.setFeature(feature);
+    });
+
     it("returns the keyword of the scenario", function () {
-      expect(scenario.getKeyword()).toBe(keyword);
+      expect(scenario.getKeyword()).toEqual('keyword');
     });
   });
 
   describe("getName()", function () {
     it("returns the name of the scenario", function () {
-      expect(scenario.getName()).toBe(name);
+      expect(scenario.getName()).toEqual('name');
     });
   });
 
   describe("getDescription()", function () {
     it("returns the description of the scenario", function () {
-      expect(scenario.getDescription()).toBe(description);
+      expect(scenario.getDescription()).toEqual('description');
     });
   });
 
   describe("getUri()", function () {
     it("returns the URI on which the background starts", function () {
-      expect(scenario.getUri()).toBe(uri);
+      expect(scenario.getUri()).toEqual('path');
     });
   });
 
   describe("getLine()", function () {
     it("returns the line on which the scenario starts", function () {
-      expect(scenario.getLine()).toBe(line);
+      expect(scenario.getLine()).toEqual(1);
     });
   });
 
-  describe("isScenarioOutline()", function () {
-    it("returns false", function () {
-      expect(scenario.isScenarioOutline()).toBeFalsy();
-    });
-  });
-
-  describe("getBackground() [setBackground()]", function () {
-    it("returns the background that was set as such", function () {
-      var background = createSpy("background");
-      scenario.setBackground(background);
-      expect(scenario.getBackground()).toBe(background);
-    });
-  });
-
-  describe("addStep()", function () {
-    var step, lastStep;
-
-    beforeEach(function () {
-      step = createSpyWithStubs("step AST element", {setPreviousStep: null, setScenario: null});
-      lastStep = createSpy("last step");
-      spyOn(scenario, 'getLastStep').and.returnValue(lastStep);
-    });
-
-    it("gets the last step", function () {
-      scenario.addStep(step);
-      expect(scenario.getLastStep).toHaveBeenCalled();
-    });
-
-    it("sets the scenario", function () {
-      scenario.addStep(step);
-      expect(step.setScenario).toHaveBeenCalledWith(scenario);
-    });
-
-    it("sets the last step as the previous step", function () {
-      scenario.addStep(step);
-      expect(step.setPreviousStep).toHaveBeenCalledWith(lastStep);
-    });
-
-    it("adds the step to the steps (collection)", function () {
-      scenario.addStep(step);
-      expect(steps.add).toHaveBeenCalledWith(step);
-    });
-  });
-
-  describe("getLastStep()", function () {
-    it("gets the last step from the collection", function () {
-      scenario.getLastStep();
-      expect(steps.getLast).toHaveBeenCalled();
-    });
-
-    it("returns that last step from the collection", function () {
-      expect(scenario.getLastStep()).toBe(lastStep);
-    });
-  });
-
-  describe("getTags() [addTags()]", function () {
-    it("returns an empty set when no tags were added", function () {
-      expect(scenario.getTags()).toEqual([]);
-    });
-
+  describe("getTags()", function () {
     it("returns the tags", function () {
-      var tag1 = createSpy("tag 1");
-      var tag2 = createSpy("tag 2");
-      var tag3 = createSpy("tag 3");
-      scenario.addTags([tag1, tag2]);
-      scenario.addTags([tag3]);
-      expect(scenario.getTags()).toEqual([tag1, tag2, tag3]);
+      expect(scenario.getTags()).toEqual([tag1, tag2]);
     });
   });
 
@@ -129,130 +94,32 @@ describe("Cucumber.Ast.Scenario", function () {
     var visitor, callback;
 
     beforeEach(function () {
-      visitor  = createSpyWithStubs("Visitor", {visitStep: null});
-      callback = createSpy("Callback");
-      spyOn(scenario, 'instructVisitorToVisitBackgroundSteps');
-      spyOn(scenario, 'instructVisitorToVisitScenarioSteps');
-    });
-
-    it("instructs the visitor to visit the background steps", function () {
-      scenario.acceptVisitor(visitor, callback);
-      expect(scenario.instructVisitorToVisitBackgroundSteps).toHaveBeenCalledWithValueAsNthParameter(visitor, 1);
-      expect(scenario.instructVisitorToVisitBackgroundSteps).toHaveBeenCalledWithAFunctionAsNthParameter(2);
-    });
-
-    describe("when the visitor has finished visiting the background steps", function () {
-      var backgroundStepsVisitCallback;
-
-      beforeEach(function () {
-        scenario.acceptVisitor(visitor, callback);
-        backgroundStepsVisitCallback = scenario.instructVisitorToVisitBackgroundSteps.calls.mostRecent().args[1];
-      });
-
-      it("instructs the visitor to visit the scenario steps", function () {
-        backgroundStepsVisitCallback();
-        expect(scenario.instructVisitorToVisitScenarioSteps).toHaveBeenCalledWith(visitor, callback);
-      });
-    });
-  });
-
-  describe("instructVisitorToVisitBackgroundSteps()", function () {
-    var visitor, callback, backgroundSteps;
-
-    beforeEach(function () {
-      visitor         = createSpyWithStubs("Visitor", {visitStep: null});
-      callback        = createSpy("Callback");
-      spyOn(scenario, 'getBackground');
-    });
-
-    it("gets the background", function () {
-      scenario.instructVisitorToVisitBackgroundSteps(visitor, callback);
-      expect(scenario.getBackground).toHaveBeenCalled();
-    });
-
-    describe("when there is a background", function () {
-      var background;
-
-      beforeEach(function () {
-        backgroundSteps = createSpy("background steps");
-        background      = createSpyWithStubs("background", {getSteps: backgroundSteps});
-        scenario.getBackground.and.returnValue(background);
-        spyOn(scenario, 'instructVisitorToVisitSteps');
-      });
-
-      it("gets the steps from the background", function () {
-        scenario.instructVisitorToVisitBackgroundSteps(visitor, callback);
-        expect(background.getSteps).toHaveBeenCalled();
-      });
-
-      it("instructs the visitor to visit the background steps and callback", function () {
-        scenario.instructVisitorToVisitBackgroundSteps(visitor, callback);
-        expect(scenario.instructVisitorToVisitSteps).toHaveBeenCalledWith(visitor, backgroundSteps, callback);
-      });
-
-      it("does not callback", function () {
-        scenario.instructVisitorToVisitBackgroundSteps(visitor, callback);
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    describe("when there is no background", function () {
-      beforeEach(function () {
-        scenario.getBackground.and.returnValue(undefined);
-      });
-
-      it("calls back", function () {
-        scenario.instructVisitorToVisitBackgroundSteps(visitor, callback);
-        expect(callback).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe("instructVisitorToVisitScenarioSteps()", function () {
-    var visitor, callback;
-
-    beforeEach(function () {
-      visitor  = createSpyWithStubs("Visitor", {visitStep: null});
-      callback = createSpy("Callback");
-      spyOn(scenario, 'instructVisitorToVisitSteps');
-    });
-
-    it("instructs the visitor to visit the steps", function () {
-      scenario.instructVisitorToVisitScenarioSteps(visitor, callback);
-      expect(scenario.instructVisitorToVisitSteps).toHaveBeenCalledWith(visitor, steps, callback);
-    });
-  });
-
-  describe("instructVisitorToVisitSteps()", function () {
-    var visitor, steps, callback;
-
-    beforeEach(function () {
       visitor  = createSpyWithStubs("visitor", {visitStep: null});
       callback = createSpy("callback");
-      steps    = createSpy("steps");
-      spyOnStub(steps, 'asyncForEach');
-   });
-
-    it("iterates over the steps with a user function", function () {
-      scenario.instructVisitorToVisitSteps(visitor, steps, callback);
-      expect(steps.asyncForEach).toHaveBeenCalled();
-      expect(steps.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(steps.asyncForEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
+      scenario.acceptVisitor(visitor, callback);
     });
 
-    describe("for each step", function () {
-      var userFunction, step, asyncForEachCallback;
+    it("instructs the visitor to visit the first step", function() {
+      expect(visitor.visitStep).toHaveBeenCalledWith(step1, jasmine.any(Function));
+    });
 
-      beforeEach(function () {
-        scenario.instructVisitorToVisitSteps(visitor, steps, callback);
-        userFunction    = steps.asyncForEach.calls.mostRecent().args[0];
-        step            = createSpy("a step");
-        asyncForEachCallback = createSpy("asyncForEach() callback");
+    describe('after the first step is visited', function () {
+      beforeEach(function() {
+        visitor.visitStep.calls.mostRecent().args[1]();
       });
 
-      it("instructs the visitor to visit the step and call back when finished", function () {
-        userFunction (step, asyncForEachCallback);
-        expect(visitor.visitStep).toHaveBeenCalledWith(step, asyncForEachCallback);
+      it("instructs the visitor to visit the second step", function() {
+        expect(visitor.visitStep).toHaveBeenCalledWith(step2, jasmine.any(Function));
+      });
+
+      describe('after the second step is visited', function () {
+        beforeEach(function() {
+          visitor.visitStep.calls.mostRecent().args[1]();
+        });
+
+        it("calls back", function() {
+          expect(callback).toHaveBeenCalled();
+        });
       });
     });
   });

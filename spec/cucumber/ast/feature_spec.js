@@ -2,281 +2,125 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.Feature", function () {
   var Cucumber = requireLib('cucumber');
-  var scenarioCollection, lastScenario;
-  var feature, keyword, name, description, uri, line;
+  var Gherkin = require('gherkin');
+  var feature, scenario1, scenario2, tag1, tag2;
 
   beforeEach(function () {
-    lastScenario = createSpy("Last scenario");
-    scenarioCollection = {}; // bare objects because we need .length
-                             // which is not available on jasmine spies
-    spyOnStub(scenarioCollection, 'add');
-    spyOnStub(scenarioCollection, 'insert');
-    spyOnStub(scenarioCollection, 'removeAtIndex');
-    spyOnStub(scenarioCollection, 'indexOf');
-    spyOnStub(scenarioCollection, 'getLast').and.returnValue(lastScenario);
-    spyOnStub(scenarioCollection, 'forEach');
-    spyOnStub(scenarioCollection, 'asyncForEach');
-    spyOn(Cucumber.Type, 'Collection').and.returnValue(scenarioCollection);
-    keyword     = createSpy("keyword");
-    name        = createSpy("name");
-    description = createSpy("description");
-    uri         = createSpy("uri");
-    line        = createSpy("line number");
-    feature     = Cucumber.Ast.Feature(keyword, name, description, uri, line);
+    var featureData = {
+      description: 'description',
+      keyword: 'keyword',
+      location: {line: 1},
+      name: 'name',
+      tags: [
+        {tag1: 'data'},
+        {tag2: 'data'}
+      ],
+      uri: 'uri'
+    };
+
+    scenario1 = createSpyWithStubs('scenario 1', {setFeature: null});
+    scenario2 = createSpyWithStubs('scenario 2', {setFeature: null});
+    var scenarios = [scenario1, scenario2];
+
+    tag1 = createSpy('tag 1');
+    tag2 = createSpy('tag 2');
+    spyOn(Cucumber.Ast, 'Tag').and.returnValues(tag1, tag2);
+
+    feature = Cucumber.Ast.Feature(featureData, scenarios);
   });
 
   describe("constructor", function () {
-    it("creates a new collection to store scenarios", function () {
-      expect(Cucumber.Type.Collection).toHaveBeenCalled();
+    it('creates tags', function () {
+      expect(Cucumber.Ast.Tag).toHaveBeenCalledWith({tag1: 'data'});
+      expect(Cucumber.Ast.Tag).toHaveBeenCalledWith({tag2: 'data'});
+    });
+  });
+
+  describe('getStepKeywordByLines()', function() {
+    describe('from a background', function() {
+      beforeEach(function() {
+        var source =
+          'Feature: Foo\n' +
+          '  Background:\n' +
+          '    Given a\n' +
+          '  Scenario: Bar\n' +
+          '    Then b\n';
+        var gherkinDocument = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+      });
+
+      it('returns the keyword', function() {
+        expect(feature.getStepKeywordByLines([3])).toEqual('Given ');
+      });
+    });
+
+    describe('from a scenario', function() {
+      beforeEach(function() {
+        var source =
+          'Feature: Foo\n' +
+          '  Scenario: Bar\n' +
+          '    Then b\n';
+        var gherkinDocument = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+      });
+
+      it('returns the keyword', function() {
+        expect(feature.getStepKeywordByLines([3])).toEqual('Then ');
+      });
+    });
+
+    describe('from a scenario outline', function() {
+      beforeEach(function() {
+        var source =
+          'Feature: Foo\n' +
+          '  Scenario Outline: Bar\n' +
+          '    When <what>\n' +
+          '  Examples:\n' +
+          '    | what |\n' +
+          '    | b    |';
+        var gherkinDocument = new Gherkin.Parser().parse(source);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+      });
+
+      it('returns the keyword', function() {
+        expect(feature.getStepKeywordByLines([3])).toEqual('When ');
+      });
     });
   });
 
   describe("getKeyword()", function () {
     it("returns the keyword of the feature", function () {
-      expect(feature.getKeyword()).toBe(keyword);
+      expect(feature.getKeyword()).toEqual('keyword');
     });
   });
 
   describe("getName()", function () {
     it("returns the name of the feature", function () {
-      expect(feature.getName()).toBe(name);
+      expect(feature.getName()).toEqual('name');
     });
   });
 
   describe("getDescription()", function () {
     it("returns the description of the feature", function () {
-      expect(feature.getDescription()).toBe(description);
+      expect(feature.getDescription()).toEqual('description');
     });
   });
 
   describe("getUri()", function () {
     it("returns the URI of the feature", function () {
-      expect(feature.getUri()).toBe(uri);
+      expect(feature.getUri()).toEqual('uri');
     });
   });
 
   describe("getLine()", function () {
     it("returns the line number on which the feature starts", function () {
-      expect(feature.getLine()).toBe(line);
+      expect(feature.getLine()).toEqual(1);
     });
   });
 
-  describe("getBackground() [setBackground()]", function () {
-    describe("when a background was previously added", function () {
-      var background;
-
-      beforeEach(function () {
-        background = createSpy("background");
-        feature.setBackground(background);
-      });
-
-      it("returns the background", function () {
-        expect(feature.getBackground()).toBe(background);
-      });
-    });
-
-    describe("when no background was previously added", function () {
-      it("returns nothing", function () {
-        expect(feature.getBackground()).toBeUndefined();
-      });
-    });
-  });
-
-  describe("hasBackground()", function () {
-    it("returns true when a background was set", function () {
-      var background = createSpy("background");
-      feature.setBackground(background);
-      expect(feature.hasBackground()).toBe(true);
-    });
-
-    it("returns false when no background was set", function () {
-      expect(feature.hasBackground()).toBe(false);
-    });
-  });
-
-  describe("addFeatureElement()", function () {
-    var scenario, background;
-
-    beforeEach(function () {
-      scenario   = createSpyWithStubs("scenario AST element", {setBackground: null});
-      background = createSpy("scenario background");
-      spyOn(feature, 'getBackground').and.returnValue(background);
-    });
-
-    it("sets the background on the scenario", function () {
-      feature.addFeatureElement(scenario);
-      expect(scenario.setBackground).toHaveBeenCalledWith(background);
-    });
-
-    it("adds the scenario to the scenarios (collection)", function () {
-      feature.addFeatureElement(scenario);
-      expect(scenarioCollection.add).toHaveBeenCalledWith(scenario);
-    });
-  });
-
-  describe("insertFeatureElement()", function () {
-    var index, scenario, background;
-
-    beforeEach(function () {
-      index      = createSpy("index");
-      scenario   = createSpyWithStubs("scenario AST element", {setBackground: null});
-      background = createSpy("scenario background");
-      spyOn(feature, 'getBackground').and.returnValue(background);
-    });
-
-    it("sets the background on the scenario", function () {
-      feature.insertFeatureElement(index, scenario);
-      expect(scenario.setBackground).toHaveBeenCalledWith(background);
-    });
-
-    it("adds the scenario to the scenarios (collection)", function () {
-      feature.insertFeatureElement(index, scenario);
-      expect(scenarioCollection.insert).toHaveBeenCalledWith(index, scenario);
-    });
-  });
-
-  describe("convertScenarioOutlinesToScenarios()", function () {
-    it ("iterates over the feature elements", function () {
-      feature.convertScenarioOutlinesToScenarios();
-      expect(scenarioCollection.forEach).toHaveBeenCalled();
-      expect(scenarioCollection.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-    });
-
-    describe("for each feature element", function () {
-      var userFunction, featureElement;
-
-      beforeEach(function () {
-        feature.convertScenarioOutlinesToScenarios();
-        userFunction   = scenarioCollection.forEach.calls.mostRecent().args[0];
-        featureElement = createSpyWithStubs("feature element", {isScenarioOutline: null});
-        spyOn(feature, 'convertScenarioOutlineToScenarios');
-      });
-
-      describe("when the feature element is a scenario outline", function () {
-        beforeEach(function () {
-          featureElement.isScenarioOutline.and.returnValue(true);
-          userFunction (featureElement);
-        });
-
-        it("converts the scenario outline into scenarios", function () {
-          expect(feature.convertScenarioOutlineToScenarios).toHaveBeenCalledWith(featureElement);
-        });
-      });
-
-      describe("when the feature element is not a scenario outline", function () {
-        beforeEach(function () {
-          featureElement.isScenarioOutline.and.returnValue(false);
-          userFunction (featureElement);
-        });
-
-        it("converts the scenario outline into scenarios", function () {
-          expect(feature.convertScenarioOutlineToScenarios).not.toHaveBeenCalled();
-        });
-      });
-    });
-  });
-
-  describe("convertScenarioOutlineToScenarios()", function () {
-    var scenarios, scenarioOutlineTags, scenarioOutline, scenarioOutlineIndex;
-
-    beforeEach(function () {
-      scenarios            = createSpyWithStubs("scenarios", {forEach: null});
-      scenarioOutlineTags  = createSpy("tags");
-      scenarioOutline      = createSpyWithStubs("scenario outline", {buildScenarios: scenarios, getTags: scenarioOutlineTags});
-      scenarioOutlineIndex = 1;
-      scenarioCollection.indexOf.and.returnValue(scenarioOutlineIndex);
-      feature.convertScenarioOutlineToScenarios(scenarioOutline);
-    });
-
-    it ("builds the scenarios for the scenario outline", function () {
-      expect(scenarioOutline.buildScenarios).toHaveBeenCalled();
-    });
-
-    it ("gets the index of the scenario outline in the scenario collection", function () {
-      expect(scenarioCollection.indexOf).toHaveBeenCalledWith(scenarioOutline);
-    });
-
-    it("removes the scenario outline from the scenario collection", function () {
-      expect(scenarioCollection.removeAtIndex).toHaveBeenCalledWith(scenarioOutlineIndex);
-    });
-
-    it ("iterates over the scenarios", function () {
-      expect(scenarios.forEach).toHaveBeenCalled();
-      expect(scenarios.forEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-    });
-
-    describe("for each scenario", function () {
-      var userFunction, scenario, index;
-
-      beforeEach(function () {
-        userFunction   = scenarios.forEach.calls.mostRecent().args[0];
-        scenario       = createSpyWithStubs("scenario", {addTags: null});
-        index          = 2;
-        spyOn(feature, 'insertFeatureElement');
-        userFunction (scenario, index);
-      });
-
-      it("inserts the scenario into the scenario collection", function () {
-        expect(feature.insertFeatureElement).toHaveBeenCalledWith(scenarioOutlineIndex + index, scenario);
-      });
-    });
-  });
-
-  describe("getFeatureElements()", function() {
-    it("gets the feature elements collection", function () {
-      expect(feature.getFeatureElements().getLast()).toBe(lastScenario);
-    });
-  });
-
-  describe("getLastScenario()", function () {
-    it("gets the last scenario from the collection", function () {
-      feature.getLastFeatureElement();
-      expect(scenarioCollection.getLast).toHaveBeenCalled();
-    });
-
-    it("returns the last scenario", function () {
-      expect(feature.getLastFeatureElement()).toBe(lastScenario);
-    });
-  });
-
-  describe("hasScenarios()", function () {
-    beforeEach(function () {
-      spyOnStub(scenarioCollection, 'length');
-    });
-
-    it("gets the number of scenarios", function () {
-      feature.hasFeatureElements();
-      expect(scenarioCollection.length).toHaveBeenCalled();
-    });
-
-    it("is falsy when there are 0 scenarios", function () {
-      scenarioCollection.length.and.returnValue(0);
-      expect(feature.hasFeatureElements()).toBeFalsy();
-    });
-
-    it("is truthy when there is 1 scenario", function () {
-      scenarioCollection.length.and.returnValue(1);
-      expect(feature.hasFeatureElements()).toBeTruthy();
-    });
-
-    it("is truthy when there are more than 1 scenarios", function () {
-      scenarioCollection.length.and.returnValue(2);
-      expect(feature.hasFeatureElements()).toBeTruthy();
-    });
-  });
-
-  describe("getTags() [addTags()]", function () {
-    it("returns an empty set when no tags were added", function () {
-      expect(feature.getTags()).toEqual([]);
-    });
-
+  describe("getTags()", function () {
     it("returns the tags", function () {
-      var tag1 = createSpy("tag 1");
-      var tag2 = createSpy("tag 2");
-      var tag3 = createSpy("tag 3");
-      feature.addTags([tag1, tag2]);
-      feature.addTags([tag3]);
-      expect(feature.getTags()).toEqual([tag1, tag2, tag3]);
+      expect(feature.getTags()).toEqual([tag1, tag2]);
     });
   });
 
@@ -284,112 +128,32 @@ describe("Cucumber.Ast.Feature", function () {
     var visitor, callback;
 
     beforeEach(function () {
-      visitor  = createSpyWithStubs("visitor", {visitStep: null});
+      visitor  = createSpyWithStubs("visitor", {visitScenario: null});
       callback = createSpy("callback");
-      spyOn(feature, 'instructVisitorToVisitBackground');
-      spyOn(feature, 'instructVisitorToVisitScenarios');
-    });
-
-    it("instructs the visitor to visit the feature background", function () {
       feature.acceptVisitor(visitor, callback);
-      expect(feature.instructVisitorToVisitBackground).toHaveBeenCalledWithValueAsNthParameter(visitor, 1);
-      expect(feature.instructVisitorToVisitBackground).toHaveBeenCalledWithAFunctionAsNthParameter(2);
     });
 
-    describe("when the visitor has finished visiting the background", function () {
-      var featureStepsVisitCallback;
-
-      beforeEach(function () {
-        feature.acceptVisitor(visitor, callback);
-        featureStepsVisitCallback = feature.instructVisitorToVisitBackground.calls.mostRecent().args[1];
-      });
-
-      it("instructs the visitor to visit the feature steps", function () {
-        featureStepsVisitCallback();
-        expect(feature.instructVisitorToVisitScenarios).toHaveBeenCalledWith(visitor, callback);
-      });
-    });
-  });
-
-  describe("instructVisitorToVisitBackground()", function () {
-    var visitor, callback;
-
-    beforeEach(function () {
-      visitor  = createSpyWithStubs("visitor", {visitBackground: undefined});
-      callback = createSpy("callback");
-      spyOn(feature, 'hasBackground');
+    it("instructs the visitor to visit the first scenario", function() {
+      expect(visitor.visitScenario).toHaveBeenCalledWith(scenario1, jasmine.any(Function));
     });
 
-    it("checks whether the feature has a background", function () {
-      feature.instructVisitorToVisitBackground(visitor, callback);
-      expect(feature.hasBackground).toHaveBeenCalled();
-    });
-
-    describe("when there is a background", function () {
-      var background;
-
-      beforeEach(function () {
-        background = createSpy("background");
-        feature.hasBackground.and.returnValue(true);
-        spyOn(feature, 'getBackground').and.returnValue(background);
+    describe('after the first scenario is visited', function () {
+      beforeEach(function() {
+        visitor.visitScenario.calls.mostRecent().args[1]();
       });
 
-      it("gets the background", function () {
-        feature.instructVisitorToVisitBackground(visitor, callback);
-        expect(feature.getBackground).toHaveBeenCalled();
+      it("instructs the visitor to visit the second scenario", function() {
+        expect(visitor.visitScenario).toHaveBeenCalledWith(scenario2, jasmine.any(Function));
       });
 
-      it("instructs the visitor to visit the background", function () {
-        feature.instructVisitorToVisitBackground(visitor, callback);
-        expect(visitor.visitBackground).toHaveBeenCalledWith(background, callback);
-      });
+      describe('after the second scenario is visited', function () {
+        beforeEach(function() {
+          visitor.visitScenario.calls.mostRecent().args[1]();
+        });
 
-      it("does not call back", function () {
-        feature.instructVisitorToVisitBackground(visitor, callback);
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    describe("when there is no background", function () {
-      beforeEach(function () {
-        feature.hasBackground.and.returnValue(false);
-      });
-
-      it("calls back", function () {
-        feature.instructVisitorToVisitBackground(visitor, callback);
-        expect(callback).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe("instructVisitorToVisitScenarios()", function () {
-    var visitor, callback;
-
-    beforeEach(function () {
-      visitor  = createSpyWithStubs("Visitor", {visitScenario: null});
-      callback = createSpy("Callback");
-    });
-
-    it ("iterates over the scenarios with a user function and the callback", function () {
-      feature.instructVisitorToVisitScenarios(visitor, callback);
-      expect(scenarioCollection.asyncForEach).toHaveBeenCalled();
-      expect(scenarioCollection.asyncForEach).toHaveBeenCalledWithAFunctionAsNthParameter(1);
-      expect(scenarioCollection.asyncForEach).toHaveBeenCalledWithValueAsNthParameter(callback, 2);
-    });
-
-    describe("for each scenario", function () {
-      var userFunction, scenario, asyncForEachCallback;
-
-      beforeEach(function () {
-        feature.instructVisitorToVisitScenarios(visitor, callback);
-        userFunction    = scenarioCollection.asyncForEach.calls.mostRecent().args[0];
-        scenario        = createSpy("A scenario from the collection");
-        asyncForEachCallback = createSpy("asyncForEachCallback() callback");
-      });
-
-      it("tells the visitor to visit the scenario and call back when finished", function () {
-        userFunction (scenario, asyncForEachCallback);
-        expect(visitor.visitScenario).toHaveBeenCalledWith(scenario, asyncForEachCallback);
+        it("calls back", function() {
+          expect(callback).toHaveBeenCalled();
+        });
       });
     });
   });

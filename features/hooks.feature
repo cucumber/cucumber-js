@@ -41,7 +41,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -51,7 +51,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -61,6 +61,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -73,6 +74,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -84,6 +86,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:6"
                   }
@@ -127,7 +130,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -137,7 +140,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -148,6 +151,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -159,6 +163,7 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -202,7 +207,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -212,7 +217,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -223,6 +228,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -235,6 +241,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "failed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -282,7 +289,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -292,7 +299,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -303,6 +310,7 @@ Feature: Environment Hooks
                     "error_message": "<error-message>",
                     "status": "failed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -314,6 +322,7 @@ Feature: Environment Hooks
                   "result": {
                     "status": "skipped"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -325,6 +334,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:6"
                   }
@@ -386,7 +396,7 @@ Feature: Environment Hooks
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -396,7 +406,7 @@ Feature: Environment Hooks
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -406,6 +416,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -418,6 +429,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -429,6 +441,7 @@ Feature: Environment Hooks
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:7"
                   }

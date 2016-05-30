@@ -4,6 +4,7 @@ var jsonOutputSteps = function jsonOutputSteps() {
 
   var helpers = require('../support/helpers');
   var getAdditionalErrorText = helpers.getAdditionalErrorText;
+  var normalizeText = helpers.normalizeText;
 
   function findScenario(features, predicate){
     var found = null;
@@ -58,23 +59,29 @@ var jsonOutputSteps = function jsonOutputSteps() {
 
     var actualJson;
     var expectedJson;
+    var errorSuffix = '\n' + getAdditionalErrorText(this.lastRun);
 
     try { actualJson = JSON.parse(actualOutput.replace(/\\\\/g,'/')); }
-    catch(err) { throw new Error('Error parsing actual JSON:\n' + actualOutput + '\n' + getAdditionalErrorText(this.lastRun)); }
+    catch(err) { throw new Error('Error parsing actual JSON:\n' + actualOutput + '\n' + err + errorSuffix); }
 
     try { expectedJson = JSON.parse(expectedOutput); }
-    catch(err) { throw new Error('Error parsing expected JSON:\n' + expectedOutput + '\n' + getAdditionalErrorText(this.lastRun)); }
+    catch(err) { throw new Error('Error parsing expected JSON:\n' + expectedOutput + '\n' + err + errorSuffix); }
 
     neutraliseVariableValuesInJson(actualJson);
     neutraliseVariableValuesInJson(expectedJson);
 
     var diff = jsonDiff.diffString(expectedJson, actualJson);
-    var message = diff + '\n' + getAdditionalErrorText(this.lastRun);
 
-    assert.deepEqual(actualJson, expectedJson, message);
+    assert.deepEqual(actualJson, expectedJson, diff + errorSuffix);
   });
 
   this.Then(/^it runs (\d+) scenarios$/, function (count) {
+    if (this.lastRun.error) {
+      throw new Error('Expected last run to pass but it failed\n' +
+                      'Output:\n' + normalizeText(this.lastRun.stdout) + '\n' +
+                      'Error:\n' + normalizeText(this.lastRun.stderr));
+    }
+
     var features = JSON.parse(this.lastRun.stdout);
     assert.equal(parseInt(count), features[0].elements.length);
   });
@@ -139,7 +146,7 @@ var jsonOutputSteps = function jsonOutputSteps() {
     }, function(step) {
       return step.name === name;
     });
-    assert.equal(step.doc_string.value, docString);
+    assert.equal(step.arguments[0].content, docString);
   });
 
   this.Then(/^the (first|second) scenario has the step "([^"]*)" with the table$/, function (cardinal, name, table) {
@@ -150,10 +157,10 @@ var jsonOutputSteps = function jsonOutputSteps() {
     }, function(step) {
       return step.name === name;
     });
-    var expected = table.raw().map(function(row) {
+    var expected = table.raw().map(function (row) {
       return {cells: row};
     });
-    assert.deepEqual(step.rows, expected);
+    assert.deepEqual(step.arguments[0].rows, expected);
   });
 
   this.Then(/^the (first|second) scenario has the name "([^"]*)"$/, function (cardinal, name) {

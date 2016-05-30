@@ -59,7 +59,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -69,7 +69,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -79,6 +79,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:21"
                   }
@@ -91,6 +92,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -102,6 +104,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:27"
                   }
@@ -158,7 +161,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -168,7 +171,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-passing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -179,6 +182,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -190,6 +194,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -246,7 +251,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -256,7 +261,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-failing",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -268,6 +273,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "failed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -279,6 +285,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -335,7 +342,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -345,7 +352,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-pending",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -355,6 +362,7 @@ Feature: Scenario Statuses
                   "result": {
                     "status": "pending"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
                   }
@@ -366,6 +374,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }
@@ -421,7 +430,7 @@ Feature: Scenario Statuses
         {
           "id": "some-feature",
           "name": "some feature",
-          "description": "",
+          "tags": [],
           "line": 1,
           "keyword": "Feature",
           "uri": "<current-directory>/features/a.feature",
@@ -431,7 +440,7 @@ Feature: Scenario Statuses
               "id": "some-feature;i've-declared-one-step-and-it-is-undefined",
               "line": 3,
               "keyword": "Scenario",
-              "description": "",
+              "tags": [],
               "type": "scenario",
               "steps": [
                 {
@@ -440,7 +449,8 @@ Feature: Scenario Statuses
                   "keyword": "Given ",
                   "result": {
                     "status": "undefined"
-                  }
+                  },
+                  "arguments": []
                 },
                 {
                   "keyword": "After ",
@@ -449,6 +459,7 @@ Feature: Scenario Statuses
                     "duration": "<duration>",
                     "status": "passed"
                   },
+                  "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/support/hooks.js:2"
                   }

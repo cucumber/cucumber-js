@@ -2,417 +2,83 @@ require('../support/spec_helper');
 
 describe("Cucumber.Parser", function () {
   var Cucumber = requireLib('cucumber');
-  var parser, featureSources;
-  var features, astFilter, astAssembler;
+  var Gherkin = require('gherkin');
+  var astFilter, featureSources, gherkinParser, gherkinCompiler, parser;
 
   beforeEach(function () {
-    features       = createSpy("Root 'features' AST element");
-    astFilter      = createSpy("AST filter");
+    astFilter = createSpyWithStubs("AST filter", {isElementEnrolled: null});
     featureSources = [
-      ["(feature:1)", createSpyWithStubs('first feature source', {toString:"first feature source"})],
-      ["(feature:2)", createSpyWithStubs('second feature source', {toString:"# language: fr\nsecond feature source"})]
+      ['first feature uri', 'first feature source'],
+      ['second feature uri', 'second feature source']
     ];
-    astAssembler   = createSpy("AST assembler");
-    spyOn(Cucumber.Ast, 'Features').and.returnValue(features);
-    spyOn(Cucumber.Ast, 'Assembler').and.returnValue(astAssembler);
+    gherkinParser = createSpyWithStubs("gherkin parser", {parse: null});
+    gherkinCompiler = createSpyWithStubs("gherkin compiler", {compile: null});
+    spyOnStub(Gherkin, 'Parser').and.returnValue(gherkinParser);
+    spyOnStub(Gherkin, 'Compiler').and.returnValue(gherkinCompiler);
+
     parser = Cucumber.Parser(featureSources, astFilter);
   });
 
-  describe("constructor", function () {
-    it("creates a new AST features element", function () {
-      expect(Cucumber.Ast.Features).toHaveBeenCalled();
-    });
-
-    it("instantiates an AST assembler", function () {
-      expect(Cucumber.Ast.Assembler).toHaveBeenCalledWith(features, astFilter);
-    });
-  });
-
   describe("parse()", function () {
-    var Gherkin = require('gherkin');
-    var gherkinENLexerConstructor, gherkinFRLexerConstructor, gherkinENLexer, gherkinFRLexer;
-    var eventHandlers;
+    var gherkinDocument1, gherkinDocument2;
+    var feature1Data, feature2Data, pickle1Data, pickle2Data, pickle3Data, pickle4Data;
+    var feature1, feature2, scenario1, scenario2, scenario3, scenario4;
+    var result;
 
     beforeEach(function () {
-      gherkinENLexer = createSpyWithStubs("English gherkin lexer instance", {scan: null});
-      gherkinFRLexer = createSpyWithStubs("French gherkin lexer instance", {scan: null});
-      gherkinENLexerConstructor = createSpy("English gherkin lexer constructor").and.returnValue(gherkinENLexer);
-      gherkinFRLexerConstructor = createSpy("French gherkin lexer constructor").and.returnValue(gherkinFRLexer);
-      spyOn(Gherkin, 'Lexer').and.callFake(
-        function (language) {
-          if (language === 'en') {
-            return gherkinENLexerConstructor;
-          } else if (language === 'fr') {
-            return gherkinFRLexerConstructor;
-          } else {
-            throw new Error('Could not instantiate a parser for this language (' + language + ')');
-          }
-        }
-      );
-      eventHandlers = createSpy("Parser event handlers");
-      spyOn(parser, 'getEventHandlers').and.returnValue(eventHandlers);
-      spyOn(parser, 'setCurrentSourceUri');
+      feature1 = createSpy('feature1');
+      feature2 = createSpy('feature2');
+      feature1Data = {feature1: 'data'};
+      feature2Data = {feature2: 'data'};
+      gherkinDocument1 = {feature: feature1Data};
+      gherkinDocument2 = {feature: feature2Data};
+      pickle1Data = {pickle1: 'data'};
+      pickle2Data = {pickle2: 'data'};
+      pickle3Data = {pickle3: 'data'};
+      pickle4Data = {pickle4: 'data'};
+      scenario1 = createSpy('scenario1');
+      scenario2 = createSpy('scenario2');
+      scenario3 = createSpy('scenario3');
+      scenario4 = createSpy('scenario4');
+      gherkinParser.parse.and.returnValues(gherkinDocument1, gherkinDocument2);
+      gherkinCompiler.compile.and.returnValues([pickle1Data, pickle2Data], [pickle3Data, pickle4Data]);
+      spyOnStub(Cucumber.Ast, 'Scenario').and.returnValues(scenario1, scenario2, scenario3, scenario4);
+      spyOnStub(Cucumber.Ast, 'Feature').and.returnValues(feature1, feature2);
+      astFilter.isElementEnrolled.and.returnValues(true, true, true, false);
+      result = parser.parse();
     });
 
-    it("gets the parse event handlers", function () {
-      parser.parse();
-      expect(parser.getEventHandlers).toHaveBeenCalled();
+    it("parses the feature sources", function () {
+      expect(gherkinParser.parse).toHaveBeenCalledWith('first feature source');
+      expect(gherkinParser.parse).toHaveBeenCalledWith('second feature source');
     });
 
-    it("creates a gherkin lexer for the English language", function () {
-      parser.parse();
-      expect(Gherkin.Lexer).toHaveBeenCalledWith('en');
-      expect(gherkinENLexerConstructor).toHaveBeenCalledWith(eventHandlers);
+    it("compiles the feature data", function () {
+      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument1, 'first feature uri');
+      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument2, 'second feature uri');
     });
 
-
-    it("creates a gherkin lexer for the French language", function () {
-      parser.parse();
-      expect(Gherkin.Lexer).toHaveBeenCalledWith('fr');
-      expect(gherkinFRLexerConstructor).toHaveBeenCalledWith(eventHandlers);
+    it("creates the scenarios", function () {
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle1Data);
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle2Data);
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle3Data);
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle4Data);
     });
 
-    it("sets the uri of each feature source", function () {
-      parser.parse();
-      expect(parser.setCurrentSourceUri).toHaveBeenCalledWith(featureSources[0][0]);
-      expect(parser.setCurrentSourceUri).toHaveBeenCalledWith(featureSources[1][0]);
+    it("checks if each scenario should be enrolled", function () {
+      expect(astFilter.isElementEnrolled).toHaveBeenCalledWith(scenario1);
+      expect(astFilter.isElementEnrolled).toHaveBeenCalledWith(scenario2);
+      expect(astFilter.isElementEnrolled).toHaveBeenCalledWith(scenario3);
+      expect(astFilter.isElementEnrolled).toHaveBeenCalledWith(scenario4);
     });
 
-    it("returns the features root element", function () {
-      expect(parser.parse()).toBe(features);
-    });
-  });
-
-  describe("getCurrentSourceUri() [setCurrentSourceUri()]", function () {
-    var uri;
-
-    beforeEach(function () {
-      uri = createSpy("uri");
+    it("creates the features", function () {
+      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith({feature1: 'data', uri: 'first feature uri'}, [scenario1, scenario2]);
+      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith({feature2: 'data', uri: 'second feature uri'}, [scenario3]);
     });
 
-    it("returns the stored current source URI", function () {
-      parser.setCurrentSourceUri(uri);
-      expect(parser.getCurrentSourceUri()).toBe(uri);
-    });
-  });
-
-  describe("getEventHandlers()", function () {
-    var eventHandlers;
-
-    it("provides a 'feature' handler", function () {
-      spyOn(parser, 'handleFeature');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.feature).toBe(parser.handleFeature);
-    });
-
-    it("provides a 'background' handler", function () {
-      spyOn(parser, 'handleBackground');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.background).toBe(parser.handleBackground);
-    });
-
-    it("provides a 'scenario' handler", function () {
-      spyOn(parser, 'handleScenario');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.scenario).toBe(parser.handleScenario);
-    });
-
-    it("provides a 'step' handler", function () {
-      spyOn(parser, 'handleStep');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.step).toBe(parser.handleStep);
-    });
-
-    it("provides a 'doc_string' handler", function () {
-      spyOn(parser, 'handleDocString');
-      eventHandlers = parser.getEventHandlers();
-      /* jshint -W106 */
-      expect(eventHandlers.doc_string).toBe(parser.handleDocString);
-      /* jshint +W106 */
-    });
-
-    it("provides a 'eof' handler", function () {
-      spyOn(parser, 'handleEof');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.eof).toBe(parser.handleEof);
-    });
-
-    it("provides a 'comment' handler", function () {
-      spyOn(parser, 'handleComment');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.comment).toBe(parser.handleComment);
-    });
-
-    it("provides a 'row' handler", function () {
-      spyOn(parser, 'handleDataTableRow');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.row).toBe(parser.handleDataTableRow);
-    });
-
-    it("provides a 'tag' handler", function () {
-      spyOn(parser, 'handleTag');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.tag).toBe(parser.handleTag);
-    });
-
-    it("provides a 'scenario_outline' handler", function () {
-      spyOn(parser, 'handleScenarioOutline');
-      eventHandlers = parser.getEventHandlers();
-      /* jshint -W106 */
-      expect(eventHandlers.scenario_outline).toBe(parser.handleScenarioOutline);
-      /* jshint +W106 */
-    });
-
-    it("provides an 'examples' handler", function () {
-      spyOn(parser, 'handleExamples');
-      eventHandlers = parser.getEventHandlers();
-      expect(eventHandlers.examples).toBe(parser.handleExamples);
-    });
-  });
-
-  describe("handleBackground()", function () {
-    var keyword, name, description, uri, line;
-    var background;
-
-    beforeEach(function () {
-      keyword        = createSpy("'background' keyword");
-      name           = createSpy("name of the background");
-      description    = createSpy("description of the background");
-      uri            = createSpy("uri");
-      line           = createSpy("line number");
-      background     = createSpyWithStubs("background AST element");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast, 'Background').and.returnValue(background);
-      spyOnStub(astAssembler, 'insertBackground');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleBackground(keyword, name, description, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new background AST element", function () {
-      parser.handleBackground(keyword, name, description, line);
-      expect(Cucumber.Ast.Background).toHaveBeenCalledWith(keyword, name, description, uri, line);
-    });
-
-    it("tells the AST assembler to insert the background into the tree", function () {
-      parser.handleBackground(keyword, name, description, line);
-      expect(astAssembler.insertBackground).toHaveBeenCalledWith(background);
-    });
-  });
-
-  describe("handleComment()", function () {
-    it("exists but does nothing", function () {
-      parser.handleComment();
-    });
-  });
-
-  describe("handleDocString()", function () {
-    var contentType, string, uri, line;
-    var docString;
-
-    beforeEach(function () {
-      contentType = createSpy("DocString's content type");
-      string      = createSpy("DocString's actual string");
-      uri         = createSpy("uri");
-      line        = createSpy("line number");
-      docString   = createSpy("DocString AST element");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast, 'DocString').and.returnValue(docString);
-      spyOnStub(astAssembler, 'insertDocString');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleDocString(contentType, string, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new DocString AST element", function () {
-      parser.handleDocString(contentType, string, line);
-      expect(Cucumber.Ast.DocString).toHaveBeenCalledWith(contentType, string, uri, line);
-    });
-
-    it("tells the AST assembler to insert the DocString into the tree", function () {
-      parser.handleDocString(contentType, string, line);
-      expect(astAssembler.insertDocString).toHaveBeenCalledWith(docString);
-    });
-  });
-
-  describe("handleEof()", function () {
-    beforeEach(function () {
-      spyOnStub(astAssembler, 'finish');
-    });
-
-    it("tells the assembler to finish its duty", function () {
-      parser.handleEof();
-      expect(astAssembler.finish).toHaveBeenCalled();
-    });
-  });
-
-  describe("handleFeature()", function () {
-    var keyword, name, description, uri, line;
-    var feature;
-
-    beforeEach(function () {
-      keyword     = createSpy("'feature' keyword");
-      name        = createSpy("Name of the feature");
-      description = createSpy("Description of the feature");
-      uri         = createSpy("uri");
-      line        = createSpy("Line number");
-      feature     = createSpyWithStubs("Feature AST element");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast, 'Feature').and.returnValue(feature);
-      spyOnStub(astAssembler, 'insertFeature');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleFeature(keyword, name, description, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new feature AST element", function () {
-      parser.handleFeature(keyword, name, description, line);
-      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith(keyword, name, description, uri, line);
-    });
-
-    it("tells the AST assembler to insert the feature into the tree", function () {
-      parser.handleFeature(keyword, name, description, line);
-      expect(astAssembler.insertFeature).toHaveBeenCalledWith(feature);
-    });
-  });
-
-  describe("handleDataTableRow()", function () {
-    var cells, uri, line;
-    var dataTableRow;
-
-    beforeEach(function () {
-      dataTableRow = createSpy("data table row");
-      cells        = createSpy("data table cells");
-      uri          = createSpy("uri");
-      line         = createSpy("line");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast.DataTable, 'Row').and.returnValue(dataTableRow);
-      spyOnStub(astAssembler, 'insertDataTableRow');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleDataTableRow(cells, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new data table row AST element", function () {
-      parser.handleDataTableRow(cells, line);
-      expect(Cucumber.Ast.DataTable.Row).toHaveBeenCalledWith(cells, uri, line);
-    });
-
-    it("tells the AST assembler to insert the data table row into the tree", function () {
-      parser.handleDataTableRow(cells, line);
-      expect(astAssembler.insertDataTableRow).toHaveBeenCalledWith(dataTableRow);
-    });
-  });
-
-  describe("handleScenario()", function () {
-    var keyword, name, description, uri, line;
-    var scenario;
-
-    beforeEach(function () {
-      keyword     = createSpy("'scenario' keyword");
-      name        = createSpy("Name of the scenario");
-      description = createSpy("Description of the scenario");
-      uri         = createSpy("uri");
-      line        = createSpy("Line number");
-      scenario    = createSpyWithStubs("Scenario AST element");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast, 'Scenario').and.returnValue(scenario);
-      spyOnStub(astAssembler, 'insertScenario');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleScenario(keyword, name, description, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new scenario AST element", function () {
-      parser.handleScenario(keyword, name, description, line);
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(keyword, name, description, uri, line);
-    });
-
-    it("tells the AST assembler to insert the scenario into the tree", function () {
-      parser.handleScenario(keyword, name, description, line);
-      expect(astAssembler.insertScenario).toHaveBeenCalledWith(scenario);
-    });
-  });
-
-  describe("handleStep()", function () {
-    var keyword, name, uri, line;
-    var step;
-
-    beforeEach(function () {
-      keyword         = createSpy("'step' keyword");
-      name            = createSpy("name of the step");
-      uri             = createSpy("uri");
-      line            = createSpy("line number");
-      step            = createSpy("step AST element");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast, 'Step').and.returnValue(step);
-      spyOnStub(astAssembler, 'insertStep');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleStep(keyword, name, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new step AST element", function () {
-      parser.handleStep(keyword, name, line);
-      expect(Cucumber.Ast.Step).toHaveBeenCalledWith(keyword, name, uri, line);
-    });
-
-    it("tells the AST assembler to insert the step into the tree", function () {
-      parser.handleStep(keyword, name, line);
-      expect(astAssembler.insertStep).toHaveBeenCalledWith(step);
-    });
-  });
-
-  describe("handleTag()", function () {
-    var name, uri, line, tag;
-
-    beforeEach(function () {
-      name = createSpy("tag name");
-      uri  = createSpy("uri");
-      line = createSpy("line number");
-      tag  = createSpy("tag AST element");
-      spyOn(parser, 'getCurrentSourceUri').and.returnValue(uri);
-      spyOn(Cucumber.Ast, 'Tag').and.returnValue(tag);
-      spyOnStub(astAssembler, 'insertTag');
-    });
-
-    it("gets the current source URI", function () {
-      parser.handleTag(name, line);
-      expect(parser.getCurrentSourceUri).toHaveBeenCalled();
-    });
-
-    it("creates a new tag AST element", function () {
-      parser.handleTag(name, line);
-      expect(Cucumber.Ast.Tag).toHaveBeenCalledWith(name, uri, line);
-    });
-
-    it("tells the AST assembler to insert the tag into the tree", function () {
-      parser.handleTag(name, line);
-      expect(astAssembler.insertTag).toHaveBeenCalledWith(tag);
-    });
-  });
-
-  describe("handleScenarioOutline()", function () {
-    it("throws an error", function () {
-      expect(parser.handleScenarioOutline).toThrow();
-    });
-  });
-
-  describe("handleExamples()", function () {
-    it("throws an error", function () {
-      expect(parser.handleExamples).toThrow();
+    it("returns the features", function () {
+      expect(result).toEqual([feature1, feature2]);
     });
   });
 });

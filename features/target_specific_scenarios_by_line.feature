@@ -51,10 +51,10 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        Scenario Outline: third scenario
+        Scenario: third scenario
           When a step is passing
 
-        Scenario Outline: third scenario
+        Scenario: third scenario
           When a step is pending
 
       Warnings:
@@ -77,7 +77,7 @@ Feature: Target specific scenarios
       """
       Feature: some feature
 
-        Scenario Outline: third scenario
+        Scenario: third scenario
           When a step is passing
 
       1 scenario (1 passed)

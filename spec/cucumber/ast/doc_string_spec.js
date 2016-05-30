@@ -2,37 +2,31 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Ast.DocString", function () {
   var Cucumber = requireLib('cucumber');
-  var docString, contents, uri, line, contentType;
+  var docString;
 
   beforeEach(function () {
-    contentType = createSpy("content type");
-    contents    = createSpy("contents");
-    uri         = createSpy("uri");
-    line        = createSpy("line number");
-    docString   = Cucumber.Ast.DocString(contentType, contents, uri, line);
+    docString = Cucumber.Ast.DocString({
+      content: 'content',
+      contentType: 'contentType',
+      location: { line: 1 }
+    });
   });
 
-  describe("getContents()", function () {
-    it("returns the contents of the DocString", function () {
-      expect(docString.getContents()).toBe(contents);
+  describe("getContent()", function () {
+    it("returns the content", function () {
+      expect(docString.getContent()).toEqual('content');
     });
   });
 
   describe("getContentType()", function () {
-    it("returns the doc type of the DocString", function () {
-      expect(docString.getContentType()).toBe(contentType);
-    });
-  });
-
-  describe("getUri()", function () {
-    it("returns the URI on which the background starts", function () {
-      expect(docString.getUri()).toBe(uri);
+    it("returns the doc", function () {
+      expect(docString.getContentType()).toEqual('contentType');
     });
   });
 
   describe("getLine()", function () {
-    it("returns the line on which the DocString starts", function () {
-      expect(docString.getLine()).toBe(line);
+    it("returns the line", function () {
+      expect(docString.getLine()).toEqual(1);
     });
   });
 });
