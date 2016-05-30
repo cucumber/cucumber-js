@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.3...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.4...master)
+
+### [0.10.4](https://github.com/cucumber/cucumber-js/compare/v0.10.3...v0.10.4) (2016-05-30)
+
+#### New Features
+
+* Allow time to be faked by utilities such as `sinon.useFakeTimers` (John McLaughlin)
 
 ### [0.10.3](https://github.com/cucumber/cucumber-js/compare/v0.10.2...v0.10.3) (2016-05-19)
 
