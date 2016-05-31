@@ -110,28 +110,58 @@ describe("Cucumber.Cli.Configuration", function () {
         var stream = createSpy('stream');
         formatterOptions.stream = stream;
         spyOn(fs, 'createWriteStream').and.returnValue(stream);
-
-        options.format = ['json:path/to/file'];
-        Cucumber.Listener.JsonFormatter.and.returnValue(formatter);
       });
 
-      it("opens the file for writing", function () {
-        configuration.getFormatters();
-        expect(fs.openSync).toHaveBeenCalledWith('path/to/file', 'w');
+      describe("when the output file does not include a colon", function() {
+        beforeEach(function () {
+          options.format = ['json:path/to/file'];
+          Cucumber.Listener.JsonFormatter.and.returnValue(formatter);
+        });
+
+        it("opens the file for writing", function () {
+          configuration.getFormatters();
+          expect(fs.openSync).toHaveBeenCalledWith('path/to/file', 'w');
+        });
+
+        it("creates a write stream to the file", function () {
+          configuration.getFormatters();
+          expect(fs.createWriteStream).toHaveBeenCalledWith(null, {fd: fd});
+        });
+
+        it("creates a new json formatter", function () {
+          configuration.getFormatters();
+          expect(Cucumber.Listener.JsonFormatter).toHaveBeenCalledWith(formatterOptions);
+        });
+
+        it("returns the formatter", function () {
+          expect(configuration.getFormatters()).toEqual([formatter]);
+        });
       });
 
-      it("creates a write stream to the file", function () {
-        configuration.getFormatters();
-        expect(fs.createWriteStream).toHaveBeenCalledWith(null, {fd: fd});
-      });
+      describe("when the output file includes a colon", function() {
+        beforeEach(function () {
+          options.format = ['json:windows:path/to/file'];
+          Cucumber.Listener.JsonFormatter.and.returnValue(formatter);
+        });
 
-      it("creates a new json formatter", function () {
-        configuration.getFormatters();
-        expect(Cucumber.Listener.JsonFormatter).toHaveBeenCalledWith(formatterOptions);
-      });
+        it("opens the file for writing", function () {
+          configuration.getFormatters();
+          expect(fs.openSync).toHaveBeenCalledWith('windows:path/to/file', 'w');
+        });
 
-      it("returns the json formatter", function () {
-        expect(configuration.getFormatters()).toEqual([formatter]);
+        it("creates a write stream to the file", function () {
+          configuration.getFormatters();
+          expect(fs.createWriteStream).toHaveBeenCalledWith(null, {fd: fd});
+        });
+
+        it("creates a new json formatter", function () {
+          configuration.getFormatters();
+          expect(Cucumber.Listener.JsonFormatter).toHaveBeenCalledWith(formatterOptions);
+        });
+
+        it("returns the formatter", function () {
+          expect(configuration.getFormatters()).toEqual([formatter]);
+        });
       });
     });
 
