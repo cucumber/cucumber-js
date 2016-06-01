@@ -2,7 +2,12 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.FeaturesResult", function () {
   var Cucumber = requireLib('cucumber');
-  var featuresResult;
+  var featuresResult, scenarioResult, step;
+
+  beforeEach(function() {
+    step = Cucumber.Ast.Step({});
+    scenarioResult = Cucumber.Runtime.ScenarioResult();
+  });
 
   describe('strict', function () {
     beforeEach(function () {
@@ -15,7 +20,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after a passing scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PASSED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PASSED, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -26,7 +32,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after a failing scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.FAILED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.FAILED, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -37,7 +44,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after an ambiguous scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.AMBIGUOUS});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.AMBIGUOUS, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -48,7 +56,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after a pending scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PENDING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -59,7 +68,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after an undefined step', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.UNDEFINED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -80,7 +90,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after a passing scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PASSING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PASSING, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -91,7 +102,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after a failing scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.FAILED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.FAILED, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -102,7 +114,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after an ambiguous scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.AMBIGUOUS});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.AMBIGUOUS, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -113,7 +126,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after a pending scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.PENDING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 
@@ -124,7 +138,8 @@ describe("Cucumber.Runtime.FeaturesResult", function () {
 
     describe('after an undefined scenario', function () {
       beforeEach(function () {
-        var scenarioResult = createSpyWithStubs('scenario result', {getStatus: Cucumber.Status.UNDEFINED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
+        scenarioResult.witnessStepResult(stepResult);
         featuresResult.witnessScenarioResult(scenarioResult);
       });
 

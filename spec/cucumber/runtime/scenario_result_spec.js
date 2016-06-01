@@ -2,9 +2,10 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.ScenarioResult", function () {
   var Cucumber = requireLib('cucumber');
-  var scenarioResult;
+  var scenarioResult, step;
 
   beforeEach(function () {
+    step = Cucumber.Ast.Step({});
     scenarioResult = Cucumber.Runtime.ScenarioResult();
   });
 
@@ -14,7 +15,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
   describe('after a passing step', function () {
     beforeEach(function () {
-      var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PASSED});
+      var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PASSED, step: step});
       scenarioResult.witnessStepResult(stepResult);
     });
 
@@ -27,7 +28,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
       beforeEach(function () {
         failureException = createSpy('failureException');
-        var stepResult = createSpyWithStubs('stepResult', {getFailureException: failureException, getStatus: Cucumber.Status.FAILED});
+        var stepResult = Cucumber.Runtime.StepResult({failureException: failureException, status: Cucumber.Status.FAILED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -42,7 +43,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a pending step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -53,7 +54,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after an undefined step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -68,7 +69,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     beforeEach(function () {
       failureException = createSpy('failureException');
-      var stepResult = createSpyWithStubs('stepResult', {getFailureException: failureException, getStatus: Cucumber.Status.FAILED});
+      var stepResult = Cucumber.Runtime.StepResult({failureException: failureException, status: Cucumber.Status.FAILED, step: step});
       scenarioResult.witnessStepResult(stepResult);
     });
 
@@ -82,7 +83,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a pending step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -97,7 +98,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after an undefined step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -112,7 +113,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a skipped step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.SKIPPED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.SKIPPED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -128,7 +129,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
   describe('after a pending step', function () {
     beforeEach(function () {
-      var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+      var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
       scenarioResult.witnessStepResult(stepResult);
     });
 
@@ -138,7 +139,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a undefined step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -149,7 +150,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a skipped step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.SKIPPED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.SKIPPED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -161,7 +162,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
   describe('after a undefined step', function () {
     beforeEach(function () {
-      var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
+      var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
       scenarioResult.witnessStepResult(stepResult);
     });
 
@@ -171,7 +172,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a pending step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -182,7 +183,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a skipped step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.SKIPPED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.SKIPPED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -194,7 +195,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
   describe('after a skipped step', function () {
     beforeEach(function () {
-      var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.SKIPPED});
+      var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.SKIPPED, step: step});
       scenarioResult.witnessStepResult(stepResult);
     });
 
@@ -204,7 +205,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after a pending step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.PENDING});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.PENDING, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 
@@ -215,7 +216,7 @@ describe("Cucumber.Runtime.ScenarioResult", function () {
 
     describe('after an undefined step', function () {
       beforeEach(function () {
-        var stepResult = createSpyWithStubs('stepResult', {getStatus: Cucumber.Status.UNDEFINED});
+        var stepResult = Cucumber.Runtime.StepResult({status: Cucumber.Status.UNDEFINED, step: step});
         scenarioResult.witnessStepResult(stepResult);
       });
 

@@ -123,38 +123,4 @@ describe("Cucumber.Ast.Feature", function () {
       expect(feature.getTags()).toEqual([tag1, tag2]);
     });
   });
-
-  describe("acceptVisitor", function () {
-    var visitor, callback;
-
-    beforeEach(function () {
-      visitor  = createSpyWithStubs("visitor", {visitScenario: null});
-      callback = createSpy("callback");
-      feature.acceptVisitor(visitor, callback);
-    });
-
-    it("instructs the visitor to visit the first scenario", function() {
-      expect(visitor.visitScenario).toHaveBeenCalledWith(scenario1, jasmine.any(Function));
-    });
-
-    describe('after the first scenario is visited', function () {
-      beforeEach(function() {
-        visitor.visitScenario.calls.mostRecent().args[1]();
-      });
-
-      it("instructs the visitor to visit the second scenario", function() {
-        expect(visitor.visitScenario).toHaveBeenCalledWith(scenario2, jasmine.any(Function));
-      });
-
-      describe('after the second scenario is visited', function () {
-        beforeEach(function() {
-          visitor.visitScenario.calls.mostRecent().args[1]();
-        });
-
-        it("calls back", function() {
-          expect(callback).toHaveBeenCalled();
-        });
-      });
-    });
-  });
 });

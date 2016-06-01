@@ -35,17 +35,4 @@ describe("Cucumber.Ast.HookStep", function () {
       expect(hookStep.hasUri()).toBe(false);
     });
   });
-
-  describe("getHook() [setHook()]", function () {
-    var hook;
-
-    beforeEach(function () {
-      hook = createSpy("hook");
-    });
-
-    it("returns the hook instance set with setHook()", function () {
-      hookStep.setHook(hook);
-      expect(hookStep.getHook()).toBe(hook);
-    });
-  });
 });

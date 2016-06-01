@@ -2,14 +2,11 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Api.Scenario", function () {
   var Cucumber = requireLib('cucumber');
-  var scenarioFailureException, attachments, astTreeWalker;
+  var failureException, scenarioResult;
   var keyword, name, description, uri, line, tags, astScenario;
   var scenario;
 
   beforeEach(function () {
-    scenarioFailureException = createSpy("scenario get exception");
-    attachments        = createSpy("attachments");
-    astTreeWalker      = createSpyWithStubs("ast scenario", { getScenarioStatus: null, getScenarioFailureException: scenarioFailureException, getAttachments: attachments, attach: undefined });
     keyword            = createSpy("scenario keyword");
     name               = createSpy("scenario name");
     description        = createSpy("scenario description");
@@ -18,7 +15,10 @@ describe("Cucumber.Api.Scenario", function () {
     tags               = createSpy("scenario tags");
     astScenario        = createSpyWithStubs("ast scenario", { getKeyword: keyword, getName: name, getDescription: description, getUri: uri, getLine: line, getTags: tags });
 
-    scenario = Cucumber.Api.Scenario(astTreeWalker, astScenario);
+    failureException = createSpy("failure exception");
+    scenarioResult     = createSpyWithStubs("scenario result", { getStatus: null, getFailureException: failureException });
+
+    scenario = Cucumber.Api.Scenario(astScenario, scenarioResult);
   });
 
   describe("getKeyword()", function () {
@@ -60,7 +60,7 @@ describe("Cucumber.Api.Scenario", function () {
   describe("isSuccessful()", function () {
     describe('scenario passed', function () {
       beforeEach(function() {
-        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.PASSED);
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.PASSED);
       });
 
       it("returns true", function () {
@@ -78,7 +78,7 @@ describe("Cucumber.Api.Scenario", function () {
   describe("isFailed()", function () {
     describe('scenario failed', function () {
       beforeEach(function() {
-        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.FAILED);
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
       });
 
       it("returns true", function () {
@@ -96,7 +96,7 @@ describe("Cucumber.Api.Scenario", function () {
   describe("isPending()", function () {
     describe('scenario is pending', function () {
       beforeEach(function() {
-        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.PENDING);
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.PENDING);
       });
 
       it("returns true", function () {
@@ -114,7 +114,7 @@ describe("Cucumber.Api.Scenario", function () {
   describe("isUndefined()", function () {
     describe('scenario is undefined', function () {
       beforeEach(function() {
-        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.UNDEFINED);
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.UNDEFINED);
       });
 
       it("returns true", function () {
@@ -132,7 +132,7 @@ describe("Cucumber.Api.Scenario", function () {
   describe("isSkipped()", function () {
     describe('scenario is skipped', function () {
       beforeEach(function() {
-        astTreeWalker.getScenarioStatus.and.returnValue(Cucumber.Status.SKIPPED);
+        scenarioResult.getStatus.and.returnValue(Cucumber.Status.SKIPPED);
       });
 
       it("returns true", function () {
@@ -149,13 +149,7 @@ describe("Cucumber.Api.Scenario", function () {
 
   describe("getException()", function () {
     it("returns the exception raised when running the scenario", function () {
-      expect(scenario.getException()).toBe(scenarioFailureException);
-    });
-  });
-
-  describe("getAttachments()", function () {
-    it("returns any attachments created by the current step", function () {
-      expect(scenario.getAttachments()).toBe(attachments);
+      expect(scenario.getException()).toBe(failureException);
     });
   });
 
@@ -197,8 +191,6 @@ describe("Cucumber.Api.Scenario", function () {
               throw new Error("Unrecognised event " + event);
             }
           });
-          spyOnStub(astTreeWalker, "attach");
-
           scenario.attach(stream, mimeType, callback);
         });
 
@@ -221,8 +213,12 @@ describe("Cucumber.Api.Scenario", function () {
             endListener();
           });
 
-          it("instructs the ast tree walker to create an attachment containing the contents of the stream", function () {
-            expect(astTreeWalker.attach).toHaveBeenCalledWith("first chunksecond chunk", mimeType);
+          it("saves the attachment with the contents of the stream", function () {
+            var attachments = scenario.getAttachments();
+            expect(attachments.length).toEqual(1);
+            var attachment = attachments[0];
+            expect(attachment.getData()).toEqual("first chunksecond chunk");
+            expect(attachment.getMimeType()).toEqual(mimeType);
           });
 
           it("calls back", function () {
@@ -243,9 +239,13 @@ describe("Cucumber.Api.Scenario", function () {
         expect(function () { scenario.attach(buffer); }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects a mimeType"));
       });
 
-      it("instructs the ast tree walker to create an attachment containing the contents of the buffer", function () {
+      it("saves the attachment containing the contents of the buffer", function () {
         scenario.attach(buffer, mimeType);
-        expect(astTreeWalker.attach).toHaveBeenCalledWith("data", mimeType);
+        var attachments = scenario.getAttachments();
+        expect(attachments.length).toEqual(1);
+        var attachment = attachments[0];
+        expect(attachment.getData()).toEqual("data");
+        expect(attachment.getMimeType()).toEqual(mimeType);
       });
 
       describe("when provided with a callback", function () {
@@ -276,14 +276,22 @@ describe("Cucumber.Api.Scenario", function () {
         data = "data";
       });
 
-      it("instructs the ast tree walker to create an attachment containing the string", function () {
+      it("saves the attachment containing the string", function () {
         scenario.attach(data, mimeType);
-        expect(astTreeWalker.attach).toHaveBeenCalledWith(data, mimeType);
+        var attachments = scenario.getAttachments();
+        expect(attachments.length).toEqual(1);
+        var attachment = attachments[0];
+        expect(attachment.getData()).toEqual("data");
+        expect(attachment.getMimeType()).toEqual(mimeType);
       });
 
       it("defaults to the plain text mime type when the mimeType argument is missing", function () {
         scenario.attach(data);
-        expect(astTreeWalker.attach).toHaveBeenCalledWith(data, "text/plain");
+        var attachments = scenario.getAttachments();
+        expect(attachments.length).toEqual(1);
+        var attachment = attachments[0];
+        expect(attachment.getData()).toEqual("data");
+        expect(attachment.getMimeType()).toEqual("text/plain");
       });
 
       it("calls back if a callback is given", function () {
