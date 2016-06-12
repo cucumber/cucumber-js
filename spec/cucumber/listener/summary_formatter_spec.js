@@ -221,7 +221,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
           '   Step Definition: ' + colors.gray('path/to/stepDefintion:3') + '\n' +
           '   Message:' + '\n' +
           '     ' + colors.red('failure exception stack') + '\n\n';
-        expect(summaryFormatter.log).toHaveBeenCalledWith(expected);
+        expect(normalizeLogCalls(summaryFormatter.log)).toHaveBeenCalledWith(expected);
       });
     });
 
@@ -243,7 +243,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
           '     ' + colors.red('Multiple step definitions match:' + '\n' +
           '       pattern 1        - path/to/stepDefinition1:3' + '\n' +
           '       longer pattern 2 - path/to/stepDefinition2:4') + '\n\n';
-        expect(summaryFormatter.log).toHaveBeenCalledWith(expected);
+        expect(normalizeLogCalls(summaryFormatter.log)).toHaveBeenCalledWith(expected);
       });
     });
   });

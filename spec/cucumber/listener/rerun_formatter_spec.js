@@ -37,7 +37,7 @@ describe("Cucumber.Listener.RerunFormatter", function () {
       });
 
       it("logs nothing", function () {
-        expect(rerunFormatter.getLogs()).toEqual('path/to/scenario:1');
+        expect(normalizePath(rerunFormatter.getLogs())).toEqual('path/to/scenario:1');
       });
     });
 
@@ -53,7 +53,7 @@ describe("Cucumber.Listener.RerunFormatter", function () {
       });
 
       it("logs the path to the failed scenarios", function () {
-        expect(rerunFormatter.getLogs()).toEqual('path/to/scenario:1:2');
+        expect(normalizePath(rerunFormatter.getLogs())).toEqual('path/to/scenario:1:2');
       });
     });
 
@@ -69,7 +69,7 @@ describe("Cucumber.Listener.RerunFormatter", function () {
       });
 
       it("logs the path to the failed scenarios", function () {
-        expect(rerunFormatter.getLogs()).toEqual(
+        expect(normalizePath(rerunFormatter.getLogs())).toEqual(
           'path/to/scenario:1' + '\n' +
           'other/path/to/scenario:1'
         );
