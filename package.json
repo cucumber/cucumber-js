@@ -101,7 +101,6 @@
     "node": ">=0.10"
   },
   "dependencies": {
-    "base-64": "^0.1.0",
     "callsite": "^1.0.0",
     "camel-case": "^1.2.0",
     "cli-table": "^0.3.1",
