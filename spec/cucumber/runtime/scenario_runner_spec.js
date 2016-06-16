@@ -218,7 +218,7 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
       });
     });
 
-    describe("with an passing step in dry run mode", function() {
+    describe("with a step in dry run mode", function() {
       var step, stepDefinition;
 
       beforeEach(function(done) {
@@ -255,7 +255,95 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
         expect(event.getPayloadItem('scenarioResult')).toEqual(result);
       });
 
-      it('returns a failed result', function() {
+      it('returns a skipped result', function() {
+        expect(result.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+      });
+    });
+
+    describe("with an before hook and step in dry run mode", function() {
+      var step, stepDefinition;
+
+      beforeEach(function(done) {
+        options.dryRun = true;
+        var hook = Cucumber.SupportCode.Hook(function(){ throw new Error('error'); }, {});
+        step = Cucumber.Ast.Step({});
+        stepDefinition = createSpy('stepDefinition');
+        supportCodeLibrary.lookupBeforeHooksByScenario.and.returnValue([hook]);
+        supportCodeLibrary.lookupStepDefinitionsByName.and.returnValue([stepDefinition]);
+        scenario.getSteps.and.returnValue([step]);
+        scenarioRunner.run(function(value) {
+          result = value;
+          done();
+        });
+      });
+
+      it('broadcasts a scenario, step and stepResult event and does not run the hook', function() {
+        expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(2);
+        expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(2);
+
+        var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
+        expect(event.getName()).toEqual('Scenario');
+        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+
+        event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
+        expect(event.getName()).toEqual('Step');
+        expect(event.getPayloadItem('step')).toEqual(step);
+
+        event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
+        expect(event.getName()).toEqual('StepResult');
+        var stepResult = event.getPayloadItem('stepResult');
+        expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+
+        event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
+        expect(event.getName()).toEqual('ScenarioResult');
+        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+      });
+
+      it('returns a skipped result', function() {
+        expect(result.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+      });
+    });
+
+    describe("with an after hook and step in dry run mode", function() {
+      var step, stepDefinition;
+
+      beforeEach(function(done) {
+        options.dryRun = true;
+        var hook = Cucumber.SupportCode.Hook(function(){ throw new Error('error'); }, {});
+        step = Cucumber.Ast.Step({});
+        stepDefinition = createSpy('stepDefinition');
+        supportCodeLibrary.lookupAfterHooksByScenario.and.returnValue([hook]);
+        supportCodeLibrary.lookupStepDefinitionsByName.and.returnValue([stepDefinition]);
+        scenario.getSteps.and.returnValue([step]);
+        scenarioRunner.run(function(value) {
+          result = value;
+          done();
+        });
+      });
+
+      it('broadcasts a scenario, step and stepResult event and does not run the hook', function() {
+        expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(2);
+        expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(2);
+
+        var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
+        expect(event.getName()).toEqual('Scenario');
+        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+
+        event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
+        expect(event.getName()).toEqual('Step');
+        expect(event.getPayloadItem('step')).toEqual(step);
+
+        event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
+        expect(event.getName()).toEqual('StepResult');
+        var stepResult = event.getPayloadItem('stepResult');
+        expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+
+        event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
+        expect(event.getName()).toEqual('ScenarioResult');
+        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+      });
+
+      it('returns a skipped result', function() {
         expect(result.getStatus()).toEqual(Cucumber.Status.SKIPPED);
       });
     });
