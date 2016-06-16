@@ -46,11 +46,11 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
         expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(1);
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURES_EVENT_NAME);
+        expect(event.getName()).toEqual('Features');
         expect(event.getPayloadItem('features')).toEqual(features);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURES_RESULT_EVENT_NAME);
+        expect(event.getName()).toEqual('FeaturesResult');
       });
 
       it('returns a successful result', function() {
@@ -77,15 +77,15 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
         expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(1);
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURES_EVENT_NAME);
+        expect(event.getName()).toEqual('Features');
         expect(event.getPayloadItem('features')).toEqual(features);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURE_EVENT_NAME);
+        expect(event.getName()).toEqual('Feature');
         expect(event.getPayloadItem('feature')).toEqual(feature);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURES_RESULT_EVENT_NAME);
+        expect(event.getName()).toEqual('FeaturesResult');
       });
 
       it('returns a successful result', function() {
@@ -112,15 +112,15 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
         expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(1);
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURES_EVENT_NAME);
+        expect(event.getName()).toEqual('Features');
         expect(event.getPayloadItem('features')).toEqual(features);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURE_EVENT_NAME);
+        expect(event.getName()).toEqual('Feature');
         expect(event.getPayloadItem('feature')).toEqual(feature);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
-        expect(event.getName()).toEqual(Cucumber.Events.FEATURES_RESULT_EVENT_NAME);
+        expect(event.getName()).toEqual('FeaturesResult');
       });
 
       it('returns a unsuccessful result', function() {
