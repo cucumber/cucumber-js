@@ -3,6 +3,7 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Listener.JsonFormatter", function () {
   var Cucumber = requireLib('cucumber');
+  var fs = require('fs');
   var jsonFormatter, options;
 
   beforeEach(function () {
@@ -281,7 +282,13 @@ describe("Cucumber.Listener.JsonFormatter", function () {
           beforeEach(function (){
             var attachment1 = createSpyWithStubs("first attachment", {getMimeType: "first mime type", getData: "first data"});
             var attachment2 = createSpyWithStubs("second attachment", {getMimeType: "second mime type", getData: "second data"});
-            var attachments = [attachment1, attachment2];
+            var favicon = fs.readFileSync('example/images/favicon.png');
+            var attachment3 = createSpyWithStubs("third attachment", {
+              getMimeType: "image/png",
+              getData: favicon
+            });
+            this.faviconBase64 = favicon.toString('base64');
+            var attachments = [attachment1, attachment2, attachment3];
             stepResult.hasAttachments.and.returnValue(true);
             stepResult.getAttachments.and.returnValue(attachments);
             jsonFormatter.handleStepResultEvent(event, callback);
@@ -298,7 +305,11 @@ describe("Cucumber.Listener.JsonFormatter", function () {
             var features = JSON.parse(json);
             expect(features[0].elements[0].steps[0].embeddings).toEqual([
               {data: 'Zmlyc3QgZGF0YQ==', mime_type: 'first mime type'},
-              {data: 'c2Vjb25kIGRhdGE=', mime_type: 'second mime type'}
+              {data: 'c2Vjb25kIGRhdGE=', mime_type: 'second mime type'},
+              {
+                data: this.faviconBase64,
+                mime_type: 'image/png'
+              }
             ]);
           });
         });
