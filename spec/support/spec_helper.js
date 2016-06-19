@@ -77,20 +77,3 @@ afterEach(function () {
     delete moduleSpies[path];
   }
 });
-
-normalizePath = function (path) {
-  return path.replace(/\\/g, "/");
-};
-
-normalizeLogCalls = function (log) {
-  var allCalls = log.calls.all();
-
-  for (var i = 0; i < allCalls.length; i++) {
-    var callArgs = allCalls[i].args;
-    for (var j = 0; j < callArgs.length; j++) {
-      callArgs[j] = normalizePath(callArgs[j]);
-    }
-  }
-
-  return log;
-};

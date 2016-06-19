@@ -30,8 +30,6 @@
     "createEmittingSpy": true,
     "spyOnModule": true,
     "spyOnModuleAndReturn": true,
-    "normalizePath": true,
-    "normalizeLogCalls": true,
     "itBehavesLikeAllCucumberConfigurations": true
   }
 }
