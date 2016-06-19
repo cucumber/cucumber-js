@@ -217,9 +217,9 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
         summaryFormatter.logFailures();
         expect(summaryFormatter.log).toHaveBeenCalledWith('Failures:\n\n');
         var expected =
-          '1) Scenario: ' + colors.bold('scenarioName') + ' - ' + colors.gray(path.join('path/to/scenario:1')) + '\n' +
-          '   Step: ' + colors.bold('stepKeyword stepName') + ' - ' + colors.gray(path.join('path/to/step:2')) + '\n' +
-          '   Step Definition: ' + colors.gray(path.join('path/to/stepDefintion:3')) + '\n' +
+          '1) Scenario: ' + colors.bold('scenarioName') + ' - ' + colors.gray(path.normalize('path/to/scenario:1')) + '\n' +
+          '   Step: ' + colors.bold('stepKeyword stepName') + ' - ' + colors.gray(path.normalize('path/to/step:2')) + '\n' +
+          '   Step Definition: ' + colors.gray(path.normalize('path/to/stepDefintion:3')) + '\n' +
           '   Message:' + '\n' +
           '     ' + colors.red('failure exception stack') + '\n\n';
         expect(summaryFormatter.log).toHaveBeenCalledWith(expected);
@@ -238,12 +238,12 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
         summaryFormatter.logFailures();
         expect(summaryFormatter.log).toHaveBeenCalledWith('Failures:\n\n');
         var expected =
-          '1) Scenario: ' + colors.bold('scenarioName') + ' - ' + colors.gray(path.join('path/to/scenario:1')) + '\n' +
-          '   Step: ' + colors.bold('stepKeyword stepName') + ' - ' + colors.gray(path.join('path/to/step:2')) + '\n' +
+          '1) Scenario: ' + colors.bold('scenarioName') + ' - ' + colors.gray(path.normalize('path/to/scenario:1')) + '\n' +
+          '   Step: ' + colors.bold('stepKeyword stepName') + ' - ' + colors.gray(path.normalize('path/to/step:2')) + '\n' +
           '   Message:' + '\n' +
           '     ' + colors.red('Multiple step definitions match:' + '\n' +
-          '       pattern 1        - ' + path.join('path/to/stepDefinition1:3') + '\n' +
-          '       longer pattern 2 - ' + path.join('path/to/stepDefinition2:4')) + '\n\n';
+          '       pattern 1        - ' + path.normalize('path/to/stepDefinition1:3') + '\n' +
+          '       longer pattern 2 - ' + path.normalize('path/to/stepDefinition2:4')) + '\n\n';
         expect(summaryFormatter.log).toHaveBeenCalledWith(expected);
       });
     });
