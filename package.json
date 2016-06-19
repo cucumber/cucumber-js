@@ -144,9 +144,9 @@
     "build-release": "node ./scripts/release.js"
   },
   "bin": {
-    "cucumber.js": "node ./bin/cucumber.js",
-    "cucumber-js": "node ./bin/cucumber.js",
-    "cucumberjs": "node ./bin/cucumber.js"
+    "cucumber.js": "./bin/cucumber.js",
+    "cucumber-js": "./bin/cucumber.js",
+    "cucumberjs": "./bin/cucumber.js"
   },
   "license": "MIT",
   "files": [
