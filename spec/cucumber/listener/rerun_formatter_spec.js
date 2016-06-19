@@ -1,3 +1,4 @@
+var path = require('path');
 require('../../support/spec_helper');
 
 describe("Cucumber.Listener.RerunFormatter", function () {
@@ -37,7 +38,7 @@ describe("Cucumber.Listener.RerunFormatter", function () {
       });
 
       it("logs nothing", function () {
-        expect(rerunFormatter.getLogs()).toEqual('path/to/scenario:1');
+        expect(rerunFormatter.getLogs()).toEqual(path.normalize('path/to/scenario:1'));
       });
     });
 
@@ -53,7 +54,7 @@ describe("Cucumber.Listener.RerunFormatter", function () {
       });
 
       it("logs the path to the failed scenarios", function () {
-        expect(rerunFormatter.getLogs()).toEqual('path/to/scenario:1:2');
+        expect(rerunFormatter.getLogs()).toEqual(path.normalize('path/to/scenario:1:2'));
       });
     });
 
@@ -70,8 +71,8 @@ describe("Cucumber.Listener.RerunFormatter", function () {
 
       it("logs the path to the failed scenarios", function () {
         expect(rerunFormatter.getLogs()).toEqual(
-          'path/to/scenario:1' + '\n' +
-          'other/path/to/scenario:1'
+          path.normalize('path/to/scenario:1') + '\n' +
+          path.normalize('other/path/to/scenario:1')
         );
       });
     });
