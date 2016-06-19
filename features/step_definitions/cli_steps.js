@@ -14,7 +14,7 @@ var cliSteps = function cliSteps() {
     var world = this;
     var cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir;
 
-    execFile("node", [executablePath, ...args], {cwd: cwd}, function (error, stdout, stderr) {
+    execFile('node', [executablePath, ...args], {cwd: cwd}, function (error, stdout, stderr) {
        world.lastRun = {
          error:  error,
          stdout: colors.strip(stdout),
