@@ -11,7 +11,8 @@ var helpers = {
       .replace(/^\s+/g, '')
       .replace(/\s+$/g, '')
       .replace(/[ \t]+\n/g, '\n')
-      .replace(/\d+m\d{2}\.\d{3}s/, '<duration-stat>');
+      .replace(/\d+m\d{2}\.\d{3}s/, '<duration-stat>')
+      .replace(/\//g, require('path').join('/'));
   }
 
 };
