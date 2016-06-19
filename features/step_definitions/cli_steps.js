@@ -11,10 +11,11 @@ var cliSteps = function cliSteps() {
 
   this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
     args = args ? args.split(' ') : [];
+    args.unshift(executablePath);
     var world = this;
     var cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir;
 
-    execFile('node', [executablePath, ...args], {cwd: cwd}, function (error, stdout, stderr) {
+    execFile('node', args, {cwd: cwd}, function (error, stdout, stderr) {
        world.lastRun = {
          error:  error,
          stdout: colors.strip(stdout),
