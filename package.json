@@ -134,7 +134,7 @@
     "tmp": "0.0.28"
   },
   "scripts": {
-    "feature-test": "./bin/cucumber.js -p build",
+    "feature-test": "node ./bin/cucumber.js -p build",
     "feature-test-es5": "./bin/cucumber.js -p build -p es5",
     "lint": "jshint bin features lib scripts spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
@@ -144,9 +144,9 @@
     "build-release": "node ./scripts/release.js"
   },
   "bin": {
-    "cucumber.js": "./bin/cucumber.js",
-    "cucumber-js": "./bin/cucumber.js",
-    "cucumberjs": "./bin/cucumber.js"
+    "cucumber.js": "node ./bin/cucumber.js",
+    "cucumber-js": "node ./bin/cucumber.js",
+    "cucumberjs": "node ./bin/cucumber.js"
   },
   "license": "MIT",
   "files": [
