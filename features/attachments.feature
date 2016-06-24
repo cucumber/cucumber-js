@@ -19,7 +19,7 @@ Feature: Attachments
       """
       var hooks = function () {
         this.Before(function(scenario, callback) {
-          scenario.attach(new Buffer([100, 97, 116, 97]), 'image/png');
+          scenario.attach(new Buffer([137, 80, 78, 71]), 'image/png');
           callback();
         });
       };
@@ -60,7 +60,7 @@ Feature: Attachments
                   "embeddings": [
                     {
                       "mime_type": "image/png",
-                      "data": "ZGF0YQ=="
+                      "data": "iVBORw=="
                     }
                   ]
                 },
@@ -101,27 +101,19 @@ Feature: Attachments
       """
     And a file named "features/support/hooks.js" with:
       """
+      var Stream = require('stream');
+
       var hooks = function () {
         this.Before(function(scenario, callback) {
-          var Stream = require('stream');
-          var versionParts = /v(\d+)\.(\d+)\.(\d+)/.exec(process.version);
-          var major = parseInt(versionParts[0], 10);
-          var minor = parseInt(versionParts[1], 10);
+          var stream = new Stream.Readable();
+          stream._read = function() {};
+          stream.push(new Buffer([137, 80]));
+          stream.push(new Buffer([78, 71]));
+          stream.push(null);
 
-          if (major > 0 || minor >= 10) {
-            var stream = new Stream.Readable();
-            stream._read = function() {};
-            stream.push(new Buffer([100, 97, 116, 97]));
-            stream.push(null);
-
-            scenario.attach(stream, 'image/png', function(error) {
-              callback(error);
-            });
-          }
-          else {
-            scenario.attach(new Buffer([100, 97, 116, 97]), 'image/png');
-            callback();
-          }
+          scenario.attach(stream, 'image/png', function(error) {
+            callback(error);
+          });
         });
       };
 
@@ -156,12 +148,12 @@ Feature: Attachments
                   },
                   "arguments": [],
                   "match": {
-                    "location": "<current-directory>/features/support/hooks.js:2"
+                    "location": "<current-directory>/features/support/hooks.js:4"
                   },
                   "embeddings": [
                     {
                       "mime_type": "image/png",
-                      "data": "ZGF0YQ=="
+                      "data": "iVBORw=="
                     }
                   ]
                 },

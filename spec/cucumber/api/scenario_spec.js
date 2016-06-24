@@ -217,7 +217,7 @@ describe("Cucumber.Api.Scenario", function () {
             var attachments = scenario.getAttachments();
             expect(attachments.length).toEqual(1);
             var attachment = attachments[0];
-            expect(attachment.getData()).toEqual("first chunksecond chunk");
+            expect(attachment.getData().toString()).toEqual("first chunksecond chunk");
             expect(attachment.getMimeType()).toEqual(mimeType);
           });
 
@@ -244,7 +244,7 @@ describe("Cucumber.Api.Scenario", function () {
         var attachments = scenario.getAttachments();
         expect(attachments.length).toEqual(1);
         var attachment = attachments[0];
-        expect(attachment.getData()).toEqual("data");
+        expect(attachment.getData().toString()).toEqual("data");
         expect(attachment.getMimeType()).toEqual(mimeType);
       });
 
@@ -298,6 +298,20 @@ describe("Cucumber.Api.Scenario", function () {
         var callback = createSpy();
         scenario.attach(data, null, callback);
         expect(callback).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the data is an object", function () {
+      var data;
+
+      beforeEach(function () {
+        data = {};
+      });
+
+      it("throws an error", function () {
+        expect(function() {
+          scenario.attach(data, mimeType);
+        }).toThrow(new Error("Cucumber.Api.Scenario.attach() expects data to be a stream, buffer, or string."));
       });
     });
   });
