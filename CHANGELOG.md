@@ -1,4 +1,20 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v0.10.4...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.1.0...master)
+
+### [1.1.0](https://github.com/cucumber/cucumber-js/compare/v1.0.0...v1.1.0) (2016-06-323)
+
+#### New Features
+
+* Add full support to `registerHandler` (Charlie Rudolph)
+  * Can now use all supported functions interfaces (synchronous, callback, promise, generators)
+  * Will throw any error received and immediately kill the test suite
+  * Supports handler specific timeouts
+  * Updated documentation
+
+#### Bug Fixes
+
+* CLI format: support absolute path on windows (Charlie Rudolph)
+* Fix typo in event name. (#590) (Artur Pomadowski)
+* Don't run hooks in dry run mode (Charlie Rudolph)
 
 ### [1.0.0](https://github.com/cucumber/cucumber-js/compare/v0.10.4...v1.0.0) (2016-05-30)
 

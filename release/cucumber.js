@@ -9,6 +9,7 @@ Cucumber.Api                   = require('./cucumber/api');
 Cucumber.Ast                   = require('./cucumber/ast');
 Cucumber.Cli                   = require('./cucumber/cli');
 Cucumber.Debug                 = require('./cucumber/debug'); // Untested namespace
+Cucumber.Events                = require('./cucumber/events');
 Cucumber.Listener              = require('./cucumber/listener');
 Cucumber.Parser                = require('./cucumber/parser');
 Cucumber.Runtime               = require('./cucumber/runtime');
@@ -23,18 +24,25 @@ Cucumber.VERSION               = require('../package.json').version;
 
 module.exports                 = Cucumber;
 
-},{"../package.json":169,"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":17,"./cucumber/debug":25,"./cucumber/listener":27,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":44,"./cucumber/support_code":45,"./cucumber/tag_group_parser":51,"./cucumber/type":52,"./cucumber/util":56,"./cucumber/volatile_configuration":65}],2:[function(require,module,exports){
+},{"../package.json":170,"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":17,"./cucumber/debug":25,"./cucumber/events":27,"./cucumber/listener":28,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":46,"./cucumber/support_code":47,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":57,"./cucumber/volatile_configuration":66}],2:[function(require,module,exports){
 var Api        = {};
 Api.Scenario   = require('./api/scenario');
 module.exports = Api;
 
 },{"./api/scenario":3}],3:[function(require,module,exports){
 (function (Buffer){
-function Scenario(astTreeWalker, astScenario) {
+function Scenario(astScenario, scenarioResult) {
   var Cucumber = require('../../cucumber');
+
+  var attachments = [];
 
   function isStream(value) {
     return value && typeof value === 'object' && typeof value.pipe === 'function';
+  }
+
+  function attachString(string, mimeType) {
+    var attachment = Cucumber.Runtime.Attachment({mimeType: mimeType, data: string});
+    attachments.push(attachment);
   }
 
   function attachStream(stream, mimeType, callback) {
@@ -44,13 +52,13 @@ function Scenario(astTreeWalker, astScenario) {
       buffers.push(chunk);
     });
     stream.on('end', function () {
-      astTreeWalker.attach(Buffer.concat(buffers).toString(), mimeType);
+      attachString(Buffer.concat(buffers).toString(), mimeType);
       callback();
     });
   }
 
   function attachBuffer(buffer, mimeType, callback) {
-    astTreeWalker.attach(buffer.toString(), mimeType);
+    attachString(buffer.toString(), mimeType);
     if (callback) callback();
   }
 
@@ -61,13 +69,14 @@ function Scenario(astTreeWalker, astScenario) {
     getUri:         function getUri()         { return astScenario.getUri(); },
     getLine:        function getLine()        { return astScenario.getLine(); },
     getTags:        function getTags()        { return astScenario.getTags(); },
-    isSuccessful:   function isSuccessful()   { return astTreeWalker.getScenarioStatus() === Cucumber.Status.PASSED; },
-    isFailed:       function isFailed()       { return astTreeWalker.getScenarioStatus() === Cucumber.Status.FAILED; },
-    isPending:      function isPending()      { return astTreeWalker.getScenarioStatus() === Cucumber.Status.PENDING; },
-    isUndefined:    function isUndefined()    { return astTreeWalker.getScenarioStatus() === Cucumber.Status.UNDEFINED; },
-    isSkipped:      function isSkipped()      { return astTreeWalker.getScenarioStatus() === Cucumber.Status.SKIPPED; },
-    getException:   function getException()   { return astTreeWalker.getScenarioFailureException(); },
-    getAttachments: function getAttachments() { return astTreeWalker.getAttachments(); },
+    isSuccessful:   function isSuccessful()   { return scenarioResult.getStatus() === Cucumber.Status.PASSED; },
+    isFailed:       function isFailed()       { return scenarioResult.getStatus() === Cucumber.Status.FAILED; },
+    isPending:      function isPending()      { return scenarioResult.getStatus() === Cucumber.Status.PENDING; },
+    isUndefined:    function isUndefined()    { return scenarioResult.getStatus() === Cucumber.Status.UNDEFINED; },
+    isSkipped:      function isSkipped()      { return scenarioResult.getStatus() === Cucumber.Status.SKIPPED; },
+    getException:   function getException()   { return scenarioResult.getFailureException(); },
+    getAttachments: function getAttachments() { return attachments; },
+    clearAttachments: function clearAttachments() { attachments = []; },
 
     attach: function attach(data, mimeType, callback) {
       if (isStream(data)) {
@@ -88,7 +97,7 @@ function Scenario(astTreeWalker, astScenario) {
         if (!mimeType)
           mimeType = Scenario.DEFAULT_TEXT_MIME_TYPE;
 
-        astTreeWalker.attach(data.toString(), mimeType);
+        attachString(data.toString(), mimeType);
         if (callback) callback();
       }
     }
@@ -105,7 +114,7 @@ module.exports = Scenario;
 
 }).call(this,require("buffer").Buffer)
 
-},{"../../cucumber":1,"buffer":72}],4:[function(require,module,exports){
+},{"../../cucumber":1,"buffer":73}],4:[function(require,module,exports){
 var Ast             = {};
 Ast.DataTable       = require('./ast/data_table');
 Ast.DocString       = require('./ast/doc_string');
@@ -168,7 +177,7 @@ function DataTable(data) {
 
 module.exports = DataTable;
 
-},{"../../cucumber":1,"lodash":155}],6:[function(require,module,exports){
+},{"../../cucumber":1,"lodash":156}],6:[function(require,module,exports){
 function DocString(data) {
   var self = {
     getType: function getType() {
@@ -244,8 +253,8 @@ function Feature(data, scenarios) {
       return tags;
     },
 
-    acceptVisitor: function acceptVisitor(visitor, callback) {
-      Cucumber.Util.asyncForEach(scenarios, visitor.visitScenario, callback);
+    getScenarios: function getScenarios() {
+      return scenarios;
     }
   };
 
@@ -258,7 +267,7 @@ function Feature(data, scenarios) {
 
 module.exports = Feature;
 
-},{"../../cucumber":1,"gherkin":134,"lodash":155}],8:[function(require,module,exports){
+},{"../../cucumber":1,"gherkin":135,"lodash":156}],8:[function(require,module,exports){
 var _ = require('lodash');
 
 function Filter(rules) {
@@ -280,7 +289,7 @@ Filter.ScenarioAtLineRule     = require('./filter/scenario_at_line_rule');
 
 module.exports = Filter;
 
-},{"./filter/any_of_names_rule":9,"./filter/any_of_tags_rule":10,"./filter/element_matching_tag_spec":11,"./filter/scenario_at_line_rule":12,"lodash":155}],9:[function(require,module,exports){
+},{"./filter/any_of_names_rule":9,"./filter/any_of_tags_rule":10,"./filter/element_matching_tag_spec":11,"./filter/scenario_at_line_rule":12,"lodash":156}],9:[function(require,module,exports){
 var _ = require('lodash');
 
 function AnyOfNamesRule(names) {
@@ -300,7 +309,7 @@ function AnyOfNamesRule(names) {
 
 module.exports = AnyOfNamesRule;
 
-},{"lodash":155}],10:[function(require,module,exports){
+},{"lodash":156}],10:[function(require,module,exports){
 var _ = require('lodash');
 
 function AnyOfTagsRule(tags) {
@@ -320,7 +329,7 @@ function AnyOfTagsRule(tags) {
 
 module.exports = AnyOfTagsRule;
 
-},{"../../../cucumber":1,"lodash":155}],11:[function(require,module,exports){
+},{"../../../cucumber":1,"lodash":156}],11:[function(require,module,exports){
 var _ = require('lodash');
 
 function ElementMatchingTagSpec(tagName) {
@@ -359,7 +368,7 @@ ElementMatchingTagSpec.NEGATION_CHARACTER = '~';
 
 module.exports = ElementMatchingTagSpec;
 
-},{"lodash":155}],12:[function(require,module,exports){
+},{"lodash":156}],12:[function(require,module,exports){
 function ScenarioAtLineRule(suppliedPaths) {
   var Cucumber = require('../../../cucumber');
   var fs = require('fs');
@@ -398,11 +407,10 @@ function ScenarioAtLineRule(suppliedPaths) {
 
 module.exports = ScenarioAtLineRule;
 
-},{"../../../cucumber":1,"fs":71,"lodash":155}],13:[function(require,module,exports){
+},{"../../../cucumber":1,"fs":72,"lodash":156}],13:[function(require,module,exports){
 function HookStep(keyword) {
   var Cucumber = require('../../cucumber');
   var self = Cucumber.Ast.Step({});
-  var hook;
 
   self.getKeyword = function getKeyword() {
     return keyword;
@@ -416,16 +424,11 @@ function HookStep(keyword) {
     return false;
   };
 
-  self.getHook = function getHook() {
-    return hook;
-  };
-
-  self.setHook = function setHook(newHook) {
-    hook = newHook;
-  };
-
   return self;
 }
+
+HookStep.BEFORE_STEP_KEYWORD = 'Before ';
+HookStep.AFTER_STEP_KEYWORD = 'After ';
 
 module.exports = HookStep;
 
@@ -478,10 +481,6 @@ function Scenario(data) {
 
     getSteps: function getSteps() {
       return steps;
-    },
-
-    acceptVisitor: function acceptVisitor(visitor, callback) {
-      Cucumber.Util.asyncForEach(steps, visitor.visitStep, callback);
     }
   };
 
@@ -505,7 +504,7 @@ function Scenario(data) {
 
 module.exports = Scenario;
 
-},{"../../cucumber":1,"lodash":155}],15:[function(require,module,exports){
+},{"../../cucumber":1,"lodash":156}],15:[function(require,module,exports){
 function Step(data) {
   var Cucumber = require('../../cucumber');
   var _ = require('lodash');
@@ -641,7 +640,7 @@ Step.STAR_STEP_KEYWORD    = '* ';
 
 module.exports = Step;
 
-},{"../../cucumber":1,"lodash":155}],16:[function(require,module,exports){
+},{"../../cucumber":1,"lodash":156}],16:[function(require,module,exports){
 function Tag(data) {
   var self = {
     getName: function getName() {
@@ -731,7 +730,7 @@ Cli.SupportCodePathExpander = require('./cli/support_code_path_expander');
 
 module.exports = Cli;
 
-},{"../cucumber":1,"./cli/configuration":18,"./cli/feature_path_expander":19,"./cli/feature_source_loader":20,"./cli/path_expander":21,"./cli/profiles_loader":22,"./cli/support_code_loader":23,"./cli/support_code_path_expander":24,"commander":98,"path":159}],18:[function(require,module,exports){
+},{"../cucumber":1,"./cli/configuration":18,"./cli/feature_path_expander":19,"./cli/feature_source_loader":20,"./cli/path_expander":21,"./cli/profiles_loader":22,"./cli/support_code_loader":23,"./cli/support_code_path_expander":24,"commander":99,"path":160}],18:[function(require,module,exports){
 (function (process){
 function Configuration(options, args) {
   var Cucumber = require('../../cucumber');
@@ -780,7 +779,7 @@ function Configuration(options, args) {
     options.format.forEach(function (format) {
       var parts = format.split(':');
       var type = parts[0];
-      var outputTo = parts[1] || '';
+      var outputTo = parts.slice(1).join(':');
       outputMapping[outputTo] = type;
     });
     return _.map(outputMapping, function (type, outputTo) {
@@ -886,7 +885,7 @@ module.exports = Configuration;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161,"fs":71,"lodash":155,"path":159}],19:[function(require,module,exports){
+},{"../../cucumber":1,"_process":162,"fs":72,"lodash":156,"path":160}],19:[function(require,module,exports){
 var FeaturePathExpander = {
   expandPaths: function expandPaths(paths) {
     var Cucumber     = require('../../cucumber');
@@ -920,7 +919,7 @@ function FeatureSourceLoader(featureFilePaths) {
 
 module.exports = FeatureSourceLoader;
 
-},{"fs":71}],21:[function(require,module,exports){
+},{"fs":72}],21:[function(require,module,exports){
 var fs = require('fs');
 var glob = require('glob');
 var _ = require('lodash');
@@ -956,7 +955,7 @@ var PathExpander = {
 
 module.exports = PathExpander;
 
-},{"fs":71,"glob":148,"lodash":155}],22:[function(require,module,exports){
+},{"fs":72,"glob":149,"lodash":156}],22:[function(require,module,exports){
 (function (process){
 var fs = require('fs');
 var path = require('path');
@@ -995,7 +994,7 @@ module.exports = ProfilesLoader;
 
 }).call(this,require('_process'))
 
-},{"_process":161,"fs":71,"lodash":155,"path":159}],23:[function(require,module,exports){
+},{"_process":162,"fs":72,"lodash":156,"path":160}],23:[function(require,module,exports){
 (function (process){
 var os = require('os');
 var path = require('path');
@@ -1078,7 +1077,7 @@ module.exports = SupportCodeLoader;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161,"module":71,"os":158,"path":159}],24:[function(require,module,exports){
+},{"../../cucumber":1,"_process":162,"module":72,"os":159,"path":160}],24:[function(require,module,exports){
 var SupportCodePathExpander = {
   expandPaths: function expandPaths(paths, extensions) {
     var Cucumber = require('../../cucumber');
@@ -1136,7 +1135,7 @@ module.exports          = Debug;
 
 }).call(this,require('_process'))
 
-},{"./debug/simple_ast_listener":26,"_process":161}],26:[function(require,module,exports){
+},{"./debug/simple_ast_listener":26,"_process":162}],26:[function(require,module,exports){
 function SimpleAstListener(options) {
   var logs                        = '';
   var failed                      = false;
@@ -1238,12 +1237,70 @@ function SimpleAstListener(options) {
 module.exports = SimpleAstListener;
 
 },{}],27:[function(require,module,exports){
-function Listener() {
+var _ = require('lodash');
+
+var events = {
+  FEATURES_EVENT_NAME: 'Features',
+  FEATURES_RESULT_EVENT_NAME: 'FeaturesResult',
+  FEATURE_EVENT_NAME: 'Feature',
+  SCENARIO_EVENT_NAME: 'Scenario',
+  SCENARIO_RESULT_EVENT_NAME: 'ScenarioResult',
+  STEP_EVENT_NAME: 'Step',
+  STEP_RESULT_EVENT_NAME: 'StepResult'
+};
+
+var BEFORE_EVENT_NAME_PREFIX = 'Before';
+var AFTER_EVENT_NAME_PREFIX = 'After';
+
+function getBeforeEvent(name) {
+  return BEFORE_EVENT_NAME_PREFIX + name;
+}
+
+function getAfterEvent(name) {
+  return AFTER_EVENT_NAME_PREFIX + name;
+}
+
+function getAroundEventsFor(name) {
+  return [
+    getBeforeEvent(name),
+    getAfterEvent(name)
+  ];
+}
+
+var allEvents = _.flatten(_.map(events, function(event) {
+  if (_.includes(event, 'Result')) {
+    return [event];
+  } else {
+    return getAroundEventsFor(event);
+  }
+}));
+
+events.getBeforeEvent = getBeforeEvent;
+events.getAfterEvent = getAfterEvent;
+events.ALL = allEvents;
+
+module.exports = events;
+
+},{"lodash":156}],28:[function(require,module,exports){
+(function (process){
+var path = require('path');
+
+function Listener(options) {
+  var Cucumber     = require('../cucumber');
+
+  if (!options) {
+    options = {};
+  }
+
   var self = {
-    hear: function hear(event, callback) {
+    hear: function hear(event, defaultTimeout, callback) {
       if (self.hasHandlerForEvent(event)) {
         var handler = self.getHandlerForEvent(event);
-        handler(event, callback);
+        var timeout = self.getTimeout() || defaultTimeout;
+        Cucumber.Util.run(handler, null, [event.getPayload()], timeout, function(error) {
+          error = self.prependLocationToError(error);
+          callback(error);
+        });
       } else {
         callback();
       }
@@ -1270,14 +1327,37 @@ function Listener() {
     setHandlerForEvent: function setHandlerForEvent(shortname, handler) {
       var eventName = self.buildHandlerName(shortname);
       self[eventName] = handler;
-    }
+    },
+
+    getTimeout: function() {
+      return options.timeout;
+    },
+
+    getUri: function() {
+      return options.uri;
+    },
+
+    getLine: function() {
+      return options.line;
+    },
+
+    prependLocationToError: function(error) {
+      if (error && self.getUri()) {
+        var ref = path.relative(process.cwd(), self.getUri()) + ':' + self.getLine() + ' ';
+        if (error instanceof Error) {
+          error.message = ref + error.message;
+        } else {
+          error = ref + error;
+        }
+      }
+      return error;
+    },
   };
   return self;
 }
 
 Listener.EVENT_HANDLER_NAME_PREFIX = 'handle';
 Listener.EVENT_HANDLER_NAME_SUFFIX = 'Event';
-Listener.Events                    = require('./listener/events');
 Listener.Formatter                 = require('./listener/formatter');
 Listener.PrettyFormatter           = require('./listener/pretty_formatter');
 Listener.ProgressFormatter         = require('./listener/progress_formatter');
@@ -1287,21 +1367,9 @@ Listener.SummaryFormatter          = require('./listener/summary_formatter');
 
 module.exports             = Listener;
 
-},{"./listener/events":28,"./listener/formatter":29,"./listener/json_formatter":30,"./listener/pretty_formatter":31,"./listener/progress_formatter":32,"./listener/rerun_formatter":33,"./listener/summary_formatter":34}],28:[function(require,module,exports){
-exports.BeforeFeatures = 'BeforeFeatures';
-exports.BeforeFeature  = 'BeforeFeature';
-exports.Background     = 'Background';
-exports.BeforeScenario = 'BeforeScenario';
-exports.BeforeStep     = 'BeforeStep';
-exports.StepResult     = 'StepResult';
-exports.AfterStep      = 'AfterStep';
-exports.ScenarioResult = 'ScenarioResult';
-exports.AfterScenario  = 'AfterScenario';
-exports.AfterFeature   = 'AfterFeature';
-exports.FeaturesResult = 'FeaturesResult';
-exports.AfterFeatures  = 'AfterFeatures';
+}).call(this,require('_process'))
 
-},{}],29:[function(require,module,exports){
+},{"../cucumber":1,"./listener/formatter":29,"./listener/json_formatter":30,"./listener/pretty_formatter":31,"./listener/progress_formatter":32,"./listener/rerun_formatter":33,"./listener/summary_formatter":34,"_process":162,"path":160}],29:[function(require,module,exports){
 (function (process){
 function Formatter(options) {
   var Cucumber = require('../../cucumber');
@@ -1339,7 +1407,7 @@ module.exports = Formatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161}],30:[function(require,module,exports){
+},{"../../cucumber":1,"_process":162}],30:[function(require,module,exports){
 /* jshint -W106 */
 function JsonFormatter(options) {
   var Cucumber = require('../../cucumber');
@@ -1358,8 +1426,7 @@ function JsonFormatter(options) {
     };
   };
 
-  self.handleBeforeFeatureEvent = function handleBeforeFeatureEvent(event, callback) {
-    var feature = event.getPayloadItem('feature');
+  self.handleBeforeFeatureEvent = function handleBeforeFeatureEvent(feature) {
     currentFeature = {
       description: feature.getDescription(),
       elements: [],
@@ -1371,11 +1438,9 @@ function JsonFormatter(options) {
       uri: feature.getUri()
     };
     features.push(currentFeature);
-    callback();
   };
 
-  self.handleBeforeScenarioEvent = function handleBeforeScenarioEvent(event, callback) {
-    var scenario = event.getPayloadItem('scenario');
+  self.handleBeforeScenarioEvent = function handleBeforeScenarioEvent(scenario) {
     currentScenario = {
       description: scenario.getDescription(),
       id: currentFeature.id + ';' + scenario.getName().replace(/ /g, '-').toLowerCase(),
@@ -1387,11 +1452,9 @@ function JsonFormatter(options) {
       type: 'scenario'
     };
     currentFeature.elements.push(currentScenario);
-    callback();
   };
 
-  self.handleStepResultEvent = function handleStepResultEvent(event, callback) {
-    var stepResult = event.getPayloadItem('stepResult');
+  self.handleStepResultEvent = function handleStepResultEvent(stepResult) {
     var step = stepResult.getStep();
     var status = stepResult.getStatus();
 
@@ -1454,7 +1517,6 @@ function JsonFormatter(options) {
     }
 
     currentScenario.steps.push(currentStep);
-    callback();
   };
 
   self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
@@ -1467,7 +1529,7 @@ function JsonFormatter(options) {
 
 module.exports = JsonFormatter;
 
-},{"../../cucumber":1,"base-64":68}],31:[function(require,module,exports){
+},{"../../cucumber":1,"base-64":69}],31:[function(require,module,exports){
 function PrettyFormatter(options) {
   var Cucumber         = require('../../cucumber');
 
@@ -1479,14 +1541,13 @@ function PrettyFormatter(options) {
   });
 
   var parentHear = self.hear;
-  self.hear = function hear(event, callback) {
-    summaryFormatter.hear(event, function () {
-      parentHear(event, callback);
+  self.hear = function hear(event, defaultTimeout, callback) {
+    summaryFormatter.hear(event, defaultTimeout, function () {
+      parentHear(event, defaultTimeout, callback);
     });
   };
 
-  self.handleBeforeFeatureEvent = function handleBeforeFeatureEvent(event, callback) {
-    var feature = event.getPayloadItem('feature');
+  self.handleBeforeFeatureEvent = function handleBeforeFeatureEvent(feature) {
     var source = '';
 
     var tagsSource = self.formatTags(feature.getTags());
@@ -1505,11 +1566,9 @@ function PrettyFormatter(options) {
     source += '\n\n';
 
     self.log(source);
-    callback();
   };
 
-  self.handleBeforeScenarioEvent = function handleBeforeScenarioEvent(event, callback) {
-    var scenario = event.getPayloadItem('scenario');
+  self.handleBeforeScenarioEvent = function handleBeforeScenarioEvent(scenario) {
     var source = '';
 
     var tagsSource = self.formatTags(scenario.getTags());
@@ -1522,12 +1581,10 @@ function PrettyFormatter(options) {
 
     self.logIndented(source, 1);
     self.log('\n');
-    callback();
   };
 
-  self.handleAfterScenarioEvent = function handleAfterScenarioEvent(event, callback) {
+  self.handleAfterScenarioEvent = function handleAfterScenarioEvent() {
     self.log('\n');
-    callback();
   };
 
   self.applyColor = function applyColor (stepResult, source) {
@@ -1535,13 +1592,11 @@ function PrettyFormatter(options) {
     return colors[status](source);
   };
 
-  self.handleStepResultEvent = function handleStepResultEvent(event, callback) {
-    var stepResult = event.getPayloadItem('stepResult');
+  self.handleStepResultEvent = function handleStepResultEvent(stepResult) {
     var step = stepResult.getStep();
     if (!step.isHidden()) {
       self.logStepResult(step, stepResult);
     }
-    callback();
   };
 
   self.formatTags = function formatTags(tags) {
@@ -1578,7 +1633,7 @@ function PrettyFormatter(options) {
     });
   };
 
-  self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
+  self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(features, callback) {
     var summaryLogs = summaryFormatter.getLogs();
     self.log(summaryLogs);
     self.finish(callback);
@@ -1672,9 +1727,9 @@ function ProgressFormatter(options) {
   });
 
   var parentHear = self.hear;
-  self.hear = function hear(event, callback) {
-    summaryFormatter.hear(event, function () {
-      parentHear(event, callback);
+  self.hear = function hear(event, defaultTimeout, callback) {
+    summaryFormatter.hear(event, defaultTimeout, function () {
+      parentHear(event, defaultTimeout, callback);
     });
   };
 
@@ -1686,18 +1741,16 @@ function ProgressFormatter(options) {
   characters[Cucumber.Status.SKIPPED] = '-';
   characters[Cucumber.Status.UNDEFINED] = 'U';
 
-  self.handleStepResultEvent = function handleStepResult(event, callback) {
-    var stepResult = event.getPayloadItem('stepResult');
+  self.handleStepResultEvent = function handleStepResult(stepResult) {
     var status = stepResult.getStatus();
     var step = stepResult.getStep();
     if (!step.isHidden() || status === Cucumber.Status.FAILED) {
       var character = colors[status](characters[status]);
       self.log(character);
     }
-    callback();
   };
 
-  self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
+  self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(features, callback) {
     var summaryLogs = summaryFormatter.getLogs();
     self.log('\n\n');
     self.log(summaryLogs);
@@ -1720,9 +1773,7 @@ function RerunFormatter(options) {
   var failures = {};
 
 
-  self.handleScenarioResultEvent = function handleScenarioResultEvent(event, callback) {
-    var scenarioResult = event.getPayloadItem('scenarioResult');
-
+  self.handleScenarioResultEvent = function handleScenarioResultEvent(scenarioResult) {
     if (scenarioResult.getStatus() === Cucumber.Status.FAILED) {
       var scenario = scenarioResult.getScenario();
       var uri = path.relative(process.cwd(), scenario.getUri());
@@ -1732,10 +1783,9 @@ function RerunFormatter(options) {
       }
       failures[uri].push(line);
     }
-    callback();
   };
 
-  self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(event, callback) {
+  self.handleAfterFeaturesEvent = function handleAfterFeaturesEvent(features, callback) {
     var text = _.map(failures, function(lines, uri) {
       return uri + ':' + lines.join(':');
     }).join('\n');
@@ -1750,7 +1800,7 @@ module.exports = RerunFormatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161,"lodash":155,"path":159}],34:[function(require,module,exports){
+},{"../../cucumber":1,"_process":162,"lodash":156,"path":160}],34:[function(require,module,exports){
 (function (process){
 function SummaryFormatter(options) {
   var Cucumber = require('../../cucumber');
@@ -1783,8 +1833,7 @@ function SummaryFormatter(options) {
 
   var self = Cucumber.Listener.Formatter(options);
 
-  self.handleStepResultEvent = function handleStepResult(event, callback) {
-    var stepResult = event.getPayloadItem('stepResult');
+  self.handleStepResultEvent = function handleStepResult(stepResult) {
     var status = stepResult.getStatus();
     switch (status) {
       case Cucumber.Status.AMBIGUOUS:
@@ -1800,11 +1849,9 @@ function SummaryFormatter(options) {
         self.storePendingStepResult(stepResult);
         break;
     }
-    callback();
   };
 
-  self.handleFeaturesResultEvent = function handleFeaturesResultEvent(event, callback) {
-    var featuresResult = event.getPayloadItem('featuresResult');
+  self.handleFeaturesResultEvent = function handleFeaturesResultEvent(featuresResult, callback) {
     self.logSummary(featuresResult);
     self.finish(callback);
   };
@@ -1982,7 +2029,7 @@ module.exports = SummaryFormatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161,"cli-table":75,"duration":102,"lodash":155,"path":159}],35:[function(require,module,exports){
+},{"../../cucumber":1,"_process":162,"cli-table":76,"duration":103,"lodash":156,"path":160}],35:[function(require,module,exports){
 function Parser(featureSources, astFilter) {
   var Gherkin      = require('gherkin');
   var Cucumber     = require('../cucumber');
@@ -2033,7 +2080,7 @@ Parser.FEATURE_NAME_SOURCE_PAIR_SOURCE_INDEX = 1;
 
 module.exports = Parser;
 
-},{"../cucumber":1,"gherkin":134}],36:[function(require,module,exports){
+},{"../cucumber":1,"gherkin":135}],36:[function(require,module,exports){
 function Runtime(configuration) {
   var Cucumber = require('../cucumber');
 
@@ -2052,12 +2099,12 @@ function Runtime(configuration) {
         strict: configuration.isStrictRequested && configuration.isStrictRequested()
       };
 
-      var astTreeWalker = Runtime.AstTreeWalker(features, supportCodeLibrary, listeners, options);
+      var featuresRunner = Runtime.FeaturesRunner(features, supportCodeLibrary, listeners, options);
 
       if (configuration.shouldFilterStackTraces())
         Runtime.StackTraceFilter.filter();
 
-      astTreeWalker.walk(function (result) {
+      featuresRunner.run(function (result) {
         Runtime.StackTraceFilter.unfilter();
         callback(result);
       });
@@ -2084,354 +2131,73 @@ function Runtime(configuration) {
 }
 
 Runtime.START_MISSING_CALLBACK_ERROR = 'Cucumber.Runtime.start() expects a callback';
-Runtime.AstTreeWalker                = require('./runtime/ast_tree_walker');
 Runtime.Attachment                   = require('./runtime/attachment');
+Runtime.Event                        = require('./runtime/event');
+Runtime.EventBroadcaster             = require('./runtime/event_broadcaster');
 Runtime.FeaturesResult               = require('./runtime/features_result');
+Runtime.FeaturesRunner               = require('./runtime/features_runner');
 Runtime.ScenarioResult               = require('./runtime/scenario_result');
+Runtime.ScenarioRunner               = require('./runtime/scenario_runner');
 Runtime.StackTraceFilter             = require('./runtime/stack_trace_filter');
 Runtime.StepResult                   = require('./runtime/step_result');
 
 module.exports = Runtime;
 
-},{"../cucumber":1,"./runtime/ast_tree_walker":37,"./runtime/attachment":39,"./runtime/features_result":40,"./runtime/scenario_result":41,"./runtime/stack_trace_filter":42,"./runtime/step_result":43}],37:[function(require,module,exports){
-(function (process){
-function AstTreeWalker(features, supportCodeLibrary, listeners, options) {
-  var Cucumber = require('../../cucumber');
-
-  var world;
-  var featuresResult = Cucumber.Runtime.FeaturesResult(options.strict);
-  var beforeSteps = Cucumber.Type.Collection();
-  var afterSteps = Cucumber.Type.Collection();
-  var attachments = [];
-  var apiScenario, scenarioResult;
-
+},{"../cucumber":1,"./runtime/attachment":37,"./runtime/event":38,"./runtime/event_broadcaster":39,"./runtime/features_result":40,"./runtime/features_runner":41,"./runtime/scenario_result":42,"./runtime/scenario_runner":43,"./runtime/stack_trace_filter":44,"./runtime/step_result":45}],37:[function(require,module,exports){
+function Attachment(payload) {
   var self = {
-    walk: function walk(callback) {
-      self.visitFeatures(features, function () {
-        callback(featuresResult.isSuccessful());
-      });
-    },
-
-    visitFeatures: function visitFeatures(features, callback) {
-      var payload = { features: features };
-      var event   = AstTreeWalker.Event(AstTreeWalker.FEATURES_EVENT_NAME, payload);
-      self.broadcastEventAroundUserFunction(
-        event,
-        function (callback) {
-          Cucumber.Util.asyncForEach(features, self.visitFeature, function() {
-            self.visitFeaturesResult(callback);
-          });
-        },
-        callback
-      );
-    },
-
-    visitFeaturesResult: function visitFeaturesResult(callback) {
-      var payload = { featuresResult: featuresResult };
-      var event   = AstTreeWalker.Event(AstTreeWalker.FEATURES_RESULT_EVENT_NAME, payload);
-      self.broadcastEvent(event, callback);
-    },
-
-    visitFeature: function visitFeature(feature, callback) {
-      if (!featuresResult.isSuccessful() && options.failFast) {
-        return callback();
-      }
-      var payload = { feature: feature };
-      var event   = AstTreeWalker.Event(AstTreeWalker.FEATURE_EVENT_NAME, payload);
-      self.broadcastEventAroundUserFunction(
-        event,
-        function (callback) { feature.acceptVisitor(self, callback); },
-        callback
-      );
-    },
-
-    visitScenario: function visitScenario(scenario, callback) {
-      if (!featuresResult.isSuccessful() && options.failFast) {
-        return callback();
-      }
-      var world = supportCodeLibrary.instantiateNewWorld();
-      self.setWorld(world);
-      self.witnessNewScenario(scenario);
-      self.createBeforeStepsForBeforeHooks(scenario);
-      self.createAfterStepsForAfterHooks(scenario);
-      var payload = { scenario: scenario };
-      var event = AstTreeWalker.Event(AstTreeWalker.SCENARIO_EVENT_NAME, payload);
-      self.broadcastEventAroundUserFunction (
-        event,
-        function (callback) {
-          self.visitBeforeSteps(function () {
-            scenario.acceptVisitor(self, function () {
-              self.visitAfterSteps(function() {
-                self.visitScenarioResult(callback);
-              });
-            });
-          });
-        },
-        callback
-      );
-    },
-
-    createBeforeStepsForBeforeHooks: function createBeforeStepsForBeforeHooks(scenario) {
-      var beforeHooks = supportCodeLibrary.lookupBeforeHooksByScenario(scenario);
-      beforeHooks.forEach(function (beforeHook) {
-        var beforeStep = Cucumber.Ast.HookStep(AstTreeWalker.BEFORE_STEP_KEYWORD);
-        beforeStep.setScenario(scenario);
-        beforeStep.setHook(beforeHook);
-        beforeSteps.add(beforeStep);
-      });
-    },
-
-    createAfterStepsForAfterHooks: function createAfterStepsForAfterHooks(scenario) {
-      var afterHooks = supportCodeLibrary.lookupAfterHooksByScenario(scenario);
-      afterHooks.forEach(function (afterHook) {
-        var afterStep = Cucumber.Ast.HookStep(AstTreeWalker.AFTER_STEP_KEYWORD);
-        afterStep.setScenario(scenario);
-        afterStep.setHook(afterHook);
-        afterSteps.unshift(afterStep);
-      });
-    },
-
-    visitBeforeSteps: function visitBeforeSteps(callback) {
-      beforeSteps.asyncForEach(function (beforeStep, callback) {
-        self.witnessHook();
-        self.executeHookStep(beforeStep, callback);
-      }, callback);
-    },
-
-    visitAfterSteps: function visitAfterSteps(callback) {
-      afterSteps.asyncForEach(function (afterStep, callback) {
-        self.witnessHook();
-        self.executeHookStep(afterStep, callback);
-      }, callback);
-    },
-
-    visitScenarioResult: function visitScenarioResult(callback) {
-      featuresResult.witnessScenarioResult(scenarioResult);
-      var payload = { scenarioResult: scenarioResult };
-      var event   = AstTreeWalker.Event(AstTreeWalker.SCENARIO_RESULT_EVENT_NAME, payload);
-      self.broadcastEvent(event, callback);
-    },
-
-    visitStep: function visitStep(step, callback) {
-      self.witnessNewStep();
-      var payload = { step: step };
-      var event   = AstTreeWalker.Event(AstTreeWalker.STEP_EVENT_NAME, payload);
-      self.broadcastEventAroundUserFunction (
-        event,
-        function (callback) {
-          process.nextTick(function() {
-            self.processStep(step, callback);
-          });
-        },
-        callback
-      );
-    },
-
-    visitStepResult: function visitStepResult(stepResult, callback) {
-      scenarioResult.witnessStepResult(stepResult);
-      featuresResult.witnessStepResult(stepResult);
-      var payload = { stepResult: stepResult };
-      var event   = AstTreeWalker.Event(AstTreeWalker.STEP_RESULT_EVENT_NAME, payload);
-      self.broadcastEvent(event, callback);
-    },
-
-    broadcastEventAroundUserFunction: function broadcastEventAroundUserFunction (event, userFunction, callback) {
-      var userFunctionWrapper = self.wrapUserFunctionAndAfterEventBroadcast(userFunction, event, callback);
-      self.broadcastBeforeEvent(event, userFunctionWrapper);
-    },
-
-    wrapUserFunctionAndAfterEventBroadcast: function wrapUserFunctionAndAfterEventBroadcast(userFunction, event, callback) {
-      var callAfterEventBroadcast = self.wrapAfterEventBroadcast(event, callback);
-      return function callUserFunctionAndBroadcastAfterEvent() {
-        userFunction (callAfterEventBroadcast);
-      };
-    },
-
-    wrapAfterEventBroadcast: function wrapAfterEventBroadcast(event, callback) {
-      return function () { self.broadcastAfterEvent(event, callback); };
-    },
-
-    broadcastBeforeEvent: function broadcastBeforeEvent(event, callback) {
-      var preEvent = event.replicateAsPreEvent();
-      self.broadcastEvent(preEvent, callback);
-    },
-
-    broadcastAfterEvent: function broadcastAfterEvent(event, callback) {
-      var postEvent = event.replicateAsPostEvent();
-      self.broadcastEvent(postEvent, callback);
-    },
-
-    broadcastEvent: function broadcastEvent(event, callback) {
-      function broadcastToListeners(listeners, callback) {
-        var iterator = function (listener, callback) {
-          listener.hear(event, callback);
-        };
-        Cucumber.Util.asyncForEach(listeners, iterator, callback);
-      }
-
-      function onRuntimeListenersComplete() {
-        var listeners = supportCodeLibrary.getListeners();
-        broadcastToListeners(listeners, callback);
-      }
-
-      broadcastToListeners(listeners, onRuntimeListenersComplete);
-    },
-
-    setWorld: function setWorld(newWorld) {
-      world = newWorld;
-    },
-
-    getWorld: function getWorld() {
-      return world;
-    },
-
-    getDefaultTimeout: function getDefaultTimeout() {
-      return supportCodeLibrary.getDefaultTimeout();
-    },
-
-    getScenarioStatus: function getScenarioStatus() {
-      return scenarioResult.getStatus();
-    },
-
-    getScenarioFailureException: function getScenarioFailureException() {
-      return scenarioResult.getFailureException();
-    },
-
-    attach: function attach(data, mimeType) {
-      attachments.push(Cucumber.Runtime.Attachment({mimeType: mimeType, data: data}));
-    },
-
-    getAttachments: function getAttachments() {
-      return attachments;
-    },
-
-    witnessHook: function witnessHook() {
-      attachments = [];
-    },
-
-    witnessNewStep: function witnessNewStep() {
-      attachments = [];
-    },
-
-    witnessNewScenario: function witnessNewScenario(scenario) {
-      apiScenario    = Cucumber.Api.Scenario(self, scenario);
-      scenarioResult = Cucumber.Runtime.ScenarioResult(scenario);
-      beforeSteps.clear();
-      afterSteps.clear();
-    },
-
-    getScenario: function getScenario() {
-      return apiScenario;
-    },
-
-    isSkippingSteps: function isSkippingSteps() {
-      return self.getScenarioStatus() !== Cucumber.Status.PASSED;
-    },
-
-    processStep: function processStep(step, callback) {
-      var stepName = step.getName();
-      var stepDefinitions = supportCodeLibrary.lookupStepDefinitionsByName(stepName);
-      if (stepDefinitions.length === 0) {
-        self.skipUndefinedStep(step, callback);
-      } else if (stepDefinitions.length > 1) {
-        self.skipAmbiguousStep(step, stepDefinitions, callback);
-      } else if (options.dryRun || self.isSkippingSteps()) {
-        self.skipStep(step, stepDefinitions[0], callback);
-      } else {
-        self.executeStep(step, stepDefinitions[0], callback);
-      }
-    },
-
-    executeHookStep: function executeHook(hookStep, callback) {
-      var stepDefinition = hookStep.getHook();
-      self.executeStep(hookStep, stepDefinition, callback);
-    },
-
-    executeStep: function executeStep(step, stepDefinition, callback) {
-      var world          = self.getWorld();
-      var scenario       = self.getScenario();
-      var defaultTimeout = self.getDefaultTimeout();
-      stepDefinition.invoke(step, world, scenario, defaultTimeout, function (stepResult) {
-        self.visitStepResult(stepResult, callback);
-      });
-    },
-
-    skipAmbiguousStep: function skipAmbiguousStep(step, stepDefinitions, callback) {
-      var ambiguousStepResult = Cucumber.Runtime.StepResult({
-        ambiguousStepDefinitions: stepDefinitions,
-        step: step,
-        status: Cucumber.Status.AMBIGUOUS
-      });
-      self.visitStepResult(ambiguousStepResult, callback);
-    },
-
-    skipStep: function skipStep(step, stepDefinition, callback) {
-      var skippedStepResult = Cucumber.Runtime.StepResult({
-        step: step,
-        stepDefinition: stepDefinition,
-        status: Cucumber.Status.SKIPPED
-      });
-      self.visitStepResult(skippedStepResult, callback);
-    },
-
-    skipUndefinedStep: function skipUndefinedStep(step, callback) {
-      var undefinedStepResult = Cucumber.Runtime.StepResult({step: step, status: Cucumber.Status.UNDEFINED});
-      self.visitStepResult(undefinedStepResult, callback);
-    }
+    getMimeType:  function getMimeType()  { return payload.mimeType; },
+    getData:      function getData()      { return payload.data; }
   };
+
   return self;
 }
 
-AstTreeWalker.FEATURES_EVENT_NAME                 = 'Features';
-AstTreeWalker.FEATURES_RESULT_EVENT_NAME          = 'FeaturesResult';
-AstTreeWalker.FEATURE_EVENT_NAME                  = 'Feature';
-AstTreeWalker.BACKGROUND_EVENT_NAME               = 'Background';
-AstTreeWalker.SCENARIO_EVENT_NAME                 = 'Scenario';
-AstTreeWalker.SCENARIO_RESULT_EVENT_NAME          = 'ScenarioResult';
-AstTreeWalker.STEP_EVENT_NAME                     = 'Step';
-AstTreeWalker.STEP_RESULT_EVENT_NAME              = 'StepResult';
-AstTreeWalker.ROW_EVENT_NAME                      = 'ExampleRow';
-AstTreeWalker.BEFORE_EVENT_NAME_PREFIX            = 'Before';
-AstTreeWalker.AFTER_EVENT_NAME_PREFIX             = 'After';
-AstTreeWalker.NON_EVENT_LEADING_PARAMETERS_COUNT  = 0;
-AstTreeWalker.NON_EVENT_TRAILING_PARAMETERS_COUNT = 2;
-AstTreeWalker.BEFORE_STEP_KEYWORD                 = 'Before ';
-AstTreeWalker.AFTER_STEP_KEYWORD                  = 'After ';
-AstTreeWalker.Event                               = require('./ast_tree_walker/event');
+module.exports = Attachment;
 
-module.exports = AstTreeWalker;
+},{}],38:[function(require,module,exports){
+var deprecatedMessageDisplayed = false;
 
-}).call(this,require('_process'))
-
-},{"../../cucumber":1,"./ast_tree_walker/event":38,"_process":161}],38:[function(require,module,exports){
 function Event(name, payload) {
-  var AstTreeWalker = require('../ast_tree_walker');
+  var Cucumber = require('../../cucumber');
 
   function buildBeforeEventName(eventName) {
-    return AstTreeWalker.BEFORE_EVENT_NAME_PREFIX + eventName;
+    return Cucumber.Events.getBeforeEvent(eventName);
   }
 
   function buildAfterEventName(eventName) {
-    return AstTreeWalker.AFTER_EVENT_NAME_PREFIX + eventName;
+    return Cucumber.Events.getAfterEvent(eventName);
   }
+
+  payload.getPayloadItem = function getPayloadItem() {
+    if (!deprecatedMessageDisplayed) {
+      console.warn(
+        'cucumber event handlers attached via registerHandler are now passed the' +
+        ' associated object instead of an event' +
+        '\ngetPayloadItem will be removed in the next major release'
+      );
+      deprecatedMessageDisplayed = true;
+    }
+    return payload;
+  };
 
   var self = {
     getName: function getName() {
       return name;
     },
 
-    getPayloadItem: function getPayloadItem(itemName) {
-      return payload[itemName];
+    getPayload: function getPayload() {
+      return payload;
     },
 
     replicateAsPreEvent: function replicateAsPreEvent() {
       var newName = buildBeforeEventName(name);
-      return AstTreeWalker.Event(newName, payload);
+      return Cucumber.Runtime.Event(newName, payload);
     },
 
     replicateAsPostEvent: function replicateAsPostEvent() {
       var newName = buildAfterEventName(name);
-      return AstTreeWalker.Event(newName, payload);
+      return Cucumber.Runtime.Event(newName, payload);
     },
 
     occurredOn: function occurredOn(eventName) {
@@ -2449,42 +2215,57 @@ function Event(name, payload) {
 
 module.exports = Event;
 
-},{"../ast_tree_walker":37}],39:[function(require,module,exports){
-function Attachment(payload) {
+},{"../../cucumber":1}],39:[function(require,module,exports){
+function EventBroadcaster(listeners, listenerDefaultTimeout) {
+  var Cucumber = require('../../cucumber');
+
   var self = {
-    getMimeType:  function getMimeType()  { return payload.mimeType; },
-    getData:      function getData()      { return payload.data; }
+    broadcastAroundEvent: function broadcastAroundEvent(event, userFunction, callback) {
+      self.broadcastBeforeEvent(event, function() {
+        userFunction(function() {
+          var userFunctionCallbackArguments = arguments;
+          self.broadcastAfterEvent(event, function() {
+            callback.apply(null, userFunctionCallbackArguments);
+          });
+        });
+      });
+    },
+
+    broadcastBeforeEvent: function broadcastBeforeEvent(event, callback) {
+      var preEvent = event.replicateAsPreEvent();
+      self.broadcastEvent(preEvent, callback);
+    },
+
+    broadcastAfterEvent: function broadcastAfterEvent(event, callback) {
+      var postEvent = event.replicateAsPostEvent();
+      self.broadcastEvent(postEvent, callback);
+    },
+
+    broadcastEvent: function broadcastEvent(event, callback) {
+      Cucumber.Util.asyncForEach(listeners, function (listener, callback) {
+        listener.hear(event, listenerDefaultTimeout, function(error) {
+          if (error) {
+            throw error;
+          }
+          callback();
+        });
+      }, callback);
+    }
   };
 
   return self;
 }
 
-module.exports = Attachment;
+module.exports = EventBroadcaster;
 
-},{}],40:[function(require,module,exports){
+},{"../../cucumber":1}],40:[function(require,module,exports){
 function FeaturesResult(strict) {
   var Cucumber = require('../../cucumber');
   var _ = require('lodash');
 
-  function getCountsObject () {
-    var statuses = [
-      Cucumber.Status.AMBIGUOUS,
-      Cucumber.Status.FAILED,
-      Cucumber.Status.PASSED,
-      Cucumber.Status.PENDING,
-      Cucumber.Status.SKIPPED,
-      Cucumber.Status.UNDEFINED
-    ];
-    var counts = {};
-    statuses.forEach(function (status) {
-      counts[status] = 0;
-    });
-    return counts;
-  }
-
   var duration = 0;
-  var scenarioCounts = getCountsObject();
-  var stepCounts = getCountsObject();
+  var scenarioCounts = Cucumber.Status.getMapping(0);
+  var stepCounts = Cucumber.Status.getMapping(0);
 
   var self = {
     getDuration: function getDuration() {
@@ -2510,21 +2291,9 @@ function FeaturesResult(strict) {
     },
 
     witnessScenarioResult: function witnessScenarioResult(scenarioResult) {
+      duration += scenarioResult.getDuration();
       scenarioCounts[scenarioResult.getStatus()] += 1;
-    },
-
-    witnessStepResult: function witnessStepResult(stepResult) {
-      var stepDuration = stepResult.getDuration();
-      if (stepDuration) {
-        duration += stepDuration;
-      }
-
-      var status = stepResult.getStatus();
-      var step = stepResult.getStep();
-
-      if (!step.isHidden()) {
-        stepCounts[status] += 1;
-      }
+      _.mergeWith(stepCounts, scenarioResult.getStepCounts(), function(a, b) { return a + b; });
     }
   };
 
@@ -2533,11 +2302,74 @@ function FeaturesResult(strict) {
 
 module.exports = FeaturesResult;
 
-},{"../../cucumber":1,"lodash":155}],41:[function(require,module,exports){
-function ScenarioResult(scenario) {
+},{"../../cucumber":1,"lodash":156}],41:[function(require,module,exports){
+function FeaturesRunner(features, supportCodeLibrary, listeners, options) {
   var Cucumber = require('../../cucumber');
 
+  var allListeners = listeners.concat(supportCodeLibrary.getListeners());
+  var eventBroadcaster = Cucumber.Runtime.EventBroadcaster(allListeners, supportCodeLibrary.getDefaultTimeout());
+  var featuresResult = Cucumber.Runtime.FeaturesResult(options.strict);
+
+  var self = {
+    run: function run(callback) {
+      var event = Cucumber.Runtime.Event(Cucumber.Events.FEATURES_EVENT_NAME, features);
+      eventBroadcaster.broadcastAroundEvent(
+        event,
+        function (callback) {
+          Cucumber.Util.asyncForEach(features, self.runFeature, function() {
+            self.broadcastFeaturesResult(callback);
+          });
+        },
+        function() {
+          callback(featuresResult.isSuccessful());
+        }
+      );
+    },
+
+    broadcastFeaturesResult: function visitFeaturesResult(callback) {
+      var event = Cucumber.Runtime.Event(Cucumber.Events.FEATURES_RESULT_EVENT_NAME, featuresResult);
+      eventBroadcaster.broadcastEvent(event, callback);
+    },
+
+    runFeature: function runFeature(feature, callback) {
+      if (!featuresResult.isSuccessful() && options.failFast) {
+        return callback();
+      }
+      var event = Cucumber.Runtime.Event(Cucumber.Events.FEATURE_EVENT_NAME, feature);
+      eventBroadcaster.broadcastAroundEvent(
+        event,
+        function (callback) {
+          Cucumber.Util.asyncForEach(feature.getScenarios(), self.runScenario, callback);
+        },
+        callback
+      );
+    },
+
+    runScenario: function runScenario(scenario, callback) {
+      if (!featuresResult.isSuccessful() && options.failFast) {
+        return callback();
+      }
+
+      var scenarioRunner = Cucumber.Runtime.ScenarioRunner(scenario, supportCodeLibrary, eventBroadcaster, options);
+      scenarioRunner.run(function(scenarioResult) {
+        featuresResult.witnessScenarioResult(scenarioResult);
+        callback();
+      });
+    }
+  };
+  return self;
+}
+
+module.exports = FeaturesRunner;
+
+},{"../../cucumber":1}],42:[function(require,module,exports){
+function ScenarioResult(scenario) {
+  var Cucumber = require('../../cucumber');
+  var _ = require('lodash');
+
+  var duration = 0;
   var status = Cucumber.Status.PASSED;
+  var stepCounts = Cucumber.Status.getMapping(0);
   var failureException = null;
 
   var shouldUpdateStatus = function shouldUpdateStatus(stepStatus) {
@@ -2555,6 +2387,10 @@ function ScenarioResult(scenario) {
   };
 
   var self = {
+    getDuration: function getDuration() {
+      return duration;
+    },
+
     getFailureException: function getFailureException() {
       return failureException;
     },
@@ -2563,21 +2399,29 @@ function ScenarioResult(scenario) {
       return scenario;
     },
 
+    getStepCounts: function getStepCounts() {
+      return _.clone(stepCounts);
+    },
+
     getStatus: function getStatus() {
       return status;
     },
 
     witnessStepResult: function witnessStepResult(stepResult) {
+      var stepDuration = stepResult.getDuration();
+      if (stepDuration) {
+        duration += stepDuration;
+      }
       var stepStatus = stepResult.getStatus();
-      self.witnessStepStatus(stepStatus);
+      if (shouldUpdateStatus(stepStatus)) {
+        status = stepStatus;
+      }
       if (stepStatus === Cucumber.Status.FAILED) {
         failureException = stepResult.getFailureException();
       }
-    },
-
-    witnessStepStatus: function witnessStepWithStatis(stepStatus) {
-      if (shouldUpdateStatus(stepStatus)) {
-        status = stepStatus;
+      var step = stepResult.getStep();
+      if (!step.isHidden()) {
+        stepCounts[stepStatus] += 1;
       }
     }
   };
@@ -2587,20 +2431,173 @@ function ScenarioResult(scenario) {
 
 module.exports = ScenarioResult;
 
-},{"../../cucumber":1}],42:[function(require,module,exports){
+},{"../../cucumber":1,"lodash":156}],43:[function(require,module,exports){
+(function (process){
+function ScenarioRunner(scenario, supportCodeLibrary, eventBroadcaster, options) {
+  var Cucumber = require('../../cucumber');
+
+  var scenarioResult = Cucumber.Runtime.ScenarioResult(scenario);
+  var apiScenario = Cucumber.Api.Scenario(scenario, scenarioResult);
+  var defaultTimeout = supportCodeLibrary.getDefaultTimeout();
+  var world = supportCodeLibrary.instantiateNewWorld();
+
+  var self = {
+    run: function run(callback) {
+      var event = Cucumber.Runtime.Event(Cucumber.Events.SCENARIO_EVENT_NAME, scenario);
+      eventBroadcaster.broadcastAroundEvent(
+        event,
+        function (callback) {
+          self.runBeforeHooks(function () {
+            self.runSteps(function() {
+              self.runAfterHooks(function(){
+                self.broadcastScenarioResult(callback);
+              });
+            });
+          });
+        },
+        function() {
+          callback(scenarioResult);
+        }
+      );
+    },
+
+    runBeforeHooks: function runBeforeHooks(callback) {
+      var beforeHooks = supportCodeLibrary.lookupBeforeHooksByScenario(scenario);
+      Cucumber.Util.asyncForEach(beforeHooks, function(beforeHook, callback) {
+        var beforeStep = Cucumber.Ast.HookStep(Cucumber.Ast.HookStep.BEFORE_STEP_KEYWORD);
+        beforeStep.setScenario(scenario);
+        self.runHookStep(beforeStep, beforeHook, callback);
+      }, callback);
+    },
+
+    runSteps: function runSteps(callback) {
+      Cucumber.Util.asyncForEach(scenario.getSteps(), self.runStep, callback);
+    },
+
+    runAfterHooks: function runAfterHooks(callback) {
+      var afterHooks = supportCodeLibrary.lookupAfterHooksByScenario(scenario).reverse();
+      Cucumber.Util.asyncForEach(afterHooks, function(afterHook, callback) {
+        var afterStep = Cucumber.Ast.HookStep(Cucumber.Ast.HookStep.AFTER_STEP_KEYWORD);
+        afterStep.setScenario(scenario);
+        self.runHookStep(afterStep, afterHook, callback);
+      }, callback);
+    },
+
+    broadcastScenarioResult: function broadcastScenarioResult(callback) {
+      var event = Cucumber.Runtime.Event(Cucumber.Events.SCENARIO_RESULT_EVENT_NAME, scenarioResult);
+      eventBroadcaster.broadcastEvent(event, callback);
+    },
+
+    runStep: function runStep(step, callback) {
+      var event = Cucumber.Runtime.Event(Cucumber.Events.STEP_EVENT_NAME, step);
+      eventBroadcaster.broadcastAroundEvent(
+        event,
+        function (callback) {
+          process.nextTick(function() {
+            self.processStep(step, callback);
+          });
+        },
+        callback
+      );
+    },
+
+    runHookStep: function(step, hook, callback) {
+      var event = Cucumber.Runtime.Event(Cucumber.Events.STEP_EVENT_NAME, step);
+      eventBroadcaster.broadcastAroundEvent(
+        event,
+        function (callback) {
+          if (options.dryRun) {
+            self.skipStep(step, hook, callback);
+          } else {
+            self.executeStep(step, hook, callback);
+          }
+        },
+        callback
+      );
+    },
+
+    broadcastStepResult: function broadcastStepResult(stepResult, callback) {
+      scenarioResult.witnessStepResult(stepResult);
+      var event = Cucumber.Runtime.Event(Cucumber.Events.STEP_RESULT_EVENT_NAME, stepResult);
+      eventBroadcaster.broadcastEvent(event, callback);
+    },
+
+    isSkippingSteps: function isSkippingSteps() {
+      return scenarioResult.getStatus() !== Cucumber.Status.PASSED;
+    },
+
+    processStep: function processStep(step, callback) {
+      var stepName = step.getName();
+      var stepDefinitions = supportCodeLibrary.lookupStepDefinitionsByName(stepName);
+      if (stepDefinitions.length === 0) {
+        self.skipUndefinedStep(step, callback);
+      } else if (stepDefinitions.length > 1) {
+        self.skipAmbiguousStep(step, stepDefinitions, callback);
+      } else if (options.dryRun || self.isSkippingSteps()) {
+        self.skipStep(step, stepDefinitions[0], callback);
+      } else {
+        self.executeStep(step, stepDefinitions[0], callback);
+      }
+    },
+
+    executeStep: function executeStep(step, stepDefinition, callback) {
+      stepDefinition.invoke(step, world, apiScenario, defaultTimeout, function (stepResult) {
+        apiScenario.clearAttachments();
+        self.broadcastStepResult(stepResult, callback);
+      });
+    },
+
+    skipAmbiguousStep: function skipAmbiguousStep(step, stepDefinitions, callback) {
+      var ambiguousStepResult = Cucumber.Runtime.StepResult({
+        ambiguousStepDefinitions: stepDefinitions,
+        step: step,
+        status: Cucumber.Status.AMBIGUOUS
+      });
+      self.broadcastStepResult(ambiguousStepResult, callback);
+    },
+
+    skipStep: function skipStep(step, stepDefinition, callback) {
+      var skippedStepResult = Cucumber.Runtime.StepResult({
+        step: step,
+        stepDefinition: stepDefinition,
+        status: Cucumber.Status.SKIPPED
+      });
+      self.broadcastStepResult(skippedStepResult, callback);
+    },
+
+    skipUndefinedStep: function skipUndefinedStep(step, callback) {
+      var undefinedStepResult = Cucumber.Runtime.StepResult({step: step, status: Cucumber.Status.UNDEFINED});
+      self.broadcastStepResult(undefinedStepResult, callback);
+    }
+  };
+
+  return self;
+}
+
+module.exports = ScenarioRunner;
+
+}).call(this,require('_process'))
+
+},{"../../cucumber":1,"_process":162}],44:[function(require,module,exports){
 (function (__dirname){
 var path = require('path');
 var chain = require('stack-chain');
+var _ = require('lodash');
 
 var currentFilter = null;
+var cucumberPath = path.join(__dirname, '..');
+
+function isFrameInCucumber(frame) {
+  var fileName = frame.getFileName() || '';
+  return fileName.indexOf(cucumberPath) !== -1;
+}
 
 function filter() {
   currentFilter = chain.filter.attach(function (error, frames) {
-    return frames.filter(function (frame) {
-      var f = frame.getFileName() || '';
-      var ignoredPath = path.join(__dirname, '..');
-      return f.indexOf(ignoredPath) === -1;
-    });
+    if (isFrameInCucumber(frames[0])) {
+      return frames;
+    }
+    return frames.filter(_.negate(isFrameInCucumber));
   });
 }
 
@@ -2615,7 +2612,7 @@ module.exports = {
 
 }).call(this,"/lib/cucumber/runtime")
 
-},{"path":159,"stack-chain":163}],43:[function(require,module,exports){
+},{"lodash":156,"path":160,"stack-chain":164}],45:[function(require,module,exports){
 function StepResult(payload) {
   var self = {
     getAmbiguousStepDefinitions: function getAmbiguousStepDefinitions() {
@@ -2660,7 +2657,7 @@ function StepResult(payload) {
 
 module.exports = StepResult;
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var Status = {};
 
 Status.AMBIGUOUS = 'ambiguous';
@@ -2670,9 +2667,25 @@ Status.PASSED = 'passed';
 Status.SKIPPED = 'skipped';
 Status.UNDEFINED = 'undefined';
 
+Status.getMapping = function getMapping(initialValue) {
+  var statuses = [
+    Status.AMBIGUOUS,
+    Status.FAILED,
+    Status.PASSED,
+    Status.PENDING,
+    Status.SKIPPED,
+    Status.UNDEFINED
+  ];
+  var counts = {};
+  statuses.forEach(function (status) {
+    counts[status] = initialValue;
+  });
+  return counts;
+};
+
 module.exports = Status;
 
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 var SupportCode                          = {};
 SupportCode.Hook                         = require('./support_code/hook');
 SupportCode.Library                      = require('./support_code/library');
@@ -2680,7 +2693,7 @@ SupportCode.StepDefinition               = require('./support_code/step_definiti
 SupportCode.StepDefinitionSnippetBuilder = require('./support_code/step_definition_snippet_builder');
 module.exports                           = SupportCode;
 
-},{"./support_code/hook":46,"./support_code/library":47,"./support_code/step_definition":48,"./support_code/step_definition_snippet_builder":49}],46:[function(require,module,exports){
+},{"./support_code/hook":48,"./support_code/library":49,"./support_code/step_definition":50,"./support_code/step_definition_snippet_builder":51}],48:[function(require,module,exports){
 function Hook(code, options, uri, line) {
   var Cucumber = require('../../cucumber');
   var self = Cucumber.SupportCode.StepDefinition(Hook.EMPTY_PATTERN, options, code, uri, line);
@@ -2720,10 +2733,11 @@ Hook.EMPTY_PATTERN = '';
 
 module.exports = Hook;
 
-},{"../../cucumber":1}],47:[function(require,module,exports){
+},{"../../cucumber":1}],49:[function(require,module,exports){
 function Library(supportCodeDefinition) {
   var Cucumber = require('../../cucumber');
   var callsite = require('callsite');
+  var _ = require('lodash');
 
   var listeners        = [];
   var stepDefinitions  = [];
@@ -2739,15 +2753,9 @@ function Library(supportCodeDefinition) {
   }
 
   function appendEventHandlers(supportCodeHelper, library) {
-    var Cucumber = require('../../cucumber');
-    var events = Cucumber.Listener.Events;
-    var eventName;
-
-    for (eventName in events) {
-      if (events.hasOwnProperty(eventName)) {
-        supportCodeHelper[eventName] = createEventListenerMethod(library, eventName);
-      }
-    }
+    _.each(Cucumber.Events.ALL, function(eventName) {
+      supportCodeHelper[eventName] = createEventListenerMethod(library, eventName);
+    });
   }
 
   var self = {
@@ -2801,8 +2809,15 @@ function Library(supportCodeDefinition) {
       listeners.push(listener);
     },
 
-    registerHandler: function registerHandler(eventName, handler) {
-      var listener = Cucumber.Listener();
+    registerHandler: function registerHandler(eventName, options, handler) {
+      if (typeof(options) === 'function') {
+        handler = options;
+        options = {};
+      }
+      var site = callsite();
+      options.line = site[1].getLineNumber();
+      options.uri = site[1].getFileName() || 'unknown';
+      var listener = Cucumber.Listener(options);
       listener.setHandlerForEvent(eventName, handler);
       self.registerListener(listener);
     },
@@ -2846,10 +2861,8 @@ function Library(supportCodeDefinition) {
 
 module.exports = Library;
 
-},{"../../cucumber":1,"callsite":74}],48:[function(require,module,exports){
+},{"../../cucumber":1,"callsite":75,"lodash":156}],50:[function(require,module,exports){
 (function (process){
-var util = require('util');
-
 function StepDefinition(pattern, options, code, uri, line) {
   var Cucumber = require('../../cucumber');
 
@@ -2925,14 +2938,7 @@ function StepDefinition(pattern, options, code, uri, line) {
         if (result === 'pending') {
           stepResultData.status = Cucumber.Status.PENDING;
         } else if (error) {
-          // If the error is not an Error, coerce it to a string
-          // to shield formatters from complex error objects
-          if(error instanceof Error) {
-            stepResultData.failureException = error;
-          } else {
-            // Use util.format for its informative string representation
-            stepResultData.failureException = util.format(error);
-          }
+          stepResultData.failureException = error;
           stepResultData.status = Cucumber.Status.FAILED;
         } else {
           stepResultData.status = Cucumber.Status.PASSED;
@@ -3008,7 +3014,7 @@ module.exports = StepDefinition;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161,"util":167}],49:[function(require,module,exports){
+},{"../../cucumber":1,"_process":162}],51:[function(require,module,exports){
 var _  = require('lodash');
 
 var NUMBER_PATTERN        = /\d+/gi;
@@ -3095,7 +3101,7 @@ StepDefinitionSnippetBuilder.JavaScriptSyntax = require('./step_definition_snipp
 
 module.exports = StepDefinitionSnippetBuilder;
 
-},{"../../cucumber":1,"./step_definition_snippet_builder/javascript_syntax":50,"lodash":155}],50:[function(require,module,exports){
+},{"../../cucumber":1,"./step_definition_snippet_builder/javascript_syntax":52,"lodash":156}],52:[function(require,module,exports){
 function JavaScriptSyntax() {
   return {
     build: function build (functionName, pattern, parameters, comment) {
@@ -3112,7 +3118,7 @@ function JavaScriptSyntax() {
 
 module.exports = JavaScriptSyntax;
 
-},{}],51:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 function TagGroupParser(tagGroupString) {
   var self = {
     parse: function parse() {
@@ -3139,116 +3145,13 @@ TagGroupParser.TAG_SEPARATOR = ',';
 
 module.exports = TagGroupParser;
 
-},{"../cucumber":1}],52:[function(require,module,exports){
+},{"../cucumber":1}],54:[function(require,module,exports){
 var Type           = {};
-Type.Collection    = require('./type/collection');
 Type.HashDataTable = require('./type/hash_data_table');
 Type.String        = require('./type/string');
 module.exports     = Type;
 
-},{"./type/collection":53,"./type/hash_data_table":54,"./type/string":55}],53:[function(require,module,exports){
-function Collection() {
-  var items = [];
-
-  var self = {
-    add: function add(item) {
-      items.push(item);
-    },
-
-    insert: function insert(index, item) {
-      items.splice(index, 0, item);
-    },
-
-    removeAtIndex: function removeAtIndex(index) {
-      items.splice(index, 1);
-    },
-
-    unshift: function unshift(item) {
-      items.unshift(item);
-    },
-
-    shift: function shift() {
-      return items.shift();
-    },
-
-    clear: function clear() {
-      items.length = 0;
-    },
-
-    indexOf: function indexOf(item) {
-      return items.indexOf(item);
-    },
-
-    getAtIndex: function getAtIndex(index) {
-      return items[index];
-    },
-
-    getLast: function getLast() {
-      return items[items.length - 1];
-    },
-
-    forEach: function forEach(userFunction) {
-      var itemsCopy = items.slice(0);
-      itemsCopy.forEach(userFunction);
-    },
-
-    asyncForEach: function asyncForEach(userFunction, callback) {
-      var itemsCopy = items.slice(0);
-
-      function iterate() {
-        if (itemsCopy.length > 0) {
-          var item = itemsCopy.shift();
-          userFunction(item, function () {
-            iterate();
-          });
-        } else {
-          callback();
-        }
-      }
-
-      iterate();
-    },
-
-    syncMap: function map(userFunction) {
-      var newCollection = new Collection();
-      items.map(function (item) {
-        newCollection.add(userFunction(item));
-      });
-      return newCollection;
-    },
-
-    sort: function sort(comparator) {
-      var sortedItems = items.sort(comparator);
-      var sortedCollection = new Collection();
-      sortedItems.forEach(function (item) {
-        sortedCollection.add(item);
-      });
-      return sortedCollection;
-    },
-
-    length: function length() {
-      return items.length;
-    },
-
-    toArray: function toArray() {
-      return items.slice(0);
-    },
-
-    filter: function (predicate) {
-      var filteredItems = items.filter(predicate);
-      var filteredCollection = new Collection();
-      filteredItems.forEach(function (item) {
-        filteredCollection.add(item);
-      });
-      return filteredCollection;
-    }
-  };
-  return self;
-}
-
-module.exports = Collection;
-
-},{}],54:[function(require,module,exports){
+},{"./type/hash_data_table":55,"./type/string":56}],55:[function(require,module,exports){
 function HashDataTable(rawArray) {
   var self = {
     raw: function raw() {
@@ -3291,7 +3194,7 @@ function HashDataTable(rawArray) {
 
 module.exports = HashDataTable;
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 if (!String.prototype.trim) {
   String.prototype.trim = function () {
     return this.replace(/^\s+|\s+$/g,'');
@@ -3300,7 +3203,7 @@ if (!String.prototype.trim) {
 
 module.exports = String;
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var Util       = {};
 Util.Arguments = require('./util/arguments');
 Util.asyncForEach = require('./util/async_for_each');
@@ -3312,14 +3215,15 @@ Util.String    = require('./util/string');
 Util.Colors    = require('./util/colors');
 module.exports = Util;
 
-},{"./util/arguments":57,"./util/async_for_each":58,"./util/colors":59,"./util/exception":60,"./util/real_time":61,"./util/reg_exp":62,"./util/run":63,"./util/string":64}],57:[function(require,module,exports){
+},{"./util/arguments":58,"./util/async_for_each":59,"./util/colors":60,"./util/exception":61,"./util/real_time":62,"./util/reg_exp":63,"./util/run":64,"./util/string":65}],58:[function(require,module,exports){
 function Arguments(argumentsObject) {
   return Array.prototype.slice.call(argumentsObject);
 }
 
 module.exports = Arguments;
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
+(function (process){
 var asyncForEach = function asyncForEach(items, userFunction, callback) {
   var itemsCopy = items.slice(0);
 
@@ -3327,7 +3231,7 @@ var asyncForEach = function asyncForEach(items, userFunction, callback) {
     if (itemsCopy.length > 0) {
       var item = itemsCopy.shift();
       userFunction(item, function () {
-        iterate();
+        process.nextTick(iterate);
       });
     } else {
       callback();
@@ -3339,7 +3243,9 @@ var asyncForEach = function asyncForEach(items, userFunction, callback) {
 
 module.exports = asyncForEach;
 
-},{}],59:[function(require,module,exports){
+}).call(this,require('_process'))
+
+},{"_process":162}],60:[function(require,module,exports){
 var colors = require('colors/safe');
 
 function Colors (useColors) {
@@ -3359,7 +3265,7 @@ function Colors (useColors) {
 
 module.exports = Colors;
 
-},{"colors/safe":97}],60:[function(require,module,exports){
+},{"colors/safe":98}],61:[function(require,module,exports){
 (function (process){
 /* jshint -W117 */
 
@@ -3385,7 +3291,7 @@ module.exports = Exception;
 
 }).call(this,require('_process'))
 
-},{"_process":161}],61:[function(require,module,exports){
+},{"_process":162}],62:[function(require,module,exports){
 (function (global){
 var methods = {
   Date: Date,
@@ -3404,7 +3310,7 @@ module.exports = methods;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 var _RegExp = {
   escapeString: function escapeString(string) {
     var escaped = string.replace(_RegExp.ESCAPE_PATTERN, _RegExp.ESCAPE_REPLACEMENT);
@@ -3416,8 +3322,9 @@ _RegExp.ESCAPE_PATTERN     = /[-[\]{}()*+?.\\^$|#\n\/]/g;
 _RegExp.ESCAPE_REPLACEMENT = '\\$&';
 module.exports = _RegExp;
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 var co = require('co');
+var util = require('util');
 var isGeneratorFn = require('is-generator').fn;
 
 function run(fn, thisArg, argsArray, timeoutInMilliseconds, callback) {
@@ -3428,6 +3335,9 @@ function run(fn, thisArg, argsArray, timeoutInMilliseconds, callback) {
     Cucumber.Util.Exception.unregisterUncaughtExceptionHandler(finish);
     if (timeoutId) {
       Cucumber.Util.RealTime.clearTimeout(timeoutId);
+    }
+    if (error && !(error instanceof Error)) {
+      error = util.format(error);
     }
     callback(error, result);
     callback = function() {};
@@ -3469,7 +3379,7 @@ function run(fn, thisArg, argsArray, timeoutInMilliseconds, callback) {
 
 module.exports = run;
 
-},{"../../cucumber":1,"co":87,"is-generator":154}],64:[function(require,module,exports){
+},{"../../cucumber":1,"co":88,"is-generator":155,"util":168}],65:[function(require,module,exports){
 var _String = {
   count: function count(hayStack, needle) {
     var splitHayStack = hayStack.split(needle);
@@ -3478,7 +3388,7 @@ var _String = {
 };
 module.exports = _String;
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 function VolatileConfiguration(features, supportCodeInitializer, options) {
   var Cucumber = require('../cucumber');
   var supportCodeLibrary = Cucumber.SupportCode.Library(supportCodeInitializer);
@@ -3539,7 +3449,7 @@ VolatileConfiguration.FEATURE_SOURCE_NAME = '(feature)';
 
 module.exports = VolatileConfiguration;
 
-},{"../cucumber":1}],66:[function(require,module,exports){
+},{"../cucumber":1}],67:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -3900,7 +3810,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":167}],67:[function(require,module,exports){
+},{"util/":168}],68:[function(require,module,exports){
 module.exports = balanced;
 function balanced(a, b, str) {
   var r = range(a, b, str);
@@ -3952,7 +3862,7 @@ function range(a, b, str) {
   return result;
 }
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
 ;(function(root) {
@@ -4122,7 +4032,7 @@ function range(a, b, str) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 ;(function (exports) {
   'use strict'
 
@@ -4255,7 +4165,7 @@ function range(a, b, str) {
   exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 var concatMap = require('concat-map');
 var balanced = require('balanced-match');
 
@@ -4448,9 +4358,9 @@ function expand(str, isTop) {
 }
 
 
-},{"balanced-match":67,"concat-map":99}],71:[function(require,module,exports){
+},{"balanced-match":68,"concat-map":100}],72:[function(require,module,exports){
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5917,14 +5827,14 @@ function blitBuffer (src, dst, offset, length) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":69,"ieee754":151,"isarray":73}],73:[function(require,module,exports){
+},{"base64-js":70,"ieee754":152,"isarray":74}],74:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 
 module.exports = function(){
   var orig = Error.prepareStackTrace;
@@ -5936,7 +5846,7 @@ module.exports = function(){
   return stack;
 };
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -6236,7 +6146,7 @@ module.exports = Table;
 
 module.exports.version = '0.0.1';
 
-},{"./utils":76,"colors/safe":86}],76:[function(require,module,exports){
+},{"./utils":77,"colors/safe":87}],77:[function(require,module,exports){
 
 /**
  * Repeats a string.
@@ -6322,7 +6232,7 @@ exports.strlen = function(str){
   return split.reduce(function (memo, s) { return (s.length > memo) ? s.length : memo }, 0);
 }
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -6499,7 +6409,7 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":78,"./custom/zalgo":79,"./maps/america":80,"./maps/rainbow":81,"./maps/random":82,"./maps/zebra":83,"./styles":84,"./system/supports-colors":85}],78:[function(require,module,exports){
+},{"./custom/trap":79,"./custom/zalgo":80,"./maps/america":81,"./maps/rainbow":82,"./maps/random":83,"./maps/zebra":84,"./styles":85,"./system/supports-colors":86}],79:[function(require,module,exports){
 module['exports'] = function runTheTrap (text, options) {
   var result = "";
   text = text || "Run the trap, drop the bass";
@@ -6546,7 +6456,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 }
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -6652,7 +6562,7 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text);
 }
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function() {
@@ -6665,7 +6575,7 @@ module['exports'] = (function() {
     }
   }
 })();
-},{"../colors":77}],81:[function(require,module,exports){
+},{"../colors":78}],82:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -6680,7 +6590,7 @@ module['exports'] = (function () {
 })();
 
 
-},{"../colors":77}],82:[function(require,module,exports){
+},{"../colors":78}],83:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -6689,13 +6599,13 @@ module['exports'] = (function () {
     return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
   };
 })();
-},{"../colors":77}],83:[function(require,module,exports){
+},{"../colors":78}],84:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = function (letter, i, exploded) {
   return i % 2 === 0 ? letter : colors.inverse(letter);
 };
-},{"../colors":77}],84:[function(require,module,exports){
+},{"../colors":78}],85:[function(require,module,exports){
 /*
 The MIT License (MIT)
 
@@ -6773,7 +6683,7 @@ Object.keys(codes).forEach(function (key) {
   style.open = '\u001b[' + val[0] + 'm';
   style.close = '\u001b[' + val[1] + 'm';
 });
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -6838,7 +6748,7 @@ module.exports = (function () {
 })();
 }).call(this,require('_process'))
 
-},{"_process":161}],86:[function(require,module,exports){
+},{"_process":162}],87:[function(require,module,exports){
 //
 // Remark: Requiring this file will use the "safe" colors API which will not touch String.prototype
 //
@@ -6848,7 +6758,7 @@ module.exports = (function () {
 //
 var colors = require('./lib/colors');
 module['exports'] = colors;
-},{"./lib/colors":77}],87:[function(require,module,exports){
+},{"./lib/colors":78}],88:[function(require,module,exports){
 
 /**
  * slice() reference.
@@ -7087,7 +6997,7 @@ function isObject(val) {
   return Object == val.constructor;
 }
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -7275,9 +7185,9 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":89,"./custom/zalgo":90,"./maps/america":91,"./maps/rainbow":92,"./maps/random":93,"./maps/zebra":94,"./styles":95,"./system/supports-colors":96}],89:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],90:[function(require,module,exports){
+},{"./custom/trap":90,"./custom/zalgo":91,"./maps/america":92,"./maps/rainbow":93,"./maps/random":94,"./maps/zebra":95,"./styles":96,"./system/supports-colors":97}],90:[function(require,module,exports){
+arguments[4][79][0].apply(exports,arguments)
+},{"dup":79}],91:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -7383,17 +7293,17 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text, options);
 }
 
-},{}],91:[function(require,module,exports){
-arguments[4][80][0].apply(exports,arguments)
-},{"../colors":88,"dup":80}],92:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../colors":88,"dup":81}],93:[function(require,module,exports){
+},{"../colors":89,"dup":81}],93:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"../colors":88,"dup":82}],94:[function(require,module,exports){
+},{"../colors":89,"dup":82}],94:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"../colors":88,"dup":83}],95:[function(require,module,exports){
+},{"../colors":89,"dup":83}],95:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],96:[function(require,module,exports){
+},{"../colors":89,"dup":84}],96:[function(require,module,exports){
+arguments[4][85][0].apply(exports,arguments)
+},{"dup":85}],97:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -7458,9 +7368,9 @@ module.exports = (function () {
 })();
 }).call(this,require('_process'))
 
-},{"_process":161}],97:[function(require,module,exports){
-arguments[4][86][0].apply(exports,arguments)
-},{"./lib/colors":88,"dup":86}],98:[function(require,module,exports){
+},{"_process":162}],98:[function(require,module,exports){
+arguments[4][87][0].apply(exports,arguments)
+},{"./lib/colors":89,"dup":87}],99:[function(require,module,exports){
 (function (process){
 /**
  * Module dependencies.
@@ -8575,7 +8485,7 @@ function exists(file) {
 
 }).call(this,require('_process'))
 
-},{"_process":161,"child_process":71,"events":133,"fs":71,"graceful-readlink":150,"path":159}],99:[function(require,module,exports){
+},{"_process":162,"child_process":72,"events":134,"fs":72,"graceful-readlink":151,"path":160}],100:[function(require,module,exports){
 module.exports = function (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -8590,7 +8500,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],100:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 var CucumberHTML = {};
 
 CucumberHTML.DOMFormatter = function(rootNode) {
@@ -8820,7 +8730,7 @@ if (typeof module !== 'undefined') {
   define([], function() { return CucumberHTML; });
 }
 
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 'use strict';
 
 var assign        = require('es5-ext/object/assign')
@@ -8885,7 +8795,7 @@ d.gs = function (dscr, get, set/*, options*/) {
 	return !options ? desc : assign(normalizeOpts(options), desc);
 };
 
-},{"es5-ext/object/assign":116,"es5-ext/object/is-callable":119,"es5-ext/object/normalize-options":123,"es5-ext/string/#/contains":125}],102:[function(require,module,exports){
+},{"es5-ext/object/assign":117,"es5-ext/object/is-callable":120,"es5-ext/object/normalize-options":124,"es5-ext/string/#/contains":126}],103:[function(require,module,exports){
 'use strict';
 
 var d           = require('d')
@@ -9065,14 +8975,14 @@ Duration.prototype = Object.create(Object.prototype, {
 	})
 });
 
-},{"d":101,"es5-ext/date/#/copy":103,"es5-ext/date/#/days-in-month":104,"es5-ext/date/#/floor-day":105,"es5-ext/date/#/floor-month":106,"es5-ext/date/#/floor-year":107,"es5-ext/date/valid-date":109,"es5-ext/number/#/pad":113,"es5-ext/number/to-integer":114,"es5-ext/number/to-pos-integer":115,"es5-ext/string/format-method":132}],103:[function(require,module,exports){
+},{"d":102,"es5-ext/date/#/copy":104,"es5-ext/date/#/days-in-month":105,"es5-ext/date/#/floor-day":106,"es5-ext/date/#/floor-month":107,"es5-ext/date/#/floor-year":108,"es5-ext/date/valid-date":110,"es5-ext/number/#/pad":114,"es5-ext/number/to-integer":115,"es5-ext/number/to-pos-integer":116,"es5-ext/string/format-method":133}],104:[function(require,module,exports){
 'use strict';
 
 var getTime = Date.prototype.getTime;
 
 module.exports = function () { return new Date(getTime.call(this)); };
 
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 'use strict';
 
 var getMonth = Date.prototype.getMonth;
@@ -9091,7 +9001,7 @@ module.exports = function () {
 	}
 };
 
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 'use strict';
 
 var setHours = Date.prototype.setHours;
@@ -9101,7 +9011,7 @@ module.exports = function () {
 	return this;
 };
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 'use strict';
 
 var floorDay = require('./floor-day');
@@ -9111,7 +9021,7 @@ module.exports = function () {
 	return this;
 };
 
-},{"./floor-day":105}],107:[function(require,module,exports){
+},{"./floor-day":106}],108:[function(require,module,exports){
 'use strict';
 
 var floorMonth = require('./floor-month');
@@ -9121,7 +9031,7 @@ module.exports = function () {
 	return this;
 };
 
-},{"./floor-month":106}],108:[function(require,module,exports){
+},{"./floor-month":107}],109:[function(require,module,exports){
 'use strict';
 
 var toString = Object.prototype.toString
@@ -9132,7 +9042,7 @@ module.exports = function (x) {
 	return (x && ((x instanceof Date) || (toString.call(x) === id))) || false;
 };
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 'use strict';
 
 var isDate = require('./is-date');
@@ -9142,14 +9052,14 @@ module.exports = function (x) {
 	return x;
 };
 
-},{"./is-date":108}],110:[function(require,module,exports){
+},{"./is-date":109}],111:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? Math.sign
 	: require('./shim');
 
-},{"./is-implemented":111,"./shim":112}],111:[function(require,module,exports){
+},{"./is-implemented":112,"./shim":113}],112:[function(require,module,exports){
 'use strict';
 
 module.exports = function () {
@@ -9158,7 +9068,7 @@ module.exports = function () {
 	return ((sign(10) === 1) && (sign(-20) === -1));
 };
 
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 'use strict';
 
 module.exports = function (value) {
@@ -9167,7 +9077,7 @@ module.exports = function (value) {
 	return (value > 0) ? 1 : -1;
 };
 
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 'use strict';
 
 var pad      = require('../../string/#/pad')
@@ -9184,7 +9094,7 @@ module.exports = function (length/*, precision*/) {
 		'0', length + (precision ? (1 + precision) : 0));
 };
 
-},{"../../string/#/pad":128,"../to-pos-integer":115}],114:[function(require,module,exports){
+},{"../../string/#/pad":129,"../to-pos-integer":116}],115:[function(require,module,exports){
 'use strict';
 
 var sign = require('../math/sign')
@@ -9198,7 +9108,7 @@ module.exports = function (value) {
 	return sign(value) * floor(abs(value));
 };
 
-},{"../math/sign":110}],115:[function(require,module,exports){
+},{"../math/sign":111}],116:[function(require,module,exports){
 'use strict';
 
 var toInteger = require('./to-integer')
@@ -9207,14 +9117,14 @@ var toInteger = require('./to-integer')
 
 module.exports = function (value) { return max(0, toInteger(value)); };
 
-},{"./to-integer":114}],116:[function(require,module,exports){
+},{"./to-integer":115}],117:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? Object.assign
 	: require('./shim');
 
-},{"./is-implemented":117,"./shim":118}],117:[function(require,module,exports){
+},{"./is-implemented":118,"./shim":119}],118:[function(require,module,exports){
 'use strict';
 
 module.exports = function () {
@@ -9225,7 +9135,7 @@ module.exports = function () {
 	return (obj.foo + obj.bar + obj.trzy) === 'razdwatrzy';
 };
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 'use strict';
 
 var keys  = require('../keys')
@@ -9249,21 +9159,21 @@ module.exports = function (dest, src/*, …srcn*/) {
 	return dest;
 };
 
-},{"../keys":120,"../valid-value":124}],119:[function(require,module,exports){
+},{"../keys":121,"../valid-value":125}],120:[function(require,module,exports){
 // Deprecated
 
 'use strict';
 
 module.exports = function (obj) { return typeof obj === 'function'; };
 
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? Object.keys
 	: require('./shim');
 
-},{"./is-implemented":121,"./shim":122}],121:[function(require,module,exports){
+},{"./is-implemented":122,"./shim":123}],122:[function(require,module,exports){
 'use strict';
 
 module.exports = function () {
@@ -9273,7 +9183,7 @@ module.exports = function () {
 	} catch (e) { return false; }
 };
 
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 'use strict';
 
 var keys = Object.keys;
@@ -9282,7 +9192,7 @@ module.exports = function (object) {
 	return keys(object == null ? object : Object(object));
 };
 
-},{}],123:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 'use strict';
 
 var forEach = Array.prototype.forEach, create = Object.create;
@@ -9301,7 +9211,7 @@ module.exports = function (options/*, …options*/) {
 	return result;
 };
 
-},{}],124:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 'use strict';
 
 module.exports = function (value) {
@@ -9309,14 +9219,14 @@ module.exports = function (value) {
 	return value;
 };
 
-},{}],125:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? String.prototype.contains
 	: require('./shim');
 
-},{"./is-implemented":126,"./shim":127}],126:[function(require,module,exports){
+},{"./is-implemented":127,"./shim":128}],127:[function(require,module,exports){
 'use strict';
 
 var str = 'razdwatrzy';
@@ -9326,7 +9236,7 @@ module.exports = function () {
 	return ((str.contains('dwa') === true) && (str.contains('foo') === false));
 };
 
-},{}],127:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 'use strict';
 
 var indexOf = String.prototype.indexOf;
@@ -9335,7 +9245,7 @@ module.exports = function (searchString/*, position*/) {
 	return indexOf.call(this, searchString, arguments[1]) > -1;
 };
 
-},{}],128:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 'use strict';
 
 var toInteger = require('../../number/to-integer')
@@ -9355,14 +9265,14 @@ module.exports = function (fill/*, length*/) {
 	return self + (((sLength + length) >= 0) ? '' : fill.slice(length + sLength));
 };
 
-},{"../../number/to-integer":114,"../../object/valid-value":124,"./repeat":129}],129:[function(require,module,exports){
+},{"../../number/to-integer":115,"../../object/valid-value":125,"./repeat":130}],130:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./is-implemented')()
 	? String.prototype.repeat
 	: require('./shim');
 
-},{"./is-implemented":130,"./shim":131}],130:[function(require,module,exports){
+},{"./is-implemented":131,"./shim":132}],131:[function(require,module,exports){
 'use strict';
 
 var str = 'foo';
@@ -9372,7 +9282,7 @@ module.exports = function () {
 	return (str.repeat(2) === 'foofoo');
 };
 
-},{}],131:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 // Thanks: http://www.2ality.com/2014/01/efficient-string-repeat.html
 
 'use strict';
@@ -9396,7 +9306,7 @@ module.exports = function (count) {
 	return result;
 };
 
-},{"../../../number/to-integer":114,"../../../object/valid-value":124}],132:[function(require,module,exports){
+},{"../../../number/to-integer":115,"../../../object/valid-value":125}],133:[function(require,module,exports){
 'use strict';
 
 var isCallable = require('../object/is-callable')
@@ -9422,7 +9332,7 @@ module.exports = function (fmap) {
 	};
 };
 
-},{"../object/is-callable":119,"../object/valid-value":124}],133:[function(require,module,exports){
+},{"../object/is-callable":120,"../object/valid-value":125}],134:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9722,7 +9632,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],134:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -9745,7 +9655,7 @@ function isUndefined(arg) {
   };
 }));
 
-},{"./lib/gherkin/ast_builder":135,"./lib/gherkin/dialects":138,"./lib/gherkin/parser":142,"./lib/gherkin/pickles/compiler":143,"./lib/gherkin/token_matcher":145,"./lib/gherkin/token_scanner":146}],135:[function(require,module,exports){
+},{"./lib/gherkin/ast_builder":136,"./lib/gherkin/dialects":139,"./lib/gherkin/parser":143,"./lib/gherkin/pickles/compiler":144,"./lib/gherkin/token_matcher":146,"./lib/gherkin/token_scanner":147}],136:[function(require,module,exports){
 var AstNode = require('./ast_node');
 var Errors = require('./errors');
 
@@ -10011,7 +9921,7 @@ module.exports = function AstBuilder () {
 
 };
 
-},{"./ast_node":136,"./errors":139}],136:[function(require,module,exports){
+},{"./ast_node":137,"./errors":140}],137:[function(require,module,exports){
 function AstNode (ruleType) {
   this.ruleType = ruleType;
   this._subItems = {};
@@ -10041,7 +9951,7 @@ AstNode.prototype.getTokens = function (tokenType) {
 
 module.exports = AstNode;
 
-},{}],137:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 // https://mathiasbynens.be/notes/javascript-unicode
 var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
 
@@ -10049,10 +9959,10 @@ module.exports = function countSymbols(string) {
   return string.replace(regexAstralSymbols, '_').length;
 }
 
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 module.exports = require('./gherkin-languages.json');
 
-},{"./gherkin-languages.json":140}],139:[function(require,module,exports){
+},{"./gherkin-languages.json":141}],140:[function(require,module,exports){
 var Errors = {};
 
 [
@@ -10115,7 +10025,7 @@ function createError(Ctor, message, location) {
 
 module.exports = Errors;
 
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 module.exports={
   "af": {
     "and": [
@@ -13086,7 +12996,7 @@ module.exports={
   }
 }
 
-},{}],141:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 var countSymbols = require('./count_symbols')
 
 function GherkinLine(lineText, lineNumber) {
@@ -13171,7 +13081,7 @@ GherkinLine.prototype.getTags = function getTags() {
 
 module.exports = GherkinLine;
 
-},{"./count_symbols":137}],142:[function(require,module,exports){
+},{"./count_symbols":138}],143:[function(require,module,exports){
 // This file is generated. Do not edit! Edit gherkin-javascript.razor instead.
 var Errors = require('./errors');
 var AstBuilder = require('./ast_builder');
@@ -15600,7 +15510,7 @@ module.exports = function Parser(builder) {
 
 }
 
-},{"./ast_builder":135,"./errors":139,"./token_matcher":145,"./token_scanner":146}],143:[function(require,module,exports){
+},{"./ast_builder":136,"./errors":140,"./token_matcher":146,"./token_scanner":147}],144:[function(require,module,exports){
 var countSymbols = require('../count_symbols')
 
 function Compiler() {
@@ -15768,7 +15678,7 @@ function Compiler() {
 
 module.exports = Compiler;
 
-},{"../count_symbols":137}],144:[function(require,module,exports){
+},{"../count_symbols":138}],145:[function(require,module,exports){
 function Token(line, location) {
   this.line = line;
   this.location = location;
@@ -15785,7 +15695,7 @@ Token.prototype.detach = function () {
 
 module.exports = Token;
 
-},{}],145:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 var DIALECTS = require('./dialects');
 var Errors = require('./errors');
 var LANGUAGE_PATTERN = /^\s*#\s*language\s*:\s*([a-zA-Z\-_]+)\s*$/;
@@ -15976,7 +15886,7 @@ module.exports = function TokenMatcher(defaultDialectName) {
   }
 };
 
-},{"./dialects":138,"./errors":139}],146:[function(require,module,exports){
+},{"./dialects":139,"./errors":140}],147:[function(require,module,exports){
 var Token = require('./token');
 var GherkinLine = require('./gherkin_line');
 
@@ -16001,7 +15911,7 @@ module.exports = function TokenScanner(source) {
   }
 };
 
-},{"./gherkin_line":141,"./token":144}],147:[function(require,module,exports){
+},{"./gherkin_line":142,"./token":145}],148:[function(require,module,exports){
 (function (process){
 exports.alphasort = alphasort
 exports.alphasorti = alphasorti
@@ -16232,7 +16142,7 @@ function childrenIgnored (self, path) {
 
 }).call(this,require('_process'))
 
-},{"_process":161,"minimatch":156,"path":159,"path-is-absolute":160}],148:[function(require,module,exports){
+},{"_process":162,"minimatch":157,"path":160,"path-is-absolute":161}],149:[function(require,module,exports){
 (function (process){
 // Approach:
 //
@@ -17009,7 +16919,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 
 }).call(this,require('_process'))
 
-},{"./common.js":147,"./sync.js":149,"_process":161,"assert":66,"events":133,"fs":71,"inflight":152,"inherits":153,"minimatch":156,"once":157,"path":159,"path-is-absolute":160,"util":167}],149:[function(require,module,exports){
+},{"./common.js":148,"./sync.js":150,"_process":162,"assert":67,"events":134,"fs":72,"inflight":153,"inherits":154,"minimatch":157,"once":158,"path":160,"path-is-absolute":161,"util":168}],150:[function(require,module,exports){
 (function (process){
 module.exports = globSync
 globSync.GlobSync = GlobSync
@@ -17480,7 +17390,7 @@ GlobSync.prototype._makeAbs = function (f) {
 
 }).call(this,require('_process'))
 
-},{"./common.js":147,"./glob.js":148,"_process":161,"assert":66,"fs":71,"minimatch":156,"path":159,"path-is-absolute":160,"util":167}],150:[function(require,module,exports){
+},{"./common.js":148,"./glob.js":149,"_process":162,"assert":67,"fs":72,"minimatch":157,"path":160,"path-is-absolute":161,"util":168}],151:[function(require,module,exports){
 var fs = require('fs')
   , lstat = fs.lstatSync;
 
@@ -17494,7 +17404,7 @@ exports.readlinkSync = function (p) {
 
 
 
-},{"fs":71}],151:[function(require,module,exports){
+},{"fs":72}],152:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -17580,7 +17490,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],152:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 (function (process){
 var wrappy = require('wrappy')
 var reqs = Object.create(null)
@@ -17629,7 +17539,7 @@ function slice (args) {
 
 }).call(this,require('_process'))
 
-},{"_process":161,"once":157,"wrappy":168}],153:[function(require,module,exports){
+},{"_process":162,"once":158,"wrappy":169}],154:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -17654,7 +17564,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],154:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 /**
  * Export generator function checks.
  */
@@ -17685,7 +17595,7 @@ function isGeneratorFunction (fn) {
     fn.constructor.name === 'GeneratorFunction'
 }
 
-},{}],155:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -32586,7 +32496,7 @@ function isGeneratorFunction (fn) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],156:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 module.exports = minimatch
 minimatch.Minimatch = Minimatch
 
@@ -33500,7 +33410,7 @@ function regExpEscape (s) {
   return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-},{"brace-expansion":70,"path":159}],157:[function(require,module,exports){
+},{"brace-expansion":71,"path":160}],158:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
 
@@ -33523,7 +33433,7 @@ function once (fn) {
   return f
 }
 
-},{"wrappy":168}],158:[function(require,module,exports){
+},{"wrappy":169}],159:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -33570,7 +33480,7 @@ exports.tmpdir = exports.tmpDir = function () {
 
 exports.EOL = '\n';
 
-},{}],159:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -33799,7 +33709,7 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this,require('_process'))
 
-},{"_process":161}],160:[function(require,module,exports){
+},{"_process":162}],161:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -33824,7 +33734,7 @@ module.exports.win32 = win32;
 
 }).call(this,require('_process'))
 
-},{"_process":161}],161:[function(require,module,exports){
+},{"_process":162}],162:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -33917,7 +33827,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 // Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -33966,7 +33876,7 @@ module.exports = function FormatStackTrace(error, frames) {
   return lines.join("\n");
 };
 
-},{}],163:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 (function (global){
 // If a another copy (same version or not) of stack-chain exists it will result
 // in wrong stack traces (most likely dublicate callSites).
@@ -33987,7 +33897,7 @@ else {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./package.json":164,"./stack-chain":165}],164:[function(require,module,exports){
+},{"./package.json":165,"./stack-chain":166}],165:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -34071,7 +33981,7 @@ module.exports={
   "version": "1.3.5"
 }
 
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 
 // use a already existing formater or fallback to the default v8 formater
 var defaultFormater = require('./format.js');
@@ -34262,14 +34172,14 @@ Object.defineProperty(Error.prototype, 'callSite', {
 
 module.exports = chain;
 
-},{"./format.js":162,"./package.json":164}],166:[function(require,module,exports){
+},{"./format.js":163,"./package.json":165}],167:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],167:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -34860,7 +34770,7 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./support/isBuffer":166,"_process":161,"inherits":153}],168:[function(require,module,exports){
+},{"./support/isBuffer":167,"_process":162,"inherits":154}],169:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -34895,7 +34805,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 module.exports={
   "name": "cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
@@ -34906,7 +34816,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "0.10.4",
+  "version": "1.1.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -34981,7 +34891,9 @@ module.exports={
     "Ádám Gólya <adam.golya@lab.coop>",
     "Scott Deakin <scott.deakin@kantar.com>",
     "efokschaner <eddyaod@gmail.com>",
-    "John McLaughlin <john.mjhm@gmail.com>"
+    "John McLaughlin <john.mjhm@gmail.com>",
+    "Josh Goldberg <joshuakgoldberg@outlook.com>",
+    "Artur Pomadowski <artur.pomadowski@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -35001,7 +34913,7 @@ module.exports={
   "dependencies": {
     "base-64": "^0.1.0",
     "callsite": "^1.0.0",
-    "camel-case": "^1.2.0",
+    "camel-case": "^3.0.0",
     "cli-table": "^0.3.1",
     "co": "^4.6.0",
     "colors": "^1.1.2",
@@ -35032,8 +34944,8 @@ module.exports={
     "tmp": "0.0.28"
   },
   "scripts": {
-    "feature-test": "./bin/cucumber.js -p build",
-    "feature-test-es5": "./bin/cucumber.js -p build -p es5",
+    "feature-test": "node ./bin/cucumber.js",
+    "feature-test-es5": "node ./bin/cucumber.js -p es5",
     "lint": "jshint bin features lib scripts spec",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
     "test-es5": "npm run lint && npm run unit-test && npm run feature-test-es5",
@@ -35061,6 +34973,6 @@ module.exports = require('../../lib/cucumber');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../lib/cucumber":1,"cucumber-html":100}]},{},[])("cucumber")
+},{"../../lib/cucumber":1,"cucumber-html":101}]},{},[])("cucumber")
 });
 //# sourceMappingURL=cucumber.js.map

@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -83,7 +83,9 @@
     "Ádám Gólya <adam.golya@lab.coop>",
     "Scott Deakin <scott.deakin@kantar.com>",
     "efokschaner <eddyaod@gmail.com>",
-    "John McLaughlin <john.mjhm@gmail.com>"
+    "John McLaughlin <john.mjhm@gmail.com>",
+    "Josh Goldberg <joshuakgoldberg@outlook.com>",
+    "Artur Pomadowski <artur.pomadowski@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -103,7 +105,7 @@
   "dependencies": {
     "base-64": "^0.1.0",
     "callsite": "^1.0.0",
-    "camel-case": "^1.2.0",
+    "camel-case": "^3.0.0",
     "cli-table": "^0.3.1",
     "co": "^4.6.0",
     "colors": "^1.1.2",
