@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.1.0",
+  "version": "1.2.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -85,7 +85,8 @@
     "efokschaner <eddyaod@gmail.com>",
     "John McLaughlin <john.mjhm@gmail.com>",
     "Josh Goldberg <joshuakgoldberg@outlook.com>",
-    "Artur Pomadowski <artur.pomadowski@gmail.com>"
+    "Artur Pomadowski <artur.pomadowski@gmail.com>",
+    "Benjamín Eidelman <beneidel+gh@gmail.com>"
   ],
   "repository": {
     "type": "git",

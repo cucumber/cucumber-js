@@ -1,6 +1,14 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.1.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.2.0...master)
 
-### [1.1.0](https://github.com/cucumber/cucumber-js/compare/v1.0.0...v1.1.0) (2016-06-323)
+### [1.2.0](https://github.com/cucumber/cucumber-js/compare/v1.1.0...v1.2.0) (2016-06-24)
+
+#### Bug Fixes
+
+* Attachments
+  * Remove intermediate conversion to string (Charlie Rudolph)
+  * Use native base64 encoding which can encode binary (#589) (Benjamín Eidelman)
+
+### [1.1.0](https://github.com/cucumber/cucumber-js/compare/v1.0.0...v1.1.0) (2016-06-23)
 
 #### New Features
 
