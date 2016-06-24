@@ -45,7 +45,7 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
         expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(1);
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
       });
 
       it('returns a passing result', function() {
@@ -75,19 +75,19 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        expect(event.getPayload()).toEqual(step);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        expect(event.getPayloadItem('stepResult')).toEqual(stepResult);
+        expect(event.getPayload()).toEqual(stepResult);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a passing result', function() {
@@ -117,19 +117,19 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        expect(event.getPayload()).toEqual(step);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        expect(event.getPayloadItem('stepResult')).toEqual(stepResult);
+        expect(event.getPayload()).toEqual(stepResult);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a failed result', function() {
@@ -157,21 +157,21 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        expect(event.getPayload()).toEqual(step);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        var stepResult = event.getPayloadItem('stepResult');
+        var stepResult = event.getPayload();
         expect(stepResult.getStatus()).toEqual(Cucumber.Status.AMBIGUOUS);
         expect(stepResult.getAmbiguousStepDefinitions()).toEqual(stepDefinitions);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a failed result', function() {
@@ -197,20 +197,20 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        expect(event.getPayload()).toEqual(step);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        var stepResult = event.getPayloadItem('stepResult');
+        var stepResult = event.getPayload();
         expect(stepResult.getStatus()).toEqual(Cucumber.Status.UNDEFINED);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a failed result', function() {
@@ -239,20 +239,20 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        expect(event.getPayload()).toEqual(step);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        var stepResult = event.getPayloadItem('stepResult');
+        var stepResult = event.getPayload();
         expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a skipped result', function() {
@@ -261,11 +261,11 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
     });
 
     describe("with an before hook and step in dry run mode", function() {
-      var step, stepDefinition;
+      var hook, step, stepDefinition;
 
       beforeEach(function(done) {
         options.dryRun = true;
-        var hook = Cucumber.SupportCode.Hook(function(){ throw new Error('error'); }, {});
+        hook = Cucumber.SupportCode.Hook(function(){ throw new Error('error'); }, {});
         step = Cucumber.Ast.Step({});
         stepDefinition = createSpy('stepDefinition');
         supportCodeLibrary.lookupBeforeHooksByScenario.and.returnValue([hook]);
@@ -278,25 +278,35 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
       });
 
       it('broadcasts a scenario, step and stepResult event and does not run the hook', function() {
-        expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(2);
-        expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(2);
+        expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(3);
+        expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(3);
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        var hookStep = event.getPayload();
+        expect(hookStep.getKeyword()).toEqual('Before ');
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        var stepResult = event.getPayloadItem('stepResult');
+        var stepResult = event.getPayload();
         expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
 
+        event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(2)[0];
+        expect(event.getName()).toEqual('Step');
+        expect(event.getPayload()).toEqual(step);
+
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
+        expect(event.getName()).toEqual('StepResult');
+        stepResult = event.getPayload();
+        expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+
+        event = eventBroadcaster.broadcastEvent.calls.argsFor(2)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a skipped result', function() {
@@ -322,25 +332,35 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
       });
 
       it('broadcasts a scenario, step and stepResult event and does not run the hook', function() {
-        expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(2);
-        expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(2);
+        expect(eventBroadcaster.broadcastAroundEvent).toHaveBeenCalledTimes(3);
+        expect(eventBroadcaster.broadcastEvent).toHaveBeenCalledTimes(3);
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Scenario');
-        expect(event.getPayloadItem('scenario')).toEqual(scenario);
+        expect(event.getPayload()).toEqual(scenario);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Step');
-        expect(event.getPayloadItem('step')).toEqual(step);
+        expect(event.getPayload()).toEqual(step);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('StepResult');
-        var stepResult = event.getPayloadItem('stepResult');
+        var stepResult = event.getPayload();
         expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
 
+        event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(2)[0];
+        expect(event.getName()).toEqual('Step');
+        var hookStep = event.getPayload();
+        expect(hookStep.getKeyword()).toEqual('After ');
+
         event = eventBroadcaster.broadcastEvent.calls.argsFor(1)[0];
+        expect(event.getName()).toEqual('StepResult');
+        stepResult = event.getPayload();
+        expect(stepResult.getStatus()).toEqual(Cucumber.Status.SKIPPED);
+
+        event = eventBroadcaster.broadcastEvent.calls.argsFor(2)[0];
         expect(event.getName()).toEqual('ScenarioResult');
-        expect(event.getPayloadItem('scenarioResult')).toEqual(result);
+        expect(event.getPayload()).toEqual(result);
       });
 
       it('returns a skipped result', function() {

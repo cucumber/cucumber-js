@@ -8,62 +8,6 @@ describe("Cucumber.Listener", function () {
     listener = Cucumber.Listener();
   });
 
-  describe("hear()", function () {
-    var event, callback;
-    var eventHandler;
-
-    beforeEach(function () {
-      event    = createSpy("event");
-      callback = createSpy("callback");
-      spyOn(listener, 'hasHandlerForEvent');
-      spyOn(listener, 'getHandlerForEvent');
-    });
-
-    it("checks whether there is a handler for the event", function () {
-      listener.hear(event, callback);
-      expect(listener.hasHandlerForEvent).toHaveBeenCalledWith(event);
-    });
-
-    describe("when there is a handler for that event", function () {
-      beforeEach(function () {
-        eventHandler = createSpy("Event handler (function)");
-        listener.hasHandlerForEvent.and.returnValue(true);
-        listener.getHandlerForEvent.and.returnValue(eventHandler);
-      });
-
-      it("gets the handler for that event", function () {
-        listener.hear(event, callback);
-        expect(listener.getHandlerForEvent).toHaveBeenCalledWith(event);
-      });
-
-      it("calls the handler with the event and the callback", function () {
-        listener.hear(event, callback);
-        expect(eventHandler).toHaveBeenCalledWith(event, callback);
-      });
-
-      it("does not callback", function () {
-        listener.hear(event, callback);
-        expect(callback).not.toHaveBeenCalled();
-      });
-    });
-
-    describe("when there are no handlers for that event", function () {
-      beforeEach(function () {
-        listener.hasHandlerForEvent.and.returnValue(false);
-      });
-
-      it("calls back", function () {
-        listener.hear(event, callback);
-        expect(callback).toHaveBeenCalled();
-      });
-
-      it("does not get the handler for the event", function () {
-        listener.hear(event, callback);
-        expect(listener.getHandlerForEvent).not.toHaveBeenCalled();
-      });
-    });
-  });
-
   describe("hasHandlerForEvent", function () {
     var event, eventHandlerName, eventHandler;
 

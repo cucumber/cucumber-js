@@ -2,17 +2,18 @@ require('../../support/spec_helper');
 
 describe("Cucumber.Runtime.EventBroadcaster", function () {
   var Cucumber = requireLib('cucumber');
-  var eventBroadcaster, listeners;
+  var eventBroadcaster, defaultTimeout, listeners;
 
   var createListener = function createListener(name) {
     var listener = createSpy(name);
-    spyOnStub(listener, 'hear').and.callFake(function (event, cb) { cb(); });
+    spyOnStub(listener, 'hear').and.callFake(function (event, defaultTimeout, cb) { cb(); });
     return listener;
   };
 
   beforeEach(function () {
+    defaultTimeout = createSpy('default timeout');
     listeners = [createListener("First listener"), createListener("Second listener")];
-    eventBroadcaster = Cucumber.Runtime.EventBroadcaster(listeners);
+    eventBroadcaster = Cucumber.Runtime.EventBroadcaster(listeners, defaultTimeout);
   });
 
   describe("broadcastAroundEvent()", function () {
@@ -27,8 +28,8 @@ describe("Cucumber.Runtime.EventBroadcaster", function () {
     });
 
     it("broadcasts the before event", function () {
-      expect(listeners[0].hear).toHaveBeenCalledWith(preEvent, jasmine.any(Function));
-      expect(listeners[1].hear).toHaveBeenCalledWith(preEvent, jasmine.any(Function));
+      expect(listeners[0].hear).toHaveBeenCalledWith(preEvent, defaultTimeout, jasmine.any(Function));
+      expect(listeners[1].hear).toHaveBeenCalledWith(preEvent, defaultTimeout, jasmine.any(Function));
     });
 
     it("calls the user function", function () {
@@ -36,8 +37,8 @@ describe("Cucumber.Runtime.EventBroadcaster", function () {
     });
 
     it("broadcasts the after event", function () {
-      expect(listeners[0].hear).toHaveBeenCalledWith(postEvent, jasmine.any(Function));
-      expect(listeners[1].hear).toHaveBeenCalledWith(postEvent, jasmine.any(Function));
+      expect(listeners[0].hear).toHaveBeenCalledWith(postEvent, defaultTimeout, jasmine.any(Function));
+      expect(listeners[1].hear).toHaveBeenCalledWith(postEvent, defaultTimeout, jasmine.any(Function));
     });
   });
 
@@ -50,8 +51,8 @@ describe("Cucumber.Runtime.EventBroadcaster", function () {
     });
 
     it("broadcasts the event", function () {
-      expect(listeners[0].hear).toHaveBeenCalledWith(event, jasmine.any(Function));
-      expect(listeners[1].hear).toHaveBeenCalledWith(event, jasmine.any(Function));
+      expect(listeners[0].hear).toHaveBeenCalledWith(event, defaultTimeout, jasmine.any(Function));
+      expect(listeners[1].hear).toHaveBeenCalledWith(event, defaultTimeout, jasmine.any(Function));
     });
   });
 });

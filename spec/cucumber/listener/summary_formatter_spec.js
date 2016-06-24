@@ -26,17 +26,10 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
   });
 
   describe("handleStepResultEvent()", function () {
-    var event, callback, stepResult;
+    var stepResult;
 
     beforeEach(function () {
       stepResult = createSpyWithStubs("step result", {getStatus: undefined});
-      event      = createSpyWithStubs("event", {getPayloadItem: stepResult});
-      callback   = createSpy("Callback");
-    });
-
-    it("gets the step result from the event payload", function () {
-      summaryFormatter.handleStepResultEvent(event, callback);
-      expect(event.getPayloadItem).toHaveBeenCalledWith('stepResult');
     });
 
     describe("when the step was ambiguous", function () {
@@ -46,7 +39,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("handles the undefined step result", function () {
-        summaryFormatter.handleStepResultEvent(event, callback);
+        summaryFormatter.handleStepResultEvent(stepResult);
         expect(summaryFormatter.storeAmbiguousStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
@@ -58,7 +51,7 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("handles the undefined step result", function () {
-        summaryFormatter.handleStepResultEvent(event, callback);
+        summaryFormatter.handleStepResultEvent(stepResult);
         expect(summaryFormatter.storeUndefinedStepResult).toHaveBeenCalledWith(stepResult);
       });
     });
@@ -70,26 +63,20 @@ describe("Cucumber.Listener.SummaryFormatter", function () {
       });
 
       it("handles the failed step result", function () {
-        summaryFormatter.handleStepResultEvent(event, callback);
+        summaryFormatter.handleStepResultEvent(stepResult);
         expect(summaryFormatter.storeFailedStepResult).toHaveBeenCalledWith(stepResult);
       });
-    });
-
-    it("calls back", function () {
-      summaryFormatter.handleStepResultEvent(event, callback);
-      expect(callback).toHaveBeenCalled();
     });
   });
 
   describe("handleFeaturesResultEvent()", function () {
-    var featuresResult, callback, event;
+    var featuresResult, callback;
 
     beforeEach(function () {
       featuresResult = createSpy("features result");
-      event = createSpyWithStubs("event", {getPayloadItem: featuresResult});
       callback = createSpy("callback");
       spyOn(summaryFormatter, 'logSummary');
-      summaryFormatter.handleFeaturesResultEvent(event, callback);
+      summaryFormatter.handleFeaturesResultEvent(featuresResult, callback);
     });
 
     it("logs the summary", function () {

@@ -7,20 +7,11 @@ describe("Cucumber.Runtime.Event", function () {
   });
 
   describe("instance method", function () {
-    var event, name, payload, payloadItems;
+    var event, name, payload;
 
     beforeEach(function () {
       name = "SomeEvent";
-      payloadItems = [
-        createSpy("First payload item"),
-        createSpy("Second payload item"),
-        createSpy("Third payload item")
-      ];
-      payload = {
-        firstItem:  payloadItems[0],
-        secondItem: payloadItems[1],
-        thirdItem:  payloadItems[2]
-      };
+      payload = createSpy('payload');
       event = Cucumber.Runtime.Event(name, payload);
     });
 
@@ -68,15 +59,9 @@ describe("Cucumber.Runtime.Event", function () {
       });
     });
 
-    describe("getPayloadItem()", function () {
-      it("returns the requested item from the payload", function () {
-        expect(event.getPayloadItem('firstItem')).toBe(payloadItems[0]);
-        expect(event.getPayloadItem('secondItem')).toBe(payloadItems[1]);
-        expect(event.getPayloadItem('thirdItem')).toBe(payloadItems[2]);
-      });
-
-      it("returns undefined when the item does not exist in the payload", function () {
-        expect(event.getPayloadItem('unknownItem')).toBeUndefined();
+    describe("getPayload()", function () {
+      it("returns the payload", function () {
+        expect(event.getPayload()).toBe(payload);
       });
     });
 

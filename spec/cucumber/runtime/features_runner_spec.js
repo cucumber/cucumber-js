@@ -1,6 +1,6 @@
 require('../../support/spec_helper');
 
-describe("Cucumber.Runtime.ScenarioRunner", function () {
+describe("Cucumber.Runtime.FeaturesRunner", function () {
   var Cucumber = requireLib('cucumber');
   var features, supportCodeLibrary, listeners, options;
   var featuresRunner, eventBroadcaster, scenarioRunner, scenarioResult;
@@ -8,6 +8,7 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
   beforeEach(function () {
     features = [];
     supportCodeLibrary = createSpyWithStubs("Support code library", {
+      getDefaultTimeout: 5000,
       getListeners: []
     });
     listeners = [];
@@ -47,7 +48,7 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Features');
-        expect(event.getPayloadItem('features')).toEqual(features);
+        expect(event.getPayload()).toEqual(features);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('FeaturesResult');
@@ -78,11 +79,11 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Features');
-        expect(event.getPayloadItem('features')).toEqual(features);
+        expect(event.getPayload()).toEqual(features);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Feature');
-        expect(event.getPayloadItem('feature')).toEqual(feature);
+        expect(event.getPayload()).toEqual(feature);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('FeaturesResult');
@@ -113,11 +114,11 @@ describe("Cucumber.Runtime.ScenarioRunner", function () {
 
         var event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('Features');
-        expect(event.getPayloadItem('features')).toEqual(features);
+        expect(event.getPayload()).toEqual(features);
 
         event = eventBroadcaster.broadcastAroundEvent.calls.argsFor(1)[0];
         expect(event.getName()).toEqual('Feature');
-        expect(event.getPayloadItem('feature')).toEqual(feature);
+        expect(event.getPayload()).toEqual(feature);
 
         event = eventBroadcaster.broadcastEvent.calls.argsFor(0)[0];
         expect(event.getName()).toEqual('FeaturesResult');

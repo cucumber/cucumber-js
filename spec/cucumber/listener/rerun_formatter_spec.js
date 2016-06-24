@@ -9,19 +9,17 @@ describe("Cucumber.Listener.RerunFormatter", function () {
     rerunFormatter = Cucumber.Listener.RerunFormatter();
   });
 
-  function createScenarioResultEvent(status, uri, line) {
+  function createScenarioResult(status, uri, line) {
     var scenario = createSpyWithStubs("event", {getLine: line, getUri: uri});
-    var scenarioResult = createSpyWithStubs("event", {getScenario: scenario, getStatus: status});
-    return createSpyWithStubs("event", {getPayloadItem: scenarioResult});
+    return createSpyWithStubs("event", {getScenario: scenario, getStatus: status});
   }
 
   describe("handleAfterFeaturesEvent()", function () {
     describe('no failed scenarios', function() {
       beforeEach(function(done){
-        var event = createScenarioResultEvent(Cucumber.Status.PASSED);
-        rerunFormatter.handleScenarioResultEvent(event, function() {});
-
-        rerunFormatter.handleAfterFeaturesEvent(null, done);
+        var scenarioResult = createScenarioResult(Cucumber.Status.PASSED);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult);
+        rerunFormatter.handleAfterFeaturesEvent([], done);
       });
 
       it("logs nothing", function () {
@@ -31,8 +29,8 @@ describe("Cucumber.Listener.RerunFormatter", function () {
 
     describe('one failed scenario', function() {
       beforeEach(function(done) {
-        var event = createScenarioResultEvent(Cucumber.Status.FAILED, 'path/to/scenario', 1);
-        rerunFormatter.handleScenarioResultEvent(event, function() {});
+        var scenarioResult = createScenarioResult(Cucumber.Status.FAILED, 'path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult);
 
         rerunFormatter.handleAfterFeaturesEvent(null, done);
       });
@@ -44,13 +42,13 @@ describe("Cucumber.Listener.RerunFormatter", function () {
 
     describe('two failed scenarios (same file)', function() {
       beforeEach(function(done) {
-        var event1 = createScenarioResultEvent(Cucumber.Status.FAILED, 'path/to/scenario', 1);
-        rerunFormatter.handleScenarioResultEvent(event1, function() {});
+        var scenarioResult1 = createScenarioResult(Cucumber.Status.FAILED, 'path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult1);
 
-        var event2 = createScenarioResultEvent(Cucumber.Status.FAILED, 'path/to/scenario', 2);
-        rerunFormatter.handleScenarioResultEvent(event2, function() {});
+        var scenarioResult2 = createScenarioResult(Cucumber.Status.FAILED, 'path/to/scenario', 2);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult2);
 
-        rerunFormatter.handleAfterFeaturesEvent(null, done);
+        rerunFormatter.handleAfterFeaturesEvent([], done);
       });
 
       it("logs the path to the failed scenarios", function () {
@@ -60,13 +58,13 @@ describe("Cucumber.Listener.RerunFormatter", function () {
 
     describe('two failed scenarios (different file)', function() {
       beforeEach(function(done) {
-        var event1 = createScenarioResultEvent(Cucumber.Status.FAILED, 'path/to/scenario', 1);
-        rerunFormatter.handleScenarioResultEvent(event1, function() {});
+        var scenarioResult1 = createScenarioResult(Cucumber.Status.FAILED, 'path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult1);
 
-        var event2 = createScenarioResultEvent(Cucumber.Status.FAILED, 'other/path/to/scenario', 1);
-        rerunFormatter.handleScenarioResultEvent(event2, function() {});
+        var scenarioResult2 = createScenarioResult(Cucumber.Status.FAILED, 'other/path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult2);
 
-        rerunFormatter.handleAfterFeaturesEvent(null, done);
+        rerunFormatter.handleAfterFeaturesEvent([], done);
       });
 
       it("logs the path to the failed scenarios", function () {

@@ -413,24 +413,56 @@ this.After(function (scenario, callback) {
 });
 ```
 
-##### After features event
+##### Event Handlers
 
-The *after features event* is emitted once all features have been executed, just before the process exits. It can be used for tasks such as closing your browser after running automated browser tests with [selenium](https://code.google.com/p/selenium/wiki/WebDriverJs) or [phantomjs](http://phantomjs.org/).
+You can register event handlers for the following events within the cucumber lifecycle.
 
-note: There are "Before" and "After" events for each of the following: "Features", "Feature", "Scenario", "Step" as well as the standalone events "Background" and "StepResult". e.g. "BeforeScenario".
+| Event          | Object                                            |
+|----------------|-----------------------------------------------------------|
+| BeforeFeatures | array of [Features](lib/cucumber/ast/feature.js)          |
+| BeforeFeature  | [Feature](lib/cucumber/ast/feature.js)                    |
+| BeforeScenario | [Scenario](lib/cucumber/ast/scenario.js)                  |
+| BeforeStep     | [Step](lib/cucumber/ast/step.js)                          |
+| StepResult     | [StepResult](lib/cucumber/runtime/step_result.js)         |
+| AfterStep      | [Step](lib/cucumber/ast/step.js)                          |
+| ScenarioResult | [ScenarioResult](lib/cucumber/runtime/scenario_result.js) |
+| AfterScenario  | [Scenario](lib/cucumber/ast/scenario.js)                  |
+| AfterFeature   | [Feature](lib/cucumber/ast/feature.js)                    |
+| FeaturesResult | [FeaturesResult](lib/cucumber/runtime/features_result.js) |
+| AfterFeatures  | array of [Features](lib/cucumber/ast/feature.js)          |
+
+Hooks also trigger `BeforeStep`, `StepResult`, and `AfterStep` events with the object
+[HookStep](lib/cucumber/ast/hook_step.js)
+
+Handlers will be passed the associated object as the first argument.
+Handlers can be synchronous, return a promise, accept an additional callback argument, or use generators.
 
 ```javascript
-// features/support/after_hooks.js
-var myAfterHooks = function () {
-  this.registerHandler('AfterFeatures', function (event, callback) {
+// features/support/handlers.js
+var myHandlers = function () {
+  this.registerHandler('AfterFeatures', function (features, callback) {
     // clean up!
-    // Be careful, there is no World instance available on `this` here
+    // There is no World instance available on `this`
     // because all scenarios are done and World instances are long gone.
     callback();
   });
 }
 
-module.exports = myAfterHooks;
+module.exports = myHandlers;
+```
+
+Handlers timeout the same as steps / hooks and can have their timeout changed
+by passing in an options object.
+
+```javascript
+// features/support/handlers.js
+var myHandlers = function () {
+  this.registerHandler('AfterFeatures', {timeout: 10000}, function (features, callback) {
+    //...
+  });
+}
+
+module.exports = myHandlers;
 ```
 
 ### CLI

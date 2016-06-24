@@ -26,8 +26,6 @@ describe("Cucumber.Listener.JsonFormatter", function () {
   });
 
   describe("one feature", function() {
-    var callback, event;
-
     beforeEach(function () {
       var tag1 = createSpyWithStubs('tag1', {getName: 'tag 1', getLine: 1});
       var tag2 = createSpyWithStubs('tag2', {getName: 'tag 2', getLine: 1});
@@ -39,18 +37,12 @@ describe("Cucumber.Listener.JsonFormatter", function () {
         getUri: 'uri',
         getTags: [tag1, tag2]
       });
-      var event = createSpyWithStubs("event", {getPayloadItem: feature});
-      callback = createSpy("callback");
-      jsonFormatter.handleBeforeFeatureEvent(event, callback);
-    });
-
-    it("calls back", function () {
-      expect(callback).toHaveBeenCalled();
+      jsonFormatter.handleBeforeFeatureEvent(feature);
     });
 
     describe("with no scenarios", function () {
       beforeEach(function () {
-        jsonFormatter.handleAfterFeaturesEvent({}, function() {});
+        jsonFormatter.handleAfterFeaturesEvent({});
       });
 
       it("outputs the feature", function () {
@@ -84,18 +76,12 @@ describe("Cucumber.Listener.JsonFormatter", function () {
           getLine: 4,
           getTags: [tag1, tag2]
         });
-        event = createSpyWithStubs("event", {getPayloadItem: scenario});
-        callback = createSpy("callback");
-        jsonFormatter.handleBeforeScenarioEvent(event, callback);
-      });
-
-      it("calls back", function () {
-        expect(callback).toHaveBeenCalled();
+        jsonFormatter.handleBeforeScenarioEvent(scenario);
       });
 
       describe("with no steps", function () {
         beforeEach(function () {
-          jsonFormatter.handleAfterFeaturesEvent({}, function() {});
+          jsonFormatter.handleAfterFeaturesEvent({});
         });
 
         it("outputs the feature and the scenario", function () {
@@ -139,19 +125,12 @@ describe("Cucumber.Listener.JsonFormatter", function () {
             hasAttachments: false,
             getAttachments: []
           });
-
-          event = createSpyWithStubs("event", {getPayloadItem: stepResult});
-          callback = createSpy("callback");
         });
 
         describe("that is passing", function () {
           beforeEach(function() {
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("outputs the step with a hidden attribute", function () {
@@ -175,12 +154,8 @@ describe("Cucumber.Listener.JsonFormatter", function () {
           beforeEach(function() {
             stepResult.getStatus.and.returnValue(Cucumber.Status.FAILED);
             stepResult.getFailureException.and.returnValue({stack: 'failure stack'});
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("outputs the step with a hidden attribute", function () {
@@ -198,12 +173,8 @@ describe("Cucumber.Listener.JsonFormatter", function () {
         describe("that is hidden", function () {
           beforeEach(function() {
             step.isHidden.and.returnValue(true);
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("does not output a line attribute and outputs a hidden attribute", function () {
@@ -224,12 +195,8 @@ describe("Cucumber.Listener.JsonFormatter", function () {
               getType: 'DocString'
             });
             step.getArguments.and.returnValue([docString]);
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("outputs the step with a hidden attribute", function () {
@@ -255,12 +222,8 @@ describe("Cucumber.Listener.JsonFormatter", function () {
               ]
             });
             step.getArguments.and.returnValue([dataTable]);
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("outputs the step with a hidden attribute", function () {
@@ -284,12 +247,8 @@ describe("Cucumber.Listener.JsonFormatter", function () {
             var attachments = [attachment1, attachment2];
             stepResult.hasAttachments.and.returnValue(true);
             stepResult.getAttachments.and.returnValue(attachments);
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("outputs the step with a hidden attribute", function () {
@@ -310,12 +269,8 @@ describe("Cucumber.Listener.JsonFormatter", function () {
               getUri: 'path/to/stepDef'
             });
             stepResult.getStepDefinition.and.returnValue(stepDefinition);
-            jsonFormatter.handleStepResultEvent(event, callback);
-            jsonFormatter.handleAfterFeaturesEvent({}, function() {});
-          });
-
-          it("calls back", function () {
-            expect(callback).toHaveBeenCalled();
+            jsonFormatter.handleStepResultEvent(stepResult);
+            jsonFormatter.handleAfterFeaturesEvent({});
           });
 
           it("outputs the step with a match attribute", function () {

@@ -14,15 +14,33 @@ describe("Cucumber.Util.run", function () {
 
     describe("function uses synchronous interface", function() {
       describe("function throws", function() {
-        beforeEach(function() {
-          fn = function() { throw 'error'; };
+        describe('error object', function() {
+          beforeEach(function() {
+            fn = function() { throw 'error'; };
+          });
+
+          it('returns the error', function (done) {
+            Cucumber.Util.run(fn, thisArg, argsArray, timeoutInMilliseconds, function(error, result) {
+              expect(error).toEqual('error');
+              expect(result).toBeUndefined();
+              done();
+            });
+          });
         });
 
-        it('returns the error', function (done) {
-          Cucumber.Util.run(fn, thisArg, argsArray, timeoutInMilliseconds, function(error, result) {
-            expect(error).toEqual('error');
-            expect(result).toBeUndefined();
-            done();
+        describe('non-serializable object', function() {
+          beforeEach(function() {
+            var error = {};
+            error.error = error;
+            fn = function() { throw error; };
+          });
+
+          it('returns the error', function (done) {
+            Cucumber.Util.run(fn, thisArg, argsArray, timeoutInMilliseconds, function(error, result) {
+              expect(error).toEqual('{ error: [Circular] }');
+              expect(result).toBeUndefined();
+              done();
+            });
           });
         });
       });
