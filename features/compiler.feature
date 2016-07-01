@@ -8,16 +8,15 @@ Feature: compilers
       """
       Feature:
         Scenario:
-          Given this step passes
+          Given a step
       """
 
 
-  Scenario: CoffeeScript step definition
+  Scenario: CoffeeScript step definition (passing)
     Given a file named "features/step_definitions/cucumber_steps.coffee" with:
       """
       stepDefinitions = ->
-        @When /^this step passes$/, (callback) ->
-          callback()
+        @Given /^a step$/, ->
 
       module.exports = stepDefinitions
       """
@@ -31,21 +30,29 @@ Feature: compilers
       <duration-stat>
       """
 
-  Scenario: Pogoscript step definition
-    Given a file named "features/step_definitions/cucumber_steps.pogo" with:
-      """
-      step definitions () =
-        this.When r/^this step passes$/ @(callback)
-          callback()
 
-      module.exports = step definitions
+  Scenario: CoffeeScript step definition (failing)
+    Given a file named "features/step_definitions/cucumber_steps.coffee" with:
       """
-    When I run cucumber.js with `--compiler pogo:pogo -f progress`
+      stepDefinitions = ->
+        @Given /^a step$/, -> throw 'fail'
+
+      module.exports = stepDefinitions
+      """
+    When I run cucumber.js with `--compiler coffee:coffee-script/register -f progress`
     Then it outputs this text:
       """
-      .
+      F
 
-      1 scenario (1 passed)
-      1 step (1 passed)
+      Failures:
+
+      1) Scenario:  - features/a.feature:2
+         Step: Given a step - features/a.feature:3
+         Step Definition: features/step_definitions/cucumber_steps.coffee:2
+         Message:
+           fail
+
+      1 scenario (1 failed)
+      1 step (1 failed)
       <duration-stat>
       """
