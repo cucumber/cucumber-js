@@ -24,7 +24,7 @@ Cucumber.VERSION               = require('../package.json').version;
 
 module.exports                 = Cucumber;
 
-},{"../package.json":169,"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":17,"./cucumber/debug":25,"./cucumber/events":27,"./cucumber/listener":28,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":46,"./cucumber/support_code":47,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":57,"./cucumber/volatile_configuration":66}],2:[function(require,module,exports){
+},{"../package.json":180,"./cucumber/api":2,"./cucumber/ast":4,"./cucumber/cli":17,"./cucumber/debug":25,"./cucumber/events":27,"./cucumber/listener":28,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":46,"./cucumber/support_code":47,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":57,"./cucumber/volatile_configuration":66}],2:[function(require,module,exports){
 var Api        = {};
 Api.Scenario   = require('./api/scenario');
 module.exports = Api;
@@ -266,7 +266,7 @@ function Feature(data, scenarios) {
 
 module.exports = Feature;
 
-},{"../../cucumber":1,"gherkin":134,"lodash":155}],8:[function(require,module,exports){
+},{"../../cucumber":1,"gherkin":135,"lodash":155}],8:[function(require,module,exports){
 var _ = require('lodash');
 
 function Filter(rules) {
@@ -729,7 +729,7 @@ Cli.SupportCodePathExpander = require('./cli/support_code_path_expander');
 
 module.exports = Cli;
 
-},{"../cucumber":1,"./cli/configuration":18,"./cli/feature_path_expander":19,"./cli/feature_source_loader":20,"./cli/path_expander":21,"./cli/profiles_loader":22,"./cli/support_code_loader":23,"./cli/support_code_path_expander":24,"commander":98,"path":159}],18:[function(require,module,exports){
+},{"../cucumber":1,"./cli/configuration":18,"./cli/feature_path_expander":19,"./cli/feature_source_loader":20,"./cli/path_expander":21,"./cli/profiles_loader":22,"./cli/support_code_loader":23,"./cli/support_code_path_expander":24,"commander":97,"path":159}],18:[function(require,module,exports){
 (function (process){
 function Configuration(options, args) {
   var Cucumber = require('../../cucumber');
@@ -954,7 +954,7 @@ var PathExpander = {
 
 module.exports = PathExpander;
 
-},{"fs":71,"glob":148,"lodash":155}],22:[function(require,module,exports){
+},{"fs":71,"glob":149,"lodash":155}],22:[function(require,module,exports){
 (function (process){
 var fs = require('fs');
 var path = require('path');
@@ -2034,7 +2034,7 @@ module.exports = SummaryFormatter;
 
 }).call(this,require('_process'))
 
-},{"../../cucumber":1,"_process":161,"cli-table":75,"duration":102,"lodash":155,"path":159}],35:[function(require,module,exports){
+},{"../../cucumber":1,"_process":161,"cli-table":74,"duration":101,"lodash":155,"path":159}],35:[function(require,module,exports){
 function Parser(featureSources, astFilter) {
   var Gherkin      = require('gherkin');
   var Cucumber     = require('../cucumber');
@@ -2085,7 +2085,7 @@ Parser.FEATURE_NAME_SOURCE_PAIR_SOURCE_INDEX = 1;
 
 module.exports = Parser;
 
-},{"../cucumber":1,"gherkin":134}],36:[function(require,module,exports){
+},{"../cucumber":1,"gherkin":135}],36:[function(require,module,exports){
 function Runtime(configuration) {
   var Cucumber = require('../cucumber');
 
@@ -2741,7 +2741,7 @@ module.exports = Hook;
 },{"../../cucumber":1}],49:[function(require,module,exports){
 function Library(supportCodeDefinition) {
   var Cucumber = require('../../cucumber');
-  var callsite = require('callsite');
+  var StackTrace = require('stacktrace-js');
   var _ = require('lodash');
 
   var listeners        = [];
@@ -2790,9 +2790,9 @@ function Library(supportCodeDefinition) {
           code = options;
           options = {};
         }
-        var site = callsite();
-        var line = site[1].getLineNumber();
-        var uri = site[1].getFileName() || 'unknown';
+        var stackframes = StackTrace.getSync();
+        var line = stackframes[1].getLineNumber();
+        var uri = stackframes[1].getFileName() || 'unknown';
         var hook = builder(code, options, uri, line);
         collection.push(hook);
       };
@@ -2803,9 +2803,9 @@ function Library(supportCodeDefinition) {
         code = options;
         options = {};
       }
-      var site = callsite();
-      var line = site[1].getLineNumber();
-      var uri = site[1].getFileName() || 'unknown';
+      var stackframes = StackTrace.getSync();
+      var line = stackframes[1].getLineNumber();
+      var uri = stackframes[1].getFileName() || 'unknown';
       var stepDefinition = Cucumber.SupportCode.StepDefinition(name, options, code, uri, line);
       stepDefinitions.push(stepDefinition);
     },
@@ -2819,9 +2819,9 @@ function Library(supportCodeDefinition) {
         handler = options;
         options = {};
       }
-      var site = callsite();
-      options.line = site[1].getLineNumber();
-      options.uri = site[1].getFileName() || 'unknown';
+      var stackframes = StackTrace.getSync();
+      options.line = stackframes[1].getLineNumber();
+      options.uri = stackframes[1].getFileName() || 'unknown';
       var listener = Cucumber.Listener(options);
       listener.setHandlerForEvent(eventName, handler);
       self.registerListener(listener);
@@ -2866,7 +2866,7 @@ function Library(supportCodeDefinition) {
 
 module.exports = Library;
 
-},{"../../cucumber":1,"callsite":74,"lodash":155}],50:[function(require,module,exports){
+},{"../../cucumber":1,"lodash":155,"stacktrace-js":176}],50:[function(require,module,exports){
 (function (process){
 function StepDefinition(pattern, options, code, uri, line) {
   var Cucumber = require('../../cucumber');
@@ -3270,7 +3270,7 @@ function Colors (useColors) {
 
 module.exports = Colors;
 
-},{"colors/safe":97}],61:[function(require,module,exports){
+},{"colors/safe":96}],61:[function(require,module,exports){
 (function (process){
 /* jshint -W117 */
 
@@ -3384,7 +3384,7 @@ function run(fn, thisArg, argsArray, timeoutInMilliseconds, callback) {
 
 module.exports = run;
 
-},{"../../cucumber":1,"co":87,"is-generator":154,"util":167}],65:[function(require,module,exports){
+},{"../../cucumber":1,"co":86,"is-generator":154,"util":178}],65:[function(require,module,exports){
 var _String = {
   count: function count(hayStack, needle) {
     var splitHayStack = hayStack.split(needle);
@@ -3815,7 +3815,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":167}],68:[function(require,module,exports){
+},{"util/":178}],68:[function(require,module,exports){
 module.exports = balanced;
 function balanced(a, b, str) {
   var r = range(a, b, str);
@@ -3868,137 +3868,120 @@ function range(a, b, str) {
 }
 
 },{}],69:[function(require,module,exports){
-;(function (exports) {
-  'use strict'
+'use strict'
 
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+function init () {
   var i
   var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-  var lookup = []
-  for (i = 0; i < code.length; i++) {
+  var len = code.length
+
+  for (i = 0; i < len; i++) {
     lookup[i] = code[i]
   }
-  var revLookup = []
 
-  for (i = 0; i < code.length; ++i) {
+  for (i = 0; i < len; ++i) {
     revLookup[code.charCodeAt(i)] = i
   }
   revLookup['-'.charCodeAt(0)] = 62
   revLookup['_'.charCodeAt(0)] = 63
+}
 
-  var Arr = (typeof Uint8Array !== 'undefined')
-    ? Uint8Array
-    : Array
+init()
 
-  function decode (elt) {
-    var v = revLookup[elt.charCodeAt(0)]
-    return v !== undefined ? v : -1
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
   }
 
-  function b64ToByteArray (b64) {
-    var i, j, l, tmp, placeHolders, arr
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
 
-    if (b64.length % 4 > 0) {
-      throw new Error('Invalid string. Length must be a multiple of 4')
-    }
+  // base64 is 4/3 + up to two characters of the original data
+  arr = new Arr(len * 3 / 4 - placeHolders)
 
-    // the number of equal signs (place holders)
-    // if there are two placeholders, than the two characters before it
-    // represent one byte
-    // if there is only one, then the three characters before it represent 2 bytes
-    // this is just a cheap hack to not do indexOf twice
-    var len = b64.length
-    placeHolders = b64.charAt(len - 2) === '=' ? 2 : b64.charAt(len - 1) === '=' ? 1 : 0
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
 
-    // base64 is 4/3 + up to two characters of the original data
-    arr = new Arr(b64.length * 3 / 4 - placeHolders)
+  var L = 0
 
-    // if there are placeholders, only get up to the last complete 4 chars
-    l = placeHolders > 0 ? b64.length - 4 : b64.length
-
-    var L = 0
-
-    function push (v) {
-      arr[L++] = v
-    }
-
-    for (i = 0, j = 0; i < l; i += 4, j += 3) {
-      tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
-      push((tmp & 0xFF0000) >> 16)
-      push((tmp & 0xFF00) >> 8)
-      push(tmp & 0xFF)
-    }
-
-    if (placeHolders === 2) {
-      tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
-      push(tmp & 0xFF)
-    } else if (placeHolders === 1) {
-      tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
-      push((tmp >> 8) & 0xFF)
-      push(tmp & 0xFF)
-    }
-
-    return arr
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp & 0xFF0000) >> 16
+    arr[L++] = (tmp & 0xFF00) >> 8
+    arr[L++] = tmp & 0xFF
   }
 
-  function encode (num) {
-    return lookup[num]
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
   }
 
-  function tripletToBase64 (num) {
-    return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
-  function encodeChunk (uint8, start, end) {
-    var temp
-    var output = []
-    for (var i = start; i < end; i += 3) {
-      temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-      output.push(tripletToBase64(temp))
-    }
-    return output.join('')
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
   }
 
-  function uint8ToBase64 (uint8) {
-    var i
-    var extraBytes = uint8.length % 3 // if we have 1 byte left, pad 2 bytes
-    var output = ''
-    var parts = []
-    var temp, length
-    var maxChunkLength = 16383 // must be multiple of 3
+  parts.push(output)
 
-    // go through the array every three bytes, we'll deal with trailing stuff later
-
-    for (i = 0, length = uint8.length - extraBytes; i < length; i += maxChunkLength) {
-      parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > length ? length : (i + maxChunkLength)))
-    }
-
-    // pad the end with zeros, but make sure to not forget the extra bytes
-    switch (extraBytes) {
-      case 1:
-        temp = uint8[uint8.length - 1]
-        output += encode(temp >> 2)
-        output += encode((temp << 4) & 0x3F)
-        output += '=='
-        break
-      case 2:
-        temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
-        output += encode(temp >> 10)
-        output += encode((temp >> 4) & 0x3F)
-        output += encode((temp << 2) & 0x3F)
-        output += '='
-        break
-      default:
-        break
-    }
-
-    parts.push(output)
-
-    return parts.join('')
-  }
-
-  exports.toByteArray = b64ToByteArray
-  exports.fromByteArray = uint8ToBase64
-}(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
+  return parts.join('')
+}
 
 },{}],70:[function(require,module,exports){
 var concatMap = require('concat-map');
@@ -5671,18 +5654,6 @@ module.exports = Array.isArray || function (arr) {
 
 },{}],74:[function(require,module,exports){
 
-module.exports = function(){
-  var orig = Error.prepareStackTrace;
-  Error.prepareStackTrace = function(_, stack){ return stack; };
-  var err = new Error;
-  Error.captureStackTrace(err, arguments.callee);
-  var stack = err.stack;
-  Error.prepareStackTrace = orig;
-  return stack;
-};
-
-},{}],75:[function(require,module,exports){
-
 /**
  * Module dependencies.
  */
@@ -5981,7 +5952,7 @@ module.exports = Table;
 
 module.exports.version = '0.0.1';
 
-},{"./utils":76,"colors/safe":86}],76:[function(require,module,exports){
+},{"./utils":75,"colors/safe":85}],75:[function(require,module,exports){
 
 /**
  * Repeats a string.
@@ -6067,7 +6038,7 @@ exports.strlen = function(str){
   return split.reduce(function (memo, s) { return (s.length > memo) ? s.length : memo }, 0);
 }
 
-},{}],77:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -6244,7 +6215,7 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":78,"./custom/zalgo":79,"./maps/america":80,"./maps/rainbow":81,"./maps/random":82,"./maps/zebra":83,"./styles":84,"./system/supports-colors":85}],78:[function(require,module,exports){
+},{"./custom/trap":77,"./custom/zalgo":78,"./maps/america":79,"./maps/rainbow":80,"./maps/random":81,"./maps/zebra":82,"./styles":83,"./system/supports-colors":84}],77:[function(require,module,exports){
 module['exports'] = function runTheTrap (text, options) {
   var result = "";
   text = text || "Run the trap, drop the bass";
@@ -6291,7 +6262,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 }
 
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -6397,7 +6368,7 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text);
 }
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function() {
@@ -6410,7 +6381,7 @@ module['exports'] = (function() {
     }
   }
 })();
-},{"../colors":77}],81:[function(require,module,exports){
+},{"../colors":76}],80:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -6425,7 +6396,7 @@ module['exports'] = (function () {
 })();
 
 
-},{"../colors":77}],82:[function(require,module,exports){
+},{"../colors":76}],81:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -6434,13 +6405,13 @@ module['exports'] = (function () {
     return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
   };
 })();
-},{"../colors":77}],83:[function(require,module,exports){
+},{"../colors":76}],82:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = function (letter, i, exploded) {
   return i % 2 === 0 ? letter : colors.inverse(letter);
 };
-},{"../colors":77}],84:[function(require,module,exports){
+},{"../colors":76}],83:[function(require,module,exports){
 /*
 The MIT License (MIT)
 
@@ -6518,7 +6489,7 @@ Object.keys(codes).forEach(function (key) {
   style.open = '\u001b[' + val[0] + 'm';
   style.close = '\u001b[' + val[1] + 'm';
 });
-},{}],85:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -6583,7 +6554,7 @@ module.exports = (function () {
 })();
 }).call(this,require('_process'))
 
-},{"_process":161}],86:[function(require,module,exports){
+},{"_process":161}],85:[function(require,module,exports){
 //
 // Remark: Requiring this file will use the "safe" colors API which will not touch String.prototype
 //
@@ -6593,7 +6564,7 @@ module.exports = (function () {
 //
 var colors = require('./lib/colors');
 module['exports'] = colors;
-},{"./lib/colors":77}],87:[function(require,module,exports){
+},{"./lib/colors":76}],86:[function(require,module,exports){
 
 /**
  * slice() reference.
@@ -6832,7 +6803,7 @@ function isObject(val) {
   return Object == val.constructor;
 }
 
-},{}],88:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -7020,9 +6991,9 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":89,"./custom/zalgo":90,"./maps/america":91,"./maps/rainbow":92,"./maps/random":93,"./maps/zebra":94,"./styles":95,"./system/supports-colors":96}],89:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],90:[function(require,module,exports){
+},{"./custom/trap":88,"./custom/zalgo":89,"./maps/america":90,"./maps/rainbow":91,"./maps/random":92,"./maps/zebra":93,"./styles":94,"./system/supports-colors":95}],88:[function(require,module,exports){
+arguments[4][77][0].apply(exports,arguments)
+},{"dup":77}],89:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -7128,17 +7099,17 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text, options);
 }
 
-},{}],91:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
+arguments[4][79][0].apply(exports,arguments)
+},{"../colors":87,"dup":79}],91:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"../colors":88,"dup":80}],92:[function(require,module,exports){
+},{"../colors":87,"dup":80}],92:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../colors":88,"dup":81}],93:[function(require,module,exports){
+},{"../colors":87,"dup":81}],93:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"../colors":88,"dup":82}],94:[function(require,module,exports){
+},{"../colors":87,"dup":82}],94:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"../colors":88,"dup":83}],95:[function(require,module,exports){
-arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],96:[function(require,module,exports){
+},{"dup":83}],95:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -7203,9 +7174,9 @@ module.exports = (function () {
 })();
 }).call(this,require('_process'))
 
-},{"_process":161}],97:[function(require,module,exports){
-arguments[4][86][0].apply(exports,arguments)
-},{"./lib/colors":88,"dup":86}],98:[function(require,module,exports){
+},{"_process":161}],96:[function(require,module,exports){
+arguments[4][85][0].apply(exports,arguments)
+},{"./lib/colors":87,"dup":85}],97:[function(require,module,exports){
 (function (process){
 /**
  * Module dependencies.
@@ -8320,7 +8291,21 @@ function exists(file) {
 
 }).call(this,require('_process'))
 
-},{"_process":161,"child_process":71,"events":133,"fs":71,"graceful-readlink":150,"path":159}],99:[function(require,module,exports){
+},{"_process":161,"child_process":71,"events":134,"fs":71,"graceful-readlink":98,"path":159}],98:[function(require,module,exports){
+var fs = require('fs')
+  , lstat = fs.lstatSync;
+
+exports.readlinkSync = function (p) {
+  if (lstat(p).isSymbolicLink()) {
+    return fs.readlinkSync(p);
+  } else {
+    return p;
+  }
+};
+
+
+
+},{"fs":71}],99:[function(require,module,exports){
 module.exports = function (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -8568,71 +8553,6 @@ if (typeof module !== 'undefined') {
 },{}],101:[function(require,module,exports){
 'use strict';
 
-var assign        = require('es5-ext/object/assign')
-  , normalizeOpts = require('es5-ext/object/normalize-options')
-  , isCallable    = require('es5-ext/object/is-callable')
-  , contains      = require('es5-ext/string/#/contains')
-
-  , d;
-
-d = module.exports = function (dscr, value/*, options*/) {
-	var c, e, w, options, desc;
-	if ((arguments.length < 2) || (typeof dscr !== 'string')) {
-		options = value;
-		value = dscr;
-		dscr = null;
-	} else {
-		options = arguments[2];
-	}
-	if (dscr == null) {
-		c = w = true;
-		e = false;
-	} else {
-		c = contains.call(dscr, 'c');
-		e = contains.call(dscr, 'e');
-		w = contains.call(dscr, 'w');
-	}
-
-	desc = { value: value, configurable: c, enumerable: e, writable: w };
-	return !options ? desc : assign(normalizeOpts(options), desc);
-};
-
-d.gs = function (dscr, get, set/*, options*/) {
-	var c, e, options, desc;
-	if (typeof dscr !== 'string') {
-		options = set;
-		set = get;
-		get = dscr;
-		dscr = null;
-	} else {
-		options = arguments[3];
-	}
-	if (get == null) {
-		get = undefined;
-	} else if (!isCallable(get)) {
-		options = get;
-		get = set = undefined;
-	} else if (set == null) {
-		set = undefined;
-	} else if (!isCallable(set)) {
-		options = set;
-		set = undefined;
-	}
-	if (dscr == null) {
-		c = true;
-		e = false;
-	} else {
-		c = contains.call(dscr, 'c');
-		e = contains.call(dscr, 'e');
-	}
-
-	desc = { get: get, set: set, configurable: c, enumerable: e };
-	return !options ? desc : assign(normalizeOpts(options), desc);
-};
-
-},{"es5-ext/object/assign":116,"es5-ext/object/is-callable":119,"es5-ext/object/normalize-options":123,"es5-ext/string/#/contains":125}],102:[function(require,module,exports){
-'use strict';
-
 var d           = require('d')
   , pad         = require('es5-ext/number/#/pad')
   , date        = require('es5-ext/date/valid-date')
@@ -8810,7 +8730,72 @@ Duration.prototype = Object.create(Object.prototype, {
 	})
 });
 
-},{"d":101,"es5-ext/date/#/copy":103,"es5-ext/date/#/days-in-month":104,"es5-ext/date/#/floor-day":105,"es5-ext/date/#/floor-month":106,"es5-ext/date/#/floor-year":107,"es5-ext/date/valid-date":109,"es5-ext/number/#/pad":113,"es5-ext/number/to-integer":114,"es5-ext/number/to-pos-integer":115,"es5-ext/string/format-method":132}],103:[function(require,module,exports){
+},{"d":102,"es5-ext/date/#/copy":103,"es5-ext/date/#/days-in-month":104,"es5-ext/date/#/floor-day":105,"es5-ext/date/#/floor-month":106,"es5-ext/date/#/floor-year":107,"es5-ext/date/valid-date":109,"es5-ext/number/#/pad":113,"es5-ext/number/to-integer":114,"es5-ext/number/to-pos-integer":115,"es5-ext/string/format-method":132}],102:[function(require,module,exports){
+'use strict';
+
+var assign        = require('es5-ext/object/assign')
+  , normalizeOpts = require('es5-ext/object/normalize-options')
+  , isCallable    = require('es5-ext/object/is-callable')
+  , contains      = require('es5-ext/string/#/contains')
+
+  , d;
+
+d = module.exports = function (dscr, value/*, options*/) {
+	var c, e, w, options, desc;
+	if ((arguments.length < 2) || (typeof dscr !== 'string')) {
+		options = value;
+		value = dscr;
+		dscr = null;
+	} else {
+		options = arguments[2];
+	}
+	if (dscr == null) {
+		c = w = true;
+		e = false;
+	} else {
+		c = contains.call(dscr, 'c');
+		e = contains.call(dscr, 'e');
+		w = contains.call(dscr, 'w');
+	}
+
+	desc = { value: value, configurable: c, enumerable: e, writable: w };
+	return !options ? desc : assign(normalizeOpts(options), desc);
+};
+
+d.gs = function (dscr, get, set/*, options*/) {
+	var c, e, options, desc;
+	if (typeof dscr !== 'string') {
+		options = set;
+		set = get;
+		get = dscr;
+		dscr = null;
+	} else {
+		options = arguments[3];
+	}
+	if (get == null) {
+		get = undefined;
+	} else if (!isCallable(get)) {
+		options = get;
+		get = set = undefined;
+	} else if (set == null) {
+		set = undefined;
+	} else if (!isCallable(set)) {
+		options = set;
+		set = undefined;
+	}
+	if (dscr == null) {
+		c = true;
+		e = false;
+	} else {
+		c = contains.call(dscr, 'c');
+		e = contains.call(dscr, 'e');
+	}
+
+	desc = { get: get, set: set, configurable: c, enumerable: e };
+	return !options ? desc : assign(normalizeOpts(options), desc);
+};
+
+},{"es5-ext/object/assign":116,"es5-ext/object/is-callable":119,"es5-ext/object/normalize-options":123,"es5-ext/string/#/contains":125}],103:[function(require,module,exports){
 'use strict';
 
 var getTime = Date.prototype.getTime;
@@ -9168,6 +9153,225 @@ module.exports = function (fmap) {
 };
 
 },{"../object/is-callable":119,"../object/valid-value":124}],133:[function(require,module,exports){
+(function(root, factory) {
+    'use strict';
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
+
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define('error-stack-parser', ['stackframe'], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('stackframe'));
+    } else {
+        root.ErrorStackParser = factory(root.StackFrame);
+    }
+}(this, function ErrorStackParser(StackFrame) {
+    'use strict';
+
+    var FIREFOX_SAFARI_STACK_REGEXP = /(^|@)\S+\:\d+/;
+    var CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+\:\d+|\(native\))/m;
+    var SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code\])?$/;
+
+    function _map(array, fn, thisArg) {
+        if (typeof Array.prototype.map === 'function') {
+            return array.map(fn, thisArg);
+        } else {
+            var output = new Array(array.length);
+            for (var i = 0; i < array.length; i++) {
+                output[i] = fn.call(thisArg, array[i]);
+            }
+            return output;
+        }
+    }
+
+    function _filter(array, fn, thisArg) {
+        if (typeof Array.prototype.filter === 'function') {
+            return array.filter(fn, thisArg);
+        } else {
+            var output = [];
+            for (var i = 0; i < array.length; i++) {
+                if (fn.call(thisArg, array[i])) {
+                    output.push(array[i]);
+                }
+            }
+            return output;
+        }
+    }
+
+    function _indexOf(array, target) {
+        if (typeof Array.prototype.indexOf === 'function') {
+            return array.indexOf(target);
+        } else {
+            for (var i = 0; i < array.length; i++) {
+                if (array[i] === target) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
+    return {
+        /**
+         * Given an Error object, extract the most information from it.
+         *
+         * @param {Error} error object
+         * @return {Array} of StackFrames
+         */
+        parse: function ErrorStackParser$$parse(error) {
+            if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined') {
+                return this.parseOpera(error);
+            } else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP)) {
+                return this.parseV8OrIE(error);
+            } else if (error.stack) {
+                return this.parseFFOrSafari(error);
+            } else {
+                throw new Error('Cannot parse given Error object');
+            }
+        },
+
+        // Separate line and column numbers from a string of the form: (URI:Line:Column)
+        extractLocation: function ErrorStackParser$$extractLocation(urlLike) {
+            // Fail-fast but return locations like "(native)"
+            if (urlLike.indexOf(':') === -1) {
+                return [urlLike];
+            }
+
+            var regExp = /(.+?)(?:\:(\d+))?(?:\:(\d+))?$/;
+            var parts = regExp.exec(urlLike.replace(/[\(\)]/g, ''));
+            return [parts[1], parts[2] || undefined, parts[3] || undefined];
+        },
+
+        parseV8OrIE: function ErrorStackParser$$parseV8OrIE(error) {
+            var filtered = _filter(error.stack.split('\n'), function(line) {
+                return !!line.match(CHROME_IE_STACK_REGEXP);
+            }, this);
+
+            return _map(filtered, function(line) {
+                if (line.indexOf('(eval ') > -1) {
+                    // Throw away eval information until we implement stacktrace.js/stackframe#8
+                    line = line.replace(/eval code/g, 'eval').replace(/(\(eval at [^\()]*)|(\)\,.*$)/g, '');
+                }
+                var tokens = line.replace(/^\s+/, '').replace(/\(eval code/g, '(').split(/\s+/).slice(1);
+                var locationParts = this.extractLocation(tokens.pop());
+                var functionName = tokens.join(' ') || undefined;
+                var fileName = _indexOf(['eval', '<anonymous>'], locationParts[0]) > -1 ? undefined : locationParts[0];
+
+                return new StackFrame(functionName, undefined, fileName, locationParts[1], locationParts[2], line);
+            }, this);
+        },
+
+        parseFFOrSafari: function ErrorStackParser$$parseFFOrSafari(error) {
+            var filtered = _filter(error.stack.split('\n'), function(line) {
+                return !line.match(SAFARI_NATIVE_CODE_REGEXP);
+            }, this);
+
+            return _map(filtered, function(line) {
+                // Throw away eval information until we implement stacktrace.js/stackframe#8
+                if (line.indexOf(' > eval') > -1) {
+                    line = line.replace(/ line (\d+)(?: > eval line \d+)* > eval\:\d+\:\d+/g, ':$1');
+                }
+
+                if (line.indexOf('@') === -1 && line.indexOf(':') === -1) {
+                    // Safari eval frames only have function names and nothing else
+                    return new StackFrame(line);
+                } else {
+                    var tokens = line.split('@');
+                    var locationParts = this.extractLocation(tokens.pop());
+                    var functionName = tokens.join('@') || undefined;
+                    return new StackFrame(functionName,
+                        undefined,
+                        locationParts[0],
+                        locationParts[1],
+                        locationParts[2],
+                        line);
+                }
+            }, this);
+        },
+
+        parseOpera: function ErrorStackParser$$parseOpera(e) {
+            if (!e.stacktrace || (e.message.indexOf('\n') > -1 &&
+                e.message.split('\n').length > e.stacktrace.split('\n').length)) {
+                return this.parseOpera9(e);
+            } else if (!e.stack) {
+                return this.parseOpera10(e);
+            } else {
+                return this.parseOpera11(e);
+            }
+        },
+
+        parseOpera9: function ErrorStackParser$$parseOpera9(e) {
+            var lineRE = /Line (\d+).*script (?:in )?(\S+)/i;
+            var lines = e.message.split('\n');
+            var result = [];
+
+            for (var i = 2, len = lines.length; i < len; i += 2) {
+                var match = lineRE.exec(lines[i]);
+                if (match) {
+                    result.push(new StackFrame(undefined, undefined, match[2], match[1], undefined, lines[i]));
+                }
+            }
+
+            return result;
+        },
+
+        parseOpera10: function ErrorStackParser$$parseOpera10(e) {
+            var lineRE = /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i;
+            var lines = e.stacktrace.split('\n');
+            var result = [];
+
+            for (var i = 0, len = lines.length; i < len; i += 2) {
+                var match = lineRE.exec(lines[i]);
+                if (match) {
+                    result.push(
+                        new StackFrame(
+                            match[3] || undefined,
+                            undefined,
+                            match[2],
+                            match[1],
+                            undefined,
+                            lines[i]
+                        )
+                    );
+                }
+            }
+
+            return result;
+        },
+
+        // Opera 10.65+ Error.stack very similar to FF/Safari
+        parseOpera11: function ErrorStackParser$$parseOpera11(error) {
+            var filtered = _filter(error.stack.split('\n'), function(line) {
+                return !!line.match(FIREFOX_SAFARI_STACK_REGEXP) && !line.match(/^Error created at/);
+            }, this);
+
+            return _map(filtered, function(line) {
+                var tokens = line.split('@');
+                var locationParts = this.extractLocation(tokens.pop());
+                var functionCall = (tokens.shift() || '');
+                var functionName = functionCall
+                        .replace(/<anonymous function(: (\w+))?>/, '$2')
+                        .replace(/\([^\)]*\)/g, '') || undefined;
+                var argsRaw;
+                if (functionCall.match(/\(([^\)]*)\)/)) {
+                    argsRaw = functionCall.replace(/^[^\(]+\(([^\)]*)\)$/, '$1');
+                }
+                var args = (argsRaw === undefined || argsRaw === '[arguments not available]') ?
+                    undefined : argsRaw.split(',');
+                return new StackFrame(
+                    functionName,
+                    args,
+                    locationParts[0],
+                    locationParts[1],
+                    locationParts[2],
+                    line);
+            }, this);
+        }
+    };
+}));
+
+
+},{"stackframe":167}],134:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9467,7 +9671,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],134:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -9490,7 +9694,7 @@ function isUndefined(arg) {
   };
 }));
 
-},{"./lib/gherkin/ast_builder":135,"./lib/gherkin/dialects":138,"./lib/gherkin/parser":142,"./lib/gherkin/pickles/compiler":143,"./lib/gherkin/token_matcher":145,"./lib/gherkin/token_scanner":146}],135:[function(require,module,exports){
+},{"./lib/gherkin/ast_builder":136,"./lib/gherkin/dialects":139,"./lib/gherkin/parser":143,"./lib/gherkin/pickles/compiler":144,"./lib/gherkin/token_matcher":146,"./lib/gherkin/token_scanner":147}],136:[function(require,module,exports){
 var AstNode = require('./ast_node');
 var Errors = require('./errors');
 
@@ -9756,7 +9960,7 @@ module.exports = function AstBuilder () {
 
 };
 
-},{"./ast_node":136,"./errors":139}],136:[function(require,module,exports){
+},{"./ast_node":137,"./errors":140}],137:[function(require,module,exports){
 function AstNode (ruleType) {
   this.ruleType = ruleType;
   this._subItems = {};
@@ -9786,7 +9990,7 @@ AstNode.prototype.getTokens = function (tokenType) {
 
 module.exports = AstNode;
 
-},{}],137:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 // https://mathiasbynens.be/notes/javascript-unicode
 var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
 
@@ -9794,10 +9998,10 @@ module.exports = function countSymbols(string) {
   return string.replace(regexAstralSymbols, '_').length;
 }
 
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 module.exports = require('./gherkin-languages.json');
 
-},{"./gherkin-languages.json":140}],139:[function(require,module,exports){
+},{"./gherkin-languages.json":141}],140:[function(require,module,exports){
 var Errors = {};
 
 [
@@ -9860,7 +10064,7 @@ function createError(Ctor, message, location) {
 
 module.exports = Errors;
 
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 module.exports={
   "af": {
     "and": [
@@ -12831,7 +13035,7 @@ module.exports={
   }
 }
 
-},{}],141:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 var countSymbols = require('./count_symbols')
 
 function GherkinLine(lineText, lineNumber) {
@@ -12916,7 +13120,7 @@ GherkinLine.prototype.getTags = function getTags() {
 
 module.exports = GherkinLine;
 
-},{"./count_symbols":137}],142:[function(require,module,exports){
+},{"./count_symbols":138}],143:[function(require,module,exports){
 // This file is generated. Do not edit! Edit gherkin-javascript.razor instead.
 var Errors = require('./errors');
 var AstBuilder = require('./ast_builder');
@@ -15345,7 +15549,7 @@ module.exports = function Parser(builder) {
 
 }
 
-},{"./ast_builder":135,"./errors":139,"./token_matcher":145,"./token_scanner":146}],143:[function(require,module,exports){
+},{"./ast_builder":136,"./errors":140,"./token_matcher":146,"./token_scanner":147}],144:[function(require,module,exports){
 var countSymbols = require('../count_symbols')
 
 function Compiler() {
@@ -15513,7 +15717,7 @@ function Compiler() {
 
 module.exports = Compiler;
 
-},{"../count_symbols":137}],144:[function(require,module,exports){
+},{"../count_symbols":138}],145:[function(require,module,exports){
 function Token(line, location) {
   this.line = line;
   this.location = location;
@@ -15530,7 +15734,7 @@ Token.prototype.detach = function () {
 
 module.exports = Token;
 
-},{}],145:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 var DIALECTS = require('./dialects');
 var Errors = require('./errors');
 var LANGUAGE_PATTERN = /^\s*#\s*language\s*:\s*([a-zA-Z\-_]+)\s*$/;
@@ -15721,7 +15925,7 @@ module.exports = function TokenMatcher(defaultDialectName) {
   }
 };
 
-},{"./dialects":138,"./errors":139}],146:[function(require,module,exports){
+},{"./dialects":139,"./errors":140}],147:[function(require,module,exports){
 var Token = require('./token');
 var GherkinLine = require('./gherkin_line');
 
@@ -15746,7 +15950,7 @@ module.exports = function TokenScanner(source) {
   }
 };
 
-},{"./gherkin_line":141,"./token":144}],147:[function(require,module,exports){
+},{"./gherkin_line":142,"./token":145}],148:[function(require,module,exports){
 (function (process){
 exports.alphasort = alphasort
 exports.alphasorti = alphasorti
@@ -15977,7 +16181,7 @@ function childrenIgnored (self, path) {
 
 }).call(this,require('_process'))
 
-},{"_process":161,"minimatch":156,"path":159,"path-is-absolute":160}],148:[function(require,module,exports){
+},{"_process":161,"minimatch":156,"path":159,"path-is-absolute":160}],149:[function(require,module,exports){
 (function (process){
 // Approach:
 //
@@ -16754,7 +16958,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 
 }).call(this,require('_process'))
 
-},{"./common.js":147,"./sync.js":149,"_process":161,"assert":67,"events":133,"fs":71,"inflight":152,"inherits":153,"minimatch":156,"once":157,"path":159,"path-is-absolute":160,"util":167}],149:[function(require,module,exports){
+},{"./common.js":148,"./sync.js":150,"_process":161,"assert":67,"events":134,"fs":71,"inflight":152,"inherits":153,"minimatch":156,"once":157,"path":159,"path-is-absolute":160,"util":178}],150:[function(require,module,exports){
 (function (process){
 module.exports = globSync
 globSync.GlobSync = GlobSync
@@ -17225,21 +17429,7 @@ GlobSync.prototype._makeAbs = function (f) {
 
 }).call(this,require('_process'))
 
-},{"./common.js":147,"./glob.js":148,"_process":161,"assert":67,"fs":71,"minimatch":156,"path":159,"path-is-absolute":160,"util":167}],150:[function(require,module,exports){
-var fs = require('fs')
-  , lstat = fs.lstatSync;
-
-exports.readlinkSync = function (p) {
-  if (lstat(p).isSymbolicLink()) {
-    return fs.readlinkSync(p);
-  } else {
-    return p;
-  }
-};
-
-
-
-},{"fs":71}],151:[function(require,module,exports){
+},{"./common.js":148,"./glob.js":149,"_process":161,"assert":67,"fs":71,"minimatch":156,"path":159,"path-is-absolute":160,"util":178}],151:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -17374,7 +17564,7 @@ function slice (args) {
 
 }).call(this,require('_process'))
 
-},{"_process":161,"once":157,"wrappy":168}],153:[function(require,module,exports){
+},{"_process":161,"once":157,"wrappy":179}],153:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -17434,7 +17624,7 @@ function isGeneratorFunction (fn) {
 (function (global){
 /**
  * @license
- * lodash 4.4.0 (Custom Build) <https://lodash.com/>
+ * lodash 4.6.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash -d -o ./foo/lodash.js`
  * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
@@ -17447,7 +17637,19 @@ function isGeneratorFunction (fn) {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.4.0';
+  var VERSION = '4.6.1';
+
+  /** Used as the size to enable large array optimizations. */
+  var LARGE_ARRAY_SIZE = 200;
+
+  /** Used as the `TypeError` message for "Functions" methods. */
+  var FUNC_ERROR_TEXT = 'Expected a function';
+
+  /** Used to stand-in for `undefined` hash values. */
+  var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+  /** Used as the internal argument placeholder. */
+  var PLACEHOLDER = '__lodash_placeholder__';
 
   /** Used to compose bitmasks for wrapper metadata. */
   var BIND_FLAG = 1,
@@ -17473,19 +17675,10 @@ function isGeneratorFunction (fn) {
   var HOT_COUNT = 150,
       HOT_SPAN = 16;
 
-  /** Used as the size to enable large array optimizations. */
-  var LARGE_ARRAY_SIZE = 200;
-
   /** Used to indicate the type of lazy iteratees. */
   var LAZY_FILTER_FLAG = 1,
       LAZY_MAP_FLAG = 2,
       LAZY_WHILE_FLAG = 3;
-
-  /** Used as the `TypeError` message for "Functions" methods. */
-  var FUNC_ERROR_TEXT = 'Expected a function';
-
-  /** Used to stand-in for `undefined` hash values. */
-  var HASH_UNDEFINED = '__lodash_hash_undefined__';
 
   /** Used as references for various `Number` constants. */
   var INFINITY = 1 / 0,
@@ -17497,9 +17690,6 @@ function isGeneratorFunction (fn) {
   var MAX_ARRAY_LENGTH = 4294967295,
       MAX_ARRAY_INDEX = MAX_ARRAY_LENGTH - 1,
       HALF_MAX_ARRAY_LENGTH = MAX_ARRAY_LENGTH >>> 1;
-
-  /** Used as the internal argument placeholder. */
-  var PLACEHOLDER = '__lodash_placeholder__';
 
   /** `Object#toString` result references. */
   var argsTag = '[object Arguments]',
@@ -17816,6 +18006,7 @@ function isGeneratorFunction (fn) {
    * @returns {Object} Returns `map`.
    */
   function addMapEntry(map, pair) {
+    // Don't return `Map#set` because it doesn't return the map instance in IE 11.
     map.set(pair[0], pair[1]);
     return map;
   }
@@ -17973,13 +18164,13 @@ function isGeneratorFunction (fn) {
   function arrayFilter(array, predicate) {
     var index = -1,
         length = array.length,
-        resIndex = -1,
+        resIndex = 0,
         result = [];
 
     while (++index < length) {
       var value = array[index];
       if (predicate(value, index, array)) {
-        result[++resIndex] = value;
+        result[resIndex++] = value;
       }
     }
     return result;
@@ -17999,8 +18190,7 @@ function isGeneratorFunction (fn) {
   }
 
   /**
-   * A specialized version of `_.includesWith` for arrays without support for
-   * specifying an index to search from.
+   * This function is like `arrayIncludes` except that it accepts a comparator.
    *
    * @private
    * @param {Array} array The array to search.
@@ -18225,6 +18415,28 @@ function isGeneratorFunction (fn) {
   }
 
   /**
+   * This function is like `baseIndexOf` except that it accepts a comparator.
+   *
+   * @private
+   * @param {Array} array The array to search.
+   * @param {*} value The value to search for.
+   * @param {number} fromIndex The index to search from.
+   * @param {Function} comparator The comparator invoked per element.
+   * @returns {number} Returns the index of the matched value, else `-1`.
+   */
+  function baseIndexOfWith(array, value, fromIndex, comparator) {
+    var index = fromIndex - 1,
+        length = array.length;
+
+    while (++index < length) {
+      if (comparator(array[index], value)) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  /**
    * The base implementation of `_.reduce` and `_.reduceRight`, without support
    * for iteratee shorthands, which iterates over `collection` using `eachFunc`.
    *
@@ -18246,9 +18458,9 @@ function isGeneratorFunction (fn) {
   }
 
   /**
-   * The base implementation of `_.sortBy` which uses `comparer` to define
-   * the sort order of `array` and replaces criteria objects with their
-   * corresponding values.
+   * The base implementation of `_.sortBy` which uses `comparer` to define the
+   * sort order of `array` and replaces criteria objects with their corresponding
+   * values.
    *
    * @private
    * @param {Array} array The array to sort.
@@ -18468,6 +18680,26 @@ function isGeneratorFunction (fn) {
   }
 
   /**
+   * Gets the number of `placeholder` occurrences in `array`.
+   *
+   * @private
+   * @param {Array} array The array to inspect.
+   * @param {*} placeholder The placeholder to search for.
+   * @returns {number} Returns the placeholder count.
+   */
+  function countHolders(array, placeholder) {
+    var length = array.length,
+        result = 0;
+
+    while (length--) {
+      if (array[length] === placeholder) {
+        result++;
+      }
+    }
+    return result;
+  }
+
+  /**
    * Used by `_.deburr` to convert latin-1 supplementary letters to basic latin letters.
    *
    * @private
@@ -18601,13 +18833,14 @@ function isGeneratorFunction (fn) {
   function replaceHolders(array, placeholder) {
     var index = -1,
         length = array.length,
-        resIndex = -1,
+        resIndex = 0,
         result = [];
 
     while (++index < length) {
-      if (array[index] === placeholder) {
+      var value = array[index];
+      if (value === placeholder || value === PLACEHOLDER) {
         array[index] = PLACEHOLDER;
-        result[++resIndex] = index;
+        result[resIndex++] = index;
       }
     }
     return result;
@@ -18784,6 +19017,12 @@ function isGeneratorFunction (fn) {
     /** Used to store function metadata. */
     var metaMap = WeakMap && new WeakMap;
 
+    /** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */
+    var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
+
+    /** Used to lookup unminified function names. */
+    var realNames = {};
+
     /** Used to detect maps, sets, and weakmaps. */
     var mapCtorString = Map ? funcToString.call(Map) : '',
         setCtorString = Set ? funcToString.call(Set) : '',
@@ -18791,11 +19030,8 @@ function isGeneratorFunction (fn) {
 
     /** Used to convert symbols to primitives and strings. */
     var symbolProto = Symbol ? Symbol.prototype : undefined,
-        symbolValueOf = Symbol ? symbolProto.valueOf : undefined,
-        symbolToString = Symbol ? symbolProto.toString : undefined;
-
-    /** Used to lookup unminified function names. */
-    var realNames = {};
+        symbolValueOf = symbolProto ? symbolProto.valueOf : undefined,
+        symbolToString = symbolProto ? symbolProto.toString : undefined;
 
     /*------------------------------------------------------------------------*/
 
@@ -18841,48 +19077,51 @@ function isGeneratorFunction (fn) {
      * `after`, `ary`, `assign`, `assignIn`, `assignInWith`, `assignWith`, `at`,
      * `before`, `bind`, `bindAll`, `bindKey`, `castArray`, `chain`, `chunk`,
      * `commit`, `compact`, `concat`, `conforms`, `constant`, `countBy`, `create`,
-     * `curry`, `debounce`, `defaults`, `defaultsDeep`, `defer`, `delay`, `difference`,
-     * `differenceBy`, `differenceWith`, `drop`, `dropRight`, `dropRightWhile`,
-     * `dropWhile`, `fill`, `filter`, `flatten`, `flattenDeep`, `flattenDepth`,
-     * `flip`, `flow`, `flowRight`, `fromPairs`, `functions`, `functionsIn`,
-     * `groupBy`, `initial`, `intersection`, `intersectionBy`, `intersectionWith`,
-     * `invert`, `invertBy`, `invokeMap`, `iteratee`, `keyBy`, `keys`, `keysIn`,
-     * `map`, `mapKeys`, `mapValues`, `matches`, `matchesProperty`, `memoize`,
-     * `merge`, `mergeWith`, `method`, `methodOf`, `mixin`, `negate`, `nthArg`,
-     * `omit`, `omitBy`, `once`, `orderBy`, `over`, `overArgs`, `overEvery`,
-     * `overSome`, `partial`, `partialRight`, `partition`, `pick`, `pickBy`, `plant`,
-     * `property`, `propertyOf`, `pull`, `pullAll`, `pullAllBy`, `pullAt`, `push`,
-     * `range`, `rangeRight`, `rearg`, `reject`, `remove`, `rest`, `reverse`,
-     * `sampleSize`, `set`, `setWith`, `shuffle`, `slice`, `sort`, `sortBy`,
-     * `splice`, `spread`, `tail`, `take`, `takeRight`, `takeRightWhile`,
-     * `takeWhile`, `tap`, `throttle`, `thru`, `toArray`, `toPairs`, `toPairsIn`,
-     * `toPath`, `toPlainObject`, `transform`, `unary`, `union`, `unionBy`,
-     * `unionWith`, `uniq`, `uniqBy`, `uniqWith`, `unset`, `unshift`, `unzip`,
-     * `unzipWith`, `values`, `valuesIn`, `without`, `wrap`, `xor`, `xorBy`,
-     * `xorWith`, `zip`, `zipObject`, `zipObjectDeep`, and `zipWith`
+     * `curry`, `debounce`, `defaults`, `defaultsDeep`, `defer`, `delay`,
+     * `difference`, `differenceBy`, `differenceWith`, `drop`, `dropRight`,
+     * `dropRightWhile`, `dropWhile`, `extend`, `extendWith`, `fill`, `filter`,
+     * `flatten`, `flattenDeep`, `flattenDepth`, `flip`, `flow`, `flowRight`,
+     * `fromPairs`, `functions`, `functionsIn`, `groupBy`, `initial`, `intersection`,
+     * `intersectionBy`, `intersectionWith`, `invert`, `invertBy`, `invokeMap`,
+     * `iteratee`, `keyBy`, `keys`, `keysIn`, `map`, `mapKeys`, `mapValues`,
+     * `matches`, `matchesProperty`, `memoize`, `merge`, `mergeWith`, `method`,
+     * `methodOf`, `mixin`, `negate`, `nthArg`, `omit`, `omitBy`, `once`, `orderBy`,
+     * `over`, `overArgs`, `overEvery`, `overSome`, `partial`, `partialRight`,
+     * `partition`, `pick`, `pickBy`, `plant`, `property`, `propertyOf`, `pull`,
+     * `pullAll`, `pullAllBy`, `pullAllWith`, `pullAt`, `push`, `range`,
+     * `rangeRight`, `rearg`, `reject`, `remove`, `rest`, `reverse`, `sampleSize`,
+     * `set`, `setWith`, `shuffle`, `slice`, `sort`, `sortBy`, `splice`, `spread`,
+     * `tail`, `take`, `takeRight`, `takeRightWhile`, `takeWhile`, `tap`, `throttle`,
+     * `thru`, `toArray`, `toPairs`, `toPairsIn`, `toPath`, `toPlainObject`,
+     * `transform`, `unary`, `union`, `unionBy`, `unionWith`, `uniq`, `uniqBy`,
+     * `uniqWith`, `unset`, `unshift`, `unzip`, `unzipWith`, `update`, `values`,
+     * `valuesIn`, `without`, `wrap`, `xor`, `xorBy`, `xorWith`, `zip`, `zipObject`,
+     * `zipObjectDeep`, and `zipWith`
      *
      * The wrapper methods that are **not** chainable by default are:
      * `add`, `attempt`, `camelCase`, `capitalize`, `ceil`, `clamp`, `clone`,
-     * `cloneDeep`, `cloneDeepWith`, `cloneWith`, `deburr`, `endsWith`, `eq`,
-     * `escape`, `escapeRegExp`, `every`, `find`, `findIndex`, `findKey`,
-     * `findLast`, `findLastIndex`, `findLastKey`, `floor`, `forEach`, `forEachRight`,
-     * `forIn`, `forInRight`, `forOwn`, `forOwnRight`, `get`, `gt`, `gte`, `has`,
-     * `hasIn`, `head`, `identity`, `includes`, `indexOf`, `inRange`, `invoke`,
-     * `isArguments`, `isArray`, `isArrayLike`, `isArrayLikeObject`, `isBoolean`,
-     * `isDate`, `isElement`, `isEmpty`, `isEqual`, `isEqualWith`, `isError`,
-     * `isFinite`, `isFunction`, `isInteger`, `isLength`, `isMatch`, `isMatchWith`,
+     * `cloneDeep`, `cloneDeepWith`, `cloneWith`, `deburr`, `each`, `eachRight`,
+     * `endsWith`, `eq`, `escape`, `escapeRegExp`, `every`, `find`, `findIndex`,
+     * `findKey`, `findLast`, `findLastIndex`, `findLastKey`, `first`, `floor`,
+     * `forEach`, `forEachRight`, `forIn`, `forInRight`, `forOwn`, `forOwnRight`,
+     * `get`, `gt`, `gte`, `has`, `hasIn`, `head`, `identity`, `includes`,
+     * `indexOf`, `inRange`, `invoke`, `isArguments`, `isArray`, `isArrayBuffer`,
+     * `isArrayLike`, `isArrayLikeObject`, `isBoolean`, `isBuffer`, `isDate`,
+     * `isElement`, `isEmpty`, `isEqual`, `isEqualWith`, `isError`, `isFinite`,
+     * `isFunction`, `isInteger`, `isLength`, `isMap`, `isMatch`, `isMatchWith`,
      * `isNaN`, `isNative`, `isNil`, `isNull`, `isNumber`, `isObject`, `isObjectLike`,
-     * `isPlainObject`, `isRegExp`, `isSafeInteger`, `isString`, `isUndefined`,
-     * `isTypedArray`, `join`, `kebabCase`, `last`, `lastIndexOf`, `lowerCase`,
-     * `lowerFirst`, `lt`, `lte`, `max`, `maxBy`, `mean`, `min`, `minBy`,
-     * `noConflict`, `noop`, `now`, `pad`, `padEnd`, `padStart`, `parseInt`,
-     * `pop`, `random`, `reduce`, `reduceRight`, `repeat`, `result`, `round`,
-     * `runInContext`, `sample`, `shift`, `size`, `snakeCase`, `some`, `sortedIndex`,
-     * `sortedIndexBy`, `sortedLastIndex`, `sortedLastIndexBy`, `startCase`,
-     * `startsWith`, `subtract`, `sum`, `sumBy`, `template`, `times`, `toLower`,
-     * `toInteger`, `toLength`, `toNumber`, `toSafeInteger`, `toString`, `toUpper`,
-     * `trim`, `trimEnd`, `trimStart`, `truncate`, `unescape`, `uniqueId`,
-     * `upperCase`, `upperFirst`, `value`, and `words`
+     * `isPlainObject`, `isRegExp`, `isSafeInteger`, `isSet`, `isString`,
+     * `isUndefined`, `isTypedArray`, `isWeakMap`, `isWeakSet`, `join`, `kebabCase`,
+     * `last`, `lastIndexOf`, `lowerCase`, `lowerFirst`, `lt`, `lte`, `max`,
+     * `maxBy`, `mean`, `min`, `minBy`, `noConflict`, `noop`, `now`, `pad`,
+     * `padEnd`, `padStart`, `parseInt`, `pop`, `random`, `reduce`, `reduceRight`,
+     * `repeat`, `result`, `round`, `runInContext`, `sample`, `shift`, `size`,
+     * `snakeCase`, `some`, `sortedIndex`, `sortedIndexBy`, `sortedLastIndex`,
+     * `sortedLastIndexBy`, `startCase`, `startsWith`, `subtract`, `sum`, `sumBy`,
+     * `template`, `times`, `toInteger`, `toJSON`, `toLength`, `toLower`,
+     * `toNumber`, `toSafeInteger`, `toString`, `toUpper`, `trim`, `trimEnd`,
+     * `trimStart`, `truncate`, `unescape`, `uniqueId`, `upperCase`, `upperFirst`,
+     * `value`, and `words`
      *
      * @name _
      * @constructor
@@ -19568,7 +19807,8 @@ function isGeneratorFunction (fn) {
     }
 
     /**
-     * This function is like `assignValue` except that it doesn't assign `undefined` values.
+     * This function is like `assignValue` except that it doesn't assign
+     * `undefined` values.
      *
      * @private
      * @param {Object} object The object to modify.
@@ -19594,8 +19834,7 @@ function isGeneratorFunction (fn) {
      */
     function assignValue(object, key, value) {
       var objValue = object[key];
-      if ((!eq(objValue, value) ||
-            (eq(objValue, objectProto[key]) && !hasOwnProperty.call(object, key))) ||
+      if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
           (value === undefined && !(key in object))) {
         object[key] = value;
       }
@@ -19713,13 +19952,14 @@ function isGeneratorFunction (fn) {
      * @private
      * @param {*} value The value to clone.
      * @param {boolean} [isDeep] Specify a deep clone.
+     * @param {boolean} [isFull] Specify a clone including symbols.
      * @param {Function} [customizer] The function to customize cloning.
      * @param {string} [key] The key of `value`.
      * @param {Object} [object] The parent object of `value`.
      * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
      * @returns {*} Returns the cloned value.
      */
-    function baseClone(value, isDeep, customizer, key, object, stack) {
+    function baseClone(value, isDeep, isFull, customizer, key, object, stack) {
       var result;
       if (customizer) {
         result = object ? customizer(value, key, object, stack) : customizer(value);
@@ -19749,12 +19989,14 @@ function isGeneratorFunction (fn) {
           }
           result = initCloneObject(isFunc ? {} : value);
           if (!isDeep) {
-            return copySymbols(value, baseAssign(result, value));
+            result = baseAssign(result, value);
+            return isFull ? copySymbols(value, result) : result;
           }
         } else {
-          return cloneableTags[tag]
-            ? initCloneByTag(value, tag, isDeep)
-            : (object ? value : {});
+          if (!cloneableTags[tag]) {
+            return object ? value : {};
+          }
+          result = initCloneByTag(value, tag, isDeep);
         }
       }
       // Check for circular references and return its corresponding clone.
@@ -19767,9 +20009,9 @@ function isGeneratorFunction (fn) {
 
       // Recursively populate clone (susceptible to call stack limits).
       (isArr ? arrayEach : baseForOwn)(value, function(subValue, key) {
-        assignValue(result, key, baseClone(subValue, isDeep, customizer, key, value, stack));
+        assignValue(result, key, baseClone(subValue, isDeep, isFull, customizer, key, value, stack));
       });
-      return isArr ? result : copySymbols(value, result);
+      return (isFull && !isArr) ? copySymbols(value, result) : result;
     }
 
     /**
@@ -20151,9 +20393,11 @@ function isGeneratorFunction (fn) {
      */
     function baseIntersection(arrays, iteratee, comparator) {
       var includes = comparator ? arrayIncludesWith : arrayIncludes,
+          length = arrays[0].length,
           othLength = arrays.length,
           othIndex = othLength,
           caches = Array(othLength),
+          maxLength = Infinity,
           result = [];
 
       while (othIndex--) {
@@ -20161,18 +20405,18 @@ function isGeneratorFunction (fn) {
         if (othIndex && iteratee) {
           array = arrayMap(array, baseUnary(iteratee));
         }
-        caches[othIndex] = !comparator && (iteratee || array.length >= 120)
+        maxLength = nativeMin(array.length, maxLength);
+        caches[othIndex] = !comparator && (iteratee || (length >= 120 && array.length >= 120))
           ? new SetCache(othIndex && array)
           : undefined;
       }
       array = arrays[0];
 
       var index = -1,
-          length = array.length,
           seen = caches[0];
 
       outer:
-      while (++index < length) {
+      while (++index < length && result.length < maxLength) {
         var value = array[index],
             computed = iteratee ? iteratee(value) : value;
 
@@ -20180,7 +20424,7 @@ function isGeneratorFunction (fn) {
               ? cacheHas(seen, computed)
               : includes(result, computed, comparator)
             )) {
-          var othIndex = othLength;
+          othIndex = othLength;
           while (--othIndex) {
             var cache = caches[othIndex];
             if (!(cache
@@ -20284,33 +20528,28 @@ function isGeneratorFunction (fn) {
 
       if (!objIsArr) {
         objTag = getTag(object);
-        if (objTag == argsTag) {
-          objTag = objectTag;
-        } else if (objTag != objectTag) {
-          objIsArr = isTypedArray(object);
-        }
+        objTag = objTag == argsTag ? objectTag : objTag;
       }
       if (!othIsArr) {
         othTag = getTag(other);
-        if (othTag == argsTag) {
-          othTag = objectTag;
-        } else if (othTag != objectTag) {
-          othIsArr = isTypedArray(other);
-        }
+        othTag = othTag == argsTag ? objectTag : othTag;
       }
       var objIsObj = objTag == objectTag && !isHostObject(object),
           othIsObj = othTag == objectTag && !isHostObject(other),
           isSameTag = objTag == othTag;
 
-      if (isSameTag && !(objIsArr || objIsObj)) {
-        return equalByTag(object, other, objTag, equalFunc, customizer, bitmask);
+      if (isSameTag && !objIsObj) {
+        stack || (stack = new Stack);
+        return (objIsArr || isTypedArray(object))
+          ? equalArrays(object, other, equalFunc, customizer, bitmask, stack)
+          : equalByTag(object, other, objTag, equalFunc, customizer, bitmask, stack);
       }
-      var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
-      if (!isPartial) {
+      if (!(bitmask & PARTIAL_COMPARE_FLAG)) {
         var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
             othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
 
         if (objIsWrapped || othIsWrapped) {
+          stack || (stack = new Stack);
           return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, bitmask, stack);
         }
       }
@@ -20318,7 +20557,7 @@ function isGeneratorFunction (fn) {
         return false;
       }
       stack || (stack = new Stack);
-      return (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, bitmask, stack);
+      return equalObjects(object, other, equalFunc, customizer, bitmask, stack);
     }
 
     /**
@@ -20575,7 +20814,7 @@ function isGeneratorFunction (fn) {
           }
           else {
             isCommon = false;
-            newValue = baseClone(srcValue, true);
+            newValue = baseClone(srcValue, !customizer);
           }
         }
         else if (isPlainObject(srcValue) || isArguments(srcValue)) {
@@ -20584,7 +20823,7 @@ function isGeneratorFunction (fn) {
           }
           else if (!isObject(objValue) || (srcIndex && isFunction(objValue))) {
             isCommon = false;
-            newValue = baseClone(srcValue, true);
+            newValue = baseClone(srcValue, !customizer);
           }
           else {
             newValue = objValue;
@@ -20600,6 +20839,7 @@ function isGeneratorFunction (fn) {
         // Recursively merge objects and arrays (susceptible to call stack limits).
         mergeFunc(newValue, srcValue, srcIndex, customizer, stack);
       }
+      stack['delete'](srcValue);
       assignMergeValue(object, key, newValue);
     }
 
@@ -20613,12 +20853,8 @@ function isGeneratorFunction (fn) {
      * @returns {Array} Returns the new sorted array.
      */
     function baseOrderBy(collection, iteratees, orders) {
-      var index = -1,
-          toIteratee = getIteratee();
-
-      iteratees = arrayMap(iteratees.length ? iteratees : Array(1), function(iteratee) {
-        return toIteratee(iteratee);
-      });
+      var index = -1;
+      iteratees = arrayMap(iteratees.length ? iteratees : Array(1), getIteratee());
 
       var result = baseMap(collection, function(value, key, collection) {
         var criteria = arrayMap(iteratees, function(iteratee) {
@@ -20696,18 +20932,6 @@ function isGeneratorFunction (fn) {
     }
 
     /**
-     * The base implementation of `_.pullAll`.
-     *
-     * @private
-     * @param {Array} array The array to modify.
-     * @param {Array} values The values to remove.
-     * @returns {Array} Returns `array`.
-     */
-    function basePullAll(array, values) {
-      return basePullAllBy(array, values);
-    }
-
-    /**
      * The base implementation of `_.pullAllBy` without support for iteratee
      * shorthands.
      *
@@ -20715,22 +20939,24 @@ function isGeneratorFunction (fn) {
      * @param {Array} array The array to modify.
      * @param {Array} values The values to remove.
      * @param {Function} [iteratee] The iteratee invoked per element.
+     * @param {Function} [comparator] The comparator invoked per element.
      * @returns {Array} Returns `array`.
      */
-    function basePullAllBy(array, values, iteratee) {
-      var index = -1,
+    function basePullAll(array, values, iteratee, comparator) {
+      var indexOf = comparator ? baseIndexOfWith : baseIndexOf,
+          index = -1,
           length = values.length,
           seen = array;
 
       if (iteratee) {
-        seen = arrayMap(array, function(value) { return iteratee(value); });
+        seen = arrayMap(array, baseUnary(iteratee));
       }
       while (++index < length) {
         var fromIndex = 0,
             value = values[index],
             computed = iteratee ? iteratee(value) : value;
 
-        while ((fromIndex = baseIndexOf(seen, computed, fromIndex)) > -1) {
+        while ((fromIndex = indexOf(seen, computed, fromIndex, comparator)) > -1) {
           if (seen !== array) {
             splice.call(seen, fromIndex, 1);
           }
@@ -21016,7 +21242,7 @@ function isGeneratorFunction (fn) {
           value = array[0],
           computed = iteratee ? iteratee(value) : value,
           seen = computed,
-          resIndex = 0,
+          resIndex = 1,
           result = [value];
 
       while (++index < length) {
@@ -21025,7 +21251,7 @@ function isGeneratorFunction (fn) {
 
         if (!eq(computed, seen)) {
           seen = computed;
-          result[++resIndex] = value;
+          result[resIndex++] = value;
         }
       }
       return result;
@@ -21104,6 +21330,20 @@ function isGeneratorFunction (fn) {
       object = parent(object, path);
       var key = last(path);
       return (object != null && has(object, key)) ? delete object[key] : true;
+    }
+
+    /**
+     * The base implementation of `_.update`.
+     *
+     * @private
+     * @param {Object} object The object to query.
+     * @param {Array|string} path The path of the property to update.
+     * @param {Function} updater The function to produce the updated value.
+     * @param {Function} [customizer] The function to customize path creation.
+     * @returns {Object} Returns `object`.
+     */
+    function baseUpdate(object, path, updater, customizer) {
+      return baseSet(object, path, updater(baseGet(object, path)), customizer);
     }
 
     /**
@@ -21207,9 +21447,7 @@ function isGeneratorFunction (fn) {
       if (isDeep) {
         return buffer.slice();
       }
-      var Ctor = buffer.constructor,
-          result = new Ctor(buffer.length);
-
+      var result = new buffer.constructor(buffer.length);
       buffer.copy(result);
       return result;
     }
@@ -21222,11 +21460,8 @@ function isGeneratorFunction (fn) {
      * @returns {ArrayBuffer} Returns the cloned array buffer.
      */
     function cloneArrayBuffer(arrayBuffer) {
-      var Ctor = arrayBuffer.constructor,
-          result = new Ctor(arrayBuffer.byteLength),
-          view = new Uint8Array(result);
-
-      view.set(new Uint8Array(arrayBuffer));
+      var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+      new Uint8Array(result).set(new Uint8Array(arrayBuffer));
       return result;
     }
 
@@ -21238,8 +21473,7 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns the cloned map.
      */
     function cloneMap(map) {
-      var Ctor = map.constructor;
-      return arrayReduce(mapToArray(map), addMapEntry, new Ctor);
+      return arrayReduce(mapToArray(map), addMapEntry, new map.constructor);
     }
 
     /**
@@ -21250,9 +21484,7 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns the cloned regexp.
      */
     function cloneRegExp(regexp) {
-      var Ctor = regexp.constructor,
-          result = new Ctor(regexp.source, reFlags.exec(regexp));
-
+      var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
       result.lastIndex = regexp.lastIndex;
       return result;
     }
@@ -21265,8 +21497,7 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns the cloned set.
      */
     function cloneSet(set) {
-      var Ctor = set.constructor;
-      return arrayReduce(setToArray(set), addSetEntry, new Ctor);
+      return arrayReduce(setToArray(set), addSetEntry, new set.constructor);
     }
 
     /**
@@ -21277,7 +21508,7 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns the cloned symbol object.
      */
     function cloneSymbol(symbol) {
-      return Symbol ? Object(symbolValueOf.call(symbol)) : {};
+      return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
     }
 
     /**
@@ -21289,11 +21520,8 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns the cloned typed array.
      */
     function cloneTypedArray(typedArray, isDeep) {
-      var arrayBuffer = typedArray.buffer,
-          buffer = isDeep ? cloneArrayBuffer(arrayBuffer) : arrayBuffer,
-          Ctor = typedArray.constructor;
-
-      return new Ctor(buffer, typedArray.byteOffset, typedArray.length);
+      var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+      return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
     }
 
     /**
@@ -21304,23 +21532,28 @@ function isGeneratorFunction (fn) {
      * @param {Array|Object} args The provided arguments.
      * @param {Array} partials The arguments to prepend to those provided.
      * @param {Array} holders The `partials` placeholder indexes.
+     * @params {boolean} [isCurried] Specify composing for a curried function.
      * @returns {Array} Returns the new array of composed arguments.
      */
-    function composeArgs(args, partials, holders) {
-      var holdersLength = holders.length,
-          argsIndex = -1,
-          argsLength = nativeMax(args.length - holdersLength, 0),
+    function composeArgs(args, partials, holders, isCurried) {
+      var argsIndex = -1,
+          argsLength = args.length,
+          holdersLength = holders.length,
           leftIndex = -1,
           leftLength = partials.length,
-          result = Array(leftLength + argsLength);
+          rangeLength = nativeMax(argsLength - holdersLength, 0),
+          result = Array(leftLength + rangeLength),
+          isUncurried = !isCurried;
 
       while (++leftIndex < leftLength) {
         result[leftIndex] = partials[leftIndex];
       }
       while (++argsIndex < holdersLength) {
-        result[holders[argsIndex]] = args[argsIndex];
+        if (isUncurried || argsIndex < argsLength) {
+          result[holders[argsIndex]] = args[argsIndex];
+        }
       }
-      while (argsLength--) {
+      while (rangeLength--) {
         result[leftIndex++] = args[argsIndex++];
       }
       return result;
@@ -21334,18 +21567,21 @@ function isGeneratorFunction (fn) {
      * @param {Array|Object} args The provided arguments.
      * @param {Array} partials The arguments to append to those provided.
      * @param {Array} holders The `partials` placeholder indexes.
+     * @params {boolean} [isCurried] Specify composing for a curried function.
      * @returns {Array} Returns the new array of composed arguments.
      */
-    function composeArgsRight(args, partials, holders) {
-      var holdersIndex = -1,
+    function composeArgsRight(args, partials, holders, isCurried) {
+      var argsIndex = -1,
+          argsLength = args.length,
+          holdersIndex = -1,
           holdersLength = holders.length,
-          argsIndex = -1,
-          argsLength = nativeMax(args.length - holdersLength, 0),
           rightIndex = -1,
           rightLength = partials.length,
-          result = Array(argsLength + rightLength);
+          rangeLength = nativeMax(argsLength - holdersLength, 0),
+          result = Array(rangeLength + rightLength),
+          isUncurried = !isCurried;
 
-      while (++argsIndex < argsLength) {
+      while (++argsIndex < rangeLength) {
         result[argsIndex] = args[argsIndex];
       }
       var offset = argsIndex;
@@ -21353,7 +21589,9 @@ function isGeneratorFunction (fn) {
         result[offset + rightIndex] = partials[rightIndex];
       }
       while (++holdersIndex < holdersLength) {
-        result[offset + holders[holdersIndex]] = args[argsIndex++];
+        if (isUncurried || argsIndex < argsLength) {
+          result[offset + holders[holdersIndex]] = args[argsIndex++];
+        }
       }
       return result;
     }
@@ -21637,10 +21875,9 @@ function isGeneratorFunction (fn) {
 
       function wrapper() {
         var length = arguments.length,
-            index = length,
             args = Array(length),
-            fn = (this && this !== root && this instanceof wrapper) ? Ctor : func,
-            placeholder = lodash.placeholder || wrapper.placeholder;
+            index = length,
+            placeholder = getPlaceholder(wrapper);
 
         while (index--) {
           args[index] = arguments[index];
@@ -21650,9 +21887,13 @@ function isGeneratorFunction (fn) {
           : replaceHolders(args, placeholder);
 
         length -= holders.length;
-        return length < arity
-          ? createRecurryWrapper(func, bitmask, createHybridWrapper, placeholder, undefined, args, holders, undefined, undefined, arity - length)
-          : apply(fn, this, args);
+        if (length < arity) {
+          return createRecurryWrapper(
+            func, bitmask, createHybridWrapper, wrapper.placeholder, undefined,
+            args, holders, undefined, undefined, arity - length);
+        }
+        var fn = (this && this !== root && this instanceof wrapper) ? Ctor : func;
+        return apply(fn, this, args);
       }
       return wrapper;
     }
@@ -21740,8 +21981,7 @@ function isGeneratorFunction (fn) {
       var isAry = bitmask & ARY_FLAG,
           isBind = bitmask & BIND_FLAG,
           isBindKey = bitmask & BIND_KEY_FLAG,
-          isCurry = bitmask & CURRY_FLAG,
-          isCurryRight = bitmask & CURRY_RIGHT_FLAG,
+          isCurried = bitmask & (CURRY_FLAG | CURRY_RIGHT_FLAG),
           isFlip = bitmask & FLIP_FLAG,
           Ctor = isBindKey ? undefined : createCtorWrapper(func);
 
@@ -21753,33 +21993,34 @@ function isGeneratorFunction (fn) {
         while (index--) {
           args[index] = arguments[index];
         }
+        if (isCurried) {
+          var placeholder = getPlaceholder(wrapper),
+              holdersCount = countHolders(args, placeholder);
+        }
         if (partials) {
-          args = composeArgs(args, partials, holders);
+          args = composeArgs(args, partials, holders, isCurried);
         }
         if (partialsRight) {
-          args = composeArgsRight(args, partialsRight, holdersRight);
+          args = composeArgsRight(args, partialsRight, holdersRight, isCurried);
         }
-        if (isCurry || isCurryRight) {
-          var placeholder = lodash.placeholder || wrapper.placeholder,
-              argsHolders = replaceHolders(args, placeholder);
-
-          length -= argsHolders.length;
-          if (length < arity) {
-            return createRecurryWrapper(
-              func, bitmask, createHybridWrapper, placeholder, thisArg, args,
-              argsHolders, argPos, ary, arity - length
-            );
-          }
+        length -= holdersCount;
+        if (isCurried && length < arity) {
+          var newHolders = replaceHolders(args, placeholder);
+          return createRecurryWrapper(
+            func, bitmask, createHybridWrapper, wrapper.placeholder, thisArg,
+            args, newHolders, argPos, ary, arity - length
+          );
         }
         var thisBinding = isBind ? thisArg : this,
             fn = isBindKey ? thisBinding[func] : func;
 
+        length = args.length;
         if (argPos) {
           args = reorder(args, argPos);
-        } else if (isFlip && args.length > 1) {
+        } else if (isFlip && length > 1) {
           args.reverse();
         }
-        if (isAry && ary < args.length) {
+        if (isAry && ary < length) {
           args.length = ary;
         }
         if (this && this !== root && this instanceof wrapper) {
@@ -21917,7 +22158,7 @@ function isGeneratorFunction (fn) {
      * @param {Function} func The function to wrap.
      * @param {number} bitmask The bitmask of wrapper flags. See `createWrapper` for more details.
      * @param {Function} wrapFunc The function to create the `func` wrapper.
-     * @param {*} placeholder The placeholder to replace.
+     * @param {*} placeholder The placeholder value.
      * @param {*} [thisArg] The `this` binding of `func`.
      * @param {Array} [partials] The arguments to prepend to those provided to the new function.
      * @param {Array} [holders] The `partials` placeholder indexes.
@@ -21929,7 +22170,7 @@ function isGeneratorFunction (fn) {
     function createRecurryWrapper(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary, arity) {
       var isCurry = bitmask & CURRY_FLAG,
           newArgPos = argPos ? copyArray(argPos) : undefined,
-          newsHolders = isCurry ? holders : undefined,
+          newHolders = isCurry ? holders : undefined,
           newHoldersRight = isCurry ? undefined : holders,
           newPartials = isCurry ? partials : undefined,
           newPartialsRight = isCurry ? undefined : partials;
@@ -21941,7 +22182,7 @@ function isGeneratorFunction (fn) {
         bitmask &= ~(BIND_FLAG | BIND_KEY_FLAG);
       }
       var newData = [
-        func, bitmask, thisArg, newPartials, newsHolders, newPartialsRight,
+        func, bitmask, thisArg, newPartials, newHolders, newPartialsRight,
         newHoldersRight, newArgPos, ary, arity
       ];
 
@@ -22077,9 +22318,9 @@ function isGeneratorFunction (fn) {
      * @param {Array} array The array to compare.
      * @param {Array} other The other array to compare.
      * @param {Function} equalFunc The function to determine equivalents of values.
-     * @param {Function} [customizer] The function to customize comparisons.
-     * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-     * @param {Object} [stack] Tracks traversed `array` and `other` objects.
+     * @param {Function} customizer The function to customize comparisons.
+     * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual` for more details.
+     * @param {Object} stack Tracks traversed `array` and `other` objects.
      * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
      */
     function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
@@ -22146,11 +22387,12 @@ function isGeneratorFunction (fn) {
      * @param {Object} other The other object to compare.
      * @param {string} tag The `toStringTag` of the objects to compare.
      * @param {Function} equalFunc The function to determine equivalents of values.
-     * @param {Function} [customizer] The function to customize comparisons.
-     * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+     * @param {Function} customizer The function to customize comparisons.
+     * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual` for more details.
+     * @param {Object} stack Tracks traversed `object` and `other` objects.
      * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
      */
-    function equalByTag(object, other, tag, equalFunc, customizer, bitmask) {
+    function equalByTag(object, other, tag, equalFunc, customizer, bitmask, stack) {
       switch (tag) {
         case arrayBufferTag:
           if ((object.byteLength != other.byteLength) ||
@@ -22185,12 +22427,21 @@ function isGeneratorFunction (fn) {
           var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
           convert || (convert = setToArray);
 
+          if (object.size != other.size && !isPartial) {
+            return false;
+          }
+          // Assume cyclic values are equal.
+          var stacked = stack.get(object);
+          if (stacked) {
+            return stacked == other;
+          }
           // Recursively compare objects (susceptible to call stack limits).
-          return (isPartial || object.size == other.size) &&
-            equalFunc(convert(object), convert(other), customizer, bitmask | UNORDERED_COMPARE_FLAG);
+          return equalArrays(convert(object), convert(other), equalFunc, customizer, bitmask | UNORDERED_COMPARE_FLAG, stack.set(object, other));
 
         case symbolTag:
-          return !!Symbol && (symbolValueOf.call(object) == symbolValueOf.call(other));
+          if (symbolValueOf) {
+            return symbolValueOf.call(object) == symbolValueOf.call(other);
+          }
       }
       return false;
     }
@@ -22203,9 +22454,9 @@ function isGeneratorFunction (fn) {
      * @param {Object} object The object to compare.
      * @param {Object} other The other object to compare.
      * @param {Function} equalFunc The function to determine equivalents of values.
-     * @param {Function} [customizer] The function to customize comparisons.
-     * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-     * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+     * @param {Function} customizer The function to customize comparisons.
+     * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual` for more details.
+     * @param {Object} stack Tracks traversed `object` and `other` objects.
      * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
      */
     function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
@@ -22358,8 +22609,20 @@ function isGeneratorFunction (fn) {
      * @returns {*} Returns the function if it's native, else `undefined`.
      */
     function getNative(object, key) {
-      var value = object == null ? undefined : object[key];
+      var value = object[key];
       return isNative(value) ? value : undefined;
+    }
+
+    /**
+     * Gets the argument placeholder value for `func`.
+     *
+     * @private
+     * @param {Function} func The function to inspect.
+     * @returns {*} Returns the placeholder value.
+     */
+    function getPlaceholder(func) {
+      var object = hasOwnProperty.call(lodash, 'placeholder') ? lodash : func;
+      return object.placeholder;
     }
 
     /**
@@ -22488,11 +22751,9 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns the initialized clone.
      */
     function initCloneObject(object) {
-      if (isPrototype(object)) {
-        return {};
-      }
-      var Ctor = object.constructor;
-      return baseCreate(isFunction(Ctor) ? Ctor.prototype : undefined);
+      return (typeof object.constructor == 'function' && !isPrototype(object))
+        ? baseCreate(getPrototypeOf(object))
+        : {};
     }
 
     /**
@@ -22678,9 +22939,9 @@ function isGeneratorFunction (fn) {
           isCommon = newBitmask < (BIND_FLAG | BIND_KEY_FLAG | ARY_FLAG);
 
       var isCombo =
-        (srcBitmask == ARY_FLAG && (bitmask == CURRY_FLAG)) ||
-        (srcBitmask == ARY_FLAG && (bitmask == REARG_FLAG) && (data[7].length <= source[8])) ||
-        (srcBitmask == (ARY_FLAG | REARG_FLAG) && (source[7].length <= source[8]) && (bitmask == CURRY_FLAG));
+        ((srcBitmask == ARY_FLAG) && (bitmask == CURRY_FLAG)) ||
+        ((srcBitmask == ARY_FLAG) && (bitmask == REARG_FLAG) && (data[7].length <= source[8])) ||
+        ((srcBitmask == (ARY_FLAG | REARG_FLAG)) && (source[7].length <= source[8]) && (bitmask == CURRY_FLAG));
 
       // Exit early if metadata can't be merged.
       if (!(isCommon || isCombo)) {
@@ -22690,7 +22951,7 @@ function isGeneratorFunction (fn) {
       if (srcBitmask & BIND_FLAG) {
         data[2] = source[2];
         // Set when currying a bound function.
-        newBitmask |= (bitmask & BIND_FLAG) ? 0 : CURRY_BOUND_FLAG;
+        newBitmask |= bitmask & BIND_FLAG ? 0 : CURRY_BOUND_FLAG;
       }
       // Compose partial arguments.
       var value = source[3];
@@ -22740,8 +23001,7 @@ function isGeneratorFunction (fn) {
      */
     function mergeDefaults(objValue, srcValue, key, object, source, stack) {
       if (isObject(objValue) && isObject(srcValue)) {
-        stack.set(srcValue, objValue);
-        baseMerge(objValue, srcValue, undefined, mergeDefaults, stack);
+        baseMerge(objValue, srcValue, undefined, mergeDefaults, stack.set(srcValue, objValue));
       }
       return objValue;
     }
@@ -22875,11 +23135,11 @@ function isGeneratorFunction (fn) {
         return [];
       }
       var index = 0,
-          resIndex = -1,
+          resIndex = 0,
           result = Array(nativeCeil(length / size));
 
       while (index < length) {
-        result[++resIndex] = baseSlice(array, index, (index += size));
+        result[resIndex++] = baseSlice(array, index, (index += size));
       }
       return result;
     }
@@ -22901,13 +23161,13 @@ function isGeneratorFunction (fn) {
     function compact(array) {
       var index = -1,
           length = array ? array.length : 0,
-          resIndex = -1,
+          resIndex = 0,
           result = [];
 
       while (++index < length) {
         var value = array[index];
         if (value) {
-          result[++resIndex] = value;
+          result[resIndex++] = value;
         }
       }
       return result;
@@ -22945,7 +23205,8 @@ function isGeneratorFunction (fn) {
     /**
      * Creates an array of unique `array` values not included in the other
      * given arrays using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
-     * for equality comparisons.
+     * for equality comparisons. The order of result values is determined by the
+     * order they occur in the first array.
      *
      * @static
      * @memberOf _
@@ -22967,7 +23228,8 @@ function isGeneratorFunction (fn) {
     /**
      * This method is like `_.difference` except that it accepts `iteratee` which
      * is invoked for each element of `array` and `values` to generate the criterion
-     * by which uniqueness is computed. The iteratee is invoked with one argument: (value).
+     * by which they're compared. Result values are chosen from the first array.
+     * The iteratee is invoked with one argument: (value).
      *
      * @static
      * @memberOf _
@@ -22997,8 +23259,9 @@ function isGeneratorFunction (fn) {
 
     /**
      * This method is like `_.difference` except that it accepts `comparator`
-     * which is invoked to compare elements of `array` to `values`. The comparator
-     * is invoked with two arguments: (arrVal, othVal).
+     * which is invoked to compare elements of `array` to `values`. Result values
+     * are chosen from the first array. The comparator is invoked with two arguments:
+     * (arrVal, othVal).
      *
      * @static
      * @memberOf _
@@ -23454,13 +23717,14 @@ function isGeneratorFunction (fn) {
     /**
      * Creates an array of unique values that are included in all given arrays
      * using [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
-     * for equality comparisons.
+     * for equality comparisons. The order of result values is determined by the
+     * order they occur in the first array.
      *
      * @static
      * @memberOf _
      * @category Array
      * @param {...Array} [arrays] The arrays to inspect.
-     * @returns {Array} Returns the new array of shared values.
+     * @returns {Array} Returns the new array of intersecting values.
      * @example
      *
      * _.intersection([2, 1], [4, 2], [1, 2]);
@@ -23476,14 +23740,15 @@ function isGeneratorFunction (fn) {
     /**
      * This method is like `_.intersection` except that it accepts `iteratee`
      * which is invoked for each element of each `arrays` to generate the criterion
-     * by which uniqueness is computed. The iteratee is invoked with one argument: (value).
+     * by which they're compared. Result values are chosen from the first array.
+     * The iteratee is invoked with one argument: (value).
      *
      * @static
      * @memberOf _
      * @category Array
      * @param {...Array} [arrays] The arrays to inspect.
      * @param {Function|Object|string} [iteratee=_.identity] The iteratee invoked per element.
-     * @returns {Array} Returns the new array of shared values.
+     * @returns {Array} Returns the new array of intersecting values.
      * @example
      *
      * _.intersectionBy([2.1, 1.2], [4.3, 2.4], Math.floor);
@@ -23509,15 +23774,16 @@ function isGeneratorFunction (fn) {
 
     /**
      * This method is like `_.intersection` except that it accepts `comparator`
-     * which is invoked to compare elements of `arrays`. The comparator is invoked
-     * with two arguments: (arrVal, othVal).
+     * which is invoked to compare elements of `arrays`. Result values are chosen
+     * from the first array. The comparator is invoked with two arguments:
+     * (arrVal, othVal).
      *
      * @static
      * @memberOf _
      * @category Array
      * @param {...Array} [arrays] The arrays to inspect.
      * @param {Function} [comparator] The comparator invoked per element.
-     * @returns {Array} Returns the new array of shared values.
+     * @returns {Array} Returns the new array of intersecting values.
      * @example
      *
      * var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
@@ -23622,7 +23888,8 @@ function isGeneratorFunction (fn) {
      * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
      * for equality comparisons.
      *
-     * **Note:** Unlike `_.without`, this method mutates `array`.
+     * **Note:** Unlike `_.without`, this method mutates `array`. Use `_.remove`
+     * to remove elements from an array by predicate.
      *
      * @static
      * @memberOf _
@@ -23668,7 +23935,7 @@ function isGeneratorFunction (fn) {
     /**
      * This method is like `_.pullAll` except that it accepts `iteratee` which is
      * invoked for each element of `array` and `values` to generate the criterion
-     * by which uniqueness is computed. The iteratee is invoked with one argument: (value).
+     * by which they're compared. The iteratee is invoked with one argument: (value).
      *
      * **Note:** Unlike `_.differenceBy`, this method mutates `array`.
      *
@@ -23689,7 +23956,35 @@ function isGeneratorFunction (fn) {
      */
     function pullAllBy(array, values, iteratee) {
       return (array && array.length && values && values.length)
-        ? basePullAllBy(array, values, getIteratee(iteratee))
+        ? basePullAll(array, values, getIteratee(iteratee))
+        : array;
+    }
+
+    /**
+     * This method is like `_.pullAll` except that it accepts `comparator` which
+     * is invoked to compare elements of `array` to `values`. The comparator is
+     * invoked with two arguments: (arrVal, othVal).
+     *
+     * **Note:** Unlike `_.differenceWith`, this method mutates `array`.
+     *
+     * @static
+     * @memberOf _
+     * @category Array
+     * @param {Array} array The array to modify.
+     * @param {Array} values The values to remove.
+     * @param {Function} [comparator] The comparator invoked per element.
+     * @returns {Array} Returns `array`.
+     * @example
+     *
+     * var array = [{ 'x': 1, 'y': 2 }, { 'x': 3, 'y': 4 }, { 'x': 5, 'y': 6 }];
+     *
+     * _.pullAllWith(array, [{ 'x': 3, 'y': 4 }], _.isEqual);
+     * console.log(array);
+     * // => [{ 'x': 1, 'y': 2 }, { 'x': 5, 'y': 6 }]
+     */
+    function pullAllWith(array, values, comparator) {
+      return (array && array.length && values && values.length)
+        ? basePullAll(array, values, undefined, comparator)
         : array;
     }
 
@@ -23727,10 +24022,11 @@ function isGeneratorFunction (fn) {
 
     /**
      * Removes all elements from `array` that `predicate` returns truthy for
-     * and returns an array of the removed elements. The predicate is invoked with
-     * three arguments: (value, index, array).
+     * and returns an array of the removed elements. The predicate is invoked
+     * with three arguments: (value, index, array).
      *
-     * **Note:** Unlike `_.filter`, this method mutates `array`.
+     * **Note:** Unlike `_.filter`, this method mutates `array`. Use `_.pull`
+     * to pull elements from an array by value.
      *
      * @static
      * @memberOf _
@@ -24410,7 +24706,8 @@ function isGeneratorFunction (fn) {
 
     /**
      * Creates an array of unique values that is the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
-     * of the given arrays.
+     * of the given arrays. The order of result values is determined by the order
+     * they occur in the arrays.
      *
      * @static
      * @memberOf _
@@ -24429,7 +24726,7 @@ function isGeneratorFunction (fn) {
     /**
      * This method is like `_.xor` except that it accepts `iteratee` which is
      * invoked for each element of each `arrays` to generate the criterion by which
-     * uniqueness is computed. The iteratee is invoked with one argument: (value).
+     * by which they're compared. The iteratee is invoked with one argument: (value).
      *
      * @static
      * @memberOf _
@@ -25893,9 +26190,7 @@ function isGeneratorFunction (fn) {
     var bind = rest(function(func, thisArg, partials) {
       var bitmask = BIND_FLAG;
       if (partials.length) {
-        var placeholder = lodash.placeholder || bind.placeholder,
-            holders = replaceHolders(partials, placeholder);
-
+        var holders = replaceHolders(partials, getPlaceholder(bind));
         bitmask |= PARTIAL_FLAG;
       }
       return createWrapper(func, bitmask, thisArg, partials, holders);
@@ -25948,9 +26243,7 @@ function isGeneratorFunction (fn) {
     var bindKey = rest(function(object, key, partials) {
       var bitmask = BIND_FLAG | BIND_KEY_FLAG;
       if (partials.length) {
-        var placeholder = lodash.placeholder || bindKey.placeholder,
-            holders = replaceHolders(partials, placeholder);
-
+        var holders = replaceHolders(partials, getPlaceholder(bindKey));
         bitmask |= PARTIAL_FLAG;
       }
       return createWrapper(key, bitmask, object, partials, holders);
@@ -25999,7 +26292,7 @@ function isGeneratorFunction (fn) {
     function curry(func, arity, guard) {
       arity = guard ? undefined : arity;
       var result = createWrapper(func, CURRY_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
-      result.placeholder = lodash.placeholder || curry.placeholder;
+      result.placeholder = curry.placeholder;
       return result;
     }
 
@@ -26043,7 +26336,7 @@ function isGeneratorFunction (fn) {
     function curryRight(func, arity, guard) {
       arity = guard ? undefined : arity;
       var result = createWrapper(func, CURRY_RIGHT_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
-      result.placeholder = lodash.placeholder || curryRight.placeholder;
+      result.placeholder = curryRight.placeholder;
       return result;
     }
 
@@ -26467,9 +26760,7 @@ function isGeneratorFunction (fn) {
      * // => 'hi fred'
      */
     var partial = rest(function(func, partials) {
-      var placeholder = lodash.placeholder || partial.placeholder,
-          holders = replaceHolders(partials, placeholder);
-
+      var holders = replaceHolders(partials, getPlaceholder(partial));
       return createWrapper(func, PARTIAL_FLAG, undefined, partials, holders);
     });
 
@@ -26505,9 +26796,7 @@ function isGeneratorFunction (fn) {
      * // => 'hello fred'
      */
     var partialRight = rest(function(func, partials) {
-      var placeholder = lodash.placeholder || partialRight.placeholder,
-          holders = replaceHolders(partials, placeholder);
-
+      var holders = replaceHolders(partials, getPlaceholder(partialRight));
       return createWrapper(func, PARTIAL_RIGHT_FLAG, undefined, partials, holders);
     });
 
@@ -26804,7 +27093,7 @@ function isGeneratorFunction (fn) {
      * // => true
      */
     function clone(value) {
-      return baseClone(value);
+      return baseClone(value, false, true);
     }
 
     /**
@@ -26837,7 +27126,7 @@ function isGeneratorFunction (fn) {
      * // => 0
      */
     function cloneWith(value, customizer) {
-      return baseClone(value, false, customizer);
+      return baseClone(value, false, true, customizer);
     }
 
     /**
@@ -26857,7 +27146,7 @@ function isGeneratorFunction (fn) {
      * // => false
      */
     function cloneDeep(value) {
-      return baseClone(value, true);
+      return baseClone(value, true, true);
     }
 
     /**
@@ -26887,7 +27176,7 @@ function isGeneratorFunction (fn) {
      * // => 20
      */
     function cloneDeepWith(value, customizer) {
-      return baseClone(value, true, customizer);
+      return baseClone(value, true, true, customizer);
     }
 
     /**
@@ -27064,8 +27353,7 @@ function isGeneratorFunction (fn) {
      * // => false
      */
     function isArrayLike(value) {
-      return value != null &&
-        !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
+      return value != null && isLength(getLength(value)) && !isFunction(value);
     }
 
     /**
@@ -27177,14 +27465,14 @@ function isGeneratorFunction (fn) {
     }
 
     /**
-     * Checks if `value` is empty. A value is considered empty unless it's an
-     * `arguments` object, array, string, or jQuery-like collection with a length
-     * greater than `0` or an object with own enumerable properties.
+     * Checks if `value` is an empty collection or object. A value is considered
+     * empty if it's an `arguments` object, array, string, or jQuery-like collection
+     * with a length of `0` or has no own enumerable properties.
      *
      * @static
      * @memberOf _
      * @category Lang
-     * @param {Array|Object|string} value The value to inspect.
+     * @param {*} value The value to check.
      * @returns {boolean} Returns `true` if `value` is empty, else `false`.
      * @example
      *
@@ -27306,9 +27594,8 @@ function isGeneratorFunction (fn) {
       if (!isObjectLike(value)) {
         return false;
       }
-      var Ctor = value.constructor;
       return (objectToString.call(value) == errorTag) ||
-        (typeof Ctor == 'function' && objectToString.call(Ctor.prototype) == errorTag);
+        (typeof value.message == 'string' && typeof value.name == 'string');
     }
 
     /**
@@ -27357,8 +27644,8 @@ function isGeneratorFunction (fn) {
      */
     function isFunction(value) {
       // The use of `Object#toString` avoids issues with the `typeof` operator
-      // in Safari 8 which returns 'object' for typed array constructors, and
-      // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+      // in Safari 8 which returns 'object' for typed array and weak map constructors,
+      // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
       var tag = isObject(value) ? objectToString.call(value) : '';
       return tag == funcTag || tag == genTag;
     }
@@ -27721,10 +28008,7 @@ function isGeneratorFunction (fn) {
           objectToString.call(value) != objectTag || isHostObject(value)) {
         return false;
       }
-      var proto = objectProto;
-      if (typeof value.constructor == 'function') {
-        proto = getPrototypeOf(value);
-      }
+      var proto = getPrototypeOf(value);
       if (proto === null) {
         return true;
       }
@@ -28197,7 +28481,7 @@ function isGeneratorFunction (fn) {
         return '';
       }
       if (isSymbol(value)) {
-        return Symbol ? symbolToString.call(value) : '';
+        return symbolToString ? symbolToString.call(value) : '';
       }
       var result = (value + '');
       return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
@@ -28236,7 +28520,15 @@ function isGeneratorFunction (fn) {
      * // => { 'a': 1, 'c': 3, 'e': 5 }
      */
     var assign = createAssigner(function(object, source) {
-      copyObject(source, keys(source), object);
+      if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {
+        copyObject(source, keys(source), object);
+        return;
+      }
+      for (var key in source) {
+        if (hasOwnProperty.call(source, key)) {
+          assignValue(object, key, source[key]);
+        }
+      }
     });
 
     /**
@@ -28269,7 +28561,13 @@ function isGeneratorFunction (fn) {
      * // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5 }
      */
     var assignIn = createAssigner(function(object, source) {
-      copyObject(source, keysIn(source), object);
+      if (nonEnumShadows || isPrototype(source) || isArrayLike(source)) {
+        copyObject(source, keysIn(source), object);
+        return;
+      }
+      for (var key in source) {
+        assignValue(object, key, source[key]);
+      }
     });
 
     /**
@@ -28938,7 +29236,8 @@ function isGeneratorFunction (fn) {
     /**
      * The opposite of `_.mapValues`; this method creates an object with the
      * same values as `object` and keys generated by running each own enumerable
-     * property of `object` through `iteratee`.
+     * property of `object` through `iteratee`. The iteratee is invoked with
+     * three arguments: (value, key, object).
      *
      * @static
      * @memberOf _
@@ -28966,7 +29265,7 @@ function isGeneratorFunction (fn) {
     /**
      * Creates an object with the same keys as `object` and values generated by
      * running each own enumerable property of `object` through `iteratee`. The
-     * iteratee function is invoked with three arguments: (value, key, object).
+     * iteratee is invoked with three arguments: (value, key, object).
      *
      * @static
      * @memberOf _
@@ -28999,12 +29298,13 @@ function isGeneratorFunction (fn) {
     }
 
     /**
-     * Recursively merges own and inherited enumerable properties of source objects
-     * into the destination object. Source properties that resolve to `undefined`
-     * are skipped if a destination value exists. Array and plain object properties
-     * are merged recursively. Other objects and value types are overridden by
-     * assignment. Source objects are applied from left to right. Subsequent
-     * sources overwrite property assignments of previous sources.
+     * This method is like `_.assign` except that it recursively merges own and
+     * inherited enumerable properties of source objects into the destination
+     * object. Source properties that resolve to `undefined` are skipped if a
+     * destination value exists. Array and plain object properties are merged
+     * recursively.Other objects and value types are overridden by assignment.
+     * Source objects are applied from left to right. Subsequent sources
+     * overwrite property assignments of previous sources.
      *
      * **Note:** This method mutates `object`.
      *
@@ -29099,9 +29399,10 @@ function isGeneratorFunction (fn) {
     });
 
     /**
-     * The opposite of `_.pickBy`; this method creates an object composed of the
-     * own and inherited enumerable properties of `object` that `predicate`
-     * doesn't return truthy for.
+     * The opposite of `_.pickBy`; this method creates an object composed of
+     * the own and inherited enumerable properties of `object` that `predicate`
+     * doesn't return truthy for. The predicate is invoked with two arguments:
+     * (value, key).
      *
      * @static
      * @memberOf _
@@ -29117,7 +29418,7 @@ function isGeneratorFunction (fn) {
      * // => { 'b': '2' }
      */
     function omitBy(object, predicate) {
-      predicate = getIteratee(predicate, 2);
+      predicate = getIteratee(predicate);
       return basePickBy(object, function(value, key) {
         return !predicate(value, key);
       });
@@ -29162,7 +29463,7 @@ function isGeneratorFunction (fn) {
      * // => { 'a': 1, 'c': 3 }
      */
     function pickBy(object, predicate) {
-      return object == null ? {} : basePickBy(object, getIteratee(predicate, 2));
+      return object == null ? {} : basePickBy(object, getIteratee(predicate));
     }
 
     /**
@@ -29256,8 +29557,10 @@ function isGeneratorFunction (fn) {
      * @returns {Object} Returns `object`.
      * @example
      *
-     * _.setWith({ '0': { 'length': 2 } }, '[0][1][2]', 3, Object);
-     * // => { '0': { '1': { '2': 3 }, 'length': 2 } }
+     * var object = {};
+     *
+     * _.setWith(object, '[0][1]', 'a', Object);
+     * // => { '0': { '1': 'a' } }
      */
     function setWith(object, path, value, customizer) {
       customizer = typeof customizer == 'function' ? customizer : undefined;
@@ -29352,7 +29655,7 @@ function isGeneratorFunction (fn) {
           if (isArr) {
             accumulator = isArray(object) ? new Ctor : [];
           } else {
-            accumulator = baseCreate(isFunction(Ctor) ? Ctor.prototype : undefined);
+            accumulator = isFunction(Ctor) ? baseCreate(getPrototypeOf(object)) : {};
           }
         } else {
           accumulator = {};
@@ -29392,6 +29695,64 @@ function isGeneratorFunction (fn) {
      */
     function unset(object, path) {
       return object == null ? true : baseUnset(object, path);
+    }
+
+    /**
+     * This method is like `_.set` except that accepts `updater` to produce the
+     * value to set. Use `_.updateWith` to customize `path` creation. The `updater`
+     * is invoked with one argument: (value).
+     *
+     * **Note:** This method mutates `object`.
+     *
+     * @static
+     * @memberOf _
+     * @category Object
+     * @param {Object} object The object to modify.
+     * @param {Array|string} path The path of the property to set.
+     * @param {Function} updater The function to produce the updated value.
+     * @returns {Object} Returns `object`.
+     * @example
+     *
+     * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+     *
+     * _.update(object, 'a[0].b.c', function(n) { return n * n; });
+     * console.log(object.a[0].b.c);
+     * // => 9
+     *
+     * _.update(object, 'x[0].y.z', function(n) { return n ? n + 1 : 0; });
+     * console.log(object.x[0].y.z);
+     * // => 0
+     */
+    function update(object, path, updater) {
+      return object == null ? object : baseUpdate(object, path, baseCastFunction(updater));
+    }
+
+    /**
+     * This method is like `_.update` except that it accepts `customizer` which is
+     * invoked to produce the objects of `path`.  If `customizer` returns `undefined`
+     * path creation is handled by the method instead. The `customizer` is invoked
+     * with three arguments: (nsValue, key, nsObject).
+     *
+     * **Note:** This method mutates `object`.
+     *
+     * @static
+     * @memberOf _
+     * @category Object
+     * @param {Object} object The object to modify.
+     * @param {Array|string} path The path of the property to set.
+     * @param {Function} updater The function to produce the updated value.
+     * @param {Function} [customizer] The function to customize assigned values.
+     * @returns {Object} Returns `object`.
+     * @example
+     *
+     * var object = {};
+     *
+     * _.updateWith(object, '[0][1]', _.constant('a'), Object);
+     * // => { '0': { '1': 'a' } }
+     */
+    function updateWith(object, path, updater, customizer) {
+      customizer = typeof customizer == 'function' ? customizer : undefined;
+      return object == null ? object : baseUpdate(object, path, baseCastFunction(updater), customizer);
     }
 
     /**
@@ -30330,7 +30691,8 @@ function isGeneratorFunction (fn) {
     }
 
     /**
-     * Converts `string`, as a whole, to lower case.
+     * Converts `string`, as a whole, to lower case just like
+     * [String#toLowerCase](https://mdn.io/toLowerCase).
      *
      * @static
      * @memberOf _
@@ -30353,7 +30715,8 @@ function isGeneratorFunction (fn) {
     }
 
     /**
-     * Converts `string`, as a whole, to upper case.
+     * Converts `string`, as a whole, to upper case just like
+     * [String#toUpperCase](https://mdn.io/toUpperCase).
      *
      * @static
      * @memberOf _
@@ -31348,8 +31711,8 @@ function isGeneratorFunction (fn) {
     var rangeRight = createRange(true);
 
     /**
-     * Invokes the iteratee function `n` times, returning an array of the results
-     * of each invocation. The iteratee is invoked with one argument; (index).
+     * Invokes the iteratee `n` times, returning an array of the results of
+     * each invocation. The iteratee is invoked with one argument; (index).
      *
      * @static
      * @memberOf _
@@ -31727,6 +32090,7 @@ function isGeneratorFunction (fn) {
 
     // Ensure wrappers are instances of `baseLodash`.
     lodash.prototype = baseLodash.prototype;
+    lodash.prototype.constructor = lodash;
 
     LodashWrapper.prototype = baseCreate(baseLodash.prototype);
     LodashWrapper.prototype.constructor = LodashWrapper;
@@ -31848,6 +32212,7 @@ function isGeneratorFunction (fn) {
     lodash.pull = pull;
     lodash.pullAll = pullAll;
     lodash.pullAllBy = pullAllBy;
+    lodash.pullAllWith = pullAllWith;
     lodash.pullAt = pullAt;
     lodash.range = range;
     lodash.rangeRight = rangeRight;
@@ -31890,6 +32255,8 @@ function isGeneratorFunction (fn) {
     lodash.unset = unset;
     lodash.unzip = unzip;
     lodash.unzipWith = unzipWith;
+    lodash.update = update;
+    lodash.updateWith = updateWith;
     lodash.values = values;
     lodash.valuesIn = valuesIn;
     lodash.without = without;
@@ -33268,7 +33635,7 @@ function once (fn) {
   return f
 }
 
-},{"wrappy":168}],158:[function(require,module,exports){
+},{"wrappy":179}],158:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -33690,9 +34057,21 @@ process.umask = function() { return 0; };
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+function FormatErrorString(error) {
+  try {
+    return Error.prototype.toString.call(error);
+  } catch (e) {
+    try {
+      return "<error: " + e + ">";
+    } catch (ee) {
+      return "<error>";
+    }
+  }
+}
+
 module.exports = function FormatStackTrace(error, frames) {
   var lines = [];
-  lines.push(error.toString());
+  lines.push(FormatErrorString(error));
   for (var i = 0; i < frames.length; i++) {
     var frame = frames[i];
     var line;
@@ -33736,37 +34115,41 @@ else {
 module.exports={
   "_args": [
     [
-      "stack-chain@1.3.5",
+      "stack-chain@^1.3.5",
       "/Users/charlesrudolph/github/cucumber-js"
     ]
   ],
-  "_from": "stack-chain@1.3.5",
-  "_id": "stack-chain@1.3.5",
+  "_from": "stack-chain@>=1.3.5 <2.0.0",
+  "_id": "stack-chain@1.3.7",
   "_inCache": true,
   "_installable": true,
   "_location": "/stack-chain",
-  "_nodeVersion": "5.0.0",
+  "_nodeVersion": "5.7.1",
+  "_npmOperationalInternal": {
+    "host": "packages-13-west.internal.npmjs.com",
+    "tmp": "tmp/stack-chain-1.3.7.tgz_1457964892201_0.46984840696677566"
+  },
   "_npmUser": {
     "email": "amwebdk@gmail.com",
     "name": "andreasmadsen"
   },
-  "_npmVersion": "3.3.6",
+  "_npmVersion": "3.6.0",
   "_phantomChildren": {},
   "_requested": {
     "name": "stack-chain",
-    "raw": "stack-chain@1.3.5",
-    "rawSpec": "1.3.5",
+    "raw": "stack-chain@^1.3.5",
+    "rawSpec": "^1.3.5",
     "scope": null,
-    "spec": "1.3.5",
-    "type": "version"
+    "spec": ">=1.3.5 <2.0.0",
+    "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/stack-chain/-/stack-chain-1.3.5.tgz",
-  "_shasum": "02a64a5fe92250d41984d55961a3b2d466a14d8a",
+  "_resolved": "https://registry.npmjs.org/stack-chain/-/stack-chain-1.3.7.tgz",
+  "_shasum": "d192c9ff4ea6a22c94c4dd459171e3f00cea1285",
   "_shrinkwrap": null,
-  "_spec": "stack-chain@1.3.5",
+  "_spec": "stack-chain@^1.3.5",
   "_where": "/Users/charlesrudolph/github/cucumber-js",
   "author": {
     "email": "amwebdk@gmail.com",
@@ -33783,24 +34166,24 @@ module.exports={
   },
   "directories": {},
   "dist": {
-    "shasum": "02a64a5fe92250d41984d55961a3b2d466a14d8a",
-    "tarball": "http://registry.npmjs.org/stack-chain/-/stack-chain-1.3.5.tgz"
+    "shasum": "d192c9ff4ea6a22c94c4dd459171e3f00cea1285",
+    "tarball": "http://registry.npmjs.org/stack-chain/-/stack-chain-1.3.7.tgz"
   },
-  "gitHead": "e51a7b2e0f0d1c79b1c4c7962dc53abbeef48e9e",
+  "gitHead": "2445f95c5ffdfc9da36703da1be236745bb4a26e",
   "homepage": "https://github.com/AndreasMadsen/stack-chain#readme",
   "keywords": [
-    "call site",
-    "chain",
-    "concat",
-    "format",
     "stack",
-    "trace"
+    "chain",
+    "trace",
+    "call site",
+    "concat",
+    "format"
   ],
   "license": "MIT",
   "maintainers": [
     {
-      "name": "andreasmadsen",
-      "email": "amwebdk@gmail.com"
+      "email": "amwebdk@gmail.com",
+      "name": "andreasmadsen"
     }
   ],
   "name": "stack-chain",
@@ -33813,7 +34196,7 @@ module.exports={
   "scripts": {
     "test": "tap ./test/simple"
   },
-  "version": "1.3.5"
+  "version": "1.3.7"
 }
 
 },{}],165:[function(require,module,exports){
@@ -33829,16 +34212,17 @@ function stackChain() {
   this.version = require('./package.json').version;
 }
 
-var SHORTCUT_CALLSITE = false;
+
+var SHORTCIRCUIT_CALLSITE = false;
 stackChain.prototype.callSite = function collectCallSites(options) {
   if (!options) options = {};
 
   // Get CallSites
-  SHORTCUT_CALLSITE = true;
+  SHORTCIRCUIT_CALLSITE = true;
   var obj = {};
   Error.captureStackTrace(obj, collectCallSites);
   var callSites = obj.stack;
-  SHORTCUT_CALLSITE = false;
+  SHORTCIRCUIT_CALLSITE = false;
 
   // Slice
   callSites = callSites.slice(options.slice || 0);
@@ -33893,18 +34277,20 @@ StackFormater.prototype.replace = function (formater) {
 
 StackFormater.prototype.restore  = function () {
   this._formater = defaultFormater;
+  this._previous = undefined;
 };
 
 StackFormater.prototype._backup = function () {
-  if (this._formater === defaultFormater) {
-    this._previous = undefined;
-  } else {
-    this._previous = this._formater;
-  }
+  this._previous = this._formater;
 };
 
 StackFormater.prototype._roolback = function () {
-  this.replace(this._previous);
+  if (this._previous === defaultFormater) {
+    this.replace(undefined);
+  } else {
+    this.replace(this._previous);
+  }
+
   this._previous = undefined;
 };
 
@@ -33920,8 +34306,10 @@ if (Error.prepareStackTrace) {
     chain.format.replace(Error.prepareStackTrace);
 }
 
+var SHORTCIRCUIT_FORMATER = false;
 function prepareStackTrace(error, originalFrames) {
-  if (SHORTCUT_CALLSITE) return originalFrames;
+  if (SHORTCIRCUIT_CALLSITE) return originalFrames;
+  if (SHORTCIRCUIT_FORMATER) return defaultFormater(error, originalFrames);
 
   // Make a loss copy of originalFrames
   var frames = originalFrames.concat();
@@ -33948,7 +34336,11 @@ function prepareStackTrace(error, originalFrames) {
   }
 
   // format frames
-  return chain.format._formater(error, frames);
+  SHORTCIRCUIT_FORMATER = true;
+  var format = chain.format._formater(error, frames);
+  SHORTCIRCUIT_FORMATER = false;
+
+  return format;
 }
 
 // Replace the v8 stack trace creator
@@ -34008,13 +34400,2741 @@ Object.defineProperty(Error.prototype, 'callSite', {
 module.exports = chain;
 
 },{"./format.js":162,"./package.json":164}],166:[function(require,module,exports){
+(function (root, factory) {
+    'use strict';
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
+
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define('stack-generator', ['stackframe'], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('stackframe'));
+    } else {
+        root.StackGenerator = factory(root.StackFrame);
+    }
+}(this, function (StackFrame) {
+    return {
+        backtrace: function StackGenerator$$backtrace(opts) {
+            var stack = [];
+            var maxStackSize = 10;
+
+            if (typeof opts === 'object' && typeof opts.maxStackSize === 'number') {
+                maxStackSize = opts.maxStackSize;
+            }
+
+            var curr = arguments.callee;
+            while (curr && stack.length < maxStackSize) {
+                // Allow V8 optimizations
+                var args = new Array(curr['arguments'].length);
+                for(var i = 0; i < args.length; ++i) {
+                    args[i] = curr['arguments'][i];
+                }
+                if (/function(?:\s+([\w$]+))+\s*\(/.test(curr.toString())) {
+                    stack.push(new StackFrame(RegExp.$1 || undefined, args));
+                } else {
+                    stack.push(new StackFrame(undefined, args));
+                }
+
+                try {
+                    curr = curr.caller;
+                } catch (e) {
+                    break;
+                }
+            }
+            return stack;
+        }
+    };
+}));
+
+},{"stackframe":167}],167:[function(require,module,exports){
+(function (root, factory) {
+    'use strict';
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
+
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define('stackframe', [], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.StackFrame = factory();
+    }
+}(this, function () {
+    'use strict';
+    function _isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+    function StackFrame(functionName, args, fileName, lineNumber, columnNumber, source) {
+        if (functionName !== undefined) {
+            this.setFunctionName(functionName);
+        }
+        if (args !== undefined) {
+            this.setArgs(args);
+        }
+        if (fileName !== undefined) {
+            this.setFileName(fileName);
+        }
+        if (lineNumber !== undefined) {
+            this.setLineNumber(lineNumber);
+        }
+        if (columnNumber !== undefined) {
+            this.setColumnNumber(columnNumber);
+        }
+        if (source !== undefined) {
+            this.setSource(source);
+        }
+    }
+
+    StackFrame.prototype = {
+        getFunctionName: function () {
+            return this.functionName;
+        },
+        setFunctionName: function (v) {
+            this.functionName = String(v);
+        },
+
+        getArgs: function () {
+            return this.args;
+        },
+        setArgs: function (v) {
+            if (Object.prototype.toString.call(v) !== '[object Array]') {
+                throw new TypeError('Args must be an Array');
+            }
+            this.args = v;
+        },
+
+        // NOTE: Property name may be misleading as it includes the path,
+        // but it somewhat mirrors V8's JavaScriptStackTraceApi
+        // https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi and Gecko's
+        // http://mxr.mozilla.org/mozilla-central/source/xpcom/base/nsIException.idl#14
+        getFileName: function () {
+            return this.fileName;
+        },
+        setFileName: function (v) {
+            this.fileName = String(v);
+        },
+
+        getLineNumber: function () {
+            return this.lineNumber;
+        },
+        setLineNumber: function (v) {
+            if (!_isNumber(v)) {
+                throw new TypeError('Line Number must be a Number');
+            }
+            this.lineNumber = Number(v);
+        },
+
+        getColumnNumber: function () {
+            return this.columnNumber;
+        },
+        setColumnNumber: function (v) {
+            if (!_isNumber(v)) {
+                throw new TypeError('Column Number must be a Number');
+            }
+            this.columnNumber = Number(v);
+        },
+
+        getSource: function () {
+            return this.source;
+        },
+        setSource: function (v) {
+            this.source = String(v);
+        },
+
+        toString: function() {
+            var functionName = this.getFunctionName() || '{anonymous}';
+            var args = '(' + (this.getArgs() || []).join(',') + ')';
+            var fileName = this.getFileName() ? ('@' + this.getFileName()) : '';
+            var lineNumber = _isNumber(this.getLineNumber()) ? (':' + this.getLineNumber()) : '';
+            var columnNumber = _isNumber(this.getColumnNumber()) ? (':' + this.getColumnNumber()) : '';
+            return functionName + args + fileName + lineNumber + columnNumber;
+        }
+    };
+
+    return StackFrame;
+}));
+
+},{}],168:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+
+var util = require('./util');
+var has = Object.prototype.hasOwnProperty;
+
+/**
+ * A data structure which is a combination of an array and a set. Adding a new
+ * member is O(1), testing for membership is O(1), and finding the index of an
+ * element is O(1). Removing elements from the set is not supported. Only
+ * strings are supported for membership.
+ */
+function ArraySet() {
+  this._array = [];
+  this._set = Object.create(null);
+}
+
+/**
+ * Static method for creating ArraySet instances from an existing array.
+ */
+ArraySet.fromArray = function ArraySet_fromArray(aArray, aAllowDuplicates) {
+  var set = new ArraySet();
+  for (var i = 0, len = aArray.length; i < len; i++) {
+    set.add(aArray[i], aAllowDuplicates);
+  }
+  return set;
+};
+
+/**
+ * Return how many unique items are in this ArraySet. If duplicates have been
+ * added, than those do not count towards the size.
+ *
+ * @returns Number
+ */
+ArraySet.prototype.size = function ArraySet_size() {
+  return Object.getOwnPropertyNames(this._set).length;
+};
+
+/**
+ * Add the given string to this set.
+ *
+ * @param String aStr
+ */
+ArraySet.prototype.add = function ArraySet_add(aStr, aAllowDuplicates) {
+  var sStr = util.toSetString(aStr);
+  var isDuplicate = has.call(this._set, sStr);
+  var idx = this._array.length;
+  if (!isDuplicate || aAllowDuplicates) {
+    this._array.push(aStr);
+  }
+  if (!isDuplicate) {
+    this._set[sStr] = idx;
+  }
+};
+
+/**
+ * Is the given string a member of this set?
+ *
+ * @param String aStr
+ */
+ArraySet.prototype.has = function ArraySet_has(aStr) {
+  var sStr = util.toSetString(aStr);
+  return has.call(this._set, sStr);
+};
+
+/**
+ * What is the index of the given string in the array?
+ *
+ * @param String aStr
+ */
+ArraySet.prototype.indexOf = function ArraySet_indexOf(aStr) {
+  var sStr = util.toSetString(aStr);
+  if (has.call(this._set, sStr)) {
+    return this._set[sStr];
+  }
+  throw new Error('"' + aStr + '" is not in the set.');
+};
+
+/**
+ * What is the element at the given index?
+ *
+ * @param Number aIdx
+ */
+ArraySet.prototype.at = function ArraySet_at(aIdx) {
+  if (aIdx >= 0 && aIdx < this._array.length) {
+    return this._array[aIdx];
+  }
+  throw new Error('No element indexed by ' + aIdx);
+};
+
+/**
+ * Returns the array representation of this set (which has the proper indices
+ * indicated by indexOf). Note that this is a copy of the internal array used
+ * for storing the members so that no one can mess with internal state.
+ */
+ArraySet.prototype.toArray = function ArraySet_toArray() {
+  return this._array.slice();
+};
+
+exports.ArraySet = ArraySet;
+
+},{"./util":174}],169:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ *
+ * Based on the Base 64 VLQ implementation in Closure Compiler:
+ * https://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/debugging/sourcemap/Base64VLQ.java
+ *
+ * Copyright 2011 The Closure Compiler Authors. All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above
+ *    copyright notice, this list of conditions and the following
+ *    disclaimer in the documentation and/or other materials provided
+ *    with the distribution.
+ *  * Neither the name of Google Inc. nor the names of its
+ *    contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var base64 = require('./base64');
+
+// A single base 64 digit can contain 6 bits of data. For the base 64 variable
+// length quantities we use in the source map spec, the first bit is the sign,
+// the next four bits are the actual value, and the 6th bit is the
+// continuation bit. The continuation bit tells us whether there are more
+// digits in this value following this digit.
+//
+//   Continuation
+//   |    Sign
+//   |    |
+//   V    V
+//   101011
+
+var VLQ_BASE_SHIFT = 5;
+
+// binary: 100000
+var VLQ_BASE = 1 << VLQ_BASE_SHIFT;
+
+// binary: 011111
+var VLQ_BASE_MASK = VLQ_BASE - 1;
+
+// binary: 100000
+var VLQ_CONTINUATION_BIT = VLQ_BASE;
+
+/**
+ * Converts from a two-complement value to a value where the sign bit is
+ * placed in the least significant bit.  For example, as decimals:
+ *   1 becomes 2 (10 binary), -1 becomes 3 (11 binary)
+ *   2 becomes 4 (100 binary), -2 becomes 5 (101 binary)
+ */
+function toVLQSigned(aValue) {
+  return aValue < 0
+    ? ((-aValue) << 1) + 1
+    : (aValue << 1) + 0;
+}
+
+/**
+ * Converts to a two-complement value from a value where the sign bit is
+ * placed in the least significant bit.  For example, as decimals:
+ *   2 (10 binary) becomes 1, 3 (11 binary) becomes -1
+ *   4 (100 binary) becomes 2, 5 (101 binary) becomes -2
+ */
+function fromVLQSigned(aValue) {
+  var isNegative = (aValue & 1) === 1;
+  var shifted = aValue >> 1;
+  return isNegative
+    ? -shifted
+    : shifted;
+}
+
+/**
+ * Returns the base 64 VLQ encoded value.
+ */
+exports.encode = function base64VLQ_encode(aValue) {
+  var encoded = "";
+  var digit;
+
+  var vlq = toVLQSigned(aValue);
+
+  do {
+    digit = vlq & VLQ_BASE_MASK;
+    vlq >>>= VLQ_BASE_SHIFT;
+    if (vlq > 0) {
+      // There are still more digits in this value, so we must make sure the
+      // continuation bit is marked.
+      digit |= VLQ_CONTINUATION_BIT;
+    }
+    encoded += base64.encode(digit);
+  } while (vlq > 0);
+
+  return encoded;
+};
+
+/**
+ * Decodes the next base 64 VLQ value from the given string and returns the
+ * value and the rest of the string via the out parameter.
+ */
+exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
+  var strLen = aStr.length;
+  var result = 0;
+  var shift = 0;
+  var continuation, digit;
+
+  do {
+    if (aIndex >= strLen) {
+      throw new Error("Expected more digits in base 64 VLQ value.");
+    }
+
+    digit = base64.decode(aStr.charCodeAt(aIndex++));
+    if (digit === -1) {
+      throw new Error("Invalid base64 digit: " + aStr.charAt(aIndex - 1));
+    }
+
+    continuation = !!(digit & VLQ_CONTINUATION_BIT);
+    digit &= VLQ_BASE_MASK;
+    result = result + (digit << shift);
+    shift += VLQ_BASE_SHIFT;
+  } while (continuation);
+
+  aOutParam.value = fromVLQSigned(result);
+  aOutParam.rest = aIndex;
+};
+
+},{"./base64":170}],170:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+
+var intToCharMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
+
+/**
+ * Encode an integer in the range of 0 to 63 to a single base 64 digit.
+ */
+exports.encode = function (number) {
+  if (0 <= number && number < intToCharMap.length) {
+    return intToCharMap[number];
+  }
+  throw new TypeError("Must be between 0 and 63: " + number);
+};
+
+/**
+ * Decode a single base 64 character code digit to an integer. Returns -1 on
+ * failure.
+ */
+exports.decode = function (charCode) {
+  var bigA = 65;     // 'A'
+  var bigZ = 90;     // 'Z'
+
+  var littleA = 97;  // 'a'
+  var littleZ = 122; // 'z'
+
+  var zero = 48;     // '0'
+  var nine = 57;     // '9'
+
+  var plus = 43;     // '+'
+  var slash = 47;    // '/'
+
+  var littleOffset = 26;
+  var numberOffset = 52;
+
+  // 0 - 25: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  if (bigA <= charCode && charCode <= bigZ) {
+    return (charCode - bigA);
+  }
+
+  // 26 - 51: abcdefghijklmnopqrstuvwxyz
+  if (littleA <= charCode && charCode <= littleZ) {
+    return (charCode - littleA + littleOffset);
+  }
+
+  // 52 - 61: 0123456789
+  if (zero <= charCode && charCode <= nine) {
+    return (charCode - zero + numberOffset);
+  }
+
+  // 62: +
+  if (charCode == plus) {
+    return 62;
+  }
+
+  // 63: /
+  if (charCode == slash) {
+    return 63;
+  }
+
+  // Invalid base64 digit.
+  return -1;
+};
+
+},{}],171:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+
+exports.GREATEST_LOWER_BOUND = 1;
+exports.LEAST_UPPER_BOUND = 2;
+
+/**
+ * Recursive implementation of binary search.
+ *
+ * @param aLow Indices here and lower do not contain the needle.
+ * @param aHigh Indices here and higher do not contain the needle.
+ * @param aNeedle The element being searched for.
+ * @param aHaystack The non-empty array being searched.
+ * @param aCompare Function which takes two elements and returns -1, 0, or 1.
+ * @param aBias Either 'binarySearch.GREATEST_LOWER_BOUND' or
+ *     'binarySearch.LEAST_UPPER_BOUND'. Specifies whether to return the
+ *     closest element that is smaller than or greater than the one we are
+ *     searching for, respectively, if the exact element cannot be found.
+ */
+function recursiveSearch(aLow, aHigh, aNeedle, aHaystack, aCompare, aBias) {
+  // This function terminates when one of the following is true:
+  //
+  //   1. We find the exact element we are looking for.
+  //
+  //   2. We did not find the exact element, but we can return the index of
+  //      the next-closest element.
+  //
+  //   3. We did not find the exact element, and there is no next-closest
+  //      element than the one we are searching for, so we return -1.
+  var mid = Math.floor((aHigh - aLow) / 2) + aLow;
+  var cmp = aCompare(aNeedle, aHaystack[mid], true);
+  if (cmp === 0) {
+    // Found the element we are looking for.
+    return mid;
+  }
+  else if (cmp > 0) {
+    // Our needle is greater than aHaystack[mid].
+    if (aHigh - mid > 1) {
+      // The element is in the upper half.
+      return recursiveSearch(mid, aHigh, aNeedle, aHaystack, aCompare, aBias);
+    }
+
+    // The exact needle element was not found in this haystack. Determine if
+    // we are in termination case (3) or (2) and return the appropriate thing.
+    if (aBias == exports.LEAST_UPPER_BOUND) {
+      return aHigh < aHaystack.length ? aHigh : -1;
+    } else {
+      return mid;
+    }
+  }
+  else {
+    // Our needle is less than aHaystack[mid].
+    if (mid - aLow > 1) {
+      // The element is in the lower half.
+      return recursiveSearch(aLow, mid, aNeedle, aHaystack, aCompare, aBias);
+    }
+
+    // we are in termination case (3) or (2) and return the appropriate thing.
+    if (aBias == exports.LEAST_UPPER_BOUND) {
+      return mid;
+    } else {
+      return aLow < 0 ? -1 : aLow;
+    }
+  }
+}
+
+/**
+ * This is an implementation of binary search which will always try and return
+ * the index of the closest element if there is no exact hit. This is because
+ * mappings between original and generated line/col pairs are single points,
+ * and there is an implicit region between each of them, so a miss just means
+ * that you aren't on the very start of a region.
+ *
+ * @param aNeedle The element you are looking for.
+ * @param aHaystack The array that is being searched.
+ * @param aCompare A function which takes the needle and an element in the
+ *     array and returns -1, 0, or 1 depending on whether the needle is less
+ *     than, equal to, or greater than the element, respectively.
+ * @param aBias Either 'binarySearch.GREATEST_LOWER_BOUND' or
+ *     'binarySearch.LEAST_UPPER_BOUND'. Specifies whether to return the
+ *     closest element that is smaller than or greater than the one we are
+ *     searching for, respectively, if the exact element cannot be found.
+ *     Defaults to 'binarySearch.GREATEST_LOWER_BOUND'.
+ */
+exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
+  if (aHaystack.length === 0) {
+    return -1;
+  }
+
+  var index = recursiveSearch(-1, aHaystack.length, aNeedle, aHaystack,
+                              aCompare, aBias || exports.GREATEST_LOWER_BOUND);
+  if (index < 0) {
+    return -1;
+  }
+
+  // We have found either the exact element, or the next-closest element than
+  // the one we are searching for. However, there may be more than one such
+  // element. Make sure we always return the smallest of these.
+  while (index - 1 >= 0) {
+    if (aCompare(aHaystack[index], aHaystack[index - 1], true) !== 0) {
+      break;
+    }
+    --index;
+  }
+
+  return index;
+};
+
+},{}],172:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+
+// It turns out that some (most?) JavaScript engines don't self-host
+// `Array.prototype.sort`. This makes sense because C++ will likely remain
+// faster than JS when doing raw CPU-intensive sorting. However, when using a
+// custom comparator function, calling back and forth between the VM's C++ and
+// JIT'd JS is rather slow *and* loses JIT type information, resulting in
+// worse generated code for the comparator function than would be optimal. In
+// fact, when sorting with a comparator, these costs outweigh the benefits of
+// sorting in C++. By using our own JS-implemented Quick Sort (below), we get
+// a ~3500ms mean speed-up in `bench/bench.html`.
+
+/**
+ * Swap the elements indexed by `x` and `y` in the array `ary`.
+ *
+ * @param {Array} ary
+ *        The array.
+ * @param {Number} x
+ *        The index of the first item.
+ * @param {Number} y
+ *        The index of the second item.
+ */
+function swap(ary, x, y) {
+  var temp = ary[x];
+  ary[x] = ary[y];
+  ary[y] = temp;
+}
+
+/**
+ * Returns a random integer within the range `low .. high` inclusive.
+ *
+ * @param {Number} low
+ *        The lower bound on the range.
+ * @param {Number} high
+ *        The upper bound on the range.
+ */
+function randomIntInRange(low, high) {
+  return Math.round(low + (Math.random() * (high - low)));
+}
+
+/**
+ * The Quick Sort algorithm.
+ *
+ * @param {Array} ary
+ *        An array to sort.
+ * @param {function} comparator
+ *        Function to use to compare two items.
+ * @param {Number} p
+ *        Start index of the array
+ * @param {Number} r
+ *        End index of the array
+ */
+function doQuickSort(ary, comparator, p, r) {
+  // If our lower bound is less than our upper bound, we (1) partition the
+  // array into two pieces and (2) recurse on each half. If it is not, this is
+  // the empty array and our base case.
+
+  if (p < r) {
+    // (1) Partitioning.
+    //
+    // The partitioning chooses a pivot between `p` and `r` and moves all
+    // elements that are less than or equal to the pivot to the before it, and
+    // all the elements that are greater than it after it. The effect is that
+    // once partition is done, the pivot is in the exact place it will be when
+    // the array is put in sorted order, and it will not need to be moved
+    // again. This runs in O(n) time.
+
+    // Always choose a random pivot so that an input array which is reverse
+    // sorted does not cause O(n^2) running time.
+    var pivotIndex = randomIntInRange(p, r);
+    var i = p - 1;
+
+    swap(ary, pivotIndex, r);
+    var pivot = ary[r];
+
+    // Immediately after `j` is incremented in this loop, the following hold
+    // true:
+    //
+    //   * Every element in `ary[p .. i]` is less than or equal to the pivot.
+    //
+    //   * Every element in `ary[i+1 .. j-1]` is greater than the pivot.
+    for (var j = p; j < r; j++) {
+      if (comparator(ary[j], pivot) <= 0) {
+        i += 1;
+        swap(ary, i, j);
+      }
+    }
+
+    swap(ary, i + 1, j);
+    var q = i + 1;
+
+    // (2) Recurse on each half.
+
+    doQuickSort(ary, comparator, p, q - 1);
+    doQuickSort(ary, comparator, q + 1, r);
+  }
+}
+
+/**
+ * Sort the given array in-place with the given comparator function.
+ *
+ * @param {Array} ary
+ *        An array to sort.
+ * @param {function} comparator
+ *        Function to use to compare two items.
+ */
+exports.quickSort = function (ary, comparator) {
+  doQuickSort(ary, comparator, 0, ary.length - 1);
+};
+
+},{}],173:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+
+var util = require('./util');
+var binarySearch = require('./binary-search');
+var ArraySet = require('./array-set').ArraySet;
+var base64VLQ = require('./base64-vlq');
+var quickSort = require('./quick-sort').quickSort;
+
+function SourceMapConsumer(aSourceMap) {
+  var sourceMap = aSourceMap;
+  if (typeof aSourceMap === 'string') {
+    sourceMap = JSON.parse(aSourceMap.replace(/^\)\]\}'/, ''));
+  }
+
+  return sourceMap.sections != null
+    ? new IndexedSourceMapConsumer(sourceMap)
+    : new BasicSourceMapConsumer(sourceMap);
+}
+
+SourceMapConsumer.fromSourceMap = function(aSourceMap) {
+  return BasicSourceMapConsumer.fromSourceMap(aSourceMap);
+}
+
+/**
+ * The version of the source mapping spec that we are consuming.
+ */
+SourceMapConsumer.prototype._version = 3;
+
+// `__generatedMappings` and `__originalMappings` are arrays that hold the
+// parsed mapping coordinates from the source map's "mappings" attribute. They
+// are lazily instantiated, accessed via the `_generatedMappings` and
+// `_originalMappings` getters respectively, and we only parse the mappings
+// and create these arrays once queried for a source location. We jump through
+// these hoops because there can be many thousands of mappings, and parsing
+// them is expensive, so we only want to do it if we must.
+//
+// Each object in the arrays is of the form:
+//
+//     {
+//       generatedLine: The line number in the generated code,
+//       generatedColumn: The column number in the generated code,
+//       source: The path to the original source file that generated this
+//               chunk of code,
+//       originalLine: The line number in the original source that
+//                     corresponds to this chunk of generated code,
+//       originalColumn: The column number in the original source that
+//                       corresponds to this chunk of generated code,
+//       name: The name of the original symbol which generated this chunk of
+//             code.
+//     }
+//
+// All properties except for `generatedLine` and `generatedColumn` can be
+// `null`.
+//
+// `_generatedMappings` is ordered by the generated positions.
+//
+// `_originalMappings` is ordered by the original positions.
+
+SourceMapConsumer.prototype.__generatedMappings = null;
+Object.defineProperty(SourceMapConsumer.prototype, '_generatedMappings', {
+  get: function () {
+    if (!this.__generatedMappings) {
+      this._parseMappings(this._mappings, this.sourceRoot);
+    }
+
+    return this.__generatedMappings;
+  }
+});
+
+SourceMapConsumer.prototype.__originalMappings = null;
+Object.defineProperty(SourceMapConsumer.prototype, '_originalMappings', {
+  get: function () {
+    if (!this.__originalMappings) {
+      this._parseMappings(this._mappings, this.sourceRoot);
+    }
+
+    return this.__originalMappings;
+  }
+});
+
+SourceMapConsumer.prototype._charIsMappingSeparator =
+  function SourceMapConsumer_charIsMappingSeparator(aStr, index) {
+    var c = aStr.charAt(index);
+    return c === ";" || c === ",";
+  };
+
+/**
+ * Parse the mappings in a string in to a data structure which we can easily
+ * query (the ordered arrays in the `this.__generatedMappings` and
+ * `this.__originalMappings` properties).
+ */
+SourceMapConsumer.prototype._parseMappings =
+  function SourceMapConsumer_parseMappings(aStr, aSourceRoot) {
+    throw new Error("Subclasses must implement _parseMappings");
+  };
+
+SourceMapConsumer.GENERATED_ORDER = 1;
+SourceMapConsumer.ORIGINAL_ORDER = 2;
+
+SourceMapConsumer.GREATEST_LOWER_BOUND = 1;
+SourceMapConsumer.LEAST_UPPER_BOUND = 2;
+
+/**
+ * Iterate over each mapping between an original source/line/column and a
+ * generated line/column in this source map.
+ *
+ * @param Function aCallback
+ *        The function that is called with each mapping.
+ * @param Object aContext
+ *        Optional. If specified, this object will be the value of `this` every
+ *        time that `aCallback` is called.
+ * @param aOrder
+ *        Either `SourceMapConsumer.GENERATED_ORDER` or
+ *        `SourceMapConsumer.ORIGINAL_ORDER`. Specifies whether you want to
+ *        iterate over the mappings sorted by the generated file's line/column
+ *        order or the original's source/line/column order, respectively. Defaults to
+ *        `SourceMapConsumer.GENERATED_ORDER`.
+ */
+SourceMapConsumer.prototype.eachMapping =
+  function SourceMapConsumer_eachMapping(aCallback, aContext, aOrder) {
+    var context = aContext || null;
+    var order = aOrder || SourceMapConsumer.GENERATED_ORDER;
+
+    var mappings;
+    switch (order) {
+    case SourceMapConsumer.GENERATED_ORDER:
+      mappings = this._generatedMappings;
+      break;
+    case SourceMapConsumer.ORIGINAL_ORDER:
+      mappings = this._originalMappings;
+      break;
+    default:
+      throw new Error("Unknown order of iteration.");
+    }
+
+    var sourceRoot = this.sourceRoot;
+    mappings.map(function (mapping) {
+      var source = mapping.source === null ? null : this._sources.at(mapping.source);
+      if (source != null && sourceRoot != null) {
+        source = util.join(sourceRoot, source);
+      }
+      return {
+        source: source,
+        generatedLine: mapping.generatedLine,
+        generatedColumn: mapping.generatedColumn,
+        originalLine: mapping.originalLine,
+        originalColumn: mapping.originalColumn,
+        name: mapping.name === null ? null : this._names.at(mapping.name)
+      };
+    }, this).forEach(aCallback, context);
+  };
+
+/**
+ * Returns all generated line and column information for the original source,
+ * line, and column provided. If no column is provided, returns all mappings
+ * corresponding to a either the line we are searching for or the next
+ * closest line that has any mappings. Otherwise, returns all mappings
+ * corresponding to the given line and either the column we are searching for
+ * or the next closest column that has any offsets.
+ *
+ * The only argument is an object with the following properties:
+ *
+ *   - source: The filename of the original source.
+ *   - line: The line number in the original source.
+ *   - column: Optional. the column number in the original source.
+ *
+ * and an array of objects is returned, each with the following properties:
+ *
+ *   - line: The line number in the generated source, or null.
+ *   - column: The column number in the generated source, or null.
+ */
+SourceMapConsumer.prototype.allGeneratedPositionsFor =
+  function SourceMapConsumer_allGeneratedPositionsFor(aArgs) {
+    var line = util.getArg(aArgs, 'line');
+
+    // When there is no exact match, BasicSourceMapConsumer.prototype._findMapping
+    // returns the index of the closest mapping less than the needle. By
+    // setting needle.originalColumn to 0, we thus find the last mapping for
+    // the given line, provided such a mapping exists.
+    var needle = {
+      source: util.getArg(aArgs, 'source'),
+      originalLine: line,
+      originalColumn: util.getArg(aArgs, 'column', 0)
+    };
+
+    if (this.sourceRoot != null) {
+      needle.source = util.relative(this.sourceRoot, needle.source);
+    }
+    if (!this._sources.has(needle.source)) {
+      return [];
+    }
+    needle.source = this._sources.indexOf(needle.source);
+
+    var mappings = [];
+
+    var index = this._findMapping(needle,
+                                  this._originalMappings,
+                                  "originalLine",
+                                  "originalColumn",
+                                  util.compareByOriginalPositions,
+                                  binarySearch.LEAST_UPPER_BOUND);
+    if (index >= 0) {
+      var mapping = this._originalMappings[index];
+
+      if (aArgs.column === undefined) {
+        var originalLine = mapping.originalLine;
+
+        // Iterate until either we run out of mappings, or we run into
+        // a mapping for a different line than the one we found. Since
+        // mappings are sorted, this is guaranteed to find all mappings for
+        // the line we found.
+        while (mapping && mapping.originalLine === originalLine) {
+          mappings.push({
+            line: util.getArg(mapping, 'generatedLine', null),
+            column: util.getArg(mapping, 'generatedColumn', null),
+            lastColumn: util.getArg(mapping, 'lastGeneratedColumn', null)
+          });
+
+          mapping = this._originalMappings[++index];
+        }
+      } else {
+        var originalColumn = mapping.originalColumn;
+
+        // Iterate until either we run out of mappings, or we run into
+        // a mapping for a different line than the one we were searching for.
+        // Since mappings are sorted, this is guaranteed to find all mappings for
+        // the line we are searching for.
+        while (mapping &&
+               mapping.originalLine === line &&
+               mapping.originalColumn == originalColumn) {
+          mappings.push({
+            line: util.getArg(mapping, 'generatedLine', null),
+            column: util.getArg(mapping, 'generatedColumn', null),
+            lastColumn: util.getArg(mapping, 'lastGeneratedColumn', null)
+          });
+
+          mapping = this._originalMappings[++index];
+        }
+      }
+    }
+
+    return mappings;
+  };
+
+exports.SourceMapConsumer = SourceMapConsumer;
+
+/**
+ * A BasicSourceMapConsumer instance represents a parsed source map which we can
+ * query for information about the original file positions by giving it a file
+ * position in the generated source.
+ *
+ * The only parameter is the raw source map (either as a JSON string, or
+ * already parsed to an object). According to the spec, source maps have the
+ * following attributes:
+ *
+ *   - version: Which version of the source map spec this map is following.
+ *   - sources: An array of URLs to the original source files.
+ *   - names: An array of identifiers which can be referrenced by individual mappings.
+ *   - sourceRoot: Optional. The URL root from which all sources are relative.
+ *   - sourcesContent: Optional. An array of contents of the original source files.
+ *   - mappings: A string of base64 VLQs which contain the actual mappings.
+ *   - file: Optional. The generated file this source map is associated with.
+ *
+ * Here is an example source map, taken from the source map spec[0]:
+ *
+ *     {
+ *       version : 3,
+ *       file: "out.js",
+ *       sourceRoot : "",
+ *       sources: ["foo.js", "bar.js"],
+ *       names: ["src", "maps", "are", "fun"],
+ *       mappings: "AA,AB;;ABCDE;"
+ *     }
+ *
+ * [0]: https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit?pli=1#
+ */
+function BasicSourceMapConsumer(aSourceMap) {
+  var sourceMap = aSourceMap;
+  if (typeof aSourceMap === 'string') {
+    sourceMap = JSON.parse(aSourceMap.replace(/^\)\]\}'/, ''));
+  }
+
+  var version = util.getArg(sourceMap, 'version');
+  var sources = util.getArg(sourceMap, 'sources');
+  // Sass 3.3 leaves out the 'names' array, so we deviate from the spec (which
+  // requires the array) to play nice here.
+  var names = util.getArg(sourceMap, 'names', []);
+  var sourceRoot = util.getArg(sourceMap, 'sourceRoot', null);
+  var sourcesContent = util.getArg(sourceMap, 'sourcesContent', null);
+  var mappings = util.getArg(sourceMap, 'mappings');
+  var file = util.getArg(sourceMap, 'file', null);
+
+  // Once again, Sass deviates from the spec and supplies the version as a
+  // string rather than a number, so we use loose equality checking here.
+  if (version != this._version) {
+    throw new Error('Unsupported version: ' + version);
+  }
+
+  sources = sources
+    .map(String)
+    // Some source maps produce relative source paths like "./foo.js" instead of
+    // "foo.js".  Normalize these first so that future comparisons will succeed.
+    // See bugzil.la/1090768.
+    .map(util.normalize)
+    // Always ensure that absolute sources are internally stored relative to
+    // the source root, if the source root is absolute. Not doing this would
+    // be particularly problematic when the source root is a prefix of the
+    // source (valid, but why??). See github issue #199 and bugzil.la/1188982.
+    .map(function (source) {
+      return sourceRoot && util.isAbsolute(sourceRoot) && util.isAbsolute(source)
+        ? util.relative(sourceRoot, source)
+        : source;
+    });
+
+  // Pass `true` below to allow duplicate names and sources. While source maps
+  // are intended to be compressed and deduplicated, the TypeScript compiler
+  // sometimes generates source maps with duplicates in them. See Github issue
+  // #72 and bugzil.la/889492.
+  this._names = ArraySet.fromArray(names.map(String), true);
+  this._sources = ArraySet.fromArray(sources, true);
+
+  this.sourceRoot = sourceRoot;
+  this.sourcesContent = sourcesContent;
+  this._mappings = mappings;
+  this.file = file;
+}
+
+BasicSourceMapConsumer.prototype = Object.create(SourceMapConsumer.prototype);
+BasicSourceMapConsumer.prototype.consumer = SourceMapConsumer;
+
+/**
+ * Create a BasicSourceMapConsumer from a SourceMapGenerator.
+ *
+ * @param SourceMapGenerator aSourceMap
+ *        The source map that will be consumed.
+ * @returns BasicSourceMapConsumer
+ */
+BasicSourceMapConsumer.fromSourceMap =
+  function SourceMapConsumer_fromSourceMap(aSourceMap) {
+    var smc = Object.create(BasicSourceMapConsumer.prototype);
+
+    var names = smc._names = ArraySet.fromArray(aSourceMap._names.toArray(), true);
+    var sources = smc._sources = ArraySet.fromArray(aSourceMap._sources.toArray(), true);
+    smc.sourceRoot = aSourceMap._sourceRoot;
+    smc.sourcesContent = aSourceMap._generateSourcesContent(smc._sources.toArray(),
+                                                            smc.sourceRoot);
+    smc.file = aSourceMap._file;
+
+    // Because we are modifying the entries (by converting string sources and
+    // names to indices into the sources and names ArraySets), we have to make
+    // a copy of the entry or else bad things happen. Shared mutable state
+    // strikes again! See github issue #191.
+
+    var generatedMappings = aSourceMap._mappings.toArray().slice();
+    var destGeneratedMappings = smc.__generatedMappings = [];
+    var destOriginalMappings = smc.__originalMappings = [];
+
+    for (var i = 0, length = generatedMappings.length; i < length; i++) {
+      var srcMapping = generatedMappings[i];
+      var destMapping = new Mapping;
+      destMapping.generatedLine = srcMapping.generatedLine;
+      destMapping.generatedColumn = srcMapping.generatedColumn;
+
+      if (srcMapping.source) {
+        destMapping.source = sources.indexOf(srcMapping.source);
+        destMapping.originalLine = srcMapping.originalLine;
+        destMapping.originalColumn = srcMapping.originalColumn;
+
+        if (srcMapping.name) {
+          destMapping.name = names.indexOf(srcMapping.name);
+        }
+
+        destOriginalMappings.push(destMapping);
+      }
+
+      destGeneratedMappings.push(destMapping);
+    }
+
+    quickSort(smc.__originalMappings, util.compareByOriginalPositions);
+
+    return smc;
+  };
+
+/**
+ * The version of the source mapping spec that we are consuming.
+ */
+BasicSourceMapConsumer.prototype._version = 3;
+
+/**
+ * The list of original sources.
+ */
+Object.defineProperty(BasicSourceMapConsumer.prototype, 'sources', {
+  get: function () {
+    return this._sources.toArray().map(function (s) {
+      return this.sourceRoot != null ? util.join(this.sourceRoot, s) : s;
+    }, this);
+  }
+});
+
+/**
+ * Provide the JIT with a nice shape / hidden class.
+ */
+function Mapping() {
+  this.generatedLine = 0;
+  this.generatedColumn = 0;
+  this.source = null;
+  this.originalLine = null;
+  this.originalColumn = null;
+  this.name = null;
+}
+
+/**
+ * Parse the mappings in a string in to a data structure which we can easily
+ * query (the ordered arrays in the `this.__generatedMappings` and
+ * `this.__originalMappings` properties).
+ */
+BasicSourceMapConsumer.prototype._parseMappings =
+  function SourceMapConsumer_parseMappings(aStr, aSourceRoot) {
+    var generatedLine = 1;
+    var previousGeneratedColumn = 0;
+    var previousOriginalLine = 0;
+    var previousOriginalColumn = 0;
+    var previousSource = 0;
+    var previousName = 0;
+    var length = aStr.length;
+    var index = 0;
+    var cachedSegments = {};
+    var temp = {};
+    var originalMappings = [];
+    var generatedMappings = [];
+    var mapping, str, segment, end, value;
+
+    while (index < length) {
+      if (aStr.charAt(index) === ';') {
+        generatedLine++;
+        index++;
+        previousGeneratedColumn = 0;
+      }
+      else if (aStr.charAt(index) === ',') {
+        index++;
+      }
+      else {
+        mapping = new Mapping();
+        mapping.generatedLine = generatedLine;
+
+        // Because each offset is encoded relative to the previous one,
+        // many segments often have the same encoding. We can exploit this
+        // fact by caching the parsed variable length fields of each segment,
+        // allowing us to avoid a second parse if we encounter the same
+        // segment again.
+        for (end = index; end < length; end++) {
+          if (this._charIsMappingSeparator(aStr, end)) {
+            break;
+          }
+        }
+        str = aStr.slice(index, end);
+
+        segment = cachedSegments[str];
+        if (segment) {
+          index += str.length;
+        } else {
+          segment = [];
+          while (index < end) {
+            base64VLQ.decode(aStr, index, temp);
+            value = temp.value;
+            index = temp.rest;
+            segment.push(value);
+          }
+
+          if (segment.length === 2) {
+            throw new Error('Found a source, but no line and column');
+          }
+
+          if (segment.length === 3) {
+            throw new Error('Found a source and line, but no column');
+          }
+
+          cachedSegments[str] = segment;
+        }
+
+        // Generated column.
+        mapping.generatedColumn = previousGeneratedColumn + segment[0];
+        previousGeneratedColumn = mapping.generatedColumn;
+
+        if (segment.length > 1) {
+          // Original source.
+          mapping.source = previousSource + segment[1];
+          previousSource += segment[1];
+
+          // Original line.
+          mapping.originalLine = previousOriginalLine + segment[2];
+          previousOriginalLine = mapping.originalLine;
+          // Lines are stored 0-based
+          mapping.originalLine += 1;
+
+          // Original column.
+          mapping.originalColumn = previousOriginalColumn + segment[3];
+          previousOriginalColumn = mapping.originalColumn;
+
+          if (segment.length > 4) {
+            // Original name.
+            mapping.name = previousName + segment[4];
+            previousName += segment[4];
+          }
+        }
+
+        generatedMappings.push(mapping);
+        if (typeof mapping.originalLine === 'number') {
+          originalMappings.push(mapping);
+        }
+      }
+    }
+
+    quickSort(generatedMappings, util.compareByGeneratedPositionsDeflated);
+    this.__generatedMappings = generatedMappings;
+
+    quickSort(originalMappings, util.compareByOriginalPositions);
+    this.__originalMappings = originalMappings;
+  };
+
+/**
+ * Find the mapping that best matches the hypothetical "needle" mapping that
+ * we are searching for in the given "haystack" of mappings.
+ */
+BasicSourceMapConsumer.prototype._findMapping =
+  function SourceMapConsumer_findMapping(aNeedle, aMappings, aLineName,
+                                         aColumnName, aComparator, aBias) {
+    // To return the position we are searching for, we must first find the
+    // mapping for the given position and then return the opposite position it
+    // points to. Because the mappings are sorted, we can use binary search to
+    // find the best mapping.
+
+    if (aNeedle[aLineName] <= 0) {
+      throw new TypeError('Line must be greater than or equal to 1, got '
+                          + aNeedle[aLineName]);
+    }
+    if (aNeedle[aColumnName] < 0) {
+      throw new TypeError('Column must be greater than or equal to 0, got '
+                          + aNeedle[aColumnName]);
+    }
+
+    return binarySearch.search(aNeedle, aMappings, aComparator, aBias);
+  };
+
+/**
+ * Compute the last column for each generated mapping. The last column is
+ * inclusive.
+ */
+BasicSourceMapConsumer.prototype.computeColumnSpans =
+  function SourceMapConsumer_computeColumnSpans() {
+    for (var index = 0; index < this._generatedMappings.length; ++index) {
+      var mapping = this._generatedMappings[index];
+
+      // Mappings do not contain a field for the last generated columnt. We
+      // can come up with an optimistic estimate, however, by assuming that
+      // mappings are contiguous (i.e. given two consecutive mappings, the
+      // first mapping ends where the second one starts).
+      if (index + 1 < this._generatedMappings.length) {
+        var nextMapping = this._generatedMappings[index + 1];
+
+        if (mapping.generatedLine === nextMapping.generatedLine) {
+          mapping.lastGeneratedColumn = nextMapping.generatedColumn - 1;
+          continue;
+        }
+      }
+
+      // The last mapping for each line spans the entire line.
+      mapping.lastGeneratedColumn = Infinity;
+    }
+  };
+
+/**
+ * Returns the original source, line, and column information for the generated
+ * source's line and column positions provided. The only argument is an object
+ * with the following properties:
+ *
+ *   - line: The line number in the generated source.
+ *   - column: The column number in the generated source.
+ *   - bias: Either 'SourceMapConsumer.GREATEST_LOWER_BOUND' or
+ *     'SourceMapConsumer.LEAST_UPPER_BOUND'. Specifies whether to return the
+ *     closest element that is smaller than or greater than the one we are
+ *     searching for, respectively, if the exact element cannot be found.
+ *     Defaults to 'SourceMapConsumer.GREATEST_LOWER_BOUND'.
+ *
+ * and an object is returned with the following properties:
+ *
+ *   - source: The original source file, or null.
+ *   - line: The line number in the original source, or null.
+ *   - column: The column number in the original source, or null.
+ *   - name: The original identifier, or null.
+ */
+BasicSourceMapConsumer.prototype.originalPositionFor =
+  function SourceMapConsumer_originalPositionFor(aArgs) {
+    var needle = {
+      generatedLine: util.getArg(aArgs, 'line'),
+      generatedColumn: util.getArg(aArgs, 'column')
+    };
+
+    var index = this._findMapping(
+      needle,
+      this._generatedMappings,
+      "generatedLine",
+      "generatedColumn",
+      util.compareByGeneratedPositionsDeflated,
+      util.getArg(aArgs, 'bias', SourceMapConsumer.GREATEST_LOWER_BOUND)
+    );
+
+    if (index >= 0) {
+      var mapping = this._generatedMappings[index];
+
+      if (mapping.generatedLine === needle.generatedLine) {
+        var source = util.getArg(mapping, 'source', null);
+        if (source !== null) {
+          source = this._sources.at(source);
+          if (this.sourceRoot != null) {
+            source = util.join(this.sourceRoot, source);
+          }
+        }
+        var name = util.getArg(mapping, 'name', null);
+        if (name !== null) {
+          name = this._names.at(name);
+        }
+        return {
+          source: source,
+          line: util.getArg(mapping, 'originalLine', null),
+          column: util.getArg(mapping, 'originalColumn', null),
+          name: name
+        };
+      }
+    }
+
+    return {
+      source: null,
+      line: null,
+      column: null,
+      name: null
+    };
+  };
+
+/**
+ * Return true if we have the source content for every source in the source
+ * map, false otherwise.
+ */
+BasicSourceMapConsumer.prototype.hasContentsOfAllSources =
+  function BasicSourceMapConsumer_hasContentsOfAllSources() {
+    if (!this.sourcesContent) {
+      return false;
+    }
+    return this.sourcesContent.length >= this._sources.size() &&
+      !this.sourcesContent.some(function (sc) { return sc == null; });
+  };
+
+/**
+ * Returns the original source content. The only argument is the url of the
+ * original source file. Returns null if no original source content is
+ * available.
+ */
+BasicSourceMapConsumer.prototype.sourceContentFor =
+  function SourceMapConsumer_sourceContentFor(aSource, nullOnMissing) {
+    if (!this.sourcesContent) {
+      return null;
+    }
+
+    if (this.sourceRoot != null) {
+      aSource = util.relative(this.sourceRoot, aSource);
+    }
+
+    if (this._sources.has(aSource)) {
+      return this.sourcesContent[this._sources.indexOf(aSource)];
+    }
+
+    var url;
+    if (this.sourceRoot != null
+        && (url = util.urlParse(this.sourceRoot))) {
+      // XXX: file:// URIs and absolute paths lead to unexpected behavior for
+      // many users. We can help them out when they expect file:// URIs to
+      // behave like it would if they were running a local HTTP server. See
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=885597.
+      var fileUriAbsPath = aSource.replace(/^file:\/\//, "");
+      if (url.scheme == "file"
+          && this._sources.has(fileUriAbsPath)) {
+        return this.sourcesContent[this._sources.indexOf(fileUriAbsPath)]
+      }
+
+      if ((!url.path || url.path == "/")
+          && this._sources.has("/" + aSource)) {
+        return this.sourcesContent[this._sources.indexOf("/" + aSource)];
+      }
+    }
+
+    // This function is used recursively from
+    // IndexedSourceMapConsumer.prototype.sourceContentFor. In that case, we
+    // don't want to throw if we can't find the source - we just want to
+    // return null, so we provide a flag to exit gracefully.
+    if (nullOnMissing) {
+      return null;
+    }
+    else {
+      throw new Error('"' + aSource + '" is not in the SourceMap.');
+    }
+  };
+
+/**
+ * Returns the generated line and column information for the original source,
+ * line, and column positions provided. The only argument is an object with
+ * the following properties:
+ *
+ *   - source: The filename of the original source.
+ *   - line: The line number in the original source.
+ *   - column: The column number in the original source.
+ *   - bias: Either 'SourceMapConsumer.GREATEST_LOWER_BOUND' or
+ *     'SourceMapConsumer.LEAST_UPPER_BOUND'. Specifies whether to return the
+ *     closest element that is smaller than or greater than the one we are
+ *     searching for, respectively, if the exact element cannot be found.
+ *     Defaults to 'SourceMapConsumer.GREATEST_LOWER_BOUND'.
+ *
+ * and an object is returned with the following properties:
+ *
+ *   - line: The line number in the generated source, or null.
+ *   - column: The column number in the generated source, or null.
+ */
+BasicSourceMapConsumer.prototype.generatedPositionFor =
+  function SourceMapConsumer_generatedPositionFor(aArgs) {
+    var source = util.getArg(aArgs, 'source');
+    if (this.sourceRoot != null) {
+      source = util.relative(this.sourceRoot, source);
+    }
+    if (!this._sources.has(source)) {
+      return {
+        line: null,
+        column: null,
+        lastColumn: null
+      };
+    }
+    source = this._sources.indexOf(source);
+
+    var needle = {
+      source: source,
+      originalLine: util.getArg(aArgs, 'line'),
+      originalColumn: util.getArg(aArgs, 'column')
+    };
+
+    var index = this._findMapping(
+      needle,
+      this._originalMappings,
+      "originalLine",
+      "originalColumn",
+      util.compareByOriginalPositions,
+      util.getArg(aArgs, 'bias', SourceMapConsumer.GREATEST_LOWER_BOUND)
+    );
+
+    if (index >= 0) {
+      var mapping = this._originalMappings[index];
+
+      if (mapping.source === needle.source) {
+        return {
+          line: util.getArg(mapping, 'generatedLine', null),
+          column: util.getArg(mapping, 'generatedColumn', null),
+          lastColumn: util.getArg(mapping, 'lastGeneratedColumn', null)
+        };
+      }
+    }
+
+    return {
+      line: null,
+      column: null,
+      lastColumn: null
+    };
+  };
+
+exports.BasicSourceMapConsumer = BasicSourceMapConsumer;
+
+/**
+ * An IndexedSourceMapConsumer instance represents a parsed source map which
+ * we can query for information. It differs from BasicSourceMapConsumer in
+ * that it takes "indexed" source maps (i.e. ones with a "sections" field) as
+ * input.
+ *
+ * The only parameter is a raw source map (either as a JSON string, or already
+ * parsed to an object). According to the spec for indexed source maps, they
+ * have the following attributes:
+ *
+ *   - version: Which version of the source map spec this map is following.
+ *   - file: Optional. The generated file this source map is associated with.
+ *   - sections: A list of section definitions.
+ *
+ * Each value under the "sections" field has two fields:
+ *   - offset: The offset into the original specified at which this section
+ *       begins to apply, defined as an object with a "line" and "column"
+ *       field.
+ *   - map: A source map definition. This source map could also be indexed,
+ *       but doesn't have to be.
+ *
+ * Instead of the "map" field, it's also possible to have a "url" field
+ * specifying a URL to retrieve a source map from, but that's currently
+ * unsupported.
+ *
+ * Here's an example source map, taken from the source map spec[0], but
+ * modified to omit a section which uses the "url" field.
+ *
+ *  {
+ *    version : 3,
+ *    file: "app.js",
+ *    sections: [{
+ *      offset: {line:100, column:10},
+ *      map: {
+ *        version : 3,
+ *        file: "section.js",
+ *        sources: ["foo.js", "bar.js"],
+ *        names: ["src", "maps", "are", "fun"],
+ *        mappings: "AAAA,E;;ABCDE;"
+ *      }
+ *    }],
+ *  }
+ *
+ * [0]: https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit#heading=h.535es3xeprgt
+ */
+function IndexedSourceMapConsumer(aSourceMap) {
+  var sourceMap = aSourceMap;
+  if (typeof aSourceMap === 'string') {
+    sourceMap = JSON.parse(aSourceMap.replace(/^\)\]\}'/, ''));
+  }
+
+  var version = util.getArg(sourceMap, 'version');
+  var sections = util.getArg(sourceMap, 'sections');
+
+  if (version != this._version) {
+    throw new Error('Unsupported version: ' + version);
+  }
+
+  this._sources = new ArraySet();
+  this._names = new ArraySet();
+
+  var lastOffset = {
+    line: -1,
+    column: 0
+  };
+  this._sections = sections.map(function (s) {
+    if (s.url) {
+      // The url field will require support for asynchronicity.
+      // See https://github.com/mozilla/source-map/issues/16
+      throw new Error('Support for url field in sections not implemented.');
+    }
+    var offset = util.getArg(s, 'offset');
+    var offsetLine = util.getArg(offset, 'line');
+    var offsetColumn = util.getArg(offset, 'column');
+
+    if (offsetLine < lastOffset.line ||
+        (offsetLine === lastOffset.line && offsetColumn < lastOffset.column)) {
+      throw new Error('Section offsets must be ordered and non-overlapping.');
+    }
+    lastOffset = offset;
+
+    return {
+      generatedOffset: {
+        // The offset fields are 0-based, but we use 1-based indices when
+        // encoding/decoding from VLQ.
+        generatedLine: offsetLine + 1,
+        generatedColumn: offsetColumn + 1
+      },
+      consumer: new SourceMapConsumer(util.getArg(s, 'map'))
+    }
+  });
+}
+
+IndexedSourceMapConsumer.prototype = Object.create(SourceMapConsumer.prototype);
+IndexedSourceMapConsumer.prototype.constructor = SourceMapConsumer;
+
+/**
+ * The version of the source mapping spec that we are consuming.
+ */
+IndexedSourceMapConsumer.prototype._version = 3;
+
+/**
+ * The list of original sources.
+ */
+Object.defineProperty(IndexedSourceMapConsumer.prototype, 'sources', {
+  get: function () {
+    var sources = [];
+    for (var i = 0; i < this._sections.length; i++) {
+      for (var j = 0; j < this._sections[i].consumer.sources.length; j++) {
+        sources.push(this._sections[i].consumer.sources[j]);
+      }
+    }
+    return sources;
+  }
+});
+
+/**
+ * Returns the original source, line, and column information for the generated
+ * source's line and column positions provided. The only argument is an object
+ * with the following properties:
+ *
+ *   - line: The line number in the generated source.
+ *   - column: The column number in the generated source.
+ *
+ * and an object is returned with the following properties:
+ *
+ *   - source: The original source file, or null.
+ *   - line: The line number in the original source, or null.
+ *   - column: The column number in the original source, or null.
+ *   - name: The original identifier, or null.
+ */
+IndexedSourceMapConsumer.prototype.originalPositionFor =
+  function IndexedSourceMapConsumer_originalPositionFor(aArgs) {
+    var needle = {
+      generatedLine: util.getArg(aArgs, 'line'),
+      generatedColumn: util.getArg(aArgs, 'column')
+    };
+
+    // Find the section containing the generated position we're trying to map
+    // to an original position.
+    var sectionIndex = binarySearch.search(needle, this._sections,
+      function(needle, section) {
+        var cmp = needle.generatedLine - section.generatedOffset.generatedLine;
+        if (cmp) {
+          return cmp;
+        }
+
+        return (needle.generatedColumn -
+                section.generatedOffset.generatedColumn);
+      });
+    var section = this._sections[sectionIndex];
+
+    if (!section) {
+      return {
+        source: null,
+        line: null,
+        column: null,
+        name: null
+      };
+    }
+
+    return section.consumer.originalPositionFor({
+      line: needle.generatedLine -
+        (section.generatedOffset.generatedLine - 1),
+      column: needle.generatedColumn -
+        (section.generatedOffset.generatedLine === needle.generatedLine
+         ? section.generatedOffset.generatedColumn - 1
+         : 0),
+      bias: aArgs.bias
+    });
+  };
+
+/**
+ * Return true if we have the source content for every source in the source
+ * map, false otherwise.
+ */
+IndexedSourceMapConsumer.prototype.hasContentsOfAllSources =
+  function IndexedSourceMapConsumer_hasContentsOfAllSources() {
+    return this._sections.every(function (s) {
+      return s.consumer.hasContentsOfAllSources();
+    });
+  };
+
+/**
+ * Returns the original source content. The only argument is the url of the
+ * original source file. Returns null if no original source content is
+ * available.
+ */
+IndexedSourceMapConsumer.prototype.sourceContentFor =
+  function IndexedSourceMapConsumer_sourceContentFor(aSource, nullOnMissing) {
+    for (var i = 0; i < this._sections.length; i++) {
+      var section = this._sections[i];
+
+      var content = section.consumer.sourceContentFor(aSource, true);
+      if (content) {
+        return content;
+      }
+    }
+    if (nullOnMissing) {
+      return null;
+    }
+    else {
+      throw new Error('"' + aSource + '" is not in the SourceMap.');
+    }
+  };
+
+/**
+ * Returns the generated line and column information for the original source,
+ * line, and column positions provided. The only argument is an object with
+ * the following properties:
+ *
+ *   - source: The filename of the original source.
+ *   - line: The line number in the original source.
+ *   - column: The column number in the original source.
+ *
+ * and an object is returned with the following properties:
+ *
+ *   - line: The line number in the generated source, or null.
+ *   - column: The column number in the generated source, or null.
+ */
+IndexedSourceMapConsumer.prototype.generatedPositionFor =
+  function IndexedSourceMapConsumer_generatedPositionFor(aArgs) {
+    for (var i = 0; i < this._sections.length; i++) {
+      var section = this._sections[i];
+
+      // Only consider this section if the requested source is in the list of
+      // sources of the consumer.
+      if (section.consumer.sources.indexOf(util.getArg(aArgs, 'source')) === -1) {
+        continue;
+      }
+      var generatedPosition = section.consumer.generatedPositionFor(aArgs);
+      if (generatedPosition) {
+        var ret = {
+          line: generatedPosition.line +
+            (section.generatedOffset.generatedLine - 1),
+          column: generatedPosition.column +
+            (section.generatedOffset.generatedLine === generatedPosition.line
+             ? section.generatedOffset.generatedColumn - 1
+             : 0)
+        };
+        return ret;
+      }
+    }
+
+    return {
+      line: null,
+      column: null
+    };
+  };
+
+/**
+ * Parse the mappings in a string in to a data structure which we can easily
+ * query (the ordered arrays in the `this.__generatedMappings` and
+ * `this.__originalMappings` properties).
+ */
+IndexedSourceMapConsumer.prototype._parseMappings =
+  function IndexedSourceMapConsumer_parseMappings(aStr, aSourceRoot) {
+    this.__generatedMappings = [];
+    this.__originalMappings = [];
+    for (var i = 0; i < this._sections.length; i++) {
+      var section = this._sections[i];
+      var sectionMappings = section.consumer._generatedMappings;
+      for (var j = 0; j < sectionMappings.length; j++) {
+        var mapping = sectionMappings[j];
+
+        var source = section.consumer._sources.at(mapping.source);
+        if (section.consumer.sourceRoot !== null) {
+          source = util.join(section.consumer.sourceRoot, source);
+        }
+        this._sources.add(source);
+        source = this._sources.indexOf(source);
+
+        var name = section.consumer._names.at(mapping.name);
+        this._names.add(name);
+        name = this._names.indexOf(name);
+
+        // The mappings coming from the consumer for the section have
+        // generated positions relative to the start of the section, so we
+        // need to offset them to be relative to the start of the concatenated
+        // generated file.
+        var adjustedMapping = {
+          source: source,
+          generatedLine: mapping.generatedLine +
+            (section.generatedOffset.generatedLine - 1),
+          generatedColumn: mapping.generatedColumn +
+            (section.generatedOffset.generatedLine === mapping.generatedLine
+            ? section.generatedOffset.generatedColumn - 1
+            : 0),
+          originalLine: mapping.originalLine,
+          originalColumn: mapping.originalColumn,
+          name: name
+        };
+
+        this.__generatedMappings.push(adjustedMapping);
+        if (typeof adjustedMapping.originalLine === 'number') {
+          this.__originalMappings.push(adjustedMapping);
+        }
+      }
+    }
+
+    quickSort(this.__generatedMappings, util.compareByGeneratedPositionsDeflated);
+    quickSort(this.__originalMappings, util.compareByOriginalPositions);
+  };
+
+exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
+
+},{"./array-set":168,"./base64-vlq":169,"./binary-search":171,"./quick-sort":172,"./util":174}],174:[function(require,module,exports){
+/* -*- Mode: js; js-indent-level: 2; -*- */
+/*
+ * Copyright 2011 Mozilla Foundation and contributors
+ * Licensed under the New BSD license. See LICENSE or:
+ * http://opensource.org/licenses/BSD-3-Clause
+ */
+
+/**
+ * This is a helper function for getting values from parameter/options
+ * objects.
+ *
+ * @param args The object we are extracting values from
+ * @param name The name of the property we are getting.
+ * @param defaultValue An optional value to return if the property is missing
+ * from the object. If this is not specified and the property is missing, an
+ * error will be thrown.
+ */
+function getArg(aArgs, aName, aDefaultValue) {
+  if (aName in aArgs) {
+    return aArgs[aName];
+  } else if (arguments.length === 3) {
+    return aDefaultValue;
+  } else {
+    throw new Error('"' + aName + '" is a required argument.');
+  }
+}
+exports.getArg = getArg;
+
+var urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.]*)(?::(\d+))?(\S*)$/;
+var dataUrlRegexp = /^data:.+\,.+$/;
+
+function urlParse(aUrl) {
+  var match = aUrl.match(urlRegexp);
+  if (!match) {
+    return null;
+  }
+  return {
+    scheme: match[1],
+    auth: match[2],
+    host: match[3],
+    port: match[4],
+    path: match[5]
+  };
+}
+exports.urlParse = urlParse;
+
+function urlGenerate(aParsedUrl) {
+  var url = '';
+  if (aParsedUrl.scheme) {
+    url += aParsedUrl.scheme + ':';
+  }
+  url += '//';
+  if (aParsedUrl.auth) {
+    url += aParsedUrl.auth + '@';
+  }
+  if (aParsedUrl.host) {
+    url += aParsedUrl.host;
+  }
+  if (aParsedUrl.port) {
+    url += ":" + aParsedUrl.port
+  }
+  if (aParsedUrl.path) {
+    url += aParsedUrl.path;
+  }
+  return url;
+}
+exports.urlGenerate = urlGenerate;
+
+/**
+ * Normalizes a path, or the path portion of a URL:
+ *
+ * - Replaces consecutive slashes with one slash.
+ * - Removes unnecessary '.' parts.
+ * - Removes unnecessary '<dir>/..' parts.
+ *
+ * Based on code in the Node.js 'path' core module.
+ *
+ * @param aPath The path or url to normalize.
+ */
+function normalize(aPath) {
+  var path = aPath;
+  var url = urlParse(aPath);
+  if (url) {
+    if (!url.path) {
+      return aPath;
+    }
+    path = url.path;
+  }
+  var isAbsolute = exports.isAbsolute(path);
+
+  var parts = path.split(/\/+/);
+  for (var part, up = 0, i = parts.length - 1; i >= 0; i--) {
+    part = parts[i];
+    if (part === '.') {
+      parts.splice(i, 1);
+    } else if (part === '..') {
+      up++;
+    } else if (up > 0) {
+      if (part === '') {
+        // The first part is blank if the path is absolute. Trying to go
+        // above the root is a no-op. Therefore we can remove all '..' parts
+        // directly after the root.
+        parts.splice(i + 1, up);
+        up = 0;
+      } else {
+        parts.splice(i, 2);
+        up--;
+      }
+    }
+  }
+  path = parts.join('/');
+
+  if (path === '') {
+    path = isAbsolute ? '/' : '.';
+  }
+
+  if (url) {
+    url.path = path;
+    return urlGenerate(url);
+  }
+  return path;
+}
+exports.normalize = normalize;
+
+/**
+ * Joins two paths/URLs.
+ *
+ * @param aRoot The root path or URL.
+ * @param aPath The path or URL to be joined with the root.
+ *
+ * - If aPath is a URL or a data URI, aPath is returned, unless aPath is a
+ *   scheme-relative URL: Then the scheme of aRoot, if any, is prepended
+ *   first.
+ * - Otherwise aPath is a path. If aRoot is a URL, then its path portion
+ *   is updated with the result and aRoot is returned. Otherwise the result
+ *   is returned.
+ *   - If aPath is absolute, the result is aPath.
+ *   - Otherwise the two paths are joined with a slash.
+ * - Joining for example 'http://' and 'www.example.com' is also supported.
+ */
+function join(aRoot, aPath) {
+  if (aRoot === "") {
+    aRoot = ".";
+  }
+  if (aPath === "") {
+    aPath = ".";
+  }
+  var aPathUrl = urlParse(aPath);
+  var aRootUrl = urlParse(aRoot);
+  if (aRootUrl) {
+    aRoot = aRootUrl.path || '/';
+  }
+
+  // `join(foo, '//www.example.org')`
+  if (aPathUrl && !aPathUrl.scheme) {
+    if (aRootUrl) {
+      aPathUrl.scheme = aRootUrl.scheme;
+    }
+    return urlGenerate(aPathUrl);
+  }
+
+  if (aPathUrl || aPath.match(dataUrlRegexp)) {
+    return aPath;
+  }
+
+  // `join('http://', 'www.example.com')`
+  if (aRootUrl && !aRootUrl.host && !aRootUrl.path) {
+    aRootUrl.host = aPath;
+    return urlGenerate(aRootUrl);
+  }
+
+  var joined = aPath.charAt(0) === '/'
+    ? aPath
+    : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
+
+  if (aRootUrl) {
+    aRootUrl.path = joined;
+    return urlGenerate(aRootUrl);
+  }
+  return joined;
+}
+exports.join = join;
+
+exports.isAbsolute = function (aPath) {
+  return aPath.charAt(0) === '/' || !!aPath.match(urlRegexp);
+};
+
+/**
+ * Make a path relative to a URL or another path.
+ *
+ * @param aRoot The root path or URL.
+ * @param aPath The path or URL to be made relative to aRoot.
+ */
+function relative(aRoot, aPath) {
+  if (aRoot === "") {
+    aRoot = ".";
+  }
+
+  aRoot = aRoot.replace(/\/$/, '');
+
+  // It is possible for the path to be above the root. In this case, simply
+  // checking whether the root is a prefix of the path won't work. Instead, we
+  // need to remove components from the root one by one, until either we find
+  // a prefix that fits, or we run out of components to remove.
+  var level = 0;
+  while (aPath.indexOf(aRoot + '/') !== 0) {
+    var index = aRoot.lastIndexOf("/");
+    if (index < 0) {
+      return aPath;
+    }
+
+    // If the only part of the root that is left is the scheme (i.e. http://,
+    // file:///, etc.), one or more slashes (/), or simply nothing at all, we
+    // have exhausted all components, so the path is not relative to the root.
+    aRoot = aRoot.slice(0, index);
+    if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
+      return aPath;
+    }
+
+    ++level;
+  }
+
+  // Make sure we add a "../" for each component we removed from the root.
+  return Array(level + 1).join("../") + aPath.substr(aRoot.length + 1);
+}
+exports.relative = relative;
+
+var supportsNullProto = (function () {
+  var obj = Object.create(null);
+  return !('__proto__' in obj);
+}());
+
+function identity (s) {
+  return s;
+}
+
+/**
+ * Because behavior goes wacky when you set `__proto__` on objects, we
+ * have to prefix all the strings in our set with an arbitrary character.
+ *
+ * See https://github.com/mozilla/source-map/pull/31 and
+ * https://github.com/mozilla/source-map/issues/30
+ *
+ * @param String aStr
+ */
+function toSetString(aStr) {
+  if (isProtoString(aStr)) {
+    return '$' + aStr;
+  }
+
+  return aStr;
+}
+exports.toSetString = supportsNullProto ? identity : toSetString;
+
+function fromSetString(aStr) {
+  if (isProtoString(aStr)) {
+    return aStr.slice(1);
+  }
+
+  return aStr;
+}
+exports.fromSetString = supportsNullProto ? identity : fromSetString;
+
+function isProtoString(s) {
+  if (!s) {
+    return false;
+  }
+
+  var length = s.length;
+
+  if (length < 9 /* "__proto__".length */) {
+    return false;
+  }
+
+  if (s.charCodeAt(length - 1) !== 95  /* '_' */ ||
+      s.charCodeAt(length - 2) !== 95  /* '_' */ ||
+      s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
+      s.charCodeAt(length - 4) !== 116 /* 't' */ ||
+      s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
+      s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
+      s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
+      s.charCodeAt(length - 8) !== 95  /* '_' */ ||
+      s.charCodeAt(length - 9) !== 95  /* '_' */) {
+    return false;
+  }
+
+  for (var i = length - 10; i >= 0; i--) {
+    if (s.charCodeAt(i) !== 36 /* '$' */) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Comparator between two mappings where the original positions are compared.
+ *
+ * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+ * mappings with the same original source/line/column, but different generated
+ * line and column the same. Useful when searching for a mapping with a
+ * stubbed out mapping.
+ */
+function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
+  var cmp = mappingA.source - mappingB.source;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.originalLine - mappingB.originalLine;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.originalColumn - mappingB.originalColumn;
+  if (cmp !== 0 || onlyCompareOriginal) {
+    return cmp;
+  }
+
+  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.generatedLine - mappingB.generatedLine;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  return mappingA.name - mappingB.name;
+}
+exports.compareByOriginalPositions = compareByOriginalPositions;
+
+/**
+ * Comparator between two mappings with deflated source and name indices where
+ * the generated positions are compared.
+ *
+ * Optionally pass in `true` as `onlyCompareGenerated` to consider two
+ * mappings with the same generated line and column, but different
+ * source/name/original line and column the same. Useful when searching for a
+ * mapping with a stubbed out mapping.
+ */
+function compareByGeneratedPositionsDeflated(mappingA, mappingB, onlyCompareGenerated) {
+  var cmp = mappingA.generatedLine - mappingB.generatedLine;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+  if (cmp !== 0 || onlyCompareGenerated) {
+    return cmp;
+  }
+
+  cmp = mappingA.source - mappingB.source;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.originalLine - mappingB.originalLine;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.originalColumn - mappingB.originalColumn;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  return mappingA.name - mappingB.name;
+}
+exports.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
+
+function strcmp(aStr1, aStr2) {
+  if (aStr1 === aStr2) {
+    return 0;
+  }
+
+  if (aStr1 > aStr2) {
+    return 1;
+  }
+
+  return -1;
+}
+
+/**
+ * Comparator between two mappings with inflated source and name strings where
+ * the generated positions are compared.
+ */
+function compareByGeneratedPositionsInflated(mappingA, mappingB) {
+  var cmp = mappingA.generatedLine - mappingB.generatedLine;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.generatedColumn - mappingB.generatedColumn;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = strcmp(mappingA.source, mappingB.source);
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.originalLine - mappingB.originalLine;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  cmp = mappingA.originalColumn - mappingB.originalColumn;
+  if (cmp !== 0) {
+    return cmp;
+  }
+
+  return strcmp(mappingA.name, mappingB.name);
+}
+exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
+
+},{}],175:[function(require,module,exports){
+(function(root, factory) {
+    'use strict';
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
+
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define('stacktrace-gps', ['source-map', 'stackframe'], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('source-map/lib/source-map-consumer'), require('stackframe'));
+    } else {
+        root.StackTraceGPS = factory(root.SourceMap || root.sourceMap, root.StackFrame);
+    }
+}(this, function(SourceMap, StackFrame) {
+    'use strict';
+
+    /**
+     * Make a X-Domain request to url and callback.
+     *
+     * @param {String} url
+     * @returns {Promise} with response text if fulfilled
+     */
+    function _xdr(url) {
+        return new Promise(function(resolve, reject) {
+            var req = new XMLHttpRequest();
+            req.open('get', url);
+            req.onerror = reject;
+            req.onreadystatechange = function onreadystatechange() {
+                if (req.readyState === 4) {
+                    if (req.status >= 200 && req.status < 300) {
+                        resolve(req.responseText);
+                    } else {
+                        reject(new Error('HTTP status: ' + req.status + ' retrieving ' + url));
+                    }
+                }
+            };
+            req.send();
+        });
+
+    }
+
+    /**
+     * Convert a Base64-encoded string into its original representation.
+     * Used for inline sourcemaps.
+     *
+     * @param {String} b64str Base-64 encoded string
+     * @returns {String} original representation of the base64-encoded string.
+     */
+    function _atob(b64str) {
+        if (typeof window !== 'undefined' && window.atob) {
+            return window.atob(b64str);
+        } else {
+            throw new Error('You must supply a polyfill for window.atob in this environment');
+        }
+    }
+
+    function _parseJson(string) {
+        if (typeof JSON !== 'undefined' && JSON.parse) {
+            return JSON.parse(string);
+        } else {
+            throw new Error('You must supply a polyfill for JSON.parse in this environment');
+        }
+    }
+
+    function _findFunctionName(source, lineNumber/*, columnNumber*/) {
+        // function {name}({args}) m[1]=name m[2]=args
+        var reFunctionDeclaration = /function\s+([^(]*?)\s*\(([^)]*)\)/;
+        // {name} = function ({args}) TODO args capture
+        var reFunctionExpression = /['"]?([$_A-Za-z][$_A-Za-z0-9]*)['"]?\s*[:=]\s*function\b/;
+        // {name} = eval()
+        var reFunctionEvaluation = /['"]?([$_A-Za-z][$_A-Za-z0-9]*)['"]?\s*[:=]\s*(?:eval|new Function)\b/;
+        var lines = source.split('\n');
+
+        // Walk backwards in the source lines until we find the line which matches one of the patterns above
+        var code = '';
+        var maxLines = Math.min(lineNumber, 20);
+        var m;
+        for (var i = 0; i < maxLines; ++i) {
+            // lineNo is 1-based, source[] is 0-based
+            var line = lines[lineNumber - i - 1];
+            var commentPos = line.indexOf('//');
+            if (commentPos >= 0) {
+                line = line.substr(0, commentPos);
+            }
+
+            if (line) {
+                code = line + code;
+                m = reFunctionExpression.exec(code);
+                if (m && m[1]) {
+                    return m[1];
+                }
+                m = reFunctionDeclaration.exec(code);
+                if (m && m[1]) {
+                    return m[1];
+                }
+                m = reFunctionEvaluation.exec(code);
+                if (m && m[1]) {
+                    return m[1];
+                }
+            }
+        }
+        return undefined;
+    }
+
+    function _ensureSupportedEnvironment() {
+        if (typeof Object.defineProperty !== 'function' || typeof Object.create !== 'function') {
+            throw new Error('Unable to consume source maps in older browsers');
+        }
+    }
+
+    function _ensureStackFrameIsLegit(stackframe) {
+        if (typeof stackframe !== 'object') {
+            throw new TypeError('Given StackFrame is not an object');
+        } else if (typeof stackframe.fileName !== 'string') {
+            throw new TypeError('Given file name is not a String');
+        } else if (typeof stackframe.lineNumber !== 'number' ||
+            stackframe.lineNumber % 1 !== 0 ||
+            stackframe.lineNumber < 1) {
+            throw new TypeError('Given line number must be a positive integer');
+        } else if (typeof stackframe.columnNumber !== 'number' ||
+            stackframe.columnNumber % 1 !== 0 ||
+            stackframe.columnNumber < 0) {
+            throw new TypeError('Given column number must be a non-negative integer');
+        }
+        return true;
+    }
+
+    function _findSourceMappingURL(source) {
+        var m = /\/\/[#@] ?sourceMappingURL=([^\s'"]+)\s*$/.exec(source);
+        if (m && m[1]) {
+            return m[1];
+        } else {
+            throw new Error('sourceMappingURL not found');
+        }
+    }
+
+    function _extractLocationInfoFromSourceMap(stackframe, rawSourceMap, sourceCache) {
+        return new Promise(function(resolve, reject) {
+            var mapConsumer = new SourceMap.SourceMapConsumer(rawSourceMap);
+
+            var loc = mapConsumer.originalPositionFor({
+                line: stackframe.lineNumber,
+                column: stackframe.columnNumber
+            });
+
+            if (loc.source) {
+                var mappedSource = mapConsumer.sourceContentFor(loc.source);
+                if (mappedSource) {
+                    sourceCache[loc.source] = mappedSource;
+                }
+                resolve(
+                    new StackFrame(
+                        loc.name || stackframe.functionName,
+                        stackframe.args,
+                        loc.source,
+                        loc.line,
+                        loc.column));
+            } else {
+                reject(new Error('Could not get original source for given stackframe and source map'));
+            }
+        });
+    }
+
+    /**
+     * @constructor
+     * @param {Object} opts
+     *      opts.sourceCache = {url: "Source String"} => preload source cache
+     *      opts.offline = True to prevent network requests.
+     *              Best effort without sources or source maps.
+     *      opts.ajax = Promise returning function to make X-Domain requests
+     */
+    return function StackTraceGPS(opts) {
+        if (!(this instanceof StackTraceGPS)) {
+            return new StackTraceGPS(opts);
+        }
+        opts = opts || {};
+
+        this.sourceCache = opts.sourceCache || {};
+
+        this.ajax = opts.ajax || _xdr;
+
+        this._atob = opts.atob || _atob;
+
+        this._get = function _get(location) {
+            return new Promise(function(resolve, reject) {
+                var isDataUrl = location.substr(0, 5) === 'data:';
+                if (this.sourceCache[location]) {
+                    resolve(this.sourceCache[location]);
+                } else if (opts.offline && !isDataUrl) {
+                    reject(new Error('Cannot make network requests in offline mode'));
+                } else {
+                    if (isDataUrl) {
+                        // data URLs can have parameters.
+                        // see http://tools.ietf.org/html/rfc2397
+                        var supportedEncodingRegexp =
+                            /^data:application\/json;([\w=:"-]+;)*base64,/;
+                        var match = location.match(supportedEncodingRegexp);
+                        if (match) {
+                            var sourceMapStart = match[0].length;
+                            var encodedSource = location.substr(sourceMapStart);
+                            var source = this._atob(encodedSource);
+                            this.sourceCache[location] = source;
+                            resolve(source);
+                        } else {
+                            reject(new Error('The encoding of the inline sourcemap is not supported'));
+                        }
+                    } else {
+                        var xhrPromise = this.ajax(location, {method: 'get'});
+                        // Cache the Promise to prevent duplicate in-flight requests
+                        this.sourceCache[location] = xhrPromise;
+                        xhrPromise.then(resolve, reject);
+                    }
+                }
+            }.bind(this));
+        };
+
+        /**
+         * Given a StackFrame, enhance function name and use source maps for a
+         * better StackFrame.
+         *
+         * @param {StackFrame} stackframe object
+         * @returns {Promise} that resolves with with source-mapped StackFrame
+         */
+        this.pinpoint = function StackTraceGPS$$pinpoint(stackframe) {
+            return new Promise(function(resolve, reject) {
+                this.getMappedLocation(stackframe).then(function(mappedStackFrame) {
+                    function resolveMappedStackFrame() {
+                        resolve(mappedStackFrame);
+                    }
+
+                    this.findFunctionName(mappedStackFrame)
+                        .then(resolve, resolveMappedStackFrame)
+                        ['catch'](resolveMappedStackFrame);
+                }.bind(this), reject);
+            }.bind(this));
+        };
+
+        /**
+         * Given a StackFrame, guess function name from location information.
+         *
+         * @param {StackFrame} stackframe
+         * @returns {Promise} that resolves with enhanced StackFrame.
+         */
+        this.findFunctionName = function StackTraceGPS$$findFunctionName(stackframe) {
+            return new Promise(function(resolve, reject) {
+                _ensureStackFrameIsLegit(stackframe);
+                this._get(stackframe.fileName).then(function getSourceCallback(source) {
+                    var lineNumber = stackframe.lineNumber;
+                    var columnNumber = stackframe.columnNumber;
+                    var guessedFunctionName = _findFunctionName(source, lineNumber, columnNumber);
+                    // Only replace functionName if we found something
+                    if (guessedFunctionName) {
+                        resolve(new StackFrame(guessedFunctionName,
+                            stackframe.args,
+                            stackframe.fileName,
+                            lineNumber,
+                            columnNumber));
+                    } else {
+                        resolve(stackframe);
+                    }
+                }, reject)['catch'](reject);
+            }.bind(this));
+        };
+
+        /**
+         * Given a StackFrame, seek source-mapped location and return new enhanced StackFrame.
+         *
+         * @param {StackFrame} stackframe
+         * @returns {Promise} that resolves with enhanced StackFrame.
+         */
+        this.getMappedLocation = function StackTraceGPS$$getMappedLocation(stackframe) {
+            return new Promise(function(resolve, reject) {
+                _ensureSupportedEnvironment();
+                _ensureStackFrameIsLegit(stackframe);
+
+                var sourceCache = this.sourceCache;
+                var fileName = stackframe.fileName;
+                this._get(fileName).then(function(source) {
+                    var sourceMappingURL = _findSourceMappingURL(source);
+                    var isDataUrl = sourceMappingURL.substr(0, 5) === 'data:';
+                    var base = fileName.substring(0, fileName.lastIndexOf('/') + 1);
+
+                    if (sourceMappingURL[0] !== '/' && !isDataUrl && !(/^https?:\/\/|^\/\//i).test(sourceMappingURL)) {
+                        sourceMappingURL = base + sourceMappingURL;
+                    }
+
+                    this._get(sourceMappingURL).then(function(sourceMap) {
+                        if (typeof sourceMap === 'string') {
+                            sourceMap = _parseJson(sourceMap.replace(/^\)\]\}'/, ''));
+                        }
+                        if (typeof sourceMap.sourceRoot === 'undefined') {
+                            sourceMap.sourceRoot = base;
+                        }
+
+                        _extractLocationInfoFromSourceMap(stackframe, sourceMap, sourceCache)
+                            .then(resolve)['catch'](function() {
+                            resolve(stackframe);
+                        });
+                    }, reject)['catch'](reject);
+                }.bind(this), reject)['catch'](reject);
+            }.bind(this));
+        };
+    };
+}));
+
+},{"source-map/lib/source-map-consumer":173,"stackframe":167}],176:[function(require,module,exports){
+(function(root, factory) {
+    'use strict';
+    // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
+
+    /* istanbul ignore next */
+    if (typeof define === 'function' && define.amd) {
+        define('stacktrace', ['error-stack-parser', 'stack-generator', 'stacktrace-gps'], factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory(require('error-stack-parser'), require('stack-generator'), require('stacktrace-gps'));
+    } else {
+        root.StackTrace = factory(root.ErrorStackParser, root.StackGenerator, root.StackTraceGPS);
+    }
+}(this, function StackTrace(ErrorStackParser, StackGenerator, StackTraceGPS) {
+    var _options = {
+        filter: function(stackframe) {
+            // Filter out stackframes for this library by default
+            return (stackframe.functionName || '').indexOf('StackTrace$$') === -1 &&
+                (stackframe.functionName || '').indexOf('ErrorStackParser$$') === -1 &&
+                (stackframe.functionName || '').indexOf('StackTraceGPS$$') === -1 &&
+                (stackframe.functionName || '').indexOf('StackGenerator$$') === -1;
+        },
+        sourceCache: {}
+    };
+
+    var _generateError = function StackTrace$$GenerateError() {
+        try {
+            // Error must be thrown to get stack in IE
+            throw new Error();
+        } catch (err) {
+            return err;
+        }
+    };
+
+    /**
+     * Merge 2 given Objects. If a conflict occurs the second object wins.
+     * Does not do deep merges.
+     *
+     * @param {Object} first base object
+     * @param {Object} second overrides
+     * @returns {Object} merged first and second
+     * @private
+     */
+    function _merge(first, second) {
+        var target = {};
+
+        [first, second].forEach(function(obj) {
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    target[prop] = obj[prop];
+                }
+            }
+            return target;
+        });
+
+        return target;
+    }
+
+    function _isShapedLikeParsableError(err) {
+        return err.stack || err['opera#sourceloc'];
+    }
+
+    function _filtered(stackframes, filter) {
+        if (typeof filter === 'function') {
+            return stackframes.filter(filter);
+        }
+        return stackframes;
+    }
+
+    return {
+        /**
+         * Get a backtrace from invocation point.
+         *
+         * @param {Object} opts
+         * @returns {Array} of StackFrame
+         */
+        get: function StackTrace$$get(opts) {
+            var err = _generateError();
+            return _isShapedLikeParsableError(err) ? this.fromError(err, opts) : this.generateArtificially(opts);
+        },
+
+        /**
+         * Get a backtrace from invocation point.
+         * IMPORTANT: Does not handle source maps or guess function names!
+         *
+         * @param {Object} opts
+         * @returns {Array} of StackFrame
+         */
+        getSync: function StackTrace$$getSync(opts) {
+            opts = _merge(_options, opts);
+            var err = _generateError();
+            var stack = _isShapedLikeParsableError(err) ? ErrorStackParser.parse(err) : StackGenerator.backtrace(opts);
+            return _filtered(stack, opts.filter);
+        },
+
+        /**
+         * Given an error object, parse it.
+         *
+         * @param {Error} error object
+         * @param {Object} opts
+         * @returns {Promise} for Array[StackFrame}
+         */
+        fromError: function StackTrace$$fromError(error, opts) {
+            opts = _merge(_options, opts);
+            var gps = new StackTraceGPS(opts);
+            return new Promise(function(resolve) {
+                var stackframes = _filtered(ErrorStackParser.parse(error), opts.filter);
+                resolve(Promise.all(stackframes.map(function(sf) {
+                    return new Promise(function(resolve) {
+                        function resolveOriginal() {
+                            resolve(sf);
+                        }
+
+                        gps.pinpoint(sf).then(resolve, resolveOriginal)['catch'](resolveOriginal);
+                    });
+                })));
+            }.bind(this));
+        },
+
+        /**
+         * Use StackGenerator to generate a backtrace.
+         *
+         * @param {Object} opts
+         * @returns {Promise} of Array[StackFrame]
+         */
+        generateArtificially: function StackTrace$$generateArtificially(opts) {
+            opts = _merge(_options, opts);
+            var stackFrames = StackGenerator.backtrace(opts);
+            if (typeof opts.filter === 'function') {
+                stackFrames = stackFrames.filter(opts.filter);
+            }
+            return Promise.resolve(stackFrames);
+        },
+
+        /**
+         * Given a function, wrap it such that invocations trigger a callback that
+         * is called with a stack trace.
+         *
+         * @param {Function} fn to be instrumented
+         * @param {Function} callback function to call with a stack trace on invocation
+         * @param {Function} errback optional function to call with error if unable to get stack trace.
+         * @param {Object} thisArg optional context object (e.g. window)
+         */
+        instrument: function StackTrace$$instrument(fn, callback, errback, thisArg) {
+            if (typeof fn !== 'function') {
+                throw new Error('Cannot instrument non-function object');
+            } else if (typeof fn.__stacktraceOriginalFn === 'function') {
+                // Already instrumented, return given Function
+                return fn;
+            }
+
+            var instrumented = function StackTrace$$instrumented() {
+                try {
+                    this.get().then(callback, errback)['catch'](errback);
+                    return fn.apply(thisArg || this, arguments);
+                } catch (e) {
+                    if (_isShapedLikeParsableError(e)) {
+                        this.fromError(e).then(callback, errback)['catch'](errback);
+                    }
+                    throw e;
+                }
+            }.bind(this);
+            instrumented.__stacktraceOriginalFn = fn;
+
+            return instrumented;
+        },
+
+        /**
+         * Given a function that has been instrumented,
+         * revert the function to it's original (non-instrumented) state.
+         *
+         * @param {Function} fn to de-instrument
+         */
+        deinstrument: function StackTrace$$deinstrument(fn) {
+            if (typeof fn !== 'function') {
+                throw new Error('Cannot de-instrument non-function object');
+            } else if (typeof fn.__stacktraceOriginalFn === 'function') {
+                return fn.__stacktraceOriginalFn;
+            } else {
+                // Function not instrumented, return original
+                return fn;
+            }
+        },
+
+        /**
+         * Given an error message and Array of StackFrames, serialize and POST to given URL.
+         *
+         * @param {Array} stackframes
+         * @param {String} url
+         * @param {String} errorMsg
+         */
+        report: function StackTrace$$report(stackframes, url, errorMsg) {
+            return new Promise(function(resolve, reject) {
+                var req = new XMLHttpRequest();
+                req.onerror = reject;
+                req.onreadystatechange = function onreadystatechange() {
+                    if (req.readyState === 4) {
+                        if (req.status >= 200 && req.status < 400) {
+                            resolve(req.responseText);
+                        } else {
+                            reject(new Error('POST to ' + url + ' failed with status: ' + req.status));
+                        }
+                    }
+                };
+                req.open('post', url);
+                req.setRequestHeader('Content-Type', 'application/json');
+
+                var reportPayload = {stack: stackframes};
+                if (errorMsg !== undefined) {
+                    reportPayload.message = errorMsg;
+                }
+
+                req.send(JSON.stringify(reportPayload));
+            });
+        }
+    };
+}));
+
+},{"error-stack-parser":133,"stack-generator":166,"stacktrace-gps":175}],177:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],167:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -34605,7 +37725,7 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./support/isBuffer":166,"_process":161,"inherits":153}],168:[function(require,module,exports){
+},{"./support/isBuffer":177,"_process":161,"inherits":153}],179:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -34640,7 +37760,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],169:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 module.exports={
   "name": "cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
@@ -34651,7 +37771,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -34747,7 +37867,6 @@ module.exports={
     "node": ">=0.10"
   },
   "dependencies": {
-    "callsite": "^1.0.0",
     "camel-case": "^3.0.0",
     "cli-table": "^0.3.1",
     "co": "^4.6.0",
@@ -34759,7 +37878,8 @@ module.exports={
     "glob": "^7.0.0",
     "is-generator": "^1.0.2",
     "lodash": "^4.0.0",
-    "stack-chain": "^1.3.5"
+    "stack-chain": "^1.3.5",
+    "stacktrace-js": "^1.3.0"
   },
   "devDependencies": {
     "ansi_up": "^1.3.0",
@@ -34772,7 +37892,6 @@ module.exports={
     "jasmine": "^2.3.2",
     "jshint": "^2.9.1",
     "json-diff": "^0.3.1",
-    "pogo": "^0.10.0",
     "rimraf": "^2.4.3",
     "serve-static": "^1.10.0",
     "sinon": "^1.17.3",

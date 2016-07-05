@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.2.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.2.1...master)
+
+### [1.2.1](https://github.com/cucumber/cucumber-js/compare/v1.2.0...v1.2.1) (2016-07-01)
+
+#### Bug Fixes
+
+* Fix hook / step definition location and stacktraces in the browser (#567, #538) (Charlie Rudolph)
 
 ### [1.2.0](https://github.com/cucumber/cucumber-js/compare/v1.1.0...v1.2.0) (2016-06-24)
 
