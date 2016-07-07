@@ -112,7 +112,7 @@ module.exports = function () {
     // Express the regexp above with the code you wish you had.
     // `this` is set to a World instance.
     // i.e. you may use this.browser to execute the step:
-
+    this.browser.runScripts = false; // this disables executing javascript
     this.visit('https://github.com/cucumber/cucumber-js', callback);
 
     // The callback is passed to visit() so that when the job's finished, the next step can
