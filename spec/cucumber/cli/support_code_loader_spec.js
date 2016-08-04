@@ -175,7 +175,8 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
       paths = [
         fs.realpathSync(__dirname + "/../../support/initializer_stub1.js"),
         fs.realpathSync(__dirname + "/../../support/initializer_stub2.js"),
-        fs.realpathSync(__dirname + "/../../support/initializer_stub3.js")
+        fs.realpathSync(__dirname + "/../../support/initializer_stub3.js"),
+        fs.realpathSync(__dirname + "/../../support/initializer_stub_es6_module.js")
       ];
     });
 
@@ -186,15 +187,19 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
     describe("returned wrapper function", function () {
       var initializers, returnedWrapperFunction, supportCodeHelper;
       var nonInitializerSupportCode, nonInitializerSupportCodeCalled;
+      var es6ModuleDefaultFunctionExportSupportCode, es6ModuleDefaultFunctionExportSupportCodeCalled;
 
       beforeEach(function () {
         nonInitializerSupportCode = { call: function () { nonInitializerSupportCodeCalled = true; } };
+        es6ModuleDefaultFunctionExportSupportCode = { default: function () { es6ModuleDefaultFunctionExportSupportCodeCalled = true; } };
         nonInitializerSupportCodeCalled = false;
+        es6ModuleDefaultFunctionExportSupportCodeCalled = false;
         initializers = [
           spyOnModule(paths[0]),
           spyOnModule(paths[1])
         ];
         spyOnModuleAndReturn(paths[2], nonInitializerSupportCode);
+        spyOnModuleAndReturn(paths[3], es6ModuleDefaultFunctionExportSupportCode);
         returnedWrapperFunction = supportCodeLoader.buildSupportCodeInitializerFromPaths(paths);
         supportCodeHelper       = createSpy("support code helper");
       });
@@ -216,6 +221,11 @@ describe("Cucumber.Cli.SupportCodeLoader", function () {
       it("does not call non-functions (non-initializer support code)", function () {
         returnedWrapperFunction.call(supportCodeHelper);
         expect(nonInitializerSupportCodeCalled).toBeFalsy();
+      });
+
+      it("calls es6 module default export initializer function (es6-module support code)", function () {
+        returnedWrapperFunction.call(supportCodeHelper);
+        expect(es6ModuleDefaultFunctionExportSupportCodeCalled).toBeTruthy();
       });
 
       it("calls each initializer function with the support code helper as 'this'", function () {
