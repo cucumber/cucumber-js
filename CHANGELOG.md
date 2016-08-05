@@ -1,5 +1,11 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.2.1...master)
 
+### [1.2.2](https://github.com/cucumber/cucumber-js/compare/v1.2.1...v1.2.2) (2016-08-05)
+
+#### Bug Fixes
+
+* Fix error when stack trace has no frames (#610) (Jan Molak)
+
 ### [1.2.1](https://github.com/cucumber/cucumber-js/compare/v1.2.0...v1.2.1) (2016-07-01)
 
 #### Bug Fixes

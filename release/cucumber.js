@@ -2599,7 +2599,7 @@ function isFrameInCucumber(frame) {
 
 function filter() {
   currentFilter = chain.filter.attach(function (error, frames) {
-    if (isFrameInCucumber(frames[0])) {
+    if (frames.length > 0 && isFrameInCucumber(frames[0])) {
       return frames;
     }
     return frames.filter(_.negate(isFrameInCucumber));
@@ -3818,6 +3818,9 @@ var objectKeys = Object.keys || function (obj) {
 },{"util/":178}],68:[function(require,module,exports){
 module.exports = balanced;
 function balanced(a, b, str) {
+  if (a instanceof RegExp) a = maybeMatch(a, str);
+  if (b instanceof RegExp) b = maybeMatch(b, str);
+
   var r = range(a, b, str);
 
   return r && {
@@ -3827,6 +3830,11 @@ function balanced(a, b, str) {
     body: str.slice(r[0] + a.length, r[1]),
     post: str.slice(r[1] + b.length)
   };
+}
+
+function maybeMatch(reg, str) {
+  var m = str.match(reg);
+  return m ? m[0] : null;
 }
 
 balanced.range = range;
@@ -3840,7 +3848,7 @@ function range(a, b, str) {
     begs = [];
     left = str.length;
 
-    while (i < str.length && i >= 0 && ! result) {
+    while (i >= 0 && !result) {
       if (i == ai) {
         begs.push(i);
         ai = str.indexOf(a, i + 1);
@@ -37771,7 +37779,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "1.2.1",
+  "version": "1.2.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -37849,7 +37857,8 @@ module.exports={
     "John McLaughlin <john.mjhm@gmail.com>",
     "Josh Goldberg <joshuakgoldberg@outlook.com>",
     "Artur Pomadowski <artur.pomadowski@gmail.com>",
-    "Benjamín Eidelman <beneidel+gh@gmail.com>"
+    "Benjamín Eidelman <beneidel+gh@gmail.com>",
+    "Jan Molak <jan.molak@smartcodeltd.co.uk>"
   ],
   "repository": {
     "type": "git",
