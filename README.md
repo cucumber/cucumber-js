@@ -291,6 +291,7 @@ this.Before(function (scenario) {
   return this.createUsers();
 });
 ```
+Multiple *Before* hooks are executed in the order that they were defined.
 
 ##### After hooks
 
@@ -313,6 +314,7 @@ var myAfterHooks = function () {
 
 module.exports = myAfterHooks;
 ```
+Multiple *After* hooks are executed in the **reverse** order that they were defined.
 
 ##### Tagged hooks
 
