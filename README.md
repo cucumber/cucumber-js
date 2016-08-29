@@ -330,6 +330,12 @@ var myHooks = function () {
 
     // ...
   });
+
+  // You can use the following shorthand when specifying a single tag
+  this.Before("@foo", function (scenario) {
+    // This hook will be executed before scenarios tagged with @foo
+    // ...
+  });
 };
 
 module.exports = myHooks;

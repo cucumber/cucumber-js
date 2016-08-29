@@ -49,6 +49,16 @@ describe("Cucumber.SupportCode.Library", function () {
           });
         });
 
+        describe("with tags shorthand", function () {
+          beforeEach(function () {
+            supportCodeHelper.Before('@tag', code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: ['@tag']}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
         describe("with options", function () {
           var options;
 
@@ -109,7 +119,17 @@ describe("Cucumber.SupportCode.Library", function () {
           });
         });
 
-        describe("with a tag group", function () {
+        describe("with tags shorthand", function () {
+          beforeEach(function () {
+            supportCodeHelper.After('@tag', code);
+          });
+
+          it("creates a before hook with the code", function () {
+            expect(Cucumber.SupportCode.Hook).toHaveBeenCalledWith(code, {tags: ['@tag']}, jasmine.any(String), jasmine.any(Number));
+          });
+        });
+
+        describe("with options", function () {
           var options;
 
           beforeEach(function () {
