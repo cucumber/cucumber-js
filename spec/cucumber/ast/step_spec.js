@@ -12,7 +12,7 @@ describe("Cucumber.Ast.Step", function () {
     };
     step = Cucumber.Ast.Step(stepData);
 
-    feature = createSpyWithStubs('feature', {getStepKeywordByLines: 'keyword'});
+    feature = createSpyWithStubs('feature', {getLanguage: 'en', getStepKeywordByLines: 'keyword'});
     var scenario = createSpyWithStubs('scenario', {getFeature: feature});
     step.setScenario(scenario);
   });
@@ -285,11 +285,6 @@ describe("Cucumber.Ast.Step", function () {
 
     it("returns true when the keyword is 'But '", function () {
       feature.getStepKeywordByLines.and.returnValue('But ');
-      expect(step.hasRepeatStepKeyword()).toBeTruthy();
-    });
-
-    it("returns true when the keyword is '* '", function () {
-      feature.getStepKeywordByLines.and.returnValue('* ');
       expect(step.hasRepeatStepKeyword()).toBeTruthy();
     });
 
