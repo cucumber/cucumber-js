@@ -5,16 +5,20 @@ Feature: Custom stack trace
       """
       Feature: Some feature
         Scenario: Some scenario
-          Given I override Error.prepareStackTrace
+          Given Error.prepareStackTrace has been overriden
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.When(/^I override Error.prepareStackTrace$/, function() {
-          Error.prepareStackTrace = function() {
-            return 'Custom message';
-          }
+        var _prepareStackTrace = Error.prepareStackTrace;
+        Error.prepareStackTrace = function() {
+          return 'Custom message';
+        }
+
+        this.When(/^Error.prepareStackTrace has been overriden$/, function() {
         });
+
+        Error.prepareStackTrace = _prepareStackTrace;
       };
       module.exports = cucumberSteps;
       """
@@ -24,7 +28,7 @@ Feature: Custom stack trace
       Feature: Some feature
 
         Scenario: Some scenario
-        ✓ Given I override Error.prepareStackTrace
+        ✓ Given Error.prepareStackTrace has been overriden
 
       1 scenario (1 passed)
       1 step (1 passed)
