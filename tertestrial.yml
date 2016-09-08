@@ -1,0 +1,22 @@
+actions:
+
+  - test:
+
+    - match:
+        filename: '\.feature$'
+      command: './bin/cucumber.js {{filename}}'
+
+    - match:
+        filename: '\.feature$'
+        line: '\d+'
+      command: './bin/cucumber.js {{filename}}:{{line}}'
+
+    - match:
+        filename: '\_spec.js$'
+      command: 'jasmine {{filename}}'
+
+  - lint:
+
+    - match:
+        filename: '\.js$'
+      command: 'jshint {{filename}}'

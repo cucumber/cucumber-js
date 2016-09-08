@@ -1,4 +1,30 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.2.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.3.0...master)
+
+### [1.3.0](https://github.com/cucumber/cucumber-js/compare/v1.2.2...v1.3.0) (2016-09-08)
+
+#### New Features
+
+* add `--snippet-interface <INTERFACE>` CLI option (Charlie Rudolph)
+* add `--world-parameters <JSON>` CLI option (Charlie Rudolph)
+* add snippets formatter (Charlie Rudolph)
+* add support for ES6 default module syntax (dbillingham)
+* pretty formatter: add symbols (Charlie Rudolph)
+* add simplified hook parameters (Charlie Rudolph)
+
+#### Bug Fixes
+
+* step definition snippets internationalization (Charlie Rudolph)
+
+#### Documentation
+
+* document order of execution for multiple hooks (John McLaughlin)
+* breakup README.md, organize docs (Charlie Rudolph)
+
+### [1.2.2](https://github.com/cucumber/cucumber-js/compare/v1.2.1...v1.2.2) (2016-08-05)
+
+#### Bug Fixes
+
+* Fix error when stack trace has no frames (#610) (Jan Molak)
 
 ### [1.2.1](https://github.com/cucumber/cucumber-js/compare/v1.2.0...v1.2.1) (2016-07-01)
 

@@ -11,6 +11,13 @@ var cliSteps = function cliSteps() {
 
   this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
     args = args ? args.split(' ') : [];
+    args = args.map(function(arg) {
+      if (arg[0] === '\'' && arg[arg.length - 1] === '\'') {
+        return arg.slice(1, arg.length - 1);
+      } else {
+        return arg;
+      }
+    });
     args.unshift(executablePath);
     var world = this;
     var cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir;

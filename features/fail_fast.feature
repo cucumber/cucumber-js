@@ -26,7 +26,7 @@ Feature: Fail fast
       Feature:
 
         Scenario: Failing
-          Given a failing step
+        ✖ Given a failing step
 
       Failures:
 

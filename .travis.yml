@@ -10,6 +10,9 @@ node_js:
   - "4"
   - "iojs"
 
+notifications:
+  email: false
+
 matrix:
   include:
     - node_js: "0.12"

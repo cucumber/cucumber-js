@@ -4,16 +4,18 @@ describe("Cucumber.Runtime", function () {
   var Cucumber = requireLib('cucumber');
   var configuration;
   var runtime;
-  var isDryRunRequested, isFailFastRequested, isStrictRequested;
+  var isDryRunRequested, isFailFastRequested, isStrictRequested, worldParameters;
 
   beforeEach(function () {
     isStrictRequested = false;
     isDryRunRequested = false;
     isFailFastRequested = false;
+    worldParameters = {some: 'data'};
     configuration = createSpyWithStubs("configuration", {
       isDryRunRequested: isDryRunRequested,
       isFailFastRequested: isFailFastRequested,
       isStrictRequested: isStrictRequested,
+      getWorldParameters: worldParameters,
       shouldFilterStackTraces: true
     });
     spyOn(Cucumber.Runtime.StackTraceFilter, 'filter');
@@ -61,7 +63,8 @@ describe("Cucumber.Runtime", function () {
       var options = {
         dryRun: isDryRunRequested,
         failFast: isFailFastRequested,
-        strict: isStrictRequested
+        strict: isStrictRequested,
+        worldParameters: worldParameters
       };
       expect(Cucumber.Runtime.FeaturesRunner).toHaveBeenCalledWith(features, supportCodeLibrary, [], options);
     });
@@ -79,7 +82,8 @@ describe("Cucumber.Runtime", function () {
         var options = {
           dryRun: isDryRunRequested,
           failFast: isFailFastRequested,
-          strict: isStrictRequested
+          strict: isStrictRequested,
+          worldParameters: worldParameters
         };
         expect(Cucumber.Runtime.FeaturesRunner).toHaveBeenCalledWith(features, supportCodeLibrary, [listener], options);
       });
