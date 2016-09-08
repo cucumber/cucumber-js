@@ -37,7 +37,7 @@ Feature: Target specific scenarios
       Feature: some feature
 
         Scenario: first scenario
-          When a step is passing
+        ✓ When a step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -52,10 +52,10 @@ Feature: Target specific scenarios
       Feature: some feature
 
         Scenario: third scenario
-          When a step is passing
+        ✓ When a step is passing
 
         Scenario: third scenario
-          When a step is pending
+        ? When a step is pending
 
       Warnings:
 
@@ -78,7 +78,7 @@ Feature: Target specific scenarios
       Feature: some feature
 
         Scenario: third scenario
-          When a step is passing
+        ✓ When a step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -93,10 +93,10 @@ Feature: Target specific scenarios
       Feature: some feature
 
         Scenario: first scenario
-          When a step is passing
+        ✓ When a step is passing
 
         Scenario: second scenario
-          When a step is passing
+        ✓ When a step is passing
 
       2 scenarios (2 passed)
       2 steps (2 passed)

@@ -21,9 +21,9 @@ Feature: step definition snippets i18n
       Funksie: a feature
 
         Situasie: a scenario
-          Gegewe undefined step A
-          Wanneer undefined step B
-          Dan undefined step C
+        ? Gegewe undefined step A
+        ? Wanneer undefined step B
+        ? Dan undefined step C
 
       Warnings:
 

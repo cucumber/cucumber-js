@@ -31,7 +31,7 @@ Feature: Multiple Formatters
       Feature: some feature
 
         Scenario: I've declared one step which passes
-          Given This step is passing
+        ✓ Given This step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)

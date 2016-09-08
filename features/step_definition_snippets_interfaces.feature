@@ -18,7 +18,7 @@ Feature: step definition snippets custom syntax
       Feature: a feature
 
         Scenario: a scenario
-          Given an undefined step
+        ? Given an undefined step
 
       Warnings:
 
