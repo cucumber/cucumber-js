@@ -92,3 +92,7 @@ so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucu
 ## Profiles
 
 In order to store and reuse commonly used CLI options, you can add a `cucumber.js` file to your project root directory. The file should export an object where the key is the profile name and the value is a string of CLI options. The profile can be applied with `-p <NAME>` or `--profile <NAME>`. This will prepend the profile's CLI options to the ones provided by the command line. Multiple profiles can be specified at a time. If no profile is specified and a profile named `default` exists, it will be applied.
+
+## World Parameters
+
+You can pass in parameters to pass to the world constructor with `--world-parameters <JSON>`. The JSON string must define an object. The parsed object will be passed as the first argument to the the world constructor. This option is repeatable and the objects will be merged with the last instance taking precedence.
