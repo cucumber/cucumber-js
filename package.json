@@ -128,7 +128,7 @@
     "connect": "^3.4.0",
     "exorcist": "^0.4.0",
     "fs-extra": "^0.26.0",
-    "jasmine": "^2.3.2",
+    "jasmine": "^2.5.1",
     "jshint": "^2.9.1",
     "json-diff": "^0.3.1",
     "rimraf": "^2.4.3",
