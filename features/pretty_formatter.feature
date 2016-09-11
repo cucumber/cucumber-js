@@ -50,7 +50,7 @@ Feature: Pretty Formatter
       Feature: some feature
 
         Scenario: I've declared one step which passes
-        ✓ Given This step is passing
+        ✔ Given This step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -130,12 +130,12 @@ Feature: Pretty Formatter
       Feature: some feature
 
         Scenario: some scenario
-        ✓ Given a basic step
-        ✓ And a step with a doc string
+        ✔ Given a basic step
+        ✔ And a step with a doc string
             \"\"\"
             my doc string
             \"\"\"
-        ✓ And a basic step
+        ✔ And a basic step
 
       1 scenario (1 passed)
       3 steps (3 passed)
@@ -164,7 +164,7 @@ Feature: Pretty Formatter
       Feature: some feature
 
         Scenario: some scenario
-        ✓ Given a table:
+        ✔ Given a table:
             | foo\nbar               | bar | baz      |
             | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
 

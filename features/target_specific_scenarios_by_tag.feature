@@ -43,7 +43,7 @@ Feature: Target specific scenarios
 
         @a
         Scenario: first scenario
-        ✓ When a step is passing
+        ✔ When a step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -59,7 +59,7 @@ Feature: Target specific scenarios
 
         @a
         Scenario: first scenario
-        ✓ When a step is passing
+        ✔ When a step is passing
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -75,7 +75,7 @@ Feature: Target specific scenarios
 
         @b @c
         Scenario: second scenario
-        ✓ When a step is passing
+        ✔ When a step is passing
 
         @b @c
         Scenario: second scenario
@@ -117,7 +117,7 @@ Feature: Target specific scenarios
 
         @b @c
         Scenario: second scenario
-        ✓ When a step is passing
+        ✔ When a step is passing
 
         @b @c
         Scenario: second scenario

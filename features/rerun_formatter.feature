@@ -47,7 +47,7 @@ Feature: Rerun Formatter
       Feature: A
 
         Scenario: 1
-        ✓ Given a passing step
+        ✔ Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -64,7 +64,7 @@ Feature: Rerun Formatter
       Feature: A
 
         Scenario: 1
-        ✓ Given a passing step
+        ✔ Given a passing step
 
         Scenario: 2
         ✖ Given a failing step
@@ -75,7 +75,7 @@ Feature: Rerun Formatter
       Feature: B
 
         Scenario: 4
-        ✓ Given a passing step
+        ✔ Given a passing step
 
         Scenario: 5
         ✖ Given a failing step
