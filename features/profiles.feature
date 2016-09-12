@@ -69,7 +69,7 @@ Feature: default command line arguments
       Feature: some feature
 
         Scenario: some scenario
-        ✓ Given a passing step
+        ✔ Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)
