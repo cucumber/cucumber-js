@@ -1,4 +1,5 @@
 var path = require('path');
+var figures = require('figures');
 
 var helpers = {
 
@@ -8,7 +9,7 @@ var helpers = {
   },
 
   normalizeText: function normalizeText(text) {
-    return text.replace(/\033\[[0-9;]*m/g, '')
+    return figures(text).replace(/\033\[[0-9;]*m/g, '')
       .replace(/\r\n|\r/g, '\n')
       .replace(/^\s+/g, '')
       .replace(/\s+$/g, '')

@@ -2,30 +2,28 @@ cache:
   directories:
     - $HOME/node_modules
 
+deploy:
+  on:
+    branch: master
+    node: "6"
+  provider: script
+  script: scripts/deploy.sh
+  skip_cleanup: true
+
 language: node_js
 
-node_js:
-  - "6"
-  - "5"
-  - "4"
-  - "iojs"
+node_js: "6"
 
 notifications:
   email: false
 
 matrix:
   include:
+    - node_js: "4"
+      script: "npm run feature-test"
     - node_js: "0.12"
-      script: "npm run test-es5"
+      script: "npm run feature-test-es5"
     - node_js: "0.10"
-      script: "npm run test-es5"
+      script: "npm run feature-test-es5"
 
 sudo: false
-
-deploy:
-  on:
-    branch: master
-    node: "5"
-  provider: script
-  script: scripts/deploy.sh
-  skip_cleanup: true

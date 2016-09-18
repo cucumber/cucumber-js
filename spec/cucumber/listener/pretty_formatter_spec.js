@@ -4,6 +4,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
   var Cucumber = requireLib('cucumber');
   var path     = require('path');
   var colors   = require('colors/safe');
+  var figures  = require('figures');
   colors.enabled = true;
   var formatter, formatterHearMethod, summaryFormatter, prettyFormatter, options, logged;
 
@@ -230,7 +231,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name', function () {
         var expected =
-          '  ' + colors.green('✔ step-keyword step-name') + '\n';
+          '  ' + colors.green(figures.tick + ' step-keyword step-name') + '\n';
         expect(logged).toEqual(expected);
       });
     });
@@ -283,7 +284,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name', function () {
         var expected =
-          '  ' + colors.red('✖ step-keyword step-name') + '\n';
+          '  ' + colors.red(figures.cross + ' step-keyword step-name') + '\n';
         expect(logged).toEqual(expected);
       });
     });
@@ -296,7 +297,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword', function () {
         var expected =
-          '  ✔ step-keyword ' + '\n';
+          '  ' + figures.tick + ' step-keyword ' + '\n';
         expect(colors.strip(logged)).toEqual(expected);
       });
     });
@@ -315,7 +316,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name and data table', function () {
         var expected =
-          '  ✔ step-keyword step-name' + '\n' +
+          '  ' + figures.tick + ' step-keyword step-name' + '\n' +
           '      | cuk | cuke | cukejs   |' + '\n' +
           '      | c   | cuke | cuke.js  |' + '\n' +
           '      | cu  | cuke | cucumber |' + '\n';
@@ -333,7 +334,7 @@ describe("Cucumber.Listener.PrettyFormatter", function () {
 
       it('logs the keyword and name and doc string', function () {
         var expected =
-          '  ✔ step-keyword step-name' + '\n' +
+          '  ' + figures.tick + ' step-keyword step-name' + '\n' +
           '      """' + '\n' +
           '      this is a multiline' + '\n' +
           '      doc string' + '\n' +

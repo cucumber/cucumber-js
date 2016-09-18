@@ -1,0 +1,20 @@
+build: off
+
+environment:
+  test_script: 'test'
+
+  matrix:
+    - nodejs_version: '6'
+    - nodejs_version: '4'
+      test_script: 'feature-test'
+    - nodejs_version: '0.12'
+      test_script: 'feature-test-es5'
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - npm install
+
+test_script:
+  - node --version
+  - npm --version
+  - npm run %test_script%
