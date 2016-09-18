@@ -28,7 +28,7 @@ Feature: Custom stack trace
       Feature: Some feature
 
         Scenario: Some scenario
-        ✓ Given Error.prepareStackTrace has been overriden
+        ✔ Given Error.prepareStackTrace has been overriden
 
       1 scenario (1 passed)
       1 step (1 passed)
