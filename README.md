@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/cucumber/cucumber-js.svg?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
-[![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.svg)](https://codeclimate.com/github/cucumber/cucumber-js)
 
 [Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
 written in plain language, they can be read by anyone on your team. Because they can be
