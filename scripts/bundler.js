@@ -9,7 +9,7 @@ function Bundler(bundlePath) {
 
   this.bundle = function (callback) {
     var wrappedCallback = _.once(callback);
-    var main = path.join(__dirname, 'bundle-main');
+    var main = path.join(__dirname, '..', 'lib', 'cucumber');
 
     browserify({debug: true, standalone: 'Cucumber'})
       .require(main, { expose: 'cucumber' })

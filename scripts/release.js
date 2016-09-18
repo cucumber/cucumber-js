@@ -1,5 +1,5 @@
 var path = require('path');
-var Bundler = require('./release/bundler');
+var Bundler = require('./bundler');
 
 var bundlePath = path.join(__dirname, '..', 'release', 'cucumber.js');
 var bundler = new Bundler(bundlePath);
