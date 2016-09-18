@@ -1,6 +1,7 @@
 # Cucumber.js
 
-[![Build Status](https://travis-ci.org/cucumber/cucumber-js.svg?branch=master)](https://travis-ci.org/cucumber/cucumber-js)
+[![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
+[![AppVeyor Status](https://img.shields.io/appveyor/ci/charlierudolph/cucumber-js/master.svg?label=appveyor)](https://ci.appveyor.com/project/charlierudolph/cucumber-js/history)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
 
 [Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
