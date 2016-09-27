@@ -1,6 +1,6 @@
 actions:
 
-  - test:
+  test:
 
     - match:
         filename: '\.feature$'
@@ -15,7 +15,7 @@ actions:
         filename: '\_spec.js$'
       command: 'jasmine {{filename}}'
 
-  - lint:
+  lint:
 
     - match:
         filename: '\.js$'
