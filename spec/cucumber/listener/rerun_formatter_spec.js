@@ -15,7 +15,7 @@ describe("Cucumber.Listener.RerunFormatter", function () {
   }
 
   describe("handleAfterFeaturesEvent()", function () {
-    describe('no failed scenarios', function() {
+    describe('all passing scenarios', function() {
       beforeEach(function(done){
         var scenarioResult = createScenarioResult(Cucumber.Status.PASSED);
         rerunFormatter.handleScenarioResultEvent(scenarioResult);
@@ -35,7 +35,46 @@ describe("Cucumber.Listener.RerunFormatter", function () {
         rerunFormatter.handleAfterFeaturesEvent(null, done);
       });
 
-      it("logs nothing", function () {
+      it("logs the path to the failed scenario", function () {
+        expect(rerunFormatter.getLogs()).toEqual(path.normalize('path/to/scenario:1'));
+      });
+    });
+
+    describe('one ambiguous scenario', function() {
+      beforeEach(function(done) {
+        var scenarioResult = createScenarioResult(Cucumber.Status.AMBIGUOUS, 'path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult);
+
+        rerunFormatter.handleAfterFeaturesEvent(null, done);
+      });
+
+      it("logs the path to the ambiguous scenario", function () {
+        expect(rerunFormatter.getLogs()).toEqual(path.normalize('path/to/scenario:1'));
+      });
+    });
+
+    describe('one undefined scenario', function() {
+      beforeEach(function(done) {
+        var scenarioResult = createScenarioResult(Cucumber.Status.UNDEFINED, 'path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult);
+
+        rerunFormatter.handleAfterFeaturesEvent(null, done);
+      });
+
+      it("logs the path to the undefined scenario", function () {
+        expect(rerunFormatter.getLogs()).toEqual(path.normalize('path/to/scenario:1'));
+      });
+    });
+
+    describe('one pending scenario', function() {
+      beforeEach(function(done) {
+        var scenarioResult = createScenarioResult(Cucumber.Status.PENDING, 'path/to/scenario', 1);
+        rerunFormatter.handleScenarioResultEvent(scenarioResult);
+
+        rerunFormatter.handleAfterFeaturesEvent(null, done);
+      });
+
+      it("logs the path to the pending scenario", function () {
         expect(rerunFormatter.getLogs()).toEqual(path.normalize('path/to/scenario:1'));
       });
     });

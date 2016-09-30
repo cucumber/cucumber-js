@@ -50,7 +50,7 @@ Built-in formatters
 * json - prints the feature as JSON
 * pretty - prints the feature as is (default)
 * progress - prints one character per scenario
-* rerun - prints the paths of the failing scenarios ([example](/features/rerun_formatter.feature))
+* rerun - prints the paths of any non passing scenarios ([example](/features/rerun_formatter.feature))
   * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`
 * snippets - prints just the code snippets for undefined steps
 * summary - prints a summary only, after all scenarios were executed

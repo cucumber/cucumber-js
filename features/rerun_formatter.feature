@@ -7,29 +7,41 @@ Feature: Rerun Formatter
     Given a file named "features/a.feature" with:
       """
       Feature: A
-        Scenario: 1
+        Scenario: A - passing
           Given a passing step
 
-        Scenario: 2
+        Scenario: A - failing
           Given a failing step
 
-        Scenario: 3
-          Given a failing step
+        Scenario: A - ambiguous
+          Given an ambiguous step
       """
     And a file named "features/b.feature" with:
       """
       Feature: B
-        Scenario: 4
+        Scenario: B - passing
           Given a passing step
 
-        Scenario: 5
-          Given a failing step
+        Scenario: B - pending
+          Given a pending step
       """
+      And a file named "features/c.feature" with:
+        """
+        Feature: B
+          Scenario: C - passing
+            Given a passing step
+
+          Scenario: C - undefined
+            Given an undefined step
+        """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.When(/^a passing step$/, function() { });
-        this.When(/^a failing step$/, function() { throw 'fail' });
+        this.Given(/^a passing step$/, function() { });
+        this.Given(/^a failing step$/, function() { throw 'fail' });
+        this.Given(/^an ambiguous step$/, function() { });
+        this.Given(/^an? ambiguous step$/, function() { });
+        this.Given(/^a pending step$/, function() { return 'pending' });
       };
       module.exports = cucumberSteps;
       """
@@ -42,110 +54,34 @@ Feature: Rerun Formatter
 
   Scenario: passing
     When I run cucumber.js with `features/a.feature:2`
-    Then it outputs this text:
-      """
-      Feature: A
-
-        Scenario: 1
-        ✔ Given a passing step
-
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
+    Then the exit status should be 0
     And the file "@rerun.txt" has the text:
       """
       """
 
   Scenario: multiple scenarios failing
-    When I run cucumber.js
-    Then it outputs this text:
-      """
-      Feature: A
-
-        Scenario: 1
-        ✔ Given a passing step
-
-        Scenario: 2
-        ✖ Given a failing step
-
-        Scenario: 3
-        ✖ Given a failing step
-
-      Feature: B
-
-        Scenario: 4
-        ✔ Given a passing step
-
-        Scenario: 5
-        ✖ Given a failing step
-
-      Failures:
-
-      1) Scenario: 2 - features/a.feature:5
-         Step: Given a failing step - features/a.feature:6
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      2) Scenario: 3 - features/a.feature:8
-         Step: Given a failing step - features/a.feature:9
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      3) Scenario: 5 - features/b.feature:5
-         Step: Given a failing step - features/b.feature:6
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      5 scenarios (3 failed, 2 passed)
-      5 steps (3 failed, 2 passed)
-      <duration-stat>
-      """
+    When I run cucumber.js with `-f json`
+    Then the exit status should be 1
+    And the json output has the scenarios with names
+      | NAME          |
+      | A - passing   |
+      | A - failing   |
+      | A - ambiguous |
+      | B - passing   |
+      | B - pending   |
+      | C - passing   |
+      | C - undefined |
     And the file "@rerun.txt" has the text:
       """
       features/a.feature:5:8
       features/b.feature:5
+      features/c.feature:5
       """
-    When I run cucumber.js with `@rerun.txt`
-    Then it outputs this text:
-      """
-      Feature: A
-
-        Scenario: 2
-        ✖ Given a failing step
-
-        Scenario: 3
-        ✖ Given a failing step
-
-      Feature: B
-
-        Scenario: 5
-        ✖ Given a failing step
-
-      Failures:
-
-      1) Scenario: 2 - features/a.feature:5
-         Step: Given a failing step - features/a.feature:6
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      2) Scenario: 3 - features/a.feature:8
-         Step: Given a failing step - features/a.feature:9
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      3) Scenario: 5 - features/b.feature:5
-         Step: Given a failing step - features/b.feature:6
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      3 scenarios (3 failed)
-      3 steps (3 failed)
-      <duration-stat>
-      """
+    When I run cucumber.js with `-f json @rerun.txt`
+    Then the exit status should be 1
+    And the json output has the scenarios with names
+      | NAME          |
+      | A - failing   |
+      | A - ambiguous |
+      | B - pending   |
+      | C - undefined |

@@ -185,6 +185,20 @@ var jsonOutputSteps = function jsonOutputSteps() {
     assert.equal(scenario.name, name);
   });
 
+  this.Then(/^the json output has the scenarios with names$/, function (table) {
+    var expectedNames = table.rows().map(function(row){ return row[0]; });
+    var features = JSON.parse(this.lastRun.stdout);
+    var actualNames = [];
+    features.forEach(function(feature) {
+      feature.elements.forEach(function(element){
+        if (element.type === 'scenario') {
+          actualNames.push(element.name);
+        }
+      });
+    });
+    assert.deepEqual(expectedNames, actualNames);
+  });
+
   this.Then(/^the json output's first scenario has the description "([^"]*)"$/, function (description) {
     var features = JSON.parse(this.lastRun.stdout);
     assert.equal(features[0].elements[0].description.trim(), description);
