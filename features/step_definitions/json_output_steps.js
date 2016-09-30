@@ -185,6 +185,11 @@ var jsonOutputSteps = function jsonOutputSteps() {
     assert.equal(scenario.name, name);
   });
 
+  this.Then(/^the json output's first scenario has the description "([^"]*)"$/, function (description) {
+    var features = JSON.parse(this.lastRun.stdout);
+    assert.equal(features[0].elements[0].description.trim(), description);
+  });
+
 };
 
 module.exports = jsonOutputSteps;

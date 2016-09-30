@@ -88,6 +88,85 @@ describe("Cucumber.Ast.Feature", function () {
     });
   });
 
+  describe('getScenarioDescriptionByLines()', function() {
+    describe('from a scenario', function() {
+      describe('with a description', function() {
+        beforeEach(function() {
+          var source =
+            'Feature: Foo\n' +
+            '  Scenario: Bar\n' +
+            '    My scenario description\n' +
+            '\n' +
+            '    Then b\n';
+          var gherkinDocument = new Gherkin.Parser().parse(source);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        });
+
+        it('returns the keyword', function() {
+          var description = feature.getScenarioDescriptionByLines([2]);
+          expect(description.trim()).toEqual('My scenario description');
+        });
+      });
+
+      describe('without a description', function() {
+        beforeEach(function() {
+          var source =
+            'Feature: Foo\n' +
+            '  Scenario: Bar\n' +
+            '    Then b\n';
+          var gherkinDocument = new Gherkin.Parser().parse(source);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        });
+
+        it('returns the keyword', function() {
+          expect(feature.getScenarioDescriptionByLines([2])).toEqual(undefined);
+        });
+      });
+    });
+
+    describe('from an example in a scenario outline', function() {
+      describe('with a description', function() {
+        beforeEach(function() {
+          var source =
+            'Feature: Foo\n' +
+            '  Scenario Outline: Bar\n' +
+            '    My scenario outline description\n' +
+            '\n' +
+            '    When <what>\n' +
+            '\n' +
+            '  Examples:\n' +
+            '    | what |\n' +
+            '    | b    |';
+          var gherkinDocument = new Gherkin.Parser().parse(source);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        });
+
+        it('returns the keyword', function() {
+          var description = feature.getScenarioDescriptionByLines([2]);
+          expect(description.trim()).toEqual('My scenario outline description');
+        });
+      });
+
+      describe('without a description', function() {
+        beforeEach(function() {
+          var source =
+            'Feature: Foo\n' +
+            '  Scenario Outline: Bar\n' +
+            '    When <what>\n' +
+            '  Examples:\n' +
+            '    | what |\n' +
+            '    | b    |';
+          var gherkinDocument = new Gherkin.Parser().parse(source);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        });
+
+        it('returns the keyword', function() {
+          expect(feature.getScenarioDescriptionByLines([2])).toEqual(undefined);
+        });
+      });
+    });
+  });
+
   describe("getKeyword()", function () {
     it("returns the keyword of the feature", function () {
       expect(feature.getKeyword()).toEqual('keyword');

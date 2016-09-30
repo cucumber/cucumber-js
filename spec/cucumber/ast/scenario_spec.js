@@ -6,7 +6,6 @@ describe("Cucumber.Ast.Scenario", function () {
 
   beforeEach(function () {
     var scenarioData = {
-      description: 'description',
       locations: [{path: 'path', line: 1}, {line: 2}],
       name: 'name',
       steps: [
@@ -67,6 +66,13 @@ describe("Cucumber.Ast.Scenario", function () {
   });
 
   describe("getDescription()", function () {
+    var feature;
+
+    beforeEach(function() {
+      feature = createSpyWithStubs('feature', {getScenarioDescriptionByLines: 'description'});
+      scenario.setFeature(feature);
+    });
+
     it("returns the description of the scenario", function () {
       expect(scenario.getDescription()).toEqual('description');
     });

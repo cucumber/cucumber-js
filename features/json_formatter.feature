@@ -1647,3 +1647,15 @@ Feature: JSON Formatter
         }
       ]
       """
+
+  Scenario: output JSON for a feature with one scenario with a description
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: some scenario
+          Some description
+
+          Given an undefined step
+      """
+    When I run cucumber.js with `-f json`
+    Then the json output's first scenario has the description "Some description"
