@@ -3,6 +3,21 @@ Feature: Command line interface
   As a person who wants to run features
   I want to run Cucumber on the command line
 
+  Scenario: run with no features directory
+    When I run cucumber.js with `-f summary`
+    Then the error output contains the text:
+    """
+    No such file or directory - features. You can use `cucumber --init` to get started.
+    """
+
+  Scenario: run a nonexistant feature file
+    Given a directory named "features" 
+    When I run cucumber.js with `-f summary features/a.feature`
+    Then the error output contains the text:
+    """
+    No such file or directory - features/a.feature. You can use `cucumber --init` to get started.
+    """
+
   Scenario: run a single feature
     Given a file named "features/a.feature" with:
       """
