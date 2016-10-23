@@ -85,3 +85,21 @@ Feature: Rerun Formatter
       | A - ambiguous |
       | B - pending   |
       | C - undefined |
+
+  Scenario: rerun file with trailing new line
+    Given a file named "@rerun.txt" with:
+      """
+      features/c.feature:2
+
+      """
+    When I run cucumber.js with `-f json @rerun.txt`
+    Then the exit status should be 0
+    And the json output has the scenarios with names
+      | NAME          |
+      | C - passing   |
+
+  Scenario: empty rerun file
+    Given an empty file named "@rerun.txt"
+    When I run cucumber.js with `-f json @rerun.txt`
+    Then the exit status should be 0
+    And the json output has no scenarios
