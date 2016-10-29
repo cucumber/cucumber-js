@@ -4,7 +4,7 @@
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
 [![Code Climate](https://codeclimate.com/github/cucumber/cucumber-js.svg)](https://codeclimate.com/github/cucumber/cucumber-js)
 
-[Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
+[Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language and stored in a plain text file. Because they're
 written in plain language, they can be read by anyone on your team. Because they can be
 read by anyone, you can use them to help improve communication, collaboration and trust on
 your team.
@@ -13,7 +13,7 @@ Cucumber.js is the JavaScript implementation of Cucumber and runs on both Node.j
 
 ## Try it now
 
-We've put a demo of Cucumber.js to [run in your browser](http://cucumber.github.io/cucumber-js/). Why don't you give it a try before anything else?
+We've created a demo of Cucumber.js that [runs in your browser] at (http://cucumber.github.io/cucumber-js/). Why not give it a try now and see how it works?
 
 ## Help & support
 
@@ -48,7 +48,7 @@ $ npm install cucumber
 
 ### Features
 
-Features are written with the [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin)
+Features are written with the [Gherkin syntax](https://github.com/cucumber/cucumber/wiki/Gherkin) and stored in a text file.
 
 ``` gherkin
 # features/my_feature.feature
@@ -96,13 +96,13 @@ If you need to perform operations before/after every scenario, use [hooks](#hook
 
 Step definitions are the glue between features written in Gherkin and the actual system under test. They are written in JavaScript.
 
-All step definitions will run with `this` set to what is known as the *[World](https://github.com/cucumber/cucumber/wiki/A-Whole-New-World)* in Cucumber. It's an object exposing useful methods, helpers and variables to your step definitions. A new instance of `World` is created before each scenario.
+All step definitions will run with `this` set to what is known as the *[World](https://github.com/cucumber/cucumber/wiki/A-Whole-New-World)* in Cucumber. It's an object exposing useful methods, helpers and variables to your step definitions. A new instance of `World` is created before each scenario there's no chance of one scenario changing another scenario's data.
 
 Step definitions are contained within one or more wrapper functions.
 
 Those wrappers are run before executing the feature suite. `this` is an object holding important properties like the `Given()`, `When()` and `Then()` functions. Another notable property is `World`; it contains a default `World` constructor that can be either extended or replaced.
 
-Step definitions are run when steps match their name. `this` is an instance of `World`.
+Step definitions are run when a step in the feature file matches a wrapper function's descriptive string. For example the feature step 'I am on the Cucumber.js GitHub repository' would execute the 'Given' method in the following example code. Remember, `this` is an instance of `World`.
 
 ``` javascript
 // features/step_definitions/my_step_definitions.js
@@ -182,7 +182,7 @@ this.When(/^I add one cucumber$/, function *() {
 
 ##### Strings instead of regular expressions
 
-It is also possible to use simple strings instead of regexps as step definition patterns:
+It is also possible to use simple strings instead of one that includes regexps as step definition patterns:
 
 ```javascript
 this.Then('I should see "$title" as the page title', function (title, callback) {
