@@ -12,6 +12,11 @@ var cliSteps = function cliSteps() {
     fsExtra.outputFile(absoluteFilePath, fileContent, callback);
   });
 
+  this.Given(/^an empty file named "(.*)"$/, function(filePath, callback) {
+    var absoluteFilePath = path.join(this.tmpDir, filePath);
+    fsExtra.outputFile(absoluteFilePath, '', callback);
+  });
+
   this.Given(/^a directory named "(.*)"$/, function(filePath, callback) {
     var absoluteFilePath = path.join(this.tmpDir, filePath);
     fsExtra.mkdirp(absoluteFilePath, callback);
