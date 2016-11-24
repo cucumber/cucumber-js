@@ -5,8 +5,7 @@ function runFeature() {
   $output.empty();
 
   var featureSource = featureEditor.getValue();
-  var supportCode;
-  eval('supportCode = function() {' + stepDefinitionsEditor.getValue() + '};');
+  var supportCode = new Function(stepDefinitionsEditor.getValue());
   var cucumber = Cucumber(featureSource, supportCode);
 
   var prettyFormatterOptions = {

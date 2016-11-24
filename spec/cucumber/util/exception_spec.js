@@ -22,17 +22,13 @@ describe("Cucumber.Util.Arguments", function () {
     });
 
     describe("in a browser environment", function () {
-      var previousOn;
-
       beforeEach(function () {
-        previousOn = process.on;
-        process.on = void(0);
         exceptionHandler = createSpy("exception handler");
         global.window = createSpy("window");
       });
 
       afterEach(function () {
-        process.on = previousOn;
+        delete global.window;
       });
 
       it("registers the exception handler to the windows's 'onerror' event handler", function () {
@@ -58,17 +54,13 @@ describe("Cucumber.Util.Arguments", function () {
     });
 
     describe("in a browser environment", function () {
-      var previousRemoveListener;
-
       beforeEach(function () {
-        previousRemoveListener = process.removeListener;
-        process.removeListener = void(0);
         exceptionHandler = createSpy("exception handler");
         global.window = createSpyWithStubs("window", {onerror: exceptionHandler});
       });
 
       afterEach(function () {
-        process.removeListener = previousRemoveListener;
+        delete global.window;
       });
 
       it("registers the exception handler to the windows's 'onerror' event handler", function () {
