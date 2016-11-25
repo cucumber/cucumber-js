@@ -47336,7 +47336,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.0.0-rc.0",
+  "version": "2.0.0-rc.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -47499,7 +47499,7 @@ module.exports={
     "feature-test": "node ./bin/cucumber.js",
     "lint": "eslint src/**",
     "prefeature-test": "npm run build-local",
-    "prepublish": "npm run build-local && npm run build-release",
+    "prepublish": "npm run build-local",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
     "unit-test": "mocha src"
   },
