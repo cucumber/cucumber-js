@@ -12,7 +12,7 @@ Feature: step definition snippets custom syntax
       """
 
   Scenario Outline:
-    When I run cucumber-js with `--snippet-interface <INTERFACE>`
+    When I run cucumber-js with `--format-options '{"snippetInterface": "<INTERFACE>"}'`
     Then it outputs this text:
       """
       Feature: a feature
@@ -27,7 +27,7 @@ Feature: step definition snippets custom syntax
          Message:
            Undefined. Implement with the following snippet:
 
-             this.Given(/^an undefined step$/, <SNIPPET_FUNCTION_KEYWORD_AND_PARAMETERS> {
+             this.Given('an undefined step', <SNIPPET_FUNCTION_KEYWORD_AND_PARAMETERS> {
                // Write code here that turns the phrase above into concrete actions
                <SNIPPET_IMPLEMENTATION>;
              });

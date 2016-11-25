@@ -10,20 +10,17 @@ Feature: JSON Formatter
     When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
-      []
-      """
-
-  Scenario: output JSON for a feature with one undefined scenario
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Scenario: I havn't done anything yet
-      """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      []
+      [
+        {
+          "elements": [],
+          "id": "some-feature",
+          "keyword": "Feature",
+          "line": 1,
+          "name": "some feature",
+          "tags": [],
+          "uri": "<current-directory>/features/a.feature"
+        }
+      ]
       """
 
   Scenario: output JSON for a feature with one scenario with one undefined step
@@ -52,7 +49,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name":"I have not defined this step",
@@ -105,7 +101,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is undefined",
@@ -168,7 +163,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is pending",
@@ -221,7 +215,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is failing",
@@ -277,7 +270,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -336,7 +328,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -419,7 +410,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is pending",
@@ -500,7 +490,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -523,7 +512,6 @@ Feature: JSON Formatter
               "line": 5,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is failing",
@@ -593,7 +581,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -626,7 +613,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -659,7 +645,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -746,7 +731,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -769,7 +753,6 @@ Feature: JSON Formatter
               "line": 6,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -792,7 +775,6 @@ Feature: JSON Formatter
               "line": 9,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -825,7 +807,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -848,7 +829,6 @@ Feature: JSON Formatter
               "line": 6,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -871,7 +851,6 @@ Feature: JSON Formatter
               "line": 9,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -904,7 +883,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -927,7 +905,6 @@ Feature: JSON Formatter
               "line": 6,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -950,7 +927,6 @@ Feature: JSON Formatter
               "line": 9,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -1008,7 +984,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "we have this DocString:",
@@ -1096,7 +1071,6 @@ Feature: JSON Formatter
                   "line": 1
                 }
               ],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -1152,7 +1126,6 @@ Feature: JSON Formatter
               "line": 4,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "tags": [
                 {
                   "name": "@one",
@@ -1228,7 +1201,6 @@ Feature: JSON Formatter
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This table:",
@@ -1297,7 +1269,6 @@ Feature: JSON Formatter
               "line": 8,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This first step is passing",
@@ -1320,7 +1291,6 @@ Feature: JSON Formatter
               "line": 9,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This second step is passing",
@@ -1382,7 +1352,6 @@ Feature: JSON Formatter
               "line": 10,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This applies to all scenarios",
@@ -1458,7 +1427,6 @@ Feature: JSON Formatter
               "line": 8,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This first step is passing",
@@ -1481,7 +1449,6 @@ Feature: JSON Formatter
               "line": 12,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This second step is passing",
@@ -1555,7 +1522,6 @@ Feature: JSON Formatter
               "line": 8,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "keyword": "Before ",
@@ -1602,7 +1568,6 @@ Feature: JSON Formatter
               "line": 9,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "keyword": "Before ",

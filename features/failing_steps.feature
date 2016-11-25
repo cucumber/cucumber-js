@@ -92,7 +92,7 @@ Feature: Failing steps
       module.exports = stepDefinitions
       """
     When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "function accepts a callback and returns a promise"
+    Then the step "a failing step" has status failed with "function uses multiple asynchronous interfaces: callback and promise"
 
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:

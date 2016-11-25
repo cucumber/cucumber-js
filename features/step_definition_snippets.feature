@@ -1,37 +1,5 @@
 Feature: step definition snippets
 
-  Scenario Outline: escape regexp special characters
-    Given a file named "features/special.feature" with:
-      """
-      Feature: a feature
-        Scenario: a scenario
-          Given a step with <character>
-      """
-    When I run cucumber-js
-    Then it suggests a "Given" step definition snippet for:
-       """
-       /^a step with \<character>$/
-       """
-
-    Examples:
-      | character |
-      | -         |
-      | [         |
-      | ]         |
-      | {         |
-      | }         |
-      | (         |
-      | )         |
-      | *         |
-      | +         |
-      | ?         |
-      | .         |
-      | \\        |
-      | /         |
-      | ^         |
-      | $         |
-      | #         |
-
   Scenario: numbers
     Given a file named "features/number.feature" with:
       """
@@ -42,7 +10,7 @@ Feature: step definition snippets
     When I run cucumber-js
     Then it suggests a "Given" step definition snippet with 1 parameter for:
       """
-      /^a step numbered (\d+)$/
+      'a step numbered {arg1:int}'
       """
 
   Scenario: quoted strings
@@ -55,7 +23,7 @@ Feature: step definition snippets
     When I run cucumber-js
     Then it suggests a "Given" step definition snippet with 1 parameter for:
       """
-      /^a step with "([^"]*)"$/
+      'a step with {arg1:stringInDoubleQuotes}'
       """
 
   Scenario: multiple quoted strings
@@ -68,7 +36,7 @@ Feature: step definition snippets
     When I run cucumber-js
     Then it suggests a "Given" step definition snippet with 2 parameters for:
       """
-      /^a step with "([^"]*)" and "([^"]*)"$/
+      'a step with {arg1:stringInDoubleQuotes} and {arg2:stringInDoubleQuotes}'
       """
 
   Scenario: background step
@@ -83,5 +51,5 @@ Feature: step definition snippets
     When I run cucumber-js
     Then it suggests a "Given" step definition snippet with 1 parameter for:
       """
-      /^a step with "([^"]*)"$/
+      'a step with {arg1:stringInDoubleQuotes}'
       """

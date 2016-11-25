@@ -17,11 +17,11 @@ A specific hook's or step's timeout can be set with:
 // features/step_definitions/my_steps.js
 
 module.exports = function () {
-  this.Before({timeout: 60 * 1000}, function(scenario, callback) {
+  this.Before({timeout: 60 * 1000}, function() {
     // Does some slow browser/filesystem/network actions
   });
 
-  this.Given(/^a slow step$/, {timeout: 60 * 1000}, function(callback) {
+  this.Given(/^a slow step$/, {timeout: 60 * 1000}, function() {
     // Does some slow browser/filesystem/network actions
   });
 };

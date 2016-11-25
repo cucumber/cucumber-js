@@ -1,0 +1,41 @@
+env:
+  browser: true
+  es6: true
+  node: true
+extends: 'eslint:recommended'
+globals:
+  afterEach: false
+  beforeEach: false
+  createMock: false
+  describe: false
+  expect: false
+  it: false
+  sinon: false
+parser: babel-eslint
+parserOptions:
+  sourceType: module
+plugins:
+  - babel
+rules:
+  babel/array-bracket-spacing: error
+  babel/arrow-parens: error
+  babel/flow-object-type: error
+  babel/func-params-comma-dangle: error
+  babel/generator-star-spacing: error
+  babel/new-cap: error
+  babel/no-await-in-loop: error
+  babel/object-curly-spacing: error
+  babel/object-shorthand: error
+  indent:
+    - error
+    - 2
+    - SwitchCase: 1
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - never

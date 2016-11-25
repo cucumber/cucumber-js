@@ -32,7 +32,7 @@ Feature: step definition snippets i18n
          Message:
            Undefined. Implement with the following snippet:
 
-             this.Given(/^undefined step A$/, function (callback) {
+             this.Given('undefined step A', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });
@@ -42,7 +42,7 @@ Feature: step definition snippets i18n
          Message:
            Undefined. Implement with the following snippet:
 
-             this.When(/^undefined step B$/, function (callback) {
+             this.When('undefined step B', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });
@@ -52,7 +52,7 @@ Feature: step definition snippets i18n
          Message:
            Undefined. Implement with the following snippet:
 
-             this.Then(/^undefined step C$/, function (callback) {
+             this.Then('undefined step C', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });

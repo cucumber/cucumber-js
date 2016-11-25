@@ -47,7 +47,7 @@ Feature: Command line interface
          Message:
            Undefined. Implement with the following snippet:
 
-             this.When(/^a step is undefined$/, function (callback) {
+             this.When('a step is undefined', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });

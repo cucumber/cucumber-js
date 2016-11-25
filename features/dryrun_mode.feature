@@ -14,7 +14,7 @@ Feature: Dryrun mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.When(/^this step passes$/, function(callback) { callback(); });
+        this.When('this step passes', function(callback) { callback(); });
       };
       module.exports = cucumberSteps;
       """
@@ -33,7 +33,7 @@ Feature: Dryrun mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.When(/^this step passes$/, function(callback) { callback(); });
+        this.When('this step passes', function(callback) { callback(); });
       };
       module.exports = cucumberSteps;
       """
@@ -61,7 +61,7 @@ Feature: Dryrun mode
          Message:
            Undefined. Implement with the following snippet:
 
-             this.Given(/^this step passes$/, function (callback) {
+             this.Given('this step passes', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });
@@ -85,7 +85,7 @@ Feature: Dryrun mode
          Message:
            Undefined. Implement with the following snippet:
 
-             this.Given(/^this step passes$/, function (callback) {
+             this.Given('this step passes', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });
@@ -100,7 +100,7 @@ Feature: Dryrun mode
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.When(/^this step passes$/, function(callback) { callback(); });
+        this.When('this step passes', function(callback) { callback(); });
       };
       module.exports = cucumberSteps;
       """

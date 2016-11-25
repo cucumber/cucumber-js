@@ -27,7 +27,7 @@ Feature: World Parameters
     When I run cucumber.js with `--world-parameters '[1,2]'`
     Then the error output contains the text:
       """
-      --world-parameters must be passed a JSON string of an object: [1,2]
+      --world-parameters must be passed JSON of an object: [1,2]
       """
     And the exit status should be non-zero
 

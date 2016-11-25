@@ -17,17 +17,17 @@ Feature: snippets formatter
     When I run cucumber-js with `--format snippets`
     Then it outputs this text:
       """
-      this.Given(/^undefined step A$/, function (callback) {
+      this.Given('undefined step A', function (callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });
 
-      this.When(/^undefined step B$/, function (callback) {
+      this.When('undefined step B', function (callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });
 
-      this.Then(/^undefined step C$/, function (callback) {
+      this.Then('undefined step C', function (callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });

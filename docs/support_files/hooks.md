@@ -1,20 +1,16 @@
 # Hooks
 
-Hooks are used for setup and teardown the environment before and after each scenario.
-The first argument will be the current running scenario.
-See [Cucumber.Api.Scenario](https://github.com/cucumber/cucumber-js/blob/master/lib/cucumber/api/scenario.js) for more information.
-Multiple *Before* hooks are executed in the order that they were defined.
-Multiple *After* hooks are executed in the **reverse** order that they were defined.
+Hooks are used for setup and teardown the environment before and after each scenario. The first argument will be a [ScenarioResult](/src/models/scenario_result.js) for the current running scenario. Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
 
 ```javascript
 var myHooks = function () {
   // Synchronous
-  this.Before(function (scenario) {
+  this.Before(function () {
     this.count = 0;
   });
 
   // Asynchronous Callback
-  this.Before(function (scenario, callback) {
+  this.Before(function (scenarioResult, callback) {
     var world = this;
     tmp.dir({unsafeCleanup: true}, function(error, dir) {
       if (error) {
@@ -27,7 +23,7 @@ var myHooks = function () {
   });
 
   // Asynchronous Promise
-  this.After(function (scenario) {
+  this.After(function () {
     // Assuming this.driver is a selenium webdriver
     return this.driver.quit();
   });
@@ -42,28 +38,29 @@ Hooks can be conditionally selected for execution based on the tags of the scena
 
 ``` javascript
 var myHooks = function () {
-  this.Before(function (scenario) {
+  this.Before(function () {
     // This hook will be executed before all scenarios
   });
 
-  this.Before({tags: ["@foo"]}, function (scenario) {
+  this.Before({tags: "@foo"}, function () {
     // This hook will be executed before scenarios tagged with @foo
   });
 
-  this.Before({tags: ["@foo", "@bar"]}, function (scenario) {
-    // This hook will be executed before scenarios tagged with @foo AND @bar
+  this.Before({tags: "@foo and @bar"}, function () {
+    // This hook will be executed before scenarios tagged with @foo and @bar
   });
 
-  this.Before({tags: ["@foo,@bar"]}, function (scenario) {
-    // This hook will be executed before scenarios tagged with @foo OR @bar
+  this.Before({tags: "@foo or @bar"}, function () {
+    // This hook will be executed before scenarios tagged with @foo or @bar
   });
 
-  // You can use the following shorthand when specifying a single tag
-  this.Before("@foo", function (scenario) {
+  // You can use the following shorthand when only specifying tags
+  this.Before("@foo", function () {
     // This hook will be executed before scenarios tagged with @foo
-    // ...
   });
 };
 
 module.exports = myHooks;
 ```
+
+See more documentation on [tag expressions](https://docs.cucumber.io/tag-expressions/)

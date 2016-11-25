@@ -1,0 +1,49 @@
+# See https://github.com/charlierudolph/dependency-lint/blob/v4.2.0/docs/configuration.md
+# for a detailed explanation of the options
+
+executedModules:
+  npmScripts:
+    dev:
+      - build
+      - coverage
+      - lint
+      - publish
+      - test
+      - version
+  shellScripts:
+    dev: []
+    ignore: []
+    root: ''
+
+ignoreErrors:
+  missing: []
+  shouldBeDependency: []
+  shouldBeDevDependency: []
+  unused:
+    - ansi_up # example/example.js
+    - babel-eslint # .eslintrc.yml
+    - babel-plugin-istanbul # .babelrc
+    - babel-plugin-transform-async-to-generator # .babelrc
+    - babel-plugin-transform-function-bind # .babelrc
+    - babel-plugin-transform-regenerator # .babelrc
+    - babel-plugin-transform-runtime # .babelrc
+    - babel-preset-es2015 # .babelrc
+    - babel-register # test/mocha.opts
+    - coffee-script # features/compiler.feature
+    - eslint-plugin-babel # .eslintrc.yml - parser
+
+requiredModules:
+  files:
+    dev:
+      - '{features,scripts,test}/**/*'
+      - '**/*_spec.js'
+    ignore:
+      - 'dist/**/*'
+      - 'node_modules/**/*'
+    root: '**/*.js'
+  stripLoaders: false
+  transpilers:
+    - extension: .js
+      fnName: transform
+      module: babel-core # 6.17.0
+      resultKey: code

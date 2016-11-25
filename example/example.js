@@ -1,33 +1,45 @@
 var featureEditor, stepDefinitionsEditor;
+var Cucumber = Cucumber.default;
 
 function runFeature() {
   var $output = $('#output');
   $output.empty();
+  $('a[href="#output-tab"]').tab('show');
 
   var featureSource = featureEditor.getValue();
-  var supportCode = new Function(stepDefinitionsEditor.getValue());
-  var cucumber = Cucumber(featureSource, supportCode);
+  var feature = Cucumber.FeatureParser.parse({
+    source: featureSource,
+    uri: '/feature'
+  });
 
-  var prettyFormatterOptions = {
-    logToFunction: function(data) {
+  var supportCode = new Function(stepDefinitionsEditor.getValue());
+  var supportCodeLibrary = Cucumber.SupportCodeLibraryBuilder.build({
+    cwd: '/',
+    fns: [supportCode]
+  });
+
+  var formatterOptions = {
+    colorsEnabled: true,
+    cwd: '/',
+    log: function(data) {
       data = ansi_up.ansi_to_html(data);
       $output.append(data);
       $output.scrollTop($output.prop("scrollHeight"));
     },
-    useColors: true
+    supportCodeLibrary: supportCodeLibrary
   };
-  var listener = Cucumber.Listener.PrettyFormatter(prettyFormatterOptions);
-  cucumber.attachListener(listener);
+  var prettyFormatter = Cucumber.FormatterBuilder.build('pretty', formatterOptions);
 
-  $('a[href="#output-tab"]').tab('show');
-
-  try {
-    cucumber.start(function() {});
-  } catch(err) {
+  var runtime = new Cucumber.Runtime({
+    features: [feature],
+    listeners: [prettyFormatter],
+    supportCodeLibrary: supportCodeLibrary
+  });
+  runtime.start().catch(function(error) {
     var errorContainer = $('<div>')
-    errorContainer.addClass('error').text(err.stack);
+    errorContainer.addClass('error').text(error.stack);
     $output.append(errorContainer);
-  };
+  });
 };
 
 $(function() {

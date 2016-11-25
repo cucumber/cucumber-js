@@ -2,22 +2,22 @@
 
 You can register event handlers for the following events within the cucumber lifecycle.
 
-| Event          | Object                                            |
-|----------------|-----------------------------------------------------------|
-| BeforeFeatures | array of [Features](/lib/cucumber/ast/feature.js)          |
-| BeforeFeature  | [Feature](/lib/cucumber/ast/feature.js)                    |
-| BeforeScenario | [Scenario](/lib/cucumber/ast/scenario.js)                  |
-| BeforeStep     | [Step](/lib/cucumber/ast/step.js)                          |
-| StepResult     | [StepResult](/lib/cucumber/runtime/step_result.js)         |
-| AfterStep      | [Step](/lib/cucumber/ast/step.js)                          |
-| ScenarioResult | [ScenarioResult](/lib/cucumber/runtime/scenario_result.js) |
-| AfterScenario  | [Scenario](/lib/cucumber/ast/scenario.js)                  |
-| AfterFeature   | [Feature](/lib/cucumber/ast/feature.js)                    |
-| FeaturesResult | [FeaturesResult](/lib/cucumber/runtime/features_result.js) |
-| AfterFeatures  | array of [Features](/lib/cucumber/ast/feature.js)          |
+| Event          | Object                                           |
+|----------------|--------------------------------------------------|
+| BeforeFeatures | array of [Features](/src/models/feature.js)      |
+| BeforeFeature  | [Feature](/src/models/feature.js)                |
+| BeforeScenario | [Scenario](/src/models/scenario.js)              |
+| BeforeStep     | [Step](/src/models/step.js)                      |
+| StepResult     | [StepResult](/src/models/step_result.js)         |
+| AfterStep      | [Step](/src/models/step.js)                      |
+| ScenarioResult | [ScenarioResult](/src/models/scenario_result.js) |
+| AfterScenario  | [Scenario](/src/models/scenario.js)              |
+| AfterFeature   | [Feature](/src/models/feature.js)                |
+| FeaturesResult | [FeaturesResult](/src/models/features_result.js) |
+| AfterFeatures  | array of [Features](/src/models/feature.js)      |
 
 Hooks also trigger `BeforeStep`, `StepResult`, and `AfterStep` events with the object
-[HookStep](/lib/cucumber/ast/hook_step.js)
+[HookStep](/src/models/hook_step.js)
 
 Handlers will be passed the associated object as the first argument.
 Handlers can be synchronous, return a promise, accept an additional callback argument, or use generators.

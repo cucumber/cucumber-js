@@ -1,51 +1,49 @@
-## Thank you!
+# Thank you!
 
 Before anything else, thank you. Thank you for taking some of your precious time helping this project move forward.
 
-This guide will help you get started with Cucumber.js's development environment. You'll also find the set of rules you're expected to follow in order to submit improvements and fixes to Cucumber.js.
+## Setup
+
+* `npm install`
 
 ## Tests
 
-There are two set of tests resulting from the BDD approach we've been applying to Cucumber.js from the beginning.
+See the `package.json` scripts section for how to run the tests.
 
-* full-stack tests (outside): surprisingly those are Gherkin scenarios;
-* unit tests (inside): jasmine specs.
+* lint
+  * [eslint](http://eslint.org/)
+* unit tests
+  * [mocha](https://mochajs.org/)
+  * [chai](http://chaijs.com/)
+  * [sinon](http://sinonjs.org/)
+* feature tests
+  * cucumber-js tests itself
 
-### Specs
+## Internals
 
-Run the specs:
+### Project Structure
 
-    $ npm i && npm test
-
-### Debug messages
-
-You can display debug messages by setting the DEBUG_LEVEL environment variable. It goes from `1` to `5`. `5` will display everything, `1` will only print out the critical things.
-
-    $ DEBUG_LEVEL=5 ./bin/cucumber.js
-
-
-## Coding guidelines
-
-If you plan on submitting code, read this carefully. Please note it is not yet complete.
-
-We stick to the [Google JavaScript Style Guide](http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml).
-
-In addition to those syntactic rules, we apply the following principles:
-
-### Write expressive method and function names
-
-Use expressive names. Express arguments as part of the method/function name. Someone calling it should be able to infer the expected arguments only from the name. They shouldn't have to check the method/function definition.
-
-``` javascript
-adorn(/* ... */) // BAD: it does not tell anything about its
-                 // parameters, you'll need to read the method
-                 // definition to know the arguments.
-
-addStyleToText(/* ... */) // you can fairly guess this function
-                          // accepts "style" and "text" arguments:
+```
+└── src
+    │
+    ├── cli                   # argv parsing, reading files
+    │
+    ├── formatter             # displaying the results
+    │
+    ├── models                # data structures
+    │
+    ├── runtime               # run features / scenarios / steps, trigger events
+    │
+    └── support_code_library  # load hooks / step definitions
 ```
 
-** WORK IN PROGRESS **
+The runtime triggers events similar to an [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
+but waits for the listener to finish (the same style used in hook and step definitions).
+
+### Coding style
+
+* Promises and ES7 async/await
+* Try to make things as unit testable as possible. If its hard to unit test, the class/function may be doing too much.
 
 ## Release process
 

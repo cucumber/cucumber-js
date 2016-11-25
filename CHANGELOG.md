@@ -1,4 +1,90 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.3.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc1...master)
+
+### [2.0.0-rc1](https://github.com/cucumber/cucumber-js/compare/v1.3.1...v2.0.0-rc1) (2016-11-24)
+
+#### Breaking Changes
+
+* Dropped support for Node 0.10
+* CLI
+  * `--colors / --no-colors` has moved to `--format-options '{"colorsEnabled": "<BOOLEAN>"}'`
+  * `--require <DIR|FILE>`: the required files are no longer reordered to require anything in a `support` directory first
+  * `--snippet-interface <INTERFACE>` has moved to `--format-options '{"snippetInterface": "<INTERFACE>"}'`
+  * `--snippet-syntax <SYNTAX>` has moved to `--format-options '{"snippetSyntax": "<SYNTAX>"}'`
+  * `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/). It is no longer repeatable and new values will override previous
+    * `--tags @dev` stays the same
+    * `--tags ~@dev` becomes `--tags 'not @dev'`
+    * `--tags @foo,@bar` becomes  `--tags '@foo and @bar'`
+    * `--tags @foo --tags @bar` becomes `--tags '@foo or bar'`
+* Internals
+  * complete rewrite using ES2015 and promises
+* JSON Formatter
+  * String attachments are no longer base64 encoded. Buffer and Stream attachments are still base64 encoded.
+* Support Files
+  * Attachments
+    * The `attach` function used for adding attachments moved from the API scenario object to world. It is thus now available in step definitions without saving a reference to the scenario.
+        ```js
+        // 1.3.0
+        this.After(function(scenario, callback) {
+          scenario.attach(new Buffer([137, 80, 78, 71]), 'image/png')
+        });
+
+        // 2.0.0
+        this.After(function() {
+          this.attach(new Buffer([137, 80, 78, 71]), 'image/png');
+        });
+        ```
+    * When attaching buffers or strings, the callback argument is ignored.
+  * Hooks
+    * Hooks now receive a [ScenarioResult](/src/models/scenario_result.js) instead of the Scenario
+        ```js
+        // 1.3.0
+        this.After(function(scenario) {});
+
+        // 2.0.0
+        this.After(function(scenarioResult) {});
+        ```
+    * The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/)
+        ```js
+        // 1.3.0
+        this.Before({tags: ["@foo"]}, function (scenario) {})
+        this.Before({tags: ["@foo,@bar"]}, function (scenario) {})
+        this.Before({tags: ["@foo", "@bar"]}, function (scenario) {})
+
+        // 2.0.0
+        this.Before({tags: "@foo"}, function (scenario) {})
+        this.Before({tags: "@foo and @bar"}, function (scenario) {})
+        this.Before({tags: "@foo or @bar"}, function (scenario) {})
+        ```
+  * Step Definitions
+    * String patterns were removed in favor [cucumber-expressions](https://docs.cucumber.io/cucumber-expressions/)
+    * Regular Expressions
+      * capture groups matching `(-?\d+)` will be automatically converted to an integer using `parseInt`
+      * capture groups matching `(-?\d*\.?\d+)` will be automatically converted to a float using `parseFloat`
+    * Generator functions are no longer automatically run with `co`. To retain the previous functionality, use [this.setDefinitionFunctionWrapper](/docs/support_files/step_definitions.md#definition-function-wrapper)
+  * Event Handlers
+    * Objects no longer have `get*` methods and instead have exposed properties
+      * For example: `scenario.getName()` is now just `scenario.name`
+    * `StepResult` duration is now in milliseconds instead of nanoseconds
+
+#### Bug Fixes
+
+* remove empty lines from `@rerun` files (#660) (Cody Ray Hoeft)
+* catch uncaught errors in the browser (Charlie Rudolph)
+
+#### New Features
+
+* Support Files
+  * Attachments:
+    * When attaching a stream, the interface can either accept a callback as a third argument or will return a promise if not passed a callback
+  * Step Definitions
+    * Ability to add custom argument transformations
+* Fail fast / rerun formatter
+  * When used together rerun formatter will output all skipped scenarios that didn't run due to a failure
+
+#### Documentation
+
+* fix typo (#659) (gforceg)
+* update support files api reference (#661) (Zearin)
 
 ### [1.3.1](https://github.com/cucumber/cucumber-js/compare/v1.3.0...v1.3.1) (2016-09-30)
 

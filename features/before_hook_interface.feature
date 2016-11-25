@@ -133,7 +133,7 @@ Feature: Before hook interface
     And the exit status should be 1
     And the output contains the text:
       """
-      function accepts a callback and returns a promise
+      function uses multiple asynchronous interfaces: callback and promise
       """
 
   Scenario: promise resolves

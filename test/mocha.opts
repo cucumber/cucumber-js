@@ -1,0 +1,6 @@
+--colors
+--compilers js:babel-register
+--fullTrace
+--recursive
+--reporter dot
+test/test_helper.js

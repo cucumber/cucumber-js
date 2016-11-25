@@ -52,7 +52,7 @@ Feature: Target specific scenarios
     And the exit status should be 0
 
   Scenario: filter out scenarios with ~
-    When I run cucumber.js with `--tags ~@b`
+    When I run cucumber.js with `--tags "not @b"`
     Then it outputs this text:
       """
       Feature: some feature
@@ -98,7 +98,7 @@ Feature: Target specific scenarios
          Message:
            Undefined. Implement with the following snippet:
 
-             this.When(/^a step is undefined$/, function (callback) {
+             this.When('a step is undefined', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });

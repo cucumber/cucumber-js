@@ -34,7 +34,7 @@ Feature: Tagged Hooks
     Given a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
       module.exports = function() {
-        this.Before({tags: ['@foo']}, function() {
+        this.Before({tags: '@foo'}, function() {
           this.value += 1;
         });
       };
@@ -56,7 +56,7 @@ Feature: Tagged Hooks
     Given a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
       module.exports = function() {
-        this.Before({tags: ['@foo,@bar']}, function() {
+        this.Before({tags: '@foo or @bar'}, function() {
           this.value += 1;
         });
       };
@@ -86,7 +86,7 @@ Feature: Tagged Hooks
     Given a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
       module.exports = function() {
-        this.Before({tags: ['@foo', '@bar']}, function() {
+        this.Before({tags: '@foo and @bar'}, function() {
           this.value += 1;
         });
       };

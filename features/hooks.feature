@@ -27,7 +27,7 @@ Feature: Environment Hooks
         });
 
         // This should not run
-        this.After({tags: ["@foo"]}, function(scenario, callback) {
+        this.After({tags: "@foo"}, function(scenario, callback) {
           callback();
         });
       };
@@ -52,7 +52,6 @@ Feature: Environment Hooks
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "keyword": "Before ",
@@ -141,7 +140,6 @@ Feature: Environment Hooks
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "keyword": "Before ",
@@ -218,7 +216,6 @@ Feature: Environment Hooks
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "name": "This step is passing",
@@ -300,7 +297,6 @@ Feature: Environment Hooks
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "keyword": "Before ",
@@ -407,7 +403,6 @@ Feature: Environment Hooks
               "line": 3,
               "keyword": "Scenario",
               "tags": [],
-              "type": "scenario",
               "steps": [
                 {
                   "keyword": "Before ",

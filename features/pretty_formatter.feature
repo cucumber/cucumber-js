@@ -10,6 +10,8 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs this text:
       """
+      Feature: some feature
+
       0 scenarios
       0 steps
       <duration-stat>

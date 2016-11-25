@@ -36,7 +36,7 @@ Feature: Fail fast
          Message:
            fail
 
-      1 scenario (1 failed)
+      2 scenarios (1 failed, 1 skipped)
       1 step (1 failed)
       <duration-stat>
       """

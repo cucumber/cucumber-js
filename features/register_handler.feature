@@ -115,7 +115,7 @@ Feature: Register Handler
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 function accepts a callback and returns a promise
+      features/support/handlers.js:2 function uses multiple asynchronous interfaces: callback and promise
       """
 
   Scenario: promise resolves
@@ -201,3 +201,7 @@ Feature: Register Handler
       """
     When I run cucumber.js
     And the exit status should be non-zero
+    And the error output contains the text:
+      """
+      features/support/handlers.js:2 my error
+      """

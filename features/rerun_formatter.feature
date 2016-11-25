@@ -77,6 +77,14 @@ Feature: Rerun Formatter
       features/b.feature:5
       features/c.feature:5
       """
+
+  Scenario: rerunning failed scenarios
+    Given a file named "@rerun.txt" with:
+      """
+      features/a.feature:5:8
+      features/b.feature:5
+      features/c.feature:5
+      """
     When I run cucumber.js with `-f json @rerun.txt`
     Then the exit status should be 1
     And the json output has the scenarios with names
@@ -101,5 +109,23 @@ Feature: Rerun Formatter
   Scenario: empty rerun file
     Given an empty file named "@rerun.txt"
     When I run cucumber.js with `-f json @rerun.txt`
-    Then the exit status should be 0
-    And the json output has no scenarios
+    Then the exit status should be 1
+    And the json output has the scenarios with names
+      | NAME          |
+      | A - passing   |
+      | A - failing   |
+      | A - ambiguous |
+      | B - passing   |
+      | B - pending   |
+      | C - passing   |
+      | C - undefined |
+
+  Scenario: rerun with fail fast outputs all skipped scenarios
+    When I run cucumber.js with `--fail-fast`
+    Then the exit status should be 1
+    And the file "@rerun.txt" has the text:
+      """
+      features/a.feature:5:8
+      features/b.feature:2:5
+      features/c.feature:2:5
+      """

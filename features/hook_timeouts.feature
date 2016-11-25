@@ -6,11 +6,11 @@ Feature: Step definition timeouts
       module.exports = function() {
         this.setDefaultTimeout(500);
 
-        this.Before({tags: ['@slow-with-increased-timeout'], timeout: 1500}, function(scenario, callback) {
+        this.Before({tags: '@slow-with-increased-timeout', timeout: 1500}, function(scenario, callback) {
           setTimeout(callback, 1000);
         });
 
-        this.Before({tags: ['@slow']}, function(scenario, callback) {
+        this.Before({tags: '@slow'}, function(scenario, callback) {
           setTimeout(callback, 1000);
         });
 
