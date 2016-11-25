@@ -3,7 +3,7 @@
 set -e
 
 # Copy resources
-rsync -a release/ example/
+rsync -a dist/ example/
 cp node_modules/ansi_up/ansi_up.js example/
 
 # Publish to gh-pages

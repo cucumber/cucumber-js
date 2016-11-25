@@ -47336,7 +47336,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "1.3.1",
+  "version": "2.0.0-rc.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -47419,7 +47419,10 @@ module.exports={
     "dbillingham <dbillinghamuk@yahoo.co.uk>",
     "Jonathan Gomez <jonathanbgomez@gmail.com>",
     "Oliver Rogers <oli.rogers@gmail.com>",
-    "Hugues Malphettes <hmalphettes@gmail.com>"
+    "Hugues Malphettes <hmalphettes@gmail.com>",
+    "gforceg <greghedin@gmail.com>",
+    "Zearin <Zearin@users.noreply.github.com>",
+    "Cody Ray Hoeft <crhoeft@gmail.com>"
   ],
   "repository": {
     "type": "git",
