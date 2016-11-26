@@ -53,7 +53,7 @@ describe('JsonFormatter', function () {
           name: 'A Feature Name',
           tags: [
             {name: 'tag 1', line: 1},
-            {name: 'tag 2', line: 1},
+            {name: 'tag 2', line: 1}
           ],
           uri: 'uri'
         }])
@@ -62,9 +62,9 @@ describe('JsonFormatter', function () {
 
     describe('with a scenario', function () {
       beforeEach(function () {
-        var tag1 = {name: 'tag 1', line: 3}
-        var tag2 = {name: 'tag 2', line: 3}
-        var scenario = {
+        const tag1 = {name: 'tag 1', line: 3}
+        const tag2 = {name: 'tag 2', line: 3}
+        const scenario = {
           keyword: 'Scenario',
           name: 'A Scenario Name',
           description: 'A Scenario Description',
@@ -251,7 +251,7 @@ describe('JsonFormatter', function () {
             const features = JSON.parse(this.output)
             expect(features[0].elements[0].steps[0].embeddings).to.eql([
               {data: 'first data', mime_type: 'first mime type'},
-              {data: 'second data', mime_type: 'second mime type'},
+              {data: 'second data', mime_type: 'second mime type'}
             ])
           })
         })
@@ -268,7 +268,7 @@ describe('JsonFormatter', function () {
           })
 
           it('outputs the step with a match attribute', function () {
-            var features = JSON.parse(this.output)
+            const features = JSON.parse(this.output)
             expect(features[0].elements[0].steps[0].match).to.eql({
               location: 'path/to/stepDef:2'
             })

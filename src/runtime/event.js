@@ -9,14 +9,14 @@ export default class Event {
   buildBeforeEvent() {
     return new Event({
       data: this.data,
-      name: 'Before' + this.name,
+      name: 'Before' + this.name
     })
   }
 
   buildAfterEvent() {
     return new Event({
       data: this.data,
-      name: 'After' + this.name,
+      name: 'After' + this.name
     })
   }
 }

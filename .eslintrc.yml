@@ -17,25 +17,23 @@ parserOptions:
 plugins:
   - babel
 rules:
-  babel/array-bracket-spacing: error
-  babel/arrow-parens: error
-  babel/flow-object-type: error
-  babel/func-params-comma-dangle: error
-  babel/generator-star-spacing: error
+  array-bracket-spacing: error
+  arrow-parens: error
   babel/new-cap: error
   babel/no-await-in-loop: error
   babel/object-curly-spacing: error
-  babel/object-shorthand: error
-  indent:
-    - error
-    - 2
-    - SwitchCase: 1
-  linebreak-style:
-    - error
-    - unix
-  quotes:
-    - error
-    - single
-  semi:
-    - error
-    - never
+  comma-dangle: [error, never]
+  complexity: error
+  eqeqeq: [error, always]
+  indent: [error, 2, {SwitchCase: 1}]
+  linebreak-style: [error, unix]
+  no-negated-condition: error
+  no-nested-ternary: error
+  no-plusplus: error
+  no-shadow: error
+  no-trailing-spaces: error
+  no-unneeded-ternary: [error, {defaultAssignment: false}]
+  no-var: error
+  object-shorthand: [error, always]
+  quotes: [error, single]
+  semi: [error, never]

@@ -1,5 +1,6 @@
 /* eslint-disable babel/new-cap */
 
+import _ from 'lodash'
 import assert from 'assert'
 import jsonDiff from 'json-diff'
 import {getAdditionalErrorText, normalizeText} from '../support/helpers'
@@ -23,7 +24,7 @@ export default function defineJsonOutputSteps() {
     neutraliseVariableValues(actualJson)
     neutraliseVariableValues(expectedJson)
 
-    var diff = jsonDiff.diffString(expectedJson, actualJson)
+    const diff = jsonDiff.diffString(expectedJson, actualJson)
 
     assert.deepEqual(actualJson, expectedJson, diff + errorSuffix)
   })
@@ -35,19 +36,19 @@ export default function defineJsonOutputSteps() {
                       'Error:\n' + normalizeText(this.lastRun.stderr))
     }
 
-    var features = JSON.parse(this.lastRun.stdout)
+    const features = JSON.parse(this.lastRun.stdout)
     assert.equal(parseInt(count), features[0].elements.length)
   })
 
   this.Then(/^it runs the scenario "([^"]*)"$/, function (scenarioName) {
-    var features = JSON.parse(this.lastRun.stdout)
+    const features = JSON.parse(this.lastRun.stdout)
     assert.equal(1, features.length)
     assert.equal(1, features[0].elements.length)
     assert.equal(features[0].elements[0].name, scenarioName)
   })
 
   this.Then(/^it runs the scenarios "([^"]*)" and "([^"]*)"$/, function (scenarioName1, scenarioName2) {
-    var features = JSON.parse(this.lastRun.stdout)
+    const features = JSON.parse(this.lastRun.stdout)
     assert.equal(1, features.length)
     assert.equal(2, features[0].elements.length)
     assert.equal(features[0].elements[0].name, scenarioName1)
@@ -55,29 +56,25 @@ export default function defineJsonOutputSteps() {
   })
 
   this.Then(/^the scenario "([^"]*)" has the steps$/, function (name, table) {
-    var features = JSON.parse(this.lastRun.stdout)
-    var scenario = findScenario(features, function(element) {
+    const features = JSON.parse(this.lastRun.stdout)
+    const scenario = findScenario(features, function(element) {
       return element.name === name
     })
-    var stepNames = scenario.steps.map(function(step){
+    const stepNames = scenario.steps.map(function(step){
       return [step.name]
     })
     assert.deepEqual(stepNames, table.rows())
   })
 
   this.Then(/^the step "([^"]*)" has status (failed|passed|pending)(?: with "([^"]*)")?$/, function (name, status, errorMessage) {
-    var features
+    let features
     try {
       features = JSON.parse(this.lastRun.stdout)
     } catch (error) {
       error.message += '\n\n' + this.lastRun.stdout + '\n\n' + getAdditionalErrorText(this.lastRun)
       throw error
     }
-    var step = findStep(features, function() {
-      return true
-    }, function(step) {
-      return step.name === name
-    })
+    const step = findStep(features, _.identity, ['name', name])
     try {
       assert.equal(step.result.status, status)
     } catch (error) {
@@ -93,55 +90,51 @@ export default function defineJsonOutputSteps() {
   })
 
   this.Then(/^the (first|second) scenario has the steps$/, function (cardinal, table) {
-    var scenarioIndex = cardinal === 'first' ? 0 : 1
-    var features = JSON.parse(this.lastRun.stdout)
-    var scenario = findScenario(features, function(element, index) {
+    const scenarioIndex = cardinal === 'first' ? 0 : 1
+    const features = JSON.parse(this.lastRun.stdout)
+    const scenario = findScenario(features, function(element, index) {
       return index === scenarioIndex
     })
-    var stepNames = scenario.steps.map(function(step){
+    const stepNames = scenario.steps.map(function(step){
       return [step.name]
     })
     assert.deepEqual(stepNames, table.rows())
   })
 
   this.Then(/^the (first|second) scenario has the step "([^"]*)" with the doc string$/, function (cardinal, name, docString) {
-    var features = JSON.parse(this.lastRun.stdout)
-    var scenarioIndex = cardinal === 'first' ? 0 : 1
-    var step = findStep(features, function(element, index){
+    const features = JSON.parse(this.lastRun.stdout)
+    const scenarioIndex = cardinal === 'first' ? 0 : 1
+    const step = findStep(features, function(element, index){
       return index === scenarioIndex
-    }, function(step) {
-      return step.name === name
-    })
+    }, ['name', name])
     assert.equal(step.arguments[0].content, docString)
   })
 
   this.Then(/^the (first|second) scenario has the step "([^"]*)" with the table$/, function (cardinal, name, table) {
-    var features = JSON.parse(this.lastRun.stdout)
-    var scenarioIndex = cardinal === 'first' ? 0 : 1
-    var step = findStep(features, function(element, index){
+    const features = JSON.parse(this.lastRun.stdout)
+    const scenarioIndex = cardinal === 'first' ? 0 : 1
+    const step = findStep(features, function(element, index){
       return index === scenarioIndex
-    }, function(step) {
-      return step.name === name
-    })
-    var expected = table.raw().map(function (row) {
+    }, ['name', name])
+    const expected = table.raw().map(function (row) {
       return {cells: row}
     })
     assert.deepEqual(step.arguments[0].rows, expected)
   })
 
   this.Then(/^the (first|second) scenario has the name "([^"]*)"$/, function (cardinal, name) {
-    var scenarioIndex = cardinal === 'first' ? 0 : 1
-    var features = JSON.parse(this.lastRun.stdout)
-    var scenario = findScenario(features, function(element, index) {
+    const scenarioIndex = cardinal === 'first' ? 0 : 1
+    const features = JSON.parse(this.lastRun.stdout)
+    const scenario = findScenario(features, function(element, index) {
       return index === scenarioIndex
     })
     assert.equal(scenario.name, name)
   })
 
   this.Then(/^the json output has the scenarios with names$/, function (table) {
-    var expectedNames = table.rows().map(function(row){ return row[0] })
-    var features = JSON.parse(this.lastRun.stdout)
-    var actualNames = []
+    const expectedNames = table.rows().map(function(row){ return row[0] })
+    const features = JSON.parse(this.lastRun.stdout)
+    const actualNames = []
     features.forEach(function(feature) {
       feature.elements.forEach(function(element){
         actualNames.push(element.name)
@@ -151,7 +144,7 @@ export default function defineJsonOutputSteps() {
   })
 
   this.Then(/^the json output's first scenario has the description "([^"]*)"$/, function (description) {
-    var features = JSON.parse(this.lastRun.stdout)
+    const features = JSON.parse(this.lastRun.stdout)
     assert.equal(features[0].elements[0].description.trim(), description)
   })
 }

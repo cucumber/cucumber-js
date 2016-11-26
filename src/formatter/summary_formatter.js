@@ -91,7 +91,7 @@ export default class SummaryFormatter extends Formatter {
   logCountSummary(type, objects) {
     const counts = _.chain(objects).groupBy('status').mapValues('length').value()
     const total = _.reduce(counts, (memo, value) => memo + value) || 0
-    let text = total + ' ' + type + (total !== 1 ? 's' : '')
+    let text = total + ' ' + type + (total === 1 ? '' : 's')
     if (total > 0) {
       const details = []
       STATUS_REPORT_ORDER.forEach((status) => {

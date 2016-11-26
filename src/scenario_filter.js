@@ -18,7 +18,7 @@ export default class ScenarioFilter {
   getFeatureUriToLinesMapping(featurePaths) {
     const mapping = {}
     featurePaths.forEach((featurePath) => {
-      var match = FEATURE_LINENUM_REGEXP.exec(featurePath)
+      const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (match) {
         const uri = path.resolve(this.cwd, match[1])
         const linesExpression = match[2]

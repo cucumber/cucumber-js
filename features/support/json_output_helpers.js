@@ -1,30 +1,26 @@
+import _ from 'lodash'
+
 export function findScenario(features, predicate) {
-  let found = null
-  features.forEach((feature) => {
-    feature.elements.forEach((element, index) => {
-      if (predicate(element, index)) {
-        found = element
-      }
-    })
-  })
-  if (found === null) {
+  const scenario = _.chain(features)
+    .map('elements')
+    .flatten()
+    .find(predicate)
+    .value()
+  if (scenario) {
+    return scenario
+  } else {
     throw new Error('Could not find scenario matching predicate')
   }
-  return found
 }
 
 export function findStep(features, scenarioPredicate, stepPredicate) {
-  var scenario = findScenario(features, scenarioPredicate)
-  var found = null
-  scenario.steps.forEach((step) => {
-    if (stepPredicate(step)) {
-      found = step
-    }
-  })
-  if (found === null){
+  const scenario = findScenario(features, scenarioPredicate)
+  const step = _.find(scenario.steps, stepPredicate)
+  if (step) {
+    return step
+  } else {
     throw new Error('Could not find step matching predicate')
   }
-  return found
 }
 
 export function neutraliseVariableValues(report) {

@@ -26,7 +26,7 @@ export default class ProfileLoader {
     if (profiles.length === 0 && definitions['default']) {
       profiles = ['default']
     }
-    var argvs = profiles.map(function (profile){
+    const argvs = profiles.map(function (profile){
       if (!definitions[profile]) {
         throw new Error('Undefined profile: ' + profile)
       }

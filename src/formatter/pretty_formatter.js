@@ -13,7 +13,7 @@ export default class PrettyFormatter extends SummaryFormatter {
   }
 
   formatDataTable(dataTable) {
-    var rows = dataTable.raw().map((row) => {
+    const rows = dataTable.raw().map((row) => {
       return row.map((cell) => {
         return cell.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
       })

@@ -83,7 +83,7 @@ export default class ConfigurationBuilder {
   async getUnexpandedFeaturePaths() {
     if (this.args.length > 0) {
       const nestedFeaturePaths = await Promise.map(this.args, async (arg) => {
-        var filename = path.basename(arg)
+        const filename = path.basename(arg)
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
           const content = await fs.readFile(filePath, 'utf8')

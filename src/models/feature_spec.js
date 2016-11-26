@@ -144,7 +144,7 @@ describe('Feature', function () {
       this.featureOptions.gherkinPickles = [
         {
           locations: [{}],
-          steps: [{locations: [{line: 1}]},]
+          steps: [{locations: [{line: 1}]}]
         }
       ]
       this.feature = new Feature(this.featureOptions)

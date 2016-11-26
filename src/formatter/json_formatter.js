@@ -113,7 +113,7 @@ export default class JsonFormatter extends Formatter {
     }
 
     if (stepResult.stepDefinition) {
-      var location = stepResult.stepDefinition.uri + ':' + stepResult.stepDefinition.line
+      const location = stepResult.stepDefinition.uri + ':' + stepResult.stepDefinition.line
       currentStep.match = {location}
     }
 

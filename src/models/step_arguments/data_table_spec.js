@@ -8,17 +8,17 @@ describe('DataTable', function () {
           {
             cells: [
               {value: 'header 1'},
-              {value: 'header 2'},
+              {value: 'header 2'}
             ]
           }, {
             cells: [
               {value: 'row 1 col 1'},
-              {value: 'row 1 col 2'},
+              {value: 'row 1 col 2'}
             ]
           }, {
             cells: [
               {value: 'row 2 col 1'},
-              {value: 'row 2 col 2'},
+              {value: 'row 2 col 2'}
             ]
           }
         ]
@@ -38,7 +38,7 @@ describe('DataTable', function () {
       it('returns an array of object where the keys are the headers', function () {
         expect(this.dataTable.hashes()).to.eql([
           {'header 1': 'row 1 col 1', 'header 2': 'row 1 col 2'},
-          {'header 1': 'row 2 col 1', 'header 2': 'row 2 col 2'},
+          {'header 1': 'row 2 col 1', 'header 2': 'row 2 col 2'}
         ])
       })
     })
@@ -51,12 +51,12 @@ describe('DataTable', function () {
           {
             cells: [
               {value: 'row 1 col 1'},
-              {value: 'row 1 col 2'},
+              {value: 'row 1 col 2'}
             ]
           }, {
             cells: [
               {value: 'row 2 col 1'},
-              {value: 'row 2 col 2'},
+              {value: 'row 2 col 2'}
             ]
           }
         ]
@@ -76,7 +76,7 @@ describe('DataTable', function () {
       it('returns an object where the keys are the first column', function () {
         expect(this.dataTable.rowsHash()).to.eql({
           'row 1 col 1': 'row 1 col 2',
-          'row 2 col 1': 'row 2 col 2',
+          'row 2 col 1': 'row 2 col 2'
         })
       })
     })

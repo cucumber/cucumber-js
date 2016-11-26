@@ -43,7 +43,7 @@ describe('SummaryFormatter', function() {
       beforeEach(function() {
         const stepDefinition = {
           line: 3,
-          uri: 'path/to/project/steps.js',
+          uri: 'path/to/project/steps.js'
         }
         const stepResult = {
           duration: 0,
