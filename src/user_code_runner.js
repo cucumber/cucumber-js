@@ -44,8 +44,9 @@ export default class UserCodeRunner {
     })
     racingPromises.push(uncaughtExceptionPromise)
 
+    let timeoutId
     const timeoutPromise = new Promise(function (resolve, reject) {
-      Time.setTimeout(function() {
+      timeoutId = Time.setTimeout(function() {
         const timeoutMessage = 'function timed out after ' + timeoutInMilliseconds + ' milliseconds'
         reject(new Error(timeoutMessage))
       }, timeoutInMilliseconds)
@@ -65,6 +66,7 @@ export default class UserCodeRunner {
       }
     }
 
+    Time.clearTimeout(timeoutId)
     UncaughtExceptionManager.unregisterHandler(exceptionHandler)
 
     return {error, result}
