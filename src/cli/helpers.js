@@ -17,11 +17,12 @@ export async function getExpandedArgv({argv, cwd}) {
 }
 
 
-export async function getFeatures(featurePaths) {
-  return await Promise.map(featurePaths, async (featurePath) => {
+export async function getFeatures({featurePaths, scenarioFilter}) {
+  const features = await Promise.map(featurePaths, async (featurePath) => {
     const source = await fs.readFile(featurePath, 'utf8')
-    return FeatureParser.parse({source, uri: featurePath})
+    return FeatureParser.parse({scenarioFilter, source, uri: featurePath})
   })
+  return _.filter(features, (feature) => feature.scenarios.length > 0)
 }
 
 

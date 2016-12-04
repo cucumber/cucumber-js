@@ -3,7 +3,7 @@ import Scenario from './scenario'
 import Tag from './tag'
 
 export default class Feature {
-  constructor ({gherkinData, gherkinPickles, uri}) {
+  constructor ({gherkinData, gherkinPickles, scenarioFilter, uri}) {
     this.description = gherkinData.description
     this.keyword = gherkinData.keyword
     this.line = gherkinData.location.line
@@ -30,15 +30,18 @@ export default class Feature {
       .fromPairs()
       .value()
 
-    this.scenarios = _.map(gherkinPickles, (gherkinPickle) => {
-      return new Scenario({
-        backgroundStepLines,
-        feature: this,
-        gherkinData: gherkinPickle,
-        language: gherkinData.language,
-        lineToDescriptionMapping: scenarioLineToDescriptionMapping,
-        stepLineToKeywordMapping
+    this.scenarios = _.chain(gherkinPickles)
+      .map((gherkinPickle) => {
+        return new Scenario({
+          backgroundStepLines,
+          feature: this,
+          gherkinData: gherkinPickle,
+          language: gherkinData.language,
+          lineToDescriptionMapping: scenarioLineToDescriptionMapping,
+          stepLineToKeywordMapping
+        })
       })
-    })
+      .filter((scenario) => scenarioFilter.matches(scenario))
+      .value()
   }
 }

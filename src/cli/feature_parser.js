@@ -5,7 +5,7 @@ const gherkinCompiler = new Gherkin.Compiler()
 const gherkinParser = new Gherkin.Parser()
 
 export default class Parser {
-  static parse({source, uri}) {
+  static parse({scenarioFilter, source, uri}) {
     let gherkinDocument
     try {
       gherkinDocument = gherkinParser.parse(source)
@@ -17,6 +17,7 @@ export default class Parser {
     return new Feature({
       gherkinData: gherkinDocument.feature,
       gherkinPickles: gherkinCompiler.compile(gherkinDocument, uri),
+      scenarioFilter,
       uri
     })
   }

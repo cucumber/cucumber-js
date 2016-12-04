@@ -10,17 +10,7 @@ Feature: JSON Formatter
     When I run cucumber.js with `-f json`
     Then it outputs this json:
       """
-      [
-        {
-          "elements": [],
-          "id": "some-feature",
-          "keyword": "Feature",
-          "line": 1,
-          "name": "some feature",
-          "tags": [],
-          "uri": "<current-directory>/features/a.feature"
-        }
-      ]
+      []
       """
 
   Scenario: output JSON for a feature with one scenario with one undefined step

@@ -9,6 +9,7 @@ describe('Feature', function () {
     this.featureOptions = {
       gherkinData: this.gherkinData,
       gherkinPickles: [],
+      scenarioFilter: createMock({matches: true}),
       uri: 'feature uri'
     }
   })
@@ -74,11 +75,16 @@ describe('Feature', function () {
         {locations: [{}]},
         {locations: [{}]}
       ]
+      this.featureOptions.scenarioFilter.matches
+        .onCall(0)
+        .returns(true)
+        .onCall(1)
+        .returns(false)
       this.feature = new Feature(this.featureOptions)
     })
 
-    it('returns the scenarios', function () {
-      expect(this.feature.scenarios).to.have.lengthOf(2)
+    it('returns only the scenarios the match the filter', function () {
+      expect(this.feature.scenarios).to.have.lengthOf(1)
     })
   })
 

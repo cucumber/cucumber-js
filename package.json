@@ -173,7 +173,7 @@
     "prefeature-test": "npm run build-local",
     "prepublish": "npm run build-local",
     "test": "npm run lint && npm run unit-test && npm run feature-test",
-    "unit-test": "mocha src"
+    "unit-test": "mocha 'src/**/*_spec.js'"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",

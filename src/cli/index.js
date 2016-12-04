@@ -46,20 +46,19 @@ export default class Cli {
   async run() {
     const configuration = await this.getConfiguration()
     const supportCodeLibrary = this.getSupportCodeLibrary(configuration.supportCodePaths)
+    const scenarioFilter = new ScenarioFilter(configuration.scenarioFilterOptions)
     const [features, {cleanup, formatters}] = await Promise.all([
-      getFeatures(configuration.featurePaths),
+      getFeatures({featurePaths: configuration.featurePaths, scenarioFilter}),
       this.getFormatters({
         formatOptions: configuration.formatOptions,
         formats: configuration.formats,
         supportCodeLibrary
       })
     ])
-    const scenarioFilter = new ScenarioFilter(configuration.scenarioFilterOptions)
     const runtime = new Runtime({
       features,
       listeners: formatters,
       options: configuration.runtimeOptions,
-      scenarioFilter,
       supportCodeLibrary
     })
     const result = await runtime.start()

@@ -6,11 +6,10 @@ import ScenarioRunner from './scenario_runner'
 import Status from '../status'
 
 export default class FeaturesRunner {
-  constructor({eventBroadcaster, features, options, scenarioFilter, supportCodeLibrary}) {
+  constructor({eventBroadcaster, features, options, supportCodeLibrary}) {
     this.eventBroadcaster = eventBroadcaster
     this.features = features
     this.options = options
-    this.scenarioFilter = scenarioFilter
     this.supportCodeLibrary = supportCodeLibrary
     this.featuresResult = new FeaturesResult(options.strict)
   }
@@ -33,9 +32,6 @@ export default class FeaturesRunner {
     const event = new Event({data: feature, name: Event.FEATURE_EVENT_NAME})
     await this.eventBroadcaster.broadcastAroundEvent(event, async() => {
       await Promise.each(feature.scenarios, async(scenario) => {
-        if (!this.scenarioFilter.matches(scenario)) {
-          return
-        }
         const scenarioResult = await this.runScenario(scenario)
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
