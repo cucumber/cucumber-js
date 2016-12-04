@@ -1,3 +1,4 @@
+import AttachmentManager from './attachment_manager'
 import Event from './event'
 import Hook from '../models/hook'
 import Promise from 'bluebird'
@@ -8,12 +9,16 @@ import StepRunner from './step_runner'
 
 export default class ScenarioRunner {
   constructor({eventBroadcaster, options, scenario, supportCodeLibrary}) {
+    this.attachmentManager = new AttachmentManager()
     this.eventBroadcaster = eventBroadcaster
     this.options = options
     this.scenario = scenario
     this.supportCodeLibrary = supportCodeLibrary
     this.scenarioResult = new ScenarioResult(scenario)
-    this.world = new supportCodeLibrary.World(options.worldParameters)
+    this.world = new supportCodeLibrary.World({
+      attach: ::this.attachmentManager.create,
+      parameters: options.worldParameters
+    })
   }
 
   async broadcastScenarioResult() {
@@ -29,6 +34,7 @@ export default class ScenarioRunner {
 
   invokeStep(step, stepDefinition) {
     return StepRunner.run({
+      attachmentManager: this.attachmentManager,
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       scenarioResult: this.scenarioResult,
       step,

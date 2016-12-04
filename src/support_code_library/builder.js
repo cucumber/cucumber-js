@@ -39,7 +39,8 @@ function build({cwd, fns}) {
     setDefinitionFunctionWrapper(fn) {
       definitionFunctionWrapper = fn
     },
-    World(parameters) {
+    World({attach, parameters}) {
+      this.attach = attach
       this.parameters = parameters
     }
   }

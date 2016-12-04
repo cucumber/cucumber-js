@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import AttachmentManager from './attachment_manager'
 import Status from '../status'
 import StepResult from '../models/step_result'
 import Time from '../time'
@@ -7,12 +6,10 @@ import UserCodeRunner from '../user_code_runner'
 
 const {beginTiming, endTiming} = Time
 
-async function run({defaultTimeout, scenarioResult, step, stepDefinition, transformLookup, world}) {
+async function run({attachmentManager, defaultTimeout, scenarioResult, step, stepDefinition, transformLookup, world}) {
   beginTiming()
   const parameters = stepDefinition.getInvocationParameters({scenarioResult, step, transformLookup})
   const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
-  const attachmentManager = new AttachmentManager()
-  world.attach = ::attachmentManager.create
 
   let error, result
   const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
@@ -29,8 +26,11 @@ async function run({defaultTimeout, scenarioResult, step, stepDefinition, transf
     error = stepDefinition.getInvalidCodeLengthMessage(parameters)
   }
 
+  const attachments = attachmentManager.getAll()
+  attachmentManager.reset()
+
   const stepResultData = {
-    attachments: attachmentManager.getAll(),
+    attachments,
     duration: endTiming(),
     step,
     stepDefinition
