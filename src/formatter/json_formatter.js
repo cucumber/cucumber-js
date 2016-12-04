@@ -94,6 +94,10 @@ export default class JsonFormatter extends Formatter {
       result: {status}
     }
 
+    if (step.isBackground) {
+      currentStep.isBackground = true
+    }
+
     if (step.constructor.name === 'Hook') {
       currentStep.hidden = true
     } else {
