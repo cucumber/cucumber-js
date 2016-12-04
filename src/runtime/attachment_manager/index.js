@@ -57,4 +57,8 @@ export default class AttachmentManager {
   getAll() {
     return this.attachments
   }
+
+  reset() {
+    this.attachments = []
+  }
 }

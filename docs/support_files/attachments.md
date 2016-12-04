@@ -1,6 +1,8 @@
 # Attachments
 
-You can attach text, images and files to the output of the JSON formatter:
+Text, images and files can be added to the output of the JSON formatter with attachments.
+The world constructor is passed an `attach` function,
+which the default world constructor assigns to `this.attach`.
 
 ``` javascript
 this.After(function () {

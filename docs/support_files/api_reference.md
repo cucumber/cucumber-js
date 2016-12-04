@@ -125,6 +125,15 @@ Alias of `this.defineStep`.
 
 #### `this.World`
 
-Set a custom world constructor, to override the default world constructor (`function () {}`).
+Set a custom world constructor, to override the default world constructor:
+```
+function World({attach, parameters}) {
+  this.attach = attach
+  this.parameters = parameters
+}
+```
+
+* `attach` - a function hooks / steps can use to add [attachments](./attachments.md)
+* `parameters` - world parameters passed in through the [cli](../cli.md#world-parameters)
 
 **Note:** The World constructor was made strictly synchronous in *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*.

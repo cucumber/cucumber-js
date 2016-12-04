@@ -83,9 +83,9 @@ Feature: World Parameters
   Scenario: custom world constructor is passed the parameters
     Given a file named "features/support/world.js" with:
       """
-      function CustomWorld(parameters) {
-        for(key in parameters) {
-          this[key] = parameters[key];
+      function CustomWorld(options) {
+        for(key in options.parameters) {
+          this[key] = options.parameters[key];
         }
       }
 
