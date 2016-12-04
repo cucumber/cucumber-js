@@ -1,7 +1,7 @@
 ## Setup
 
 * Install [Chrome](https://www.google.com/chrome/)
-* Run `npm install --save-dev cucumber selenium-webdriver chromedriver`
+* Run `npm install --save-dev cucumber selenium-webdriver@3.0.1 chromedriver@2.25.1 `
 * Add the following files
 
     ```gherkin
@@ -19,12 +19,13 @@
 
     ```javascript
     // features/support/world.js
-    var chrome = require('selenium-webdriver/chrome');
-    var chromeDriverPath = require('chromedriver').path;
-    chrome.setDefaultService(new chrome.ServiceBuilder(chromeDriverPath).build())
+    require('chromedriver')
+    var seleniumWebdriver = require('selenium-webdriver');
 
     function CustomWorld() {
-      this.driver = new chrome.Driver()
+      this.driver = new seleniumWebdriver.Builder()
+        .forBrowser('chrome')
+        .build();
     }
 
     module.exports = function() {
