@@ -92,7 +92,7 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 Use `--tags <EXPRESSION>` to run specific features or scenarios.
 
 * `--tags @dev`: tagged with @dev
-* `--tags ~@dev`: NOT tagged with `@dev`
+* `--tags not @dev`: NOT tagged with `@dev`
 * `--tags @foo,@bar`: tagged with `@foo` OR `bar`
 * `--tags @foo --tags @bar`: tagged with `@foo` AND `bar`
 
