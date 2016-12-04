@@ -1,7 +1,7 @@
 ## Setup
 
 * Install [Chrome](https://www.google.com/chrome/)
-* Run `npm install --save-dev cucumber selenium-webdriver chromedriver`
+* Run `npm install --save-dev cucumber selenium-webdriver@3.0.1 chromedriver@2.25.1`
 * Add the following files
 
     ```gherkin
@@ -19,12 +19,13 @@
 
     ```javascript
     // features/support/world.js
-    var chrome = require('selenium-webdriver/chrome');
-    var chromeDriverPath = require('chromedriver').path;
-    chrome.setDefaultService(new chrome.ServiceBuilder(chromeDriverPath).build())
+    require('chromedriver')
+    var seleniumWebdriver = require('selenium-webdriver');
 
     function CustomWorld() {
-      this.driver = new chrome.Driver()
+      this.driver = new seleniumWebdriver.Builder()
+        .forBrowser('chrome')
+        .build();
     }
 
     module.exports = function() {
@@ -46,17 +47,17 @@
     var seleniumWebdriver = require('selenium-webdriver');
 
     module.exports = function () {
-      this.Given(/^I am on the Cucumber.js GitHub repository$/, function() {
+      this.Given('I am on the Cucumber.js GitHub repository', function() {
         return this.driver.get('https://github.com/cucumber/cucumber-js/tree/master');
       });
 
-      this.When(/^I click on "([^"]*)"$/, function (text) {
+      this.When('I click on {stringInDoubleQuotes}', function (text) {
         return this.driver.findElement({linkText: text}).then(function(element) {
           return element.click();
         });
       });
 
-      this.Then(/^I should see "([^"]*)"$/, function (text) {
+      this.Then('I should see {stringInDoubleQuotes}', function (text) {
         var xpath = "//*[contains(text(),'" + text + "')]";
         var condition = seleniumWebdriver.until.elementLocated({xpath: xpath});
         return this.driver.wait(condition, 5000);
