@@ -1354,7 +1354,8 @@ Feature: JSON Formatter
                   "arguments": [],
                   "match": {
                     "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                  }
+                  },
+                  "isBackground": true
                 },
                 {
                   "name": "This first step is passing",

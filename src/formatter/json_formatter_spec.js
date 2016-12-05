@@ -155,6 +155,20 @@ describe('JsonFormatter', function () {
           })
         })
 
+        describe('that is background', function () {
+          beforeEach(function() {
+            this.step.isBackground = true
+            this.jsonFormatter.handleStepResult(this.stepResult)
+            this.jsonFormatter.handleAfterFeatures({})
+          })
+
+          it('outputs a isBackground attribute', function () {
+            const features = JSON.parse(this.output)
+            const step = features[0].elements[0].steps[0]
+            expect(step.isBackground).to.be.true
+          })
+        })
+
         describe('that is hidden', function () {
           beforeEach(function() {
             this.step.constructor = {name: 'Hook'}
