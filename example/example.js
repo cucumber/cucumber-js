@@ -8,6 +8,7 @@ function runFeature() {
 
   var featureSource = featureEditor.getValue();
   var feature = Cucumber.FeatureParser.parse({
+    scenarioFilter: new Cucumber.ScenarioFilter({}),
     source: featureSource,
     uri: '/feature'
   });

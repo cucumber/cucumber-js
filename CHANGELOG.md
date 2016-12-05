@@ -1,4 +1,20 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc2...master)
+
+### [2.0.0-rc.2](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2016-12-04)
+
+#### New Features
+
+* json formatter: add `isBackground` to steps
+* pass `attach` to world constructor instead of assigning it to world
+
+#### Bug Fixes
+
+* clear timeouts of asynchronous hooks/steps
+* stop running features with no scenarios
+
+#### Documentation
+
+* update node js example
 
 ### [2.0.0-rc.1](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.0...v2.0.0-rc.1) (2016-11-25)
 
