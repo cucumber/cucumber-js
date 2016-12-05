@@ -42,7 +42,7 @@ $ npm install cucumber
 
 ### Browser
 
-* Grab the latest browserified code from the [release](/release) folder
+* Grab the browserified code from the latest release in the [dist](/dist) folder
 
 ## Documentation
 
