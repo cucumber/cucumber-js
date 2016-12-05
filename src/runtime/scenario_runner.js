@@ -132,7 +132,6 @@ export default class ScenarioRunner {
     await Promise.each(this.scenario.steps, async(step) => {
       const event = new Event({data: step, name: Event.STEP_EVENT_NAME})
       await this.eventBroadcaster.broadcastAroundEvent(event, async() => {
-        await Promise.resolve() // synonymous to process.nextTick / setImmediate
         const stepResult = await this.runStep(step)
         await this.broadcastStepResult(stepResult)
       })
