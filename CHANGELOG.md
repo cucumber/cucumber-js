@@ -35,8 +35,8 @@
   * `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/). It is no longer repeatable and new values will override previous
     * `--tags @dev` stays the same
     * `--tags ~@dev` becomes `--tags 'not @dev'`
-    * `--tags @foo,@bar` becomes  `--tags '@foo and @bar'`
-    * `--tags @foo --tags @bar` becomes `--tags '@foo or bar'`
+    * `--tags @foo,@bar` becomes  `--tags '@foo or @bar'`
+    * `--tags @foo --tags @bar` becomes `--tags '@foo and bar'`
 * Internals
   * complete rewrite using ES2015 and promises
 * JSON Formatter
