@@ -24,12 +24,12 @@ describe('SupportCodeLibraryBuilder', function () {
     })
   })
 
-  describe('this.After', function() {
+  describe('After', function() {
     describe('function only', function() {
       beforeEach(function() {
         const hook = function() {}
-        const fn = function() {
-          this.After(hook) // eslint-disable-line babel/new-cap
+        const fn = ({After}) => {
+          After(hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
         this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
@@ -44,8 +44,8 @@ describe('SupportCodeLibraryBuilder', function () {
     describe('tag and function', function() {
       beforeEach(function() {
         const hook = function() {}
-        const fn = function() {
-          this.After('@tagA', hook) // eslint-disable-line babel/new-cap
+        const fn = ({After}) => {
+          After('@tagA', hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
         this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
@@ -61,8 +61,8 @@ describe('SupportCodeLibraryBuilder', function () {
     describe('options and function', function() {
       beforeEach(function() {
         const hook = function() {}
-        const fn = function() {
-          this.After({tags: '@tagA'}, hook) // eslint-disable-line babel/new-cap
+        const fn = ({After}) => {
+          After({tags: '@tagA'}, hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
         this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
@@ -80,8 +80,8 @@ describe('SupportCodeLibraryBuilder', function () {
     describe('function only', function() {
       beforeEach(function() {
         const hook = function() {}
-        const fn = function() {
-          this.Before(hook) // eslint-disable-line babel/new-cap
+        const fn = ({Before}) => {
+          Before(hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
         this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
@@ -96,8 +96,8 @@ describe('SupportCodeLibraryBuilder', function () {
     describe('tag and function', function() {
       beforeEach(function() {
         const hook = function() {}
-        const fn = function() {
-          this.Before('@tagA', hook) // eslint-disable-line babel/new-cap
+        const fn = ({Before}) => {
+          Before('@tagA', hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
         this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
@@ -113,8 +113,8 @@ describe('SupportCodeLibraryBuilder', function () {
     describe('options and function', function() {
       beforeEach(function() {
         const hook = function() {}
-        const fn = function() {
-          this.Before({tags: '@tagA'}, hook) // eslint-disable-line babel/new-cap
+        const fn = ({Before}) => {
+          Before({tags: '@tagA'}, hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
         this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})

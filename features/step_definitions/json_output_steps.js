@@ -1,13 +1,14 @@
 /* eslint-disable babel/new-cap */
 
 import _ from 'lodash'
+import {defineSupportCode} from '../../'
+import {findScenario, findStep, neutraliseVariableValues} from '../support/json_output_helpers'
+import {getAdditionalErrorText, normalizeText} from '../support/helpers'
 import assert from 'assert'
 import jsonDiff from 'json-diff'
-import {getAdditionalErrorText, normalizeText} from '../support/helpers'
-import {findScenario, findStep, neutraliseVariableValues} from '../support/json_output_helpers'
 
-export default function defineJsonOutputSteps() {
-  this.Then(/^it outputs this json:$/, function(expectedOutput) {
+defineSupportCode(function({Then}) {
+  Then(/^it outputs this json:$/, function(expectedOutput) {
     const actualOutput = this.lastRun.stdout
     expectedOutput = expectedOutput.replace(/<current-directory>/g, this.tmpDir.replace(/\\/g,'/'))
 
@@ -29,7 +30,7 @@ export default function defineJsonOutputSteps() {
     assert.deepEqual(actualJson, expectedJson, diff + errorSuffix)
   })
 
-  this.Then(/^it runs (\d+) scenarios$/, function (count) {
+  Then(/^it runs (\d+) scenarios$/, function (count) {
     if (this.lastRun.error) {
       throw new Error('Expected last run to pass but it failed\n' +
                       'Output:\n' + normalizeText(this.lastRun.stdout) + '\n' +
@@ -40,14 +41,14 @@ export default function defineJsonOutputSteps() {
     assert.equal(parseInt(count), features[0].elements.length)
   })
 
-  this.Then(/^it runs the scenario "([^"]*)"$/, function (scenarioName) {
+  Then(/^it runs the scenario "([^"]*)"$/, function (scenarioName) {
     const features = JSON.parse(this.lastRun.stdout)
     assert.equal(1, features.length)
     assert.equal(1, features[0].elements.length)
     assert.equal(features[0].elements[0].name, scenarioName)
   })
 
-  this.Then(/^it runs the scenarios "([^"]*)" and "([^"]*)"$/, function (scenarioName1, scenarioName2) {
+  Then(/^it runs the scenarios "([^"]*)" and "([^"]*)"$/, function (scenarioName1, scenarioName2) {
     const features = JSON.parse(this.lastRun.stdout)
     assert.equal(1, features.length)
     assert.equal(2, features[0].elements.length)
@@ -55,7 +56,7 @@ export default function defineJsonOutputSteps() {
     assert.equal(features[0].elements[1].name, scenarioName2)
   })
 
-  this.Then(/^the scenario "([^"]*)" has the steps$/, function (name, table) {
+  Then(/^the scenario "([^"]*)" has the steps$/, function (name, table) {
     const features = JSON.parse(this.lastRun.stdout)
     const scenario = findScenario(features, function(element) {
       return element.name === name
@@ -66,7 +67,7 @@ export default function defineJsonOutputSteps() {
     assert.deepEqual(stepNames, table.rows())
   })
 
-  this.Then(/^the step "([^"]*)" has status (failed|passed|pending)(?: with "([^"]*)")?$/, function (name, status, errorMessage) {
+  Then(/^the step "([^"]*)" has status (failed|passed|pending)(?: with "([^"]*)")?$/, function (name, status, errorMessage) {
     let features
     try {
       features = JSON.parse(this.lastRun.stdout)
@@ -89,7 +90,7 @@ export default function defineJsonOutputSteps() {
     }
   })
 
-  this.Then(/^the (first|second) scenario has the steps$/, function (cardinal, table) {
+  Then(/^the (first|second) scenario has the steps$/, function (cardinal, table) {
     const scenarioIndex = cardinal === 'first' ? 0 : 1
     const features = JSON.parse(this.lastRun.stdout)
     const scenario = findScenario(features, function(element, index) {
@@ -101,7 +102,7 @@ export default function defineJsonOutputSteps() {
     assert.deepEqual(stepNames, table.rows())
   })
 
-  this.Then(/^the (first|second) scenario has the step "([^"]*)" with the doc string$/, function (cardinal, name, docString) {
+  Then(/^the (first|second) scenario has the step "([^"]*)" with the doc string$/, function (cardinal, name, docString) {
     const features = JSON.parse(this.lastRun.stdout)
     const scenarioIndex = cardinal === 'first' ? 0 : 1
     const step = findStep(features, function(element, index){
@@ -110,7 +111,7 @@ export default function defineJsonOutputSteps() {
     assert.equal(step.arguments[0].content, docString)
   })
 
-  this.Then(/^the (first|second) scenario has the step "([^"]*)" with the table$/, function (cardinal, name, table) {
+  Then(/^the (first|second) scenario has the step "([^"]*)" with the table$/, function (cardinal, name, table) {
     const features = JSON.parse(this.lastRun.stdout)
     const scenarioIndex = cardinal === 'first' ? 0 : 1
     const step = findStep(features, function(element, index){
@@ -122,7 +123,7 @@ export default function defineJsonOutputSteps() {
     assert.deepEqual(step.arguments[0].rows, expected)
   })
 
-  this.Then(/^the (first|second) scenario has the name "([^"]*)"$/, function (cardinal, name) {
+  Then(/^the (first|second) scenario has the name "([^"]*)"$/, function (cardinal, name) {
     const scenarioIndex = cardinal === 'first' ? 0 : 1
     const features = JSON.parse(this.lastRun.stdout)
     const scenario = findScenario(features, function(element, index) {
@@ -131,7 +132,7 @@ export default function defineJsonOutputSteps() {
     assert.equal(scenario.name, name)
   })
 
-  this.Then(/^the json output has the scenarios with names$/, function (table) {
+  Then(/^the json output has the scenarios with names$/, function (table) {
     const expectedNames = table.rows().map(function(row){ return row[0] })
     const features = JSON.parse(this.lastRun.stdout)
     const actualNames = []
@@ -143,8 +144,8 @@ export default function defineJsonOutputSteps() {
     assert.deepEqual(expectedNames, actualNames)
   })
 
-  this.Then(/^the json output's first scenario has the description "([^"]*)"$/, function (description) {
+  Then(/^the json output's first scenario has the description "([^"]*)"$/, function (description) {
     const features = JSON.parse(this.lastRun.stdout)
     assert.equal(features[0].elements[0].description.trim(), description)
   })
-}
+})

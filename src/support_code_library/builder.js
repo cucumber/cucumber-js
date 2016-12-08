@@ -13,10 +13,14 @@ function build({cwd, fns}) {
     defaultTimeout: 5000,
     listeners: [],
     stepDefinitions: [],
-    transformLookup: TransformLookupBuilder.build()
+    transformLookup: TransformLookupBuilder.build(),
+    World({attach, parameters}) {
+      this.attach = attach
+      this.parameters = parameters
+    }
   }
   let definitionFunctionWrapper = null
-  const fnContext = {
+  const fnArgument = {
     addTransform({captureGroupRegexps, transformer, typeName}) {
       const transform = new Transform(
         typeName,
@@ -39,13 +43,12 @@ function build({cwd, fns}) {
     setDefinitionFunctionWrapper(fn) {
       definitionFunctionWrapper = fn
     },
-    World({attach, parameters}) {
-      this.attach = attach
-      this.parameters = parameters
+    setWorldConstructor(fn) {
+      options.World = fn
     }
   }
-  fnContext.Given = fnContext.When = fnContext.Then = fnContext.defineStep
-  fns.forEach((fn) => fn.call(fnContext))
+  fnArgument.Given = fnArgument.When = fnArgument.Then = fnArgument.defineStep
+  fns.forEach((fn) => fn(fnArgument))
   wrapDefinitions({
     cwd,
     definitionFunctionWrapper,
@@ -54,7 +57,6 @@ function build({cwd, fns}) {
       .flatten()
       .value()
   })
-  options.World = fnContext.World
   return options
 }
 

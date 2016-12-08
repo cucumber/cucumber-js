@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {getExpandedArgv, getFeatures, getSupportCodeFunctions} from './helpers'
+import {getExpandedArgv, getFeatures} from './helpers'
 import ConfigurationBuilder from './configuration_builder'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
@@ -39,8 +39,9 @@ export default class Cli {
   }
 
   getSupportCodeLibrary(supportCodePaths) {
-    const fns = getSupportCodeFunctions(supportCodePaths)
-    return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns})
+    Cli.supportCodeFns = []
+    supportCodePaths.forEach((codePath) => require(codePath))
+    return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns: Cli.supportCodeFns})
   }
 
   async run() {
