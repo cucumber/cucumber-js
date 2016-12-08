@@ -39,6 +39,7 @@ If not used, the following files are required:
   * all support files in the `features` folder are loaded
 * Otherwise
   * all support files that are siblings or below the features are loaded
+
 Support files are defined as all `*.js` files and other extensions specified by `--compiler`.
 Automatic loading is disabled when this option is specified, and all loading becomes explicit.
 
