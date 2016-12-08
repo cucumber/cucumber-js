@@ -1,6 +1,7 @@
 Feature: Failed scenarios
   As a developer nesting feature files
-  I want the default required files to include any
+  I want the default required files to include any files under the features folder
+  So I don't have to do anything special when I start organizing my features
 
   Scenario:
     Given a directory named "features/nested"
