@@ -35,7 +35,7 @@ because of the file extension.
 
 Use `--require <FILE|DIR>` to require files before executing the features.
 If not used, the following files are required:
-* If the features live in a `features` folder
+* If the features live in a `features` folder (at any level)
   * all support files in the `features` folder are loaded
 * Otherwise
   * all support files that are siblings or below the features are loaded
