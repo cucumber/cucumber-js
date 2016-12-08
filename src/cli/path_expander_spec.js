@@ -18,8 +18,7 @@ describe('PathExpander', function() {
       })
 
       it('returns the file', async function() {
-        const realPath = await fs.realpath(path.join(this.tmpDir, 'a.ext'))
-        expect(this.results).to.eql([realPath])
+        expect(this.results).to.eql([path.join(this.tmpDir, 'a.ext')])
       })
     })
 
@@ -46,8 +45,7 @@ describe('PathExpander', function() {
         })
 
         it('returns the file', async function() {
-          const realPath = await fs.realpath(path.join(this.subdirectoryPath, 'a.ext'))
-          expect(this.results).to.eql([realPath])
+          expect(this.results).to.eql([path.join(this.subdirectoryPath, 'a.ext')])
         })
       })
 
@@ -60,8 +58,7 @@ describe('PathExpander', function() {
         })
 
         it('returns the file', async function() {
-          const realPath = await fs.realpath(path.join(this.nestedSubdirectoryPath, 'a.ext'))
-          expect(this.results).to.eql([realPath])
+          expect(this.results).to.eql([path.join(this.nestedSubdirectoryPath, 'a.ext')])
         })
       })
     })

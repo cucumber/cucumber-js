@@ -34,9 +34,13 @@ because of the file extension.
 ## Requiring support files
 
 Use `--require <FILE|DIR>` to require files before executing the features.
-If not used, all `*.js` files (and other extensions specified by `--compiler`) that are siblings
-or below the features will be loaded automatically. Automatic
-loading is disabled when this option is specified, and all loading becomes explicit.
+If not used, the following files are required:
+* If the features live in a `features` folder
+  * all support files in the `features` folder are loaded
+* Otherwise
+  * all support files that are siblings or below the features are loaded
+Support files are defined as all `*.js` files and other extensions specified by `--compiler`.
+Automatic loading is disabled when this option is specified, and all loading becomes explicit.
 
 ## Formats
 
