@@ -16,6 +16,8 @@ module.exports = function () {
   });
 
   // Asynchronous - callback
+  //
+  // Take a callback as an additional argument to execute when the step is done
   this.Then(/^Then the file named (.*) is empty$/, function (fileName, callback) {
     fs.readFile(fileName, 'utf8', function(error, contents) {
       if (error) {
@@ -28,6 +30,8 @@ module.exports = function () {
   });
 
   // Asynchronous - promise
+  //
+  // Return a promise. The step is done when the promise resolves or rejects
   this.When(/^I view my profile$/, function () {
     // Assuming this.driver is a selenium webdriver
     return this.driver.findElement({css: '.profile-link'}).then(function(element) {
@@ -40,7 +44,7 @@ module.exports = function () {
 
 ## Definition function wrapper
 
-If you would like to wrap step or hook definitions in with some additional logic you can use `this.setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the  function retains its original length.
+If you would like to wrap step or hook definitions in with some additional logic you can use `this.setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
 
 ```javascript
 // features/step_definitions/file_steps.js
@@ -72,6 +76,6 @@ module.exports = function () {
 ## Pending steps
 
 Each interface has its own way of marking a step as pending
-* synchronous / asynchronous generator - return `'pending'`
+* synchronous - return `'pending'`
 * asynchronous callback - execute the callback with `null, 'pending'`
 * asynchronous promise - promise resolves to `'pending'`
