@@ -55,7 +55,18 @@ export default class ConfigurationBuilder {
 
   getFeatureDirectoryPaths(featurePaths) {
     const featureDirs = featurePaths.map((featurePath) => {
-      return path.relative(this.cwd, path.dirname(featurePath))
+      let featureDir = path.dirname(featurePath)
+      let childDir
+      let parentDir = featureDir
+      while (childDir !== parentDir) {
+        childDir = parentDir
+        parentDir = path.dirname(childDir)
+        if (path.basename(parentDir) === 'features') {
+          featureDir = parentDir
+          break
+        }
+      }
+      return path.relative(this.cwd, featureDir)
     })
     return _.uniq(featureDirs)
   }
