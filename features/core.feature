@@ -14,10 +14,11 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a step passes$/, function() {});
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step passes$/, function() {});
+      })
       """
     When I run cucumber-js with `--strict`
     Then it passes
@@ -44,12 +45,13 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a "Given" step passes$/, function() {});
-        this.When(/^a "When" step passes$/, function() {});
-        this.Then(/^a "Then" step passes$/, function() {});
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given, Then, When}) => {
+        Given(/^a "Given" step passes$/, function() {})
+        When(/^a "When" step passes$/, function() {})
+        Then(/^a "Then" step passes$/, function() {})
+      })
       """
     When I run cucumber-js with `--strict`
     Then it passes
@@ -70,22 +72,22 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      var cucumberSteps = function() {
-        this.World = function () {
-          this.count = 0;
-        };
+      defineSupportCode(({setWorldConstructor, Then, When}) => {
+        setWorldConstructor(function () {
+          this.count = 0
+        })
 
-        this.When(/^I call a watched step$/, function() {
+        When(/^I call a watched step$/, function() {
           this.count += 1
-        });
+        })
 
-        this.Then(/^the watched step should have been called (\d+) times?$/, function(count){
-          assert.equal(this.count, parseInt(count));
-        });
-      };
-      module.exports = cucumberSteps;
+        Then(/^the watched step should have been called (\d+) times?$/, function(count){
+          assert.equal(this.count, parseInt(count))
+        })
+      })
       """
     When I run cucumber-js with `--strict`
     Then it passes
@@ -106,28 +108,28 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      var cucumberSteps = function() {
-        this.World = function () {
-          this.parameters = {};
-        };
-
-        this.When(/^I call a step with "([^"]*)"$/, function(arg) {
-          this.parameters['1'] = arg;
-        });
-
-        this.When(/^I call a step with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(arg1, arg2, arg3) {
-          this.parameters['1'] = arg1;
-          this.parameters['2'] = arg2;
-          this.parameters['3'] = arg3;
+      defineSupportCode(({setWorldConstructor, Then, When}) => {
+        setWorldConstructor(function () {
+          this.parameters = {}
         })
 
-        this.Then(/^the (\d+)(?:st|nd|rd) received parameter should be "([^"]*)"$/, function(index, arg){
-          assert.equal(this.parameters[index], arg);
-        });
-      };
-      module.exports = cucumberSteps;
+        When(/^I call a step with "([^"]*)"$/, function(arg) {
+          this.parameters['1'] = arg
+        })
+
+        When(/^I call a step with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(arg1, arg2, arg3) {
+          this.parameters['1'] = arg1
+          this.parameters['2'] = arg2
+          this.parameters['3'] = arg3
+        })
+
+        Then(/^the (\d+)(?:st|nd|rd) received parameter should be "([^"]*)"$/, function(index, arg){
+          assert.equal(this.parameters[index], arg)
+        })
+      })
       """
     When I run cucumber-js with `--strict`
     Then it passes

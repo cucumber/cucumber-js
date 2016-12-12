@@ -12,10 +12,11 @@ Feature: Command line interface
       """
     And a file named "step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a step is passing$/, function() {})
+      })
       """
     When I run cucumber.js with `-r step_definitions/cucumber_steps.js`
     And the exit status should be 0
@@ -29,10 +30,11 @@ Feature: Command line interface
       """
     And a file named "step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a step is passing$/, function() {});
+      })
       """
     When I run cucumber.js with `-r step_definitions`
     And the exit status should be 0

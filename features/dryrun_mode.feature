@@ -13,10 +13,11 @@ Feature: Dryrun mode
   Scenario: default behavior
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given('a step', function() { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given('a step', function() {})
+      })
       """
     When I run cucumber.js with `--dry-run`
     Then all steps have status "skipped"
@@ -24,11 +25,12 @@ Feature: Dryrun mode
   Scenario: ambiguous step
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given('a step', function() { });
-        this.Given('an? step', function() { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given('a step', function() { });
+        Given('an? step', function() { });
+      })
       """
     When I run cucumber.js with `--dry-run`
     Then the step "a step" has status "ambiguous"

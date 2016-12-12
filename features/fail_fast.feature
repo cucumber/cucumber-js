@@ -14,11 +14,12 @@ Feature: Fail fast
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a failing step$/, function() { throw 'fail' });
-        this.When(/^a passing step$/, function() { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a failing step$/, function() { throw 'fail' })
+        Given(/^a passing step$/, function() {})
+      })
       """
     When I run cucumber.js with `--fail-fast`
     Then it runs the scenario "Failing"

@@ -9,11 +9,12 @@ Feature: Ambiguous Steps
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a ambiguous step$/, function() { });
-        this.When(/^a (.*) step$/, function(status) { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a ambiguous step$/, function() {});
+        When(/^a (.*) step$/, function(status) {});
+      })
       """
     When I run cucumber.js with `-f progress`
     Then it outputs this text:
@@ -26,8 +27,8 @@ Feature: Ambiguous Steps
          Step: Given a ambiguous step - features/a.feature:3
          Message:
            Multiple step definitions match:
-             /^a ambiguous step$/ - features/step_definitions/cucumber_steps.js:2
-             /^a (.*) step$/      - features/step_definitions/cucumber_steps.js:3
+             /^a ambiguous step$/ - features/step_definitions/cucumber_steps.js:4
+             /^a (.*) step$/      - features/step_definitions/cucumber_steps.js:5
 
       1 scenario (1 ambiguous)
       1 step (1 ambiguous)
