@@ -17,8 +17,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "function has 0 arguments, should have 1 (if synchronous or returning a promise) or 2 (if accepting a callback)"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      function has 0 arguments, should have 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
+      """
 
   Scenario: too many arguments
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -29,8 +32,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "function has 2 arguments, should have 0 (if synchronous or returning a promise) or 1 (if accepting a callback)"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      function has 2 arguments, should have 0 (if synchronous or returning a promise) or 1 (if accepting a callback)
+      """
 
   Scenario: synchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -43,8 +49,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "my error"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      my error
+      """
 
   Scenario: asynchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -59,8 +68,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "my error"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      my error
+      """
 
   Scenario: asynchronous - passing error as first argument to the callback
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -75,8 +87,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "my error"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      my error
+      """
 
   Scenario: asynchronous - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -91,8 +106,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "function uses multiple asynchronous interfaces: callback and promise"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      function uses multiple asynchronous interfaces: callback and promise
+      """
 
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -111,8 +129,11 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "my error"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      my error
+      """
 
   Scenario: promise - rejects
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -131,5 +152,8 @@ Feature: Failing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a failing step" has status failed with "my error"
+    When I run cucumber.js
+    Then the step "a failing step" failed with:
+      """
+      my error
+      """

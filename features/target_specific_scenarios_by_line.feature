@@ -8,98 +8,35 @@ Feature: Target specific scenarios
       """
       Feature: some feature
         Scenario: first scenario
-          When a step is passing
+          Given a step
 
-        Scenario: second scenario
-          When a step is passing
-
-        Scenario Outline: third scenario
-          When a step is <STATUS>
+        Scenario Outline: second scenario - <ID>
+          Given a step
 
           Examples:
-            | STATUS  |
-            | passing |
-            | pending |
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.When(/^a step is passing$/, function() { });
-        this.When(/^a step is pending$/, function(callback) { callback(null, 'pending') });
-      };
-      module.exports = cucumberSteps;
+            | ID |
+            | X  |
+            | Y  |
       """
 
   Scenario: run a single scenario
     When I run cucumber.js with `features/a.feature:2`
-    Then it outputs this text:
-      """
-      Feature: some feature
-
-        Scenario: first scenario
-        ✔ When a step is passing
-
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
-    And the exit status should be 0
+    Then it runs the scenario "first scenario"
 
   Scenario: run a single scenario outline
-    When I run cucumber.js with `features/a.feature:8`
-    Then it outputs this text:
-      """
-      Feature: some feature
-
-        Scenario: third scenario
-        ✔ When a step is passing
-
-        Scenario: third scenario
-        ? When a step is pending
-
-      Warnings:
-
-      1) Scenario: third scenario - features/a.feature:14
-         Step: When a step is pending - features/a.feature:9
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           Pending
-
-      2 scenarios (1 pending, 1 passed)
-      2 steps (1 pending, 1 passed)
-      <duration-stat>
-      """
-    And the exit status should be 0
+    When I run cucumber.js with `features/a.feature:5`
+    Then it runs the scenarios:
+      | NAME                |
+      | second scenario - X |
+      | second scenario - Y |
 
   Scenario: run a single scenario outline example
-    When I run cucumber.js with `features/a.feature:13`
-    Then it outputs this text:
-      """
-      Feature: some feature
-
-        Scenario: third scenario
-        ✔ When a step is passing
-
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
-    And the exit status should be 0
+    When I run cucumber.js with `features/a.feature:10`
+    Then it runs the scenario "second scenario - X"
 
   Scenario: run multiple scenarios
-    When I run cucumber.js with `features/a.feature:2:5`
-    Then it outputs this text:
-      """
-      Feature: some feature
-
-        Scenario: first scenario
-        ✔ When a step is passing
-
-        Scenario: second scenario
-        ✔ When a step is passing
-
-      2 scenarios (2 passed)
-      2 steps (2 passed)
-      <duration-stat>
-      """
-    And the exit status should be 0
+    When I run cucumber.js with `features/a.feature:2:10`
+    Then it runs the scenarios:
+      | NAME                |
+      | first scenario      |
+      | second scenario - X |

@@ -21,23 +21,5 @@ Feature: Fail fast
       module.exports = cucumberSteps;
       """
     When I run cucumber.js with `--fail-fast`
-    Then it outputs this text:
-      """
-      Feature:
-
-        Scenario: Failing
-        ✖ Given a failing step
-
-      Failures:
-
-      1) Scenario: Failing - features/a.feature:2
-         Step: Given a failing step - features/a.feature:3
-         Step Definition: features/step_definitions/cucumber_steps.js:2
-         Message:
-           fail
-
-      2 scenarios (1 failed, 1 skipped)
-      1 step (1 failed)
-      <duration-stat>
-      """
+    Then it runs the scenario "Failing"
     And the exit status should be 1

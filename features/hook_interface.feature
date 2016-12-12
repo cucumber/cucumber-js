@@ -1,4 +1,4 @@
-Feature: Before hook interface
+Feature: After hook interface
 
   Background:
     Given a file named "features/my_feature.feature" with:
@@ -9,24 +9,20 @@ Feature: Before hook interface
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      assert = require('assert');
-
       stepDefinitions = function() {
-        this.When(/^a step$/, function () {
-          assert.equal(this.value, 1)
-        });
+        this.When(/^a step$/, function() {});
       };
 
       module.exports = stepDefinitions
       """
 
-  Scenario: too many arguments
+  Scenario Outline: too many arguments
     Given a file named "features/support/hooks.js" with:
       """
       assert = require('assert');
 
       hooks = function() {
-        this.Before(function (arg1, arg2, arg3) {});
+        this.<TYPE>(function (arg1, arg2, arg3) {});
       };
 
       module.exports = hooks
@@ -38,13 +34,18 @@ Feature: Before hook interface
       function has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
       """
 
-  Scenario: synchronous
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
+      assert = require('assert');
+
       hooks = function() {
-        this.Before(function () {
-          this.value = 1;
-        });
+        this.<TYPE>(function () {});
       };
 
       module.exports = hooks
@@ -52,11 +53,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 0
 
-  Scenario: synchronously throws
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
       """
       hooks = function() {
-        this.Before(function(){
+        this.<TYPE>(function(){
           throw new Error('my error');
         });
       };
@@ -66,16 +72,19 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: callback without error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
+      assert = require('assert');
+
       hooks = function() {
-        this.Before(function (scenario, callback) {
-          var world = this;
-          setTimeout(function () {
-            world.value = 1;
-            callback();
-          });
+        this.<TYPE>(function (scenario, callback) {
+          setTimeout(callback);
         });
       };
 
@@ -84,11 +93,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 0
 
-  Scenario: callback with error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
       hooks = function() {
-        this.Before(function (scenario, callback) {
+        this.<TYPE>(function (scenario, callback) {
           setTimeout(function() {
             callback(new Error('my error'));
           });
@@ -100,11 +114,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: callback asynchronously throws
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
       hooks = function() {
-        this.Before(function(scenario, callback){
+        this.<TYPE>(function(scenario, callback){
           setTimeout(function(){
             throw new Error('my error');
           });
@@ -116,11 +135,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: callback - returning a promise
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       hooks = function() {
-        this.Before(function(scenario, callback){
+        this.<TYPE>(function(scenario, callback){
           return {
             then: function(onResolve, onReject) {}
           };
@@ -129,25 +153,28 @@ Feature: Before hook interface
 
       module.exports = hooks
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     And the exit status should be 1
     And the output contains the text:
       """
       function uses multiple asynchronous interfaces: callback and promise
       """
 
-  Scenario: promise resolves
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
+      assert = require('assert');
+
       hooks = function() {
-        this.Before(function(){
-          var world = this;
+        this.<TYPE>(function(){
           return {
             then: function(onResolve, onReject) {
-              setTimeout(function () {
-                world.value = 1;
-                onResolve();
-              });
+              setTimeout(onResolve);
             }
           };
         });
@@ -158,11 +185,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 0
 
-  Scenario: promise rejects with error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
       """
       hooks = function() {
-        this.Before(function(){
+        this.<TYPE>(function(){
           return {
             then: function(onResolve, onReject) {
               setTimeout(function () {
@@ -178,11 +210,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: promise rejects without error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
       """
       hooks = function() {
-        this.Before(function(){
+        this.<TYPE>(function(){
           return {
             then: function(onResolve, onReject) {
               setTimeout(onReject);
@@ -196,11 +233,16 @@ Feature: Before hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: promise asynchronously throws
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function() {
-        this.Before(function(){
+      hooks = function(){
+        this.<TYPE>(function(){
           return {
             then: function(onResolve, onReject) {
               setTimeout(function(){
@@ -215,3 +257,8 @@ Feature: Before hook interface
       """
     When I run cucumber.js
     And the exit status should be 1
+
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |

@@ -12,7 +12,7 @@ Feature: Scenario Outlines and Examples
           | passing |
           | failing |
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then it runs 2 scenarios
     And the first scenario has the steps
       | STEP           |
@@ -36,7 +36,7 @@ Feature: Scenario Outlines and Examples
           | passing |
           | failing |
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then it runs 2 scenarios
     And the first scenario has the step "a doc string step" with the doc string
       """
@@ -60,7 +60,7 @@ Feature: Scenario Outlines and Examples
           | passing |
           | failing |
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then it runs 2 scenarios
     And the first scenario has the step "a table step" with the table
       | passing |
@@ -79,12 +79,12 @@ Feature: Scenario Outlines and Examples
           | passing |
           | failing |
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then it runs 2 scenarios
     And the first scenario has the name "a passing scenario"
     And the second scenario has the name "a failing scenario"
 
-  Scenario: several scenarion outlines
+  Scenario: several scenario outlines
     Given a file named "features/scenario_outline.feature" with:
       """
       Feature: a feature
@@ -104,5 +104,5 @@ Feature: Scenario Outlines and Examples
           | 3  |
           | 4  |
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then it runs 4 scenarios

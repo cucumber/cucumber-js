@@ -4,7 +4,7 @@ Feature: Rerun Formatter
   I would like to be able to save my rerun results to a subfolder
   So that cucumber-js give me flexibility for where I store them
 
-  Background:
+  Scenario: saving @rerun.txt in subfolder
     Given a file named "features/a.feature" with:
       """
       Feature: A
@@ -22,50 +22,11 @@ Feature: Rerun Formatter
       };
       module.exports = cucumberSteps;
       """
-    And a file named "cucumber.js" with:
-      """
-      module.exports = {
-        'default': '--format progress --format rerun:test_results/@rerun.txt',
-      };
-      """
     And a directory named "test_results"
-
-  Scenario: saving @rerun.txt in subfolder
-    When I run cucumber.js
-    Then it outputs this text:
-      """
-      .F
-
-      Failures:
-
-      1) Scenario: 2 - features/a.feature:5
-         Step: Given a failing step - features/a.feature:6
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      2 scenarios (1 failed, 1 passed)
-      2 steps (1 failed, 1 passed)
-      <duration-stat>
-      """
-    And the file "test_results/@rerun.txt" has the text:
+    When I run cucumber.js with `--format rerun:test_results/@rerun.txt`
+    Then the file "test_results/@rerun.txt" has the text:
       """
       features/a.feature:5
       """
     When I run cucumber.js with `test_results/@rerun.txt`
-    Then it outputs this text:
-      """
-      F
-
-      Failures:
-
-      1) Scenario: 2 - features/a.feature:5
-         Step: Given a failing step - features/a.feature:6
-         Step Definition: features/step_definitions/cucumber_steps.js:3
-         Message:
-           fail
-
-      1 scenario (1 failed)
-      1 step (1 failed)
-      <duration-stat>
-      """
+    Then it runs the scenario "2"

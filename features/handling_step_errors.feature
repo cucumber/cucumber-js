@@ -19,8 +19,8 @@ Feature: Handling step errors
         Scenario:
           Given I pass an error to the callback
       """
-    When I run cucumber.js with `-f json:json`
-    Then the file "json" contains the text:
+    When I run cucumber.js
+    Then the step "I pass an error to the callback" failed with:
       """
       { member: [Circular] }
       """

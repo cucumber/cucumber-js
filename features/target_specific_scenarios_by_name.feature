@@ -8,19 +8,19 @@ Feature: Target specific scenarios
       """
       Feature: some feature
         Scenario: my topic
-          When a step is passing
+          Given a step
 
         Scenario: other topic 1
-          When a step is passing
+          Given a step
 
         Scenario: other topic 2
-          When a step is passing
+          Given a step
       """
 
   Scenario: run a scenario by name
-    When I run cucumber.js with `--format json --name my`
+    When I run cucumber.js with `--name my`
     Then it runs the scenario "my topic"
 
   Scenario: run multiple scenarios by name
-    When I run cucumber.js with `--format json --name other`
+    When I run cucumber.js with `--name other`
     Then it runs the scenarios "other topic 1" and "other topic 2"

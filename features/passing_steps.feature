@@ -17,8 +17,8 @@ Feature: Passing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a passing step" has status passed
+    When I run cucumber.js
+    Then the step "a passing step" has status "passed"
 
   Scenario: asynchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
@@ -31,8 +31,8 @@ Feature: Passing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a passing step" has status passed
+    When I run cucumber.js
+    Then the step "a passing step" has status "passed"
 
   Scenario: promise
     Given a file named "features/step_definitions/passing_steps.js" with:
@@ -49,5 +49,5 @@ Feature: Passing steps
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "a passing step" has status passed
+    When I run cucumber.js
+    Then the step "a passing step" has status "passed"

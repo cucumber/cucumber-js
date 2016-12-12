@@ -1,5 +1,22 @@
 import _ from 'lodash'
 
+export function getScenarioNames(features) {
+  return _.chain(features)
+    .map('elements')
+    .flatten()
+    .map('name')
+    .value()
+}
+
+export function getSteps(features) {
+  return _.chain(features)
+    .map('elements')
+    .flatten()
+    .map('steps')
+    .flatten()
+    .value()
+}
+
 export function findScenario(features, predicate) {
   const scenario = _.chain(features)
     .map('elements')

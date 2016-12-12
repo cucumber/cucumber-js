@@ -1,7 +1,20 @@
 Feature: Tagged Hooks
+  As a developer running features
+  I want the ability to control which scenarios my hooks run for
+  Because not all my scenarios have the same setup and teardown
 
-  Background:
-    Given a file named "features/step_definitions/world.js" with:
+  Scenario: ability to specify tags for hooks
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario:
+          Then the value is 0
+
+        @foo
+        Scenario:
+          Then the value is 1
+      """
+    And a file named "features/step_definitions/world.js" with:
       """
       module.exports = function() {
         this.World = function() {
@@ -9,29 +22,17 @@ Feature: Tagged Hooks
         };
       };
       """
-    Given a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.js" with:
       """
       var assert = require('assert');
 
       module.exports = function() {
         this.Then(/^the value is (\d*)$/, function(number) {
-          assert.equal(parseInt(number), this.value);
+          assert.equal(number, this.value);
         });
       };
       """
-
-  Scenario: no tags
-    Given a file named "features/a.feature" with:
-      """
-      Feature:
-        Scenario:
-          Then the value is 0
-      """
-    When I run cucumber.js with `--strict`
-    And the exit status should be 0
-
-  Scenario: simple tag match
-    Given a file named "features/step_definitions/my_tagged_hooks.js" with:
+    And a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
       module.exports = function() {
         this.Before({tags: '@foo'}, function() {
@@ -39,75 +40,5 @@ Feature: Tagged Hooks
         });
       };
       """
-    Given a file named "features/a.feature" with:
-      """
-      Feature:
-        Scenario:
-          Then the value is 0
-
-        @foo
-        Scenario:
-          Then the value is 1
-      """
-    When I run cucumber.js with `--strict`
-    And the exit status should be 0
-
-  Scenario: or tag match
-    Given a file named "features/step_definitions/my_tagged_hooks.js" with:
-      """
-      module.exports = function() {
-        this.Before({tags: '@foo or @bar'}, function() {
-          this.value += 1;
-        });
-      };
-      """
-    Given a file named "features/a.feature" with:
-      """
-      Feature:
-        Scenario:
-          Then the value is 0
-
-        @foo
-        Scenario:
-          Then the value is 1
-
-        @bar
-        Scenario:
-          Then the value is 1
-
-        @foo @bar
-        Scenario:
-          Then the value is 1
-      """
-    When I run cucumber.js with `--strict`
-    And the exit status should be 0
-
-  Scenario: and tag match
-    Given a file named "features/step_definitions/my_tagged_hooks.js" with:
-      """
-      module.exports = function() {
-        this.Before({tags: '@foo and @bar'}, function() {
-          this.value += 1;
-        });
-      };
-      """
-    Given a file named "features/a.feature" with:
-      """
-      Feature:
-        Scenario:
-          Then the value is 0
-
-        @foo
-        Scenario:
-          Then the value is 0
-
-        @bar
-        Scenario:
-          Then the value is 0
-
-        @foo @bar
-        Scenario:
-          Then the value is 1
-      """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     And the exit status should be 0

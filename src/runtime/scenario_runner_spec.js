@@ -224,13 +224,13 @@ describe('ScenarioRunner', function () {
         expectToHearEvents(this.listener, [
           ['BeforeScenario', this.scenario],
           ['BeforeStep', function(step) {
-            expect(step.keyword).to.eql('Before ')
+            expect(step.keyword).to.eql('Before')
           }],
           ['StepResult', function(stepResult) {
             expect(stepResult.status).to.eql(Status.SKIPPED)
           }],
           ['AfterStep', function(step) {
-            expect(step.keyword).to.eql('Before ')
+            expect(step.keyword).to.eql('Before')
           }],
           ['BeforeStep', this.step],
           ['StepResult', function(stepResult) {
@@ -271,13 +271,13 @@ describe('ScenarioRunner', function () {
           }],
           ['AfterStep', this.step],
           ['BeforeStep', function(step) {
-            expect(step.keyword).to.eql('After ')
+            expect(step.keyword).to.eql('After')
           }],
           ['StepResult', function(stepResult) {
             expect(stepResult.status).to.eql(Status.SKIPPED)
           }],
           ['AfterStep', function(step) {
-            expect(step.keyword).to.eql('After ')
+            expect(step.keyword).to.eql('After')
           }],
           ['ScenarioResult', this.scenarioResult],
           ['AfterScenario', this.scenario]

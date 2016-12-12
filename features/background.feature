@@ -16,11 +16,11 @@ Feature: Background
         Scenario: a scenario
           When a scenario step
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then the scenario "a scenario" has the steps
-      | STEP              |
-      | a background step |
-      | a scenario step   |
+      | IDENTIFIER              |
+      | Given a background step |
+      | When a scenario step    |
 
   Scenario: Two scenarios and a background
     Given a file named "features/background.feature" with:
@@ -35,13 +35,12 @@ Feature: Background
         Scenario: another scenario
           When another scenario step
       """
-    When I run cucumber.js with `-f json`
+    When I run cucumber.js
     Then the scenario "a scenario" has the steps
-      | STEP              |
-      | a background step |
-      | a scenario step   |
+      | IDENTIFIER              |
+      | Given a background step |
+      | When a scenario step    |
     Then the scenario "another scenario" has the steps
-      | STEP                  |
-      | a background step     |
-      | another scenario step |
-
+      | IDENTIFIER                 |
+      | Given a background step    |
+      | When another scenario step |
