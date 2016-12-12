@@ -4,6 +4,7 @@ import {defineSupportCode} from '../../'
 import {execFile} from 'child_process'
 import {getAdditionalErrorText, normalizeText} from '../support/helpers'
 import colors from 'colors/safe'
+import fs from 'fs'
 import path from 'path'
 import stringArgv from 'string-argv'
 
@@ -13,11 +14,20 @@ defineSupportCode(function({When, Then}) {
   When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
     args = stringArgv(args || '')
     args.unshift(executablePath)
-    args.push('--backtrace')
+    args.push('--backtrace', '--format', 'json:out.json')
     const cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir
     execFile('node', args, {cwd}, (error, stdout, stderr) => {
+      let jsonOutput = []
+      const jsonOutputPath = path.join(cwd, 'out.json')
+      if (fs.existsSync(jsonOutputPath)) {
+        const fileContent = fs.readFileSync(jsonOutputPath, 'utf8')
+        if (fileContent) {
+          jsonOutput = JSON.parse(fileContent)
+        }
+      }
       this.lastRun = {
         error,
+        jsonOutput,
         stdout: colors.strip(stdout),
         stderr
       }

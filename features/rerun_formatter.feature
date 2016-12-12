@@ -45,24 +45,16 @@ Feature: Rerun Formatter
       };
       module.exports = cucumberSteps;
       """
-    And a file named "cucumber.js" with:
-      """
-      module.exports = {
-        'default': '--format rerun:@rerun.txt',
-      };
-      """
 
   Scenario: passing
-    When I run cucumber.js with `features/a.feature:2`
-    Then the exit status should be 0
+    When I run cucumber.js with `--format rerun:@rerun.txt features/a.feature:2`
     And the file "@rerun.txt" has the text:
       """
       """
 
   Scenario: multiple scenarios failing
-    When I run cucumber.js with `-f json`
-    Then the exit status should be 1
-    And the json output has the scenarios with names
+    When I run cucumber.js with `--format rerun:@rerun.txt`
+    Then it runs the scenarios:
       | NAME          |
       | A - passing   |
       | A - failing   |
@@ -85,9 +77,9 @@ Feature: Rerun Formatter
       features/b.feature:5
       features/c.feature:5
       """
-    When I run cucumber.js with `-f json @rerun.txt`
+    When I run cucumber.js with `@rerun.txt`
     Then the exit status should be 1
-    And the json output has the scenarios with names
+    Then it runs the scenarios:
       | NAME          |
       | A - failing   |
       | A - ambiguous |
@@ -100,17 +92,13 @@ Feature: Rerun Formatter
       features/c.feature:2
 
       """
-    When I run cucumber.js with `-f json @rerun.txt`
-    Then the exit status should be 0
-    And the json output has the scenarios with names
-      | NAME          |
-      | C - passing   |
+    When I run cucumber.js with `@rerun.txt`
+    Then it runs the scenario "C - passing"
 
   Scenario: empty rerun file
     Given an empty file named "@rerun.txt"
-    When I run cucumber.js with `-f json @rerun.txt`
-    Then the exit status should be 1
-    And the json output has the scenarios with names
+    When I run cucumber.js with `@rerun.txt`
+    Then it runs the scenarios:
       | NAME          |
       | A - passing   |
       | A - failing   |
@@ -121,8 +109,7 @@ Feature: Rerun Formatter
       | C - undefined |
 
   Scenario: rerun with fail fast outputs all skipped scenarios
-    When I run cucumber.js with `--fail-fast`
-    Then the exit status should be 1
+    When I run cucumber.js with `--fail-fast --format rerun:@rerun.txt`
     And the file "@rerun.txt" has the text:
       """
       features/a.feature:5:8

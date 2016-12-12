@@ -17,12 +17,12 @@ export default class PathExpander {
   }
 
   async expandPathWithExtensions(p, extensions) {
-    const realPath = await fs.realpath(path.resolve(this.directory, p))
-    const stats = await fs.stat(realPath)
+    const fullPath = path.resolve(this.directory, p)
+    const stats = await fs.stat(fullPath)
     if (stats.isDirectory()) {
-      return await this.expandDirectoryWithExtensions(realPath, extensions)
+      return await this.expandDirectoryWithExtensions(fullPath, extensions)
     } else {
-      return [realPath]
+      return [fullPath]
     }
   }
 

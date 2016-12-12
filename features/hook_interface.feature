@@ -18,13 +18,13 @@ Feature: After hook interface
       })
       """
 
-  Scenario: too many arguments
+  Scenario Outline: too many arguments
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function(arg1, arg2, arg3) {})
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(arg1, arg2, arg3) {})
       })
       """
     When I run cucumber.js
@@ -34,28 +34,36 @@ Feature: After hook interface
       function has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
       """
 
-  Scenario: synchronous
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
       import assert from 'assert'
 
-      defineSupportCode(({After}) => {
-        After(function() {
-          assert.equal(this.value, 1)
-        })
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {})
       })
       """
     When I run cucumber.js
     And the exit status should be 0
 
-  Scenario: synchronously throws
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function() {
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
           throw new Error('my error')
         })
       }
@@ -63,31 +71,38 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: callback without error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
       import assert from 'assert'
 
-      defineSupportCode(({After}) => {
-        After(function(scenario, callback) {
-          setTimeout(() => {
-            assert.equal(this.value, 1);
-            callback();
-          })
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
+          setTimeout(callback)
         })
       })
       """
     When I run cucumber.js
     And the exit status should be 0
 
-  Scenario: callback with error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function(scenario, callback) {
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
           setTimeout(() => {
             callback(new Error('my error'))
           })
@@ -97,13 +112,18 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: callback asynchronously throws
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function(scenario, callback) {
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
           setTimeout(() => {
             throw new Error('my error')
           })
@@ -113,13 +133,18 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: callback - returning a promise
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function(scenario, callback) {
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
           return {
             then: function() {}
           }
@@ -133,20 +158,22 @@ Feature: After hook interface
       function uses multiple asynchronous interfaces: callback and promise
       """
 
-  Scenario: promise resolves
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
       import assert from 'assert'
 
-      defineSupportCode(({After}) => {
-        After(function() {
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
           return {
             then: (onResolve, onReject) => {
-              setTimeout(() => {
-                assert.equal(this.value, 1);
-                onResolve()
-              })
+              setTimeout(onResolve)
             }
           }
         })
@@ -155,13 +182,18 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 0
 
-  Scenario: promise rejects with error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        this.After(function(){
+      defineSupportCode(({<TYPE>}) => {
+        this.<TYPE>(function(){
           return {
             then: (onResolve, onReject) => {
               setTimeout(() => {
@@ -175,13 +207,18 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: promise rejects without error
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function() {
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
           return {
             then: (onResolve, onReject) => {
               setTimeout(onReject)
@@ -195,13 +232,18 @@ Feature: After hook interface
     When I run cucumber.js
     And the exit status should be 1
 
-  Scenario: promise asynchronously throws
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
+  Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function(){
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(){
           return {
             then: (onResolve, onReject) => {
               setTimeout(() => {
@@ -214,3 +256,8 @@ Feature: After hook interface
       """
     When I run cucumber.js
     And the exit status should be 1
+
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |

@@ -44,8 +44,8 @@ Feature: World Parameters
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json`
-    Then the step "the world parameters are correct" has status passed
+    When I run cucumber.js
+    Then the step "the world parameters are correct" has status "passed"
 
   Scenario: default world constructor saves the parameters
     Given a file named "features/step_definitions/my_steps.js" with:
@@ -60,8 +60,8 @@ Feature: World Parameters
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json --world-parameters '{"a":1}'`
-    Then the step "the world parameters are correct" has status passed
+    When I run cucumber.js with `--world-parameters '{"a":1}'`
+    Then the step "the world parameters are correct" has status "passed"
 
   Scenario: multiple world parameters are merged with the last taking precedence
     Given a file named "features/step_definitions/my_steps.js" with:
@@ -77,8 +77,8 @@ Feature: World Parameters
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json --world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
-    Then the step "the world parameters are correct" has status passed
+    When I run cucumber.js with `--world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
+    Then the step "the world parameters are correct" has status "passed"
 
   Scenario: custom world constructor is passed the parameters
     Given a file named "features/support/world.js" with:
@@ -105,5 +105,5 @@ Feature: World Parameters
 
       module.exports = stepDefinitions
       """
-    When I run cucumber.js with `-f json --world-parameters '{"a":1}'`
-    Then the step "the world parameters are correct" has status passed
+    When I run cucumber.js with `--world-parameters '{"a":1}'`
+    Then the step "the world parameters are correct" has status "passed"

@@ -1,21 +1,22 @@
 Feature: Attachments
 
-  Scenario: Attach a buffer
+  Background:
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-
-      Scenario: I've declared one step and it is passing
-          Given This step is passing
+        Scenario: some scenario
+          Given a step
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^a step$/, function() {});
       };
       module.exports = cucumberSteps;
       """
-    And a file named "features/support/hooks.js" with:
+
+  Scenario: Attach a buffer
+    Given a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
         this.Before(function() {
@@ -25,79 +26,13 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I've declared one step and it is passing",
-              "id": "some-feature;i've-declared-one-step-and-it-is-passing",
-              "line": 3,
-              "keyword": "Scenario",
-              "tags": [],
-              "steps": [
-                {
-                  "keyword": "Before ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/support/hooks.js:2"
-                  },
-                  "embeddings": [
-                    {
-                      "mime_type": "image/png",
-                      "data": "iVBORw=="
-                    }
-                  ]
-                },
-                {
-                  "name": "This step is passing",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
+    When I run cucumber.js
+    Then the "Before" hook has the attachment
+      | DATA     | MIME TYPE |
+      | iVBORw== | image/png |
 
   Scenario: Attach a stream (callback)
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Scenario: I've declared one step and it is passing
-          Given This step is passing
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    And a file named "features/support/hooks.js" with:
+    Given a file named "features/support/hooks.js" with:
       """
       var stream = require('stream');
 
@@ -113,79 +48,13 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I've declared one step and it is passing",
-              "id": "some-feature;i've-declared-one-step-and-it-is-passing",
-              "line": 3,
-              "keyword": "Scenario",
-              "tags": [],
-              "steps": [
-                {
-                  "keyword": "Before ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/support/hooks.js:4"
-                  },
-                  "embeddings": [
-                    {
-                      "mime_type": "image/png",
-                      "data": "iVBORw=="
-                    }
-                  ]
-                },
-                {
-                  "name": "This step is passing",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
+    When I run cucumber.js
+    Then the "Before" hook has the attachment
+      | DATA     | MIME TYPE |
+      | iVBORw== | image/png |
 
     Scenario: Attach a stream (promise)
-      Given a file named "features/a.feature" with:
-        """
-        Feature: some feature
-
-        Scenario: I've declared one step and it is passing
-            Given This step is passing
-        """
-      And a file named "features/step_definitions/cucumber_steps.js" with:
-        """
-        var cucumberSteps = function() {
-          this.Given(/^This step is passing$/, function(callback) { callback(); });
-        };
-        module.exports = cucumberSteps;
-        """
-      And a file named "features/support/hooks.js" with:
+      Given a file named "features/support/hooks.js" with:
         """
         var stream = require('stream');
 
@@ -202,79 +71,13 @@ Feature: Attachments
 
         module.exports = hooks;
         """
-      When I run cucumber.js with `-f json`
-      Then it outputs this json:
-        """
-        [
-          {
-            "id": "some-feature",
-            "name": "some feature",
-            "tags": [],
-            "line": 1,
-            "keyword": "Feature",
-            "uri": "<current-directory>/features/a.feature",
-            "elements": [
-              {
-                "name": "I've declared one step and it is passing",
-                "id": "some-feature;i've-declared-one-step-and-it-is-passing",
-                "line": 3,
-                "keyword": "Scenario",
-                "tags": [],
-                "steps": [
-                  {
-                    "keyword": "Before ",
-                    "hidden": true,
-                    "result": {
-                      "duration": "<duration>",
-                      "status": "passed"
-                    },
-                    "arguments": [],
-                    "match": {
-                      "location": "<current-directory>/features/support/hooks.js:4"
-                    },
-                    "embeddings": [
-                      {
-                        "mime_type": "image/png",
-                        "data": "iVBORw=="
-                      }
-                    ]
-                  },
-                  {
-                    "name": "This step is passing",
-                    "line": 4,
-                    "keyword": "Given ",
-                    "result": {
-                      "duration": "<duration>",
-                      "status": "passed"
-                    },
-                    "arguments": [],
-                    "match": {
-                      "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-        """
+      When I run cucumber.js
+      Then the "Before" hook has the attachment
+        | DATA     | MIME TYPE |
+        | iVBORw== | image/png |
 
   Scenario: Attach from a before hook
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Scenario: I've declared one step and it is passing
-          Given This step is passing
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    And a file named "features/support/hooks.js" with:
+    Given a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
         this.Before(function() {
@@ -284,79 +87,13 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I've declared one step and it is passing",
-              "id": "some-feature;i've-declared-one-step-and-it-is-passing",
-              "line": 3,
-              "keyword": "Scenario",
-              "tags": [],
-              "steps": [
-                {
-                  "keyword": "Before ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/support/hooks.js:2"
-                  },
-                  "embeddings": [
-                    {
-                      "mime_type": "text/plain",
-                      "data": "text"
-                    }
-                  ]
-                },
-                {
-                  "name": "This step is passing",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
+    When I run cucumber.js
+    Then the "Before" hook has the attachment
+      | DATA | MIME TYPE  |
+      | text | text/plain |
 
   Scenario: Attach from an after hook
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Scenario: I've declared one step and it is passing
-          Given This step is passing
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
-      """
-    And a file named "features/support/hooks.js" with:
+    Given a file named "features/support/hooks.js" with:
       """
       var hooks = function () {
         this.After(function() {
@@ -366,121 +103,22 @@ Feature: Attachments
 
       module.exports = hooks;
       """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I've declared one step and it is passing",
-              "id": "some-feature;i've-declared-one-step-and-it-is-passing",
-              "line": 3,
-              "keyword": "Scenario",
-              "tags": [],
-              "steps": [
-                {
-                  "name": "This step is passing",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                  }
-                },
-                {
-                  "keyword": "After ",
-                  "hidden": true,
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/support/hooks.js:2"
-                  },
-                  "embeddings": [
-                    {
-                      "mime_type": "text/plain",
-                      "data": "text"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
+    When I run cucumber.js
+    Then the "After" hook has the attachment
+      | DATA | MIME TYPE  |
+      | text | text/plain |
 
   Scenario: Attach from a step definition
-    Given a file named "features/a.feature" with:
-      """
-      Feature: some feature
-
-      Scenario: I've declared one step and it is passing
-          Given This step is passing
-      """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function() {
+        this.Given(/^a step$/, function() {
           this.attach("text");
         });
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber.js with `-f json`
-    Then it outputs this json:
-      """
-      [
-        {
-          "id": "some-feature",
-          "name": "some feature",
-          "tags": [],
-          "line": 1,
-          "keyword": "Feature",
-          "uri": "<current-directory>/features/a.feature",
-          "elements": [
-            {
-              "name": "I've declared one step and it is passing",
-              "id": "some-feature;i've-declared-one-step-and-it-is-passing",
-              "line": 3,
-              "keyword": "Scenario",
-              "tags": [],
-              "steps": [
-                {
-                  "name": "This step is passing",
-                  "line": 4,
-                  "keyword": "Given ",
-                  "result": {
-                    "duration": "<duration>",
-                    "status": "passed"
-                  },
-                  "arguments": [],
-                  "match": {
-                    "location": "<current-directory>/features/step_definitions/cucumber_steps.js:2"
-                  },
-                  "embeddings": [
-                    {
-                      "mime_type": "text/plain",
-                      "data": "text"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      """
+    When I run cucumber.js
+    Then the step "a step" has the attachment
+      | DATA | MIME TYPE  |
+      | text | text/plain |

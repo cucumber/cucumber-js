@@ -2,7 +2,7 @@ Feature: Summary Formatter
   In order to get a quick overview of Cucumber test run
   Developers should be able to see a high level summary of the scenarios that were executed
 
-  Scenario: Output summary for a feature with no scenarios
+  Scenario: with no scenarios
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -15,39 +15,26 @@ Feature: Summary Formatter
       <duration-stat>
       """
 
-  Scenario: Summary formatter hides before and after hooks
+  Scenario: with a scenarios
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-
-      Scenario: I've declared one step which passes
-          Given This step is passing
+        Scenario: some scenario
+          Given a step
+          And another step
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^a step$/, function() {});
+        this.Given(/^another step$/, function() {});
       };
       module.exports = cucumberSteps;
-      """
-    And a file named "features/support/hooks.js" with:
-      """
-      var hooks = function () {
-        this.Before(function(scenario, callback) {
-          callback();
-        });
-
-        this.After(function(scenario, callback) {
-          callback();
-        });
-      };
-
-      module.exports = hooks;
       """
     When I run cucumber.js with `-f summary`
     Then it outputs this text:
       """
       1 scenario (1 passed)
-      1 step (1 passed)
+      2 steps (2 passed)
       <duration-stat>
       """

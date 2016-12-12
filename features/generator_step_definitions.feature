@@ -8,9 +8,9 @@ Feature: Generator Step Definitions
     Given a file named "features/a.feature" with:
       """
       Feature: Step is a generator
-      Scenario: Step generator run successfully
-        When I call a step which is a generator with return value "ok"
-        Then I can see the yielded "ok" value in the context
+        Scenario: Step generator run successfully
+          When I call a step which is a generator with return value "ok"
+          Then I can see the yielded "ok" value in the context
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
