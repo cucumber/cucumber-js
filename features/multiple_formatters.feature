@@ -4,16 +4,16 @@ Feature: Multiple Formatters
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-
-      Scenario: I've declared one step which passes
-          Given This step is passing
+        Scenario: some scenario
+          Given a passing step
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {})
+      })
       """
 
   Scenario: Ability to specify multiple formatters
@@ -30,8 +30,8 @@ Feature: Multiple Formatters
       """
       Feature: some feature
 
-        Scenario: I've declared one step which passes
-        ✔ Given This step is passing
+        Scenario: some scenario
+        ✔ Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)

@@ -3,19 +3,21 @@ Feature: Step definition timeouts
   Background:
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      module.exports = function() {
-        this.setDefaultTimeout(500);
+      import {defineSupportCode} from 'cucumber'
 
-        this.Before({tags: '@slow-with-increased-timeout', timeout: 1500}, function(scenario, callback) {
-          setTimeout(callback, 1000);
-        });
+      defineSupportCode(({Before, Given, setDefaultTimeout}) => {
+        setDefaultTimeout(500);
 
-        this.Before({tags: '@slow'}, function(scenario, callback) {
-          setTimeout(callback, 1000);
-        });
+        Before({tags:' @slow-with-increased-timeout', timeout: 1500}, function(scenario, callback) {
+          setTimeout(callback, 1000)
+        })
 
-        this.Given(/^a passing step$/, function() {});
-      };
+        Before({tags: '@slow'}, function(scenario, callback) {
+          setTimeout(callback, 1000)
+        })
+
+        Given(/^a passing step$/, function() {})
+      })
       """
 
   Scenario: slow hooks timeout

@@ -11,11 +11,11 @@ Feature: Failing steps
   Scenario: too few arguments
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a (.*) step$/, function(){});
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({When}) => {
+        When(/^a (.*) step$/, function() {})
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -26,11 +26,11 @@ Feature: Failing steps
   Scenario: too many arguments
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(arg1, arg2){});
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function(arg1, arg2) {})
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -41,13 +41,13 @@ Feature: Failing steps
   Scenario: synchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(){
-          throw new Error('my error');
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function() {
+          throw new Error('my error');
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -58,15 +58,15 @@ Feature: Failing steps
   Scenario: asynchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(callback){
-          setTimeout(function(){
-            throw new Error('my error');
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function(callback) {
+          setTimeout(function() {
+            throw new Error('my error')
+          })
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -77,15 +77,15 @@ Feature: Failing steps
   Scenario: asynchronous - passing error as first argument to the callback
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(callback){
-          setTimeout(function(){
-            callback(new Error('my error'));
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function(callback) {
+          setTimeout(function() {
+            callback(new Error('my error'))
+          })
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -93,18 +93,18 @@ Feature: Failing steps
       my error
       """
 
-  Scenario: asynchronous - returning a promise
+  Scenario: asynchronous - using a callback and returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(callback){
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function(callback) {
           return {
             then: function(resolve, reject) {}
-          };
-        });
-      };
-
-      module.exports = stepDefinitions
+          }
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -115,19 +115,19 @@ Feature: Failing steps
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(){
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(function(){
-                throw new Error('my error');
-              });
+              setTimeout(function() {
+                throw new Error('my error')
+              })
             }
-          };
-        });
-      };
-
-      module.exports = stepDefinitions
+          }
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:
@@ -138,19 +138,19 @@ Feature: Failing steps
   Scenario: promise - rejects
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a failing step$/, function(){
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a failing step$/, function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(function(){
-                reject(new Error('my error'));
-              });
+              setTimeout(function() {
+                reject(new Error('my error'))
+              })
             }
-          };
-        });
-      };
-
-      module.exports = stepDefinitions
+          }
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a failing step" failed with:

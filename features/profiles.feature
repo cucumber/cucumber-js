@@ -12,17 +12,20 @@ Feature: default command line arguments
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a passing step$/, function () {});
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {})
+      })
       """
     And a file named "cucumber.js" with:
       """
+      var common = '--compiler js:babel-register ';
+      
       module.exports = {
-        'default': '--format summary',
-        dry: '--dry-run',
-        progress: '--format progress'
+        'default': common + '--format summary',
+        dry: common + '--dry-run',
+        progress: common + '--format progress'
       };
       """
 

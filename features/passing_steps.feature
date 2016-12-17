@@ -11,11 +11,11 @@ Feature: Passing steps
   Scenario: synchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.Given(/^a passing step$/, function(){});
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {})
+      })
       """
     When I run cucumber.js
     Then the step "a passing step" has status "passed"
@@ -23,13 +23,13 @@ Feature: Passing steps
   Scenario: asynchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a passing step$/, function(callback){
-          setTimeout(callback);
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function(callback) {
+          setTimeout(callback)
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a passing step" has status "passed"
@@ -37,17 +37,17 @@ Feature: Passing steps
   Scenario: promise
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a passing step$/, function(){
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(resolve);
+              setTimeout(resolve)
             }
-          };
-        });
-      };
-
-      module.exports = stepDefinitions
+          }
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a passing step" has status "passed"

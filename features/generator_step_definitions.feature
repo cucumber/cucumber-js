@@ -14,22 +14,22 @@ Feature: Generator Step Definitions
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var assert = require('assert');
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
 
-      var cucumberSteps = function() {
-        this.World = function () {
-          this.context = "";
-        };
+      defineSupportCode(({setWorldConstructor, Then, When}) => {
+        setWorldConstructor(function () {
+          this.context = ""
+        })
 
-        this.When(/^I call a step which is a generator with return value "([^"]*)"$/, function *(return_value) {
+        When(/^I call a step which is a generator with return value "([^"]*)"$/, function *(return_value) {
           this.context = yield Promise.resolve(return_value);
-        });
+        })
 
-        this.Then(/^I can see the yielded "([^"]*)" value in the context$/, function(return_value){
-          assert.equal(this.context, return_value);
-        });
-      };
-      module.exports = cucumberSteps;
+        Then(/^I can see the yielded "([^"]*)" value in the context$/, function(return_value) {
+          assert.equal(this.context, return_value)
+        })
+      })
       """
 
   Scenario: without generator function runner
@@ -39,7 +39,7 @@ Feature: Generator Step Definitions
       """
       The following hook/step definitions use generator functions:
 
-        features/step_definitions/cucumber_steps.js:8
+        features/step_definitions/cucumber_steps.js:9
 
       Use 'this.setDefinitionFunctionWrapper(fn)' to wrap then in a function that returns a promise
       """
@@ -47,18 +47,19 @@ Feature: Generator Step Definitions
   Scenario: with generator function wrapper
     Given a file named "features/support/setup.js" with:
       """
-      var isGenerator = require('is-generator');
-      var Promise = require('bluebird');
+      import isGenerator from 'is-generator'
+      import {coroutine} from 'bluebird'
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = function () {
-        this.setDefinitionFunctionWrapper(function (fn) {
+      defineSupportCode(({setDefinitionFunctionWrapper}) => {
+        setDefinitionFunctionWrapper(function (fn) {
           if (isGenerator.fn(fn)) {
-            return Promise.coroutine(fn);
+            return coroutine(fn)
           } else {
-            return fn;
+            return fn
           }
-        });
-      };
+        })
+      })
       """
     When I run cucumber-js with `--strict`
     Then the exit status should be 0

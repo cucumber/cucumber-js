@@ -11,10 +11,11 @@ Feature: Failed scenarios
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a step is failing$/, function(callback) { callback("forced error"); });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({When}) => {
+        When(/^a step is failing$/, function() { throw "forced error" });
+      })
       """
 
   Scenario: from project directory
@@ -27,7 +28,7 @@ Feature: Failed scenarios
 
       1) Scenario: some scenario - features/a.feature:2
          Step: When a step is failing - features/a.feature:3
-         Step Definition: features/step_definitions/cucumber_steps.js:2
+         Step Definition: features/step_definitions/cucumber_steps.js:4
          Message:
            forced error
 
@@ -49,7 +50,7 @@ Feature: Failed scenarios
 
       1) Scenario: some scenario - ../a.feature:2
          Step: When a step is failing - ../a.feature:3
-         Step Definition: ../step_definitions/cucumber_steps.js:2
+         Step Definition: ../step_definitions/cucumber_steps.js:4
          Message:
            forced error
 

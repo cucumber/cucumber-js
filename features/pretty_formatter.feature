@@ -19,38 +19,33 @@ Feature: Pretty Formatter
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-
-      Scenario: I've declared one step which passes
-          Given This step is passing
+        Scenario: some scenario
+          Given a passing step
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {})
+      })
       """
     And a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.Before(function(scenario, callback) {
-          callback();
-        });
+      import {defineSupportCode} from 'cucumber'
 
-        this.After(function(scenario, callback) {
-          callback();
-        });
-      };
-
-      module.exports = hooks;
+      defineSupportCode(({After, Before}) => {
+        Before(function() {})
+        After(function() {})
+      })
       """
     When I run cucumber.js with `-f pretty`
     Then it outputs this text:
       """
       Feature: some feature
 
-        Scenario: I've declared one step which passes
-        ✔ Given This step is passing
+        Scenario: some scenario
+        ✔ Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -61,40 +56,38 @@ Feature: Pretty Formatter
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-
-      Scenario: I've declared one step and it is passing
-          Given This step is passing
+        Scenario: some scenario
+          Given a passing step
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {})
+      })
       """
     And a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.Before(function(scenario, callback) {
-          callback('Fail');
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = hooks;
+      defineSupportCode(({Before}) => {
+        Before(function() { throw 'Fail' })
+      })
       """
     When I run cucumber.js with `-f pretty`
     Then it outputs this text:
       """
       Feature: some feature
 
-        Scenario: I've declared one step and it is passing
-        - Given This step is passing
+        Scenario: some scenario
+        - Given a passing step
 
       Failures:
 
-      1) Scenario: I've declared one step and it is passing - features/a.feature:3
+      1) Scenario: some scenario - features/a.feature:2
          Step: Before
-         Step Definition: features/support/hooks.js:2
+         Step Definition: features/support/hooks.js:4
          Message:
            Fail
 
@@ -118,11 +111,12 @@ Feature: Pretty Formatter
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a basic step$/, function() { });
-        this.Given(/^a step with a doc string$/, function(str) { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a basic step$/, function() {})
+        Given(/^a step with a doc string$/, function(str) {})
+      })
       """
     When I run cucumber.js with `-f pretty`
     Then it outputs this text:
@@ -149,14 +143,16 @@ Feature: Pretty Formatter
 
         Scenario: some scenario
           Given a table:
-          | foo\nbar    |bar |   baz |
-          | foo\nbar\n\nbaz\n\\boo       |bar |   baz\nfoo |
+            | foo\nbar    |bar |   baz |
+            | foo\nbar\n\nbaz\n\\boo       |bar |   baz\nfoo |
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      module.exports = function() {
-        this.Given(/^a table:$/, function(table) { });
-      };
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a table:$/, function(table) {})
+      })
       """
     When I run cucumber.js with `-f pretty`
     Then it outputs this text:
