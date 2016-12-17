@@ -34,15 +34,14 @@ Feature: World Parameters
   Scenario: default world constructor has an empty parameters object by default
     Given a file named "features/step_definitions/my_steps.js" with:
       """
-      var assert = require('assert');
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
 
-      stepDefinitions = function() {
-        this.Given(/^the world parameters are correct$/, function () {
-          assert.deepEqual(this.parameters, {});
-        });
-      };
-
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^the world parameters are correct$/, function() {
+          assert.deepEqual(this.parameters, {})
+        })
+      })
       """
     When I run cucumber.js
     Then the step "the world parameters are correct" has status "passed"
@@ -50,15 +49,14 @@ Feature: World Parameters
   Scenario: default world constructor saves the parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
-      var assert = require('assert');
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
 
-      stepDefinitions = function() {
-        this.Given(/^the world parameters are correct$/, function () {
-          assert.equal(this.parameters.a, 1);
-        });
-      };
-
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^the world parameters are correct$/, function() {
+          assert.equal(this.parameters.a, 1)
+        })
+      })
       """
     When I run cucumber.js with `--world-parameters '{"a":1}'`
     Then the step "the world parameters are correct" has status "passed"
@@ -66,16 +64,15 @@ Feature: World Parameters
   Scenario: multiple world parameters are merged with the last taking precedence
     Given a file named "features/step_definitions/my_steps.js" with:
       """
-      var assert = require('assert');
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
 
-      stepDefinitions = function() {
-        this.Given(/^the world parameters are correct$/, function () {
-          assert.equal(this.parameters.a, 3);
-          assert.equal(this.parameters.b, 2);
-        });
-      };
-
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^the world parameters are correct$/, function() {
+          assert.equal(this.parameters.a, 3)
+          assert.equal(this.parameters.b, 2)
+        })
+      })
       """
     When I run cucumber.js with `--world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
     Then the step "the world parameters are correct" has status "passed"
@@ -85,25 +82,24 @@ Feature: World Parameters
       """
       function CustomWorld(options) {
         for(key in options.parameters) {
-          this[key] = options.parameters[key];
+          this[key] = options.parameters[key]
         }
       }
 
-      module.exports = function() {
-        this.World = CustomWorld;
-      };
+      defineSupportCode(({setWorldConstructor}) => {
+        setWorldConstructor(CustomWorld)
+      })
       """
     Given a file named "features/step_definitions/my_steps.js" with:
       """
-      var assert = require('assert');
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
 
-      stepDefinitions = function() {
-        this.Given(/^the world parameters are correct$/, function () {
-          assert.equal(this.a, 1);
-        });
-      };
-
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^the world parameters are correct$/, function() {
+          assert.equal(this.a, 1)
+        })
+      })
       """
     When I run cucumber.js with `--world-parameters '{"a":1}'`
     Then the step "the world parameters are correct" has status "passed"

@@ -14,10 +14,11 @@ Feature: Strict mode
   Scenario: Succeed scenario with implemented step with --strict
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a step$/, function() {});
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() {})
+      })
       """
     When I run cucumber.js with `--strict`
     Then the exit status should be 0
@@ -29,10 +30,11 @@ Feature: Strict mode
   Scenario: Fail Scenario with pending step with --strict
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a step$/, function() { return 'pending'; });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() { return 'pending' })
+      })
       """
     When I run cucumber.js with `--strict`
     Then the exit status should be 1

@@ -12,11 +12,11 @@ Feature: step definition snippets custom syntax
       """
     And a file named "coffeescript_syntax.js" with:
       """
-      function CoffeeScriptSyntax(interface) {
+      function CoffeeScriptSyntax(snippetInterface) {
         return {
           build: function build (functionName, pattern, parameters, comment) {
             var implementation;
-            if (interface === 'callback') {
+            if (snippetInterface === 'callback') {
               var callbackName = parameters[parameters.length - 1];
               implementation = callbackName + ' null, \'pending\'';
             } else {

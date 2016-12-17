@@ -7,6 +7,10 @@ import assert from 'assert'
 import {getScenarioNames, getSteps, findScenario, findStep} from '../support/json_output_helpers'
 
 defineSupportCode(({Then}) => {
+  Then(/^it runs (\d+) scenarios$/, function(count) {
+    assert.equal(this.lastRun.jsonOutput[0].elements.length, count)
+  })
+
   Then(/^it runs the scenario "([^"]*)"$/, function (name) {
     const actualNames = getScenarioNames(this.lastRun.jsonOutput)
     assert.deepEqual(actualNames, [name])

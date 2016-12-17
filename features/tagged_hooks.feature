@@ -16,29 +16,34 @@ Feature: Tagged Hooks
       """
     And a file named "features/step_definitions/world.js" with:
       """
-      module.exports = function() {
-        this.World = function() {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({setWorldConstructor}) => {
+        setWorldConstructor(function() {
           this.value = 0
-        };
-      };
+        })
+      })
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      var assert = require('assert');
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = function() {
-        this.Then(/^the value is (\d*)$/, function(number) {
-          assert.equal(number, this.value);
-        });
-      };
+      defineSupportCode(({Then}) => {
+        Then(/^the value is (\d*)$/, function(number) {
+          assert.equal(number, this.value)
+        })
+      })
       """
     And a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
-      module.exports = function() {
-        this.Before({tags: '@foo'}, function() {
-          this.value += 1;
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Before}) => {
+        Before({tags: '@foo'}, function() {
+          this.value += 1
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
