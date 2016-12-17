@@ -6,6 +6,7 @@ import fs from 'mz/fs'
 import Promise from 'bluebird'
 import Runtime from '../runtime'
 import ScenarioFilter from '../scenario_filter'
+import SupportCodeFns from '../support_code_fns'
 import SupportCodeLibraryBuilder from '../support_code_library/builder'
 
 export default class Cli {
@@ -39,9 +40,8 @@ export default class Cli {
   }
 
   getSupportCodeLibrary(supportCodePaths) {
-    Cli.supportCodeFns = []
     supportCodePaths.forEach((codePath) => require(codePath))
-    return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns: Cli.supportCodeFns})
+    return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns: SupportCodeFns.get()})
   }
 
   async run() {

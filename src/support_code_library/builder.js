@@ -60,7 +60,7 @@ function build({cwd, fns}) {
   return options
 }
 
-export function wrapDefinitions({cwd, definitionFunctionWrapper, definitions}) {
+function wrapDefinitions({cwd, definitionFunctionWrapper, definitions}) {
   if (definitionFunctionWrapper) {
     definitions.forEach((definition) => {
       const codeLength = definition.code.length

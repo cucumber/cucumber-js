@@ -24,16 +24,16 @@ Handlers can be synchronous, return a promise, accept an additional callback arg
 
 ```javascript
 // features/support/handlers.js
-var myHandlers = function () {
-  this.registerHandler('AfterFeatures', function (features, callback) {
+var {defineSupportCode} = require('cucumber');
+
+defineSupportCode(function({registerHandler}) {
+  registerHandler('AfterFeatures', function (features, callback) {
     // clean up!
     // There is no World instance available on `this`
     // because all scenarios are done and World instances are long gone.
     callback();
   });
-}
-
-module.exports = myHandlers;
+});
 ```
 
 Handlers timeout the same as steps / hooks and can have their timeout changed
@@ -41,11 +41,11 @@ by passing in an options object.
 
 ```javascript
 // features/support/handlers.js
-var myHandlers = function () {
-  this.registerHandler('AfterFeatures', {timeout: 10000}, function (features, callback) {
+var {defineSupportCode} = require('cucumber');
+
+defineSupportCode(function({registerHandler}) {
+  registerHandler('AfterFeatures', {timeout: 10000}, function (features, callback) {
     //...
   });
-}
-
-module.exports = myHandlers;
+});
 ```

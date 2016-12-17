@@ -59,41 +59,50 @@
       |  12 |         5 |     18 |</div>
         </div>
         <div class="tab-pane" id="step-definitions-tab">
-          <div id="step-definitions">///// Your World /////
+          <div id="step-definitions">Cucumber.defineSupportCode(function(context) {
+  var setWorldConstructor = context.setWorldConstructor;
+  var Given = context.Given
+  var When = context.When
+  var Then = context.Then
 
-// set this.World to your custom world (optional)
+  ///// Your World /////
+  //
+  // Call 'setWorldConstructor' with to your custom world (optional)
+  //
 
-var CustomWorld = function() {};
+  var CustomWorld = function() {};
 
-CustomWorld.prototype.variable = 0;
+  CustomWorld.prototype.variable = 0;
 
-CustomWorld.prototype.setTo = function(number) {
-  this.variable = parseInt(number);
-};
+  CustomWorld.prototype.setTo = function(number) {
+    this.variable = parseInt(number);
+  };
 
-CustomWorld.prototype.incrementBy = function(number) {
-  this.variable += parseInt(number);
-};
+  CustomWorld.prototype.incrementBy = function(number) {
+    this.variable += parseInt(number);
+  };
 
-this.World = CustomWorld;
+  setWorldConstructor(CustomWorld);
 
-///// Your step definitions /////
+  ///// Your step definitions /////
+  //
+  // use 'Given', 'When' and 'Then' to declare step definitions
+  //
 
-// use this.Given(), this.When() and this.Then() to declare step definitions
+  Given(/^a variable set to (\d+)$/, function(number) {
+    this.setTo(number);
+  });
 
-this.Given(/^a variable set to (\d+)$/, function(number) {
-  this.setTo(number);
-});
+  When(/^I increment the variable by (\d+)$/, function(number) {
+    this.incrementBy(number);
+  });
 
-this.When(/^I increment the variable by (\d+)$/, function(number) {
-  this.incrementBy(number);
-});
-
-this.Then(/^the variable should contain (\d+)$/, function(number) {
-  if (this.variable != parseInt(number))
-    throw new Error('Variable should contain ' + number +
-      ' but it contains ' + this.variable + '.');
-});</div>
+  Then(/^the variable should contain (\d+)$/, function(number) {
+    if (this.variable != parseInt(number))
+      throw new Error('Variable should contain ' + number +
+        ' but it contains ' + this.variable + '.');
+  });
+})</div>
         </div>
         <div class="tab-pane" id="output-tab">
           <pre id="output"></pre>

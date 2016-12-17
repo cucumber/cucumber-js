@@ -1,8 +1,6 @@
-var featureEditor, stepDefinitionsEditor;
-var Cucumber = Cucumber.default;
+var featureEditor, stepDefinitionsEditor, $output;
 
 function runFeature() {
-  var $output = $('#output');
   $output.empty();
   $('a[href="#output-tab"]').tab('show');
 
@@ -13,19 +11,18 @@ function runFeature() {
     uri: '/feature'
   });
 
-  var supportCode = new Function(stepDefinitionsEditor.getValue());
+  Cucumber.clearSupportCodeFns();
+  new Function(stepDefinitionsEditor.getValue())();
   var supportCodeLibrary = Cucumber.SupportCodeLibraryBuilder.build({
     cwd: '/',
-    fns: [supportCode]
+    fns: Cucumber.getSupportCodeFns()
   });
 
   var formatterOptions = {
     colorsEnabled: true,
     cwd: '/',
     log: function(data) {
-      data = ansi_up.ansi_to_html(data);
-      $output.append(data);
-      $output.scrollTop($output.prop("scrollHeight"));
+      appendToOutput(ansi_up.ansi_to_html(data));
     },
     supportCodeLibrary: supportCodeLibrary
   };
@@ -36,19 +33,37 @@ function runFeature() {
     listeners: [prettyFormatter],
     supportCodeLibrary: supportCodeLibrary
   });
-  runtime.start().catch(function(error) {
-    var errorContainer = $('<div>')
-    errorContainer.addClass('error').text(error.stack);
-    $output.append(errorContainer);
-  });
+  return runtime.start();
 };
 
-$(function() {
-  $('#run-feature').click(runFeature);
+function appendToOutput(data) {
+  $output.append(data);
+  $output.scrollTop($output.prop("scrollHeight"));
+}
 
+function displayError(error) {
+  var errorContainer = $('<div>')
+  errorContainer.addClass('error').text(error.stack || error);
+  appendToOutput(errorContainer)
+}
+
+$(function() {
   featureEditor = ace.edit("feature");
   featureEditor.getSession().setMode("ace/mode/gherkin");
 
   stepDefinitionsEditor = ace.edit("step-definitions");
   stepDefinitionsEditor.getSession().setMode("ace/mode/javascript");
+
+  $output = $('#output');
+
+  window.onerror = displayError;
+
+  $('#run-feature').click(function() {
+    runFeature().then(function(success) {
+      var exitStatus = success ? '0' : '1';
+      var exitStatusContainer = $('<div>');
+      exitStatusContainer.addClass('exit-status').text('Exit Status: ' + exitStatus);
+      appendToOutput(exitStatusContainer);
+    }).catch(displayError);
+  });
 });
