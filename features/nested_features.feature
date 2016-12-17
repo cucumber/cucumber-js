@@ -18,5 +18,5 @@ Feature: Automatically required support files for nested features
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then the exit status should be 0

@@ -43,5 +43,5 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
 
       module.exports = stepDefinitions
       """
-      When I run cucumber.js with `--strict`
+      When I run cucumber.js
       Then it passes

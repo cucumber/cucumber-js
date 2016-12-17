@@ -19,7 +19,7 @@ Feature: Core feature elements execution
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then it passes
 
   Scenario: Given, When, Then, And and But steps
@@ -51,7 +51,7 @@ Feature: Core feature elements execution
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then it passes
 
   Scenario: Step definition body is executed
@@ -87,7 +87,7 @@ Feature: Core feature elements execution
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then it passes
 
   Scenario: Steps accepting parameters
@@ -129,5 +129,5 @@ Feature: Core feature elements execution
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then it passes

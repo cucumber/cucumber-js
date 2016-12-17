@@ -22,7 +22,7 @@ Feature: doc string
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then it passes
 
   Scenario: with other step definition arguments
@@ -48,5 +48,5 @@ Feature: doc string
       };
       module.exports = cucumberSteps;
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then it passes
