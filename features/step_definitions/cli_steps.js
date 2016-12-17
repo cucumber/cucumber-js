@@ -11,11 +11,11 @@ import stringArgv from 'string-argv'
 const executablePath = path.join(__dirname, '..', '..', 'bin', 'cucumber.js')
 
 defineSupportCode(function({When, Then}) {
-  When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
+  When(/^I run cucumber.js(?: with `(|.+)`)?$/, {timeout: 10000}, function(args, callback) {
     args = stringArgv(args || '')
     args.unshift(executablePath)
     args.push('--backtrace', '--format', 'json:out.json')
-    const cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir
+    const cwd = this.tmpDir
     execFile('node', args, {cwd}, (error, stdout, stderr) => {
       let jsonOutput = []
       const jsonOutputPath = path.join(cwd, 'out.json')
