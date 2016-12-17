@@ -2,7 +2,7 @@
 
 ## API Reference
 
-Each call to `defineSupportCode` is passed an object with the following methods:
+The function passed to `defineSupportCode` is called with an object as the first argument that exposes the following methods:
 
 ---
 
