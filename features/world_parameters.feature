@@ -80,8 +80,10 @@ Feature: World Parameters
   Scenario: custom world constructor is passed the parameters
     Given a file named "features/support/world.js" with:
       """
+      import {defineSupportCode} from 'cucumber'
+
       function CustomWorld(options) {
-        for(key in options.parameters) {
+        for(const key in options.parameters) {
           this[key] = options.parameters[key]
         }
       }

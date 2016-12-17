@@ -2,7 +2,6 @@
 
 import _ from 'lodash'
 import {defineSupportCode} from '../../'
-import {getAdditionalErrorText, normalizeText} from '../support/helpers'
 import assert from 'assert'
 import {getScenarioNames, getSteps, findScenario, findStep} from '../support/json_output_helpers'
 
