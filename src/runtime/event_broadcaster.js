@@ -1,4 +1,3 @@
-import path from 'path'
 import Promise from 'bluebird'
 import UserCodeRunner from '../user_code_runner'
 
@@ -36,11 +35,7 @@ export default class EventBroadcaster {
   }
 
   getListenerErrorLocation({fnName, listener}) {
-    if (listener.cwd && listener.uri) {
-      return path.relative(listener.cwd, listener.uri) + ':' + listener.line
-    } else {
-      return `${listener.constructor.name}::${fnName}`
-    }
+    return listener.relativeUri || `${listener.constructor.name}::${fnName}`
   }
 
   prependLocationToError({error, location}) {
