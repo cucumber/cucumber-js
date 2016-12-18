@@ -14,11 +14,13 @@ export default class Parser {
       throw error
     }
 
-    return new Feature({
-      gherkinData: gherkinDocument.feature,
-      gherkinPickles: gherkinCompiler.compile(gherkinDocument, uri),
-      scenarioFilter,
-      uri
-    })
+    if (gherkinDocument.feature) {
+      return new Feature({
+        gherkinData: gherkinDocument.feature,
+        gherkinPickles: gherkinCompiler.compile(gherkinDocument, uri),
+        scenarioFilter,
+        uri
+      })
+    }
   }
 }
