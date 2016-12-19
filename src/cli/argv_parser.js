@@ -37,9 +37,9 @@ export default class ArgvParser {
       .option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, [])
       .option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {})
       .option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, [])
+      .option('--no-strict', 'succeed even if there are pending or undefined steps')
       .option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, [])
       .option('-r, --require <FILE|DIR>', 'require files before executing features (repeatable)', ArgvParser.collect, [])
-      .option('-S, --strict', 'fail if there are any undefined or pending steps')
       .option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression', '')
       .option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {})
 

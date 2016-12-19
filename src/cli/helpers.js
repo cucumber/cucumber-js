@@ -22,5 +22,8 @@ export async function getFeatures({featurePaths, scenarioFilter}) {
     const source = await fs.readFile(featurePath, 'utf8')
     return FeatureParser.parse({scenarioFilter, source, uri: featurePath})
   })
-  return _.filter(features, (feature) => feature.scenarios.length > 0)
+  return _.chain(features)
+    .compact()
+    .filter((feature) => feature.scenarios.length > 0)
+    .value()
 }

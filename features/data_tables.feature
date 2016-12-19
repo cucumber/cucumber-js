@@ -24,7 +24,7 @@ Feature: Data Tables
         })
       })
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then it passes
 
   Scenario: rows
@@ -54,7 +54,7 @@ Feature: Data Tables
         })
       })
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then it passes
 
   Scenario: rowsHash
@@ -81,7 +81,7 @@ Feature: Data Tables
         })
       })
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then it passes
 
   Scenario: hashes
@@ -111,5 +111,5 @@ Feature: Data Tables
         })
       })
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then it passes

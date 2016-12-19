@@ -30,9 +30,9 @@ function build({cwd, fns}) {
       )
       options.transformLookup.addTransform(transform)
     },
-    After: helpers.defineHook(options.afterHookDefinitions),
-    Before: helpers.defineHook(options.beforeHookDefinitions),
-    defineStep: helpers.defineStep(options.stepDefinitions),
+    After: helpers.defineHook(cwd, options.afterHookDefinitions),
+    Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
+    defineStep: helpers.defineStep(cwd, options.stepDefinitions),
     registerHandler: helpers.registerHandler(cwd, options.listeners),
     registerListener(listener) {
       options.listeners.push(listener)

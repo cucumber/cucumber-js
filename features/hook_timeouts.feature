@@ -28,7 +28,7 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then the output contains the text:
       """
       function timed out after 500 milliseconds
@@ -44,7 +44,7 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then the exit status should be 0
 
 
@@ -57,7 +57,7 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then the output contains the text:
       """
       function timed out after 500 milliseconds

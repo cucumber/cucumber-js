@@ -29,7 +29,7 @@ Feature: registerHandler timeouts
         })
       })
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then the error output contains the text:
       """
       features/supports/handlers.js:6 function timed out after 500 milliseconds
@@ -50,5 +50,5 @@ Feature: registerHandler timeouts
         })
       })
       """
-    When I run cucumber.js with `--strict`
+    When I run cucumber.js
     Then the exit status should be 0
