@@ -33,7 +33,7 @@ Feature: Generator Step Definitions
       """
 
   Scenario: without generator function runner
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then the exit status should be 1
     And the error output contains the text:
       """
@@ -60,5 +60,5 @@ Feature: Generator Step Definitions
         });
       };
       """
-    When I run cucumber-js with `--strict`
+    When I run cucumber-js
     Then the exit status should be 0

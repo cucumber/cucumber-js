@@ -40,7 +40,7 @@ Feature: custom formatter
       a feature / a scenario
         Given an undefined step - undefined
 
-      SUCCESS
+      FAILURE
       """
 
   Scenario: extending SummaryFormatter

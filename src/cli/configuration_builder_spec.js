@@ -35,7 +35,7 @@ describe('Configuration', function() {
           dryRun: false,
           failFast: false,
           filterStacktraces: true,
-          strict: false,
+          strict: true,
           worldParameters: {}
         },
         scenarioFilterOptions: {
