@@ -1,20 +1,21 @@
 /* eslint-disable babel/new-cap */
 
-import colors from 'colors/safe'
+import {defineSupportCode} from '../../'
 import {execFile} from 'child_process'
+import {getAdditionalErrorText, normalizeText} from '../support/helpers'
+import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
 import stringArgv from 'string-argv'
-import {getAdditionalErrorText, normalizeText} from '../support/helpers'
 
 const executablePath = path.join(__dirname, '..', '..', 'bin', 'cucumber.js')
 
-export default function cliSteps() {
-  this.When(/^I run cucumber.js(?: from the "([^"]*)" directory)?(?: with `(|.+)`)?$/, {timeout: 10000}, function(dir, args, callback) {
+defineSupportCode(function({When, Then}) {
+  When(/^I run cucumber.js(?: with `(|.+)`)?$/, {timeout: 10000}, function(args, callback) {
     args = stringArgv(args || '')
     args.unshift(executablePath)
     args.push('--backtrace', '--format', 'json:out.json')
-    const cwd = dir ? path.join(this.tmpDir, dir) : this.tmpDir
+    const cwd = this.tmpDir
     execFile('node', args, {cwd}, (error, stdout, stderr) => {
       let jsonOutput = []
       const jsonOutputPath = path.join(cwd, 'out.json')
@@ -34,7 +35,7 @@ export default function cliSteps() {
     })
   })
 
-  this.Then(/^it passes$/, function() {
+  Then(/^it passes$/, function() {
     if (this.lastRun.error) {
       throw new Error('Expected last run to pass but it failed\n' +
                       'Output:\n' + normalizeText(this.lastRun.stdout)
@@ -42,7 +43,7 @@ export default function cliSteps() {
     }
   })
 
-  this.Then(/^the exit status should be ([0-9]+|non-zero)$/, function(code) {
+  Then(/^the exit status should be ([0-9]+|non-zero)$/, function(code) {
     const actualCode = this.lastRun.error ? this.lastRun.error.code : 0
     const ok = (code === 'non-zero' && actualCode !== 0) || actualCode === parseInt(code)
     if (!ok) {
@@ -53,7 +54,7 @@ export default function cliSteps() {
     }
   })
 
-  this.Then(/^it outputs this text:$/, function(expectedOutput) {
+  Then(/^it outputs this text:$/, function(expectedOutput) {
     const actualOutput = normalizeText(this.lastRun.stdout)
     expectedOutput = normalizeText(expectedOutput)
     if (actualOutput !== expectedOutput) {
@@ -63,7 +64,7 @@ export default function cliSteps() {
     }
   })
 
-  this.Then(/^the (error )?output contains the text:$/, function(error, expectedOutput) {
+  Then(/^the (error )?output contains the text:$/, function(error, expectedOutput) {
     const actualOutput = normalizeText(error ? this.lastRun.stderr : this.lastRun.stdout)
     expectedOutput = normalizeText(expectedOutput)
     if (actualOutput.indexOf(expectedOutput) === -1) {
@@ -73,7 +74,7 @@ export default function cliSteps() {
     }
   })
 
-  this.Then(/^I see the version of Cucumber$/, function() {
+  Then(/^I see the version of Cucumber$/, function() {
     const version = require('../../package.json').version
     const actualOutput = this.lastRun.stdout
     const expectedOutput = version + '\n'
@@ -83,7 +84,7 @@ export default function cliSteps() {
     }
   })
 
-  this.Then(/^I see the help of Cucumber$/, function() {
+  Then(/^I see the help of Cucumber$/, function() {
     const actualOutput = this.lastRun.stdout
     const expectedOutput = 'Usage: cucumber.js '
     if (actualOutput.indexOf(expectedOutput) === -1) {
@@ -92,7 +93,7 @@ export default function cliSteps() {
     }
   })
 
-  this.Then(/^it suggests a "([^"]*)" step definition snippet(?: with (\d+) parameters?(?: named "([^"]*)")?)? for:$/, function (step, parameterCount, parameterName, regExp) {
+  Then(/^it suggests a "([^"]*)" step definition snippet(?: with (\d+) parameters?(?: named "([^"]*)")?)? for:$/, function (step, parameterCount, parameterName, regExp) {
     const parameters = []
     if (parameterName) {
       parameters.push(parameterName)
@@ -112,4 +113,4 @@ export default function cliSteps() {
                       getAdditionalErrorText(this.lastRun))
     }
   })
-}
+})

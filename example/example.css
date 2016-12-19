@@ -55,6 +55,14 @@ img.github-logo {
   padding: 5px;
 }
 
+#output .exit-status {
+  margin-top: 20px;
+}
+
+#output .error {
+  color: red;
+}
+
 /*
  * Footer
  */

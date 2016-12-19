@@ -1,11 +1,12 @@
 import _ from 'lodash'
-import {getExpandedArgv, getFeatures, getSupportCodeFunctions} from './helpers'
+import {getExpandedArgv, getFeatures} from './helpers'
 import ConfigurationBuilder from './configuration_builder'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
 import Promise from 'bluebird'
 import Runtime from '../runtime'
 import ScenarioFilter from '../scenario_filter'
+import SupportCodeFns from '../support_code_fns'
 import SupportCodeLibraryBuilder from '../support_code_library/builder'
 
 export default class Cli {
@@ -39,8 +40,8 @@ export default class Cli {
   }
 
   getSupportCodeLibrary(supportCodePaths) {
-    const fns = getSupportCodeFunctions(supportCodePaths)
-    return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns})
+    supportCodePaths.forEach((codePath) => require(codePath))
+    return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns: SupportCodeFns.get()})
   }
 
   async run() {

@@ -3,25 +3,27 @@ Feature: Step definition timeouts
   Background:
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      module.exports = function() {
-        this.setDefaultTimeout(500);
+      import {defineSupportCode} from 'cucumber'
 
-        this.Given(/^a callback step runs slowly$/, function(callback) {
-          setTimeout(callback, 1000);
-        });
+      defineSupportCode(({Given, setDefaultTimeout}) => {
+        setDefaultTimeout(500)
 
-        this.Given(/^a callback step runs slowly with an increased timeout$/, {timeout: 1500}, function(callback) {
-          setTimeout(callback, 1000);
-        });
+        Given(/^a callback step runs slowly$/, function(callback) {
+          setTimeout(callback, 1000)
+        })
 
-        this.Given(/^a promise step runs slowly$/, function() {
-          return { then: function (ok, ko) { setTimeout(ok, 1000); } };
-        });
+        Given(/^a callback step runs slowly with an increased timeout$/, {timeout: 1500}, function(callback) {
+          setTimeout(callback, 1000)
+        })
 
-        this.Given(/^a promise step runs slowly with an increased timeout$/, {timeout: 1500}, function() {
-          return { then: function (ok, ko) { setTimeout(ok, 1000); } };
-        });
-      };
+        Given(/^a promise step runs slowly$/, function() {
+          return { then: function(resolve) { setTimeout(resolve, 1000) } }
+        })
+
+        Given(/^a promise step runs slowly with an increased timeout$/, {timeout: 1500}, function() {
+          return { then: function(resolve) { setTimeout(resolve, 1000) } }
+        })
+      })
       """
 
   Scenario Outline: slow steps timeout

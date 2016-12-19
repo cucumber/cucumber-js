@@ -11,7 +11,7 @@ Feature: custom formatter
   Scenario: extending Formatter
     Given a file named "simple_formatter.js" with:
       """
-      const {default: {Formatter}} = require('cucumber');
+      import {Formatter} from 'cucumber'
 
       class SimpleFormatter extends Formatter {
         handleBeforeScenario(scenario) {
@@ -52,7 +52,7 @@ Feature: custom formatter
       """
     And a file named "simple_formatter.js" with:
       """
-      const {default: {SummaryFormatter}} = require('cucumber');
+      import {SummaryFormatter} from 'cucumber'
 
       class SimpleFormatter extends SummaryFormatter {
         handleBeforeScenario(scenario) {

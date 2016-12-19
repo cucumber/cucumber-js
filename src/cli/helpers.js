@@ -27,18 +27,3 @@ export async function getFeatures({featurePaths, scenarioFilter}) {
     .filter((feature) => feature.scenarios.length > 0)
     .value()
 }
-
-
-export function getSupportCodeFunctions(supportCodePaths) {
-  return _.chain(supportCodePaths)
-    .map((codePath) => {
-      const codeExport = require(codePath)
-      if (typeof(codeExport) === 'function') {
-        return codeExport
-      } else if (codeExport && typeof(codeExport.default) === 'function') {
-        return codeExport.default
-      }
-    })
-    .compact()
-    .value()
-}

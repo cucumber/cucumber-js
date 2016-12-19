@@ -9,21 +9,21 @@ Feature: Register Handler
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      var stepDefinitions = function() {
-        this.When(/^a step$/, function () {});
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions;
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() {})
+      })
       """
 
   Scenario: synchronous
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function () {});
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = handlers;
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function() {})
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
@@ -31,33 +31,31 @@ Feature: Register Handler
   Scenario: synchronously throws
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function(){
-          throw new Error('my error');
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = handlers;
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function() {
+          throw new Error('my error')
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 my error
+      features/support/handlers.js:4 my error
       """
 
   Scenario: callback without error
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function(features, callback) {
-          setTimeout(function () {
-            callback();
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = handlers;
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function(features, callback) {
+          setTimeout(callback)
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
@@ -65,35 +63,35 @@ Feature: Register Handler
   Scenario: callback with error
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function(features, callback) {
-          setTimeout(function() {
-            callback(new Error('my error'));
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = handlers
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function(features, callback) {
+          setTimeout(function() {
+            callback(new Error('my error'))
+          })
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 my error
+      features/support/handlers.js:4 my error
       """
 
   Scenario: callback asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function(features, callback) {
-          setTimeout(function(){
-            throw new Error('my error');
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = handlers;
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function(features, callback) {
+          setTimeout(function(){
+            throw new Error('my error')
+          })
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
@@ -101,37 +99,37 @@ Feature: Register Handler
   Scenario: callback - returning a promise
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function(features, callback) {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function(features, callback) {
           return {
             then: function() {}
-          };
-        });
-      };
-
-      module.exports = handlers;
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 function uses multiple asynchronous interfaces: callback and promise
+      features/support/handlers.js:4 function uses multiple asynchronous interfaces: callback and promise
       """
 
   Scenario: promise resolves
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function() {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(resolve);
+              setTimeout(resolve)
             }
-          };
-        });
-      };
-
-      module.exports = handlers;
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
@@ -139,69 +137,69 @@ Feature: Register Handler
   Scenario: promise rejects with error
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function() {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(function () {
-                reject(new Error('my error'));
-              });
+              setTimeout(function() {
+                reject(new Error('my error'))
+              })
             }
-          };
-        });
-      };
-
-      module.exports = handlers;
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 my error
+      features/support/handlers.js:4 my error
       """
 
   Scenario: promise rejects without error
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function() {
-        this.registerHandler('AfterFeatures', function() {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(reject);
+              setTimeout(reject)
             }
-          };
-        });
-      };
-
-      module.exports = handlers
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 Promise rejected
+      features/support/handlers.js:4 Promise rejected
       """
 
   Scenario: promise asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
-      var handlers = function(){
-        this.registerHandler('AfterFeatures', function() {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({registerHandler}) => {
+        registerHandler('AfterFeatures', function() {
           return {
             then: function(resolve, reject) {
-              setTimeout(function(){
-                throw new Error('my error');
-              });
+              setTimeout(function() {
+                throw new Error('my error')
+              })
             }
-          };
-        });
-      };
-
-      module.exports = handlers;
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be non-zero
     And the error output contains the text:
       """
-      features/support/handlers.js:2 my error
+      features/support/handlers.js:4 my error
       """

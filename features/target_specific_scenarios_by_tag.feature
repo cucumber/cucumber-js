@@ -28,10 +28,11 @@ Feature: Target specific scenarios
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a step is (.*)$/, function() { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step is (.*)$/, function() {})
+      })
       """
 
   Scenario: run a single scenario

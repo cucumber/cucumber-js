@@ -12,15 +12,15 @@ Feature: doc string
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      var cucumberSteps = function() {
-        this.When(/^a doc string step$/, function(docString) {
+      defineSupportCode(({Given}) => {
+        Given(/^a doc string step$/, function(docString) {
           assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
                                   "cultivated plant in the gourd family Cucurbitaceae.")
-        });
-      };
-      module.exports = cucumberSteps;
+        })
+      })
       """
     When I run cucumber-js
     Then it passes
@@ -37,16 +37,16 @@ Feature: doc string
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      var cucumberSteps = function() {
-        this.When(/^a "([^"]*)" step$/, function(type, docString) {
-          assert.equal(type, "doc string");
+      defineSupportCode(({Given}) => {
+        Given(/^a "([^"]*)" step$/, function(type, docString) {
+          assert.equal(type, "doc string")
           assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
                                   "cultivated plant in the gourd family Cucurbitaceae.")
-        });
-      };
-      module.exports = cucumberSteps;
+        })
+      })
       """
     When I run cucumber-js
     Then it passes

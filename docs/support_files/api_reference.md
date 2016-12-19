@@ -2,11 +2,11 @@
 
 ## API Reference
 
-All support files that export a function will be called with a context that exposes the following methods:
+The function passed to `defineSupportCode` is called with an object as the first argument that exposes the following methods:
 
 ---
 
-#### `this.addTransform({captureGroupRegexps, name, transformer})`
+#### `addTransform({captureGroupRegexps, name, transformer})`
 
 Add a new transform to convert a capture group into something else.
 
@@ -40,7 +40,7 @@ The built in transforms are:
 
 ---
 
-#### `this.After([options,] fn)`
+#### `After([options,] fn)`
 
 Defines a hook which is run after each scenario.
 
@@ -58,19 +58,19 @@ Multiple `After` hooks are executed in the **reverse** order that they are defin
 
 ---
 
-#### `this.Before([options,] fn)`
+#### `Before([options,] fn)`
 
-Defines a hook which is run before each scenario. Same interface as `this.After`.
+Defines a hook which is run before each scenario. Same interface as `After`.
 
 Multiple `Before` hooks are executed in the order that they are defined.
 
 ---
 
-#### `this.defineStep([options,] pattern, fn)`
+#### `defineStep([options,] pattern, fn)`
 
 Defines a step.
 
-Aliases: `this.Given`, `this.When`, `this.Then`.
+Aliases: `Given`, `When`, `Then`.
 
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
@@ -82,13 +82,13 @@ Aliases: `this.Given`, `this.When`, `this.Then`.
 
 ---
 
-#### `this.Given(pattern[, options], fn)`
+#### `Given(pattern[, options], fn)`
 
-Alias of `this.defineStep`.
+Alias of `defineStep`.
 
 ---
 
-#### `this.registerHandler(event[, options], fn)`
+#### `registerHandler(event[, options], fn)`
 
 * `event`: One of the supported event names [listed here](./event_handlers.md).
 * `options`: An object with the following keys:
@@ -99,37 +99,25 @@ Alias of `this.defineStep`.
 
 ---
 
-#### `this.setDefaultTimeout(milliseconds)`
+#### `setDefaultTimeout(milliseconds)`
 
 Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.
 
 ---
 
-#### `this.setDefinitionFunctionWrapper(fn)`
+#### `setDefinitionFunctionWrapper(fn)`
 
 Set a function used to wrap step / hook definitions. When used, the result is wrapped again to ensure it has the same length of the original step / hook definition.
 
 ---
 
-#### `this.Then(pattern[, options], fn)`
-
-Alias of `this.defineStep`.
-
----
-
-#### `this.When(pattern[, options], fn)`
-
-Alias of `this.defineStep`.
-
----
-
-#### `this.World`
+#### `setWorldConstructor(constructor)`
 
 Set a custom world constructor, to override the default world constructor:
-```
+```js
 function World({attach, parameters}) {
-  this.attach = attach
-  this.parameters = parameters
+  attach = attach
+  parameters = parameters
 }
 ```
 
@@ -137,3 +125,15 @@ function World({attach, parameters}) {
 * `parameters` - world parameters passed in through the [cli](../cli.md#world-parameters)
 
 **Note:** The World constructor was made strictly synchronous in *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*.
+
+---
+
+#### `Then(pattern[, options], fn)`
+
+Alias of `defineStep`.
+
+---
+
+#### `When(pattern[, options], fn)`
+
+Alias of `defineStep`.

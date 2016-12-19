@@ -11,13 +11,13 @@ Feature: Pending steps
   Scenario: Synchronous pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a pending step$/, function(){
-          return 'pending';
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^a pending step$/, function() {
+          return 'pending'
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a pending step" has status "pending"
@@ -26,13 +26,13 @@ Feature: Pending steps
   Scenario: Callback pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a pending step$/, function(callback){
-          callback(null, 'pending');
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^a pending step$/, function(callback) {
+          callback(null, 'pending')
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a pending step" has status "pending"
@@ -40,19 +40,19 @@ Feature: Pending steps
   Scenario: Promise pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a pending step$/, function(){
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a pending step$/, function(){
           return {
             then: function(onResolve, onReject) {
-              setTimeout(function () {
-                onResolve('pending');
-              });
+              setTimeout(function() {
+                onResolve('pending')
+              })
             }
-          };
-        });
-      };
-
-      module.exports = stepDefinitions
+          }
+        })
+      })
       """
     When I run cucumber.js
     Then the step "a pending step" has status "pending"

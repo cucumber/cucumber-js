@@ -1,27 +1,31 @@
 /* eslint-disable babel/new-cap */
 
+import {defineSupportCode} from '../../'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
 
-export default function hooks() {
-  this.Before(function () {
+const projectPath = path.join(__dirname, '..', '..')
+
+defineSupportCode(function({Before}) {
+  Before(function () {
     const tmpObject = tmp.dirSync({unsafeCleanup: true})
-    this.tmpDir = fs.realpathSync(tmpObject.name)
+    this.tmpDir = tmpObject.name
+
+    const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
+    const profileContent = 'module.exports = {default: "--compiler js:babel-register"}'
+    fs.writeFileSync(tmpDirProfilePath, profileContent)
+
+    const tmpDirBabelRcPath = path.join(this.tmpDir, '.babelrc')
+    const profileBabelRcPath = path.join(projectPath, '.babelrc')
+    fsExtra.createSymlinkSync(profileBabelRcPath, tmpDirBabelRcPath)
+
     const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-    fs.mkdirSync(tmpDirNodeModulesPath)
-
-    const projectPath = path.join(__dirname, '..', '..')
-
-    const moduleNames = ['bluebird', 'coffee-script', 'is-generator', 'sinon']
-    moduleNames.forEach(function(moduleName){
-      const projectModulePath = path.join(projectPath, 'node_modules', moduleName)
-      const tmpDirModulePath = path.join(tmpDirNodeModulesPath, moduleName)
-      fsExtra.createSymlinkSync(projectModulePath, tmpDirModulePath)
-    })
+    const projectNodeModulePath = path.join(projectPath, 'node_modules')
+    fsExtra.createSymlinkSync(projectNodeModulePath, tmpDirNodeModulesPath)
 
     const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
     fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
   })
-}
+})

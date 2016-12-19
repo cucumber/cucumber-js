@@ -9,18 +9,16 @@ Feature: Custom stack trace
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        var _prepareStackTrace = Error.prepareStackTrace;
-        Error.prepareStackTrace = function() {
-          return 'Custom message';
-        }
+      import {defineSupportCode} from 'cucumber'
 
-        this.When(/^Error.prepareStackTrace has been overriden$/, function() {
-        });
+      defineSupportCode(({When}) => {
+        const _prepareStackTrace = Error.prepareStackTrace;
+        Error.prepareStackTrace = () => { return 'Custom message' }
 
-        Error.prepareStackTrace = _prepareStackTrace;
-      };
-      module.exports = cucumberSteps;
+        When(/^Error.prepareStackTrace has been overriden$/, function() {})
+
+        Error.prepareStackTrace = _prepareStackTrace
+      })
       """
     When I run cucumber.js
     Then it outputs this text:

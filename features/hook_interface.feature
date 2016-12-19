@@ -9,23 +9,23 @@ Feature: After hook interface
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      stepDefinitions = function() {
-        this.When(/^a step$/, function() {});
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode(({When}) => {
+        When(/^a step$/, function() {
+          this.value = 1;
+        })
+      })
       """
 
   Scenario Outline: too many arguments
     Given a file named "features/support/hooks.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
 
-      hooks = function() {
-        this.<TYPE>(function (arg1, arg2, arg3) {});
-      };
-
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(arg1, arg2, arg3) {})
+      })
       """
     When I run cucumber.js
     And the exit status should be 1
@@ -42,13 +42,12 @@ Feature: After hook interface
   Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      hooks = function() {
-        this.<TYPE>(function () {});
-      };
-
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {})
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
@@ -61,13 +60,13 @@ Feature: After hook interface
   Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function() {
-        this.<TYPE>(function(){
-          throw new Error('my error');
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
+          throw new Error('my error')
+        })
+      }
       """
     When I run cucumber.js
     And the exit status should be 1
@@ -80,15 +79,14 @@ Feature: After hook interface
   Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      hooks = function() {
-        this.<TYPE>(function (scenario, callback) {
-          setTimeout(callback);
-        });
-      };
-
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
+          setTimeout(callback)
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
@@ -101,15 +99,15 @@ Feature: After hook interface
   Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function() {
-        this.<TYPE>(function (scenario, callback) {
-          setTimeout(function() {
-            callback(new Error('my error'));
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
+          setTimeout(() => {
+            callback(new Error('my error'))
+          })
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 1
@@ -122,15 +120,15 @@ Feature: After hook interface
   Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function() {
-        this.<TYPE>(function(scenario, callback){
-          setTimeout(function(){
-            throw new Error('my error');
-          });
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
+          setTimeout(() => {
+            throw new Error('my error')
+          })
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 1
@@ -143,15 +141,15 @@ Feature: After hook interface
   Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      hooks = function() {
-        this.<TYPE>(function(scenario, callback){
-          return {
-            then: function(onResolve, onReject) {}
-          };
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(scenario, callback) {
+          return {
+            then: function() {}
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 1
@@ -168,19 +166,18 @@ Feature: After hook interface
   Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      hooks = function() {
-        this.<TYPE>(function(){
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
           return {
-            then: function(onResolve, onReject) {
-              setTimeout(onResolve);
+            then: (onResolve, onReject) => {
+              setTimeout(onResolve)
             }
-          };
-        });
-      };
-
-      module.exports = hooks
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 0
@@ -193,19 +190,19 @@ Feature: After hook interface
   Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function() {
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({<TYPE>}) => {
         this.<TYPE>(function(){
           return {
-            then: function(onResolve, onReject) {
-              setTimeout(function () {
-                onReject(new Error('my error'));
-              });
+            then: (onResolve, onReject) => {
+              setTimeout(() => {
+                onReject(new Error('my error'))
+              })
             }
-          };
-        });
-      };
-
-      module.exports = hooks
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 1
@@ -218,15 +215,17 @@ Feature: After hook interface
   Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function() {
-        this.<TYPE>(function(){
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
           return {
-            then: function(onResolve, onReject) {
-              setTimeout(onReject);
+            then: (onResolve, onReject) => {
+              setTimeout(onReject)
             }
-          };
-        });
-      };
+          }
+        })
+      })
 
       module.exports = hooks
       """
@@ -241,19 +240,19 @@ Feature: After hook interface
   Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      hooks = function(){
-        this.<TYPE>(function(){
-          return {
-            then: function(onResolve, onReject) {
-              setTimeout(function(){
-                throw new Error('my error');
-              });
-            }
-          };
-        });
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = hooks
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(){
+          return {
+            then: (onResolve, onReject) => {
+              setTimeout(() => {
+                throw new Error('my error')
+              })
+            }
+          }
+        })
+      })
       """
     When I run cucumber.js
     And the exit status should be 1

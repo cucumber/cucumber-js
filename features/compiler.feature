@@ -7,23 +7,16 @@ Feature: compilers
   Scenario: CoffeeScript step definition
     Given a file named "features/a.feature" with:
       """
-      Feature:
-        Scenario:
+      Feature: some feature
+        Scenario: some scenario
           Given a step
       """
     Given a file named "features/step_definitions/cucumber_steps.coffee" with:
       """
-      stepDefinitions = ->
-        @Given /^a step$/, ->
+      {defineSupportCode} = require 'cucumber'
 
-      module.exports = stepDefinitions
+      defineSupportCode ({Given}) ->
+        Given /^a step$/, ->
       """
-    When I run cucumber.js with `--compiler coffee:coffee-script/register -f progress`
-    Then it outputs this text:
-      """
-      .
-
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
+    When I run cucumber.js with `--compiler coffee:coffee-script/register`
+    Then the step "a step" has status "passed"

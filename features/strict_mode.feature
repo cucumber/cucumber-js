@@ -22,10 +22,11 @@ Feature: Strict mode
   Scenario: Fail with pending step by default
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a step$/, function() { return 'pending'; });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() { return 'pending' })
+      })
       """
     When I run cucumber.js
     Then the exit status should be 1
@@ -33,10 +34,11 @@ Feature: Strict mode
   Scenario: Succeed with pending step with --no-strict
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a step$/, function() { return 'pending'; });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() { return 'pending' })
+      })
       """
     When I run cucumber.js with `--no-strict`
     Then the exit status should be 0

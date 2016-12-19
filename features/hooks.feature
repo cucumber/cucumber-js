@@ -9,20 +9,22 @@ Feature: Environment Hooks
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a step$/, function() { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() {})
+      })
       """
 
   Scenario: Hooks are steps
     Given a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.Before(function() {});
-        this.After(function() {});
-      };
-      module.exports = hooks;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({After, Before}) => {
+        Before(function() {})
+        After(function() {})
+      })
       """
     When I run cucumber.js
     Then the scenario "some scenario" has the steps
@@ -34,10 +36,11 @@ Feature: Environment Hooks
   Scenario: Failing before fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.Before(function() { throw 'Fail' });
-      };
-      module.exports = hooks;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Before}) => {
+        Before(function() { throw 'Fail' })
+      })
       """
     When I run cucumber.js
     Then the exit status should be 1
@@ -45,10 +48,11 @@ Feature: Environment Hooks
   Scenario: Failing after hook fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.After(function() { throw 'Fail' });
-      };
-      module.exports = hooks;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({After}) => {
+        After(function() { throw 'Fail' })
+      })
       """
     When I run cucumber.js
     Then the exit status should be 1
@@ -56,11 +60,12 @@ Feature: Environment Hooks
   Scenario: After hooks still execute after a failure
     Given a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.Before(function() { throw 'Fail' });
-        this.After(function() {});
-      };
-      module.exports = hooks;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({After, Before}) => {
+        Before(function() { throw 'Fail' })
+        After(function() {})
+      })
       """
     When I run cucumber.js
     Then the "After" hook has status "passed"
@@ -68,33 +73,35 @@ Feature: Environment Hooks
   Scenario: World is this in hooks
     Given a file named "features/support/world.js" with:
       """
-      var WorldConstructor = function WorldConstructor() {
-        return {
-          isWorld: function() { return true; }
-        };
-      };
+      import {defineSupportCode} from 'cucumber'
 
-      module.exports = function() {
-        this.World = WorldConstructor;
-      };
+      function WorldConstructor() {
+        return {
+          isWorld: function() { return true }
+        }
+      }
+
+      defineSupportCode(({setWorldConstructor}) => {
+        setWorldConstructor(WorldConstructor)
+      })
       """
     Given a file named "features/support/hooks.js" with:
       """
-      var hooks = function () {
-        this.Before(function() {
-          if (!this.isWorld()) {
-            throw Error("Expected this to be world");
-          }
-        });
+      import {defineSupportCode} from 'cucumber'
 
-        this.After(function() {
+      defineSupportCode(({After, Before}) => {
+        Before(function() {
           if (!this.isWorld()) {
-            throw Error("Expected this to be world");
+            throw Error("Expected this to be world")
           }
-        });
-      };
+        })
 
-      module.exports = hooks;
+        After(function() {
+          if (!this.isWorld()) {
+            throw Error("Expected this to be world")
+          }
+        })
+      })
       """
     When I run cucumber.js
     Then the exit status should be 0

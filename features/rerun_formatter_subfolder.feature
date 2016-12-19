@@ -16,11 +16,12 @@ Feature: Rerun Formatter
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a passing step$/, function() { });
-        this.When(/^a failing step$/, function() { throw 'fail' });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a passing step$/, function() {})
+        Given(/^a failing step$/, function() { throw 'fail' })
+      })
       """
     And a directory named "test_results"
     When I run cucumber.js with `--format rerun:test_results/@rerun.txt`

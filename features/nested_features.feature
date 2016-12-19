@@ -13,10 +13,11 @@ Feature: Automatically required support files for nested features
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.When(/^a step$/, function() { });
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() {})
+      })
       """
     When I run cucumber.js
     Then the exit status should be 0

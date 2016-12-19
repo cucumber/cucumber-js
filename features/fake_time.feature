@@ -2,19 +2,18 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
   Background: Before and After hooks to enable faking time.
     Given a file named "features/support/hooks.js" with:
     """
-    var sinon = require('sinon');
-    var hooks = function () {
+    import {defineSupportCode} from 'cucumber'
+    import sinon from 'sinon'
 
-      this.Before(function(scenario) {
-        this.clock = sinon.useFakeTimers();
-      });
+    defineSupportCode(({After, Before}) => {
+      Before(function(scenario) {
+        this.clock = sinon.useFakeTimers()
+      })
 
-      this.After(function(scenario) {
-        this.clock.restore();
-      });
-
-    };
-    module.exports = hooks;
+      After(function(scenario) {
+        this.clock.restore()
+      })
+    })
     """
 
   Scenario: faked time doesn't trigger the test runner timeout
@@ -27,21 +26,19 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
 
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      var assert = require('assert');
-      var sinon = require('sinon')
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
+      import sinon from 'sinon'
 
-      stepDefinitions = function() {
-        this.Given(/^a faked time step$/, function (done) {
-          var testFunction = sinon.stub();
-          setTimeout(testFunction, 10000);
-          assert(!testFunction.called);
-          this.clock.tick(10001);
-          assert(testFunction.called);
-          done()
-        });
-      };
-
-      module.exports = stepDefinitions
+      defineSupportCode(({Given}) => {
+        Given(/^a faked time step$/, function () {
+          var testFunction = sinon.stub()
+          setTimeout(testFunction, 10000)
+          assert(!testFunction.called)
+          this.clock.tick(10001)
+          assert(testFunction.called)
+        })
+      })
       """
       When I run cucumber.js
       Then it passes

@@ -25,11 +25,12 @@ Feature: Summary Formatter
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      var cucumberSteps = function() {
-        this.Given(/^a step$/, function() {});
-        this.Given(/^another step$/, function() {});
-      };
-      module.exports = cucumberSteps;
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a step$/, function() {})
+        Given(/^another step$/, function() {})
+      })
       """
     When I run cucumber.js with `-f summary`
     Then it outputs this text:

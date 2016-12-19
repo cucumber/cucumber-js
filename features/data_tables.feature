@@ -11,19 +11,18 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      stepDefinitions = function() {
-        this.Given(/^a table step$/, function(table){
-          expected = [
+      defineSupportCode(({Given}) => {
+        Given(/^a table step$/, function(table) {
+          const expected = [
             ['Cucumber', 'Cucumis sativus'],
             ['Burr Gherkin', 'Cucumis anguria']
-          ];
+          ]
           assert.deepEqual(table.raw(), expected)
-        });
-      };
-
-      module.exports = stepDefinitions
+        })
+      })
       """
     When I run cucumber.js
     Then it passes
@@ -41,20 +40,19 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      stepDefinitions = function() {
-        this.Given(/^a table step$/, function(table){
-          expected = [
+      defineSupportCode(({Given}) => {
+        Given(/^a table step$/, function(table) {
+          const expected = [
             ['Apricot', '5'],
             ['Brocolli', '2'],
             ['Cucumber', '10']
-          ];
+          ]
           assert.deepEqual(table.rows(), expected)
-        });
-      };
-
-      module.exports = stepDefinitions
+        })
+      })
       """
     When I run cucumber.js
     Then it passes
@@ -70,19 +68,18 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      stepDefinitions = function() {
-        this.Given(/^a table step$/, function(table){
-          expected = {
+      defineSupportCode(({Given}) => {
+        Given(/^a table step$/, function(table) {
+          const expected = {
             'Cucumber': 'Cucumis sativus',
             'Burr Gherkin': 'Cucumis anguria'
-          };
+          }
           assert.deepEqual(table.rowsHash(), expected)
-        });
-      };
-
-      module.exports = stepDefinitions
+        })
+      })
       """
     When I run cucumber.js
     Then it passes
@@ -100,20 +97,19 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      assert = require('assert');
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
 
-      stepDefinitions = function() {
-        this.Given(/^a table step$/, function(table){
-          expected = [
+      defineSupportCode(({Given}) => {
+        Given(/^a table step$/, function(table) {
+          const expected = [
             {'Vegetable': 'Apricot', 'Rating': '5'},
             {'Vegetable': 'Brocolli', 'Rating': '2'},
             {'Vegetable': 'Cucumber', 'Rating': '10'}
-          ];
+          ]
           assert.deepEqual(table.hashes(), expected)
-        });
-      };
-
-      module.exports = stepDefinitions
+        })
+      })
       """
     When I run cucumber.js
     Then it passes
