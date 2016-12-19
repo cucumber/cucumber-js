@@ -50246,7 +50246,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.0.0-rc.3",
+  "version": "2.0.0-rc.4",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -51037,8 +51037,6 @@ var getFeatures = exports.getFeatures = function () {
   };
 }();
 
-exports.getSupportCodeFunctions = getSupportCodeFunctions;
-
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -51064,17 +51062,6 @@ var _bluebird = require('bluebird');
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function getSupportCodeFunctions(supportCodePaths) {
-  return _lodash2.default.chain(supportCodePaths).map(function (codePath) {
-    var codeExport = require(codePath);
-    if (typeof codeExport === 'function') {
-      return codeExport;
-    } else if (codeExport && typeof codeExport.default === 'function') {
-      return codeExport.default;
-    }
-  }).compact().value();
-}
 
 },{"./argv_parser":288,"./feature_parser":290,"./profile_loader":294,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/regenerator":26,"bluebird":29,"lodash":236,"mz/fs":238}],292:[function(require,module,exports){
 'use strict';
@@ -51132,6 +51119,10 @@ var _runtime2 = _interopRequireDefault(_runtime);
 var _scenario_filter = require('../scenario_filter');
 
 var _scenario_filter2 = _interopRequireDefault(_scenario_filter);
+
+var _support_code_fns = require('../support_code_fns');
+
+var _support_code_fns2 = _interopRequireDefault(_support_code_fns);
 
 var _builder3 = require('../support_code_library/builder');
 
@@ -51273,8 +51264,10 @@ var Cli = function () {
   }, {
     key: 'getSupportCodeLibrary',
     value: function getSupportCodeLibrary(supportCodePaths) {
-      var fns = (0, _helpers.getSupportCodeFunctions)(supportCodePaths);
-      return _builder4.default.build({ cwd: this.cwd, fns: fns });
+      supportCodePaths.forEach(function (codePath) {
+        return require(codePath);
+      });
+      return _builder4.default.build({ cwd: this.cwd, fns: _support_code_fns2.default.get() });
     }
   }, {
     key: 'run',
@@ -51344,7 +51337,7 @@ var Cli = function () {
 
 exports.default = Cli;
 
-},{"../formatter/builder":295,"../runtime":327,"../scenario_filter":331,"../support_code_library/builder":333,"./configuration_builder":289,"./helpers":291,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/helpers/slicedToArray":22,"babel-runtime/regenerator":26,"bluebird":29,"lodash":236,"mz/fs":238}],293:[function(require,module,exports){
+},{"../formatter/builder":295,"../runtime":327,"../scenario_filter":331,"../support_code_fns":333,"../support_code_library/builder":334,"./configuration_builder":289,"./helpers":291,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/helpers/slicedToArray":22,"babel-runtime/regenerator":26,"bluebird":29,"lodash":236,"mz/fs":238}],293:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52878,58 +52871,100 @@ function formatLocation(cwd, obj) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.clearSupportCodeFns = exports.getSupportCodeFns = exports.defineSupportCode = exports.SupportCodeLibraryBuilder = exports.SummaryFormatter = exports.Status = exports.ScenarioFilter = exports.Runtime = exports.FormatterBuilder = exports.Formatter = exports.FeatureParser = exports.Cli = undefined;
 
 var _cli = require('./cli');
 
-var _cli2 = _interopRequireDefault(_cli);
+Object.defineProperty(exports, 'Cli', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_cli).default;
+  }
+});
 
 var _feature_parser = require('./cli/feature_parser');
 
-var _feature_parser2 = _interopRequireDefault(_feature_parser);
+Object.defineProperty(exports, 'FeatureParser', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_feature_parser).default;
+  }
+});
 
 var _formatter = require('./formatter');
 
-var _formatter2 = _interopRequireDefault(_formatter);
+Object.defineProperty(exports, 'Formatter', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_formatter).default;
+  }
+});
 
 var _builder = require('./formatter/builder');
 
-var _builder2 = _interopRequireDefault(_builder);
+Object.defineProperty(exports, 'FormatterBuilder', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_builder).default;
+  }
+});
 
 var _runtime = require('./runtime');
 
-var _runtime2 = _interopRequireDefault(_runtime);
+Object.defineProperty(exports, 'Runtime', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_runtime).default;
+  }
+});
 
 var _scenario_filter = require('./scenario_filter');
 
-var _scenario_filter2 = _interopRequireDefault(_scenario_filter);
+Object.defineProperty(exports, 'ScenarioFilter', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_scenario_filter).default;
+  }
+});
 
 var _status = require('./status');
 
-var _status2 = _interopRequireDefault(_status);
+Object.defineProperty(exports, 'Status', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_status).default;
+  }
+});
 
 var _summary_formatter = require('./formatter/summary_formatter');
 
-var _summary_formatter2 = _interopRequireDefault(_summary_formatter);
+Object.defineProperty(exports, 'SummaryFormatter', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_summary_formatter).default;
+  }
+});
 
-var _builder3 = require('./support_code_library/builder');
+var _builder2 = require('./support_code_library/builder');
 
-var _builder4 = _interopRequireDefault(_builder3);
+Object.defineProperty(exports, 'SupportCodeLibraryBuilder', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_builder2).default;
+  }
+});
+
+var _support_code_fns = require('./support_code_fns');
+
+var _support_code_fns2 = _interopRequireDefault(_support_code_fns);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = {
-  Cli: _cli2.default,
-  FeatureParser: _feature_parser2.default,
-  Formatter: _formatter2.default,
-  FormatterBuilder: _builder2.default,
-  Runtime: _runtime2.default,
-  ScenarioFilter: _scenario_filter2.default,
-  Status: _status2.default,
-  SummaryFormatter: _summary_formatter2.default,
-  SupportCodeLibraryBuilder: _builder4.default
-};
+var defineSupportCode = exports.defineSupportCode = _support_code_fns2.default.add;
+var getSupportCodeFns = exports.getSupportCodeFns = _support_code_fns2.default.get;
+var clearSupportCodeFns = exports.clearSupportCodeFns = _support_code_fns2.default.reset;
 
-},{"./cli":292,"./cli/feature_parser":290,"./formatter":297,"./formatter/builder":295,"./formatter/summary_formatter":305,"./runtime":327,"./scenario_filter":331,"./status":332,"./support_code_library/builder":333}],308:[function(require,module,exports){
+},{"./cli":292,"./cli/feature_parser":290,"./formatter":297,"./formatter/builder":295,"./formatter/summary_formatter":305,"./runtime":327,"./scenario_filter":331,"./status":332,"./support_code_fns":333,"./support_code_library/builder":334}],308:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54098,7 +54133,7 @@ var EventBroadcaster = function () {
 
 exports.default = EventBroadcaster;
 
-},{"../user_code_runner":339,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29}],326:[function(require,module,exports){
+},{"../user_code_runner":340,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29}],326:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55201,7 +55236,7 @@ var beginTiming = _time2.default.beginTiming,
     endTiming = _time2.default.endTiming;
 exports.default = { run: run };
 
-},{"../models/step_result":320,"../status":332,"../time":337,"../user_code_runner":339,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/regenerator":26,"lodash":236}],331:[function(require,module,exports){
+},{"../models/step_result":320,"../status":332,"../time":338,"../user_code_runner":340,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/regenerator":26,"lodash":236}],331:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55361,12 +55396,31 @@ function getStatusMapping(initialValue) {
 }
 
 },{"lodash":236,"upper-case-first":279}],333:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var fns = [];
+
+exports.default = {
+  add: function add(fn) {
+    fns.push(fn);
+  },
+  get: function get() {
+    return fns;
+  },
+  reset: function reset() {
+    fns = [];
+  }
+};
+
+},{}],334:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.wrapDefinitions = wrapDefinitions;
 
 var _lodash = require('lodash');
 
@@ -55408,14 +55462,21 @@ function build(_ref) {
     defaultTimeout: 5000,
     listeners: [],
     stepDefinitions: [],
-    transformLookup: _transform_lookup_builder2.default.build()
+    transformLookup: _transform_lookup_builder2.default.build(),
+    World: function World(_ref2) {
+      var attach = _ref2.attach,
+          parameters = _ref2.parameters;
+
+      this.attach = attach;
+      this.parameters = parameters;
+    }
   };
   var definitionFunctionWrapper = null;
-  var fnContext = {
-    addTransform: function addTransform(_ref2) {
-      var captureGroupRegexps = _ref2.captureGroupRegexps,
-          transformer = _ref2.transformer,
-          typeName = _ref2.typeName;
+  var fnArgument = {
+    addTransform: function addTransform(_ref3) {
+      var captureGroupRegexps = _ref3.captureGroupRegexps,
+          transformer = _ref3.transformer,
+          typeName = _ref3.typeName;
 
       var transform = new _cucumberExpressions.Transform(typeName, function () {}, captureGroupRegexps, transformer);
       options.transformLookup.addTransform(transform);
@@ -55434,17 +55495,13 @@ function build(_ref) {
     setDefinitionFunctionWrapper: function setDefinitionFunctionWrapper(fn) {
       definitionFunctionWrapper = fn;
     },
-    World: function World(_ref3) {
-      var attach = _ref3.attach,
-          parameters = _ref3.parameters;
-
-      this.attach = attach;
-      this.parameters = parameters;
+    setWorldConstructor: function setWorldConstructor(fn) {
+      options.World = fn;
     }
   };
-  fnContext.Given = fnContext.When = fnContext.Then = fnContext.defineStep;
+  fnArgument.Given = fnArgument.When = fnArgument.Then = fnArgument.defineStep;
   fns.forEach(function (fn) {
-    return fn.call(fnContext);
+    return fn(fnArgument);
   });
   wrapDefinitions({
     cwd: cwd,
@@ -55453,7 +55510,6 @@ function build(_ref) {
       return options[key + 'Definitions'];
     }).flatten().value()
   });
-  options.World = fnContext.World;
   return options;
 }
 
@@ -55486,7 +55542,7 @@ function wrapDefinitions(_ref4) {
 
 exports.default = { build: build };
 
-},{"./helpers":334,"./transform_lookup_builder":335,"cucumber-expressions":161,"is-generator":233,"lodash":236,"path":242,"util-arity":281}],334:[function(require,module,exports){
+},{"./helpers":335,"./transform_lookup_builder":336,"cucumber-expressions":161,"is-generator":233,"lodash":236,"path":242,"util-arity":281}],335:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55600,7 +55656,7 @@ function registerHandler(cwd, collection) {
   };
 }
 
-},{"../formatter/utils":306,"../models/hook_definition":312,"../models/step_definition":319,"./validate_arguments":336,"babel-runtime/helpers/defineProperty":18,"lodash":236,"stacktrace-js":273}],335:[function(require,module,exports){
+},{"../formatter/utils":306,"../models/hook_definition":312,"../models/step_definition":319,"./validate_arguments":337,"babel-runtime/helpers/defineProperty":18,"lodash":236,"stacktrace-js":273}],336:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55618,7 +55674,7 @@ function build() {
 
 exports.default = { build: build };
 
-},{"cucumber-expressions":161}],336:[function(require,module,exports){
+},{"cucumber-expressions":161}],337:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55700,7 +55756,7 @@ function validateArguments(_ref7) {
   });
 }
 
-},{"lodash":236}],337:[function(require,module,exports){
+},{"lodash":236}],338:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -55737,7 +55793,7 @@ function getTimestamp() {
 exports.default = methods;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],338:[function(require,module,exports){
+},{}],339:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -55785,7 +55841,7 @@ var UncaughtExceptionManager = function () {
 exports.default = UncaughtExceptionManager;
 
 }).call(this,require('_process'))
-},{"_process":245,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17}],339:[function(require,module,exports){
+},{"_process":245,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17}],340:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55971,5 +56027,5 @@ var UserCodeRunner = function () {
 
 exports.default = UserCodeRunner;
 
-},{"./time":337,"./uncaught_exception_manager":338,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29,"util":285}]},{},[307])(307)
+},{"./time":338,"./uncaught_exception_manager":339,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29,"util":285}]},{},[307])(307)
 });

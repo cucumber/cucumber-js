@@ -1,4 +1,25 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc4...master)
+
+### [2.0.0-rc.4](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.3...v2.0.0-rc.4) (2016-12-19)
+
+#### Breaking Changes
+
+* update support code library interface - instead of exporting a function and calling methods on `this`, require the `cucumber` module and call `defineSupportCode` which passes an object as the first argument whch exposes the methods. Overriding the world constructor has changed from overriding the World property to calling `setWorldConstructor`.
+    ```js
+    // 1.3.1
+    module.exports = function () {
+      this.Given(/^a step$/, function() {});
+      this.World = CustomWorld
+    });
+
+    // 2.0.0
+    var {defineSupportCode} = require('cucumber');
+
+    defineSupportCode(function({Given, setWorldConstructor}) {
+      Given(/^a step$/, function() {});
+      setWorldConstructor(CustomWorld);
+    });
+    ```
 
 ### [2.0.0-rc.3](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.2...v2.0.0-rc.3) (2016-12-19)
 
