@@ -16267,7 +16267,7 @@ exports.realpath = function realpath(p, cache, cb) {
   } else {
     // Browser globals (root is window)
     root.Gherkin = factory();
-  } 
+  }
 }(this, function () {
   return {
     Parser: require('./lib/gherkin/parser'),
@@ -50246,7 +50246,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0-rc.3",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -50487,7 +50487,7 @@ var ArgvParser = function () {
     value: function parse(argv) {
       var program = new _commander.Command(_path2.default.basename(argv[1]));
 
-      program.usage('[options] [<DIR|FILE[:LINE]>...]').version(_package.version, '-v, --version').option('-b, --backtrace', 'show full backtrace for errors').option('--compiler <EXTENSION:MODULE>', 'require files with the given EXTENSION after requiring MODULE (repeatable)', ArgvParser.collect, []).option('-d, --dry-run', 'invoke formatters without executing steps').option('--fail-fast', 'abort the run on first failure').option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, []).option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {}).option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, []).option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, []).option('-r, --require <FILE|DIR>', 'require files before executing features (repeatable)', ArgvParser.collect, []).option('-S, --strict', 'fail if there are any undefined or pending steps').option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression', '').option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {});
+      program.usage('[options] [<DIR|FILE[:LINE]>...]').version(_package.version, '-v, --version').option('-b, --backtrace', 'show full backtrace for errors').option('--compiler <EXTENSION:MODULE>', 'require files with the given EXTENSION after requiring MODULE (repeatable)', ArgvParser.collect, []).option('-d, --dry-run', 'invoke formatters without executing steps').option('--fail-fast', 'abort the run on first failure').option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, []).option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {}).option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, []).option('--no-strict', 'succeed even if there are pending or undefined steps').option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, []).option('-r, --require <FILE|DIR>', 'require files before executing features (repeatable)', ArgvParser.collect, []).option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression', '').option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {});
 
       program.on('--help', function () {
         /* eslint-disable no-console */
@@ -50701,7 +50701,18 @@ var ConfigurationBuilder = function () {
       var _this = this;
 
       var featureDirs = featurePaths.map(function (featurePath) {
-        return _path2.default.relative(_this.cwd, _path2.default.dirname(featurePath));
+        var featureDir = _path2.default.dirname(featurePath);
+        var childDir = void 0;
+        var parentDir = featureDir;
+        while (childDir !== parentDir) {
+          childDir = parentDir;
+          parentDir = _path2.default.dirname(childDir);
+          if (_path2.default.basename(parentDir) === 'features') {
+            featureDir = parentDir;
+            break;
+          }
+        }
+        return _path2.default.relative(_this.cwd, featureDir);
       });
       return _lodash2.default.uniq(featureDirs);
     }
@@ -50900,12 +50911,14 @@ var Parser = function () {
         throw error;
       }
 
-      return new _feature2.default({
-        gherkinData: gherkinDocument.feature,
-        gherkinPickles: gherkinCompiler.compile(gherkinDocument, uri),
-        scenarioFilter: scenarioFilter,
-        uri: uri
-      });
+      if (gherkinDocument.feature) {
+        return new _feature2.default({
+          gherkinData: gherkinDocument.feature,
+          gherkinPickles: gherkinCompiler.compile(gherkinDocument, uri),
+          scenarioFilter: scenarioFilter,
+          uri: uri
+        });
+      }
     }
   }]);
   return Parser;
@@ -51007,9 +51020,9 @@ var getFeatures = exports.getFeatures = function () {
 
           case 2:
             features = _context3.sent;
-            return _context3.abrupt('return', _lodash2.default.filter(features, function (feature) {
+            return _context3.abrupt('return', _lodash2.default.chain(features).compact().filter(function (feature) {
               return feature.scenarios.length > 0;
-            }));
+            }).value());
 
           case 4:
           case 'end':
@@ -51442,37 +51455,33 @@ var PathExpander = function () {
     key: 'expandPathWithExtensions',
     value: function () {
       var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(p, extensions) {
-        var realPath, stats;
+        var fullPath, stats;
         return _regenerator2.default.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
-                return _fs2.default.realpath(_path2.default.resolve(this.directory, p));
+                fullPath = _path2.default.resolve(this.directory, p);
+                _context3.next = 3;
+                return _fs2.default.stat(fullPath);
 
-              case 2:
-                realPath = _context3.sent;
-                _context3.next = 5;
-                return _fs2.default.stat(realPath);
-
-              case 5:
+              case 3:
                 stats = _context3.sent;
 
                 if (!stats.isDirectory()) {
-                  _context3.next = 12;
+                  _context3.next = 10;
                   break;
                 }
 
-                _context3.next = 9;
-                return this.expandDirectoryWithExtensions(realPath, extensions);
+                _context3.next = 7;
+                return this.expandDirectoryWithExtensions(fullPath, extensions);
 
-              case 9:
+              case 7:
                 return _context3.abrupt('return', _context3.sent);
 
-              case 12:
-                return _context3.abrupt('return', [realPath]);
+              case 10:
+                return _context3.abrupt('return', [fullPath]);
 
-              case 13:
+              case 11:
               case 'end':
                 return _context3.stop();
             }
@@ -53123,8 +53132,8 @@ var Hook = function Hook(_ref) {
 exports.default = Hook;
 
 
-Hook.BEFORE_STEP_KEYWORD = 'Before ';
-Hook.AFTER_STEP_KEYWORD = 'After ';
+Hook.BEFORE_STEP_KEYWORD = 'Before';
+Hook.AFTER_STEP_KEYWORD = 'After';
 
 },{"babel-runtime/helpers/classCallCheck":16}],312:[function(require,module,exports){
 'use strict';
@@ -53932,10 +53941,6 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
 var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
@@ -54072,11 +54077,7 @@ var EventBroadcaster = function () {
       var fnName = _ref6.fnName,
           listener = _ref6.listener;
 
-      if (listener.cwd && listener.uri) {
-        return _path2.default.relative(listener.cwd, listener.uri) + ':' + listener.line;
-      } else {
-        return listener.constructor.name + '::' + fnName;
-      }
+      return listener.relativeUri || listener.constructor.name + '::' + fnName;
     }
   }, {
     key: 'prependLocationToError',
@@ -54097,7 +54098,7 @@ var EventBroadcaster = function () {
 
 exports.default = EventBroadcaster;
 
-},{"../user_code_runner":338,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29,"path":242}],326:[function(require,module,exports){
+},{"../user_code_runner":339,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29}],326:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55200,7 +55201,7 @@ var beginTiming = _time2.default.beginTiming,
     endTiming = _time2.default.endTiming;
 exports.default = { run: run };
 
-},{"../models/step_result":320,"../status":332,"../time":336,"../user_code_runner":338,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/regenerator":26,"lodash":236}],331:[function(require,module,exports){
+},{"../models/step_result":320,"../status":332,"../time":337,"../user_code_runner":339,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/regenerator":26,"lodash":236}],331:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55420,9 +55421,9 @@ function build(_ref) {
       options.transformLookup.addTransform(transform);
     },
 
-    After: helpers.defineHook(options.afterHookDefinitions),
-    Before: helpers.defineHook(options.beforeHookDefinitions),
-    defineStep: helpers.defineStep(options.stepDefinitions),
+    After: helpers.defineHook(cwd, options.afterHookDefinitions),
+    Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
+    defineStep: helpers.defineStep(cwd, options.stepDefinitions),
     registerHandler: helpers.registerHandler(cwd, options.listeners),
     registerListener: function registerListener(listener) {
       options.listeners.push(listener);
@@ -55504,6 +55505,8 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _utils = require('../formatter/utils');
+
 var _hook_definition = require('../models/hook_definition');
 
 var _hook_definition2 = _interopRequireDefault(_hook_definition);
@@ -55516,9 +55519,13 @@ var _step_definition = require('../models/step_definition');
 
 var _step_definition2 = _interopRequireDefault(_step_definition);
 
+var _validate_arguments = require('./validate_arguments');
+
+var _validate_arguments2 = _interopRequireDefault(_validate_arguments);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function defineHook(collection) {
+function defineHook(cwd, collection) {
   return function (options, code) {
     if (typeof options === 'string') {
       options = { tags: options };
@@ -55531,12 +55538,17 @@ function defineHook(collection) {
         line = _getDefinitionLineAnd.line,
         uri = _getDefinitionLineAnd.uri;
 
+    (0, _validate_arguments2.default)({
+      args: { code: code, options: options },
+      fnName: 'defineHook',
+      relativeUri: (0, _utils.formatLocation)(cwd, { line: line, uri: uri })
+    });
     var hookDefinition = new _hook_definition2.default({ code: code, line: line, options: options, uri: uri });
     collection.push(hookDefinition);
   };
 }
 
-function defineStep(collection) {
+function defineStep(cwd, collection) {
   return function (pattern, options, code) {
     if (typeof options === 'function') {
       code = options;
@@ -55547,6 +55559,11 @@ function defineStep(collection) {
         line = _getDefinitionLineAnd2.line,
         uri = _getDefinitionLineAnd2.uri;
 
+    (0, _validate_arguments2.default)({
+      args: { code: code, pattern: pattern, options: options },
+      fnName: 'defineStep',
+      relativeUri: (0, _utils.formatLocation)(cwd, { line: line, uri: uri })
+    });
     var stepDefinition = new _step_definition2.default({ code: code, line: line, options: options, pattern: pattern, uri: uri });
     collection.push(stepDefinition);
   };
@@ -55561,11 +55578,11 @@ function getDefinitionLineAndUri() {
 }
 
 function registerHandler(cwd, collection) {
-  return function (eventName, options, handler) {
+  return function (eventName, options, code) {
     var _$assign;
 
     if (typeof options === 'function') {
-      handler = options;
+      code = options;
       options = {};
     }
 
@@ -55573,14 +55590,17 @@ function registerHandler(cwd, collection) {
         line = _getDefinitionLineAnd3.line,
         uri = _getDefinitionLineAnd3.uri;
 
-    var listener = _lodash2.default.assign((_$assign = {
-      cwd: cwd
-    }, (0, _defineProperty3.default)(_$assign, 'handle' + eventName, handler), (0, _defineProperty3.default)(_$assign, 'line', line), (0, _defineProperty3.default)(_$assign, 'uri', uri), _$assign), options);
+    (0, _validate_arguments2.default)({
+      args: { code: code, eventName: eventName, options: options },
+      fnName: 'registerHandler',
+      relativeUri: (0, _utils.formatLocation)(cwd, { line: line, uri: uri })
+    });
+    var listener = _lodash2.default.assign((_$assign = {}, (0, _defineProperty3.default)(_$assign, 'handle' + eventName, code), (0, _defineProperty3.default)(_$assign, 'relativeUri', (0, _utils.formatLocation)(cwd, { line: line, uri: uri })), _$assign), options);
     collection.push(listener);
   };
 }
 
-},{"../models/hook_definition":312,"../models/step_definition":319,"babel-runtime/helpers/defineProperty":18,"lodash":236,"stacktrace-js":273}],335:[function(require,module,exports){
+},{"../formatter/utils":306,"../models/hook_definition":312,"../models/step_definition":319,"./validate_arguments":336,"babel-runtime/helpers/defineProperty":18,"lodash":236,"stacktrace-js":273}],335:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55599,6 +55619,88 @@ function build() {
 exports.default = { build: build };
 
 },{"cucumber-expressions":161}],336:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = validateArguments;
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var optionsValidation = {
+  expectedType: 'object or function',
+  predicate: function predicate(_ref) {
+    var options = _ref.options;
+    return _lodash2.default.isPlainObject(options);
+  }
+};
+
+var optionsTimeoutValidation = {
+  identifier: '"options.timeout"',
+  expectedType: 'integer',
+  predicate: function predicate(_ref2) {
+    var options = _ref2.options;
+    return !options.timeout || _lodash2.default.isInteger(options.timeout);
+  }
+};
+
+var fnValidation = {
+  expectedType: 'function',
+  predicate: function predicate(_ref3) {
+    var code = _ref3.code;
+    return _lodash2.default.isFunction(code);
+  }
+};
+
+var validations = {
+  defineHook: [_lodash2.default.assign({ identifier: 'first argument' }, optionsValidation), {
+    identifier: '"options.tags"',
+    expectedType: 'string',
+    predicate: function predicate(_ref4) {
+      var options = _ref4.options;
+      return !options.tags || _lodash2.default.isString(options.tags);
+    }
+  }, optionsTimeoutValidation, _lodash2.default.assign({ identifier: 'second argument' }, fnValidation)],
+  defineStep: [{
+    identifier: 'first argument',
+    expectedType: 'string or regular expression',
+    predicate: function predicate(_ref5) {
+      var pattern = _ref5.pattern;
+      return _lodash2.default.isRegExp(pattern) || _lodash2.default.isString(pattern);
+    }
+  }, _lodash2.default.assign({ identifier: 'second argument' }, optionsValidation), optionsTimeoutValidation, _lodash2.default.assign({ identifier: 'third argument' }, fnValidation)],
+  registerHandler: [{
+    identifier: 'first argument',
+    expectedType: 'string',
+    predicate: function predicate(_ref6) {
+      var eventName = _ref6.eventName;
+      return _lodash2.default.isString(eventName);
+    }
+  }, _lodash2.default.assign({ identifier: 'second argument' }, optionsValidation), optionsTimeoutValidation, _lodash2.default.assign({ identifier: 'third argument' }, fnValidation)]
+};
+
+function validateArguments(_ref7) {
+  var args = _ref7.args,
+      fnName = _ref7.fnName,
+      relativeUri = _ref7.relativeUri;
+
+  validations[fnName].forEach(function (_ref8) {
+    var identifier = _ref8.identifier,
+        expectedType = _ref8.expectedType,
+        predicate = _ref8.predicate;
+
+    if (!predicate(args)) {
+      throw new Error(relativeUri + ': Invalid ' + identifier + ': should be a ' + expectedType);
+    }
+  });
+}
+
+},{"lodash":236}],337:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -55635,7 +55737,7 @@ function getTimestamp() {
 exports.default = methods;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],337:[function(require,module,exports){
+},{}],338:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -55683,7 +55785,7 @@ var UncaughtExceptionManager = function () {
 exports.default = UncaughtExceptionManager;
 
 }).call(this,require('_process'))
-},{"_process":245,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17}],338:[function(require,module,exports){
+},{"_process":245,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17}],339:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55869,5 +55971,5 @@ var UserCodeRunner = function () {
 
 exports.default = UserCodeRunner;
 
-},{"./time":336,"./uncaught_exception_manager":337,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29,"util":285}]},{},[307])(307)
+},{"./time":337,"./uncaught_exception_manager":338,"babel-runtime/helpers/asyncToGenerator":15,"babel-runtime/helpers/classCallCheck":16,"babel-runtime/helpers/createClass":17,"babel-runtime/regenerator":26,"bluebird":29,"util":285}]},{},[307])(307)
 });
