@@ -1,11 +1,36 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc2...master)
 
+### [2.0.0-rc.3](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.2...v2.0.0-rc.3) (2016-12-19)
+
+#### Breaking Changes
+
+* make strict the default
+  * previously pending and undefined steps did not cause an exit code of 1. This could be overridden with `--strict`. Strict is now the default and you can use `--no-strict` to return to the previous behavior.
+* update automatically required files
+  * if the features live in a `features` directory at any level, all support files in the `features` directory are loaded.
+
+#### Bug Fixes
+
+* prevent crash on empty feature file
+
+#### New Features
+
+* validate argument types
+
+#### Documentation
+
+* docs: fix tag expression migration guide (#691) (Aslak Hellesøy)
+
 ### [2.0.0-rc.2](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2016-12-04)
+
+#### Breaking Changes
+
+* pass `attach` to world constructor instead of assigning it to world
+  * the world constructor now receives `{attach, parameters}` as the first argument instead of `parameters`
 
 #### New Features
 
 * json formatter: add `isBackground` to steps
-* pass `attach` to world constructor instead of assigning it to world
 
 #### Bug Fixes
 
