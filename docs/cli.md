@@ -75,12 +75,12 @@ Undefined steps snippets are printed in javascript using the callback interface 
 
 ### Interface
 
-Override the snippet interface with `--format-option '{"snippetInterface": "<interface>"}'`.
+Override the snippet interface with `--format-options '{"snippetInterface": "<interface>"}'`.
 Valid interfaces are 'callback', 'generator', 'promise', or 'synchronous'.
 
 ### Syntax
 
-Override the snippet syntaxes with `--format-option '{"snippetSyntax": "<FILE>"}'`.
+Override the snippet syntaxes with `--format-options '{"snippetSyntax": "<FILE>"}'`.
 See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
 
 #### Building a custom snippet syntax
