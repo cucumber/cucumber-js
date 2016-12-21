@@ -1,4 +1,3 @@
-@node-6 @node-4
 Feature: Generator Step Definitions
   In order to use new JavaScript features
   As a developer

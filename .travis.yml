@@ -21,7 +21,5 @@ matrix:
   include:
     - node_js: "4"
       script: "yarn run feature-test -- --profile node-4"
-    - node_js: "0.12"
-      script: "yarn run feature-test -- --profile node-0.12"
 
 sudo: false

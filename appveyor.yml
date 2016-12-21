@@ -9,8 +9,6 @@ environment:
       test_script: 'test'
     - nodejs_version: '4'
       test_script: 'feature-test -- --profile node-4'
-    - nodejs_version: '0.12'
-      test_script: 'feature-test -- --profile node-0.12'
 
 install:
   - ps: Install-Product node $env:nodejs_version
