@@ -170,9 +170,9 @@
     "coverage": "BABEL_ENV=test_coverage nyc mocha src",
     "feature-test": "node ./bin/cucumber.js",
     "lint": "eslint features/step_definitions/** features/support/** src/**",
-    "prefeature-test": "npm run build-local",
-    "prepublish": "npm run build-local",
-    "test": "npm run lint && npm run unit-test && npm run feature-test",
+    "prefeature-test": "yarn run build-local",
+    "prepublish": "yarn run build-local",
+    "test": "yarn run lint && yarn run unit-test && yarn run feature-test",
     "unit-test": "mocha 'src/**/*_spec.js'"
   },
   "bin": {
