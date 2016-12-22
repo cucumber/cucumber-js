@@ -4,7 +4,8 @@ Before anything else, thank you. Thank you for taking some of your precious time
 
 ## Setup
 
-* `npm install`
+* install [Node.Js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/)
+* `yarn install`
 
 ## Tests
 
@@ -58,7 +59,7 @@ Perform the following steps on a feature branch.
   * bump version
   * add new contributors, if any
     * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD`
-* Compile the bundle with `npm run build-release`
+* Compile the bundle with `yarn run build-release`
   * Ensure the example works `node scripts/server.js`, visit `localhost:9797` in your browser
     * For now, need to manually update Gherkin with this [change](https://github.com/cucumber/gherkin/commit/46e72cd3cd79965298a9b154af7741480230b916), until the next version is released
 
