@@ -43,7 +43,7 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 my error
+      features/support/handlers.js:4: my error
       """
 
   Scenario: callback without error
@@ -77,7 +77,7 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 my error
+      features/support/handlers.js:4: my error
       """
 
   Scenario: callback asynchronously throws
@@ -97,7 +97,7 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 my error
+      features/support/handlers.js:4: my error
       """
 
   Scenario: callback - returning a promise
@@ -117,7 +117,7 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 function uses multiple asynchronous interfaces: callback and promise
+      features/support/handlers.js:4: function uses multiple asynchronous interfaces: callback and promise
       """
 
   Scenario: promise resolves
@@ -159,7 +159,7 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 my error
+      features/support/handlers.js:4: my error
       """
 
   Scenario: promise rejects without error
@@ -181,7 +181,7 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 Promise rejected
+      features/support/handlers.js:4: Promise rejected
       """
 
   Scenario: promise asynchronously throws
@@ -205,5 +205,5 @@ Feature: Register Handler
     Then it fails
     And the output contains the text:
       """
-      features/support/handlers.js:4 my error
+      features/support/handlers.js:4: my error
       """

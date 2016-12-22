@@ -19,7 +19,7 @@ export default class UserCodeRunner {
     try {
       fnReturn = fn.apply(thisArg, argsArray)
     } catch (e) {
-      const error = (e instanceof Error) ? e : util.format(e)
+      const error = (e instanceof Error) ? e : new Error(util.format(e))
       return {error}
     }
 
@@ -28,7 +28,7 @@ export default class UserCodeRunner {
     const promiseInterface = fnReturn && typeof fnReturn.then === 'function'
 
     if (callbackInterface && promiseInterface) {
-      return {error: 'function uses multiple asynchronous interfaces: callback and promise'}
+      return {error: new Error('function uses multiple asynchronous interfaces: callback and promise')}
     } else if (callbackInterface) {
       racingPromises.push(callbackPromise)
     } else if (promiseInterface) {
@@ -60,9 +60,9 @@ export default class UserCodeRunner {
       if ((e instanceof Error)) {
         error = e
       } else if (e) {
-        error = util.format(e)
+        error = new Error(util.format(e))
       } else {
-        error = 'Promise rejected without a reason'
+        error = new Error('Promise rejected without a reason')
       }
     }
 

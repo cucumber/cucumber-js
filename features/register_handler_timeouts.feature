@@ -33,7 +33,7 @@ Feature: registerHandler timeouts
     Then it fails
     And the output contains the text:
       """
-      features/supports/handlers.js:6 function timed out after 500 milliseconds
+      features/supports/handlers.js:6: function timed out after 500 milliseconds
       """
 
   Scenario: slow handler can increase their timeout

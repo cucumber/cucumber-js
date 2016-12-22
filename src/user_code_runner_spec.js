@@ -18,7 +18,8 @@ describe('UserCodeRunner', function () {
 
         it('returns the error', async function () {
           const {error, result} = await UserCodeRunner.run(this.options)
-          expect(error).to.eql('error')
+          expect(error).to.be.instanceOf(Error)
+          expect(error.message).to.eql('error')
           expect(result).to.be.undefined
         })
       })
@@ -34,7 +35,8 @@ describe('UserCodeRunner', function () {
 
         it('returns the error', async function () {
           const {error, result} = await UserCodeRunner.run(this.options)
-          expect(error).to.eql('{ error: [Circular] }')
+          expect(error).to.be.instanceOf(Error)
+          expect(error.message).to.eql('{ error: [Circular] }')
           expect(result).to.be.undefined
         })
       })
@@ -66,7 +68,8 @@ describe('UserCodeRunner', function () {
 
         it('returns the error', async function () {
           const {error, result} = await UserCodeRunner.run(this.options)
-          expect(error).to.eql('error')
+          expect(error).to.be.instanceOf(Error)
+          expect(error.message).to.eql('error')
           expect(result).to.be.undefined
         })
       })
@@ -82,7 +85,8 @@ describe('UserCodeRunner', function () {
 
         it('returns the error', async function () {
           const {error, result} = await UserCodeRunner.run(this.options)
-          expect(error).to.eql('{ error: [Circular] }')
+          expect(error).to.be.instanceOf(Error)
+          expect(error.message).to.eql('{ error: [Circular] }')
           expect(result).to.be.undefined
         })
       })
@@ -153,7 +157,8 @@ describe('UserCodeRunner', function () {
 
         it('returns what the promise rejects as an error', async function () {
           const {error, result} = await UserCodeRunner.run(this.options)
-          expect(error).to.eql('error')
+          expect(error).to.be.instanceOf(Error)
+          expect(error.message).to.eql('error')
           expect(result).to.be.undefined
         })
       })
@@ -171,7 +176,8 @@ describe('UserCodeRunner', function () {
 
         it('returns a helpful error message', async function () {
           const {error, result} = await UserCodeRunner.run(this.options)
-          expect(error).to.eql('Promise rejected without a reason')
+          expect(error).to.be.instanceOf(Error)
+          expect(error.message).to.eql('Promise rejected without a reason')
           expect(result).to.be.undefined
         })
       })
@@ -207,7 +213,8 @@ describe('UserCodeRunner', function () {
 
       it('returns an error that multiple interface are used', async function () {
         const {error, result} = await UserCodeRunner.run(this.options)
-        expect(error).to.eql('function uses multiple asynchronous interfaces: callback and promise')
+        expect(error).to.be.instanceof(Error)
+        expect(error.message).to.eql('function uses multiple asynchronous interfaces: callback and promise')
         expect(result).to.be.undefined
       })
     })

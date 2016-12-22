@@ -1,5 +1,6 @@
 import Promise from 'bluebird'
 import UserCodeRunner from '../user_code_runner'
+import VError from 'verror'
 
 export default class EventBroadcaster {
   constructor({cwd, listenerDefaultTimeout, listeners}) {
@@ -28,7 +29,7 @@ export default class EventBroadcaster {
         })
         if (error) {
           const location = this.getListenerErrorLocation({fnName, listener})
-          throw this.prependLocationToError({error, location})
+          throw new VError(error, location)
         }
       }
     })
@@ -36,14 +37,5 @@ export default class EventBroadcaster {
 
   getListenerErrorLocation({fnName, listener}) {
     return listener.relativeUri || `${listener.constructor.name}::${fnName}`
-  }
-
-  prependLocationToError({error, location}) {
-    if (error instanceof Error) {
-      error.message = location + ' ' + error.message
-    } else {
-      error = location + ' ' + error
-    }
-    return error
   }
 }

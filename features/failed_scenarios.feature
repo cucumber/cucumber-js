@@ -18,7 +18,7 @@ Feature: Failed scenarios
       })
       """
     When I run cucumber.js with `-f progress`
-    Then it outputs the text:
+    Then the output contains the text:
       """
       F
 
@@ -28,10 +28,6 @@ Feature: Failed scenarios
          Step: When a step is failing - features/a.feature:3
          Step Definition: features/step_definitions/cucumber_steps.js:4
          Message:
-           forced error
-
-      1 scenario (1 failed)
-      1 step (1 failed)
-      <duration-stat>
+           Error: forced error
       """
     And it fails

@@ -77,7 +77,7 @@ Feature: Pretty Formatter
       """
     When I run cucumber.js with `-f pretty`
     Then it fails
-    And it outputs the text:
+    And the output contains the text:
       """
       Feature: some feature
 
@@ -90,11 +90,7 @@ Feature: Pretty Formatter
          Step: Before
          Step Definition: features/support/hooks.js:4
          Message:
-           Fail
-
-      1 scenario (1 failed)
-      1 step (1 skipped)
-      <duration-stat>
+           Error: Fail
       """
 
   Scenario: Pretty formatter with doc strings
