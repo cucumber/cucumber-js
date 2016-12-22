@@ -18,7 +18,7 @@ Feature: Multiple Formatters
 
   Scenario: Ability to specify multiple formatters
     When I run cucumber.js with `-f progress -f pretty:pretty.txt`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       .
 
@@ -40,8 +40,8 @@ Feature: Multiple Formatters
 
   Scenario: Invalid path
     When I run cucumber.js with `-f progress -f pretty:invalid/pretty.txt`
-    Then the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       ENOENT
       """
-    And the exit status should be non-zero

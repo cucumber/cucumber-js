@@ -18,7 +18,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       function has 0 arguments, should have 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
       """
@@ -33,7 +34,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       function has 2 arguments, should have 0 (if synchronous or returning a promise) or 1 (if accepting a callback)
       """
@@ -50,7 +52,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       my error
       """
@@ -69,7 +72,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       my error
       """
@@ -88,7 +92,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       my error
       """
@@ -107,7 +112,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       function uses multiple asynchronous interfaces: callback and promise
       """
@@ -130,7 +136,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       my error
       """
@@ -153,7 +160,8 @@ Feature: Failing steps
       })
       """
     When I run cucumber.js
-    Then the step "a failing step" failed with:
+    Then it fails
+    And the step "a failing step" failed with:
       """
       my error
       """

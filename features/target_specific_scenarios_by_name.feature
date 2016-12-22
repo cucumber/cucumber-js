@@ -19,8 +19,10 @@ Feature: Target specific scenarios
 
   Scenario: run a scenario by name
     When I run cucumber.js with `--name my`
-    Then it runs the scenario "my topic"
+    Then it fails
+    And it runs the scenario "my topic"
 
   Scenario: run multiple scenarios by name
     When I run cucumber.js with `--name other`
-    Then it runs the scenarios "other topic 1" and "other topic 2"
+    Then it fails
+    And it runs the scenarios "other topic 1" and "other topic 2"

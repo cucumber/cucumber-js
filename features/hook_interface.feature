@@ -28,7 +28,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
     And the output contains the text:
       """
       function has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
@@ -50,7 +50,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes
 
     Examples:
       | TYPE   |
@@ -69,7 +69,7 @@ Feature: After hook interface
       }
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
 
     Examples:
       | TYPE   |
@@ -89,7 +89,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes
 
     Examples:
       | TYPE   |
@@ -110,7 +110,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
 
     Examples:
       | TYPE   |
@@ -131,7 +131,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
 
     Examples:
       | TYPE   |
@@ -152,7 +152,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
     And the output contains the text:
       """
       function uses multiple asynchronous interfaces: callback and promise
@@ -180,7 +180,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes
 
     Examples:
       | TYPE   |
@@ -205,7 +205,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
 
     Examples:
       | TYPE   |
@@ -230,7 +230,7 @@ Feature: After hook interface
       module.exports = hooks
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
 
     Examples:
       | TYPE   |
@@ -255,7 +255,7 @@ Feature: After hook interface
       })
       """
     When I run cucumber.js
-    And the exit status should be 1
+    Then it fails
 
     Examples:
       | TYPE   |

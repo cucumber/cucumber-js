@@ -13,23 +13,23 @@ Feature: World Parameters
 
   Scenario: Invalid JSON
     When I run cucumber.js with `--world-parameters '{"a":}'`
-    Then the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       --world-parameters passed invalid JSON: Unexpected token }
       """
-    And the error output contains the text:
+    And the output contains the text:
       """
       {"a":}
       """
-    And the exit status should be non-zero
 
   Scenario: Non-object
     When I run cucumber.js with `--world-parameters '[1,2]'`
-    Then the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       --world-parameters must be passed JSON of an object: [1,2]
       """
-    And the exit status should be non-zero
 
   Scenario: default world constructor has an empty parameters object by default
     Given a file named "features/step_definitions/my_steps.js" with:

@@ -8,7 +8,11 @@ import tmp from 'tmp'
 
 const projectPath = path.join(__dirname, '..', '..')
 
-defineSupportCode(function({Before}) {
+defineSupportCode(function({After, Before}) {
+  Before('@debug', function () {
+    this.debug = true
+  })
+
   Before(function () {
     const tmpObject = tmp.dirSync({unsafeCleanup: true})
     this.tmpDir = tmpObject.name
@@ -27,5 +31,11 @@ defineSupportCode(function({Before}) {
 
     const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
     fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
+  })
+
+  After(function() {
+    if (this.lastRun.error && !this.verifiedLastRunError) {
+      throw new Error(`Last run errored unexpectedly:\n${this.lastRun.output}`)
+    }
   })
 })

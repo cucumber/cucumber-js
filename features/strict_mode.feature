@@ -13,11 +13,11 @@ Feature: Strict mode
 
   Scenario: Fail with undefined step by default
     When I run cucumber.js
-    Then the exit status should be 1
+    Then it fails
 
   Scenario: Succeed with undefined step with --no-strict
     When I run cucumber.js with `--no-strict`
-    Then the exit status should be 0
+    Then it passes
 
   Scenario: Fail with pending step by default
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -29,7 +29,7 @@ Feature: Strict mode
       })
       """
     When I run cucumber.js
-    Then the exit status should be 1
+    Then it fails
 
   Scenario: Succeed with pending step with --no-strict
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -41,4 +41,4 @@ Feature: Strict mode
       })
       """
     When I run cucumber.js with `--no-strict`
-    Then the exit status should be 0
+    Then it passes

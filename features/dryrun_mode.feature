@@ -33,8 +33,10 @@ Feature: Dryrun mode
       })
       """
     When I run cucumber.js with `--dry-run`
-    Then the step "a step" has status "ambiguous"
+    Then it fails
+    And the step "a step" has status "ambiguous"
 
   Scenario: undefined step
     When I run cucumber.js with `--dry-run`
-    Then the step "a step" has status "undefined"
+    Then it fails
+    And the step "a step" has status "undefined"

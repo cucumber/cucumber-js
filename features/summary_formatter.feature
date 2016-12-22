@@ -8,7 +8,7 @@ Feature: Summary Formatter
       Feature: some feature
       """
     When I run cucumber.js with `-f summary`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       0 scenarios
       0 steps
@@ -33,7 +33,7 @@ Feature: Summary Formatter
       })
       """
     When I run cucumber.js with `-f summary`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       1 scenario (1 passed)
       2 steps (2 passed)

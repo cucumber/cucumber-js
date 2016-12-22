@@ -15,7 +15,8 @@ Feature: snippets formatter
           Then undefined step C
       """
     When I run cucumber-js with `--format snippets`
-    Then it outputs this text:
+    Then it fails
+    And it outputs the text:
       """
       this.Given('undefined step A', function (callback) {
         // Write code here that turns the phrase above into concrete actions

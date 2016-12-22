@@ -21,7 +21,7 @@ Feature: Custom stack trace
       })
       """
     When I run cucumber.js
-    Then it outputs this text:
+    Then it outputs the text:
       """
       Feature: Some feature
 
@@ -32,4 +32,3 @@ Feature: Custom stack trace
       1 step (1 passed)
       <duration-stat>
       """
-    And the exit status should be 0

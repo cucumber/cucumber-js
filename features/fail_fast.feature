@@ -23,4 +23,4 @@ Feature: Fail fast
       """
     When I run cucumber.js with `--fail-fast`
     Then it runs the scenario "Failing"
-    And the exit status should be 1
+    And it fails

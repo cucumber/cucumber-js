@@ -33,8 +33,8 @@ Feature: Generator Step Definitions
 
   Scenario: without generator function runner
     When I run cucumber-js
-    Then the exit status should be 1
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       The following hook/step definitions use generator functions:
 
@@ -61,4 +61,4 @@ Feature: Generator Step Definitions
       })
       """
     When I run cucumber-js
-    Then the exit status should be 0
+    Then it passes

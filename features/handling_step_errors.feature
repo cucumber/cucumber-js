@@ -26,4 +26,4 @@ Feature: Handling step errors
       """
       { member: [Circular] }
       """
-    And the exit status should be 1
+    And it fails

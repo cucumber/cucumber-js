@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {formatLocation} from './utils'
+import {formatError, formatLocation} from './utils'
 import Duration from 'duration'
 import Formatter from './'
 import indentString from 'indent-string'
@@ -35,16 +35,17 @@ export default class SummaryFormatter extends Formatter {
       const pattern = stepDefinition.pattern.toString()
       return [pattern, formatLocation(this.cwd, stepDefinition)]
     }))
-    return 'Multiple step definitions match:' + '\n' + this.indent(table.toString(), 2)
+    const message = 'Multiple step definitions match:' + '\n' + this.indent(table.toString(), 2)
+    return this.colorFns.ambiguous(message)
   }
 
   getFailedStepResultMessage(stepResult) {
     const {failureException} = stepResult
-    return failureException.stack || failureException
+    return formatError(failureException, this.colorFns)
   }
 
   getPendingStepResultMessage() {
-    return 'Pending'
+    return this.colorFns.pending('Pending')
   }
 
   getStepResultMessage(stepResult) {
@@ -63,7 +64,8 @@ export default class SummaryFormatter extends Formatter {
   getUndefinedStepResultMessage(stepResult) {
     const {step} = stepResult
     const snippet = this.snippetBuilder.build(step)
-    return 'Undefined. Implement with the following snippet:' + '\n\n' + this.indent(snippet, 2)
+    const message = 'Undefined. Implement with the following snippet:' + '\n\n' + this.indent(snippet, 2)
+    return this.colorFns.undefined(message)
   }
 
   handleFeaturesResult(featuresResult) {
@@ -146,9 +148,8 @@ export default class SummaryFormatter extends Formatter {
       text += this.indent(stepDefinitionLine, prefix.length) + '\n'
     }
 
-    const messageColorFn = this.colorFns[stepResult.status]
     text += this.indent('Message:', prefix.length) + '\n'
-    text += this.indent(messageColorFn(message), prefix.length + 2) + '\n\n'
+    text += this.indent(message, prefix.length + 2) + '\n\n'
     this.log(text)
   }
 

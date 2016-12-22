@@ -13,7 +13,8 @@ Feature: step definition snippets custom syntax
 
   Scenario Outline:
     When I run cucumber-js with `--format-options '{"snippetInterface": "<INTERFACE>"}'`
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       this.Given('an undefined step', <SNIPPET_FUNCTION_KEYWORD_AND_PARAMETERS> {
         // Write code here that turns the phrase above into concrete actions

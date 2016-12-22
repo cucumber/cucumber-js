@@ -13,7 +13,8 @@ Feature: Scenario Outlines and Examples
           | failing |
       """
     When I run cucumber.js
-    Then it runs 2 scenarios
+    Then it fails
+    And it runs 2 scenarios
     And the first scenario has the steps
       | STEP           |
       | a passing step |
@@ -37,7 +38,8 @@ Feature: Scenario Outlines and Examples
           | failing |
       """
     When I run cucumber.js
-    Then it runs 2 scenarios
+    Then it fails
+    And it runs 2 scenarios
     And the first scenario has the step "a doc string step" with the doc string
       """
       a passing doc string
@@ -61,7 +63,8 @@ Feature: Scenario Outlines and Examples
           | failing |
       """
     When I run cucumber.js
-    Then it runs 2 scenarios
+    Then it fails
+    And it runs 2 scenarios
     And the first scenario has the step "a table step" with the table
       | passing |
     And the second scenario has the step "a table step" with the table
@@ -80,7 +83,8 @@ Feature: Scenario Outlines and Examples
           | failing |
       """
     When I run cucumber.js
-    Then it runs 2 scenarios
+    Then it fails
+    And it runs 2 scenarios
     And the first scenario has the name "a passing scenario"
     And the second scenario has the name "a failing scenario"
 
@@ -105,4 +109,5 @@ Feature: Scenario Outlines and Examples
           | 4  |
       """
     When I run cucumber.js
-    Then it runs 4 scenarios
+    Then it fails
+    And it runs 4 scenarios

@@ -43,7 +43,7 @@ Feature: Environment Hooks
       })
       """
     When I run cucumber.js
-    Then the exit status should be 1
+    Then it fails
 
   Scenario: Failing after hook fails the scenario
     Given a file named "features/support/hooks.js" with:
@@ -55,7 +55,7 @@ Feature: Environment Hooks
       })
       """
     When I run cucumber.js
-    Then the exit status should be 1
+    Then it fails
 
   Scenario: After hooks still execute after a failure
     Given a file named "features/support/hooks.js" with:
@@ -68,7 +68,8 @@ Feature: Environment Hooks
       })
       """
     When I run cucumber.js
-    Then the "After" hook has status "passed"
+    Then it fails
+    And the "After" hook has status "passed"
 
   Scenario: World is this in hooks
     Given a file named "features/support/world.js" with:
@@ -104,4 +105,4 @@ Feature: Environment Hooks
       })
       """
     When I run cucumber.js
-    Then the exit status should be 0
+    Then it passes

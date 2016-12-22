@@ -26,7 +26,7 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes
 
   Scenario: synchronously throws
     Given a file named "features/support/handlers.js" with:
@@ -40,8 +40,8 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/support/handlers.js:4 my error
       """
@@ -58,7 +58,7 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes
 
   Scenario: callback with error
     Given a file named "features/support/handlers.js" with:
@@ -74,8 +74,8 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/support/handlers.js:4 my error
       """
@@ -94,7 +94,11 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
+    Then it fails
+    And the output contains the text:
+      """
+      features/support/handlers.js:4 my error
+      """
 
   Scenario: callback - returning a promise
     Given a file named "features/support/handlers.js" with:
@@ -110,8 +114,8 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/support/handlers.js:4 function uses multiple asynchronous interfaces: callback and promise
       """
@@ -132,7 +136,7 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes
 
   Scenario: promise rejects with error
     Given a file named "features/support/handlers.js" with:
@@ -152,8 +156,8 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/support/handlers.js:4 my error
       """
@@ -174,8 +178,8 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/support/handlers.js:4 Promise rejected
       """
@@ -198,8 +202,8 @@ Feature: Register Handler
       })
       """
     When I run cucumber.js
-    And the exit status should be non-zero
-    And the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/support/handlers.js:4 my error
       """

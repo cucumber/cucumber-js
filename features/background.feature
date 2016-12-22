@@ -17,7 +17,8 @@ Feature: Background
           When a scenario step
       """
     When I run cucumber.js
-    Then the scenario "a scenario" has the steps
+    Then it fails
+    And the scenario "a scenario" has the steps
       | IDENTIFIER              |
       | Given a background step |
       | When a scenario step    |
@@ -36,11 +37,12 @@ Feature: Background
           When another scenario step
       """
     When I run cucumber.js
-    Then the scenario "a scenario" has the steps
+    Then it fails
+    And the scenario "a scenario" has the steps
       | IDENTIFIER              |
       | Given a background step |
       | When a scenario step    |
-    Then the scenario "another scenario" has the steps
+    And the scenario "another scenario" has the steps
       | IDENTIFIER                 |
       | Given a background step    |
       | When another scenario step |

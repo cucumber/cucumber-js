@@ -5,7 +5,7 @@ Feature: Automatically required support files for nested features
 
   Scenario:
     Given a directory named "features/nested"
-    Given a file named "features/nested/a.feature" with:
+    And a file named "features/nested/a.feature" with:
       """
       Feature: some feature
         Scenario: some scenario
@@ -20,4 +20,4 @@ Feature: Automatically required support files for nested features
       })
       """
     When I run cucumber.js
-    Then the exit status should be 0
+    Then it passes

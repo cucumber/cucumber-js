@@ -16,7 +16,8 @@ Feature: step definition snippets i18n
 
   Scenario:
     When I run cucumber-js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       this.Given('undefined step A', function (callback) {
         // Write code here that turns the phrase above into concrete actions

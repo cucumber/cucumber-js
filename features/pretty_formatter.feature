@@ -8,7 +8,7 @@ Feature: Pretty Formatter
       Feature: some feature
       """
     When I run cucumber.js with `-f pretty`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       0 scenarios
       0 steps
@@ -40,7 +40,7 @@ Feature: Pretty Formatter
       })
       """
     When I run cucumber.js with `-f pretty`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       Feature: some feature
 
@@ -76,7 +76,8 @@ Feature: Pretty Formatter
       })
       """
     When I run cucumber.js with `-f pretty`
-    Then it outputs this text:
+    Then it fails
+    And it outputs the text:
       """
       Feature: some feature
 
@@ -119,7 +120,7 @@ Feature: Pretty Formatter
       })
       """
     When I run cucumber.js with `-f pretty`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       Feature: some feature
 
@@ -155,7 +156,7 @@ Feature: Pretty Formatter
       })
       """
     When I run cucumber.js with `-f pretty`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       Feature: some feature
 

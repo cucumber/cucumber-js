@@ -222,11 +222,11 @@ describe('SummaryFormatter', function() {
       })
     })
 
-    describe('with one of every kind of setp', function() {
+    describe('with one of every kind of step', function() {
       beforeEach(function() {
         this.featuresResult.stepResults = [
           {ambiguousStepDefinitions: [], status: Status.AMBIGUOUS, step: {}},
-          {failureException: {}, status: Status.FAILED, step: {}},
+          {failureException: '', status: Status.FAILED, step: {}},
           {status: Status.PASSED, step: {}},
           {status: Status.PENDING, step: {}},
           {status: Status.SKIPPED, step: {}},

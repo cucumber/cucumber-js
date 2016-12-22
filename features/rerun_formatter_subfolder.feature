@@ -25,9 +25,11 @@ Feature: Rerun Formatter
       """
     And a directory named "test_results"
     When I run cucumber.js with `--format rerun:test_results/@rerun.txt`
-    Then the file "test_results/@rerun.txt" has the text:
+    Then it fails
+    And the file "test_results/@rerun.txt" has the text:
       """
       features/a.feature:5
       """
     When I run cucumber.js with `test_results/@rerun.txt`
-    Then it runs the scenario "2"
+    Then it fails
+    And it runs the scenario "2"

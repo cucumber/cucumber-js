@@ -39,7 +39,8 @@ Feature: step definition snippets custom syntax
 
   Scenario Outline:
     When I run cucumber-js with `--format-options '{"snippetInterface": "<INTERFACE>", "snippetSyntax": "coffeescript_syntax.js"}'`
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       @Given 'an undefined step', <SNIPPET_PARAMETERS_AND_ARROW>
         # Write code here that turns the phrase above into concrete actions

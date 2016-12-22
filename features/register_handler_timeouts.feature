@@ -30,12 +30,11 @@ Feature: registerHandler timeouts
       })
       """
     When I run cucumber.js
-    Then the error output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       features/supports/handlers.js:6 function timed out after 500 milliseconds
       """
-    And the exit status should be non-zero
-
 
   Scenario: slow handler can increase their timeout
     Given a file named "features/supports/handlers.js" with:
@@ -51,4 +50,4 @@ Feature: registerHandler timeouts
       })
       """
     When I run cucumber.js
-    Then the exit status should be 0
+    Then it passes

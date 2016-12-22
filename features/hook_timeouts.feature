@@ -29,11 +29,11 @@ Feature: Step definition timeouts
           Given a passing step
       """
     When I run cucumber.js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       function timed out after 500 milliseconds
       """
-    And the exit status should be 1
 
 
   Scenario: slow hooks can increase their timeout
@@ -45,7 +45,7 @@ Feature: Step definition timeouts
           Given a passing step
       """
     When I run cucumber.js
-    Then the exit status should be 0
+    Then it passes
 
 
   Scenario: changing hooks timeouts does not effect other hooks
@@ -58,8 +58,8 @@ Feature: Step definition timeouts
           Given a passing step
       """
     When I run cucumber.js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       function timed out after 500 milliseconds
       """
-    Then the exit status should be 1

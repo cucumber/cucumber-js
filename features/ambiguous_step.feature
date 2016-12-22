@@ -17,7 +17,7 @@ Feature: Ambiguous Steps
       })
       """
     When I run cucumber.js with `-f progress`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       A
 
@@ -34,4 +34,4 @@ Feature: Ambiguous Steps
       1 step (1 ambiguous)
       <duration-stat>
       """
-    And the exit status should be 1
+    And it fails

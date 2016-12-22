@@ -46,4 +46,4 @@ Feature: Tagged Hooks
       })
       """
     When I run cucumber.js
-    And the exit status should be 0
+    Then it passes

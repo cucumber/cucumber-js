@@ -34,11 +34,11 @@ Feature: Step definition timeouts
           When a <TYPE> step runs slowly
       """
     When I run cucumber.js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       function timed out after 500 milliseconds
       """
-    And the exit status should be 1
 
     Examples:
       | TYPE     |
@@ -54,7 +54,7 @@ Feature: Step definition timeouts
           When a <TYPE> step runs slowly with an increased timeout
       """
     When I run cucumber.js
-    Then the exit status should be 0
+    Then it passes
 
     Examples:
       | TYPE     |
@@ -71,11 +71,11 @@ Feature: Step definition timeouts
           And a <TYPE> step runs slowly
       """
     When I run cucumber.js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
       """
       function timed out after 500 milliseconds
       """
-    Then the exit status should be 1
 
     Examples:
       | TYPE     |

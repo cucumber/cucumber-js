@@ -19,7 +19,6 @@ Feature: Command line interface
       })
       """
     When I run cucumber.js with `-r step_definitions/cucumber_steps.js`
-    And the exit status should be 0
 
   Scenario: run feature with step definitions in required directory (-r option)
     Given a file named "features/a.feature" with:
@@ -37,14 +36,11 @@ Feature: Command line interface
       })
       """
     When I run cucumber.js with `-r step_definitions`
-    And the exit status should be 0
 
   Scenario: display Cucumber version
     When I run cucumber.js with `--version`
     Then I see the version of Cucumber
-    And the exit status should be 0
 
   Scenario: display help
     When I run cucumber.js with `--help`
-    Then I see the help of Cucumber
-    And the exit status should be 0
+    Then I see the help text for Cucumber

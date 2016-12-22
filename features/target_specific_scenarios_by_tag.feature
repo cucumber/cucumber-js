@@ -37,15 +37,18 @@ Feature: Target specific scenarios
 
   Scenario: run a single scenario
     When I run cucumber.js with `--tags @a`
-    Then it runs the scenario "first scenario"
+    Then it fails
+    And it runs the scenario "first scenario"
 
   Scenario: filter out scenarios with ~
     When I run cucumber.js with `--tags "not @b"`
-    Then it runs the scenario "first scenario"
+    Then it fails
+    And it runs the scenario "first scenario"
 
   Scenario: run a single scenario outline
     When I run cucumber.js with `--tags @b`
-    Then it runs the scenarios:
+    Then it fails
+    And it runs the scenarios:
       | NAME |
       | second scenario - X |
       | second scenario - Y |
@@ -53,7 +56,8 @@ Feature: Target specific scenarios
 
   Scenario: run a single scenario outline examples
     When I run cucumber.js with `--tags @c`
-    Then it runs the scenarios:
+    Then it fails
+    And it runs the scenarios:
       | NAME |
       | second scenario - X |
       | second scenario - Y |

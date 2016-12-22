@@ -31,7 +31,7 @@ Feature: default command line arguments
 
   Scenario: default profile
     When I run cucumber-js
-    Then it outputs this text:
+    Then it outputs the text:
       """
       1 scenario (1 passed)
       1 step (1 passed)
@@ -40,7 +40,7 @@ Feature: default command line arguments
 
   Scenario Outline: specifying a profile
     When I run cucumber-js with `<OPT> progress`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       .
 
@@ -56,7 +56,7 @@ Feature: default command line arguments
 
   Scenario: specifying multiple profiles
     When I run cucumber-js with `-p dry -p progress`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       -
 
@@ -67,7 +67,7 @@ Feature: default command line arguments
 
   Scenario: overriding the default profile
     When I run cucumber-js with `-f pretty`
-    Then it outputs this text:
+    Then it outputs the text:
       """
       Feature: some feature
 

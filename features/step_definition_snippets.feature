@@ -8,7 +8,8 @@ Feature: step definition snippets
           Given a step numbered 5
       """
     When I run cucumber-js
-    Then it suggests a "Given" step definition snippet with 1 parameter for:
+    Then it fails
+    And it suggests a "Given" step definition snippet with 1 parameter for:
       """
       'a step numbered {arg1:int}'
       """
@@ -21,7 +22,8 @@ Feature: step definition snippets
           Given a step with "quotes"
       """
     When I run cucumber-js
-    Then it suggests a "Given" step definition snippet with 1 parameter for:
+    Then it fails
+    And it suggests a "Given" step definition snippet with 1 parameter for:
       """
       'a step with {arg1:stringInDoubleQuotes}'
       """
@@ -34,7 +36,8 @@ Feature: step definition snippets
           Given a step with "quotes" and "more quotes"
       """
     When I run cucumber-js
-    Then it suggests a "Given" step definition snippet with 2 parameters for:
+    Then it fails
+    And it suggests a "Given" step definition snippet with 2 parameters for:
       """
       'a step with {arg1:stringInDoubleQuotes} and {arg2:stringInDoubleQuotes}'
       """
@@ -49,7 +52,8 @@ Feature: step definition snippets
           Given a passing step
       """
     When I run cucumber-js
-    Then it suggests a "Given" step definition snippet with 1 parameter for:
+    Then it fails
+    And it suggests a "Given" step definition snippet with 1 parameter for:
       """
       'a step with {arg1:stringInDoubleQuotes}'
       """

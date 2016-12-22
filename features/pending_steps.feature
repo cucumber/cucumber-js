@@ -20,7 +20,8 @@ Feature: Pending steps
       })
       """
     When I run cucumber.js
-    Then the step "a pending step" has status "pending"
+    Then it fails
+    And the step "a pending step" has status "pending"
 
 
   Scenario: Callback pending step
@@ -35,7 +36,8 @@ Feature: Pending steps
       })
       """
     When I run cucumber.js
-    Then the step "a pending step" has status "pending"
+    Then it fails
+    And the step "a pending step" has status "pending"
 
   Scenario: Promise pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -55,4 +57,5 @@ Feature: Pending steps
       })
       """
     When I run cucumber.js
-    Then the step "a pending step" has status "pending"
+    Then it fails
+    And the step "a pending step" has status "pending"

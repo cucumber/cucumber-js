@@ -35,7 +35,8 @@ Feature: custom formatter
       module.exports = SimpleFormatter
       """
     When I run cucumber-js with `--format ./simple_formatter.js`
-    Then it outputs this text:
+    Then it fails
+    And it outputs the text:
       """
       a feature / a scenario
         Given an undefined step - undefined
@@ -72,7 +73,8 @@ Feature: custom formatter
       module.exports = SimpleFormatter
       """
     When I run cucumber-js with `--format ./simple_formatter.js`
-    Then it outputs this text:
+    Then it fails
+    And it outputs the text:
       """
       a feature / a scenario
         Given an undefined step - undefined

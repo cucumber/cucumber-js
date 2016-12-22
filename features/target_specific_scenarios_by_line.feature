@@ -21,22 +21,26 @@ Feature: Target specific scenarios
 
   Scenario: run a single scenario
     When I run cucumber.js with `features/a.feature:2`
-    Then it runs the scenario "first scenario"
+    Then it fails
+    And it runs the scenario "first scenario"
 
   Scenario: run a single scenario outline
     When I run cucumber.js with `features/a.feature:5`
-    Then it runs the scenarios:
+    Then it fails
+    And it runs the scenarios:
       | NAME                |
       | second scenario - X |
       | second scenario - Y |
 
   Scenario: run a single scenario outline example
     When I run cucumber.js with `features/a.feature:10`
-    Then it runs the scenario "second scenario - X"
+    Then it fails
+    And it runs the scenario "second scenario - X"
 
   Scenario: run multiple scenarios
     When I run cucumber.js with `features/a.feature:2:10`
-    Then it runs the scenarios:
+    Then it fails
+    And it runs the scenarios:
       | NAME                |
       | first scenario      |
       | second scenario - X |
