@@ -1,4 +1,16 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc4...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc5...master)
+
+### [2.0.0-rc.5](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.4...v2.0.0-rc.5) (2016-12-22)
+
+#### Breaking Changes
+
+* Drop support for Node 0.12
+* format assertion errors to display diffs
+
+#### Documentation
+
+* fix CLI format-options name (#703) (Florian Ribon)
+* add link on README.md to custom formatters documentation
 
 ### [2.0.0-rc.4](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.3...v2.0.0-rc.4) (2016-12-19)
 
