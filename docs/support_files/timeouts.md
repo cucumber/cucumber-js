@@ -26,3 +26,24 @@ defineSupportCode(function({Before, Given}) {
   });
 });
 ```
+
+## Disable Timeouts
+
+**DO NOT USE THIS UNLESS ABSOLUTELY NECESSARY**
+
+Disable timeouts by setting it to -1.
+If you use this, you need to implement your own timeout protection.
+Otherwise the test suite may end prematurely or hang indefinitely.
+
+```js
+var {defineSupportCode} = require('cucumber');
+var Promise = require('bluebird');
+
+defineSupportCode(function({Before, Given}) {
+  Given('the operation completes within {n} minutes', {timeout: -1}, function(minutes) {
+    const timeout = (minutes + 1) * 60 * 1000
+    const message = `operation did not complete within ${minutes} minutes`
+    return Promise(this.verifyOperationComplete()).timeout(timeoutInMilliseconds, message);
+  });
+});
+```

@@ -8,11 +8,15 @@ Feature: Step definition timeouts
       defineSupportCode(({Before, Given, setDefaultTimeout}) => {
         setDefaultTimeout(500);
 
-        Before({tags:' @slow-with-increased-timeout', timeout: 1500}, function(scenario, callback) {
+        Before({tags: '@slow-with-increased-timeout', timeout: 1500}, function(scenario, callback) {
           setTimeout(callback, 1000)
         })
 
         Before({tags: '@slow'}, function(scenario, callback) {
+          setTimeout(callback, 1000)
+        })
+
+        Before({tags: '@disabled', timeout: -1}, function(scenario, callback) {
           setTimeout(callback, 1000)
         })
 
@@ -63,3 +67,15 @@ Feature: Step definition timeouts
       """
       function timed out after 500 milliseconds
       """
+
+
+  Scenario: hooks can disable timeouts
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        @disabled
+        Scenario:
+          Given a passing step
+      """
+    When I run cucumber.js
+    Then it passes

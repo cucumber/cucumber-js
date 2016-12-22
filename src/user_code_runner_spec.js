@@ -119,6 +119,21 @@ describe('UserCodeRunner', function () {
           expect(result).to.be.undefined
         })
       })
+
+      describe('timeout of -1', function() {
+        beforeEach(function() {
+          this.options.fn = function(callback) {
+            setTimeout(function(){ callback(null, 'result') }, 200)
+          }
+          this.options.timeoutInMilliseconds = -1
+        })
+
+        it('disables timeout protection', async function () {
+          const {error, result} = await UserCodeRunner.run(this.options)
+          expect(error).to.be.undefined
+          expect(result).to.eql('result')
+        })
+      })
     })
 
     describe('function uses promise interface', function() {
@@ -198,6 +213,25 @@ describe('UserCodeRunner', function () {
           expect(error).to.be.instanceof(Error)
           expect(error.message).to.eql('function timed out after 100 milliseconds')
           expect(result).to.be.undefined
+        })
+      })
+
+      describe('timeout of -1', function() {
+        beforeEach(function() {
+          this.options.fn = function() {
+            return {
+              then(resolve) {
+                setTimeout(function(){ resolve('result') }, 200)
+              }
+            }
+          }
+          this.options.timeoutInMilliseconds = -1
+        })
+
+        it('disables timeout protection', async function () {
+          const {error, result} = await UserCodeRunner.run(this.options)
+          expect(error).to.be.undefined
+          expect(result).to.eql('result')
         })
       })
     })
