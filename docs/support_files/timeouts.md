@@ -41,9 +41,9 @@ var Promise = require('bluebird');
 
 defineSupportCode(function({Before, Given}) {
   Given('the operation completes within {n} minutes', {timeout: -1}, function(minutes) {
-    const timeout = (minutes + 1) * 60 * 1000
+    const milliseconds = (minutes + 1) * 60 * 1000
     const message = `operation did not complete within ${minutes} minutes`
-    return Promise(this.verifyOperationComplete()).timeout(timeoutInMilliseconds, message);
+    return Promise(this.verifyOperationComplete()).timeout(milliseconds, message);
   });
 });
 ```
