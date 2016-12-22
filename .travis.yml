@@ -3,12 +3,19 @@ cache:
     - $HOME/node_modules
 
 deploy:
-  on:
-    branch: master
-    node: "6"
-  provider: script
-  script: scripts/deploy.sh
-  skip_cleanup: true
+  - on:
+      node: "6"
+      tags: true
+    provider: script
+    script: scripts/deploy.sh
+    skip_cleanup: true
+  - api_key: "$NPM_AUTH_TOKEN"
+    email: "charles.w.rudolph@gmail.com"
+    on:
+      node: "6"
+      tags: true
+    provider: npm
+    skip_cleanup: true
 
 language: node_js
 
