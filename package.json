@@ -174,7 +174,7 @@
     "prefeature-test": "yarn run build-local",
     "prepublish": "yarn run build-local",
     "test": "yarn run lint && yarn run unit-test && yarn run feature-test",
-    "unit-test": "mocha 'src/**/*_spec.js'"
+    "unit-test": "mocha src"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
