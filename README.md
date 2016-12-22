@@ -47,6 +47,7 @@ $ npm install cucumber
 ## Documentation
 
 * [CLI](/docs/cli.md)
+* [Custom Formatters](/docs/custom_formatters.md)
 * [NodeJs Example](/docs/nodejs_example.md)
 * Support Files
   * [World](/docs/support_files/world.md)

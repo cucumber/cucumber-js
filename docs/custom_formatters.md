@@ -2,7 +2,7 @@
 
 Custom formatters should be a javascript class. The constructor will be an options object  which is the options defined with `--format-options` and the following:
 
-* `colorFns`: a series of helper functions for outputting colors. See [here](/src/formatters/get_color_fns). Respects `colorsEnabled` option
+* `colorFns`: a series of helper functions for outputting colors. See [here](/src/formatter/get_color_fns.js). Respects `colorsEnabled` option
 * `cwd`: the current working directory
 * `log`: function which will write the passed string to the the designated stream (stdout or the to file the formatter output is being redirected to).
 * `snippetBuilder`: an object with a `build` method that should be called with a [step](/src/models/step.js) to get the snippet for an undefined step
