@@ -33,9 +33,28 @@ Feature: snippets formatter
       })
       """
     When I run cucumber-js with `--format usage`
-    Then the usage output is:
-      | PATTERN | NUMBER OF MATCHES | MEAN DURATION |
-      | step A  | 1                 | 100           |
-      | step B  | 2                 | 50            |
-      | step C  | 1                 | 10            |
-      | step D  | 0                 |               |
+    Then it outputs the text:
+      """
+      ┌───────────────────────────────────────┬───────────────┬──────────────────────┐
+      │ Step Definition                       │ Mean Duration │ Matches              │
+      ├───────────────────────────────────────┼───────────────┼──────────────────────┤
+      │ step A                                │ <d>ms         │ step A               │
+      │ features/step_definitions/steps.js:4  │               │ features/a.feature:3 │
+      │                                       │               │ <d>ms                │
+      ├───────────────────────────────────────┼───────────────┼──────────────────────┤
+      │ /^(slow )?step B$/                    │ <d>ms         │ slow step B          │
+      │ features/step_definitions/steps.js:5  │               │ features/a.feature:5 │
+      │                                       │               │ <d>ms                │
+      │                                       │               │                      │
+      │                                       │               │ step B               │
+      │                                       │               │ features/a.feature:4 │
+      │                                       │               │ <d>ms                │
+      ├───────────────────────────────────────┼───────────────┼──────────────────────┤
+      │ step C                                │ <d>ms         │ step C               │
+      │ features/step_definitions/steps.js:12 │               │ features/a.feature:6 │
+      │                                       │               │ <d>ms                │
+      ├───────────────────────────────────────┼───────────────┼──────────────────────┤
+      │ step D                                │ UNUSED        │ UNUSED               │
+      │ features/step_definitions/steps.js:13 │               │                      │
+      └───────────────────────────────────────┴───────────────┴──────────────────────┘
+      """

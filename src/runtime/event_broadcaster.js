@@ -28,8 +28,9 @@ export default class EventBroadcaster {
           thisArg: listener
         })
         if (error) {
+          console.error(error)
           const location = this.getListenerErrorLocation({fnName, listener})
-          throw new VError(error, location)
+          //throw new VError(error, location)
         }
       }
     })
