@@ -16,11 +16,19 @@ Feature: Step definition timeouts
           setTimeout(callback, 1000)
         })
 
+        Given(/^a callback step with a disabled timeout$/, {timeout: -1}, function(callback) {
+          setTimeout(callback, 1000)
+        })
+
         Given(/^a promise step runs slowly$/, function() {
           return { then: function(resolve) { setTimeout(resolve, 1000) } }
         })
 
         Given(/^a promise step runs slowly with an increased timeout$/, {timeout: 1500}, function() {
+          return { then: function(resolve) { setTimeout(resolve, 1000) } }
+        })
+
+        Given(/^a promise step with a disabled timeout$/, {timeout: -1}, function() {
           return { then: function(resolve) { setTimeout(resolve, 1000) } }
         })
       })
@@ -76,6 +84,22 @@ Feature: Step definition timeouts
       """
       function timed out after 500 milliseconds
       """
+
+    Examples:
+      | TYPE     |
+      | callback |
+      | promise  |
+
+
+  Scenario Outline: steps can disable timeouts
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario:
+          When a <TYPE> step with a disabled timeout
+      """
+    When I run cucumber.js
+    Then it passes
 
     Examples:
       | TYPE     |
