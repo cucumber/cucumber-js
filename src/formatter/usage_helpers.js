@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {formatLocation} from './utils'
+import Hook from '../models/hook'
 
 function buildEmptyMapping({cwd, stepDefinitions}) {
   const mapping = {}
@@ -17,7 +18,7 @@ function buildMapping({cwd, stepDefinitions, stepResults}) {
   const mapping = buildEmptyMapping({cwd, stepDefinitions})
   stepResults.forEach((stepResult) => {
     const {duration, step, stepDefinition} = stepResult
-    if (stepDefinition) {
+    if (!(step instanceof Hook) && stepDefinition) {
       const location = formatLocation(cwd, stepDefinition)
       const match = {
         location: formatLocation(cwd, step),

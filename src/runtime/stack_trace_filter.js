@@ -9,7 +9,7 @@ export default class StackTraceFilter {
 
   filter() {
     this.currentFilter = stackChain.filter.attach((error, frames) => {
-      if (frames.length > 0 && this.isFrameInCucumber(frames[0])) {
+      if (this.isErrorInCucumber(frames)) {
         return frames
       }
       const index = _.findIndex(frames, ::this.isFrameInCucumber)
@@ -21,9 +21,19 @@ export default class StackTraceFilter {
     })
   }
 
+  isErrorInCucumber(frames) {
+    const filteredFrames = _.reject(frames, ::this.isFrameInNode)
+    return filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
+  }
+
   isFrameInCucumber(frame) {
     const fileName = frame.getFileName() || ''
     return _.startsWith(fileName, this.cucumberPath)
+  }
+
+  isFrameInNode(frame) {
+    const fileName = frame.getFileName() || ''
+    return !_.includes(fileName, path.sep)
   }
 
   unfilter() {

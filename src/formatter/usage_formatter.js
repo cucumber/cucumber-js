@@ -25,8 +25,8 @@ export default class UsageFormatter extends Formatter {
       let col2, col3
       if (matches.length > 0) {
         col2 = `${meanDuration}ms`
-        col3 = matches.map(({duration, location, text}) => {
-          return [text, location, `${duration}ms`].join('\n')
+        col3 = matches.map((match) => {
+          return [match.text, match.location, `${match.duration}ms`].join('\n')
         }).join('\n\n')
       } else {
         col2 = 'UNUSED'
