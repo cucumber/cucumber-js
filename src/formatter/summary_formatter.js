@@ -87,7 +87,7 @@ export default class SummaryFormatter extends Formatter {
   }
 
   indent(text, numberOfSpaces) {
-    return indentString(text, ' ', numberOfSpaces)
+    return indentString(text, numberOfSpaces)
   }
 
   logCountSummary(type, objects) {
