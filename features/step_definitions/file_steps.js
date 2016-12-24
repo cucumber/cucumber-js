@@ -31,12 +31,4 @@ defineSupportCode(function({Given, Then}) {
     const expectedContent = normalizeText(text)
     expect(actualContent).to.eql(expectedContent)
   })
-
-  Then(/^the file "([^"]*)" contains the text:$/, async function(filePath, text) {
-    const absoluteFilePath = path.join(this.tmpDir, filePath)
-    const content = await fs.readFile(absoluteFilePath, 'utf8')
-    const actualContent = normalizeText(content)
-    const expectedContent = normalizeText(text)
-    expect(actualContent).to.include(expectedContent)
-  })
 })
