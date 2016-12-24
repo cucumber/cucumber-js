@@ -61,12 +61,12 @@ Feature: snippets formatter
           And step
 
         Examples:
-          | <UNUSED> |
-          | 1 |
-          | 2 |
-          | 3 |
-          | 4 |
-          | 5 |
+          | <ID> |
+          | 1    |
+          | 2    |
+          | 3    |
+          | 4    |
+          | 5    |
       """
     And a file named "features/step_definitions/steps.js" with:
       """
