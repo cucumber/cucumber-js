@@ -43,7 +43,7 @@ Feature: snippets formatter
       ├────────────────────┼──────────┼───────────────────────────────────────┤
       │ /^(slow )?step B$/ │ <d>ms    │ features/step_definitions/steps.js:5  │
       │   slow step B      │ <d>ms    │ features/a.feature:5                  │
-      │   step B           │ 0ms      │ features/a.feature:4                  │
+      │   step B           │ <d>ms    │ features/a.feature:4                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
       │ step C             │ <d>ms    │ features/step_definitions/steps.js:12 │
       │   step C           │ <d>ms    │ features/a.feature:6                  │
