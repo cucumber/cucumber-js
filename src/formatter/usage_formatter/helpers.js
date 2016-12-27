@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import {formatLocation} from './utils'
-import Hook from '../models/hook'
+import {formatLocation} from '../utils'
+import Hook from '../../models/hook'
 
 function buildEmptyMapping({cwd, stepDefinitions}) {
   const mapping = {}

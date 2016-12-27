@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import {getUsage} from './usage_helpers'
-import Formatter from './'
+import {getUsage} from './helpers'
+import Formatter from '../'
 import Table from 'cli-table'
 
 export default class UsageFormatter extends Formatter {
@@ -10,6 +10,10 @@ export default class UsageFormatter extends Formatter {
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       stepResults: featuresResult.stepResults
     })
+    if (usage.length === 0) {
+      this.log('No step definitions')
+      return
+    }
     const table = new Table({
       head: [
         'Pattern / Text',
@@ -25,14 +29,23 @@ export default class UsageFormatter extends Formatter {
       let col1 = [pattern.toString()]
       let col2 = []
       if (matches.length > 0) {
-        col2.push(`${parseFloat(meanDuration.toFixed(2))}ms`)
+        if (isFinite(meanDuration)) {
+          col2.push(`${parseFloat(meanDuration.toFixed(2))}ms`)
+        } else {
+          col2.push('-')
+        }
       } else {
         col2.push('UNUSED')
       }
       let col3 = [location]
       _.take(matches, 5).forEach((match) => {
         col1.push(`  ${match.text}`)
-        col2.push(`${match.duration}ms`)
+        if (isFinite(match.duration)) {
+          col2.push(`${match.duration}ms`)
+        }
+        else {
+          col2.push('-')
+        }
         col3.push(match.location)
       })
       if (matches.length > 5) {
@@ -40,6 +53,6 @@ export default class UsageFormatter extends Formatter {
       }
       table.push([col1.join('\n'), col2.join('\n'), col3.join('\n')])
     })
-    this.log(table.toString())
+    this.log(table.toString() + '\n')
   }
 }
