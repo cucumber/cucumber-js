@@ -19,14 +19,15 @@ deploy:
 
 language: node_js
 
-node_js: "6"
+node_js:
+  - '7'
+  - "6"
 
 notifications:
   email: false
 
 matrix:
   include:
-    - node_js: "7"
     - node_js: "4"
       script: "yarn run feature-test -- --profile node-4"
 
