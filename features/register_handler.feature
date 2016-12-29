@@ -41,10 +41,10 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: my error
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting |
+      | Error: my error                    |
+      | features/support/handlers.js:4     |
 
   Scenario: callback without error
     Given a file named "features/support/handlers.js" with:
@@ -75,10 +75,10 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: my error
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting |
+      | Error: my error                    |
+      | features/support/handlers.js:4     |
 
   Scenario: callback asynchronously throws
     Given a file named "features/support/handlers.js" with:
@@ -95,43 +95,39 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: my error
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting |
+      | Error: my error                    |
+      | features/support/handlers.js:4     |
 
   Scenario: callback - returning a promise
     Given a file named "features/support/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({registerHandler}) => {
         registerHandler('AfterFeatures', function(features, callback) {
-          return {
-            then: function() {}
-          }
+          return Promise.resolve()
         })
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: function uses multiple asynchronous interfaces: callback and promise
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting                                   |
+      | function uses multiple asynchronous interfaces: callback and promise |
+      | features/support/handlers.js:5                                       |
 
   Scenario: promise resolves
     Given a file named "features/support/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({registerHandler}) => {
         registerHandler('AfterFeatures', function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(resolve)
-            }
-          }
+          return Promise.resolve()
         })
       })
       """
@@ -142,68 +138,59 @@ Feature: Register Handler
     Given a file named "features/support/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({registerHandler}) => {
         registerHandler('AfterFeatures', function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(function() {
-                reject(new Error('my error'))
-              })
-            }
-          }
+          return Promise.reject(new Error('my error'))
         })
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: my error
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting |
+      | Error: my error                    |
+      | features/support/handlers.js:5     |
 
   Scenario: promise rejects without error
     Given a file named "features/support/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({registerHandler}) => {
         registerHandler('AfterFeatures', function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(reject)
-            }
-          }
+          return Promise.reject()
         })
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: Promise rejected
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting |
+      | Promise rejected without a reason  |
+      | features/support/handlers.js:5     |
 
   Scenario: promise asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({registerHandler}) => {
         registerHandler('AfterFeatures', function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(function() {
-                throw new Error('my error')
-              })
-            }
-          }
+          return new Promise(function() {
+            setTimeout(function() {
+              throw new Error('my error')
+            })
+          })
         })
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/support/handlers.js:4: my error
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting |
+      | Error: my error                    |
+      | features/support/handlers.js:5     |

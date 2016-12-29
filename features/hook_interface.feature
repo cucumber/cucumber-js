@@ -142,12 +142,11 @@ Feature: After hook interface
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
         <TYPE>(function(scenario, callback) {
-          return {
-            then: function() {}
-          }
+          return Promise.resolve()
         })
       })
       """
@@ -167,15 +166,11 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
-      import assert from 'assert'
+      import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
         <TYPE>(function() {
-          return {
-            then: (onResolve, onReject) => {
-              setTimeout(onResolve)
-            }
-          }
+          return Promise.resolve()
         })
       })
       """
@@ -191,21 +186,20 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
-        this.<TYPE>(function(){
-          return {
-            then: (onResolve, onReject) => {
-              setTimeout(() => {
-                onReject(new Error('my error'))
-              })
-            }
-          }
+        <TYPE>(function(){
+          return Promise.reject(new Error('my error'))
         })
       })
       """
     When I run cucumber.js
     Then it fails
+    And the output contains the text:
+      """
+      my error
+      """
 
     Examples:
       | TYPE   |
@@ -216,21 +210,20 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
         <TYPE>(function() {
-          return {
-            then: (onResolve, onReject) => {
-              setTimeout(onReject)
-            }
-          }
+          return Promise.reject()
         })
       })
-
-      module.exports = hooks
       """
     When I run cucumber.js
     Then it fails
+    And the output contains the text:
+      """
+      Promise rejected without a reason
+      """
 
     Examples:
       | TYPE   |
@@ -241,21 +234,24 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
         <TYPE>(function(){
-          return {
-            then: (onResolve, onReject) => {
-              setTimeout(() => {
-                throw new Error('my error')
-              })
-            }
-          }
+          return new Promise(function() {
+            setTimeout(() => {
+              throw new Error('my error')
+            })
+          })
         })
       })
       """
     When I run cucumber.js
     Then it fails
+    And the output contains the text:
+      """
+      my error
+      """
 
     Examples:
       | TYPE   |

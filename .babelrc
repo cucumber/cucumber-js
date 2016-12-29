@@ -1,7 +1,8 @@
 {
   "plugins": [
-    "transform-async-to-generator",
+    "external-helpers",
     "transform-function-bind",
+    ["transform-async-to-module-method", {"module": "bluebird", "method": "coroutine"}],
     ["transform-runtime", {"polyfill": false, "regenerator": true}]
   ],
   "presets": ["es2015"],

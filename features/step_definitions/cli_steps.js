@@ -35,6 +35,7 @@ defineSupportCode(function({When, Then}) {
         output: colors.strip(stdout) + stderr
       }
       this.verifiedLastRunError = false
+      expect(this.lastRun.output).to.not.include('Unhandled rejection')
       callback()
     })
   })
@@ -57,6 +58,14 @@ defineSupportCode(function({When, Then}) {
     const actualOutput = normalizeText(this.lastRun.output)
     const expectedOutput = normalizeText(text)
     expect(actualOutput).to.include(expectedOutput)
+  })
+
+  Then(/^the output contains the text snippets:$/, function(table) {
+    const actualOutput = normalizeText(this.lastRun.output)
+    table.rows().forEach((row) => {
+      const expectedOutput = normalizeText(row[0])
+      expect(actualOutput).to.include(expectedOutput)
+    })
   })
 
   Then(/^I see the version of Cucumber$/, function() {

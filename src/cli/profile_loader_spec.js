@@ -7,7 +7,7 @@ import tmp from 'tmp'
 describe('ProfileLoader', function() {
   describe('getArgv', function() {
     beforeEach(async function() {
-      this.tmpDir = await await promisify(tmp.dir)({unsafeCleanup: true})
+      this.tmpDir = await promisify(tmp.dir)({unsafeCleanup: true})
       this.profileLoader = new ProfileLoader(this.tmpDir)
     })
 
