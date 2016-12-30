@@ -10,7 +10,7 @@ describe('JavascriptSnippetSyntax', function () {
       it('returns the proper snippet', function () {
         const actual = this.syntax.build('functionName', 'pattern', ['arg1', 'arg2', 'callback'], 'comment')
         const expected =
-          'this.functionName(\'pattern\', function (arg1, arg2, callback) {' + '\n' +
+          'functionName(\'pattern\', function (arg1, arg2, callback) {' + '\n' +
           '  // comment' + '\n' +
           '  callback(null, \'pending\');' + '\n' +
           '});'
@@ -26,7 +26,7 @@ describe('JavascriptSnippetSyntax', function () {
       it('returns the proper snippet', function () {
         const actual = this.syntax.build('functionName', 'pattern', ['arg1', 'arg2', 'callback'], 'comment')
         const expected =
-          'this.functionName(\'pattern\', function *(arg1, arg2) {' + '\n' +
+          'functionName(\'pattern\', function *(arg1, arg2) {' + '\n' +
           '  // comment' + '\n' +
           '  return \'pending\';' + '\n' +
           '});'
@@ -42,7 +42,7 @@ describe('JavascriptSnippetSyntax', function () {
       it('returns the proper snippet', function () {
         const actual = this.syntax.build('functionName', 'pattern', ['arg1', 'arg2', 'callback'], 'comment')
         const expected =
-          'this.functionName(\'pattern\', function (arg1, arg2) {' + '\n' +
+          'functionName(\'pattern\', function (arg1, arg2) {' + '\n' +
           '  // comment' + '\n' +
           '  return \'pending\';' + '\n' +
           '});'
@@ -58,7 +58,7 @@ describe('JavascriptSnippetSyntax', function () {
       it('returns the proper snippet', function () {
         const actual = this.syntax.build('functionName', 'pattern', ['arg1', 'arg2', 'callback'], 'comment')
         const expected =
-          'this.functionName(\'pattern\', function (arg1, arg2) {' + '\n' +
+          'functionName(\'pattern\', function (arg1, arg2) {' + '\n' +
           '  // comment' + '\n' +
           '  return \'pending\';' + '\n' +
           '});'
@@ -74,7 +74,7 @@ describe('JavascriptSnippetSyntax', function () {
       it('returns the proper snippet', function () {
         const actual = this.syntax.build('functionName', 'pattern\'', ['arg1', 'arg2', 'callback'], 'comment')
         const expected =
-          'this.functionName(\'pattern\\\'\', function (arg1, arg2) {' + '\n' +
+          'functionName(\'pattern\\\'\', function (arg1, arg2) {' + '\n' +
           '  // comment' + '\n' +
           '  return \'pending\';' + '\n' +
           '});'
