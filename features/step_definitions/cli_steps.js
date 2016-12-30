@@ -93,7 +93,7 @@ defineSupportCode(function({When, Then}) {
       }
     }
     parameters.push('callback')
-    const expectedOutput = 'this.' + step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n'
+    const expectedOutput = step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n'
     const actualOutput = normalizeText(this.lastRun.output)
     expect(actualOutput).to.include(expectedOutput)
   })
