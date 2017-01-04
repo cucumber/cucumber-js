@@ -1,4 +1,5 @@
 import UserCodeRunner from './user_code_runner'
+import Promise from 'bluebird'
 
 describe('UserCodeRunner', function () {
   describe('run()', function () {
@@ -144,11 +145,7 @@ describe('UserCodeRunner', function () {
       describe('promise resolves', function() {
         beforeEach(function() {
           this.options.fn = function() {
-            return {
-              then(resolve) {
-                setTimeout(function(){ resolve('result') }, 25)
-              }
-            }
+            return Promise.resolve('result')
           }
         })
 
@@ -162,11 +159,7 @@ describe('UserCodeRunner', function () {
       describe('promise rejects with reason', function() {
         beforeEach(function() {
           this.options.fn = function() {
-            return {
-              then(resolve, reject) {
-                setTimeout(function(){ reject('error') }, 25)
-              }
-            }
+            return Promise.reject('error')
           }
         })
 
@@ -181,11 +174,7 @@ describe('UserCodeRunner', function () {
       describe('promise rejects without reason', function() {
         beforeEach(function() {
           this.options.fn = function() {
-            return {
-              then(resolve, reject) {
-                setTimeout(function(){ reject() }, 25)
-              }
-            }
+            return Promise.reject()
           }
         })
 
@@ -200,11 +189,7 @@ describe('UserCodeRunner', function () {
       describe('function times out', function() {
         beforeEach(function() {
           this.options.fn = function() {
-            return {
-              then(resolve) {
-                setTimeout(function(){ resolve('result') }, 200)
-              }
-            }
+            return Promise.resolve('result').delay(200)
           }
         })
 
@@ -219,11 +204,7 @@ describe('UserCodeRunner', function () {
       describe('timeout of -1', function() {
         beforeEach(function() {
           this.options.fn = function() {
-            return {
-              then(resolve) {
-                setTimeout(function(){ resolve('result') }, 200)
-              }
-            }
+            return Promise.resolve('result').delay(200)
           }
           this.options.timeoutInMilliseconds = -1
         })
@@ -239,9 +220,8 @@ describe('UserCodeRunner', function () {
     describe('function uses multiple asynchronous interfaces: callback and promise', function() {
       beforeEach(function() {
         this.options.fn = function(callback) {
-          return {
-            then() { callback() }
-          }
+          callback()
+          return Promise.resolve()
         }
       })
 

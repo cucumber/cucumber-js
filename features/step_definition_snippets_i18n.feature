@@ -19,21 +19,21 @@ Feature: step definition snippets i18n
     Then it fails
     And the output contains the text:
       """
-      this.Given('undefined step A', function (callback) {
+      Given('undefined step A', function (callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });
       """
     And the output contains the text:
       """
-      this.When('undefined step B', function (callback) {
+      When('undefined step B', function (callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });
       """
     And the output contains the text:
       """
-      this.Then('undefined step C', function (callback) {
+      Then('undefined step C', function (callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });

@@ -15,8 +15,8 @@ export default class EventBroadcaster {
     await this.broadcastEvent(event.buildAfterEvent())
   }
 
-  async broadcastEvent(event) {
-    await Promise.each(this.listeners, async(listener) => {
+  broadcastEvent(event) {
+    return Promise.each(this.listeners, async(listener) => {
       const fnName = `handle${event.name}`
       const handler = listener[fnName]
       if (handler) {
@@ -24,12 +24,12 @@ export default class EventBroadcaster {
         const {error} = await UserCodeRunner.run({
           argsArray: [event.data],
           fn: handler,
-          timeoutInMilliseconds: timeout,
-          thisArg: listener
+          thisArg: listener,
+          timeoutInMilliseconds: timeout
         })
         if (error) {
           const location = this.getListenerErrorLocation({fnName, listener})
-          throw new VError(error, location)
+          throw new VError(error, `a handler errored, process exiting: ${location}`)
         }
       }
     })

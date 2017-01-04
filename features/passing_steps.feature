@@ -38,14 +38,11 @@ Feature: Passing steps
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({Given}) => {
         Given(/^a passing step$/, function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(resolve)
-            }
-          }
+          return Promise.resolve()
         })
       })
       """

@@ -17,7 +17,7 @@ Feature: registerHandler timeouts
       """
 
   Scenario: slow handler timeout
-    Given a file named "features/supports/handlers.js" with:
+    Given a file named "features/support/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
@@ -31,10 +31,10 @@ Feature: registerHandler timeouts
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
-      """
-      features/supports/handlers.js:6: function timed out after 500 milliseconds
-      """
+    And the output contains the text snippets:
+      | a handler errored, process exiting        |
+      | function timed out after 500 milliseconds |
+      | features/support/handlers.js:6            |
 
   Scenario: slow handler can increase their timeout
     Given a file named "features/supports/handlers.js" with:

@@ -1,4 +1,5 @@
 import Cli from './'
+import VError from 'verror'
 
 export default async function run() {
   const cli = new Cli({
@@ -11,8 +12,8 @@ export default async function run() {
   try {
     success = await cli.run()
   } catch (error) {
-    process.nextTick(function(){ throw error })
-    return
+    console.error(VError.fullStack(error)) // eslint-disable-line no-console
+    process.exit(1)
   }
 
   const exitCode = success ? 0 : 1

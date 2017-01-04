@@ -21,7 +21,7 @@ export default class JavaScriptSnippetSyntax {
     }
 
     const snippet =
-      'this.' + functionName + '(\'' + pattern.replace(/'/g, '\\\'') + '\', ' + functionKeyword + '(' + parameters.join(', ') + ') {' + '\n' +
+      functionName + '(\'' + pattern.replace(/'/g, '\\\'') + '\', ' + functionKeyword + '(' + parameters.join(', ') + ') {' + '\n' +
       '  // ' + comment + '\n' +
       '  ' + implementation + '\n' +
       '});'

@@ -86,7 +86,7 @@ Feature: custom formatter
          Message:
            Undefined. Implement with the following snippet:
 
-             this.Given('an undefined step', function (callback) {
+             Given('an undefined step', function (callback) {
                // Write code here that turns the phrase above into concrete actions
                callback(null, 'pending');
              });

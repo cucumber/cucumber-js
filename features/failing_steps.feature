@@ -102,12 +102,11 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({When}) => {
         When(/^a failing step$/, function(callback) {
-          return {
-            then: function(resolve, reject) {}
-          }
+          return Promise.resolve()
         })
       })
       """
@@ -122,16 +121,15 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({When}) => {
         When(/^a failing step$/, function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(function() {
-                throw new Error('my error')
-              })
-            }
-          }
+          return new Promise(function() {
+            setTimeout(function() {
+              throw new Error('my error')
+            })
+          })
         })
       })
       """
@@ -146,16 +144,11 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
+      import Promise from 'bluebird'
 
       defineSupportCode(({When}) => {
         When(/^a failing step$/, function() {
-          return {
-            then: function(resolve, reject) {
-              setTimeout(function() {
-                reject(new Error('my error'))
-              })
-            }
-          }
+          return Promise.reject(new Error('my error'))
         })
       })
       """
