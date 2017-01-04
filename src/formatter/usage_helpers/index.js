@@ -2,27 +2,30 @@ import _ from 'lodash'
 import {formatLocation} from '../utils'
 import Hook from '../../models/hook'
 
-function buildEmptyMapping({cwd, stepDefinitions}) {
+function buildEmptyMapping(stepDefinitions) {
   const mapping = {}
   stepDefinitions.forEach((stepDefinition) => {
-    const location = formatLocation(cwd, stepDefinition)
+    const location = formatLocation('', stepDefinition)
     mapping[location] = {
+      line: stepDefinition.line,
       pattern: stepDefinition.pattern,
-      matches: []
+      matches: [],
+      uri: stepDefinition.uri
     }
   })
   return mapping
 }
 
-function buildMapping({cwd, stepDefinitions, stepResults}) {
-  const mapping = buildEmptyMapping({cwd, stepDefinitions})
+function buildMapping({stepDefinitions, stepResults}) {
+  const mapping = buildEmptyMapping(stepDefinitions)
   stepResults.forEach((stepResult) => {
     const {duration, step, stepDefinition} = stepResult
     if (!(step instanceof Hook) && stepDefinition) {
-      const location = formatLocation(cwd, stepDefinition)
+      const location = formatLocation('', stepDefinition)
       const match = {
-        location: formatLocation(cwd, step),
-        text: step.name
+        line: step.line,
+        text: step.name,
+        uri: step.uri
       }
       if (isFinite(duration)) {
         match.duration = duration
@@ -47,9 +50,9 @@ function invertNumber(key) {
 
 function buildResult(mapping) {
   return _.chain(mapping)
-    .map(({matches, pattern}, location) => {
+    .map(({line, matches, pattern, uri}) => {
       const sortedMatches = _.sortBy(matches, [invertNumber('duration'), 'text'])
-      const result = {location, matches: sortedMatches, pattern}
+      const result = {line, matches: sortedMatches, pattern, uri}
       const meanDuration = _.meanBy(matches, 'duration')
       if (isFinite(meanDuration)) {
         result.meanDuration = meanDuration

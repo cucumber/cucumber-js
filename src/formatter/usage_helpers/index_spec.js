@@ -2,15 +2,10 @@ import {getUsage} from './'
 
 describe('UsageHelpers', function() {
   describe('getUsage', function() {
-    beforeEach(function() {
-      this.cwd = 'path/to/project'
-    })
-
     describe('no step definitions', function() {
       describe('no step results', function() {
         beforeEach(function() {
           this.result = getUsage({
-            cwd: this.cwd,
             stepDefinitions: [],
             stepResults: []
           })
@@ -30,7 +25,6 @@ describe('UsageHelpers', function() {
           }
           const stepResult = {step}
           this.result = getUsage({
-            cwd: this.cwd,
             stepDefinitions: [],
             stepResults: [stepResult]
           })
@@ -54,7 +48,6 @@ describe('UsageHelpers', function() {
       describe('unused', function() {
         beforeEach(function() {
           this.result = getUsage({
-            cwd: this.cwd,
             stepDefinitions: [this.stepDefinition],
             stepResults: []
           })
@@ -62,9 +55,10 @@ describe('UsageHelpers', function() {
 
         it('outputs the step definition with no matches', function () {
           expect(this.result).to.eql([{
-            location: 'steps.js:1',
+            line: 1,
             matches: [],
-            pattern: 'abc'
+            pattern: 'abc',
+            uri: 'path/to/project/steps.js'
           }])
         })
       })
@@ -94,7 +88,6 @@ describe('UsageHelpers', function() {
         describe('in dry run', function() {
           beforeEach(function() {
             this.result = getUsage({
-              cwd: this.cwd,
               stepDefinitions: [this.stepDefinition],
               stepResults: [this.stepResult1, this.stepResult2]
             })
@@ -102,12 +95,13 @@ describe('UsageHelpers', function() {
 
           it('outputs the step definition with the matches', function () {
             expect(this.result).to.eql([{
-              location: 'steps.js:1',
+              line: 1,
               matches: [
-                {location: 'a.feature:1', text: 'step-name1'},
-                {location: 'a.feature:2', text: 'step-name2'}
+                {line: 1, text: 'step-name1', uri: 'path/to/project/a.feature'},
+                {line: 2, text: 'step-name2', uri: 'path/to/project/a.feature'}
               ],
-              pattern: 'abc'
+              pattern: 'abc',
+              uri: 'path/to/project/steps.js'
             }])
           })
         })
@@ -117,7 +111,6 @@ describe('UsageHelpers', function() {
             this.stepResult1.duration = 1
             this.stepResult2.duration = 2
             this.result = getUsage({
-              cwd: this.cwd,
               stepDefinitions: [this.stepDefinition],
               stepResults: [this.stepResult1, this.stepResult2]
             })
@@ -125,13 +118,14 @@ describe('UsageHelpers', function() {
 
           it('outputs the step definition with the matches, durations, and a mean duration', function () {
             expect(this.result).to.eql([{
-              location: 'steps.js:1',
+              line: 1,
               matches: [
-                {duration: 2, location: 'a.feature:2', text: 'step-name2'},
-                {duration: 1, location: 'a.feature:1', text: 'step-name1'}
+                {duration: 2, line: 2, text: 'step-name2', uri: 'path/to/project/a.feature'},
+                {duration: 1, line: 1, text: 'step-name1', uri: 'path/to/project/a.feature'}
               ],
               meanDuration: 1.5,
-              pattern: 'abc'
+              pattern: 'abc',
+              uri: 'path/to/project/steps.js'
             }])
           })
         })
@@ -176,7 +170,6 @@ describe('UsageHelpers', function() {
           stepDefinition: stepDefinition2
         }
         this.result = getUsage({
-          cwd: this.cwd,
           stepDefinitions: [
             stepDefinition1,
             stepDefinition2,
@@ -191,19 +184,22 @@ describe('UsageHelpers', function() {
 
       it('orders by mean duration descending with unused steps at the end', function() {
         expect(this.result).to.eql([{
-          location: 'steps.js:2',
-          matches: [{duration: 2, location: 'a.feature:2', text: 'step-name2'}],
+          line: 2,
+          matches: [{duration: 2, line: 2, text: 'step-name2', uri: 'path/to/project/a.feature'}],
           meanDuration: 2,
-          pattern: 'def'
+          pattern: 'def',
+          uri: 'path/to/project/steps.js',
         }, {
-          location: 'steps.js:1',
-          matches: [{duration: 1, location: 'a.feature:1', text: 'step-name1'}],
+          line: 1,
+          matches: [{duration: 1, line: 1, text: 'step-name1', uri: 'path/to/project/a.feature'}],
           meanDuration: 1,
-          pattern: 'abc'
+          pattern: 'abc',
+          uri: 'path/to/project/steps.js',
         }, {
-          location: 'steps.js:3',
+          line: 3,
           matches: [],
-          pattern: 'ghi'
+          pattern: 'ghi',
+          uri: 'path/to/project/steps.js'
         }])
       })
     })
