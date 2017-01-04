@@ -58,6 +58,8 @@ Built-in formatters
   * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`. Use with `--fail-fast` to rerun the failure and the remaining features.
 * snippets - prints just the code snippets for undefined steps
 * summary - prints a summary only, after all scenarios were executed
+* usage - prints a table with data about step definitions usage
+* usage-json - prints the step definitions usage data as JSON
 
 ### Format Options
 

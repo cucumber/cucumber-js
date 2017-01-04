@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import {getUsage} from './helpers'
-import Formatter from '../'
+import {getUsage} from './usage_helpers'
+import Formatter from './'
 import Table from 'cli-table'
 
 export default class UsageFormatter extends Formatter {

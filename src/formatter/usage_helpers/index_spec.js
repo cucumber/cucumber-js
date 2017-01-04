@@ -1,4 +1,4 @@
-import {getUsage} from './helpers'
+import {getUsage} from './'
 
 describe('UsageHelpers', function() {
   describe('getUsage', function() {

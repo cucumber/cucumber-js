@@ -1,4 +1,4 @@
-import UsageFormatter from './'
+import UsageFormatter from './usage_formatter'
 
 describe('UsageFormatter', function () {
   describe('handleFeaturesResult', function() {
