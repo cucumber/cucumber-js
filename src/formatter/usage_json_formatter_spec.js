@@ -1,6 +1,6 @@
 import UsageJsonFormatter from './usage_json_formatter'
 
-describe('UsageFormatter', function () {
+describe('UsageJsonFormatter', function () {
   describe('handleFeaturesResult', function() {
     beforeEach(function() {
       const stepDefinition1 = {
@@ -66,19 +66,22 @@ describe('UsageFormatter', function () {
     it('outputs the usage in json format', function() {
       const parsedOutput = JSON.parse(this.output)
       expect(parsedOutput).to.eql([{
-        location: 'steps.js:2',
-        matches: [{duration: 2, location: 'a.feature:2', text: 'step-name2'}],
+        line: 2,
+        matches: [{duration: 2, line: 2, text: 'step-name2', uri: 'path/to/project/a.feature'}],
         meanDuration: 2,
-        pattern: 'def'
+        pattern: 'def',
+        uri: 'path/to/project/steps.js'
       }, {
-        location: 'steps.js:1',
-        matches: [{duration: 1, location: 'a.feature:1', text: 'step-name1'}],
+        line: 1,
+        matches: [{duration: 1, line: 1, text: 'step-name1', uri: 'path/to/project/a.feature'}],
         meanDuration: 1,
-        pattern: 'abc'
+        pattern: 'abc',
+        uri: 'path/to/project/steps.js'
       }, {
-        location: 'steps.js:3',
+        line: 3,
         matches: [],
-        pattern: 'ghi'
+        pattern: 'ghi',
+        uri: 'path/to/project/steps.js'
       }])
     })
   })

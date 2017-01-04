@@ -188,13 +188,13 @@ describe('UsageHelpers', function() {
           matches: [{duration: 2, line: 2, text: 'step-name2', uri: 'path/to/project/a.feature'}],
           meanDuration: 2,
           pattern: 'def',
-          uri: 'path/to/project/steps.js',
+          uri: 'path/to/project/steps.js'
         }, {
           line: 1,
           matches: [{duration: 1, line: 1, text: 'step-name1', uri: 'path/to/project/a.feature'}],
           meanDuration: 1,
           pattern: 'abc',
-          uri: 'path/to/project/steps.js',
+          uri: 'path/to/project/steps.js'
         }, {
           line: 3,
           matches: [],

@@ -9,7 +9,7 @@ import path from 'path'
 defineSupportCode(({Then}) => {
   Then('it outputs the usage data:', function (table) {
     const usageData = JSON.parse(this.lastRun.output)
-    table.hashes().forEach((row, index) => {
+    table.hashes().forEach((row) => {
       const rowUsage = _.find(usageData, (datum) => {
         return datum.pattern === row['PATTERN']
       })

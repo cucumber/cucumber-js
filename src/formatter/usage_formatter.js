@@ -1,12 +1,12 @@
 import _ from 'lodash'
 import {getUsage} from './usage_helpers'
+import {formatLocation} from './utils'
 import Formatter from './'
 import Table from 'cli-table'
 
 export default class UsageFormatter extends Formatter {
   handleFeaturesResult(featuresResult) {
     const usage = getUsage({
-      cwd: this.cwd,
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       stepResults: featuresResult.stepResults
     })
@@ -25,7 +25,7 @@ export default class UsageFormatter extends Formatter {
         head: []
       }
     })
-    usage.forEach(({pattern, location, matches, meanDuration}) => {
+    usage.forEach(({line, matches, meanDuration, pattern, uri}) => {
       let col1 = [pattern.toString()]
       let col2 = []
       if (matches.length > 0) {
@@ -37,7 +37,7 @@ export default class UsageFormatter extends Formatter {
       } else {
         col2.push('UNUSED')
       }
-      let col3 = [location]
+      let col3 = [formatLocation(this.cwd, {line, uri})]
       _.take(matches, 5).forEach((match) => {
         col1.push(`  ${match.text}`)
         if (isFinite(match.duration)) {
@@ -46,7 +46,7 @@ export default class UsageFormatter extends Formatter {
         else {
           col2.push('-')
         }
-        col3.push(match.location)
+        col3.push(formatLocation(this.cwd, match))
       })
       if (matches.length > 5) {
         col1.push(`  ${matches.length - 5} more`)
