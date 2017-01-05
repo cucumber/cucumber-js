@@ -1,8 +1,8 @@
-Feature: snippets formatter
+Feature: usage json formatter
 
-  As a developer with slow or unused steps
-  I want a formatter which just outputs the step definition usage
-  So I know where my bottelnecks are and what step definitions I can remove
+  As a developer
+  I want a formatter which just outputs the full step definition usage in a parsable format
+  So I can feed the usage data to other programs
 
 
   Scenario:

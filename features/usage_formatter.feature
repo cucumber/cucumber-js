@@ -1,4 +1,4 @@
-Feature: snippets formatter
+Feature: usage formatter
 
   As a developer with slow or unused steps
   I want a formatter which just outputs the step definition usage
