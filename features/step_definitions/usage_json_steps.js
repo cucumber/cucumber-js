@@ -16,7 +16,7 @@ defineSupportCode(({Then}) => {
       expect(rowUsage).to.exist
       expect(rowUsage.line).to.eql(parseInt(row['LINE']))
       expect(rowUsage.matches).to.have.lengthOf(row['NUMBER OF MATCHES'])
-      const expectedUri = fs.realpathSync(path.posix.join(this.tmpDir, row['URI'])))
+      const expectedUri = fs.realpathSync(path.posix.join(this.tmpDir, row['URI']))
       expect(rowUsage.uri).to.eql(expectedUri)
     })
   })
