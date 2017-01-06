@@ -9,6 +9,8 @@ import RerunFormatter from './rerun_formatter'
 import SnippetsFormatter from './snippets_formatter'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import SummaryFormatter from './summary_formatter'
+import UsageFormatter from './usage_formatter'
+import UsageJsonFormatter from './usage_json_formatter'
 
 export default class FormatterBuilder {
   static build(type, options) {
@@ -28,6 +30,8 @@ export default class FormatterBuilder {
       case 'rerun': return RerunFormatter
       case 'snippets': return SnippetsFormatter
       case 'summary': return SummaryFormatter
+      case 'usage': return UsageFormatter
+      case 'usage-json': return UsageJsonFormatter
       default: return FormatterBuilder.loadCustomFormatter(type, options)
     }
   }

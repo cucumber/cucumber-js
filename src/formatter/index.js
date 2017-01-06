@@ -6,7 +6,8 @@ export default class Formatter {
       'colorFns',
       'cwd',
       'log',
-      'snippetBuilder'
+      'snippetBuilder',
+      'supportCodeLibrary'
     ]))
   }
 }
