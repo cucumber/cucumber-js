@@ -1,4 +1,16 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc5...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc6...master)
+
+### [2.0.0-rc.6](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.5...v2.0.0-rc.6) (2017-01-06)
+
+#### New Features
+
+* usage and usage-json formatters
+* update error reporting for `registerHandler` errors
+* add ability to disable timeout
+
+#### Bug Fixes
+
+* update snippets to new support code interface
 
 ### [2.0.0-rc.5](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.4...v2.0.0-rc.5) (2016-12-22)
 
