@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import {formatLocation} from '../formatter/utils'
 import HookDefinition from '../models/hook_definition'
+import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
@@ -45,7 +46,8 @@ function getDefinitionLineAndUri() {
   const stackframes = StackTrace.getSync()
   const stackframe = stackframes.length > 2 ? stackframes[2] : stackframes[0]
   const line = stackframe.getLineNumber()
-  const uri = stackframe.getFileName() || 'unknown'
+  const fileName = stackframe.getFileName()
+  const uri = fileName ? fileName.replace(/\//g, path.sep) : 'unknown'
   return {line, uri}
 }
 
