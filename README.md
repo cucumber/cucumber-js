@@ -55,7 +55,6 @@ $ npm install cucumber
   * [Hooks](/docs/support_files/hooks.md)
   * [Timeouts](docs/support_files/timeouts.md)
   * [Data Table Interface](/docs/support_files/data_table_interface.md)
-  * [String patterns](/docs/support_files/string_patterns.md)
   * [Attachments](/docs/support_files/attachments.md)
   * [Event Handlers](/docs/support_files/event_handlers.md)
   * [API Reference](/docs/support_files/api_reference.md)
