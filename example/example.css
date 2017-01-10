@@ -3,10 +3,9 @@
  */
 
 img.cucumber-logo {
-  height: 100px;
   position: absolute;
   left: 50%;
-  margin-left: -144px;
+  transform: translateX(-50%)
 }
 
 img.github-logo {
