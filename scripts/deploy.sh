@@ -4,7 +4,8 @@ set -e
 
 # Copy resources
 rsync -a dist/ example/
-cp node_modules/ansi_up/ansi_up.js example/
+mkdir example/ansi-html
+cp node_modules/ansi-html/index.js example/ansi-html/index.js
 
 # Publish to gh-pages
 cd example

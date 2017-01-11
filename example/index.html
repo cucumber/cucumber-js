@@ -13,7 +13,16 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js"></script>
-    <script type="text/javascript" src="ansi_up.js"></script>
+
+    <!-- Hack to get ansi-html to run in the browser -->
+    <script type="text/javascript">
+      var module = {};
+    </script>
+    <script type="text/javascript" src="ansi-html/index.js"></script>
+    <script type="text/javascript">
+      var ansiHTML = module.exports;
+      module = null;
+    </script>
 
     <script type="text/javascript" src="cucumber.js"></script>
     <script type="text/javascript" src="example.js"></script>

@@ -20,7 +20,7 @@ ignoreErrors:
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
-    - ansi_up # example/example.js
+    - ansi-html # example/example.js
     - babel-eslint # .eslintrc.yml
     - babel-plugin-istanbul # .babelrc
     - babel-plugin-transform-async-to-generator # .babelrc

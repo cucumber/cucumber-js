@@ -22,7 +22,7 @@ function runFeature() {
     colorsEnabled: true,
     cwd: '/',
     log: function(data) {
-      appendToOutput(ansi_up.ansi_to_html(data));
+      appendToOutput(ansiHTML(data));
     },
     supportCodeLibrary: supportCodeLibrary
   };
