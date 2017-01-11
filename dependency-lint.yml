@@ -21,14 +21,17 @@ ignoreErrors:
   shouldBeDevDependency: []
   unused:
     - ansi-html # example/example.js
-    - babel-eslint # .eslintrc.yml
+    - babel-eslint # .eslintrc.yml - plugins
+    - babel-plugin-external-helpers # .babelrc
     - babel-plugin-istanbul # .babelrc
-    - babel-plugin-transform-async-to-generator # .babelrc
+    - babel-plugin-transform-async-to-module-method # .babelrc
     - babel-plugin-transform-function-bind # .babelrc
+    - babel-plugin-transform-promise-to-bluebird # .babelrc
     - babel-plugin-transform-regenerator # .babelrc
     - babel-plugin-transform-runtime # .babelrc
     - babel-preset-es2015 # .babelrc
     - babel-register # test/mocha.opts
+    - babelify # package.json - scripts - build-release
     - coffee-script # features/compiler.feature
     - eslint-plugin-babel # .eslintrc.yml - parser
 

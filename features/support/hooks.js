@@ -26,10 +26,16 @@ defineSupportCode(function({After, Before}) {
     fsExtra.createSymlinkSync(profileBabelRcPath, tmpDirBabelRcPath)
 
     const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-    const projectNodeModulePath = path.join(projectPath, 'node_modules')
-    fsExtra.createSymlinkSync(projectNodeModulePath, tmpDirNodeModulesPath)
+    const projectNodeModulesPath = path.join(projectPath, 'node_modules')
 
-    const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
+    const moduleNames = fs.readdirSync(projectNodeModulesPath)
+    moduleNames.forEach((moduleName) => {
+      const tmpDirNodeModulePath = path.join(tmpDirNodeModulesPath, moduleName)
+      const projectNodeModulePath = path.join(projectPath, 'node_modules', moduleName)
+      fsExtra.createSymlinkSync(projectNodeModulePath, tmpDirNodeModulePath)
+    })
+
+    const tmpDirCucumberPath = path.join(this.tmpDir, 'node_modules', 'cucumber')
     fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
   })
 
