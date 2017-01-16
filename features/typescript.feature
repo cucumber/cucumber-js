@@ -10,4 +10,3 @@ Feature: Typescript Definitions
 
     Scenario: 
         Given a typescript feature
-        
