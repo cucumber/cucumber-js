@@ -2,6 +2,7 @@
 
 [![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
 [![AppVeyor Status](https://img.shields.io/appveyor/ci/charlierudolph/cucumber-js/master.svg?label=appveyor)](https://ci.appveyor.com/project/charlierudolph/cucumber-js/history)
+[![npm downloads](https://img.shields.io/npm/dm/cucumber.svg?style=flat-square)](http://npm-stat.com/charts.html?package=cucumber&from=2015-09-01)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
 
 [Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
