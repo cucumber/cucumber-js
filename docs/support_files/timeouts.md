@@ -3,7 +3,7 @@
 By default, asynchronous hooks and steps timeout after 5000 milliseconds.
 This can be modified globally with:
 
-```js
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({setDefaultTimeout}) {
@@ -13,7 +13,7 @@ defineSupportCode(function({setDefaultTimeout}) {
 
 A specific hook's or step's timeout can be set with:
 
-```js
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({Before, Given}) {
@@ -35,7 +35,7 @@ Disable timeouts by setting it to -1.
 If you use this, you need to implement your own timeout protection.
 Otherwise the test suite may end prematurely or hang indefinitely.
 
-```js
+```javascript
 var {defineSupportCode} = require('cucumber');
 var Promise = require('bluebird');
 
