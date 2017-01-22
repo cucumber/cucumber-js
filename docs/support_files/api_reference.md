@@ -6,7 +6,7 @@ The function passed to `defineSupportCode` is called with an object as the first
 
 ---
 
-#### `addTransform({captureGroupRegexps, name, transformer})`
+#### `addTransform({captureGroupRegexps, typeName, transformer})`
 
 Add a new transform to convert a capture group into something else.
 
