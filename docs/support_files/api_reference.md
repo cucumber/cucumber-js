@@ -15,7 +15,8 @@ Add a new transform to convert a capture group into something else.
 * `typeName`: string used to refer to this type in cucumber expressions
 
 The built in transforms are:
-```js
+
+```javascript
 // Float
 {
   captureGroupRegexps: ['-?\\d*\\.?\\d+'],
@@ -113,7 +114,8 @@ Set a function used to wrap step / hook definitions. When used, the result is wr
 #### `setWorldConstructor(constructor)`
 
 Set a custom world constructor, to override the default world constructor:
-```js
+
+```javascript
 function World({attach, parameters}) {
   attach = attach
   parameters = parameters
