@@ -61,7 +61,7 @@ export default class ScenarioRunner {
 
   async runAfterHooks() {
     await this.runHooks({
-      hookDefinitions: this.supportCodeLibrary.afterHookDefinitions.reverse(),
+      hookDefinitions: this.supportCodeLibrary.afterHookDefinitions,
       hookKeyword: Hook.AFTER_STEP_KEYWORD
     })
   }
