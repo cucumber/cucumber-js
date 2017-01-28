@@ -92,6 +92,6 @@ declare namespace cucumber {
       hashes: () => {};
     }
 
-    type IParameter = any | CallbackParameter | TableParameter;
+    type IParameter = any | ICallbackParameter | ITableParameter;
   }
 }
