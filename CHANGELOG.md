@@ -29,7 +29,8 @@
 #### Breaking Changes
 
 * update support code library interface - instead of exporting a function and calling methods on `this`, require the `cucumber` module and call `defineSupportCode` which passes an object as the first argument whch exposes the methods. Overriding the world constructor has changed from overriding the World property to calling `setWorldConstructor`.
-    ```js
+
+    ```javascript
     // 1.3.1
     module.exports = function () {
       this.Given(/^a step$/, function() {});
@@ -114,7 +115,8 @@
 * Support Files
   * Attachments
     * The `attach` function used for adding attachments moved from the API scenario object to world. It is thus now available in step definitions without saving a reference to the scenario.
-        ```js
+
+        ```javascript
         // 1.3.0
         this.After(function(scenario, callback) {
           scenario.attach(new Buffer([137, 80, 78, 71]), 'image/png')
@@ -125,18 +127,22 @@
           this.attach(new Buffer([137, 80, 78, 71]), 'image/png');
         });
         ```
+
     * When attaching buffers or strings, the callback argument is ignored.
   * Hooks
     * Hooks now receive a [ScenarioResult](/src/models/scenario_result.js) instead of the Scenario
-        ```js
+
+        ```javascript
         // 1.3.0
         this.After(function(scenario) {});
 
         // 2.0.0
         this.After(function(scenarioResult) {});
         ```
+
     * The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/)
-        ```js
+
+        ```javascript
         // 1.3.0
         this.Before({tags: ["@foo"]}, function (scenario) {})
         this.Before({tags: ["@foo,@bar"]}, function (scenario) {})
@@ -147,6 +153,7 @@
         this.Before({tags: "@foo and @bar"}, function (scenario) {})
         this.Before({tags: "@foo or @bar"}, function (scenario) {})
         ```
+
   * Step Definitions
     * String patterns were removed in favor [cucumber-expressions](https://docs.cucumber.io/cucumber-expressions/)
     * Regular Expressions

@@ -2,7 +2,8 @@
 
 *World* is an isolated context for each scenario, exposed to the hooks and steps as `this`.
 The default world constructor is:
-```js
+
+```javascript
 function World({attach, parameters}) {
   attach = attach
   parameters = parameters
@@ -10,6 +11,7 @@ function World({attach, parameters}) {
 ```
 
 The default can be overridden with `setWorldConstructor`.
+
 ```javascript
 var {defineSupportCode} = require('cucumber');
 var seleniumWebdriver = require('selenium-webdriver');
