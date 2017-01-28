@@ -32,7 +32,7 @@ declare namespace cucumber {
     Then(pattern: IStepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
     When(pattern: IStepDefinitionPattern, fn: IStepDefinitionFunction): void;
     When(pattern: IStepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
-	}
+  }
 
   interface ITransformOptions {
     captureGroupRegexps: Array<RegExp>;
@@ -73,24 +73,24 @@ declare namespace cucumber {
   type StepDefinitionPattern = RegExp | string;
 
   interface IStepDefinitionOptions {
-		timeout?: number;
-	}
+    timeout?: number;
+  }
 
   interface IStepDefinitionFunction {
-		(...parameters: Array<StepDefinitionFunction.IParameter>): PromiseLike<any> | any | void;
-	}
+    (...parameters: Array<StepDefinitionFunction.IParameter>): PromiseLike<any> | any | void;
+  }
 
   namespace StepDefinitionFunction {
     export interface CallbackParameter {
-  		(error?: any, result?: any): void;
-  	}
+      (error?: any, result?: any): void;
+    }
 
     export interface ITableParameter {
-  		raw: () => Array<any>;
-  		rows: () => Array<any>;
-  		rowsHash: () => {};
-  		hashes: () => {};
-  	}
+      raw: () => Array<any>;
+      rows: () => Array<any>;
+      rowsHash: () => {};
+      hashes: () => {};
+    }
 
     type IParameter = any | CallbackParameter | TableParameter;
   }
