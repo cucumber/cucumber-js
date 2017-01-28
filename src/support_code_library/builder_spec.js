@@ -74,6 +74,24 @@ describe('SupportCodeLibraryBuilder', function () {
         expect(this.options.afterHookDefinitions[0].code).to.eql(this.hook)
       })
     })
+
+    describe('multiple', function() {
+      beforeEach(function() {
+        this.hook1 = function hook1() {}
+        this.hook2 = function hook2() {}
+        const fn = ({After}) => {
+          After(this.hook1) // eslint-disable-line babel/new-cap
+          After(this.hook2) // eslint-disable-line babel/new-cap
+        }
+        this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
+      })
+
+      it('adds the hook definitions in the reverse order of definition', function() {
+        expect(this.options.afterHookDefinitions).to.have.lengthOf(2)
+        expect(this.options.afterHookDefinitions[0].code).to.eql(this.hook2)
+        expect(this.options.afterHookDefinitions[1].code).to.eql(this.hook1)
+      })
+    })
   })
 
   describe('this.Before', function() {
@@ -124,6 +142,24 @@ describe('SupportCodeLibraryBuilder', function () {
         expect(this.options.beforeHookDefinitions).to.have.lengthOf(1)
         expect(this.options.beforeHookDefinitions[0].options.tags).to.eql('@tagA')
         expect(this.options.beforeHookDefinitions[0].code).to.eql(this.hook)
+      })
+    })
+
+    describe('multiple', function() {
+      beforeEach(function() {
+        this.hook1 = function hook1() {}
+        this.hook2 = function hook2() {}
+        const fn = ({Before}) => {
+          Before(this.hook1) // eslint-disable-line babel/new-cap
+          Before(this.hook2) // eslint-disable-line babel/new-cap
+        }
+        this.options = SupportCodeLibraryBuilder.build({cwd: 'path/to/project', fns: [fn]})
+      })
+
+      it('adds the hook definitions in the order of definition', function() {
+        expect(this.options.beforeHookDefinitions).to.have.lengthOf(2)
+        expect(this.options.beforeHookDefinitions[0].code).to.eql(this.hook1)
+        expect(this.options.beforeHookDefinitions[1].code).to.eql(this.hook2)
       })
     })
   })

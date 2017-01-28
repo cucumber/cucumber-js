@@ -57,6 +57,7 @@ function build({cwd, fns}) {
       .flatten()
       .value()
   })
+  options.afterHookDefinitions.reverse()
   return options
 }
 
