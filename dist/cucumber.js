@@ -51951,7 +51951,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.0.0-rc.6",
+  "version": "2.0.0-rc.7",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -52038,7 +52038,9 @@ module.exports={
     "gforceg <greghedin@gmail.com>",
     "Zearin <Zearin@users.noreply.github.com>",
     "Cody Ray Hoeft <crhoeft@gmail.com>",
-    "Florian Ribon <florian.ribon@gmail.com>"
+    "Florian Ribon <florian.ribon@gmail.com>",
+    "temyers <temyers@users.noreply.github.com>",
+    "Martin Delille <martin@phonations.com>"
   ],
   "repository": {
     "type": "git",
@@ -52057,9 +52059,6 @@ module.exports={
   },
   "dependencies": {
     "assertion-error-formatter": "^2.0.0",
-    "babel-plugin-external-helpers": "^6.18.0",
-    "babel-plugin-transform-async-to-module-method": "^6.16.0",
-    "babel-plugin-transform-promise-to-bluebird": "^1.1.1",
     "babel-runtime": "^6.11.6",
     "bluebird": "^3.4.1",
     "cli-table": "^0.3.1",
@@ -52071,7 +52070,6 @@ module.exports={
     "figures": "2.0.0",
     "gherkin": "^4.0.0",
     "glob": "^7.0.0",
-    "graceful-fs": "^4.1.11",
     "indent-string": "3.0.0",
     "is-generator": "^1.0.2",
     "is-stream": "^1.1.0",
@@ -52085,12 +52083,14 @@ module.exports={
     "verror": "^1.9.0"
   },
   "devDependencies": {
-    "ansi_up": "^1.3.0",
+    "ansi-html": "^0.0.7",
     "babel-cli": "^6.10.1",
     "babel-eslint": "^7.1.1",
+    "babel-plugin-external-helpers": "^6.18.0",
     "babel-plugin-istanbul": "^3.0.0",
-    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-plugin-transform-async-to-module-method": "^6.16.0",
     "babel-plugin-transform-function-bind": "^6.8.0",
+    "babel-plugin-transform-promise-to-bluebird": "^1.1.1",
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-register": "^6.9.0",
@@ -52103,7 +52103,6 @@ module.exports={
     "eslint": "^3.1.1",
     "eslint-plugin-babel": "^4.0.0",
     "fs-extra": "^1.0.0",
-    "json-diff": "^0.3.1",
     "mocha": "^3.1.2",
     "nyc": "^10.0.0",
     "regenerator-runtime": "^0.10.0",
@@ -52118,7 +52117,9 @@ module.exports={
     "build-release": "BABEL_ENV=browser browserify src/index.js -o dist/cucumber.js -t babelify --standalone Cucumber",
     "coverage": "BABEL_ENV=test_coverage nyc mocha src",
     "feature-test": "node ./bin/cucumber.js",
-    "lint": "eslint features/step_definitions/** features/support/** src/**",
+    "lint": "yarn run lint-dependencies && yarn run lint-style",
+    "lint-dependencies": "dependency-lint",
+    "lint-style": "eslint features/step_definitions/** features/support/** src/**",
     "prefeature-test": "yarn run build-local",
     "prepublish": "yarn run build-local",
     "test": "yarn run lint && yarn run unit-test && yarn run feature-test",
@@ -56669,7 +56670,7 @@ var ScenarioRunner = function () {
               case 0:
                 _context6.next = 2;
                 return this.runHooks({
-                  hookDefinitions: this.supportCodeLibrary.afterHookDefinitions.reverse(),
+                  hookDefinitions: this.supportCodeLibrary.afterHookDefinitions,
                   hookKeyword: _hook2.default.AFTER_STEP_KEYWORD
                 });
 
@@ -57461,6 +57462,7 @@ function build(_ref) {
       return options[key + 'Definitions'];
     }).flatten().value()
   });
+  options.afterHookDefinitions.reverse();
   return options;
 }
 

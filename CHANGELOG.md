@@ -1,4 +1,15 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc6...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc7...master)
+
+### [2.0.0-rc.7](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.6...v2.0.0-rc.7) (2017-01-30)
+
+#### Bug Fixes
+
+* fix after hook run order (#743)
+
+#### Documentation
+
+* normalize syntax highlighting (#726) (Martin Delille)
+* fix addTransform parameter name (#738)
 
 ### [2.0.0-rc.6](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.5...v2.0.0-rc.6) (2017-01-06)
 

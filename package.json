@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "2.0.0-rc.6",
+  "version": "2.0.0-rc.7",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -95,7 +95,9 @@
     "gforceg <greghedin@gmail.com>",
     "Zearin <Zearin@users.noreply.github.com>",
     "Cody Ray Hoeft <crhoeft@gmail.com>",
-    "Florian Ribon <florian.ribon@gmail.com>"
+    "Florian Ribon <florian.ribon@gmail.com>",
+    "temyers <temyers@users.noreply.github.com>",
+    "Martin Delille <martin@phonations.com>"
   ],
   "repository": {
     "type": "git",
