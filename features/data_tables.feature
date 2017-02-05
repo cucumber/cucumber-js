@@ -112,7 +112,7 @@ Feature: Data Tables
             'Typed Since': new Date('2017-02-05'),
             'compound': {name:'joe'}
           }
-          assert.deepEqual(table.rowsHash(), expected)
+          assert.deepEqual(table.typedRowsHash(), expected)
         })
       })
       """
