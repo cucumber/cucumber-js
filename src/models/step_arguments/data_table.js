@@ -19,10 +19,10 @@ const types = {
   'boolean': trueFalse,
   'y/n':     trueFalse,
   'bit':     trueFalse,
-  'date':    date,
+  date,
   'datetime':date,
   'array':   list,
-  'list':    list,
+  list,
   'json':    JSON.parse
 }
 
@@ -69,9 +69,7 @@ export default class DataTable {
     }
     return this.rawTable.reduce( (h, r) => {
       h[ r[0] ] = (types[r[1].toLowerCase()] || asIs)(r[2])
-        return h
-      },
-      {}
-    )
+      return h
+    }, {})
   }
 }

@@ -56,14 +56,14 @@ describe('DataTable', function () {
             ]
           } , {
             cells: [
-              {value: 'key2'}, 
-              {value: 'string'}, 
+              {value: 'key2'},
+              {value: 'string'},
               {value: 'value'}
             ]
           } , {
             cells: [
-              {value: 'key3'}, 
-              {value: 'value'}, 
+              {value: 'key3'},
+              {value: 'value'}
             ]
           }
         ]
@@ -72,9 +72,9 @@ describe('DataTable', function () {
         dataTable.typedRowsHash()
       }).to.throw(Error)
     })
-    
+
     it('rejects tables where not all types are recognized', function() {
-      const dataTable = new DataTable({ 
+      const dataTable = new DataTable({
         rows: [
           {
             cells: [
@@ -127,7 +127,7 @@ describe('DataTable', function () {
           ['k19', 'Array'   , '1,2,3'],
           ['k20', 'JSON'    , '["a",1,true]'],
           ['k21', 'Json'    , '"a string"']
-        ].map( (rawRow) => ({cells : rawRow.map(value => ({ value }))}) )
+        ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
       })
       expect(dataTable.typedRowsHash()).to.deep.equal( {
         k1 : 'value',
@@ -150,7 +150,7 @@ describe('DataTable', function () {
         k18: ['a','b','c'],
         k19: ['1','2','3'],
         k20: ['a',1,true],
-        k21: "a string"
+        k21: 'a string'
       })
     })
 
