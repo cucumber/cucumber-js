@@ -1,22 +1,29 @@
 import _ from 'lodash'
 
-const truths = ["true", "TRUE", "True", "yes", "y", "1"];
-const trueFalse = v => !!~truths.indexOf(v);
-const asIs = v => v;
+const truths = ['true', 'TRUE', 'True', 'yes', 'YES', 'Yes', 'y', 'Y', '1']
+const trueFalse = v => !!~truths.indexOf(v)
+const asIs = v => v
+const list = v => v.split(",")
+const date = v => new Date(v)
 
 const types = {
-  "string":  asIs,
-  "str":     asIs,
-  "number":  Number,
-  "int":     parseInt,
-  "integer": parseInt,
-  "double":  parseFloat,
-  "float":   parseFloat,
-  "bool":    trueFalse,
-  "boolean": trueFalse,
-  "y/n":     trueFalse,
-  "bit":     trueFalse,
-  "date":    Date
+  'string':  asIs,
+  'str':     asIs,
+  '':        asIs,
+  'int':     parseInt,
+  'integer': parseInt,
+  'double':  parseInt,
+  'float':   parseFloat,
+  'number':  parseFloat,
+  'bool':    trueFalse,
+  'boolean': trueFalse,
+  'y/n':     trueFalse,
+  'bit':     trueFalse,
+  'date':    date,
+  'datetime':date,
+  'array':   list,
+  'list':    list,
+  'json':    JSON.parse
 };
 
 export default class DataTable {
@@ -50,11 +57,18 @@ export default class DataTable {
     return _.fromPairs(rows)
   }
 
-  map() {
-    return this.rawTable.reduce( (h,r) => {
-          if (r.length == 1 ) r = r.concat(['bool', true])
-          if (r.length == 2 ) r = [r[0], "string", r[1]]
-          h[r[0] ] = (types[r[1].toLowerCase()] || asIs)(r[2])
+  typedRowsHash() {
+    const rows = this.raw()
+    const everyRowHasThreeColumns = _.every(rows, (row) => row.length === 3)
+    if (!everyRowHasThreeColumns) {
+      throw new Error('typedRowsHash can only be called on a data table where all rows have exactly 3 columns')
+    }
+    const unrecognizedTypes = rows.filter((row) => typeof types[row[1].toLowerCase()] != 'function')
+    if (unrecognizedTypes.length) {
+      throw new Error('typedRowsHash does not support type(s): [' + unrecognizedTypes + ']')
+    }
+    return this.rawTable.reduce( (h, r) => {
+          h[ r[0] ] = (types[r[1].toLowerCase()] || asIs)(r[2])
           return h
       }, 
       {}
