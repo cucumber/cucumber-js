@@ -43,33 +43,33 @@ describe('DataTable', function () {
       })
     })
   })
-  
+
   describe('typed hashes', function() {
     it('rejects tables where not all rows have 3 columns', function() {
-      const dataTable = new DataTable({ 
+      const dataTable = new DataTable({
         rows: [
           {
             cells: [
-              { value: 'key1'}, 
-              { value: 'string'},
-              { value:  'value'}
+              {value: 'key1'},
+              {value: 'string'},
+              {value:  'value'}
             ]
           } , {
             cells: [
-              { value: 'key2'}, 
-              { value: 'string'}, 
-              { value: 'value'}
+              {value: 'key2'}, 
+              {value: 'string'}, 
+              {value: 'value'}
             ]
           } , {
             cells: [
-              { value: 'key3'}, 
-              { value: 'value'}, 
+              {value: 'key3'}, 
+              {value: 'value'}, 
             ]
           }
         ]
-      });
+      })
       expect(() => {
-          dataTable.typedRowsHash()
+        dataTable.typedRowsHash()
       }).to.throw(Error)
     })
     
@@ -78,56 +78,56 @@ describe('DataTable', function () {
         rows: [
           {
             cells: [
-              { value: 'key1'}, 
-              { value: 'string'},
-              { value:  'value'}
+              {value: 'key1'},
+              {value: 'string'},
+              {value:  'value'}
             ]
           } , {
             cells: [
-              { value: 'key2'}, 
-              { value: 'OUPS'}, 
-              { value: 'value'}
+              {value: 'key2'},
+              {value: 'OUPS'},
+              {value: 'value'}
             ]
           } , {
             cells: [
-              { value: 'key3'}, 
-              { value: 'string'}, 
-              { value: 'value'}
+              {value: 'key3'},
+              {value: 'string'},
+              {value: 'value'}
             ]
           }
         ]
-      });
+      })
       expect(() => {
-          dataTable.typedRowsHash()
+        dataTable.typedRowsHash()
       }).to.throw(Error)
     })
-    
+
     it('accepts all supported types, case insensitive, no type given - is string', function() {
-      const dataTable = new DataTable({ 
+      const dataTable = new DataTable({
         rows: [
           ['k1' , 'string'  , 'value'],
           ['k2' , 'String'  , 'value'],
           ['k3' , 'str'     , 'value'],
           ['k4' , 'STR'     , 'value'],
           ['k5' , ''        , 'value'],
-          ['k6' , 'Int'     , '42'   ],
-          ['k7' , 'integer' , '42'   ],
-          ['k8' , 'double'  , '4.2'  ],
-          ['k9' , 'Float'   , '4.2'  ],
-          ['k9' , 'Number'  , '0.42' ],
-          ['k10', 'Bool'    , 'true' ],
-          ['k11', 'Boolean' , 'True' ],
-          ['k12', 'Y/N'     , 'Y'    ],
-          ['k13', 'y/n'     , 'y'    ],
-          ['k14', 'bit'     , '1'    ],
-          ['k15', 'BIT'     , 'TRUE' ],
-          ['k16', 'bool'    , 'n'    ],
+          ['k6' , 'Int'     , '42'],
+          ['k7' , 'integer' , '42'],
+          ['k8' , 'double'  , '4.2'],
+          ['k9' , 'Float'   , '4.2'],
+          ['k9' , 'Number'  , '0.42'],
+          ['k10', 'Bool'    , 'true'],
+          ['k11', 'Boolean' , 'True'],
+          ['k12', 'Y/N'     , 'Y'],
+          ['k13', 'y/n'     , 'y'],
+          ['k14', 'bit'     , '1'],
+          ['k15', 'BIT'     , 'TRUE'],
+          ['k16', 'bool'    , 'n'],
           ['k17', 'bool'    , 'false'],
           ['k18', 'list'    , 'a,b,c'],
           ['k19', 'Array'   , '1,2,3'],
-          ['k20', 'JSON'    , '["a",1,true]' ],
+          ['k20', 'JSON'    , '["a",1,true]'],
           ['k21', 'Json'    , '"a string"']
-        ].map( (rawRow) => ({ cells : rawRow.map(value => ({ value })) }) )
+        ].map( (rawRow) => ({cells : rawRow.map(value => ({ value }))}) )
       })
       expect(dataTable.typedRowsHash()).to.deep.equal( {
         k1 : 'value',
@@ -153,21 +153,21 @@ describe('DataTable', function () {
         k21: "a string"
       })
     })
-    
+
     it('handles dates correctly', function () {
       const dataTable = new DataTable({
         rows: [
           {
             cells: [
-              { value: 'key1'},
-              { value: 'Date'},
-              { value:  '2017-02-03'}
+              {value: 'key1'},
+              {value: 'Date'},
+              {value:  '2017-02-03'}
             ]
           } , {
             cells: [
-              { value: 'key2'},
-              { value: 'datetime'},
-              { value: '2017-02-03T12:50:10'}
+              {value: 'key2'},
+              {value: 'datetime'},
+              {value: '2017-02-03T12:50:10'}
             ]
           }
         ]

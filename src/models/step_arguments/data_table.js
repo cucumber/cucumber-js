@@ -1,10 +1,10 @@
 import _ from 'lodash'
 
 const truths = ['true', 'TRUE', 'True', 'yes', 'YES', 'Yes', 'y', 'Y', '1']
-const trueFalse = v => !!~truths.indexOf(v)
-const asIs = v => v
-const list = v => v.split(",")
-const date = v => new Date(v)
+const trueFalse = (v) => !!~truths.indexOf(v)
+const asIs = (v) => v
+const list = (v) => v.split(',')
+const date = (v) => new Date(v)
 
 const types = {
   'string':  asIs,
@@ -24,7 +24,7 @@ const types = {
   'array':   list,
   'list':    list,
   'json':    JSON.parse
-};
+}
 
 export default class DataTable {
   constructor(gherkinData) {
@@ -63,14 +63,14 @@ export default class DataTable {
     if (!everyRowHasThreeColumns) {
       throw new Error('typedRowsHash can only be called on a data table where all rows have exactly 3 columns')
     }
-    const unrecognizedTypes = rows.filter((row) => typeof types[row[1].toLowerCase()] != 'function')
+    const unrecognizedTypes = rows.filter((row) => typeof types[row[1].toLowerCase()] !== 'function')
     if (unrecognizedTypes.length) {
       throw new Error('typedRowsHash does not support type(s): [' + unrecognizedTypes + ']')
     }
     return this.rawTable.reduce( (h, r) => {
-          h[ r[0] ] = (types[r[1].toLowerCase()] || asIs)(r[2])
-          return h
-      }, 
+      h[ r[0] ] = (types[r[1].toLowerCase()] || asIs)(r[2])
+        return h
+      },
       {}
     )
   }
