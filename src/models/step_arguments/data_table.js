@@ -1,5 +1,24 @@
 import _ from 'lodash'
 
+const truths = ["true", "TRUE", "True", "yes", "y", "1"];
+const trueFalse = v => !!~truths.indexOf(v);
+const asIs = v => v;
+
+const types = {
+  "string":  asIs,
+  "str":     asIs,
+  "number":  Number,
+  "int":     parseInt,
+  "integer": parseInt,
+  "double":  parseFloat,
+  "float":   parseFloat,
+  "bool":    trueFalse,
+  "boolean": trueFalse,
+  "y/n":     trueFalse,
+  "bit":     trueFalse,
+  "date":    Date
+};
+
 export default class DataTable {
   constructor(gherkinData) {
     this.rawTable = gherkinData.rows.map((row) => row.cells.map((cell) => cell.value))
@@ -29,5 +48,16 @@ export default class DataTable {
       throw new Error('rowsHash can only be called on a data table where all rows have exactly two columns')
     }
     return _.fromPairs(rows)
+  }
+
+  map() {
+    return this.rawTable.reduce( (h,r) => {
+          if (r.length == 1 ) r = r.concat(['bool', true])
+          if (r.length == 2 ) r = [r[0], "string", r[1]]
+          h[r[0] ] = (types[r[1].toLowerCase()] || asIs)(r[2])
+          return h
+      }, 
+      {}
+    )
   }
 }
