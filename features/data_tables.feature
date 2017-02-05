@@ -108,8 +108,8 @@ Feature: Data Tables
             'Cucumber': 'Cucumis sativus',
             'Stars': 5,
             'OK': true,
-            'Best For': ['bdd','ci','cd']
-            'Typed Since': new Date('2017-02-05')
+            'Best For': ['bdd','ci','cd'],
+            'Typed Since': new Date('2017-02-05'),
             'compound': {name:'joe'}
           }
           assert.deepEqual(table.rowsHash(), expected)
