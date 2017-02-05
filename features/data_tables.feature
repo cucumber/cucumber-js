@@ -110,7 +110,7 @@ Feature: Data Tables
             'OK': true,
             'Best For': ['bdd','ci','cd'],
             'Typed Since': new Date('2017-02-05'),
-            'compound': {name:'joe'}
+            'compound': {name:'Joe'}
           }
           assert.deepEqual(table.typedRowsHash(), expected)
         })
