@@ -68,7 +68,26 @@ Feature: Custom Parameter
     When I run cucumber.js
     Then the step "a generic step" has status "passed"
 
-  Scenario: custom transform throwing exception
+  Scenario: custom async transform
+    Given a file named "features/step_definitions/parameterized_steps.js" with:
+      """
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
+      defineSupportCode(({Given, defineParameterType}) => {
+        defineParameterType({
+          regexp: /generic|specific/,
+          transformer: async s => s.toUpperCase(),
+          typeName: 'status'
+        })
+        Given('a {status} step', function(status) {
+          assert.equal(status, 'GENERIC')
+        })
+      })
+      """
+    When I run cucumber.js
+    Then the step "a generic step" has status "passed"
+
+  Scenario: custom parameter throwing exception
     Given a file named "features/step_definitions/parameterized_steps.js" with:
       """
       import assert from 'assert'
