@@ -20,6 +20,11 @@ See the `package.json` scripts section for how to run the tests.
 * feature tests
   * cucumber-js tests itself
 
+## Browser Example
+
+You can test the browser example locally by running `node scripts/server.js` and visiting `localhost:9797`.
+The browser example is only updated when releasing a new version.
+
 ## Internals
 
 ### Project Structure
@@ -60,7 +65,7 @@ Perform the following steps on a feature branch.
   * add new contributors, if any
     * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD`
 * Compile the bundle with `yarn run build-release`
-  * Ensure the browser example works by running `node scripts/server.js` and visiting `localhost:9797`
+  * Ensure the browser example works
     * For now, need to manually update Gherkin with this [change](https://github.com/cucumber/gherkin/commit/46e72cd3cd79965298a9b154af7741480230b916), until the next version is released
 
 Review the changes, if everything looks good, squash merge into master.
