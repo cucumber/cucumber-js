@@ -3,6 +3,7 @@ import Status from '../status'
 import StepResult from '../models/step_result'
 import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
+import Promise from 'bluebird'
 
 const {beginTiming, endTiming} = Time
 

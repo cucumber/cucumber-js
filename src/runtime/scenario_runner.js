@@ -6,6 +6,7 @@ import ScenarioResult from '../models/scenario_result'
 import Status from '../status'
 import StepResult from '../models/step_result'
 import StepRunner from './step_runner'
+import {TransformLookup} from 'cucumber-expressions'
 
 export default class ScenarioRunner {
   constructor({eventBroadcaster, options, scenario, supportCodeLibrary}) {
