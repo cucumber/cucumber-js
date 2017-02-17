@@ -1,15 +1,15 @@
-import {Transform, TransformLookup} from 'cucumber-expressions'
+import {Parameter, ParameterRegistry} from 'cucumber-expressions'
 
 function build() {
-  const transformLookup = new TransformLookup()
-  const stringInDoubleQuotesTransform = new Transform(
+  const parameterRegistry = new ParameterRegistry()
+  const stringInDoubleQuotesParameter = new Parameter(
     'stringInDoubleQuotes',
     function() {},
     '"[^"]*"',
     JSON.parse
   )
-  transformLookup.addTransform(stringInDoubleQuotesTransform)
-  return transformLookup
+  parameterRegistry.addParameter(stringInDoubleQuotesParameter)
+  return parameterRegistry
 }
 
 export default {build}

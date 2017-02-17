@@ -39,7 +39,7 @@ export default class ScenarioRunner {
       scenarioResult: this.scenarioResult,
       step,
       stepDefinition,
-      transformLookup: this.supportCodeLibrary.transformLookup,
+      parameterRegistry: this.supportCodeLibrary.parameterRegistry,
       world: this.world
     })
   }
@@ -103,7 +103,7 @@ export default class ScenarioRunner {
     const stepDefinitions = this.supportCodeLibrary.stepDefinitions.filter((stepDefinition) => {
       return stepDefinition.matchesStepName({
         stepName: step.name,
-        transformLookup: this.supportCodeLibrary.transformLookup
+        parameterRegistry: this.supportCodeLibrary.parameterRegistry
       })
     })
     if (stepDefinitions.length === 0) {

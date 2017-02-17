@@ -5,16 +5,16 @@ import DocString from '../../models/step_arguments/doc_string'
 import KeywordType from '../../keyword_type'
 
 export default class StepDefinitionSnippetBuilder {
-  constructor({snippetSyntax, transformLookup}) {
+  constructor({snippetSyntax, parameterRegistry}) {
     this.snippetSyntax = snippetSyntax
-    this.cucumberExpressionGenerator = new CucumberExpressionGenerator(transformLookup)
+    this.cucumberExpressionGenerator = new CucumberExpressionGenerator(parameterRegistry)
   }
 
   build(step) {
     const functionName = this.getFunctionName(step)
     const generatedExpression = this.cucumberExpressionGenerator.generateExpression(step.name, true)
     const pattern = generatedExpression.source
-    const parameters = this.getParameters(step, generatedExpression.transforms)
+    const parameters = this.getParameters(step, generatedExpression.parameterNames)
     const comment = 'Write code here that turns the phrase above into concrete actions'
     return this.snippetSyntax.build(functionName, pattern, parameters, comment)
   }
@@ -27,18 +27,12 @@ export default class StepDefinitionSnippetBuilder {
     }
   }
 
-  getParameters(step, expressionTranforms) {
+  getParameters(step, expressionParameterNames) {
     return _.concat(
-      this.getPatternMatchingGroupParameters(expressionTranforms),
+      expressionParameterNames,
       this.getStepArgumentParameters(step),
       'callback'
     )
-  }
-
-  getPatternMatchingGroupParameters(expressionTranforms) {
-    return _.times(expressionTranforms.length, function (n) {
-      return `arg${n + 1}`
-    })
   }
 
   getStepArgumentParameters(step) {

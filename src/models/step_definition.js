@@ -22,8 +22,8 @@ export default class StepDefinition {
     return this.buildInvalidCodeLengthMessage(parameters.length, parameters.length + 1)
   }
 
-  getInvocationParameters({step, transformLookup}) {
-    const cucumberExpression = this.getCucumberExpression(transformLookup)
+  getInvocationParameters({step, parameterRegistry}) {
+    const cucumberExpression = this.getCucumberExpression(parameterRegistry)
     const stepNameParameters = _.map(cucumberExpression.match(step.name), 'transformedValue')
     const stepArgumentParameters = step.arguments.map(function(arg) {
       if (arg instanceof DataTable) {
@@ -37,11 +37,11 @@ export default class StepDefinition {
     return stepNameParameters.concat(stepArgumentParameters)
   }
 
-  getCucumberExpression(transformLookup) {
+  getCucumberExpression(parameterRegistry) {
     if (typeof(this.pattern) === 'string') {
-      return new CucumberExpression(this.pattern, [], transformLookup)
+      return new CucumberExpression(this.pattern, [], parameterRegistry)
     } else {
-      return new RegularExpression(this.pattern, [], transformLookup)
+      return new RegularExpression(this.pattern, [], parameterRegistry)
     }
   }
 
@@ -49,8 +49,8 @@ export default class StepDefinition {
     return [parameters.length, parameters.length + 1]
   }
 
-  matchesStepName({stepName, transformLookup}) {
-    const cucumberExpression = this.getCucumberExpression(transformLookup)
+  matchesStepName({stepName, parameterRegistry}) {
+    const cucumberExpression = this.getCucumberExpression(parameterRegistry)
     return Boolean(cucumberExpression.match(stepName))
   }
 }

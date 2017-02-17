@@ -29,7 +29,7 @@ Feature: Dryrun mode
 
       defineSupportCode(({Given}) => {
         Given('a step', function() { });
-        Given('an? step', function() { });
+        Given('a(n) step', function() { });
       })
       """
     When I run cucumber.js with `--dry-run`

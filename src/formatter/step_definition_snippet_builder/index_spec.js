@@ -10,7 +10,7 @@ describe('StepDefinitionSnippetBuilder', function () {
     this.transformsLookup = TransformLookupBuilder.build()
     this.snippetBuilder = new StepDefinitionSnippetBuilder({
       snippetSyntax: this.snippetSyntax,
-      transformLookup: this.transformsLookup
+      parameterRegistry: this.transformsLookup
     })
   })
 
@@ -74,8 +74,8 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the quoted string with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {arg1:stringInDoubleQuotes} ghi')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['arg1', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {stringInDoubleQuotes} ghi')
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['stringInDoubleQuotes', 'callback'])
       })
     })
 
@@ -86,8 +86,8 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the quoted strings with capture groups and adds parameters', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {arg1:stringInDoubleQuotes} ghi {arg2:stringInDoubleQuotes} mno')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['arg1', 'arg2', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {stringInDoubleQuotes} ghi {stringInDoubleQuotes} mno')
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['stringInDoubleQuotes', 'stringInDoubleQuotes2', 'callback'])
       })
     })
 
@@ -98,8 +98,8 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the number with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {arg1:int} def')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['arg1', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {int} def')
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['int', 'callback'])
       })
     })
 
@@ -133,7 +133,7 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('puts the table argument after the capture groups', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['arg1', 'arg2', 'table', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['stringInDoubleQuotes', 'stringInDoubleQuotes2', 'table', 'callback'])
       })
     })
   })

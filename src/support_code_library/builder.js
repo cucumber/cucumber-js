@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import arity from 'util-arity'
 import isGenerator from 'is-generator'
-import {Transform} from 'cucumber-expressions'
+import {Parameter} from 'cucumber-expressions'
 import path from 'path'
 import TransformLookupBuilder from './transform_lookup_builder'
 import * as helpers from './helpers'
@@ -13,23 +13,33 @@ function build({cwd, fns}) {
     defaultTimeout: 5000,
     listeners: [],
     stepDefinitions: [],
-    transformLookup: TransformLookupBuilder.build(),
+    parameterRegistry: TransformLookupBuilder.build(),
     World({attach, parameters}) {
       this.attach = attach
       this.parameters = parameters
     }
   }
   let definitionFunctionWrapper = null
+  function addParameter({captureGroupRegexps, transformer, typeName}) {
+    const parameter = new Parameter(
+      typeName,
+      function() {},
+      captureGroupRegexps,
+      transformer
+    )
+    options.parameterRegistry.addParameter(parameter)
+  }
+  function addTransform({captureGroupRegexps, transformer, typeName}) {
+    // eslint-disable-next-line no-console
+    if (console !== 'undefined' && typeof console.error === 'function') {
+      // eslint-disable-next-line no-console
+      console.error('addTransform is obsolete and will be removed in a future version. Please use addParameter instead.')
+    }
+    addParameter({captureGroupRegexps, transformer, typeName})
+  }
   const fnArgument = {
-    addTransform({captureGroupRegexps, transformer, typeName}) {
-      const transform = new Transform(
-        typeName,
-        function() {},
-        captureGroupRegexps,
-        transformer
-      )
-      options.transformLookup.addTransform(transform)
-    },
+    addParameter,
+    addTransform,
     After: helpers.defineHook(cwd, options.afterHookDefinitions),
     Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),

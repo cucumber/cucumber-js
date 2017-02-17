@@ -1,4 +1,4 @@
-import {TransformLookup} from 'cucumber-expressions'
+import {ParameterRegistry} from 'cucumber-expressions'
 import SupportCodeLibraryBuilder from './builder'
 
 describe('SupportCodeLibraryBuilder', function () {
@@ -14,7 +14,7 @@ describe('SupportCodeLibraryBuilder', function () {
       expect(this.options.defaultTimeout).to.eql(5000)
       expect(this.options.listeners).to.eql([])
       expect(this.options.stepDefinitions).to.eql([])
-      expect(this.options.transformLookup).to.be.instanceOf(TransformLookup)
+      expect(this.options.parameterRegistry).to.be.instanceOf(ParameterRegistry)
       const worldInstance = new this.options.World({
         attach: this.attachFn,
         parameters: {some: 'data'}
