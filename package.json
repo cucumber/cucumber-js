@@ -121,7 +121,7 @@
     "cli-table": "^0.3.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
-    "cucumber-expressions": "^2.0.0",
+    "cucumber-expressions": "^2.0.1",
     "cucumber-tag-expressions": "^1.0.0",
     "duration": "^0.2.0",
     "figures": "2.0.0",
