@@ -83,7 +83,7 @@ Feature: Parameter transforms
       defineSupportCode(({addTransform}) => {
         addTransform({
           captureGroupRegexps: ['passing'],
-          transformer: s => Promise.reject(new Error('transform error'))
+          transformer: s => Promise.reject(new Error('transform error')),
           typeName: 'status'
         })
       })
