@@ -8,22 +8,27 @@ const {beginTiming, endTiming} = Time
 
 async function run({attachmentManager, defaultTimeout, scenarioResult, step, stepDefinition, parameterTypeRegistry, world}) {
   beginTiming()
-  const parameters = stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry})
-  const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
-
   let error, result
-  const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
-  if (_.includes(validCodeLengths, stepDefinition.code.length)) {
-    const data = await UserCodeRunner.run({
-      argsArray: parameters,
-      fn: stepDefinition.code,
-      thisArg: world,
-      timeoutInMilliseconds
-    })
-    error = data.error
-    result = data.result
-  } else {
-    error = stepDefinition.getInvalidCodeLengthMessage(parameters)
+
+  try {
+    const parameters = stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry})
+    const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
+
+    const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
+    if (_.includes(validCodeLengths, stepDefinition.code.length)) {
+      const data = await UserCodeRunner.run({
+        argsArray: parameters,
+        fn: stepDefinition.code,
+        thisArg: world,
+        timeoutInMilliseconds
+      })
+      error = data.error
+      result = data.result
+    } else {
+      error = stepDefinition.getInvalidCodeLengthMessage(parameters)
+    }
+  } catch(err) {
+    error = err
   }
 
   const attachments = attachmentManager.getAll()

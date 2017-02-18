@@ -9,61 +9,84 @@ Feature: Custom Parameter
       """
       Feature: a feature
         Scenario: a scenario
-          Given a passing step
+          Given a generic step
       """
 
   Scenario: custom parameter
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/parameterized_steps.js" with:
       """
       import assert from 'assert'
       import {defineSupportCode} from 'cucumber'
       defineSupportCode(({Given, defineParameterType}) => {
         defineParameterType({
-          regexp: /passing|failing|undefined|pending/,
+          regexp: /generic|specific/,
           transformer: s => s.toUpperCase(),
           typeName: 'status'
         })
         Given('a {status} step', function(status) {
-          assert.equal(status, 'PASSING')
+          assert.equal(status, 'GENERIC')
         })
       })
       """
     When I run cucumber.js
-    Then the step "a passing step" has status "passed"
+    Then the step "a generic step" has status "passed"
 
   Scenario: custom parameter without transformer
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/parameterized_steps.js" with:
       """
       import assert from 'assert'
       import {defineSupportCode} from 'cucumber'
       defineSupportCode(({Given, defineParameterType}) => {
         defineParameterType({
-          regexp: /passing|failing|undefined|pending/,
+          regexp: /generic|specific/,
           typeName: 'status'
         })
         Given('a {status} step', function(status) {
-          assert.equal(status, 'passing')
+          assert.equal(status, 'generic')
         })
       })
       """
     When I run cucumber.js
-    Then the step "a passing step" has status "passed"
+    Then the step "a generic step" has status "passed"
 
   Scenario: custom parameter (legacy API)
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/parameterized_steps.js" with:
       """
       import assert from 'assert'
       import {defineSupportCode} from 'cucumber'
       defineSupportCode(({Given, addTransform}) => {
         addTransform({
-          captureGroupRegexps: /passing|failing|undefined|pending/,
+          captureGroupRegexps: /generic|specific/,
           transformer: s => s.toUpperCase(),
           typeName: 'status'
         })
         Given('a {status} step', function(status) {
-          assert.equal(status, 'PASSING')
+          assert.equal(status, 'GENERIC')
         })
       })
       """
     When I run cucumber.js
-    Then the step "a passing step" has status "passed"
+    Then the step "a generic step" has status "passed"
+
+  Scenario: custom transform throwing exception
+    Given a file named "features/step_definitions/parameterized_steps.js" with:
+      """
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
+      defineSupportCode(({Given, defineParameterType}) => {
+        defineParameterType({
+          regexp: /generic|specific/,
+          transformer: s => { throw new Error(`the parameter transform of [${s}] failed`) },
+          typeName: 'status'
+        })
+        Given('a {status} step', function(status) {
+          throw new Error('should never get here')
+        })
+      })
+      """
+    When I run cucumber.js
+    Then it fails
+    And the step "a generic step" failed with:
+      """
+      the parameter transform of [generic] failed
+      """
