@@ -2,7 +2,6 @@ import util from 'util'
 import _ from 'lodash'
 import arity from 'util-arity'
 import isGenerator from 'is-generator'
-import {Parameter} from 'cucumber-expressions'
 import path from 'path'
 import TransformLookupBuilder from './transform_lookup_builder'
 import * as helpers from './helpers'
@@ -20,19 +19,9 @@ function build({cwd, fns}) {
     }
   }
   let definitionFunctionWrapper = null
-  function addParameter({captureGroupRegexps, transformer, typeName}) {
-    const parameter = new Parameter(
-      typeName,
-      function() {},
-      captureGroupRegexps,
-      transformer
-    )
-    options.parameterRegistry.addParameter(parameter)
-  }
-  const addTransform = util.deprecate(addParameter, 'addTransform is deprecated and will be removed in a future version. Please use addParameter instead.')
   const fnArgument = {
-    addParameter,
-    addTransform,
+    addParameter: helpers.addParameter(options.parameterRegistry),
+    addTransform: util.deprecate(helpers.addParameter(options.parameterRegistry), 'addTransform is deprecated and will be removed in a future version. Please use addParameter instead.'),
     After: helpers.defineHook(cwd, options.afterHookDefinitions),
     Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),

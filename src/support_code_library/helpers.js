@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import {Parameter} from 'cucumber-expressions'
 import {formatLocation} from '../formatter/utils'
 import HookDefinition from '../models/hook_definition'
 import path from 'path'
@@ -68,5 +69,17 @@ export function registerHandler(cwd, collection) {
       relativeUri: formatLocation(cwd, {line, uri})
     }, options)
     collection.push(listener)
+  }
+}
+
+export function addParameter(parameterRegistry) {
+  return ({captureGroupRegexps, transformer, typeName}) => {
+    const parameter = new Parameter(
+      typeName,
+      function() {},
+      captureGroupRegexps,
+      transformer
+    )
+    parameterRegistry.addParameter(parameter)
   }
 }
