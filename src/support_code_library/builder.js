@@ -1,3 +1,4 @@
+import util from 'util'
 import _ from 'lodash'
 import arity from 'util-arity'
 import isGenerator from 'is-generator'
@@ -5,7 +6,6 @@ import {Parameter} from 'cucumber-expressions'
 import path from 'path'
 import TransformLookupBuilder from './transform_lookup_builder'
 import * as helpers from './helpers'
-
 function build({cwd, fns}) {
   const options = {
     afterHookDefinitions: [],
@@ -29,14 +29,7 @@ function build({cwd, fns}) {
     )
     options.parameterRegistry.addParameter(parameter)
   }
-  function addTransform({captureGroupRegexps, transformer, typeName}) {
-    // eslint-disable-next-line no-console
-    if (console !== 'undefined' && typeof console.error === 'function') {
-      // eslint-disable-next-line no-console
-      console.error('addTransform is obsolete and will be removed in a future version. Please use addParameter instead.')
-    }
-    addParameter({captureGroupRegexps, transformer, typeName})
-  }
+  const addTransform = util.deprecate(addParameter, 'addTransform is deprecated and will be removed in a future version. Please use addParameter instead.')
   const fnArgument = {
     addParameter,
     addTransform,
