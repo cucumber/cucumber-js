@@ -8,10 +8,15 @@ const {beginTiming, endTiming} = Time
 
 async function run({attachmentManager, defaultTimeout, scenarioResult, step, stepDefinition, parameterTypeRegistry, world}) {
   beginTiming()
-  let error, result
+  let error, result, parameters
 
   try {
-    const parameters = stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry})
+    parameters = stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry})
+  } catch(err) {
+    error = err
+  }
+
+  if(!error) {
     const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
 
     const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
@@ -27,8 +32,6 @@ async function run({attachmentManager, defaultTimeout, scenarioResult, step, ste
     } else {
       error = stepDefinition.getInvalidCodeLengthMessage(parameters)
     }
-  } catch(err) {
-    error = err
   }
 
   const attachments = attachmentManager.getAll()
