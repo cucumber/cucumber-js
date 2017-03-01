@@ -207,7 +207,7 @@ declare namespace cucumber {
 	}
 
 	export interface SupportCodeConsumer {
-		(stepDefinitions:StepDefinitions | Hooks):void;
+		(stepDefinitions:StepDefinitions & Hooks):void;
 	}
 
 	export function defineSupportCode(consumer:SupportCodeConsumer): void;
