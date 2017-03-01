@@ -4,7 +4,7 @@ Text, images and files can be added to the output of the JSON formatter with att
 The world constructor is passed an `attach` function,
 which the default world constructor assigns to `this.attach`.
 
-``` javascript
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {
@@ -17,7 +17,7 @@ defineSupportCode(function({After}) {
 By default, text is saved with a MIME type of `text/plain`.  You can also specify
 a different MIME type:
 
-``` javascript
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {
@@ -31,7 +31,7 @@ Images and other binary data can be attached using a [stream.Readable](https://n
 The data will be `base64` encoded in the output.
 You should wait for the stream to be read before continuing by providing a callback or waiting for the returned promise to resolve.
 
-``` javascript
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {
@@ -59,7 +59,7 @@ defineSupportCode(function({After}) {
 Images and binary data can also be attached using a [Buffer](https://nodejs.org/api/buffer.html).
 The data will be `base64` encoded in the output.
 
-``` javascript
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {
@@ -75,7 +75,7 @@ defineSupportCode(function({After}) {
 Here is an example of saving a screenshot using [Selenium WebDriver](https://www.npmjs.com/package/selenium-webdriver)
 when a scenario fails:
 
-``` javascript
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {

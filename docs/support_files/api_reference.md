@@ -6,7 +6,7 @@ The function passed to `defineSupportCode` is called with an object as the first
 
 ---
 
-#### `addTransform({captureGroupRegexps, name, transformer})`
+#### `addTransform({captureGroupRegexps, typeName, transformer})`
 
 Add a new transform to convert a capture group into something else.
 
@@ -15,7 +15,8 @@ Add a new transform to convert a capture group into something else.
 * `typeName`: string used to refer to this type in cucumber expressions
 
 The built in transforms are:
-```js
+
+```javascript
 // Float
 {
   captureGroupRegexps: ['-?\\d*\\.?\\d+'],
@@ -47,12 +48,11 @@ Defines a hook which is run after each scenario.
 * `options`: An object with the following keys:
   * `tags`: string tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information
   * `timeout`: A hook-specific timeout, to override the default timeout.
-  * string as a shorthand for specifying `tags`
 * `fn`: A function, defined as follows:
   * The first argument will be a [ScenarioResult](/src/models/scenario_result.js)
   * When using the asynchronous callback interface, have one final argument for the callback function.
 
-If `options` is a string then it specifies the `tags`
+`options` can also be a string as a shorthand for specifying `tags`.
 
 Multiple `After` hooks are executed in the **reverse** order that they are defined.
 
@@ -114,7 +114,8 @@ Set a function used to wrap step / hook definitions. When used, the result is wr
 #### `setWorldConstructor(constructor)`
 
 Set a custom world constructor, to override the default world constructor:
-```js
+
+```javascript
 function World({attach, parameters}) {
   attach = attach
   parameters = parameters

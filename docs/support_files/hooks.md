@@ -36,7 +36,7 @@ defineSupportCode(function({After, Before}) {
 
 Hooks can be conditionally selected for execution based on the tags of the scenario.
 
-``` javascript
+```javascript
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After, Before}) {
