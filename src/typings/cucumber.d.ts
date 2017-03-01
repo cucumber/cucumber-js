@@ -1,7 +1,5 @@
 // Type definitions for cucumber-js
 // Project: https://github.com/cucumber/cucumber-js
-// Definitions by: Abraão Alves <https://github.com/abraaoalves>, Jan Molak <https://github.com/jan-molak>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 export = cucumber;
 
@@ -17,26 +15,26 @@ declare namespace cucumber {
     After(options: IHookOptions, fn: IHookDefinitionFunction): void;
     After(tags: string, fn: IHookDefinitionFunction): void;
     Before(fn: IHookDefinitionFunction): void;
-    Before(options: HookOptions, fn: IHookDefinitionFunction): void;
+    Before(options: IHookOptions, fn: IHookDefinitionFunction): void;
     Before(tags: string, fn: IHookDefinitionFunction): void;
-    defineStep(pattern: IStepDefinitionPattern, fn: IStepDefinitionFunction): void;
-    defineStep(pattern: IStepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
-    Given(pattern: IStepDefinitionPattern, fn: IStepDefinitionFunction): void;
-    Given(pattern: IStepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
+    defineStep(pattern: StepDefinitionPattern, fn: IStepDefinitionFunction): void;
+    defineStep(pattern: StepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
+    Given(pattern: StepDefinitionPattern, fn: IStepDefinitionFunction): void;
+    Given(pattern: StepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
     registerHandler(eventName: string, fn: IHandlerFunction): void;
     registerHandler(eventName: string, options: IHandlerOptions, code: IHandlerFunction): void;
     setDefaultTimeout(milliseconds: number): void;
     setDefinitionFunctionWrapper(fn: IDefinitionWrapperFunction): void;
     setWorldConstructor(constructor: IWorld): void;
-    Then(pattern: IStepDefinitionPattern, fn: IStepDefinitionFunction): void;
-    Then(pattern: IStepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
-    When(pattern: IStepDefinitionPattern, fn: IStepDefinitionFunction): void;
-    When(pattern: IStepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
+    Then(pattern: StepDefinitionPattern, fn: IStepDefinitionFunction): void;
+    Then(pattern: StepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
+    When(pattern: StepDefinitionPattern, fn: IStepDefinitionFunction): void;
+    When(pattern: StepDefinitionPattern, options: IStepDefinitionOptions, fn: IStepDefinitionFunction): void;
   }
 
   interface ITransformOptions {
     captureGroupRegexps: Array<RegExp>;
-    transformer: (capture: string): any;
+    transformer: (capture: string) => any;
     typeName: string;
   }
 
@@ -57,11 +55,11 @@ declare namespace cucumber {
   }
 
   interface IWorldOptions {
-    attach?: attach(data: Buffer | string | Stream, mimeType?: string, callback?: (err?: any) => void):void;
+    attach?: (data: Buffer | string | NodeJS.ReadableStream, mimeType?: string, callback?: (err?: any) => void) => void;
     parameters?: any;
   }
 
-  interface IHookDefinitionOptions {
+  interface IHookOptions {
     tags?: string;
     timeout?: number;
   }
@@ -81,7 +79,7 @@ declare namespace cucumber {
   }
 
   namespace StepDefinitionFunction {
-    export interface CallbackParameter {
+    export interface ICallbackParameter {
       (error?: any, result?: any): void;
     }
 
