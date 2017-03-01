@@ -10,6 +10,10 @@ declare namespace cucumber {
   export function clearSupportCodeFns(): void;
 
   export interface ISupportCodeConsumer {
+    (supportCode: ISupportCode): void;
+  }
+
+  export interface ISupportCode {
     addTransform(options: ITransformOptions): void;
     After(fn: IHookDefinitionFunction): void;
     After(options: IHookOptions, fn: IHookDefinitionFunction): void;

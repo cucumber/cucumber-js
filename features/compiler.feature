@@ -30,13 +30,12 @@ Feature: compilers
         """
       Given a file named "features/step_definitions/cucumber_steps.ts" with:
         """
-        import {defineSupportCode} from "cucumber";
+        import {defineSupportCode, ISupportCode} from "cucumber";
 
-        defineSupportCode((stepDef: StepDefinitions) => {
-          stepDef.Given( /^a step$/, (x: string) => {
-              
-          } );
-        
+        defineSupportCode((support: ISupportCode) => {
+            support.Given(/^a step$/, params => {
+
+            } );
         });
         """
       When I run cucumber.js with `--compiler ts:ts-node/register`
