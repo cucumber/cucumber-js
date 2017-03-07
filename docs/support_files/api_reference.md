@@ -117,8 +117,8 @@ Set a custom world constructor, to override the default world constructor:
 
 ```javascript
 function World({attach, parameters}) {
-  attach = attach
-  parameters = parameters
+  this.attach = attach
+  this.parameters = parameters
 }
 ```
 
