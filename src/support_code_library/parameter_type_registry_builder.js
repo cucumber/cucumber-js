@@ -4,8 +4,8 @@ function build() {
   const parameterTypeRegistry = new ParameterTypeRegistry()
   const stringInDoubleQuotesParameterType = new ParameterType(
     'stringInDoubleQuotes',
-    function() {},
-    '"[^"]*"',
+    null,
+    /"[^"]+"/,
     JSON.parse
   )
   parameterTypeRegistry.defineParameterType(stringInDoubleQuotesParameterType)
