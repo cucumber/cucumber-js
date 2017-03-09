@@ -17,14 +17,32 @@ Feature: Custom Parameter
       """
       import assert from 'assert'
       import {defineSupportCode} from 'cucumber'
-      defineSupportCode(({Given, addParameter}) => {
-        addParameter({
-          captureGroupRegexps: /passing|failing|undefined|pending/,
+      defineSupportCode(({Given, defineParameterType}) => {
+        defineParameterType({
+          regexp: /passing|failing|undefined|pending/,
           transformer: s => s.toUpperCase(),
           typeName: 'status'
         })
         Given('a {status} step', function(status) {
           assert.equal(status, 'PASSING')
+        })
+      })
+      """
+    When I run cucumber.js
+    Then the step "a passing step" has status "passed"
+
+  Scenario: custom parameter without transformer
+    Given a file named "features/step_definitions/passing_steps.js" with:
+      """
+      import assert from 'assert'
+      import {defineSupportCode} from 'cucumber'
+      defineSupportCode(({Given, defineParameterType}) => {
+        defineParameterType({
+          regexp: /passing|failing|undefined|pending/,
+          typeName: 'status'
+        })
+        Given('a {status} step', function(status) {
+          assert.equal(status, 'passing')
         })
       })
       """

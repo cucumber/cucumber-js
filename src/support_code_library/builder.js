@@ -1,9 +1,8 @@
-import util from 'util'
 import _ from 'lodash'
 import arity from 'util-arity'
 import isGenerator from 'is-generator'
 import path from 'path'
-import TransformLookupBuilder from './transform_lookup_builder'
+import TransformLookupBuilder from './parameter_type_registry_builder'
 import * as helpers from './helpers'
 function build({cwd, fns}) {
   const options = {
@@ -12,7 +11,7 @@ function build({cwd, fns}) {
     defaultTimeout: 5000,
     listeners: [],
     stepDefinitions: [],
-    parameterRegistry: TransformLookupBuilder.build(),
+    parameterTypeRegistry: TransformLookupBuilder.build(),
     World({attach, parameters}) {
       this.attach = attach
       this.parameters = parameters
@@ -20,8 +19,8 @@ function build({cwd, fns}) {
   }
   let definitionFunctionWrapper = null
   const fnArgument = {
-    addParameter: helpers.addParameter(options.parameterRegistry),
-    addTransform: util.deprecate(helpers.addParameter(options.parameterRegistry), 'addTransform is deprecated and will be removed in a future version. Please use addParameter instead.'),
+    addTransform: helpers.addTransform(options.parameterTypeRegistry),
+    defineParameterType: helpers.defineParameterType(options.parameterTypeRegistry),
     After: helpers.defineHook(cwd, options.afterHookDefinitions),
     Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),

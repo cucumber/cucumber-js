@@ -47,7 +47,7 @@ export default class FormatterBuilder {
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
-      parameterRegistry: supportCodeLibrary.parameterRegistry
+      parameterTypeRegistry: supportCodeLibrary.parameterTypeRegistry
     })
   }
 

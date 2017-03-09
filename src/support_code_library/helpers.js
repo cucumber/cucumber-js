@@ -1,5 +1,6 @@
+import util from 'util'
 import _ from 'lodash'
-import {Parameter} from 'cucumber-expressions'
+import {ParameterType} from 'cucumber-expressions'
 import {formatLocation} from '../formatter/utils'
 import HookDefinition from '../models/hook_definition'
 import path from 'path'
@@ -72,14 +73,26 @@ export function registerHandler(cwd, collection) {
   }
 }
 
-export function addParameter(parameterRegistry) {
-  return ({captureGroupRegexps, transformer, typeName}) => {
-    const parameter = new Parameter(
+export function addTransform(parameterTypeRegistry) {
+  return util.deprecate(({captureGroupRegexps, transformer, typeName}) => {
+    const parameter = new ParameterType(
       typeName,
-      function() {},
+      null,
       captureGroupRegexps,
       transformer
     )
-    parameterRegistry.addParameter(parameter)
+    parameterTypeRegistry.defineParameterType(parameter)
+  }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
+}
+
+export function defineParameterType(parameterTypeRegistry) {
+  return ({regexp, transformer, typeName}) => {
+    const parameter = new ParameterType(
+      typeName,
+      null,
+      regexp,
+      transformer
+    )
+    parameterTypeRegistry.defineParameterType(parameter)
   }
 }

@@ -5,9 +5,9 @@ import DocString from '../../models/step_arguments/doc_string'
 import KeywordType from '../../keyword_type'
 
 export default class StepDefinitionSnippetBuilder {
-  constructor({snippetSyntax, parameterRegistry}) {
+  constructor({snippetSyntax, parameterTypeRegistry}) {
     this.snippetSyntax = snippetSyntax
-    this.cucumberExpressionGenerator = new CucumberExpressionGenerator(parameterRegistry)
+    this.cucumberExpressionGenerator = new CucumberExpressionGenerator(parameterTypeRegistry)
   }
 
   build(step) {

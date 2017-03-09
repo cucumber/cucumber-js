@@ -2,7 +2,7 @@ import DataTable from '../../models/step_arguments/data_table'
 import DocString from '../../models/step_arguments/doc_string'
 import KeywordType from '../../keyword_type'
 import StepDefinitionSnippetBuilder from './'
-import TransformLookupBuilder from '../../support_code_library/transform_lookup_builder'
+import TransformLookupBuilder from '../../support_code_library/parameter_type_registry_builder'
 
 describe('StepDefinitionSnippetBuilder', function () {
   beforeEach(function () {
@@ -10,7 +10,7 @@ describe('StepDefinitionSnippetBuilder', function () {
     this.transformsLookup = TransformLookupBuilder.build()
     this.snippetBuilder = new StepDefinitionSnippetBuilder({
       snippetSyntax: this.snippetSyntax,
-      parameterRegistry: this.transformsLookup
+      parameterTypeRegistry: this.transformsLookup
     })
   })
 
