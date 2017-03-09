@@ -4,6 +4,7 @@ import isGenerator from 'is-generator'
 import path from 'path'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import * as helpers from './helpers'
+
 function build({cwd, fns}) {
   const options = {
     afterHookDefinitions: [],
