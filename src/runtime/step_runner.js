@@ -16,7 +16,7 @@ async function run({attachmentManager, defaultTimeout, scenarioResult, step, ste
     error = err
   }
 
-  if(!error) {
+  if (!error) {
     const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
 
     const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
