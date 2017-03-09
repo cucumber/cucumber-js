@@ -80,21 +80,4 @@ defineSupportCode(function({When, Then}) {
     const expectedOutput = 'Usage: cucumber.js'
     expect(actualOutput).to.include(expectedOutput)
   })
-
-  Then(/^it suggests a "([^"]*)" step definition snippet(?: with (\d+) parameters?(?: named "([^"]*)")?)? for:$/, function (step, parameterCount, parameterName, regExp) {
-    const parameters = []
-    if (parameterName) {
-      parameters.push(parameterName)
-    }
-    else if (parameterCount) {
-      const count = parseInt(parameterCount)
-      for (let i = 1; i <= count; i += 1) {
-        parameters.push('arg' + i)
-      }
-    }
-    parameters.push('callback')
-    const expectedOutput = step + '(' + regExp + ', function (' + parameters.join(', ') + ') {\n'
-    const actualOutput = normalizeText(this.lastRun.output)
-    expect(actualOutput).to.include(expectedOutput)
-  })
 })

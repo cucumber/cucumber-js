@@ -60,13 +60,13 @@ defineSupportCode(({Then}) => {
     expect(step.result.status).to.eql(status)
   })
 
-  Then('the step {arg1:stringInDoubleQuotes} has the attachment', function (name, table) {
+  Then('the step {stringInDoubleQuotes} has the attachment', function (name, table) {
     const step = findStep(this.lastRun.jsonOutput, _.identity, ['name', name])
     const attachment = _.mapKeys(table.hashes()[0], (v, k) => _.snakeCase(k))
     expect(step.embeddings[0]).to.eql(attachment)
   })
 
-  Then('the {arg1:stringInDoubleQuotes} hook has the attachment', function (keyword, table) {
+  Then('the {stringInDoubleQuotes} hook has the attachment', function (keyword, table) {
     const hook = findStep(this.lastRun.jsonOutput, _.identity, ['keyword', keyword])
     const attachment = _.mapKeys(table.hashes()[0], (v, k) => _.snakeCase(k))
     expect(hook.embeddings[0]).to.eql(attachment)

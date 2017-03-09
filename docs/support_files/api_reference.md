@@ -6,34 +6,35 @@ The function passed to `defineSupportCode` is called with an object as the first
 
 ---
 
-#### `addTransform({captureGroupRegexps, typeName, transformer})`
+#### `defineParameterType({regexp, typeName, transformer})`
 
 Add a new transform to convert a capture group into something else.
 
-* `captureGroupRegexps`: An array of regular expressions to apply the transformer to
-* `transformer`: A function which transforms the captured group from a string into what is passed to the step definition
+* `regexp`: A regular expression (or array of regular expressions) that match the parameter
 * `typeName`: string used to refer to this type in cucumber expressions
+* `transformer`: An optional function which transforms the captured argument from a string into what is passed to the step definition.
+  If no transform function is specified, the captured argument is left as a string.
 
 The built in transforms are:
 
 ```javascript
 // Float
 {
-  captureGroupRegexps: ['-?\\d*\\.?\\d+'],
+  regexp: /-?\d*\.?\d+/,
   transformer: parseFloat,
   typeName: 'float'
 }
 
-// Int
+// Integer
 {
-  captureGroupRegexps: ['-?\\d+'],
+  regexp: /-?\d+/,
   transformer: parseInt,
   typeName: 'int'
 }
 
 // String in double quotes
 {
-  captureGroupRegexps: ['"[^"]*"'],
+  regexp: /"[^"]+"/,
   transformer: JSON.parse,
   typeName: 'stringInDoubleQuotes'
 }
