@@ -14,7 +14,7 @@ Add a new transform to convert a capture group into something else.
 * `typeName`: string used to refer to this type in cucumber expressions
 * `transformer`: An optional function which transforms the captured argument from a string into what is passed to the step definition.
   If no transform function is specified, the captured argument is left as a string.
-  * The function can be synchronous, or it can return a `Promise` of the transformed value. In other words, the function may be `async`.
+  The function can be synchronous or return a `Promise` of the transformed value.
 
 The built in transforms are:
 

@@ -77,7 +77,7 @@ Feature: Parameter types
       transform error
       """
 
-  Scenario: no transform (error)
+  Scenario: no transform
     Given a file named "features/support/transforms.js" with:
       """
       import {defineSupportCode} from 'cucumber'
