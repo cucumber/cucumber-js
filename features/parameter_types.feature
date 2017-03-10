@@ -133,3 +133,23 @@ Feature: Parameter types
       """
       transform error
       """
+
+  Scenario: duplicate capture group regex
+    Given a file named "features/support/my_parameter_types.js" with:
+      """
+      import {defineSupportCode} from 'cucumber'
+
+      defineSupportCode(({defineParameterType, When}) => {
+        defineParameterType({
+          regexp: /"[^"]+"/,
+          transformer: JSON.parse,
+          typeName: 'stringInDoubleQuotes2'
+        })
+      })
+      """
+    When I run cucumber.js with `-f progress`
+    Then the output contains the text:
+      """
+      There is already a parameter with regexp "[^"]+"
+      """
+    And it fails
