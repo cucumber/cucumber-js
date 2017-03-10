@@ -3,6 +3,7 @@ import Status from '../status'
 import StepResult from '../models/step_result'
 import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
+import Promise from 'bluebird'
 
 const {beginTiming, endTiming} = Time
 
@@ -11,12 +12,12 @@ async function run({attachmentManager, defaultTimeout, scenarioResult, step, ste
   let error, result, parameters
 
   try {
-    parameters = stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry})
+    parameters = await Promise.all(stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry}))
   } catch(err) {
     error = err
   }
 
-  if (!error) {
+  if(!error) {
     const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
 
     const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
