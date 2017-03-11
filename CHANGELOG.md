@@ -1,4 +1,26 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc7...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc8...master)
+
+### [2.0.0-rc.8](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.7...v2.0.0-rc.8) (2017-03-10)
+
+#### Bug Fixes
+
+* generated step definition snippets are not found (#732) (Aslak Hellesøy)
+* catch attempt to define duplicate parameter type regular expression (#780) (Aslak Hellesøy)
+* catch errors in parameter type transform functions (Aslak Hellesøy)
+
+#### New Features
+
+* all async parameter type transform functions (Aslak Hellesøy)
+* make all formatters available when requiring
+
+#### Deprecations
+
+* `addTransform` was deprecated in favor of `defineParameterType`
+
+#### Documentation
+
+* normalize syntax highlighting (#726) (Martin Delille)
+* fix setWorldConstructor example
 
 ### [2.0.0-rc.7](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.6...v2.0.0-rc.7) (2017-01-30)
 
