@@ -316,7 +316,7 @@ function _setExports(ndebug) {
 module.exports = _setExports(process.env.NODE_NDEBUG);
 
 }).call(this,{"isBuffer":require("../is-buffer/index.js")},require('_process'))
-},{"../is-buffer/index.js":240,"_process":252,"assert":5,"stream":283,"util":294}],5:[function(require,module,exports){
+},{"../is-buffer/index.js":243,"_process":255,"assert":5,"stream":286,"util":297}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -810,7 +810,7 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":294}],6:[function(require,module,exports){
+},{"util/":297}],6:[function(require,module,exports){
 'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default =
 
 
@@ -911,7 +911,7 @@ function errorDiff(actual, expected, colorFns) {
     return str.value;
   }).join('');
 }
-},{"diff":24,"pad-right":248}],9:[function(require,module,exports){
+},{"diff":24,"pad-right":251}],9:[function(require,module,exports){
 'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default =
 
 
@@ -991,7 +991,7 @@ function jsonStringifyProperties(object, depth) {
 
   return str + end;
 }
-},{"./type":11,"repeat-string":266}],10:[function(require,module,exports){
+},{"./type":11,"repeat-string":269}],10:[function(require,module,exports){
 'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default =
 
 
@@ -2621,7 +2621,7 @@ exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.d
 },{"../core-js/symbol":37,"../core-js/symbol/iterator":38}],47:[function(require,module,exports){
 module.exports = require("regenerator-runtime");
 
-},{"regenerator-runtime":264}],48:[function(require,module,exports){
+},{"regenerator-runtime":267}],48:[function(require,module,exports){
 module.exports = balanced;
 function balanced(a, b, str) {
   if (a instanceof RegExp) a = maybeMatch(a, str);
@@ -2801,19 +2801,19 @@ function fromByteArray (uint8) {
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
- *
+ * 
  * Copyright (c) 2013-2015 Petka Antonov
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -2821,7 +2821,7 @@ function fromByteArray (uint8) {
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- *
+ * 
  */
 /**
  * bluebird build version 3.4.7
@@ -6276,28 +6276,28 @@ _dereq_('./some.js')(Promise, PromiseArray, apiRejection);
 _dereq_('./filter.js')(Promise, INTERNAL);
 _dereq_('./each.js')(Promise, INTERNAL);
 _dereq_('./any.js')(Promise);
-
-    util.toFastProperties(Promise);
-    util.toFastProperties(Promise.prototype);
-    function fillTypes(value) {
-        var p = new Promise(INTERNAL);
-        p._fulfillmentHandler0 = value;
-        p._rejectionHandler0 = value;
-        p._promise0 = value;
-        p._receiver0 = value;
-    }
-    // Complete slack tracking, opt out of field-type tracking and
-    // stabilize map
-    fillTypes({a: 1});
-    fillTypes({b: 2});
-    fillTypes({c: 3});
-    fillTypes(1);
-    fillTypes(function(){});
-    fillTypes(undefined);
-    fillTypes(false);
-    fillTypes(new Promise(INTERNAL));
-    debug.setBounds(Async.firstLineError, util.lastLineError);
-    return Promise;
+                                                         
+    util.toFastProperties(Promise);                                          
+    util.toFastProperties(Promise.prototype);                                
+    function fillTypes(value) {                                              
+        var p = new Promise(INTERNAL);                                       
+        p._fulfillmentHandler0 = value;                                      
+        p._rejectionHandler0 = value;                                        
+        p._promise0 = value;                                                 
+        p._receiver0 = value;                                                
+    }                                                                        
+    // Complete slack tracking, opt out of field-type tracking and           
+    // stabilize map                                                         
+    fillTypes({a: 1});                                                       
+    fillTypes({b: 2});                                                       
+    fillTypes({c: 3});                                                       
+    fillTypes(1);                                                            
+    fillTypes(function(){});                                                 
+    fillTypes(undefined);                                                    
+    fillTypes(false);                                                        
+    fillTypes(new Promise(INTERNAL));                                        
+    debug.setBounds(Async.firstLineError, util.lastLineError);               
+    return Promise;                                                          
 
 };
 
@@ -7084,8 +7084,8 @@ function ReductionPromiseArray(promises, fn, initialValue, _each) {
 util.inherits(ReductionPromiseArray, PromiseArray);
 
 ReductionPromiseArray.prototype._gotAccum = function(accum) {
-    if (this._eachValues !== undefined &&
-        this._eachValues !== null &&
+    if (this._eachValues !== undefined && 
+        this._eachValues !== null && 
         accum !== INTERNAL) {
         this._eachValues.push(accum);
     }
@@ -8381,7 +8381,7 @@ module.exports = ret;
 },{"./es5":13}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":252}],51:[function(require,module,exports){
+},{"_process":255}],51:[function(require,module,exports){
 var concatMap = require('concat-map');
 var balanced = require('balanced-match');
 
@@ -10493,7 +10493,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":49,"ieee754":236,"isarray":243}],56:[function(require,module,exports){
+},{"base64-js":49,"ieee754":239,"isarray":246}],56:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -10884,7 +10884,7 @@ exports.strlen = function(str){
 
 The MIT License (MIT)
 
-Original Library
+Original Library 
   - Copyright (c) Marak Squires
 
 Additional functionality
@@ -11159,7 +11159,7 @@ module['exports'] = function zalgo(text, options) {
     });
     return bool;
   }
-
+  
 
   function heComes(text, options) {
     var result = '', counts, l;
@@ -11394,7 +11394,7 @@ module.exports = (function () {
   return false;
 })();
 }).call(this,require('_process'))
-},{"_process":252}],67:[function(require,module,exports){
+},{"_process":255}],67:[function(require,module,exports){
 //
 // Remark: Requiring this file will use the "safe" colors API which will not touch String.prototype
 //
@@ -11409,7 +11409,7 @@ module['exports'] = colors;
 
 The MIT License (MIT)
 
-Original Library
+Original Library 
   - Copyright (c) Marak Squires
 
 Additional functionality
@@ -11650,7 +11650,7 @@ module['exports'] = function zalgo(text, options) {
     });
     return bool;
   }
-
+  
 
   function heComes(text, options) {
     var result = '', counts, l;
@@ -11712,7 +11712,7 @@ arguments[4][64][0].apply(exports,arguments)
 arguments[4][65][0].apply(exports,arguments)
 },{"dup":65}],76:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"_process":252,"dup":66}],77:[function(require,module,exports){
+},{"_process":255,"dup":66}],77:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
 },{"./lib/colors":68,"dup":67}],78:[function(require,module,exports){
 (function (process){
@@ -12828,7 +12828,7 @@ function exists(file) {
 
 
 }).call(this,require('_process'))
-},{"_process":252,"child_process":53,"events":210,"fs":53,"graceful-readlink":235,"path":249}],79:[function(require,module,exports){
+},{"_process":255,"child_process":53,"events":210,"fs":53,"graceful-readlink":238,"path":252}],79:[function(require,module,exports){
 module.exports = function (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -13285,7 +13285,7 @@ $export.P = 8;   // proto
 $export.B = 16;  // bind
 $export.W = 32;  // wrap
 $export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
+$export.R = 128; // real proto method for `library` 
 module.exports = $export;
 },{"./_core":96,"./_ctx":97,"./_global":105,"./_hide":107}],104:[function(require,module,exports){
 module.exports = function(exec){
@@ -14302,7 +14302,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":240}],165:[function(require,module,exports){
+},{"../../is-buffer/index.js":243}],165:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -15599,7 +15599,7 @@ Duration.prototype = Object.create(Object.prototype, {
 }));
 
 
-},{"stackframe":280}],179:[function(require,module,exports){
+},{"stackframe":283}],179:[function(require,module,exports){
 'use strict';
 
 var getTime = Date.prototype.getTime;
@@ -16460,7 +16460,7 @@ function dumpException(ex)
 }
 
 }).call(this,require('_process'))
-},{"_process":252,"assert":5,"util":294}],212:[function(require,module,exports){
+},{"_process":255,"assert":5,"util":297}],212:[function(require,module,exports){
 (function (process){
 'use strict';
 const escapeStringRegexp = require('escape-string-regexp');
@@ -16611,7 +16611,7 @@ const fn = str => {
 module.exports = Object.assign(fn, figures);
 
 }).call(this,require('_process'))
-},{"_process":252,"escape-string-regexp":209}],213:[function(require,module,exports){
+},{"_process":255,"escape-string-regexp":209}],213:[function(require,module,exports){
 (function (process){
 module.exports = realpath
 realpath.realpath = realpath
@@ -16681,7 +16681,7 @@ function unmonkeypatch () {
 }
 
 }).call(this,require('_process'))
-},{"./old.js":214,"_process":252,"fs":53}],214:[function(require,module,exports){
+},{"./old.js":214,"_process":255,"fs":53}],214:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16988,7 +16988,7 @@ exports.realpath = function realpath(p, cache, cb) {
 };
 
 }).call(this,require('_process'))
-},{"_process":252,"fs":53,"path":249}],215:[function(require,module,exports){
+},{"_process":255,"fs":53,"path":252}],215:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -17007,11 +17007,16 @@ exports.realpath = function realpath(p, cache, cb) {
     TokenMatcher: require('./lib/gherkin/token_matcher'),
     AstBuilder: require('./lib/gherkin/ast_builder'),
     Compiler: require('./lib/gherkin/pickles/compiler'),
-    DIALECTS: require('./lib/gherkin/dialects')
+    DIALECTS: require('./lib/gherkin/dialects'),
+    Stream: {
+      createGherkinStream: require('./lib/gherkin/stream/gherkin_stream'),
+      createSourceEventStream: require('./lib/gherkin/stream/source_event_stream'),
+      createNdjsonStream: require('./lib/gherkin/stream/ndjson_stream')
+    }
   };
 }));
 
-},{"./lib/gherkin/ast_builder":216,"./lib/gherkin/dialects":219,"./lib/gherkin/parser":223,"./lib/gherkin/pickles/compiler":224,"./lib/gherkin/token_matcher":226,"./lib/gherkin/token_scanner":227}],216:[function(require,module,exports){
+},{"./lib/gherkin/ast_builder":216,"./lib/gherkin/dialects":219,"./lib/gherkin/parser":223,"./lib/gherkin/pickles/compiler":224,"./lib/gherkin/stream/gherkin_stream":225,"./lib/gherkin/stream/ndjson_stream":226,"./lib/gherkin/stream/source_event_stream":227,"./lib/gherkin/token_matcher":229,"./lib/gherkin/token_scanner":230}],216:[function(require,module,exports){
 var AstNode = require('./ast_node');
 var Errors = require('./errors');
 
@@ -17504,6 +17509,93 @@ module.exports={
       "* ",
       "متى ",
       "عندما "
+    ]
+  },
+  "ast": {
+    "and": [
+      "* ",
+      "Y ",
+      "Ya "
+    ],
+    "background": [
+      "Antecedentes"
+    ],
+    "but": [
+      "* ",
+      "Peru "
+    ],
+    "examples": [
+      "Exemplos"
+    ],
+    "feature": [
+      "Carauterística"
+    ],
+    "given": [
+      "* ",
+      "Dáu ",
+      "Dada ",
+      "Daos ",
+      "Daes "
+    ],
+    "name": "Asturian",
+    "native": "asturianu",
+    "scenario": [
+      "Casu"
+    ],
+    "scenarioOutline": [
+      "Esbozu del casu"
+    ],
+    "then": [
+      "* ",
+      "Entós "
+    ],
+    "when": [
+      "* ",
+      "Cuando "
+    ]
+  },
+  "az": {
+    "and": [
+      "* ",
+      "Və ",
+      "Həm "
+    ],
+    "background": [
+      "Keçmiş",
+      "Kontekst"
+    ],
+    "but": [
+      "* ",
+      "Amma ",
+      "Ancaq "
+    ],
+    "examples": [
+      "Nümunələr"
+    ],
+    "feature": [
+      "Özəllik"
+    ],
+    "given": [
+      "* ",
+      "Tutaq ki ",
+      "Verilir "
+    ],
+    "name": "Azerbaijani",
+    "native": "Azərbaycanca",
+    "scenario": [
+      "Ssenari"
+    ],
+    "scenarioOutline": [
+      "Ssenarinin strukturu"
+    ],
+    "then": [
+      "* ",
+      "O halda "
+    ],
+    "when": [
+      "* ",
+      "Əgər ",
+      "Nə vaxt ki "
     ]
   },
   "bg": {
@@ -19009,6 +19101,45 @@ module.exports={
       "Menawa "
     ]
   },
+  "ka": {
+    "and": [
+      "* ",
+      "და"
+    ],
+    "background": [
+      "კონტექსტი"
+    ],
+    "but": [
+      "* ",
+      "მაგ­რამ"
+    ],
+    "examples": [
+      "მაგალითები"
+    ],
+    "feature": [
+      "თვისება"
+    ],
+    "given": [
+      "* ",
+      "მოცემული"
+    ],
+    "name": "Georgian",
+    "native": "ქართველი",
+    "scenario": [
+      "სცენარის"
+    ],
+    "scenarioOutline": [
+      "სცენარის ნიმუში"
+    ],
+    "then": [
+      "* ",
+      "მაშინ"
+    ],
+    "when": [
+      "* ",
+      "როდესაც"
+    ]
+  },
   "kn": {
     "and": [
       "* ",
@@ -19214,6 +19345,100 @@ module.exports={
       "Ja "
     ]
   },
+  "mk-Cyrl": {
+    "and": [
+      "* ",
+      "И "
+    ],
+    "background": [
+      "Контекст",
+      "Содржина"
+    ],
+    "but": [
+      "* ",
+      "Но "
+    ],
+    "examples": [
+      "Примери",
+      "Сценарија"
+    ],
+    "feature": [
+      "Функционалност",
+      "Бизнис потреба",
+      "Можност"
+    ],
+    "given": [
+      "* ",
+      "Дадено ",
+      "Дадена "
+    ],
+    "name": "Macedonian",
+    "native": "Македонски",
+    "scenario": [
+      "Сценарио",
+      "На пример"
+    ],
+    "scenarioOutline": [
+      "Преглед на сценарија",
+      "Скица",
+      "Концепт"
+    ],
+    "then": [
+      "* ",
+      "Тогаш "
+    ],
+    "when": [
+      "* ",
+      "Кога "
+    ]
+  },
+  "mk-Latn": {
+    "and": [
+      "* ",
+      "I "
+    ],
+    "background": [
+      "Kontekst",
+      "Sodrzhina"
+    ],
+    "but": [
+      "* ",
+      "No "
+    ],
+    "examples": [
+      "Primeri",
+      "Scenaria"
+    ],
+    "feature": [
+      "Funkcionalnost",
+      "Biznis potreba",
+      "Mozhnost"
+    ],
+    "given": [
+      "* ",
+      "Dadeno ",
+      "Dadena "
+    ],
+    "name": "Macedonian (Latin)",
+    "native": "Makedonski (Latinica)",
+    "scenario": [
+      "Scenario",
+      "Na primer"
+    ],
+    "scenarioOutline": [
+      "Pregled na scenarija",
+      "Skica",
+      "Koncept"
+    ],
+    "then": [
+      "* ",
+      "Togash "
+    ],
+    "when": [
+      "* ",
+      "Koga "
+    ]
+  },
   "mn": {
     "and": [
       "* ",
@@ -19295,7 +19520,8 @@ module.exports={
     ],
     "when": [
       "* ",
-      "Als "
+      "Als ",
+      "Wanneer "
     ]
   },
   "no": {
@@ -19561,7 +19787,8 @@ module.exports={
       "* ",
       "Допустим ",
       "Дано ",
-      "Пусть "
+      "Пусть ",
+      "Если "
     ],
     "name": "Russian",
     "native": "русский",
@@ -19574,11 +19801,11 @@ module.exports={
     "then": [
       "* ",
       "То ",
+      "Затем ",
       "Тогда "
     ],
     "when": [
       "* ",
-      "Если ",
       "Когда "
     ]
   },
@@ -20690,7 +20917,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 0;
     }
-
+    
     var stateComment = "State: 0 - Start";
     token.detach();
     var expectedTokens = ["#EOF", "#Language", "#TagLine", "#FeatureLine", "#Comment", "#Empty"];
@@ -20722,7 +20949,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 1;
     }
-
+    
     var stateComment = "State: 1 - GherkinDocument:0>Feature:0>Feature_Header:0>#Language:0";
     token.detach();
     var expectedTokens = ["#TagLine", "#FeatureLine", "#Comment", "#Empty"];
@@ -20754,7 +20981,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 2;
     }
-
+    
     var stateComment = "State: 2 - GherkinDocument:0>Feature:0>Feature_Header:1>Tags:0>#TagLine:0";
     token.detach();
     var expectedTokens = ["#TagLine", "#FeatureLine", "#Comment", "#Empty"];
@@ -20815,7 +21042,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 4;
     }
-
+    
     var stateComment = "State: 3 - GherkinDocument:0>Feature:0>Feature_Header:2>#FeatureLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Empty", "#Comment", "#BackgroundLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -20877,7 +21104,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 4;
     }
-
+    
     var stateComment = "State: 4 - GherkinDocument:0>Feature:0>Feature_Header:3>Feature_Description:0>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#BackgroundLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -20933,7 +21160,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 5;
     }
-
+    
     var stateComment = "State: 5 - GherkinDocument:0>Feature:0>Feature_Header:3>Feature_Description:0>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#BackgroundLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
@@ -20993,7 +21220,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 7;
     }
-
+    
     var stateComment = "State: 6 - GherkinDocument:0>Feature:1>Background:0>#BackgroundLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Empty", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -21054,7 +21281,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 7;
     }
-
+    
     var stateComment = "State: 7 - GherkinDocument:0>Feature:1>Background:1>Background_Description:0>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -21109,7 +21336,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 8;
     }
-
+    
     var stateComment = "State: 8 - GherkinDocument:0>Feature:1>Background:1>Background_Description:0>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
@@ -21179,7 +21406,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 9;
     }
-
+    
     var stateComment = "State: 9 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:0>#StepLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#DocStringSeparator", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -21248,7 +21475,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 10;
     }
-
+    
     var stateComment = "State: 10 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -21287,7 +21514,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 11;
     }
-
+    
     var stateComment = "State: 11 - GherkinDocument:0>Feature:2>Scenario_Definition:0>Tags:0>#TagLine:0";
     token.detach();
     var expectedTokens = ["#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -21351,7 +21578,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 13;
     }
-
+    
     var stateComment = "State: 12 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:0>#ScenarioLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Empty", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -21416,7 +21643,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 13;
     }
-
+    
     var stateComment = "State: 13 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Scenario_Description:0>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -21475,7 +21702,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 14;
     }
-
+    
     var stateComment = "State: 14 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Scenario_Description:0>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
@@ -21549,7 +21776,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 15;
     }
-
+    
     var stateComment = "State: 15 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:0>#StepLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#DocStringSeparator", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -21622,7 +21849,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 16;
     }
-
+    
     var stateComment = "State: 16 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -21700,7 +21927,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 18;
     }
-
+    
     var stateComment = "State: 17 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:0>#ScenarioOutlineLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Empty", "#Comment", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -21781,7 +22008,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 18;
     }
-
+    
     var stateComment = "State: 18 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>ScenarioOutline_Description:0>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -21854,7 +22081,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 19;
     }
-
+    
     var stateComment = "State: 19 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>ScenarioOutline_Description:0>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
@@ -21944,7 +22171,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 20;
     }
-
+    
     var stateComment = "State: 20 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:0>#StepLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#DocStringSeparator", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -22035,7 +22262,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 21;
     }
-
+    
     var stateComment = "State: 21 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -22068,7 +22295,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 22;
     }
-
+    
     var stateComment = "State: 22 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:0>Tags:0>#TagLine:0";
     token.detach();
     var expectedTokens = ["#TagLine", "#ExamplesLine", "#Comment", "#Empty"];
@@ -22158,7 +22385,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 24;
     }
-
+    
     var stateComment = "State: 23 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:0>#ExamplesLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Empty", "#Comment", "#TableRow", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -22251,7 +22478,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 24;
     }
-
+    
     var stateComment = "State: 24 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Examples_Description:0>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#TableRow", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
@@ -22336,7 +22563,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 25;
     }
-
+    
     var stateComment = "State: 25 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Examples_Description:0>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#TableRow", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
@@ -22426,7 +22653,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 26;
     }
-
+    
     var stateComment = "State: 26 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:2>Examples_Table:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -22449,7 +22676,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 28;
     }
-
+    
     var stateComment = "State: 28 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#DocStringSeparator", "#Other"];
@@ -22536,7 +22763,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 29;
     }
-
+    
     var stateComment = "State: 29 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#EOF", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -22559,7 +22786,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 30;
     }
-
+    
     var stateComment = "State: 30 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#DocStringSeparator", "#Other"];
@@ -22628,7 +22855,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 31;
     }
-
+    
     var stateComment = "State: 31 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#EOF", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -22651,7 +22878,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 32;
     }
-
+    
     var stateComment = "State: 32 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#DocStringSeparator", "#Other"];
@@ -22716,7 +22943,7 @@ module.exports = function Parser(builder) {
       build(context, token);
       return 33;
     }
-
+    
     var stateComment = "State: 33 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#EOF", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
@@ -22866,32 +23093,33 @@ module.exports = function Parser(builder) {
 
 }
 
-},{"./ast_builder":216,"./errors":220,"./token_matcher":226,"./token_scanner":227}],224:[function(require,module,exports){
-var countSymbols = require('../count_symbols')
+},{"./ast_builder":216,"./errors":220,"./token_matcher":229,"./token_scanner":230}],224:[function(require,module,exports){
+var countSymbols = require('../count_symbols');
 
 function Compiler() {
-  this.compile = function (gherkin_document, path) {
+  this.compile = function (gherkin_document) {
     var pickles = [];
 
     if (gherkin_document.feature == null) return pickles;
 
     var feature = gherkin_document.feature;
+    var language = feature.language;
     var featureTags = feature.tags;
     var backgroundSteps = [];
 
     feature.children.forEach(function (scenarioDefinition) {
       if(scenarioDefinition.type === 'Background') {
-        backgroundSteps = pickleSteps(scenarioDefinition, path);
+        backgroundSteps = pickleSteps(scenarioDefinition);
       } else if(scenarioDefinition.type === 'Scenario') {
-        compileScenario(featureTags, backgroundSteps, scenarioDefinition, path, pickles);
+        compileScenario(featureTags, backgroundSteps, scenarioDefinition, language, pickles);
       } else {
-        compileScenarioOutline(featureTags, backgroundSteps, scenarioDefinition, path, pickles);
+        compileScenarioOutline(featureTags, backgroundSteps, scenarioDefinition, language, pickles);
       }
     });
     return pickles;
   };
 
-  function compileScenario(featureTags, backgroundSteps, scenario, path, pickles) {
+  function compileScenario(featureTags, backgroundSteps, scenario, language, pickles) {
     if (scenario.steps.length == 0) return;
 
     var steps = [].concat(backgroundSteps);
@@ -22899,19 +23127,20 @@ function Compiler() {
     var tags = [].concat(featureTags).concat(scenario.tags);
 
     scenario.steps.forEach(function (step) {
-      steps.push(pickleStep(step, path));
+      steps.push(pickleStep(step));
     });
 
     var pickle = {
-      tags: pickleTags(tags, path),
+      tags: pickleTags(tags),
       name: scenario.name,
-      locations: [pickleLocation(scenario.location, path)],
+      language: language,
+      locations: [pickleLocation(scenario.location)],
       steps: steps
     };
     pickles.push(pickle);
   }
 
-  function compileScenarioOutline(featureTags, backgroundSteps, scenarioOutline, path, pickles) {
+  function compileScenarioOutline(featureTags, backgroundSteps, scenarioOutline, language, pickles) {
     if (scenarioOutline.steps.length == 0) return;
 
     scenarioOutline.examples.filter(function(e) { return e.tableHeader != undefined; }).forEach(function (examples) {
@@ -22923,13 +23152,13 @@ function Compiler() {
 
         scenarioOutline.steps.forEach(function (scenarioOutlineStep) {
           var stepText = interpolate(scenarioOutlineStep.text, variableCells, valueCells);
-          var args = createPickleArguments(scenarioOutlineStep.argument, variableCells, valueCells, path);
+          var args = createPickleArguments(scenarioOutlineStep.argument, variableCells, valueCells);
           var pickleStep = {
             text: stepText,
             arguments: args,
             locations: [
-              pickleLocation(values.location, path),
-              pickleStepLocation(scenarioOutlineStep, path)
+              pickleLocation(values.location),
+              pickleStepLocation(scenarioOutlineStep)
             ]
           };
           steps.push(pickleStep);
@@ -22937,11 +23166,12 @@ function Compiler() {
 
         var pickle = {
           name: interpolate(scenarioOutline.name, variableCells, valueCells),
+          language: language,
           steps: steps,
-          tags: pickleTags(tags, path),
+          tags: pickleTags(tags),
           locations: [
-            pickleLocation(values.location, path),
-            pickleLocation(scenarioOutline.location, path)
+            pickleLocation(values.location),
+            pickleLocation(scenarioOutline.location)
           ]
         };
         pickles.push(pickle);
@@ -22950,7 +23180,7 @@ function Compiler() {
     });
   }
 
-  function createPickleArguments(argument, variableCells, valueCells, path) {
+  function createPickleArguments(argument, variableCells, valueCells) {
     var result = [];
     if (!argument) return result;
     if (argument.type === 'DataTable') {
@@ -22959,7 +23189,7 @@ function Compiler() {
           return {
             cells: row.cells.map(function (cell) {
               return {
-                location: pickleLocation(cell.location, path),
+                location: pickleLocation(cell.location),
                 value: interpolate(cell.value, variableCells, valueCells)
               };
             })
@@ -22969,9 +23199,9 @@ function Compiler() {
       result.push(table);
     } else if (argument.type === 'DocString') {
       var docString = {
-        location: pickleLocation(argument.location, path),
+        location: pickleLocation(argument.location),
         content: interpolate(argument.content, variableCells, valueCells)
-      }
+      };
       result.push(docString);
     } else {
       throw Error('Internal error');
@@ -22982,52 +23212,50 @@ function Compiler() {
   function interpolate(name, variableCells, valueCells) {
     variableCells.forEach(function (variableCell, n) {
       var valueCell = valueCells[n];
-      var search = new RegExp('<' + variableCell.value + '>', 'g')
+      var search = new RegExp('<' + variableCell.value + '>', 'g');
       name = name.replace(search, valueCell.value);
     });
     return name;
   }
 
-  function pickleSteps(scenarioDefinition, path) {
+  function pickleSteps(scenarioDefinition) {
     return scenarioDefinition.steps.map(function (step) {
-      return pickleStep(step, path);
+      return pickleStep(step);
     });
   }
 
-  function pickleStep(step, path) {
+  function pickleStep(step) {
     return {
       text: step.text,
-      arguments: createPickleArguments(step.argument, [], [], path),
-      locations: [pickleStepLocation(step, path)]
+      arguments: createPickleArguments(step.argument, [], []),
+      locations: [pickleStepLocation(step)]
     }
   }
 
-  function pickleStepLocation(step, path) {
+  function pickleStepLocation(step) {
     return {
-      path: path,
       line: step.location.line,
       column: step.location.column + (step.keyword ? countSymbols(step.keyword) : 0)
     };
   }
 
-  function pickleLocation(location, path) {
+  function pickleLocation(location) {
     return {
-      path: path,
       line: location.line,
       column: location.column
     }
   }
 
-  function pickleTags(tags, path) {
+  function pickleTags(tags) {
     return tags.map(function (tag) {
-      return pickleTag(tag, path);
+      return pickleTag(tag);
     });
   }
 
-  function pickleTag(tag, path) {
+  function pickleTag(tag) {
     return {
       name: tag.name,
-      location: pickleLocation(tag.location, path)
+      location: pickleLocation(tag.location)
     };
   }
 }
@@ -23035,6 +23263,118 @@ function Compiler() {
 module.exports = Compiler;
 
 },{"../count_symbols":218}],225:[function(require,module,exports){
+var Stream = require('stream')
+var Parser = require('../parser')
+var Compiler = require('../pickles/compiler')
+
+var compiler = new Compiler();
+var parser = new Parser();
+parser.stopAtFirstError = false;
+
+function gherkinStream(options) {
+  return new Stream.Transform({
+    objectMode: true,
+    transform: function (event, _, callback) {
+      if (event.type === 'source') {
+        try {
+          var gherkinDocument = parser.parse(event.data);
+
+          if (options.printSource)
+            this.push(event);
+
+          if (options.printAst)
+            this.push({
+              type: 'gherkin-document',
+              uri: event.uri,
+              document: gherkinDocument
+            });
+
+          if (options.printPickles) {
+            var pickles = compiler.compile(gherkinDocument  );
+            for (var p in pickles) {
+              this.push({
+                type: 'pickle',
+                uri: event.uri,
+                pickle: pickles[p]
+              })
+            }
+          }
+        } catch (err) {
+          var errors = err.errors || [err]
+          for (var e in errors) {
+            this.push({
+              type: "attachment",
+              source: {
+                uri: event.uri,
+                start: {
+                  line: errors[e].location.line,
+                  column: errors[e].location.column
+                }
+              },
+              data: errors[e].message,
+              media: {
+                encoding: "utf-8",
+                type: "text/vnd.cucumber.stacktrace+plain"
+              }
+            })
+          }
+        }
+      } else {
+        this.push(event)
+      }
+      callback()
+    }
+  })
+}
+
+module.exports = gherkinStream
+
+},{"../parser":223,"../pickles/compiler":224,"stream":286}],226:[function(require,module,exports){
+var Stream = require('stream')
+
+function ndjsonStream() {
+  return new Stream.Transform({
+    objectMode: true,
+    transform: function (event, _, callback) {
+      this.push(JSON.stringify(event) + "\n")
+      callback()
+    }
+  })
+}
+
+module.exports = ndjsonStream
+},{"stream":286}],227:[function(require,module,exports){
+var Stream = require('stream')
+var fs = require('fs')
+
+function sourceEventStream(paths) {
+  var stream = new Stream.PassThrough({objectMode: true})
+  Promise.all(paths.map(function (path) {
+    return new Promise(function (resolve, reject) {
+      fs.readFile(path, 'utf-8', function (err, data) {
+        if (err) return reject(err)
+        resolve({
+          type: 'source',
+          uri: path,
+          data: data,
+          media: {
+            encoding: 'utf-8',
+            type: 'text/vnd.cucumber.gherkin+plain'
+          }
+        })
+      })
+    })
+  }))
+    .then(function (events) {
+      events.forEach(function (event) {
+        stream.write(event)
+      })
+    })
+  return stream
+}
+
+module.exports = sourceEventStream
+},{"fs":53,"stream":286}],228:[function(require,module,exports){
 function Token(line, location) {
   this.line = line;
   this.location = location;
@@ -23051,7 +23391,7 @@ Token.prototype.detach = function () {
 
 module.exports = Token;
 
-},{}],226:[function(require,module,exports){
+},{}],229:[function(require,module,exports){
 var DIALECTS = require('./dialects');
 var Errors = require('./errors');
 var LANGUAGE_PATTERN = /^\s*#\s*language\s*:\s*([a-zA-Z\-_]+)\s*$/;
@@ -23242,15 +23582,15 @@ module.exports = function TokenMatcher(defaultDialectName) {
   }
 };
 
-},{"./dialects":219,"./errors":220}],227:[function(require,module,exports){
+},{"./dialects":219,"./errors":220}],230:[function(require,module,exports){
 var Token = require('./token');
 var GherkinLine = require('./gherkin_line');
 
 /**
- * The scanner reads a gherkin doc (typically read from a .feature file) and creates a token for each line.
+ * The scanner reads a gherkin doc (typically read from a .feature file) and creates a token for each line. 
  * The tokens are passed to the parser, which outputs an AST (Abstract Syntax Tree).
- *
- * If the scanner sees a `#` language header, it will reconfigure itself dynamically to look for
+ * 
+ * If the scanner sees a `#` language header, it will reconfigure itself dynamically to look for 
  * Gherkin keywords for the associated language. The keywords are defined in gherkin-languages.json.
  */
 module.exports = function TokenScanner(source) {
@@ -23267,7 +23607,7 @@ module.exports = function TokenScanner(source) {
   }
 };
 
-},{"./gherkin_line":222,"./token":225}],228:[function(require,module,exports){
+},{"./gherkin_line":222,"./token":228}],231:[function(require,module,exports){
 (function (process){
 exports.alphasort = alphasort
 exports.alphasorti = alphasorti
@@ -23511,7 +23851,7 @@ function childrenIgnored (self, path) {
 }
 
 }).call(this,require('_process'))
-},{"_process":252,"minimatch":245,"path":249,"path-is-absolute":250}],229:[function(require,module,exports){
+},{"_process":255,"minimatch":248,"path":252,"path-is-absolute":253}],232:[function(require,module,exports){
 (function (process){
 // Approach:
 //
@@ -24307,7 +24647,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./common.js":228,"./sync.js":230,"_process":252,"assert":5,"events":210,"fs":53,"fs.realpath":213,"inflight":238,"inherits":239,"minimatch":245,"once":247,"path":249,"path-is-absolute":250,"util":294}],230:[function(require,module,exports){
+},{"./common.js":231,"./sync.js":233,"_process":255,"assert":5,"events":210,"fs":53,"fs.realpath":213,"inflight":241,"inherits":242,"minimatch":248,"once":250,"path":252,"path-is-absolute":253,"util":297}],233:[function(require,module,exports){
 (function (process){
 module.exports = globSync
 globSync.GlobSync = GlobSync
@@ -24797,7 +25137,7 @@ GlobSync.prototype._makeAbs = function (f) {
 }
 
 }).call(this,require('_process'))
-},{"./common.js":228,"./glob.js":229,"_process":252,"assert":5,"fs":53,"fs.realpath":213,"minimatch":245,"path":249,"path-is-absolute":250,"util":294}],231:[function(require,module,exports){
+},{"./common.js":231,"./glob.js":232,"_process":255,"assert":5,"fs":53,"fs.realpath":213,"minimatch":248,"path":252,"path-is-absolute":253,"util":297}],234:[function(require,module,exports){
 'use strict'
 
 var fs = require('fs')
@@ -24820,7 +25160,7 @@ function clone (obj) {
   return copy
 }
 
-},{"fs":53}],232:[function(require,module,exports){
+},{"fs":53}],235:[function(require,module,exports){
 (function (process){
 var fs = require('fs')
 var polyfills = require('./polyfills.js')
@@ -25086,7 +25426,7 @@ function retry () {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":231,"./legacy-streams.js":233,"./polyfills.js":234,"_process":252,"assert":5,"fs":53,"util":294}],233:[function(require,module,exports){
+},{"./fs.js":234,"./legacy-streams.js":236,"./polyfills.js":237,"_process":255,"assert":5,"fs":53,"util":297}],236:[function(require,module,exports){
 (function (process){
 var Stream = require('stream').Stream
 
@@ -25208,7 +25548,7 @@ function legacy (fs) {
 }
 
 }).call(this,require('_process'))
-},{"_process":252,"stream":283}],234:[function(require,module,exports){
+},{"_process":255,"stream":286}],237:[function(require,module,exports){
 (function (process){
 var fs = require('./fs.js')
 var constants = require('constants')
@@ -25542,7 +25882,7 @@ function chownErOk (er) {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":231,"_process":252,"constants":80}],235:[function(require,module,exports){
+},{"./fs.js":234,"_process":255,"constants":80}],238:[function(require,module,exports){
 var fs = require('fs')
   , lstat = fs.lstatSync;
 
@@ -25556,7 +25896,7 @@ exports.readlinkSync = function (p) {
 
 
 
-},{"fs":53}],236:[function(require,module,exports){
+},{"fs":53}],239:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -25642,7 +25982,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],237:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 'use strict';
 module.exports = (str, count, indent) => {
 	indent = indent === undefined ? ' ' : indent;
@@ -25667,7 +26007,7 @@ module.exports = (str, count, indent) => {
 	return str.replace(/^(?!\s*$)/mg, indent.repeat(count));
 };
 
-},{}],238:[function(require,module,exports){
+},{}],241:[function(require,module,exports){
 (function (process){
 var wrappy = require('wrappy')
 var reqs = Object.create(null)
@@ -25725,7 +26065,7 @@ function slice (args) {
 }
 
 }).call(this,require('_process'))
-},{"_process":252,"once":247,"wrappy":296}],239:[function(require,module,exports){
+},{"_process":255,"once":250,"wrappy":299}],242:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -25750,7 +26090,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],240:[function(require,module,exports){
+},{}],243:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -25773,7 +26113,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],241:[function(require,module,exports){
+},{}],244:[function(require,module,exports){
 /**
  * Export generator function checks.
  */
@@ -25804,7 +26144,7 @@ function isGeneratorFunction (fn) {
     fn.constructor.name === 'GeneratorFunction'
 }
 
-},{}],242:[function(require,module,exports){
+},{}],245:[function(require,module,exports){
 'use strict';
 
 var isStream = module.exports = function (stream) {
@@ -25827,14 +26167,14 @@ isStream.transform = function (stream) {
 	return isStream.duplex(stream) && typeof stream._transform === 'function' && typeof stream._transformState === 'object';
 };
 
-},{}],243:[function(require,module,exports){
+},{}],246:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],244:[function(require,module,exports){
+},{}],247:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -42922,7 +43262,7 @@ module.exports = Array.isArray || function (arr) {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],245:[function(require,module,exports){
+},{}],248:[function(require,module,exports){
 module.exports = minimatch
 minimatch.Minimatch = Minimatch
 
@@ -43847,7 +44187,7 @@ function regExpEscape (s) {
   return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-},{"brace-expansion":51,"path":249}],246:[function(require,module,exports){
+},{"brace-expansion":51,"path":252}],249:[function(require,module,exports){
 
 var Promise = require('any-promise')
 var fs
@@ -43910,7 +44250,7 @@ exports.exists = function (filename, callback) {
   })
 }
 
-},{"any-promise":1,"fs":53,"graceful-fs":232,"thenify-all":286}],247:[function(require,module,exports){
+},{"any-promise":1,"fs":53,"graceful-fs":235,"thenify-all":289}],250:[function(require,module,exports){
 var wrappy = require('wrappy')
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
@@ -43954,7 +44294,7 @@ function onceStrict (fn) {
   return f
 }
 
-},{"wrappy":296}],248:[function(require,module,exports){
+},{"wrappy":299}],251:[function(require,module,exports){
 'use strict';
 
 var repeat = require('repeat-string');
@@ -43976,7 +44316,7 @@ module.exports = function padLeft(val, num, str) {
   return val + padding.slice(0, diff);
 };
 
-},{"repeat-string":266}],249:[function(require,module,exports){
+},{"repeat-string":269}],252:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -44204,7 +44544,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":252}],250:[function(require,module,exports){
+},{"_process":255}],253:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -44228,7 +44568,7 @@ module.exports.posix = posix;
 module.exports.win32 = win32;
 
 }).call(this,require('_process'))
-},{"_process":252}],251:[function(require,module,exports){
+},{"_process":255}],254:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -44275,7 +44615,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":252}],252:[function(require,module,exports){
+},{"_process":255}],255:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -44457,10 +44797,10 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],253:[function(require,module,exports){
+},{}],256:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":254}],254:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":257}],257:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -44536,7 +44876,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":256,"./_stream_writable":258,"core-util-is":164,"inherits":239,"process-nextick-args":251}],255:[function(require,module,exports){
+},{"./_stream_readable":259,"./_stream_writable":261,"core-util-is":164,"inherits":242,"process-nextick-args":254}],258:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -44563,7 +44903,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":257,"core-util-is":164,"inherits":239}],256:[function(require,module,exports){
+},{"./_stream_transform":260,"core-util-is":164,"inherits":242}],259:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -45507,7 +45847,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":254,"./internal/streams/BufferList":259,"_process":252,"buffer":55,"buffer-shims":54,"core-util-is":164,"events":210,"inherits":239,"isarray":243,"process-nextick-args":251,"string_decoder/":285,"util":52}],257:[function(require,module,exports){
+},{"./_stream_duplex":257,"./internal/streams/BufferList":262,"_process":255,"buffer":55,"buffer-shims":54,"core-util-is":164,"events":210,"inherits":242,"isarray":246,"process-nextick-args":254,"string_decoder/":288,"util":52}],260:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -45690,7 +46030,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":254,"core-util-is":164,"inherits":239}],258:[function(require,module,exports){
+},{"./_stream_duplex":257,"core-util-is":164,"inherits":242}],261:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -46247,7 +46587,7 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":254,"_process":252,"buffer":55,"buffer-shims":54,"core-util-is":164,"events":210,"inherits":239,"process-nextick-args":251,"util-deprecate":291}],259:[function(require,module,exports){
+},{"./_stream_duplex":257,"_process":255,"buffer":55,"buffer-shims":54,"core-util-is":164,"events":210,"inherits":242,"process-nextick-args":254,"util-deprecate":294}],262:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('buffer').Buffer;
@@ -46312,10 +46652,10 @@ BufferList.prototype.concat = function (n) {
   }
   return ret;
 };
-},{"buffer":55,"buffer-shims":54}],260:[function(require,module,exports){
+},{"buffer":55,"buffer-shims":54}],263:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":255}],261:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":258}],264:[function(require,module,exports){
 (function (process){
 var Stream = (function (){
   try {
@@ -46335,13 +46675,13 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":254,"./lib/_stream_passthrough.js":255,"./lib/_stream_readable.js":256,"./lib/_stream_transform.js":257,"./lib/_stream_writable.js":258,"_process":252}],262:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":257,"./lib/_stream_passthrough.js":258,"./lib/_stream_readable.js":259,"./lib/_stream_transform.js":260,"./lib/_stream_writable.js":261,"_process":255}],265:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":257}],263:[function(require,module,exports){
+},{"./lib/_stream_transform.js":260}],266:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":258}],264:[function(require,module,exports){
+},{"./lib/_stream_writable.js":261}],267:[function(require,module,exports){
 (function (global){
 // This method of obtaining a reference to the global object needs to be
 // kept identical to the way it is obtained in runtime.js
@@ -46376,7 +46716,7 @@ if (hadRuntime) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./runtime":265}],265:[function(require,module,exports){
+},{"./runtime":268}],268:[function(require,module,exports){
 (function (process,global){
 /**
  * Copyright (c) 2014, Facebook, Inc.
@@ -47063,7 +47403,7 @@ if (hadRuntime) {
 );
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":252}],266:[function(require,module,exports){
+},{"_process":255}],269:[function(require,module,exports){
 /*!
  * repeat-string <https://github.com/jonschlinkert/repeat-string>
  *
@@ -47135,7 +47475,7 @@ function repeat(str, num) {
   return res;
 }
 
-},{}],267:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47241,7 +47581,7 @@ ArraySet.prototype.toArray = function ArraySet_toArray() {
 
 exports.ArraySet = ArraySet;
 
-},{"./util":273}],268:[function(require,module,exports){
+},{"./util":276}],271:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47383,7 +47723,7 @@ exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
   aOutParam.rest = aIndex;
 };
 
-},{"./base64":269}],269:[function(require,module,exports){
+},{"./base64":272}],272:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47452,7 +47792,7 @@ exports.decode = function (charCode) {
   return -1;
 };
 
-},{}],270:[function(require,module,exports){
+},{}],273:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47565,7 +47905,7 @@ exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
   return index;
 };
 
-},{}],271:[function(require,module,exports){
+},{}],274:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -47681,7 +48021,7 @@ exports.quickSort = function (ary, comparator) {
   doQuickSort(ary, comparator, 0, ary.length - 1);
 };
 
-},{}],272:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -48765,7 +49105,7 @@ IndexedSourceMapConsumer.prototype._parseMappings =
 
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./array-set":267,"./base64-vlq":268,"./binary-search":270,"./quick-sort":271,"./util":273}],273:[function(require,module,exports){
+},{"./array-set":270,"./base64-vlq":271,"./binary-search":273,"./quick-sort":274,"./util":276}],276:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -49184,7 +49524,7 @@ function compareByGeneratedPositionsInflated(mappingA, mappingB) {
 }
 exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
 
-},{}],274:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 // Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -49245,7 +49585,7 @@ module.exports = function FormatStackTrace(error, frames) {
   return lines.join("\n");
 };
 
-},{}],275:[function(require,module,exports){
+},{}],278:[function(require,module,exports){
 (function (global){
 // If a another copy (same version or not) of stack-chain exists it will result
 // in wrong stack traces (most likely dublicate callSites).
@@ -49265,7 +49605,7 @@ else {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./package.json":276,"./stack-chain":277}],276:[function(require,module,exports){
+},{"./package.json":279,"./stack-chain":280}],279:[function(require,module,exports){
 module.exports={
   "name": "stack-chain",
   "description": "API for combining call site modifiers",
@@ -49293,7 +49633,7 @@ module.exports={
   "license": "MIT"
 }
 
-},{}],277:[function(require,module,exports){
+},{}],280:[function(require,module,exports){
 
 // use a already existing formater or fallback to the default v8 formater
 var defaultFormater = require('./format.js');
@@ -49493,7 +49833,7 @@ Object.defineProperty(Error.prototype, 'callSite', {
 
 module.exports = chain;
 
-},{"./format.js":274,"./package.json":276}],278:[function(require,module,exports){
+},{"./format.js":277,"./package.json":279}],281:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -49605,7 +49945,7 @@ module.exports = chain;
     return StackFrame;
 }));
 
-},{}],279:[function(require,module,exports){
+},{}],282:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -49652,7 +49992,7 @@ module.exports = chain;
     };
 }));
 
-},{"stackframe":278}],280:[function(require,module,exports){
+},{"stackframe":281}],283:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -49761,7 +50101,7 @@ module.exports = chain;
     return StackFrame;
 }));
 
-},{}],281:[function(require,module,exports){
+},{}],284:[function(require,module,exports){
 (function(root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -50066,7 +50406,7 @@ module.exports = chain;
     };
 }));
 
-},{"source-map/lib/source-map-consumer":272,"stackframe":280}],282:[function(require,module,exports){
+},{"source-map/lib/source-map-consumer":275,"stackframe":283}],285:[function(require,module,exports){
 (function(root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -50284,7 +50624,7 @@ module.exports = chain;
     };
 }));
 
-},{"error-stack-parser":178,"stack-generator":279,"stacktrace-gps":281}],283:[function(require,module,exports){
+},{"error-stack-parser":178,"stack-generator":282,"stacktrace-gps":284}],286:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -50413,7 +50753,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":210,"inherits":239,"readable-stream/duplex.js":253,"readable-stream/passthrough.js":260,"readable-stream/readable.js":261,"readable-stream/transform.js":262,"readable-stream/writable.js":263}],284:[function(require,module,exports){
+},{"events":210,"inherits":242,"readable-stream/duplex.js":256,"readable-stream/passthrough.js":263,"readable-stream/readable.js":264,"readable-stream/transform.js":265,"readable-stream/writable.js":266}],287:[function(require,module,exports){
 "use strict";
 
 module.exports = parseArgsStringToArgv;
@@ -50450,7 +50790,7 @@ function parseArgsStringToArgv(value, env, file) {
   return myArray;
 }
 
-},{}],285:[function(require,module,exports){
+},{}],288:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -50673,7 +51013,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":55}],286:[function(require,module,exports){
+},{"buffer":55}],289:[function(require,module,exports){
 
 var thenify = require('thenify')
 
@@ -50748,7 +51088,7 @@ function deprecated(source, name) {
   return false
 }
 
-},{"thenify":287}],287:[function(require,module,exports){
+},{"thenify":290}],290:[function(require,module,exports){
 
 var Promise = require('any-promise')
 var assert = require('assert')
@@ -50813,7 +51153,7 @@ function createWrapper(name, withCallback) {
   + '})'
 }
 
-},{"any-promise":1,"assert":5}],288:[function(require,module,exports){
+},{"any-promise":1,"assert":5}],291:[function(require,module,exports){
 var upperCase = require('upper-case')
 
 /**
@@ -50832,7 +51172,7 @@ module.exports = function (str, locale) {
   return upperCase(str.charAt(0), locale) + str.substr(1)
 }
 
-},{"upper-case":289}],289:[function(require,module,exports){
+},{"upper-case":292}],292:[function(require,module,exports){
 /**
  * Special language-specific overrides.
  *
@@ -50884,7 +51224,7 @@ module.exports = function (str, locale) {
   return str.toUpperCase()
 }
 
-},{}],290:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 var FUNCTIONS = {};
 
 /**
@@ -50907,7 +51247,7 @@ module.exports = function (arity, fn) {
   return FUNCTIONS[arity](fn);
 };
 
-},{}],291:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 (function (global){
 
 /**
@@ -50978,16 +51318,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],292:[function(require,module,exports){
-arguments[4][239][0].apply(exports,arguments)
-},{"dup":239}],293:[function(require,module,exports){
+},{}],295:[function(require,module,exports){
+arguments[4][242][0].apply(exports,arguments)
+},{"dup":242}],296:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],294:[function(require,module,exports){
+},{}],297:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -51577,7 +51917,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":293,"_process":252,"inherits":292}],295:[function(require,module,exports){
+},{"./support/isBuffer":296,"_process":255,"inherits":295}],298:[function(require,module,exports){
 /*
  * verror.js: richer JavaScript errors
  */
@@ -51999,7 +52339,7 @@ WError.prototype.cause = function we_cause(c)
 	return (this.jse_cause);
 };
 
-},{"assert-plus":4,"core-util-is":164,"extsprintf":211,"util":294}],296:[function(require,module,exports){
+},{"assert-plus":4,"core-util-is":164,"extsprintf":211,"util":297}],299:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -52034,7 +52374,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],297:[function(require,module,exports){
+},{}],300:[function(require,module,exports){
 module.exports={
   "name": "cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
@@ -52045,7 +52385,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.0.0-rc.8",
+  "version": "2.0.0-rc.9",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -52162,7 +52502,7 @@ module.exports={
     "cucumber-tag-expressions": "^1.0.0",
     "duration": "^0.2.0",
     "figures": "2.0.0",
-    "gherkin": "^4.0.0",
+    "gherkin": "^4.1.0",
     "glob": "^7.0.0",
     "indent-string": "^3.1.0",
     "is-generator": "^1.0.2",
@@ -52232,7 +52572,7 @@ module.exports={
   ]
 }
 
-},{}],298:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52314,7 +52654,7 @@ var ArgvParser = function () {
 
 exports.default = ArgvParser;
 
-},{"../../package.json":297,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"commander":78,"lodash":244,"path":249}],299:[function(require,module,exports){
+},{"../../package.json":300,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"commander":78,"lodash":247,"path":252}],302:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52665,7 +53005,7 @@ var ConfigurationBuilder = function () {
 
 exports.default = ConfigurationBuilder;
 
-},{"./argv_parser":298,"./path_expander":303,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"lodash":244,"mz/fs":246,"path":249}],300:[function(require,module,exports){
+},{"./argv_parser":301,"./path_expander":306,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"lodash":247,"mz/fs":249,"path":252}],303:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52728,7 +53068,7 @@ var Parser = function () {
 
 exports.default = Parser;
 
-},{"../models/feature":322,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"gherkin":215}],301:[function(require,module,exports){
+},{"../models/feature":325,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"gherkin":215}],304:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52861,7 +53201,7 @@ var _profile_loader2 = _interopRequireDefault(_profile_loader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./argv_parser":298,"./feature_parser":300,"./profile_loader":304,"babel-runtime/regenerator":47,"bluebird":50,"lodash":244,"mz/fs":246}],302:[function(require,module,exports){
+},{"./argv_parser":301,"./feature_parser":303,"./profile_loader":307,"babel-runtime/regenerator":47,"bluebird":50,"lodash":247,"mz/fs":249}],305:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53131,7 +53471,7 @@ var Cli = function () {
 
 exports.default = Cli;
 
-},{"../formatter/builder":305,"../runtime":340,"../scenario_filter":344,"../support_code_fns":346,"../support_code_library/builder":347,"./configuration_builder":299,"./helpers":301,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/slicedToArray":45,"babel-runtime/regenerator":47,"bluebird":50,"lodash":244,"mz/fs":246}],303:[function(require,module,exports){
+},{"../formatter/builder":308,"../runtime":343,"../scenario_filter":347,"../support_code_fns":349,"../support_code_library/builder":350,"./configuration_builder":302,"./helpers":304,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/slicedToArray":45,"babel-runtime/regenerator":47,"bluebird":50,"lodash":247,"mz/fs":249}],306:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53323,7 +53663,7 @@ var PathExpander = function () {
 
 exports.default = PathExpander;
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"glob":229,"lodash":244,"mz/fs":246,"path":249}],304:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"glob":232,"lodash":247,"mz/fs":249,"path":252}],307:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53469,7 +53809,7 @@ var ProfileLoader = function () {
 
 exports.default = ProfileLoader;
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/typeof":46,"babel-runtime/regenerator":47,"bluebird":50,"lodash":244,"mz/fs":246,"path":249,"string-argv":284}],305:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/typeof":46,"babel-runtime/regenerator":47,"bluebird":50,"lodash":247,"mz/fs":249,"path":252,"string-argv":287}],308:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53619,7 +53959,7 @@ var FormatterBuilder = function () {
 
 exports.default = FormatterBuilder;
 
-},{"./get_color_fns":306,"./json_formatter":308,"./pretty_formatter":309,"./progress_formatter":310,"./rerun_formatter":311,"./snippets_formatter":312,"./step_definition_snippet_builder":313,"./step_definition_snippet_builder/javascript_snippet_syntax":314,"./summary_formatter":315,"./usage_formatter":316,"./usage_json_formatter":318,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":244,"path":249}],306:[function(require,module,exports){
+},{"./get_color_fns":309,"./json_formatter":311,"./pretty_formatter":312,"./progress_formatter":313,"./rerun_formatter":314,"./snippets_formatter":315,"./step_definition_snippet_builder":316,"./step_definition_snippet_builder/javascript_snippet_syntax":317,"./summary_formatter":318,"./usage_formatter":319,"./usage_json_formatter":321,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":247,"path":252}],309:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53650,7 +53990,7 @@ function getColorFns(enabled) {
   return _safe2.default;
 }
 
-},{"../status":345,"babel-runtime/helpers/defineProperty":41,"colors/safe":77}],307:[function(require,module,exports){
+},{"../status":348,"babel-runtime/helpers/defineProperty":41,"colors/safe":77}],310:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53675,7 +54015,7 @@ var Formatter = function Formatter(options) {
 
 exports.default = Formatter;
 
-},{"babel-runtime/helpers/classCallCheck":39,"lodash":244}],308:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"lodash":247}],311:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53853,7 +54193,7 @@ var JsonFormatter = function (_Formatter) {
 
 exports.default = JsonFormatter;
 
-},{"../models/step_arguments/data_table":329,"../models/step_arguments/doc_string":330,"../status":345,"./":307,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"lodash":244,"util":294}],309:[function(require,module,exports){
+},{"../models/step_arguments/data_table":332,"../models/step_arguments/doc_string":333,"../status":348,"./":310,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"lodash":247,"util":297}],312:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54043,7 +54383,7 @@ exports.default = PrettyFormatter;
 
 PrettyFormatter.CHARACTERS = (_PrettyFormatter$CHAR = {}, (0, _defineProperty3.default)(_PrettyFormatter$CHAR, _status2.default.AMBIGUOUS, _figures2.default.cross), (0, _defineProperty3.default)(_PrettyFormatter$CHAR, _status2.default.FAILED, _figures2.default.cross), (0, _defineProperty3.default)(_PrettyFormatter$CHAR, _status2.default.PASSED, _figures2.default.tick), (0, _defineProperty3.default)(_PrettyFormatter$CHAR, _status2.default.PENDING, '?'), (0, _defineProperty3.default)(_PrettyFormatter$CHAR, _status2.default.SKIPPED, '-'), (0, _defineProperty3.default)(_PrettyFormatter$CHAR, _status2.default.UNDEFINED, '?'), _PrettyFormatter$CHAR);
 
-},{"../models/hook":324,"../models/step_arguments/data_table":329,"../models/step_arguments/doc_string":330,"../status":345,"./summary_formatter":315,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/defineProperty":41,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"cli-table":56,"figures":212}],310:[function(require,module,exports){
+},{"../models/hook":327,"../models/step_arguments/data_table":332,"../models/step_arguments/doc_string":333,"../status":348,"./summary_formatter":318,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/defineProperty":41,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"cli-table":56,"figures":212}],313:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54121,7 +54461,7 @@ var ProgressFormatter = function (_SummaryFormatter) {
 
 exports.default = ProgressFormatter;
 
-},{"../models/hook":324,"../status":345,"./summary_formatter":315,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/defineProperty":41,"babel-runtime/helpers/get":42,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],311:[function(require,module,exports){
+},{"../models/hook":327,"../status":348,"./summary_formatter":318,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/defineProperty":41,"babel-runtime/helpers/get":42,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],314:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54197,7 +54537,7 @@ var RerunFormatter = function (_Formatter) {
 
 exports.default = RerunFormatter;
 
-},{"../status":345,"./":307,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"lodash":244,"path":249}],312:[function(require,module,exports){
+},{"../status":348,"./":310,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"lodash":247,"path":252}],315:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54252,7 +54592,7 @@ var SnippetsFormatter = function (_Formatter) {
 
 exports.default = SnippetsFormatter;
 
-},{"../status":345,"./":307,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],313:[function(require,module,exports){
+},{"../status":348,"./":310,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],316:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54343,7 +54683,7 @@ var StepDefinitionSnippetBuilder = function () {
 
 exports.default = StepDefinitionSnippetBuilder;
 
-},{"../../keyword_type":321,"../../models/step_arguments/data_table":329,"../../models/step_arguments/doc_string":330,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"cucumber-expressions":170,"lodash":244}],314:[function(require,module,exports){
+},{"../../keyword_type":324,"../../models/step_arguments/data_table":332,"../../models/step_arguments/doc_string":333,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"cucumber-expressions":170,"lodash":247}],317:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54397,7 +54737,7 @@ var JavaScriptSnippetSyntax = function () {
 
 exports.default = JavaScriptSnippetSyntax;
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":244}],315:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":247}],318:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54642,7 +54982,7 @@ var SummaryFormatter = function (_Formatter) {
 
 exports.default = SummaryFormatter;
 
-},{"../models/hook":324,"../status":345,"./":307,"./utils":319,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"cli-table":56,"duration":177,"indent-string":237,"lodash":244}],316:[function(require,module,exports){
+},{"../models/hook":327,"../status":348,"./":310,"./utils":322,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"cli-table":56,"duration":177,"indent-string":240,"lodash":247}],319:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54752,7 +55092,7 @@ var UsageFormatter = function (_Formatter) {
 
 exports.default = UsageFormatter;
 
-},{"./":307,"./usage_helpers":317,"./utils":319,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"cli-table":56,"lodash":244}],317:[function(require,module,exports){
+},{"./":310,"./usage_helpers":320,"./utils":322,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44,"cli-table":56,"lodash":247}],320:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54850,7 +55190,7 @@ function getUsage(_ref3) {
   return buildResult(mapping);
 }
 
-},{"../../models/hook":324,"../utils":319,"lodash":244}],318:[function(require,module,exports){
+},{"../../models/hook":327,"../utils":322,"lodash":247}],321:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54905,7 +55245,7 @@ var UsageJsonFormatter = function (_Formatter) {
 
 exports.default = UsageJsonFormatter;
 
-},{"./":307,"./usage_helpers":317,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],319:[function(require,module,exports){
+},{"./":310,"./usage_helpers":320,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],322:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54937,7 +55277,7 @@ function formatError(error, colorFns) {
   });
 }
 
-},{"assertion-error-formatter":13,"path":249}],320:[function(require,module,exports){
+},{"assertion-error-formatter":13,"path":252}],323:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55099,7 +55439,7 @@ var defineSupportCode = exports.defineSupportCode = _support_code_fns2.default.a
 var getSupportCodeFns = exports.getSupportCodeFns = _support_code_fns2.default.get;
 var clearSupportCodeFns = exports.clearSupportCodeFns = _support_code_fns2.default.reset;
 
-},{"./cli":302,"./cli/feature_parser":300,"./formatter":307,"./formatter/builder":305,"./formatter/json_formatter":308,"./formatter/pretty_formatter":309,"./formatter/progress_formatter":310,"./formatter/rerun_formatter":311,"./formatter/snippets_formatter":312,"./formatter/summary_formatter":315,"./formatter/usage_formatter":316,"./formatter/usage_json_formatter":318,"./runtime":340,"./scenario_filter":344,"./status":345,"./support_code_fns":346,"./support_code_library/builder":347}],321:[function(require,module,exports){
+},{"./cli":305,"./cli/feature_parser":303,"./formatter":310,"./formatter/builder":308,"./formatter/json_formatter":311,"./formatter/pretty_formatter":312,"./formatter/progress_formatter":313,"./formatter/rerun_formatter":314,"./formatter/snippets_formatter":315,"./formatter/summary_formatter":318,"./formatter/usage_formatter":319,"./formatter/usage_json_formatter":321,"./runtime":343,"./scenario_filter":347,"./status":348,"./support_code_fns":349,"./support_code_library/builder":350}],324:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55149,7 +55489,7 @@ function getStepKeywordType(_ref) {
   }
 }
 
-},{"gherkin":215,"lodash":244}],322:[function(require,module,exports){
+},{"gherkin":215,"lodash":247}],325:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55218,7 +55558,7 @@ var Feature = function Feature(_ref) {
 
 exports.default = Feature;
 
-},{"./scenario":326,"./tag":334,"babel-runtime/helpers/classCallCheck":39,"lodash":244}],323:[function(require,module,exports){
+},{"./scenario":329,"./tag":337,"babel-runtime/helpers/classCallCheck":39,"lodash":247}],326:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55277,7 +55617,7 @@ var FeaturesResult = function () {
 
 exports.default = FeaturesResult;
 
-},{"../status":345,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":244}],324:[function(require,module,exports){
+},{"../status":348,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":247}],327:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55305,7 +55645,7 @@ exports.default = Hook;
 Hook.BEFORE_STEP_KEYWORD = 'Before';
 Hook.AFTER_STEP_KEYWORD = 'After';
 
-},{"babel-runtime/helpers/classCallCheck":39}],325:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39}],328:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55378,7 +55718,7 @@ var HookDefinition = function (_StepDefinition) {
 
 exports.default = HookDefinition;
 
-},{"../scenario_filter":344,"./step_definition":332,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],326:[function(require,module,exports){
+},{"../scenario_filter":347,"./step_definition":335,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/helpers/inherits":43,"babel-runtime/helpers/possibleConstructorReturn":44}],329:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55424,7 +55764,7 @@ var Scenario = function Scenario(options) {
   this.lines = _lodash2.default.map(gherkinData.locations, 'line');
   this.name = gherkinData.name;
   this.tags = _lodash2.default.map(gherkinData.tags, _tag2.default.build);
-  this.uri = gherkinData.locations[0].path;
+  this.uri = feature.uri;
 
   this.line = _lodash2.default.first(this.lines);
   this.description = _lodash2.default.chain(this.lines).map(function (line) {
@@ -55448,7 +55788,7 @@ var Scenario = function Scenario(options) {
 
 exports.default = Scenario;
 
-},{"./step":328,"./tag":334,"babel-runtime/helpers/classCallCheck":39,"gherkin":215,"lodash":244}],327:[function(require,module,exports){
+},{"./step":331,"./tag":337,"babel-runtime/helpers/classCallCheck":39,"gherkin":215,"lodash":247}],330:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55522,7 +55862,7 @@ exports.default = ScenarioResult;
 
 (0, _status.addStatusPredicates)(ScenarioResult.prototype);
 
-},{"../status":345,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],328:[function(require,module,exports){
+},{"../status":348,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],331:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55559,7 +55899,7 @@ var Step = function Step(options) {
   this.line = _lodash2.default.last(_lodash2.default.map(gherkinData.locations, 'line'));
   this.name = gherkinData.text;
   this.scenario = scenario;
-  this.uri = gherkinData.locations[0].path;
+  this.uri = scenario.uri;
 
   this.isBackground = _lodash2.default.some(gherkinData.locations, function (_ref) {
     var line = _ref.line;
@@ -55577,7 +55917,7 @@ var Step = function Step(options) {
 
 exports.default = Step;
 
-},{"../keyword_type":321,"./step_arguments":331,"babel-runtime/helpers/classCallCheck":39,"lodash":244}],329:[function(require,module,exports){
+},{"../keyword_type":324,"./step_arguments":334,"babel-runtime/helpers/classCallCheck":39,"lodash":247}],332:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55649,7 +55989,7 @@ var DataTable = function () {
 
 exports.default = DataTable;
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":244}],330:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":247}],333:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55672,7 +56012,7 @@ var DocString = function DocString(gherkinData) {
 
 exports.default = DocString;
 
-},{"babel-runtime/helpers/classCallCheck":39}],331:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39}],334:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55719,7 +56059,7 @@ var StepArguments = function () {
 
 exports.default = StepArguments;
 
-},{"./data_table":329,"./doc_string":330,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],332:[function(require,module,exports){
+},{"./data_table":332,"./doc_string":333,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],335:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55824,7 +56164,7 @@ var StepDefinition = function () {
 
 exports.default = StepDefinition;
 
-},{"./step_arguments/data_table":329,"./step_arguments/doc_string":330,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"cucumber-expressions":170,"lodash":244}],333:[function(require,module,exports){
+},{"./step_arguments/data_table":332,"./step_arguments/doc_string":333,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"cucumber-expressions":170,"lodash":247}],336:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55854,7 +56194,7 @@ exports.default = StepResult;
 
 (0, _status.addStatusPredicates)(StepResult.prototype);
 
-},{"../status":345,"babel-runtime/helpers/classCallCheck":39,"lodash":244}],334:[function(require,module,exports){
+},{"../status":348,"babel-runtime/helpers/classCallCheck":39,"lodash":247}],337:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55891,7 +56231,7 @@ var Tag = function () {
 
 exports.default = Tag;
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],335:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],338:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55915,7 +56255,7 @@ var Attachment = function Attachment(_ref) {
 
 exports.default = Attachment;
 
-},{"babel-runtime/helpers/classCallCheck":39}],336:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39}],339:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -56024,7 +56364,7 @@ var AttachmentManager = function () {
 exports.default = AttachmentManager;
 
 }).call(this,require("buffer").Buffer)
-},{"./attachment":335,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"bluebird":50,"buffer":55,"is-stream":242}],337:[function(require,module,exports){
+},{"./attachment":338,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"bluebird":50,"buffer":55,"is-stream":245}],340:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56088,7 +56428,7 @@ _lodash2.default.assign(Event, {
   STEP_RESULT_EVENT_NAME: 'StepResult'
 });
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":244}],338:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":247}],341:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56235,7 +56575,7 @@ var EventBroadcaster = function () {
 
 exports.default = EventBroadcaster;
 
-},{"../user_code_runner":353,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"verror":295}],339:[function(require,module,exports){
+},{"../user_code_runner":356,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"verror":298}],342:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56490,7 +56830,7 @@ var FeaturesRunner = function () {
 
 exports.default = FeaturesRunner;
 
-},{"../models/features_result":323,"../models/scenario_result":327,"../status":345,"./event":337,"./scenario_runner":341,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50}],340:[function(require,module,exports){
+},{"../models/features_result":326,"../models/scenario_result":330,"../status":348,"./event":340,"./scenario_runner":344,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50}],343:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56604,7 +56944,7 @@ var Runtime = function () {
 
 exports.default = Runtime;
 
-},{"./event_broadcaster":338,"./features_runner":339,"./stack_trace_filter":342,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50}],341:[function(require,module,exports){
+},{"./event_broadcaster":341,"./features_runner":342,"./stack_trace_filter":345,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50}],344:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57134,7 +57474,7 @@ var ScenarioRunner = function () {
 
 exports.default = ScenarioRunner;
 
-},{"../models/hook":324,"../models/scenario_result":327,"../models/step_result":333,"../status":345,"./attachment_manager":336,"./event":337,"./step_runner":343,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50}],342:[function(require,module,exports){
+},{"../models/hook":327,"../models/scenario_result":330,"../models/step_result":336,"../status":348,"./attachment_manager":339,"./event":340,"./step_runner":346,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50}],345:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -57218,7 +57558,7 @@ var StackTraceFilter = function () {
 exports.default = StackTraceFilter;
 
 }).call(this,"/src/runtime")
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":244,"path":249,"stack-chain":275}],343:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"lodash":247,"path":252,"stack-chain":278}],346:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57360,7 +57700,7 @@ var beginTiming = _time2.default.beginTiming,
     endTiming = _time2.default.endTiming;
 exports.default = { run: run };
 
-},{"../models/step_result":333,"../status":345,"../time":351,"../user_code_runner":353,"babel-runtime/regenerator":47,"bluebird":50,"lodash":244}],344:[function(require,module,exports){
+},{"../models/step_result":336,"../status":348,"../time":354,"../user_code_runner":356,"babel-runtime/regenerator":47,"bluebird":50,"lodash":247}],347:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57476,7 +57816,7 @@ var ScenarioFilter = function () {
 
 exports.default = ScenarioFilter;
 
-},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"cucumber-tag-expressions/lib/tag_expression_parser":175,"lodash":244,"path":249}],345:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"cucumber-tag-expressions/lib/tag_expression_parser":175,"lodash":247,"path":252}],348:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57519,7 +57859,7 @@ function getStatusMapping(initialValue) {
   }).fromPairs().value();
 }
 
-},{"lodash":244,"upper-case-first":288}],346:[function(require,module,exports){
+},{"lodash":247,"upper-case-first":291}],349:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57539,7 +57879,7 @@ exports.default = {
   }
 };
 
-},{}],347:[function(require,module,exports){
+},{}],350:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57658,7 +57998,7 @@ function wrapDefinitions(_ref3) {
 
 exports.default = { build: build };
 
-},{"./helpers":348,"./parameter_type_registry_builder":349,"is-generator":241,"lodash":244,"path":249,"util-arity":290}],348:[function(require,module,exports){
+},{"./helpers":351,"./parameter_type_registry_builder":352,"is-generator":244,"lodash":247,"path":252,"util-arity":293}],351:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57807,7 +58147,7 @@ function defineParameterType(parameterTypeRegistry) {
   };
 }
 
-},{"../formatter/utils":319,"../models/hook_definition":325,"../models/step_definition":332,"./validate_arguments":350,"babel-runtime/helpers/defineProperty":41,"cucumber-expressions":170,"lodash":244,"path":249,"stacktrace-js":282,"util":294}],349:[function(require,module,exports){
+},{"../formatter/utils":322,"../models/hook_definition":328,"../models/step_definition":335,"./validate_arguments":353,"babel-runtime/helpers/defineProperty":41,"cucumber-expressions":170,"lodash":247,"path":252,"stacktrace-js":285,"util":297}],352:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57825,7 +58165,7 @@ function build() {
 
 exports.default = { build: build };
 
-},{"cucumber-expressions":170}],350:[function(require,module,exports){
+},{"cucumber-expressions":170}],353:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57907,7 +58247,7 @@ function validateArguments(_ref7) {
   });
 }
 
-},{"lodash":244}],351:[function(require,module,exports){
+},{"lodash":247}],354:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -57944,7 +58284,7 @@ function getTimestamp() {
 exports.default = methods;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],352:[function(require,module,exports){
+},{}],355:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -57992,7 +58332,7 @@ var UncaughtExceptionManager = function () {
 exports.default = UncaughtExceptionManager;
 
 }).call(this,require('_process'))
-},{"_process":252,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],353:[function(require,module,exports){
+},{"_process":255,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40}],356:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58177,5 +58517,5 @@ var UserCodeRunner = function () {
 
 exports.default = UserCodeRunner;
 
-},{"./time":351,"./uncaught_exception_manager":352,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"util":294}]},{},[320])(320)
+},{"./time":354,"./uncaught_exception_manager":355,"babel-runtime/helpers/classCallCheck":39,"babel-runtime/helpers/createClass":40,"babel-runtime/regenerator":47,"bluebird":50,"util":297}]},{},[323])(323)
 });

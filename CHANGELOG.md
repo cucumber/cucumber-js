@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc8...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc9...master)
+
+### [2.0.0-rc.9](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.8...v2.0.0-rc.9) (2017-03-10)
+
+#### Bug Fixes
+
+* dependency: fix use of gherkin to not rely on removed field
 
 ### [2.0.0-rc.8](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.7...v2.0.0-rc.8) (2017-03-10)
 

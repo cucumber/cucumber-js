@@ -66,7 +66,6 @@ Perform the following steps on a feature branch.
     * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD`
 * Compile the bundle with `yarn run build-release`
   * Ensure the browser example works
-    * For now, need to manually update Gherkin with this [change](https://github.com/cucumber/gherkin/commit/46e72cd3cd79965298a9b154af7741480230b916), until the next version is released
 
 Review the changes, if everything looks good, squash merge into master.
 
