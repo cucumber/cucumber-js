@@ -17,7 +17,7 @@ export default class Step {
     this.line = _.last(_.map(gherkinData.locations, 'line'))
     this.name = gherkinData.text
     this.scenario = scenario
-    this.uri = gherkinData.locations[0].path
+    this.uri = scenario.uri
 
     this.isBackground = _.some(gherkinData.locations, ({line}) => {
       return _.includes(backgroundLines, line)
