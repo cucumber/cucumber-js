@@ -125,7 +125,7 @@
     "cucumber-tag-expressions": "^1.0.0",
     "duration": "^0.2.0",
     "figures": "2.0.0",
-    "gherkin": "^4.0.0",
+    "gherkin": "^4.1.0",
     "glob": "^7.0.0",
     "indent-string": "^3.1.0",
     "is-generator": "^1.0.2",
