@@ -14,8 +14,7 @@ describe("Cucumber.Ast.Feature", function () {
       tags: [
         {tag1: 'data'},
         {tag2: 'data'}
-      ],
-      uri: 'uri'
+      ]
     };
 
     scenario1 = createSpyWithStubs('scenario 1', {setFeature: null});
@@ -26,7 +25,7 @@ describe("Cucumber.Ast.Feature", function () {
     tag2 = createSpy('tag 2');
     spyOn(Cucumber.Ast, 'Tag').and.returnValues(tag1, tag2);
 
-    feature = Cucumber.Ast.Feature(featureData, scenarios);
+    feature = Cucumber.Ast.Feature(featureData, 'uri', scenarios);
   });
 
   describe("constructor", function () {
@@ -46,7 +45,7 @@ describe("Cucumber.Ast.Feature", function () {
           '  Scenario: Bar\n' +
           '    Then b\n';
         var gherkinDocument = new Gherkin.Parser().parse(source);
-        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
       });
 
       it('returns the keyword', function() {
@@ -61,7 +60,7 @@ describe("Cucumber.Ast.Feature", function () {
           '  Scenario: Bar\n' +
           '    Then b\n';
         var gherkinDocument = new Gherkin.Parser().parse(source);
-        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
       });
 
       it('returns the keyword', function() {
@@ -79,7 +78,7 @@ describe("Cucumber.Ast.Feature", function () {
           '    | what |\n' +
           '    | b    |';
         var gherkinDocument = new Gherkin.Parser().parse(source);
-        feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+        feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
       });
 
       it('returns the keyword', function() {
@@ -99,7 +98,7 @@ describe("Cucumber.Ast.Feature", function () {
             '\n' +
             '    Then b\n';
           var gherkinDocument = new Gherkin.Parser().parse(source);
-          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
         });
 
         it('returns the keyword', function() {
@@ -115,7 +114,7 @@ describe("Cucumber.Ast.Feature", function () {
             '  Scenario: Bar\n' +
             '    Then b\n';
           var gherkinDocument = new Gherkin.Parser().parse(source);
-          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
         });
 
         it('returns the keyword', function() {
@@ -138,7 +137,7 @@ describe("Cucumber.Ast.Feature", function () {
             '    | what |\n' +
             '    | b    |';
           var gherkinDocument = new Gherkin.Parser().parse(source);
-          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
         });
 
         it('returns the keyword', function() {
@@ -157,7 +156,7 @@ describe("Cucumber.Ast.Feature", function () {
             '    | what |\n' +
             '    | b    |';
           var gherkinDocument = new Gherkin.Parser().parse(source);
-          feature = Cucumber.Ast.Feature(gherkinDocument.feature, []);
+          feature = Cucumber.Ast.Feature(gherkinDocument.feature, 'uri', []);
         });
 
         it('returns the keyword', function() {
