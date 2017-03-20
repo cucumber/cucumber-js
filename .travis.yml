@@ -3,11 +3,12 @@ cache:
     - $HOME/node_modules
 
 deploy:
+  api_key: "$NPM_AUTH_TOKEN"
+  email: "charles.w.rudolph@gmail.com"
   on:
-    branch: master
     node: "6"
-  provider: script
-  script: scripts/deploy.sh
+    tags: true
+  provider: npm
   skip_cleanup: true
 
 language: node_js
