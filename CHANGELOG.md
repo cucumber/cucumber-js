@@ -6,12 +6,6 @@
 
 * dependency: fix use of gherkin to not rely on removed field
 
-#### Documentation
-
-* fix node.js example (#637) (Jonathan Gomez)
-* fix links in event_handlers.md (#638) (Oliver Rogers)
-* fix hooks example (#644) (John McLaughlin)
-
 ### [1.3.1](https://github.com/cucumber/cucumber-js/compare/v1.3.0...v1.3.1) (2016-09-30)
 
 #### Bug Fixes
