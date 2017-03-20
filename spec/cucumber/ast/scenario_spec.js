@@ -6,7 +6,7 @@ describe("Cucumber.Ast.Scenario", function () {
 
   beforeEach(function () {
     var scenarioData = {
-      locations: [{path: 'path', line: 1}, {line: 2}],
+      locations: [{line: 1}, {line: 2}],
       name: 'name',
       steps: [
         {step1: 'data'},
@@ -26,7 +26,7 @@ describe("Cucumber.Ast.Scenario", function () {
     tag2 = createSpy('tag 2');
     spyOn(Cucumber.Ast, 'Tag').and.returnValues(tag1, tag2);
 
-    scenario = Cucumber.Ast.Scenario(scenarioData);
+    scenario = Cucumber.Ast.Scenario(scenarioData, 'uri');
   });
 
   describe("constructor", function () {
@@ -80,7 +80,7 @@ describe("Cucumber.Ast.Scenario", function () {
 
   describe("getUri()", function () {
     it("returns the URI on which the background starts", function () {
-      expect(scenario.getUri()).toEqual('path');
+      expect(scenario.getUri()).toEqual('uri');
     });
   });
 

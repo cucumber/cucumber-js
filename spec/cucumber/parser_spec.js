@@ -54,15 +54,15 @@ describe("Cucumber.Parser", function () {
     });
 
     it("compiles the feature data", function () {
-      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument1, 'first feature uri');
-      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument2, 'second feature uri');
+      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument1);
+      expect(gherkinCompiler.compile).toHaveBeenCalledWith(gherkinDocument2);
     });
 
     it("creates the scenarios", function () {
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle1Data);
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle2Data);
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle3Data);
-      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle4Data);
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle1Data, 'first feature uri');
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle2Data, 'first feature uri');
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle3Data, 'second feature uri');
+      expect(Cucumber.Ast.Scenario).toHaveBeenCalledWith(pickle4Data, 'second feature uri');
     });
 
     it("checks if each scenario should be enrolled", function () {
@@ -73,8 +73,8 @@ describe("Cucumber.Parser", function () {
     });
 
     it("creates the features", function () {
-      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith({feature1: 'data', uri: 'first feature uri'}, [scenario1, scenario2]);
-      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith({feature2: 'data', uri: 'second feature uri'}, [scenario3]);
+      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith({feature1: 'data'}, 'first feature uri', [scenario1, scenario2]);
+      expect(Cucumber.Ast.Feature).toHaveBeenCalledWith({feature2: 'data'}, 'second feature uri', [scenario3]);
     });
 
     it("returns the features", function () {
