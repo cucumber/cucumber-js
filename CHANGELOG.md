@@ -1,4 +1,16 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.3.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.3.2...master)
+
+### [1.3.2](https://github.com/cucumber/cucumber-js/compare/v1.3.1...v1.3.2) (2016-03-20)
+
+#### Bug Fixes
+
+* dependency: fix use of gherkin to not rely on removed field
+
+#### Documentation
+
+* fix node.js example (#637) (Jonathan Gomez)
+* fix links in event_handlers.md (#638) (Oliver Rogers)
+* fix hooks example (#644) (John McLaughlin)
 
 ### [1.3.1](https://github.com/cucumber/cucumber-js/compare/v1.3.0...v1.3.1) (2016-09-30)
 
