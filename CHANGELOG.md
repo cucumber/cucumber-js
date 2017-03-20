@@ -1,6 +1,6 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc9...master)
 
-### [2.0.0-rc.9](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.8...v2.0.0-rc.9) (2017-03-10)
+### [2.0.0-rc.9](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.8...v2.0.0-rc.9) (2017-03-16)
 
 #### Bug Fixes
 
