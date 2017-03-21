@@ -36,9 +36,8 @@ defineSupportCode(function({Then, When}) {
   // Return a promise. The step is done when the promise resolves or rejects
   When(/^I view my profile$/, function () {
     // Assuming this.driver is a selenium webdriver
-    return this.driver.findElement({css: '.profile-link'}).then(function(element) {
-      return element.click();
-    });
+    var element = this.driver.findElement({css: '.profile-link'});
+    return element.click();
   });
 });
 ```
