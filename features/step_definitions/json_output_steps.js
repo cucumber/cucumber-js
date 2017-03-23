@@ -203,6 +203,19 @@ var jsonOutputSteps = function jsonOutputSteps() {
     var features = JSON.parse(this.lastRun.stdout);
     assert.equal(features[0].elements[0].description.trim(), description);
   });
+  
+  this.Then(/^it (does not)? ?outputs? a valid JSON$/, function(expected){
+    var expectedValid = (expected != 'does not');
+    var isValid = true;
+    try {
+        JSON.parse(this.lastRun.stdout);
+    } catch (e) {
+      isValid = false;
+    }
+      
+    
+    assert.equal(expectedValid, isValid);
+  });
 
 };
 
