@@ -284,7 +284,7 @@ Feature: Environment Hooks
     """
       features/support/hooks.js:2 Something bad
     """
-    And it does not outputs a valid JSON
+    And it does not output a valid JSON
 
   Scenario: Hooks still execute after a failure
     Given a file named "features/a.feature" with:
