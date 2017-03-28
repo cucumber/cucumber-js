@@ -63,16 +63,21 @@ var cliSteps = function cliSteps() {
                       getAdditionalErrorText(this.lastRun));
   });
 
-  this.Then(/^the (error )?output contains the text:$/, function(error, expectedOutput) {
+  this.Then(/^the (error )?output (does not)? ?contains? the text:$/, function(error, shouldFind, expectedOutput) {
+    var expectedToFind = !(shouldFind);
     var actualOutput = error ? this.lastRun.stderr : this.lastRun.stdout;
 
     actualOutput = normalizeText(actualOutput);
     expectedOutput = normalizeText(expectedOutput);
 
-    if (actualOutput.indexOf(expectedOutput) === -1)
-      throw new Error('Expected output to contain the following:\n' + expectedOutput + '\n' +
-                      'Got:\n' + actualOutput + '\n' +
-                      getAdditionalErrorText(this.lastRun));
+      if ((actualOutput.indexOf(expectedOutput) !== -1) !== expectedToFind) {
+          var errorPhrase = (expectedToFind) ? 'Expected output to contain the following:' : 'Expected output not to contain the following:';
+
+          throw new Error(errorPhrase + '\n' + expectedOutput + '\n' +
+              'Got:\n' + actualOutput + '\n' +
+              getAdditionalErrorText(this.lastRun));
+      }
+
   });
 
   this.Then(/^I see the version of Cucumber$/, function() {

@@ -204,19 +204,6 @@ var jsonOutputSteps = function jsonOutputSteps() {
     assert.equal(features[0].elements[0].description.trim(), description);
   });
   
-  this.Then(/^it (does not)? ?outputs? a valid JSON$/, function(expected){
-    var expectedValid = (expected != 'does not');
-    var isValid = true;
-    try {
-        JSON.parse(this.lastRun.stdout);
-    } catch (e) {
-      isValid = false;
-    }
-      
-    
-    assert.equal(expectedValid, isValid);
-  });
-
 };
 
 module.exports = jsonOutputSteps;

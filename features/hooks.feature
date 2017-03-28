@@ -264,7 +264,7 @@ Feature: Environment Hooks
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       var cucumberSteps = function() {
-        this.Given(/^This step is passing$/, function(callback) { callback(); });
+        this.Given(/^This step is passing$/, function(callback) { console.log('is passing'); callback(); });
       };
       module.exports = cucumberSteps;
       """
@@ -284,7 +284,15 @@ Feature: Environment Hooks
     """
       features/support/hooks.js:2 Something bad
     """
-    And it does not output a valid JSON
+    And the output does not contain the text:
+    """
+      is passing
+    """
+    And the error output does not contain the text:
+    """
+      is passing
+    """
+    
 
   Scenario: Hooks still execute after a failure
     Given a file named "features/a.feature" with:
