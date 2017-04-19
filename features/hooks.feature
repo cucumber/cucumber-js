@@ -270,6 +270,8 @@ Feature: Environment Hooks
       """
     And a file named "features/support/hooks.js" with:
       """
+      var Promise = require('bluebird');
+      
       var hooks = function () {
         this.registerHandler('BeforeFeatures', function(){
             return Promise.reject(new Error('Something bad'));
@@ -281,17 +283,17 @@ Feature: Environment Hooks
     When I run cucumber.js with `-f json`
     Then the exit status should be 1
     And the error output contains the text: 
-    """
+      """
       features/support/hooks.js:2 Something bad
-    """
+      """
     And the output does not contain the text:
-    """
+      """
       is passing
-    """
+      """
     And the error output does not contain the text:
-    """
+      """
       is passing
-    """
+      """
     
 
   Scenario: Hooks still execute after a failure
