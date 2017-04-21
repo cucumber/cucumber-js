@@ -285,7 +285,7 @@ Feature: Environment Hooks
       module.exports = hooks;
       """
     When I run cucumber.js with `-f json`
-    Then the exit status should be 1
+    Then the exit status should be non-zero
     And the error output contains the text: 
       """
       features/support/hooks.js:2 Something bad
