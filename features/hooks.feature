@@ -270,11 +270,15 @@ Feature: Environment Hooks
       """
     And a file named "features/support/hooks.js" with:
       """
-      var Promise = require('bluebird');
-      
       var hooks = function () {
         this.registerHandler('BeforeFeatures', function(){
-            return Promise.reject(new Error('Something bad'));
+          return {
+            then: function(resolve, reject){
+              setTimeout(function(){
+                reject(new Error('Something bad'))
+              });
+            }
+          };
         });
       };
 
