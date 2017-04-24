@@ -253,6 +253,53 @@ Feature: Environment Hooks
       ]
       """
 
+  Scenario: Failing the BeforeFeatures hook exists immediately with code = 1
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+      Scenario: I've declared one step and it is passing
+          Given This step is passing
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      var cucumberSteps = function() {
+        this.Given(/^This step is passing$/, function(callback) { console.log('is passing'); callback(); });
+      };
+      module.exports = cucumberSteps;
+      """
+    And a file named "features/support/hooks.js" with:
+      """
+      var hooks = function () {
+        this.registerHandler('BeforeFeatures', function(){
+          return {
+            then: function(resolve, reject){
+              setTimeout(function(){
+                reject(new Error('Something bad'))
+              });
+            }
+          };
+        });
+      };
+
+      module.exports = hooks;
+      """
+    When I run cucumber.js with `-f json`
+    Then the exit status should be non-zero
+    And the error output contains the text: 
+      """
+      features/support/hooks.js:2 Something bad
+      """
+    And the output does not contain the text:
+      """
+      is passing
+      """
+    And the error output does not contain the text:
+      """
+      is passing
+      """
+    
+
   Scenario: Hooks still execute after a failure
     Given a file named "features/a.feature" with:
       """
