@@ -2,7 +2,11 @@
 
 * Install [Chrome](https://www.google.com/chrome/)
 * Install [Node.js](https://nodejs.org) (6 or higher)
-* Run `npm install --save-dev cucumber@latest selenium-webdriver@3.0.1 chromedriver@2.25.1`
+* Install the following node modules with [yarn](https://yarnpkg.com/en/) or [npm](https://www.npmjs.com/)
+  * cucumber@latest
+  * selenium-webdriver@3.4.0 
+  * chromedriver@2.29.0
+
 * Add the following files
 
     ```gherkin
