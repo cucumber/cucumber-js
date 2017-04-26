@@ -2278,6 +2278,7 @@ function Event(name, payload) {
 module.exports = Event;
 
 },{"../../cucumber":"cucumber"}],39:[function(require,module,exports){
+(function (process){
 function EventBroadcaster(listeners, listenerDefaultTimeout) {
   var Cucumber = require('../../cucumber');
 
@@ -2307,7 +2308,7 @@ function EventBroadcaster(listeners, listenerDefaultTimeout) {
       Cucumber.Util.asyncForEach(listeners, function (listener, callback) {
         listener.hear(event, listenerDefaultTimeout, function(error) {
           if (error) {
-            throw error;
+            process.nextTick(function(){ throw error; }); // prevent swallow by unhandled rejection
           }
           callback();
         });
@@ -2320,7 +2321,9 @@ function EventBroadcaster(listeners, listenerDefaultTimeout) {
 
 module.exports = EventBroadcaster;
 
-},{"../../cucumber":"cucumber"}],40:[function(require,module,exports){
+}).call(this,require('_process'))
+
+},{"../../cucumber":"cucumber","_process":173}],40:[function(require,module,exports){
 function FeaturesResult(strict) {
   var Cucumber = require('../../cucumber');
   var _ = require('lodash');
@@ -2674,7 +2677,7 @@ module.exports = {
 
 }).call(this,"/lib/cucumber/runtime")
 
-},{"lodash":165,"path":170,"stack-chain":193}],45:[function(require,module,exports){
+},{"lodash":165,"path":170,"stack-chain":195}],45:[function(require,module,exports){
 function StepResult(payload) {
   var self = {
     getAmbiguousStepDefinitions: function getAmbiguousStepDefinitions() {
@@ -2936,7 +2939,7 @@ function Library(supportCodeDefinition) {
 
 module.exports = Library;
 
-},{"../../cucumber":"cucumber","lodash":165,"stacktrace-js":200}],50:[function(require,module,exports){
+},{"../../cucumber":"cucumber","lodash":165,"stacktrace-js":202}],50:[function(require,module,exports){
 (function (process){
 function StepDefinition(pattern, options, code, uri, line) {
   var Cucumber = require('../../cucumber');
@@ -3467,7 +3470,7 @@ function run(fn, thisArg, argsArray, timeoutInMilliseconds, callback) {
 
 module.exports = run;
 
-},{"../../cucumber":"cucumber","co":87,"is-generator":163,"util":206}],65:[function(require,module,exports){
+},{"../../cucumber":"cucumber","co":87,"is-generator":163,"util":207}],65:[function(require,module,exports){
 var _String = {
   count: function count(hayStack, needle) {
     var splitHayStack = hayStack.split(needle);
@@ -4037,7 +4040,7 @@ var objectKeys = Object.keys || function (obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"util/":206}],68:[function(require,module,exports){
+},{"util/":207}],68:[function(require,module,exports){
 module.exports = balanced;
 function balanced(a, b, str) {
   if (a instanceof RegExp) a = maybeMatch(a, str);
@@ -4322,7 +4325,7 @@ function expand(str, isTop) {
   var isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
   var isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
   var isSequence = isNumericSequence || isAlphaSequence;
-  var isOptions = /^(.*,)+(.+)?$/.test(m.body);
+  var isOptions = m.body.indexOf(',') >= 0;
   if (!isSequence && !isOptions) {
     // {a},b}
     if (m.post.match(/,.*\}/)) {
@@ -9557,7 +9560,7 @@ Duration.prototype = Object.create(Object.prototype, {
 }));
 
 
-},{"stackframe":198}],104:[function(require,module,exports){
+},{"stackframe":200}],104:[function(require,module,exports){
 'use strict';
 
 var getTime = Date.prototype.getTime;
@@ -17103,7 +17106,7 @@ function gherkinStream(options) {
 
 module.exports = gherkinStream
 
-},{"../parser":147,"../pickles/compiler":148,"stream":201}],150:[function(require,module,exports){
+},{"../parser":147,"../pickles/compiler":148,"stream":203}],150:[function(require,module,exports){
 var Stream = require('stream')
 
 function ndjsonStream() {
@@ -17117,7 +17120,7 @@ function ndjsonStream() {
 }
 
 module.exports = ndjsonStream
-},{"stream":201}],151:[function(require,module,exports){
+},{"stream":203}],151:[function(require,module,exports){
 var Stream = require('stream')
 var fs = require('fs')
 
@@ -17148,7 +17151,7 @@ function sourceEventStream(paths) {
 }
 
 module.exports = sourceEventStream
-},{"fs":72,"stream":201}],152:[function(require,module,exports){
+},{"fs":72,"stream":203}],152:[function(require,module,exports){
 function Token(line, location) {
   this.line = line;
   this.location = location;
@@ -18423,7 +18426,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 
 }).call(this,require('_process'))
 
-},{"./common.js":155,"./sync.js":157,"_process":173,"assert":67,"events":135,"fs":72,"fs.realpath":137,"inflight":160,"inherits":161,"minimatch":166,"once":168,"path":170,"path-is-absolute":171,"util":206}],157:[function(require,module,exports){
+},{"./common.js":155,"./sync.js":157,"_process":173,"assert":67,"events":135,"fs":72,"fs.realpath":137,"inflight":160,"inherits":161,"minimatch":166,"once":168,"path":170,"path-is-absolute":171,"util":207}],157:[function(require,module,exports){
 (function (process){
 module.exports = globSync
 globSync.GlobSync = GlobSync
@@ -18914,7 +18917,7 @@ GlobSync.prototype._makeAbs = function (f) {
 
 }).call(this,require('_process'))
 
-},{"./common.js":155,"./glob.js":156,"_process":173,"assert":67,"fs":72,"fs.realpath":137,"minimatch":166,"path":170,"path-is-absolute":171,"util":206}],158:[function(require,module,exports){
+},{"./common.js":155,"./glob.js":156,"_process":173,"assert":67,"fs":72,"fs.realpath":137,"minimatch":166,"path":170,"path-is-absolute":171,"util":207}],158:[function(require,module,exports){
 var fs = require('fs')
   , lstat = fs.lstatSync;
 
@@ -19073,7 +19076,7 @@ function slice (args) {
 
 }).call(this,require('_process'))
 
-},{"_process":173,"once":168,"wrappy":207}],161:[function(require,module,exports){
+},{"_process":173,"once":168,"wrappy":208}],161:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -37309,7 +37312,7 @@ function onceStrict (fn) {
   return f
 }
 
-},{"wrappy":207}],169:[function(require,module,exports){
+},{"wrappy":208}],169:[function(require,module,exports){
 exports.endianness = function () { return 'LE' };
 
 exports.hostname = function () {
@@ -37829,6 +37832,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -37841,7 +37848,7 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],174:[function(require,module,exports){
-module.exports = require("./lib/_stream_duplex.js")
+module.exports = require('./lib/_stream_duplex.js');
 
 },{"./lib/_stream_duplex.js":175}],175:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
@@ -37975,14 +37982,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream;
-(function () {
-  try {
-    Stream = require('st' + 'ream');
-  } catch (_) {} finally {
-    if (!Stream) Stream = require('events').EventEmitter;
-  }
-})();
+var Stream = require('./internal/streams/stream');
 /*</replacement>*/
 
 var Buffer = require('buffer').Buffer;
@@ -38009,6 +38009,8 @@ var BufferList = require('./internal/streams/BufferList');
 var StringDecoder;
 
 util.inherits(Readable, Stream);
+
+var kProxyEvents = ['error', 'close', 'destroy', 'pause', 'resume'];
 
 function prependListener(emitter, event, fn) {
   // Sadly this is not cacheable as some libraries bundle their own
@@ -38734,10 +38736,9 @@ Readable.prototype.wrap = function (stream) {
   }
 
   // proxy certain important events.
-  var events = ['error', 'close', 'destroy', 'pause', 'resume'];
-  forEach(events, function (ev) {
-    stream.on(ev, self.emit.bind(self, ev));
-  });
+  for (var n = 0; n < kProxyEvents.length; n++) {
+    stream.on(kProxyEvents[n], self.emit.bind(self, kProxyEvents[n]));
+  }
 
   // when we try to consume some more bytes, simply unpause the
   // underlying stream.
@@ -38891,7 +38892,7 @@ function indexOf(xs, x) {
 }
 }).call(this,require('_process'))
 
-},{"./_stream_duplex":175,"./internal/streams/BufferList":180,"_process":173,"buffer":74,"buffer-shims":73,"core-util-is":100,"events":135,"inherits":161,"isarray":164,"process-nextick-args":172,"string_decoder/":202,"util":71}],178:[function(require,module,exports){
+},{"./_stream_duplex":175,"./internal/streams/BufferList":180,"./internal/streams/stream":181,"_process":173,"buffer":74,"buffer-shims":73,"core-util-is":100,"events":135,"inherits":161,"isarray":164,"process-nextick-args":172,"string_decoder/":182,"util":71}],178:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -39110,14 +39111,7 @@ var internalUtil = {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream;
-(function () {
-  try {
-    Stream = require('st' + 'ream');
-  } catch (_) {} finally {
-    if (!Stream) Stream = require('events').EventEmitter;
-  }
-})();
+var Stream = require('./internal/streams/stream');
 /*</replacement>*/
 
 var Buffer = require('buffer').Buffer;
@@ -39629,7 +39623,7 @@ function CorkedRequest(state) {
 }
 }).call(this,require('_process'))
 
-},{"./_stream_duplex":175,"_process":173,"buffer":74,"buffer-shims":73,"core-util-is":100,"events":135,"inherits":161,"process-nextick-args":172,"util-deprecate":203}],180:[function(require,module,exports){
+},{"./_stream_duplex":175,"./internal/streams/stream":181,"_process":173,"buffer":74,"buffer-shims":73,"core-util-is":100,"inherits":161,"process-nextick-args":172,"util-deprecate":204}],180:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('buffer').Buffer;
@@ -39695,36 +39689,301 @@ BufferList.prototype.concat = function (n) {
   return ret;
 };
 },{"buffer":74,"buffer-shims":73}],181:[function(require,module,exports){
-module.exports = require("./lib/_stream_passthrough.js")
+module.exports = require('events').EventEmitter;
 
-},{"./lib/_stream_passthrough.js":176}],182:[function(require,module,exports){
-(function (process){
-var Stream = (function (){
-  try {
-    return require('st' + 'ream'); // hack to fix a circular dependency issue when used with browserify
-  } catch(_){}
-}());
+},{"events":135}],182:[function(require,module,exports){
+'use strict';
+
+var Buffer = require('buffer').Buffer;
+var bufferShim = require('buffer-shims');
+
+var isEncoding = Buffer.isEncoding || function (encoding) {
+  encoding = '' + encoding;
+  switch (encoding && encoding.toLowerCase()) {
+    case 'hex':case 'utf8':case 'utf-8':case 'ascii':case 'binary':case 'base64':case 'ucs2':case 'ucs-2':case 'utf16le':case 'utf-16le':case 'raw':
+      return true;
+    default:
+      return false;
+  }
+};
+
+function _normalizeEncoding(enc) {
+  if (!enc) return 'utf8';
+  var retried;
+  while (true) {
+    switch (enc) {
+      case 'utf8':
+      case 'utf-8':
+        return 'utf8';
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return 'utf16le';
+      case 'latin1':
+      case 'binary':
+        return 'latin1';
+      case 'base64':
+      case 'ascii':
+      case 'hex':
+        return enc;
+      default:
+        if (retried) return; // undefined
+        enc = ('' + enc).toLowerCase();
+        retried = true;
+    }
+  }
+};
+
+// Do not cache `Buffer.isEncoding` when checking encoding names as some
+// modules monkey-patch it to support additional encodings
+function normalizeEncoding(enc) {
+  var nenc = _normalizeEncoding(enc);
+  if (typeof nenc !== 'string' && (Buffer.isEncoding === isEncoding || !isEncoding(enc))) throw new Error('Unknown encoding: ' + enc);
+  return nenc || enc;
+}
+
+// StringDecoder provides an interface for efficiently splitting a series of
+// buffers into a series of JS strings without breaking apart multi-byte
+// characters.
+exports.StringDecoder = StringDecoder;
+function StringDecoder(encoding) {
+  this.encoding = normalizeEncoding(encoding);
+  var nb;
+  switch (this.encoding) {
+    case 'utf16le':
+      this.text = utf16Text;
+      this.end = utf16End;
+      nb = 4;
+      break;
+    case 'utf8':
+      this.fillLast = utf8FillLast;
+      nb = 4;
+      break;
+    case 'base64':
+      this.text = base64Text;
+      this.end = base64End;
+      nb = 3;
+      break;
+    default:
+      this.write = simpleWrite;
+      this.end = simpleEnd;
+      return;
+  }
+  this.lastNeed = 0;
+  this.lastTotal = 0;
+  this.lastChar = bufferShim.allocUnsafe(nb);
+}
+
+StringDecoder.prototype.write = function (buf) {
+  if (buf.length === 0) return '';
+  var r;
+  var i;
+  if (this.lastNeed) {
+    r = this.fillLast(buf);
+    if (r === undefined) return '';
+    i = this.lastNeed;
+    this.lastNeed = 0;
+  } else {
+    i = 0;
+  }
+  if (i < buf.length) return r ? r + this.text(buf, i) : this.text(buf, i);
+  return r || '';
+};
+
+StringDecoder.prototype.end = utf8End;
+
+// Returns only complete characters in a Buffer
+StringDecoder.prototype.text = utf8Text;
+
+// Attempts to complete a partial non-UTF-8 character using bytes from a Buffer
+StringDecoder.prototype.fillLast = function (buf) {
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, buf.length);
+  this.lastNeed -= buf.length;
+};
+
+// Checks the type of a UTF-8 byte, whether it's ASCII, a leading byte, or a
+// continuation byte.
+function utf8CheckByte(byte) {
+  if (byte <= 0x7F) return 0;else if (byte >> 5 === 0x06) return 2;else if (byte >> 4 === 0x0E) return 3;else if (byte >> 3 === 0x1E) return 4;
+  return -1;
+}
+
+// Checks at most 3 bytes at the end of a Buffer in order to detect an
+// incomplete multi-byte UTF-8 character. The total number of bytes (2, 3, or 4)
+// needed to complete the UTF-8 character (if applicable) are returned.
+function utf8CheckIncomplete(self, buf, i) {
+  var j = buf.length - 1;
+  if (j < i) return 0;
+  var nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 1;
+    return nb;
+  }
+  if (--j < i) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 2;
+    return nb;
+  }
+  if (--j < i) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) {
+      if (nb === 2) nb = 0;else self.lastNeed = nb - 3;
+    }
+    return nb;
+  }
+  return 0;
+}
+
+// Validates as many continuation bytes for a multi-byte UTF-8 character as
+// needed or are available. If we see a non-continuation byte where we expect
+// one, we "replace" the validated continuation bytes we've seen so far with
+// UTF-8 replacement characters ('\ufffd'), to match v8's UTF-8 decoding
+// behavior. The continuation byte check is included three times in the case
+// where all of the continuation bytes for a character exist in the same buffer.
+// It is also done this way as a slight performance increase instead of using a
+// loop.
+function utf8CheckExtraBytes(self, buf, p) {
+  if ((buf[0] & 0xC0) !== 0x80) {
+    self.lastNeed = 0;
+    return '\ufffd'.repeat(p);
+  }
+  if (self.lastNeed > 1 && buf.length > 1) {
+    if ((buf[1] & 0xC0) !== 0x80) {
+      self.lastNeed = 1;
+      return '\ufffd'.repeat(p + 1);
+    }
+    if (self.lastNeed > 2 && buf.length > 2) {
+      if ((buf[2] & 0xC0) !== 0x80) {
+        self.lastNeed = 2;
+        return '\ufffd'.repeat(p + 2);
+      }
+    }
+  }
+}
+
+// Attempts to complete a multi-byte UTF-8 character using bytes from a Buffer.
+function utf8FillLast(buf) {
+  var p = this.lastTotal - this.lastNeed;
+  var r = utf8CheckExtraBytes(this, buf, p);
+  if (r !== undefined) return r;
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, p, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, p, 0, buf.length);
+  this.lastNeed -= buf.length;
+}
+
+// Returns all complete UTF-8 characters in a Buffer. If the Buffer ended on a
+// partial character, the character's bytes are buffered until the required
+// number of bytes are available.
+function utf8Text(buf, i) {
+  var total = utf8CheckIncomplete(this, buf, i);
+  if (!this.lastNeed) return buf.toString('utf8', i);
+  this.lastTotal = total;
+  var end = buf.length - (total - this.lastNeed);
+  buf.copy(this.lastChar, 0, end);
+  return buf.toString('utf8', i, end);
+}
+
+// For UTF-8, a replacement character for each buffered byte of a (partial)
+// character needs to be added to the output.
+function utf8End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + '\ufffd'.repeat(this.lastTotal - this.lastNeed);
+  return r;
+}
+
+// UTF-16LE typically needs two bytes per character, but even if we have an even
+// number of bytes available, we need to check if we end on a leading/high
+// surrogate. In that case, we need to wait for the next two bytes in order to
+// decode the last character properly.
+function utf16Text(buf, i) {
+  if ((buf.length - i) % 2 === 0) {
+    var r = buf.toString('utf16le', i);
+    if (r) {
+      var c = r.charCodeAt(r.length - 1);
+      if (c >= 0xD800 && c <= 0xDBFF) {
+        this.lastNeed = 2;
+        this.lastTotal = 4;
+        this.lastChar[0] = buf[buf.length - 2];
+        this.lastChar[1] = buf[buf.length - 1];
+        return r.slice(0, -1);
+      }
+    }
+    return r;
+  }
+  this.lastNeed = 1;
+  this.lastTotal = 2;
+  this.lastChar[0] = buf[buf.length - 1];
+  return buf.toString('utf16le', i, buf.length - 1);
+}
+
+// For UTF-16LE we do not explicitly append special replacement characters if we
+// end on a partial character, we simply let v8 handle that.
+function utf16End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) {
+    var end = this.lastTotal - this.lastNeed;
+    return r + this.lastChar.toString('utf16le', 0, end);
+  }
+  return r;
+}
+
+function base64Text(buf, i) {
+  var n = (buf.length - i) % 3;
+  if (n === 0) return buf.toString('base64', i);
+  this.lastNeed = 3 - n;
+  this.lastTotal = 3;
+  if (n === 1) {
+    this.lastChar[0] = buf[buf.length - 1];
+  } else {
+    this.lastChar[0] = buf[buf.length - 2];
+    this.lastChar[1] = buf[buf.length - 1];
+  }
+  return buf.toString('base64', i, buf.length - n);
+}
+
+function base64End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + this.lastChar.toString('base64', 0, 3 - this.lastNeed);
+  return r;
+}
+
+// Pass bytes on through for single-byte encodings (e.g. ascii, latin1, hex)
+function simpleWrite(buf) {
+  return buf.toString(this.encoding);
+}
+
+function simpleEnd(buf) {
+  return buf && buf.length ? this.write(buf) : '';
+}
+},{"buffer":74,"buffer-shims":73}],183:[function(require,module,exports){
+module.exports = require('./readable').PassThrough
+
+},{"./readable":184}],184:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
-exports.Stream = Stream || exports;
+exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = require('./lib/_stream_writable.js');
 exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
-  module.exports = Stream;
-}
+},{"./lib/_stream_duplex.js":175,"./lib/_stream_passthrough.js":176,"./lib/_stream_readable.js":177,"./lib/_stream_transform.js":178,"./lib/_stream_writable.js":179}],185:[function(require,module,exports){
+module.exports = require('./readable').Transform
 
-}).call(this,require('_process'))
+},{"./readable":184}],186:[function(require,module,exports){
+module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_duplex.js":175,"./lib/_stream_passthrough.js":176,"./lib/_stream_readable.js":177,"./lib/_stream_transform.js":178,"./lib/_stream_writable.js":179,"_process":173}],183:[function(require,module,exports){
-module.exports = require("./lib/_stream_transform.js")
-
-},{"./lib/_stream_transform.js":178}],184:[function(require,module,exports){
-module.exports = require("./lib/_stream_writable.js")
-
-},{"./lib/_stream_writable.js":179}],185:[function(require,module,exports){
+},{"./lib/_stream_writable.js":179}],187:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -39830,7 +40089,7 @@ ArraySet.prototype.toArray = function ArraySet_toArray() {
 
 exports.ArraySet = ArraySet;
 
-},{"./util":191}],186:[function(require,module,exports){
+},{"./util":193}],188:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -39972,7 +40231,7 @@ exports.decode = function base64VLQ_decode(aStr, aIndex, aOutParam) {
   aOutParam.rest = aIndex;
 };
 
-},{"./base64":187}],187:[function(require,module,exports){
+},{"./base64":189}],189:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -40041,7 +40300,7 @@ exports.decode = function (charCode) {
   return -1;
 };
 
-},{}],188:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -40154,7 +40413,7 @@ exports.search = function search(aNeedle, aHaystack, aCompare, aBias) {
   return index;
 };
 
-},{}],189:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -40270,7 +40529,7 @@ exports.quickSort = function (ary, comparator) {
   doQuickSort(ary, comparator, 0, ary.length - 1);
 };
 
-},{}],190:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41354,7 +41613,7 @@ IndexedSourceMapConsumer.prototype._parseMappings =
 
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./array-set":185,"./base64-vlq":186,"./binary-search":188,"./quick-sort":189,"./util":191}],191:[function(require,module,exports){
+},{"./array-set":187,"./base64-vlq":188,"./binary-search":190,"./quick-sort":191,"./util":193}],193:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -41773,7 +42032,7 @@ function compareByGeneratedPositionsInflated(mappingA, mappingB) {
 }
 exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
 
-},{}],192:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 // Copyright 2012 the V8 project authors. All rights reserved.
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -41834,7 +42093,7 @@ module.exports = function FormatStackTrace(error, frames) {
   return lines.join("\n");
 };
 
-},{}],193:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 (function (global){
 // If a another copy (same version or not) of stack-chain exists it will result
 // in wrong stack traces (most likely dublicate callSites).
@@ -41855,7 +42114,7 @@ else {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./package.json":194,"./stack-chain":195}],194:[function(require,module,exports){
+},{"./package.json":196,"./stack-chain":197}],196:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -41951,7 +42210,7 @@ module.exports={
   "version": "1.3.7"
 }
 
-},{}],195:[function(require,module,exports){
+},{}],197:[function(require,module,exports){
 
 // use a already existing formater or fallback to the default v8 formater
 var defaultFormater = require('./format.js');
@@ -42151,7 +42410,7 @@ Object.defineProperty(Error.prototype, 'callSite', {
 
 module.exports = chain;
 
-},{"./format.js":192,"./package.json":194}],196:[function(require,module,exports){
+},{"./format.js":194,"./package.json":196}],198:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -42263,7 +42522,7 @@ module.exports = chain;
     return StackFrame;
 }));
 
-},{}],197:[function(require,module,exports){
+},{}],199:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -42310,7 +42569,7 @@ module.exports = chain;
     };
 }));
 
-},{"stackframe":196}],198:[function(require,module,exports){
+},{"stackframe":198}],200:[function(require,module,exports){
 (function (root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -42419,7 +42678,7 @@ module.exports = chain;
     return StackFrame;
 }));
 
-},{}],199:[function(require,module,exports){
+},{}],201:[function(require,module,exports){
 (function(root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -42724,7 +42983,7 @@ module.exports = chain;
     };
 }));
 
-},{"source-map/lib/source-map-consumer":190,"stackframe":198}],200:[function(require,module,exports){
+},{"source-map/lib/source-map-consumer":192,"stackframe":200}],202:[function(require,module,exports){
 (function(root, factory) {
     'use strict';
     // Universal Module Definition (UMD) to support AMD, CommonJS/Node.js, Rhino, and browsers.
@@ -42942,7 +43201,7 @@ module.exports = chain;
     };
 }));
 
-},{"error-stack-parser":103,"stack-generator":197,"stacktrace-gps":199}],201:[function(require,module,exports){
+},{"error-stack-parser":103,"stack-generator":199,"stacktrace-gps":201}],203:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -43071,230 +43330,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":135,"inherits":161,"readable-stream/duplex.js":174,"readable-stream/passthrough.js":181,"readable-stream/readable.js":182,"readable-stream/transform.js":183,"readable-stream/writable.js":184}],202:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var Buffer = require('buffer').Buffer;
-
-var isBufferEncoding = Buffer.isEncoding
-  || function(encoding) {
-       switch (encoding && encoding.toLowerCase()) {
-         case 'hex': case 'utf8': case 'utf-8': case 'ascii': case 'binary': case 'base64': case 'ucs2': case 'ucs-2': case 'utf16le': case 'utf-16le': case 'raw': return true;
-         default: return false;
-       }
-     }
-
-
-function assertEncoding(encoding) {
-  if (encoding && !isBufferEncoding(encoding)) {
-    throw new Error('Unknown encoding: ' + encoding);
-  }
-}
-
-// StringDecoder provides an interface for efficiently splitting a series of
-// buffers into a series of JS strings without breaking apart multi-byte
-// characters. CESU-8 is handled as part of the UTF-8 encoding.
-//
-// @TODO Handling all encodings inside a single object makes it very difficult
-// to reason about this code, so it should be split up in the future.
-// @TODO There should be a utf8-strict encoding that rejects invalid UTF-8 code
-// points as used by CESU-8.
-var StringDecoder = exports.StringDecoder = function(encoding) {
-  this.encoding = (encoding || 'utf8').toLowerCase().replace(/[-_]/, '');
-  assertEncoding(encoding);
-  switch (this.encoding) {
-    case 'utf8':
-      // CESU-8 represents each of Surrogate Pair by 3-bytes
-      this.surrogateSize = 3;
-      break;
-    case 'ucs2':
-    case 'utf16le':
-      // UTF-16 represents each of Surrogate Pair by 2-bytes
-      this.surrogateSize = 2;
-      this.detectIncompleteChar = utf16DetectIncompleteChar;
-      break;
-    case 'base64':
-      // Base-64 stores 3 bytes in 4 chars, and pads the remainder.
-      this.surrogateSize = 3;
-      this.detectIncompleteChar = base64DetectIncompleteChar;
-      break;
-    default:
-      this.write = passThroughWrite;
-      return;
-  }
-
-  // Enough space to store all bytes of a single character. UTF-8 needs 4
-  // bytes, but CESU-8 may require up to 6 (3 bytes per surrogate).
-  this.charBuffer = new Buffer(6);
-  // Number of bytes received for the current incomplete multi-byte character.
-  this.charReceived = 0;
-  // Number of bytes expected for the current incomplete multi-byte character.
-  this.charLength = 0;
-};
-
-
-// write decodes the given buffer and returns it as JS string that is
-// guaranteed to not contain any partial multi-byte characters. Any partial
-// character found at the end of the buffer is buffered up, and will be
-// returned when calling write again with the remaining bytes.
-//
-// Note: Converting a Buffer containing an orphan surrogate to a String
-// currently works, but converting a String to a Buffer (via `new Buffer`, or
-// Buffer#write) will replace incomplete surrogates with the unicode
-// replacement character. See https://codereview.chromium.org/121173009/ .
-StringDecoder.prototype.write = function(buffer) {
-  var charStr = '';
-  // if our last write ended with an incomplete multibyte character
-  while (this.charLength) {
-    // determine how many remaining bytes this buffer has to offer for this char
-    var available = (buffer.length >= this.charLength - this.charReceived) ?
-        this.charLength - this.charReceived :
-        buffer.length;
-
-    // add the new bytes to the char buffer
-    buffer.copy(this.charBuffer, this.charReceived, 0, available);
-    this.charReceived += available;
-
-    if (this.charReceived < this.charLength) {
-      // still not enough chars in this buffer? wait for more ...
-      return '';
-    }
-
-    // remove bytes belonging to the current character from the buffer
-    buffer = buffer.slice(available, buffer.length);
-
-    // get the character that was split
-    charStr = this.charBuffer.slice(0, this.charLength).toString(this.encoding);
-
-    // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
-    var charCode = charStr.charCodeAt(charStr.length - 1);
-    if (charCode >= 0xD800 && charCode <= 0xDBFF) {
-      this.charLength += this.surrogateSize;
-      charStr = '';
-      continue;
-    }
-    this.charReceived = this.charLength = 0;
-
-    // if there are no more bytes in this buffer, just emit our char
-    if (buffer.length === 0) {
-      return charStr;
-    }
-    break;
-  }
-
-  // determine and set charLength / charReceived
-  this.detectIncompleteChar(buffer);
-
-  var end = buffer.length;
-  if (this.charLength) {
-    // buffer the incomplete character bytes we got
-    buffer.copy(this.charBuffer, 0, buffer.length - this.charReceived, end);
-    end -= this.charReceived;
-  }
-
-  charStr += buffer.toString(this.encoding, 0, end);
-
-  var end = charStr.length - 1;
-  var charCode = charStr.charCodeAt(end);
-  // CESU-8: lead surrogate (D800-DBFF) is also the incomplete character
-  if (charCode >= 0xD800 && charCode <= 0xDBFF) {
-    var size = this.surrogateSize;
-    this.charLength += size;
-    this.charReceived += size;
-    this.charBuffer.copy(this.charBuffer, size, 0, size);
-    buffer.copy(this.charBuffer, 0, 0, size);
-    return charStr.substring(0, end);
-  }
-
-  // or just emit the charStr
-  return charStr;
-};
-
-// detectIncompleteChar determines if there is an incomplete UTF-8 character at
-// the end of the given buffer. If so, it sets this.charLength to the byte
-// length that character, and sets this.charReceived to the number of bytes
-// that are available for this character.
-StringDecoder.prototype.detectIncompleteChar = function(buffer) {
-  // determine how many bytes we have to check at the end of this buffer
-  var i = (buffer.length >= 3) ? 3 : buffer.length;
-
-  // Figure out if one of the last i bytes of our buffer announces an
-  // incomplete char.
-  for (; i > 0; i--) {
-    var c = buffer[buffer.length - i];
-
-    // See http://en.wikipedia.org/wiki/UTF-8#Description
-
-    // 110XXXXX
-    if (i == 1 && c >> 5 == 0x06) {
-      this.charLength = 2;
-      break;
-    }
-
-    // 1110XXXX
-    if (i <= 2 && c >> 4 == 0x0E) {
-      this.charLength = 3;
-      break;
-    }
-
-    // 11110XXX
-    if (i <= 3 && c >> 3 == 0x1E) {
-      this.charLength = 4;
-      break;
-    }
-  }
-  this.charReceived = i;
-};
-
-StringDecoder.prototype.end = function(buffer) {
-  var res = '';
-  if (buffer && buffer.length)
-    res = this.write(buffer);
-
-  if (this.charReceived) {
-    var cr = this.charReceived;
-    var buf = this.charBuffer;
-    var enc = this.encoding;
-    res += buf.slice(0, cr).toString(enc);
-  }
-
-  return res;
-};
-
-function passThroughWrite(buffer) {
-  return buffer.toString(this.encoding);
-}
-
-function utf16DetectIncompleteChar(buffer) {
-  this.charReceived = buffer.length % 2;
-  this.charLength = this.charReceived ? 2 : 0;
-}
-
-function base64DetectIncompleteChar(buffer) {
-  this.charReceived = buffer.length % 3;
-  this.charLength = this.charReceived ? 3 : 0;
-}
-
-},{"buffer":74}],203:[function(require,module,exports){
+},{"events":135,"inherits":161,"readable-stream/duplex.js":174,"readable-stream/passthrough.js":183,"readable-stream/readable.js":184,"readable-stream/transform.js":185,"readable-stream/writable.js":186}],204:[function(require,module,exports){
 (function (global){
 
 /**
@@ -43366,16 +43402,16 @@ function config (name) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],204:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 arguments[4][161][0].apply(exports,arguments)
-},{"dup":161}],205:[function(require,module,exports){
+},{"dup":161}],206:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],206:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -43966,7 +44002,7 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./support/isBuffer":205,"_process":173,"inherits":204}],207:[function(require,module,exports){
+},{"./support/isBuffer":206,"_process":173,"inherits":205}],208:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -44001,7 +44037,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],208:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 module.exports={
   "name": "cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
@@ -44012,7 +44048,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "1.3.1",
+  "version": "1.3.3",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -44095,7 +44131,8 @@ module.exports={
     "dbillingham <dbillinghamuk@yahoo.co.uk>",
     "Jonathan Gomez <jonathanbgomez@gmail.com>",
     "Oliver Rogers <oli.rogers@gmail.com>",
-    "Hugues Malphettes <hmalphettes@gmail.com>"
+    "Hugues Malphettes <hmalphettes@gmail.com>",
+    "yaronassa <yaronassa@users.noreply.github.com>"
   ],
   "repository": {
     "type": "git",
@@ -44192,6 +44229,6 @@ Cucumber.VERSION               = require('../package.json').version;
 
 module.exports                 = Cucumber;
 
-},{"../package.json":208,"./cucumber/api":1,"./cucumber/ast":3,"./cucumber/cli":16,"./cucumber/debug":24,"./cucumber/events":26,"./cucumber/listener":27,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":46,"./cucumber/support_code":47,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":57,"./cucumber/volatile_configuration":66}]},{},[])("cucumber")
+},{"../package.json":209,"./cucumber/api":1,"./cucumber/ast":3,"./cucumber/cli":16,"./cucumber/debug":24,"./cucumber/events":26,"./cucumber/listener":27,"./cucumber/parser":35,"./cucumber/runtime":36,"./cucumber/status":46,"./cucumber/support_code":47,"./cucumber/tag_group_parser":53,"./cucumber/type":54,"./cucumber/util":57,"./cucumber/volatile_configuration":66}]},{},[])("cucumber")
 });
 //# sourceMappingURL=cucumber.js.map

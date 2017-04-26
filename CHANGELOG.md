@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.3.2...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v1.3.3...master)
+
+### [1.3.3](https://github.com/cucumber/cucumber-js/compare/v1.3.2...v1.3.3) (2016-04-26)
+
+#### Bug Fixes
+
+* fix unhandled rejections in handlers (#792)
 
 ### [1.3.2](https://github.com/cucumber/cucumber-js/compare/v1.3.1...v1.3.2) (2016-03-20)
 
