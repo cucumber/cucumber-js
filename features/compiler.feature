@@ -20,3 +20,23 @@ Feature: compilers
       """
     When I run cucumber.js with `--compiler coffee:coffee-script/register`
     Then the step "a step" has status "passed"
+
+    Scenario: Typescript step definition
+      Given a file named "features/a.feature" with:
+        """
+        Feature: some feature
+          Scenario: some scenario
+            Given a step
+        """
+      Given a file named "features/step_definitions/cucumber_steps.ts" with:
+        """
+        import {defineSupportCode, ISupportCode} from "cucumber";
+
+        defineSupportCode((support: ISupportCode) => {
+            support.Given(/^a step$/, params => {
+
+            } );
+        });
+        """
+      When I run cucumber.js with `--compiler ts:ts-node/register`
+      Then the step "a step" has status "passed"

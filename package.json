@@ -112,10 +112,12 @@
     "lib": "./lib"
   },
   "main": "./lib/index",
+  "types": "./lib/index.d.ts",
   "engines": {
     "node": ">=0.10"
   },
   "dependencies": {
+    "@types/node": "^7.0.5",
     "assertion-error-formatter": "^2.0.0",
     "babel-runtime": "^6.11.6",
     "bluebird": "^3.4.1",
@@ -167,14 +169,17 @@
     "serve-static": "^1.10.0",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0",
-    "tmp": "0.0.31"
+    "tmp": "0.0.31",
+    "ts-node": "^2.0.0",
+    "typescript": "^2.1.5"
   },
   "scripts": {
-    "build-local-continuous": "babel src --watch -d lib --ignore '**/*_spec.js'",
-    "build-local": "babel src -d lib --ignore '**/*_spec.js'",
+    "build-local-continuous": "babel src --watch -d lib --ignore '**/*_spec.js' --extensions .js",
+    "build-local": "babel src -d lib --ignore '**/*_spec.js' --extensions .js && cp src/typings/cucumber.d.ts lib/index.d.ts",
     "build-release": "BABEL_ENV=browser browserify src/index.js -o dist/cucumber.js -t babelify --standalone Cucumber",
     "coverage": "BABEL_ENV=test_coverage nyc mocha src",
     "feature-test": "node ./bin/cucumber.js",
+    "feature-test-typescript": "node ./bin/cucumber.js features/typescript.feature --compiler ts:ts-node/register",
     "lint": "yarn run lint-dependencies && yarn run lint-style",
     "lint-dependencies": "dependency-lint",
     "lint-style": "eslint features/step_definitions/** features/support/** src/**",
