@@ -33,4 +33,10 @@ defineSupportCode(function({setWorldConstructor}) {
 });
 ```
 
+If you want to be able to attach screenshots to the results file you will need to pass in {attach} explicity to your CustomWorld.
+
+```javascript
+function CustomWorld({attach}) {...}
+```
+
 **Note:** The World constructor was made strictly synchronous in *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*.
