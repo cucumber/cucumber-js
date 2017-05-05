@@ -28,7 +28,7 @@
     var seleniumWebdriver = require('selenium-webdriver');
     var {defineSupportCode} = require('cucumber');
 
-    function CustomWorld({attach}) {
+    function CustomWorld() {
       this.driver = new seleniumWebdriver.Builder()
         .forBrowser('chrome')
         .build();
@@ -46,16 +46,6 @@
     defineSupportCode(function({After}) {
       After(function() {
         return this.driver.quit();
-      });
-    
-      After(function (scenarioResult) {
-        var world = this;
-        if (scenarioResult.isFailed()) {
-          return world.driver.takeScreenshot().then(function(screenShot) {
-            // screenShot is a base-64 encoded PNG
-            world.attach(screenShot, 'image/png');
-          });
-        }
       });
     });
     ```
