@@ -37,6 +37,7 @@ If you want to be able to attach screenshots to the results file you will need t
 
 ```javascript
 function CustomWorld({attach}) {...}
+this.attach = attach;
 ```
 
 **Note:** The World constructor was made strictly synchronous in *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*.
