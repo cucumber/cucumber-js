@@ -102,6 +102,7 @@ Use `--tags <EXPRESSION>` to run specific features or scenarios.
 ## Transpilers
 
 Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--compiler <file_extension>:<module_name>`. Running `require("<module_name>")`, should make it possible to require files with the given extension. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--compiler coffee:coffee-script/register`.
+If you want to ignore certain files and exclude them from compilation, add its extension after another `:`, like: `--compiler js:babel-register:.css`.
 
 ## World Parameters
 
