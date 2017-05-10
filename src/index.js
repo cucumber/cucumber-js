@@ -1,4 +1,5 @@
 import SupportCodeFns from './support_code_fns'
+import * as helpers from './support_code_library/helpers'
 
 export {default as Cli} from './cli'
 export {default as FeatureParser} from './cli/feature_parser'
@@ -20,3 +21,20 @@ export {default as UsageJsonFormatter} from './formatter/usage_json_formatter'
 export const defineSupportCode = SupportCodeFns.add
 export const getSupportCodeFns = SupportCodeFns.get
 export const clearSupportCodeFns = SupportCodeFns.reset
+
+const cwd = process.cwd()
+const step = helpers.defineStepFactory(cwd)
+const hook = helpers.defineHookFactory(cwd)
+export const defineStep = (pattern, options, code) => {
+  SupportCodeFns.addStepDefinition(step(pattern, options, code))
+}
+export const given = defineStep
+export const when = defineStep
+export const then = defineStep
+export const before = (options, code) => {
+  SupportCodeFns.addBeforeHook(hook(options, code))
+}
+export const after = (options, code) => {
+  SupportCodeFns.addAfterHook(hook(options, code))
+}
+
