@@ -20,3 +20,24 @@ export {default as UsageJsonFormatter} from './formatter/usage_json_formatter'
 export const defineSupportCode = SupportCodeFns.add
 export const getSupportCodeFns = SupportCodeFns.get
 export const clearSupportCodeFns = SupportCodeFns.reset
+
+const proxySupportCode = (name) => (...args) => defineSupportCode((supportCodeContext) => supportCodeContext[name](...args))
+
+export const defineStep = proxySupportCode('defineStep')
+export const addTransform = proxySupportCode('addTransform')
+export const defineParameterType = proxySupportCode('defineParameterType')
+export const After = proxySupportCode('After')
+export const Before = proxySupportCode('Before')
+export const registerHandler = proxySupportCode('registerHandler')
+export const registerListener = proxySupportCode('registerListener')
+export const setDefaultTimeout = proxySupportCode('setDefaultTimeout')
+export const setDefinitionFunctionWrapper = proxySupportCode('setDefinitionFunctionWrapper')
+export const setWorldConstructor = proxySupportCode('setWorldConstructor')
+export const given = defineStep
+export const when = defineStep
+export const then = defineStep
+export const Given = defineStep
+export const When = defineStep
+export const Then = defineStep
+export const before = Before
+export const after = After
