@@ -1,10 +1,24 @@
 import Cli from './'
 import VError from 'verror'
+import {validateInstall} from './install_validator'
+
+function exitWithError(error) {
+  console.error(VError.fullStack(error)) // eslint-disable-line no-console
+  process.exit(1)
+}
 
 export default async function run() {
+  const cwd = process.cwd()
+
+  try {
+    await validateInstall(cwd)
+  } catch (error) {
+    exitWithError(error)
+  }
+
   const cli = new Cli({
     argv: process.argv,
-    cwd: process.cwd(),
+    cwd,
     stdout: process.stdout
   })
 
@@ -12,8 +26,7 @@ export default async function run() {
   try {
     success = await cli.run()
   } catch (error) {
-    console.error(VError.fullStack(error)) // eslint-disable-line no-console
-    process.exit(1)
+    exitWithError(error)
   }
 
   const exitCode = success ? 0 : 1
