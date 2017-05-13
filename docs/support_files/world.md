@@ -5,10 +5,13 @@ The default world constructor is:
 
 ```javascript
 function World({attach, parameters}) {
-  attach = attach
-  parameters = parameters
+  this.attach = attach
+  this.parameters = parameters
 }
 ```
+
+* `attach`: function used for adding [attachments](./attachments.md) to hooks/steps
+* `parameters`: object of parameters passed in via the [CLI](../cli.md#world-parameters)
 
 The default can be overridden with `setWorldConstructor`.
 
