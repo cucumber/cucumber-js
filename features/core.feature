@@ -14,9 +14,9 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {given} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      given(/^a step passes$/, function() {});
+      Given(/^a step passes$/, function() {});
       """
     When I run cucumber-js
     Then it passes
@@ -70,18 +70,18 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {setWorldConstructor, when, then} from 'cucumber'
+      import {setWorldConstructor, When, Then} from 'cucumber'
       import assert from 'assert'
 
       setWorldConstructor(function () {
         this.count = 0
       })
 
-      when(/^I call a watched step$/, function() {
+      When(/^I call a watched step$/, function() {
         this.count += 1
       })
 
-      then(/^the watched step should have been called (\d+) times?$/, function(count){
+      Then(/^the watched step should have been called (\d+) times?$/, function(count){
         assert.equal(this.count, parseInt(count))
       })
       """
@@ -104,24 +104,24 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {setWorldConstructor, when, then} from 'cucumber'
+      import {setWorldConstructor, When, Then} from 'cucumber'
       import assert from 'assert'
 
       setWorldConstructor(function () {
         this.parameters = {}
       })
 
-      when(/^I call a step with "([^"]*)"$/, function(arg) {
+      When(/^I call a step with "([^"]*)"$/, function(arg) {
         this.parameters['1'] = arg
       })
 
-      when(/^I call a step with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(arg1, arg2, arg3) {
+      When(/^I call a step with "([^"]*)", "([^"]*)" and "([^"]*)"$/, function(arg1, arg2, arg3) {
         this.parameters['1'] = arg1
         this.parameters['2'] = arg2
         this.parameters['3'] = arg3
       })
 
-      then(/^the (\d+)(?:st|nd|rd) received parameter should be "([^"]*)"$/, function(index, arg){
+      Then(/^the (\d+)(?:st|nd|rd) received parameter should be "([^"]*)"$/, function(index, arg){
         assert.equal(this.parameters[index], arg)
       })
       """

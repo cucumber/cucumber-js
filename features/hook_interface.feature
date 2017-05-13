@@ -9,9 +9,9 @@ Feature: After hook interface
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      import {when} from 'cucumber'
+      import {When} from 'cucumber'
 
-      when(/^a step$/, function() {
+      When(/^a step$/, function() {
         this.value = 1;
       })
       """
