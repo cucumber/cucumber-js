@@ -68,9 +68,13 @@ describe('DataTable', function () {
           }
         ]
       })
-      expect(() => {
+      try {
         dataTable.typedRowsHash()
-      }).to.throw(Error)
+      } catch (err) {
+        expect(err.message).to.match(/typedRowsHash can only be used on a data table where all rows have exactly 3 columns/)
+        return
+      }
+      throw new Error('did not throw error for row that lacks columns')
     })
 
     it('rejects tables where not all types are recognized', function() {
@@ -85,8 +89,8 @@ describe('DataTable', function () {
           } , {
             cells: [
               {value: 'key2'},
-              {value: 'OUPS'},
-              {value: 'value'}
+              {value: 'OUPS'}, //<--- 1st No such type
+              {value: 'some value'}
             ]
           } , {
             cells: [
@@ -94,12 +98,26 @@ describe('DataTable', function () {
               {value: 'string'},
               {value: 'value'}
             ]
+          } , {
+            cells: [
+              {value: 'key3'},
+              {value: 'AYAYAYAYAY'}, //<--- 2nd No such type
+              {value: 'value'}
+            ]
           }
         ]
       })
-      expect(() => {
+
+      try {
         dataTable.typedRowsHash()
-      }).to.throw(Error)
+      } catch (err) {
+        expect(err.message).to.match(/typedRowsHash does not support type\(s\) in rows/)
+        const rows = err.message.split(/\n/).slice(1)
+        expect(rows.length).to.eql(2) //formatted row per rejected row
+        expect(rows[0].length).to.eql(rows[1].length) //formatted
+        return
+      }
+      throw new Error('did not throw error for unrecognized type');
     })
 
     it('reads value as string when no type is given', function() {
