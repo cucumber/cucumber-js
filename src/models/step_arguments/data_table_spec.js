@@ -114,7 +114,7 @@ describe('DataTable', function () {
         expect(err.message).to.match(/typedRowsHash does not support type\(s\) in rows/)
         const rows = err.message.split(/\n/).slice(1)
         expect(rows.length).to.eql(2) //formatted row per rejected row
-        expect(rows[0].length).to.eql(rows[1].length) //formatted
+        expect(rows[0].length).to.eql(rows[1].length) //formatted awsomely
         return
       }
       throw new Error('did not throw error for unrecognized type');
