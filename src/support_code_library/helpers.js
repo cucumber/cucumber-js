@@ -8,11 +8,18 @@ import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-export function defineHook(cwd, collection) {
+export function defineHookAndAddToCollection(cwd, collection){
+  const defineHook = defineHookFactory(cwd)
   return (options, code) => {
-    if (typeof(options) === 'string') {
+    collection.push(defineHook(options, code))
+  }
+}
+
+export function defineHookFactory(cwd){
+  return (options, code) => {
+    if (typeof (options) === 'string'){
       options = {tags: options}
-    } else if (typeof(options) === 'function') {
+    }else if (typeof (options) === 'function'){
       code = options
       options = {}
     }
@@ -22,14 +29,21 @@ export function defineHook(cwd, collection) {
       fnName: 'defineHook',
       relativeUri: formatLocation(cwd, {line, uri})
     })
-    const hookDefinition = new HookDefinition({code, line, options, uri})
-    collection.push(hookDefinition)
+    return new HookDefinition({code, line, options, uri})
   }
 }
 
-export function defineStep(cwd, collection) {
+export function defineStepAndAddToCollection(cwd, collection){
+  const defineStep = defineStepFactory(cwd)
   return (pattern, options, code) => {
-    if (typeof(options) === 'function') {
+    const stepDefinition = defineStep(pattern, options, code)
+    collection.push(stepDefinition)
+  }
+}
+
+export function defineStepFactory(cwd){
+  return (pattern, options, code) => {
+    if (typeof (options) === 'function'){
       code = options
       options = {}
     }
@@ -39,12 +53,11 @@ export function defineStep(cwd, collection) {
       fnName: 'defineStep',
       relativeUri: formatLocation(cwd, {line, uri})
     })
-    const stepDefinition = new StepDefinition({code, line, options, pattern, uri})
-    collection.push(stepDefinition)
+    return new StepDefinition({code, line, options, pattern, uri})
   }
 }
 
-function getDefinitionLineAndUri() {
+export function getDefinitionLineAndUri(){
   const stackframes = StackTrace.getSync()
   const stackframe = stackframes.length > 2 ? stackframes[2] : stackframes[0]
   const line = stackframe.getLineNumber()
@@ -53,9 +66,9 @@ function getDefinitionLineAndUri() {
   return {line, uri}
 }
 
-export function registerHandler(cwd, collection) {
+export function registerHandler(cwd, collection){
   return (eventName, options, code) => {
-    if (typeof(options) === 'function') {
+    if (typeof (options) === 'function') {
       code = options
       options = {}
     }
@@ -73,7 +86,7 @@ export function registerHandler(cwd, collection) {
   }
 }
 
-export function addTransform(parameterTypeRegistry) {
+export function addTransform(parameterTypeRegistry){
   return util.deprecate(({captureGroupRegexps, transformer, typeName}) => {
     const parameter = new ParameterType(
       typeName,

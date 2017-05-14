@@ -1,9 +1,9 @@
-import {defineHook, defineStep, registerHandler} from './helpers'
+import {defineHookAndAddToCollection, defineStepAndAddToCollection, registerHandler} from './helpers'
 
 describe('helpers', function () {
   describe('defineHook', function() {
     beforeEach(function() {
-      this.defineHook = defineHook('', [])
+      this.defineHook = defineHookAndAddToCollection('', [])
     })
 
     it('throws on invalid options/fn type', function() {
@@ -33,7 +33,7 @@ describe('helpers', function () {
 
   describe('defineStep', function() {
     beforeEach(function() {
-      this.defineStep = defineStep('', [])
+      this.defineStep = defineStepAndAddToCollection('', [])
     })
 
     it('throws on invalid pattern type', function() {

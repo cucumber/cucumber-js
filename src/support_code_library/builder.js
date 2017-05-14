@@ -3,14 +3,15 @@ import arity from 'util-arity'
 import isGenerator from 'is-generator'
 import path from 'path'
 import TransformLookupBuilder from './parameter_type_registry_builder'
+import SupportCodeFns from '../support_code_fns'
 import * as helpers from './helpers'
 function build({cwd, fns}) {
   const options = {
-    afterHookDefinitions: [],
-    beforeHookDefinitions: [],
+    afterHookDefinitions: [].concat(SupportCodeFns.getAfterHooks()),
+    beforeHookDefinitions: [].concat(SupportCodeFns.getBeforeHooks()),
     defaultTimeout: 5000,
     listeners: [],
-    stepDefinitions: [],
+    stepDefinitions: [].concat(SupportCodeFns.getStepDefinitions()),
     parameterTypeRegistry: TransformLookupBuilder.build(),
     World({attach, parameters}) {
       this.attach = attach
@@ -21,9 +22,9 @@ function build({cwd, fns}) {
   const fnArgument = {
     addTransform: helpers.addTransform(options.parameterTypeRegistry),
     defineParameterType: helpers.defineParameterType(options.parameterTypeRegistry),
-    After: helpers.defineHook(cwd, options.afterHookDefinitions),
-    Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
-    defineStep: helpers.defineStep(cwd, options.stepDefinitions),
+    After: helpers.defineHookAndAddToCollection(cwd, options.afterHookDefinitions),
+    Before: helpers.defineHookAndAddToCollection(cwd, options.beforeHookDefinitions),
+    defineStep: helpers.defineStepAndAddToCollection(cwd, options.stepDefinitions),
     registerHandler: helpers.registerHandler(cwd, options.listeners),
     registerListener(listener) {
       options.listeners.push(listener)
