@@ -8,7 +8,6 @@ const date = (v) => new Date(v)
 
 const types = {
   'string':  asIs,
-  'str':     asIs,
   '':        asIs,
   'int':     parseInt,
   'integer': parseInt,

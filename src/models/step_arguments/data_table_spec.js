@@ -102,19 +102,76 @@ describe('DataTable', function () {
       }).to.throw(Error)
     })
 
-    it('accepts all supported types, case insensitive, no type given - is string', function() {
+    it('reads value as string when no type is given', function() {
+      const dataTable = new DataTable({
+        rows: [
+          ['k5' , ''        , 'some value'],
+          ['j5' , ''        , 'other value']
+        ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
+      })
+      expect(dataTable.typedRowsHash()).to.deep.equal({
+        k5 : 'some value',
+        j5 : 'other value'
+      })
+    })
+
+    it('accept strings, type column is case insensitive', function() {
       const dataTable = new DataTable({
         rows: [
           ['k1' , 'string'  , 'value'],
           ['k2' , 'String'  , 'value'],
-          ['k3' , 'str'     , 'value'],
-          ['k4' , 'STR'     , 'value'],
-          ['k5' , ''        , 'value'],
-          ['k6' , 'Int'     , '42'],
-          ['k7' , 'integer' , '42'],
-          ['k8' , 'double'  , '4.2'],
-          ['k9' , 'Float'   , '4.2'],
-          ['k9' , 'Number'  , '0.42'],
+          ['k3' , 'STRING'  , 'value']
+        ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
+      })
+      expect(dataTable.typedRowsHash()).to.deep.equal({
+        k1 : 'value',
+        k2 : 'value',
+        k3 : 'value'
+      })        
+    })
+    
+    it('accept numbers, lets user\'s PO document a concrete type (although JS does not care), type column is case insensitive', function() {
+      const dataTable = new DataTable({
+        rows: [
+          ['k60', 'int'     , '42'],
+          ['k61', 'Int'     , '42'],
+          ['k62', 'INT'     , '42'],
+          ['k70', 'Integer' , '42'],
+          ['k71', 'integer' , '42'],
+          ['k72', 'INTEGER' , '42'],
+          ['k80', 'double'  , '4.2'],
+          ['k81', 'Double'  , '4.2'],
+          ['k82', 'DOUBLE'  , '4.2'],
+          ['k90', 'float'   , '4.2'],
+          ['k91', 'Float'   , '4.2'],
+          ['k92', 'FLOAT'   , '4.2'],
+          ['k00', 'number'  , '0.42'],
+          ['k01', 'Number'  , '0.42'],
+          ['k02', 'NUMBER'  , '0.42']
+        ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
+      })
+      expect(dataTable.typedRowsHash()).to.deep.equal({
+        k60: 42,
+        k61: 42,
+        k62: 42,
+        k70: 42,
+        k71: 42,
+        k72: 42,
+        k80: 4,
+        k81: 4,
+        k82: 4,
+        k90: 4.2,
+        k91: 4.2,
+        k92: 4.2,
+        k00: 0.42,
+        k01: 0.42,
+        k02: 0.42,
+      })        
+    })    
+    
+    it('accepts boolean values, lets user use his non-tech PO\'s favorite jargone, type column is case insensitive', function() {
+       const dataTable = new DataTable({
+        rows: [
           ['k10', 'Bool'    , 'true'],
           ['k11', 'Boolean' , 'True'],
           ['k12', 'Y/N'     , 'Y'],
@@ -122,23 +179,10 @@ describe('DataTable', function () {
           ['k14', 'bit'     , '1'],
           ['k15', 'BIT'     , 'TRUE'],
           ['k16', 'bool'    , 'n'],
-          ['k17', 'bool'    , 'false'],
-          ['k18', 'list'    , 'a,b,c'],
-          ['k19', 'Array'   , '1,2,3'],
-          ['k20', 'JSON'    , '["a",1,true]'],
-          ['k21', 'Json'    , '"a string"']
+          ['k17', 'bool'    , 'false']
         ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
       })
-      expect(dataTable.typedRowsHash()).to.deep.equal( {
-        k1 : 'value',
-        k2 : 'value',
-        k3 : 'value',
-        k4 : 'value',
-        k5 : 'value',
-        k6 : 42,
-        k7 : 42,
-        k8 : 4,
-        k9 : 0.42,
+      expect(dataTable.typedRowsHash()).to.deep.equal({
         k10: true,
         k11: true,
         k12: true,
@@ -146,15 +190,47 @@ describe('DataTable', function () {
         k14: true,
         k15: true,
         k16: false,
-        k17: false,
-        k18: ['a','b','c'],
-        k19: ['1','2','3'],
-        k20: ['a',1,true],
-        k21: 'a string'
+        k17: false
+      })
+    })
+    
+    it('accepts lists, lets user communicate with non-tech PO anyhow they like, type column is case insensitive', function() {
+      const dataTable = new DataTable({
+        rows: [
+          ['k180', 'list'    , 'a,b,c'],
+          ['k181', 'List'    , 'a,b,c'],
+          ['k182', 'LIST'    , 'a,b,c'],
+          ['k190', 'array'   , '1,2,3'],
+          ['k191', 'Array'   , '1,2,3'],
+          ['k192', 'ARRAY'   , '1,2,3']
+        ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
+      })
+      expect(dataTable.typedRowsHash()).to.deep.equal({
+        k180: ['a','b','c'],
+        k181: ['a','b','c'],
+        k182: ['a','b','c'],
+        k190: ['1','2','3'],
+        k191: ['1','2','3'],
+        k192: ['1','2','3']
       })
     })
 
-    it('handles dates correctly', function () {
+    it('accepts JSON, type column is case insensitive', function() {
+      const dataTable = new DataTable({
+        rows: [
+          ['k20', 'JSON'    , '["a",1,true]'],
+          ['k21', 'Json'    , '"a string"'],
+          ['k22', 'json'    , '{"answer":42}']
+        ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
+      })
+      expect(dataTable.typedRowsHash()).to.deep.equal({
+        k20: ['a',1,true],
+        k21: 'a string',
+        k22: {answer: 42}
+      })
+    })    
+    
+    it('handles dates correctly, lets user document concrete type (although JS does not care), column type is case insensitive', function () {
       const dataTable = new DataTable({
         rows: [
           {
