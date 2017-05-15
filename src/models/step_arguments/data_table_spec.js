@@ -117,7 +117,7 @@ describe('DataTable', function () {
         expect(rows[0].length).to.eql(rows[1].length) //formatted awsomely
         return
       }
-      throw new Error('did not throw error for unrecognized type');
+      throw new Error('did not throw error for unrecognized type')
     })
 
     it('reads value as string when no type is given', function() {
@@ -145,9 +145,9 @@ describe('DataTable', function () {
         k1 : 'value',
         k2 : 'value',
         k3 : 'value'
-      })        
+      })
     })
-    
+
     it('accept numbers, lets user\'s PO document a concrete type (although JS does not care), type column is case insensitive', function() {
       const dataTable = new DataTable({
         rows: [
@@ -183,13 +183,13 @@ describe('DataTable', function () {
         k92: 4.2,
         k00: 0.42,
         k01: 0.42,
-        k02: 0.42,
-      })        
-    })    
-    
+        k02: 0.42
+      })
+    })
+
     it('accepts boolean values, lets user use his non-tech PO\'s favorite jargone, type column is case insensitive', function() {
-       const dataTable = new DataTable({
-        rows: [
+      const dataTable = new DataTable({
+         rows: [
           ['k10', 'Bool'    , 'true'],
           ['k11', 'Boolean' , 'True'],
           ['k12', 'Y/N'     , 'Y'],
@@ -199,7 +199,7 @@ describe('DataTable', function () {
           ['k16', 'bool'    , 'n'],
           ['k17', 'bool'    , 'false']
         ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
-      })
+       })
       expect(dataTable.typedRowsHash()).to.deep.equal({
         k10: true,
         k11: true,
@@ -211,7 +211,7 @@ describe('DataTable', function () {
         k17: false
       })
     })
-    
+
     it('accepts lists, lets user communicate with non-tech PO anyhow they like, type column is case insensitive', function() {
       const dataTable = new DataTable({
         rows: [
@@ -246,8 +246,8 @@ describe('DataTable', function () {
         k21: 'a string',
         k22: {answer: 42}
       })
-    })    
-    
+    })
+
     it('handles dates correctly, lets user document concrete type (although JS does not care), column type is case insensitive', function () {
       const dataTable = new DataTable({
         rows: [

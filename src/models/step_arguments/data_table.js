@@ -58,18 +58,18 @@ export default class DataTable {
 
   typedRowsHash() {
     const erroredRowFormat = ( () => {
-        const pad = "             ".split("").join("                     ")
-        const colPadder = () => {
-          let colLen = 0
-          return v => {
-            colLen = Math.max(colLen, v.length)
-            return { toString: () => (v + pad).substr(0, colLen) }
-          }
+      const pad = '             '.split('').join('                     ')
+      const colPadder = () => {
+        let colLen = 0
+        return v => {
+          colLen = Math.max(colLen, v.length)
+          return {toString: () => (v + pad).substr(0, colLen)}
         }
-        const cols = [ colPadder(), colPadder(), colPadder() ]
-        return row => {
-            return cols.map( (pad, i) => pad( row[i] ) )
-        }
+      }
+      const cols = [colPadder(), colPadder(), colPadder()]
+      return row => {
+        return cols.map( (padder, i) => padder( row[i] ) )
+      }
     })()
     const rows = this.raw()
     const everyRowHasThreeColumns = _.every(rows, (row) => row.length === 3)
@@ -80,8 +80,8 @@ export default class DataTable {
     if (unrecognizedTypes.length) {
       throw new Error('typedRowsHash does not support type(s) in rows: \n\t| ' +
         unrecognizedTypes.map(erroredRowFormat)
-          .map(row => row.join(" | ") )
-          .join(' |\n\t| ') + " |"
+          .map((row) => row.join(' | '))
+          .join(' |\n\t| ') + ' |'
       )
     }
     return this.rawTable.reduce( (h, r) => {
