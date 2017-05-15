@@ -61,13 +61,13 @@ export default class DataTable {
       const pad = '             '.split('').join('                     ')
       const colPadder = () => {
         let colLen = 0
-        return v => {
+        return (v) => {
           colLen = Math.max(colLen, v.length)
           return {toString: () => (v + pad).substr(0, colLen)}
         }
       }
       const cols = [colPadder(), colPadder(), colPadder()]
-      return row => {
+      return (row) => {
         return cols.map( (padder, i) => padder( row[i] ) )
       }
     })()

@@ -189,7 +189,7 @@ describe('DataTable', function () {
 
     it('accepts boolean values, lets user use his non-tech PO\'s favorite jargone, type column is case insensitive', function() {
       const dataTable = new DataTable({
-         rows: [
+        rows: [
           ['k10', 'Bool'    , 'true'],
           ['k11', 'Boolean' , 'True'],
           ['k12', 'Y/N'     , 'Y'],
@@ -199,7 +199,7 @@ describe('DataTable', function () {
           ['k16', 'bool'    , 'n'],
           ['k17', 'bool'    , 'false']
         ].map( (rawRow) => ({cells : rawRow.map((value) => ({value}))}) )
-       })
+      })
       expect(dataTable.typedRowsHash()).to.deep.equal({
         k10: true,
         k11: true,
