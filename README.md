@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/cucumber/cucumber-js.png?label=ready&title=Ready)](https://waffle.io/cucumber/cucumber-js)
 # Cucumber.js
 
 [![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
