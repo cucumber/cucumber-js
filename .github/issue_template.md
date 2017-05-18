@@ -1,3 +1,6 @@
+<!-- Please use the [support](https://cucumber.io/support) forums for questions 
+and discussions which are not related to documentation updates, bug reports, or feature requests -->
+
 <!-- Please search for related issues and check the documentation
 before opening a new issue -->
 
