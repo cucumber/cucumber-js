@@ -7,6 +7,7 @@ export default class Formatter {
       'cwd',
       'log',
       'snippetBuilder',
+      'stream',
       'supportCodeLibrary'
     ]))
   }

@@ -30,7 +30,7 @@ export default class Cli {
         stream = fs.createWriteStream(null, {fd})
         streamsToClose.push(stream)
       }
-      const typeOptions = _.assign({log: ::stream.write, supportCodeLibrary}, formatOptions)
+      const typeOptions = _.assign({log: ::stream.write, stream, supportCodeLibrary}, formatOptions)
       return FormatterBuilder.build(type, typeOptions)
     })
     const cleanup = function() {

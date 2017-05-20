@@ -1,6 +1,5 @@
 import _ from 'lodash'
-import {getUsage} from './usage_helpers'
-import {formatLocation} from './utils'
+import {formatLocation, getUsage} from './helpers'
 import Formatter from './'
 import Table from 'cli-table'
 

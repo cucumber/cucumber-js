@@ -5,6 +5,7 @@ import Hook from '../models/hook'
 import Status from '../status'
 import SummaryFormatter from './summary_formatter'
 import Table from 'cli-table'
+import indentString from 'indent-string'
 
 export default class PrettyFormatter extends SummaryFormatter {
   applyColor(stepResult, text) {
@@ -59,7 +60,7 @@ export default class PrettyFormatter extends SummaryFormatter {
     text += feature.keyword + ': ' + feature.name
     let description = feature.description
     if (description) {
-      text += '\n\n' + this.indent(description, 2)
+      text += '\n\n' + indentString(description, 2)
     }
     this.log(text + '\n\n')
   }
@@ -81,7 +82,7 @@ export default class PrettyFormatter extends SummaryFormatter {
   }
 
   logIndented(text, level) {
-    this.log(this.indent(text, level * 2))
+    this.log(indentString(text, level * 2))
   }
 
   logStepResult(stepResult) {
