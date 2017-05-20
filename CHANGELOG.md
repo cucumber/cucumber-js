@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.1.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.2.0...master)
+
+### [2.2.0](https://github.com/cucumber/cucumber-js/compare/v2.1.0...v2.2.0) (2017-05-20)
+
+#### New Features
+
+* Add `progress-bar` formatter inspired by [fuubar-cucumber]( https://github.com/martinciu/fuubar-cucumber) and [fuubar](https://github.com/thekompanee/fuubar) which outputs a progress bar and errors as they happen
 
 ### [2.1.0](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.9...v2.1.0) (2017-05-12)
 
