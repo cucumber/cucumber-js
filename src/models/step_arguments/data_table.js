@@ -76,7 +76,7 @@ export default class DataTable {
         chars: [
           'bottom', 'bottom-left', 'bottom-mid', 'bottom-right',
           'top', 'top-left', 'top-mid', 'top-right',
-          'left-mid', 'mid', 'mid-mid', 'right-mid',
+          'left-mid', 'mid', 'mid-mid', 'right-mid'
         ].reduce( (r,f) => {r[f] = ''; return r}, {left: '\t|', 'middle': '|', 'right' : '|'} )
       })
       rows.forEach( (row) => tbl.push(row) )
