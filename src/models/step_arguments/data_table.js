@@ -72,15 +72,15 @@ export default class DataTable {
 
   typedRowsHash() {
     const formatTypes = (rows) => {
-        const tbl = new Table( {
-          chars: [
-            'bottom', 'bottom-left', 'bottom-mid', 'bottom-right', 
-            'top', 'top-left', 'top-mid', 'top-right',
-            'left-mid', 'mid', 'mid-mid', 'right-mid', 
-          ].reduce( (r,f) => {r[f] = ''; return r}, {left: '\t|', 'middle': '|', 'right' : '|'} )
-        })
-        rows.forEach( (row) => tbl.push(row) )
-        return tbl.toString().replace(/\u001b\[[0-9]{2}m/g,'')
+      const tbl = new Table( {
+        chars: [
+          'bottom', 'bottom-left', 'bottom-mid', 'bottom-right',
+          'top', 'top-left', 'top-mid', 'top-right',
+          'left-mid', 'mid', 'mid-mid', 'right-mid',
+        ].reduce( (r,f) => {r[f] = ''; return r}, {left: '\t|', 'middle': '|', 'right' : '|'} )
+      })
+      rows.forEach( (row) => tbl.push(row) )
+      return tbl.toString().replace(/\u001b\[[0-9]{2}m/g,'')
     }
     const rows = this.raw()
     const everyRowHasThreeColumns = _.every(rows, (row) => row.length === 3)

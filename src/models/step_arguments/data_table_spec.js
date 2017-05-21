@@ -108,22 +108,22 @@ describe('DataTable', function () {
         ]
       })
 
-      let err;
+      let err
       try {
         dataTable.typedRowsHash()
       } catch (e) {
-        err = e;
+        err = e
       }
 
-      expect(err).to.exist;
+      expect(err).to.exist
       expect( err.message ).to.equal([
-        "typedRowsHash does not support type(s) in rows: ",
-        "\t" + "| key2 | OUPS       | some value |",
-	      "\t" + "| key3 | AYAYAYAYAY | value      |"
-      ].join("\n"))
+        'typedRowsHash does not support type(s) in rows: ',
+        '\t' + '| key2 | OUPS       | some value |',
+        '\t' + '| key3 | AYAYAYAYAY | value      |'
+      ].join('\n'))
     })
 
-    const toTableRow = (rawRow) => ({cells : rawRow.map((value) => ({value}))});
+    const toTableRow = (rawRow) => ({cells : rawRow.map((value) => ({value}))})
 
     it('reads value as string when no type is given', function() {
       const dataTable = new DataTable({
@@ -224,24 +224,24 @@ describe('DataTable', function () {
           ['k13', 'bool',    'no'],
           ['k16', 'bool',    'maybe']
         ].map(toTableRow)
-      });
+      })
 
-      let err;
+      let err
       try {
         dataTable.typedRowsHash()
-      } catch(e) { 
+      } catch(e) {
         err = e
       }
 
-      expect(err).to.exist;
+      expect(err).to.exist
       expect( err.message ).to.equal([
-        "'maybe' is not a legal boolean value.",
-        "Boolean values are case insensitive and may accept any of the following forms:",
-        " - true/false",
-        " - yes/no",
-        " - y/n",
-        " - 1/0"
-      ].join("\n"))
+        ''maybe' is not a legal boolean value.',
+        'Boolean values are case insensitive and may accept any of the following forms:',
+        ' - true/false',
+        ' - yes/no',
+        ' - y/n',
+        ' - 1/0'
+      ].join('\n'))
     })
 
     it('accepts lists, lets user communicate with non-tech PO anyhow they like, type column is case insensitive', function() {
@@ -268,9 +268,9 @@ describe('DataTable', function () {
     it('accepts JSON, type column is case insensitive', function() {
       const dataTable = new DataTable({
         rows: [
-          ['k20', 'JSON', '["a",1,true]'],
-          ['k21', 'Json', '"a string"'],
-          ['k22', 'json', '{"answer":42}']
+          ['k20', 'JSON', '['a',1,true]'],
+          ['k21', 'Json', ''a string''],
+          ['k22', 'json', '{'answer':42}']
         ].map(toTableRow)
       })
       expect(dataTable.typedRowsHash()).to.deep.equal({
