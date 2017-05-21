@@ -268,9 +268,9 @@ describe('DataTable', function () {
     it('accepts JSON, type column is case insensitive', function() {
       const dataTable = new DataTable({
         rows: [
-          ['k20', 'JSON', '['a',1,true]'],
-          ['k21', 'Json', ''a string''],
-          ['k22', 'json', '{'answer':42}']
+          ['k20', 'JSON', '["a",1,true]'],
+          ['k21', 'Json', '"a string"'],
+          ['k22', 'json', '{"answer":42}']
         ].map(toTableRow)
       })
       expect(dataTable.typedRowsHash()).to.deep.equal({
