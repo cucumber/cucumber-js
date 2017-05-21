@@ -235,7 +235,7 @@ describe('DataTable', function () {
 
       expect(err).to.exist
       expect( err.message ).to.equal([
-        ''maybe' is not a legal boolean value.',
+        '\'maybe\' is not a legal boolean value.',
         'Boolean values are case insensitive and may accept any of the following forms:',
         ' - true/false',
         ' - yes/no',
