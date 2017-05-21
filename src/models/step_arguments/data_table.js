@@ -1,8 +1,21 @@
 import _ from 'lodash'
 
-const truths = ['true', 'TRUE', 'True', 'yes', 'YES', 'Yes', 'y', 'Y', '1']
-const trueFalse = (v) => !!~truths.indexOf(v)
-const asIs = (v) => v
+const truths = ['true', 'yes', 'y', '1']
+const falses = ['false', 'no', 'n', '0']
+const trueFalse = (v) => {
+    const lower = v.toLowerCase()
+    if (~truths.indexOf(lower)) return true;
+    if (~falses.indexOf(lower)) return false;
+    throw new Error([
+      "'" + v + "' is not a legal boolean value.",
+      "Boolean values are case insensitive and may accept any of the following forms:",
+      " - true/false",
+      " - yes/no",
+      " - y/n",
+      " - 1/0"
+    ].join("\n"))
+}
+const asIs = _.identity
 const list = (v) => v.split(',')
 const date = (v) => new Date(v)
 
