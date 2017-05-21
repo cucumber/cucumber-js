@@ -71,20 +71,17 @@ export default class DataTable {
   }
 
   typedRowsHash() {
-    const erroredRowFormat = ( () => {
-      const pad = '             '.split('').join('                     ')
-      const colPadder = () => {
-        let colLen = 0
-        return (v) => {
-          colLen = Math.max(colLen, v.length)
-          return {toString: () => (v + pad).substr(0, colLen)}
-        }
-      }
-      const cols = [colPadder(), colPadder(), colPadder()]
-      return (row) => {
-        return cols.map( (padder, i) => padder( row[i] ) )
-      }
-    })()
+    const formatTypes = (rows) => {
+        const tbl = new Table( {
+          chars: [
+            'bottom', 'bottom-left', 'bottom-mid', 'bottom-right', 
+            'top', 'top-left', 'top-mid', 'top-right',
+            'left-mid', 'mid', 'mid-mid', 'right-mid', 
+          ].reduce( (r,f) => {r[f] = ''; return r}, {left: '\t|', 'middle': '|', 'right' : '|'} )
+        })
+        rows.forEach( (row) => tbl.push(row) )
+        return tbl.toString().replace(/\u001b\[[0-9]{2}m/g,'')
+    }
     const rows = this.raw()
     const everyRowHasThreeColumns = _.every(rows, (row) => row.length === 3)
     if (!everyRowHasThreeColumns) {
@@ -92,10 +89,9 @@ export default class DataTable {
     }
     const unrecognizedTypes = rows.filter((row) => typeof types[row[1].toLowerCase()] !== 'function')
     if (unrecognizedTypes.length) {
-      throw new Error('typedRowsHash does not support type(s) in rows: \n\t| ' +
-        unrecognizedTypes.map(erroredRowFormat)
-          .map((row) => row.join(' | '))
-          .join(' |\n\t| ') + ' |'
+      throw new Error(
+        'typedRowsHash does not support type(s) in rows: \n' +
+        formatTypes(unrecognizedTypes)
       )
     }
     return this.rawTable.reduce( (h, r) => {
