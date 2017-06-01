@@ -9,23 +9,19 @@ Feature: After hook interface
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a step$/, function() {
-          this.value = 1;
-        })
+      When(/^a step$/, function() {
+        this.value = 1;
       })
       """
 
   Scenario Outline: too many arguments
     Given a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {<TYPE>} from 'cucumber'
 
-      defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(arg1, arg2, arg3) {})
-      })
+      <TYPE>(function(arg1, arg2, arg3) {})
       """
     When I run cucumber.js
     Then it fails
