@@ -36,5 +36,3 @@ export const setWorldConstructor = proxySupportCode('setWorldConstructor')
 export const Given = defineStep
 export const When = defineStep
 export const Then = defineStep
-export const before = Before
-export const after = After
