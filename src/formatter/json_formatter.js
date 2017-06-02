@@ -105,7 +105,8 @@ export default class JsonFormatter extends Formatter {
     }
 
     if (status === Status.PASSED || status === Status.FAILED) {
-      currentStep.result.duration = stepResult.duration
+      // Convert ms to ns
+      currentStep.result.duration = stepResult.duration * 1e6
     }
 
     if (_.size(stepResult.attachments) > 0) {
