@@ -117,6 +117,9 @@ export default class ConfigurationBuilder {
       const parts = compiler.split(':')
       extensions.push(parts[0])
       require(parts[1])
+      if(parts.length > 1) {
+        require.extensions[parts[2]] = () =>  {}
+      }
     })
     return await this.pathExpander.expandPathsWithExtensions(supportCodePaths, extensions)
   }
