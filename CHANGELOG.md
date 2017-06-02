@@ -1,5 +1,25 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.2.0...master)
 
+### [2.3.0](https://github.com/cucumber/cucumber-js/compare/v2.2.0...v2.3.0) (2017-06-01)
+
+#### New Features
+
+* Add support code aliases for every method in the [support code API](./docs/support_files/api_reference.md). The following are now equivalent:
+  ```javascript
+  // Using defineSupportCode
+  var {defineSupportCode} = require('cucumber');
+
+  defineSupportCode(function({Given}) {
+    Given(/^a step$/, function() {});
+  });
+
+  // Using aliases
+  var {Given} = require('cucumber');
+
+  Given(/^a step$/, function() {});
+  ```
+  (Nico Jansen and Łukasz Gandecki)
+
 ### [2.2.0](https://github.com/cucumber/cucumber-js/compare/v2.1.0...v2.2.0) (2017-05-20)
 
 #### New Features

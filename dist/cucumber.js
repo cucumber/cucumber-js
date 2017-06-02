@@ -52260,7 +52260,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.2.0",
+  "version": "2.3.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -52351,7 +52351,8 @@ module.exports={
     "temyers <temyers@users.noreply.github.com>",
     "Martin Delille <martin@phonations.com>",
     "yaronassa <yaronassa@users.noreply.github.com>",
-    "Nico Jansen <jansennico@gmail.com>"
+    "Nico Jansen <jansennico@gmail.com>",
+    "Łukasz Gandecki <lgandecki@css.edu>"
   ],
   "repository": {
     "type": "git",
@@ -55403,7 +55404,7 @@ exports.default = UsageJsonFormatter;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.clearSupportCodeFns = exports.getSupportCodeFns = exports.defineSupportCode = exports.formatterHelpers = exports.UsageJsonFormatter = exports.UsageFormatter = exports.SupportCodeLibraryBuilder = exports.SummaryFormatter = exports.Status = exports.SnippetsFormatter = exports.ScenarioFilter = exports.Runtime = exports.RerunFormatter = exports.ProgressFormatter = exports.PrettyFormatter = exports.JsonFormatter = exports.FormatterBuilder = exports.Formatter = exports.FeatureParser = exports.Cli = undefined;
+exports.Then = exports.When = exports.Given = exports.setWorldConstructor = exports.setDefinitionFunctionWrapper = exports.setDefaultTimeout = exports.registerListener = exports.registerHandler = exports.Before = exports.After = exports.defineParameterType = exports.addTransform = exports.defineStep = exports.clearSupportCodeFns = exports.getSupportCodeFns = exports.defineSupportCode = exports.formatterHelpers = exports.UsageJsonFormatter = exports.UsageFormatter = exports.SupportCodeLibraryBuilder = exports.SummaryFormatter = exports.Status = exports.SnippetsFormatter = exports.ScenarioFilter = exports.Runtime = exports.RerunFormatter = exports.ProgressFormatter = exports.PrettyFormatter = exports.JsonFormatter = exports.FormatterBuilder = exports.Formatter = exports.FeatureParser = exports.Cli = undefined;
 
 var _cli = require('./cli');
 
@@ -55565,6 +55566,32 @@ exports.formatterHelpers = formatterHelpers;
 var defineSupportCode = exports.defineSupportCode = _support_code_fns2.default.add;
 var getSupportCodeFns = exports.getSupportCodeFns = _support_code_fns2.default.get;
 var clearSupportCodeFns = exports.clearSupportCodeFns = _support_code_fns2.default.reset;
+
+var proxySupportCode = function proxySupportCode(name) {
+  return function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return defineSupportCode(function (supportCodeContext) {
+      return supportCodeContext[name].apply(supportCodeContext, args);
+    });
+  };
+};
+
+var defineStep = exports.defineStep = proxySupportCode('defineStep');
+var addTransform = exports.addTransform = proxySupportCode('addTransform');
+var defineParameterType = exports.defineParameterType = proxySupportCode('defineParameterType');
+var After = exports.After = proxySupportCode('After');
+var Before = exports.Before = proxySupportCode('Before');
+var registerHandler = exports.registerHandler = proxySupportCode('registerHandler');
+var registerListener = exports.registerListener = proxySupportCode('registerListener');
+var setDefaultTimeout = exports.setDefaultTimeout = proxySupportCode('setDefaultTimeout');
+var setDefinitionFunctionWrapper = exports.setDefinitionFunctionWrapper = proxySupportCode('setDefinitionFunctionWrapper');
+var setWorldConstructor = exports.setWorldConstructor = proxySupportCode('setWorldConstructor');
+var Given = exports.Given = defineStep;
+var When = exports.When = defineStep;
+var Then = exports.Then = defineStep;
 
 },{"./cli":302,"./cli/feature_parser":300,"./formatter":313,"./formatter/builder":305,"./formatter/helpers":308,"./formatter/json_formatter":314,"./formatter/pretty_formatter":315,"./formatter/progress_formatter":317,"./formatter/rerun_formatter":318,"./formatter/snippets_formatter":319,"./formatter/summary_formatter":322,"./formatter/usage_formatter":323,"./formatter/usage_json_formatter":324,"./runtime":345,"./scenario_filter":349,"./status":350,"./support_code_fns":351,"./support_code_library/builder":352}],326:[function(require,module,exports){
 'use strict';
