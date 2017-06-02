@@ -91,3 +91,5 @@ defineSupportCode(function({After}) {
   });
 });
 ```
+
+**Note:** If you are using a custom instance of World ensure that you are explicitly passing in the attach function (see [world.md](https://github.com/cucumber/cucumber-js/blob/master/docs/support_files/world.md)).
