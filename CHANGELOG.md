@@ -1,4 +1,4 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.2.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.0...master)
 
 ### [2.3.0](https://github.com/cucumber/cucumber-js/compare/v2.2.0...v2.3.0) (2017-06-01)
 
