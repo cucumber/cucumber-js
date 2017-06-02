@@ -8,5 +8,7 @@ When steps have a data table, they are passed an object with methods that can be
 - without column headers
   - `raw`: returns the table as a 2-D array
   - `rowsHash`: returns an object where each row corresponds to an entry (first column is the key, second column is the value)
-
+  - `typedRowsHash`: returns an object where each row corresponds to an entry (first column is the key, second column is data-type, last is the value)
+     For supported DataTypes - look for `const types` at [src/models/step_arguments/data_table.js](../../src/models/step_arguments/data_table.js).
+  
 See this [feature](/features/data_tables.feature) for examples

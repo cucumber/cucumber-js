@@ -84,6 +84,41 @@ Feature: Data Tables
     When I run cucumber.js
     Then it passes
 
+  Scenario: typedRowsHash
+    Given a file named "features/passing_steps.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a table step
+            | Cucumber   | String | Cucumis sativus |
+            | Stars      | Number | 5               |
+            | OK         | Y/N    | Y               |
+            | Typed Since| Date   | 2017-02-05      |
+            | Best For   | list   | bdd,ci,cd       |
+            | compound   | JSON   | {"name":"Joe"}  |
+      """
+    Given a file named "features/step_definitions/passing_steps.js" with:
+      """
+      import {defineSupportCode} from 'cucumber'
+      import assert from 'assert'
+
+      defineSupportCode(({Given}) => {
+        Given(/^a table step$/, function(table) {
+          const expected = {
+            'Cucumber': 'Cucumis sativus',
+            'Stars': 5,
+            'OK': true,
+            'Best For': ['bdd','ci','cd'],
+            'Typed Since': new Date('2017-02-05'),
+            'compound': {name:'Joe'}
+          }
+          assert.deepEqual(table.typedRowsHash(), expected)
+        })
+      })
+      """
+    When I run cucumber.js
+    Then it passes
+
   Scenario: hashes
     Given a file named "features/passing_steps.feature" with:
       """
