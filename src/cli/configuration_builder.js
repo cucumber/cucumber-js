@@ -114,9 +114,9 @@ export default class ConfigurationBuilder {
   async expandSupportCodePaths(supportCodePaths) {
     const extensions = ['js']
     this.options.compiler.forEach((compiler) => {
-      const parts = compiler.split(':')
-      extensions.push(parts[0])
-      require(parts[1])
+      const [,extension, module] = compiler.match(/^([^:]+):(.+)$/)
+      extensions.push(extension)
+      require(module)
     })
     return await this.pathExpander.expandPathsWithExtensions(supportCodePaths, extensions)
   }
