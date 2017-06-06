@@ -4,7 +4,7 @@ Feature: Data Tables
     Given a file named "features/passing_steps.feature" with:
       """
       Feature: a feature
-        Scenario: a scenario
+        Scenario Outline: a scenario
           Given a table step
             | Cucumber     | Cucumis sativus |
             | Burr Gherkin | Cucumis anguria |
@@ -31,7 +31,7 @@ Feature: Data Tables
     Given a file named "features/passing_steps.feature" with:
       """
       Feature: a feature
-        Scenario: a scenario
+        Scenario Outline: a scenario
           Given a table step
             | Vegetable | Rating |
             | Apricot   | 5      |
@@ -61,7 +61,7 @@ Feature: Data Tables
     Given a file named "features/passing_steps.feature" with:
       """
       Feature: a feature
-        Scenario: a scenario
+        Scenario Outline: a scenario
           Given a table step
             | Cucumber     | Cucumis sativus |
             | Burr Gherkin | Cucumis anguria |
@@ -88,7 +88,7 @@ Feature: Data Tables
     Given a file named "features/passing_steps.feature" with:
       """
       Feature: a feature
-        Scenario: a scenario
+        Scenario Outline: a scenario
           Given a table step
             | Vegetable | Rating |
             | Apricot   | 5      |
