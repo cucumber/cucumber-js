@@ -30,7 +30,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for info on contributing to Cucumber.js.
 
 Everyone interacting in this codebase and issue tracker is expected to follow the Cucumber [code of conduct](https://github.com/cucumber/cucumber/blob/master/CODE_OF_CONDUCT.md).
 
-## Install 
+## Install
 
 [![npm downloads](https://img.shields.io/npm/dm/cucumber.svg?style=flat-square)](http://npm-stat.com/charts.html?package=cucumber&from=2015-09-01)
 
@@ -49,6 +49,8 @@ $ npm install cucumber
 
 ## Documentation
 
+The following documentation is for `2.x`. Documentation for `1.x`  is available [here](https://github.com/cucumber/cucumber-js/tree/1.x).
+
 * [CLI](/docs/cli.md)
 * [Custom Formatters](/docs/custom_formatters.md)
 * [NodeJs Example](/docs/nodejs_example.md)
@@ -61,3 +63,4 @@ $ npm install cucumber
   * [Attachments](/docs/support_files/attachments.md)
   * [Event Handlers](/docs/support_files/event_handlers.md)
   * [API Reference](/docs/support_files/api_reference.md)
+* [FAQ](/docs/faq.md)

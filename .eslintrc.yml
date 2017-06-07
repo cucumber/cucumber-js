@@ -20,13 +20,13 @@ rules:
   array-bracket-spacing: error
   arrow-parens: error
   babel/new-cap: error
-  babel/no-await-in-loop: error
   babel/object-curly-spacing: error
   comma-dangle: [error, never]
   complexity: error
   eqeqeq: [error, always]
   indent: [error, 2, {SwitchCase: 1}]
   linebreak-style: [error, unix]
+  no-await-in-loop: error
   no-negated-condition: error
   no-nested-ternary: error
   no-plusplus: error

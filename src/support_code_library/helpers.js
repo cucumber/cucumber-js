@@ -1,5 +1,7 @@
+import util from 'util'
 import _ from 'lodash'
-import {formatLocation} from '../formatter/utils'
+import {ParameterType} from 'cucumber-expressions'
+import {formatLocation} from '../formatter/helpers'
 import HookDefinition from '../models/hook_definition'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
@@ -68,5 +70,29 @@ export function registerHandler(cwd, collection) {
       relativeUri: formatLocation(cwd, {line, uri})
     }, options)
     collection.push(listener)
+  }
+}
+
+export function addTransform(parameterTypeRegistry) {
+  return util.deprecate(({captureGroupRegexps, transformer, typeName}) => {
+    const parameter = new ParameterType(
+      typeName,
+      null,
+      captureGroupRegexps,
+      transformer
+    )
+    parameterTypeRegistry.defineParameterType(parameter)
+  }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
+}
+
+export function defineParameterType(parameterTypeRegistry) {
+  return ({regexp, transformer, typeName}) => {
+    const parameter = new ParameterType(
+      typeName,
+      null,
+      regexp,
+      transformer
+    )
+    parameterTypeRegistry.defineParameterType(parameter)
   }
 }

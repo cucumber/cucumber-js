@@ -2,9 +2,12 @@ import Scenario from './scenario'
 
 describe('Scenario', function () {
   beforeEach(function() {
-    this.feature = {feature: 'data'}
+    this.feature = {
+      feature: 'data',
+      uri: '/path/to/feature'
+    }
     this.gherkinData = {
-      locations: [{line: 2, path: '/path/to/feature'}]
+      locations: [{line: 2}]
     }
     this.lineToKeywordMapping = {}
     this.stepLineToKeywordMapping = {stepLine: 'data'}
@@ -34,7 +37,7 @@ describe('Scenario', function () {
     })
 
     it('returns the feature', function () {
-      expect(this.scenario.feature).to.eql({feature: 'data'})
+      expect(this.scenario.feature).to.eql({feature: 'data', uri: '/path/to/feature'})
     })
   })
 
@@ -83,12 +86,11 @@ describe('Scenario', function () {
 
   describe('uri', function () {
     beforeEach(function() {
-      this.gherkinData.locations = [{path: 'path1'}, {path: 'path2'}]
       this.scenario = new Scenario(this.scenarioOptions)
     })
 
-    it('returns the first path', function () {
-      expect(this.scenario.uri).to.eql('path1')
+    it('returns the feature uri', function () {
+      expect(this.scenario.uri).to.eql('/path/to/feature')
     })
   })
 

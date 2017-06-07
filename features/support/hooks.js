@@ -7,6 +7,8 @@ import path from 'path'
 import tmp from 'tmp'
 
 const projectPath = path.join(__dirname, '..', '..')
+const projectNodeModulesPath = path.join(projectPath, 'node_modules')
+const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
 defineSupportCode(function({After, Before}) {
   Before('@debug', function () {
@@ -26,17 +28,34 @@ defineSupportCode(function({After, Before}) {
     fsExtra.createSymlinkSync(profileBabelRcPath, tmpDirBabelRcPath)
 
     const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-    const projectNodeModulesPath = path.join(projectPath, 'node_modules')
-
-    const moduleNames = fs.readdirSync(projectNodeModulesPath)
     moduleNames.forEach((moduleName) => {
       const tmpDirNodeModulePath = path.join(tmpDirNodeModulesPath, moduleName)
       const projectNodeModulePath = path.join(projectPath, 'node_modules', moduleName)
       fsExtra.createSymlinkSync(projectNodeModulePath, tmpDirNodeModulePath)
     })
 
-    const tmpDirCucumberPath = path.join(this.tmpDir, 'node_modules', 'cucumber')
+    const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
     fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
+    this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber.js')
+  })
+
+  Before('@global-install', function () {
+    const tmpObject = tmp.dirSync({unsafeCleanup: true})
+
+    const globalInstallNodeModulesPath = path.join(tmpObject.name, 'node_modules')
+    moduleNames.forEach((moduleName) => {
+      const globalInstallNodeModulePath = path.join(globalInstallNodeModulesPath, moduleName)
+      const projectNodeModulePath = path.join(projectPath, 'node_modules', moduleName)
+      fsExtra.createSymlinkSync(projectNodeModulePath, globalInstallNodeModulePath)
+    })
+
+    const globalInstallCucumberPath = path.join(globalInstallNodeModulesPath, 'cucumber')
+    const itemsToCopy = ['bin', 'lib', 'package.json']
+    itemsToCopy.forEach((item) => {
+      fsExtra.copySync(path.join(projectPath, item), path.join(globalInstallCucumberPath, item))
+    })
+
+    this.globalExecutablePath = path.join(globalInstallCucumberPath, 'bin', 'cucumber.js')
   })
 
   After(function() {

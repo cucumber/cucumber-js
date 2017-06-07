@@ -1,4 +1,76 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc7...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.0...master)
+
+### [2.3.0](https://github.com/cucumber/cucumber-js/compare/v2.2.0...v2.3.0) (2017-06-01)
+
+#### New Features
+
+* Add support code aliases for every method in the [support code API](./docs/support_files/api_reference.md). The following are now equivalent:
+  ```javascript
+  // Using defineSupportCode
+  var {defineSupportCode} = require('cucumber');
+
+  defineSupportCode(function({Given}) {
+    Given(/^a step$/, function() {});
+  });
+
+  // Using aliases
+  var {Given} = require('cucumber');
+
+  Given(/^a step$/, function() {});
+  ```
+  (Nico Jansen and Łukasz Gandecki)
+
+### [2.2.0](https://github.com/cucumber/cucumber-js/compare/v2.1.0...v2.2.0) (2017-05-20)
+
+#### New Features
+
+* Add `progress-bar` formatter inspired by [fuubar-cucumber]( https://github.com/martinciu/fuubar-cucumber) and [fuubar](https://github.com/thekompanee/fuubar) which outputs a progress bar and errors as they happen
+
+### [2.1.0](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.9...v2.1.0) (2017-05-12)
+
+#### Bug Fixes
+
+* throw descriptive error message when running a global install
+
+### [1.3.3](https://github.com/cucumber/cucumber-js/compare/v1.3.2...v1.3.3) (2016-04-26)
+
+#### Bug Fixes
+
+* fix unhandled rejections in handlers (#792) (yaronassa)
+
+### [1.3.2](https://github.com/cucumber/cucumber-js/compare/v1.3.1...v1.3.2) (2016-03-20)
+
+#### Bug Fixes
+
+* dependency: fix use of gherkin to not rely on removed field
+
+### [2.0.0-rc.9](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.8...v2.0.0-rc.9) (2017-03-16)
+
+#### Bug Fixes
+
+* dependency: fix use of gherkin to not rely on removed field
+
+### [2.0.0-rc.8](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.7...v2.0.0-rc.8) (2017-03-10)
+
+#### Bug Fixes
+
+* generated step definition snippets are not found (#732) (Aslak Hellesøy)
+* catch attempt to define duplicate parameter type regular expression (#780) (Aslak Hellesøy)
+* catch errors in parameter type transform functions (Aslak Hellesøy)
+
+#### New Features
+
+* all async parameter type transform functions (Aslak Hellesøy)
+* make all formatters available when requiring
+
+#### Deprecations
+
+* `addTransform` was deprecated in favor of `defineParameterType`
+
+#### Documentation
+
+* normalize syntax highlighting (#726) (Martin Delille)
+* fix setWorldConstructor example
 
 ### [2.0.0-rc.7](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.6...v2.0.0-rc.7) (2017-01-30)
 
@@ -118,7 +190,7 @@
     * `--tags @dev` stays the same
     * `--tags ~@dev` becomes `--tags 'not @dev'`
     * `--tags @foo,@bar` becomes  `--tags '@foo or @bar'`
-    * `--tags @foo --tags @bar` becomes `--tags '@foo and bar'`
+    * `--tags @foo --tags @bar` becomes `--tags '@foo and @bar'`
 * Internals
   * complete rewrite using ES2015 and promises
 * JSON Formatter

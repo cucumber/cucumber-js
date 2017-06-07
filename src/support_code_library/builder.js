@@ -1,11 +1,9 @@
 import _ from 'lodash'
 import arity from 'util-arity'
 import isGenerator from 'is-generator'
-import {Transform} from 'cucumber-expressions'
 import path from 'path'
-import TransformLookupBuilder from './transform_lookup_builder'
+import TransformLookupBuilder from './parameter_type_registry_builder'
 import * as helpers from './helpers'
-
 function build({cwd, fns}) {
   const options = {
     afterHookDefinitions: [],
@@ -13,7 +11,7 @@ function build({cwd, fns}) {
     defaultTimeout: 5000,
     listeners: [],
     stepDefinitions: [],
-    transformLookup: TransformLookupBuilder.build(),
+    parameterTypeRegistry: TransformLookupBuilder.build(),
     World({attach, parameters}) {
       this.attach = attach
       this.parameters = parameters
@@ -21,15 +19,8 @@ function build({cwd, fns}) {
   }
   let definitionFunctionWrapper = null
   const fnArgument = {
-    addTransform({captureGroupRegexps, transformer, typeName}) {
-      const transform = new Transform(
-        typeName,
-        function() {},
-        captureGroupRegexps,
-        transformer
-      )
-      options.transformLookup.addTransform(transform)
-    },
+    addTransform: helpers.addTransform(options.parameterTypeRegistry),
+    defineParameterType: helpers.defineParameterType(options.parameterTypeRegistry),
     After: helpers.defineHook(cwd, options.afterHookDefinitions),
     Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),

@@ -19,7 +19,7 @@ export default class Scenario {
     this.lines = _.map(gherkinData.locations, 'line')
     this.name = gherkinData.name
     this.tags = _.map(gherkinData.tags, Tag.build)
-    this.uri = gherkinData.locations[0].path
+    this.uri = feature.uri
 
     this.line = _.first(this.lines)
     this.description = _.chain(this.lines)

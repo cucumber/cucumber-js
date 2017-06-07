@@ -9,9 +9,12 @@ Feature: step definition snippets
       """
     When I run cucumber-js
     Then it fails
-    And it suggests a "Given" step definition snippet with 1 parameter for:
+    And the output contains the text:
       """
-      'a step numbered {arg1:int}'
+      Given('a step numbered {int}', function (int, callback) {
+        // Write code here that turns the phrase above into concrete actions
+        callback(null, 'pending');
+      });
       """
 
   Scenario: quoted strings
@@ -23,9 +26,12 @@ Feature: step definition snippets
       """
     When I run cucumber-js
     Then it fails
-    And it suggests a "Given" step definition snippet with 1 parameter for:
+    And the output contains the text:
       """
-      'a step with {arg1:stringInDoubleQuotes}'
+      Given('a step with {stringInDoubleQuotes}', function (stringInDoubleQuotes, callback) {
+        // Write code here that turns the phrase above into concrete actions
+        callback(null, 'pending');
+      });
       """
 
   Scenario: multiple quoted strings
@@ -37,9 +43,12 @@ Feature: step definition snippets
       """
     When I run cucumber-js
     Then it fails
-    And it suggests a "Given" step definition snippet with 2 parameters for:
+    And the output contains the text:
       """
-      'a step with {arg1:stringInDoubleQuotes} and {arg2:stringInDoubleQuotes}'
+      Given('a step with {stringInDoubleQuotes} and {stringInDoubleQuotes}', function (stringInDoubleQuotes, stringInDoubleQuotes2, callback) {
+        // Write code here that turns the phrase above into concrete actions
+        callback(null, 'pending');
+      });
       """
 
   Scenario: background step
@@ -53,7 +62,10 @@ Feature: step definition snippets
       """
     When I run cucumber-js
     Then it fails
-    And it suggests a "Given" step definition snippet with 1 parameter for:
+    And the output contains the text:
       """
-      'a step with {arg1:stringInDoubleQuotes}'
+      Given('a step with {stringInDoubleQuotes}', function (stringInDoubleQuotes, callback) {
+        // Write code here that turns the phrase above into concrete actions
+        callback(null, 'pending');
+      });
       """

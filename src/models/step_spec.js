@@ -6,14 +6,19 @@ import Step from './step'
 describe('Step', function () {
   beforeEach(function() {
     this.gherkinData = {
-      locations: [{line: 2, path: '/path/to/feature'}]
+      locations: [{line: 2}]
+    }
+    this.scenario = {
+      scenario: 'data',
+      uri: '/path/to/feature'
     }
     this.lineToKeywordMapping = {}
     this.stepOptions = {
       backgroundLines: [],
       gherkinData: this.gherkinData,
       language: 'en',
-      lineToKeywordMapping: this.lineToKeywordMapping
+      lineToKeywordMapping: this.lineToKeywordMapping,
+      scenario: this.scenario
     }
   })
 
@@ -208,23 +213,21 @@ describe('Step', function () {
 
   describe('scenario', function () {
     beforeEach(function() {
-      this.stepOptions.scenario = {scenario: 'data'}
       this.step = new Step(this.stepOptions)
     })
 
     it('returns the scenario', function () {
-      expect(this.step.scenario).to.eql({scenario: 'data'})
+      expect(this.step.scenario).to.eql({scenario: 'data', uri: '/path/to/feature'})
     })
   })
 
   describe('uri', function () {
     beforeEach(function() {
-      this.gherkinData.locations = [{path: 'path1'}, {path: 'path2'}]
       this.step = new Step(this.stepOptions)
     })
 
-    it('returns the first path', function () {
-      expect(this.step.uri).to.eql('path1')
+    it('returns the scenario uri', function () {
+      expect(this.step.uri).to.eql('/path/to/feature')
     })
   })
 })
