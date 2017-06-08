@@ -158,7 +158,7 @@
     "babel-register": "^6.9.0",
     "babelify": "^7.3.0",
     "browserify": "^14.3.0",
-    "chai": "^3.5.0",
+    "chai": "^4.0.1",
     "coffee-script": "^1.10.0",
     "connect": "^3.4.0",
     "dependency-lint": "^5.0.1",
