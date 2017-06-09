@@ -56,9 +56,7 @@ function wrapDefinitions({cwd, definitionFunctionWrapper, definitions}) {
   if (definitionFunctionWrapper) {
     definitions.forEach((definition) => {
       const codeLength = definition.code.length
-      const wrappedFn = definitionFunctionWrapper(
-        definition.code, definition.options && definition.options.wrapperOptions
-      )
+      const wrappedFn = definitionFunctionWrapper(definition.code, definition.options.wrapperOptions)
       if (wrappedFn !== definition.code) {
         definition.code = arity(codeLength, wrappedFn)
       }
