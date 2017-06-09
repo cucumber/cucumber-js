@@ -166,7 +166,7 @@
     "eslint-plugin-babel": "^4.0.0",
     "fs-extra": "^3.0.1",
     "mocha": "^3.1.2",
-    "nyc": "^10.0.0",
+    "nyc": "^11.0.2",
     "regenerator-runtime": "^0.10.0",
     "serve-static": "^1.10.0",
     "sinon": "^2.2.0",
