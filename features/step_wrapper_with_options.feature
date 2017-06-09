@@ -15,9 +15,7 @@ Feature: Step Wrapper with Options
       import {defineSupportCode} from 'cucumber'
 
       defineSupportCode(({Then, When}) => {
-        When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {
-        })
-
+        When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {})
       })
       """
     And a file named "features/support/setup.js" with:
@@ -27,7 +25,7 @@ Feature: Step Wrapper with Options
       defineSupportCode(({setDefinitionFunctionWrapper}) => {
         setDefinitionFunctionWrapper(function (fn, options = {}) {
           if (options.retry) {
-            console.log("I can see that you want to retry the step at most", options.retry, "times");
+            console.log("Max retries: ", options.retry);
           }
           return fn;
         })
@@ -38,5 +36,5 @@ Feature: Step Wrapper with Options
     When I run cucumber-js
     Then the output contains the text:
       """
-      I can see that you want to retry the step at most 2 times
+      Max retries: 2
       """
