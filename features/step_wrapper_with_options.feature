@@ -15,7 +15,7 @@ Feature: Step Wrapper with Options
       import {defineSupportCode} from 'cucumber'
 
       defineSupportCode(({Then, When}) => {
-        When(/^I run a step with options$/, {retry: 2}, function () {
+        When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {
         })
 
       })
