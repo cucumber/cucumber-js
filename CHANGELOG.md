@@ -1,4 +1,10 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.0...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.1...master)
+
+### [2.3.1](https://github.com/cucumber/cucumber-js/compare/v2.3.0...v2.3.1) (2017-06-09)
+
+#### New Features
+
+* pass step specific options to definition function wrapper (#838) (Łukasz Gandecki)
 
 ### [2.3.0](https://github.com/cucumber/cucumber-js/compare/v2.2.0...v2.3.0) (2017-06-01)
 

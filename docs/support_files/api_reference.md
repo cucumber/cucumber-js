@@ -68,7 +68,7 @@ Multiple `Before` hooks are executed in the order that they are defined.
 
 ---
 
-#### `defineStep([options,] pattern, fn)`
+#### `defineStep(pattern[, options], fn)`
 
 Defines a step.
 
@@ -77,6 +77,7 @@ Aliases: `Given`, `When`, `Then`.
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
   - `timeout`: A step-specific timeout, to override the default timeout.
+  - `wrapperOptions`: step-specific options that are passed to the definition function wrapper
 * `fn`: A function, which should be defined as follows:
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
@@ -107,9 +108,9 @@ Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.
 
 ---
 
-#### `setDefinitionFunctionWrapper(fn)`
+#### `setDefinitionFunctionWrapper(fn, options)`
 
-Set a function used to wrap step / hook definitions. When used, the result is wrapped again to ensure it has the same length of the original step / hook definition.
+Set a function used to wrap step / hook definitions. When used, the result is wrapped again to ensure it has the same length of the original step / hook definition. `options` is the step specific `wrapperOptions` and may be undefined.
 
 ---
 

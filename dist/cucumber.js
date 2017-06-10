@@ -52260,7 +52260,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "2.3.0",
+  "version": "2.3.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -52410,7 +52410,7 @@ module.exports={
     "babel-register": "^6.9.0",
     "babelify": "^7.3.0",
     "browserify": "^14.3.0",
-    "chai": "^3.5.0",
+    "chai": "^4.0.1",
     "coffee-script": "^1.10.0",
     "connect": "^3.4.0",
     "dependency-lint": "^5.0.1",
@@ -52418,7 +52418,7 @@ module.exports={
     "eslint-plugin-babel": "^4.0.0",
     "fs-extra": "^3.0.1",
     "mocha": "^3.1.2",
-    "nyc": "^10.0.0",
+    "nyc": "^11.0.2",
     "regenerator-runtime": "^0.10.0",
     "serve-static": "^1.10.0",
     "sinon": "^2.2.0",
@@ -58129,7 +58129,7 @@ function wrapDefinitions(_ref3) {
   if (definitionFunctionWrapper) {
     definitions.forEach(function (definition) {
       var codeLength = definition.code.length;
-      var wrappedFn = definitionFunctionWrapper(definition.code);
+      var wrappedFn = definitionFunctionWrapper(definition.code, definition.options.wrapperOptions);
       if (wrappedFn !== definition.code) {
         definition.code = (0, _utilArity2.default)(codeLength, wrappedFn);
       }
