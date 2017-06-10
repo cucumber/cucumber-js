@@ -19,15 +19,16 @@ deploy:
 
 language: node_js
 
-node_js:
-  - '7'
-  - "6"
-
 notifications:
   email: false
 
 matrix:
   include:
+    - node_js: "6"
+      script: "yarn test-coverage"
+      after_success: "nyc report --reporter=text-lcov | coveralls"
+    - node_js: "7"
+      script: "yarn test"
     - node_js: "4"
       script: "yarn run feature-test -- --profile node-4"
 

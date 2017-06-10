@@ -11,9 +11,10 @@ executedModules:
       - test
       - version
   shellScripts:
-    dev: []
+    dev:
+      - test
     ignore: []
-    root: ''
+    root: 'scripts/*.sh'
 
 ignoreErrors:
   missing: []
@@ -33,6 +34,7 @@ ignoreErrors:
     - babel-register # test/mocha.opts
     - babelify # package.json - scripts - build-release
     - coffee-script # features/compiler.feature
+    - coveralls # .travis.yml
     - eslint-plugin-babel # .eslintrc.yml - parser
 
 requiredModules:
