@@ -258,7 +258,6 @@ Feature: After hook interface
       | Before |
       | After  |
 
-  @pittgoose
   Scenario Outline: hook step match location with support code aliases
     Given a file named "features/support/hooks.js" with:
       """

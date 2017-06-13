@@ -195,7 +195,6 @@ Feature: Register Handler
       | Error: my error                    |
       | features/support/handlers.js:5     |
 
-  @pittgoose1
   Scenario: event handler step match location with support code aliases
     Given a file named "features/support/handlers.js" with:
       """

@@ -127,7 +127,6 @@ Feature: Core feature elements execution using direct imports
     When I run cucumber-js
     Then it passes
 
-  @pittgoose
   Scenario Outline: step match location with support code aliases
     Given a file named "features/a.feature" with:
     """
@@ -141,7 +140,8 @@ Feature: Core feature elements execution using direct imports
     <step_type>("failing step A", function(arg1, arg2){});
     """
     When I run cucumber.js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
     """
     Step Definition: features\step_definitions\steps.js:2
     """
