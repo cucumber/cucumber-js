@@ -194,3 +194,18 @@ Feature: Register Handler
       | a handler errored, process exiting |
       | Error: my error                    |
       | features/support/handlers.js:5     |
+
+  @pittgoose1
+  Scenario: event handler step match location with support code aliases
+    Given a file named "features/support/handlers.js" with:
+      """
+      let {registerHandler} = require('cucumber')
+      registerHandler('AfterFeatures', function(arg1, arg2) {
+      })
+      """
+    When I run cucumber.js
+    Then it fails
+    And the output contains the text:
+      """
+      a handler errored, process exiting: features\support\handlers.js:2
+      """
