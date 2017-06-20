@@ -1,7 +1,7 @@
 # Step Definitions
 
 Step definitions are glue between features written in Gherkin and the actual system under test.
-Use `this.Given`, `this.When`, `this.Then`, and `this.defineStep`.
+Use `Given`, `When`, `Then`.
 Matching groups in the regular expression are passed as parameters to the step definition.
 
 ```javascript
@@ -53,8 +53,8 @@ If you would like to wrap step or hook definitions in with some additional logic
 var {defineSupportCode} = require('cucumber');
 var mzFs = require('mz/fs');
 
-defineSupportCode(function({Then, When}) {
-  this.Then(/^Then the file named (.*) is empty$/, function *(fileName) {
+defineSupportCode(function({Then}) {
+  Then(/^Then the file named (.*) is empty$/, function *(fileName) {
     contents = yield mzFs.readFile(fileName, 'utf8');
     assert.equal(contents, '');
   });
