@@ -46,7 +46,7 @@ defineSupportCode(function({Then, When}) {
 
 ## Definition function wrapper
 
-If you would like to wrap step or hook definitions in with some additional logic you can use `this.setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
+If you would like to wrap step or hook definitions in with some additional logic you can use `setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
 
 ```javascript
 // features/step_definitions/file_steps.js
