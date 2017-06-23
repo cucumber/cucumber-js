@@ -6,6 +6,7 @@ Matching groups in the regular expression are passed as parameters to the step d
 
 ```javascript
 var {defineSupportCode} = require('cucumber');
+var assert = require('assert');
 var fs = require('fs');
 var mzFs = require('mz/fs')
 var seleniumWebdriver = require('selenium-webdriver');
@@ -51,6 +52,7 @@ If you would like to wrap step or hook definitions in with some additional logic
 ```javascript
 // features/step_definitions/file_steps.js
 var {defineSupportCode} = require('cucumber');
+var assert = require('assert');
 var mzFs = require('mz/fs');
 
 defineSupportCode(function({Then}) {
