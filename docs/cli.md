@@ -1,14 +1,6 @@
 # CLI
 
-Cucumber.js includes a executable file to run the features.
-
-If you installed Cucumber.js globally, you may run it with:
-
-```shell
-$ cucumber.js
-```
-
-If you installed Cucumber locally, you may need to specify the path to the executable:
+Cucumber.js includes a executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
 $ ./node_modules/.bin/cucumber.js
@@ -19,6 +11,9 @@ The executable is also aliased as `cucumber-js` and `cucumberjs`.
 **Note to Windows users:** Use `cucumber-js` or `cucumberjs` instead of `cucumber.js`.
 The latter is causing the operating system to invoke JScript instead of Node.js,
 because of the file extension.
+
+**Note on global installs:** Cucumber does not work when installed globally because cucumber 
+needs to be required in your support files and globally installed modules cannot be required. 
 
 ## Running specific features
 
