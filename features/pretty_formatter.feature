@@ -52,6 +52,7 @@ Feature: Pretty Formatter
       <duration-stat>
       """
 
+  @spawn
   Scenario: Failing hook is reported as a failed step
     Given a file named "features/a.feature" with:
       """

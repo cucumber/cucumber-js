@@ -1,6 +1,6 @@
 Feature: Global Installs
 
-  @global-install
+  @spawn @global-install
   Scenario: executing cucumber from a global install error
     Given a file named "features/a.feature" with:
       """

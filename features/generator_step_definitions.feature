@@ -31,6 +31,7 @@ Feature: Generator Step Definitions
       })
       """
 
+  @spawn
   Scenario: without generator function runner
     When I run cucumber-js
     Then it fails

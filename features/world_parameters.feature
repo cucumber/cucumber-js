@@ -11,6 +11,7 @@ Feature: World Parameters
           Given the world parameters are correct
       """
 
+  @spawn
   Scenario: Invalid JSON
     When I run cucumber.js with `--world-parameters '{"a":}'`
     Then it fails
@@ -23,6 +24,7 @@ Feature: World Parameters
       {"a":}
       """
 
+  @spawn
   Scenario: Non-object
     When I run cucumber.js with `--world-parameters '[1,2]'`
     Then it fails

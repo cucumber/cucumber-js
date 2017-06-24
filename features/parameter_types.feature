@@ -39,6 +39,7 @@ Feature: Parameter types
     When I run cucumber.js
     Then the step "a particular step" has status "passed"
 
+  @spawn
   Scenario: sync transform (success) using deprecated addTransform API
     Given a file named "features/support/transforms.js" with:
       """
