@@ -31,7 +31,7 @@ function printAsTable(header, rows) {
   })
   table.push(header)
   table.push.apply(table, rows)
-  console.log(table.toString())
+  console.log(table.toString()) // eslint-disable-line no-console
 }
 
 export function printLanguages() {

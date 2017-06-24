@@ -25,7 +25,7 @@ export default class ArgvParser {
     }
   }
 
-  static validateLanguage(val, memo) {
+  static validateLanguage(val) {
     if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
       throw new Error('Unsupported ISO 639-1: ' + val)
     }
