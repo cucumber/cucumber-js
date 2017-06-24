@@ -22,7 +22,7 @@ export default class ConfigurationBuilder {
 
   async build() {
     const listI18nKeywordsFor = this.options.i18nKeywords
-    const listI18nLanguages = this.options.i18nLanguages
+    const listI18nLanguages = !!this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
     let featurePaths = []
     let supportCodePaths = []
