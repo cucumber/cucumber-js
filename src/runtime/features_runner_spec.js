@@ -22,7 +22,7 @@ describe('FeaturesRunner', function () {
     }
     this.scenarioFilter = createMock({matches: true})
     this.listeners = []
-    this.options = {}
+    this.options = {maximumConcurrentScenarios: 1}
     sinon.stub(ScenarioRunner.prototype, 'run')
     this.featuresRunner = new FeaturesRunner({
       eventBroadcaster: this.eventBroadcaster,

@@ -42,10 +42,8 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        ✔ Given a passing step
+      Scenario: some scenario
+      ✔ Given a passing step
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -79,10 +77,8 @@ Feature: Pretty Formatter
     Then it fails
     And the output contains the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        - Given a passing step
+      Scenario: some scenario
+      - Given a passing step
 
       Failures:
 
@@ -118,15 +114,13 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        ✔ Given a basic step
-        ✔ And a step with a doc string
-            \"\"\"
-            my doc string
-            \"\"\"
-        ✔ And a basic step
+      Scenario: some scenario
+      ✔ Given a basic step
+      ✔ And a step with a doc string
+          \"\"\"
+          my doc string
+          \"\"\"
+      ✔ And a basic step
 
       1 scenario (1 passed)
       3 steps (3 passed)
@@ -154,12 +148,10 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        ✔ Given a table:
-            | foo\nbar               | bar | baz      |
-            | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
+      Scenario: some scenario
+      ✔ Given a table:
+          | foo\nbar               | bar | baz      |
+          | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
 
       1 scenario (1 passed)
       1 step (1 passed)

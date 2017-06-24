@@ -31,16 +31,18 @@ export default class FeaturesRunner {
   }
 
   async runScenario(scenario) {
+    let scenarioResult
     if (!this.featuresResult.success && this.options.failFast) {
-      return new ScenarioResult(scenario, Status.SKIPPED)
+      scenarioResult = new ScenarioResult(scenario, Status.SKIPPED)
+    } else {
+      const scenarioRunner = new ScenarioRunner({
+        eventBroadcaster: this.eventBroadcaster,
+        options: this.options,
+        scenario,
+        supportCodeLibrary: this.supportCodeLibrary
+      })
+      scenarioResult = await scenarioRunner.run()
     }
-    const scenarioRunner = new ScenarioRunner({
-      eventBroadcaster: this.eventBroadcaster,
-      options: this.options,
-      scenario,
-      supportCodeLibrary: this.supportCodeLibrary
-    })
-    const scenarioResult = await scenarioRunner.run()
     this.featuresResult.witnessScenarioResult(scenarioResult)
   }
 }

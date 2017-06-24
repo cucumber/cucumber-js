@@ -17,13 +17,13 @@ defineSupportCode(({Then}) => {
 
   Then(/^it runs the scenarios "([^"]*)" and "([^"]*)"$/, function (name1, name2) {
     const actualNames = getScenarioNames(this.lastRun.jsonOutput)
-    expect(actualNames).to.eql([name1, name2])
+    expect(actualNames).to.have.members([name1, name2])
   })
 
   Then(/^it runs the scenarios:$/, function (table) {
     const expectedNames = table.rows().map((row) => row[0])
     const actualNames = getScenarioNames(this.lastRun.jsonOutput)
-    expect(expectedNames).to.eql(actualNames)
+    expect(expectedNames).to.have.members(actualNames)
   })
 
   Then(/^the scenario "([^"]*)" has the steps$/, function (name, table) {

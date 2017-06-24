@@ -2,7 +2,8 @@ var common = [
   '--compiler js:babel-register',
   '--format progress-bar',
   '--format rerun:@rerun.txt',
-  '--format usage:usage.txt'
+  '--format usage:usage.txt',
+  '--maximum-concurrent-scenarios 4'
 ].join(' ')
 
 module.exports = {
