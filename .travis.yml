@@ -4,7 +4,7 @@ cache:
 
 deploy:
   - on:
-      node: "6"
+      node: "8"
       tags: true
     provider: script
     script: scripts/deploy.sh
@@ -12,7 +12,7 @@ deploy:
   - api_key: "$NPM_AUTH_TOKEN"
     email: "charles.w.rudolph@gmail.com"
     on:
-      node: "6"
+      node: "8"
       tags: true
     provider: npm
     skip_cleanup: true
@@ -24,10 +24,10 @@ notifications:
 
 matrix:
   include:
-    - node_js: "6"
+    - node_js: "8"
       script: "yarn test-coverage"
       after_success: "nyc report --reporter=text-lcov | coveralls"
-    - node_js: "7"
+    - node_js: "6"
       script: "yarn test"
     - node_js: "4"
       script: "yarn run feature-test -- --profile node-4"
