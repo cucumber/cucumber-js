@@ -8,6 +8,7 @@ import Runtime from '../runtime'
 import ScenarioFilter from '../scenario_filter'
 import SupportCodeFns from '../support_code_fns'
 import SupportCodeLibraryBuilder from '../support_code_library/builder'
+import * as I18n from './i18n'
 
 export default class Cli {
   constructor ({argv, cwd, stdout}) {
@@ -46,6 +47,14 @@ export default class Cli {
 
   async run() {
     const configuration = await this.getConfiguration()
+    if (configuration.listI18nLanguages) {
+      I18n.printLanguages()
+      return true
+    }
+    if (configuration.listI18nKeywordsFor) {
+      I18n.printKeywords(configuration.listI18nKeywordsFor)
+      return true
+    }
     const supportCodeLibrary = this.getSupportCodeLibrary(configuration.supportCodePaths)
     const scenarioFilter = new ScenarioFilter(configuration.scenarioFilterOptions)
     const [features, {cleanup, formatters}] = await Promise.all([
