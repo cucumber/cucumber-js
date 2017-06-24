@@ -3,7 +3,8 @@ Feature: Step Wrapper with Options
   As a developer
   I want Cucumber to provide the "options" object to the wrapping function
 
-  Background:
+  @spawn
+  Scenario: options passed to the step definitions wrapper
     Given a file named "features/a.feature" with:
       """
       Feature: Step with an option
@@ -31,8 +32,6 @@ Feature: Step Wrapper with Options
         })
       })
       """
-
-  Scenario: options passed to the step definitions wrapper
     When I run cucumber-js
     Then the output contains the text:
       """

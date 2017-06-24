@@ -2,6 +2,7 @@ Feature: Failed scenarios
   In order to easily rerun failed scenarios
   I want Cucumber to print the relative path to each
 
+  @spawn
   Scenario: from project directory
     Given a file named "features/a.feature" with:
       """

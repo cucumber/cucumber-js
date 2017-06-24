@@ -1,6 +1,5 @@
 import Cli from './'
 import VError from 'verror'
-import {validateInstall} from './install_validator'
 
 function exitWithError(error) {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
@@ -9,13 +8,6 @@ function exitWithError(error) {
 
 export default async function run() {
   const cwd = process.cwd()
-
-  try {
-    await validateInstall(cwd)
-  } catch (error) {
-    exitWithError(error)
-  }
-
   const cli = new Cli({
     argv: process.argv,
     cwd,

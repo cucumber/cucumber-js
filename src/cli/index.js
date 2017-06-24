@@ -1,8 +1,10 @@
 import _ from 'lodash'
+import {validateInstall} from './install_validator'
 import {getExpandedArgv, getFeatures} from './helpers'
 import ConfigurationBuilder from './configuration_builder'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
+import path from 'path'
 import Promise from 'bluebird'
 import Runtime from '../runtime'
 import ScenarioFilter from '../scenario_filter'
@@ -26,7 +28,7 @@ export default class Cli {
     const formatters = await Promise.map(formats, async ({type, outputTo}) => {
       let stream = this.stdout
       if (outputTo) {
-        let fd = await fs.open(outputTo, 'w')
+        let fd = await fs.open(path.join(this.cwd, outputTo), 'w')
         stream = fs.createWriteStream(null, {fd})
         streamsToClose.push(stream)
       }
@@ -40,11 +42,13 @@ export default class Cli {
   }
 
   getSupportCodeLibrary(supportCodePaths) {
+    SupportCodeFns.reset()
     supportCodePaths.forEach((codePath) => require(codePath))
     return SupportCodeLibraryBuilder.build({cwd: this.cwd, fns: SupportCodeFns.get()})
   }
 
   async run() {
+    await validateInstall(this.cwd)
     const configuration = await this.getConfiguration()
     const supportCodeLibrary = this.getSupportCodeLibrary(configuration.supportCodePaths)
     const scenarioFilter = new ScenarioFilter(configuration.scenarioFilterOptions)
