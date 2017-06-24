@@ -117,6 +117,7 @@ Feature: After hook interface
       | Before |
       | After  |
 
+  @spawn
   Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
@@ -230,6 +231,7 @@ Feature: After hook interface
       | Before |
       | After  |
 
+  @spawn
   Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """

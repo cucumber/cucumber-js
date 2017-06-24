@@ -45,6 +45,7 @@ Feature: Environment Hooks
     When I run cucumber.js
     Then it fails
 
+  @spawn
   Scenario: Failing after hook fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
@@ -57,6 +58,7 @@ Feature: Environment Hooks
     When I run cucumber.js
     Then it fails
 
+  @spawn
   Scenario: After hooks still execute after a failure
     Given a file named "features/support/hooks.js" with:
       """

@@ -28,6 +28,7 @@ Feature: Register Handler
     When I run cucumber.js
     Then it passes
 
+  @spawn
   Scenario: synchronously throws
     Given a file named "features/support/handlers.js" with:
       """
@@ -80,6 +81,7 @@ Feature: Register Handler
       | Error: my error                    |
       | features/support/handlers.js:4     |
 
+  @spawn
   Scenario: callback asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
@@ -172,6 +174,7 @@ Feature: Register Handler
       | Promise rejected without a reason  |
       | features/support/handlers.js:5     |
 
+  @spawn
   Scenario: promise asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
