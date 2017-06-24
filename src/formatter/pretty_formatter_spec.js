@@ -36,7 +36,7 @@ describe('PrettyFormatter', function() {
 
       it('output the scenario keyword and name', function() {
         expect(this.output).to.eql(
-          '  scenario-keyword: scenario-name\n'
+          'scenario-keyword: scenario-name\n'
         )
       })
     })
@@ -49,8 +49,8 @@ describe('PrettyFormatter', function() {
 
       it('outputs the tags seperated by spaces above the keyword and name', function() {
         expect(this.output).to.eql(
-          '  @tagA @tagB\n' +
-          '  scenario-keyword: scenario-name\n'
+          '@tagA @tagB\n' +
+          'scenario-keyword: scenario-name\n'
         )
       })
     })
@@ -78,7 +78,7 @@ describe('PrettyFormatter', function() {
 
       it('logs the keyword and name', function () {
         expect(this.output).to.eql(
-          '  ' + figures.cross + ' step-keyword step-name\n'
+          figures.cross + ' step-keyword step-name\n'
         )
       })
     })
@@ -92,7 +92,7 @@ describe('PrettyFormatter', function() {
 
         it('logs the keyword', function () {
           expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword \n'
+            figures.tick + ' step-keyword \n'
           )
         })
       })
@@ -104,7 +104,7 @@ describe('PrettyFormatter', function() {
 
         it('logs the keyword and name', function () {
           expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword step-name\n'
+            figures.tick + ' step-keyword step-name\n'
           )
         })
       })
@@ -125,10 +125,10 @@ describe('PrettyFormatter', function() {
 
         it('logs the keyword and name and data table', function () {
           expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword step-name\n' +
-            '      | cuk | cuke | cukejs   |\n' +
-            '      | c   | cuke | cuke.js  |\n' +
-            '      | cu  | cuke | cucumber |\n'
+            figures.tick + ' step-keyword step-name\n' +
+            '    | cuk | cuke | cukejs   |\n' +
+            '    | c   | cuke | cuke.js  |\n' +
+            '    | cu  | cuke | cucumber |\n'
           )
         })
       })
@@ -143,13 +143,13 @@ describe('PrettyFormatter', function() {
 
         it('logs the keyword and name and doc string', function () {
           expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword step-name\n' +
-            '      """\n' +
-            '      this is a multiline\n' +
-            '      doc string\n' +
+            figures.tick + ' step-keyword step-name\n' +
+            '    """\n' +
+            '    this is a multiline\n' +
+            '    doc string\n' +
             '\n' +
-            '      :-)\n' +
-            '      """\n'
+            '    :-)\n' +
+            '    """\n'
           )
         })
       })
@@ -163,7 +163,7 @@ describe('PrettyFormatter', function() {
 
       it('logs the keyword and name', function () {
         expect(this.output).to.eql(
-          '  ? step-keyword step-name\n'
+          '? step-keyword step-name\n'
         )
       })
     })
@@ -176,7 +176,7 @@ describe('PrettyFormatter', function() {
 
       it('logs the keyword and name', function () {
         expect(this.output).to.eql(
-          '  - step-keyword step-name\n'
+          '- step-keyword step-name\n'
         )
       })
     })
@@ -189,7 +189,7 @@ describe('PrettyFormatter', function() {
 
       it('logs the keyword and name', function () {
         expect(this.output).to.eql(
-          '  ? step-keyword step-name\n'
+          '? step-keyword step-name\n'
         )
       })
     })
