@@ -51,20 +51,6 @@ export default class PrettyFormatter extends SummaryFormatter {
     this.log('\n')
   }
 
-  handleBeforeFeature(feature) {
-    let text = ''
-    let tagsText = this.formatTags(feature.tags)
-    if (tagsText) {
-      text = tagsText + '\n'
-    }
-    text += feature.keyword + ': ' + feature.name
-    let description = feature.description
-    if (description) {
-      text += '\n\n' + indentString(description, 2)
-    }
-    this.log(text + '\n\n')
-  }
-
   handleBeforeScenario(scenario) {
     let text = ''
     let tagsText = this.formatTags(scenario.tags)

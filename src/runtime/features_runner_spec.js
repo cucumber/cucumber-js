@@ -9,8 +9,6 @@ describe('FeaturesRunner', function () {
   beforeEach(function () {
     this.listener = createMock([
       'handleBeforeFeatures',
-      'handleBeforeFeature',
-      'handleAfterFeature',
       'handleFeaturesResult',
       'handleAfterFeatures'
     ])
@@ -75,11 +73,9 @@ describe('FeaturesRunner', function () {
         this.result = await this.featuresRunner.run()
       })
 
-      it('broadcasts a features, feature and featuresResult event', function() {
+      it('broadcasts features and featuresResult event', function() {
         expectToHearEvents(this.listener, [
           ['BeforeFeatures', this.features],
-          ['BeforeFeature', this.feature],
-          ['AfterFeature', this.feature],
           ['FeaturesResult', function(featureResult) {
             expect(featureResult.success).to.be.true
           }],
@@ -107,11 +103,9 @@ describe('FeaturesRunner', function () {
         this.result = await this.featuresRunner.run()
       })
 
-      it('broadcasts a features, feature and featuresResult event', function() {
+      it('broadcasts features and featuresResult event', function() {
         expectToHearEvents(this.listener, [
           ['BeforeFeatures', this.features],
-          ['BeforeFeature', this.feature],
-          ['AfterFeature', this.feature],
           ['FeaturesResult', function(featureResult) {
             expect(featureResult.success).to.be.false
           }],

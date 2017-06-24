@@ -4,6 +4,7 @@ import Promise from 'bluebird'
 import ScenarioResult from '../models/scenario_result'
 import ScenarioRunner from './scenario_runner'
 import Status from '../status'
+import _ from 'lodash'
 
 export default class FeaturesRunner {
   constructor({eventBroadcaster, features, options, supportCodeLibrary}) {
@@ -17,7 +18,8 @@ export default class FeaturesRunner {
   async run() {
     const event = new Event({data: this.features, name: Event.FEATURES_EVENT_NAME})
     await this.eventBroadcaster.broadcastAroundEvent(event, async() => {
-      await Promise.each(this.features, ::this.runFeature)
+      const scenarios = _.chain(this.features).map('scenarios').flatten().value()
+      await Promise.map(scenarios, ::this.runScenario, {concurrency: this.options.maximumConcurrentScenarios})
       await this.broadcastFeaturesResult()
     })
     return this.featuresResult.success
@@ -26,16 +28,6 @@ export default class FeaturesRunner {
   async broadcastFeaturesResult() {
     const event = new Event({data: this.featuresResult, name: Event.FEATURES_RESULT_EVENT_NAME})
     await this.eventBroadcaster.broadcastEvent(event)
-  }
-
-  async runFeature(feature) {
-    const event = new Event({data: feature, name: Event.FEATURE_EVENT_NAME})
-    await this.eventBroadcaster.broadcastAroundEvent(event, async() => {
-      await Promise.each(feature.scenarios, async(scenario) => {
-        const scenarioResult = await this.runScenario(scenario)
-        this.featuresResult.witnessScenarioResult(scenarioResult)
-      })
-    })
   }
 
   async runScenario(scenario) {
@@ -48,6 +40,7 @@ export default class FeaturesRunner {
       scenario,
       supportCodeLibrary: this.supportCodeLibrary
     })
-    return await scenarioRunner.run()
+    const scenarioResult = await scenarioRunner.run()
+    this.featuresResult.witnessScenarioResult(scenarioResult)
   }
 }

@@ -35,6 +35,7 @@ export default class ConfigurationBuilder {
         dryRun: !!this.options.dryRun,
         failFast: !!this.options.failFast,
         filterStacktraces: !this.options.backtrace,
+        maximumConcurrentScenarios: parseInt(this.options.maximumConcurrentScenarios) || Infinity,
         strict: !!this.options.strict,
         worldParameters: this.options.worldParameters
       },

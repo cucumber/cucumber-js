@@ -52,23 +52,24 @@ export default class JsonFormatter extends Formatter {
     this.log(JSON.stringify(this.features, null, 2))
   }
 
-  handleBeforeFeature(feature) {
-    this.currentFeature = _.pick(feature, [
-      'description',
-      'keyword',
-      'line' ,
-      'name',
-      'tags',
-      'uri'
-    ])
-    _.assign(this.currentFeature, {
-      elements: [],
-      id: this.convertNameToId(feature)
-    })
-    this.features.push(this.currentFeature)
-  }
-
   handleBeforeScenario(scenario) {
+    const feature = scenario.feature
+    const featureId = this.convertNameToId(feature)
+    if (!this.currentFeature || this.currentFeature.id !== featureId) {
+      this.currentFeature = _.pick(feature, [
+        'description',
+        'keyword',
+        'line' ,
+        'name',
+        'tags',
+        'uri'
+      ])
+      _.assign(this.currentFeature, {
+        elements: [],
+        id: this.convertNameToId(feature)
+      })
+      this.features.push(this.currentFeature)
+    }
     this.currentScenario = _.pick(scenario, [
       'description',
       'keyword',

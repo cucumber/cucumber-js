@@ -1,58 +1,59 @@
 /* eslint-disable babel/new-cap */
 
 import {defineSupportCode} from '../../'
-import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
+import Promise from 'bluebird'
 
+
+const getTmpDir = Promise.promisify(tmp.dir)
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
-const moduleNames = fs.readdirSync(projectNodeModulesPath)
+const moduleNames = fsExtra.readdirSync(projectNodeModulesPath)
 
 defineSupportCode(function({After, Before}) {
   Before('@debug', function () {
     this.debug = true
   })
 
-  Before(function () {
-    const tmpObject = tmp.dirSync({unsafeCleanup: true})
-    this.tmpDir = tmpObject.name
+  Before(async function () {
+    this.tmpDir = await getTmpDir({unsafeCleanup: true})
 
     const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
     const profileContent = 'module.exports = {default: "--compiler js:babel-register"}'
-    fs.writeFileSync(tmpDirProfilePath, profileContent)
+    await fsExtra.writeFile(tmpDirProfilePath, profileContent)
 
     const tmpDirBabelRcPath = path.join(this.tmpDir, '.babelrc')
     const profileBabelRcPath = path.join(projectPath, '.babelrc')
-    fsExtra.createSymlinkSync(profileBabelRcPath, tmpDirBabelRcPath)
+    await fsExtra.createSymlink(profileBabelRcPath, tmpDirBabelRcPath)
 
     const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-    moduleNames.forEach((moduleName) => {
+    await Promise.map(moduleNames, async (moduleName) => {
       const tmpDirNodeModulePath = path.join(tmpDirNodeModulesPath, moduleName)
       const projectNodeModulePath = path.join(projectPath, 'node_modules', moduleName)
-      fsExtra.createSymlinkSync(projectNodeModulePath, tmpDirNodeModulePath)
+      return fsExtra.createSymlink(projectNodeModulePath, tmpDirNodeModulePath)
     })
 
     const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
-    fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
+    await fsExtra.createSymlink(projectPath, tmpDirCucumberPath)
     this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber.js')
   })
 
-  Before('@global-install', function () {
-    const tmpObject = tmp.dirSync({unsafeCleanup: true})
+  Before('@global-install', async function () {
+    const globalTmpDir = await getTmpDir({unsafeCleanup: true})
 
-    const globalInstallNodeModulesPath = path.join(tmpObject.name, 'node_modules')
-    moduleNames.forEach((moduleName) => {
+    const globalInstallNodeModulesPath = path.join(globalTmpDir, 'node_modules')
+    await Promise.map(moduleNames, (moduleName) => {
       const globalInstallNodeModulePath = path.join(globalInstallNodeModulesPath, moduleName)
       const projectNodeModulePath = path.join(projectPath, 'node_modules', moduleName)
-      fsExtra.createSymlinkSync(projectNodeModulePath, globalInstallNodeModulePath)
+      return fsExtra.createSymlink(projectNodeModulePath, globalInstallNodeModulePath)
     })
 
     const globalInstallCucumberPath = path.join(globalInstallNodeModulesPath, 'cucumber')
     const itemsToCopy = ['bin', 'lib', 'package.json']
-    itemsToCopy.forEach((item) => {
-      fsExtra.copySync(path.join(projectPath, item), path.join(globalInstallCucumberPath, item))
+    await Promise.map(itemsToCopy, (item) => {
+      return fsExtra.copySync(path.join(projectPath, item), path.join(globalInstallCucumberPath, item))
     })
 
     this.globalExecutablePath = path.join(globalInstallCucumberPath, 'bin', 'cucumber.js')

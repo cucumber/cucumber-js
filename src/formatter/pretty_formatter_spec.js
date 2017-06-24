@@ -20,62 +20,6 @@ describe('PrettyFormatter', function() {
     })
   })
 
-  describe('before feature', function() {
-    beforeEach(function(){
-      this.feature = {
-        keyword: 'feature-keyword',
-        name: 'feature-name',
-        description: '',
-        tags: []
-      }
-    })
-
-    describe('without tags or description', function() {
-      beforeEach(function() {
-        this.prettyFormatter.handleBeforeFeature(this.feature)
-      })
-
-      it('output the feature keyword and name', function() {
-        expect(this.output).to.eql(
-          'feature-keyword: feature-name\n' +
-          '\n'
-        )
-      })
-    })
-
-    describe('with tags', function() {
-      beforeEach(function() {
-        this.feature.tags = [{name: '@tagA'}, {name: '@tagB'}]
-        this.prettyFormatter.handleBeforeFeature(this.feature)
-      })
-
-      it('outputs the tags seperated by spaces above the keyword and name', function() {
-        expect(this.output).to.eql(
-          '@tagA @tagB\n' +
-          'feature-keyword: feature-name\n' +
-          '\n'
-        )
-      })
-    })
-
-    describe('with description', function() {
-      beforeEach(function() {
-        this.feature.description = 'line1\nline2'
-        this.prettyFormatter.handleBeforeFeature(this.feature)
-      })
-
-      it('outputs the description below the keyword and name', function() {
-        expect(this.output).to.eql(
-          'feature-keyword: feature-name\n' +
-          '\n' +
-          '  line1\n' +
-          '  line2\n' +
-          '\n'
-        )
-      })
-    })
-  })
-
   describe('before scenario', function() {
     beforeEach(function(){
       this.scenario = {
