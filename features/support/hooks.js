@@ -15,9 +15,13 @@ defineSupportCode(function({After, Before}) {
     this.debug = true
   })
 
+  Before('@spawn', function() {
+    this.spawn = true
+  })
+
   Before(function () {
     const tmpObject = tmp.dirSync({unsafeCleanup: true})
-    this.tmpDir = tmpObject.name
+    this.tmpDir = fs.realpathSync(tmpObject.name)
 
     const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
     const profileContent = 'module.exports = {default: "--compiler js:babel-register"}'

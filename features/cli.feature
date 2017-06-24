@@ -37,10 +37,12 @@ Feature: Command line interface
       """
     When I run cucumber.js with `-r step_definitions`
 
+  @spawn
   Scenario: display Cucumber version
     When I run cucumber.js with `--version`
     Then I see the version of Cucumber
 
+  @spawn
   Scenario: display help
     When I run cucumber.js with `--help`
     Then I see the help text for Cucumber
