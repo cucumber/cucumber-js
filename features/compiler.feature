@@ -1,3 +1,4 @@
+@spawn
 Feature: compilers
   In order to use the JS dialect I'm most comfortable with
   As a step definition implementor

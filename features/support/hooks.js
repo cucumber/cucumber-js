@@ -1,24 +1,29 @@
 /* eslint-disable babel/new-cap */
 
 import {defineSupportCode} from '../../'
+import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
 import Promise from 'bluebird'
 
-
 const getTmpDir = Promise.promisify(tmp.dir)
+const realpath = Promise.promisify(fs.realpath)
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
-const moduleNames = fsExtra.readdirSync(projectNodeModulesPath)
+const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
 defineSupportCode(function({After, Before}) {
   Before('@debug', function () {
     this.debug = true
   })
 
+  Before('@spawn', function() {
+    this.spawn = true
+  })
+
   Before(async function () {
-    this.tmpDir = await getTmpDir({unsafeCleanup: true})
+    this.tmpDir = await realpath(await getTmpDir({unsafeCleanup: true}))
 
     const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
     const profileContent = 'module.exports = {default: "--compiler js:babel-register"}'

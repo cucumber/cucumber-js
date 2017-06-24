@@ -172,6 +172,7 @@
     "serve-static": "^1.10.0",
     "sinon": "^2.2.0",
     "sinon-chai": "^2.8.0",
+    "stream-to-string": "^1.1.0",
     "tmp": "0.0.31"
   },
   "scripts": {
