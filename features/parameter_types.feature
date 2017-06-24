@@ -93,7 +93,7 @@ Feature: Parameter types
     Then it fails
     And the step "a particular step" failed with:
       """
-      AssertionError: 'particular' == 'PARTICULAR'
+      AssertionError
       """
 
   Scenario: async transform (success)
