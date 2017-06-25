@@ -197,7 +197,7 @@ describe('ProgressBarFormatter', function() {
           scenario: this.scenario,
           stepResults: [{
             status: Status.UNDEFINED,
-            step: this.step,
+            step: this.step
           }]
         })
       })

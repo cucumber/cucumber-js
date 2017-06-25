@@ -5,6 +5,8 @@ import indentString from 'indent-string'
 import Status from '../../status'
 import figures from 'figures'
 import Table from 'cli-table'
+import DataTable from '../../models/step_arguments/data_table'
+import DocString from '../../models/step_arguments/doc_string'
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,
@@ -76,7 +78,7 @@ export function formatIssue({colorFns, cwd, number, snippetBuilder, scenarioResu
   const {scenario, stepResults} = scenarioResult
   let text = prefix
   const scenarioLocation = formatLocation(cwd, scenario)
-  text += 'Scenario: ' + scenario.name + ' # ' + colorFns.location(scenarioLocation) + "\n"
+  text += 'Scenario: ' + scenario.name + ' # ' + colorFns.location(scenarioLocation) + '\n'
   _.each(stepResults, (stepResult) => {
     const identifier = formatStepResult({colorFns, cwd, stepResult})
     text += indentString(identifier, prefix.length)

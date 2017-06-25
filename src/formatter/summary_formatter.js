@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {formatIssue} from './helpers'
+import {formatIssue, formatSummary} from './helpers'
 import Formatter from './'
 import Status from '../status'
 
@@ -11,7 +11,7 @@ export default class SummaryFormatter extends Formatter {
     if (failures.length > 0) {
       this.logIssues({stepResults: failures, title: 'Failures'})
     }
-    const warnings = featuresResult.scenarioResults.filter(function (stepResult) {
+    const warnings = featuresResult.scenarioResults.filter(function (scenarioResult) {
       return _.includes([Status.PENDING, Status.UNDEFINED], scenarioResult.status)
     })
     if (warnings.length > 0) {
