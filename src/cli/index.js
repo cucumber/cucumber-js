@@ -52,11 +52,11 @@ export default class Cli {
     await validateInstall(this.cwd)
     const configuration = await this.getConfiguration()
     if (configuration.listI18nLanguages) {
-      I18n.printLanguages()
+      this.stdout.write(I18n.printLanguages())
       return true
     }
     if (configuration.listI18nKeywordsFor) {
-      I18n.printKeywords(configuration.listI18nKeywordsFor)
+      this.stdout.write(I18n.printKeywords(configuration.listI18nKeywordsFor))
       return true
     }
     const supportCodeLibrary = this.getSupportCodeLibrary(configuration.supportCodePaths)

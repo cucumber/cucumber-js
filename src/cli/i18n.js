@@ -31,14 +31,14 @@ function printAsTable(header, rows) {
   })
   table.push(header)
   table.push.apply(table, rows)
-  console.log(table.toString()) // eslint-disable-line no-console
+  return table.toString()
 }
 
 export function printLanguages() {
   const rows = _.map(Gherkin.DIALECTS, (data, isoCode) => {
     return [isoCode, data.name, data['native']]
   })
-  printAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
+  return printAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
 }
 
 export function printKeywords(isoCode) {
@@ -47,5 +47,5 @@ export function printKeywords(isoCode) {
     const words = _.map(language[keyword], (s) => `"${s}"`).join(', ')
     return [titleCase(keyword), words]
   })
-  printAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)
+  return printAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)
 }
