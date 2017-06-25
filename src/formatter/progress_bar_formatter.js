@@ -38,14 +38,17 @@ export default class ProgressBarFormatter extends Formatter {
     if (!(stepResult.step instanceof Hook)) {
       this.progressBar.tick()
     }
-    if (_.includes(statusToReport, stepResult.status)) {
+  }
+
+  handleScenarioResult(scenarioResult) {
+    if (_.includes(statusToReport, scenarioResult.status)) {
       this.issueCount += 1
       this.progressBar.interrupt(formatIssue({
         colorFns: this.colorFns,
         cwd: this.cwd,
         number: this.issueCount,
         snippetBuilder: this.snippetBuilder,
-        stepResult
+        scenarioResult
       }))
     }
   }

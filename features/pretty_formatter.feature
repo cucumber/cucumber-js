@@ -7,7 +7,7 @@ Feature: Pretty Formatter
       """
       Feature: some feature
       """
-    When I run cucumber.js with `-f pretty`
+    When I run cucumber.js with `--format progress-bar --format-options '{"errorFormat": "scenario"}'`
     Then it outputs the text:
       """
       0 scenarios
@@ -42,13 +42,8 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        ✔ Given a passing step
-
-      1 scenario (1 passed)
-      1 step (1 passed)
+      0 scenarios
+      0 steps
       <duration-stat>
       """
 
@@ -80,18 +75,16 @@ Feature: Pretty Formatter
     Then it fails
     And the output contains the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        - Given a passing step
-
       Failures:
 
-      1) Scenario: some scenario - features/a.feature:2
-         Step: Before
-         Step Definition: features/support/hooks.js:4
-         Message:
-           Error: Fail
+      1) Scenario: some scenario # features/a.feature:2
+         ✖ Before # features/support/hooks.js:4
+             Error: Fail
+         - Given a passing step
+
+      1 scenario (1 failed)
+      1 step (1 passed)
+      <duration-stat>
       """
 
   Scenario: Pretty formatter with doc strings
@@ -119,15 +112,16 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs the text:
       """
-      Feature: some feature
+      Failures:
 
-        Scenario: some scenario
-        ✔ Given a basic step
-        ✔ And a step with a doc string
-            \"\"\"
-            my doc string
-            \"\"\"
-        ✔ And a basic step
+      1) Scenario: some scenario # features/a.feature:2
+         ✔ Given a basic step
+         ✔ And a step with a doc string
+             \"\"\"
+             my doc string
+             \"\"\"
+         ✖ And a failing string step
+             Error: Fail
 
       1 scenario (1 passed)
       3 steps (3 passed)
@@ -155,14 +149,16 @@ Feature: Pretty Formatter
     When I run cucumber.js with `-f pretty`
     Then it outputs the text:
       """
-      Feature: some feature
+      Failures:
 
-        Scenario: some scenario
-        ✔ Given a table:
-            | foo\nbar               | bar | baz      |
-            | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
+      1) Scenario: some scenario # features/a.feature:2
+         ✔ Given a table:
+             | foo\nbar               | bar | baz      |
+             | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
+         ✖ And a failing step
+             Error: Fail
 
       1 scenario (1 passed)
-      1 step (1 passed)
+      2 steps (1 passed, 1 failed)
       <duration-stat>
       """

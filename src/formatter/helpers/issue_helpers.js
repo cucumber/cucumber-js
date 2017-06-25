@@ -1,90 +1,89 @@
+import _ from 'lodash'
 import {formatLocation} from './location_helpers'
-import {formatError} from './error_helpers'
+import {getStepResultMessage} from './step_result_helpers'
 import indentString from 'indent-string'
 import Status from '../../status'
+import figures from 'figures'
 import Table from 'cli-table'
 
-export function formatIssue({colorFns, cwd, number, snippetBuilder, stepResult}) {
-  const message = getStepResultMessage({colorFns, cwd, snippetBuilder, stepResult})
-  const prefix = number + ') '
-  const {step} = stepResult
-  const {scenario} = step
-  let text = prefix
+const CHARACTERS = {
+  [Status.AMBIGUOUS]: figures.cross,
+  [Status.FAILED]: figures.cross,
+  [Status.PASSED]: figures.tick,
+  [Status.PENDING]: '?',
+  [Status.SKIPPED]: '-',
+  [Status.UNDEFINED]: '?'
+}
 
-  if (scenario) {
-    const scenarioLocation = formatLocation(cwd, scenario)
-    text += 'Scenario: ' + colorFns.bold(scenario.name) + ' - ' + colorFns.location(scenarioLocation)
-  } else {
-    text += 'Background:'
-  }
-  text += '\n'
+function formatDataTable(dataTable) {
+  const rows = dataTable.raw().map((row) => {
+    return row.map((cell) => {
+      return cell.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
+    })
+  })
+  const table = new Table({
+    chars: {
+      'bottom': '', 'bottom-left': '', 'bottom-mid': '', 'bottom-right': '',
+      'left': '|', 'left-mid': '',
+      'mid': '', 'mid-mid': '', 'middle': '|',
+      'right': '|', 'right-mid': '',
+      'top': '' , 'top-left': '', 'top-mid': '', 'top-right': ''
+    },
+    style: {
+      border: [], 'padding-left': 1, 'padding-right': 1
+    }
+  })
+  table.push.apply(table, rows)
+  return table.toString()
+}
 
-  let stepText = 'Step: ' + colorFns.bold(step.keyword + (step.name || ''))
-  if (step.uri) {
-    const stepLocation = formatLocation(cwd, step)
-    stepText += ' - ' + colorFns.location(stepLocation)
-  }
-  text += indentString(stepText, prefix.length) + '\n'
+function formatDocString(docString) {
+  return '"""\n' + docString.content + '\n"""'
+}
+
+function formatStepResult({colorFns, cwd, stepResult}) {
+  const {status, step} = stepResult
+  const colorFn = colorFns[status]
+
+  const symbol = CHARACTERS[stepResult.status]
+  const identifier = colorFn(symbol + ' ' + step.keyword + (step.name || ''))
+  let text = identifier
 
   const {stepDefinition} = stepResult
   if (stepDefinition) {
     const stepDefinitionLocation = formatLocation(cwd, stepDefinition)
-    const stepDefinitionLine = 'Step Definition: ' + colorFns.location(stepDefinitionLocation)
-    text += indentString(stepDefinitionLine, prefix.length) + '\n'
+    const stepDefinitionLine = ' # ' + colorFns.location(stepDefinitionLocation)
+    text += stepDefinitionLine
   }
+  text += '\n'
 
-  text += indentString('Message:', prefix.length) + '\n'
-  text += indentString(message, prefix.length + 2) + '\n\n'
+  step.arguments.forEach((arg) => {
+    let str
+    if (arg instanceof DataTable) {
+      str = formatDataTable(arg)
+    } else if (arg instanceof DocString) {
+      str = formatDocString(arg)
+    } else {
+      throw new Error('Unknown argument type: ' + arg)
+    }
+    text += indentString(colorFn(str) + '\n', 4)
+  })
   return text
 }
 
-function getAmbiguousStepResultMessage({colorFns, cwd, stepResult}) {
-  const {ambiguousStepDefinitions} = stepResult
-  const table = new Table({
-    chars: {
-      'bottom': '', 'bottom-left': '', 'bottom-mid': '', 'bottom-right': '',
-      'left': '', 'left-mid': '',
-      'mid': '', 'mid-mid': '', 'middle': ' - ',
-      'right': '', 'right-mid': '',
-      'top': '' , 'top-left': '', 'top-mid': '', 'top-right': ''
-    },
-    style: {
-      border: [], 'padding-left': 0, 'padding-right': 0
+export function formatIssue({colorFns, cwd, number, snippetBuilder, scenarioResult}) {
+  const prefix = number + ') '
+  const {scenario, stepResults} = scenarioResult
+  let text = prefix
+  const scenarioLocation = formatLocation(cwd, scenario)
+  text += 'Scenario: ' + scenario.name + ' # ' + colorFns.location(scenarioLocation) + "\n"
+  _.each(stepResults, (stepResult) => {
+    const identifier = formatStepResult({colorFns, cwd, stepResult})
+    text += indentString(identifier, prefix.length)
+    const message = getStepResultMessage({colorFns, cwd, snippetBuilder, stepResult})
+    if (message) {
+      text += indentString(message, prefix.length + 4) + '\n'
     }
   })
-  table.push.apply(table, ambiguousStepDefinitions.map((stepDefinition) => {
-    const pattern = stepDefinition.pattern.toString()
-    return [pattern, formatLocation(cwd, stepDefinition)]
-  }))
-  const message = 'Multiple step definitions match:' + '\n' + indentString(table.toString(), 2)
-  return colorFns.ambiguous(message)
-}
-
-function getFailedStepResultMessage({colorFns, stepResult}) {
-  const {failureException} = stepResult
-  return formatError(failureException, colorFns)
-}
-
-function getPendingStepResultMessage({colorFns}) {
-  return colorFns.pending('Pending')
-}
-
-function getStepResultMessage({colorFns, cwd, snippetBuilder, stepResult}) {
-  switch (stepResult.status) {
-    case Status.AMBIGUOUS:
-      return getAmbiguousStepResultMessage({colorFns, cwd, stepResult})
-    case Status.FAILED:
-      return getFailedStepResultMessage({colorFns, stepResult})
-    case Status.UNDEFINED:
-      return getUndefinedStepResultMessage({colorFns, snippetBuilder, stepResult})
-    case Status.PENDING:
-      return getPendingStepResultMessage({colorFns})
-  }
-}
-
-function getUndefinedStepResultMessage({colorFns, snippetBuilder, stepResult}) {
-  const {step} = stepResult
-  const snippet = snippetBuilder.build(step)
-  const message = 'Undefined. Implement with the following snippet:' + '\n\n' + indentString(snippet, 2)
-  return colorFns.undefined(message)
+  return text + '\n'
 }

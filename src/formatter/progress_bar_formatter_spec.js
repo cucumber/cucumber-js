@@ -44,175 +44,166 @@ describe('ProgressBarFormatter', function() {
 
     describe('step is a hook', function() {
       beforeEach(function(){
-        this.stepResult = {
-          status: null,
+        this.progressBarFormatter.handleStepResult({
+          status: Status.PASSED,
           step: Object.create(Hook.prototype)
-        }
-      })
-
-      describe('failed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.FAILED
-          this.stepResult.failureException = new Error('error message')
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('does not increase the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).not.to.have.been.called
-        })
-
-        it('prints the error', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
         })
       })
 
-      describe('passed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PASSED
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('does not increase the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).not.to.have.been.called
-        })
-
-        it('does not print anything', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).not.to.have.been.called
-        })
-      })
-
-      describe('pending', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PENDING
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('does not increase the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).not.to.have.been.called
-        })
-
-        it('prints the warning', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
-        })
-      })
-
-      describe('skipped', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.SKIPPED
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('does not increase the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).not.to.have.been.called
-        })
-
-        it('does not print anything', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).not.to.have.been.called
-        })
+      it('does not increase the progress bar percentage', function() {
+        expect(this.progressBarFormatter.progressBar.tick).not.to.have.been.called
       })
     })
 
     describe('step is a normal step', function() {
       beforeEach(function(){
-        this.stepResult = createMock({
-          status: null,
+        this.progressBarFormatter.handleStepResult({
+          status: Status.PASSED,
           step: Object.create(Step.prototype)
         })
       })
 
-      describe('ambiguous', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.AMBIGUOUS
-          this.stepResult.ambiguousStepDefinitions = [
-            {line: 1, pattern: /a/, uri: 'path/to/project/file1'},
-            {line: 1, pattern: /b/, uri: 'path/to/project/file2'}
-          ]
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
+      it('increases the progress bar percentage', function() {
+        expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
+      })
+    })
+  })
 
-        it('increases the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
-        })
+  describe('scenarioResult', function() {
+    beforeEach(function() {
+      this.progressBarFormatter.progressBar = {
+        interrupt: sinon.stub(),
+        tick: sinon.stub()
+      }
+      this.scenario = {
+        line: 1,
+        uri: 'path/to/project/a.feature'
+      }
+      this.step = {
+        arguments: []
+      }
+    })
 
-        it('prints the error', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
+    describe('ambiguous', function() {
+      beforeEach(function() {
+        this.progressBarFormatter.handleScenarioResult({
+          status: Status.AMBIGUOUS,
+          scenario: this.scenario,
+          stepResults: [{
+            ambiguousStepDefinitions: [
+              {line: 1, pattern: /a/, uri: 'path/to/project/file1'},
+              {line: 1, pattern: /b/, uri: 'path/to/project/file2'}
+            ],
+            status: Status.AMBIGUOUS,
+            step: this.step
+          }]
         })
       })
 
-      describe('failed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.FAILED
-          this.stepResult.failureException = new Error('error message')
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
+      it('prints the error', function() {
+        expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
+      })
+    })
 
-        it('increases the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
-        })
-
-        it('prints the error', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
+    describe('failed', function() {
+      beforeEach(function() {
+        this.progressBarFormatter.handleScenarioResult({
+          status: Status.FAILED,
+          scenario: this.scenario,
+          stepResults: [{
+            failureException: new Error('error message'),
+            status: Status.FAILED,
+            step: this.step,
+            stepDefinition: {
+              line: 1,
+              uri: 'path/to/project/steps.js'
+            }
+          }]
         })
       })
 
-      describe('passed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PASSED
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
+      it('prints the error', function() {
+        expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
+      })
+    })
 
-        it('increases the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
-        })
-
-        it('does not print anything', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).not.to.have.been.called
+    describe('passed', function() {
+      beforeEach(function() {
+        this.progressBarFormatter.handleScenarioResult({
+          status: Status.PASSED,
+          scenario: this.scenario,
+          stepResults: [{
+            status: Status.PASSED,
+            step: this.step,
+            stepDefinition: {
+              line: 1,
+              uri: 'path/to/project/steps.js'
+            }
+          }]
         })
       })
 
-      describe('pending', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PENDING
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
+      it('does not print anything', function() {
+        expect(this.progressBarFormatter.progressBar.interrupt).not.to.have.been.called
+      })
+    })
 
-        it('increases the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
-        })
-
-        it('prints the warning', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
+    describe('pending', function() {
+      beforeEach(function() {
+        this.progressBarFormatter.handleScenarioResult({
+          status: Status.PENDING,
+          scenario: this.scenario,
+          stepResults: [{
+            status: Status.PENDING,
+            step: this.step,
+            stepDefinition: {
+              line: 1,
+              uri: 'path/to/project/steps.js'
+            }
+          }]
         })
       })
 
-      describe('skipped', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.SKIPPED
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
+      it('prints the warning', function() {
+        expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
+      })
+    })
 
-        it('increases the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
-        })
-
-        it('does not print anything', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).not.to.have.been.called
+    describe('skipped', function() {
+      beforeEach(function() {
+        this.progressBarFormatter.handleScenarioResult({
+          status: Status.SKIPPED,
+          scenario: this.scenario,
+          stepResults: [{
+            status: Status.SKIPPED,
+            step: this.step,
+            stepDefinition: {
+              line: 1,
+              uri: 'path/to/project/steps.js'
+            }
+          }]
         })
       })
 
-      describe('undefined', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.UNDEFINED
-          this.progressBarFormatter.handleStepResult(this.stepResult)
-        })
+      it('does not print anything', function() {
+        expect(this.progressBarFormatter.progressBar.interrupt).not.to.have.been.called
+      })
+    })
 
-        it('increases the progress bar percentage', function() {
-          expect(this.progressBarFormatter.progressBar.tick).to.have.been.calledOnce
+    describe('undefined', function() {
+      beforeEach(function() {
+        this.progressBarFormatter.handleScenarioResult({
+          status: Status.UNDEFINED,
+          scenario: this.scenario,
+          stepResults: [{
+            status: Status.UNDEFINED,
+            step: this.step,
+          }]
         })
+      })
 
-        it('prints the warning', function() {
-          expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
-        })
+      it('prints the warning', function() {
+        expect(this.progressBarFormatter.progressBar.interrupt).to.have.been.calledOnce
       })
     })
   })
