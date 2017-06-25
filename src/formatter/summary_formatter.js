@@ -9,13 +9,13 @@ export default class SummaryFormatter extends Formatter {
       return _.includes([Status.AMBIGUOUS, Status.FAILED], scenarioResult.status)
     })
     if (failures.length > 0) {
-      this.logIssues({stepResults: failures, title: 'Failures'})
+      this.logIssues({scenarioResults: failures, title: 'Failures'})
     }
     const warnings = featuresResult.scenarioResults.filter(function (scenarioResult) {
       return _.includes([Status.PENDING, Status.UNDEFINED], scenarioResult.status)
     })
     if (warnings.length > 0) {
-      this.logIssues({stepResults: warnings, title: 'Warnings'})
+      this.logIssues({scenarioResults: warnings, title: 'Warnings'})
     }
     this.log(formatSummary({
       colorFns: this.colorFns,

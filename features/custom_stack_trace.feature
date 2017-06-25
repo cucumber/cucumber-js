@@ -21,14 +21,4 @@ Feature: Custom stack trace
       })
       """
     When I run cucumber.js
-    Then it outputs the text:
-      """
-      Feature: Some feature
-
-        Scenario: Some scenario
-        ✔ Given Error.prepareStackTrace has been overriden
-
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
+    Then it passes

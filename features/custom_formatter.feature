@@ -81,15 +81,15 @@ Feature: custom formatter
 
       Warnings:
 
-      1) Scenario: a scenario - features/a.feature:2
-         Step: Given an undefined step - features/a.feature:3
-         Message:
-           Undefined. Implement with the following snippet:
+      1) Scenario: a scenario # features/a.feature:2
+         ? Given an undefined step
+             Undefined. Implement with the following snippet:
 
-             Given('an undefined step', function (callback) {
-               // Write code here that turns the phrase above into concrete actions
-               callback(null, 'pending');
-             });
+               Given('an undefined step', function (callback) {
+                 // Write code here that turns the phrase above into concrete actions
+                 callback(null, 'pending');
+               });
+
 
       1 scenario (1 undefined)
       1 step (1 undefined)

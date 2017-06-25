@@ -29,7 +29,7 @@ describe('Configuration', function() {
           colorsEnabled: true,
           cwd: this.tmpDir
         },
-        formats: [{outputTo: '', type: 'pretty'}],
+        formats: [{outputTo: '', type: 'progress'}],
         profiles: [],
         runtimeOptions: {
           dryRun: false,

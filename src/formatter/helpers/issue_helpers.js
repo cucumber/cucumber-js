@@ -59,7 +59,7 @@ function formatStepResult({colorFns, cwd, stepResult}) {
   }
   text += '\n'
 
-  step.arguments.forEach((arg) => {
+  _.each(step.arguments, (arg) => {
     let str
     if (arg instanceof DataTable) {
       str = formatDataTable(arg)

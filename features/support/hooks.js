@@ -24,7 +24,7 @@ defineSupportCode(function({After, Before}) {
     this.tmpDir = fs.realpathSync(tmpObject.name)
 
     const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
-    const profileContent = 'module.exports = {default: "--compiler js:babel-register"}'
+    const profileContent = 'module.exports = {default: "--compiler js:babel-register --format summary"}'
     fs.writeFileSync(tmpDirProfilePath, profileContent)
 
     const tmpDirBabelRcPath = path.join(this.tmpDir, '.babelrc')

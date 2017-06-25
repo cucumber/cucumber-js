@@ -17,7 +17,7 @@ Feature: Multiple Formatters
       """
 
   Scenario: Ability to specify multiple formatters
-    When I run cucumber.js with `-f progress -f pretty:pretty.txt`
+    When I run cucumber.js with `-f progress -f summary:summary.txt`
     Then it outputs the text:
       """
       .
@@ -26,13 +26,8 @@ Feature: Multiple Formatters
       1 step (1 passed)
       <duration-stat>
       """
-    And the file "pretty.txt" has the text:
+    And the file "summary.txt" has the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        ✔ Given a passing step
-
       1 scenario (1 passed)
       1 step (1 passed)
       <duration-stat>
