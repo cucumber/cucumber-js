@@ -26,11 +26,11 @@ function runFeature() {
     },
     supportCodeLibrary: supportCodeLibrary
   };
-  var prettyFormatter = Cucumber.FormatterBuilder.build('pretty', formatterOptions);
+  var progressFormatter = Cucumber.FormatterBuilder.build('progress', formatterOptions);
 
   var runtime = new Cucumber.Runtime({
     features: [feature],
-    listeners: [prettyFormatter],
+    listeners: [progressFormatter],
     supportCodeLibrary: supportCodeLibrary
   });
   return runtime.start();
