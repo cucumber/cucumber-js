@@ -39,3 +39,31 @@ export const setWorldConstructor = proxySupportCode('setWorldConstructor')
 export const Given = defineStep
 export const When = defineStep
 export const Then = defineStep
+
+// functional API
+
+const defineFnStep = (...args) => {
+  const fn = args.pop()
+
+  const wrapped = (..._args) => Promise.resolve(fn(this.ctx, ..._args))
+  const params = []
+  for (let i = 0; i < fn.length - 1; i = i + 1)
+    params.push(`p${i}`)
+  const def = new Function(...params, wrapped)
+
+  defineStep(...args, def)
+}
+
+export const initialize = (fn) => {
+  setWorldConstructor(class FnWorld {
+    async initialize() {
+      this.ctx = await Promise.resolve(fn())
+    }
+  })
+
+  Before(async function () { await this.initialize() })
+}
+
+export const fnGiven = defineFnStep
+export const fnWhen = defineFnStep
+export const fnThen = defineFnStep
