@@ -2,7 +2,9 @@ env:
   browser: true
   es6: true
   node: true
-extends: 'eslint:recommended'
+extends:
+  - 'eslint:recommended'
+  - prettier
 globals:
   afterEach: false
   beforeEach: false
@@ -16,6 +18,7 @@ parserOptions:
   sourceType: module
 plugins:
   - babel
+  - prettier
 rules:
   babel/new-cap: error
   complexity: error
@@ -28,3 +31,9 @@ rules:
   no-unneeded-ternary: [error, {defaultAssignment: false}]
   no-var: error
   object-shorthand: [error, always]
+  prettier/prettier:
+    - 2
+    -
+      trailingComma: none
+      singleQuote: true
+      semi: false

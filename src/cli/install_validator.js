@@ -1,18 +1,18 @@
-import { promisify } from "bluebird";
-import fs from "mz/fs";
-import path from "path";
-import resolve from "resolve";
+import { promisify } from 'bluebird'
+import fs from 'mz/fs'
+import path from 'path'
+import resolve from 'resolve'
 
 export async function validateInstall(cwd) {
-  const projectPath = path.join(__dirname, "..", "..");
+  const projectPath = path.join(__dirname, '..', '..')
   if (projectPath === cwd) {
-    return; // cucumber testing itself
+    return // cucumber testing itself
   }
-  const currentCucumberPath = require.resolve(projectPath);
-  let localCucumberPath = await promisify(resolve)("cucumber", {
+  const currentCucumberPath = require.resolve(projectPath)
+  let localCucumberPath = await promisify(resolve)('cucumber', {
     basedir: cwd
-  });
-  localCucumberPath = await fs.realpath(localCucumberPath);
+  })
+  localCucumberPath = await fs.realpath(localCucumberPath)
   if (localCucumberPath !== currentCucumberPath) {
     throw new Error(
       `
@@ -24,6 +24,6 @@ export async function validateInstall(cwd) {
       Executed Path: ${currentCucumberPath}
       Local Path:    ${localCucumberPath}
       `
-    );
+    )
   }
 }

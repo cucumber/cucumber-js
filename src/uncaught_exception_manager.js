@@ -1,17 +1,17 @@
 export default class UncaughtExceptionManager {
   static registerHandler(handler) {
-    if (typeof window === "undefined") {
-      process.addListener("uncaughtException", handler);
+    if (typeof window === 'undefined') {
+      process.addListener('uncaughtException', handler)
     } else {
-      window.onerror = handler;
+      window.onerror = handler
     }
   }
 
   static unregisterHandler(handler) {
-    if (typeof window === "undefined") {
-      process.removeListener("uncaughtException", handler);
+    if (typeof window === 'undefined') {
+      process.removeListener('uncaughtException', handler)
     } else {
-      window.onerror = void 0;
+      window.onerror = void 0
     }
   }
 }

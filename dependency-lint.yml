@@ -36,6 +36,9 @@ ignoreErrors:
     - coffee-script # features/compiler.feature
     - coveralls # .travis.yml
     - eslint-plugin-babel # .eslintrc.yml - parser
+    - eslint-config-prettier # .eslintrc.yml - prettier config for eslint
+    - eslint-plugin-prettier # .eslintrc.yml - prettier plugin for eslint
+    - prettier # package.json - code formatter
 
 requiredModules:
   files:

@@ -1,5 +1,5 @@
-import path from "path";
+import path from 'path'
 
 export function formatLocation(cwd, obj) {
-  return path.relative(cwd, obj.uri) + ":" + obj.line;
+  return path.relative(cwd, obj.uri) + ':' + obj.line
 }

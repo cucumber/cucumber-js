@@ -1,41 +1,41 @@
-import _ from "lodash";
-import ArgvParser from "./argv_parser";
-import fs from "mz/fs";
-import path from "path";
-import PathExpander from "./path_expander";
-import Promise from "bluebird";
+import _ from 'lodash'
+import ArgvParser from './argv_parser'
+import fs from 'mz/fs'
+import path from 'path'
+import PathExpander from './path_expander'
+import Promise from 'bluebird'
 
 export default class ConfigurationBuilder {
   static async build(options) {
-    const builder = new ConfigurationBuilder(options);
-    return await builder.build();
+    const builder = new ConfigurationBuilder(options)
+    return await builder.build()
   }
 
   constructor({ argv, cwd }) {
-    this.cwd = cwd;
-    this.pathExpander = new PathExpander(cwd);
+    this.cwd = cwd
+    this.pathExpander = new PathExpander(cwd)
 
-    const parsedArgv = ArgvParser.parse(argv);
-    this.args = parsedArgv.args;
-    this.options = parsedArgv.options;
+    const parsedArgv = ArgvParser.parse(argv)
+    this.args = parsedArgv.args
+    this.options = parsedArgv.options
   }
 
   async build() {
-    const listI18nKeywordsFor = this.options.i18nKeywords;
-    const listI18nLanguages = !!this.options.i18nLanguages;
-    const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths();
-    let featurePaths = [];
-    let supportCodePaths = [];
+    const listI18nKeywordsFor = this.options.i18nKeywords
+    const listI18nLanguages = !!this.options.i18nLanguages
+    const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
+    let featurePaths = []
+    let supportCodePaths = []
     if (!listI18nKeywordsFor && !listI18nLanguages) {
-      featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths);
-      const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths);
+      featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
+      const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
       const unexpandedSupportCodePaths =
         this.options.require.length > 0
           ? this.options.require
-          : featureDirectoryPaths;
+          : featureDirectoryPaths
       supportCodePaths = await this.expandSupportCodePaths(
         unexpandedSupportCodePaths
-      );
+      )
     }
     return {
       featurePaths,
@@ -58,84 +58,84 @@ export default class ConfigurationBuilder {
         tagExpression: this.options.tags
       },
       supportCodePaths
-    };
+    }
   }
 
   async expandFeaturePaths(featurePaths) {
-    featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, "")); // Strip line numbers
+    featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
     return await this.pathExpander.expandPathsWithExtensions(featurePaths, [
-      "feature"
-    ]);
+      'feature'
+    ])
   }
 
   getFeatureDirectoryPaths(featurePaths) {
     const featureDirs = featurePaths.map(featurePath => {
-      let featureDir = path.dirname(featurePath);
-      let childDir;
-      let parentDir = featureDir;
+      let featureDir = path.dirname(featurePath)
+      let childDir
+      let parentDir = featureDir
       while (childDir !== parentDir) {
-        childDir = parentDir;
-        parentDir = path.dirname(childDir);
-        if (path.basename(parentDir) === "features") {
-          featureDir = parentDir;
-          break;
+        childDir = parentDir
+        parentDir = path.dirname(childDir)
+        if (path.basename(parentDir) === 'features') {
+          featureDir = parentDir
+          break
         }
       }
-      return path.relative(this.cwd, featureDir);
-    });
-    return _.uniq(featureDirs);
+      return path.relative(this.cwd, featureDir)
+    })
+    return _.uniq(featureDirs)
   }
 
   getFormatOptions() {
-    const formatOptions = _.clone(this.options.formatOptions);
-    formatOptions.cwd = this.cwd;
-    _.defaults(formatOptions, { colorsEnabled: true });
-    return formatOptions;
+    const formatOptions = _.clone(this.options.formatOptions)
+    formatOptions.cwd = this.cwd
+    _.defaults(formatOptions, { colorsEnabled: true })
+    return formatOptions
   }
 
   getFormats() {
-    const mapping = { "": "pretty" };
+    const mapping = { '': 'pretty' }
     this.options.format.forEach(function(format) {
-      const parts = format.split(":");
-      const type = parts[0];
-      const outputTo = parts.slice(1).join(":");
-      mapping[outputTo] = type;
-    });
+      const parts = format.split(':')
+      const type = parts[0]
+      const outputTo = parts.slice(1).join(':')
+      mapping[outputTo] = type
+    })
     return _.map(mapping, function(type, outputTo) {
-      return { outputTo, type };
-    });
+      return { outputTo, type }
+    })
   }
 
   async getUnexpandedFeaturePaths() {
     if (this.args.length > 0) {
       const nestedFeaturePaths = await Promise.map(this.args, async arg => {
-        const filename = path.basename(arg);
-        if (filename[0] === "@") {
-          const filePath = path.join(this.cwd, arg);
-          const content = await fs.readFile(filePath, "utf8");
-          return _.chain(content).split("\n").map(_.trim).compact().value();
+        const filename = path.basename(arg)
+        if (filename[0] === '@') {
+          const filePath = path.join(this.cwd, arg)
+          const content = await fs.readFile(filePath, 'utf8')
+          return _.chain(content).split('\n').map(_.trim).compact().value()
         } else {
-          return arg;
+          return arg
         }
-      });
-      const featurePaths = _.flatten(nestedFeaturePaths);
+      })
+      const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {
-        return featurePaths;
+        return featurePaths
       }
     }
-    return ["features"];
+    return ['features']
   }
 
   async expandSupportCodePaths(supportCodePaths) {
-    const extensions = ["js"];
+    const extensions = ['js']
     this.options.compiler.forEach(compiler => {
-      const parts = compiler.split(":");
-      extensions.push(parts[0]);
-      require(parts[1]);
-    });
+      const parts = compiler.split(':')
+      extensions.push(parts[0])
+      require(parts[1])
+    })
     return await this.pathExpander.expandPathsWithExtensions(
       supportCodePaths,
       extensions
-    );
+    )
   }
 }

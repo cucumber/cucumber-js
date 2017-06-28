@@ -1,15 +1,15 @@
-import { ParameterType, ParameterTypeRegistry } from "cucumber-expressions";
+import { ParameterType, ParameterTypeRegistry } from 'cucumber-expressions'
 
 function build() {
-  const parameterTypeRegistry = new ParameterTypeRegistry();
+  const parameterTypeRegistry = new ParameterTypeRegistry()
   const stringInDoubleQuotesParameterType = new ParameterType(
-    "stringInDoubleQuotes",
+    'stringInDoubleQuotes',
     null,
     /"[^"]+"/,
     JSON.parse
-  );
-  parameterTypeRegistry.defineParameterType(stringInDoubleQuotesParameterType);
-  return parameterTypeRegistry;
+  )
+  parameterTypeRegistry.defineParameterType(stringInDoubleQuotesParameterType)
+  return parameterTypeRegistry
 }
 
-export default { build };
+export default { build }
