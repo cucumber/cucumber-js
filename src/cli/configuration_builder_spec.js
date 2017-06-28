@@ -30,6 +30,8 @@ describe('Configuration', function() {
           cwd: this.tmpDir
         },
         formats: [{outputTo: '', type: 'progress'}],
+        listI18nKeywordsFor: '',
+        listI18nLanguages: false,
         profiles: [],
         runtimeOptions: {
           dryRun: false,

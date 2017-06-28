@@ -2,6 +2,7 @@ import _ from 'lodash'
 import {Command} from 'commander'
 import {version} from '../../package.json'
 import path from 'path'
+import Gherkin from 'gherkin'
 
 export default class ArgvParser {
   static collect(val, memo) {
@@ -24,6 +25,13 @@ export default class ArgvParser {
     }
   }
 
+  static validateLanguage(val) {
+    if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
+      throw new Error('Unsupported ISO 639-1: ' + val)
+    }
+    return val
+  }
+
   static parse (argv) {
     const program = new Command(path.basename(argv[1]))
 
@@ -36,6 +44,8 @@ export default class ArgvParser {
       .option('--fail-fast', 'abort the run on first failure')
       .option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, [])
       .option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {})
+      .option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage, '')
+      .option('--i18n-languages', 'list languages')
       .option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, [])
       .option('--no-strict', 'succeed even if there are pending or undefined steps')
       .option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, [])
