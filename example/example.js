@@ -2,31 +2,34 @@ var featureEditor, stepDefinitionsEditor, $output;
 
 function runFeature() {
   $output.empty();
-  $('a[href="#output-tab"]').tab('show');
+  $('a[href="#output-tab"]').tab("show");
 
   var featureSource = featureEditor.getValue();
   var feature = Cucumber.FeatureParser.parse({
     scenarioFilter: new Cucumber.ScenarioFilter({}),
     source: featureSource,
-    uri: '/feature'
+    uri: "/feature"
   });
 
   Cucumber.clearSupportCodeFns();
   new Function(stepDefinitionsEditor.getValue())();
   var supportCodeLibrary = Cucumber.SupportCodeLibraryBuilder.build({
-    cwd: '/',
+    cwd: "/",
     fns: Cucumber.getSupportCodeFns()
   });
 
   var formatterOptions = {
     colorsEnabled: true,
-    cwd: '/',
+    cwd: "/",
     log: function(data) {
       appendToOutput(ansiHTML(data));
     },
     supportCodeLibrary: supportCodeLibrary
   };
-  var prettyFormatter = Cucumber.FormatterBuilder.build('pretty', formatterOptions);
+  var prettyFormatter = Cucumber.FormatterBuilder.build(
+    "pretty",
+    formatterOptions
+  );
 
   var runtime = new Cucumber.Runtime({
     features: [feature],
@@ -34,7 +37,7 @@ function runFeature() {
     supportCodeLibrary: supportCodeLibrary
   });
   return runtime.start();
-};
+}
 
 function appendToOutput(data) {
   $output.append(data);
@@ -42,9 +45,9 @@ function appendToOutput(data) {
 }
 
 function displayError(error) {
-  var errorContainer = $('<div>')
-  errorContainer.addClass('error').text(error.stack || error);
-  appendToOutput(errorContainer)
+  var errorContainer = $("<div>");
+  errorContainer.addClass("error").text(error.stack || error);
+  appendToOutput(errorContainer);
 }
 
 $(function() {
@@ -54,16 +57,20 @@ $(function() {
   stepDefinitionsEditor = ace.edit("step-definitions");
   stepDefinitionsEditor.getSession().setMode("ace/mode/javascript");
 
-  $output = $('#output');
+  $output = $("#output");
 
   window.onerror = displayError;
 
-  $('#run-feature').click(function() {
-    runFeature().then(function(success) {
-      var exitStatus = success ? '0' : '1';
-      var exitStatusContainer = $('<div>');
-      exitStatusContainer.addClass('exit-status').text('Exit Status: ' + exitStatus);
-      appendToOutput(exitStatusContainer);
-    }).catch(displayError);
+  $("#run-feature").click(function() {
+    runFeature()
+      .then(function(success) {
+        var exitStatus = success ? "0" : "1";
+        var exitStatusContainer = $("<div>");
+        exitStatusContainer
+          .addClass("exit-status")
+          .text("Exit Status: " + exitStatus);
+        appendToOutput(exitStatusContainer);
+      })
+      .catch(displayError);
   });
 });

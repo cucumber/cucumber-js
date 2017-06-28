@@ -1,39 +1,39 @@
-import _ from 'lodash'
-import fs from 'mz/fs'
-import glob from 'glob'
-import path from 'path'
-import Promise from 'bluebird'
+import _ from "lodash";
+import fs from "mz/fs";
+import glob from "glob";
+import path from "path";
+import Promise from "bluebird";
 
 export default class PathExpander {
   constructor(directory) {
-    this.directory = directory
+    this.directory = directory;
   }
 
   async expandPathsWithExtensions(paths, extensions) {
-    const expandedPaths = await Promise.map(paths, async (p) => {
-      return await this.expandPathWithExtensions(p, extensions)
-    })
-    return _.uniq(_.flatten(expandedPaths))
+    const expandedPaths = await Promise.map(paths, async p => {
+      return await this.expandPathWithExtensions(p, extensions);
+    });
+    return _.uniq(_.flatten(expandedPaths));
   }
 
   async expandPathWithExtensions(p, extensions) {
-    const fullPath = path.resolve(this.directory, p)
-    const stats = await fs.stat(fullPath)
+    const fullPath = path.resolve(this.directory, p);
+    const stats = await fs.stat(fullPath);
     if (stats.isDirectory()) {
-      return await this.expandDirectoryWithExtensions(fullPath, extensions)
+      return await this.expandDirectoryWithExtensions(fullPath, extensions);
     } else {
-      return [fullPath]
+      return [fullPath];
     }
   }
 
   async expandDirectoryWithExtensions(realPath, extensions) {
-    let pattern = realPath + '/**/*.'
+    let pattern = realPath + "/**/*.";
     if (extensions.length > 1) {
-      pattern += '{' + extensions.join(',') + '}'
+      pattern += "{" + extensions.join(",") + "}";
     } else {
-      pattern += extensions[0]
+      pattern += extensions[0];
     }
-    const results = await Promise.promisify(glob)(pattern)
-    return results.map((filePath) => filePath.replace(/\//g, path.sep))
+    const results = await Promise.promisify(glob)(pattern);
+    return results.map(filePath => filePath.replace(/\//g, path.sep));
   }
 }

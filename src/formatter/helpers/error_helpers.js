@@ -1,4 +1,4 @@
-import {format} from 'assertion-error-formatter'
+import { format } from "assertion-error-formatter";
 
 export function formatError(error, colorFns) {
   return format(error, {
@@ -8,5 +8,5 @@ export function formatError(error, colorFns) {
       errorMessage: colorFns.red,
       errorStack: colorFns.gray
     }
-  })
+  });
 }

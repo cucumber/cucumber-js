@@ -1,15 +1,15 @@
-let fns = []
+let fns = [];
 
 export default {
   add(fn) {
-    fns.push(fn)
+    fns.push(fn);
   },
 
   get() {
-    return fns
+    return fns;
   },
 
   reset() {
-    fns = []
+    fns = [];
   }
-}
+};
