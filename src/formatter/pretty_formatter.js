@@ -51,20 +51,6 @@ export default class PrettyFormatter extends SummaryFormatter {
     this.log('\n')
   }
 
-  handleBeforeFeature(feature) {
-    let text = ''
-    let tagsText = this.formatTags(feature.tags)
-    if (tagsText) {
-      text = tagsText + '\n'
-    }
-    text += feature.keyword + ': ' + feature.name
-    let description = feature.description
-    if (description) {
-      text += '\n\n' + indentString(description, 2)
-    }
-    this.log(text + '\n\n')
-  }
-
   handleBeforeScenario(scenario) {
     let text = ''
     let tagsText = this.formatTags(scenario.tags)
@@ -72,7 +58,7 @@ export default class PrettyFormatter extends SummaryFormatter {
       text = tagsText + '\n'
     }
     text += scenario.keyword + ': ' + scenario.name
-    this.logIndented(text + '\n', 1)
+    this.logIndented(text + '\n')
   }
 
   handleStepResult(stepResult) {
@@ -91,7 +77,7 @@ export default class PrettyFormatter extends SummaryFormatter {
 
     const symbol = PrettyFormatter.CHARACTERS[stepResult.status]
     const identifier = colorFn(symbol + ' ' + step.keyword + (step.name || ''))
-    this.logIndented(identifier + '\n', 1)
+    this.logIndented(identifier + '\n')
 
     step.arguments.forEach((arg) => {
       let str
@@ -102,7 +88,7 @@ export default class PrettyFormatter extends SummaryFormatter {
       } else {
         throw new Error('Unknown argument type: ' + arg)
       }
-      this.logIndented(colorFn(str) + '\n', 3)
+      this.logIndented(colorFn(str) + '\n', 2)
     })
   }
 }

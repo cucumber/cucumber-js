@@ -27,7 +27,7 @@ describe('JsonFormatter', function () {
     beforeEach(function () {
       const tag1 = {name: 'tag 1', line: 1}
       const tag2 = {name: 'tag 2', line: 1}
-      const feature = {
+      this.feature = {
         keyword: 'Feature',
         name: 'A Feature Name',
         description: 'A Feature Description',
@@ -35,7 +35,6 @@ describe('JsonFormatter', function () {
         uri: 'uri',
         tags: [tag1, tag2]
       }
-      this.jsonFormatter.handleBeforeFeature(feature)
     })
 
     describe('with no scenarios', function () {
@@ -43,20 +42,8 @@ describe('JsonFormatter', function () {
         this.jsonFormatter.handleAfterFeatures()
       })
 
-      it('outputs the feature', function () {
-        expect(JSON.parse(this.output)).to.eql([{
-          description: 'A Feature Description',
-          elements: [],
-          id: 'a-feature-name',
-          keyword: 'Feature',
-          line: 2,
-          name: 'A Feature Name',
-          tags: [
-            {name: 'tag 1', line: 1},
-            {name: 'tag 2', line: 1}
-          ],
-          uri: 'uri'
-        }])
+      it('outputs an empty array', function () {
+        expect(JSON.parse(this.output)).to.eql([])
       })
     })
 
@@ -65,6 +52,7 @@ describe('JsonFormatter', function () {
         const tag1 = {name: 'tag 1', line: 3}
         const tag2 = {name: 'tag 2', line: 3}
         const scenario = {
+          feature: this.feature,
           keyword: 'Scenario',
           name: 'A Scenario Name',
           description: 'A Scenario Description',
@@ -79,19 +67,30 @@ describe('JsonFormatter', function () {
           this.jsonFormatter.handleAfterFeatures()
         })
 
-        it('outputs the scenario', function () {
-          const features = JSON.parse(this.output)
-          expect(features[0].elements).to.eql([{
-            description: 'A Scenario Description',
-            id: 'a-feature-name;a-scenario-name',
-            keyword: 'Scenario',
-            line: 4,
-            name: 'A Scenario Name',
-            steps: [],
+        it('outputs the feature and scenario', function () {
+          expect(JSON.parse(this.output)).to.eql([{
+            description: 'A Feature Description',
+            elements: [{
+              description: 'A Scenario Description',
+              id: 'a-feature-name;a-scenario-name',
+              keyword: 'Scenario',
+              line: 4,
+              name: 'A Scenario Name',
+              steps: [],
+              tags: [
+                {name: 'tag 1', line: 3},
+                {name: 'tag 2', line: 3}
+              ]
+            }],
+            id: 'a-feature-name',
+            keyword: 'Feature',
+            line: 2,
+            name: 'A Feature Name',
             tags: [
-              {name: 'tag 1', line: 3},
-              {name: 'tag 2', line: 3}
-            ]
+              {name: 'tag 1', line: 1},
+              {name: 'tag 2', line: 1}
+            ],
+            uri: 'uri'
           }])
         })
       })

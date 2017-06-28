@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import toString from 'stream-to-string'
 import {PassThrough} from 'stream'
 import colors from 'colors/safe'
-import fs from 'fs'
+import mzFs from 'mz/fs'
 import path from 'path'
 import VError from 'verror'
 
@@ -45,8 +45,8 @@ class World {
 
     let jsonOutput = []
     const jsonOutputPath = path.join(cwd, 'out.json')
-    if (fs.existsSync(jsonOutputPath)) {
-      const fileContent = fs.readFileSync(jsonOutputPath, 'utf8')
+    if (await mzFs.exists(jsonOutputPath)) {
+      const fileContent = await mzFs.readFile(jsonOutputPath, 'utf8')
       if (fileContent) {
         jsonOutput = JSON.parse(fileContent)
       }

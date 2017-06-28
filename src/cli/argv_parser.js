@@ -46,6 +46,7 @@ export default class ArgvParser {
       .option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {})
       .option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage, '')
       .option('--i18n-languages', 'list languages')
+      .option('--maximum-concurrent-scenarios <COUNT>', 'specify the the number of scenarios that are allowed to run concurrently (default: 1)')
       .option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, [])
       .option('--no-strict', 'succeed even if there are pending or undefined steps')
       .option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, [])

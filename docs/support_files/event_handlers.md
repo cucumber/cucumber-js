@@ -5,14 +5,12 @@ You can register event handlers for the following events within the cucumber lif
 | Event          | Object                                           |
 |----------------|--------------------------------------------------|
 | BeforeFeatures | array of [Features](/src/models/feature.js)      |
-| BeforeFeature  | [Feature](/src/models/feature.js)                |
 | BeforeScenario | [Scenario](/src/models/scenario.js)              |
 | BeforeStep     | [Step](/src/models/step.js)                      |
 | StepResult     | [StepResult](/src/models/step_result.js)         |
 | AfterStep      | [Step](/src/models/step.js)                      |
 | ScenarioResult | [ScenarioResult](/src/models/scenario_result.js) |
-| AfterScenario  | [Scenario](/src/models/scenario.js)              |
-| AfterFeature   | [Feature](/src/models/feature.js)                |
+| AfterScenario  | [Scenario](/src/models/scenario.js)              |           |
 | FeaturesResult | [FeaturesResult](/src/models/features_result.js) |
 | AfterFeatures  | array of [Features](/src/models/feature.js)      |
 

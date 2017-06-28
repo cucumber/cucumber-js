@@ -4,6 +4,7 @@ import Promise from 'bluebird'
 import ScenarioResult from '../models/scenario_result'
 import ScenarioRunner from './scenario_runner'
 import Status from '../status'
+import _ from 'lodash'
 
 export default class FeaturesRunner {
   constructor({eventBroadcaster, features, options, supportCodeLibrary}) {
@@ -17,7 +18,8 @@ export default class FeaturesRunner {
   async run() {
     const event = new Event({data: this.features, name: Event.FEATURES_EVENT_NAME})
     await this.eventBroadcaster.broadcastAroundEvent(event, async() => {
-      await Promise.each(this.features, ::this.runFeature)
+      const scenarios = _.chain(this.features).map('scenarios').flatten().value()
+      await Promise.map(scenarios, ::this.runScenario, {concurrency: this.options.maximumConcurrentScenarios})
       await this.broadcastFeaturesResult()
     })
     return this.featuresResult.success
@@ -28,26 +30,19 @@ export default class FeaturesRunner {
     await this.eventBroadcaster.broadcastEvent(event)
   }
 
-  async runFeature(feature) {
-    const event = new Event({data: feature, name: Event.FEATURE_EVENT_NAME})
-    await this.eventBroadcaster.broadcastAroundEvent(event, async() => {
-      await Promise.each(feature.scenarios, async(scenario) => {
-        const scenarioResult = await this.runScenario(scenario)
-        this.featuresResult.witnessScenarioResult(scenarioResult)
-      })
-    })
-  }
-
   async runScenario(scenario) {
+    let scenarioResult
     if (!this.featuresResult.success && this.options.failFast) {
-      return new ScenarioResult(scenario, Status.SKIPPED)
+      scenarioResult = new ScenarioResult(scenario, Status.SKIPPED)
+    } else {
+      const scenarioRunner = new ScenarioRunner({
+        eventBroadcaster: this.eventBroadcaster,
+        options: this.options,
+        scenario,
+        supportCodeLibrary: this.supportCodeLibrary
+      })
+      scenarioResult = await scenarioRunner.run()
     }
-    const scenarioRunner = new ScenarioRunner({
-      eventBroadcaster: this.eventBroadcaster,
-      options: this.options,
-      scenario,
-      supportCodeLibrary: this.supportCodeLibrary
-    })
-    return await scenarioRunner.run()
+    this.featuresResult.witnessScenarioResult(scenarioResult)
   }
 }

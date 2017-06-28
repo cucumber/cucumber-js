@@ -16,9 +16,13 @@ export default class RerunFormatter extends Formatter {
         mapping[relativeUri].push(scenario.line)
       }
     })
-    const text = _.map(mapping, (lines, relativeUri) => {
-      return relativeUri + ':' + lines.join(':')
-    }).join('\n')
+    const text = _.chain(mapping)
+      .map((lines, relativeUri) => {
+        return relativeUri + ':' + _.sortBy(lines).join(':')
+      })
+      .sortBy()
+      .value()
+      .join('\n')
     this.log(text)
   }
 }
