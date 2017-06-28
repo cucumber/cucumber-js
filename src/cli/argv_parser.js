@@ -2,6 +2,7 @@ import _ from "lodash";
 import { Command } from "commander";
 import { version } from "../../package.json";
 import path from "path";
+import Gherkin from "gherkin";
 
 export default class ArgvParser {
   static collect(val, memo) {
@@ -24,6 +25,13 @@ export default class ArgvParser {
       }
       return _.merge(memo, val);
     };
+  }
+
+  static validateLanguage(val) {
+    if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
+      throw new Error("Unsupported ISO 639-1: " + val);
+    }
+    return val;
   }
 
   static parse(argv) {
@@ -53,6 +61,13 @@ export default class ArgvParser {
         ArgvParser.mergeJson("--format-options"),
         {}
       )
+      .option(
+        "--i18n-keywords <ISO 639-1>",
+        "list language keywords",
+        ArgvParser.validateLanguage,
+        ""
+      )
+      .option("--i18n-languages", "list languages")
       .option(
         "--name <REGEXP>",
         "only execute the scenarios with name matching the expression (repeatable)",
