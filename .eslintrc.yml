@@ -18,7 +18,6 @@ plugins:
   - babel
 rules:
   array-bracket-spacing: error
-  arrow-parens: off
   babel/new-cap: error
   comma-dangle: [error, never]
   complexity: error
@@ -34,5 +33,3 @@ rules:
   no-unneeded-ternary: [error, {defaultAssignment: false}]
   no-var: error
   object-shorthand: [error, always]
-  quotes: off
-  semi: off
