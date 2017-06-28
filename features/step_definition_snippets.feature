@@ -28,7 +28,7 @@ Feature: step definition snippets
     Then it fails
     And the output contains the text:
       """
-      Given('a step with {stringInDoubleQuotes}', function (stringInDoubleQuotes, callback) {
+      Given('a step with {string}', function (string, callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });
@@ -45,7 +45,7 @@ Feature: step definition snippets
     Then it fails
     And the output contains the text:
       """
-      Given('a step with {stringInDoubleQuotes} and {stringInDoubleQuotes}', function (stringInDoubleQuotes, stringInDoubleQuotes2, callback) {
+      Given('a step with {string} and {string}', function (string, string2, callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });
@@ -64,7 +64,7 @@ Feature: step definition snippets
     Then it fails
     And the output contains the text:
       """
-      Given('a step with {stringInDoubleQuotes}', function (stringInDoubleQuotes, callback) {
+      Given('a step with {string}', function (string, callback) {
         // Write code here that turns the phrase above into concrete actions
         callback(null, 'pending');
       });

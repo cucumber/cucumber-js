@@ -24,7 +24,7 @@ export default class StepDefinition {
 
   getInvocationParameters({step, parameterTypeRegistry}) {
     const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
-    const stepNameParameters = _.map(cucumberExpression.match(step.name), 'transformedValue')
+    const stepNameParameters = _.map(cucumberExpression.match(step.name), 'value')
     const stepArgumentParameters = step.arguments.map(function(arg) {
       if (arg instanceof DataTable) {
         return arg
@@ -39,9 +39,9 @@ export default class StepDefinition {
 
   getCucumberExpression(parameterTypeRegistry) {
     if (typeof(this.pattern) === 'string') {
-      return new CucumberExpression(this.pattern, [], parameterTypeRegistry)
+      return new CucumberExpression(this.pattern, parameterTypeRegistry)
     } else {
-      return new RegularExpression(this.pattern, [], parameterTypeRegistry)
+      return new RegularExpression(this.pattern, parameterTypeRegistry)
     }
   }
 

@@ -75,24 +75,28 @@ export function registerHandler(cwd, collection) {
 
 export function addTransform(parameterTypeRegistry) {
   return util.deprecate(({captureGroupRegexps, transformer, typeName}) => {
-    const parameter = new ParameterType(
+    const parameterType = new ParameterType(
       typeName,
-      null,
       captureGroupRegexps,
-      transformer
+      null,
+      transformer,
+      true,
+      true
     )
-    parameterTypeRegistry.defineParameterType(parameter)
+    parameterTypeRegistry.defineParameterType(parameterType)
   }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
 }
 
 export function defineParameterType(parameterTypeRegistry) {
   return ({regexp, transformer, typeName}) => {
-    const parameter = new ParameterType(
+    const parameterType = new ParameterType(
       typeName,
-      null,
       regexp,
-      transformer
+      null,
+      transformer,
+      true,
+      true
     )
-    parameterTypeRegistry.defineParameterType(parameter)
+    parameterTypeRegistry.defineParameterType(parameterType)
   }
 }

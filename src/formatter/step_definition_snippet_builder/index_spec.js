@@ -74,8 +74,8 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the quoted string with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {stringInDoubleQuotes} ghi')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['stringInDoubleQuotes', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {string} ghi')
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'callback'])
       })
     })
 
@@ -86,8 +86,8 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the quoted strings with capture groups and adds parameters', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {stringInDoubleQuotes} ghi {stringInDoubleQuotes} mno')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['stringInDoubleQuotes', 'stringInDoubleQuotes2', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {string} ghi {string} mno')
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'string2', 'callback'])
       })
     })
 
@@ -133,7 +133,7 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('puts the table argument after the capture groups', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['stringInDoubleQuotes', 'stringInDoubleQuotes2', 'table', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'string2', 'table', 'callback'])
       })
     })
   })
