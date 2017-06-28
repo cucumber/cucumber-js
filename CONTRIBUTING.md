@@ -12,7 +12,9 @@ Before anything else, thank you. Thank you for taking some of your precious time
 See the `package.json` scripts section for how to run the tests.
 
 * lint
+  * [prettier](https://github.com/prettier/prettier)
   * [eslint](http://eslint.org/)
+  * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
 * unit tests
   * [mocha](https://mochajs.org/)
   * [chai](http://chaijs.com/)
