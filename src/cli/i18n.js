@@ -16,7 +16,7 @@ const keywords = [
   'but'
 ]
 
-function printAsTable(header, rows) {
+function getAsTable(header, rows) {
   const table = new Table({
     chars: {
       'bottom': '', 'bottom-left': '', 'bottom-mid': '', 'bottom-right': '',
@@ -34,18 +34,18 @@ function printAsTable(header, rows) {
   return table.toString()
 }
 
-export function printLanguages() {
+export function getLanguages() {
   const rows = _.map(Gherkin.DIALECTS, (data, isoCode) => {
     return [isoCode, data.name, data['native']]
   })
-  return printAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
+  return getAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
 }
 
-export function printKeywords(isoCode) {
+export function getKeywords(isoCode) {
   const language = Gherkin.DIALECTS[isoCode]
   const rows = _.map(keywords, (keyword) => {
     const words = _.map(language[keyword], (s) => `"${s}"`).join(', ')
     return [titleCase(keyword), words]
   })
-  return printAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)
+  return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)
 }
