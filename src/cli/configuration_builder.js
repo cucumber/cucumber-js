@@ -21,15 +21,23 @@ export default class ConfigurationBuilder {
   }
 
   async build() {
+    const listI18nKeywordsFor = this.options.i18nKeywords
+    const listI18nLanguages = !!this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
-    const featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
-    const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
-    const unexpandedSupportCodePaths = this.options.require.length > 0 ? this.options.require : featureDirectoryPaths
-    const supportCodePaths = await this.expandSupportCodePaths(unexpandedSupportCodePaths)
+    let featurePaths = []
+    let supportCodePaths = []
+    if (!listI18nKeywordsFor && !listI18nLanguages) {
+      featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
+      const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
+      const unexpandedSupportCodePaths = this.options.require.length > 0 ? this.options.require : featureDirectoryPaths
+      supportCodePaths = await this.expandSupportCodePaths(unexpandedSupportCodePaths)
+    }
     return {
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.getFormatOptions(),
+      listI18nKeywordsFor,
+      listI18nLanguages,
       profiles: this.options.profile,
       runtimeOptions: {
         dryRun: !!this.options.dryRun,
