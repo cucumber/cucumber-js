@@ -1,4 +1,4 @@
-import Status, {addStatusPredicates} from '../status'
+import Status, { addStatusPredicates } from '../status'
 
 export default class ScenarioResult {
   constructor(scenario, status) {
@@ -24,7 +24,7 @@ export default class ScenarioResult {
   }
 
   witnessStepResult(stepResult) {
-    const {duration, failureException, status} = stepResult
+    const { duration, failureException, status } = stepResult
     if (duration) {
       this.duration += duration
     }

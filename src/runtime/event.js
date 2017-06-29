@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 export default class Event {
-  constructor({data, name}) {
+  constructor({ data, name }) {
     this.data = data
     this.name = name
   }

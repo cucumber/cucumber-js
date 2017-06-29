@@ -1,5 +1,5 @@
 export default class Hook {
-  constructor({keyword, scenario}) {
+  constructor({ keyword, scenario }) {
     this.keyword = keyword
     this.scenario = scenario
   }

@@ -14,16 +14,28 @@ export default class JavaScriptSnippetSyntax {
     let implementation
     if (this.snippetInterface === 'callback') {
       const callbackName = _.last(parameters)
-      implementation = callbackName + '(null, \'pending\');'
+      implementation = callbackName + "(null, 'pending');"
     } else {
       parameters.pop()
-      implementation = 'return \'pending\';'
+      implementation = "return 'pending';"
     }
 
     const snippet =
-      functionName + '(\'' + pattern.replace(/'/g, '\\\'') + '\', ' + functionKeyword + '(' + parameters.join(', ') + ') {' + '\n' +
-      '  // ' + comment + '\n' +
-      '  ' + implementation + '\n' +
+      functionName +
+      "('" +
+      pattern.replace(/'/g, "\\'") +
+      "', " +
+      functionKeyword +
+      '(' +
+      parameters.join(', ') +
+      ') {' +
+      '\n' +
+      '  // ' +
+      comment +
+      '\n' +
+      '  ' +
+      implementation +
+      '\n' +
       '});'
     return snippet
   }

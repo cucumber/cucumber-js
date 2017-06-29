@@ -13,8 +13,8 @@ const statuses = {
 export default statuses
 
 export function addStatusPredicates(protoype) {
-  _.each(statuses, (status) => {
-    protoype['is' + upperCaseFirst(status)] = function () {
+  _.each(statuses, status => {
+    protoype['is' + upperCaseFirst(status)] = function() {
       return this.status === status
     }
   })
@@ -22,7 +22,7 @@ export function addStatusPredicates(protoype) {
 
 export function getStatusMapping(initialValue) {
   return _.chain(statuses)
-    .map((status) => [status, initialValue])
+    .map(status => [status, initialValue])
     .fromPairs()
     .value()
 }

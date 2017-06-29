@@ -16,7 +16,7 @@ export default class JsonFormatter extends Formatter {
   }
 
   formatAttachments(attachments) {
-    return attachments.map(function (attachment) {
+    return attachments.map(function(attachment) {
       return {
         data: attachment.data,
         mime_type: attachment.mimeType
@@ -26,8 +26,8 @@ export default class JsonFormatter extends Formatter {
 
   formatDataTable(dataTable) {
     return {
-      rows: dataTable.raw().map(function (row) {
-        return {cells: row}
+      rows: dataTable.raw().map(function(row) {
+        return { cells: row }
       })
     }
   }
@@ -37,7 +37,7 @@ export default class JsonFormatter extends Formatter {
   }
 
   formatStepArguments(stepArguments) {
-    return _.map(stepArguments, (arg) => {
+    return _.map(stepArguments, arg => {
       if (arg instanceof DataTable) {
         return this.formatDataTable(arg)
       } else if (arg instanceof DocString) {
@@ -56,7 +56,7 @@ export default class JsonFormatter extends Formatter {
     this.currentFeature = _.pick(feature, [
       'description',
       'keyword',
-      'line' ,
+      'line',
       'name',
       'tags',
       'uri'
@@ -91,7 +91,7 @@ export default class JsonFormatter extends Formatter {
       arguments: this.formatStepArguments(step.arguments),
       keyword: step.keyword,
       name: step.name,
-      result: {status}
+      result: { status }
     }
 
     if (step.isBackground) {
@@ -113,12 +113,14 @@ export default class JsonFormatter extends Formatter {
     }
 
     if (status === Status.FAILED && stepResult.failureException) {
-      currentStep.result.error_message = (stepResult.failureException.stack || stepResult.failureException)
+      currentStep.result.error_message =
+        stepResult.failureException.stack || stepResult.failureException
     }
 
     if (stepResult.stepDefinition) {
-      const location = stepResult.stepDefinition.uri + ':' + stepResult.stepDefinition.line
-      currentStep.match = {location}
+      const location =
+        stepResult.stepDefinition.uri + ':' + stepResult.stepDefinition.line
+      currentStep.match = { location }
     }
 
     this.currentScenario.steps.push(currentStep)

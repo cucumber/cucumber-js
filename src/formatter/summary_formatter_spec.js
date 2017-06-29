@@ -5,7 +5,7 @@ import SummaryFormatter from './summary_formatter'
 describe('SummaryFormatter', function() {
   beforeEach(function() {
     this.output = ''
-    const logFn = (data) => {
+    const logFn = data => {
       this.output += data
     }
     const colorFns = getColorFns(false)
@@ -14,7 +14,7 @@ describe('SummaryFormatter', function() {
       stepResults: [],
       duration: 0
     }
-    const snippetBuilder = createMock({build: 'snippet'})
+    const snippetBuilder = createMock({ build: 'snippet' })
     this.summaryFormatter = new SummaryFormatter({
       colorFns,
       cwd: 'path/to/project',
@@ -59,12 +59,12 @@ describe('SummaryFormatter', function() {
       it('logs the issue', function() {
         expect(this.output).to.contain(
           'Failures:\n' +
-          '\n' +
-          '1) Scenario: name1 - a.feature:1\n' +
-          '   Step: keyword name2 - a.feature:2\n' +
-          '   Step Definition: steps.js:3\n' +
-          '   Message:\n' +
-          '     error'
+            '\n' +
+            '1) Scenario: name1 - a.feature:1\n' +
+            '   Step: keyword name2 - a.feature:2\n' +
+            '   Step Definition: steps.js:3\n' +
+            '   Message:\n' +
+            '     error'
         )
       })
     })
@@ -94,13 +94,13 @@ describe('SummaryFormatter', function() {
       it('logs the issue', function() {
         expect(this.output).to.contain(
           'Failures:\n' +
-          '\n' +
-          '1) Scenario: name1 - a.feature:1\n' +
-          '   Step: keyword name2 - a.feature:2\n' +
-          '   Message:\n' +
-          '     Multiple step definitions match:\n' +
-          '       pattern1        - steps.js:3\n' +
-          '       longer pattern2 - steps.js:4'
+            '\n' +
+            '1) Scenario: name1 - a.feature:1\n' +
+            '   Step: keyword name2 - a.feature:2\n' +
+            '   Message:\n' +
+            '     Multiple step definitions match:\n' +
+            '       pattern1        - steps.js:3\n' +
+            '       longer pattern2 - steps.js:4'
         )
       })
     })
@@ -119,13 +119,13 @@ describe('SummaryFormatter', function() {
       it('logs the issue', function() {
         expect(this.output).to.contain(
           'Warnings:\n' +
-          '\n' +
-          '1) Scenario: name1 - a.feature:1\n' +
-          '   Step: keyword name2 - a.feature:2\n' +
-          '   Message:\n' +
-          '     Undefined. Implement with the following snippet:\n' +
-          '\n' +
-          '       snippet'
+            '\n' +
+            '1) Scenario: name1 - a.feature:1\n' +
+            '   Step: keyword name2 - a.feature:2\n' +
+            '   Message:\n' +
+            '     Undefined. Implement with the following snippet:\n' +
+            '\n' +
+            '       snippet'
         )
       })
     })
@@ -144,11 +144,11 @@ describe('SummaryFormatter', function() {
       it('logs the issue', function() {
         expect(this.output).to.contain(
           'Warnings:\n' +
-          '\n' +
-          '1) Scenario: name1 - a.feature:1\n' +
-          '   Step: keyword name2 - a.feature:2\n' +
-          '   Message:\n' +
-          '     Pending'
+            '\n' +
+            '1) Scenario: name1 - a.feature:1\n' +
+            '   Step: keyword name2 - a.feature:2\n' +
+            '   Message:\n' +
+            '     Pending'
         )
       })
     })
@@ -162,25 +162,21 @@ describe('SummaryFormatter', function() {
 
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
-          '0 scenarios\n' +
-          '0 steps\n' +
-          '0m00.000s\n'
+          '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one passing scenario', function() {
       beforeEach(function() {
-        const scenarioResult = {status: Status.PASSED}
+        const scenarioResult = { status: Status.PASSED }
         this.featuresResult.scenarioResults = [scenarioResult]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
 
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
-          '1 scenario (1 passed)\n' +
-          '0 steps\n' +
-          '0m00.000s\n'
+          '1 scenario (1 passed)\n' + '0 steps\n' + '0m00.000s\n'
         )
       })
     })
@@ -188,12 +184,12 @@ describe('SummaryFormatter', function() {
     describe('with one of every kind of scenario', function() {
       beforeEach(function() {
         this.featuresResult.scenarioResults = [
-          {status: Status.AMBIGUOUS},
-          {status: Status.FAILED},
-          {status: Status.PASSED},
-          {status: Status.PENDING},
-          {status: Status.SKIPPED},
-          {status: Status.UNDEFINED}
+          { status: Status.AMBIGUOUS },
+          { status: Status.FAILED },
+          { status: Status.PASSED },
+          { status: Status.PENDING },
+          { status: Status.SKIPPED },
+          { status: Status.UNDEFINED }
         ]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
@@ -201,23 +197,21 @@ describe('SummaryFormatter', function() {
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
           '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
-          '0 steps\n' +
-          '0m00.000s\n'
+            '0 steps\n' +
+            '0m00.000s\n'
         )
       })
     })
 
     describe('with one passing step', function() {
       beforeEach(function() {
-        this.featuresResult.stepResults = [{status: Status.PASSED}]
+        this.featuresResult.stepResults = [{ status: Status.PASSED }]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
 
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
-          '0 scenarios\n' +
-          '1 step (1 passed)\n' +
-          '0m00.000s\n'
+          '0 scenarios\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
@@ -225,12 +219,12 @@ describe('SummaryFormatter', function() {
     describe('with one of every kind of step', function() {
       beforeEach(function() {
         this.featuresResult.stepResults = [
-          {ambiguousStepDefinitions: [], status: Status.AMBIGUOUS, step: {}},
-          {failureException: '', status: Status.FAILED, step: {}},
-          {status: Status.PASSED, step: {}},
-          {status: Status.PENDING, step: {}},
-          {status: Status.SKIPPED, step: {}},
-          {status: Status.UNDEFINED, step: {}}
+          { ambiguousStepDefinitions: [], status: Status.AMBIGUOUS, step: {} },
+          { failureException: '', status: Status.FAILED, step: {} },
+          { status: Status.PASSED, step: {} },
+          { status: Status.PENDING, step: {} },
+          { status: Status.SKIPPED, step: {} },
+          { status: Status.UNDEFINED, step: {} }
         ]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
@@ -238,8 +232,8 @@ describe('SummaryFormatter', function() {
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
           '0 scenarios\n' +
-          '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
-          '0m00.000s\n'
+            '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
+            '0m00.000s\n'
         )
       })
     })
@@ -252,9 +246,7 @@ describe('SummaryFormatter', function() {
 
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
-          '0 scenarios\n' +
-          '0 steps\n' +
-          '0m00.123s\n'
+          '0 scenarios\n' + '0 steps\n' + '0m00.123s\n'
         )
       })
     })
@@ -267,9 +259,7 @@ describe('SummaryFormatter', function() {
 
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
-          '0 scenarios\n' +
-          '0 steps\n' +
-          '0m12.300s\n'
+          '0 scenarios\n' + '0 steps\n' + '0m12.300s\n'
         )
       })
     })
@@ -282,9 +272,7 @@ describe('SummaryFormatter', function() {
 
       it('outputs step totals, scenario totals, and duration', function() {
         expect(this.output).to.contain(
-          '0 scenarios\n' +
-          '0 steps\n' +
-          '2m03.000s\n'
+          '0 scenarios\n' + '0 steps\n' + '2m03.000s\n'
         )
       })
     })

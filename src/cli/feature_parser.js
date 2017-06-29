@@ -5,7 +5,7 @@ const gherkinCompiler = new Gherkin.Compiler()
 const gherkinParser = new Gherkin.Parser()
 
 export default class Parser {
-  static parse({scenarioFilter, source, uri}) {
+  static parse({ scenarioFilter, source, uri }) {
     let gherkinDocument
     try {
       gherkinDocument = gherkinParser.parse(source)

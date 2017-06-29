@@ -1,10 +1,10 @@
 import _ from 'lodash'
-import {formatLocation} from '../location_helpers'
+import { formatLocation } from '../location_helpers'
 import Hook from '../../../models/hook'
 
 function buildEmptyMapping(stepDefinitions) {
   const mapping = {}
-  stepDefinitions.forEach((stepDefinition) => {
+  stepDefinitions.forEach(stepDefinition => {
     const location = formatLocation('', stepDefinition)
     mapping[location] = {
       line: stepDefinition.line,
@@ -16,10 +16,10 @@ function buildEmptyMapping(stepDefinitions) {
   return mapping
 }
 
-function buildMapping({stepDefinitions, stepResults}) {
+function buildMapping({ stepDefinitions, stepResults }) {
   const mapping = buildEmptyMapping(stepDefinitions)
-  stepResults.forEach((stepResult) => {
-    const {duration, step, stepDefinition} = stepResult
+  stepResults.forEach(stepResult => {
+    const { duration, step, stepDefinition } = stepResult
     if (!(step instanceof Hook) && stepDefinition) {
       const location = formatLocation('', stepDefinition)
       const match = {
@@ -39,7 +39,7 @@ function buildMapping({stepDefinitions, stepResults}) {
 }
 
 function invertNumber(key) {
-  return (obj) => {
+  return obj => {
     const value = obj[key]
     if (isFinite(value)) {
       return -1 * value
@@ -50,9 +50,12 @@ function invertNumber(key) {
 
 function buildResult(mapping) {
   return _.chain(mapping)
-    .map(({line, matches, pattern, uri}) => {
-      const sortedMatches = _.sortBy(matches, [invertNumber('duration'), 'text'])
-      const result = {line, matches: sortedMatches, pattern, uri}
+    .map(({ line, matches, pattern, uri }) => {
+      const sortedMatches = _.sortBy(matches, [
+        invertNumber('duration'),
+        'text'
+      ])
+      const result = { line, matches: sortedMatches, pattern, uri }
       const meanDuration = _.meanBy(matches, 'duration')
       if (isFinite(meanDuration)) {
         result.meanDuration = meanDuration
@@ -63,7 +66,7 @@ function buildResult(mapping) {
     .value()
 }
 
-export function getUsage({cwd, stepDefinitions, stepResults}) {
-  const mapping = buildMapping({cwd, stepDefinitions, stepResults})
+export function getUsage({ cwd, stepDefinitions, stepResults }) {
+  const mapping = buildMapping({ cwd, stepDefinitions, stepResults })
   return buildResult(mapping)
 }

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Status, {addStatusPredicates, getStatusMapping} from './status'
+import Status, { addStatusPredicates, getStatusMapping } from './status'
 
 class MyObject {
   constructor(status) {
@@ -16,7 +16,10 @@ const predicates = [
   'isUndefined'
 ]
 
-function predicatesShouldOnlyReturnTrueFor(status, expectedPredicatToReturnTrue) {
+function predicatesShouldOnlyReturnTrueFor(
+  status,
+  expectedPredicatToReturnTrue
+) {
   describe('object has a status ' + status, function() {
     beforeEach(function() {
       this.obj = new MyObject(status)

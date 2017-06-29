@@ -11,7 +11,7 @@ export default class FeaturesResult {
   }
 
   witnessScenarioResult(scenarioResult) {
-    const {duration, status, stepResults} = scenarioResult
+    const { duration, status, stepResults } = scenarioResult
     this.duration += duration
     this.scenarioResults.push(scenarioResult)
     this.stepResults = this.stepResults.concat(stepResults)

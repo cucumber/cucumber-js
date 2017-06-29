@@ -1,8 +1,8 @@
-import {defineSupportCode, Cli} from '../../'
-import {execFile} from 'child_process'
-import {expect} from 'chai'
+import { defineSupportCode, Cli } from '../../'
+import { execFile } from 'child_process'
+import { expect } from 'chai'
 import toString from 'stream-to-string'
-import {PassThrough} from 'stream'
+import { PassThrough } from 'stream'
 import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
@@ -10,15 +10,19 @@ import VError from 'verror'
 
 class World {
   async run(executablePath, inputArgs) {
-    const args = ['node', executablePath].concat(inputArgs, ['--backtrace', '--format', 'json:out.json'])
+    const args = ['node', executablePath].concat(inputArgs, [
+      '--backtrace',
+      '--format',
+      'json:out.json'
+    ])
     const cwd = this.tmpDir
 
     let result
 
     if (this.spawn) {
-      result = await new Promise((resolve) => {
-        execFile(args[0], args.slice(1), {cwd}, (error, stdout, stderr) => {
-          resolve({error, stdout, stderr})
+      result = await new Promise(resolve => {
+        execFile(args[0], args.slice(1), { cwd }, (error, stdout, stderr) => {
+          resolve({ error, stdout, stderr })
         })
       })
     } else {
@@ -40,7 +44,7 @@ class World {
         stderr = VError.fullStack(error)
       }
       stdout.end()
-      result = {error, stdout: await toString(stdout), stderr}
+      result = { error, stdout: await toString(stdout), stderr }
     }
 
     let jsonOutput = []
@@ -64,6 +68,6 @@ class World {
   }
 }
 
-defineSupportCode(({setWorldConstructor}) => {
+defineSupportCode(({ setWorldConstructor }) => {
   setWorldConstructor(World)
 })

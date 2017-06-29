@@ -1,4 +1,4 @@
-import {promisify} from 'bluebird'
+import { promisify } from 'bluebird'
 import fs from 'mz/fs'
 import path from 'path'
 import resolve from 'resolve'
@@ -9,7 +9,9 @@ export async function validateInstall(cwd) {
     return // cucumber testing itself
   }
   const currentCucumberPath = require.resolve(projectPath)
-  let localCucumberPath = await promisify(resolve)('cucumber', {basedir: cwd})
+  let localCucumberPath = await promisify(resolve)('cucumber', {
+    basedir: cwd
+  })
   localCucumberPath = await fs.realpath(localCucumberPath)
   if (localCucumberPath !== currentCucumberPath) {
     throw new Error(

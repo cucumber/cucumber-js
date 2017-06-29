@@ -6,7 +6,7 @@ import Status from '../status'
 export default class RerunFormatter extends Formatter {
   handleFeaturesResult(featuresResult) {
     const mapping = {}
-    featuresResult.scenarioResults.forEach((scenarioResult) => {
+    featuresResult.scenarioResults.forEach(scenarioResult => {
       if (scenarioResult.status !== Status.PASSED) {
         const scenario = scenarioResult.scenario
         const relativeUri = path.relative(this.cwd, scenario.uri)

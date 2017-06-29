@@ -1,4 +1,4 @@
-import {getUsage} from './helpers'
+import { getUsage } from './helpers'
 import Formatter from './'
 
 export default class UsageJsonFormatter extends Formatter {

@@ -35,7 +35,10 @@ ignoreErrors:
     - babelify # package.json - scripts - build-release
     - coffee-script # features/compiler.feature
     - coveralls # .travis.yml
+    - eslint-config-prettier # .eslintrc.yml - extends
     - eslint-plugin-babel # .eslintrc.yml - parser
+    - eslint-plugin-prettier # .eslintrc.yml - plugins
+    - prettier # peer dependency of eslint-plugin-prettier
 
 requiredModules:
   files:

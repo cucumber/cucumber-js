@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {formatIssue, formatSummary} from './helpers'
+import { formatIssue, formatSummary } from './helpers'
 import Hook from '../models/hook'
 import Status from '../status'
 import Formatter from './'
@@ -20,8 +20,8 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   handleBeforeFeatures(features) {
-    const numberOfSteps = _.sumBy(features, (feature) => {
-      return _.sumBy(feature.scenarios, (scenario) => {
+    const numberOfSteps = _.sumBy(features, feature => {
+      return _.sumBy(feature.scenarios, scenario => {
         return scenario.steps.length
       })
     })
@@ -40,20 +40,24 @@ export default class ProgressBarFormatter extends Formatter {
     }
     if (_.includes(statusToReport, stepResult.status)) {
       this.issueCount += 1
-      this.progressBar.interrupt(formatIssue({
-        colorFns: this.colorFns,
-        cwd: this.cwd,
-        number: this.issueCount,
-        snippetBuilder: this.snippetBuilder,
-        stepResult
-      }))
+      this.progressBar.interrupt(
+        formatIssue({
+          colorFns: this.colorFns,
+          cwd: this.cwd,
+          number: this.issueCount,
+          snippetBuilder: this.snippetBuilder,
+          stepResult
+        })
+      )
     }
   }
 
   handleFeaturesResult(featuresResult) {
-    this.log(formatSummary({
-      colorFns: this.colorFns,
-      featuresResult
-    }))
+    this.log(
+      formatSummary({
+        colorFns: this.colorFns,
+        featuresResult
+      })
+    )
   }
 }

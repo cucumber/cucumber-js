@@ -1,4 +1,4 @@
-import {promisify} from 'bluebird'
+import { promisify } from 'bluebird'
 import ConfigurationBuilder from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
@@ -8,7 +8,7 @@ const outputFile = promisify(fsExtra.outputFile)
 
 describe('Configuration', function() {
   beforeEach(async function() {
-    this.tmpDir = await promisify(tmp.dir)({unsafeCleanup: true})
+    this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
     await promisify(fsExtra.mkdirp)(path.join(this.tmpDir, 'features'))
     this.argv = ['path/to/node', 'path/to/cucumber.js']
     this.configurationOptions = {
@@ -29,7 +29,7 @@ describe('Configuration', function() {
           colorsEnabled: true,
           cwd: this.tmpDir
         },
-        formats: [{outputTo: '', type: 'pretty'}],
+        formats: [{ outputTo: '', type: 'pretty' }],
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         profiles: [],
@@ -63,9 +63,15 @@ describe('Configuration', function() {
     })
 
     it('returns the appropriate feature and support code paths', async function() {
-      const {featurePaths, scenarioFilterOptions, supportCodePaths} = this.result
+      const {
+        featurePaths,
+        scenarioFilterOptions,
+        supportCodePaths
+      } = this.result
       expect(featurePaths).to.eql([this.featurePath])
-      expect(scenarioFilterOptions.featurePaths).to.eql([this.relativeFeaturePath])
+      expect(scenarioFilterOptions.featurePaths).to.eql([
+        this.relativeFeaturePath
+      ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
     })
   })
@@ -82,9 +88,15 @@ describe('Configuration', function() {
     })
 
     it('returns the appropriate feature and support code paths', async function() {
-      const {featurePaths, scenarioFilterOptions, supportCodePaths} = this.result
+      const {
+        featurePaths,
+        scenarioFilterOptions,
+        supportCodePaths
+      } = this.result
       expect(featurePaths).to.eql([this.featurePath])
-      expect(scenarioFilterOptions.featurePaths).to.eql([this.relativeFeaturePath])
+      expect(scenarioFilterOptions.featurePaths).to.eql([
+        this.relativeFeaturePath
+      ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
     })
   })

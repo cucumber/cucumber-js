@@ -14,21 +14,33 @@ export default class PrettyFormatter extends SummaryFormatter {
   }
 
   formatDataTable(dataTable) {
-    const rows = dataTable.raw().map((row) => {
-      return row.map((cell) => {
+    const rows = dataTable.raw().map(row => {
+      return row.map(cell => {
         return cell.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
       })
     })
     const table = new Table({
       chars: {
-        'bottom': '', 'bottom-left': '', 'bottom-mid': '', 'bottom-right': '',
-        'left': '|', 'left-mid': '',
-        'mid': '', 'mid-mid': '', 'middle': '|',
-        'right': '|', 'right-mid': '',
-        'top': '' , 'top-left': '', 'top-mid': '', 'top-right': ''
+        bottom: '',
+        'bottom-left': '',
+        'bottom-mid': '',
+        'bottom-right': '',
+        left: '|',
+        'left-mid': '',
+        mid: '',
+        'mid-mid': '',
+        middle: '|',
+        right: '|',
+        'right-mid': '',
+        top: '',
+        'top-left': '',
+        'top-mid': '',
+        'top-right': ''
       },
       style: {
-        border: [], 'padding-left': 1, 'padding-right': 1
+        border: [],
+        'padding-left': 1,
+        'padding-right': 1
       }
     })
     table.push.apply(table, rows)
@@ -43,7 +55,7 @@ export default class PrettyFormatter extends SummaryFormatter {
     if (tags.length === 0) {
       return ''
     }
-    const tagNames = tags.map((tag) => tag.name)
+    const tagNames = tags.map(tag => tag.name)
     return this.colorFns.tag(tagNames.join(' '))
   }
 
@@ -86,14 +98,14 @@ export default class PrettyFormatter extends SummaryFormatter {
   }
 
   logStepResult(stepResult) {
-    const {status, step} = stepResult
+    const { status, step } = stepResult
     const colorFn = this.colorFns[status]
 
     const symbol = PrettyFormatter.CHARACTERS[stepResult.status]
     const identifier = colorFn(symbol + ' ' + step.keyword + (step.name || ''))
     this.logIndented(identifier + '\n', 1)
 
-    step.arguments.forEach((arg) => {
+    step.arguments.forEach(arg => {
       let str
       if (arg instanceof DataTable) {
         str = this.formatDataTable(arg)

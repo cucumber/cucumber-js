@@ -162,7 +162,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag A', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagA'}]
+            this.scenario.tags = [{ name: '@tagA' }]
           })
 
           it('returns true', function() {
@@ -189,7 +189,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag A', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagA'}]
+            this.scenario.tags = [{ name: '@tagA' }]
           })
 
           it('returns false', function() {
@@ -216,7 +216,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag A and B', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagA'}, {name: '@tagB'}]
+            this.scenario.tags = [{ name: '@tagA' }, { name: '@tagB' }]
           })
 
           it('returns true', function() {
@@ -226,7 +226,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag A, but not B', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagA'}]
+            this.scenario.tags = [{ name: '@tagA' }]
           })
 
           it('returns false', function() {
@@ -236,7 +236,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag B, but not A', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagB'}]
+            this.scenario.tags = [{ name: '@tagB' }]
           })
 
           it('returns false', function() {
@@ -263,7 +263,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag A and B', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagA'}, {name: '@tagB'}]
+            this.scenario.tags = [{ name: '@tagA' }, { name: '@tagB' }]
           })
 
           it('returns true', function() {
@@ -273,7 +273,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag A, but not B', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagA'}]
+            this.scenario.tags = [{ name: '@tagA' }]
           })
 
           it('returns true', function() {
@@ -283,7 +283,7 @@ describe('ScenarioFilter', function() {
 
         describe('scenario has tag B, but not A', function() {
           beforeEach(function() {
-            this.scenario.tags = [{name: '@tagB'}]
+            this.scenario.tags = [{ name: '@tagB' }]
           })
 
           it('returns true', function() {
@@ -314,7 +314,7 @@ describe('ScenarioFilter', function() {
           })
           this.scenario.lines = [1]
           this.scenario.name = 'nameA descriptionA'
-          this.scenario.tags = [{name: '@tagA'}]
+          this.scenario.tags = [{ name: '@tagA' }]
           this.scenario.uri = this.scenarioPath
         })
 
