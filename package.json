@@ -164,7 +164,7 @@
     "connect": "^3.4.0",
     "coveralls": "^2.13.1",
     "dependency-lint": "^5.0.1",
-    "eslint": "^3.1.1",
+    "eslint": "^4.1.1",
     "eslint-config-prettier": "^2.2.0",
     "eslint-plugin-babel": "^4.0.0",
     "eslint-plugin-prettier": "^2.1.2",
@@ -175,7 +175,7 @@
     "regenerator-runtime": "^0.10.0",
     "serve-static": "^1.10.0",
     "sinon": "^2.2.0",
-    "sinon-chai": "^2.8.0",
+    "sinon-chai": "^2.11.0",
     "stream-to-string": "^1.1.0",
     "tmp": "0.0.31"
   },
