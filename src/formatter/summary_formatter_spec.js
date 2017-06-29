@@ -1,6 +1,7 @@
 import getColorFns from './get_color_fns'
 import Status from '../status'
 import SummaryFormatter from './summary_formatter'
+import figures from 'figures'
 
 describe('SummaryFormatter', function() {
   beforeEach(function() {
@@ -8,7 +9,18 @@ describe('SummaryFormatter', function() {
     const logFn = data => {
       this.output += data
     }
-    const colorFns = getColorFns(false)
+    this.scenario = {
+      line: 1,
+      name: 'name1',
+      uri: 'path/to/project/a.feature'
+    }
+    this.step = {
+      arguments: [],
+      keyword: 'keyword ',
+      line: 2,
+      name: 'name2',
+      uri: 'path/to/project/a.feature'
+    }
     this.featuresResult = {
       scenarioResults: [],
       stepResults: [],
@@ -16,7 +28,7 @@ describe('SummaryFormatter', function() {
     }
     const snippetBuilder = createMock({ build: 'snippet' })
     this.summaryFormatter = new SummaryFormatter({
-      colorFns,
+      colorFns: getColorFns(false),
       cwd: 'path/to/project',
       log: logFn,
       snippetBuilder
@@ -24,35 +36,27 @@ describe('SummaryFormatter', function() {
   })
 
   describe('issues', function() {
-    beforeEach(function() {
-      const scenario = {
-        line: 1,
-        name: 'name1',
-        uri: 'path/to/project/a.feature'
-      }
-      this.step = {
-        keyword: 'keyword ',
-        line: 2,
-        name: 'name2',
-        scenario,
-        uri: 'path/to/project/a.feature'
-      }
-    })
+    beforeEach(function() {})
 
-    describe('with a failing step', function() {
+    describe('with a failing scenario', function() {
       beforeEach(function() {
-        const stepDefinition = {
-          line: 3,
-          uri: 'path/to/project/steps.js'
-        }
-        const stepResult = {
-          duration: 0,
-          failureException: 'error',
+        const scenarioResult = {
           status: Status.FAILED,
-          step: this.step,
-          stepDefinition
+          scenario: this.scenario,
+          stepResults: [
+            {
+              duration: 0,
+              failureException: 'error',
+              status: Status.FAILED,
+              step: this.step,
+              stepDefinition: {
+                line: 3,
+                uri: 'path/to/project/steps.js'
+              }
+            }
+          ]
         }
-        this.featuresResult.stepResults = [stepResult]
+        this.featuresResult.scenarioResults = [scenarioResult]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
 
@@ -60,11 +64,11 @@ describe('SummaryFormatter', function() {
         expect(this.output).to.contain(
           'Failures:\n' +
             '\n' +
-            '1) Scenario: name1 - a.feature:1\n' +
-            '   Step: keyword name2 - a.feature:2\n' +
-            '   Step Definition: steps.js:3\n' +
-            '   Message:\n' +
-            '     error'
+            '1) Scenario: name1 # a.feature:1\n' +
+            '   ' +
+            figures.cross +
+            ' keyword name2 # steps.js:3\n' +
+            '       error'
         )
       })
     })
@@ -81,13 +85,19 @@ describe('SummaryFormatter', function() {
           pattern: 'longer pattern2',
           uri: 'path/to/project/steps.js'
         }
-        const stepResult = {
-          ambiguousStepDefinitions: [stepDefinition1, stepDefinition2],
-          duration: 0,
-          status: Status.AMBIGUOUS,
-          step: this.step
+        const scenarioResult = {
+          status: Status.FAILED,
+          scenario: this.scenario,
+          stepResults: [
+            {
+              ambiguousStepDefinitions: [stepDefinition1, stepDefinition2],
+              duration: 0,
+              status: Status.AMBIGUOUS,
+              step: this.step
+            }
+          ]
         }
-        this.featuresResult.stepResults = [stepResult]
+        this.featuresResult.scenarioResults = [scenarioResult]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
 
@@ -95,24 +105,31 @@ describe('SummaryFormatter', function() {
         expect(this.output).to.contain(
           'Failures:\n' +
             '\n' +
-            '1) Scenario: name1 - a.feature:1\n' +
-            '   Step: keyword name2 - a.feature:2\n' +
-            '   Message:\n' +
-            '     Multiple step definitions match:\n' +
-            '       pattern1        - steps.js:3\n' +
-            '       longer pattern2 - steps.js:4'
+            '1) Scenario: name1 # a.feature:1\n' +
+            '   ' +
+            figures.cross +
+            ' keyword name2\n' +
+            '       Multiple step definitions match:\n' +
+            '         pattern1        - steps.js:3\n' +
+            '         longer pattern2 - steps.js:4'
         )
       })
     })
 
     describe('with an undefined step', function() {
       beforeEach(function() {
-        const stepResult = {
-          duration: 0,
+        const scenarioResult = {
           status: Status.UNDEFINED,
-          step: this.step
+          scenario: this.scenario,
+          stepResults: [
+            {
+              duration: 0,
+              status: Status.UNDEFINED,
+              step: this.step
+            }
+          ]
         }
-        this.featuresResult.stepResults = [stepResult]
+        this.featuresResult.scenarioResults = [scenarioResult]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
 
@@ -120,24 +137,30 @@ describe('SummaryFormatter', function() {
         expect(this.output).to.contain(
           'Warnings:\n' +
             '\n' +
-            '1) Scenario: name1 - a.feature:1\n' +
-            '   Step: keyword name2 - a.feature:2\n' +
-            '   Message:\n' +
-            '     Undefined. Implement with the following snippet:\n' +
+            '1) Scenario: name1 # a.feature:1\n' +
+            '   ? keyword name2\n' +
+            '       Undefined. Implement with the following snippet:\n' +
             '\n' +
-            '       snippet'
+            '         snippet\n' +
+            '\n'
         )
       })
     })
 
     describe('with a pending step', function() {
       beforeEach(function() {
-        const stepResult = {
-          duration: 0,
+        const scenarioResult = {
           status: Status.PENDING,
-          step: this.step
+          scenario: this.scenario,
+          stepResults: [
+            {
+              duration: 0,
+              status: Status.PENDING,
+              step: this.step
+            }
+          ]
         }
-        this.featuresResult.stepResults = [stepResult]
+        this.featuresResult.scenarioResults = [scenarioResult]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
 
@@ -145,10 +168,9 @@ describe('SummaryFormatter', function() {
         expect(this.output).to.contain(
           'Warnings:\n' +
             '\n' +
-            '1) Scenario: name1 - a.feature:1\n' +
-            '   Step: keyword name2 - a.feature:2\n' +
-            '   Message:\n' +
-            '     Pending'
+            '1) Scenario: name1 # a.feature:1\n' +
+            '   ? keyword name2\n' +
+            '       Pending'
         )
       })
     })
@@ -169,7 +191,10 @@ describe('SummaryFormatter', function() {
 
     describe('with one passing scenario', function() {
       beforeEach(function() {
-        const scenarioResult = { status: Status.PASSED }
+        const scenarioResult = {
+          scenario: this.scenario,
+          status: Status.PASSED
+        }
         this.featuresResult.scenarioResults = [scenarioResult]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })
@@ -184,12 +209,12 @@ describe('SummaryFormatter', function() {
     describe('with one of every kind of scenario', function() {
       beforeEach(function() {
         this.featuresResult.scenarioResults = [
-          { status: Status.AMBIGUOUS },
-          { status: Status.FAILED },
-          { status: Status.PASSED },
-          { status: Status.PENDING },
-          { status: Status.SKIPPED },
-          { status: Status.UNDEFINED }
+          { scenario: this.scenario, status: Status.AMBIGUOUS },
+          { scenario: this.scenario, status: Status.FAILED },
+          { scenario: this.scenario, status: Status.PASSED },
+          { scenario: this.scenario, status: Status.PENDING },
+          { scenario: this.scenario, status: Status.SKIPPED },
+          { scenario: this.scenario, status: Status.UNDEFINED }
         ]
         this.summaryFormatter.handleFeaturesResult(this.featuresResult)
       })

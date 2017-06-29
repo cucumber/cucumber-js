@@ -94,7 +94,7 @@ export default class ConfigurationBuilder {
   }
 
   getFormats() {
-    const mapping = { '': 'pretty' }
+    const mapping = { '': 'progress' }
     this.options.format.forEach(function(format) {
       const parts = format.split(':')
       const type = parts[0]

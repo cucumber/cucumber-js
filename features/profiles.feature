@@ -21,7 +21,7 @@ Feature: default command line arguments
     And a file named "cucumber.js" with:
       """
       var common = '--compiler js:babel-register ';
-      
+
       module.exports = {
         'default': common + '--format summary',
         dry: common + '--dry-run',
@@ -66,14 +66,9 @@ Feature: default command line arguments
       """
 
   Scenario: overriding the default profile
-    When I run cucumber-js with `-f pretty`
+    When I run cucumber-js with `-f summary`
     Then it outputs the text:
       """
-      Feature: some feature
-
-        Scenario: some scenario
-        ✔ Given a passing step
-
       1 scenario (1 passed)
       1 step (1 passed)
       <duration-stat>
