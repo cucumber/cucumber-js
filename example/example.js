@@ -1,3 +1,5 @@
+/* global $, ace, ansiHTML, Cucumber */
+
 let featureEditor, stepDefinitionsEditor, $output
 
 function runFeature() {

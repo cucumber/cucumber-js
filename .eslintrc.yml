@@ -32,8 +32,7 @@ rules:
   no-var: error
   object-shorthand: [error, always]
   prettier/prettier:
-    - 2
-    -
-      trailingComma: none
+    - error
+    - trailingComma: none
       singleQuote: true
       semi: false

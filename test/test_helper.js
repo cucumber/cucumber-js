@@ -1,18 +1,18 @@
-import _ from "lodash";
-import "regenerator-runtime/runtime";
-import chai from "chai";
-import sinon from "sinon";
-import sinonChai from "sinon-chai";
+import _ from 'lodash'
+import 'regenerator-runtime/runtime'
+import chai from 'chai'
+import sinon from 'sinon'
+import sinonChai from 'sinon-chai'
 
-chai.use(sinonChai);
+chai.use(sinonChai)
 
 function createMock(input) {
   if (_.isArray(input)) {
-    input = _.zipObject(input);
+    input = _.zipObject(input)
   }
   return _.mapValues(input, value => {
-    return sinon.stub().returns(value);
-  });
+    return sinon.stub().returns(value)
+  })
 }
 
 _.assign(global, {
@@ -20,4 +20,4 @@ _.assign(global, {
   createMock,
   expect: chai.expect,
   sinon
-});
+})
