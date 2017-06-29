@@ -4,7 +4,9 @@ import StepDefinition from './step_definition'
 export default class HookDefinition extends StepDefinition {
   constructor(data) {
     super(data)
-    this.scenarioFilter = new ScenarioFilter({tagExpression: this.options.tags})
+    this.scenarioFilter = new ScenarioFilter({
+      tagExpression: this.options.tags
+    })
   }
 
   appliesToScenario(scenario) {
@@ -15,11 +17,11 @@ export default class HookDefinition extends StepDefinition {
     return this.buildInvalidCodeLengthMessage('0 or 1', '2')
   }
 
-  getInvocationParameters({scenarioResult}) {
+  getInvocationParameters({ scenarioResult }) {
     return [scenarioResult]
   }
 
-  getValidCodeLengths () {
+  getValidCodeLengths() {
     return [0, 1, 2]
   }
 }

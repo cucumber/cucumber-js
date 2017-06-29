@@ -8,7 +8,9 @@ export default class StepArguments {
     } else if (gherkinData.hasOwnProperty('rows')) {
       return new DataTable(gherkinData)
     } else {
-      throw new Error('Unknown step argument type: ' + JSON.stringify(gherkinData))
+      throw new Error(
+        'Unknown step argument type: ' + JSON.stringify(gherkinData)
+      )
     }
   }
 }

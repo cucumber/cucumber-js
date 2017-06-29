@@ -4,7 +4,7 @@ import StackTraceFilter from './stack_trace_filter'
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, strict}
-  constructor({features, listeners, options, supportCodeLibrary}) {
+  constructor({ features, listeners, options, supportCodeLibrary }) {
     this.features = features || []
     this.listeners = listeners || []
     this.options = options || {}

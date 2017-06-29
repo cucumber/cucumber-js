@@ -1,13 +1,15 @@
-var path = require('path');
-var http = require('http');
-var connect = require('connect');
-var serveStatic = require('serve-static');
+let path = require('path')
+let http = require('http')
+let connect = require('connect')
+let serveStatic = require('serve-static')
 
-var port = process.env.PORT || 9797;
-var app = connect();
-app.use(serveStatic(path.join(__dirname, '..', 'example')));
-app.use(serveStatic(path.join(__dirname, '..', 'node_modules')));
-app.use(serveStatic(path.join(__dirname, '..', 'dist')));
+let port = process.env.PORT || 9797
+let app = connect()
+app.use(serveStatic(path.join(__dirname, '..', 'example')))
+app.use(serveStatic(path.join(__dirname, '..', 'node_modules')))
+app.use(serveStatic(path.join(__dirname, '..', 'dist')))
 
-http.createServer(app).listen(port);
-console.log('Accepting connections on port ' + port + '...');
+http.createServer(app).listen(port)
+/* eslint-disable no-console */
+console.log('Accepting connections on port ' + port + '...')
+/* eslint-enable no-console */

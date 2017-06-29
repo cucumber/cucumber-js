@@ -1,14 +1,14 @@
 /* eslint-disable babel/new-cap */
 
-import {defineSupportCode} from '../../'
-import {expect} from 'chai'
-import {normalizeText} from '../support/helpers'
-import {promisify} from 'bluebird'
+import { defineSupportCode } from '../../'
+import { expect } from 'chai'
+import { normalizeText } from '../support/helpers'
+import { promisify } from 'bluebird'
 import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 
-defineSupportCode(function({Given, Then}) {
+defineSupportCode(function({ Given, Then }) {
   Given(/^a file named "(.*)" with:$/, function(filePath, fileContent) {
     const absoluteFilePath = path.join(this.tmpDir, filePath)
     return promisify(fsExtra.outputFile)(absoluteFilePath, fileContent)

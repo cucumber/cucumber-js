@@ -1,7 +1,7 @@
 export function expectToHearEvents(listener, expectedEvents) {
   let previousStub = null
   let callNumberMapping = {}
-  expectedEvents.forEach(function([expectedName, expectedData], index) {
+  expectedEvents.forEach(function([expectedName, expectedData]) {
     const fnName = 'handle' + expectedName
     if (!callNumberMapping[fnName]) {
       callNumberMapping[fnName] = 0

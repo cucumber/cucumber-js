@@ -1,11 +1,7 @@
 import _ from 'lodash'
 
 export function getScenarioNames(features) {
-  return _.chain(features)
-    .map('elements')
-    .flatten()
-    .map('name')
-    .value()
+  return _.chain(features).map('elements').flatten().map('name').value()
 }
 
 export function getSteps(features) {
@@ -41,9 +37,9 @@ export function findStep(features, scenarioPredicate, stepPredicate) {
 }
 
 export function neutraliseVariableValues(report) {
-  report.forEach(function (item) {
-    (item.elements || []).forEach((element) => {
-      (element.steps || []).forEach((step) => {
+  report.forEach(function(item) {
+    ;(item.elements || []).forEach(element => {
+      ;(element.steps || []).forEach(step => {
         if ('result' in step) {
           if ('error_message' in step.result) {
             step.result.error_message = '<error-message>'

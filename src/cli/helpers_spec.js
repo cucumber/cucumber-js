@@ -1,12 +1,12 @@
-import {promisify} from 'bluebird'
+import { promisify } from 'bluebird'
 import fs from 'mz/fs'
-import {getFeatures} from './helpers'
+import { getFeatures } from './helpers'
 import tmp from 'tmp'
 
 describe('helpers', function() {
   describe('getFeatures', function() {
     beforeEach(async function() {
-      this.tmpDir = await promisify(tmp.dir)({unsafeCleanup: true})
+      this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
     })
 
     describe('empty feature', function() {
@@ -15,7 +15,7 @@ describe('helpers', function() {
         await fs.writeFile(tmpFile, '')
         this.result = await getFeatures({
           featurePaths: [tmpFile],
-          scenarioFilter: createMock({matches: true})
+          scenarioFilter: createMock({ matches: true })
         })
       })
 
@@ -30,7 +30,7 @@ describe('helpers', function() {
         await fs.writeFile(tmpFile, 'Feature: a\nScenario: b\nGiven a step')
         this.result = await getFeatures({
           featurePaths: [tmpFile],
-          scenarioFilter: createMock({matches: false})
+          scenarioFilter: createMock({ matches: false })
         })
       })
 
@@ -45,7 +45,7 @@ describe('helpers', function() {
         await fs.writeFile(tmpFile, 'Feature: a\nScenario: b\nGiven a step')
         this.result = await getFeatures({
           featurePaths: [tmpFile],
-          scenarioFilter: createMock({matches: true})
+          scenarioFilter: createMock({ matches: true })
         })
       })
 

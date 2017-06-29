@@ -1,4 +1,4 @@
-import {expectToHearEvents} from '../../test/listener_helpers'
+import { expectToHearEvents } from '../../test/listener_helpers'
 import EventBroadcaster from './event_broadcaster'
 import HookDefinition from '../models/hook_definition'
 import Promise from 'bluebird'
@@ -6,8 +6,8 @@ import ScenarioRunner from './scenario_runner'
 import Status from '../status'
 import StepRunner from './step_runner'
 
-describe('ScenarioRunner', function () {
-  beforeEach(function () {
+describe('ScenarioRunner', function() {
+  beforeEach(function() {
     this.listener = createMock([
       'handleBeforeScenario',
       'handleBeforeStep',
@@ -16,7 +16,9 @@ describe('ScenarioRunner', function () {
       'handleScenarioResult',
       'handleAfterScenario'
     ])
-    this.eventBroadcaster = new EventBroadcaster({listeners: [this.listener]})
+    this.eventBroadcaster = new EventBroadcaster({
+      listeners: [this.listener]
+    })
     this.scenario = createMock({
       getFeature: null,
       getSteps: []
@@ -43,7 +45,7 @@ describe('ScenarioRunner', function () {
     StepRunner.run.restore()
   })
 
-  describe('run()', function () {
+  describe('run()', function() {
     describe('with no steps or hooks', function() {
       beforeEach(async function() {
         this.scenario.steps = []
@@ -71,7 +73,7 @@ describe('ScenarioRunner', function () {
           status: Status.PASSED,
           step: this.step
         }
-        const stepDefinition = createMock({matchesStepName: true})
+        const stepDefinition = createMock({ matchesStepName: true })
         StepRunner.run.returns(Promise.resolve(this.stepResult))
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
@@ -102,7 +104,7 @@ describe('ScenarioRunner', function () {
           status: Status.FAILED,
           step: this.step
         }
-        const stepDefinition = createMock({matchesStepName: true})
+        const stepDefinition = createMock({ matchesStepName: true })
         StepRunner.run.returns(Promise.resolve(this.stepResult))
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
@@ -128,8 +130,11 @@ describe('ScenarioRunner', function () {
     describe('with an ambiguous step', function() {
       beforeEach(async function() {
         this.step = {}
-        const stepDefinition = createMock({matchesStepName: true})
-        this.supportCodeLibrary.stepDefinitions = [stepDefinition, stepDefinition]
+        const stepDefinition = createMock({ matchesStepName: true })
+        this.supportCodeLibrary.stepDefinitions = [
+          stepDefinition,
+          stepDefinition
+        ]
         this.scenario.steps = [this.step]
         this.scenarioResult = await this.scenarioRunner.run()
       })
@@ -138,9 +143,12 @@ describe('ScenarioRunner', function () {
         expectToHearEvents(this.listener, [
           ['BeforeScenario', this.scenario],
           ['BeforeStep', this.step],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.AMBIGUOUS)
-          }],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.AMBIGUOUS)
+            }
+          ],
           ['AfterStep', this.step],
           ['ScenarioResult', this.scenarioResult],
           ['AfterScenario', this.scenario]
@@ -163,9 +171,12 @@ describe('ScenarioRunner', function () {
         expectToHearEvents(this.listener, [
           ['BeforeScenario', this.scenario],
           ['BeforeStep', this.step],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.UNDEFINED)
-          }],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.UNDEFINED)
+            }
+          ],
           ['AfterStep', this.step],
           ['ScenarioResult', this.scenarioResult],
           ['AfterScenario', this.scenario]
@@ -181,7 +192,7 @@ describe('ScenarioRunner', function () {
       beforeEach(async function() {
         this.options.dryRun = true
         this.step = {}
-        const stepDefinition = createMock({matchesStepName: true})
+        const stepDefinition = createMock({ matchesStepName: true })
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
         this.scenarioResult = await this.scenarioRunner.run()
@@ -191,9 +202,12 @@ describe('ScenarioRunner', function () {
         expectToHearEvents(this.listener, [
           ['BeforeScenario', this.scenario],
           ['BeforeStep', this.step],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.SKIPPED)
-          }],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.SKIPPED)
+            }
+          ],
           ['AfterStep', this.step],
           ['ScenarioResult', this.scenarioResult],
           ['AfterScenario', this.scenario]
@@ -209,11 +223,13 @@ describe('ScenarioRunner', function () {
       beforeEach(async function() {
         this.options.dryRun = true
         const hookDefinition = new HookDefinition({
-          code() { throw new Error('error') },
+          code() {
+            throw new Error('error')
+          },
           options: {}
         })
         this.step = {}
-        const stepDefinition = createMock({matchesStepName: true})
+        const stepDefinition = createMock({ matchesStepName: true })
         this.supportCodeLibrary.beforeHookDefinitions = [hookDefinition]
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
@@ -223,19 +239,31 @@ describe('ScenarioRunner', function () {
       it('broadcasts the expected events', function() {
         expectToHearEvents(this.listener, [
           ['BeforeScenario', this.scenario],
-          ['BeforeStep', function(step) {
-            expect(step.keyword).to.eql('Before')
-          }],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.SKIPPED)
-          }],
-          ['AfterStep', function(step) {
-            expect(step.keyword).to.eql('Before')
-          }],
+          [
+            'BeforeStep',
+            function(step) {
+              expect(step.keyword).to.eql('Before')
+            }
+          ],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.SKIPPED)
+            }
+          ],
+          [
+            'AfterStep',
+            function(step) {
+              expect(step.keyword).to.eql('Before')
+            }
+          ],
           ['BeforeStep', this.step],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.SKIPPED)
-          }],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.SKIPPED)
+            }
+          ],
           ['AfterStep', this.step],
           ['ScenarioResult', this.scenarioResult],
           ['AfterScenario', this.scenario]
@@ -251,11 +279,13 @@ describe('ScenarioRunner', function () {
       beforeEach(async function() {
         this.options.dryRun = true
         const hookDefinition = new HookDefinition({
-          code() { throw new Error('error') },
+          code() {
+            throw new Error('error')
+          },
           options: {}
         })
         this.step = {}
-        const stepDefinition = createMock({matchesStepName: true})
+        const stepDefinition = createMock({ matchesStepName: true })
         this.supportCodeLibrary.afterHookDefinitions = [hookDefinition]
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
@@ -266,19 +296,31 @@ describe('ScenarioRunner', function () {
         expectToHearEvents(this.listener, [
           ['BeforeScenario', this.scenario],
           ['BeforeStep', this.step],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.SKIPPED)
-          }],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.SKIPPED)
+            }
+          ],
           ['AfterStep', this.step],
-          ['BeforeStep', function(step) {
-            expect(step.keyword).to.eql('After')
-          }],
-          ['StepResult', function(stepResult) {
-            expect(stepResult.status).to.eql(Status.SKIPPED)
-          }],
-          ['AfterStep', function(step) {
-            expect(step.keyword).to.eql('After')
-          }],
+          [
+            'BeforeStep',
+            function(step) {
+              expect(step.keyword).to.eql('After')
+            }
+          ],
+          [
+            'StepResult',
+            function(stepResult) {
+              expect(stepResult.status).to.eql(Status.SKIPPED)
+            }
+          ],
+          [
+            'AfterStep',
+            function(step) {
+              expect(step.keyword).to.eql('After')
+            }
+          ],
           ['ScenarioResult', this.scenarioResult],
           ['AfterScenario', this.scenario]
         ])

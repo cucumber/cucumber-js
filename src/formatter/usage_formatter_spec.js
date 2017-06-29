@@ -1,10 +1,10 @@
 import UsageFormatter from './usage_formatter'
 
-describe('UsageFormatter', function () {
+describe('UsageFormatter', function() {
   describe('handleFeaturesResult', function() {
     beforeEach(function() {
       this.output = ''
-      const logFn = (data) => {
+      const logFn = data => {
         this.output += data
       }
       this.featuresResult = {
@@ -27,7 +27,7 @@ describe('UsageFormatter', function () {
         this.usageFormatter.handleFeaturesResult(this.featuresResult)
       })
 
-      it('outputs "No step definitions"', function () {
+      it('outputs "No step definitions"', function() {
         expect(this.output).to.eql('No step definitions')
       })
     })
@@ -47,13 +47,13 @@ describe('UsageFormatter', function () {
           this.usageFormatter.handleFeaturesResult(this.featuresResult)
         })
 
-        it('outputs the step definition as unused', function () {
+        it('outputs the step definition as unused', function() {
           expect(this.output).to.eql(
             '┌────────────────┬──────────┬────────────┐\n' +
-            '│ Pattern / Text │ Duration │ Location   │\n' +
-            '├────────────────┼──────────┼────────────┤\n' +
-            '│ /^abc?$/       │ UNUSED   │ steps.js:1 │\n' +
-            '└────────────────┴──────────┴────────────┘\n'
+              '│ Pattern / Text │ Duration │ Location   │\n' +
+              '├────────────────┼──────────┼────────────┤\n' +
+              '│ /^abc?$/       │ UNUSED   │ steps.js:1 │\n' +
+              '└────────────────┴──────────┴────────────┘\n'
           )
         })
       })
@@ -86,15 +86,15 @@ describe('UsageFormatter', function () {
             this.usageFormatter.handleFeaturesResult(this.featuresResult)
           })
 
-          it('outputs the step definition without durations', function () {
+          it('outputs the step definition without durations', function() {
             expect(this.output).to.eql(
               '┌────────────────┬──────────┬─────────────┐\n' +
-              '│ Pattern / Text │ Duration │ Location    │\n' +
-              '├────────────────┼──────────┼─────────────┤\n' +
-              '│ /^abc?$/       │ -        │ steps.js:1  │\n' +
-              '│   step-name1   │ -        │ a.feature:1 │\n' +
-              '│   step-name2   │ -        │ a.feature:2 │\n' +
-              '└────────────────┴──────────┴─────────────┘\n'
+                '│ Pattern / Text │ Duration │ Location    │\n' +
+                '├────────────────┼──────────┼─────────────┤\n' +
+                '│ /^abc?$/       │ -        │ steps.js:1  │\n' +
+                '│   step-name1   │ -        │ a.feature:1 │\n' +
+                '│   step-name2   │ -        │ a.feature:2 │\n' +
+                '└────────────────┴──────────┴─────────────┘\n'
             )
           })
         })
@@ -106,15 +106,15 @@ describe('UsageFormatter', function () {
             this.usageFormatter.handleFeaturesResult(this.featuresResult)
           })
 
-          it('outputs the step definition with durations in desending order', function () {
+          it('outputs the step definition with durations in desending order', function() {
             expect(this.output).to.eql(
               '┌────────────────┬──────────┬─────────────┐\n' +
-              '│ Pattern / Text │ Duration │ Location    │\n' +
-              '├────────────────┼──────────┼─────────────┤\n' +
-              '│ /^abc?$/       │ 0.5ms    │ steps.js:1  │\n' +
-              '│   step-name2   │ 1ms      │ a.feature:2 │\n' +
-              '│   step-name1   │ 0ms      │ a.feature:1 │\n' +
-              '└────────────────┴──────────┴─────────────┘\n'
+                '│ Pattern / Text │ Duration │ Location    │\n' +
+                '├────────────────┼──────────┼─────────────┤\n' +
+                '│ /^abc?$/       │ 0.5ms    │ steps.js:1  │\n' +
+                '│   step-name2   │ 1ms      │ a.feature:2 │\n' +
+                '│   step-name1   │ 0ms      │ a.feature:1 │\n' +
+                '└────────────────┴──────────┴─────────────┘\n'
             )
           })
         })
@@ -170,16 +170,16 @@ describe('UsageFormatter', function () {
       it('outputs the step definitions ordered by mean duration descending with unused steps at the end', function() {
         expect(this.output).to.eql(
           '┌────────────────┬──────────┬─────────────┐\n' +
-          '│ Pattern / Text │ Duration │ Location    │\n' +
-          '├────────────────┼──────────┼─────────────┤\n' +
-          '│ def            │ 2ms      │ steps.js:2  │\n' +
-          '│   step-name2   │ 2ms      │ a.feature:2 │\n' +
-          '├────────────────┼──────────┼─────────────┤\n' +
-          '│ abc            │ 1ms      │ steps.js:1  │\n' +
-          '│   step-name1   │ 1ms      │ a.feature:1 │\n' +
-          '├────────────────┼──────────┼─────────────┤\n' +
-          '│ ghi            │ UNUSED   │ steps.js:3  │\n' +
-          '└────────────────┴──────────┴─────────────┘\n'
+            '│ Pattern / Text │ Duration │ Location    │\n' +
+            '├────────────────┼──────────┼─────────────┤\n' +
+            '│ def            │ 2ms      │ steps.js:2  │\n' +
+            '│   step-name2   │ 2ms      │ a.feature:2 │\n' +
+            '├────────────────┼──────────┼─────────────┤\n' +
+            '│ abc            │ 1ms      │ steps.js:1  │\n' +
+            '│   step-name1   │ 1ms      │ a.feature:1 │\n' +
+            '├────────────────┼──────────┼─────────────┤\n' +
+            '│ ghi            │ UNUSED   │ steps.js:3  │\n' +
+            '└────────────────┴──────────┴─────────────┘\n'
         )
       })
     })

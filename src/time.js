@@ -8,7 +8,7 @@ const methods = {
   clearTimeout: clearTimeout.bind(global),
   Date,
   endTiming() {
-    return (getTimestamp() - previousTimestamp)
+    return getTimestamp() - previousTimestamp
   },
   setInterval: setInterval.bind(global),
   setTimeout: setTimeout.bind(global)
