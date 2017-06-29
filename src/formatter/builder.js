@@ -3,7 +3,6 @@ import getColorFns from './get_color_fns'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
 import JsonFormatter from './json_formatter'
 import path from 'path'
-import PrettyFormatter from './pretty_formatter'
 import ProgressBarFormatter from './progress_bar_formatter'
 import ProgressFormatter from './progress_formatter'
 import RerunFormatter from './rerun_formatter'
@@ -26,7 +25,6 @@ export default class FormatterBuilder {
   static getConstructorByType(type, options) {
     switch(type) {
       case 'json': return JsonFormatter
-      case 'pretty': return PrettyFormatter
       case 'progress': return ProgressFormatter
       case 'progress-bar': return ProgressBarFormatter
       case 'rerun': return RerunFormatter
