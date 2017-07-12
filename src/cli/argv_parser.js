@@ -40,6 +40,7 @@ export default class ArgvParser {
     program
       .usage('[options] [<DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
+      .allowUnknownOption()
       .option('-b, --backtrace', 'show full backtrace for errors')
       .option(
         '--compiler <EXTENSION:MODULE>',
