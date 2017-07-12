@@ -60,8 +60,9 @@ class World {
     }
     this.lastRun = {
       error: result.error,
+      errorOutput: result.stderr,
       jsonOutput,
-      output: colors.strip(result.stdout) + result.stderr
+      output: colors.strip(result.stdout)
     }
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')

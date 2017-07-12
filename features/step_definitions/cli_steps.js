@@ -45,12 +45,18 @@ defineSupportCode(function({ When, Then }) {
     expect(actualOutput).to.include(expectedOutput)
   })
 
-  Then(/^the output contains the text snippets:$/, function(table) {
-    const actualOutput = normalizeText(this.lastRun.output)
+  Then(/^the error output contains the text snippets:$/, function(table) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
     table.rows().forEach(row => {
       const expectedOutput = normalizeText(row[0])
       expect(actualOutput).to.include(expectedOutput)
     })
+  })
+
+  Then(/^the error output contains the text:$/, function(text) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
+    const expectedOutput = normalizeText(text)
+    expect(actualOutput).to.include(expectedOutput)
   })
 
   Then(/^I see the version of Cucumber$/, function() {

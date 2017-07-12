@@ -15,11 +15,11 @@ Feature: World Parameters
   Scenario: Invalid JSON
     When I run cucumber.js with `--world-parameters '{"a":}'`
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       --world-parameters passed invalid JSON: Unexpected token }
       """
-    And the output contains the text:
+    And the error output contains the text:
       """
       {"a":}
       """
@@ -28,7 +28,7 @@ Feature: World Parameters
   Scenario: Non-object
     When I run cucumber.js with `--world-parameters '[1,2]'`
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       --world-parameters must be passed JSON of an object: [1,2]
       """

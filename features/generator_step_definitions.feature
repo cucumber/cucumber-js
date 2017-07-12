@@ -35,7 +35,7 @@ Feature: Generator Step Definitions
   Scenario: without generator function runner
     When I run cucumber-js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       The following hook/step definitions use generator functions:
 
