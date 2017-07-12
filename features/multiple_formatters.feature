@@ -36,7 +36,7 @@ Feature: Multiple Formatters
   Scenario: Invalid path
     When I run cucumber.js with `-f progress -f pretty:invalid/pretty.txt`
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       ENOENT
       """

@@ -149,7 +149,7 @@ Feature: Parameter types
       })
       """
     When I run cucumber.js with `-f progress`
-    Then the output contains the text:
+    Then the error output contains the text:
       """
       There is already a parameter with regexp "[^"]+"
       """
