@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import util from 'util'
 
 export function getScenarioNames(features) {
   return _.chain(features).map('elements').flatten().map('name').value()
@@ -13,11 +14,11 @@ export function getSteps(features) {
     .value()
 }
 
-export function findScenario(features, predicate) {
+export function findScenario({ features, scenarioPredicate }) {
   const scenario = _.chain(features)
     .map('elements')
     .flatten()
-    .find(predicate)
+    .find(scenarioPredicate)
     .value()
   if (scenario) {
     return scenario
@@ -26,13 +27,27 @@ export function findScenario(features, predicate) {
   }
 }
 
-export function findStep(features, scenarioPredicate, stepPredicate) {
-  const scenario = findScenario(features, scenarioPredicate)
-  const step = _.find(scenario.steps, stepPredicate)
+export function findStep({ features, stepPredicate, scenarioPredicate }) {
+  let steps
+  if (scenarioPredicate) {
+    steps = findScenario({ features, scenarioPredicate }).steps
+  } else {
+    steps = _.chain(features)
+      .map('elements')
+      .flatten()
+      .map('steps')
+      .flatten()
+      .value()
+  }
+  const step = _.find(steps, stepPredicate)
   if (step) {
     return step
   } else {
-    throw new Error('Could not find step matching predicate')
+    throw new Error(
+      `Could not find step matching predicate: ${util.inspect(features, {
+        depth: null
+      })}`
+    )
   }
 }
 
