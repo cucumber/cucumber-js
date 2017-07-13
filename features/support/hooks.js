@@ -10,16 +10,16 @@ const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
-defineSupportCode(function({ After, Before }) {
-  Before('@debug', function() {
+defineSupportCode(function({ AfterEach, BeforeEach }) {
+  BeforeEach('@debug', function() {
     this.debug = true
   })
 
-  Before('@spawn', function() {
+  BeforeEach('@spawn', function() {
     this.spawn = true
   })
 
-  Before(function() {
+  BeforeEach(function() {
     const tmpObject = tmp.dirSync({ unsafeCleanup: true })
     this.tmpDir = fs.realpathSync(tmpObject.name)
 
@@ -52,7 +52,7 @@ defineSupportCode(function({ After, Before }) {
     )
   })
 
-  Before('@global-install', function() {
+  BeforeEach('@global-install', function() {
     const tmpObject = tmp.dirSync({ unsafeCleanup: true })
 
     const globalInstallNodeModulesPath = path.join(
@@ -94,7 +94,7 @@ defineSupportCode(function({ After, Before }) {
     )
   })
 
-  After(function() {
+  AfterEach(function() {
     if (this.lastRun.error && !this.verifiedLastRunError) {
       throw new Error(`Last run errored unexpectedly:\n${this.lastRun.output}`)
     }

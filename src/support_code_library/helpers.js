@@ -2,13 +2,21 @@ import util from 'util'
 import _ from 'lodash'
 import { ParameterType } from 'cucumber-expressions'
 import { formatLocation } from '../formatter/helpers'
-import HookDefinition from '../models/hook_definition'
+import ScenarioHookDefinition from '../models/scenario_hook_definition'
+import FeaturesHookDefinition from '../models/features_hook_definition'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-export function defineHook(cwd, collection) {
+
+export function defineHook(cwd, collection, name) {
+  return util.deprecate((options, code) => {
+    defineScenarioHook(cwd, collection)(options, code)
+  }, `${name} is deprecated: use ${name}Each instead`)
+}
+
+export function defineScenarioHook(cwd, collection) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -19,11 +27,30 @@ export function defineHook(cwd, collection) {
     const { line, uri } = getDefinitionLineAndUri()
     validateArguments({
       args: { code, options },
-      fnName: 'defineHook',
+      fnName: 'defineScenarioHook',
       relativeUri: formatLocation(cwd, { line, uri })
     })
-    const hookDefinition = new HookDefinition({ code, line, options, uri })
+    const hookDefinition = new ScenarioHookDefinition({ code, line, options, uri })
     collection.push(hookDefinition)
+  }
+}
+
+export function defineFeaturesHook(cwd, collection) {
+  return (options, code) => {
+    if (typeof options === 'string') {
+      options = { tags: options }
+    } else if (typeof options === 'function') {
+      code = options
+      options = {}
+    }
+    const { line, uri } = getDefinitionLineAndUri()
+    validateArguments({
+      args: { code, options },
+      fnName: 'defineFeaturesHook',
+      relativeUri: formatLocation(cwd, { line, uri })
+    })
+    const hookDefinition = new FeaturesHookDefinition({ code, line, options, uri })
+    collection.push({ code, line, options, uri })
   }
 }
 

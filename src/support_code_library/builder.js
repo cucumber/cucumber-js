@@ -6,8 +6,10 @@ import TransformLookupBuilder from './parameter_type_registry_builder'
 import * as helpers from './helpers'
 function build({ cwd, fns }) {
   const options = {
-    afterHookDefinitions: [],
-    beforeHookDefinitions: [],
+    afterFeaturesHookDefinitions: [],
+    afterScenarioHookDefinitions: [],
+    beforeFeaturesHookDefinitions: [],
+    beforeScenarioHookDefinitions: [],
     defaultTimeout: 5000,
     listeners: [],
     stepDefinitions: [],
@@ -23,8 +25,12 @@ function build({ cwd, fns }) {
     defineParameterType: helpers.defineParameterType(
       options.parameterTypeRegistry
     ),
-    After: helpers.defineHook(cwd, options.afterHookDefinitions),
-    Before: helpers.defineHook(cwd, options.beforeHookDefinitions),
+    After: helpers.defineHook(cwd, options.afterScenarioHookDefinitions, 'After'),
+    AfterAll: helpers.defineFeaturesHook(cwd, options.afterFeaturesHookDefinitions),
+    AfterEach: helpers.defineScenarioHook(cwd, options.afterScenarioHookDefinitions),
+    Before: helpers.defineHook(cwd, options.beforeScenarioHookDefinitions, 'Before'),
+    BeforeAll: helpers.defineFeaturesHook(cwd, options.beforeFeaturesHookDefinitions),
+    BeforeEach: helpers.defineScenarioHook(cwd, options.beforeScenarioHookDefinitions),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),
     registerHandler: helpers.registerHandler(cwd, options.listeners),
     registerListener(listener) {
@@ -45,12 +51,13 @@ function build({ cwd, fns }) {
   wrapDefinitions({
     cwd,
     definitionFunctionWrapper,
-    definitions: _.chain(['afterHook', 'beforeHook', 'step'])
+    definitions: _.chain(['afterFeaturesHook', 'afterScenarioHook', 'beforeFeaturesHook', 'beforeScenarioHook', 'step'])
       .map(key => options[key + 'Definitions'])
       .flatten()
       .value()
   })
-  options.afterHookDefinitions.reverse()
+  options.afterScenarioHookDefinitions.reverse()
+  options.afterFeaturesHookDefinitions.reverse()
   return options
 }
 

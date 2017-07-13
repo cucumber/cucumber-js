@@ -4,6 +4,9 @@ import Promise from 'bluebird'
 import ScenarioResult from '../models/scenario_result'
 import ScenarioRunner from './scenario_runner'
 import Status from '../status'
+import UserCodeRunner from '../user_code_runner'
+import { formatLocation } from '../formatter/helpers'
+import VError from 'verror'
 
 export default class FeaturesRunner {
   constructor({ eventBroadcaster, features, options, supportCodeLibrary }) {
@@ -15,6 +18,7 @@ export default class FeaturesRunner {
   }
 
   async run() {
+    await this.runFeaturesHooks('beforeFeaturesHookDefinitions', 'a BeforeAll')
     const event = new Event({
       data: this.features,
       name: Event.FEATURES_EVENT_NAME
@@ -23,7 +27,26 @@ export default class FeaturesRunner {
       await Promise.each(this.features, ::this.runFeature)
       await this.broadcastFeaturesResult()
     })
+    await this.runFeaturesHooks('afterFeaturesHookDefinitions', 'an AfterAll')
     return this.featuresResult.success
+  }
+
+  async runFeaturesHooks(key, name) {
+    await Promise.each(this.supportCodeLibrary[key], async (hookDefinition) => {
+      const { error } = await UserCodeRunner.run({
+        argsArray: [],
+        fn: hookDefinition.code,
+        thisArg: null,
+        timeoutInMilliseconds: hookDefinition.timeout || this.supportCodeLibrary.defaultTimeout
+      })
+      if (error) {
+        const location = formatLocation('', hookDefinition)
+        throw new VError(
+          error,
+          `${name} hook errored, process exiting: ${location}`
+        )
+      }
+    })
   }
 
   async broadcastFeaturesResult() {

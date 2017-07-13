@@ -6,6 +6,7 @@ import ScenarioResult from '../models/scenario_result'
 import Status from '../status'
 import StepResult from '../models/step_result'
 import StepRunner from './step_runner'
+import { formatLocation } from '../formatter/helpers'
 
 export default class ScenarioRunner {
   constructor({ eventBroadcaster, options, scenario, supportCodeLibrary }) {
@@ -70,14 +71,14 @@ export default class ScenarioRunner {
 
   async runAfterHooks() {
     await this.runHooks({
-      hookDefinitions: this.supportCodeLibrary.afterHookDefinitions,
+      hookDefinitions: this.supportCodeLibrary.afterScenarioHookDefinitions,
       hookKeyword: Hook.AFTER_STEP_KEYWORD
     })
   }
 
   async runBeforeHooks() {
     await this.runHooks({
-      hookDefinitions: this.supportCodeLibrary.beforeHookDefinitions,
+      hookDefinitions: this.supportCodeLibrary.beforeScenarioHookDefinitions,
       hookKeyword: Hook.BEFORE_STEP_KEYWORD
     })
   }

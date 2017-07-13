@@ -1,7 +1,7 @@
 import ScenarioFilter from '../scenario_filter'
 import StepDefinition from './step_definition'
 
-export default class HookDefinition extends StepDefinition {
+export default class ScenarioHookDefinition extends StepDefinition {
   constructor(data) {
     super(data)
     this.scenarioFilter = new ScenarioFilter({
