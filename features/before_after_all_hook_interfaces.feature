@@ -13,25 +13,13 @@ Feature: before / after all hook interfaces
         Scenario: second scenario
           Given second step
       """
+    And a file named "features/step_definitions/my_steps.js" with:
+      """
+      import {Given} from 'cucumber'
 
-  Scenario Outline: too many arguments
-    Given a file named "features/support/env.js" with:
+      Given('first step', function() {})
+      Given('second step', function() {})
       """
-      import {<TYPE>} from 'cucumber'
-
-      <TYPE>(function(arg1, arg2) {})
-      """
-    When I run cucumber.js
-    Then it fails
-    And the output contains the text:
-      """
-      function has 2 arguments, should have 0 (if synchronous or returning a promise) or 1 (if accepting a callback)
-      """
-
-    Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
 
   Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
@@ -44,9 +32,9 @@ Feature: before / after all hook interfaces
     Then it passes
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
@@ -61,16 +49,16 @@ Feature: before / after all hook interfaces
     Then it fails
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
       import {<TYPE>} from 'cucumber'
 
-      <TYPE>(function(scenario, callback) {
+      <TYPE>(function(callback) {
         setTimeout(callback)
       })
       """
@@ -78,16 +66,16 @@ Feature: before / after all hook interfaces
     Then it passes
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
       import {<TYPE>} from 'cucumber'
 
-      <TYPE>(function(scenario, callback) {
+      <TYPE>(function(callback) {
         setTimeout(() => {
           callback(new Error('my error'))
         })
@@ -95,11 +83,15 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber.js
     Then it fails
+    And the error output contains the text:
+      """
+      my error
+      """
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   @spawn
   Scenario Outline: callback asynchronously throws
@@ -107,7 +99,7 @@ Feature: before / after all hook interfaces
       """
       import {<TYPE>} from 'cucumber'
 
-      <TYPE>(function(scenario, callback) {
+      <TYPE>(function(callback) {
         setTimeout(() => {
           throw new Error('my error')
         })
@@ -115,11 +107,15 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber.js
     Then it fails
+    And the error output contains the text:
+      """
+      my error
+      """
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -127,21 +123,21 @@ Feature: before / after all hook interfaces
       import {<TYPE>} from 'cucumber'
       import Promise from 'bluebird'
 
-      <TYPE>(function(scenario, callback) {
+      <TYPE>(function(callback) {
         return Promise.resolve()
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       function uses multiple asynchronous interfaces: callback and promise
       """
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
@@ -157,9 +153,9 @@ Feature: before / after all hook interfaces
     Then it passes
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
@@ -173,15 +169,15 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       my error
       """
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
@@ -195,15 +191,15 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       Promise rejected without a reason
       """
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   @spawn
   Scenario Outline: promise asynchronously throws
@@ -222,12 +218,12 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       my error
       """
 
     Examples:
-      | TYPE             |
-      | setBeforeAllHook |
-      | setAfterAllHook  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
