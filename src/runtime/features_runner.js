@@ -32,12 +32,13 @@ export default class FeaturesRunner {
   }
 
   async runFeaturesHooks(key, name) {
-    await Promise.each(this.supportCodeLibrary[key], async (hookDefinition) => {
+    await Promise.each(this.supportCodeLibrary[key], async hookDefinition => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,
         thisArg: null,
-        timeoutInMilliseconds: hookDefinition.timeout || this.supportCodeLibrary.defaultTimeout
+        timeoutInMilliseconds:
+          hookDefinition.timeout || this.supportCodeLibrary.defaultTimeout
       })
       if (error) {
         const location = formatLocation('', hookDefinition)

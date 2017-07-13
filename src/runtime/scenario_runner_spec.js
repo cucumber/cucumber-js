@@ -1,6 +1,6 @@
 import { expectToHearEvents } from '../../test/listener_helpers'
 import EventBroadcaster from './event_broadcaster'
-import HookDefinition from '../models/hook_definition'
+import ScenarioHookDefinition from '../models/scenario_hook_definition'
 import Promise from 'bluebird'
 import ScenarioRunner from './scenario_runner'
 import Status from '../status'
@@ -24,8 +24,8 @@ describe('ScenarioRunner', function() {
       getSteps: []
     })
     this.supportCodeLibrary = {
-      afterHookDefinitions: [],
-      beforeHookDefinitions: [],
+      afterScenarioHookDefinitions: [],
+      beforeScenarioHookDefinitions: [],
       defaultTimeout: 5000,
       stepDefinitions: [],
       parameterTypeRegistry: {},
@@ -222,7 +222,7 @@ describe('ScenarioRunner', function() {
     describe('with an before hook and step in dry run mode', function() {
       beforeEach(async function() {
         this.options.dryRun = true
-        const hookDefinition = new HookDefinition({
+        const scenarioHookDefinition = new ScenarioHookDefinition({
           code() {
             throw new Error('error')
           },
@@ -230,7 +230,9 @@ describe('ScenarioRunner', function() {
         })
         this.step = {}
         const stepDefinition = createMock({ matchesStepName: true })
-        this.supportCodeLibrary.beforeHookDefinitions = [hookDefinition]
+        this.supportCodeLibrary.beforeScenarioHookDefinitions = [
+          scenarioHookDefinition
+        ]
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
         this.scenarioResult = await this.scenarioRunner.run()
@@ -278,7 +280,7 @@ describe('ScenarioRunner', function() {
     describe('with an after hook and step in dry run mode', function() {
       beforeEach(async function() {
         this.options.dryRun = true
-        const hookDefinition = new HookDefinition({
+        const scenarioHookDefinition = new ScenarioHookDefinition({
           code() {
             throw new Error('error')
           },
@@ -286,7 +288,9 @@ describe('ScenarioRunner', function() {
         })
         this.step = {}
         const stepDefinition = createMock({ matchesStepName: true })
-        this.supportCodeLibrary.afterHookDefinitions = [hookDefinition]
+        this.supportCodeLibrary.afterScenarioHookDefinitions = [
+          scenarioHookDefinition
+        ]
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.scenario.steps = [this.step]
         this.scenarioResult = await this.scenarioRunner.run()

@@ -1,4 +1,9 @@
-import { defineFeaturesHook, defineScenarioHook, defineStep, registerHandler } from './helpers'
+import {
+  defineFeaturesHook,
+  defineScenarioHook,
+  defineStep,
+  registerHandler
+} from './helpers'
 
 describe('helpers', function() {
   describe('defineFeaturesHook', function() {

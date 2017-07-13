@@ -9,13 +9,6 @@ import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-
-export function defineHook(cwd, collection, name) {
-  return util.deprecate((options, code) => {
-    defineScenarioHook(cwd, collection)(options, code)
-  }, `${name} is deprecated: use ${name}Each instead`)
-}
-
 export function defineScenarioHook(cwd, collection) {
   return (options, code) => {
     if (typeof options === 'string') {
@@ -30,7 +23,12 @@ export function defineScenarioHook(cwd, collection) {
       fnName: 'defineScenarioHook',
       relativeUri: formatLocation(cwd, { line, uri })
     })
-    const hookDefinition = new ScenarioHookDefinition({ code, line, options, uri })
+    const hookDefinition = new ScenarioHookDefinition({
+      code,
+      line,
+      options,
+      uri
+    })
     collection.push(hookDefinition)
   }
 }
@@ -49,8 +47,13 @@ export function defineFeaturesHook(cwd, collection) {
       fnName: 'defineFeaturesHook',
       relativeUri: formatLocation(cwd, { line, uri })
     })
-    const hookDefinition = new FeaturesHookDefinition({ code, line, options, uri })
-    collection.push({ code, line, options, uri })
+    const hookDefinition = new FeaturesHookDefinition({
+      code,
+      line,
+      options,
+      uri
+    })
+    collection.push(hookDefinition)
   }
 }
 

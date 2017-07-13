@@ -19,6 +19,8 @@ describe('FeaturesRunner', function() {
     })
     this.features = []
     this.supportCodeLibrary = {
+      afterFeaturesHookDefinitions: [],
+      beforeFeaturesHookDefinitions: [],
       defaultTimeout: 5000,
       transformLookuo: {},
       listeners: [],

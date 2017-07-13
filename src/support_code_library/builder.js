@@ -25,12 +25,22 @@ function build({ cwd, fns }) {
     defineParameterType: helpers.defineParameterType(
       options.parameterTypeRegistry
     ),
-    After: helpers.defineHook(cwd, options.afterScenarioHookDefinitions, 'After'),
-    AfterAll: helpers.defineFeaturesHook(cwd, options.afterFeaturesHookDefinitions),
-    AfterEach: helpers.defineScenarioHook(cwd, options.afterScenarioHookDefinitions),
-    Before: helpers.defineHook(cwd, options.beforeScenarioHookDefinitions, 'Before'),
-    BeforeAll: helpers.defineFeaturesHook(cwd, options.beforeFeaturesHookDefinitions),
-    BeforeEach: helpers.defineScenarioHook(cwd, options.beforeScenarioHookDefinitions),
+    After: helpers.defineScenarioHook(
+      cwd,
+      options.afterScenarioHookDefinitions
+    ),
+    AfterAll: helpers.defineFeaturesHook(
+      cwd,
+      options.afterFeaturesHookDefinitions
+    ),
+    Before: helpers.defineScenarioHook(
+      cwd,
+      options.beforeScenarioHookDefinitions
+    ),
+    BeforeAll: helpers.defineFeaturesHook(
+      cwd,
+      options.beforeFeaturesHookDefinitions
+    ),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),
     registerHandler: helpers.registerHandler(cwd, options.listeners),
     registerListener(listener) {
@@ -51,7 +61,13 @@ function build({ cwd, fns }) {
   wrapDefinitions({
     cwd,
     definitionFunctionWrapper,
-    definitions: _.chain(['afterFeaturesHook', 'afterScenarioHook', 'beforeFeaturesHook', 'beforeScenarioHook', 'step'])
+    definitions: _.chain([
+      'afterFeaturesHook',
+      'afterScenarioHook',
+      'beforeFeaturesHook',
+      'beforeScenarioHook',
+      'step'
+    ])
       .map(key => options[key + 'Definitions'])
       .flatten()
       .value()

@@ -11,11 +11,14 @@ describe('ScenarioHookDefinition', function() {
 
     describe('no tags', function() {
       beforeEach(function() {
-        this.scenariohookDefinition = new ScenarioHookDefinition({ options: {} })
+        this.scenariohookDefinition = new ScenarioHookDefinition({
+          options: {}
+        })
       })
 
       it('returns true', function() {
-        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to.be.true
+        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to
+          .be.true
       })
     })
 
@@ -28,7 +31,8 @@ describe('ScenarioHookDefinition', function() {
       })
 
       it('returns true', function() {
-        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to.be.true
+        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to
+          .be.true
       })
     })
 
@@ -40,7 +44,8 @@ describe('ScenarioHookDefinition', function() {
       })
 
       it('returns false', function() {
-        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to.be.false
+        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to
+          .be.false
       })
     })
   })
