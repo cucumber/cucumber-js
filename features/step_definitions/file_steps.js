@@ -11,6 +11,9 @@ import path from 'path'
 defineSupportCode(function({ Given, Then }) {
   Given(/^a file named "(.*)" with:$/, function(filePath, fileContent) {
     const absoluteFilePath = path.join(this.tmpDir, filePath)
+    if (filePath === '@rerun.txt') {
+      fileContent = fileContent.replace(/\//g, path.sep)
+    }
     return promisify(fsExtra.outputFile)(absoluteFilePath, fileContent)
   })
 

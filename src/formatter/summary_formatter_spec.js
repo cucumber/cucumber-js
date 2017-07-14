@@ -12,14 +12,14 @@ describe('SummaryFormatter', function() {
     this.scenario = {
       line: 1,
       name: 'name1',
-      uri: 'path/to/project/a.feature'
+      uri: 'a.feature'
     }
     this.step = {
       arguments: [],
       keyword: 'keyword ',
       line: 2,
       name: 'name2',
-      uri: 'path/to/project/a.feature'
+      uri: 'a.feature'
     }
     this.featuresResult = {
       scenarioResults: [],
@@ -29,7 +29,6 @@ describe('SummaryFormatter', function() {
     const snippetBuilder = createMock({ build: 'snippet' })
     this.summaryFormatter = new SummaryFormatter({
       colorFns: getColorFns(false),
-      cwd: 'path/to/project',
       log: logFn,
       snippetBuilder
     })
@@ -51,7 +50,7 @@ describe('SummaryFormatter', function() {
               step: this.step,
               stepDefinition: {
                 line: 3,
-                uri: 'path/to/project/steps.js'
+                uri: 'steps.js'
               }
             }
           ]
@@ -78,12 +77,12 @@ describe('SummaryFormatter', function() {
         const stepDefinition1 = {
           line: 3,
           pattern: 'pattern1',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const stepDefinition2 = {
           line: 4,
           pattern: 'longer pattern2',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const scenarioResult = {
           status: Status.FAILED,

@@ -6,11 +6,11 @@ cache:
 environment:
   matrix:
     - nodejs_version: '8'
-      test_script: 'test'
+      test_script: 'test -- -- --format progress'
     - nodejs_version: '6'
-      test_script: 'test'
+      test_script: 'test -- -- --format progress'
     - nodejs_version: '4'
-      test_script: 'feature-test -- --profile node-4'
+      test_script: 'feature-test -- --format progress --profile node-4'
 
 install:
   - ps: Install-Product node $env:nodejs_version

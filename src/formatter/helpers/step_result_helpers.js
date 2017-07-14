@@ -4,7 +4,7 @@ import Status from '../../status'
 import Table from 'cli-table'
 import indentString from 'indent-string'
 
-function getAmbiguousStepResultMessage({ colorFns, cwd, stepResult }) {
+function getAmbiguousStepResultMessage({ colorFns, stepResult }) {
   const { ambiguousStepDefinitions } = stepResult
   const table = new Table({
     chars: {
@@ -34,7 +34,7 @@ function getAmbiguousStepResultMessage({ colorFns, cwd, stepResult }) {
     table,
     ambiguousStepDefinitions.map(stepDefinition => {
       const pattern = stepDefinition.pattern.toString()
-      return [pattern, formatLocation(cwd, stepDefinition)]
+      return [pattern, formatLocation(stepDefinition)]
     })
   )
   const message =
@@ -53,15 +53,10 @@ function getPendingStepResultMessage({ colorFns }) {
   return colorFns.pending('Pending')
 }
 
-export function getStepResultMessage({
-  colorFns,
-  cwd,
-  snippetBuilder,
-  stepResult
-}) {
+export function getStepResultMessage({ colorFns, snippetBuilder, stepResult }) {
   switch (stepResult.status) {
     case Status.AMBIGUOUS:
-      return getAmbiguousStepResultMessage({ colorFns, cwd, stepResult })
+      return getAmbiguousStepResultMessage({ colorFns, stepResult })
     case Status.FAILED:
       return getFailedStepResultMessage({ colorFns, stepResult })
     case Status.UNDEFINED:

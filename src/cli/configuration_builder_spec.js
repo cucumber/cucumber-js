@@ -41,7 +41,6 @@ describe('Configuration', function() {
           worldParameters: {}
         },
         scenarioFilterOptions: {
-          cwd: this.tmpDir,
           featurePaths: ['features'],
           names: [],
           tagExpression: ''

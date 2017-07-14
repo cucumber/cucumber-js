@@ -6,22 +6,22 @@ describe('UsageJsonFormatter', function() {
       const stepDefinition1 = {
         line: 1,
         pattern: 'abc',
-        uri: 'path/to/project/steps.js'
+        uri: 'steps.js'
       }
       const stepDefinition2 = {
         line: 2,
         pattern: 'def',
-        uri: 'path/to/project/steps.js'
+        uri: 'steps.js'
       }
       const stepDefinition3 = {
         line: 3,
         pattern: 'ghi',
-        uri: 'path/to/project/steps.js'
+        uri: 'steps.js'
       }
       const step1 = {
         line: 1,
         name: 'step-name1',
-        uri: 'path/to/project/a.feature'
+        uri: 'a.feature'
       }
       const stepResult1 = {
         duration: 1,
@@ -31,7 +31,7 @@ describe('UsageJsonFormatter', function() {
       const step2 = {
         line: 2,
         name: 'step-name2',
-        uri: 'path/to/project/a.feature'
+        uri: 'a.feature'
       }
       const stepResult2 = {
         duration: 2,
@@ -49,7 +49,6 @@ describe('UsageJsonFormatter', function() {
         this.output += data
       }
       const usageJsonFormatter = new UsageJsonFormatter({
-        cwd: 'path/to/project',
         log: logFn,
         supportCodeLibrary
       })
@@ -66,12 +65,12 @@ describe('UsageJsonFormatter', function() {
               duration: 2,
               line: 2,
               text: 'step-name2',
-              uri: 'path/to/project/a.feature'
+              uri: 'a.feature'
             }
           ],
           meanDuration: 2,
           pattern: 'def',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         },
         {
           line: 1,
@@ -80,18 +79,18 @@ describe('UsageJsonFormatter', function() {
               duration: 1,
               line: 1,
               text: 'step-name1',
-              uri: 'path/to/project/a.feature'
+              uri: 'a.feature'
             }
           ],
           meanDuration: 1,
           pattern: 'abc',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         },
         {
           line: 3,
           matches: [],
           pattern: 'ghi',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
       ])
     })

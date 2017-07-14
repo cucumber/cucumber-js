@@ -77,7 +77,11 @@ export default class Cli {
       configuration.scenarioFilterOptions
     )
     const [features, { cleanup, formatters }] = await Promise.all([
-      getFeatures({ featurePaths: configuration.featurePaths, scenarioFilter }),
+      getFeatures({
+        cwd: this.cwd,
+        featurePaths: configuration.featurePaths,
+        scenarioFilter
+      }),
       this.getFormatters({
         formatOptions: configuration.formatOptions,
         formats: configuration.formats,
