@@ -61,11 +61,11 @@ const validations = {
   ]
 }
 
-export default function validateArguments({ args, fnName, relativeUri }) {
+export default function validateArguments({ args, fnName, location }) {
   validations[fnName].forEach(({ identifier, expectedType, predicate }) => {
     if (!predicate(args)) {
       throw new Error(
-        `${relativeUri}: Invalid ${identifier}: should be a ${expectedType}`
+        `${location}: Invalid ${identifier}: should be a ${expectedType}`
       )
     }
   })

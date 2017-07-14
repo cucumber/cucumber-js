@@ -1,10 +1,8 @@
-import path from 'path'
 import ScenarioFilter from './scenario_filter'
 
 describe('ScenarioFilter', function() {
   describe('matches', function() {
     beforeEach(function() {
-      this.projectPath = path.resolve('path', 'to', 'project')
       this.scenario = {
         lines: [],
         name: '',
@@ -16,7 +14,6 @@ describe('ScenarioFilter', function() {
     describe('no filters', function() {
       beforeEach(function() {
         this.scenarioFilter = new ScenarioFilter({
-          cwd: this.projectPath,
           featurePaths: ['features'],
           names: [],
           tagExpressions: []
@@ -31,8 +28,7 @@ describe('ScenarioFilter', function() {
     describe('line filters', function() {
       beforeEach(function() {
         this.scenarioFilter = new ScenarioFilter({
-          cwd: this.projectPath,
-          featurePaths: ['a.feature', 'b.feature:1:2'],
+          featurePaths: ['features/a.feature', 'features/b.feature:1:2'],
           names: [],
           tagExpressions: []
         })
@@ -40,7 +36,7 @@ describe('ScenarioFilter', function() {
 
       describe('scenario in feature without line specified', function() {
         beforeEach(function() {
-          this.scenario.uri = path.join(this.projectPath, 'a.feature')
+          this.scenario.uri = 'features/a.feature'
         })
 
         it('returns true', function() {
@@ -50,7 +46,7 @@ describe('ScenarioFilter', function() {
 
       describe('scenario in feature with line specified', function() {
         beforeEach(function() {
-          this.scenario.uri = path.join(this.projectPath, 'b.feature')
+          this.scenario.uri = 'features/b.feature'
         })
 
         describe('scenario line matches', function() {
@@ -79,7 +75,6 @@ describe('ScenarioFilter', function() {
       describe('should match name A', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
             featurePaths: ['features'],
             names: ['nameA'],
             tagExpressions: []
@@ -110,7 +105,6 @@ describe('ScenarioFilter', function() {
       describe('should match name A or B', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
             featurePaths: ['features'],
             names: ['nameA', 'nameB'],
             tagExpressions: []
@@ -153,7 +147,6 @@ describe('ScenarioFilter', function() {
       describe('should have tag A', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
             featurePaths: ['features'],
             names: [],
             tagExpression: '@tagA'
@@ -180,7 +173,6 @@ describe('ScenarioFilter', function() {
       describe('should not have tag A', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
             featurePaths: ['features'],
             names: [],
             tagExpression: 'not @tagA'
@@ -207,7 +199,6 @@ describe('ScenarioFilter', function() {
       describe('should have tag A and B', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
             featurePaths: ['features'],
             names: [],
             tagExpression: '@tagA and @tagB'
@@ -254,7 +245,6 @@ describe('ScenarioFilter', function() {
       describe('should have tag A or B', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
             featurePaths: ['features'],
             names: [],
             tagExpression: '@tagA or @tagB'
@@ -301,21 +291,19 @@ describe('ScenarioFilter', function() {
 
     describe('line, name, and tag filters', function() {
       beforeEach(function() {
-        this.scenarioPath = path.join(this.projectPath, 'b.feature')
+        this.scenario.uri = 'features/b.feature'
       })
 
       describe('scenario matches all filters', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
-            featurePaths: ['b.feature:1:2'],
+            featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
             tagExpressions: ['@tagA']
           })
           this.scenario.lines = [1]
           this.scenario.name = 'nameA descriptionA'
           this.scenario.tags = [{ name: '@tagA' }]
-          this.scenario.uri = this.scenarioPath
         })
 
         it('returns true', function() {
@@ -326,13 +314,11 @@ describe('ScenarioFilter', function() {
       describe('scenario matches some filters', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
-            featurePaths: ['b.feature:1:2'],
+            featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
             tagExpressions: ['tagA']
           })
           this.scenario.lines = [1]
-          this.scenario.uri = this.scenarioPath
         })
 
         it('returns false', function() {
@@ -343,13 +329,11 @@ describe('ScenarioFilter', function() {
       describe('scenario matches no filters', function() {
         beforeEach(function() {
           this.scenarioFilter = new ScenarioFilter({
-            cwd: this.projectPath,
-            featurePaths: ['b.feature:1:2'],
+            featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
             tagExpression: '@tagA'
           })
           this.scenario.lines = [3]
-          this.scenario.uri = this.scenarioPath
         })
 
         it('returns false', function() {

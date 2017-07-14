@@ -16,7 +16,6 @@ describe('UsageFormatter', function() {
         stepDefinitions: []
       }
       this.usageFormatter = new UsageFormatter({
-        cwd: 'path/to/project',
         log: logFn,
         supportCodeLibrary: this.supportCodeLibrary
       })
@@ -37,7 +36,7 @@ describe('UsageFormatter', function() {
         this.stepDefinition = {
           line: 1,
           pattern: '/^abc?$/',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
       })
@@ -63,7 +62,7 @@ describe('UsageFormatter', function() {
           this.step1 = {
             line: 1,
             name: 'step-name1',
-            uri: 'path/to/project/a.feature'
+            uri: 'a.feature'
           }
           this.stepResult1 = {
             step: this.step1,
@@ -72,7 +71,7 @@ describe('UsageFormatter', function() {
           this.step2 = {
             line: 2,
             name: 'step-name2',
-            uri: 'path/to/project/a.feature'
+            uri: 'a.feature'
           }
           this.stepResult2 = {
             step: this.step2,
@@ -126,22 +125,22 @@ describe('UsageFormatter', function() {
         const stepDefinition1 = {
           line: 1,
           pattern: 'abc',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const stepDefinition2 = {
           line: 2,
           pattern: 'def',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const stepDefinition3 = {
           line: 3,
           pattern: 'ghi',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const step1 = {
           line: 1,
           name: 'step-name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         const stepResult1 = {
           duration: 1,
@@ -151,7 +150,7 @@ describe('UsageFormatter', function() {
         const step2 = {
           line: 2,
           name: 'step-name2',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         const stepResult2 = {
           duration: 2,

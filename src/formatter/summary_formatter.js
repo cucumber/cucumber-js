@@ -31,7 +31,6 @@ export default class SummaryFormatter extends Formatter {
       this.log(
         formatIssue({
           colorFns: this.colorFns,
-          cwd: this.cwd,
           number: index + 1,
           snippetBuilder: this.snippetBuilder,
           stepResult

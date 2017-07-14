@@ -8,7 +8,6 @@ describe('SummaryFormatter', function() {
     const logFn = data => {
       this.output += data
     }
-    const colorFns = getColorFns(false)
     this.featuresResult = {
       scenarioResults: [],
       stepResults: [],
@@ -16,8 +15,7 @@ describe('SummaryFormatter', function() {
     }
     const snippetBuilder = createMock({ build: 'snippet' })
     this.summaryFormatter = new SummaryFormatter({
-      colorFns,
-      cwd: 'path/to/project',
+      colorFns: getColorFns(false),
       log: logFn,
       snippetBuilder
     })
@@ -28,14 +26,14 @@ describe('SummaryFormatter', function() {
       const scenario = {
         line: 1,
         name: 'name1',
-        uri: 'path/to/project/a.feature'
+        uri: 'a.feature'
       }
       this.step = {
         keyword: 'keyword ',
         line: 2,
         name: 'name2',
         scenario,
-        uri: 'path/to/project/a.feature'
+        uri: 'a.feature'
       }
     })
 
@@ -43,7 +41,7 @@ describe('SummaryFormatter', function() {
       beforeEach(function() {
         const stepDefinition = {
           line: 3,
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const stepResult = {
           duration: 0,
@@ -74,12 +72,12 @@ describe('SummaryFormatter', function() {
         const stepDefinition1 = {
           line: 3,
           pattern: 'pattern1',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const stepDefinition2 = {
           line: 4,
           pattern: 'longer pattern2',
-          uri: 'path/to/project/steps.js'
+          uri: 'steps.js'
         }
         const stepResult = {
           ambiguousStepDefinitions: [stepDefinition1, stepDefinition2],

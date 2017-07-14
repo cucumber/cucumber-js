@@ -7,14 +7,18 @@ import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
+import _ from 'lodash'
 
 class World {
   async run(executablePath, inputArgs) {
-    const args = ['node', executablePath].concat(inputArgs, [
-      '--backtrace',
-      '--format',
-      'json:out.json'
-    ])
+    const args = ['node', executablePath]
+      .concat(inputArgs, ['--backtrace', '--format', 'json:out.json'])
+      .map(arg => {
+        if (_.includes(arg, '/')) {
+          return path.normalize(arg)
+        }
+        return arg
+      })
     const cwd = this.tmpDir
 
     let result

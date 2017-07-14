@@ -4,16 +4,9 @@ import indentString from 'indent-string'
 import Status from '../../status'
 import Table from 'cli-table'
 
-export function formatIssue({
-  colorFns,
-  cwd,
-  number,
-  snippetBuilder,
-  stepResult
-}) {
+export function formatIssue({ colorFns, number, snippetBuilder, stepResult }) {
   const message = getStepResultMessage({
     colorFns,
-    cwd,
     snippetBuilder,
     stepResult
   })
@@ -23,12 +16,11 @@ export function formatIssue({
   let text = prefix
 
   if (scenario) {
-    const scenarioLocation = formatLocation(cwd, scenario)
     text +=
       'Scenario: ' +
       colorFns.bold(scenario.name) +
       ' - ' +
-      colorFns.location(scenarioLocation)
+      colorFns.location(formatLocation(scenario))
   } else {
     text += 'Background:'
   }
@@ -36,16 +28,14 @@ export function formatIssue({
 
   let stepText = 'Step: ' + colorFns.bold(step.keyword + (step.name || ''))
   if (step.uri) {
-    const stepLocation = formatLocation(cwd, step)
-    stepText += ' - ' + colorFns.location(stepLocation)
+    stepText += ' - ' + colorFns.location(formatLocation(step))
   }
   text += indentString(stepText, prefix.length) + '\n'
 
   const { stepDefinition } = stepResult
   if (stepDefinition) {
-    const stepDefinitionLocation = formatLocation(cwd, stepDefinition)
     const stepDefinitionLine =
-      'Step Definition: ' + colorFns.location(stepDefinitionLocation)
+      'Step Definition: ' + colorFns.location(formatLocation(stepDefinition))
     text += indentString(stepDefinitionLine, prefix.length) + '\n'
   }
 
@@ -54,7 +44,7 @@ export function formatIssue({
   return text
 }
 
-function getAmbiguousStepResultMessage({ colorFns, cwd, stepResult }) {
+function getAmbiguousStepResultMessage({ colorFns, stepResult }) {
   const { ambiguousStepDefinitions } = stepResult
   const table = new Table({
     chars: {
@@ -84,7 +74,7 @@ function getAmbiguousStepResultMessage({ colorFns, cwd, stepResult }) {
     table,
     ambiguousStepDefinitions.map(stepDefinition => {
       const pattern = stepDefinition.pattern.toString()
-      return [pattern, formatLocation(cwd, stepDefinition)]
+      return [pattern, formatLocation(stepDefinition)]
     })
   )
   const message =
@@ -103,10 +93,10 @@ function getPendingStepResultMessage({ colorFns }) {
   return colorFns.pending('Pending')
 }
 
-function getStepResultMessage({ colorFns, cwd, snippetBuilder, stepResult }) {
+function getStepResultMessage({ colorFns, snippetBuilder, stepResult }) {
   switch (stepResult.status) {
     case Status.AMBIGUOUS:
-      return getAmbiguousStepResultMessage({ colorFns, cwd, stepResult })
+      return getAmbiguousStepResultMessage({ colorFns, stepResult })
     case Status.FAILED:
       return getFailedStepResultMessage({ colorFns, stepResult })
     case Status.UNDEFINED:
