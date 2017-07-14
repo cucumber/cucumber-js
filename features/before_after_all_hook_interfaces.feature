@@ -15,18 +15,22 @@ Feature: before / after all hook interfaces
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      Given('first step', function() {})
-      Given('second step', function() {})
+      defineSupportCode(({Given}) => {
+        Given('first step', function() {})
+        Given('second step', function() {})
+      })
       """
 
   Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      <TYPE>(function() {})
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {})
+      })
       """
     When I run cucumber.js
     Then it passes
@@ -39,10 +43,12 @@ Feature: before / after all hook interfaces
   Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      <TYPE>(function() {
-        throw new Error('my error')
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
+          throw new Error('my error')
+        })
       })
       """
     When I run cucumber.js
@@ -56,10 +62,12 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      <TYPE>(function(callback) {
-        setTimeout(callback)
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(callback) {
+          setTimeout(callback)
+        })
       })
       """
     When I run cucumber.js
@@ -73,11 +81,13 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      <TYPE>(function(callback) {
-        setTimeout(() => {
-          callback(new Error('my error'))
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(callback) {
+          setTimeout(() => {
+            callback(new Error('my error'))
+          })
         })
       })
       """
@@ -97,11 +107,13 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      <TYPE>(function(callback) {
-        setTimeout(() => {
-          throw new Error('my error')
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(callback) {
+          setTimeout(() => {
+            throw new Error('my error')
+          })
         })
       })
       """
@@ -120,11 +132,13 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
       import Promise from 'bluebird'
 
-      <TYPE>(function(callback) {
-        return Promise.resolve()
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function(callback) {
+          return Promise.resolve()
+        })
       })
       """
     When I run cucumber.js
@@ -142,11 +156,13 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
       import Promise from 'bluebird'
 
-      <TYPE>(function() {
-        return Promise.resolve()
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
+          return Promise.resolve()
+        })
       })
       """
     When I run cucumber.js
@@ -160,11 +176,13 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
       import Promise from 'bluebird'
 
-      <TYPE>(function(){
-        return Promise.reject(new Error('my error'))
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
+          return Promise.reject(new Error('my error'))
+        })
       })
       """
     When I run cucumber.js
@@ -182,11 +200,13 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
       import Promise from 'bluebird'
 
-      <TYPE>(function() {
-        return Promise.reject()
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
+          return Promise.reject()
+        })
       })
       """
     When I run cucumber.js
@@ -205,13 +225,15 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
       import Promise from 'bluebird'
 
-      <TYPE>(function(){
-        return new Promise(function() {
-          setTimeout(() => {
-            throw new Error('my error')
+      defineSupportCode(({<TYPE>}) => {
+        <TYPE>(function() {
+          return new Promise(function() {
+            setTimeout(() => {
+              throw new Error('my error')
+            })
           })
         })
       })

@@ -17,43 +17,44 @@ Feature: Environment Hooks
   Scenario: before all / after all hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {AfterAll, BeforeAll, Given} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
       import {expect} from 'chai'
 
       let counter = 1
 
-      BeforeAll(function() {
-        expect(counter).to.eql(1)
-        counter += counter
-      })
+      defineSupportCode(({AfterAll, BeforeAll, Given}) => {
+        BeforeAll(function() {
+          expect(counter).to.eql(1)
+          counter += counter
+        })
 
-      Given('first step', function() {
-        expect(counter).to.eql(2)
-        counter += counter
-      })
+        Given('first step', function() {
+          expect(counter).to.eql(2)
+          counter += counter
+        })
 
-      Given('second step', function() {
-        expect(counter).to.eql(4)
-        counter += counter
-      })
+        Given('second step', function() {
+          expect(counter).to.eql(4)
+          counter += counter
+        })
 
-      AfterAll(function() {
-        expect(counter).to.eql(8)
-        counter += counter
+        AfterAll(function() {
+          expect(counter).to.eql(8)
+          counter += counter
+        })
       })
       """
     When I run cucumber.js
     Then it passes
 
-  @spawn
   Scenario: Failing before all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
       defineSupportCode(({BeforeAll}) => {
-        BeforeAll(function() {
-          throw new Error('my error')
+        BeforeAll(function(callback) {
+          callback(new Error('my error'))
         })
       })
       """
@@ -64,15 +65,14 @@ Feature: Environment Hooks
       | Error: my error                           |
       | features/support/hooks.js:4               |
 
-  @spawn
   Scenario: Failing after all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
       defineSupportCode(({AfterAll}) => {
-        AfterAll(function() {
-          throw new Error('my error')
+        AfterAll(function(callback) {
+          callback(new Error('my error'))
         })
       })
       """
