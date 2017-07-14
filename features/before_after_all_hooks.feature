@@ -49,10 +49,12 @@ Feature: Environment Hooks
   Scenario: Failing before all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
-      import {BeforeAll} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      BeforeAll(function() {
-        throw new Error('my error')
+      defineSupportCode(({BeforeAll}) => {
+        BeforeAll(function() {
+          throw new Error('my error')
+        })
       })
       """
     When I run cucumber.js
@@ -60,16 +62,18 @@ Feature: Environment Hooks
     And the error output contains the text snippets:
       | a BeforeAll hook errored, process exiting |
       | Error: my error                           |
-      | features/support/hooks.js:3               |
+      | features/support/hooks.js:4               |
 
   @spawn
   Scenario: Failing after all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
-      import {AfterAll} from 'cucumber'
+      import {defineSupportCode} from 'cucumber'
 
-      AfterAll(function() {
-        throw new Error('my error')
+      defineSupportCode(({AfterAll}) => {
+        AfterAll(function() {
+          throw new Error('my error')
+        })
       })
       """
     When I run cucumber.js
@@ -77,4 +81,4 @@ Feature: Environment Hooks
     And the error output contains the text snippets:
       | an AfterAll hook errored, process exiting |
       | Error: my error                           |
-      | features/support/hooks.js:3               |
+      | features/support/hooks.js:4               |

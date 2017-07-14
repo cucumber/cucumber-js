@@ -41,11 +41,11 @@ export function defineFeaturesHook(cwd, collection) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri()
+    const { line, uri } = getDefinitionLineAndUri(cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineFeaturesHook',
-      relativeUri: formatLocation({ line, uri })
+      location: formatLocation({ line, uri })
     })
     const hookDefinition = new FeaturesHookDefinition({
       code,

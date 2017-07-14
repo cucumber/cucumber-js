@@ -41,7 +41,7 @@ export default class FeaturesRunner {
           hookDefinition.timeout || this.supportCodeLibrary.defaultTimeout
       })
       if (error) {
-        const location = formatLocation('', hookDefinition)
+        const location = formatLocation(hookDefinition)
         throw new VError(
           error,
           `${name} hook errored, process exiting: ${location}`
