@@ -28,13 +28,13 @@ export const clearSupportCodeFns = SupportCodeFns.reset
 const proxySupportCode = name => (...args) =>
   defineSupportCode(supportCodeContext => supportCodeContext[name](...args))
 
+export const defineStep = proxySupportCode('defineStep')
 export const addTransform = proxySupportCode('addTransform')
+export const defineParameterType = proxySupportCode('defineParameterType')
 export const After = proxySupportCode('After')
 export const AfterAll = proxySupportCode('AfterAll')
 export const Before = proxySupportCode('Before')
 export const BeforeAll = proxySupportCode('BeforeAll')
-export const defineParameterType = proxySupportCode('defineParameterType')
-export const defineStep = proxySupportCode('defineStep')
 export const registerHandler = proxySupportCode('registerHandler')
 export const registerListener = proxySupportCode('registerListener')
 export const setDefaultTimeout = proxySupportCode('setDefaultTimeout')
@@ -42,7 +42,6 @@ export const setDefinitionFunctionWrapper = proxySupportCode(
   'setDefinitionFunctionWrapper'
 )
 export const setWorldConstructor = proxySupportCode('setWorldConstructor')
-
 export const Given = defineStep
 export const When = defineStep
 export const Then = defineStep
