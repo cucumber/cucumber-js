@@ -10,7 +10,6 @@ describe('IssueHelpers', function() {
   beforeEach(function() {
     this.options = {
       colorFns: getColorFns(false),
-      cwd: 'path/to/project',
       number: 1,
       snippetBuilder: createMock({ build: 'snippet' })
     }
@@ -24,7 +23,7 @@ describe('IssueHelpers', function() {
       },
       stepDefinition: {
         line: 2,
-        uri: 'path/to/project/steps.js'
+        uri: 'steps.js'
       }
     }
     this.skippedStepResult = {
@@ -37,7 +36,7 @@ describe('IssueHelpers', function() {
       },
       stepDefinition: {
         line: 4,
-        uri: 'path/to/project/steps.js'
+        uri: 'steps.js'
       }
     }
   })
@@ -58,7 +57,7 @@ describe('IssueHelpers', function() {
             },
             stepDefinition: {
               line: 3,
-              uri: 'path/to/project/steps.js'
+              uri: 'steps.js'
             }
           },
           this.skippedStepResult
@@ -66,7 +65,7 @@ describe('IssueHelpers', function() {
         const scenario = {
           line: 1,
           name: 'name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         this.options.scenarioResult = {
           scenario,
@@ -99,12 +98,12 @@ describe('IssueHelpers', function() {
               {
                 line: 5,
                 pattern: 'pattern1',
-                uri: 'path/to/project/steps.js'
+                uri: 'steps.js'
               },
               {
                 line: 6,
                 pattern: 'longer pattern2',
-                uri: 'path/to/project/steps.js'
+                uri: 'steps.js'
               }
             ],
             duration: 0,
@@ -120,7 +119,7 @@ describe('IssueHelpers', function() {
         const scenario = {
           line: 1,
           name: 'name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         this.options.scenarioResult = {
           scenario,
@@ -164,7 +163,7 @@ describe('IssueHelpers', function() {
         const scenario = {
           line: 1,
           name: 'name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         this.options.scenarioResult = {
           scenario,
@@ -207,7 +206,7 @@ describe('IssueHelpers', function() {
         const scenario = {
           line: 1,
           name: 'name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         this.options.scenarioResult = {
           scenario,
@@ -256,7 +255,7 @@ describe('IssueHelpers', function() {
         const scenario = {
           line: 1,
           name: 'name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         this.options.scenarioResult = {
           scenario,
@@ -297,7 +296,7 @@ describe('IssueHelpers', function() {
         const scenario = {
           line: 1,
           name: 'name1',
-          uri: 'path/to/project/a.feature'
+          uri: 'a.feature'
         }
         this.options.scenarioResult = {
           scenario,

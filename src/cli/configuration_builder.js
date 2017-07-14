@@ -52,7 +52,6 @@ export default class ConfigurationBuilder {
         worldParameters: this.options.worldParameters
       },
       scenarioFilterOptions: {
-        cwd: this.cwd,
         featurePaths: unexpandedFeaturePaths,
         names: this.options.name,
         tagExpression: this.options.tags

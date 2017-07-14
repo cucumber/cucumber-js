@@ -55,7 +55,7 @@ function formatDocString(docString) {
   return '"""\n' + docString.content + '\n"""'
 }
 
-function formatStepResult({ colorFns, cwd, stepResult }) {
+function formatStepResult({ colorFns, stepResult }) {
   const { status, step } = stepResult
   const colorFn = colorFns[status]
 
@@ -65,7 +65,7 @@ function formatStepResult({ colorFns, cwd, stepResult }) {
 
   const { stepDefinition } = stepResult
   if (stepDefinition) {
-    const stepDefinitionLocation = formatLocation(cwd, stepDefinition)
+    const stepDefinitionLocation = formatLocation(stepDefinition)
     const stepDefinitionLine = ' # ' + colorFns.location(stepDefinitionLocation)
     text += stepDefinitionLine
   }
@@ -87,7 +87,6 @@ function formatStepResult({ colorFns, cwd, stepResult }) {
 
 export function formatIssue({
   colorFns,
-  cwd,
   number,
   snippetBuilder,
   scenarioResult
@@ -95,7 +94,7 @@ export function formatIssue({
   const prefix = number + ') '
   const { scenario, stepResults } = scenarioResult
   let text = prefix
-  const scenarioLocation = formatLocation(cwd, scenario)
+  const scenarioLocation = formatLocation(scenario)
   text +=
     'Scenario: ' +
     scenario.name +
@@ -103,11 +102,10 @@ export function formatIssue({
     colorFns.location(scenarioLocation) +
     '\n'
   _.each(stepResults, stepResult => {
-    const identifier = formatStepResult({ colorFns, cwd, stepResult })
+    const identifier = formatStepResult({ colorFns, stepResult })
     text += indentString(identifier, prefix.length)
     const message = getStepResultMessage({
       colorFns,
-      cwd,
       snippetBuilder,
       stepResult
     })

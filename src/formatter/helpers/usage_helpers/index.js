@@ -5,7 +5,7 @@ import Hook from '../../../models/hook'
 function buildEmptyMapping(stepDefinitions) {
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
-    const location = formatLocation('', stepDefinition)
+    const location = formatLocation(stepDefinition)
     mapping[location] = {
       line: stepDefinition.line,
       pattern: stepDefinition.pattern,
@@ -21,7 +21,7 @@ function buildMapping({ stepDefinitions, stepResults }) {
   stepResults.forEach(stepResult => {
     const { duration, step, stepDefinition } = stepResult
     if (!(step instanceof Hook) && stepDefinition) {
-      const location = formatLocation('', stepDefinition)
+      const location = formatLocation(stepDefinition)
       const match = {
         line: step.line,
         text: step.name,

@@ -39,6 +39,6 @@ export default class EventBroadcaster {
   }
 
   getListenerErrorLocation({ fnName, listener }) {
-    return listener.relativeUri || `${listener.constructor.name}::${fnName}`
+    return listener.location || `${listener.constructor.name}::${fnName}`
   }
 }
