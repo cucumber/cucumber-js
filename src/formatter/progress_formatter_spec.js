@@ -9,7 +9,7 @@ describe('ProgressFormatter', function() {
   beforeEach(function() {
     this.output = ''
     const colorFns = getColorFns(false)
-    const logFn = (data) => {
+    const logFn = data => {
       this.output += data
     }
     this.progressFormatter = new ProgressFormatter({
@@ -25,7 +25,7 @@ describe('ProgressFormatter', function() {
 
   describe('step result', function() {
     describe('step is a hook', function() {
-      beforeEach(function(){
+      beforeEach(function() {
         this.stepResult = {
           status: null,
           step: Object.create(Hook.prototype)
@@ -78,7 +78,7 @@ describe('ProgressFormatter', function() {
     })
 
     describe('step is a normal step', function() {
-      beforeEach(function(){
+      beforeEach(function() {
         this.stepResult = createMock({
           status: null,
           step: Object.create(Step.prototype)
@@ -155,7 +155,7 @@ describe('ProgressFormatter', function() {
 
   describe('features result', function() {
     beforeEach(function() {
-      this.featuresResult = {some: 'data'}
+      this.featuresResult = { some: 'data' }
       this.progressFormatter.handleFeaturesResult(this.featuresResult)
     })
 
@@ -165,8 +165,11 @@ describe('ProgressFormatter', function() {
 
     describe('summary formatter', function() {
       it('handleFeaturesResult is also called', function() {
-        expect(SummaryFormatter.prototype.handleFeaturesResult).to.have.been.calledOnce
-        expect(SummaryFormatter.prototype.handleFeaturesResult).to.have.been.calledWith(this.featuresResult)
+        expect(SummaryFormatter.prototype.handleFeaturesResult).to.have.been
+          .calledOnce
+        expect(
+          SummaryFormatter.prototype.handleFeaturesResult
+        ).to.have.been.calledWith(this.featuresResult)
       })
     })
   })

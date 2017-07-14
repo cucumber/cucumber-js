@@ -19,14 +19,26 @@ const keywords = [
 function getAsTable(header, rows) {
   const table = new Table({
     chars: {
-      'bottom': '', 'bottom-left': '', 'bottom-mid': '', 'bottom-right': '',
-      'left': '', 'left-mid': '',
-      'mid': '', 'mid-mid': '', 'middle': ' | ',
-      'right': '', 'right-mid': '',
-      'top': '' , 'top-left': '', 'top-mid': '', 'top-right': ''
+      bottom: '',
+      'bottom-left': '',
+      'bottom-mid': '',
+      'bottom-right': '',
+      left: '',
+      'left-mid': '',
+      mid: '',
+      'mid-mid': '',
+      middle: ' | ',
+      right: '',
+      'right-mid': '',
+      top: '',
+      'top-left': '',
+      'top-mid': '',
+      'top-right': ''
     },
     style: {
-      border: [], 'padding-left': 0, 'padding-right': 0
+      border: [],
+      'padding-left': 0,
+      'padding-right': 0
     }
   })
   table.push(header)
@@ -43,8 +55,8 @@ export function getLanguages() {
 
 export function getKeywords(isoCode) {
   const language = Gherkin.DIALECTS[isoCode]
-  const rows = _.map(keywords, (keyword) => {
-    const words = _.map(language[keyword], (s) => `"${s}"`).join(', ')
+  const rows = _.map(keywords, keyword => {
+    const words = _.map(language[keyword], s => `"${s}"`).join(', ')
     return [titleCase(keyword), words]
   })
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)

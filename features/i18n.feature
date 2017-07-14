@@ -14,7 +14,7 @@ Feature: internationalization
 
   Scenario: invalid iso code
     When I run cucumber-js with `--i18n-keywords XX`
-    Then the output contains the text:
+    Then the error output contains the text:
       """
       Unsupported ISO 639-1: XX
       """

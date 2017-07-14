@@ -1,21 +1,23 @@
-import {promisify} from 'bluebird'
+import { promisify } from 'bluebird'
 import fs from 'mz/fs'
-import {getFeatures} from './helpers'
+import { getFeatures } from './helpers'
 import tmp from 'tmp'
+import path from 'path'
 
 describe('helpers', function() {
   describe('getFeatures', function() {
     beforeEach(async function() {
-      this.tmpDir = await promisify(tmp.dir)({unsafeCleanup: true})
+      this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
+      this.tmpFile = path.join(this.tmpDir, 'a.feature')
     })
 
     describe('empty feature', function() {
       beforeEach(async function() {
-        const tmpFile = await promisify(tmp.file)()
-        await fs.writeFile(tmpFile, '')
+        await fs.writeFile(this.tmpFile, '')
         this.result = await getFeatures({
-          featurePaths: [tmpFile],
-          scenarioFilter: createMock({matches: true})
+          cwd: this.tmpDir,
+          featurePaths: [this.tmpFile],
+          scenarioFilter: createMock({ matches: true })
         })
       })
 
@@ -26,11 +28,14 @@ describe('helpers', function() {
 
     describe('feature without matching scenarios', function() {
       beforeEach(async function() {
-        const tmpFile = await promisify(tmp.file)()
-        await fs.writeFile(tmpFile, 'Feature: a\nScenario: b\nGiven a step')
+        await fs.writeFile(
+          this.tmpFile,
+          'Feature: a\nScenario: b\nGiven a step'
+        )
         this.result = await getFeatures({
-          featurePaths: [tmpFile],
-          scenarioFilter: createMock({matches: false})
+          cwd: this.tmpDir,
+          featurePaths: [this.tmpFile],
+          scenarioFilter: createMock({ matches: false })
         })
       })
 
@@ -41,11 +46,14 @@ describe('helpers', function() {
 
     describe('feature with matching scenarios', function() {
       beforeEach(async function() {
-        const tmpFile = await promisify(tmp.file)()
-        await fs.writeFile(tmpFile, 'Feature: a\nScenario: b\nGiven a step')
+        await fs.writeFile(
+          this.tmpFile,
+          'Feature: a\nScenario: b\nGiven a step'
+        )
         this.result = await getFeatures({
-          featurePaths: [tmpFile],
-          scenarioFilter: createMock({matches: true})
+          cwd: this.tmpDir,
+          featurePaths: [this.tmpFile],
+          scenarioFilter: createMock({ matches: true })
         })
       })
 

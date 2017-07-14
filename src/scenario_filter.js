@@ -1,14 +1,14 @@
 import _ from 'lodash'
-import path from 'path'
 import TagExpressionParser from 'cucumber-tag-expressions/lib/tag_expression_parser'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 const tagExpressionParser = new TagExpressionParser()
 
 export default class ScenarioFilter {
-  constructor({cwd, featurePaths, names, tagExpression}) {
-    this.cwd = cwd
-    this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping(featurePaths || [])
+  constructor({ featurePaths, names, tagExpression }) {
+    this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping(
+      featurePaths || []
+    )
     this.names = names || []
     if (tagExpression) {
       this.tagExpressionNode = tagExpressionParser.parse(tagExpression || '')
@@ -17,16 +17,16 @@ export default class ScenarioFilter {
 
   getFeatureUriToLinesMapping(featurePaths) {
     const mapping = {}
-    featurePaths.forEach((featurePath) => {
+    featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (match) {
-        const uri = path.resolve(this.cwd, match[1])
+        const uri = match[1]
         const linesExpression = match[2]
         if (linesExpression) {
           if (!mapping[uri]) {
             mapping[uri] = []
           }
-          linesExpression.slice(1).split(':').forEach(function (line) {
+          linesExpression.slice(1).split(':').forEach(function(line) {
             mapping[uri].push(parseInt(line))
           })
         }
@@ -36,9 +36,11 @@ export default class ScenarioFilter {
   }
 
   matches(scenario) {
-    return this.matchesAnyLine(scenario) &&
+    return (
+      this.matchesAnyLine(scenario) &&
       this.matchesAnyName(scenario) &&
       this.matchesAllTagExpressions(scenario)
+    )
   }
 
   matchesAnyLine(scenario) {
@@ -55,7 +57,7 @@ export default class ScenarioFilter {
       return true
     }
     const scenarioName = scenario.name
-    return _.some(this.names, function (name) {
+    return _.some(this.names, function(name) {
       return scenarioName.match(name)
     })
   }
@@ -64,7 +66,7 @@ export default class ScenarioFilter {
     if (!this.tagExpressionNode) {
       return true
     }
-    const scenarioTags = scenario.tags.map((t) => t.name)
+    const scenarioTags = scenario.tags.map(t => t.name)
     return this.tagExpressionNode.evaluate(scenarioTags)
   }
 }

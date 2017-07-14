@@ -4,8 +4,8 @@ import KeywordType from '../../keyword_type'
 import StepDefinitionSnippetBuilder from './'
 import TransformLookupBuilder from '../../support_code_library/parameter_type_registry_builder'
 
-describe('StepDefinitionSnippetBuilder', function () {
-  beforeEach(function () {
+describe('StepDefinitionSnippetBuilder', function() {
+  beforeEach(function() {
     this.snippetSyntax = createMock(['build'])
     this.transformsLookup = TransformLookupBuilder.build()
     this.snippetBuilder = new StepDefinitionSnippetBuilder({
@@ -14,7 +14,7 @@ describe('StepDefinitionSnippetBuilder', function () {
     })
   })
 
-  describe('build()', function () {
+  describe('build()', function() {
     beforeEach(function() {
       this.step = {
         arguments: [],
@@ -74,8 +74,13 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the quoted string with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {string} ghi')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql(
+          'abc {string} ghi'
+        )
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
+          'string',
+          'callback'
+        ])
       })
     })
 
@@ -86,8 +91,14 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the quoted strings with capture groups and adds parameters', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {string} ghi {string} mno')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'string2', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql(
+          'abc {string} ghi {string} mno'
+        )
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
+          'string',
+          'string2',
+          'callback'
+        ])
       })
     })
 
@@ -98,19 +109,27 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('replaces the number with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc {int} def')
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['int', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql(
+          'abc {int} def'
+        )
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
+          'int',
+          'callback'
+        ])
       })
     })
 
     describe('step has a data table argument', function() {
       beforeEach(function() {
-        this.step.arguments = [new DataTable({rows: []})]
+        this.step.arguments = [new DataTable({ rows: [] })]
         this.result = this.snippetBuilder.build(this.step)
       })
 
       it('passes table as a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['table', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
+          'table',
+          'callback'
+        ])
       })
     })
 
@@ -121,7 +140,10 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('passes table as a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
+          'string',
+          'callback'
+        ])
       })
     })
 
@@ -133,7 +155,12 @@ describe('StepDefinitionSnippetBuilder', function () {
       })
 
       it('puts the table argument after the capture groups', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql(['string', 'string2', 'table', 'callback'])
+        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
+          'string',
+          'string2',
+          'table',
+          'callback'
+        ])
       })
     })
   })

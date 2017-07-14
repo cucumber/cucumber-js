@@ -23,13 +23,13 @@ export default class Scenario {
 
     this.line = _.first(this.lines)
     this.description = _.chain(this.lines)
-      .map((line) => lineToDescriptionMapping[line])
+      .map(line => lineToDescriptionMapping[line])
       .compact()
       .first()
       .value()
 
     let previousStep
-    this.steps = _.map(gherkinData.steps, (gherkinStepData) => {
+    this.steps = _.map(gherkinData.steps, gherkinStepData => {
       const step = new Step({
         backgroundLines: backgroundStepLines,
         gherkinData: gherkinStepData,

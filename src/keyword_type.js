@@ -9,12 +9,12 @@ const types = {
 
 export default types
 
-export function getStepKeywordType({language, previousStep, step}) {
+export function getStepKeywordType({ language, previousStep, step }) {
   const dialect = Gherkin.DIALECTS[language]
-  const type = _.find(['given', 'when', 'then', 'and', 'but'], (keyword) => {
+  const type = _.find(['given', 'when', 'then', 'and', 'but'], keyword => {
     return _.includes(dialect[keyword], step.keyword)
   })
-  switch(type) {
+  switch (type) {
     case 'when':
       return types.EVENT
     case 'then':
@@ -24,7 +24,7 @@ export function getStepKeywordType({language, previousStep, step}) {
       if (previousStep) {
         return previousStep.keywordType
       }
-      // fallthrough
+    // fallthrough
     default:
       return types.PRECONDITION
   }

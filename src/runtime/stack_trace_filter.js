@@ -23,7 +23,9 @@ export default class StackTraceFilter {
 
   isErrorInCucumber(frames) {
     const filteredFrames = _.reject(frames, ::this.isFrameInNode)
-    return filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
+    return (
+      filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
+    )
   }
 
   isFrameInCucumber(frame) {

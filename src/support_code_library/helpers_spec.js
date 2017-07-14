@@ -1,6 +1,6 @@
-import {defineHook, defineStep, registerHandler} from './helpers'
+import { defineHook, defineStep, registerHandler } from './helpers'
 
-describe('helpers', function () {
+describe('helpers', function() {
   describe('defineHook', function() {
     beforeEach(function() {
       this.defineHook = defineHook('', [])
@@ -14,13 +14,13 @@ describe('helpers', function () {
 
     it('throws on invalid options.tags type', function() {
       expect(() => {
-        this.defineHook({tags:[]}, function() {})
+        this.defineHook({ tags: [] }, function() {})
       }).to.throw(/Invalid "options.tags": should be a string$/)
     })
 
     it('throws on invalid options.timeout type', function() {
       expect(() => {
-        this.defineHook({timeout:'1'}, function() {})
+        this.defineHook({ timeout: '1' }, function() {})
       }).to.throw(/Invalid "options.timeout": should be a integer$/)
     })
 
@@ -39,7 +39,9 @@ describe('helpers', function () {
     it('throws on invalid pattern type', function() {
       expect(() => {
         this.defineStep([])
-      }).to.throw(/Invalid first argument: should be a string or regular expression$/)
+      }).to.throw(
+        /Invalid first argument: should be a string or regular expression$/
+      )
     })
 
     it('throws on invalid options/fn type', function() {
@@ -50,7 +52,7 @@ describe('helpers', function () {
 
     it('throws on invalid options.timeout type', function() {
       expect(() => {
-        this.defineStep('', {timeout:'1'}, function() {})
+        this.defineStep('', { timeout: '1' }, function() {})
       }).to.throw(/Invalid "options.timeout": should be a integer$/)
     })
 
@@ -80,7 +82,7 @@ describe('helpers', function () {
 
     it('throws on invalid options.timeout type', function() {
       expect(() => {
-        this.registerHandler('', {timeout:'1'}, function() {})
+        this.registerHandler('', { timeout: '1' }, function() {})
       }).to.throw(/Invalid "options.timeout": should be a integer$/)
     })
 

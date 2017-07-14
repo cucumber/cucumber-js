@@ -31,7 +31,7 @@ Feature: registerHandler timeouts
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting        |
       | function timed out after 500 milliseconds |
       | features/support/handlers.js:6            |

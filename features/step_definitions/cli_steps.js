@@ -1,23 +1,29 @@
 /* eslint-disable babel/new-cap */
 
-import {defineSupportCode} from '../../'
-import {expect} from 'chai'
-import {normalizeText} from '../support/helpers'
+import { defineSupportCode } from '../../'
+import { expect } from 'chai'
+import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
 
-defineSupportCode(function({When, Then}) {
-  When(/^I run cucumber.js(?: with `(|.+)`)?$/, {timeout: 10000}, function(args) {
+defineSupportCode(function({ When, Then }) {
+  When(/^I run cucumber.js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
+    args
+  ) {
     args = stringArgv(args || '')
     return this.run(this.localExecutablePath, args)
   })
 
-  When(/^I run cucumber.js \(installed (locally|globally)\)$/, {timeout: 10000}, function(location) {
-    if (location === 'locally') {
-      return this.run(this.localExecutablePath, [])
-    } else {
-      return this.run(this.globalExecutablePath, [])
+  When(
+    /^I run cucumber.js \(installed (locally|globally)\)$/,
+    { timeout: 10000 },
+    function(location) {
+      if (location === 'locally') {
+        return this.run(this.localExecutablePath, [])
+      } else {
+        return this.run(this.globalExecutablePath, [])
+      }
     }
-  })
+  )
 
   Then(/^it passes$/, function() {})
 
@@ -39,12 +45,18 @@ defineSupportCode(function({When, Then}) {
     expect(actualOutput).to.include(expectedOutput)
   })
 
-  Then(/^the output contains the text snippets:$/, function(table) {
-    const actualOutput = normalizeText(this.lastRun.output)
-    table.rows().forEach((row) => {
+  Then(/^the error output contains the text snippets:$/, function(table) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
+    table.rows().forEach(row => {
       const expectedOutput = normalizeText(row[0])
       expect(actualOutput).to.include(expectedOutput)
     })
+  })
+
+  Then(/^the error output contains the text:$/, function(text) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
+    const expectedOutput = normalizeText(text)
+    expect(actualOutput).to.include(expectedOutput)
   })
 
   Then(/^I see the version of Cucumber$/, function() {

@@ -5,20 +5,35 @@ import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
 import Promise from 'bluebird'
 
-const {beginTiming, endTiming} = Time
+const { beginTiming, endTiming } = Time
 
-async function run({attachmentManager, defaultTimeout, scenarioResult, step, stepDefinition, parameterTypeRegistry, world}) {
+async function run({
+  attachmentManager,
+  defaultTimeout,
+  scenarioResult,
+  step,
+  stepDefinition,
+  parameterTypeRegistry,
+  world
+}) {
   beginTiming()
   let error, result, parameters
 
   try {
-    parameters = await Promise.all(stepDefinition.getInvocationParameters({scenarioResult, step, parameterTypeRegistry}))
-  } catch(err) {
+    parameters = await Promise.all(
+      stepDefinition.getInvocationParameters({
+        scenarioResult,
+        step,
+        parameterTypeRegistry
+      })
+    )
+  } catch (err) {
     error = err
   }
 
-  if(!error) {
-    const timeoutInMilliseconds = stepDefinition.options.timeout || defaultTimeout
+  if (!error) {
+    const timeoutInMilliseconds =
+      stepDefinition.options.timeout || defaultTimeout
 
     const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
     if (_.includes(validCodeLengths, stepDefinition.code.length)) {
@@ -57,4 +72,4 @@ async function run({attachmentManager, defaultTimeout, scenarioResult, step, ste
   return new StepResult(stepResultData)
 }
 
-export default {run}
+export default { run }

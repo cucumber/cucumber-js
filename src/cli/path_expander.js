@@ -10,7 +10,7 @@ export default class PathExpander {
   }
 
   async expandPathsWithExtensions(paths, extensions) {
-    const expandedPaths = await Promise.map(paths, async (p) => {
+    const expandedPaths = await Promise.map(paths, async p => {
       return await this.expandPathWithExtensions(p, extensions)
     })
     return _.uniq(_.flatten(expandedPaths))
@@ -34,6 +34,6 @@ export default class PathExpander {
       pattern += extensions[0]
     }
     const results = await Promise.promisify(glob)(pattern)
-    return results.map((filePath) => filePath.replace(/\//g, path.sep))
+    return results.map(filePath => filePath.replace(/\//g, path.sep))
   }
 }

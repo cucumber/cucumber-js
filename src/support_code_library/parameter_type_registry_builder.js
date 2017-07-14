@@ -1,7 +1,7 @@
-import {ParameterTypeRegistry} from 'cucumber-expressions'
+import { ParameterTypeRegistry } from 'cucumber-expressions'
 
 function build() {
   return new ParameterTypeRegistry()
 }
 
-export default {build}
+export default { build }
