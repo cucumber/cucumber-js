@@ -52,7 +52,9 @@ Built-in formatters
 * progress - prints one character per scenario
 * progress-bar - prints a progress bar and outputs errors/warnings along the way
 * rerun - prints the paths of any non passing scenarios ([example](/features/rerun_formatter.feature))
-  * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`. Use with `--fail-fast` to rerun the failure and the remaining features.
+  * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`. 
+  * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
+  * Use with `--fail-fast` to rerun the failure and the remaining features.
 * snippets - prints just the code snippets for undefined steps
 * summary - prints a summary only, after all scenarios were executed
 * usage - prints a table with data about step definitions usage
