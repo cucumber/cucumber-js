@@ -60,11 +60,32 @@ Multiple `After` hooks are executed in the **reverse** order that they are defin
 
 ---
 
+#### `AfterAll([options,] fn)`
+
+Defines a hook which is run after all scenarios have completed.
+
+* `options`: An object with the following keys:
+  * `timeout`: A hook-specific timeout, to override the default timeout.
+* `fn`: A function, defined as follows:
+  * When using the asynchronous callback interface, have one argument for the callback function.
+
+Multiple `AfterAll` hooks are executed in the **reverse** order that they are defined.
+
+---
+
 #### `Before([options,] fn)`
 
 Defines a hook which is run before each scenario. Same interface as `After`.
 
 Multiple `Before` hooks are executed in the order that they are defined.
+
+---
+
+#### `BeforeAll([options,] fn)`
+
+Defines a hook which is run before all scenarios. Same interface as `AfterAll`.
+
+Multiple `BeforeAll` hooks are executed in the order that they are defined.
 
 ---
 

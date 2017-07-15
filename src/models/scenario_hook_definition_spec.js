@@ -1,6 +1,6 @@
-import HookDefinition from './hook_definition'
+import ScenarioHookDefinition from './scenario_hook_definition'
 
-describe('HookDefinition', function() {
+describe('ScenarioHookDefinition', function() {
   describe('appliesToScenario', function() {
     beforeEach(function() {
       this.scenario = {
@@ -11,36 +11,41 @@ describe('HookDefinition', function() {
 
     describe('no tags', function() {
       beforeEach(function() {
-        this.hookDefinition = new HookDefinition({ options: {} })
+        this.scenariohookDefinition = new ScenarioHookDefinition({
+          options: {}
+        })
       })
 
       it('returns true', function() {
-        expect(this.hookDefinition.appliesToScenario(this.scenario)).to.be.true
+        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to
+          .be.true
       })
     })
 
     describe('tags match', function() {
       beforeEach(function() {
         this.scenario.tags = [{ name: '@tagA' }]
-        this.hookDefinition = new HookDefinition({
+        this.scenariohookDefinition = new ScenarioHookDefinition({
           options: { tags: '@tagA' }
         })
       })
 
       it('returns true', function() {
-        expect(this.hookDefinition.appliesToScenario(this.scenario)).to.be.true
+        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to
+          .be.true
       })
     })
 
     describe('tags do not match', function() {
       beforeEach(function() {
-        this.hookDefinition = new HookDefinition({
+        this.scenariohookDefinition = new ScenarioHookDefinition({
           options: { tags: '@tagA' }
         })
       })
 
       it('returns false', function() {
-        expect(this.hookDefinition.appliesToScenario(this.scenario)).to.be.false
+        expect(this.scenariohookDefinition.appliesToScenario(this.scenario)).to
+          .be.false
       })
     })
   })
