@@ -12,8 +12,10 @@ describe('SupportCodeLibraryBuilder', function() {
     })
 
     it('returns the default options', function() {
-      expect(this.options.afterHookDefinitions).to.eql([])
-      expect(this.options.beforeHookDefinitions).to.eql([])
+      expect(this.options.afterFeaturesHookDefinitions).to.eql([])
+      expect(this.options.afterScenarioHookDefinitions).to.eql([])
+      expect(this.options.beforeFeaturesHookDefinitions).to.eql([])
+      expect(this.options.beforeScenarioHookDefinitions).to.eql([])
       expect(this.options.defaultTimeout).to.eql(5000)
       expect(this.options.listeners).to.eql([])
       expect(this.options.stepDefinitions).to.eql([])
@@ -43,9 +45,11 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds a after hook definition', function() {
-        expect(this.options.afterHookDefinitions).to.have.lengthOf(1)
-        expect(this.options.afterHookDefinitions[0].code).to.eql(this.hook)
+      it('adds a scenario hook definition', function() {
+        expect(this.options.afterScenarioHookDefinitions).to.have.lengthOf(1)
+        expect(this.options.afterScenarioHookDefinitions[0].code).to.eql(
+          this.hook
+        )
       })
     })
 
@@ -62,12 +66,14 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds a after hook definition', function() {
-        expect(this.options.afterHookDefinitions).to.have.lengthOf(1)
-        expect(this.options.afterHookDefinitions[0].options.tags).to.eql(
-          '@tagA'
+      it('adds a scenario hook definition', function() {
+        expect(this.options.afterScenarioHookDefinitions).to.have.lengthOf(1)
+        expect(
+          this.options.afterScenarioHookDefinitions[0].options.tags
+        ).to.eql('@tagA')
+        expect(this.options.afterScenarioHookDefinitions[0].code).to.eql(
+          this.hook
         )
-        expect(this.options.afterHookDefinitions[0].code).to.eql(this.hook)
       })
     })
 
@@ -84,12 +90,14 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds a after hook definition', function() {
-        expect(this.options.afterHookDefinitions).to.have.lengthOf(1)
-        expect(this.options.afterHookDefinitions[0].options.tags).to.eql(
-          '@tagA'
+      it('adds a scenario hook definition', function() {
+        expect(this.options.afterScenarioHookDefinitions).to.have.lengthOf(1)
+        expect(
+          this.options.afterScenarioHookDefinitions[0].options.tags
+        ).to.eql('@tagA')
+        expect(this.options.afterScenarioHookDefinitions[0].code).to.eql(
+          this.hook
         )
-        expect(this.options.afterHookDefinitions[0].code).to.eql(this.hook)
       })
     })
 
@@ -107,10 +115,14 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds the hook definitions in the reverse order of definition', function() {
-        expect(this.options.afterHookDefinitions).to.have.lengthOf(2)
-        expect(this.options.afterHookDefinitions[0].code).to.eql(this.hook2)
-        expect(this.options.afterHookDefinitions[1].code).to.eql(this.hook1)
+      it('adds the scenario hook definitions in the reverse order of definition', function() {
+        expect(this.options.afterScenarioHookDefinitions).to.have.lengthOf(2)
+        expect(this.options.afterScenarioHookDefinitions[0].code).to.eql(
+          this.hook2
+        )
+        expect(this.options.afterScenarioHookDefinitions[1].code).to.eql(
+          this.hook1
+        )
       })
     })
   })
@@ -129,9 +141,11 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds a before hook definition', function() {
-        expect(this.options.beforeHookDefinitions).to.have.lengthOf(1)
-        expect(this.options.beforeHookDefinitions[0].code).to.eql(this.hook)
+      it('adds a scenario hook definition', function() {
+        expect(this.options.beforeScenarioHookDefinitions).to.have.lengthOf(1)
+        expect(this.options.beforeScenarioHookDefinitions[0].code).to.eql(
+          this.hook
+        )
       })
     })
 
@@ -148,12 +162,14 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds a before hook definition', function() {
-        expect(this.options.beforeHookDefinitions).to.have.lengthOf(1)
-        expect(this.options.beforeHookDefinitions[0].options.tags).to.eql(
-          '@tagA'
+      it('adds a scenario hook definition', function() {
+        expect(this.options.beforeScenarioHookDefinitions).to.have.lengthOf(1)
+        expect(
+          this.options.beforeScenarioHookDefinitions[0].options.tags
+        ).to.eql('@tagA')
+        expect(this.options.beforeScenarioHookDefinitions[0].code).to.eql(
+          this.hook
         )
-        expect(this.options.beforeHookDefinitions[0].code).to.eql(this.hook)
       })
     })
 
@@ -170,12 +186,14 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds a before hook definition', function() {
-        expect(this.options.beforeHookDefinitions).to.have.lengthOf(1)
-        expect(this.options.beforeHookDefinitions[0].options.tags).to.eql(
-          '@tagA'
+      it('adds a scenario hook definition', function() {
+        expect(this.options.beforeScenarioHookDefinitions).to.have.lengthOf(1)
+        expect(
+          this.options.beforeScenarioHookDefinitions[0].options.tags
+        ).to.eql('@tagA')
+        expect(this.options.beforeScenarioHookDefinitions[0].code).to.eql(
+          this.hook
         )
-        expect(this.options.beforeHookDefinitions[0].code).to.eql(this.hook)
       })
     })
 
@@ -193,10 +211,14 @@ describe('SupportCodeLibraryBuilder', function() {
         })
       })
 
-      it('adds the hook definitions in the order of definition', function() {
-        expect(this.options.beforeHookDefinitions).to.have.lengthOf(2)
-        expect(this.options.beforeHookDefinitions[0].code).to.eql(this.hook1)
-        expect(this.options.beforeHookDefinitions[1].code).to.eql(this.hook2)
+      it('adds the scenario hook definitions in the order of definition', function() {
+        expect(this.options.beforeScenarioHookDefinitions).to.have.lengthOf(2)
+        expect(this.options.beforeScenarioHookDefinitions[0].code).to.eql(
+          this.hook1
+        )
+        expect(this.options.beforeScenarioHookDefinitions[1].code).to.eql(
+          this.hook2
+        )
       })
     })
   })
