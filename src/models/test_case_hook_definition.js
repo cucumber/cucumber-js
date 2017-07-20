@@ -1,16 +1,16 @@
-import ScenarioFilter from '../scenario_filter'
+import PickleFilter from '../pickle_filter'
 import StepDefinition from './step_definition'
 
-export default class ScenarioHookDefinition extends StepDefinition {
+export default class TestCaseHookDefinition extends StepDefinition {
   constructor(data) {
     super(data)
-    this.scenarioFilter = new ScenarioFilter({
+    this.pickleFilter = new PickleFilter({
       tagExpression: this.options.tags
     })
   }
 
-  appliesToScenario(scenario) {
-    return this.scenarioFilter.matches(scenario)
+  appliesToTestCase({ pickle, uri }) {
+    return this.pickleFilter.matches({ pickle, uri })
   }
 
   getInvalidCodeLengthMessage() {
