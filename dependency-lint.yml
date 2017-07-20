@@ -27,6 +27,7 @@ ignoreErrors:
     - babel-plugin-istanbul # .babelrc
     - babel-plugin-transform-async-to-module-method # .babelrc
     - babel-plugin-transform-function-bind # .babelrc
+    - babel-plugin-transform-object-rest-spread # .babelrc
     - babel-plugin-transform-promise-to-bluebird # .babelrc
     - babel-plugin-transform-regenerator # .babelrc
     - babel-plugin-transform-runtime # .babelrc

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { validateInstall } from './install_validator'
 import { getExpandedArgv, getFeatures } from './helpers'
 import ConfigurationBuilder from './configuration_builder'
@@ -35,10 +34,12 @@ export default class Cli {
           stream = fs.createWriteStream(null, { fd })
           streamsToClose.push(stream)
         }
-        const typeOptions = _.assign(
-          { log: ::stream.write, stream, supportCodeLibrary },
-          formatOptions
-        )
+        const typeOptions = {
+          log: ::stream.write,
+          stream,
+          supportCodeLibrary,
+          ...formatOptions
+        }
         return FormatterBuilder.build(type, typeOptions)
       }
     )

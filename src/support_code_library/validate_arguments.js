@@ -24,12 +24,12 @@ const fnValidation = {
 
 const validations = {
   defineFeaturesHook: [
-    _.assign({ identifier: 'first argument' }, optionsValidation),
+    { identifier: 'first argument', ...optionsValidation },
     optionsTimeoutValidation,
-    _.assign({ identifier: 'second argument' }, fnValidation)
+    { identifier: 'second argument', ...fnValidation }
   ],
   defineScenarioHook: [
-    _.assign({ identifier: 'first argument' }, optionsValidation),
+    { identifier: 'first argument', ...optionsValidation },
     {
       identifier: '"options.tags"',
       expectedType: 'string',
@@ -38,7 +38,7 @@ const validations = {
       }
     },
     optionsTimeoutValidation,
-    _.assign({ identifier: 'second argument' }, fnValidation)
+    { identifier: 'second argument', ...fnValidation }
   ],
   defineStep: [
     {
@@ -48,9 +48,9 @@ const validations = {
         return _.isRegExp(pattern) || _.isString(pattern)
       }
     },
-    _.assign({ identifier: 'second argument' }, optionsValidation),
+    { identifier: 'second argument', ...optionsValidation },
     optionsTimeoutValidation,
-    _.assign({ identifier: 'third argument' }, fnValidation)
+    { identifier: 'third argument', ...fnValidation }
   ],
   registerHandler: [
     {
@@ -60,9 +60,9 @@ const validations = {
         return _.isString(eventName)
       }
     },
-    _.assign({ identifier: 'second argument' }, optionsValidation),
+    { identifier: 'second argument', ...optionsValidation },
     optionsTimeoutValidation,
-    _.assign({ identifier: 'third argument' }, fnValidation)
+    { identifier: 'third argument', ...fnValidation }
   ]
 }
 
