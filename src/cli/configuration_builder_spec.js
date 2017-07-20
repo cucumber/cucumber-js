@@ -32,6 +32,11 @@ describe('Configuration', function() {
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
+        pickleFilterOptions: {
+          featurePaths: ['features'],
+          names: [],
+          tagExpression: ''
+        },
         profiles: [],
         runtimeOptions: {
           dryRun: false,
@@ -39,11 +44,6 @@ describe('Configuration', function() {
           filterStacktraces: true,
           strict: true,
           worldParameters: {}
-        },
-        scenarioFilterOptions: {
-          featurePaths: ['features'],
-          names: [],
-          tagExpression: ''
         },
         supportCodePaths: []
       })
@@ -64,11 +64,11 @@ describe('Configuration', function() {
     it('returns the appropriate feature and support code paths', async function() {
       const {
         featurePaths,
-        scenarioFilterOptions,
+        pickleFilterOptions,
         supportCodePaths
       } = this.result
       expect(featurePaths).to.eql([this.featurePath])
-      expect(scenarioFilterOptions.featurePaths).to.eql([
+      expect(pickleFilterOptions.featurePaths).to.eql([
         this.relativeFeaturePath
       ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
@@ -89,11 +89,11 @@ describe('Configuration', function() {
     it('returns the appropriate feature and support code paths', async function() {
       const {
         featurePaths,
-        scenarioFilterOptions,
+        pickleFilterOptions,
         supportCodePaths
       } = this.result
       expect(featurePaths).to.eql([this.featurePath])
-      expect(scenarioFilterOptions.featurePaths).to.eql([
+      expect(pickleFilterOptions.featurePaths).to.eql([
         this.relativeFeaturePath
       ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
