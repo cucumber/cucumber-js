@@ -1,4 +1,3 @@
-import Hook from '../models/hook'
 import Status from '../status'
 import SummaryFormatter from './summary_formatter'
 
@@ -12,16 +11,17 @@ const STATUS_CHARACTER_MAPPING = {
 }
 
 export default class ProgressFormatter extends SummaryFormatter {
-  handleStepResult(stepResult) {
-    const status = stepResult.status
-    if (!(stepResult.step instanceof Hook && status === Status.PASSED)) {
-      const character = this.colorFns[status](STATUS_CHARACTER_MAPPING[status])
-      this.log(character)
-    }
+  constructor(options) {
+    options.eventBroadcaster.on('test-run-finished', () => {
+      this.log('\n\n')
+    })
+    super(options)
+    options.eventBroadcaster.on('test-step-finished', ::this.logProgress)
   }
 
-  handleFeaturesResult(featuresResult) {
-    this.log('\n\n')
-    super.handleFeaturesResult(featuresResult)
+  logProgress({ result }) {
+    const { status } = result
+    const character = this.colorFns[status](STATUS_CHARACTER_MAPPING[status])
+    this.log(character)
   }
 }

@@ -1,14 +1,22 @@
 import _ from 'lodash'
-import DataTable from '../models/step_arguments/data_table'
-import DocString from '../models/step_arguments/doc_string'
 import Formatter from './'
 import Status from '../status'
-import util from 'util'
+import { formatLocation } from './helpers'
+import { buildStepArgumentIterator } from '../step_arguments'
+import {
+  getStepLineToKeywordMap,
+  getScenarioLineToDescriptionMap
+} from '../gherkin_document_parser'
+import {
+  getScenarioDescription,
+  getStepLineToPickledStepMap,
+  getStepKeyword
+} from '../pickle_parser'
 
 export default class JsonFormatter extends Formatter {
   constructor(options) {
     super(options)
-    this.features = []
+    options.eventBroadcaster.on('test-run-finished', ::this.onTestRunFinished)
   }
 
   convertNameToId(obj) {
@@ -26,61 +34,138 @@ export default class JsonFormatter extends Formatter {
 
   formatDataTable(dataTable) {
     return {
-      rows: dataTable.raw().map(function(row) {
-        return { cells: row }
+      rows: dataTable.rows.map(row => {
+        return { cells: _.map(row.cells, 'value') }
       })
     }
   }
 
   formatDocString(docString) {
-    return _.pick(docString, ['content', 'contentType', 'line'])
+    return {
+      content: docString.content,
+      line: docString.location.line
+    }
   }
 
   formatStepArguments(stepArguments) {
-    return _.map(stepArguments, arg => {
-      if (arg instanceof DataTable) {
-        return this.formatDataTable(arg)
-      } else if (arg instanceof DocString) {
-        return this.formatDocString(arg)
-      } else {
-        throw new Error(`Unknown argument type: ${util.inspect(arg)}`)
+    const iterator = buildStepArgumentIterator({
+      dataTable: this.formatDataTable.bind(this),
+      docString: this.formatDocString.bind(this)
+    })
+    return _.map(stepArguments, iterator)
+  }
+
+  onTestRunFinished() {
+    const groupedTestCases = {}
+    _.each(this.eventDataCollector.testCaseMap, testCase => {
+      const { sourceLocation: { uri } } = testCase
+      if (!groupedTestCases[uri]) {
+        groupedTestCases[uri] = []
       }
+      groupedTestCases[uri].push(testCase)
     })
+    const features = _.map(groupedTestCases, (group, uri) => {
+      const gherkinDocument = this.eventDataCollector.gherkinDocumentMap[uri]
+      const featureData = this.getFeatureData(gherkinDocument.feature, uri)
+      const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
+      const scenarioLineToDescriptionMap = getScenarioLineToDescriptionMap(
+        gherkinDocument
+      )
+      featureData.elements = group.map(testCase => {
+        const { pickle } = this.eventDataCollector.getTestCaseData(
+          testCase.sourceLocation
+        )
+        const scenarioData = this.getScenarioData({
+          featureId: featureData.id,
+          pickle,
+          scenarioLineToDescriptionMap
+        })
+        const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
+        let isBeforeHook = true
+        scenarioData.steps = testCase.steps.map(testStep => {
+          isBeforeHook = isBeforeHook && !testStep.sourceLocation
+          return this.getStepData({
+            isBeforeHook,
+            stepLineToKeywordMap,
+            stepLineToPickledStepMap,
+            testStep
+          })
+        })
+        return scenarioData
+      })
+      return featureData
+    })
+    this.log(JSON.stringify(features, null, 2))
   }
 
-  handleAfterFeatures() {
-    this.log(JSON.stringify(this.features, null, 2))
+  getFeatureData(feature, uri) {
+    return {
+      description: feature.description,
+      keyword: feature.keyword,
+      name: feature.name,
+      line: feature.location.line,
+      id: this.convertNameToId(feature),
+      tags: this.getTags(feature),
+      uri
+    }
   }
 
-  handleBeforeFeature(feature) {
-    this.currentFeature = _.pick(feature, [
-      'description',
-      'keyword',
-      'line',
-      'name',
-      'tags',
-      'uri'
-    ])
-    _.assign(this.currentFeature, {
-      elements: [],
-      id: this.convertNameToId(feature)
+  getScenarioData({ featureId, pickle, scenarioLineToDescriptionMap }) {
+    const description = getScenarioDescription({
+      pickle,
+      scenarioLineToDescriptionMap
     })
-    this.features.push(this.currentFeature)
+    return {
+      description,
+      id: featureId + ';' + this.convertNameToId(pickle),
+      keyword: 'Scenario',
+      line: pickle.locations[0].line,
+      name: pickle.name,
+      tags: this.getTags(pickle)
+    }
   }
 
-  handleBeforeScenario(scenario) {
-    this.currentScenario = _.pick(scenario, [
-      'description',
-      'keyword',
-      'line',
-      'name',
-      'tags'
-    ])
-    _.assign(this.currentScenario, {
-      id: this.currentFeature.id + ';' + this.convertNameToId(scenario),
-      steps: []
+  getStepData({
+    isBeforeHook,
+    stepLineToKeywordMap,
+    stepLineToPickledStepMap,
+    testStep
+  }) {
+    const data = {}
+    if (testStep.sourceLocation) {
+      const { line } = testStep.sourceLocation
+      const pickledStep = stepLineToPickledStepMap[line]
+      data.arguments = this.formatStepArguments(pickledStep.arguments)
+      data.keyword = getStepKeyword({ pickledStep, stepLineToKeywordMap })
+      data.line = line
+      data.name = pickledStep.text
+    } else {
+      data.keyword = isBeforeHook ? 'Before' : 'After'
+      data.hidden = true
+    }
+    if (testStep.actionLocation) {
+      data.match = { location: formatLocation(testStep.actionLocation) }
+    }
+    if (testStep.result) {
+      const { result: { exception, status } } = testStep
+      data.result = { status }
+      if (testStep.result.duration) {
+        data.result.duration = testStep.result.duration
+      }
+      if (status === Status.FAILED && exception) {
+        data.result.error_message = exception.stack || exception
+      }
+    }
+    if (_.size(testStep.attachments) > 0) {
+      data.embeddings = testStep.attachments
+    }
+    return data
+  }
+
+  getTags(obj) {
+    return _.map(obj.tags, tagData => {
+      return { name: tagData.name, line: tagData.location.line }
     })
-    this.currentFeature.elements.push(this.currentScenario)
   }
 
   handleStepResult(stepResult) {

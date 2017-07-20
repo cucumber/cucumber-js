@@ -1,21 +1,22 @@
 import UsageFormatter from './usage_formatter'
+import EventEmitter from 'events'
+import Gherkin from 'gherkin'
+import EventDataCollector from '../event_data_collector'
 
 describe('UsageFormatter', function() {
   describe('handleFeaturesResult', function() {
     beforeEach(function() {
+      this.eventBroadcaster = new EventEmitter()
       this.output = ''
       const logFn = data => {
         this.output += data
       }
-      this.featuresResult = {
-        scenarioResults: [],
-        stepResults: [],
-        duration: 0
-      }
       this.supportCodeLibrary = {
         stepDefinitions: []
       }
-      this.usageFormatter = new UsageFormatter({
+      new UsageFormatter({
+        eventBroadcaster: this.eventBroadcaster,
+        eventDataCollector: new EventDataCollector(this.eventBroadcaster),
         log: logFn,
         supportCodeLibrary: this.supportCodeLibrary
       })
@@ -23,7 +24,7 @@ describe('UsageFormatter', function() {
 
     describe('no step definitions', function() {
       beforeEach(function() {
-        this.usageFormatter.handleFeaturesResult(this.featuresResult)
+        this.eventBroadcaster.emit('test-run-finished')
       })
 
       it('outputs "No step definitions"', function() {
@@ -43,7 +44,7 @@ describe('UsageFormatter', function() {
 
       describe('unused', function() {
         beforeEach(function() {
-          this.usageFormatter.handleFeaturesResult(this.featuresResult)
+          this.eventBroadcaster.emit('test-run-finished')
         })
 
         it('outputs the step definition as unused', function() {
@@ -59,30 +60,49 @@ describe('UsageFormatter', function() {
 
       describe('used', function() {
         beforeEach(function() {
-          this.step1 = {
-            line: 1,
-            name: 'step-name1',
-            uri: 'a.feature'
-          }
-          this.stepResult1 = {
-            step: this.step1,
-            stepDefinition: this.stepDefinition
-          }
-          this.step2 = {
-            line: 2,
-            name: 'step-name2',
-            uri: 'a.feature'
-          }
-          this.stepResult2 = {
-            step: this.step2,
-            stepDefinition: this.stepDefinition
-          }
-          this.featuresResult.stepResults = [this.stepResult1, this.stepResult2]
+          const events = Gherkin.generateEvents(
+            'Feature: a\nScenario: b\nWhen abc\nThen ab',
+            'a.feature'
+          )
+          events.forEach(event => {
+            this.eventBroadcaster.emit(event.type, event)
+            if (event.type === 'pickle') {
+              this.eventBroadcaster.emit('pickle-accepted', {
+                type: 'pickle-accepted',
+                pickle: event.pickle,
+                uri: event.uri
+              })
+            }
+          })
+          this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+          this.eventBroadcaster.emit('test-case-prepared', {
+            ...this.testCase,
+            steps: [
+              {
+                sourceLocation: { uri: 'a.feature', line: 3 },
+                actionLocation: { uri: 'steps.js', line: 1 }
+              },
+              {
+                sourceLocation: { uri: 'a.feature', line: 4 },
+                actionLocation: { uri: 'steps.js', line: 1 }
+              }
+            ]
+          })
         })
 
         describe('in dry run', function() {
           beforeEach(function() {
-            this.usageFormatter.handleFeaturesResult(this.featuresResult)
+            this.eventBroadcaster.emit('test-step-finished', {
+              index: 0,
+              testCase: this.testCase,
+              result: {}
+            })
+            this.eventBroadcaster.emit('test-step-finished', {
+              index: 1,
+              testCase: this.testCase,
+              result: {}
+            })
+            this.eventBroadcaster.emit('test-run-finished')
           })
 
           it('outputs the step definition without durations', function() {
@@ -91,8 +111,8 @@ describe('UsageFormatter', function() {
                 '│ Pattern / Text │ Duration │ Location    │\n' +
                 '├────────────────┼──────────┼─────────────┤\n' +
                 '│ /^abc?$/       │ -        │ steps.js:1  │\n' +
-                '│   step-name1   │ -        │ a.feature:1 │\n' +
-                '│   step-name2   │ -        │ a.feature:2 │\n' +
+                '│   ab           │ -        │ a.feature:4 │\n' +
+                '│   abc          │ -        │ a.feature:3 │\n' +
                 '└────────────────┴──────────┴─────────────┘\n'
             )
           })
@@ -100,9 +120,17 @@ describe('UsageFormatter', function() {
 
         describe('not in dry run', function() {
           beforeEach(function() {
-            this.stepResult1.duration = 0
-            this.stepResult2.duration = 1
-            this.usageFormatter.handleFeaturesResult(this.featuresResult)
+            this.eventBroadcaster.emit('test-step-finished', {
+              index: 0,
+              testCase: this.testCase,
+              result: { duration: 1 }
+            })
+            this.eventBroadcaster.emit('test-step-finished', {
+              index: 1,
+              testCase: this.testCase,
+              result: { duration: 0 }
+            })
+            this.eventBroadcaster.emit('test-run-finished')
           })
 
           it('outputs the step definition with durations in desending order', function() {
@@ -111,8 +139,8 @@ describe('UsageFormatter', function() {
                 '│ Pattern / Text │ Duration │ Location    │\n' +
                 '├────────────────┼──────────┼─────────────┤\n' +
                 '│ /^abc?$/       │ 0.5ms    │ steps.js:1  │\n' +
-                '│   step-name2   │ 1ms      │ a.feature:2 │\n' +
-                '│   step-name1   │ 0ms      │ a.feature:1 │\n' +
+                '│   abc          │ 1ms      │ a.feature:3 │\n' +
+                '│   ab           │ 0ms      │ a.feature:4 │\n' +
                 '└────────────────┴──────────┴─────────────┘\n'
             )
           })
@@ -122,48 +150,62 @@ describe('UsageFormatter', function() {
 
     describe('with multiple definition', function() {
       beforeEach(function() {
-        const stepDefinition1 = {
-          line: 1,
-          pattern: 'abc',
-          uri: 'steps.js'
-        }
-        const stepDefinition2 = {
-          line: 2,
-          pattern: 'def',
-          uri: 'steps.js'
-        }
-        const stepDefinition3 = {
-          line: 3,
-          pattern: 'ghi',
-          uri: 'steps.js'
-        }
-        const step1 = {
-          line: 1,
-          name: 'step-name1',
-          uri: 'a.feature'
-        }
-        const stepResult1 = {
-          duration: 1,
-          step: step1,
-          stepDefinition: stepDefinition1
-        }
-        const step2 = {
-          line: 2,
-          name: 'step-name2',
-          uri: 'a.feature'
-        }
-        const stepResult2 = {
-          duration: 2,
-          step: step2,
-          stepDefinition: stepDefinition2
-        }
         this.supportCodeLibrary.stepDefinitions = [
-          stepDefinition1,
-          stepDefinition2,
-          stepDefinition3
+          {
+            line: 1,
+            pattern: '/abc/',
+            uri: 'steps.js'
+          },
+          {
+            line: 2,
+            pattern: '/def/',
+            uri: 'steps.js'
+          },
+          {
+            line: 3,
+            pattern: '/ghi/',
+            uri: 'steps.js'
+          }
         ]
-        this.featuresResult.stepResults = [stepResult1, stepResult2]
-        this.usageFormatter.handleFeaturesResult(this.featuresResult)
+        const events = Gherkin.generateEvents(
+          'Feature: a\nScenario: b\nGiven abc\nWhen def',
+          'a.feature'
+        )
+        events.forEach(event => {
+          this.eventBroadcaster.emit(event.type, event)
+          if (event.type === 'pickle') {
+            this.eventBroadcaster.emit('pickle-accepted', {
+              type: 'pickle-accepted',
+              pickle: event.pickle,
+              uri: event.uri
+            })
+          }
+        })
+        const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+        this.eventBroadcaster.emit('test-case-prepared', {
+          ...testCase,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 1 }
+            },
+            {
+              sourceLocation: { uri: 'a.feature', line: 4 },
+              actionLocation: { uri: 'steps.js', line: 2 }
+            }
+          ]
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase,
+          result: { duration: 1 }
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 1,
+          testCase,
+          result: { duration: 2 }
+        })
+        this.eventBroadcaster.emit('test-run-finished')
       })
 
       it('outputs the step definitions ordered by mean duration descending with unused steps at the end', function() {
@@ -171,13 +213,13 @@ describe('UsageFormatter', function() {
           '┌────────────────┬──────────┬─────────────┐\n' +
             '│ Pattern / Text │ Duration │ Location    │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ def            │ 2ms      │ steps.js:2  │\n' +
-            '│   step-name2   │ 2ms      │ a.feature:2 │\n' +
+            '│ /def/          │ 2ms      │ steps.js:2  │\n' +
+            '│   def          │ 2ms      │ a.feature:4 │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ abc            │ 1ms      │ steps.js:1  │\n' +
-            '│   step-name1   │ 1ms      │ a.feature:1 │\n' +
+            '│ /abc/          │ 1ms      │ steps.js:1  │\n' +
+            '│   abc          │ 1ms      │ a.feature:3 │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ ghi            │ UNUSED   │ steps.js:3  │\n' +
+            '│ /ghi/          │ UNUSED   │ steps.js:3  │\n' +
             '└────────────────┴──────────┴─────────────┘\n'
         )
       })

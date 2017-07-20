@@ -2,6 +2,9 @@ import getColorFns from './get_color_fns'
 import Status from '../status'
 import SummaryFormatter from './summary_formatter'
 import figures from 'figures'
+import { EventEmitter } from 'events'
+import Gherkin from 'gherkin'
+import EventDataCollector from '../event_data_collector'
 
 describe('SummaryFormatter', function() {
   beforeEach(function() {
@@ -9,295 +12,239 @@ describe('SummaryFormatter', function() {
     const logFn = data => {
       this.output += data
     }
-    this.scenario = {
-      line: 1,
-      name: 'name1',
-      uri: 'a.feature'
-    }
-    this.step = {
-      arguments: [],
-      keyword: 'keyword ',
-      line: 2,
-      name: 'name2',
-      uri: 'a.feature'
-    }
-    this.featuresResult = {
-      scenarioResults: [],
-      stepResults: [],
-      duration: 0
-    }
-    const snippetBuilder = createMock({ build: 'snippet' })
+    this.eventBroadcaster = new EventEmitter()
     this.summaryFormatter = new SummaryFormatter({
       colorFns: getColorFns(false),
+      eventBroadcaster: this.eventBroadcaster,
+      eventDataCollector: new EventDataCollector(this.eventBroadcaster),
       log: logFn,
-      snippetBuilder
+      snippetBuilder: createMock({ build: 'snippet' })
     })
   })
 
   describe('issues', function() {
-    beforeEach(function() {})
+    beforeEach(function() {
+      const events = Gherkin.generateEvents(
+        'Feature: a\nScenario: b\nGiven a step',
+        'a.feature'
+      )
+      events.forEach(event => {
+        this.eventBroadcaster.emit(event.type, event)
+        if (event.type === 'pickle') {
+          this.eventBroadcaster.emit('pickle-accepted', {
+            type: 'pickle-accepted',
+            pickle: event.pickle,
+            uri: event.uri
+          })
+        }
+      })
+      this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+    })
 
     describe('with a failing scenario', function() {
       beforeEach(function() {
-        const scenarioResult = {
-          status: Status.FAILED,
-          scenario: this.scenario,
-          stepResults: [
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
             {
-              duration: 0,
-              failureException: 'error',
-              status: Status.FAILED,
-              step: this.step,
-              stepDefinition: {
-                line: 3,
-                uri: 'steps.js'
-              }
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 }
             }
           ]
-        }
-        this.featuresResult.scenarioResults = [scenarioResult]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { exception: 'error', status: Status.FAILED }
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: this.testCase.sourceLocation,
+          result: { status: Status.FAILED }
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 }
+        })
       })
 
       it('logs the issue', function() {
-        expect(this.output).to.contain(
+        expect(this.output).to.eql(
           'Failures:\n' +
             '\n' +
-            '1) Scenario: name1 # a.feature:1\n' +
-            '   ' +
-            figures.cross +
-            ' keyword name2 # steps.js:3\n' +
-            '       error'
+            '1) Scenario: b # a.feature:2\n' +
+            `   ${figures.cross} Given a step # steps.js:4\n` +
+            '       error\n' +
+            '\n' +
+            '1 scenario (1 failed)\n' +
+            '1 step (1 failed)\n' +
+            '0m00.000s\n'
         )
       })
     })
 
     describe('with an ambiguous step', function() {
       beforeEach(function() {
-        const stepDefinition1 = {
-          line: 3,
-          pattern: 'pattern1',
-          uri: 'steps.js'
-        }
-        const stepDefinition2 = {
-          line: 4,
-          pattern: 'longer pattern2',
-          uri: 'steps.js'
-        }
-        const scenarioResult = {
-          status: Status.FAILED,
-          scenario: this.scenario,
-          stepResults: [
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
             {
-              ambiguousStepDefinitions: [stepDefinition1, stepDefinition2],
-              duration: 0,
-              status: Status.AMBIGUOUS,
-              step: this.step
+              sourceLocation: { uri: 'a.feature', line: 3 }
             }
           ]
-        }
-        this.featuresResult.scenarioResults = [scenarioResult]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: {
+            exception:
+              'Multiple step definitions match:\n' +
+              '  pattern1        - steps.js:3\n' +
+              '  longer pattern2 - steps.js:4',
+            status: Status.AMBIGUOUS
+          }
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: this.testCase.sourceLocation,
+          result: { status: Status.AMBIGUOUS }
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 }
+        })
       })
 
       it('logs the issue', function() {
-        expect(this.output).to.contain(
+        expect(this.output).to.eql(
           'Failures:\n' +
             '\n' +
-            '1) Scenario: name1 # a.feature:1\n' +
-            '   ' +
-            figures.cross +
-            ' keyword name2\n' +
+            '1) Scenario: b # a.feature:2\n' +
+            `   ${figures.cross} Given a step\n` +
             '       Multiple step definitions match:\n' +
             '         pattern1        - steps.js:3\n' +
-            '         longer pattern2 - steps.js:4'
+            '         longer pattern2 - steps.js:4\n' +
+            '\n' +
+            '1 scenario (1 ambiguous)\n' +
+            '1 step (1 ambiguous)\n' +
+            '0m00.000s\n'
         )
       })
     })
 
     describe('with an undefined step', function() {
       beforeEach(function() {
-        const scenarioResult = {
-          status: Status.UNDEFINED,
-          scenario: this.scenario,
-          stepResults: [
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
             {
-              duration: 0,
-              status: Status.UNDEFINED,
-              step: this.step
+              sourceLocation: { uri: 'a.feature', line: 3 }
             }
           ]
-        }
-        this.featuresResult.scenarioResults = [scenarioResult]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { status: Status.UNDEFINED }
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: this.testCase.sourceLocation,
+          result: { status: Status.UNDEFINED }
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 }
+        })
       })
 
       it('logs the issue', function() {
-        expect(this.output).to.contain(
+        expect(this.output).to.eql(
           'Warnings:\n' +
             '\n' +
-            '1) Scenario: name1 # a.feature:1\n' +
-            '   ? keyword name2\n' +
+            '1) Scenario: b # a.feature:2\n' +
+            '   ? Given a step\n' +
             '       Undefined. Implement with the following snippet:\n' +
             '\n' +
             '         snippet\n' +
-            '\n'
+            '\n' +
+            '\n' +
+            '1 scenario (1 undefined)\n' +
+            '1 step (1 undefined)\n' +
+            '0m00.000s\n'
         )
       })
     })
 
     describe('with a pending step', function() {
       beforeEach(function() {
-        const scenarioResult = {
-          status: Status.PENDING,
-          scenario: this.scenario,
-          stepResults: [
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
             {
-              duration: 0,
-              status: Status.PENDING,
-              step: this.step
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 }
             }
           ]
-        }
-        this.featuresResult.scenarioResults = [scenarioResult]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { status: Status.PENDING }
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: this.testCase.sourceLocation,
+          result: { status: Status.PENDING }
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 }
+        })
       })
 
       it('logs the issue', function() {
-        expect(this.output).to.contain(
+        expect(this.output).to.eql(
           'Warnings:\n' +
             '\n' +
-            '1) Scenario: name1 # a.feature:1\n' +
-            '   ? keyword name2\n' +
-            '       Pending'
-        )
-      })
-    })
-  })
-
-  describe('summary', function() {
-    describe('with no features', function() {
-      beforeEach(function() {
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
-      })
-
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
-        )
-      })
-    })
-
-    describe('with one passing scenario', function() {
-      beforeEach(function() {
-        const scenarioResult = {
-          scenario: this.scenario,
-          status: Status.PASSED
-        }
-        this.featuresResult.scenarioResults = [scenarioResult]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
-      })
-
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '1 scenario (1 passed)\n' + '0 steps\n' + '0m00.000s\n'
-        )
-      })
-    })
-
-    describe('with one of every kind of scenario', function() {
-      beforeEach(function() {
-        this.featuresResult.scenarioResults = [
-          { scenario: this.scenario, status: Status.AMBIGUOUS },
-          { scenario: this.scenario, status: Status.FAILED },
-          { scenario: this.scenario, status: Status.PASSED },
-          { scenario: this.scenario, status: Status.PENDING },
-          { scenario: this.scenario, status: Status.SKIPPED },
-          { scenario: this.scenario, status: Status.UNDEFINED }
-        ]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
-      })
-
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
-            '0 steps\n' +
+            '1) Scenario: b # a.feature:2\n' +
+            '   ? Given a step # steps.js:4\n' +
+            '       Pending\n' +
+            '\n' +
+            '1 scenario (1 pending)\n' +
+            '1 step (1 pending)\n' +
             '0m00.000s\n'
         )
       })
     })
 
-    describe('with one passing step', function() {
-      beforeEach(function() {
-        this.featuresResult.stepResults = [{ status: Status.PASSED }]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
+    describe('summary', function() {
+      describe('with a duration of 123 milliseconds', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-run-finished', {
+            result: { duration: 123 }
+          })
+        })
+
+        it('outputs step totals, scenario totals, and duration', function() {
+          expect(this.output).to.contain('0 scenarios\n0 steps\n0m00.123s\n')
+        })
       })
 
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '0 scenarios\n' + '1 step (1 passed)\n' + '0m00.000s\n'
-        )
-      })
-    })
+      describe('with a duration of 12.3 seconds', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-run-finished', {
+            result: { duration: 123 * 100 }
+          })
+        })
 
-    describe('with one of every kind of step', function() {
-      beforeEach(function() {
-        this.featuresResult.stepResults = [
-          { ambiguousStepDefinitions: [], status: Status.AMBIGUOUS, step: {} },
-          { failureException: '', status: Status.FAILED, step: {} },
-          { status: Status.PASSED, step: {} },
-          { status: Status.PENDING, step: {} },
-          { status: Status.SKIPPED, step: {} },
-          { status: Status.UNDEFINED, step: {} }
-        ]
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
+        it('outputs step totals, scenario totals, and duration', function() {
+          expect(this.output).to.contain('0 scenarios\n0 steps\n0m12.300s\n')
+        })
       })
 
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '0 scenarios\n' +
-            '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
-            '0m00.000s\n'
-        )
-      })
-    })
+      describe('with a duration of 120.3 seconds', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-run-finished', {
+            result: { duration: 123 * 1000 }
+          })
+        })
 
-    describe('with a duration of 123 milliseconds', function() {
-      beforeEach(function() {
-        this.featuresResult.duration = 123
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
-      })
-
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m00.123s\n'
-        )
-      })
-    })
-
-    describe('with a duration of 12.3 seconds', function() {
-      beforeEach(function() {
-        this.featuresResult.duration = 123 * 100
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
-      })
-
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m12.300s\n'
-        )
-      })
-    })
-
-    describe('with a duration of 120.3 seconds', function() {
-      beforeEach(function() {
-        this.featuresResult.duration = 123 * 1000
-        this.summaryFormatter.handleFeaturesResult(this.featuresResult)
-      })
-
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.output).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '2m03.000s\n'
-        )
+        it('outputs step totals, scenario totals, and duration', function() {
+          expect(this.output).to.contain('0 scenarios\n0 steps\n2m03.000s\n')
+        })
       })
     })
   })

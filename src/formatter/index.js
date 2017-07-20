@@ -7,6 +7,7 @@ export default class Formatter {
       _.pick(options, [
         'colorFns',
         'cwd',
+        'eventDataCollector',
         'log',
         'snippetBuilder',
         'stream',

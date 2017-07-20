@@ -1,12 +1,12 @@
 import getColorFns from './get_color_fns'
-import Hook from '../models/hook'
 import ProgressFormatter from './progress_formatter'
 import Status from '../status'
-import Step from '../models/step'
-import SummaryFormatter from './summary_formatter'
+import { EventEmitter } from 'events'
+import EventDataCollector from '../event_data_collector'
 
 describe('ProgressFormatter', function() {
   beforeEach(function() {
+    this.eventBroadcaster = new EventEmitter()
     this.output = ''
     const colorFns = getColorFns(false)
     const logFn = data => {
@@ -14,163 +14,115 @@ describe('ProgressFormatter', function() {
     }
     this.progressFormatter = new ProgressFormatter({
       colorFns,
+      eventBroadcaster: this.eventBroadcaster,
+      eventDataCollector: new EventDataCollector(this.eventBroadcaster),
       log: logFn
     })
-    sinon.stub(SummaryFormatter.prototype, 'handleFeaturesResult')
   })
 
-  afterEach(function() {
-    SummaryFormatter.prototype.handleFeaturesResult.restore()
-  })
-
-  describe('step result', function() {
-    describe('step is a hook', function() {
-      beforeEach(function() {
-        this.stepResult = {
-          status: null,
-          step: Object.create(Hook.prototype)
-        }
-      })
-
-      describe('failed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.FAILED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs F', function() {
-          expect(this.output).to.eql('F')
-        })
-      })
-
-      describe('passed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PASSED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('does not output', function() {
-          expect(this.output).to.eql('')
-        })
-      })
-
-      describe('pending', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PENDING
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs P', function() {
-          expect(this.output).to.eql('P')
-        })
-      })
-
-      describe('skipped', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.SKIPPED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs -', function() {
-          expect(this.output).to.eql('-')
-        })
-      })
-    })
-
-    describe('step is a normal step', function() {
-      beforeEach(function() {
-        this.stepResult = createMock({
-          status: null,
-          step: Object.create(Step.prototype)
-        })
-      })
-
-      describe('ambiguous', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.AMBIGUOUS
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs A', function() {
-          expect(this.output).to.eql('A')
-        })
-      })
-
-      describe('failed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.FAILED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs F', function() {
-          expect(this.output).to.eql('F')
-        })
-      })
-
-      describe('passed', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PASSED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs a dot', function() {
-          expect(this.output).to.eql('.')
-        })
-      })
-
-      describe('pending', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.PENDING
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs P', function() {
-          expect(this.output).to.eql('P')
-        })
-      })
-
-      describe('skipped', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.SKIPPED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs -', function() {
-          expect(this.output).to.eql('-')
-        })
-      })
-
-      describe('undefined', function() {
-        beforeEach(function() {
-          this.stepResult.status = Status.UNDEFINED
-          this.progressFormatter.handleStepResult(this.stepResult)
-        })
-
-        it('outputs U', function() {
-          expect(this.output).to.eql('U')
-        })
-      })
-    })
-  })
-
-  describe('features result', function() {
+  describe('test step finished', function() {
     beforeEach(function() {
-      this.featuresResult = { some: 'data' }
-      this.progressFormatter.handleFeaturesResult(this.featuresResult)
-    })
-
-    it('outputs two newlines to separate the step results from the summary output', function() {
-      expect(this.output).to.eql('\n\n')
-    })
-
-    describe('summary formatter', function() {
-      it('handleFeaturesResult is also called', function() {
-        expect(SummaryFormatter.prototype.handleFeaturesResult).to.have.been
-          .calledOnce
-        expect(
-          SummaryFormatter.prototype.handleFeaturesResult
-        ).to.have.been.calledWith(this.featuresResult)
+      this.testCase = { sourceLocation: { uri: 'path/to/feature', line: 1 } }
+      this.eventBroadcaster.emit('test-case-prepared', {
+        sourceLocation: this.testCase.sourceLocation,
+        steps: [{}]
       })
+    })
+
+    describe('ambiguous', function() {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          result: { status: Status.AMBIGUOUS },
+          testCase: this.testCase
+        })
+      })
+
+      it('outputs A', function() {
+        expect(this.output).to.eql('A')
+      })
+    })
+
+    describe('failed', function() {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          result: { status: Status.FAILED },
+          testCase: this.testCase
+        })
+      })
+
+      it('outputs F', function() {
+        expect(this.output).to.eql('F')
+      })
+    })
+
+    describe('passed', function() {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          result: { status: Status.PASSED },
+          testCase: this.testCase
+        })
+      })
+
+      it('outputs .', function() {
+        expect(this.output).to.eql('.')
+      })
+    })
+
+    describe('pending', function() {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          result: { status: Status.PENDING },
+          testCase: this.testCase
+        })
+      })
+
+      it('outputs P', function() {
+        expect(this.output).to.eql('P')
+      })
+    })
+
+    describe('skipped', function() {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          result: { status: Status.SKIPPED },
+          testCase: this.testCase
+        })
+      })
+
+      it('outputs -', function() {
+        expect(this.output).to.eql('-')
+      })
+    })
+
+    describe('undefined', function() {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          result: { status: Status.UNDEFINED },
+          testCase: this.testCase
+        })
+      })
+
+      it('outputs U', function() {
+        expect(this.output).to.eql('U')
+      })
+    })
+  })
+
+  describe(' result', function() {
+    beforeEach(function() {
+      this.eventBroadcaster.emit('test-run-finished', {
+        result: { duration: 0 }
+      })
+    })
+
+    it('outputs two newlines before the summary', function() {
+      expect(this.output).to.eql('\n\n0 scenarios\n0 steps\n0m00.000s\n')
     })
   })
 })
