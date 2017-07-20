@@ -127,6 +127,7 @@
     "cucumber-expressions": "^3.0.0",
     "cucumber-tag-expressions": "^1.0.0",
     "duration": "^0.2.0",
+    "escape-string-regexp": "^1.0.5",
     "figures": "2.0.0",
     "gherkin": "^4.1.0",
     "glob": "^7.0.0",
