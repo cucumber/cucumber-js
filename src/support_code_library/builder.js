@@ -4,14 +4,14 @@ import isGenerator from 'is-generator'
 import path from 'path'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import * as helpers from './helpers'
+
 function build({ cwd, fns }) {
   const options = {
-    afterFeaturesHookDefinitions: [],
-    afterScenarioHookDefinitions: [],
-    beforeFeaturesHookDefinitions: [],
-    beforeScenarioHookDefinitions: [],
+    afterTestRunHookDefinitions: [],
+    afterTestCaseHookDefinitions: [],
+    beforeTestRunHookDefinitions: [],
+    beforeTestCaseHookDefinitions: [],
     defaultTimeout: 5000,
-    listeners: [],
     stepDefinitions: [],
     parameterTypeRegistry: TransformLookupBuilder.build(),
     World({ attach, parameters }) {
@@ -25,27 +25,23 @@ function build({ cwd, fns }) {
     defineParameterType: helpers.defineParameterType(
       options.parameterTypeRegistry
     ),
-    After: helpers.defineScenarioHook(
+    After: helpers.defineTestCaseHook(
       cwd,
-      options.afterScenarioHookDefinitions
+      options.afterTestCaseHookDefinitions
     ),
-    AfterAll: helpers.defineFeaturesHook(
+    AfterAll: helpers.defineTestRunHook(
       cwd,
-      options.afterFeaturesHookDefinitions
+      options.afterTestRunHookDefinitions
     ),
-    Before: helpers.defineScenarioHook(
+    Before: helpers.defineTestCaseHook(
       cwd,
-      options.beforeScenarioHookDefinitions
+      options.beforeTestCaseHookDefinitions
     ),
-    BeforeAll: helpers.defineFeaturesHook(
+    BeforeAll: helpers.defineTestRunHook(
       cwd,
-      options.beforeFeaturesHookDefinitions
+      options.beforeTestRunHookDefinitions
     ),
     defineStep: helpers.defineStep(cwd, options.stepDefinitions),
-    registerHandler: helpers.registerHandler(cwd, options.listeners),
-    registerListener(listener) {
-      options.listeners.push(listener)
-    },
     setDefaultTimeout(milliseconds) {
       options.defaultTimeout = milliseconds
     },
@@ -62,18 +58,18 @@ function build({ cwd, fns }) {
     cwd,
     definitionFunctionWrapper,
     definitions: _.chain([
-      'afterFeaturesHook',
-      'afterScenarioHook',
-      'beforeFeaturesHook',
-      'beforeScenarioHook',
+      'afterTestRunHook',
+      'afterTestCaseHook',
+      'beforeTestRunHook',
+      'beforeTestCaseHook',
       'step'
     ])
       .map(key => options[key + 'Definitions'])
       .flatten()
       .value()
   })
-  options.afterScenarioHookDefinitions.reverse()
-  options.afterFeaturesHookDefinitions.reverse()
+  options.afterTestCaseHookDefinitions.reverse()
+  options.afterTestRunHookDefinitions.reverse()
   return options
 }
 

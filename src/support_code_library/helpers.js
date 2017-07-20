@@ -1,15 +1,14 @@
 import util from 'util'
-import _ from 'lodash'
 import { ParameterType } from 'cucumber-expressions'
 import { formatLocation } from '../formatter/helpers'
-import ScenarioHookDefinition from '../models/scenario_hook_definition'
-import FeaturesHookDefinition from '../models/features_hook_definition'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-export function defineScenarioHook(cwd, collection) {
+export function defineTestCaseHook(cwd, collection) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -20,10 +19,10 @@ export function defineScenarioHook(cwd, collection) {
     const { line, uri } = getDefinitionLineAndUri(cwd)
     validateArguments({
       args: { code, options },
-      fnName: 'defineScenarioHook',
+      fnName: 'defineTestCaseHook',
       location: formatLocation({ line, uri })
     })
-    const hookDefinition = new ScenarioHookDefinition({
+    const hookDefinition = new TestCaseHookDefinition({
       code,
       line,
       options,
@@ -33,7 +32,7 @@ export function defineScenarioHook(cwd, collection) {
   }
 }
 
-export function defineFeaturesHook(cwd, collection) {
+export function defineTestRunHook(cwd, collection) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -44,10 +43,10 @@ export function defineFeaturesHook(cwd, collection) {
     const { line, uri } = getDefinitionLineAndUri(cwd)
     validateArguments({
       args: { code, options },
-      fnName: 'defineFeaturesHook',
+      fnName: 'defineTestRunHook',
       location: formatLocation({ line, uri })
     })
-    const hookDefinition = new FeaturesHookDefinition({
+    const hookDefinition = new TestRunHookDefinition({
       code,
       line,
       options,
@@ -91,29 +90,6 @@ function getDefinitionLineAndUri(cwd) {
     uri = 'unknown'
   }
   return { line, uri }
-}
-
-export function registerHandler(cwd, collection) {
-  return (eventName, options, code) => {
-    if (typeof options === 'function') {
-      code = options
-      options = {}
-    }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
-    validateArguments({
-      args: { code, eventName, options },
-      fnName: 'registerHandler',
-      location: formatLocation({ line, uri })
-    })
-    const listener = _.assign(
-      {
-        [`handle${eventName}`]: code,
-        location: formatLocation({ line, uri })
-      },
-      options
-    )
-    collection.push(listener)
-  }
 }
 
 export function addTransform(parameterTypeRegistry) {

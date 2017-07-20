@@ -23,12 +23,12 @@ const fnValidation = {
 }
 
 const validations = {
-  defineFeaturesHook: [
+  defineTestRunHook: [
     { identifier: 'first argument', ...optionsValidation },
     optionsTimeoutValidation,
     { identifier: 'second argument', ...fnValidation }
   ],
-  defineScenarioHook: [
+  defineTestCaseHook: [
     { identifier: 'first argument', ...optionsValidation },
     {
       identifier: '"options.tags"',
@@ -46,18 +46,6 @@ const validations = {
       expectedType: 'string or regular expression',
       predicate({ pattern }) {
         return _.isRegExp(pattern) || _.isString(pattern)
-      }
-    },
-    { identifier: 'second argument', ...optionsValidation },
-    optionsTimeoutValidation,
-    { identifier: 'third argument', ...fnValidation }
-  ],
-  registerHandler: [
-    {
-      identifier: 'first argument',
-      expectedType: 'string',
-      predicate({ eventName }) {
-        return _.isString(eventName)
       }
     },
     { identifier: 'second argument', ...optionsValidation },
