@@ -1,8 +1,7 @@
 import _ from 'lodash'
 import { CucumberExpressionGenerator } from 'cucumber-expressions'
-import DataTable from '../../models/step_arguments/data_table'
-import DocString from '../../models/step_arguments/doc_string'
 import KeywordType from '../../keyword_type'
+import { buildStepArgumentIterator } from '../../step_arguments'
 
 export default class StepDefinitionSnippetBuilder {
   constructor({ snippetSyntax, parameterTypeRegistry }) {
@@ -12,15 +11,15 @@ export default class StepDefinitionSnippetBuilder {
     )
   }
 
-  build(step) {
-    const functionName = this.getFunctionName(step)
+  build({ keywordType, pickledStep }) {
+    const functionName = this.getFunctionName(keywordType)
     const generatedExpression = this.cucumberExpressionGenerator.generateExpression(
-      step.name,
+      pickledStep.text,
       true
     )
     const pattern = generatedExpression.source
     const parameters = this.getParameters(
-      step,
+      pickledStep,
       generatedExpression.parameterNames
     )
     const comment =
@@ -28,8 +27,8 @@ export default class StepDefinitionSnippetBuilder {
     return this.snippetSyntax.build(functionName, pattern, parameters, comment)
   }
 
-  getFunctionName(step) {
-    switch (step.keywordType) {
+  getFunctionName(keywordType) {
+    switch (keywordType) {
       case KeywordType.EVENT:
         return 'When'
       case KeywordType.OUTCOME:
@@ -48,14 +47,10 @@ export default class StepDefinitionSnippetBuilder {
   }
 
   getStepArgumentParameters(step) {
-    return step.arguments.map(function(arg) {
-      if (arg instanceof DataTable) {
-        return 'table'
-      } else if (arg instanceof DocString) {
-        return 'string'
-      } else {
-        throw new Error(`Unknown argument type: ${arg}`)
-      }
+    const iterator = buildStepArgumentIterator({
+      dataTable: () => 'table',
+      docString: () => 'string'
     })
+    return step.arguments.map(iterator)
   }
 }

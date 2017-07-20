@@ -1,12 +1,17 @@
 import _ from 'lodash'
 import { formatLocation } from './location_helpers'
-import { getStepResultMessage } from './step_result_helpers'
+import { getStepMessage } from './step_result_helpers'
 import indentString from 'indent-string'
 import Status from '../../status'
 import figures from 'figures'
 import Table from 'cli-table'
-import DataTable from '../../models/step_arguments/data_table'
-import DocString from '../../models/step_arguments/doc_string'
+import KeywordType, { getStepKeywordType } from '../../keyword_type'
+import { buildStepArgumentIterator } from '../../step_arguments'
+import { getStepLineToKeywordMap } from '../../gherkin_document_parser'
+import {
+  getStepLineToPickledStepMap,
+  getStepKeyword
+} from '../../pickle_parser'
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,
@@ -17,10 +22,10 @@ const CHARACTERS = {
   [Status.UNDEFINED]: '?'
 }
 
-function formatDataTable(dataTable) {
-  const rows = dataTable.raw().map(row => {
-    return row.map(cell => {
-      return cell.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
+function formatDataTable(arg) {
+  const rows = arg.rows.map(row => {
+    return row.cells.map(cell => {
+      return cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
     })
   })
   const table = new Table({
@@ -51,67 +56,112 @@ function formatDataTable(dataTable) {
   return table.toString()
 }
 
-function formatDocString(docString) {
-  return '"""\n' + docString.content + '\n"""'
+function formatDocString(arg) {
+  return '"""\n' + arg.content + '\n"""'
 }
 
-function formatStepResult({ colorFns, stepResult }) {
-  const { status, step } = stepResult
+function formatStep({
+  colorFns,
+  isBeforeHook,
+  keyword,
+  keywordType,
+  pickledStep,
+  snippetBuilder,
+  testStep
+}) {
+  const { status } = testStep.result
   const colorFn = colorFns[status]
 
-  const symbol = CHARACTERS[stepResult.status]
-  const identifier = colorFn(symbol + ' ' + step.keyword + (step.name || ''))
-  let text = identifier
+  let identifier
+  if (testStep.sourceLocation) {
+    identifier = keyword + (pickledStep.text || '')
+  } else {
+    identifier = isBeforeHook ? 'Before' : 'After'
+  }
 
-  const { stepDefinition } = stepResult
-  if (stepDefinition) {
-    const stepDefinitionLocation = formatLocation(stepDefinition)
-    const stepDefinitionLine = ' # ' + colorFns.location(stepDefinitionLocation)
-    text += stepDefinitionLine
+  let text = colorFn(CHARACTERS[status] + ' ' + identifier)
+
+  const { actionLocation } = testStep
+  if (actionLocation) {
+    text += ' # ' + colorFns.location(formatLocation(actionLocation))
   }
   text += '\n'
 
-  _.each(step.arguments, arg => {
+  if (pickledStep) {
     let str
-    if (arg instanceof DataTable) {
-      str = formatDataTable(arg)
-    } else if (arg instanceof DocString) {
-      str = formatDocString(arg)
-    } else {
-      throw new Error('Unknown argument type: ' + arg)
+    const iterator = buildStepArgumentIterator({
+      dataTable: arg => (str = formatDataTable(arg)),
+      docString: arg => (str = formatDocString(arg))
+    })
+    _.each(pickledStep.arguments, iterator)
+    if (str) {
+      text += indentString(colorFn(str) + '\n', 4)
     }
-    text += indentString(colorFn(str) + '\n', 4)
+  }
+  const message = getStepMessage({
+    colorFns,
+    keywordType,
+    pickledStep,
+    snippetBuilder,
+    testStep
   })
+  if (message) {
+    text += indentString(message, 4) + '\n'
+  }
   return text
+}
+
+export function isIssue(status) {
+  return _.includes(
+    [Status.AMBIGUOUS, Status.FAILED, Status.PENDING, Status.UNDEFINED],
+    status
+  )
 }
 
 export function formatIssue({
   colorFns,
+  gherkinDocument,
   number,
+  pickle,
   snippetBuilder,
-  scenarioResult
+  testCase
 }) {
   const prefix = number + ') '
-  const { scenario, stepResults } = scenarioResult
   let text = prefix
-  const scenarioLocation = formatLocation(scenario)
+  const scenarioLocation = formatLocation(testCase.sourceLocation)
   text +=
     'Scenario: ' +
-    scenario.name +
+    pickle.name +
     ' # ' +
     colorFns.location(scenarioLocation) +
     '\n'
-  _.each(stepResults, stepResult => {
-    const identifier = formatStepResult({ colorFns, stepResult })
-    text += indentString(identifier, prefix.length)
-    const message = getStepResultMessage({
-      colorFns,
-      snippetBuilder,
-      stepResult
-    })
-    if (message) {
-      text += indentString(message, prefix.length + 4) + '\n'
+  const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
+  const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
+  let isBeforeHook = true
+  let previousKeywordType = KeywordType.PRECONDITION
+  _.each(testCase.steps, testStep => {
+    isBeforeHook = isBeforeHook && !testStep.sourceLocation
+    let keyword, keywordType, pickledStep
+    if (testStep.sourceLocation) {
+      pickledStep = stepLineToPickledStepMap[testStep.sourceLocation.line]
+      keyword = getStepKeyword({ pickledStep, stepLineToKeywordMap })
+      keywordType = getStepKeywordType({
+        keyword,
+        language: gherkinDocument.feature.language,
+        previousKeywordType
+      })
     }
+    const formattedStep = formatStep({
+      colorFns,
+      isBeforeHook,
+      keyword,
+      keywordType,
+      pickledStep,
+      snippetBuilder,
+      testStep
+    })
+    text += indentString(formattedStep, prefix.length)
+    previousKeywordType = keywordType
   })
   return text + '\n'
 }
