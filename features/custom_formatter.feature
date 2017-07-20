@@ -14,21 +14,35 @@ Feature: custom formatter
       import {Formatter} from 'cucumber'
 
       class SimpleFormatter extends Formatter {
-        handleBeforeScenario(scenario) {
-          this.log(scenario.feature.name + ' / ' + scenario.name + '\n');
+        constructor(options) {
+          super(options)
+          options.eventBroadcaster
+            .on('test-case-started', ::this.logTestCaseName)
+            .on('test-step-finished', ::this.logTestStep)
+            .on('test-case-finished', ::this.logSeparator)
+            .on('test-run-finished', ::this.logTestRunResult)
         }
 
-        handleStepResult(stepResult) {
-          const {status, step} = stepResult;
-          this.log('  ' + step.keyword + step.name + ' - ' + status + '\n');
+        logTestCaseName({sourceLocation}) {
+          const {gherkinDocument, pickle} = this.eventDataCollector.getTestCaseData(sourceLocation)
+          this.log(gherkinDocument.feature.name + ' / ' + pickle.name + '\n');
         }
 
-        handleAfterScenario() {
+        logTestStep({testCase, index, result}) {
+          const {gherkinKeyword, pickledStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
+          if (pickledStep) {
+            this.log('  ' + gherkinKeyword + pickledStep.text + ' - ' + result.status + '\n');
+          } else {
+            this.log('  Hook - ' + result.status + '\n');
+          }
+        }
+
+        logSeparator() {
           this.log('\n');
         }
 
-        handleFeaturesResult(featuresResult) {
-          this.log(featuresResult.success ? 'SUCCESS' : 'FAILURE');
+        logTestRunResult({result}) {
+          this.log(result.success ? 'SUCCESS' : 'FAILURE');
         }
       }
 
@@ -56,16 +70,29 @@ Feature: custom formatter
       import {SummaryFormatter} from 'cucumber'
 
       class SimpleFormatter extends SummaryFormatter {
-        handleBeforeScenario(scenario) {
-          this.log(scenario.feature.name + ' / ' + scenario.name + '\n');
+        constructor(options) {
+          super(options)
+          options.eventBroadcaster
+            .on('test-case-started', ::this.logTestCaseName)
+            .on('test-step-finished', ::this.logTestStep)
+            .on('test-case-finished', ::this.logSeparator)
         }
 
-        handleStepResult(stepResult) {
-          const {status, step} = stepResult;
-          this.log('  ' + step.keyword + step.name + ' - ' + status + '\n');
+        logTestCaseName({sourceLocation}) {
+          const {gherkinDocument, pickle} = this.eventDataCollector.getTestCaseData(sourceLocation)
+          this.log(gherkinDocument.feature.name + ' / ' + pickle.name + '\n');
         }
 
-        handleAfterScenario() {
+        logTestStep({testCase, index, result}) {
+          const {gherkinKeyword, pickledStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
+          if (pickledStep) {
+            this.log('  ' + gherkinKeyword + pickledStep.text + ' - ' + result.status + '\n');
+          } else {
+            this.log('  Hook - ' + result.status + '\n');
+          }
+        }
+
+        logSeparator() {
           this.log('\n');
         }
       }

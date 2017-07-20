@@ -29,8 +29,8 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the "Before" hook has the attachment
-      | DATA     | MIME TYPE |
-      | iVBORw== | image/png |
+      | DATA     | MEDIA ENCODING | MEDIA TYPE |
+      | iVBORw== | base64         | image/png  |
 
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
@@ -50,8 +50,8 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the "Before" hook has the attachment
-      | DATA     | MIME TYPE |
-      | iVBORw== | image/png |
+      | DATA     | MEDIA ENCODING | MEDIA TYPE |
+      | iVBORw== | base64         | image/png  |
 
     Scenario: Attach a stream (promise)
       Given a file named "features/support/hooks.js" with:
@@ -72,8 +72,8 @@ Feature: Attachments
         """
       When I run cucumber.js
       Then the "Before" hook has the attachment
-        | DATA     | MIME TYPE |
-        | iVBORw== | image/png |
+        | DATA     | MEDIA ENCODING | MEDIA TYPE |
+        | iVBORw== | base64         | image/png  |
 
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
@@ -88,7 +88,7 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the "Before" hook has the attachment
-      | DATA | MIME TYPE  |
+      | DATA | MEDIA TYPE |
       | text | text/plain |
 
   Scenario: Attach from an after hook
@@ -104,7 +104,7 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the "After" hook has the attachment
-      | DATA | MIME TYPE  |
+      | DATA | MEDIA TYPE |
       | text | text/plain |
 
   Scenario: Attach from a step definition
@@ -120,5 +120,5 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the step "a step" has the attachment
-      | DATA | MIME TYPE  |
+      | DATA | MEDIA TYPE |
       | text | text/plain |

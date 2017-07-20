@@ -22,5 +22,5 @@ Feature: Fail fast
       })
       """
     When I run cucumber.js with `--fail-fast`
-    Then it runs the scenario "Failing"
+    Then the step "a passing step" has status "skipped"
     And it fails
