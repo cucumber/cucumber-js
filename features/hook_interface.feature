@@ -259,3 +259,22 @@ Feature: After hook interface
       | TYPE   |
       | Before |
       | After  |
+
+  Scenario Outline: hook step match location with support code aliases
+    Given a file named "features/support/hooks.js" with:
+      """
+      let {<TYPE>} = require('cucumber')
+
+      <TYPE>(function(arg1, arg2) {
+      })
+      """
+    When I run cucumber.js
+    Then it fails
+    And the output contains the text:
+      """
+      Step Definition: features\support\hooks.js:3
+      """
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
