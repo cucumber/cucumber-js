@@ -10,7 +10,7 @@ import SupportCodeFns from '../support_code_fns'
 import SupportCodeLibraryBuilder from '../support_code_library/builder'
 import * as I18n from './i18n'
 import EventEmitter from 'events'
-import EventDataCollector from '../event_data_collector'
+import { EventDataCollector } from '../formatter/helpers'
 
 export default class Cli {
   constructor({ argv, cwd, stdout }) {

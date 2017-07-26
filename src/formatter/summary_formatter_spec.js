@@ -4,7 +4,7 @@ import SummaryFormatter from './summary_formatter'
 import figures from 'figures'
 import { EventEmitter } from 'events'
 import Gherkin from 'gherkin'
-import EventDataCollector from '../event_data_collector'
+import { EventDataCollector } from './helpers'
 
 describe('SummaryFormatter', function() {
   beforeEach(function() {

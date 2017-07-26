@@ -1,4 +1,4 @@
-import KeywordType from '../../keyword_type'
+import { KeywordType } from '../helpers'
 import StepDefinitionSnippetBuilder from './'
 import TransformLookupBuilder from '../../support_code_library/parameter_type_registry_builder'
 

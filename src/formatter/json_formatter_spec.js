@@ -2,7 +2,7 @@ import JsonFormatter from './json_formatter'
 import Status from '../status'
 import EventEmitter from 'events'
 import Gherkin from 'gherkin'
-import EventDataCollector from '../event_data_collector'
+import { EventDataCollector } from './helpers'
 
 describe('JsonFormatter', function() {
   beforeEach(function() {

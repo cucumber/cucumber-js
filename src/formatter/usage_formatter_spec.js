@@ -1,7 +1,7 @@
 import UsageFormatter from './usage_formatter'
 import EventEmitter from 'events'
 import Gherkin from 'gherkin'
-import EventDataCollector from '../event_data_collector'
+import { EventDataCollector } from './helpers'
 
 describe('UsageFormatter', function() {
   describe('handleFeaturesResult', function() {

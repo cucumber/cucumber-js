@@ -1,7 +1,7 @@
 import UsageJsonFormatter from './usage_json_formatter'
 import EventEmitter from 'events'
 import Gherkin from 'gherkin'
-import EventDataCollector from '../event_data_collector'
+import { EventDataCollector } from './helpers'
 
 describe('UsageJsonFormatter', function() {
   describe('handleFeaturesResult', function() {

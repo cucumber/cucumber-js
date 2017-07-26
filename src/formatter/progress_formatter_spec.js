@@ -2,7 +2,7 @@ import getColorFns from './get_color_fns'
 import ProgressFormatter from './progress_formatter'
 import Status from '../status'
 import { EventEmitter } from 'events'
-import EventDataCollector from '../event_data_collector'
+import { EventDataCollector } from './helpers'
 
 describe('ProgressFormatter', function() {
   beforeEach(function() {

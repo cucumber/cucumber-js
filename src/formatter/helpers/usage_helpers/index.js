@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { formatLocation } from '../location_helpers'
-import { getStepLineToPickledStepMap } from '../../../pickle_parser'
+import { getStepLineToPickledStepMap } from '../pickle_parser'
 
 function buildEmptyMapping(stepDefinitions) {
   const mapping = {}

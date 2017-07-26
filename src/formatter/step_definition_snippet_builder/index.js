@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { CucumberExpressionGenerator } from 'cucumber-expressions'
-import KeywordType from '../../keyword_type'
+import { KeywordType } from '../helpers'
 import { buildStepArgumentIterator } from '../../step_arguments'
 
 export default class StepDefinitionSnippetBuilder {

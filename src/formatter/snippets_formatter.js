@@ -1,6 +1,6 @@
 import Formatter from './'
 import Status from '../status'
-import KeywordType, { getStepKeywordType } from '../keyword_type'
+import { KeywordType, getStepKeywordType } from './helpers'
 
 export default class SnippetsFormatter extends Formatter {
   constructor(options) {

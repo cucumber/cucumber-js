@@ -5,13 +5,10 @@ import indentString from 'indent-string'
 import Status from '../../status'
 import figures from 'figures'
 import Table from 'cli-table'
-import KeywordType, { getStepKeywordType } from '../../keyword_type'
+import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
-import { getStepLineToKeywordMap } from '../../gherkin_document_parser'
-import {
-  getStepLineToPickledStepMap,
-  getStepKeyword
-} from '../../pickle_parser'
+import { getStepLineToKeywordMap } from './gherkin_document_parser'
+import { getStepLineToPickledStepMap, getStepKeyword } from './pickle_parser'
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,

@@ -1,17 +1,19 @@
 import _ from 'lodash'
 import Formatter from './'
 import Status from '../status'
-import { formatLocation } from './helpers'
+import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { buildStepArgumentIterator } from '../step_arguments'
-import {
+
+const {
   getStepLineToKeywordMap,
   getScenarioLineToDescriptionMap
-} from '../gherkin_document_parser'
-import {
+} = GherkinDocumentParser
+
+const {
   getScenarioDescription,
   getStepLineToPickledStepMap,
   getStepKeyword
-} from '../pickle_parser'
+} = PickleParser
 
 export default class JsonFormatter extends Formatter {
   constructor(options) {
