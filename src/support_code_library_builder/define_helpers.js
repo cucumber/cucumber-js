@@ -9,7 +9,7 @@ import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-export function defineScenarioHook(library, collectionName) {
+export function defineScenarioHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -17,7 +17,7 @@ export function defineScenarioHook(library, collectionName) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(library.cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineScenarioHook',
@@ -29,11 +29,11 @@ export function defineScenarioHook(library, collectionName) {
       options,
       uri
     })
-    library.options[collectionName].push(hookDefinition)
+    builder.options[collectionName].push(hookDefinition)
   }
 }
 
-export function defineFeaturesHook(library, collectionName) {
+export function defineFeaturesHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -41,7 +41,7 @@ export function defineFeaturesHook(library, collectionName) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(library.cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineFeaturesHook',
@@ -53,17 +53,17 @@ export function defineFeaturesHook(library, collectionName) {
       options,
       uri
     })
-    library.options[collectionName].push(hookDefinition)
+    builder.options[collectionName].push(hookDefinition)
   }
 }
 
-export function defineStep(library) {
+export function defineStep(builder) {
   return (pattern, options, code) => {
     if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(library.cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, pattern, options },
       fnName: 'defineStep',
@@ -76,7 +76,7 @@ export function defineStep(library) {
       pattern,
       uri
     })
-    library.options.stepDefinitions.push(stepDefinition)
+    builder.options.stepDefinitions.push(stepDefinition)
   }
 }
 
@@ -105,13 +105,13 @@ function getDefinitionLineAndUri(cwd) {
   return { line, uri }
 }
 
-export function registerHandler(library) {
+export function registerHandler(builder) {
   return (eventName, options, code) => {
     if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(library.cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, eventName, options },
       fnName: 'registerHandler',
@@ -124,11 +124,11 @@ export function registerHandler(library) {
       },
       options
     )
-    library.options.listeners.push(listener)
+    builder.options.listeners.push(listener)
   }
 }
 
-export function addTransform(library) {
+export function addTransform(builder) {
   return util.deprecate(({ captureGroupRegexps, transformer, typeName }) => {
     const parameter = new ParameterType(
       typeName,
@@ -136,13 +136,13 @@ export function addTransform(library) {
       captureGroupRegexps,
       transformer
     )
-    library.options.parameterTypeRegistry.defineParameterType(parameter)
+    builder.options.parameterTypeRegistry.defineParameterType(parameter)
   }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
 }
 
-export function defineParameterType(library) {
+export function defineParameterType(builder) {
   return ({ regexp, transformer, typeName }) => {
     const parameter = new ParameterType(typeName, null, regexp, transformer)
-    library.options.parameterTypeRegistry.defineParameterType(parameter)
+    builder.options.parameterTypeRegistry.defineParameterType(parameter)
   }
 }
