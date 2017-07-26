@@ -1,14 +1,12 @@
 import { ParameterTypeRegistry } from 'cucumber-expressions'
-import SupportCodeLibraryBuilder from './builder'
+import supportCodeLibraryBuilder from './'
 
-describe('SupportCodeLibraryBuilder', function() {
+describe('supportCodeLibraryBuilder', function() {
   describe('no support code fns', function() {
     beforeEach(function() {
       this.attachFn = sinon.stub()
-      this.options = SupportCodeLibraryBuilder.build({
-        cwd: 'path/to/project',
-        fns: []
-      })
+      supportCodeLibraryBuilder.reset('path/to/project')
+      this.options = supportCodeLibraryBuilder.finalize()
     })
 
     it('returns the default options', function() {
@@ -39,10 +37,9 @@ describe('SupportCodeLibraryBuilder', function() {
           After(hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds a scenario hook definition', function() {
@@ -60,10 +57,9 @@ describe('SupportCodeLibraryBuilder', function() {
           After('@tagA', hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds a scenario hook definition', function() {
@@ -84,10 +80,9 @@ describe('SupportCodeLibraryBuilder', function() {
           After({ tags: '@tagA' }, hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds a scenario hook definition', function() {
@@ -109,10 +104,9 @@ describe('SupportCodeLibraryBuilder', function() {
           After(this.hook1) // eslint-disable-line babel/new-cap
           After(this.hook2) // eslint-disable-line babel/new-cap
         }
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds the scenario hook definitions in the reverse order of definition', function() {
@@ -135,10 +129,9 @@ describe('SupportCodeLibraryBuilder', function() {
           Before(hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds a scenario hook definition', function() {
@@ -156,10 +149,9 @@ describe('SupportCodeLibraryBuilder', function() {
           Before('@tagA', hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds a scenario hook definition', function() {
@@ -180,10 +172,9 @@ describe('SupportCodeLibraryBuilder', function() {
           Before({ tags: '@tagA' }, hook) // eslint-disable-line babel/new-cap
         }
         this.hook = hook
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds a scenario hook definition', function() {
@@ -205,10 +196,9 @@ describe('SupportCodeLibraryBuilder', function() {
           Before(this.hook1) // eslint-disable-line babel/new-cap
           Before(this.hook2) // eslint-disable-line babel/new-cap
         }
-        this.options = SupportCodeLibraryBuilder.build({
-          cwd: 'path/to/project',
-          fns: [fn]
-        })
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineSupportCode(fn)
+        this.options = supportCodeLibraryBuilder.finalize()
       })
 
       it('adds the scenario hook definitions in the order of definition', function() {

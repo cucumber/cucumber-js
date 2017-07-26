@@ -2,7 +2,7 @@ import DataTable from '../../models/step_arguments/data_table'
 import DocString from '../../models/step_arguments/doc_string'
 import KeywordType from '../../keyword_type'
 import StepDefinitionSnippetBuilder from './'
-import TransformLookupBuilder from '../../support_code_library/parameter_type_registry_builder'
+import TransformLookupBuilder from '../../support_code_library_builder/parameter_type_registry_builder'
 
 describe('StepDefinitionSnippetBuilder', function() {
   beforeEach(function() {
