@@ -35,7 +35,7 @@ export default class EventDataCollector {
     if (result.testStep.sourceLocation) {
       const { line } = result.testStep.sourceLocation
       result.gherkinKeyword = getStepLineToKeywordMap(gherkinDocument)[line]
-      result.pickledStep = getStepLineToPickledStepMap(pickle)[line]
+      result.pickleStep = getStepLineToPickledStepMap(pickle)[line]
     }
     return result
   }

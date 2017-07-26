@@ -16,7 +16,7 @@ describe('StepDefinitionSnippetBuilder', function() {
     beforeEach(function() {
       this.input = {
         keywordType: KeywordType.PRECONDITION,
-        pickledStep: {
+        pickleStep: {
           arguments: [],
           text: ''
         }
@@ -58,7 +58,7 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step has simple name', function() {
       beforeEach(function() {
-        this.input.pickledStep.text = 'abc'
+        this.input.pickleStep.text = 'abc'
         this.result = this.snippetBuilder.build(this.input)
       })
 
@@ -69,7 +69,7 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step name has a quoted string', function() {
       beforeEach(function() {
-        this.input.pickledStep.text = 'abc "def" ghi'
+        this.input.pickleStep.text = 'abc "def" ghi'
         this.result = this.snippetBuilder.build(this.input)
       })
 
@@ -86,7 +86,7 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step name has multiple quoted strings', function() {
       beforeEach(function() {
-        this.input.pickledStep.text = 'abc "def" ghi "jkl" mno'
+        this.input.pickleStep.text = 'abc "def" ghi "jkl" mno'
         this.result = this.snippetBuilder.build(this.input)
       })
 
@@ -104,7 +104,7 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step name has a standalone number', function() {
       beforeEach(function() {
-        this.input.pickledStep.text = 'abc 123 def'
+        this.input.pickleStep.text = 'abc 123 def'
         this.result = this.snippetBuilder.build(this.input)
       })
 
@@ -121,7 +121,7 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step has a data table argument', function() {
       beforeEach(function() {
-        this.input.pickledStep.arguments = [{ rows: [] }]
+        this.input.pickleStep.arguments = [{ rows: [] }]
         this.result = this.snippetBuilder.build(this.input)
       })
 
@@ -135,7 +135,7 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step has a doc string argument', function() {
       beforeEach(function() {
-        this.input.pickledStep.arguments = [{ content: '' }]
+        this.input.pickleStep.arguments = [{ content: '' }]
         this.result = this.snippetBuilder.build(this.input)
       })
 
@@ -149,8 +149,8 @@ describe('StepDefinitionSnippetBuilder', function() {
 
     describe('step name has multiple quoted strings and a data table argument', function() {
       beforeEach(function() {
-        this.input.pickledStep.text = 'abc "def" ghi "jkl" mno'
-        this.input.pickledStep.arguments = [{ rows: [] }]
+        this.input.pickleStep.text = 'abc "def" ghi "jkl" mno'
+        this.input.pickleStep.arguments = [{ rows: [] }]
         this.result = this.snippetBuilder.build(this.input)
       })
 

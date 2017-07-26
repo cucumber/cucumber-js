@@ -29,9 +29,9 @@ Feature: custom formatter
         }
 
         logTestStep({testCase, index, result}) {
-          const {gherkinKeyword, pickledStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
-          if (pickledStep) {
-            this.log('  ' + gherkinKeyword + pickledStep.text + ' - ' + result.status + '\n');
+          const {gherkinKeyword, pickleStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
+          if (pickleStep) {
+            this.log('  ' + gherkinKeyword + pickleStep.text + ' - ' + result.status + '\n');
           } else {
             this.log('  Hook - ' + result.status + '\n');
           }
@@ -84,9 +84,9 @@ Feature: custom formatter
         }
 
         logTestStep({testCase, index, result}) {
-          const {gherkinKeyword, pickledStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
-          if (pickledStep) {
-            this.log('  ' + gherkinKeyword + pickledStep.text + ' - ' + result.status + '\n');
+          const {gherkinKeyword, pickleStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
+          if (pickleStep) {
+            this.log('  ' + gherkinKeyword + pickleStep.text + ' - ' + result.status + '\n');
           } else {
             this.log('  Hook - ' + result.status + '\n');
           }

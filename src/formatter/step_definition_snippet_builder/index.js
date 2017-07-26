@@ -11,15 +11,15 @@ export default class StepDefinitionSnippetBuilder {
     )
   }
 
-  build({ keywordType, pickledStep }) {
+  build({ keywordType, pickleStep }) {
     const functionName = this.getFunctionName(keywordType)
     const generatedExpression = this.cucumberExpressionGenerator.generateExpression(
-      pickledStep.text,
+      pickleStep.text,
       true
     )
     const pattern = generatedExpression.source
     const parameters = this.getParameters(
-      pickledStep,
+      pickleStep,
       generatedExpression.parameterNames
     )
     const comment =

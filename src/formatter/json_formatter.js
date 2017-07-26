@@ -134,11 +134,11 @@ export default class JsonFormatter extends Formatter {
     const data = {}
     if (testStep.sourceLocation) {
       const { line } = testStep.sourceLocation
-      const pickledStep = stepLineToPickledStepMap[line]
-      data.arguments = this.formatStepArguments(pickledStep.arguments)
-      data.keyword = getStepKeyword({ pickledStep, stepLineToKeywordMap })
+      const pickleStep = stepLineToPickledStepMap[line]
+      data.arguments = this.formatStepArguments(pickleStep.arguments)
+      data.keyword = getStepKeyword({ pickleStep, stepLineToKeywordMap })
       data.line = line
-      data.name = pickledStep.text
+      data.name = pickleStep.text
     } else {
       data.keyword = isBeforeHook ? 'Before' : 'After'
       data.hidden = true

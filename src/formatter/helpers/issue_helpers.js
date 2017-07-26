@@ -65,7 +65,7 @@ function formatStep({
   isBeforeHook,
   keyword,
   keywordType,
-  pickledStep,
+  pickleStep,
   snippetBuilder,
   testStep
 }) {
@@ -74,7 +74,7 @@ function formatStep({
 
   let identifier
   if (testStep.sourceLocation) {
-    identifier = keyword + (pickledStep.text || '')
+    identifier = keyword + (pickleStep.text || '')
   } else {
     identifier = isBeforeHook ? 'Before' : 'After'
   }
@@ -87,13 +87,13 @@ function formatStep({
   }
   text += '\n'
 
-  if (pickledStep) {
+  if (pickleStep) {
     let str
     const iterator = buildStepArgumentIterator({
       dataTable: arg => (str = formatDataTable(arg)),
       docString: arg => (str = formatDocString(arg))
     })
-    _.each(pickledStep.arguments, iterator)
+    _.each(pickleStep.arguments, iterator)
     if (str) {
       text += indentString(colorFn(str) + '\n', 4)
     }
@@ -101,7 +101,7 @@ function formatStep({
   const message = getStepMessage({
     colorFns,
     keywordType,
-    pickledStep,
+    pickleStep,
     snippetBuilder,
     testStep
   })
@@ -141,10 +141,10 @@ export function formatIssue({
   let previousKeywordType = KeywordType.PRECONDITION
   _.each(testCase.steps, testStep => {
     isBeforeHook = isBeforeHook && !testStep.sourceLocation
-    let keyword, keywordType, pickledStep
+    let keyword, keywordType, pickleStep
     if (testStep.sourceLocation) {
-      pickledStep = stepLineToPickledStepMap[testStep.sourceLocation.line]
-      keyword = getStepKeyword({ pickledStep, stepLineToKeywordMap })
+      pickleStep = stepLineToPickledStepMap[testStep.sourceLocation.line]
+      keyword = getStepKeyword({ pickleStep, stepLineToKeywordMap })
       keywordType = getStepKeywordType({
         keyword,
         language: gherkinDocument.feature.language,
@@ -156,7 +156,7 @@ export function formatIssue({
       isBeforeHook,
       keyword,
       keywordType,
-      pickledStep,
+      pickleStep,
       snippetBuilder,
       testStep
     })

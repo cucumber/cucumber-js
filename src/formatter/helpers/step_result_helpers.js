@@ -19,7 +19,7 @@ export function getStepMessage({
   keywordType,
   snippetBuilder,
   testStep,
-  pickledStep
+  pickleStep
 }) {
   switch (testStep.result.status) {
     case Status.AMBIGUOUS:
@@ -31,7 +31,7 @@ export function getStepMessage({
         colorFns,
         keywordType,
         snippetBuilder,
-        pickledStep
+        pickleStep
       })
     case Status.PENDING:
       return getPendingStepResultMessage({ colorFns })
@@ -42,9 +42,9 @@ function getUndefinedStepResultMessage({
   colorFns,
   keywordType,
   snippetBuilder,
-  pickledStep
+  pickleStep
 }) {
-  const snippet = snippetBuilder.build({ keywordType, pickledStep })
+  const snippet = snippetBuilder.build({ keywordType, pickleStep })
   const message =
     'Undefined. Implement with the following snippet:' +
     '\n\n' +

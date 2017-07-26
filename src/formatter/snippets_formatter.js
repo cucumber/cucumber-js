@@ -9,7 +9,6 @@ export default class SnippetsFormatter extends Formatter {
       'test-step-finished',
       ::this.logUndefinedTestStepSnippet
     )
-    this.mapping = {}
   }
 
   logUndefinedTestStepSnippet({ testCase: { sourceLocation }, index, result }) {
@@ -19,7 +18,7 @@ export default class SnippetsFormatter extends Formatter {
         testCase
       } = this.eventDataCollector.getTestCaseData(sourceLocation)
       const {
-        pickledStep,
+        pickleStep,
         gherkinKeyword
       } = this.eventDataCollector.getTestStepData({ testCase, index })
       const previousKeywordType = this.getPreviousKeywordType({
@@ -32,7 +31,7 @@ export default class SnippetsFormatter extends Formatter {
         language: gherkinDocument.feature.language,
         previousKeywordType
       })
-      const snippet = this.snippetBuilder.build({ keywordType, pickledStep })
+      const snippet = this.snippetBuilder.build({ keywordType, pickleStep })
       this.log(snippet + '\n\n')
     }
   }
