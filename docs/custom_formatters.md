@@ -4,7 +4,7 @@ Custom formatters should be a javascript class. The constructor will be an optio
 
 * `colorFns`: a series of helper functions for outputting colors. See [here](/src/formatter/get_color_fns.js). Respects `colorsEnabled` option
 * `cwd`: the current working directory
-* `eventDataCollector`: an instance of [EventDataCollector](/src/event_data_collector.js) which handles the complexity of grouping the data for related events
+* `eventDataCollector`: an instance of [EventDataCollector](/src/formatter/helpers/event_data_collector.js) which handles the complexity of grouping the data for related events
 * `log`: function which will write the passed string to the the designated stream (stdout or the to file the formatter output is being redirected to).
 * `snippetBuilder`: an object with a `build` method that should be called with `{keywordType, pickleStep}`. The pickleStep can be retrieved with the `eventDataCollector` while the keyword type can be complex to compute (see the [SnippetsFormatter](/src/formatter/snippets_formatter.js) for an example).
 * `stream`: the underlying stream the formatter is writing to. `log` is a shortcut for writing to it.
