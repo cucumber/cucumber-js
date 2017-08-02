@@ -19,6 +19,15 @@ const CHARACTERS = {
   [Status.UNDEFINED]: '?'
 }
 
+const IS_ISSUE = {
+  [Status.AMBIGUOUS]: true,
+  [Status.FAILED]: true,
+  [Status.PASSED]: false,
+  [Status.PENDING]: true,
+  [Status.SKIPPED]: false,
+  [Status.UNDEFINED]: true
+}
+
 function formatDataTable(arg) {
   const rows = arg.rows.map(row => {
     return row.cells.map(cell => {
@@ -109,10 +118,7 @@ function formatStep({
 }
 
 export function isIssue(status) {
-  return _.includes(
-    [Status.AMBIGUOUS, Status.FAILED, Status.PENDING, Status.UNDEFINED],
-    status
-  )
+  return IS_ISSUE[status]
 }
 
 export function formatIssue({
