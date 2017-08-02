@@ -11,6 +11,7 @@ export default class Parser {
       gherkinDocument = gherkinParser.parse(source)
     } catch (error) {
       error.message += '\npath: ' + uri
+      error.stack += '\npath: ' + uri
       throw error
     }
 
