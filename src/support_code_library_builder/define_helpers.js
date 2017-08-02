@@ -1,14 +1,15 @@
-import util from 'util'
-import { ParameterType } from 'cucumber-expressions'
+import _ from 'lodash'
 import { formatLocation } from '../formatter/helpers'
-import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { ParameterType } from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
+import util from 'util'
 import validateArguments from './validate_arguments'
 
-export function defineTestCaseHook(cwd, collection) {
+export function defineTestCaseHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -16,7 +17,7 @@ export function defineTestCaseHook(cwd, collection) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineTestCaseHook',
@@ -28,11 +29,11 @@ export function defineTestCaseHook(cwd, collection) {
       options,
       uri
     })
-    collection.push(hookDefinition)
+    builder.options[collectionName].push(hookDefinition)
   }
 }
 
-export function defineTestRunHook(cwd, collection) {
+export function defineTestRunHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -40,7 +41,7 @@ export function defineTestRunHook(cwd, collection) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineTestRunHook',
@@ -52,17 +53,17 @@ export function defineTestRunHook(cwd, collection) {
       options,
       uri
     })
-    collection.push(hookDefinition)
+    builder.options[collectionName].push(hookDefinition)
   }
 }
 
-export function defineStep(cwd, collection) {
+export function defineStep(builder) {
   return (pattern, options, code) => {
     if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, pattern, options },
       fnName: 'defineStep',
@@ -75,24 +76,36 @@ export function defineStep(cwd, collection) {
       pattern,
       uri
     })
-    collection.push(stepDefinition)
+    builder.options.stepDefinitions.push(stepDefinition)
   }
 }
 
+const projectPath = path.join(__dirname, '..', '..')
+const projectSrcPath = path.join(projectPath, 'src')
+const projectLibPath = path.join(projectPath, 'lib')
+
 function getDefinitionLineAndUri(cwd) {
+  let line = 'unknown'
+  let uri = 'unknown'
   const stackframes = StackTrace.getSync()
-  const stackframe = stackframes.length > 2 ? stackframes[2] : stackframes[0]
-  const line = stackframe.getLineNumber()
-  let uri = stackframe.getFileName()
-  if (uri) {
-    uri = path.relative(cwd, uri.replace(/\//g, path.sep))
-  } else {
-    uri = 'unknown'
+  const stackframe = _.find(stackframes, frame => {
+    const filename = frame.getFileName()
+    return (
+      !_.includes(filename, projectSrcPath) &&
+      !_.includes(filename, projectLibPath)
+    )
+  })
+  if (stackframe) {
+    line = stackframe.getLineNumber()
+    uri = stackframe.getFileName()
+    if (uri) {
+      uri = path.relative(cwd, uri)
+    }
   }
   return { line, uri }
 }
 
-export function addTransform(parameterTypeRegistry) {
+export function addTransform(builder) {
   return util.deprecate(({ captureGroupRegexps, transformer, typeName }) => {
     const parameter = new ParameterType(
       typeName,
@@ -100,13 +113,13 @@ export function addTransform(parameterTypeRegistry) {
       captureGroupRegexps,
       transformer
     )
-    parameterTypeRegistry.defineParameterType(parameter)
+    builder.options.parameterTypeRegistry.defineParameterType(parameter)
   }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
 }
 
-export function defineParameterType(parameterTypeRegistry) {
+export function defineParameterType(builder) {
   return ({ regexp, transformer, typeName }) => {
     const parameter = new ParameterType(typeName, null, regexp, transformer)
-    parameterTypeRegistry.defineParameterType(parameter)
+    builder.options.parameterTypeRegistry.defineParameterType(parameter)
   }
 }

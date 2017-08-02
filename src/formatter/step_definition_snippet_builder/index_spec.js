@@ -1,6 +1,6 @@
 import { KeywordType } from '../helpers'
 import StepDefinitionSnippetBuilder from './'
-import TransformLookupBuilder from '../../support_code_library/parameter_type_registry_builder'
+import TransformLookupBuilder from '../../support_code_library_builder/parameter_type_registry_builder'
 
 describe('StepDefinitionSnippetBuilder', function() {
   beforeEach(function() {

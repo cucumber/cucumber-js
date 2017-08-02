@@ -1,16 +1,15 @@
-import { validateInstall } from './install_validator'
+import { EventDataCollector } from '../formatter/helpers'
 import { getExpandedArgv, getTestCases } from './helpers'
+import { validateInstall } from './install_validator'
+import * as I18n from './i18n'
 import ConfigurationBuilder from './configuration_builder'
+import EventEmitter from 'events'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
 import path from 'path'
 import Promise from 'bluebird'
 import Runtime from '../runtime'
-import SupportCodeFns from '../support_code_fns'
-import SupportCodeLibraryBuilder from '../support_code_library/builder'
-import * as I18n from './i18n'
-import EventEmitter from 'events'
-import { EventDataCollector } from '../formatter/helpers'
+import supportCodeLibraryBuilder from '../support_code_library_builder'
 
 export default class Cli {
   constructor({ argv, cwd, stdout }) {
@@ -57,12 +56,9 @@ export default class Cli {
   }
 
   getSupportCodeLibrary(supportCodePaths) {
-    SupportCodeFns.reset()
+    supportCodeLibraryBuilder.reset(this.cwd)
     supportCodePaths.forEach(codePath => require(codePath))
-    return SupportCodeLibraryBuilder.build({
-      cwd: this.cwd,
-      fns: SupportCodeFns.get()
-    })
+    return supportCodeLibraryBuilder.finalize()
   }
 
   async run() {

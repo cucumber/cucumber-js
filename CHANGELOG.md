@@ -1,5 +1,17 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.1...master)
 
+#### BREAKING CHANGES
+* `pretty` formatter has been removed. All errors are now reported in a `pretty` format instead. Use the `progress-bar` or `progress` formats instead.
+
+#### New Features
+
+* Add `--i18n-languages` and `--i18n-keywords <ISO 639-1>` CLI options
+* Add `BeforeAll` / `AfterAll` hooks to replace uses of `registerHandler`
+
+#### Bug Fixes
+
+* Fix support code line and uri references when using direct imports
+
 ### [2.3.1](https://github.com/cucumber/cucumber-js/compare/v2.3.0...v2.3.1) (2017-06-09)
 
 #### New Features
