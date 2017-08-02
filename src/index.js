@@ -1,5 +1,5 @@
-import SupportCodeFns from './support_code_fns'
 import * as formatterHelpers from './formatter/helpers'
+import supportCodeLibraryBuilder from './support_code_library_builder'
 
 export { default as Cli } from './cli'
 export { default as FeatureParser } from './cli/feature_parser'
@@ -14,34 +14,26 @@ export { default as SnippetsFormatter } from './formatter/snippets_formatter'
 export { default as Status } from './status'
 export { default as SummaryFormatter } from './formatter/summary_formatter'
 export {
-  default as SupportCodeLibraryBuilder
-} from './support_code_library/builder'
+  default as supportCodeLibraryBuilder
+} from './support_code_library_builder'
 export { default as UsageFormatter } from './formatter/usage_formatter'
 export { default as UsageJsonFormatter } from './formatter/usage_json_formatter'
-
 export { formatterHelpers }
 
-export const defineSupportCode = SupportCodeFns.add
-export const getSupportCodeFns = SupportCodeFns.get
-export const clearSupportCodeFns = SupportCodeFns.reset
-
-const proxySupportCode = name => (...args) =>
-  defineSupportCode(supportCodeContext => supportCodeContext[name](...args))
-
-export const defineStep = proxySupportCode('defineStep')
-export const addTransform = proxySupportCode('addTransform')
-export const defineParameterType = proxySupportCode('defineParameterType')
-export const After = proxySupportCode('After')
-export const AfterAll = proxySupportCode('AfterAll')
-export const Before = proxySupportCode('Before')
-export const BeforeAll = proxySupportCode('BeforeAll')
-export const registerHandler = proxySupportCode('registerHandler')
-export const registerListener = proxySupportCode('registerListener')
-export const setDefaultTimeout = proxySupportCode('setDefaultTimeout')
-export const setDefinitionFunctionWrapper = proxySupportCode(
-  'setDefinitionFunctionWrapper'
-)
-export const setWorldConstructor = proxySupportCode('setWorldConstructor')
-export const Given = defineStep
-export const When = defineStep
-export const Then = defineStep
+const { methods } = supportCodeLibraryBuilder
+export const addTransform = methods.addTransform
+export const After = methods.After
+export const AfterAll = methods.AfterAll
+export const Before = methods.Before
+export const BeforeAll = methods.BeforeAll
+export const defineParameterType = methods.defineParameterType
+export const defineStep = methods.defineStep
+export const defineSupportCode = methods.defineSupportCode
+export const Given = methods.Given
+export const registerHandler = methods.registerHandler
+export const registerListener = methods.registerListener
+export const setDefaultTimeout = methods.setDefaultTimeout
+export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
+export const setWorldConstructor = methods.setWorldConstructor
+export const Then = methods.Then
+export const When = methods.When

@@ -9,7 +9,7 @@ import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-export function defineScenarioHook(cwd, collection) {
+export function defineScenarioHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -17,7 +17,7 @@ export function defineScenarioHook(cwd, collection) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineScenarioHook',
@@ -29,11 +29,11 @@ export function defineScenarioHook(cwd, collection) {
       options,
       uri
     })
-    collection.push(hookDefinition)
+    builder.options[collectionName].push(hookDefinition)
   }
 }
 
-export function defineFeaturesHook(cwd, collection) {
+export function defineFeaturesHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -41,7 +41,7 @@ export function defineFeaturesHook(cwd, collection) {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
       fnName: 'defineFeaturesHook',
@@ -53,17 +53,17 @@ export function defineFeaturesHook(cwd, collection) {
       options,
       uri
     })
-    collection.push(hookDefinition)
+    builder.options[collectionName].push(hookDefinition)
   }
 }
 
-export function defineStep(cwd, collection) {
+export function defineStep(builder) {
   return (pattern, options, code) => {
     if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, pattern, options },
       fnName: 'defineStep',
@@ -76,30 +76,42 @@ export function defineStep(cwd, collection) {
       pattern,
       uri
     })
-    collection.push(stepDefinition)
+    builder.options.stepDefinitions.push(stepDefinition)
   }
 }
 
+const projectPath = path.join(__dirname, '..', '..')
+const projectSrcPath = path.join(projectPath, 'src')
+const projectLibPath = path.join(projectPath, 'lib')
+
 function getDefinitionLineAndUri(cwd) {
+  let line = 'unknown'
+  let uri = 'unknown'
   const stackframes = StackTrace.getSync()
-  const stackframe = stackframes.length > 2 ? stackframes[2] : stackframes[0]
-  const line = stackframe.getLineNumber()
-  let uri = stackframe.getFileName()
-  if (uri) {
-    uri = path.relative(cwd, uri.replace(/\//g, path.sep))
-  } else {
-    uri = 'unknown'
+  const stackframe = _.find(stackframes, frame => {
+    const filename = frame.getFileName()
+    return (
+      !_.includes(filename, projectSrcPath) &&
+      !_.includes(filename, projectLibPath)
+    )
+  })
+  if (stackframe) {
+    line = stackframe.getLineNumber()
+    uri = stackframe.getFileName()
+    if (uri) {
+      uri = path.relative(cwd, uri)
+    }
   }
   return { line, uri }
 }
 
-export function registerHandler(cwd, collection) {
+export function registerHandler(builder) {
   return (eventName, options, code) => {
     if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const { line, uri } = getDefinitionLineAndUri(cwd)
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, eventName, options },
       fnName: 'registerHandler',
@@ -112,11 +124,11 @@ export function registerHandler(cwd, collection) {
       },
       options
     )
-    collection.push(listener)
+    builder.options.listeners.push(listener)
   }
 }
 
-export function addTransform(parameterTypeRegistry) {
+export function addTransform(builder) {
   return util.deprecate(({ captureGroupRegexps, transformer, typeName }) => {
     const parameter = new ParameterType(
       typeName,
@@ -124,13 +136,13 @@ export function addTransform(parameterTypeRegistry) {
       captureGroupRegexps,
       transformer
     )
-    parameterTypeRegistry.defineParameterType(parameter)
+    builder.options.parameterTypeRegistry.defineParameterType(parameter)
   }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
 }
 
-export function defineParameterType(parameterTypeRegistry) {
+export function defineParameterType(builder) {
   return ({ regexp, transformer, typeName }) => {
     const parameter = new ParameterType(typeName, null, regexp, transformer)
-    parameterTypeRegistry.defineParameterType(parameter)
+    builder.options.parameterTypeRegistry.defineParameterType(parameter)
   }
 }

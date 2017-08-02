@@ -7,9 +7,8 @@ import path from 'path'
 import Promise from 'bluebird'
 import Runtime from '../runtime'
 import ScenarioFilter from '../scenario_filter'
-import SupportCodeFns from '../support_code_fns'
-import SupportCodeLibraryBuilder from '../support_code_library/builder'
 import * as I18n from './i18n'
+import supportCodeLibraryBuilder from '../support_code_library_builder'
 
 export default class Cli {
   constructor({ argv, cwd, stdout }) {
@@ -52,12 +51,9 @@ export default class Cli {
   }
 
   getSupportCodeLibrary(supportCodePaths) {
-    SupportCodeFns.reset()
+    supportCodeLibraryBuilder.reset(this.cwd)
     supportCodePaths.forEach(codePath => require(codePath))
-    return SupportCodeLibraryBuilder.build({
-      cwd: this.cwd,
-      fns: SupportCodeFns.get()
-    })
+    return supportCodeLibraryBuilder.finalize()
   }
 
   async run() {
