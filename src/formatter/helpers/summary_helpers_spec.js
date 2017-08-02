@@ -69,7 +69,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with one passing scenario with multiple passing step', function() {
+    describe('with one passing scenario with multiple passing steps', function() {
       beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [

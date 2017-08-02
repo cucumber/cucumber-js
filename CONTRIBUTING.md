@@ -45,7 +45,7 @@ The browser example is only updated when releasing a new version.
     └── support_code_library  # load hooks / step definitions
 ```
 
-The runtime emits events with to an [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
+The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
 
 ### Coding style
 

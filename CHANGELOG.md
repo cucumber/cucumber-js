@@ -2,11 +2,14 @@
 
 #### BREAKING CHANGES
 * `pretty` formatter has been removed. All errors are now reported in a `pretty` format instead. Use the `progress-bar` or `progress` formats instead.
+* Custom Formatters API major changes. Please see updated documentation
+* Remove `registerHandler` and `registerListener`. Use `BeforeAll` / `AfterAll` for setup code. Use the event protocol formatter if used for reporting. Please open an issue if you have another use case.
 
 #### New Features
 
 * Add `--i18n-languages` and `--i18n-keywords <ISO 639-1>` CLI options
 * Add `BeforeAll` / `AfterAll` hooks to replace uses of `registerHandler`
+* Add event protocol formatter
 
 #### Bug Fixes
 

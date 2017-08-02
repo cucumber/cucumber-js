@@ -423,7 +423,7 @@ describe('TestCaseRunner', function() {
       })
     })
 
-    describe('with an before hook and step when skipping', function() {
+    describe('with a before hook and step when skipping', function() {
       beforeEach(async function() {
         const testCaseHookDefinition = new TestCaseHookDefinition({
           code() {

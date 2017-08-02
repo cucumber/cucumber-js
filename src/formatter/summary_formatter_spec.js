@@ -218,7 +218,7 @@ describe('SummaryFormatter', function() {
           })
         })
 
-        it('outputs step totals, scenario totals, and duration', function() {
+        it('outputs scenario totals, step totals, and duration', function() {
           expect(this.output).to.contain('0 scenarios\n0 steps\n0m00.123s\n')
         })
       })
@@ -230,7 +230,7 @@ describe('SummaryFormatter', function() {
           })
         })
 
-        it('outputs step totals, scenario totals, and duration', function() {
+        it('outputs scenario totals, step totals, and duration', function() {
           expect(this.output).to.contain('0 scenarios\n0 steps\n0m12.300s\n')
         })
       })
@@ -242,7 +242,7 @@ describe('SummaryFormatter', function() {
           })
         })
 
-        it('outputs step totals, scenario totals, and duration', function() {
+        it('outputs scenario totals, step totals, and duration', function() {
           expect(this.output).to.contain('0 scenarios\n0 steps\n2m03.000s\n')
         })
       })

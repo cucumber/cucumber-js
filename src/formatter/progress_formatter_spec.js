@@ -114,7 +114,7 @@ describe('ProgressFormatter', function() {
     })
   })
 
-  describe(' result', function() {
+  describe('test run finished', function() {
     beforeEach(function() {
       this.eventBroadcaster.emit('test-run-finished', {
         result: { duration: 0 }
