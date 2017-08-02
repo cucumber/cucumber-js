@@ -4,6 +4,7 @@
 * `pretty` formatter has been removed. All errors are now reported in a `pretty` format instead. The `progress` formatter is now the default.
 * Major changes to custom formatters API due to rewrite in support of event protocol. Please see the updated documentation.
 * Remove `registerHandler` and `registerListener`. Use `BeforeAll` / `AfterAll` for setup  code. Use the event protocol formatter if used for reporting. Please open an issue if you have another use case.
+* Remove deprecated `addTransform`. Use `defineParameterType` instead.
 
 #### New Features
 

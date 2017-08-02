@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import {
-  addTransform,
   defineTestRunHook,
   defineParameterType,
   defineTestCaseHook,
@@ -12,7 +11,6 @@ import { wrapDefinitions } from './finalize_helpers'
 export class SupportCodeLibraryBuilder {
   constructor() {
     this.methods = {
-      addTransform: addTransform(this),
       defineParameterType: defineParameterType(this),
       After: defineTestCaseHook(this, 'afterTestCaseHookDefinitions'),
       AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),

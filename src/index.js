@@ -24,7 +24,6 @@ export { formatterHelpers }
 
 // Support Code Fuctions
 const { methods } = supportCodeLibraryBuilder
-export const addTransform = methods.addTransform
 export const After = methods.After
 export const AfterAll = methods.AfterAll
 export const Before = methods.Before

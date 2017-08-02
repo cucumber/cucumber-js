@@ -6,7 +6,6 @@ import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import util from 'util'
 import validateArguments from './validate_arguments'
 
 export function defineTestCaseHook(builder, collectionName) {
@@ -103,18 +102,6 @@ function getDefinitionLineAndUri(cwd) {
     }
   }
   return { line, uri }
-}
-
-export function addTransform(builder) {
-  return util.deprecate(({ captureGroupRegexps, transformer, typeName }) => {
-    const parameter = new ParameterType(
-      typeName,
-      null,
-      captureGroupRegexps,
-      transformer
-    )
-    builder.options.parameterTypeRegistry.defineParameterType(parameter)
-  }, 'addTransform is deprecated and will be removed in a future version. Please use defineParameterType instead.')
 }
 
 export function defineParameterType(builder) {
