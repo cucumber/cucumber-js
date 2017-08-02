@@ -25,15 +25,15 @@ Feature: Rerun Formatter
         Scenario: B - pending
           Given a pending step
       """
-      And a file named "features/c.feature" with:
-        """
-        Feature: B
-          Scenario: C - passing
-            Given a passing step
+    And a file named "features/c.feature" with:
+      """
+      Feature: C
+        Scenario: C - passing
+          Given a passing step
 
-          Scenario: C - undefined
-            Given an undefined step
-        """
+        Scenario: C - undefined
+          Given an undefined step
+      """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'

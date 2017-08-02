@@ -1,65 +1,69 @@
-import _ from 'lodash'
-import { formatIssue, formatSummary } from './helpers'
-import Hook from '../models/hook'
-import Status from '../status'
+import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter from './'
 import ProgressBar from 'progress'
-
-const statusToReport = [
-  Status.AMBIGUOUS,
-  Status.FAILED,
-  Status.PENDING,
-  Status.UNDEFINED
-]
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
   constructor(options) {
     super(options)
+    options.eventBroadcaster
+      .on('pickle-accepted', ::this.incrementStepCount)
+      .once('test-case-started', ::this.initializeProgressBar)
+      .on('test-step-finished', ::this.logProgress)
+      .on('test-case-finished', ::this.logErrorIfNeeded)
+      .on('test-run-finished', ::this.logSummary)
+    this.numberOfSteps = 0
     this.issueCount = 0
   }
 
-  handleBeforeFeatures(features) {
-    const numberOfSteps = _.sumBy(features, feature => {
-      return _.sumBy(feature.scenarios, scenario => {
-        return scenario.steps.length
-      })
-    })
+  incrementStepCount({ pickle }) {
+    this.numberOfSteps += pickle.steps.length
+  }
+
+  initializeProgressBar() {
     this.progressBar = new ProgressBar(':current/:total steps [:bar] ', {
       clear: true,
       incomplete: ' ',
       stream: this.stream,
-      total: numberOfSteps,
+      total: this.numberOfSteps,
       width: this.stream.columns || 80
     })
   }
 
-  handleStepResult(stepResult) {
-    if (!(stepResult.step instanceof Hook)) {
+  logProgress({ index, testCase: { sourceLocation } }) {
+    const { testCase } = this.eventDataCollector.getTestCaseData(sourceLocation)
+    if (testCase.steps[index].sourceLocation) {
       this.progressBar.tick()
     }
   }
 
-  handleScenarioResult(scenarioResult) {
-    if (_.includes(statusToReport, scenarioResult.status)) {
+  logErrorIfNeeded({ sourceLocation, result }) {
+    if (isIssue(result.status)) {
       this.issueCount += 1
+      const {
+        gherkinDocument,
+        pickle,
+        testCase
+      } = this.eventDataCollector.getTestCaseData(sourceLocation)
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
-          cwd: this.cwd,
+          gherkinDocument,
           number: this.issueCount,
+          pickle,
           snippetBuilder: this.snippetBuilder,
-          scenarioResult
+          testCase
         })
       )
     }
   }
 
-  handleFeaturesResult(featuresResult) {
+  logSummary(testRun) {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        featuresResult
+        testCaseMap: this.eventDataCollector.testCaseMap,
+        testRun
       })
     )
   }

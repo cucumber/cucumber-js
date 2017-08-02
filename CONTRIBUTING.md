@@ -40,13 +40,12 @@ The browser example is only updated when releasing a new version.
     │
     ├── models                # data structures
     │
-    ├── runtime               # run features / scenarios / steps, trigger events
+    ├── runtime               # run test cases, emits the event protocol
     │
     └── support_code_library  # load hooks / step definitions
 ```
 
-The runtime triggers events similar to an [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
-but waits for the listener to finish (the same style used in hook and step definitions).
+The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
 
 ### Coding style
 

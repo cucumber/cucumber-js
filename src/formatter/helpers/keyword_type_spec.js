@@ -11,8 +11,8 @@ describe('KeywordType', function() {
     describe('keyword is Given', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
-          language: 'en',
-          step: { keyword: 'Given ' }
+          keyword: 'Given ',
+          language: 'en'
         })
       })
 
@@ -24,8 +24,8 @@ describe('KeywordType', function() {
     describe('keyword is When', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
-          language: 'en',
-          step: { keyword: 'When ' }
+          keyword: 'When ',
+          language: 'en'
         })
       })
 
@@ -37,8 +37,8 @@ describe('KeywordType', function() {
     describe('keyword is Then', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
-          language: 'en',
-          step: { keyword: 'Then ' }
+          keyword: 'Then ',
+          language: 'en'
         })
       })
 
@@ -50,8 +50,8 @@ describe('KeywordType', function() {
     describe('keyword is And, no previous step', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
-          language: 'en',
-          step: { keyword: 'And ' }
+          keyword: 'And ',
+          language: 'en'
         })
       })
 
@@ -60,16 +60,16 @@ describe('KeywordType', function() {
       })
     })
 
-    describe('keyword is And, previous step keyword type is EVENT', function() {
+    describe('keyword is And, previous keyword type is event', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
+          keyword: 'And ',
           language: 'en',
-          previousStep: { keywordType: KeywordType.EVENT },
-          step: { keyword: 'And ' }
+          previousKeywordType: KeywordType.EVENT
         })
       })
 
-      it('returns precondition', function() {
+      it('returns event', function() {
         expect(this.keywordType).to.eql(KeywordType.EVENT)
       })
     })
@@ -77,8 +77,8 @@ describe('KeywordType', function() {
     describe('keyword is But, no previous step', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
-          language: 'en',
-          step: { keyword: 'But ' }
+          keyword: 'But ',
+          language: 'en'
         })
       })
 
@@ -87,12 +87,12 @@ describe('KeywordType', function() {
       })
     })
 
-    describe('keyword is But, previous step keyword type is OUTCOME', function() {
+    describe('keyword is But, previous keyword type is outcome', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
+          keyword: 'But ',
           language: 'en',
-          previousStep: { keywordType: KeywordType.OUTCOME },
-          step: { keyword: 'But ' }
+          previousKeywordType: KeywordType.OUTCOME
         })
       })
 
@@ -104,8 +104,9 @@ describe('KeywordType', function() {
     describe('keyword is unknown', function() {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
+          index: 0,
           language: 'en',
-          step: { keyword: 'other ' }
+          stepKeywords: ['other ']
         })
       })
 

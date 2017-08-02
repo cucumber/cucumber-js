@@ -4,47 +4,62 @@ import Formatter from './'
 import Status from '../status'
 
 export default class SummaryFormatter extends Formatter {
-  handleFeaturesResult(featuresResult) {
-    const failures = featuresResult.scenarioResults.filter(function(
-      scenarioResult
-    ) {
-      return _.includes(
-        [Status.AMBIGUOUS, Status.FAILED],
-        scenarioResult.status
-      )
+  constructor(options) {
+    super(options)
+    options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
+  }
+
+  isTestCaseFailure(testCase) {
+    return _.includes([Status.AMBIGUOUS, Status.FAILED], testCase.result.status)
+  }
+
+  isTestCaseWarning(testCase) {
+    return _.includes(
+      [Status.PENDING, Status.UNDEFINED],
+      testCase.result.status
+    )
+  }
+
+  logSummary(testRun) {
+    const failures = []
+    const warnings = []
+    _.each(this.eventDataCollector.testCaseMap, testCase => {
+      if (this.isTestCaseFailure(testCase)) {
+        failures.push(testCase)
+      } else if (this.isTestCaseWarning(testCase)) {
+        warnings.push(testCase)
+      }
     })
     if (failures.length > 0) {
-      this.logIssues({ scenarioResults: failures, title: 'Failures' })
+      this.logIssues({ issues: failures, title: 'Failures' })
     }
-    const warnings = featuresResult.scenarioResults.filter(function(
-      scenarioResult
-    ) {
-      return _.includes(
-        [Status.PENDING, Status.UNDEFINED],
-        scenarioResult.status
-      )
-    })
     if (warnings.length > 0) {
-      this.logIssues({ scenarioResults: warnings, title: 'Warnings' })
+      this.logIssues({ issues: warnings, title: 'Warnings' })
     }
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        featuresResult
+        testCaseMap: this.eventDataCollector.testCaseMap,
+        testRun
       })
     )
   }
 
-  logIssues({ scenarioResults, title }) {
+  logIssues({ issues, title }) {
     this.log(title + ':\n\n')
-    scenarioResults.forEach((scenarioResult, index) => {
+    issues.forEach((testCase, index) => {
+      const {
+        gherkinDocument,
+        pickle
+      } = this.eventDataCollector.getTestCaseData(testCase.sourceLocation)
       this.log(
         formatIssue({
           colorFns: this.colorFns,
-          cwd: this.cwd,
+          gherkinDocument,
           number: index + 1,
+          pickle,
           snippetBuilder: this.snippetBuilder,
-          scenarioResult
+          testCase
         })
       )
     })

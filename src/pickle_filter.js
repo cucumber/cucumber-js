@@ -4,7 +4,7 @@ import TagExpressionParser from 'cucumber-tag-expressions/lib/tag_expression_par
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 const tagExpressionParser = new TagExpressionParser()
 
-export default class ScenarioFilter {
+export default class PickleFilter {
   constructor({ featurePaths, names, tagExpression }) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping(
       featurePaths || []
@@ -35,38 +35,36 @@ export default class ScenarioFilter {
     return mapping
   }
 
-  matches(scenario) {
+  matches({ pickle, uri }) {
     return (
-      this.matchesAnyLine(scenario) &&
-      this.matchesAnyName(scenario) &&
-      this.matchesAllTagExpressions(scenario)
+      this.matchesAnyLine({ pickle, uri }) &&
+      this.matchesAnyName(pickle) &&
+      this.matchesAllTagExpressions(pickle)
     )
   }
 
-  matchesAnyLine(scenario) {
-    const lines = this.featureUriToLinesMapping[scenario.uri]
+  matchesAnyLine({ pickle, uri }) {
+    const lines = this.featureUriToLinesMapping[uri]
     if (lines) {
-      return _.size(_.intersection(lines, scenario.lines)) > 0
+      return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
     } else {
       return true
     }
   }
 
-  matchesAnyName(scenario) {
+  matchesAnyName(pickle) {
     if (this.names.length === 0) {
       return true
     }
-    const scenarioName = scenario.name
     return _.some(this.names, function(name) {
-      return scenarioName.match(name)
+      return pickle.name.match(name)
     })
   }
 
-  matchesAllTagExpressions(scenario) {
+  matchesAllTagExpressions(pickle) {
     if (!this.tagExpressionNode) {
       return true
     }
-    const scenarioTags = scenario.tags.map(t => t.name)
-    return this.tagExpressionNode.evaluate(scenarioTags)
+    return this.tagExpressionNode.evaluate(_.map(pickle.tags, 'name'))
   }
 }

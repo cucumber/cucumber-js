@@ -1,43 +1,84 @@
-import EventBroadcaster from './event_broadcaster'
-import FeaturesRunner from './features_runner'
+import _ from 'lodash'
+import { formatLocation } from '../formatter/helpers'
+import Promise from 'bluebird'
 import StackTraceFilter from './stack_trace_filter'
+import Status from '../status'
+import TestCaseRunner from './test_case_runner'
+import UserCodeRunner from '../user_code_runner'
+import VError from 'verror'
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, strict}
-  constructor({ features, listeners, options, supportCodeLibrary }) {
-    this.features = features || []
-    this.listeners = listeners || []
+  constructor({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
+    this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
-    this.supportCodeLibrary = supportCodeLibrary
     this.stackTraceFilter = new StackTraceFilter()
+    this.supportCodeLibrary = supportCodeLibrary
+    this.testCases = testCases || []
+    this.result = {
+      duration: 0,
+      success: true
+    }
+  }
+
+  async runTestRunHooks(key, name) {
+    await Promise.each(this.supportCodeLibrary[key], async hookDefinition => {
+      const { error } = await UserCodeRunner.run({
+        argsArray: [],
+        fn: hookDefinition.code,
+        thisArg: null,
+        timeoutInMilliseconds:
+          hookDefinition.timeout || this.supportCodeLibrary.defaultTimeout
+      })
+      if (error) {
+        const location = formatLocation(hookDefinition)
+        throw new VError(
+          error,
+          `${name} hook errored, process exiting: ${location}`
+        )
+      }
+    })
+  }
+
+  async runTestCase(testCase) {
+    const skip =
+      this.options.dryRun || (this.options.failFast && !this.result.success)
+    const testCaseRunner = new TestCaseRunner({
+      eventBroadcaster: this.eventBroadcaster,
+      skip,
+      supportCodeLibrary: this.supportCodeLibrary,
+      testCase,
+      worldParameters: this.options.worldParameters
+    })
+    const testCaseResult = await testCaseRunner.run()
+    if (testCaseResult.duration) {
+      this.result.duration += testCaseResult.duration
+    }
+    if (this.shouldCauseFailure(testCaseResult.status)) {
+      this.result.success = false
+    }
   }
 
   async start() {
-    const eventBroadcaster = new EventBroadcaster({
-      listenerDefaultTimeout: this.supportCodeLibrary.defaultTimeout,
-      listeners: this.listeners.concat(this.supportCodeLibrary.listeners)
-    })
-    const featuresRunner = new FeaturesRunner({
-      eventBroadcaster,
-      features: this.features,
-      options: this.options,
-      supportCodeLibrary: this.supportCodeLibrary
-    })
-
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-
-    const result = await featuresRunner.run()
-
+    this.eventBroadcaster.emit('test-run-started')
+    await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
+    await Promise.each(this.testCases, ::this.runTestCase)
+    await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
+    this.eventBroadcaster.emit('test-run-finished', { result: this.result })
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
-
-    return result
+    return this.result.success
   }
 
-  attachListener(listener) {
-    this.listeners.push(listener)
+  shouldCauseFailure(status) {
+    return (
+      _.includes([Status.AMBIGUOUS, Status.FAILED], status) ||
+      (_.includes([Status.PENDING, Status.UNDEFINED], status) &&
+        this.options.strict)
+    )
   }
 }

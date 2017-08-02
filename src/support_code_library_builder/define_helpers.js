@@ -1,15 +1,15 @@
-import util from 'util'
 import _ from 'lodash'
-import { ParameterType } from 'cucumber-expressions'
 import { formatLocation } from '../formatter/helpers'
-import ScenarioHookDefinition from '../models/scenario_hook_definition'
-import FeaturesHookDefinition from '../models/features_hook_definition'
+import { ParameterType } from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
+import util from 'util'
 import validateArguments from './validate_arguments'
 
-export function defineScenarioHook(builder, collectionName) {
+export function defineTestCaseHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -20,10 +20,10 @@ export function defineScenarioHook(builder, collectionName) {
     const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
-      fnName: 'defineScenarioHook',
+      fnName: 'defineTestCaseHook',
       location: formatLocation({ line, uri })
     })
-    const hookDefinition = new ScenarioHookDefinition({
+    const hookDefinition = new TestCaseHookDefinition({
       code,
       line,
       options,
@@ -33,7 +33,7 @@ export function defineScenarioHook(builder, collectionName) {
   }
 }
 
-export function defineFeaturesHook(builder, collectionName) {
+export function defineTestRunHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -44,10 +44,10 @@ export function defineFeaturesHook(builder, collectionName) {
     const { line, uri } = getDefinitionLineAndUri(builder.cwd)
     validateArguments({
       args: { code, options },
-      fnName: 'defineFeaturesHook',
+      fnName: 'defineTestRunHook',
       location: formatLocation({ line, uri })
     })
-    const hookDefinition = new FeaturesHookDefinition({
+    const hookDefinition = new TestRunHookDefinition({
       code,
       line,
       options,
@@ -103,29 +103,6 @@ function getDefinitionLineAndUri(cwd) {
     }
   }
   return { line, uri }
-}
-
-export function registerHandler(builder) {
-  return (eventName, options, code) => {
-    if (typeof options === 'function') {
-      code = options
-      options = {}
-    }
-    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
-    validateArguments({
-      args: { code, eventName, options },
-      fnName: 'registerHandler',
-      location: formatLocation({ line, uri })
-    })
-    const listener = _.assign(
-      {
-        [`handle${eventName}`]: code,
-        location: formatLocation({ line, uri })
-      },
-      options
-    )
-    builder.options.listeners.push(listener)
-  }
 }
 
 export function addTransform(builder) {

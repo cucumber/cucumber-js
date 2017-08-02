@@ -44,17 +44,17 @@ export default class ConfigurationBuilder {
       listI18nKeywordsFor,
       listI18nLanguages,
       profiles: this.options.profile,
+      pickleFilterOptions: {
+        featurePaths: unexpandedFeaturePaths,
+        names: this.options.name,
+        tagExpression: this.options.tags
+      },
       runtimeOptions: {
         dryRun: !!this.options.dryRun,
         failFast: !!this.options.failFast,
         filterStacktraces: !this.options.backtrace,
         strict: !!this.options.strict,
         worldParameters: this.options.worldParameters
-      },
-      scenarioFilterOptions: {
-        featurePaths: unexpandedFeaturePaths,
-        names: this.options.name,
-        tagExpression: this.options.tags
       },
       supportCodePaths
     }

@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import Duration from 'duration'
-import Hook from '../../models/hook'
 import Status from '../../status'
 
 const STATUS_REPORT_ORDER = [
@@ -12,20 +11,28 @@ const STATUS_REPORT_ORDER = [
   Status.PASSED
 ]
 
-export function formatSummary({ colorFns, featuresResult }) {
+export function formatSummary({ colorFns, testCaseMap, testRun }) {
+  const testCaseResults = []
+  const testStepResults = []
+  _.each(testCaseMap, ({ result, steps }) => {
+    testCaseResults.push(result)
+    _.each(steps, testStep => {
+      if (testStep.sourceLocation) {
+        testStepResults.push(testStep.result)
+      }
+    })
+  })
   const scenarioSummary = getCountSummary({
     colorFns,
-    objects: featuresResult.scenarioResults,
+    objects: testCaseResults,
     type: 'scenario'
   })
   const stepSummary = getCountSummary({
     colorFns,
-    objects: featuresResult.stepResults.filter(
-      ({ step }) => !(step instanceof Hook)
-    ),
+    objects: testStepResults,
     type: 'step'
   })
-  const durationSummary = getDuration(featuresResult)
+  const durationSummary = getDuration(testRun.result.duration)
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
@@ -45,8 +52,7 @@ function getCountSummary({ colorFns, objects, type }) {
   return text
 }
 
-function getDuration(featuresResult) {
-  const milliseconds = featuresResult.duration
+function getDuration(milliseconds) {
   const start = new Date(0)
   const end = new Date(milliseconds)
   const duration = new Duration(start, end)

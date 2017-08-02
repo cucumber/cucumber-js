@@ -112,17 +112,6 @@ Alias of `defineStep`.
 
 ---
 
-#### `registerHandler(event[, options], fn)`
-
-* `event`: One of the supported event names [listed here](./event_handlers.md).
-* `options`: An object with the following keys:
-  - `timeout`: A step-specific timeout, to override the default timeout.
-* `fn`: A function, defined as follows:
-  - The first argument is the object as defined [here](./event_handlers.md).
-  - When using the asynchronous callback interface, have one final argument for the callback function.
-
----
-
 #### `setDefaultTimeout(milliseconds)`
 
 Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.

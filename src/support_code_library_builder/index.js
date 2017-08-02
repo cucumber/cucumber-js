@@ -2,11 +2,10 @@ import _ from 'lodash'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import {
   addTransform,
-  defineFeaturesHook,
+  defineTestRunHook,
   defineParameterType,
-  defineScenarioHook,
-  defineStep,
-  registerHandler
+  defineTestCaseHook,
+  defineStep
 } from './define_helpers'
 import { wrapDefinitions } from './finalize_helpers'
 
@@ -15,18 +14,14 @@ export class SupportCodeLibraryBuilder {
     this.methods = {
       addTransform: addTransform(this),
       defineParameterType: defineParameterType(this),
-      After: defineScenarioHook(this, 'afterScenarioHookDefinitions'),
-      AfterAll: defineFeaturesHook(this, 'afterFeaturesHookDefinitions'),
-      Before: defineScenarioHook(this, 'beforeScenarioHookDefinitions'),
-      BeforeAll: defineFeaturesHook(this, 'beforeFeaturesHookDefinitions'),
+      After: defineTestCaseHook(this, 'afterTestCaseHookDefinitions'),
+      AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),
+      Before: defineTestCaseHook(this, 'beforeTestCaseHookDefinitions'),
+      BeforeAll: defineTestRunHook(this, 'beforeTestRunHookDefinitions'),
       defineSupportCode: fn => {
         fn(this.methods)
       },
       defineStep: defineStep(this),
-      registerHandler: registerHandler(this),
-      registerListener: listener => {
-        this.options.listeners.push(listener)
-      },
       setDefaultTimeout: milliseconds => {
         this.options.defaultTimeout = milliseconds
       },
@@ -45,31 +40,30 @@ export class SupportCodeLibraryBuilder {
       cwd: this.cwd,
       definitionFunctionWrapper: this.options.definitionFunctionWrapper,
       definitions: _.chain([
-        'afterFeaturesHook',
-        'afterScenarioHook',
-        'beforeFeaturesHook',
-        'beforeScenarioHook',
+        'afterTestCaseHook',
+        'afterTestRunHook',
+        'beforeTestCaseHook',
+        'beforeTestRunHook',
         'step'
       ])
         .map(key => this.options[key + 'Definitions'])
         .flatten()
         .value()
     })
-    this.options.afterScenarioHookDefinitions.reverse()
-    this.options.afterFeaturesHookDefinitions.reverse()
+    this.options.afterTestCaseHookDefinitions.reverse()
+    this.options.afterTestRunHookDefinitions.reverse()
     return this.options
   }
 
   reset(cwd) {
     this.cwd = cwd
     this.options = _.cloneDeep({
-      afterFeaturesHookDefinitions: [],
-      afterScenarioHookDefinitions: [],
-      beforeFeaturesHookDefinitions: [],
-      beforeScenarioHookDefinitions: [],
+      afterTestCaseHookDefinitions: [],
+      afterTestRunHookDefinitions: [],
+      beforeTestCaseHookDefinitions: [],
+      beforeTestRunHookDefinitions: [],
       defaultTimeout: 5000,
       definitionFunctionWrapper: null,
-      listeners: [],
       stepDefinitions: [],
       parameterTypeRegistry: TransformLookupBuilder.build(),
       World({ attach, parameters }) {

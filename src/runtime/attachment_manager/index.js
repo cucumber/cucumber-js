@@ -1,28 +1,27 @@
-import Attachment from './attachment'
 import isStream from 'is-stream'
 import Promise from 'bluebird'
 
 export default class AttachmentManager {
-  constructor() {
-    this.attachments = []
+  constructor(onAttachment) {
+    this.onAttachment = onAttachment
   }
 
-  create(data, mimeType, callback) {
+  create(data, mediaType, callback) {
     if (Buffer.isBuffer(data)) {
-      if (!mimeType) {
-        throw Error('Buffer attachments must specify a mimeType')
+      if (!mediaType) {
+        throw Error('Buffer attachments must specify a media type')
       }
-      this.createBufferAttachment(data, mimeType)
+      this.createBufferAttachment(data, mediaType)
     } else if (isStream.readable(data)) {
-      if (!mimeType) {
-        throw Error('Stream attachments must specify a mimeType')
+      if (!mediaType) {
+        throw Error('Stream attachments must specify a media type')
       }
-      return this.createStreamAttachment(data, mimeType, callback)
+      return this.createStreamAttachment(data, mediaType, callback)
     } else if (typeof data === 'string') {
-      if (!mimeType) {
-        mimeType = 'text/plain'
+      if (!mediaType) {
+        mediaType = 'text/plain'
       }
-      this.createStringAttachment(data, mimeType)
+      this.createStringAttachment(data, { type: mediaType })
     } else {
       throw Error(
         'Invalid attachment data: must be a buffer, readable stream, or string'
@@ -30,18 +29,21 @@ export default class AttachmentManager {
     }
   }
 
-  createBufferAttachment(data, mimeType) {
-    this.createStringAttachment(data.toString('base64'), mimeType)
+  createBufferAttachment(data, mediaType) {
+    this.createStringAttachment(data.toString('base64'), {
+      encoding: 'base64',
+      type: mediaType
+    })
   }
 
-  createStreamAttachment(data, mimeType, callback) {
+  createStreamAttachment(data, mediaType, callback) {
     const promise = new Promise((resolve, reject) => {
       const buffers = []
       data.on('data', chunk => {
         buffers.push(chunk)
       })
       data.on('end', () => {
-        this.createBufferAttachment(Buffer.concat(buffers), mimeType)
+        this.createBufferAttachment(Buffer.concat(buffers), mediaType)
         resolve()
       })
       data.on('error', reject)
@@ -53,16 +55,7 @@ export default class AttachmentManager {
     }
   }
 
-  createStringAttachment(data, mimeType) {
-    const attachment = new Attachment({ data, mimeType })
-    this.attachments.push(attachment)
-  }
-
-  getAll() {
-    return this.attachments
-  }
-
-  reset() {
-    this.attachments = []
+  createStringAttachment(data, media) {
+    this.onAttachment({ data, media })
   }
 }

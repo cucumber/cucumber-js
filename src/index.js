@@ -1,25 +1,28 @@
 import * as formatterHelpers from './formatter/helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 
+// Top level
 export { default as Cli } from './cli'
-export { default as FeatureParser } from './cli/feature_parser'
+export { default as PickleFilter } from './pickle_filter'
+export { default as Runtime } from './runtime'
+export { default as Status } from './status'
+export {
+  default as supportCodeLibraryBuilder
+} from './support_code_library_builder'
+
+// Formatters
 export { default as Formatter } from './formatter'
 export { default as FormatterBuilder } from './formatter/builder'
 export { default as JsonFormatter } from './formatter/json_formatter'
 export { default as ProgressFormatter } from './formatter/progress_formatter'
 export { default as RerunFormatter } from './formatter/rerun_formatter'
-export { default as Runtime } from './runtime'
-export { default as ScenarioFilter } from './scenario_filter'
 export { default as SnippetsFormatter } from './formatter/snippets_formatter'
-export { default as Status } from './status'
 export { default as SummaryFormatter } from './formatter/summary_formatter'
-export {
-  default as supportCodeLibraryBuilder
-} from './support_code_library_builder'
 export { default as UsageFormatter } from './formatter/usage_formatter'
 export { default as UsageJsonFormatter } from './formatter/usage_json_formatter'
 export { formatterHelpers }
 
+// Support Code Fuctions
 const { methods } = supportCodeLibraryBuilder
 export const addTransform = methods.addTransform
 export const After = methods.After
