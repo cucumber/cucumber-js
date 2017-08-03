@@ -58,6 +58,7 @@ Feature: Failing steps
       my error
       """
 
+  @spawn
   Scenario: asynchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
@@ -66,7 +67,7 @@ Feature: Failing steps
       defineSupportCode(({When}) => {
         When(/^a failing step$/, function(callback) {
           setTimeout(function() {
-            throw new Error('my error')
+            throw new Error('the expected error in an async step')
           })
         })
       })
@@ -75,7 +76,7 @@ Feature: Failing steps
     Then it fails
     And the step "a failing step" failed with:
       """
-      my error
+      the expected error in an async step
       """
 
   Scenario: asynchronous - passing error as first argument to the callback
@@ -117,6 +118,7 @@ Feature: Failing steps
       function uses multiple asynchronous interfaces: callback and promise
       """
 
+  @spawn
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """

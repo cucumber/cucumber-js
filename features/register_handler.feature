@@ -28,6 +28,7 @@ Feature: Register Handler
     When I run cucumber.js
     Then it passes
 
+  @spawn
   Scenario: synchronously throws
     Given a file named "features/support/handlers.js" with:
       """
@@ -41,7 +42,7 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting |
       | Error: my error                    |
       | features/support/handlers.js:4     |
@@ -75,11 +76,12 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting |
       | Error: my error                    |
       | features/support/handlers.js:4     |
 
+  @spawn
   Scenario: callback asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
@@ -95,7 +97,7 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting |
       | Error: my error                    |
       | features/support/handlers.js:4     |
@@ -114,7 +116,7 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting                                   |
       | function uses multiple asynchronous interfaces: callback and promise |
       | features/support/handlers.js:5                                       |
@@ -148,7 +150,7 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting |
       | Error: my error                    |
       | features/support/handlers.js:5     |
@@ -167,11 +169,12 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting |
       | Promise rejected without a reason  |
       | features/support/handlers.js:5     |
 
+  @spawn
   Scenario: promise asynchronously throws
     Given a file named "features/support/handlers.js" with:
       """
@@ -190,7 +193,7 @@ Feature: Register Handler
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text snippets:
+    And the error output contains the text snippets:
       | a handler errored, process exiting |
       | Error: my error                    |
       | features/support/handlers.js:5     |

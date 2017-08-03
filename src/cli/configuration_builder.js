@@ -11,7 +11,7 @@ export default class ConfigurationBuilder {
     return await builder.build()
   }
 
-  constructor({argv, cwd}) {
+  constructor({ argv, cwd }) {
     this.cwd = cwd
     this.pathExpander = new PathExpander(cwd)
 
@@ -21,15 +21,28 @@ export default class ConfigurationBuilder {
   }
 
   async build() {
+    const listI18nKeywordsFor = this.options.i18nKeywords
+    const listI18nLanguages = !!this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
-    const featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
-    const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
-    const unexpandedSupportCodePaths = this.options.require.length > 0 ? this.options.require : featureDirectoryPaths
-    const supportCodePaths = await this.expandSupportCodePaths(unexpandedSupportCodePaths)
+    let featurePaths = []
+    let supportCodePaths = []
+    if (!listI18nKeywordsFor && !listI18nLanguages) {
+      featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
+      const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
+      const unexpandedSupportCodePaths =
+        this.options.require.length > 0
+          ? this.options.require
+          : featureDirectoryPaths
+      supportCodePaths = await this.expandSupportCodePaths(
+        unexpandedSupportCodePaths
+      )
+    }
     return {
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.getFormatOptions(),
+      listI18nKeywordsFor,
+      listI18nLanguages,
       profiles: this.options.profile,
       runtimeOptions: {
         dryRun: !!this.options.dryRun,
@@ -39,7 +52,6 @@ export default class ConfigurationBuilder {
         worldParameters: this.options.worldParameters
       },
       scenarioFilterOptions: {
-        cwd: this.cwd,
         featurePaths: unexpandedFeaturePaths,
         names: this.options.name,
         tagExpression: this.options.tags
@@ -49,12 +61,14 @@ export default class ConfigurationBuilder {
   }
 
   async expandFeaturePaths(featurePaths) {
-    featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-    return await this.pathExpander.expandPathsWithExtensions(featurePaths, ['feature'])
+    featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
+    return await this.pathExpander.expandPathsWithExtensions(featurePaths, [
+      'feature'
+    ])
   }
 
   getFeatureDirectoryPaths(featurePaths) {
-    const featureDirs = featurePaths.map((featurePath) => {
+    const featureDirs = featurePaths.map(featurePath => {
       let featureDir = path.dirname(featurePath)
       let childDir
       let parentDir = featureDir
@@ -74,26 +88,26 @@ export default class ConfigurationBuilder {
   getFormatOptions() {
     const formatOptions = _.clone(this.options.formatOptions)
     formatOptions.cwd = this.cwd
-    _.defaults(formatOptions, {colorsEnabled: true})
+    _.defaults(formatOptions, { colorsEnabled: true })
     return formatOptions
   }
 
   getFormats() {
-    const mapping = {'': 'pretty'}
-    this.options.format.forEach(function (format) {
+    const mapping = { '': 'pretty' }
+    this.options.format.forEach(function(format) {
       const parts = format.split(':')
       const type = parts[0]
       const outputTo = parts.slice(1).join(':')
       mapping[outputTo] = type
     })
     return _.map(mapping, function(type, outputTo) {
-      return {outputTo, type}
+      return { outputTo, type }
     })
   }
 
   async getUnexpandedFeaturePaths() {
     if (this.args.length > 0) {
-      const nestedFeaturePaths = await Promise.map(this.args, async (arg) => {
+      const nestedFeaturePaths = await Promise.map(this.args, async arg => {
         const filename = path.basename(arg)
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
@@ -103,7 +117,7 @@ export default class ConfigurationBuilder {
           return arg
         }
       })
-      const featurePaths =_.flatten(nestedFeaturePaths)
+      const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {
         return featurePaths
       }
@@ -113,11 +127,14 @@ export default class ConfigurationBuilder {
 
   async expandSupportCodePaths(supportCodePaths) {
     const extensions = ['js']
-    this.options.compiler.forEach((compiler) => {
+    this.options.compiler.forEach(compiler => {
       const parts = compiler.split(':')
       extensions.push(parts[0])
       require(parts[1])
     })
-    return await this.pathExpander.expandPathsWithExtensions(supportCodePaths, extensions)
+    return await this.pathExpander.expandPathsWithExtensions(
+      supportCodePaths,
+      extensions
+    )
   }
 }

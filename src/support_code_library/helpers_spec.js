@@ -1,32 +1,61 @@
-import {defineHook, defineStep, registerHandler} from './helpers'
+import {
+  defineFeaturesHook,
+  defineScenarioHook,
+  defineStep,
+  registerHandler
+} from './helpers'
 
-describe('helpers', function () {
-  describe('defineHook', function() {
+describe('helpers', function() {
+  describe('defineFeaturesHook', function() {
     beforeEach(function() {
-      this.defineHook = defineHook('', [])
+      this.defineFeaturesHook = defineFeaturesHook('', [])
     })
 
     it('throws on invalid options/fn type', function() {
       expect(() => {
-        this.defineHook([])
+        this.defineFeaturesHook([])
       }).to.throw(/Invalid first argument: should be a object or function$/)
-    })
-
-    it('throws on invalid options.tags type', function() {
-      expect(() => {
-        this.defineHook({tags:[]}, function() {})
-      }).to.throw(/Invalid "options.tags": should be a string$/)
     })
 
     it('throws on invalid options.timeout type', function() {
       expect(() => {
-        this.defineHook({timeout:'1'}, function() {})
+        this.defineFeaturesHook({ timeout: '1' }, function() {})
       }).to.throw(/Invalid "options.timeout": should be a integer$/)
     })
 
     it('throws on invalid fn type', function() {
       expect(() => {
-        this.defineHook({}, 'code')
+        this.defineFeaturesHook({}, 'code')
+      }).to.throw(/Invalid second argument: should be a function$/)
+    })
+  })
+
+  describe('defineScenarioHook', function() {
+    beforeEach(function() {
+      this.defineScenarioHook = defineScenarioHook('', [])
+    })
+
+    it('throws on invalid options/fn type', function() {
+      expect(() => {
+        this.defineScenarioHook([])
+      }).to.throw(/Invalid first argument: should be a object or function$/)
+    })
+
+    it('throws on invalid options.tags type', function() {
+      expect(() => {
+        this.defineScenarioHook({ tags: [] }, function() {})
+      }).to.throw(/Invalid "options.tags": should be a string$/)
+    })
+
+    it('throws on invalid options.timeout type', function() {
+      expect(() => {
+        this.defineScenarioHook({ timeout: '1' }, function() {})
+      }).to.throw(/Invalid "options.timeout": should be a integer$/)
+    })
+
+    it('throws on invalid fn type', function() {
+      expect(() => {
+        this.defineScenarioHook({}, 'code')
       }).to.throw(/Invalid second argument: should be a function$/)
     })
   })
@@ -39,7 +68,9 @@ describe('helpers', function () {
     it('throws on invalid pattern type', function() {
       expect(() => {
         this.defineStep([])
-      }).to.throw(/Invalid first argument: should be a string or regular expression$/)
+      }).to.throw(
+        /Invalid first argument: should be a string or regular expression$/
+      )
     })
 
     it('throws on invalid options/fn type', function() {
@@ -50,7 +81,7 @@ describe('helpers', function () {
 
     it('throws on invalid options.timeout type', function() {
       expect(() => {
-        this.defineStep('', {timeout:'1'}, function() {})
+        this.defineStep('', { timeout: '1' }, function() {})
       }).to.throw(/Invalid "options.timeout": should be a integer$/)
     })
 
@@ -80,7 +111,7 @@ describe('helpers', function () {
 
     it('throws on invalid options.timeout type', function() {
       expect(() => {
-        this.registerHandler('', {timeout:'1'}, function() {})
+        this.registerHandler('', { timeout: '1' }, function() {})
       }).to.throw(/Invalid "options.timeout": should be a integer$/)
     })
 

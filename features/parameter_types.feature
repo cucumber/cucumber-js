@@ -39,6 +39,7 @@ Feature: Parameter types
     When I run cucumber.js
     Then the step "a particular step" has status "passed"
 
+  @spawn
   Scenario: sync transform (success) using deprecated addTransform API
     Given a file named "features/support/transforms.js" with:
       """
@@ -93,7 +94,7 @@ Feature: Parameter types
     Then it fails
     And the step "a particular step" failed with:
       """
-      AssertionError: 'particular' == 'PARTICULAR'
+      AssertionError
       """
 
   Scenario: async transform (success)
@@ -148,7 +149,7 @@ Feature: Parameter types
       })
       """
     When I run cucumber.js with `-f progress`
-    Then the output contains the text:
+    Then the error output contains the text:
       """
       There is already a parameter with regexp "[^"]+"
       """

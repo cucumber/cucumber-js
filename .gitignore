@@ -1,6 +1,9 @@
+.idea/
+.nyc_output_feature/
+.nyc_output_unit/
 .nyc_output/
 @rerun.txt
+coverage/
 lib/
 node_modules
 usage.txt
-.idea/

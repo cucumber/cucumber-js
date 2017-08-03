@@ -1,4 +1,4 @@
-import {ParameterType, ParameterTypeRegistry} from 'cucumber-expressions'
+import { ParameterType, ParameterTypeRegistry } from 'cucumber-expressions'
 
 function build() {
   const parameterTypeRegistry = new ParameterTypeRegistry()
@@ -12,4 +12,4 @@ function build() {
   return parameterTypeRegistry
 }
 
-export default {build}
+export default { build }

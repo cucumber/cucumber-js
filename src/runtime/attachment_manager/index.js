@@ -18,13 +18,15 @@ export default class AttachmentManager {
         throw Error('Stream attachments must specify a mimeType')
       }
       return this.createStreamAttachment(data, mimeType, callback)
-    } else if (typeof(data) === 'string') {
+    } else if (typeof data === 'string') {
       if (!mimeType) {
         mimeType = 'text/plain'
       }
       this.createStringAttachment(data, mimeType)
     } else {
-      throw Error('Invalid attachment data: must be a buffer, readable stream, or string')
+      throw Error(
+        'Invalid attachment data: must be a buffer, readable stream, or string'
+      )
     }
   }
 
@@ -35,7 +37,9 @@ export default class AttachmentManager {
   createStreamAttachment(data, mimeType, callback) {
     const promise = new Promise((resolve, reject) => {
       const buffers = []
-      data.on('data', (chunk) => { buffers.push(chunk) })
+      data.on('data', chunk => {
+        buffers.push(chunk)
+      })
       data.on('end', () => {
         this.createBufferAttachment(Buffer.concat(buffers), mimeType)
         resolve()
@@ -50,7 +54,7 @@ export default class AttachmentManager {
   }
 
   createStringAttachment(data, mimeType) {
-    const attachment = new Attachment({data, mimeType})
+    const attachment = new Attachment({ data, mimeType })
     this.attachments.push(attachment)
   }
 

@@ -2,8 +2,8 @@ import ScenarioResult from './scenario_result'
 import Status from '../status'
 import Step from './step'
 
-describe('ScenarioResult', function () {
-  beforeEach(function () {
+describe('ScenarioResult', function() {
+  beforeEach(function() {
     this.step = Object.create(Step.prototype)
     this.scenarioResult = new ScenarioResult()
   })
@@ -12,9 +12,9 @@ describe('ScenarioResult', function () {
     expect(this.scenarioResult.status).to.eql(Status.PASSED)
   })
 
-  describe('after a passing step', function () {
-    beforeEach(function () {
-      const stepResult = {status: Status.PASSED, step: this.step}
+  describe('after a passing step', function() {
+    beforeEach(function() {
+      const stepResult = { status: Status.PASSED, step: this.step }
       this.scenarioResult.witnessStepResult(stepResult)
     })
 
@@ -22,8 +22,8 @@ describe('ScenarioResult', function () {
       expect(this.scenarioResult.status).to.eql(Status.PASSED)
     })
 
-    describe('after a failing step', function () {
-      beforeEach(function () {
+    describe('after a failing step', function() {
+      beforeEach(function() {
         this.failureException = new Error('failureException')
         const stepResult = {
           failureException: this.failureException,
@@ -38,13 +38,15 @@ describe('ScenarioResult', function () {
       })
 
       it('has a failure exception', function() {
-        expect(this.scenarioResult.failureException).to.equal(this.failureException)
+        expect(this.scenarioResult.failureException).to.equal(
+          this.failureException
+        )
       })
     })
 
-    describe('after a pending step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.PENDING, step: this.step}
+    describe('after a pending step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.PENDING, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -53,9 +55,9 @@ describe('ScenarioResult', function () {
       })
     })
 
-    describe('after an undefined step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.UNDEFINED, step: this.step}
+    describe('after an undefined step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.UNDEFINED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -65,8 +67,8 @@ describe('ScenarioResult', function () {
     })
   })
 
-  describe('after a failing step', function () {
-    beforeEach(function () {
+  describe('after a failing step', function() {
+    beforeEach(function() {
       this.failureException = new Error('failureException')
       const stepResult = {
         failureException: this.failureException,
@@ -81,12 +83,14 @@ describe('ScenarioResult', function () {
     })
 
     it('has a failure exception', function() {
-      expect(this.scenarioResult.failureException).to.equal(this.failureException)
+      expect(this.scenarioResult.failureException).to.equal(
+        this.failureException
+      )
     })
 
-    describe('after a pending step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.PENDING, step: this.step}
+    describe('after a pending step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.PENDING, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -95,13 +99,15 @@ describe('ScenarioResult', function () {
       })
 
       it('has a failure exception', function() {
-        expect(this.scenarioResult.failureException).to.equal(this.failureException)
+        expect(this.scenarioResult.failureException).to.equal(
+          this.failureException
+        )
       })
     })
 
-    describe('after an undefined step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.UNDEFINED, step: this.step}
+    describe('after an undefined step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.UNDEFINED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -110,13 +116,15 @@ describe('ScenarioResult', function () {
       })
 
       it('has a failure exception', function() {
-        expect(this.scenarioResult.failureException).to.equal(this.failureException)
+        expect(this.scenarioResult.failureException).to.equal(
+          this.failureException
+        )
       })
     })
 
-    describe('after a skipped step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.SKIPPED, step: this.step}
+    describe('after a skipped step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.SKIPPED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -125,14 +133,16 @@ describe('ScenarioResult', function () {
       })
 
       it('has a failure exception', function() {
-        expect(this.scenarioResult.failureException).to.equal(this.failureException)
+        expect(this.scenarioResult.failureException).to.equal(
+          this.failureException
+        )
       })
     })
   })
 
-  describe('after a pending step', function () {
-    beforeEach(function () {
-      const stepResult = {status: Status.PENDING, step: this.step}
+  describe('after a pending step', function() {
+    beforeEach(function() {
+      const stepResult = { status: Status.PENDING, step: this.step }
       this.scenarioResult.witnessStepResult(stepResult)
     })
 
@@ -140,9 +150,9 @@ describe('ScenarioResult', function () {
       expect(this.scenarioResult.status).to.eql(Status.PENDING)
     })
 
-    describe('after a undefined step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.UNDEFINED, step: this.step}
+    describe('after a undefined step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.UNDEFINED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -151,9 +161,9 @@ describe('ScenarioResult', function () {
       })
     })
 
-    describe('after a skipped step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.SKIPPED, step: this.step}
+    describe('after a skipped step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.SKIPPED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -163,9 +173,9 @@ describe('ScenarioResult', function () {
     })
   })
 
-  describe('after a undefined step', function () {
-    beforeEach(function () {
-      const stepResult = {status: Status.UNDEFINED, step: this.step}
+  describe('after a undefined step', function() {
+    beforeEach(function() {
+      const stepResult = { status: Status.UNDEFINED, step: this.step }
       this.scenarioResult.witnessStepResult(stepResult)
     })
 
@@ -173,9 +183,9 @@ describe('ScenarioResult', function () {
       expect(this.scenarioResult.status).to.eql(Status.UNDEFINED)
     })
 
-    describe('after a pending step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.PENDING, step: this.step}
+    describe('after a pending step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.PENDING, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -184,9 +194,9 @@ describe('ScenarioResult', function () {
       })
     })
 
-    describe('after a skipped step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.SKIPPED, step: this.step}
+    describe('after a skipped step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.SKIPPED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -196,9 +206,9 @@ describe('ScenarioResult', function () {
     })
   })
 
-  describe('after a skipped step', function () {
-    beforeEach(function () {
-      const stepResult = {status: Status.SKIPPED, step: this.step}
+  describe('after a skipped step', function() {
+    beforeEach(function() {
+      const stepResult = { status: Status.SKIPPED, step: this.step }
       this.scenarioResult.witnessStepResult(stepResult)
     })
 
@@ -206,9 +216,9 @@ describe('ScenarioResult', function () {
       expect(this.scenarioResult.status).to.eql(Status.SKIPPED)
     })
 
-    describe('after a pending step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.PENDING, step: this.step}
+    describe('after a pending step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.PENDING, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 
@@ -217,9 +227,9 @@ describe('ScenarioResult', function () {
       })
     })
 
-    describe('after an undefined step', function () {
-      beforeEach(function () {
-        const stepResult = {status: Status.UNDEFINED, step: this.step}
+    describe('after an undefined step', function() {
+      beforeEach(function() {
+        const stepResult = { status: Status.UNDEFINED, step: this.step }
         this.scenarioResult.witnessStepResult(stepResult)
       })
 

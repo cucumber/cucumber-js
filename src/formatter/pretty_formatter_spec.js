@@ -11,7 +11,7 @@ describe('PrettyFormatter', function() {
   beforeEach(function() {
     this.output = ''
     const colorFns = getColorFns(false)
-    const logFn = (data) => {
+    const logFn = data => {
       this.output += data
     }
     this.prettyFormatter = new PrettyFormatter({
@@ -21,7 +21,7 @@ describe('PrettyFormatter', function() {
   })
 
   describe('before feature', function() {
-    beforeEach(function(){
+    beforeEach(function() {
       this.feature = {
         keyword: 'feature-keyword',
         name: 'feature-name',
@@ -36,24 +36,19 @@ describe('PrettyFormatter', function() {
       })
 
       it('output the feature keyword and name', function() {
-        expect(this.output).to.eql(
-          'feature-keyword: feature-name\n' +
-          '\n'
-        )
+        expect(this.output).to.eql('feature-keyword: feature-name\n' + '\n')
       })
     })
 
     describe('with tags', function() {
       beforeEach(function() {
-        this.feature.tags = [{name: '@tagA'}, {name: '@tagB'}]
+        this.feature.tags = [{ name: '@tagA' }, { name: '@tagB' }]
         this.prettyFormatter.handleBeforeFeature(this.feature)
       })
 
       it('outputs the tags seperated by spaces above the keyword and name', function() {
         expect(this.output).to.eql(
-          '@tagA @tagB\n' +
-          'feature-keyword: feature-name\n' +
-          '\n'
+          '@tagA @tagB\n' + 'feature-keyword: feature-name\n' + '\n'
         )
       })
     })
@@ -67,17 +62,17 @@ describe('PrettyFormatter', function() {
       it('outputs the description below the keyword and name', function() {
         expect(this.output).to.eql(
           'feature-keyword: feature-name\n' +
-          '\n' +
-          '  line1\n' +
-          '  line2\n' +
-          '\n'
+            '\n' +
+            '  line1\n' +
+            '  line2\n' +
+            '\n'
         )
       })
     })
   })
 
   describe('before scenario', function() {
-    beforeEach(function(){
+    beforeEach(function() {
       this.scenario = {
         keyword: 'scenario-keyword',
         name: 'scenario-name',
@@ -91,29 +86,26 @@ describe('PrettyFormatter', function() {
       })
 
       it('output the scenario keyword and name', function() {
-        expect(this.output).to.eql(
-          '  scenario-keyword: scenario-name\n'
-        )
+        expect(this.output).to.eql('  scenario-keyword: scenario-name\n')
       })
     })
 
     describe('with tags', function() {
       beforeEach(function() {
-        this.scenario.tags = [{name: '@tagA'}, {name: '@tagB'}]
+        this.scenario.tags = [{ name: '@tagA' }, { name: '@tagB' }]
         this.prettyFormatter.handleBeforeScenario(this.scenario)
       })
 
       it('outputs the tags seperated by spaces above the keyword and name', function() {
         expect(this.output).to.eql(
-          '  @tagA @tagB\n' +
-          '  scenario-keyword: scenario-name\n'
+          '  @tagA @tagB\n' + '  scenario-keyword: scenario-name\n'
         )
       })
     })
   })
 
   describe('step result', function() {
-    beforeEach(function(){
+    beforeEach(function() {
       this.step = Object.create(Step.prototype)
       _.assign(this.step, {
         arguments: [],
@@ -126,13 +118,13 @@ describe('PrettyFormatter', function() {
       }
     })
 
-    describe('failed step', function () {
-      beforeEach(function () {
+    describe('failed step', function() {
+      beforeEach(function() {
         this.stepResult.status = Status.FAILED
         this.prettyFormatter.handleStepResult(this.stepResult)
       })
 
-      it('logs the keyword and name', function () {
+      it('logs the keyword and name', function() {
         expect(this.output).to.eql(
           '  ' + figures.cross + ' step-keyword step-name\n'
         )
@@ -146,10 +138,8 @@ describe('PrettyFormatter', function() {
           this.prettyFormatter.handleStepResult(this.stepResult)
         })
 
-        it('logs the keyword', function () {
-          expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword \n'
-          )
+        it('logs the keyword', function() {
+          expect(this.output).to.eql('  ' + figures.tick + ' step-keyword \n')
         })
       })
 
@@ -158,101 +148,102 @@ describe('PrettyFormatter', function() {
           this.prettyFormatter.handleStepResult(this.stepResult)
         })
 
-        it('logs the keyword and name', function () {
+        it('logs the keyword and name', function() {
           expect(this.output).to.eql(
             '  ' + figures.tick + ' step-keyword step-name\n'
           )
         })
       })
 
-      describe('with data table', function () {
+      describe('with data table', function() {
         beforeEach(function() {
           const dataTable = Object.create(DataTable.prototype)
-          _.assign(dataTable, createMock({
-            raw: [
-              ['cuk', 'cuke', 'cukejs'],
-              ['c',   'cuke', 'cuke.js'],
-              ['cu',  'cuke', 'cucumber']
-            ]
-          }))
+          _.assign(
+            dataTable,
+            createMock({
+              raw: [
+                ['cuk', 'cuke', 'cukejs'],
+                ['c', 'cuke', 'cuke.js'],
+                ['cu', 'cuke', 'cucumber']
+              ]
+            })
+          )
           this.step.arguments = [dataTable]
           this.prettyFormatter.handleStepResult(this.stepResult)
         })
 
-        it('logs the keyword and name and data table', function () {
+        it('logs the keyword and name and data table', function() {
           expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword step-name\n' +
-            '      | cuk | cuke | cukejs   |\n' +
-            '      | c   | cuke | cuke.js  |\n' +
-            '      | cu  | cuke | cucumber |\n'
+            '  ' +
+              figures.tick +
+              ' step-keyword step-name\n' +
+              '      | cuk | cuke | cukejs   |\n' +
+              '      | c   | cuke | cuke.js  |\n' +
+              '      | cu  | cuke | cucumber |\n'
           )
         })
       })
 
       describe('with doc string', function() {
-        beforeEach(function () {
+        beforeEach(function() {
           const docString = Object.create(DocString.prototype)
           docString.content = 'this is a multiline\ndoc string\n\n:-)'
           this.step.arguments = [docString]
           this.prettyFormatter.handleStepResult(this.stepResult)
         })
 
-        it('logs the keyword and name and doc string', function () {
+        it('logs the keyword and name and doc string', function() {
           expect(this.output).to.eql(
-            '  ' + figures.tick + ' step-keyword step-name\n' +
-            '      """\n' +
-            '      this is a multiline\n' +
-            '      doc string\n' +
-            '\n' +
-            '      :-)\n' +
-            '      """\n'
+            '  ' +
+              figures.tick +
+              ' step-keyword step-name\n' +
+              '      """\n' +
+              '      this is a multiline\n' +
+              '      doc string\n' +
+              '\n' +
+              '      :-)\n' +
+              '      """\n'
           )
         })
       })
     })
 
-    describe('pending', function () {
-      beforeEach(function () {
+    describe('pending', function() {
+      beforeEach(function() {
         this.stepResult.status = Status.PENDING
         this.prettyFormatter.handleStepResult(this.stepResult)
       })
 
-      it('logs the keyword and name', function () {
-        expect(this.output).to.eql(
-          '  ? step-keyword step-name\n'
-        )
+      it('logs the keyword and name', function() {
+        expect(this.output).to.eql('  ? step-keyword step-name\n')
       })
     })
 
-    describe('skipped', function () {
-      beforeEach(function () {
+    describe('skipped', function() {
+      beforeEach(function() {
         this.stepResult.status = Status.SKIPPED
         this.prettyFormatter.handleStepResult(this.stepResult)
       })
 
-      it('logs the keyword and name', function () {
-        expect(this.output).to.eql(
-          '  - step-keyword step-name\n'
-        )
+      it('logs the keyword and name', function() {
+        expect(this.output).to.eql('  - step-keyword step-name\n')
       })
     })
 
-    describe('undefined', function () {
-      beforeEach(function () {
+    describe('undefined', function() {
+      beforeEach(function() {
         this.stepResult.status = Status.UNDEFINED
         this.prettyFormatter.handleStepResult(this.stepResult)
       })
 
-      it('logs the keyword and name', function () {
-        expect(this.output).to.eql(
-          '  ? step-keyword step-name\n'
-        )
+      it('logs the keyword and name', function() {
+        expect(this.output).to.eql('  ? step-keyword step-name\n')
       })
     })
   })
 
   describe('after scenario', function() {
-    beforeEach(function(){
+    beforeEach(function() {
       this.prettyFormatter.handleAfterScenario(this.scenario)
     })
 

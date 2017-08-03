@@ -38,7 +38,11 @@ describe('AttachmentManager', function() {
         describe('with callback', function() {
           beforeEach(function(done) {
             const readableStream = new stream.PassThrough()
-            this.result = this.attachmentManager.create(readableStream, 'text/special', done)
+            this.result = this.attachmentManager.create(
+              readableStream,
+              'text/special',
+              done
+            )
             setTimeout(function() {
               readableStream.write('my string')
               readableStream.end()
@@ -63,7 +67,10 @@ describe('AttachmentManager', function() {
         describe('without callback', function() {
           beforeEach(function() {
             const readableStream = new stream.PassThrough()
-            this.result = this.attachmentManager.create(readableStream, 'text/special')
+            this.result = this.attachmentManager.create(
+              readableStream,
+              'text/special'
+            )
             setTimeout(function() {
               readableStream.write('my string')
               readableStream.end()
@@ -129,7 +136,9 @@ describe('AttachmentManager', function() {
       it('throws', function() {
         expect(() => {
           this.attachmentManager.create({}, 'object/special')
-        }).to.throw('Invalid attachment data: must be a buffer, readable stream, or string')
+        }).to.throw(
+          'Invalid attachment data: must be a buffer, readable stream, or string'
+        )
       })
     })
   })

@@ -1,12 +1,12 @@
-import {expectToHearEvents} from '../../test/listener_helpers'
+import { expectToHearEvents } from '../../test/listener_helpers'
 import EventBroadcaster from './event_broadcaster'
 import FeaturesRunner from './features_runner'
 import Promise from 'bluebird'
 import ScenarioRunner from './scenario_runner'
 import Status from '../status'
 
-describe('FeaturesRunner', function () {
-  beforeEach(function () {
+describe('FeaturesRunner', function() {
+  beforeEach(function() {
     this.listener = createMock([
       'handleBeforeFeatures',
       'handleBeforeFeature',
@@ -14,15 +14,19 @@ describe('FeaturesRunner', function () {
       'handleFeaturesResult',
       'handleAfterFeatures'
     ])
-    this.eventBroadcaster = new EventBroadcaster({listeners: [this.listener]})
+    this.eventBroadcaster = new EventBroadcaster({
+      listeners: [this.listener]
+    })
     this.features = []
     this.supportCodeLibrary = {
+      afterFeaturesHookDefinitions: [],
+      beforeFeaturesHookDefinitions: [],
       defaultTimeout: 5000,
       transformLookuo: {},
       listeners: [],
       World() {}
     }
-    this.scenarioFilter = createMock({matches: true})
+    this.scenarioFilter = createMock({ matches: true })
     this.listeners = []
     this.options = {}
     sinon.stub(ScenarioRunner.prototype, 'run')
@@ -39,7 +43,7 @@ describe('FeaturesRunner', function () {
     ScenarioRunner.prototype.run.restore()
   })
 
-  describe('run()', function () {
+  describe('run()', function() {
     describe('with no features', function() {
       beforeEach(async function() {
         this.result = await this.featuresRunner.run()
@@ -48,9 +52,12 @@ describe('FeaturesRunner', function () {
       it('broadcasts features and featureResult events', function() {
         expectToHearEvents(this.listener, [
           ['BeforeFeatures', this.features],
-          ['FeaturesResult', function(featureResult) {
-            expect(featureResult.success).to.be.true
-          }],
+          [
+            'FeaturesResult',
+            function(featureResult) {
+              expect(featureResult.success).to.be.true
+            }
+          ],
           ['AfterFeatures', this.features]
         ])
       })
@@ -80,9 +87,12 @@ describe('FeaturesRunner', function () {
           ['BeforeFeatures', this.features],
           ['BeforeFeature', this.feature],
           ['AfterFeature', this.feature],
-          ['FeaturesResult', function(featureResult) {
-            expect(featureResult.success).to.be.true
-          }],
+          [
+            'FeaturesResult',
+            function(featureResult) {
+              expect(featureResult.success).to.be.true
+            }
+          ],
           ['AfterFeatures', this.features]
         ])
       })
@@ -112,9 +122,12 @@ describe('FeaturesRunner', function () {
           ['BeforeFeatures', this.features],
           ['BeforeFeature', this.feature],
           ['AfterFeature', this.feature],
-          ['FeaturesResult', function(featureResult) {
-            expect(featureResult.success).to.be.false
-          }],
+          [
+            'FeaturesResult',
+            function(featureResult) {
+              expect(featureResult.success).to.be.false
+            }
+          ],
           ['AfterFeatures', this.features]
         ])
       })

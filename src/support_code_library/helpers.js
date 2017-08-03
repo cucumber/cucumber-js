@@ -1,80 +1,123 @@
 import util from 'util'
 import _ from 'lodash'
-import {ParameterType} from 'cucumber-expressions'
-import {formatLocation} from '../formatter/helpers'
-import HookDefinition from '../models/hook_definition'
+import { ParameterType } from 'cucumber-expressions'
+import { formatLocation } from '../formatter/helpers'
+import ScenarioHookDefinition from '../models/scenario_hook_definition'
+import FeaturesHookDefinition from '../models/features_hook_definition'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
 import validateArguments from './validate_arguments'
 
-export function defineHook(cwd, collection) {
+export function defineScenarioHook(cwd, collection) {
   return (options, code) => {
-    if (typeof(options) === 'string') {
-      options = {tags: options}
-    } else if (typeof(options) === 'function') {
+    if (typeof options === 'string') {
+      options = { tags: options }
+    } else if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const {line, uri} = getDefinitionLineAndUri()
+    const { line, uri } = getDefinitionLineAndUri(cwd)
     validateArguments({
-      args: {code, options},
-      fnName: 'defineHook',
-      relativeUri: formatLocation(cwd, {line, uri})
+      args: { code, options },
+      fnName: 'defineScenarioHook',
+      location: formatLocation({ line, uri })
     })
-    const hookDefinition = new HookDefinition({code, line, options, uri})
+    const hookDefinition = new ScenarioHookDefinition({
+      code,
+      line,
+      options,
+      uri
+    })
+    collection.push(hookDefinition)
+  }
+}
+
+export function defineFeaturesHook(cwd, collection) {
+  return (options, code) => {
+    if (typeof options === 'string') {
+      options = { tags: options }
+    } else if (typeof options === 'function') {
+      code = options
+      options = {}
+    }
+    const { line, uri } = getDefinitionLineAndUri(cwd)
+    validateArguments({
+      args: { code, options },
+      fnName: 'defineFeaturesHook',
+      location: formatLocation({ line, uri })
+    })
+    const hookDefinition = new FeaturesHookDefinition({
+      code,
+      line,
+      options,
+      uri
+    })
     collection.push(hookDefinition)
   }
 }
 
 export function defineStep(cwd, collection) {
   return (pattern, options, code) => {
-    if (typeof(options) === 'function') {
+    if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const {line, uri} = getDefinitionLineAndUri()
+    const { line, uri } = getDefinitionLineAndUri(cwd)
     validateArguments({
-      args: {code, pattern, options},
+      args: { code, pattern, options },
       fnName: 'defineStep',
-      relativeUri: formatLocation(cwd, {line, uri})
+      location: formatLocation({ line, uri })
     })
-    const stepDefinition = new StepDefinition({code, line, options, pattern, uri})
+    const stepDefinition = new StepDefinition({
+      code,
+      line,
+      options,
+      pattern,
+      uri
+    })
     collection.push(stepDefinition)
   }
 }
 
-function getDefinitionLineAndUri() {
+function getDefinitionLineAndUri(cwd) {
   const stackframes = StackTrace.getSync()
   const stackframe = stackframes.length > 2 ? stackframes[2] : stackframes[0]
   const line = stackframe.getLineNumber()
-  const fileName = stackframe.getFileName()
-  const uri = fileName ? fileName.replace(/\//g, path.sep) : 'unknown'
-  return {line, uri}
+  let uri = stackframe.getFileName()
+  if (uri) {
+    uri = path.relative(cwd, uri.replace(/\//g, path.sep))
+  } else {
+    uri = 'unknown'
+  }
+  return { line, uri }
 }
 
 export function registerHandler(cwd, collection) {
   return (eventName, options, code) => {
-    if (typeof(options) === 'function') {
+    if (typeof options === 'function') {
       code = options
       options = {}
     }
-    const {line, uri} = getDefinitionLineAndUri()
+    const { line, uri } = getDefinitionLineAndUri(cwd)
     validateArguments({
-      args: {code, eventName, options},
+      args: { code, eventName, options },
       fnName: 'registerHandler',
-      relativeUri: formatLocation(cwd, {line, uri})
+      location: formatLocation({ line, uri })
     })
-    const listener = _.assign({
-      [`handle${eventName}`]: code,
-      relativeUri: formatLocation(cwd, {line, uri})
-    }, options)
+    const listener = _.assign(
+      {
+        [`handle${eventName}`]: code,
+        location: formatLocation({ line, uri })
+      },
+      options
+    )
     collection.push(listener)
   }
 }
 
 export function addTransform(parameterTypeRegistry) {
-  return util.deprecate(({captureGroupRegexps, transformer, typeName}) => {
+  return util.deprecate(({ captureGroupRegexps, transformer, typeName }) => {
     const parameter = new ParameterType(
       typeName,
       null,
@@ -86,13 +129,8 @@ export function addTransform(parameterTypeRegistry) {
 }
 
 export function defineParameterType(parameterTypeRegistry) {
-  return ({regexp, transformer, typeName}) => {
-    const parameter = new ParameterType(
-      typeName,
-      null,
-      regexp,
-      transformer
-    )
+  return ({ regexp, transformer, typeName }) => {
+    const parameter = new ParameterType(typeName, null, regexp, transformer)
     parameterTypeRegistry.defineParameterType(parameter)
   }
 }

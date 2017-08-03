@@ -1,14 +1,6 @@
 # CLI
 
-Cucumber.js includes a executable file to run the features.
-
-If you installed Cucumber.js globally, you may run it with:
-
-```shell
-$ cucumber.js
-```
-
-If you installed Cucumber locally, you may need to specify the path to the executable:
+Cucumber.js includes a executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
 $ ./node_modules/.bin/cucumber.js
@@ -19,6 +11,9 @@ The executable is also aliased as `cucumber-js` and `cucumberjs`.
 **Note to Windows users:** Use `cucumber-js` or `cucumberjs` instead of `cucumber.js`.
 The latter is causing the operating system to invoke JScript instead of Node.js,
 because of the file extension.
+
+**Note on global installs:** Cucumber does not work when installed globally because cucumber 
+needs to be required in your support files and globally installed modules cannot be required. 
 
 ## Running specific features
 
@@ -48,6 +43,7 @@ Automatic loading is disabled when this option is specified, and all loading bec
 Use `--format <TYPE[:PATH]>` to specify the format of the output.
 If PATH is not supplied, the formatter prints to stdout.
 If PATH is supplied, it prints to the given file.
+This option may be used multiple times in order to output different formats to different files.
 If multiple formats are specified with the same output, only the last is used.
 
 Built-in formatters
@@ -56,7 +52,9 @@ Built-in formatters
 * progress - prints one character per scenario
 * progress-bar - prints a progress bar and outputs errors/warnings along the way
 * rerun - prints the paths of any non passing scenarios ([example](/features/rerun_formatter.feature))
-  * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`. Use with `--fail-fast` to rerun the failure and the remaining features.
+  * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`. 
+  * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
+  * Use with `--fail-fast` to rerun the failure and the remaining features.
 * snippets - prints just the code snippets for undefined steps
 * summary - prints a summary only, after all scenarios were executed
 * usage - prints a table with data about step definitions usage

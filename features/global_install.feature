@@ -1,6 +1,6 @@
 Feature: Global Installs
 
-  @global-install
+  @spawn @global-install
   Scenario: executing cucumber from a global install error
     Given a file named "features/a.feature" with:
       """
@@ -18,7 +18,7 @@ Feature: Global Installs
       """
     When I run cucumber.js (installed globally)
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       You appear to be executing an install of cucumber (most likely a global install)
       that is different from your local install (the one required in your support files).

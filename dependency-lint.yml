@@ -11,9 +11,10 @@ executedModules:
       - test
       - version
   shellScripts:
-    dev: []
+    dev:
+      - test
     ignore: []
-    root: ''
+    root: 'scripts/*.sh'
 
 ignoreErrors:
   missing: []
@@ -26,6 +27,7 @@ ignoreErrors:
     - babel-plugin-istanbul # .babelrc
     - babel-plugin-transform-async-to-module-method # .babelrc
     - babel-plugin-transform-function-bind # .babelrc
+    - babel-plugin-transform-object-rest-spread # .babelrc
     - babel-plugin-transform-promise-to-bluebird # .babelrc
     - babel-plugin-transform-regenerator # .babelrc
     - babel-plugin-transform-runtime # .babelrc
@@ -33,7 +35,11 @@ ignoreErrors:
     - babel-register # test/mocha.opts
     - babelify # package.json - scripts - build-release
     - coffee-script # features/compiler.feature
+    - coveralls # .travis.yml
+    - eslint-config-prettier # .eslintrc.yml - extends
     - eslint-plugin-babel # .eslintrc.yml - parser
+    - eslint-plugin-prettier # .eslintrc.yml - plugins
+    - prettier # peer dependency of eslint-plugin-prettier
 
 requiredModules:
   files:

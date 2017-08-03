@@ -1,11 +1,12 @@
 # Step Definitions
 
 Step definitions are glue between features written in Gherkin and the actual system under test.
-Use `this.Given`, `this.When`, `this.Then`, and `this.defineStep`.
+Use `Given`, `When`, `Then`.
 Matching groups in the regular expression are passed as parameters to the step definition.
 
 ```javascript
 var {defineSupportCode} = require('cucumber');
+var assert = require('assert');
 var fs = require('fs');
 var mzFs = require('mz/fs')
 var seleniumWebdriver = require('selenium-webdriver');
@@ -46,15 +47,16 @@ defineSupportCode(function({Then, When}) {
 
 ## Definition function wrapper
 
-If you would like to wrap step or hook definitions in with some additional logic you can use `this.setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
+If you would like to wrap step or hook definitions in with some additional logic you can use `setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
 
 ```javascript
 // features/step_definitions/file_steps.js
 var {defineSupportCode} = require('cucumber');
+var assert = require('assert');
 var mzFs = require('mz/fs');
 
-defineSupportCode(function({Then, When}) {
-  this.Then(/^Then the file named (.*) is empty$/, function *(fileName) {
+defineSupportCode(function({Then}) {
+  Then(/^Then the file named (.*) is empty$/, function *(fileName) {
     contents = yield mzFs.readFile(fileName, 'utf8');
     assert.equal(contents, '');
   });

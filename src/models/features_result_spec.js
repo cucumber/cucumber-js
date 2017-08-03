@@ -1,9 +1,9 @@
 import FeaturesResult from './features_result'
 import Status from '../status'
 
-describe('FeaturesResult', function () {
-  describe('strict', function () {
-    beforeEach(function () {
+describe('FeaturesResult', function() {
+  describe('strict', function() {
+    beforeEach(function() {
       this.featuresResult = new FeaturesResult(true)
     })
 
@@ -11,9 +11,9 @@ describe('FeaturesResult', function () {
       expect(this.featuresResult.success).to.eql(true)
     })
 
-    describe('after a passed scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.PASSED}
+    describe('after a passed scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.PASSED }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -22,9 +22,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after a failed scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.FAILED}
+    describe('after a failed scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.FAILED }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -33,9 +33,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after an ambiguous scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.AMBIGUOUS}
+    describe('after an ambiguous scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.AMBIGUOUS }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -44,9 +44,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after a pending scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.PENDING}
+    describe('after a pending scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.PENDING }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -55,9 +55,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after an undefined scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.UNDEFINED}
+    describe('after an undefined scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.UNDEFINED }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -67,8 +67,8 @@ describe('FeaturesResult', function () {
     })
   })
 
-  describe('not strict', function () {
-    beforeEach(function () {
+  describe('not strict', function() {
+    beforeEach(function() {
       this.featuresResult = new FeaturesResult(false)
     })
 
@@ -76,9 +76,9 @@ describe('FeaturesResult', function () {
       expect(this.featuresResult.success).to.eql(true)
     })
 
-    describe('after a passing scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.PASSED}
+    describe('after a passing scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.PASSED }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -87,9 +87,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after a failing scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.FAILED}
+    describe('after a failing scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.FAILED }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -98,9 +98,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after an ambiguous scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.AMBIGUOUS}
+    describe('after an ambiguous scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.AMBIGUOUS }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -109,9 +109,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after a pending scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.PENDING}
+    describe('after a pending scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.PENDING }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 
@@ -120,9 +120,9 @@ describe('FeaturesResult', function () {
       })
     })
 
-    describe('after an undefined scenario', function () {
-      beforeEach(function () {
-        const scenarioResult = {status: Status.UNDEFINED}
+    describe('after an undefined scenario', function() {
+      beforeEach(function() {
+        const scenarioResult = { status: Status.UNDEFINED }
         this.featuresResult.witnessScenarioResult(scenarioResult)
       })
 

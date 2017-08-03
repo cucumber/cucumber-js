@@ -1,4 +1,4 @@
-import {promisify} from 'bluebird'
+import { promisify } from 'bluebird'
 import fs from 'mz/fs'
 import path from 'path'
 import ProfileLoader from './profile_loader'
@@ -7,7 +7,7 @@ import tmp from 'tmp'
 describe('ProfileLoader', function() {
   describe('getArgv', function() {
     beforeEach(async function() {
-      this.tmpDir = await promisify(tmp.dir)({unsafeCleanup: true})
+      this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
       this.profileLoader = new ProfileLoader(this.tmpDir)
     })
 
@@ -23,7 +23,10 @@ describe('ProfileLoader', function() {
         describe('with a default', function() {
           beforeEach(async function() {
             const fileContent = 'module.exports = {default: "--opt1 --opt2"}'
-            await fs.writeFile(path.join(this.tmpDir, 'cucumber.js'), fileContent)
+            await fs.writeFile(
+              path.join(this.tmpDir, 'cucumber.js'),
+              fileContent
+            )
           })
 
           it('returns the argv for the default profile', async function() {
@@ -35,7 +38,10 @@ describe('ProfileLoader', function() {
         describe('without a default', function() {
           beforeEach(async function() {
             const fileContent = 'module.exports = {profile1: "--opt1 --opt2"}'
-            await fs.writeFile(path.join(this.tmpDir, 'cucumber.js'), fileContent)
+            await fs.writeFile(
+              path.join(this.tmpDir, 'cucumber.js'),
+              fileContent
+            )
           })
 
           it('returns an empty array', async function() {

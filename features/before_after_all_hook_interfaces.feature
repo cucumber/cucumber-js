@@ -1,49 +1,32 @@
-Feature: After hook interface
+Feature: before / after all hook interfaces
+
+  Rules:
+  - before / after all hooks can be synchronous, return a promise, or accept a callback
 
   Background:
-    Given a file named "features/my_feature.feature" with:
+    Given a file named "features/a.feature" with:
       """
-      Feature: a feature
-        Scenario: a scenario
-          Given a step
+      Feature: some feature
+        Scenario: first scenario
+          Given first step
+
+        Scenario: second scenario
+          Given second step
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a step$/, function() {
-          this.value = 1;
-        })
+      defineSupportCode(({Given}) => {
+        Given('first step', function() {})
+        Given('second step', function() {})
       })
       """
-
-  Scenario Outline: too many arguments
-    Given a file named "features/support/hooks.js" with:
-      """
-      import {defineSupportCode} from 'cucumber'
-
-      defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(arg1, arg2, arg3) {})
-      })
-      """
-    When I run cucumber.js
-    Then it fails
-    And the output contains the text:
-      """
-      function has 3 arguments, should have 0 or 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
-      """
-
-    Examples:
-      | TYPE   |
-      | Before |
-      | After  |
 
   Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
-      import assert from 'assert'
 
       defineSupportCode(({<TYPE>}) => {
         <TYPE>(function() {})
@@ -53,9 +36,9 @@ Feature: After hook interface
     Then it passes
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
@@ -66,24 +49,23 @@ Feature: After hook interface
         <TYPE>(function() {
           throw new Error('my error')
         })
-      }
+      })
       """
     When I run cucumber.js
     Then it fails
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
       import {defineSupportCode} from 'cucumber'
-      import assert from 'assert'
 
       defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(scenario, callback) {
+        <TYPE>(function(callback) {
           setTimeout(callback)
         })
       })
@@ -92,9 +74,9 @@ Feature: After hook interface
     Then it passes
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
@@ -102,7 +84,7 @@ Feature: After hook interface
       import {defineSupportCode} from 'cucumber'
 
       defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(scenario, callback) {
+        <TYPE>(function(callback) {
           setTimeout(() => {
             callback(new Error('my error'))
           })
@@ -111,11 +93,15 @@ Feature: After hook interface
       """
     When I run cucumber.js
     Then it fails
+    And the error output contains the text:
+      """
+      my error
+      """
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   @spawn
   Scenario Outline: callback asynchronously throws
@@ -124,7 +110,7 @@ Feature: After hook interface
       import {defineSupportCode} from 'cucumber'
 
       defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(scenario, callback) {
+        <TYPE>(function(callback) {
           setTimeout(() => {
             throw new Error('my error')
           })
@@ -133,11 +119,15 @@ Feature: After hook interface
       """
     When I run cucumber.js
     Then it fails
+    And the error output contains the text:
+      """
+      my error
+      """
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
@@ -146,22 +136,22 @@ Feature: After hook interface
       import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(scenario, callback) {
+        <TYPE>(function(callback) {
           return Promise.resolve()
         })
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       function uses multiple asynchronous interfaces: callback and promise
       """
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
@@ -179,9 +169,9 @@ Feature: After hook interface
     Then it passes
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
@@ -190,22 +180,22 @@ Feature: After hook interface
       import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(){
+        <TYPE>(function() {
           return Promise.reject(new Error('my error'))
         })
       })
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       my error
       """
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
@@ -221,15 +211,15 @@ Feature: After hook interface
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       Promise rejected without a reason
       """
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |
 
   @spawn
   Scenario Outline: promise asynchronously throws
@@ -239,7 +229,7 @@ Feature: After hook interface
       import Promise from 'bluebird'
 
       defineSupportCode(({<TYPE>}) => {
-        <TYPE>(function(){
+        <TYPE>(function() {
           return new Promise(function() {
             setTimeout(() => {
               throw new Error('my error')
@@ -250,12 +240,12 @@ Feature: After hook interface
       """
     When I run cucumber.js
     Then it fails
-    And the output contains the text:
+    And the error output contains the text:
       """
       my error
       """
 
     Examples:
-      | TYPE   |
-      | Before |
-      | After  |
+      | TYPE      |
+      | BeforeAll |
+      | AfterAll  |

@@ -4,29 +4,29 @@ import DocString from '../models/step_arguments/doc_string'
 import JsonFormatter from './json_formatter'
 import Status from '../status'
 
-describe('JsonFormatter', function () {
-  beforeEach(function () {
+describe('JsonFormatter', function() {
+  beforeEach(function() {
     this.output = ''
-    const logFn = (data) => {
+    const logFn = data => {
       this.output += data
     }
-    this.jsonFormatter = new JsonFormatter({log: logFn})
+    this.jsonFormatter = new JsonFormatter({ log: logFn })
   })
 
-  describe('no features', function () {
-    beforeEach(function () {
+  describe('no features', function() {
+    beforeEach(function() {
       this.jsonFormatter.handleAfterFeatures()
     })
 
-    it('outputs an empty array', function () {
+    it('outputs an empty array', function() {
       expect(JSON.parse(this.output)).to.eql([])
     })
   })
 
   describe('one feature', function() {
-    beforeEach(function () {
-      const tag1 = {name: 'tag 1', line: 1}
-      const tag2 = {name: 'tag 2', line: 1}
+    beforeEach(function() {
+      const tag1 = { name: 'tag 1', line: 1 }
+      const tag2 = { name: 'tag 2', line: 1 }
       const feature = {
         keyword: 'Feature',
         name: 'A Feature Name',
@@ -38,32 +38,31 @@ describe('JsonFormatter', function () {
       this.jsonFormatter.handleBeforeFeature(feature)
     })
 
-    describe('with no scenarios', function () {
-      beforeEach(function () {
+    describe('with no scenarios', function() {
+      beforeEach(function() {
         this.jsonFormatter.handleAfterFeatures()
       })
 
-      it('outputs the feature', function () {
-        expect(JSON.parse(this.output)).to.eql([{
-          description: 'A Feature Description',
-          elements: [],
-          id: 'a-feature-name',
-          keyword: 'Feature',
-          line: 2,
-          name: 'A Feature Name',
-          tags: [
-            {name: 'tag 1', line: 1},
-            {name: 'tag 2', line: 1}
-          ],
-          uri: 'uri'
-        }])
+      it('outputs the feature', function() {
+        expect(JSON.parse(this.output)).to.eql([
+          {
+            description: 'A Feature Description',
+            elements: [],
+            id: 'a-feature-name',
+            keyword: 'Feature',
+            line: 2,
+            name: 'A Feature Name',
+            tags: [{ name: 'tag 1', line: 1 }, { name: 'tag 2', line: 1 }],
+            uri: 'uri'
+          }
+        ])
       })
     })
 
-    describe('with a scenario', function () {
-      beforeEach(function () {
-        const tag1 = {name: 'tag 1', line: 3}
-        const tag2 = {name: 'tag 2', line: 3}
+    describe('with a scenario', function() {
+      beforeEach(function() {
+        const tag1 = { name: 'tag 1', line: 3 }
+        const tag2 = { name: 'tag 2', line: 3 }
         const scenario = {
           keyword: 'Scenario',
           name: 'A Scenario Name',
@@ -74,29 +73,28 @@ describe('JsonFormatter', function () {
         this.jsonFormatter.handleBeforeScenario(scenario)
       })
 
-      describe('with no steps', function () {
-        beforeEach(function () {
+      describe('with no steps', function() {
+        beforeEach(function() {
           this.jsonFormatter.handleAfterFeatures()
         })
 
-        it('outputs the scenario', function () {
+        it('outputs the scenario', function() {
           const features = JSON.parse(this.output)
-          expect(features[0].elements).to.eql([{
-            description: 'A Scenario Description',
-            id: 'a-feature-name;a-scenario-name',
-            keyword: 'Scenario',
-            line: 4,
-            name: 'A Scenario Name',
-            steps: [],
-            tags: [
-              {name: 'tag 1', line: 3},
-              {name: 'tag 2', line: 3}
-            ]
-          }])
+          expect(features[0].elements).to.eql([
+            {
+              description: 'A Scenario Description',
+              id: 'a-feature-name;a-scenario-name',
+              keyword: 'Scenario',
+              line: 4,
+              name: 'A Scenario Name',
+              steps: [],
+              tags: [{ name: 'tag 1', line: 3 }, { name: 'tag 2', line: 3 }]
+            }
+          ])
         })
       })
 
-      describe('with a step', function () {
+      describe('with a step', function() {
         beforeEach(function() {
           this.step = {
             arguments: [],
@@ -116,36 +114,38 @@ describe('JsonFormatter', function () {
           }
         })
 
-        describe('that is passing', function () {
+        describe('that is passing', function() {
           beforeEach(function() {
             this.jsonFormatter.handleStepResult(this.stepResult)
             this.jsonFormatter.handleAfterFeatures()
           })
 
-          it('outputs the step', function () {
+          it('outputs the step', function() {
             const features = JSON.parse(this.output)
-            expect(features[0].elements[0].steps).to.eql([{
-              arguments: [],
-              line: 1,
-              keyword: 'Step',
-              name: 'A Step Name',
-              result: {
-                status: 'passed',
-                duration: 1
+            expect(features[0].elements[0].steps).to.eql([
+              {
+                arguments: [],
+                line: 1,
+                keyword: 'Step',
+                name: 'A Step Name',
+                result: {
+                  status: 'passed',
+                  duration: 1
+                }
               }
-            }])
+            ])
           })
         })
 
-        describe('that is failing', function () {
+        describe('that is failing', function() {
           beforeEach(function() {
             this.stepResult.status = Status.FAILED
-            this.stepResult.failureException = {stack: 'failure stack'}
+            this.stepResult.failureException = { stack: 'failure stack' }
             this.jsonFormatter.handleStepResult(this.stepResult)
             this.jsonFormatter.handleAfterFeatures()
           })
 
-          it('outputs the step with the error message', function () {
+          it('outputs the step with the error message', function() {
             const features = JSON.parse(this.output)
             expect(features[0].elements[0].steps[0].result).to.eql({
               status: 'failed',
@@ -155,28 +155,28 @@ describe('JsonFormatter', function () {
           })
         })
 
-        describe('that is background', function () {
+        describe('that is background', function() {
           beforeEach(function() {
             this.step.isBackground = true
             this.jsonFormatter.handleStepResult(this.stepResult)
             this.jsonFormatter.handleAfterFeatures({})
           })
 
-          it('outputs a isBackground attribute', function () {
+          it('outputs a isBackground attribute', function() {
             const features = JSON.parse(this.output)
             const step = features[0].elements[0].steps[0]
             expect(step.isBackground).to.be.true
           })
         })
 
-        describe('that is hidden', function () {
+        describe('that is hidden', function() {
           beforeEach(function() {
-            this.step.constructor = {name: 'Hook'}
+            this.step.constructor = { name: 'Hook' }
             this.jsonFormatter.handleStepResult(this.stepResult)
             this.jsonFormatter.handleAfterFeatures({})
           })
 
-          it('does not output a line attribute and outputs a hidden attribute', function () {
+          it('does not output a line attribute and outputs a hidden attribute', function() {
             const features = JSON.parse(this.output)
             const step = features[0].elements[0].steps[0]
             expect(step).to.not.have.ownProperty('line')
@@ -184,8 +184,8 @@ describe('JsonFormatter', function () {
           })
         })
 
-        describe('with a doc string', function () {
-          beforeEach(function (){
+        describe('with a doc string', function() {
+          beforeEach(function() {
             const docString = Object.create(DocString.prototype)
             _.assign(docString, {
               content: 'This is a DocString',
@@ -197,57 +197,64 @@ describe('JsonFormatter', function () {
             this.jsonFormatter.handleAfterFeatures({})
           })
 
-          it('outputs the doc string as a step argument', function () {
+          it('outputs the doc string as a step argument', function() {
             const features = JSON.parse(this.output)
-            expect(features[0].elements[0].steps[0].arguments).to.eql([{
-              line: 2,
-              content: 'This is a DocString',
-              contentType: null
-            }])
+            expect(features[0].elements[0].steps[0].arguments).to.eql([
+              {
+                line: 2,
+                content: 'This is a DocString',
+                contentType: null
+              }
+            ])
           })
         })
 
-        describe('with a data table', function () {
-          beforeEach(function (){
+        describe('with a data table', function() {
+          beforeEach(function() {
             const dataTable = Object.create(DataTable.prototype)
-            _.assign(dataTable, createMock({
-              raw: [
-                ['a:1', 'a:2', 'a:3'],
-                ['b:1', 'b:2', 'b:3'],
-                ['c:1', 'c:2', 'c:3']
-              ]
-            }))
+            _.assign(
+              dataTable,
+              createMock({
+                raw: [
+                  ['a:1', 'a:2', 'a:3'],
+                  ['b:1', 'b:2', 'b:3'],
+                  ['c:1', 'c:2', 'c:3']
+                ]
+              })
+            )
             this.step.arguments = [dataTable]
             this.jsonFormatter.handleStepResult(this.stepResult)
             this.jsonFormatter.handleAfterFeatures()
           })
 
-          it('outputs the data table as a step argument', function () {
+          it('outputs the data table as a step argument', function() {
             const features = JSON.parse(this.output)
-            expect(features[0].elements[0].steps[0].arguments).to.eql([{
-              rows: [
-                {cells: ['a:1', 'a:2', 'a:3']},
-                {cells: ['b:1', 'b:2', 'b:3']},
-                {cells: ['c:1', 'c:2', 'c:3']}
-              ]
-            }])
+            expect(features[0].elements[0].steps[0].arguments).to.eql([
+              {
+                rows: [
+                  { cells: ['a:1', 'a:2', 'a:3'] },
+                  { cells: ['b:1', 'b:2', 'b:3'] },
+                  { cells: ['c:1', 'c:2', 'c:3'] }
+                ]
+              }
+            ])
           })
         })
 
-        describe('with an unknown argument type', function () {
-          beforeEach(function (){
-            this.step.arguments = [{some: 'data'}]
+        describe('with an unknown argument type', function() {
+          beforeEach(function() {
+            this.step.arguments = [{ some: 'data' }]
           })
 
-          it('throws an arror', function () {
+          it('throws an arror', function() {
             expect(() => {
               this.jsonFormatter.handleStepResult(this.stepResult)
-            }).to.throw('Unknown argument type: { some: \'data\' }')
+            }).to.throw("Unknown argument type: { some: 'data' }")
           })
         })
 
-        describe('with attachments', function () {
-          beforeEach(function (){
+        describe('with attachments', function() {
+          beforeEach(function() {
             const attachment1 = {
               mimeType: 'first mime type',
               data: 'first data'
@@ -261,17 +268,17 @@ describe('JsonFormatter', function () {
             this.jsonFormatter.handleAfterFeatures({})
           })
 
-          it('outputs the step with embeddings', function () {
+          it('outputs the step with embeddings', function() {
             const features = JSON.parse(this.output)
             expect(features[0].elements[0].steps[0].embeddings).to.eql([
-              {data: 'first data', mime_type: 'first mime type'},
-              {data: 'second data', mime_type: 'second mime type'}
+              { data: 'first data', mime_type: 'first mime type' },
+              { data: 'second data', mime_type: 'second mime type' }
             ])
           })
         })
 
-        describe('with a step definition', function () {
-          beforeEach(function (){
+        describe('with a step definition', function() {
+          beforeEach(function() {
             const stepDefinition = {
               line: 2,
               uri: 'path/to/stepDef'
@@ -281,7 +288,7 @@ describe('JsonFormatter', function () {
             this.jsonFormatter.handleAfterFeatures({})
           })
 
-          it('outputs the step with a match attribute', function () {
+          it('outputs the step with a match attribute', function() {
             const features = JSON.parse(this.output)
             expect(features[0].elements[0].steps[0].match).to.eql({
               location: 'path/to/stepDef:2'

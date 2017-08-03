@@ -64,3 +64,31 @@ defineSupportCode(function({After, Before}) {
 ```
 
 See more documentation on [tag expressions](https://docs.cucumber.io/tag-expressions/)
+
+## BeforeAll / AfterAll
+
+If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise.
+
+```javascript
+var {defineSupportCode} = require('cucumber');
+
+defineSupportCode(function({AfterAll, BeforeAll}) {
+  // Synchronous
+  BeforeAll(function () {
+    // perform some shared setup
+  });
+
+  // Asynchronous Callback
+  BeforeAll(function (callback) {
+    // perform some shared setup
+
+    // execute the callback (optionally passing an error when done)
+  });
+
+  // Asynchronous Promise
+  AfterAll(function () {
+    // perform some shared teardown
+    return Promise.resolve()
+  });
+});
+```

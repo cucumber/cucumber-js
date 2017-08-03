@@ -12,6 +12,6 @@ export function normalizeText(text) {
     .replace(/\//g, path.sep)
     .replace(/ +/g, ' ')
     .split('\n')
-    .map((line) => line.trim())
+    .map(line => line.trim())
     .join('\n')
 }
