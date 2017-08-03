@@ -50,7 +50,9 @@ $ npm install cucumber
 
 ## Documentation
 
-The following documentation is for `2.x`. Documentation for `1.x`  is available [here](https://github.com/cucumber/cucumber-js/tree/1.x).
+The following documentation is for master. 
+Documentation for `2.x`  is available [here](https://github.com/cucumber/cucumber-js/tree/2.x).
+Documentation for `1.x`  is available [here](https://github.com/cucumber/cucumber-js/tree/1.x).
 
 * [CLI](/docs/cli.md)
 * [Custom Formatters](/docs/custom_formatters.md)
@@ -62,6 +64,5 @@ The following documentation is for `2.x`. Documentation for `1.x`  is available 
   * [Timeouts](docs/support_files/timeouts.md)
   * [Data Table Interface](/docs/support_files/data_table_interface.md)
   * [Attachments](/docs/support_files/attachments.md)
-  * [Event Handlers](/docs/support_files/event_handlers.md)
   * [API Reference](/docs/support_files/api_reference.md)
 * [FAQ](/docs/faq.md)
