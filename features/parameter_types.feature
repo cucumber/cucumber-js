@@ -39,23 +39,6 @@ Feature: Parameter types
     When I run cucumber.js
     Then the step "a particular step" has status "passed"
 
-  @spawn
-  Scenario: sync transform (success) using deprecated addTransform API
-    Given a file named "features/support/transforms.js" with:
-      """
-      import {defineSupportCode} from 'cucumber'
-
-      defineSupportCode(({addTransform}) => {
-        addTransform({
-          captureGroupRegexps: /particular/,
-          transformer: s => s.toUpperCase(),
-          typeName: 'param'
-        })
-      })
-      """
-    When I run cucumber.js
-    Then the step "a particular step" has status "passed"
-
   Scenario: sync transform (error)
     Given a file named "features/support/transforms.js" with:
       """

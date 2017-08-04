@@ -4,10 +4,15 @@ import Formatter from './'
 import Table from 'cli-table'
 
 export default class UsageFormatter extends Formatter {
-  handleFeaturesResult(featuresResult) {
+  constructor(options) {
+    super(options)
+    options.eventBroadcaster.on('test-run-finished', ::this.logUsage)
+  }
+
+  logUsage() {
     const usage = getUsage({
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
-      stepResults: featuresResult.stepResults
+      eventDataCollector: this.eventDataCollector
     })
     if (usage.length === 0) {
       this.log('No step definitions')

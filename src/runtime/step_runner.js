@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import Status from '../status'
-import StepResult from '../models/step_result'
 import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
 import Promise from 'bluebird'
@@ -8,7 +7,6 @@ import Promise from 'bluebird'
 const { beginTiming, endTiming } = Time
 
 async function run({
-  attachmentManager,
   defaultTimeout,
   scenarioResult,
   step,
@@ -50,26 +48,18 @@ async function run({
     }
   }
 
-  const attachments = attachmentManager.getAll()
-  attachmentManager.reset()
-
-  const stepResultData = {
-    attachments,
-    duration: endTiming(),
-    step,
-    stepDefinition
-  }
+  const testStepResult = { duration: endTiming() }
 
   if (result === 'pending') {
-    stepResultData.status = Status.PENDING
+    testStepResult.status = Status.PENDING
   } else if (error) {
-    stepResultData.failureException = error
-    stepResultData.status = Status.FAILED
+    testStepResult.exception = error
+    testStepResult.status = Status.FAILED
   } else {
-    stepResultData.status = Status.PASSED
+    testStepResult.status = Status.PASSED
   }
 
-  return new StepResult(stepResultData)
+  return testStepResult
 }
 
 export default { run }

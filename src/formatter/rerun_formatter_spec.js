@@ -1,6 +1,8 @@
 import _ from 'lodash'
+import path from 'path'
 import RerunFormatter from './rerun_formatter'
 import Status from '../status'
+import { EventEmitter } from 'events'
 
 describe('RerunFormatter', function() {
   beforeEach(function() {
@@ -8,17 +10,18 @@ describe('RerunFormatter', function() {
     const logFn = data => {
       this.output += data
     }
-    this.feature1Path = 'features/a.feature'
-    this.feature2Path = 'features/b.feature'
+    this.eventBroadcaster = new EventEmitter()
+    this.feature1Path = path.join('features', 'a.feature')
+    this.feature2Path = path.join('features', 'b.feature')
     this.rerunFormatter = new RerunFormatter({
+      eventBroadcaster: this.eventBroadcaster,
       log: logFn
     })
   })
 
   describe('with no scenarios', function() {
     beforeEach(function() {
-      const featuresResult = { scenarioResults: [] }
-      this.rerunFormatter.handleFeaturesResult(featuresResult)
+      this.eventBroadcaster.emit('test-run-finished')
     })
 
     it('outputs nothing', function() {
@@ -29,9 +32,11 @@ describe('RerunFormatter', function() {
   _.each([Status.PASSED], status => {
     describe('with one ' + status + ' scenario', function() {
       beforeEach(function() {
-        const scenarioResult = { status }
-        const featuresResult = { scenarioResults: [scenarioResult] }
-        this.rerunFormatter.handleFeaturesResult(featuresResult)
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: { uri: this.feature1Path, line: 1 },
+          result: { status }
+        })
+        this.eventBroadcaster.emit('test-run-finished')
       })
 
       it('outputs nothing', function() {
@@ -51,20 +56,15 @@ describe('RerunFormatter', function() {
     status => {
       describe('with one ' + status + ' scenario', function() {
         beforeEach(function() {
-          const scenario = {
-            line: 1,
-            uri: this.feature1Path
-          }
-          const scenarioResult = {
-            scenario,
-            status
-          }
-          const featuresResult = { scenarioResults: [scenarioResult] }
-          this.rerunFormatter.handleFeaturesResult(featuresResult)
+          this.eventBroadcaster.emit('test-case-finished', {
+            sourceLocation: { uri: this.feature1Path, line: 1 },
+            result: { status }
+          })
+          this.eventBroadcaster.emit('test-run-finished')
         })
 
         it('outputs the reference needed to run the scenario again', function() {
-          expect(this.output).to.eql(`features/a.feature:1`)
+          expect(this.output).to.eql(`${this.feature1Path}:1`)
         })
       })
     }
@@ -72,59 +72,39 @@ describe('RerunFormatter', function() {
 
   describe('with two failing scenarios in the same file', function() {
     beforeEach(function() {
-      const scenario1 = {
-        line: 1,
-        uri: this.feature1Path
-      }
-      const scenarioResult1 = {
-        scenario: scenario1,
-        status: Status.FAILED
-      }
-      const scenario2 = {
-        line: 2,
-        uri: this.feature1Path
-      }
-      const scenarioResult2 = {
-        scenario: scenario2,
-        status: Status.FAILED
-      }
-      const featuresResult = {
-        scenarioResults: [scenarioResult1, scenarioResult2]
-      }
-      this.rerunFormatter.handleFeaturesResult(featuresResult)
+      this.eventBroadcaster.emit('test-case-finished', {
+        sourceLocation: { uri: this.feature1Path, line: 1 },
+        result: { status: Status.FAILED }
+      })
+      this.eventBroadcaster.emit('test-case-finished', {
+        sourceLocation: { uri: this.feature1Path, line: 2 },
+        result: { status: Status.FAILED }
+      })
+      this.eventBroadcaster.emit('test-run-finished')
     })
 
     it('outputs the reference needed to run the scenarios again', function() {
-      expect(this.output).to.eql(`features/a.feature:1:2`)
+      expect(this.output).to.eql(`${this.feature1Path}:1:2`)
     })
   })
 
   describe('with two failing scenarios in different files', function() {
     beforeEach(function() {
-      const scenario1 = {
-        line: 1,
-        uri: this.feature1Path
-      }
-      const scenarioResult1 = {
-        scenario: scenario1,
-        status: Status.FAILED
-      }
-      const scenario2 = {
-        line: 2,
-        uri: this.feature2Path
-      }
-      const scenarioResult2 = {
-        scenario: scenario2,
-        status: Status.FAILED
-      }
-      const featuresResult = {
-        scenarioResults: [scenarioResult1, scenarioResult2]
-      }
-      this.rerunFormatter.handleFeaturesResult(featuresResult)
+      this.eventBroadcaster.emit('test-case-finished', {
+        sourceLocation: { uri: this.feature1Path, line: 1 },
+        result: { status: Status.FAILED }
+      })
+      this.eventBroadcaster.emit('test-case-finished', {
+        sourceLocation: { uri: this.feature2Path, line: 2 },
+        result: { status: Status.FAILED }
+      })
+      this.eventBroadcaster.emit('test-run-finished')
     })
 
     it('outputs the references needed to run the scenarios again', function() {
-      expect(this.output).to.eql(`features/a.feature:1\nfeatures/b.feature:2`)
+      expect(this.output).to.eql(
+        `${this.feature1Path}:1\n` + `${this.feature2Path}:2`
+      )
     })
   })
 })

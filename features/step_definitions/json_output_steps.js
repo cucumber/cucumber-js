@@ -86,8 +86,15 @@ defineSupportCode(({ Then }) => {
       features: this.lastRun.jsonOutput,
       stepPredicate: ['name', name]
     })
-    const attachment = _.mapKeys(table.hashes()[0], (v, k) => _.snakeCase(k))
-    expect(step.embeddings[0]).to.eql(attachment)
+    const tableRowData = table.hashes()[0]
+    const expectedAttachment = {
+      data: tableRowData.DATA,
+      media: { type: tableRowData['MEDIA TYPE'] }
+    }
+    if (tableRowData['MEDIA ENCODING']) {
+      expectedAttachment.media.encoding = tableRowData['MEDIA ENCODING']
+    }
+    expect(step.embeddings[0]).to.eql(expectedAttachment)
   })
 
   Then('the {string} hook has the attachment', function(keyword, table) {
@@ -95,8 +102,15 @@ defineSupportCode(({ Then }) => {
       features: this.lastRun.jsonOutput,
       stepPredicate: ['keyword', keyword]
     })
-    const attachment = _.mapKeys(table.hashes()[0], (v, k) => _.snakeCase(k))
-    expect(hook.embeddings[0]).to.eql(attachment)
+    const tableRowData = table.hashes()[0]
+    const expectedAttachment = {
+      data: tableRowData.DATA,
+      media: { type: tableRowData['MEDIA TYPE'] }
+    }
+    if (tableRowData['MEDIA ENCODING']) {
+      expectedAttachment.media.encoding = tableRowData['MEDIA ENCODING']
+    }
+    expect(hook.embeddings[0]).to.eql(expectedAttachment)
   })
 
   Then(/^the (first|second) scenario has the steps$/, function(

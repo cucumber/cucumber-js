@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import EventProtocolFormatter from './event_protocol_formatter'
 import getColorFns from './get_color_fns'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
 import JsonFormatter from './json_formatter'
@@ -15,15 +15,18 @@ import UsageJsonFormatter from './usage_json_formatter'
 export default class FormatterBuilder {
   static build(type, options) {
     const Formatter = FormatterBuilder.getConstructorByType(type, options)
-    const extendedOptions = _.assign({}, options, {
+    const extendedOptions = {
       colorFns: getColorFns(options.colorsEnabled),
-      snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder(options)
-    })
+      snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder(options),
+      ...options
+    }
     return new Formatter(extendedOptions)
   }
 
   static getConstructorByType(type, options) {
     switch (type) {
+      case 'event-protocol':
+        return EventProtocolFormatter
       case 'json':
         return JsonFormatter
       case 'progress':

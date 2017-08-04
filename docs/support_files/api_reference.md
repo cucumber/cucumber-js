@@ -60,11 +60,32 @@ Multiple `After` hooks are executed in the **reverse** order that they are defin
 
 ---
 
+#### `AfterAll([options,] fn)`
+
+Defines a hook which is run after all scenarios have completed.
+
+* `options`: An object with the following keys:
+  * `timeout`: A hook-specific timeout, to override the default timeout.
+* `fn`: A function, defined as follows:
+  * When using the asynchronous callback interface, have one argument for the callback function.
+
+Multiple `AfterAll` hooks are executed in the **reverse** order that they are defined.
+
+---
+
 #### `Before([options,] fn)`
 
 Defines a hook which is run before each scenario. Same interface as `After`.
 
 Multiple `Before` hooks are executed in the order that they are defined.
+
+---
+
+#### `BeforeAll([options,] fn)`
+
+Defines a hook which is run before all scenarios. Same interface as `AfterAll`.
+
+Multiple `BeforeAll` hooks are executed in the order that they are defined.
 
 ---
 
@@ -88,17 +109,6 @@ Aliases: `Given`, `When`, `Then`.
 #### `Given(pattern[, options], fn)`
 
 Alias of `defineStep`.
-
----
-
-#### `registerHandler(event[, options], fn)`
-
-* `event`: One of the supported event names [listed here](./event_handlers.md).
-* `options`: An object with the following keys:
-  - `timeout`: A step-specific timeout, to override the default timeout.
-* `fn`: A function, defined as follows:
-  - The first argument is the object as defined [here](./event_handlers.md).
-  - When using the asynchronous callback interface, have one final argument for the callback function.
 
 ---
 

@@ -1,5 +1,21 @@
 ### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.1...master)
 
+#### BREAKING CHANGES
+* `pretty` formatter has been removed. All errors are now reported in a `pretty` format instead. The `progress` formatter is now the default.
+* Major changes to custom formatters API due to rewrite in support of event protocol. Please see the updated documentation.
+* Remove `registerHandler` and `registerListener`. Use `BeforeAll` / `AfterAll` for setup  code. Use the event protocol formatter if used for reporting. Please open an issue if you have another use case.
+* Remove deprecated `addTransform`. Use `defineParameterType` instead.
+
+#### New Features
+
+* Add `--i18n-languages` and `--i18n-keywords <ISO 639-1>` CLI options
+* Add `BeforeAll` / `AfterAll` hooks for suite level setup / teardown
+* Add event protocol formatter
+
+#### Bug Fixes
+
+* Fix support code line and uri references when using direct imports
+
 ### [2.3.1](https://github.com/cucumber/cucumber-js/compare/v2.3.0...v2.3.1) (2017-06-09)
 
 #### New Features

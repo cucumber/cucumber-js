@@ -1,69 +1,37 @@
-import { formatLocation } from './location_helpers'
 import { formatError } from './error_helpers'
 import Status from '../../status'
-import Table from 'cli-table'
 import indentString from 'indent-string'
 
-function getAmbiguousStepResultMessage({ colorFns, stepResult }) {
-  const { ambiguousStepDefinitions } = stepResult
-  const table = new Table({
-    chars: {
-      bottom: '',
-      'bottom-left': '',
-      'bottom-mid': '',
-      'bottom-right': '',
-      left: '',
-      'left-mid': '',
-      mid: '',
-      'mid-mid': '',
-      middle: ' - ',
-      right: '',
-      'right-mid': '',
-      top: '',
-      'top-left': '',
-      'top-mid': '',
-      'top-right': ''
-    },
-    style: {
-      border: [],
-      'padding-left': 0,
-      'padding-right': 0
-    }
-  })
-  table.push.apply(
-    table,
-    ambiguousStepDefinitions.map(stepDefinition => {
-      const pattern = stepDefinition.pattern.toString()
-      return [pattern, formatLocation(stepDefinition)]
-    })
-  )
-  const message =
-    'Multiple step definitions match:' +
-    '\n' +
-    indentString(table.toString(), 2)
-  return colorFns.ambiguous(message)
+function getAmbiguousStepResultMessage({ colorFns, testStep }) {
+  return colorFns.ambiguous(testStep.result.exception)
 }
 
-function getFailedStepResultMessage({ colorFns, stepResult }) {
-  const { failureException } = stepResult
-  return formatError(failureException, colorFns)
+function getFailedStepResultMessage({ colorFns, testStep }) {
+  return formatError(testStep.result.exception, colorFns)
 }
 
 function getPendingStepResultMessage({ colorFns }) {
   return colorFns.pending('Pending')
 }
 
-export function getStepResultMessage({ colorFns, snippetBuilder, stepResult }) {
-  switch (stepResult.status) {
+export function getStepMessage({
+  colorFns,
+  keywordType,
+  snippetBuilder,
+  testStep,
+  pickleStep
+}) {
+  switch (testStep.result.status) {
     case Status.AMBIGUOUS:
-      return getAmbiguousStepResultMessage({ colorFns, stepResult })
+      return getAmbiguousStepResultMessage({ colorFns, testStep })
     case Status.FAILED:
-      return getFailedStepResultMessage({ colorFns, stepResult })
+      return getFailedStepResultMessage({ colorFns, testStep })
     case Status.UNDEFINED:
       return getUndefinedStepResultMessage({
         colorFns,
+        keywordType,
         snippetBuilder,
-        stepResult
+        pickleStep
       })
     case Status.PENDING:
       return getPendingStepResultMessage({ colorFns })
@@ -72,11 +40,11 @@ export function getStepResultMessage({ colorFns, snippetBuilder, stepResult }) {
 
 function getUndefinedStepResultMessage({
   colorFns,
+  keywordType,
   snippetBuilder,
-  stepResult
+  pickleStep
 }) {
-  const { step } = stepResult
-  const snippet = snippetBuilder.build(step)
+  const snippet = snippetBuilder.build({ keywordType, pickleStep })
   const message =
     'Undefined. Implement with the following snippet:' +
     '\n\n' +

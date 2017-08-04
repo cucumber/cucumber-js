@@ -22,6 +22,7 @@
     "transform-es2015-typeof-symbol",
     "transform-es2015-unicode-regex",
     "transform-function-bind",
+    "transform-object-rest-spread",
     ["transform-async-to-module-method", {"module": "bluebird", "method": "coroutine"}],
     ["transform-runtime", {"polyfill": false, "regenerator": false}]
   ],
