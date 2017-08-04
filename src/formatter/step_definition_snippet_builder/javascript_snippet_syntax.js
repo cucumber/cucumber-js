@@ -1,11 +1,11 @@
-import _ from 'lodash'
+const CALLBACK_NAME = 'callback'
 
 export default class JavaScriptSnippetSyntax {
   constructor(snippetInterface) {
     this.snippetInterface = snippetInterface
   }
 
-  build(functionName, pattern, parameters, comment) {
+  build({ comment, generatedExpressions, functionName, stepParameterNames }) {
     let functionKeyword = 'function '
     if (this.snippetInterface === 'generator') {
       functionKeyword += '*'
@@ -13,30 +13,39 @@ export default class JavaScriptSnippetSyntax {
 
     let implementation
     if (this.snippetInterface === 'callback') {
-      const callbackName = _.last(parameters)
-      implementation = callbackName + "(null, 'pending');"
+      implementation = `${CALLBACK_NAME}(null, 'pending');`
     } else {
-      parameters.pop()
       implementation = "return 'pending';"
     }
 
-    const snippet =
-      functionName +
-      "('" +
-      pattern.replace(/'/g, "\\'") +
-      "', " +
-      functionKeyword +
-      '(' +
-      parameters.join(', ') +
-      ') {' +
-      '\n' +
-      '  // ' +
-      comment +
-      '\n' +
-      '  ' +
-      implementation +
-      '\n' +
+    const definitionChoices = generatedExpressions.map(
+      (generatedExpression, index) => {
+        const prefix = index === 0 ? '' : '// '
+        const allParameterNames = generatedExpression.parameterNames.concat(
+          stepParameterNames
+        )
+        if (this.snippetInterface === 'callback') {
+          allParameterNames.push(CALLBACK_NAME)
+        }
+        return (
+          prefix +
+          functionName +
+          "('" +
+          generatedExpression.source.replace(/'/g, "\\'") +
+          "', " +
+          functionKeyword +
+          '(' +
+          allParameterNames.join(', ') +
+          ') {\n'
+        )
+      }
+    )
+
+    return (
+      definitionChoices.join('') +
+      `  // ${comment}\n` +
+      `  ${implementation}\n` +
       '});'
-    return snippet
+    )
   }
 }

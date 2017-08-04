@@ -14,22 +14,29 @@ Feature: step definition snippets custom syntax
       """
       function CoffeeScriptSyntax(snippetInterface) {
         return {
-          build: function build (functionName, pattern, parameters, comment) {
+          build: function build (opts) {
             var implementation;
             if (snippetInterface === 'callback') {
-              var callbackName = parameters[parameters.length - 1];
-              implementation = callbackName + ' null, \'pending\'';
+              implementation = "done null, 'pending'";
             } else {
-              parameters.pop();
-              implementation = '\'pending\'';
+              implementation = "'pending'";
             }
-            var callbackName = parameters[parameters.length - 1];
-            var parametersStr = parameters.length > 0 ? '(' + parameters.join(', ') + ') ' : '';
-            var snippet =
-              '@' + functionName + ' \'' + pattern.replace(/'/g, '\\\'') + '\', ' + parametersStr + '-> ' + '\n' +
-              '  # ' + comment + '\n' +
-              '  ' + implementation;
-            return snippet;
+            var definitionChoices = opts.generatedExpressions.map(
+              function (generatedExpression, index) {
+                var prefix = index === 0 ? '' : '# ';
+                var allParameterNames = generatedExpression.parameterNames.concat(opts.stepParameterNames);
+                if (snippetInterface === 'callback') {
+                  allParameterNames.push('done');
+                }
+                var parametersStr = allParameterNames.length > 0 ? '(' + allParameterNames.join(', ') + ') ' : '';
+                return prefix + '@' + opts.functionName + " '" + generatedExpression.source.replace(/'/g, '\\\'') + "', " + parametersStr + '-> \n';
+              }
+            )
+            return (
+              definitionChoices.join('') +
+              '  # ' + opts.comment + '\n' +
+              '  ' + implementation
+            );
           }
         };
       }
@@ -49,7 +56,7 @@ Feature: step definition snippets custom syntax
 
     Examples:
       | INTERFACE   | SNIPPET_PARAMETERS_AND_ARROW | SNIPPET_IMPLEMENTATION   |
-      | callback    | (callback) ->                | callback null, 'pending' |
+      | callback    | (done) ->                    | done null, 'pending' |
       | generator   | ->                           | 'pending'                |
       | promise     | ->                           | 'pending'                |
       | synchronous | ->                           | 'pending'                |
