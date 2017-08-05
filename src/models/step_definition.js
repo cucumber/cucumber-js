@@ -37,7 +37,7 @@ export default class StepDefinition {
     const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
     const stepNameParameters = _.map(
       cucumberExpression.match(step.text),
-      'transformedValue'
+      'value'
     )
     const iterator = buildStepArgumentIterator({
       dataTable: arg => new DataTable(arg),
@@ -49,9 +49,9 @@ export default class StepDefinition {
 
   getCucumberExpression(parameterTypeRegistry) {
     if (typeof this.pattern === 'string') {
-      return new CucumberExpression(this.pattern, [], parameterTypeRegistry)
+      return new CucumberExpression(this.pattern, parameterTypeRegistry)
     } else {
-      return new RegularExpression(this.pattern, [], parameterTypeRegistry)
+      return new RegularExpression(this.pattern, parameterTypeRegistry)
     }
   }
 

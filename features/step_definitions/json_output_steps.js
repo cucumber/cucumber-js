@@ -81,10 +81,7 @@ defineSupportCode(({ Then }) => {
     expect(step.result.status).to.eql(status)
   })
 
-  Then('the step {stringInDoubleQuotes} has the attachment', function(
-    name,
-    table
-  ) {
+  Then('the step {string} has the attachment', function(name, table) {
     const step = findStep({
       features: this.lastRun.jsonOutput,
       stepPredicate: ['name', name]
@@ -100,10 +97,7 @@ defineSupportCode(({ Then }) => {
     expect(step.embeddings[0]).to.eql(expectedAttachment)
   })
 
-  Then('the {stringInDoubleQuotes} hook has the attachment', function(
-    keyword,
-    table
-  ) {
+  Then('the {string} hook has the attachment', function(keyword, table) {
     const hook = findStep({
       features: this.lastRun.jsonOutput,
       stepPredicate: ['keyword', keyword]

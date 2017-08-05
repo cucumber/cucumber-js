@@ -27,10 +27,11 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.keywordType = KeywordType.PRECONDITION
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
       it('uses Given as the function name', function() {
-        expect(this.snippetSyntax.build.firstCall.args[0]).to.eql('Given')
+        expect(this.arg.functionName).to.eql('Given')
       })
     })
 
@@ -38,10 +39,11 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.keywordType = KeywordType.EVENT
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
       it('uses When as the function name', function() {
-        expect(this.snippetSyntax.build.firstCall.args[0]).to.eql('When')
+        expect(this.arg.functionName).to.eql('When')
       })
     })
 
@@ -49,10 +51,11 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.keywordType = KeywordType.OUTCOME
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
       it('uses Then as the function name', function() {
-        expect(this.snippetSyntax.build.firstCall.args[0]).to.eql('Then')
+        expect(this.arg.functionName).to.eql('Then')
       })
     })
 
@@ -60,10 +63,13 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.pickleStep.text = 'abc'
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
-      it('returns the cucumber expression', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql('abc')
+      it('adds the proper generated expression', function() {
+        let generatedExpression = this.arg.generatedExpressions[0]
+        expect(generatedExpression.source).to.eql('abc')
+        expect(generatedExpression.parameterNames).to.eql([])
       })
     })
 
@@ -71,16 +77,13 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.pickleStep.text = 'abc "def" ghi'
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
-      it('replaces the quoted string with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql(
-          'abc {stringInDoubleQuotes} ghi'
-        )
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
-          'stringInDoubleQuotes',
-          'callback'
-        ])
+      it('adds the proper generated expression', function() {
+        let generatedExpression = this.arg.generatedExpressions[0]
+        expect(generatedExpression.source).to.eql('abc {string} ghi')
+        expect(generatedExpression.parameterNames).to.eql(['string'])
       })
     })
 
@@ -88,17 +91,15 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.pickleStep.text = 'abc "def" ghi "jkl" mno'
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
-      it('replaces the quoted strings with capture groups and adds parameters', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql(
-          'abc {stringInDoubleQuotes} ghi {stringInDoubleQuotes} mno'
+      it('adds the proper generated expression', function() {
+        let generatedExpression = this.arg.generatedExpressions[0]
+        expect(generatedExpression.source).to.eql(
+          'abc {string} ghi {string} mno'
         )
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
-          'stringInDoubleQuotes',
-          'stringInDoubleQuotes2',
-          'callback'
-        ])
+        expect(generatedExpression.parameterNames).to.eql(['string', 'string2'])
       })
     })
 
@@ -106,16 +107,24 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.pickleStep.text = 'abc 123 def'
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
-      it('replaces the number with a capture group and adds a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[1]).to.eql(
-          'abc {int} def'
-        )
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
-          'int',
-          'callback'
-        ])
+      it('adds the proper generated expression', function() {
+        let generatedExpression = this.arg.generatedExpressions[0]
+        expect(generatedExpression.source).to.eql('abc {int} def')
+        expect(generatedExpression.parameterNames).to.eql(['int'])
+      })
+    })
+
+    describe('step has no arguments', function() {
+      beforeEach(function() {
+        this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
+      })
+
+      it('passes no step parameter names', function() {
+        expect(this.arg.stepParameterNames).to.eql([])
       })
     })
 
@@ -123,13 +132,11 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.pickleStep.arguments = [{ rows: [] }]
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
-      it('passes table as a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
-          'table',
-          'callback'
-        ])
+      it('passes dataTable as a step parameter name', function() {
+        expect(this.arg.stepParameterNames).to.eql(['dataTable'])
       })
     })
 
@@ -137,30 +144,11 @@ describe('StepDefinitionSnippetBuilder', function() {
       beforeEach(function() {
         this.input.pickleStep.arguments = [{ content: '' }]
         this.result = this.snippetBuilder.build(this.input)
+        this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
 
-      it('passes table as a parameter', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
-          'string',
-          'callback'
-        ])
-      })
-    })
-
-    describe('step name has multiple quoted strings and a data table argument', function() {
-      beforeEach(function() {
-        this.input.pickleStep.text = 'abc "def" ghi "jkl" mno'
-        this.input.pickleStep.arguments = [{ rows: [] }]
-        this.result = this.snippetBuilder.build(this.input)
-      })
-
-      it('puts the table argument after the capture groups', function() {
-        expect(this.snippetSyntax.build.firstCall.args[2]).to.eql([
-          'stringInDoubleQuotes',
-          'stringInDoubleQuotes2',
-          'table',
-          'callback'
-        ])
+      it('passes docString as a step parameter name', function() {
+        expect(this.arg.stepParameterNames).to.eql(['docString'])
       })
     })
   })

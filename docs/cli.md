@@ -82,12 +82,7 @@ Valid interfaces are 'callback', 'generator', 'promise', or 'synchronous'.
 ### Syntax
 
 Override the snippet syntaxes with `--format-options '{"snippetSyntax": "<FILE>"}'`.
-See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
-
-#### Building a custom snippet syntax
-
-* See the [JavaScript syntax](/src/formatters/snippet_builder/javascript_syntax.js) for an example. Please open an issue if you need more information.
-* Please add the keywords `cucumber` and `snippets` to your package, so it can easily be found by searching [npm](https://www.npmjs.com/search?q=cucumber+snippets).
+See [here](/docs/custom_snippet_syntaxes.md) for documentation about building a custom snippet syntax.
 
 ## Profiles
 

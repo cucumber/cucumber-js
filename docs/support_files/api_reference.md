@@ -16,30 +16,13 @@ Add a new transform to convert a capture group into something else.
   If no transform function is specified, the captured argument is left as a string.
   The function can be synchronous or return a `Promise` of the transformed value.
 
-The built in transforms are:
-
-```javascript
-// Float
-{
-  regexp: /-?\d*\.?\d+/,
-  transformer: parseFloat,
-  typeName: 'float'
-}
-
-// Integer
-{
-  regexp: /-?\d+/,
-  transformer: parseInt,
-  typeName: 'int'
-}
-
-// String in double quotes
-{
-  regexp: /"[^"]+"/,
-  transformer: JSON.parse,
-  typeName: 'stringInDoubleQuotes'
-}
-```
+The built in parameter types are
+* `int`
+* `float`
+* `string`
+  * contained in single or double quotes
+  * the transformer removes the quotes
+* `word`
 
 ---
 

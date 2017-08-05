@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { CucumberExpressionGenerator } from 'cucumber-expressions'
 import { KeywordType } from '../helpers'
 import { buildStepArgumentIterator } from '../../step_arguments'
@@ -12,19 +11,20 @@ export default class StepDefinitionSnippetBuilder {
   }
 
   build({ keywordType, pickleStep }) {
+    const comment =
+      'Write code here that turns the phrase above into concrete actions'
     const functionName = this.getFunctionName(keywordType)
-    const generatedExpression = this.cucumberExpressionGenerator.generateExpression(
+    const generatedExpressions = this.cucumberExpressionGenerator.generateExpressions(
       pickleStep.text,
       true
     )
-    const pattern = generatedExpression.source
-    const parameters = this.getParameters(
-      pickleStep,
-      generatedExpression.parameterNames
-    )
-    const comment =
-      'Write code here that turns the phrase above into concrete actions'
-    return this.snippetSyntax.build(functionName, pattern, parameters, comment)
+    const stepParameterNames = this.getStepParameterNames(pickleStep)
+    return this.snippetSyntax.build({
+      comment,
+      functionName,
+      generatedExpressions,
+      stepParameterNames
+    })
   }
 
   getFunctionName(keywordType) {
@@ -38,18 +38,10 @@ export default class StepDefinitionSnippetBuilder {
     }
   }
 
-  getParameters(step, expressionParameterNames) {
-    return _.concat(
-      expressionParameterNames,
-      this.getStepArgumentParameters(step),
-      'callback'
-    )
-  }
-
-  getStepArgumentParameters(step) {
+  getStepParameterNames(step) {
     const iterator = buildStepArgumentIterator({
-      dataTable: () => 'table',
-      docString: () => 'string'
+      dataTable: () => 'dataTable',
+      docString: () => 'docString'
     })
     return step.arguments.map(iterator)
   }

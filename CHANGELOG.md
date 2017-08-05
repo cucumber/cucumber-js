@@ -5,12 +5,18 @@
 * Major changes to custom formatters API due to rewrite in support of event protocol. Please see the updated documentation.
 * Remove `registerHandler` and `registerListener`. Use `BeforeAll` / `AfterAll` for setup  code. Use the event protocol formatter if used for reporting. Please open an issue if you have another use case.
 * Remove deprecated `addTransform`. Use `defineParameterType` instead.
+* `cucumber-expressions`:
+  * using an undefined parameter type now results in an error
+  * `{stringInDoubleQuotes}` is now `{string}` which works for strings in single or double quotes
 
 #### New Features
 
 * Add `--i18n-languages` and `--i18n-keywords <ISO 639-1>` CLI options
 * Add `BeforeAll` / `AfterAll` hooks for suite level setup / teardown
 * Add event protocol formatter
+* `cucumber-expressions`:
+  * Add built in `{word}` parameter type which is equivalent to `[A-Za-z0-9_]+`
+  * Allow multiple parameter types to use the same regular expression
 
 #### Bug Fixes
 

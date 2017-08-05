@@ -106,7 +106,14 @@ function getDefinitionLineAndUri(cwd) {
 
 export function defineParameterType(builder) {
   return ({ regexp, transformer, typeName }) => {
-    const parameter = new ParameterType(typeName, null, regexp, transformer)
-    builder.options.parameterTypeRegistry.defineParameterType(parameter)
+    const parameterType = new ParameterType(
+      typeName,
+      regexp,
+      null,
+      transformer,
+      true,
+      true
+    )
+    builder.options.parameterTypeRegistry.defineParameterType(parameterType)
   }
 }
