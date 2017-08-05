@@ -82,7 +82,7 @@ Valid interfaces are 'callback', 'generator', 'promise', or 'synchronous'.
 ### Syntax
 
 Override the snippet syntaxes with `--format-options '{"snippetSyntax": "<FILE>"}'`.
-See [here](/features/step_definition_snippets_custom_syntax.feature) for an example.
+See [here](/custom_snippet_syntaxes.md) for documentation about building a custom snippet syntax.
 
 ## Profiles
 
