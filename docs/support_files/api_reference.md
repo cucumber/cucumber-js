@@ -33,11 +33,18 @@ The built in transforms are:
   typeName: 'int'
 }
 
-// String in double quotes
+// String
 {
-  regexp: /"[^"]+"/,
-  transformer: JSON.parse,
-  typeName: 'stringInDoubleQuotes'
+  regexp: /\w+/,
+  transformer: s => s,
+  typeName: 'string'
+}
+
+// Word
+{
+  regexp: /"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/,
+  transformer: s => s.replace(/\\"/g, '"').replace(/\\'/g, "'"),
+  typeName: 'string'
 }
 ```
 
