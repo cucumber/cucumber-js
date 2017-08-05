@@ -247,7 +247,9 @@ describe('UserCodeRunner', function() {
         const { error, result } = await UserCodeRunner.run(this.options)
         expect(error).to.be.instanceof(Error)
         expect(error.message).to.eql(
-          'function uses multiple asynchronous interfaces: callback and promise'
+          'function uses multiple asynchronous interfaces: callback and promise\n' +
+            'to use the callback interface: do not return a promise\n' +
+            'to use the promise interface: remove the last argument to the function'
         )
         expect(result).to.be.undefined
       })

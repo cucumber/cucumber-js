@@ -30,7 +30,9 @@ export default class UserCodeRunner {
     if (callbackInterface && promiseInterface) {
       return {
         error: new Error(
-          'function uses multiple asynchronous interfaces: callback and promise'
+          'function uses multiple asynchronous interfaces: callback and promise\n' +
+            'to use the callback interface: do not return a promise\n' +
+            'to use the promise interface: remove the last argument to the function'
         )
       }
     } else if (callbackInterface) {

@@ -156,6 +156,8 @@ Feature: After hook interface
     And the output contains the text:
       """
       function uses multiple asynchronous interfaces: callback and promise
+      to use the callback interface: do not return a promise
+      to use the promise interface: remove the last argument to the function
       """
 
     Examples:

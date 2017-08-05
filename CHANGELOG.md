@@ -18,6 +18,7 @@
 * `cucumber-expressions`:
   * Add built in `{word}` parameter type which is equivalent to `[A-Za-z0-9_]+`
   * Allow multiple parameter types to use the same regular expression
+* Improve error message when using multiple asynchronous interfaces 
 
 #### Bug Fixes
 
