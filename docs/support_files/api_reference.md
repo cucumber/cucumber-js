@@ -33,17 +33,17 @@ The built in transforms are:
   typeName: 'int'
 }
 
-// String
+// String - contained in single or double quotes
 {
-  regexp: /\w+/,
-  transformer: s => s,
+  regexp: /"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/,
+  transformer: s => s.replace(/\\"/g, '"').replace(/\\'/g, "'"),
   typeName: 'string'
 }
 
 // Word
 {
-  regexp: /"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/,
-  transformer: s => s.replace(/\\"/g, '"').replace(/\\'/g, "'"),
+  regexp: /\w+/,
+  transformer: s => s,
   typeName: 'string'
 }
 ```
