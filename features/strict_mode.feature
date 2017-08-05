@@ -1,7 +1,7 @@
 Feature: Strict mode
 
   Using the `--no-strict` flag will cause cucumber to succeed even if there are
-  undefined or pending steps.
+  pending steps.
 
   Background:
     Given a file named "features/a.feature" with:
@@ -10,14 +10,6 @@ Feature: Strict mode
         Scenario: Missing
           Given a step
       """
-
-  Scenario: Fail with undefined step by default
-    When I run cucumber.js
-    Then it fails
-
-  Scenario: Succeed with undefined step with --no-strict
-    When I run cucumber.js with `--no-strict`
-    Then it passes
 
   Scenario: Fail with pending step by default
     Given a file named "features/step_definitions/cucumber_steps.js" with:

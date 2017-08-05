@@ -8,6 +8,7 @@
 * `cucumber-expressions`:
   * using an undefined parameter type now results in an error
   * `{stringInDoubleQuotes}` is now `{string}` which works for strings in single or double quotes
+* Undefined steps fail the build in non-strict mode. Non-strict mode only allows pending steps now.
 
 #### New Features
 

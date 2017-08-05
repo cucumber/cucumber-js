@@ -76,9 +76,8 @@ export default class Runtime {
 
   shouldCauseFailure(status) {
     return (
-      _.includes([Status.AMBIGUOUS, Status.FAILED], status) ||
-      (_.includes([Status.PENDING, Status.UNDEFINED], status) &&
-        this.options.strict)
+      _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
+      (status === Status.PENDING && this.options.strict)
     )
   }
 }
