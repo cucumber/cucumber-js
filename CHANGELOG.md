@@ -9,7 +9,6 @@
   * using an undefined parameter type now results in an error
   * `{stringInDoubleQuotes}` is now `{string}` which works for strings in single or double quotes
 
-
 #### New Features
 
 * Add `--i18n-languages` and `--i18n-keywords <ISO 639-1>` CLI options
