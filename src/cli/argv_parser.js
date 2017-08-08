@@ -74,10 +74,7 @@ export default class ArgvParser {
         ArgvParser.collect,
         []
       )
-      .option(
-        '--no-strict',
-        'succeed even if there are pending or undefined steps'
-      )
+      .option('--no-strict', 'succeed even if there are pending steps')
       .option(
         '-p, --profile <NAME>',
         'specify the profile to use (repeatable)',

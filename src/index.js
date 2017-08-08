@@ -3,6 +3,7 @@ import supportCodeLibraryBuilder from './support_code_library_builder'
 
 // Top level
 export { default as Cli } from './cli'
+export { getTestCases, getTestCasesFromFilesystem } from './cli/helpers'
 export { default as PickleFilter } from './pickle_filter'
 export { default as Runtime } from './runtime'
 export { default as Status } from './status'

@@ -1,4 +1,6 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v2.3.1...master)
+### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v3.0.0...master)
+
+### [3.0.0](https://github.com/cucumber/cucumber-js/compare/v2.3.1...v3.0.0) (2017-08-08)
 
 #### BREAKING CHANGES
 * `pretty` formatter has been removed. All errors are now reported in a `pretty` format instead. The `progress` formatter is now the default.
@@ -18,7 +20,7 @@
 * `cucumber-expressions`:
   * Add built in `{word}` parameter type which is equivalent to `[A-Za-z0-9_]+`
   * Allow multiple parameter types to use the same regular expression
-* Improve error message when using multiple asynchronous interfaces 
+* Improve error message when using multiple asynchronous interfaces
 
 #### Bug Fixes
 

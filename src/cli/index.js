@@ -1,5 +1,5 @@
 import { EventDataCollector } from '../formatter/helpers'
-import { getExpandedArgv, getTestCases } from './helpers'
+import { getExpandedArgv, getTestCasesFromFilesystem } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
 import ConfigurationBuilder from './configuration_builder'
@@ -7,6 +7,7 @@ import EventEmitter from 'events'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
 import path from 'path'
+import PickleFilter from '../pickle_filter'
 import Promise from 'bluebird'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
@@ -82,11 +83,11 @@ export default class Cli {
       formats: configuration.formats,
       supportCodeLibrary
     })
-    const testCases = await getTestCases({
+    const testCases = await getTestCasesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
       featurePaths: configuration.featurePaths,
-      pickleFilterOptions: configuration.pickleFilterOptions
+      pickleFilter: new PickleFilter(configuration.pickleFilterOptions)
     })
     const runtime = new Runtime({
       eventBroadcaster,

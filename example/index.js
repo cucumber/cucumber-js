@@ -1,4 +1,6 @@
-/* global $, ace, ansiHTML, Cucumber */
+/* global $, ace, Cucumber */
+import { EventEmitter } from 'events'
+import ansiHTML from 'ansi-html'
 
 let featureEditor, stepDefinitionsEditor, $output
 
@@ -6,36 +8,39 @@ function runFeature() {
   $output.empty()
   $('a[href="#output-tab"]').tab('show')
 
+  const eventBroadcaster = new EventEmitter()
+  const eventDataCollector = new Cucumber.formatterHelpers.EventDataCollector(
+    eventBroadcaster
+  )
+
   let featureSource = featureEditor.getValue()
-  let feature = Cucumber.FeatureParser.parse({
-    scenarioFilter: new Cucumber.ScenarioFilter({}),
+  const testCases = Cucumber.getTestCases({
+    eventBroadcaster,
+    pickleFilter: new Cucumber.PickleFilter({}),
     source: featureSource,
     uri: '/feature'
   })
 
-  Cucumber.clearSupportCodeFns()
+  Cucumber.supportCodeLibraryBuilder.reset('')
   new Function(stepDefinitionsEditor.getValue())()
-  let supportCodeLibrary = Cucumber.SupportCodeLibraryBuilder.build({
-    cwd: '/',
-    fns: Cucumber.getSupportCodeFns()
-  })
+  let supportCodeLibrary = Cucumber.supportCodeLibraryBuilder.finalize()
 
   let formatterOptions = {
     colorsEnabled: true,
     cwd: '/',
+    eventBroadcaster,
+    eventDataCollector,
     log(data) {
       appendToOutput(ansiHTML(data))
     },
     supportCodeLibrary
   }
-  let prettyFormatter = Cucumber.FormatterBuilder.build(
-    'pretty',
-    formatterOptions
-  )
+  Cucumber.FormatterBuilder.build('progress', formatterOptions)
 
   let runtime = new Cucumber.Runtime({
-    features: [feature],
-    listeners: [prettyFormatter],
+    eventBroadcaster,
+    options: {},
+    testCases,
     supportCodeLibrary
   })
   return runtime.start()

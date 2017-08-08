@@ -1,12 +1,13 @@
+import { getTestCasesFromFilesystem } from './helpers'
 import { promisify } from 'bluebird'
-import fs from 'fs-extra'
-import { getTestCases } from './helpers'
-import tmp from 'tmp'
 import EventEmitter from 'events'
+import fs from 'fs-extra'
 import path from 'path'
+import PickleFilter from '../pickle_filter'
+import tmp from 'tmp'
 
 describe('helpers', function() {
-  describe('getTestCases', function() {
+  describe('getTestCasesFromFilesystem', function() {
     beforeEach(async function() {
       this.onSource = sinon.stub()
       this.onGherkinDocument = sinon.stub()
@@ -27,11 +28,11 @@ describe('helpers', function() {
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
         await fs.outputFile(featurePath, '')
-        this.result = await getTestCases({
+        this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
-          pickleFilterOptions: {}
+          pickleFilter: new PickleFilter({})
         })
       })
 
@@ -71,13 +72,13 @@ describe('helpers', function() {
           featurePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
-        this.result = await getTestCases({
+        this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
-          pickleFilterOptions: {
+          pickleFilter: new PickleFilter({
             featurePaths: [`${this.relativeFeaturePath}:5`]
-          }
+          })
         })
       })
 
@@ -111,11 +112,11 @@ describe('helpers', function() {
           featurePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
-        this.result = await getTestCases({
+        this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
-          pickleFilterOptions: {}
+          pickleFilter: new PickleFilter({})
         })
       })
 

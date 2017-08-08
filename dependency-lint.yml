@@ -21,7 +21,6 @@ ignoreErrors:
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
-    - ansi-html # example/example.js
     - babel-eslint # .eslintrc.yml - plugins
     - babel-plugin-external-helpers # .babelrc
     - babel-plugin-istanbul # .babelrc
@@ -33,7 +32,7 @@ ignoreErrors:
     - babel-plugin-transform-runtime # .babelrc
     - babel-preset-es2015 # .babelrc
     - babel-register # test/mocha.opts
-    - babelify # package.json - scripts - build-release
+    - babelify # package.json - scripts - build-browser-example / build-release
     - coffee-script # features/compiler.feature
     - coveralls # .travis.yml
     - eslint-config-prettier # .eslintrc.yml - extends
@@ -46,6 +45,7 @@ requiredModules:
     dev:
       - '{features,scripts,test}/**/*'
       - '**/*_spec.js'
+      - 'example/index.js'
     ignore:
       - 'dist/**/*'
       - 'node_modules/**/*'

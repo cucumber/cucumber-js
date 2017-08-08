@@ -22,10 +22,13 @@ See the `package.json` scripts section for how to run the tests.
 * feature tests
   * cucumber-js tests itself
 
-## Browser Example
+## Test browser example locally
 
-You can test the browser example locally by running `node scripts/server.js` and visiting `localhost:9797`.
-The browser example is only updated when releasing a new version.
+* Run `yarn build-browser-example`
+* Run `node scripts/server.js`
+* Visit `localhost:9797`.
+
+The published browser example is only updated when releasing a new version.
 
 ## Internals
 
