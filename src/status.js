@@ -12,12 +12,14 @@ const statuses = {
 
 export default statuses
 
-export function addStatusPredicates(protoype) {
+export function addStatusPredicates(obj) {
+  const clone = _.clone(obj)
   _.each(statuses, status => {
-    protoype['is' + upperCaseFirst(status)] = function() {
+    clone['is' + upperCaseFirst(status)] = function() {
       return this.status === status
     }
   })
+  return clone
 }
 
 export function getStatusMapping(initialValue) {

@@ -1,6 +1,6 @@
 # Hooks
 
-Hooks are used for setup and teardown the environment before and after each scenario. The first argument will be a [ScenarioResult](/src/models/scenario_result.js) for the current running scenario. Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
+Hooks are used for setup and teardown the environment before and after each scenario. The first argument will be a test case result (an object with the keys `duration` and `status` and with methods `isPassed`, `isFailed`, `isAmbiguous`, `isUndefined`, `isPending`, `isSkipped`). Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
 
 ```javascript
 var {defineSupportCode} = require('cucumber');
@@ -12,7 +12,7 @@ defineSupportCode(function({After, Before}) {
   });
 
   // Asynchronous Callback
-  Before(function (scenarioResult, callback) {
+  Before(function (testCase, callback) {
     var world = this;
     tmp.dir({unsafeCleanup: true}, function(error, dir) {
       if (error) {

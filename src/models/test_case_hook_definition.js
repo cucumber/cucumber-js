@@ -1,5 +1,6 @@
 import PickleFilter from '../pickle_filter'
 import StepDefinition from './step_definition'
+import { addStatusPredicates } from '../status'
 
 export default class TestCaseHookDefinition extends StepDefinition {
   constructor(data) {
@@ -17,8 +18,8 @@ export default class TestCaseHookDefinition extends StepDefinition {
     return this.buildInvalidCodeLengthMessage('0 or 1', '2')
   }
 
-  getInvocationParameters({ scenarioResult }) {
-    return [scenarioResult]
+  getInvocationParameters({ testCaseResult }) {
+    return [addStatusPredicates(testCaseResult)]
   }
 
   getValidCodeLengths() {

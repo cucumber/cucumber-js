@@ -22,7 +22,7 @@ function predicatesShouldOnlyReturnTrueFor(
 ) {
   describe('object has a status ' + status, function() {
     beforeEach(function() {
-      this.obj = new MyObject(status)
+      this.obj = addStatusPredicates(new MyObject(status))
     })
 
     _.each(predicates, function(predicate) {
@@ -54,10 +54,6 @@ describe('Status', function() {
   })
 
   describe('addStatusPredicates()', function() {
-    beforeEach(function() {
-      addStatusPredicates(MyObject.prototype)
-    })
-
     predicatesShouldOnlyReturnTrueFor(Status.AMBIGUOUS, 'isAmbiguous')
     predicatesShouldOnlyReturnTrueFor(Status.FAILED, 'isFailed')
     predicatesShouldOnlyReturnTrueFor(Status.PASSED, 'isPassed')
