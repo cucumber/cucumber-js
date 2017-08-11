@@ -1,4 +1,4 @@
-Feature: registerHandler timeouts
+Feature: before / after all hook timeouts
 
   Background:
     Given a file named "features/a.feature" with:
