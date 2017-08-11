@@ -85,6 +85,7 @@ describe('JsonFormatter', function() {
                 keyword: 'Scenario',
                 line: 4,
                 name: 'my scenario',
+                type: 'scenario',
                 steps: [
                   {
                     arguments: [],
