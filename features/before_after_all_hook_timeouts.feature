@@ -41,7 +41,7 @@ Feature: before / after all hook timeouts
       | BeforeAll |
       | AfterAll  |
 
-  Scenario Outline: slow handler can increase their timeout
+  Scenario Outline: slow handlers can increase their timeout
     Given a file named "features/supports/handlers.js" with:
       """
       import {defineSupportCode} from 'cucumber'
