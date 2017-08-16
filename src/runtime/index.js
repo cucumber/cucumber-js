@@ -28,7 +28,8 @@ export default class Runtime {
         fn: hookDefinition.code,
         thisArg: null,
         timeoutInMilliseconds:
-          hookDefinition.timeout || this.supportCodeLibrary.defaultTimeout
+          hookDefinition.options.timeout ||
+          this.supportCodeLibrary.defaultTimeout
       })
       if (error) {
         const location = formatLocation(hookDefinition)
