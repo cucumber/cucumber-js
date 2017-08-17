@@ -8,9 +8,9 @@ fs.access(path.join(__dirname, '..', 'lib'), function(err) {
 
     // If we're installed as a dependency, install our own node_modules,
     // which are required to run build-local
-    fs.access(path.join(__dirname, '..', 'node_modules'), function(err) {
+    fs.access(path.join(__dirname, '..', 'node_modules', 'babel-plugin-external-helpers'), function(err) {
       if(err) {
-        console.log("*********** cucumber: node_modules does not exist")
+        console.log("*********** cucumber: node_modules/babel-plugin-external-helpers does not exist")
         var npmInstall = spawn('npm', ['install'], { cwd: path.join(__dirname, '..'), stdio: 'inherit' })
         npmInstall.on('close', function(code) {
           if(code !== 0) throw new Error('cucumber: `npm install` failed')
