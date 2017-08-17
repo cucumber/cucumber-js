@@ -1,3 +1,4 @@
+import { deprecate } from 'util'
 import _ from 'lodash'
 import { formatLocation } from '../formatter/helpers'
 import { ParameterType } from 'cucumber-expressions'
@@ -105,14 +106,28 @@ function getDefinitionLineAndUri(cwd) {
 }
 
 export function defineParameterType(builder) {
-  return ({ regexp, transformer, typeName }) => {
+  return ({
+    name,
+    typeName,
+    regexp,
+    transformer,
+    useForSnippets,
+    preferForRegexpMatch
+  }) => {
+    const getTypeName = deprecate(
+      () => typeName,
+      'Use name instead of typeName'
+    )
+    const _name = name || getTypeName()
+    if (typeof useForSnippets !== 'boolean') useForSnippets = true
+    if (typeof preferForRegexpMatch !== 'boolean') preferForRegexpMatch = false
     const parameterType = new ParameterType(
-      typeName,
+      _name,
       regexp,
       null,
       transformer,
-      true,
-      true
+      useForSnippets,
+      preferForRegexpMatch
     )
     builder.options.parameterTypeRegistry.defineParameterType(parameterType)
   }
