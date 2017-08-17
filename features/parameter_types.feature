@@ -32,7 +32,7 @@ Feature: Parameter types
         defineParameterType({
           regexp: /particular/,
           transformer: s => s.toUpperCase(),
-          typeName: 'param'
+          name: 'param'
         })
       })
       """
@@ -50,7 +50,7 @@ Feature: Parameter types
           transformer: s => {
             throw new Error('transform error')
           },
-          typeName: 'param'
+          name: 'param'
         })
       })
       """
@@ -69,7 +69,7 @@ Feature: Parameter types
       defineSupportCode(({defineParameterType}) => {
         defineParameterType({
           regexp: /particular/,
-          typeName: 'param'
+          name: 'param'
         })
       })
       """
@@ -90,7 +90,7 @@ Feature: Parameter types
         defineParameterType({
           regexp: /particular/,
           transformer: s => Promise.resolve(s.toUpperCase()),
-          typeName: 'param'
+          name: 'param'
         })
       })
       """
@@ -107,7 +107,7 @@ Feature: Parameter types
         defineParameterType({
           regexp: /particular/,
           transformer: s => Promise.reject(new Error('transform error')),
-          typeName: 'param'
+          name: 'param'
         })
       })
       """
