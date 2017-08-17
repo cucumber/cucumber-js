@@ -194,6 +194,7 @@
     "lint-code": "eslint \"{example,features,scripts,src,test}/**/*.js\"",
     "lint-autofix": "eslint --fix \"{example,features,scripts,src,test}/**/*.js\"",
     "lint": "yarn run lint-code && yarn run lint-dependencies",
+    "postinstall": "node scripts/postinstall.js",
     "prefeature-test": "yarn run build-local",
     "prepublish": "yarn run build-local",
     "test-coverage": "yarn run lint && ./scripts/test-coverage.sh",
