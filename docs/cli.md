@@ -47,18 +47,18 @@ This option may be used multiple times in order to output different formats to d
 If multiple formats are specified with the same output, only the last is used.
 
 Built-in formatters
-* event-protocol - prints the event protocl. See [current docs](https://docs.cucumber.io/event-protocol/) and the [proposed updates](https://github.com/cucumber/cucumber/pull/172) which were implemented.
-* json - prints the feature as JSON
-* progress - prints one character per scenario (default)
-* progress-bar - prints a progress bar and outputs errors/warnings along the way
+* event-protocol - prints the event protocol. See [current docs](https://docs.cucumber.io/event-protocol/) and the [proposed updates](https://github.com/cucumber/cucumber/pull/172) which were implemented.
+* json - prints the feature as JSON.
+* progress - prints one character per scenario (default).
+* progress-bar - prints a progress bar and outputs errors/warnings along the way.
 * rerun - prints the paths of any non passing scenarios ([example](/features/rerun_formatter.feature))
   * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`.
   * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
   * Use with `--fail-fast` to rerun the failure and the remaining features.
-* snippets - prints just the code snippets for undefined steps
-* summary - prints a summary only, after all scenarios were executed
-* usage - prints a table with data about step definitions usage
-* usage-json - prints the step definitions usage data as JSON
+* snippets - prints just the code snippets for undefined steps.
+* summary - prints a summary only, after all scenarios were executed.
+* usage - prints a table with data about step definitions usage.
+* usage-json - prints the step definitions usage data as JSON.
 
 ### Format Options
 
