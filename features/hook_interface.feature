@@ -18,6 +18,26 @@ Feature: After hook interface
       })
       """
 
+  Scenario Outline: scenario hook parameter
+    Given a file named "features/support/hooks.js" with:
+      """
+      import {<TYPE>} from 'cucumber'
+
+      <TYPE>(function(scenario) {
+        throw new Error('STATUS: ' + scenario.status)
+      })
+      """
+    When I run cucumber.js
+    Then it fails
+    And the output contains the text:
+      """
+      STATUS: passed
+      """
+    Examples:
+      | TYPE   |
+      | Before |
+      | After  |
+
   Scenario Outline: too many arguments
     Given a file named "features/support/hooks.js" with:
       """
