@@ -8,7 +8,7 @@ Feature: Skipped steps
           Given a skipped step
       """
 
-  Scenario: Synchronous pending step
+  Scenario: Synchronous skipped step
     Given a file named "features/step_definitions/skipped_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
@@ -24,7 +24,7 @@ Feature: Skipped steps
     And the step "a skipped step" has status "skipped"
 
 
-  Scenario: Callback pending step
+  Scenario: Callback skipped step
     Given a file named "features/step_definitions/skipped_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
@@ -39,7 +39,7 @@ Feature: Skipped steps
     Then it passes
     And the step "a skipped step" has status "skipped"
 
-  Scenario: Promise pending step
+  Scenario: Promise skipped step
     Given a file named "features/step_definitions/skipped_steps.js" with:
       """
       import {defineSupportCode} from 'cucumber'
