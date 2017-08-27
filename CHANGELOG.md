@@ -1,10 +1,11 @@
-### [master (unreleased)](https://github.com/cucumber/cucumber-js/compare/v3.0.0...master)
+Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ### [3.0.0](https://github.com/cucumber/cucumber-js/compare/v2.3.1...v3.0.0) (2017-08-08)
 
 #### BREAKING CHANGES
+
 * `pretty` formatter has been removed. All errors are now reported in a `pretty` format instead. The `progress` formatter is now the default.
-* Major changes to custom formatters API due to rewrite in support of event protocol. Please see the updated documentation.
+* Major changes to [custom formatter](/docs/custom_formatters.md) and [custom snippet syntax](/docs/custom_snippet_syntaxes.md) APIs due to rewrite in support of the event protocol. Please see the updated documentation.
 * Remove `registerHandler` and `registerListener`. Use `BeforeAll` / `AfterAll` for setup  code. Use the event protocol formatter if used for reporting. Please open an issue if you have another use case.
 * Remove deprecated `addTransform`. Use `defineParameterType` instead.
 * `cucumber-expressions`:
@@ -30,7 +31,7 @@
 
 #### New Features
 
-* pass step specific options to definition function wrapper (#838) (Łukasz Gandecki)
+* pass step specific options to definition function wrapper ([#838](https://github.com/cucumber/cucumber-js/issues/838), Łukasz Gandecki)
 
 ### [2.3.0](https://github.com/cucumber/cucumber-js/compare/v2.2.0...v2.3.0) (2017-06-01)
 
@@ -68,7 +69,7 @@
 
 #### Bug Fixes
 
-* fix unhandled rejections in handlers (#792) (yaronassa)
+* fix unhandled rejections in handlers ([#792](https://github.com/cucumber/cucumber-js/issues/792), yaronassa)
 
 ### [1.3.2](https://github.com/cucumber/cucumber-js/compare/v1.3.1...v1.3.2) (2016-03-20)
 
@@ -86,8 +87,8 @@
 
 #### Bug Fixes
 
-* generated step definition snippets are not found (#732) (Aslak Hellesøy)
-* catch attempt to define duplicate parameter type regular expression (#780) (Aslak Hellesøy)
+* generated step definition snippets are not found ([#732](https://github.com/cucumber/cucumber-js/issues/732), Aslak Hellesøy)
+* catch attempt to define duplicate parameter type regular expression ([#780](https://github.com/cucumber/cucumber-js/issues/780), Aslak Hellesøy)
 * catch errors in parameter type transform functions (Aslak Hellesøy)
 
 #### New Features
@@ -101,19 +102,19 @@
 
 #### Documentation
 
-* normalize syntax highlighting (#726) (Martin Delille)
+* normalize syntax highlighting ([#726](https://github.com/cucumber/cucumber-js/issues/726), Martin Delille)
 * fix setWorldConstructor example
 
 ### [2.0.0-rc.7](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.6...v2.0.0-rc.7) (2017-01-30)
 
 #### Bug Fixes
 
-* fix after hook run order (#743)
+* fix after hook run order ([#743](https://github.com/cucumber/cucumber-js/issues/743))
 
 #### Documentation
 
-* normalize syntax highlighting (#726) (Martin Delille)
-* fix addTransform parameter name (#738)
+* normalize syntax highlighting ([#726](https://github.com/cucumber/cucumber-js/issues/726), (Martin Delille)
+* fix addTransform parameter name ([#738](https://github.com/cucumber/cucumber-js/issues/738))
 
 ### [2.0.0-rc.6](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.5...v2.0.0-rc.6) (2017-01-06)
 
@@ -136,7 +137,7 @@
 
 #### Documentation
 
-* fix CLI format-options name (#703) (Florian Ribon)
+* fix CLI format-options name ([#703](https://github.com/cucumber/cucumber-js/issues/703), Florian Ribon)
 * add link on README.md to custom formatters documentation
 
 ### [2.0.0-rc.4](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.3...v2.0.0-rc.4) (2016-12-19)
@@ -180,7 +181,7 @@
 
 #### Documentation
 
-* docs: fix tag expression migration guide (#691) (Aslak Hellesøy)
+* docs: fix tag expression migration guide ([#691](https://github.com/cucumber/cucumber-js/issues/691), Aslak Hellesøy)
 
 ### [2.0.0-rc.2](https://github.com/cucumber/cucumber-js/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2016-12-04)
 
@@ -282,7 +283,7 @@
 
 #### Bug Fixes
 
-* remove empty lines from `@rerun` files (#660) (Cody Ray Hoeft)
+* remove empty lines from `@rerun` files ([#660](https://github.com/cucumber/cucumber-js/issues/660), Cody Ray Hoeft)
 * catch uncaught errors in the browser (Charlie Rudolph)
 
 #### New Features
@@ -297,24 +298,24 @@
 
 #### Documentation
 
-* fix typo (#659) (gforceg)
-* update support files api reference (#661) (Zearin)
+* fix typo ([#659](https://github.com/cucumber/cucumber-js/issues/659), gforceg)
+* update support files api reference ([#661](https://github.com/cucumber/cucumber-js/issues/661), Zearin)
 
 ### [1.3.1](https://github.com/cucumber/cucumber-js/compare/v1.3.0...v1.3.1) (2016-09-30)
 
 #### Bug Fixes
 
-* pass formatter options to listener (#641) (Charlie Rudolph)
+* pass formatter options to listener ([#641](https://github.com/cucumber/cucumber-js/issues/641), Charlie Rudolph)
 * rerun formatter: output any scenario that doesn't pass (Charlie Rudolph)
-* populate scenario definition (#647) (Charlie Rudolph)
-* handle empty stacktraces (#605) (Hugues Malphettes)
-* use cross-platform symbols (#635) (Kevin Goslar)
+* populate scenario definition ([#647](https://github.com/cucumber/cucumber-js/issues/647), Charlie Rudolph)
+* handle empty stacktraces ([#605](https://github.com/cucumber/cucumber-js/issues/605), Hugues Malphettes)
+* use cross-platform symbols ([#635](https://github.com/cucumber/cucumber-js/issues/635), Kevin Goslar)
 
 #### Documentation
 
-* fix node.js example (#637) (Jonathan Gomez)
-* fix links in event_handlers.md (#638) (Oliver Rogers)
-* fix hooks example (#644) (John McLaughlin)
+* fix node.js example ([#637](https://github.com/cucumber/cucumber-js/issues/637), Jonathan Gomez)
+* fix links in event_handlers.md ([#638](https://github.com/cucumber/cucumber-js/issues/638), Oliver Rogers)
+* fix hooks example ([#644](https://github.com/cucumber/cucumber-js/issues/644), John McLaughlin)
 
 ### [1.3.0](https://github.com/cucumber/cucumber-js/compare/v1.2.2...v1.3.0) (2016-09-08)
 
@@ -340,13 +341,13 @@
 
 #### Bug Fixes
 
-* Fix error when stack trace has no frames (#610) (Jan Molak)
+* Fix error when stack trace has no frames ([#610](https://github.com/cucumber/cucumber-js/issues/610), Jan Molak)
 
 ### [1.2.1](https://github.com/cucumber/cucumber-js/compare/v1.2.0...v1.2.1) (2016-07-01)
 
 #### Bug Fixes
 
-* Fix hook / step definition location and stacktraces in the browser (#567, #538) (Charlie Rudolph)
+* Fix hook / step definition location and stacktraces in the browser ([#567](https://github.com/cucumber/cucumber-js/issues/567), [#538](https://github.com/cucumber/cucumber-js/issues/538), Charlie Rudolph)
 
 ### [1.2.0](https://github.com/cucumber/cucumber-js/compare/v1.1.0...v1.2.0) (2016-06-24)
 
@@ -354,7 +355,7 @@
 
 * Attachments
   * Remove intermediate conversion to string (Charlie Rudolph)
-  * Use native base64 encoding which can encode binary (#589) (Benjamín Eidelman)
+  * Use native base64 encoding which can encode binary ([#589](https://github.com/cucumber/cucumber-js/issues/589), Benjamín Eidelman)
 
 ### [1.1.0](https://github.com/cucumber/cucumber-js/compare/v1.0.0...v1.1.0) (2016-06-23)
 
@@ -369,7 +370,7 @@
 #### Bug Fixes
 
 * CLI format: support absolute path on windows (Charlie Rudolph)
-* Fix typo in event name. (#590) (Artur Pomadowski)
+* Fix typo in event name. ([#590](https://github.com/cucumber/cucumber-js/issues/590), Artur Pomadowski)
 * Don't run hooks in dry run mode (Charlie Rudolph)
 
 ### [1.0.0](https://github.com/cucumber/cucumber-js/compare/v0.10.4...v1.0.0) (2016-05-30)
@@ -697,7 +698,7 @@
 #### New features
 
 * Make pretty formatter the default (Julien Biezemans)
-* Filter stack traces (close #157) (Julien Biezemans)
+* Filter stack traces (close [#157](https://github.com/cucumber/cucumber-js/issues/157), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -720,8 +721,8 @@
 
 #### Fixes
 
-* Handle BOM and fix regexp for hyphenated languages (close #144) (Aslak Hellesøy)
-* Fix attachment clean up in hooks (close #282) (nebehr)
+* Handle BOM and fix regexp for hyphenated languages ([#144](https://github.com/cucumber/cucumber-js/issues/144), Aslak Hellesøy)
+* Fix attachment clean up in hooks ([#282](https://github.com/cucumber/cucumber-js/issues/282), nebehr)
 
 #### Documentation, internals and tests
 
@@ -751,13 +752,13 @@
 
 #### New features
 
-* Add --no-snippets flag to CLI (close #207) (Krispin Schulz)
-* Add strict mode (close #211) (Elwyn)
-* Add strict mode to volatile configuration (close #258) (Jan-Eric Duden)
+* Add --no-snippets flag to CLI (close [#207](https://github.com/cucumber/cucumber-js/issues/207), Krispin Schulz)
+* Add strict mode (close [#211](https://github.com/cucumber/cucumber-js/issues/211), Elwyn)
+* Add strict mode to volatile configuration (close [#258](https://github.com/cucumber/cucumber-js/issues/258), Jan-Eric Duden)
 
 #### Fixes
 
-* Fix code loader on windows (close #226) (Gary Taylor)
+* Fix code loader on windows (close [#226](https://github.com/cucumber/cucumber-js/issues/226), Gary Taylor)
 
 #### Documentation, internals and tests
 
@@ -766,7 +767,7 @@
 * Do not display snippets in build (Julien Biezemans)
 * Asynchronously dispose of step domains (Julien Biezemans)
 * Change order of tests in build (Julien Biezemans)
-* Fix tests to run on Windows (close #216) (kostya.misura)
+* Fix tests to run on Windows (close [#216](https://github.com/cucumber/cucumber-js/issues/216), kostya.misura)
 * Fix registerHandler() example in README (Julien Biezemans)
 * Fix typo in variable name (Julien Biezemans)
 * Fix World property assignment in README example (Julian)
@@ -785,7 +786,7 @@
 #### Fixes
 
 * Allow >1 parameter in string step definitions (Craig Morris)
-* Don't skip scenario outlines (close #245) (Julien Biezemans)
+* Don't skip scenario outlines (close [#245](https://github.com/cucumber/cucumber-js/issues/245), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -796,7 +797,7 @@
 * Bump rimraf (Julien Biezemans)
 * Bump jasmine-node (Julien Biezemans)
 * Bump connect (Julien Biezemans)
-* Rewrite bundling system (close #186) (Julien Biezemans)
+* Rewrite bundling system (close [#186](https://github.com/cucumber/cucumber-js/issues/186), Julien Biezemans)
 * Rename release script (Julien Biezemans)
 * Upgrade NPM on Travis (Julien Biezemans)
 * Drop Node 0.6 support (Julien Biezemans)
@@ -813,7 +814,7 @@
 
 #### New features
 
-* Support attachments (close #189) (Julien Biezemans)
+* Support attachments (close [#189](https://github.com/cucumber/cucumber-js/issues/189), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -824,22 +825,22 @@
 
 #### New features
 
-* Target scenario by line number on CLI (close #168) (Simon Lampen)
+* Target scenario by line number on CLI (close [#168](https://github.com/cucumber/cucumber-js/issues/168), Simon Lampen)
 
 #### Fixes
 
 * Ensure no stdout output is lost (Simon Dean)
-* Properly tag scenario outlines (close #195 #197) (Artur Kania)
+* Properly tag scenario outlines (close [#195](https://github.com/cucumber/cucumber-js/issues/195), [#197](https://github.com/cucumber/cucumber-js/issues/197), Artur Kania)
 
 #### Documentation, internals and tests
 
-* Align snippet comment with Cucumber-Ruby/JVM (close #150) (Julien Biezemans)
+* Align snippet comment with Cucumber-Ruby/JVM (close [#150](https://github.com/cucumber/cucumber-js/issues/150), Julien Biezemans)
 * Update build badge URL on README (Julien Biezemans)
 * Add line number pattern to --help on CLI (Julien Biezemans)
-* Document AfterFeatures event (close #171) (Eddie Loeffen)
+* Document AfterFeatures event (close [#171](https://github.com/cucumber/cucumber-js/issues/171), Eddie Loeffen)
 * Include 'features' in *Features events payload (Stanley Shyiko)
 * Try to fix build on Travis (Julien Biezemans)
-* Remove bower as a dev dependency (close #191) (Simon Dean)
+* Remove bower as a dev dependency (close [#191](https://github.com/cucumber/cucumber-js/issues/191), Simon Dean)
 * Remove obsolete Travis trick for Node 0.8 (Julien Biezemans)
 * Remove development status table from README (Julien Biezemans)
 * Help the guy produce changelogs (Julien Biezemans)
@@ -848,19 +849,19 @@
 
 #### New features
 
-* Add support for scenario outlines and examples (close #155) (Ben Van Treese)
-* Add i18n support (close #156) (Lukas Degener)
+* Add support for scenario outlines and examples (close [#155](https://github.com/cucumber/cucumber-js/issues/155), Ben Van Treese)
+* Add i18n support (close [#156](https://github.com/cucumber/cucumber-js/issues/156), Lukas Degener)
 
 #### Changed features
 
 * Pass scenario to hooks (Marat Dyatko)
 * Minor change to stepdef snippets (JS) (Julien Biezemans)
-* Make feature id in JSON output replace all spaces (close 127) (Tim Perry)
-* Bump CoffeeScript (close #154) (Gabe Hayes)
+* Make feature id in JSON output replace all spaces (close #[127](https://github.com/cucumber/cucumber-js/issues/127), Tim Perry)
+* Bump CoffeeScript (close [#154](https://github.com/cucumber/cucumber-js/issues/154), Gabe Hayes)
 
 #### Documentation, internals and tests
 
-* Add Hook spec example for single-arg function (close #143) (Julien Biezemans)
+* Add Hook spec example for single-arg function (close [#143](https://github.com/cucumber/cucumber-js/issues/143), Julien Biezemans)
 * Update README with Hook scenario object doc (Julien Biezemans)
 * Style (Julien Biezemans)
 
@@ -886,7 +887,7 @@
 #### New features
 
 * Add PogoScript support (Josh Chisholm)
-* Add listener and event handler registration (close #130) (Paul Shannon)
+* Add listener and event handler registration (close [#130](https://github.com/cucumber/cucumber-js/issues/130), Paul Shannon)
 
 #### Documentation, internals and tests
 
@@ -925,7 +926,7 @@
 * Move data table scenario to TCK (Julien Biezemans)
 * Be consistent in spec matchers (Julien Biezemans)
 * Remove cucumber.no.de links	(Kim, Jang-hwan)
-* Fix broken link in README dev status table (#118) (Michael Zedeler)
+* Fix broken link in README dev status table ([#118](https://github.com/cucumber/cucumber-js/issues/118), Michael Zedeler)
 * Refactor hook-related Given steps in JS stepdefs (Julien Biezemans)
 * Refactor failing mapping JS step definitions (Julien Biezemans & Matt Wynne)
 * Update README.md to correct error in example for zombie initialization (Tom V)
@@ -938,18 +939,18 @@
 #### New features
 
 * Allow for node-like callback errors (Julien Biezemans)
-* Accept multiple features in volatile configuration (#52) (Julien Biezemans)
+* Accept multiple features in volatile configuration ([#52](https://github.com/cucumber/cucumber-js/issues/52), Julien Biezemans)
 
 #### Fixes
 
-* Add ^ prefix and $ suffix to string-based step definition regexps (#77) (Julien Biezemans)
-* Allow for unsafe regexp characters in stepdef string patterns (#77) (Julien Biezemans)
+* Add ^ prefix and $ suffix to string-based step definition regexps ([#77](https://github.com/cucumber/cucumber-js/issues/77), Julien Biezemans)
+* Allow for unsafe regexp characters in stepdef string patterns ([#77](https://github.com/cucumber/cucumber-js/issues/77), Julien Biezemans)
 
 #### Documentation, internals and tests
 
 * Build on Node.js 0.8 on Travis (Julien Biezemans)
 * Rewrite README's status table in HTML (Julien Biezemans)
-* Bump Gherkin (#78) (Julien Biezemans)
+* Bump Gherkin ([#78](https://github.com/cucumber/cucumber-js/issues/78), Julien Biezemans)
 * Switch to HTML tables in README (Julien Biezemans)
 * Bump Aruba (Julien Biezemans)
 
@@ -961,11 +962,11 @@
 
 #### New features
 
-* Print data tables and doc strings in pretty formatter output (#89, #81) (Julien Biezemans)
+* Print data tables and doc strings in pretty formatter output ([#89](https://github.com/cucumber/cucumber-js/issues/89), [#81](https://github.com/cucumber/cucumber-js/issues/81), Julien Biezemans)
 
 #### Fixes
 
-* Exclude unmatched features from AST (#80) (Julien Biezemans)
+* Exclude unmatched features from AST ([#80](https://github.com/cucumber/cucumber-js/issues/80), Julien Biezemans)
 
 
 
@@ -983,7 +984,7 @@
 
 #### New features
 
-* Add JSON formatter (#79) (Chris Young)
+* Add JSON formatter ([#79](https://github.com/cucumber/cucumber-js/issues/79), Chris Young)
 
 #### Fixes
 
@@ -999,11 +1000,11 @@
 
 #### Fixes
 
-* Fix CLI arguments passing (#83) (Omar Gonzalez)
+* Fix CLI arguments passing ([#83](https://github.com/cucumber/cucumber-js/issues/83), Omar Gonzalez)
 
 #### Documentation, internals and tests
 
-* Refactor "summarizer" listener to summary formatter (#71)	28b74ef (Julien Biezemans)
+* Refactor "summarizer" listener to summary formatter ([#71](https://github.com/cucumber/cucumber-js/issues/71), 28b74ef, Julien Biezemans)
 * Add "summary" formatter to available CLI formatters (Julien Biezemans)
 * Fix spec example description (Julien Biezemans)
 
@@ -1013,7 +1014,7 @@
 
 #### Fixes
 
-* Replace findit with walkdir to fix file loading on Windows (#73) (Aaron Garvey)
+* Replace findit with walkdir to fix file loading on Windows ([#73](https://github.com/cucumber/cucumber-js/issues/73), Aaron Garvey)
 
 #### Documentation, internals and tests
 
@@ -1028,13 +1029,13 @@
 
 #### New features
 
-* Add pretty formatter (simplified, monochrome) (#59) (@renier, Julien Biezemans)
+* Add pretty formatter (simplified, monochrome) ([#59](https://github.com/cucumber/cucumber-js/issues/59), @renier, Julien Biezemans)
 
 #### Documentation, internals and tests
 
 * Display only master branch build status in README (Julien Biezemans)
-* Rename "summary logger" to "summarizer" (#59) (Julien Biezemans)
-* Extract common formatter methods (#59, #63) (Julien Biezemans)
+* Rename "summary logger" to "summarizer" ([#59](https://github.com/cucumber/cucumber-js/issues/59), Julien Biezemans)
+* Extract common formatter methods ([#59](https://github.com/cucumber/cucumber-js/issues/59), [#63](https://github.com/cucumber/cucumber-js/issues/63), Julien Biezemans)
 
 
 
@@ -1047,9 +1048,9 @@
 #### Documentation, internals and tests
 
 * Ran a gem update (Aslak Hellesøy)
-* Update NPM dependencies (#69) (Aslak Hellesøy)
-* Refactor listener infrastructure (#35, #59, #63) (Julien Biezemans)
-* Extract summary logger from progress formatter (#59, #63) (Julien Biezemans)
+* Update NPM dependencies ([#69](https://github.com/cucumber/cucumber-js/issues/69), Aslak Hellesøy)
+* Refactor listener infrastructure ([#35](https://github.com/cucumber/cucumber-js/issues/35), [#59](https://github.com/cucumber/cucumber-js/issues/59), [#63](https://github.com/cucumber/cucumber-js/issues/63), Julien Biezemans)
+* Extract summary logger from progress formatter ([#59](https://github.com/cucumber/cucumber-js/issues/59), [#63](https://github.com/cucumber/cucumber-js/issues/63), Julien Biezemans)
 * Store URI on AST elements (Julien Biezemans)
 
 
@@ -1058,7 +1059,7 @@
 
 #### New features
 
-* Handle asynchronous exceptions (#51) (Julien Biezemans)
+* Handle asynchronous exceptions ([#51](https://github.com/cucumber/cucumber-js/issues/51), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1075,7 +1076,7 @@
 
 #### Fixes
 
-* Add alternate binary script for Windows (#60) (Julien Biezemans)
+* Add alternate binary script for Windows ([#60](https://github.com/cucumber/cucumber-js/issues/60), Julien Biezemans)
 
 
 
@@ -1083,15 +1084,15 @@
 
 #### New features
 
-* Add support for string-based step definition patterns (#48) (Ted de Koning, Julien Biezemans)
+* Add support for string-based step definition patterns ([#48](https://github.com/cucumber/cucumber-js/issues/48), Ted de Koning, Julien Biezemans)
 
 #### Documentation, internals and tests
 
-* Pass step instance to step definition invocation (#57) (Julien Biezemans)
+* Pass step instance to step definition invocation ([#57](https://github.com/cucumber/cucumber-js/issues/57), Julien Biezemans)
 * Refactor step result specs (Julien Biezemans)
-* Store step on step results (#57) (Julien Biezemans)
+* Store step on step results ([#57](https://github.com/cucumber/cucumber-js/issues/57), Julien Biezemans)
 * Increase Aruba timeout delay for slow Travis (Julien Biezemans)
-* Decouple pattern from regexp in step definition (#48) (Julien Biezemans)
+* Decouple pattern from regexp in step definition ([#48](https://github.com/cucumber/cucumber-js/issues/48), Julien Biezemans)
 
 
 
@@ -1099,7 +1100,7 @@
 
 #### Changed features
 
-* Allow World constructor to set explicit World object (#50) (Julien Biezemans)
+* Allow World constructor to set explicit World object ([#50](https://github.com/cucumber/cucumber-js/issues/50), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1112,7 +1113,7 @@
 
 #### Changed features
 
-* Simplify World callbacks (#49) (Julien Biezemans)
+* Simplify World callbacks ([#49](https://github.com/cucumber/cucumber-js/issues/49), Julien Biezemans)
 
 #### Fixes
 
@@ -1130,7 +1131,7 @@
 
 #### Fixes
 
-* Fix path handling on Windows platforms (#47) (Julien Biezemans)
+* Fix path handling on Windows platforms ([#47](https://github.com/cucumber/cucumber-js/issues/47), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1146,7 +1147,7 @@
 
 #### New features
 
-* Add support for tagged hooks (#32) (Julien Biezemans)
+* Add support for tagged hooks ([#32](https://github.com/cucumber/cucumber-js/issues/32), Julien Biezemans)
 
 #### Changed features
 
@@ -1154,7 +1155,7 @@
 
 #### Documentation, internals and tests
 
-* Add Cucumber.Type.String and String#trim() (Julien Biezemans)
+* Add Cucumber.Type.String and String#trim(, Julien Biezemans)
 * Remove unnecessary this. from stepdefs (Julien Biezemans)
 * Simplify tag-related stepdefs (Julien Biezemans)
 * Simplify tag selection syntax in volatile configuration (Julien Biezemans)
@@ -1166,7 +1167,7 @@
 
 #### New features
 
-* Add around hooks (#32) (Julien Biezemans)
+* Add around hooks ([#32](https://github.com/cucumber/cucumber-js/issues/32), Julien Biezemans)
 
 #### Changed features
 
@@ -1176,11 +1177,11 @@
 
 * Remove unused parameter in parser spec (Julien Biezemans)
 * Add JS stepdef for async failing steps scenario (Julien Biezemans)
-* Assign zombie in README example (#44) (Julien Biezemans)
+* Assign zombie in README example ([#44](https://github.com/cucumber/cucumber-js/issues/44), Julien Biezemans)
 * Remove trailing spaces (Julien Biezemans)
 * Get rid of obsolete PendingStepException (Julien Biezemans)
 * Refactor SupportCode.Library spec (Julien Biezemans)
-* Add around hooks documentation (#32) (Julien Biezemans)
+* Add around hooks documentation ([#32](https://github.com/cucumber/cucumber-js/issues/32), Julien Biezemans)
 
 
 
@@ -1193,7 +1194,7 @@
 
 #### Fixes
 
-* Fix matching groups in step definition snippets (#42) (Julien Biezemans)
+* Fix matching groups in step definition snippets ([#42](https://github.com/cucumber/cucumber-js/issues/42), Julien Biezemans)
 * Remove obsolete dependency from snippet builder spec (Julien Biezemans)
 
 #### Documentation, internals and tests
@@ -1208,22 +1209,22 @@
 
 #### New features
 
-* Add tags support (#7) (Julien Biezemans)
-* Add support for tags on features (#7) (Julien Biezemans)
+* Add tags support ([#7](https://github.com/cucumber/cucumber-js/issues/7), Julien Biezemans)
+* Add support for tags on features ([#7](https://github.com/cucumber/cucumber-js/issues/7), Julien Biezemans)
 
 #### Changed features
 
-* Handle missing instance in World constructor callback (#40) (Julien Biezemans)
+* Handle missing instance in World constructor callback ([#40](https://github.com/cucumber/cucumber-js/issues/40), Julien Biezemans)
 
 #### Documentation, internals and tests
 
 * Update development status in README (Julien Biezemans)
 * Typo in README (Julien Biezemans)
-* Refactor parser and add AST assembler (required by #7) (Julien Biezemans)
+* Refactor parser and add AST assembler (required by [#7](https://github.com/cucumber/cucumber-js/issues/7), Julien Biezemans)
 * Indent properly (Julien Biezemans)
-* Refactor AST assembler to be stateful (needed by #7) (Julien Biezemans)
+* Refactor AST assembler to be stateful (needed by [#7](https://github.com/cucumber/cucumber-js/issues/7), Julien Biezemans)
 * Update master diff in History (Julien Biezemans)
-* Add --tags documentation to --help (CLI) (Julien Biezemans)
+* Add --tags documentation to --help (CLI, Julien Biezemans)
 
 
 
@@ -1231,7 +1232,7 @@
 
 #### New features
 
-* Add Before/After hooks (#32, #31) (Tristan Dunn)
+* Add Before/After hooks ([#32](https://github.com/cucumber/cucumber-js/issues/32), [#31](https://github.com/cucumber/cucumber-js/issues/31), Tristan Dunn)
 
 #### Changed features
 
@@ -1256,7 +1257,7 @@
 #### Changed features
 
 * Add styles for reported errors on web example (Julien Biezemans)
-* Make and expect World constructors to be asynchronous (#39) (Julien Biezemans)
+* Make and expect World constructors to be asynchronous ([#39](https://github.com/cucumber/cucumber-js/issues/39), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1264,7 +1265,7 @@
 * Add development status to README (Julien Biezemans)
 * Add link to demo at cucumber.no.de (Julien Biezemans)
 * Add link to example app to README (Julien Biezemans)
-* Add usage documentation to README (#23) (Olivier Melcher)
+* Add usage documentation to README ([#23](https://github.com/cucumber/cucumber-js/issues/23), Olivier Melcher)
 * Add examples to run features with the CLI (Olivier Melcher)
 * Fix header levels and whitespaces in README (Julien Biezemans)
 * Add Opera to supported browsers in README (Julien Biezemans)
@@ -1317,7 +1318,7 @@
 
 #### New features
 
-* Suggest step definition snippets for undefined steps (#33 Julien Biezemans)
+* Suggest step definition snippets for undefined steps ([#33](https://github.com/cucumber/cucumber-js/issues/33), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1334,7 +1335,7 @@
 #### New features
 
 * Allow custom World constructors (Julien Biezemans)
-* Add support for data tables (with conversion to hashes) (#12) (Julien Biezemans)
+* Add support for data tables (with conversion to hashes) ([#12](https://github.com/cucumber/cucumber-js/issues/12), Julien Biezemans)
 
 #### Changed features
 
@@ -1348,7 +1349,7 @@
 
 * Setup application to run on [Travis CI](http://travis-ci.org/#!/jbpros/cucumber-js) (Julien Biezemans)
 * Add CoffeeScript support for step definition files (Paul Jensen)
-* Add "World" (#26 Julien Biezemans)
+* Add "World" ([#26](https://github.com/cucumber/cucumber-js/issues/26), Julien Biezemans)
 
 #### Changed features
 
@@ -1382,7 +1383,7 @@
 * Bump browserify (Julien Biezemans)
 * Remove "glob" from dependencies (Julien Biezemans)
 * Refactor SupportCodePathExpander spec (Julien Biezemans)
-* Add feature for CoffeeScript support (#29) (Julien Biezemans)
+* Add feature for CoffeeScript support ([#29](https://github.com/cucumber/cucumber-js/issues/29), Julien Biezemans)
 
 
 
@@ -1392,7 +1393,7 @@
 
 #### New features
 
-* Add support for background (#9 Julien Biezemans)
+* Add support for background ([#9](https://github.com/cucumber/cucumber-js/issues/9), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1405,9 +1406,9 @@
 
 #### Changed features
 
-* Stop polluting the global namespace with Given(), When() and Then() (#2 Julien Biezemans)
+* Stop polluting the global namespace with Given(), When() and Then() ([#2](https://github.com/cucumber/cucumber-js/issues/2), Julien Biezemans)
 * Step definitions can be created with the support code helper passed as 'this':
-  this.Given(), this.When(), this.Then() and this.defineStep() (#2 Julien Biezemans)
+  this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://github.com/cucumber/cucumber-js/issues/2), Julien Biezemans)
 
 #### Documentation, internals and tests
 
@@ -1420,7 +1421,7 @@
 
 #### New features
 
-* Allow several features to run at once (#14) (Julien Biezemans)
+* Allow several features to run at once ([#14](https://github.com/cucumber/cucumber-js/issues/14), Julien Biezemans)
 * Add support for --require (Julien Biezemans)
 
 #### Documentation, internals and tests
@@ -1437,7 +1438,7 @@
 
 #### New features
 
-* Add failure reporting to the progress formatter (#20) (Julien Biezemans)
+* Add failure reporting to the progress formatter ([#20](https://github.com/cucumber/cucumber-js/issues/20), Julien Biezemans)
 
 
 
@@ -1453,7 +1454,7 @@
 
 #### Documentation, internals and tests
 
-* Unify and clean up js-specific features and step definitions (#21) (Julien Biezemans)
+* Unify and clean up js-specific features and step definitions ([#21](https://github.com/cucumber/cucumber-js/issues/21), Julien Biezemans)
 
 
 
@@ -1462,10 +1463,10 @@
 #### New features
 
 * Add cucumber.js executable (Julien Biezemans)
-* Handle step failures (#6) (Julien Biezemans)
-* Add the progress formatter (#16) (Julien Biezemans)
-* Add support for pending steps (#18) (Julien Biezemans)
-* Add support for undefined steps (#19) (Julien Biezemans)
+* Handle step failures ([#6](https://github.com/cucumber/cucumber-js/issues/6), Julien Biezemans)
+* Add the progress formatter ([#16](https://github.com/cucumber/cucumber-js/issues/16), Julien Biezemans)
+* Add support for pending steps ([#18](https://github.com/cucumber/cucumber-js/issues/18), Julien Biezemans)
+* Add support for undefined steps ([#19](https://github.com/cucumber/cucumber-js/issues/19), Julien Biezemans)
 
 #### Changed features
 
@@ -1473,7 +1474,7 @@
 
 #### Fixes
 
-* Fix asynchronous step definition callbacks (#1) (Julien Biezemans)
+* Fix asynchronous step definition callbacks ([#1](https://github.com/cucumber/cucumber-js/issues/1), Julien Biezemans)
 * Fix stepResult.isSuccessful call in ProgressFormatter (Julien Biezemans)
 * Load Gherkin properly in browsers (Julien Biezemans)
 * Remove calls to console.log in web example (Julien Biezemans)
@@ -1483,11 +1484,11 @@
 * Pass against core.feature in its new form, both with the Cucumber-ruby/Aruba pair and cucumber-js itself (Julien Biezemans)
 * Refactor cucumber-features JS mappings (Julien Biezemans)
 * Refactor js-specific features (Julien Biezemans)
-* Rename PyString to DocString (#15) (Julien Biezemans)
+* Rename PyString to DocString ([#15](https://github.com/cucumber/cucumber-js/issues/15), Julien Biezemans)
 * Update Gherkin to 2.4.0 (Julien Biezemans)
-* Modularize the project and use browserify.js to serve a single JS file to browsers. (#3 Julien Biezemans)
+* Modularize the project and use browserify.js to serve a single JS file to browsers. ([#3](https://github.com/cucumber/cucumber-js/issues/3), Julien Biezemans)
 * Rename Cucumber.Types to Cucumber.Type (Julien Biezemans)
-* Use progress formatter in cucumber-features (#17) (Julien Biezemans)
+* Use progress formatter in cucumber-features ([#17](https://github.com/cucumber/cucumber-js/issues/17), Julien Biezemans)
 
 
 

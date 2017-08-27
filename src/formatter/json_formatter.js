@@ -123,7 +123,8 @@ export default class JsonFormatter extends Formatter {
       keyword: 'Scenario',
       line: pickle.locations[0].line,
       name: pickle.name,
-      tags: this.getTags(pickle)
+      tags: this.getTags(pickle),
+      type: 'scenario'
     }
   }
 
