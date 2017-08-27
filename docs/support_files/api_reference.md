@@ -58,8 +58,6 @@ Multiple `AfterAll` hooks are executed in the **reverse** order that they are de
 
 #### `Before([options,] fn)`
 
-* The first argument will be an object of the form `{sourceLocation: {line, uri}}` matching the event data for `test-case-started`
-
 Defines a hook which is run before each scenario. Same interface as `After` except the first argument passed to `fn` will be an object of the form `{sourceLocation: {line, uri}}` matching the event data for `test-case-started`.
 
 Multiple `Before` hooks are executed in the order that they are defined.
