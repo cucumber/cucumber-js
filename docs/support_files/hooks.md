@@ -1,6 +1,6 @@
 # Hooks
 
-Hooks are used for setup and teardown the environment before and after each scenario. The first argument will be a test case result (an object with the keys `duration` and `status` and with methods `isPassed`, `isFailed`, `isAmbiguous`, `isUndefined`, `isPending`, `isSkipped`). Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
+Hooks are used for setup and teardown the environment before and after each scenario. See the [API reference](./api_reference.md) for the specification of the first argument passed to hooks. Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
 
 ```javascript
 var {defineSupportCode} = require('cucumber');
@@ -67,7 +67,7 @@ See more documentation on [tag expressions](https://docs.cucumber.io/tag-express
 
 ## BeforeAll / AfterAll
 
-If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise. 
+If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise.
 
 Unlike `Before` / `After` these methods will not have a world instance as `this`. This is becauce each scenario gets its own world instance and these hooks run before / after **all** scenarios.
 

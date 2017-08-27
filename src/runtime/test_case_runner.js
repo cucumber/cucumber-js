@@ -106,10 +106,10 @@ export default class TestCaseRunner {
   invokeStep(step, stepDefinition, hookParameter) {
     return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
+      hookParameter,
       parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
-      hookParameter,
       world: this.world
     })
   }
