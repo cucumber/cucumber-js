@@ -145,7 +145,6 @@
     "stacktrace-js": "^2.0.0",
     "string-argv": "0.0.2",
     "title-case": "^2.1.1",
-    "upper-case-first": "^1.1.2",
     "util-arity": "^1.0.2",
     "verror": "^1.9.0"
   },

@@ -33,12 +33,12 @@ The data will be `base64` encoded in the output.
 You should wait for the stream to be read before continuing by providing a callback or waiting for the returned promise to resolve.
 
 ```javascript
-var {defineSupportCode} = require('cucumber');
+var {defineSupportCode, Status} = require('cucumber');
 
 defineSupportCode(function({After}) {
   // Passing a callback
-  After(function (testCaseResult, callback) {
-    if (testCaseResult.isFailed()) {
+  After(function (testCase, callback) {
+    if (testCase.result.status === Status.FAILED) {
       var stream = getScreenshotOfError();
       this.attach(stream, 'image/png', callback);
     }
@@ -48,8 +48,8 @@ defineSupportCode(function({After}) {
   });
 
   // Returning the promise
-  After(function (testCaseResult) {
-    if (testCaseResult.isFailed()) {
+  After(function (testCase) {
+    if (testCase.result.status === Status.FAILED) {
       var stream = getScreenshotOfError();
       return this.attach(stream, 'image/png');
     }
@@ -64,8 +64,8 @@ The data will be `base64` encoded in the output.
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {
-  After(function (testCaseResult) {
-    if (testCaseResult.isFailed()) {
+  After(function (testCase) {
+    if (testCase.result.status === Status.FAILED) {
       var buffer = getScreenshotOfError();
       this.attach(buffer, 'image/png');
     }
@@ -80,9 +80,9 @@ when a scenario fails:
 var {defineSupportCode} = require('cucumber');
 
 defineSupportCode(function({After}) {
-    After(function (testCaseResult) {
+    After(function (testCase) {
     var world = this;
-    if (testCaseResult.isFailed()) {
+    if (testCase.result.status === Status.FAILED) {
       return webDriver.takeScreenshot().then(function(screenShot) {
         // screenShot is a base-64 encoded PNG
         world.attach(screenShot, 'image/png');
