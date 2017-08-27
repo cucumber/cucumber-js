@@ -103,15 +103,13 @@ export default class TestCaseRunner {
     })
   }
 
-  getTestCaseSourceLocation() {}
-
   invokeStep(step, stepDefinition, hookParameter) {
     return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
-      hookParameter: hookParameter,
+      hookParameter,
       world: this.world
     })
   }
