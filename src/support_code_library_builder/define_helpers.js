@@ -116,7 +116,7 @@ export function defineParameterType(builder) {
   }) => {
     const getTypeName = deprecate(
       () => typeName,
-      'Use name instead of typeName'
+      'Cucumber defineParameterType: Use name instead of typeName'
     )
     const _name = name || getTypeName()
     if (typeof useForSnippets !== 'boolean') useForSnippets = true
