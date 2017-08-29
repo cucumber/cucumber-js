@@ -1,4 +1,4 @@
-Feature: Multiple Formatters
+Feature: Formatter Paths
 
   Background:
     Given a file named "features/a.feature" with:
@@ -16,19 +16,29 @@ Feature: Multiple Formatters
       })
       """
 
-  Scenario: Ability to specify multiple formatters
-    When I run cucumber.js with `-f progress -f summary:summary.txt`
-    Then it outputs the text:
+  Scenario: Relative path
+    When I run cucumber.js with `-f summary:summary.txt`
+    Then the file "summary.txt" has the text:
       """
-      .
+      1 scenario (1 passed)
+      1 step (1 passed)
+      <duration-stat>
+      """
 
+  Scenario: Absolute path
+    Given "{{{tmpDir}}}" is an absolute path
+    When I run cucumber.js with `-f summary:{{{tmpDir}}}/summary.txt`
+    Then the file "{{{tmpDir}}}/summary.txt" has the text:
+      """
       1 scenario (1 passed)
       1 step (1 passed)
       <duration-stat>
       """
-    And the file "summary.txt" has the text:
+
+  Scenario: Invalid path
+    When I run cucumber.js with `-f summary:invalid/summary.txt`
+    Then it fails
+    And the error output contains the text:
       """
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
+      ENOENT
       """

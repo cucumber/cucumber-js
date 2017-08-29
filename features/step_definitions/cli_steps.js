@@ -4,11 +4,13 @@ import { defineSupportCode } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
+import Mustache from 'mustache'
 
 defineSupportCode(function({ When, Then }) {
   When(/^I run cucumber.js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
     args
   ) {
+    args = Mustache.render(args || '', this)
     args = stringArgv(args || '')
     return this.run(this.localExecutablePath, args)
   })
