@@ -17,8 +17,8 @@ export default class TestCaseHookDefinition extends StepDefinition {
     return this.buildInvalidCodeLengthMessage('0 or 1', '2')
   }
 
-  getInvocationParameters({ scenarioResult }) {
-    return [scenarioResult]
+  getInvocationParameters({ hookParameter }) {
+    return [hookParameter]
   }
 
   getValidCodeLengths() {
