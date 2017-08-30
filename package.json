@@ -175,6 +175,7 @@
     "eslint-plugin-prettier": "^2.1.2",
     "fs-extra": "^3.0.1",
     "mocha": "^3.1.2",
+    "mustache": "^2.3.0",
     "nyc": "^11.0.2",
     "prettier": "^1.5.2",
     "regenerator-runtime": "^0.10.0",

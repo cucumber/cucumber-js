@@ -35,7 +35,7 @@ export default class Cli {
     await Promise.map(formats, async ({ type, outputTo }) => {
       let stream = this.stdout
       if (outputTo) {
-        let fd = await fs.open(path.join(this.cwd, outputTo), 'w')
+        let fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
         stream = fs.createWriteStream(null, { fd })
         streamsToClose.push(stream)
       }
