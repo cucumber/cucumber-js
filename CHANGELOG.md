@@ -1,5 +1,23 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [3.0.1](https://github.com/cucumber/cucumber-js/compare/v3.0.0...v3.0.1) (2017-08-28)
+
+#### Bug Fixes
+
+* JSON formatter: add type to scenario ([#893](https://github.com/cucumber/cucumber-js/issues/893), szymonprz)
+* BeforeAll/AfterAll hooks: fix timeout support ([#899](https://github.com/cucumber/cucumber-js/issues/899))
+* format output paths: allow absolute paths ([#906](https://github.com/cucumber/cucumber-js/issues/906), Darrin Holst)
+* Before/After: fix undefined hook parameter ([#919](https://github.com/cucumber/cucumber-js/issues/919))
+
+#### Documentation
+
+* update nodejs example
+([#898](https://github.com/cucumber/cucumber-js/issues/898), João Guilherme Farias Duda)
+* fix typo and make punctuation consistent
+([#909](https://github.com/cucumber/cucumber-js/issues/909), Dmitry Shirokov)
+* normalize CHANGELOG
+([#915](https://github.com/cucumber/cucumber-js/issues/915), Jayson Smith)
+
 ### [3.0.0](https://github.com/cucumber/cucumber-js/compare/v2.3.1...v3.0.0) (2017-08-08)
 
 #### BREAKING CHANGES

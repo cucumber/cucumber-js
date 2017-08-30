@@ -35,18 +35,18 @@ export default class TestCaseRunner {
       duration: 0,
       status: this.skip ? Status.SKIPPED : Status.PASSED
     }
-  }
-
-  emit(name, data) {
-    let sourceLocation = {
+    this.testCaseSourceLocation = {
       uri: this.testCase.uri,
       line: this.testCase.pickle.locations[0].line
     }
+  }
+
+  emit(name, data) {
     let eventData = { ...data }
     if (_.startsWith(name, 'test-case')) {
-      eventData.sourceLocation = sourceLocation
+      eventData.sourceLocation = this.testCaseSourceLocation
     } else {
-      eventData.testCase = { sourceLocation }
+      eventData.testCase = { sourceLocation: this.testCaseSourceLocation }
     }
     this.eventBroadcaster.emit(name, eventData)
   }
@@ -103,13 +103,13 @@ export default class TestCaseRunner {
     })
   }
 
-  invokeStep(step, stepDefinition) {
+  invokeStep(step, stepDefinition, hookParameter) {
     return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
-      scenarioResult: this.result,
+      hookParameter,
+      parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
-      parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       world: this.world
     })
   }
@@ -153,25 +153,30 @@ export default class TestCaseRunner {
   async run() {
     this.emitPrepared()
     this.emit('test-case-started', {})
-    await this.runHooks(this.beforeHookDefinitions)
+    await this.runHooks(this.beforeHookDefinitions, {
+      sourceLocation: this.testCaseSourceLocation
+    })
     await this.runSteps()
-    await this.runHooks(this.afterHookDefinitions)
+    await this.runHooks(this.afterHookDefinitions, {
+      sourceLocation: this.testCaseSourceLocation,
+      result: this.result
+    })
     this.emit('test-case-finished', { result: this.result })
     return this.result
   }
 
-  async runHook(hookDefinition) {
+  async runHook(hookDefinition, hookParameter) {
     if (this.skip) {
       return { status: Status.SKIPPED }
     } else {
-      return await this.invokeStep(null, hookDefinition)
+      return await this.invokeStep(null, hookDefinition, hookParameter)
     }
   }
 
-  async runHooks(hookDefinitions) {
+  async runHooks(hookDefinitions, hookParameter) {
     await Promise.each(hookDefinitions, async hookDefinition => {
       await this.aroundTestStep(() => {
-        return this.runHook(hookDefinition)
+        return this.runHook(hookDefinition, hookParameter)
       })
     })
   }

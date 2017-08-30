@@ -316,7 +316,7 @@ function _setExports(ndebug) {
 module.exports = _setExports(process.env.NODE_NDEBUG);
 
 }).call(this,{"isBuffer":require("../is-buffer/index.js")},require('_process'))
-},{"../is-buffer/index.js":232,"_process":250,"assert":5,"stream":292,"util":304}],5:[function(require,module,exports){
+},{"../is-buffer/index.js":232,"_process":250,"assert":5,"stream":292,"util":303}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -810,7 +810,7 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":304}],6:[function(require,module,exports){
+},{"util/":303}],6:[function(require,module,exports){
 'use strict';Object.defineProperty(exports, "__esModule", { value: true });exports.default =
 
 
@@ -13957,7 +13957,7 @@ var CucumberExpressionGenerator = function () {
 }();
 
 module.exports = CucumberExpressionGenerator;
-},{"./combinatorial_generated_expression_factory":138,"./parameter_type":146,"./parameter_type_matcher":147,"util":304}],141:[function(require,module,exports){
+},{"./combinatorial_generated_expression_factory":138,"./parameter_type":146,"./parameter_type_matcher":147,"util":303}],141:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -14100,7 +14100,7 @@ function getParameterName(typeName, usageByTypeName) {
 }
 
 module.exports = GeneratedExpression;
-},{"util":304}],143:[function(require,module,exports){
+},{"util":303}],143:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25262,7 +25262,7 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./common.js":220,"./sync.js":222,"_process":250,"assert":5,"events":202,"fs":34,"fs.realpath":204,"inflight":230,"inherits":231,"minimatch":238,"once":244,"path":246,"path-is-absolute":247,"util":304}],222:[function(require,module,exports){
+},{"./common.js":220,"./sync.js":222,"_process":250,"assert":5,"events":202,"fs":34,"fs.realpath":204,"inflight":230,"inherits":231,"minimatch":238,"once":244,"path":246,"path-is-absolute":247,"util":303}],222:[function(require,module,exports){
 (function (process){
 module.exports = globSync
 globSync.GlobSync = GlobSync
@@ -25752,7 +25752,7 @@ GlobSync.prototype._makeAbs = function (f) {
 }
 
 }).call(this,require('_process'))
-},{"./common.js":220,"./glob.js":221,"_process":250,"assert":5,"fs":34,"fs.realpath":204,"minimatch":238,"path":246,"path-is-absolute":247,"util":304}],223:[function(require,module,exports){
+},{"./common.js":220,"./glob.js":221,"_process":250,"assert":5,"fs":34,"fs.realpath":204,"minimatch":238,"path":246,"path-is-absolute":247,"util":303}],223:[function(require,module,exports){
 'use strict'
 
 var fs = require('fs')
@@ -26041,7 +26041,7 @@ function retry () {
 }
 
 }).call(this,require('_process'))
-},{"./fs.js":223,"./legacy-streams.js":225,"./polyfills.js":226,"_process":250,"assert":5,"fs":34,"util":304}],225:[function(require,module,exports){
+},{"./fs.js":223,"./legacy-streams.js":225,"./polyfills.js":226,"_process":250,"assert":5,"fs":34,"util":303}],225:[function(require,module,exports){
 (function (process){
 var Stream = require('stream').Stream
 
@@ -26680,7 +26680,7 @@ function slice (args) {
 }
 
 }).call(this,require('_process'))
-},{"_process":250,"once":244,"wrappy":307}],231:[function(require,module,exports){
+},{"_process":250,"once":244,"wrappy":306}],231:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -45016,7 +45016,7 @@ function onceStrict (fn) {
   return f
 }
 
-},{"wrappy":307}],245:[function(require,module,exports){
+},{"wrappy":306}],245:[function(require,module,exports){
 'use strict';
 
 var repeat = require('repeat-string');
@@ -47926,7 +47926,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":254,"./internal/streams/destroy":260,"./internal/streams/stream":261,"_process":250,"core-util-is":136,"inherits":231,"process-nextick-args":249,"safe-buffer":276,"util-deprecate":301}],259:[function(require,module,exports){
+},{"./_stream_duplex":254,"./internal/streams/destroy":260,"./internal/streams/stream":261,"_process":250,"core-util-is":136,"inherits":231,"process-nextick-args":249,"safe-buffer":276,"util-deprecate":300}],259:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -53132,26 +53132,7 @@ module.exports = function (value, locale) {
   })
 }
 
-},{"no-case":240,"upper-case":299}],298:[function(require,module,exports){
-var upperCase = require('upper-case')
-
-/**
- * Upper case the first character of a string.
- *
- * @param  {String} str
- * @return {String}
- */
-module.exports = function (str, locale) {
-  if (str == null) {
-    return ''
-  }
-
-  str = String(str)
-
-  return upperCase(str.charAt(0), locale) + str.substr(1)
-}
-
-},{"upper-case":299}],299:[function(require,module,exports){
+},{"no-case":240,"upper-case":298}],298:[function(require,module,exports){
 /**
  * Special language-specific overrides.
  *
@@ -53203,7 +53184,7 @@ module.exports = function (str, locale) {
   return str.toUpperCase()
 }
 
-},{}],300:[function(require,module,exports){
+},{}],299:[function(require,module,exports){
 var FUNCTIONS = {};
 
 /**
@@ -53234,7 +53215,7 @@ module.exports = function (arity, fn) {
   return FUNCTIONS[arity](fn);
 };
 
-},{}],301:[function(require,module,exports){
+},{}],300:[function(require,module,exports){
 (function (global){
 
 /**
@@ -53305,16 +53286,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],302:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 arguments[4][231][0].apply(exports,arguments)
-},{"dup":231}],303:[function(require,module,exports){
+},{"dup":231}],302:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],304:[function(require,module,exports){
+},{}],303:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -53904,7 +53885,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":303,"_process":250,"inherits":302}],305:[function(require,module,exports){
+},{"./support/isBuffer":302,"_process":250,"inherits":301}],304:[function(require,module,exports){
 /*
  * verror.js: richer JavaScript errors
  */
@@ -54357,7 +54338,7 @@ WError.prototype.cause = function we_cause(c)
 	return (this.jse_cause);
 };
 
-},{"assert-plus":4,"core-util-is":136,"extsprintf":306,"util":304}],306:[function(require,module,exports){
+},{"assert-plus":4,"core-util-is":136,"extsprintf":305,"util":303}],305:[function(require,module,exports){
 (function (process){
 /*
  * extsprintf.js: extended POSIX-style sprintf
@@ -54544,7 +54525,7 @@ function dumpException(ex)
 }
 
 }).call(this,require('_process'))
-},{"_process":250,"assert":5,"util":304}],307:[function(require,module,exports){
+},{"_process":250,"assert":5,"util":303}],306:[function(require,module,exports){
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
 // presumably different callback function.
@@ -54579,7 +54560,7 @@ function wrappy (fn, cb) {
   }
 }
 
-},{}],308:[function(require,module,exports){
+},{}],307:[function(require,module,exports){
 module.exports={
   "name": "cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
@@ -54590,7 +54571,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.0.0",
+  "version": "3.0.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -54685,7 +54666,13 @@ module.exports={
     "Łukasz Gandecki <lgandecki@css.edu>",
     "Warren <w.green@hotmail.com>",
     "Vasily Shelkov <vasilydshelkov@gmail.com>",
-    "Steve Tooke <tooky@cucumber.io>"
+    "Steve Tooke <tooky@cucumber.io>",
+    "João Guilherme Farias Duda <jgfd@cin.ufpe.br>",
+    "szymonprz <szymonprz@gmail.com>",
+    "Olle Jonsson <olle.jonsson@gmail.com>",
+    "Darrin Holst <darrinholst@gmail.com>",
+    "Dmitry Shirokov <deadrunk@gmail.com>",
+    "Jayson Smith <github@nes.33mail.com>"
   ],
   "repository": {
     "type": "git",
@@ -54727,7 +54714,6 @@ module.exports={
     "stacktrace-js": "^2.0.0",
     "string-argv": "0.0.2",
     "title-case": "^2.1.1",
-    "upper-case-first": "^1.1.2",
     "util-arity": "^1.0.2",
     "verror": "^1.9.0"
   },
@@ -54757,6 +54743,7 @@ module.exports={
     "eslint-plugin-prettier": "^2.1.2",
     "fs-extra": "^3.0.1",
     "mocha": "^3.1.2",
+    "mustache": "^2.3.0",
     "nyc": "^11.0.2",
     "prettier": "^1.5.2",
     "regenerator-runtime": "^0.10.0",
@@ -54795,7 +54782,7 @@ module.exports={
   ]
 }
 
-},{}],309:[function(require,module,exports){
+},{}],308:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -54889,7 +54876,7 @@ var ArgvParser = function () {
 
 exports.default = ArgvParser;
 
-},{"../../package.json":308,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"commander":58,"gherkin":206,"lodash":236,"path":246}],310:[function(require,module,exports){
+},{"../../package.json":307,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"commander":58,"gherkin":206,"lodash":236,"path":246}],309:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55253,7 +55240,7 @@ var ConfigurationBuilder = function () {
 
 exports.default = ConfigurationBuilder;
 
-},{"./argv_parser":309,"./path_expander":315,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236,"mz/fs":239,"path":246}],311:[function(require,module,exports){
+},{"./argv_parser":308,"./path_expander":314,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236,"mz/fs":239,"path":246}],310:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55446,7 +55433,7 @@ var _profile_loader2 = _interopRequireDefault(_profile_loader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./argv_parser":309,"./profile_loader":316,"babel-runtime/regenerator":27,"bluebird":31,"gherkin":206,"lodash":236,"mz/fs":239,"path":246}],312:[function(require,module,exports){
+},{"./argv_parser":308,"./profile_loader":315,"babel-runtime/regenerator":27,"bluebird":31,"gherkin":206,"lodash":236,"mz/fs":239,"path":246}],311:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55523,7 +55510,7 @@ function getKeywords(isoCode) {
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows);
 }
 
-},{"cli-table":36,"gherkin":206,"lodash":236,"title-case":297}],313:[function(require,module,exports){
+},{"cli-table":36,"gherkin":206,"lodash":236,"title-case":297}],312:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -55679,7 +55666,7 @@ var Cli = function () {
                             }
 
                             _context3.next = 4;
-                            return _fs2.default.open(_path2.default.join(_this.cwd, outputTo), 'w');
+                            return _fs2.default.open(_path2.default.resolve(_this.cwd, outputTo), 'w');
 
                           case 4:
                             fd = _context3.sent;
@@ -55836,7 +55823,7 @@ var Cli = function () {
 
 exports.default = Cli;
 
-},{"../formatter/builder":317,"../formatter/helpers":323,"../pickle_filter":347,"../runtime":350,"../support_code_library_builder":358,"./configuration_builder":310,"./helpers":311,"./i18n":312,"./install_validator":314,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"babel-runtime/regenerator":27,"bluebird":31,"events":202,"mz/fs":239,"path":246}],314:[function(require,module,exports){
+},{"../formatter/builder":316,"../formatter/helpers":322,"../pickle_filter":346,"../runtime":349,"../support_code_library_builder":357,"./configuration_builder":309,"./helpers":310,"./i18n":311,"./install_validator":313,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"babel-runtime/regenerator":27,"bluebird":31,"events":202,"mz/fs":239,"path":246}],313:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -55917,7 +55904,7 @@ var _resolve2 = _interopRequireDefault(_resolve);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 }).call(this,"/src/cli")
-},{"babel-runtime/regenerator":27,"bluebird":31,"mz/fs":239,"path":246,"resolve":269}],315:[function(require,module,exports){
+},{"babel-runtime/regenerator":27,"bluebird":31,"mz/fs":239,"path":246,"resolve":269}],314:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56109,7 +56096,7 @@ var PathExpander = function () {
 
 exports.default = PathExpander;
 
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"glob":221,"lodash":236,"mz/fs":239,"path":246}],316:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"glob":221,"lodash":236,"mz/fs":239,"path":246}],315:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56255,7 +56242,7 @@ var ProfileLoader = function () {
 
 exports.default = ProfileLoader;
 
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/typeof":26,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236,"mz/fs":239,"path":246,"string-argv":293}],317:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/typeof":26,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236,"mz/fs":239,"path":246,"string-argv":293}],316:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56411,7 +56398,7 @@ var FormatterBuilder = function () {
 
 exports.default = FormatterBuilder;
 
-},{"./event_protocol_formatter":318,"./get_color_fns":319,"./json_formatter":332,"./progress_bar_formatter":333,"./progress_formatter":334,"./rerun_formatter":335,"./snippets_formatter":336,"./step_definition_snippet_builder":337,"./step_definition_snippet_builder/javascript_snippet_syntax":338,"./summary_formatter":339,"./usage_formatter":340,"./usage_json_formatter":341,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"path":246}],318:[function(require,module,exports){
+},{"./event_protocol_formatter":317,"./get_color_fns":318,"./json_formatter":331,"./progress_bar_formatter":332,"./progress_formatter":333,"./rerun_formatter":334,"./snippets_formatter":335,"./step_definition_snippet_builder":336,"./step_definition_snippet_builder/javascript_snippet_syntax":337,"./summary_formatter":338,"./usage_formatter":339,"./usage_json_formatter":340,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"path":246}],317:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56495,7 +56482,7 @@ var EventProtocolFormatter = function (_Formatter) {
 
 exports.default = EventProtocolFormatter;
 
-},{"./":331,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"escape-string-regexp":201,"path":246}],319:[function(require,module,exports){
+},{"./":330,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"escape-string-regexp":201,"path":246}],318:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56526,7 +56513,7 @@ function getColorFns(enabled) {
   return _safe2.default;
 }
 
-},{"../status":354,"babel-runtime/helpers/defineProperty":22,"colors/safe":57}],320:[function(require,module,exports){
+},{"../status":353,"babel-runtime/helpers/defineProperty":22,"colors/safe":57}],319:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56547,7 +56534,7 @@ function formatError(error, colorFns) {
   });
 }
 
-},{"assertion-error-formatter":13}],321:[function(require,module,exports){
+},{"assertion-error-formatter":13}],320:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56680,7 +56667,7 @@ var EventDataCollector = function () {
 
 exports.default = EventDataCollector;
 
-},{"./gherkin_document_parser":322,"./pickle_parser":327,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21}],322:[function(require,module,exports){
+},{"./gherkin_document_parser":321,"./pickle_parser":326,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21}],321:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56707,7 +56694,7 @@ function getScenarioLineToDescriptionMap(gherkinDocument) {
   }).fromPairs().value();
 }
 
-},{"lodash":236}],323:[function(require,module,exports){
+},{"lodash":236}],322:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56805,7 +56792,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.GherkinDocumentParser = GherkinDocumentParser;
 exports.PickleParser = PickleParser;
 
-},{"./error_helpers":320,"./event_data_collector":321,"./gherkin_document_parser":322,"./issue_helpers":324,"./keyword_type":325,"./location_helpers":326,"./pickle_parser":327,"./summary_helpers":329,"./usage_helpers":330}],324:[function(require,module,exports){
+},{"./error_helpers":319,"./event_data_collector":320,"./gherkin_document_parser":321,"./issue_helpers":323,"./keyword_type":324,"./location_helpers":325,"./pickle_parser":326,"./summary_helpers":328,"./usage_helpers":329}],323:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57004,7 +56991,7 @@ function formatIssue(_ref2) {
   return text + '\n';
 }
 
-},{"../../status":354,"../../step_arguments":355,"./gherkin_document_parser":322,"./keyword_type":325,"./location_helpers":326,"./pickle_parser":327,"./step_result_helpers":328,"babel-runtime/helpers/defineProperty":22,"cli-table":36,"figures":203,"indent-string":229,"lodash":236}],325:[function(require,module,exports){
+},{"../../status":353,"../../step_arguments":354,"./gherkin_document_parser":321,"./keyword_type":324,"./location_helpers":325,"./pickle_parser":326,"./step_result_helpers":327,"babel-runtime/helpers/defineProperty":22,"cli-table":36,"figures":203,"indent-string":229,"lodash":236}],324:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57054,7 +57041,7 @@ function getStepKeywordType(_ref) {
   }
 }
 
-},{"gherkin":206,"lodash":236}],326:[function(require,module,exports){
+},{"gherkin":206,"lodash":236}],325:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57065,7 +57052,7 @@ function formatLocation(obj) {
   return obj.uri + ":" + obj.line;
 }
 
-},{}],327:[function(require,module,exports){
+},{}],326:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57107,7 +57094,7 @@ function getStepLineToPickledStepMap(pickle) {
   }).fromPairs().value();
 }
 
-},{"lodash":236}],328:[function(require,module,exports){
+},{"lodash":236}],327:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57182,7 +57169,7 @@ function getUndefinedStepResultMessage(_ref5) {
   return colorFns.undefined(message);
 }
 
-},{"../../status":354,"./error_helpers":320,"indent-string":229}],329:[function(require,module,exports){
+},{"../../status":353,"./error_helpers":319,"indent-string":229}],328:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57268,7 +57255,7 @@ function getDuration(milliseconds) {
   return duration.minutes + 'm' + duration.toString('%S') + '.' + duration.toString('%L') + 's' + '\n';
 }
 
-},{"../../status":354,"duration":168,"lodash":236}],330:[function(require,module,exports){
+},{"../../status":353,"duration":168,"lodash":236}],329:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57369,7 +57356,7 @@ function getUsage(_ref3) {
   return buildResult(mapping);
 }
 
-},{"../location_helpers":326,"../pickle_parser":327,"lodash":236}],331:[function(require,module,exports){
+},{"../location_helpers":325,"../pickle_parser":326,"lodash":236}],330:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57394,7 +57381,7 @@ var Formatter = function Formatter(options) {
 
 exports.default = Formatter;
 
-},{"babel-runtime/helpers/classCallCheck":20,"lodash":236}],332:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"lodash":236}],331:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57569,7 +57556,8 @@ var JsonFormatter = function (_Formatter) {
         keyword: 'Scenario',
         line: pickle.locations[0].line,
         name: pickle.name,
-        tags: this.getTags(pickle)
+        tags: this.getTags(pickle),
+        type: 'scenario'
       };
     }
   }, {
@@ -57669,7 +57657,7 @@ var JsonFormatter = function (_Formatter) {
 
 exports.default = JsonFormatter;
 
-},{"../status":354,"../step_arguments":355,"./":331,"./helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"lodash":236}],333:[function(require,module,exports){
+},{"../status":353,"../step_arguments":354,"./":330,"./helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"lodash":236}],332:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57789,7 +57777,7 @@ var ProgressBarFormatter = function (_Formatter) {
 
 exports.default = ProgressBarFormatter;
 
-},{"./":331,"./helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"progress":251}],334:[function(require,module,exports){
+},{"./":330,"./helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"progress":251}],333:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57861,7 +57849,7 @@ var ProgressFormatter = function (_SummaryFormatter) {
 
 exports.default = ProgressFormatter;
 
-},{"../status":354,"./summary_formatter":339,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/defineProperty":22,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],335:[function(require,module,exports){
+},{"../status":353,"./summary_formatter":338,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/defineProperty":22,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],334:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57940,7 +57928,7 @@ var RerunFormatter = function (_Formatter) {
 
 exports.default = RerunFormatter;
 
-},{"../status":354,"./":331,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"lodash":236}],336:[function(require,module,exports){
+},{"../status":353,"./":330,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"lodash":236}],335:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58046,7 +58034,7 @@ var SnippetsFormatter = function (_Formatter) {
 
 exports.default = SnippetsFormatter;
 
-},{"../status":354,"./":331,"./helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],337:[function(require,module,exports){
+},{"../status":353,"./":330,"./helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],336:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58127,7 +58115,7 @@ var StepDefinitionSnippetBuilder = function () {
 
 exports.default = StepDefinitionSnippetBuilder;
 
-},{"../../step_arguments":355,"../helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"cucumber-expressions":145}],338:[function(require,module,exports){
+},{"../../step_arguments":354,"../helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"cucumber-expressions":145}],337:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58192,7 +58180,7 @@ var JavaScriptSnippetSyntax = function () {
 
 exports.default = JavaScriptSnippetSyntax;
 
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21}],339:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21}],338:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58309,7 +58297,7 @@ var SummaryFormatter = function (_Formatter) {
 
 exports.default = SummaryFormatter;
 
-},{"../status":354,"./":331,"./helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"lodash":236}],340:[function(require,module,exports){
+},{"../status":353,"./":330,"./helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"lodash":236}],339:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58419,7 +58407,7 @@ var UsageFormatter = function (_Formatter) {
 
 exports.default = UsageFormatter;
 
-},{"./":331,"./helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"cli-table":36,"lodash":236}],341:[function(require,module,exports){
+},{"./":330,"./helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25,"cli-table":36,"lodash":236}],340:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58477,7 +58465,7 @@ var UsageJsonFormatter = function (_Formatter) {
 
 exports.default = UsageJsonFormatter;
 
-},{"./":331,"./helpers":323,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],342:[function(require,module,exports){
+},{"./":330,"./helpers":322,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],341:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58657,7 +58645,7 @@ var setWorldConstructor = exports.setWorldConstructor = methods.setWorldConstruc
 var Then = exports.Then = methods.Then;
 var When = exports.When = methods.When;
 
-},{"./cli":313,"./cli/helpers":311,"./formatter":331,"./formatter/builder":317,"./formatter/helpers":323,"./formatter/json_formatter":332,"./formatter/progress_formatter":334,"./formatter/rerun_formatter":335,"./formatter/snippets_formatter":336,"./formatter/summary_formatter":339,"./formatter/usage_formatter":340,"./formatter/usage_json_formatter":341,"./pickle_filter":347,"./runtime":350,"./status":354,"./support_code_library_builder":358}],343:[function(require,module,exports){
+},{"./cli":312,"./cli/helpers":310,"./formatter":330,"./formatter/builder":316,"./formatter/helpers":322,"./formatter/json_formatter":331,"./formatter/progress_formatter":333,"./formatter/rerun_formatter":334,"./formatter/snippets_formatter":335,"./formatter/summary_formatter":338,"./formatter/usage_formatter":339,"./formatter/usage_json_formatter":340,"./pickle_filter":346,"./runtime":349,"./status":353,"./support_code_library_builder":357}],342:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58729,7 +58717,7 @@ var DataTable = function () {
 
 exports.default = DataTable;
 
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"lodash":236}],344:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"lodash":236}],343:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58832,7 +58820,7 @@ var StepDefinition = function () {
 
 exports.default = StepDefinition;
 
-},{"../step_arguments":355,"./data_table":343,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"cucumber-expressions":145,"lodash":236}],345:[function(require,module,exports){
+},{"../step_arguments":354,"./data_table":342,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"cucumber-expressions":145,"lodash":236}],344:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58895,9 +58883,9 @@ var TestCaseHookDefinition = function (_StepDefinition) {
   }, {
     key: 'getInvocationParameters',
     value: function getInvocationParameters(_ref2) {
-      var scenarioResult = _ref2.scenarioResult;
+      var hookParameter = _ref2.hookParameter;
 
-      return [scenarioResult];
+      return [hookParameter];
     }
   }, {
     key: 'getValidCodeLengths',
@@ -58910,7 +58898,7 @@ var TestCaseHookDefinition = function (_StepDefinition) {
 
 exports.default = TestCaseHookDefinition;
 
-},{"../pickle_filter":347,"./step_definition":344,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],346:[function(require,module,exports){
+},{"../pickle_filter":346,"./step_definition":343,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],345:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58968,7 +58956,7 @@ var TestRunHookDefinition = function (_StepDefinition) {
 
 exports.default = TestRunHookDefinition;
 
-},{"./step_definition":344,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],347:[function(require,module,exports){
+},{"./step_definition":343,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/inherits":24,"babel-runtime/helpers/possibleConstructorReturn":25}],346:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59076,7 +59064,7 @@ var PickleFilter = function () {
 
 exports.default = PickleFilter;
 
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"cucumber-tag-expressions/lib/tag_expression_parser":151,"lodash":236}],348:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"cucumber-tag-expressions/lib/tag_expression_parser":151,"lodash":236}],347:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -59173,7 +59161,7 @@ var AttachmentManager = function () {
 exports.default = AttachmentManager;
 
 }).call(this,require("buffer").Buffer)
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"bluebird":31,"buffer":35,"is-stream":234}],349:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"bluebird":31,"buffer":35,"is-stream":234}],348:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59225,7 +59213,7 @@ function getAmbiguousStepException(stepDefinitions) {
   return 'Multiple step definitions match:' + '\n' + (0, _indentString2.default)(table.toString(), 2);
 }
 
-},{"../formatter/helpers/location_helpers":326,"cli-table":36,"indent-string":229}],350:[function(require,module,exports){
+},{"../formatter/helpers/location_helpers":325,"cli-table":36,"indent-string":229}],349:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59320,7 +59308,7 @@ var Runtime = function () {
                               argsArray: [],
                               fn: hookDefinition.code,
                               thisArg: null,
-                              timeoutInMilliseconds: hookDefinition.timeout || _this.supportCodeLibrary.defaultTimeout
+                              timeoutInMilliseconds: hookDefinition.options.timeout || _this.supportCodeLibrary.defaultTimeout
                             });
 
                           case 2:
@@ -59461,7 +59449,7 @@ var Runtime = function () {
 
 exports.default = Runtime;
 
-},{"../formatter/helpers":323,"../status":354,"../user_code_runner":363,"./stack_trace_filter":351,"./test_case_runner":353,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236,"verror":305}],351:[function(require,module,exports){
+},{"../formatter/helpers":322,"../status":353,"../user_code_runner":362,"./stack_trace_filter":350,"./test_case_runner":352,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236,"verror":304}],350:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -59545,7 +59533,7 @@ var StackTraceFilter = function () {
 exports.default = StackTraceFilter;
 
 }).call(this,"/src/runtime")
-},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"lodash":236,"path":246,"stack-chain":285}],352:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"lodash":236,"path":246,"stack-chain":285}],351:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59563,10 +59551,10 @@ var _bluebird2 = _interopRequireDefault(_bluebird);
 var run = function () {
   var _ref2 = (0, _bluebird.coroutine)(_regenerator2.default.mark(function _callee(_ref) {
     var defaultTimeout = _ref.defaultTimeout,
-        scenarioResult = _ref.scenarioResult,
+        hookParameter = _ref.hookParameter,
+        parameterTypeRegistry = _ref.parameterTypeRegistry,
         step = _ref.step,
         stepDefinition = _ref.stepDefinition,
-        parameterTypeRegistry = _ref.parameterTypeRegistry,
         world = _ref.world;
     var error, result, parameters, timeoutInMilliseconds, validCodeLengths, data, testStepResult;
     return _regenerator2.default.wrap(function _callee$(_context) {
@@ -59578,9 +59566,9 @@ var run = function () {
             _context.prev = 2;
             _context.next = 5;
             return _bluebird2.default.all(stepDefinition.getInvocationParameters({
-              scenarioResult: scenarioResult,
-              step: step,
-              parameterTypeRegistry: parameterTypeRegistry
+              hookParameter: hookParameter,
+              parameterTypeRegistry: parameterTypeRegistry,
+              step: step
             }));
 
           case 5:
@@ -59677,7 +59665,7 @@ var beginTiming = _time2.default.beginTiming,
     endTiming = _time2.default.endTiming;
 exports.default = { run: run };
 
-},{"../status":354,"../time":361,"../user_code_runner":363,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236}],353:[function(require,module,exports){
+},{"../status":353,"../time":360,"../user_code_runner":362,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236}],352:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59760,20 +59748,20 @@ var TestCaseRunner = function () {
       duration: 0,
       status: this.skip ? _status2.default.SKIPPED : _status2.default.PASSED
     };
+    this.testCaseSourceLocation = {
+      uri: this.testCase.uri,
+      line: this.testCase.pickle.locations[0].line
+    };
   }
 
   (0, _createClass3.default)(TestCaseRunner, [{
     key: 'emit',
     value: function emit(name, data) {
-      var sourceLocation = {
-        uri: this.testCase.uri,
-        line: this.testCase.pickle.locations[0].line
-      };
       var eventData = (0, _extends3.default)({}, data);
       if (_lodash2.default.startsWith(name, 'test-case')) {
-        eventData.sourceLocation = sourceLocation;
+        eventData.sourceLocation = this.testCaseSourceLocation;
       } else {
-        eventData.testCase = { sourceLocation: sourceLocation };
+        eventData.testCase = { sourceLocation: this.testCaseSourceLocation };
       }
       this.eventBroadcaster.emit(name, eventData);
     }
@@ -59839,13 +59827,13 @@ var TestCaseRunner = function () {
     }
   }, {
     key: 'invokeStep',
-    value: function invokeStep(step, stepDefinition) {
+    value: function invokeStep(step, stepDefinition, hookParameter) {
       return _step_runner2.default.run({
         defaultTimeout: this.supportCodeLibrary.defaultTimeout,
-        scenarioResult: this.scenarioResult,
+        hookParameter: hookParameter,
+        parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
         step: step,
         stepDefinition: stepDefinition,
-        parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
         world: this.world
       });
     }
@@ -59918,7 +59906,9 @@ var TestCaseRunner = function () {
                 this.emitPrepared();
                 this.emit('test-case-started', {});
                 _context2.next = 4;
-                return this.runHooks(this.beforeHookDefinitions);
+                return this.runHooks(this.beforeHookDefinitions, {
+                  sourceLocation: this.testCaseSourceLocation
+                });
 
               case 4:
                 _context2.next = 6;
@@ -59926,7 +59916,10 @@ var TestCaseRunner = function () {
 
               case 6:
                 _context2.next = 8;
-                return this.runHooks(this.afterHookDefinitions);
+                return this.runHooks(this.afterHookDefinitions, {
+                  sourceLocation: this.testCaseSourceLocation,
+                  result: this.result
+                });
 
               case 8:
                 this.emit('test-case-finished', { result: this.result });
@@ -59949,7 +59942,7 @@ var TestCaseRunner = function () {
   }, {
     key: 'runHook',
     value: function () {
-      var _ref5 = (0, _bluebird.coroutine)(_regenerator2.default.mark(function _callee3(hookDefinition) {
+      var _ref5 = (0, _bluebird.coroutine)(_regenerator2.default.mark(function _callee3(hookDefinition, hookParameter) {
         return _regenerator2.default.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -59963,7 +59956,7 @@ var TestCaseRunner = function () {
 
               case 4:
                 _context3.next = 6;
-                return this.invokeStep(null, hookDefinition);
+                return this.invokeStep(null, hookDefinition, hookParameter);
 
               case 6:
                 return _context3.abrupt('return', _context3.sent);
@@ -59976,7 +59969,7 @@ var TestCaseRunner = function () {
         }, _callee3, this);
       }));
 
-      function runHook(_x2) {
+      function runHook(_x2, _x3) {
         return _ref5.apply(this, arguments);
       }
 
@@ -59985,7 +59978,7 @@ var TestCaseRunner = function () {
   }, {
     key: 'runHooks',
     value: function () {
-      var _ref6 = (0, _bluebird.coroutine)(_regenerator2.default.mark(function _callee5(hookDefinitions) {
+      var _ref6 = (0, _bluebird.coroutine)(_regenerator2.default.mark(function _callee5(hookDefinitions, hookParameter) {
         var _this6 = this;
 
         return _regenerator2.default.wrap(function _callee5$(_context5) {
@@ -60001,7 +59994,7 @@ var TestCaseRunner = function () {
                           case 0:
                             _context4.next = 2;
                             return _this6.aroundTestStep(function () {
-                              return _this6.runHook(hookDefinition);
+                              return _this6.runHook(hookDefinition, hookParameter);
                             });
 
                           case 2:
@@ -60012,7 +60005,7 @@ var TestCaseRunner = function () {
                     }, _callee4, _this6);
                   }));
 
-                  return function (_x4) {
+                  return function (_x6) {
                     return _ref7.apply(this, arguments);
                   };
                 }());
@@ -60025,7 +60018,7 @@ var TestCaseRunner = function () {
         }, _callee5, this);
       }));
 
-      function runHooks(_x3) {
+      function runHooks(_x4, _x5) {
         return _ref6.apply(this, arguments);
       }
 
@@ -60083,7 +60076,7 @@ var TestCaseRunner = function () {
         }, _callee6, this);
       }));
 
-      function runStep(_x5) {
+      function runStep(_x7) {
         return _ref8.apply(this, arguments);
       }
 
@@ -60119,7 +60112,7 @@ var TestCaseRunner = function () {
                     }, _callee7, _this7);
                   }));
 
-                  return function (_x6) {
+                  return function (_x8) {
                     return _ref10.apply(this, arguments);
                   };
                 }());
@@ -60144,22 +60137,17 @@ var TestCaseRunner = function () {
 
 exports.default = TestCaseRunner;
 
-},{"../status":354,"./attachment_manager":348,"./helpers":349,"./step_runner":352,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236}],354:[function(require,module,exports){
+},{"../status":353,"./attachment_manager":347,"./helpers":348,"./step_runner":351,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/helpers/extends":23,"babel-runtime/regenerator":27,"bluebird":31,"lodash":236}],353:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addStatusPredicates = addStatusPredicates;
 exports.getStatusMapping = getStatusMapping;
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
-
-var _upperCaseFirst = require('upper-case-first');
-
-var _upperCaseFirst2 = _interopRequireDefault(_upperCaseFirst);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -60173,21 +60161,13 @@ var statuses = {
 };
 
 exports.default = statuses;
-function addStatusPredicates(protoype) {
-  _lodash2.default.each(statuses, function (status) {
-    protoype['is' + (0, _upperCaseFirst2.default)(status)] = function () {
-      return this.status === status;
-    };
-  });
-}
-
 function getStatusMapping(initialValue) {
   return _lodash2.default.chain(statuses).map(function (status) {
     return [status, initialValue];
   }).fromPairs().value();
 }
 
-},{"lodash":236,"upper-case-first":298}],355:[function(require,module,exports){
+},{"lodash":236}],354:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60213,7 +60193,7 @@ function buildStepArgumentIterator(mapping) {
   };
 }
 
-},{"util":304}],356:[function(require,module,exports){
+},{"util":303}],355:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -60376,7 +60356,7 @@ function defineParameterType(builder) {
 }
 
 }).call(this,"/src/support_code_library_builder")
-},{"../formatter/helpers":323,"../models/step_definition":344,"../models/test_case_hook_definition":345,"../models/test_run_hook_definition":346,"./validate_arguments":360,"cucumber-expressions":145,"lodash":236,"path":246,"stacktrace-js":291}],357:[function(require,module,exports){
+},{"../formatter/helpers":322,"../models/step_definition":343,"../models/test_case_hook_definition":344,"../models/test_run_hook_definition":345,"./validate_arguments":359,"cucumber-expressions":145,"lodash":236,"path":246,"stacktrace-js":291}],356:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60429,7 +60409,7 @@ function wrapDefinitions(_ref) {
   }
 }
 
-},{"is-generator":233,"lodash":236,"path":246,"util-arity":300}],358:[function(require,module,exports){
+},{"is-generator":233,"lodash":236,"path":246,"util-arity":299}],357:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60532,7 +60512,7 @@ var SupportCodeLibraryBuilder = exports.SupportCodeLibraryBuilder = function () 
 
 exports.default = new SupportCodeLibraryBuilder();
 
-},{"./define_helpers":356,"./finalize_helpers":357,"./parameter_type_registry_builder":359,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"lodash":236}],359:[function(require,module,exports){
+},{"./define_helpers":355,"./finalize_helpers":356,"./parameter_type_registry_builder":358,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"lodash":236}],358:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60547,7 +60527,7 @@ function build() {
 
 exports.default = { build: build };
 
-},{"cucumber-expressions":145}],360:[function(require,module,exports){
+},{"cucumber-expressions":145}],359:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60632,7 +60612,7 @@ function validateArguments(_ref6) {
   });
 }
 
-},{"babel-runtime/helpers/extends":23,"lodash":236}],361:[function(require,module,exports){
+},{"babel-runtime/helpers/extends":23,"lodash":236}],360:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -60669,7 +60649,7 @@ function getTimestamp() {
 exports.default = methods;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],362:[function(require,module,exports){
+},{}],361:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -60717,7 +60697,7 @@ var UncaughtExceptionManager = function () {
 exports.default = UncaughtExceptionManager;
 
 }).call(this,require('_process'))
-},{"_process":250,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21}],363:[function(require,module,exports){
+},{"_process":250,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21}],362:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60904,5 +60884,5 @@ var UserCodeRunner = function () {
 
 exports.default = UserCodeRunner;
 
-},{"./time":361,"./uncaught_exception_manager":362,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"util":304}]},{},[342])(342)
+},{"./time":360,"./uncaught_exception_manager":361,"babel-runtime/helpers/classCallCheck":20,"babel-runtime/helpers/createClass":21,"babel-runtime/regenerator":27,"bluebird":31,"util":303}]},{},[341])(341)
 });
