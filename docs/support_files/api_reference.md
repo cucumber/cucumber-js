@@ -6,7 +6,7 @@ The function passed to `defineSupportCode` is called with an object as the first
 
 ---
 
-#### `defineParameterType({name, regexp, transformer})`
+#### `defineParameterType({name, preferForRegexpMatch, regexp, transformer, useForSnippets})`
 
 Add a new transform to convert a capture group into something else.
 
