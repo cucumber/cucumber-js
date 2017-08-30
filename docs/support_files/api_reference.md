@@ -6,15 +6,17 @@ The function passed to `defineSupportCode` is called with an object as the first
 
 ---
 
-#### `defineParameterType({regexp, typeName, transformer})`
+#### `defineParameterType({name, preferForRegexpMatch, regexp, transformer, useForSnippets})`
 
 Add a new transform to convert a capture group into something else.
 
+* `name`: string used to refer to this type in cucumber expressions
 * `regexp`: A regular expression (or array of regular expressions) that match the parameter
-* `typeName`: string used to refer to this type in cucumber expressions
 * `transformer`: An optional function which transforms the captured argument from a string into what is passed to the step definition.
   If no transform function is specified, the captured argument is left as a string.
   The function can be synchronous or return a `Promise` of the transformed value.
+* `useForSnippets`: Defaults to `true`. That means this parameter type will be used to generate snippets for undefined steps. If the `regexp` frequently matches text you don't intend to be used as arguments, disable its use for snippets with `false`.
+* `preferForRegexpMatch`: Defaults to `false`. Set to true if you use regular expressions and you want this parameter type's `regexp` to take precedence over others during a match.
 
 The built in parameter types are
 * `int`
