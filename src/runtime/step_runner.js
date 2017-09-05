@@ -8,10 +8,10 @@ const { beginTiming, endTiming } = Time
 
 async function run({
   defaultTimeout,
-  scenarioResult,
+  hookParameter,
+  parameterTypeRegistry,
   step,
   stepDefinition,
-  parameterTypeRegistry,
   world
 }) {
   beginTiming()
@@ -20,9 +20,9 @@ async function run({
   try {
     parameters = await Promise.all(
       stepDefinition.getInvocationParameters({
-        scenarioResult,
-        step,
-        parameterTypeRegistry
+        hookParameter,
+        parameterTypeRegistry,
+        step
       })
     )
   } catch (err) {

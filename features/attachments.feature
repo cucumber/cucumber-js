@@ -39,7 +39,7 @@ Feature: Attachments
       import stream from 'stream'
 
       defineSupportCode(({Before}) => {
-        Before(function(scenarioResult, callback) {
+        Before(function(testCase, callback) {
           var passThroughStream = new stream.PassThrough()
           this.attach(passThroughStream, 'image/png', callback)
           passThroughStream.write(new Buffer([137, 80]))
