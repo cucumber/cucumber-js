@@ -1,37 +1,48 @@
-var path = require('path')
-var fs = require('fs')
-var spawn = require('child_process').spawn
+const path = require('path')
+const fs = require('fs')
+const spawn = require('child_process').spawn
 
 // If installed as an unreleased git dependency, installs the dev dependencies
 // and compiles the source.
 
-if(!process.env.building_non_release) {
-  fs.access(path.join(__dirname, '..', 'lib'), function(err) {
-    if (err) {
-      // The lib dir doesn't exist, which means we need to compile sources with babel.
-      fs.access(path.join(__dirname, '..', 'node_modules', 'babel-plugin-external-helpers'), function(err) {
-        if(err) {
-          // Looks like we don't have babel - let's install all dev dependencies
-          var npmInstall = spawn('npm', ['install'], {
-            cwd: path.join(__dirname, '..'),
-            stdio: 'inherit',
-            env: Object.assign(process.env, { building_non_release: '1' })
-          })
-          npmInstall.on('close', function(code) {
-            if(code !== 0) throw new Error('cucumber: `npm install` failed')
-            buildLocal()
-          })
-        } else {
-          buildLocal()
-        }
-      })
+const projectDir = path.join(__dirname, '..')
 
-      function buildLocal() {
-        var build = spawn('npm', ['run', 'build-local'], { cwd: path.join(__dirname, '..'), stdio: 'inherit' })
-        build.on('close', function(code) {
-          if(code !== 0) throw new Error('cucumber: `npm run build-local` failed')
-        })
-      }
+if (!process.env.building_non_release) {
+  runIfDoesNotHaveLib(function() {
+    runIfDoesNotHaveDevDependencies(function() {
+      installDevDependencies()
+    })
+  })
+}
+
+function installDevDependencies() {
+  const npmInstall = spawn('npm', ['install'], {
+    cwd: path.join(__dirname, '..'),
+    stdio: 'inherit',
+    env: Object.assign({}, process.env, { building_non_release: '1' })
+  })
+  npmInstall.on('close', function(code) {
+    if (code !== 0) throw new Error('cucumber: `npm install` failed')
+  })
+}
+
+function runIfDoesNotHaveDevDependencies(callback) {
+  const devDependencyPath = path.join(
+    projectDir,
+    'node_modules',
+    'babel-plugin-external-helpers'
+  )
+  fs.access(devDependencyPath, function(err) {
+    if (err) {
+      callback()
+    }
+  })
+}
+
+function runIfDoesNotHaveLib(callback) {
+  fs.access(path.join(projectDir, 'lib'), function(err) {
+    if (err) {
+      callback()
     }
   })
 }
