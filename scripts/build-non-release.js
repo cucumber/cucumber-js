@@ -32,15 +32,15 @@ function runIfDoesNotHaveDevDependencies(callback) {
     'node_modules',
     'babel-plugin-external-helpers'
   )
-  fs.access(devDependencyPath, function(err) {
-    if (err) {
-      callback()
-    }
-  })
+  runIfPathDoesNotExist(devDependencyPath, callback)
 }
 
 function runIfDoesNotHaveLib(callback) {
-  fs.access(path.join(projectDir, 'lib'), function(err) {
+  runIfPathDoesNotExist(path.join(projectDir, 'lib'), callback)
+}
+
+function runIfPathDoesNotExist(filePath, callback) {
+  fs.access(filePath, function(err) {
     if (err) {
       callback()
     }
