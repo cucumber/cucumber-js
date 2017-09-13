@@ -1,5 +1,19 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [3.0.2](https://github.com/cucumber/cucumber-js/compare/v3.0.1...v3.0.2) (2017-09-13)
+
+#### New Features
+
+* `defineParameterType`: new options `useForSnippets` and `preferForRegexpMatch`. Please see documentation for usage.
+
+#### Bug Fixes
+
+* fix `usage` and `usage-json` formatters when there are undefined steps
+
+#### Deprecations
+
+* `defineParameterType`: `typeName` option is deprecated in favor of `name`
+
 ### [3.0.1](https://github.com/cucumber/cucumber-js/compare/v3.0.0...v3.0.1) (2017-08-28)
 
 #### Bug Fixes

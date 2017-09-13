@@ -54571,7 +54571,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.0.1",
+  "version": "3.0.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -57302,7 +57302,7 @@ function buildMapping(_ref) {
           sourceLocation = testStep.sourceLocation,
           duration = testStep.result.duration;
 
-      if (sourceLocation) {
+      if (actionLocation && sourceLocation) {
         var location = (0, _location_helpers.formatLocation)(actionLocation);
         var match = {
           line: sourceLocation.line,
@@ -60205,6 +60205,8 @@ exports.defineTestRunHook = defineTestRunHook;
 exports.defineStep = defineStep;
 exports.defineParameterType = defineParameterType;
 
+var _util = require('util');
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -60346,17 +60348,26 @@ function getDefinitionLineAndUri(cwd) {
 
 function defineParameterType(builder) {
   return function (_ref) {
-    var regexp = _ref.regexp,
+    var name = _ref.name,
+        typeName = _ref.typeName,
+        regexp = _ref.regexp,
         transformer = _ref.transformer,
-        typeName = _ref.typeName;
+        useForSnippets = _ref.useForSnippets,
+        preferForRegexpMatch = _ref.preferForRegexpMatch;
 
-    var parameterType = new _cucumberExpressions.ParameterType(typeName, regexp, null, transformer, true, true);
+    var getTypeName = (0, _util.deprecate)(function () {
+      return typeName;
+    }, 'Cucumber defineParameterType: Use name instead of typeName');
+    var _name = name || getTypeName();
+    if (typeof useForSnippets !== 'boolean') useForSnippets = true;
+    if (typeof preferForRegexpMatch !== 'boolean') preferForRegexpMatch = false;
+    var parameterType = new _cucumberExpressions.ParameterType(_name, regexp, null, transformer, useForSnippets, preferForRegexpMatch);
     builder.options.parameterTypeRegistry.defineParameterType(parameterType);
   };
 }
 
 }).call(this,"/src/support_code_library_builder")
-},{"../formatter/helpers":322,"../models/step_definition":343,"../models/test_case_hook_definition":344,"../models/test_run_hook_definition":345,"./validate_arguments":359,"cucumber-expressions":145,"lodash":236,"path":246,"stacktrace-js":291}],356:[function(require,module,exports){
+},{"../formatter/helpers":322,"../models/step_definition":343,"../models/test_case_hook_definition":344,"../models/test_run_hook_definition":345,"./validate_arguments":359,"cucumber-expressions":145,"lodash":236,"path":246,"stacktrace-js":291,"util":303}],356:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
