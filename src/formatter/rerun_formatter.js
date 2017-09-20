@@ -2,6 +2,8 @@ import _ from 'lodash'
 import Formatter from './'
 import Status from '../status'
 
+const DEFAULT_SEPARATOR = '\n'
+
 export default class RerunFormatter extends Formatter {
   constructor(options) {
     super(options)
@@ -9,6 +11,7 @@ export default class RerunFormatter extends Formatter {
       .on('test-case-finished', ::this.storeFailedTestCases)
       .on('test-run-finished', ::this.logFailedTestCases)
     this.mapping = {}
+    this.separator = options.separator || DEFAULT_SEPARATOR
   }
 
   storeFailedTestCases({ sourceLocation: { line, uri }, result: { status } }) {
@@ -23,7 +26,7 @@ export default class RerunFormatter extends Formatter {
   logFailedTestCases() {
     const text = _.chain(this.mapping)
       .map((lines, uri) => uri + ':' + lines.join(':'))
-      .join('\n')
+      .join(this.separator)
       .value()
     this.log(text)
   }
