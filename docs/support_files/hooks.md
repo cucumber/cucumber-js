@@ -65,9 +65,25 @@ defineSupportCode(function({After, Before}) {
 
 See more documentation on [tag expressions](https://docs.cucumber.io/tag-expressions/)
 
+## Skipping in a Before Hook
+
+If you need to imperatively skip a test using a `Before` hook, this can be done using any of the constructs defined in [skipped steps](./step_definitions.md)
+
+This includes using: a synchronous return, an asynchronous callback, or an asynchronous promise
+
+```javascript
+defineSupportCode(({After, Before}) => {
+  // Synchronous
+  Before(function() {
+    // perform some runtime check to decide whether to skip the proceeding scenario
+    return 'skipped'
+  });
+});
+```
+
 ## BeforeAll / AfterAll
 
-If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise. 
+If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise.
 
 Unlike `Before` / `After` these methods will not have a world instance as `this`. This is becauce each scenario gets its own world instance and these hooks run before / after **all** scenarios.
 
