@@ -50,7 +50,9 @@ async function run({
 
   const testStepResult = { duration: endTiming() }
 
-  if (result === 'pending') {
+  if (result === 'skipped') {
+    testStepResult.status = Status.SKIPPED
+  } else if (result === 'pending') {
     testStepResult.status = Status.PENDING
   } else if (error) {
     testStepResult.exception = error

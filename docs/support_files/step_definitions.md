@@ -85,3 +85,14 @@ Each interface has its own way of marking a step as pending
 * synchronous - return `'pending'`
 * asynchronous callback - execute the callback with `null, 'pending'`
 * asynchronous promise - promise resolves to `'pending'`
+
+## Skipped steps
+
+Marking a step as skipped will also mark the proceeding steps of the same scenario as skipped.
+
+This can be used to mark a scenario as skipped based on a runtime condition.
+
+Each interface has its own way of marking a step as skipped
+* synchronous - return `'skipped'`
+* asynchronous callback - execute the callback with `null, 'skipped'`
+* asynchronous promise - promise resolves to `'skipped'`
