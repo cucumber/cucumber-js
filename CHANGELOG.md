@@ -1,5 +1,11 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [3.0.3](https://github.com/cucumber/cucumber-js/compare/v3.0.2...v3.0.3) (2017-09-23)
+
+#### New Features
+
+* support to imperatively skip steps. See documentation [here](/docs/support_files/step_definitions.md#skipped-steps) ([#912](https://github.com/cucumber/cucumber-js/issues/912), jshifflet)
+
 ### [3.0.2](https://github.com/cucumber/cucumber-js/compare/v3.0.1...v3.0.2) (2017-09-13)
 
 #### New Features

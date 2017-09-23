@@ -54571,7 +54571,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.0.2",
+  "version": "3.0.3",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -54672,7 +54672,8 @@ module.exports={
     "Olle Jonsson <olle.jonsson@gmail.com>",
     "Darrin Holst <darrinholst@gmail.com>",
     "Dmitry Shirokov <deadrunk@gmail.com>",
-    "Jayson Smith <github@nes.33mail.com>"
+    "Jayson Smith <github@nes.33mail.com>",
+    "jshifflet <jason.shifflet@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -59619,7 +59620,9 @@ var run = function () {
             testStepResult = { duration: endTiming() };
 
 
-            if (result === 'pending') {
+            if (result === 'skipped') {
+              testStepResult.status = _status2.default.SKIPPED;
+            } else if (result === 'pending') {
               testStepResult.status = _status2.default.PENDING;
             } else if (error) {
               testStepResult.exception = error;
