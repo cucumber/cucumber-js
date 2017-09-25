@@ -4,20 +4,23 @@ import RerunFormatter from './rerun_formatter'
 import Status from '../status'
 import { EventEmitter } from 'events'
 
-describe('RerunFormatter', function() {
-  beforeEach(function() {
-    this.output = ''
-    const logFn = data => {
-      this.output += data
-    }
-    this.eventBroadcaster = new EventEmitter()
-    this.feature1Path = path.join('features', 'a.feature')
-    this.feature2Path = path.join('features', 'b.feature')
-    this.rerunFormatter = new RerunFormatter({
-      eventBroadcaster: this.eventBroadcaster,
-      log: logFn
-    })
+function prepareFormatter(options = {}) {
+  this.output = ''
+  const logFn = data => {
+    this.output += data
+  }
+  this.eventBroadcaster = new EventEmitter()
+  this.feature1Path = path.join('features', 'a.feature')
+  this.feature2Path = path.join('features', 'b.feature')
+  this.rerunFormatter = new RerunFormatter({
+    ...options,
+    eventBroadcaster: this.eventBroadcaster,
+    log: logFn
   })
+}
+
+describe('RerunFormatter', function() {
+  beforeEach(prepareFormatter)
 
   describe('with no scenarios', function() {
     beforeEach(function() {
@@ -88,23 +91,36 @@ describe('RerunFormatter', function() {
     })
   })
 
-  describe('with two failing scenarios in different files', function() {
-    beforeEach(function() {
-      this.eventBroadcaster.emit('test-case-finished', {
-        sourceLocation: { uri: this.feature1Path, line: 1 },
-        result: { status: Status.FAILED }
-      })
-      this.eventBroadcaster.emit('test-case-finished', {
-        sourceLocation: { uri: this.feature2Path, line: 2 },
-        result: { status: Status.FAILED }
-      })
-      this.eventBroadcaster.emit('test-run-finished')
-    })
+  _.each(
+    [
+      { separator: null, label: 'default' },
+      { separator: '\n', label: 'newline' },
+      { separator: ' ', label: 'space' }
+    ],
+    ({ separator, label }) => {
+      describe('using ' + label + ' separator', function() {
+        describe('with two failing scenarios in different files', function() {
+          beforeEach(function() {
+            prepareFormatter.apply(this, [{ rerun: { separator } }])
 
-    it('outputs the references needed to run the scenarios again', function() {
-      expect(this.output).to.eql(
-        `${this.feature1Path}:1\n` + `${this.feature2Path}:2`
-      )
-    })
-  })
+            this.eventBroadcaster.emit('test-case-finished', {
+              sourceLocation: { uri: this.feature1Path, line: 1 },
+              result: { status: Status.FAILED }
+            })
+            this.eventBroadcaster.emit('test-case-finished', {
+              sourceLocation: { uri: this.feature2Path, line: 2 },
+              result: { status: Status.FAILED }
+            })
+            this.eventBroadcaster.emit('test-run-finished')
+          })
+
+          it('outputs the references needed to run the scenarios again', function() {
+            expect(this.output).to.eql(
+              `${this.feature1Path}:1` + separator + `${this.feature2Path}:2`
+            )
+          })
+        })
+      })
+    }
+  )
 })
