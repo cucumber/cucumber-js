@@ -11,7 +11,7 @@ export default class RerunFormatter extends Formatter {
       .on('test-case-finished', ::this.storeFailedTestCases)
       .on('test-run-finished', ::this.logFailedTestCases)
     this.mapping = {}
-    this.separator = options.separator || DEFAULT_SEPARATOR
+    this.separator = _.get(options, 'rerun.separator', DEFAULT_SEPARATOR)
   }
 
   storeFailedTestCases({ sourceLocation: { line, uri }, result: { status } }) {
