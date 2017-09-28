@@ -27,6 +27,10 @@ export default class ArgvParser {
     }
   }
 
+  static mergeTags(val, memo) {
+    return memo === '' ? `(${val})` : `${memo} and (${val})`
+  }
+
   static validateLanguage(val) {
     if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
       throw new Error('Unsupported ISO 639-1: ' + val)
@@ -89,7 +93,8 @@ export default class ArgvParser {
       )
       .option(
         '-t, --tags <EXPRESSION>',
-        'only execute the features or scenarios with tags matching the expression',
+        'only execute the features or scenarios with tags matching the expression (repeatable)',
+        ArgvParser.mergeTags,
         ''
       )
       .option(
