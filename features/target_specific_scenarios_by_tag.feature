@@ -45,6 +45,13 @@ Feature: Target specific scenarios
     Then it fails
     And it runs the scenario "first scenario"
 
+  Scenario: merge multiple tag expressions
+    When I run cucumber.js with `--tags @b --tags @d`
+    Then it fails
+    And it runs the scenarios:
+      | NAME |
+      | second scenario - Z |
+
   Scenario: run a single scenario outline
     When I run cucumber.js with `--tags @b`
     Then it fails
