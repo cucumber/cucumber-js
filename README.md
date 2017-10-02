@@ -18,10 +18,7 @@ We've put a demo of Cucumber.js to [run in your browser](http://cucumber.github.
 
 ## Help & support
 
-* Chat: [Gitter](https://gitter.im/cucumber/cucumber-js)
-* Google Groups: [cukes](https://groups.google.com/group/cukes)
-* Website: [cucumber.io](https://cucumber.io)
-* Twitter: [@cucumberbdd](https://twitter.com/cucumberbdd/)
+* See here: https://cucumber.io/support
 
 ## Contributing
 
