@@ -46,7 +46,7 @@ Feature: Target specific scenarios
     And it runs the scenario "first scenario"
 
   Scenario: merge multiple tag expressions
-    When I run cucumber.js with `--tags @b --tags @d`
+    When I run cucumber.js with `--tags @b --tags "not @c"`
     Then it fails
     And it runs the scenarios:
       | NAME |
