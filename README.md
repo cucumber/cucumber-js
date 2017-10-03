@@ -1,7 +1,7 @@
 # Cucumber.js
 
-[![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](#backers) 
-[![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](#sponsors)
+[![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber) 
+[![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
 
 [![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
 [![AppVeyor Status](https://img.shields.io/appveyor/ci/charlierudolph/cucumber-js/master.svg?label=appveyor)](https://ci.appveyor.com/project/charlierudolph/cucumber-js/history)
