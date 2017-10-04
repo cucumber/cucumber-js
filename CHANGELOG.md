@@ -1,5 +1,12 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [3.0.4](https://github.com/cucumber/cucumber-js/compare/v3.0.3...v3.0.4) (2017-10-04)
+
+#### New Features
+
+* cli: make `--tags` option repeatable (joined with `and`) ([#940](https://github.com/cucumber/cucumber-js/issues/940), Ilya Kozhevnikov)
+* rerun formatter: make separator configurable. See docs [here](https://github.com/cucumber/cucumber-js/blob/fb9e8fc2e68d4395b9b0a124d18e036d00a8c69f/docs/cli.md) ([#930](https://github.com/cucumber/cucumber-js/issues/930), Máté Karácsony)
+
 ### [3.0.3](https://github.com/cucumber/cucumber-js/compare/v3.0.2...v3.0.3) (2017-09-23)
 
 #### New Features

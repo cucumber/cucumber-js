@@ -54571,7 +54571,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.0.3",
+  "version": "3.0.4",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -54673,7 +54673,9 @@ module.exports={
     "Darrin Holst <darrinholst@gmail.com>",
     "Dmitry Shirokov <deadrunk@gmail.com>",
     "Jayson Smith <github@nes.33mail.com>",
-    "jshifflet <jason.shifflet@gmail.com>"
+    "jshifflet <jason.shifflet@gmail.com>",
+    "Máté Karácsony <k_mate@inf.elte.hu>",
+    "Ilya Kozhevnikov <github@kozhevnikov.com>"
   ],
   "repository": {
     "type": "git",
@@ -54844,6 +54846,11 @@ var ArgvParser = function () {
       };
     }
   }, {
+    key: 'mergeTags',
+    value: function mergeTags(val, memo) {
+      return memo === '' ? '(' + val + ')' : memo + ' and (' + val + ')';
+    }
+  }, {
     key: 'validateLanguage',
     value: function validateLanguage(val) {
       if (!_lodash2.default.includes(_lodash2.default.keys(_gherkin2.default.DIALECTS), val)) {
@@ -54856,7 +54863,7 @@ var ArgvParser = function () {
     value: function parse(argv) {
       var program = new _commander.Command(_path2.default.basename(argv[1]));
 
-      program.usage('[options] [<DIR|FILE[:LINE]>...]').version(_package.version, '-v, --version').option('-b, --backtrace', 'show full backtrace for errors').option('--compiler <EXTENSION:MODULE>', 'require files with the given EXTENSION after requiring MODULE (repeatable)', ArgvParser.collect, []).option('-d, --dry-run', 'invoke formatters without executing steps').option('--fail-fast', 'abort the run on first failure').option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, []).option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {}).option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage, '').option('--i18n-languages', 'list languages').option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, []).option('--no-strict', 'succeed even if there are pending steps').option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, []).option('-r, --require <FILE|DIR>', 'require files before executing features (repeatable)', ArgvParser.collect, []).option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression', '').option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {});
+      program.usage('[options] [<DIR|FILE[:LINE]>...]').version(_package.version, '-v, --version').option('-b, --backtrace', 'show full backtrace for errors').option('--compiler <EXTENSION:MODULE>', 'require files with the given EXTENSION after requiring MODULE (repeatable)', ArgvParser.collect, []).option('-d, --dry-run', 'invoke formatters without executing steps').option('--fail-fast', 'abort the run on first failure').option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, []).option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {}).option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage, '').option('--i18n-languages', 'list languages').option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, []).option('--no-strict', 'succeed even if there are pending steps').option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, []).option('-r, --require <FILE|DIR>', 'require files before executing features (repeatable)', ArgvParser.collect, []).option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression (repeatable)', ArgvParser.mergeTags, '').option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {});
 
       program.on('--help', function () {
         /* eslint-disable no-console */
@@ -57887,6 +57894,8 @@ var _status2 = _interopRequireDefault(_status);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var DEFAULT_SEPARATOR = '\n';
+
 var RerunFormatter = function (_Formatter) {
   (0, _inherits3.default)(RerunFormatter, _Formatter);
 
@@ -57897,6 +57906,7 @@ var RerunFormatter = function (_Formatter) {
 
     options.eventBroadcaster.on('test-case-finished', _this.storeFailedTestCases.bind(_this)).on('test-run-finished', _this.logFailedTestCases.bind(_this));
     _this.mapping = {};
+    _this.separator = _lodash2.default.get(options, 'rerun.separator', DEFAULT_SEPARATOR);
     return _this;
   }
 
@@ -57920,7 +57930,7 @@ var RerunFormatter = function (_Formatter) {
     value: function logFailedTestCases() {
       var text = _lodash2.default.chain(this.mapping).map(function (lines, uri) {
         return uri + ':' + lines.join(':');
-      }).join('\n').value();
+      }).join(this.separator).value();
       this.log(text);
     }
   }]);
