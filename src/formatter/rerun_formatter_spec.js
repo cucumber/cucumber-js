@@ -93,15 +93,17 @@ describe('RerunFormatter', function() {
 
   _.each(
     [
-      { separator: null, label: 'default' },
-      { separator: '\n', label: 'newline' },
-      { separator: ' ', label: 'space' }
+      { separator: { opt: undefined, expected: '\n' }, label: 'default' },
+      { separator: { opt: '\n', expected: '\n' }, label: 'newline' },
+      { separator: { opt: ' ', expected: ' ' }, label: 'space' }
     ],
     ({ separator, label }) => {
       describe('using ' + label + ' separator', function() {
         describe('with two failing scenarios in different files', function() {
           beforeEach(function() {
-            prepareFormatter.apply(this, [{ rerun: { separator } }])
+            prepareFormatter.apply(this, [
+              { rerun: { separator: separator.opt } }
+            ])
 
             this.eventBroadcaster.emit('test-case-finished', {
               sourceLocation: { uri: this.feature1Path, line: 1 },
@@ -116,7 +118,9 @@ describe('RerunFormatter', function() {
 
           it('outputs the references needed to run the scenarios again', function() {
             expect(this.output).to.eql(
-              `${this.feature1Path}:1` + separator + `${this.feature2Path}:2`
+              `${this.feature1Path}:1` +
+                separator.expected +
+                `${this.feature2Path}:2`
             )
           })
         })
