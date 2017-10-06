@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import TagExpressionParser from 'cucumber-tag-expressions/lib/tag_expression_parser'
+import { TagExpressionParser } from 'cucumber-tag-expressions'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 const tagExpressionParser = new TagExpressionParser()
