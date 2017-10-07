@@ -36,8 +36,9 @@ Defines a hook which is run after each scenario.
   * `tags`: string tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
-  * The first argument will be an object of the form `{sourceLocation: {line, uri}, result: {duration, status}}` matching the event data for `test-case-finished`
+  * The first argument will be an object of the form `{sourceLocation: {line, uri}, result: {duration, status}, pickle: { tags: [{ name, location: { line, column } }], name, language, locations: [{ line, column }], steps: [{ text, arguments: [], locations: [{ line, column }] }]}}`
   * When using the asynchronous callback interface, have one final argument for the callback function.
+  * The pickle object comes from [gherkin](https://github.com/cucumber/cucumber/tree/gherkin-v4.1.3/gherkin) library
 
 `options` can also be a string as a shorthand for specifying `tags`.
 
@@ -60,7 +61,7 @@ Multiple `AfterAll` hooks are executed in the **reverse** order that they are de
 
 #### `Before([options,] fn)`
 
-Defines a hook which is run before each scenario. Same interface as `After` except the first argument passed to `fn` will be an object of the form `{sourceLocation: {line, uri}}` matching the event data for `test-case-started`.
+Defines a hook which is run before each scenario. Same interface as `After` except the first argument passed to `fn` will be an object of the form `{sourceLocation, pickle} (see after hook for object structure)`.
 
 Multiple `Before` hooks are executed in the order that they are defined.
 

@@ -154,11 +154,13 @@ export default class TestCaseRunner {
     this.emitPrepared()
     this.emit('test-case-started', {})
     await this.runHooks(this.beforeHookDefinitions, {
-      sourceLocation: this.testCaseSourceLocation
+      sourceLocation: this.testCaseSourceLocation,
+      pickle: this.testCase.pickle
     })
     await this.runSteps()
     await this.runHooks(this.afterHookDefinitions, {
       sourceLocation: this.testCaseSourceLocation,
+      pickle: this.testCase.pickle,
       result: this.result
     })
     this.emit('test-case-finished', { result: this.result })
