@@ -22,7 +22,8 @@ async function run({
       stepDefinition.getInvocationParameters({
         hookParameter,
         parameterTypeRegistry,
-        step
+        step,
+        world
       })
     )
   } catch (err) {

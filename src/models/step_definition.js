@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { CucumberExpression, RegularExpression } from 'cucumber-expressions'
 import DataTable from './data_table'
 import { buildStepArgumentIterator } from '../step_arguments'
@@ -33,12 +32,11 @@ export default class StepDefinition {
     )
   }
 
-  getInvocationParameters({ step, parameterTypeRegistry }) {
+  getInvocationParameters({ step, parameterTypeRegistry, world }) {
     const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
-    const stepNameParameters = _.map(
-      cucumberExpression.match(step.text),
-      'value'
-    )
+    const stepNameParameters = cucumberExpression
+      .match(step.text)
+      .map(arg => arg.getValue(world))
     const iterator = buildStepArgumentIterator({
       dataTable: arg => new DataTable(arg),
       docString: arg => arg.content
