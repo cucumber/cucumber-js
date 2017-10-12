@@ -23,6 +23,29 @@ Feature: Parameter types
       })
       """
 
+  Scenario: delegate transform to world
+    Given a file named "features/support/transforms.js" with:
+      """
+      import {setWorldConstructor, defineParameterType} from 'cucumber'
+
+      defineParameterType({
+        regexp: /particular/,
+        transformer(s) {
+          return this.upcase(s)
+        },
+        name: 'param'
+      })
+
+      class MyWorld {
+        upcase(s) {
+          return s.toUpperCase()
+        }
+      }
+      setWorldConstructor(MyWorld)
+      """
+    When I run cucumber.js
+    Then the step "a particular step" has status "passed"
+
   Scenario: sync transform (success)
     Given a file named "features/support/transforms.js" with:
       """
