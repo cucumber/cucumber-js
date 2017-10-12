@@ -1,5 +1,11 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [Git master](https://github.com/cucumber/cucumber-js/compare/v3.0.4...master) (Not released)
+
+#### New Features
+
+* `defineParameterType`: The `transformer` function's `this` object is now the current World (as long as it's not an arrow function). ([#948](https://github.com/cucumber/cucumber-js/pull/948) Aslak Hellesøy)
+
 ### [3.0.4](https://github.com/cucumber/cucumber-js/compare/v3.0.3...v3.0.4) (2017-10-04)
 
 #### New Features
