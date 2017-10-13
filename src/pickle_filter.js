@@ -26,9 +26,12 @@ export default class PickleFilter {
           if (!mapping[uri]) {
             mapping[uri] = []
           }
-          linesExpression.slice(1).split(':').forEach(function(line) {
-            mapping[uri].push(parseInt(line))
-          })
+          linesExpression
+            .slice(1)
+            .split(':')
+            .forEach(function(line) {
+              mapping[uri].push(parseInt(line))
+            })
         }
       }
     })
