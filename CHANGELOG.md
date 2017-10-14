@@ -1,10 +1,12 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Git master](https://github.com/cucumber/cucumber-js/compare/v3.0.4...master) (Not released)
+### [3.0.5](https://github.com/cucumber/cucumber-js/compare/v3.0.4...v3.0.5) (2017-10-14)
 
 #### New Features
 
 * `defineParameterType`: The `transformer` function's `this` object is now the current World (as long as it's not an arrow function). ([#948](https://github.com/cucumber/cucumber-js/pull/948) Aslak Hellesøy)
+* `Before` / `After`: The first argument now includes a `pickle` property which can
+be used to get the name / tags of the running scenario. ([#947](https://github.com/cucumber/cucumber-js/pull/947) Giuseppe DiBella)
 
 ### [3.0.4](https://github.com/cucumber/cucumber-js/compare/v3.0.3...v3.0.4) (2017-10-04)
 
