@@ -86,6 +86,7 @@ export default class Cli {
     const testCases = await getTestCasesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
+      featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions)
     })

@@ -44,7 +44,7 @@ describe('helpers', function() {
         expect(this.onSource).to.have.been.calledOnce
         expect(this.onSource).to.have.been.calledWith({
           data: '',
-          media: { encoding: 'utf-8', type: 'text/vnd.cucumber.gherkin+plain' },
+          media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
           uri: this.relativeFeaturePath
         })
       })
@@ -90,7 +90,7 @@ describe('helpers', function() {
         expect(this.onSource).to.have.been.calledOnce
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
-          media: { encoding: 'utf-8', type: 'text/vnd.cucumber.gherkin+plain' },
+          media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
           uri: this.relativeFeaturePath
         })
       })
@@ -130,7 +130,7 @@ describe('helpers', function() {
         expect(this.onSource).to.have.been.calledOnce
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
-          media: { encoding: 'utf-8', type: 'text/vnd.cucumber.gherkin+plain' },
+          media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
           uri: this.relativeFeaturePath
         })
       })

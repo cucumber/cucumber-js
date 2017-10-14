@@ -19,6 +19,7 @@ export async function getExpandedArgv({ argv, cwd }) {
 export async function getTestCasesFromFilesystem({
   cwd,
   eventBroadcaster,
+  featureDefaultLanguage,
   featurePaths,
   pickleFilter
 }) {
@@ -28,6 +29,7 @@ export async function getTestCasesFromFilesystem({
     result = result.concat(
       await getTestCases({
         eventBroadcaster,
+        language: featureDefaultLanguage,
         source,
         pickleFilter,
         uri: path.relative(cwd, featurePath)
@@ -39,12 +41,13 @@ export async function getTestCasesFromFilesystem({
 
 export async function getTestCases({
   eventBroadcaster,
+  language,
   pickleFilter,
   source,
   uri
 }) {
   const result = []
-  const events = Gherkin.generateEvents(source, uri)
+  const events = Gherkin.generateEvents(source, uri, {}, language)
   events.forEach(event => {
     eventBroadcaster.emit(event.type, _.omit(event, 'type'))
     if (event.type === 'pickle') {

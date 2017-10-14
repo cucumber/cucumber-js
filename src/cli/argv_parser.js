@@ -73,6 +73,11 @@ export default class ArgvParser {
       )
       .option('--i18n-languages', 'list languages')
       .option(
+        '--language <ISO 639-1>',
+        'provide the default langauge for feature files',
+        ''
+      )
+      .option(
         '--name <REGEXP>',
         'only execute the scenarios with name matching the expression (repeatable)',
         ArgvParser.collect,

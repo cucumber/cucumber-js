@@ -38,6 +38,7 @@ export default class ConfigurationBuilder {
       )
     }
     return {
+      featureDefaultLanguage: this.options.language,
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.getFormatOptions(),
