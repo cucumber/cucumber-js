@@ -23,6 +23,8 @@ Feature: Hook Parameters
       defineSupportCode(({Before}) => {
         Before(function(testCase) {
           console.log(testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line)
+          console.log('tags: ', testCase.pickle.tags);
+          console.log('name: ', testCase.pickle.name);
         })
       })
       """
@@ -30,6 +32,8 @@ Feature: Hook Parameters
     Then the output contains the text:
       """
       features/my_feature.feature:2
+      tags: []
+      name: a scenario
       """
 
   @spawn
@@ -65,6 +69,8 @@ Feature: Hook Parameters
             message += "did not fail"
           }
           console.log(message)
+          console.log('tags: ', testCase.pickle.tags);
+          console.log('name: ', testCase.pickle.name);
         })
       })
       """
@@ -73,8 +79,12 @@ Feature: Hook Parameters
     And the output contains the text:
       """
       features/my_feature.feature:2 did not fail
+      tags: []
+      name: a scenario
       """
     And the output contains the text:
       """
       features/my_feature.feature:5 failed
+      tags: []
+      name: another scenario
       """
