@@ -55296,7 +55296,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.0.5",
+  "version": "3.0.6",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -55840,9 +55840,15 @@ var ConfigurationBuilder = function () {
     value: function getFormats() {
       var mapping = { '': 'progress' };
       this.options.format.forEach(function (format) {
-        var parts = format.split(':');
-        var type = parts[0];
-        var outputTo = parts.slice(1).join(':');
+        var type = format;
+        var outputTo = '';
+        var parts = format.split(/([^A-Z]):([^\\])/);
+
+        if (parts.length > 1) {
+          type = parts.slice(0, 2).join('');
+          outputTo = parts.slice(2).join('');
+        }
+
         mapping[outputTo] = type;
       });
       return _lodash2.default.map(mapping, function (type, outputTo) {
