@@ -61,7 +61,9 @@
       });
 
       When('I click on {string}', function (text) {
+        let driver = this.driver;
         return this.driver.findElement({linkText: text}).then(function(element) {
+          driver.executeScript("arguments[0].scrollIntoView();", element);
           return element.click();
         });
       });
