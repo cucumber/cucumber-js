@@ -24,6 +24,7 @@ describe('Configuration', function() {
 
     it('returns the default configuration', function() {
       expect(this.result).to.eql({
+        featureDefaultLanguage: '',
         featurePaths: [],
         formatOptions: {
           colorsEnabled: true,
