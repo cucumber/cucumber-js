@@ -48,7 +48,7 @@ export default class PickleFilter {
   }
 
   matchesAnyLine({ pickle, uri }) {
-    const lines = this.featureUriToLinesMapping[path.resolve(uri || '')]
+    const lines = this.featureUriToLinesMapping[path.resolve(uri)]
     if (lines) {
       return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
     } else {

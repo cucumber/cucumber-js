@@ -347,7 +347,6 @@ describe('PickleFilter', function() {
             tagExpressions: ['tagA']
           })
           this.input.pickle.locations = [{ line: 1 }]
-          this.input.uri = this.scenarioPath
         })
 
         it('returns false', function() {
@@ -363,7 +362,6 @@ describe('PickleFilter', function() {
             tagExpression: '@tagA'
           })
           this.input.pickle.locations = [{ line: 1 }]
-          this.input.uri = this.scenarioPath
         })
 
         it('returns false', function() {
