@@ -1,5 +1,9 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [3.0.6](https://github.com/cucumber/cucumber-js/compare/v3.0.5...v3.0.6) (2017-10-18)
+
+* cli: fix `--format` option parsing on Windows ([#954](https://github.com/cucumber/cucumber-js/pull/954) Darrin Holst)
+
 ### [3.0.5](https://github.com/cucumber/cucumber-js/compare/v3.0.4...v3.0.5) (2017-10-14)
 
 #### New Features

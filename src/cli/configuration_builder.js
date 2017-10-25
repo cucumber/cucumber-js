@@ -38,6 +38,7 @@ export default class ConfigurationBuilder {
       )
     }
     return {
+      featureDefaultLanguage: this.options.language,
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.getFormatOptions(),
@@ -95,9 +96,15 @@ export default class ConfigurationBuilder {
   getFormats() {
     const mapping = { '': 'progress' }
     this.options.format.forEach(function(format) {
-      const parts = format.split(':')
-      const type = parts[0]
-      const outputTo = parts.slice(1).join(':')
+      let type = format
+      let outputTo = ''
+      const parts = format.split(/([^A-Z]):([^\\])/)
+
+      if (parts.length > 1) {
+        type = parts.slice(0, 2).join('')
+        outputTo = parts.slice(2).join('')
+      }
+
       mapping[outputTo] = type
     })
     return _.map(mapping, function(type, outputTo) {
