@@ -146,6 +146,7 @@ export default class TestCaseRunner {
     if (testStepResult.exception) {
       this.result.exception = testStepResult.exception
     }
+
     this.emit('test-step-finished', {
       index: this.testStepIndex,
       result: testStepResult
