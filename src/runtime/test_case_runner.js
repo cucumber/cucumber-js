@@ -143,8 +143,8 @@ export default class TestCaseRunner {
     if (this.shouldUpdateStatus(testStepResult)) {
       this.result.status = testStepResult.status
     }
-    if(testStepResult.exception) {
-      this.result.exception = testStepResult.exception;
+    if (testStepResult.exception) {
+      this.result.exception = testStepResult.exception
     }
     this.emit('test-step-finished', {
       index: this.testStepIndex,
