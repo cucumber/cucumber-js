@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "3.0.6",
+  "version": "3.1.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -113,7 +113,8 @@
     "jshifflet <jason.shifflet@gmail.com>",
     "Máté Karácsony <k_mate@inf.elte.hu>",
     "Ilya Kozhevnikov <github@kozhevnikov.com>",
-    "Giuseppe DiBella <gd46@njit.edu>"
+    "Giuseppe DiBella <gd46@njit.edu>",
+    "Marco Muller <marco@remotemetering.net>"
   ],
   "repository": {
     "type": "git",

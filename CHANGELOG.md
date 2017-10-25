@@ -1,5 +1,13 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [3.1.0](https://github.com/cucumber/cucumber-js/compare/v3.0.6...v3.1.0) (2017-10-25)
+
+#### New Features
+* add `--language` cli option to provide the default language for feature files
+
+#### Bug Fixes
+* pickle filter: support relative paths ([#962](https://github.com/cucumber/cucumber-js/pull/962) Marco Muller)
+
 ### [3.0.6](https://github.com/cucumber/cucumber-js/compare/v3.0.5...v3.0.6) (2017-10-18)
 
 * cli: fix `--format` option parsing on Windows ([#954](https://github.com/cucumber/cucumber-js/pull/954) Darrin Holst)
