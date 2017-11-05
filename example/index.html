@@ -13,6 +13,7 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2/chai.min.js"></script>
 
     <!-- Hack to get ansi-html to run in the browser -->
     <script type="text/javascript">
@@ -67,50 +68,49 @@
       |  12 |         5 |     18 |</div>
         </div>
         <div class="tab-pane" id="step-definitions-tab">
-          <div id="step-definitions">Cucumber.defineSupportCode(function(context) {
-  var setWorldConstructor = context.setWorldConstructor;
-  var Given = context.Given
-  var When = context.When
-  var Then = context.Then
+          <div id="step-definitions"> // Cucumber and chai have been loaded in the browser
+var setWorldConstructor = Cucumber.setWorldConstructor;
+var Given = Cucumber.Given;
+var When = Cucumber.When;
+var Then = Cucumber.Then;
+var expect = chai.expect;
 
-  ///// Your World /////
-  //
-  // Call 'setWorldConstructor' with to your custom world (optional)
-  //
+///// World /////
+//
+// Call 'setWorldConstructor' with to your custom world (optional)
+//
 
-  var CustomWorld = function() {};
+var CustomWorld = function() {
+  this.variable = 0;
+};
 
-  CustomWorld.prototype.variable = 0;
+CustomWorld.prototype.setTo = function(number) {
+  this.variable = parseInt(number);
+};
 
-  CustomWorld.prototype.setTo = function(number) {
-    this.variable = parseInt(number);
-  };
+CustomWorld.prototype.incrementBy = function(number) {
+  this.variable += parseInt(number);
+};
 
-  CustomWorld.prototype.incrementBy = function(number) {
-    this.variable += parseInt(number);
-  };
+setWorldConstructor(CustomWorld);
 
-  setWorldConstructor(CustomWorld);
+///// Step definitions /////
+//
+// use 'Given', 'When' and 'Then' to declare step definitions
+//
 
-  ///// Your step definitions /////
-  //
-  // use 'Given', 'When' and 'Then' to declare step definitions
-  //
+Given('a variable set to {int}', function(number) {
+  this.setTo(number);
+});
 
-  Given(/^a variable set to (\d+)$/, function(number) {
-    this.setTo(number);
-  });
+When('I increment the variable by {int}', function(number) {
+  this.incrementBy(number);
+});
 
-  When(/^I increment the variable by (\d+)$/, function(number) {
-    this.incrementBy(number);
-  });
-
-  Then(/^the variable should contain (\d+)$/, function(number) {
-    if (this.variable != parseInt(number))
-      throw new Error('Variable should contain ' + number +
-        ' but it contains ' + this.variable + '.');
-  });
-})</div>
+Then('the variable should contain {int}', function(number) {
+  expect(this.variable).to.eql(number)
+});
+</div>
         </div>
         <div class="tab-pane" id="output-tab">
           <pre id="output"></pre>
