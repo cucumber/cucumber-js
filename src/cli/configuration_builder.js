@@ -3,6 +3,7 @@ import ArgvParser from './argv_parser'
 import fs from 'mz/fs'
 import path from 'path'
 import PathExpander from './path_expander'
+import OptionSplitter from './option_splitter'
 import Promise from 'bluebird'
 
 export default class ConfigurationBuilder {
@@ -95,17 +96,9 @@ export default class ConfigurationBuilder {
 
   getFormats() {
     const mapping = { '': 'progress' }
-    this.options.format.forEach(function(format) {
-      let type = format
-      let outputTo = ''
-      const parts = format.split(/([^A-Z]):([^\\])/)
-
-      if (parts.length > 1) {
-        type = parts.slice(0, 2).join('')
-        outputTo = parts.slice(2).join('')
-      }
-
-      mapping[outputTo] = type
+    this.options.format.forEach(format => {
+      const [type, outputTo] = OptionSplitter.split(format)
+      mapping[outputTo || ''] = type
     })
     return _.map(mapping, function(type, outputTo) {
       return { outputTo, type }
@@ -139,9 +132,9 @@ export default class ConfigurationBuilder {
   async expandSupportCodePaths(supportCodePaths) {
     const extensions = ['js']
     this.options.compiler.forEach(compiler => {
-      const parts = compiler.split(':')
-      extensions.push(parts[0])
-      require(parts[1])
+      const [extension, module] = OptionSplitter.split(compiler)
+      extensions.push(extension)
+      require(module)
     })
     return await this.pathExpander.expandPathsWithExtensions(
       supportCodePaths,
