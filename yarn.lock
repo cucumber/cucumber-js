@@ -1359,9 +1359,9 @@ crypto-browserify@^3.0.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
 
-cucumber-expressions@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-5.0.0.tgz#69332ccd38b8a06c57a7ecc38dfd7f75efc98f65"
+cucumber-expressions@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-5.0.3.tgz#7494860afd51309ba91088fb5d1af9a9897b7c7e"
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.2.0"
 
