@@ -1,6 +1,6 @@
 # Attachments
 
-Text, images and files can be added to the output of the JSON formatter with attachments.
+Text, images and other data can be added to the output of the event protocol and JSON formatters with attachments.
 The world constructor is passed an `attach` function,
 which the default world constructor assigns to `this.attach`. If using a custom world constructor,
 you need to do this as well if you want to add attachments.
