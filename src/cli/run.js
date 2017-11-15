@@ -1,11 +1,6 @@
 import Cli from './'
 import VError from 'verror'
 
-function exitWithError(error) {
-  console.error(VError.fullStack(error)) // eslint-disable-line no-console
-  process.exit(1)
-}
-
 export default async function run() {
   const cwd = process.cwd()
   const cli = new Cli({
@@ -18,18 +13,18 @@ export default async function run() {
   try {
     success = await cli.run()
   } catch (error) {
-    exitWithError(error)
+    console.error(VError.fullStack(error)) // eslint-disable-line no-console
   }
 
-  const exitCode = success ? 0 : 1
-  function exitNow() {
-    process.exit(exitCode)
+  process.exitCode = success ? 0 : 1
+  function exit() {
+    setTimeout(process.exit, 5000).unref()
   }
 
   // If stdout.write() returned false, kernel buffer is not empty yet
   if (process.stdout.write('')) {
-    exitNow()
+    exit()
   } else {
-    process.stdout.on('drain', exitNow)
+    process.stdout.on('drain', exit)
   }
 }
