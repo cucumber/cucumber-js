@@ -193,9 +193,9 @@ assert@^1.4.0:
   dependencies:
     util "0.10.3"
 
-assertion-error-formatter@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/assertion-error-formatter/-/assertion-error-formatter-2.0.0.tgz#17a24289cc8440889b54318e6d1187ebee2d5494"
+assertion-error-formatter@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/assertion-error-formatter/-/assertion-error-formatter-2.0.1.tgz#6bbdffaec8e2fa9e2b0eb158bfe353132d7c0a9b"
   dependencies:
     diff "^3.0.0"
     pad-right "^0.2.2"
