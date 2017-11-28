@@ -1359,15 +1359,15 @@ crypto-browserify@^3.0.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
 
-cucumber-expressions@^5.0.5:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-5.0.5.tgz#dd9da14e55179140080a894f6c8cbf5c89d63342"
+cucumber-expressions@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-5.0.3.tgz#7494860afd51309ba91088fb5d1af9a9897b7c7e"
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.2.0"
 
-cucumber-tag-expressions@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/cucumber-tag-expressions/-/cucumber-tag-expressions-1.1.0.tgz#aa73d7bf47a3a2e4b365a45fcadc463c0f3cb5aa"
+cucumber-tag-expressions@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/cucumber-tag-expressions/-/cucumber-tag-expressions-1.0.1.tgz#d6d3c43180a03f5fb4fc957fe1382ddce5cb9ac8"
 
 d@1:
   version "1.0.0"

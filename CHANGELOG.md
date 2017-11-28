@@ -7,8 +7,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 #### Bug Fixes
 * pickle filter: support relative paths ([#962](https://github.com/cucumber/cucumber-js/pull/962) Marco Muller)
-* tag-expressions: Upgrade from 1.0.1 to [1.1.0](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#110---2017-11-28)
-* cucumber-expressions: Upgrade from 5.0.3 to [5.0.5](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#505---2017-11-28)
 
 ### [3.0.6](https://github.com/cucumber/cucumber-js/compare/v3.0.5...v3.0.6) (2017-10-18)
 
