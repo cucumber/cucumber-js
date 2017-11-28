@@ -3,6 +3,7 @@ import Formatter from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { buildStepArgumentIterator } from '../step_arguments'
+import { format } from 'assertion-error-formatter'
 
 const {
   getStepLineToKeywordMap,
@@ -156,7 +157,7 @@ export default class JsonFormatter extends Formatter {
         data.result.duration = testStep.result.duration
       }
       if (status === Status.FAILED && exception) {
-        data.result.error_message = exception.stack || exception
+        data.result.error_message = format(exception)
       }
     }
     if (_.size(testStep.attachments) > 0) {
