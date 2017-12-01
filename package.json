@@ -139,7 +139,7 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "cucumber-expressions": "^5.0.7",
-    "cucumber-tag-expressions": "^1.1.0",
+    "cucumber-tag-expressions": "^1.1.1",
     "duration": "^0.2.0",
     "escape-string-regexp": "^1.0.5",
     "figures": "2.0.0",

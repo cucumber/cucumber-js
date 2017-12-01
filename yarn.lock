@@ -1365,9 +1365,9 @@ cucumber-expressions@^5.0.7:
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.2.0"
 
-cucumber-tag-expressions@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/cucumber-tag-expressions/-/cucumber-tag-expressions-1.1.0.tgz#aa73d7bf47a3a2e4b365a45fcadc463c0f3cb5aa"
+cucumber-tag-expressions@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cucumber-tag-expressions/-/cucumber-tag-expressions-1.1.1.tgz#7f5c7b70009bc2b666591bfe64854578bedee85a"
 
 d@1:
   version "1.0.0"

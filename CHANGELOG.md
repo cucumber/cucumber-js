@@ -1,5 +1,11 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.1.0...master) (In Git)
+
+#### Bug Fixes
+* cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
+* tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#111---2017-12-01)
+
 ### [3.1.0](https://github.com/cucumber/cucumber-js/compare/v3.0.6...v3.1.0) (2017-10-25)
 
 #### New Features
@@ -7,8 +13,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 #### Bug Fixes
 * pickle filter: support relative paths ([#962](https://github.com/cucumber/cucumber-js/pull/962) Marco Muller)
-* cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
-* tag-expressions: Upgrade from 1.0.1 to [1.1.0](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#110---2017-11-28)
 
 ### [3.0.6](https://github.com/cucumber/cucumber-js/compare/v3.0.5...v3.0.6) (2017-10-18)
 
