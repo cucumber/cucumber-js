@@ -1,6 +1,13 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.1.0...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.0...master) (In Git)
+
+### [3.2.0](https://github.com/cucumber/cucumber-js/compare/v3.1.0...v3.2.0) (2017-12-08)
+
+#### New Features
+* add exception to `test-case-finished` event ([#952](https://github.com/cucumber/cucumber-js/pull/952) Giuseppe DiBella)
+* compiler option - allow `:` in module name to support specifying an absolute path on Windows ([#958](https://github.com/cucumber/cucumber-js/pull/958) Darrin Holst)
+* json formatter: format step result exception ([#973](https://github.com/cucumber/cucumber-js/pull/973) Valerio Innocenti Sedili)
 
 #### Bug Fixes
 * cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
