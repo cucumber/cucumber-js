@@ -91,9 +91,6 @@ defineSupportCode(({ Then }) => {
       data: tableRowData.DATA,
       mime_type: tableRowData['MIME TYPE']
     }
-    if (tableRowData['MEDIA ENCODING']) {
-      expectedAttachment.media.encoding = tableRowData['MEDIA ENCODING']
-    }
     expect(step.embeddings[0]).to.eql(expectedAttachment)
   })
 
@@ -106,9 +103,6 @@ defineSupportCode(({ Then }) => {
     const expectedAttachment = {
       data: tableRowData.DATA,
       mime_type: tableRowData['MIME TYPE']
-    }
-    if (tableRowData['MEDIA ENCODING']) {
-      expectedAttachment.media.encoding = tableRowData['MEDIA ENCODING']
     }
     expect(hook.embeddings[0]).to.eql(expectedAttachment)
   })
