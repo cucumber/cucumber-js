@@ -17,5 +17,5 @@ mv .nyc_output .nyc_output_feature
 mkdir .nyc_output
 cp -a .nyc_output_unit/* .nyc_output
 cp -a .nyc_output_feature/* .nyc_output
-nyc report --reporter=lcov
+./node_modules/.bin/nyc report --reporter=lcov
 echo "Open 'file://$(pwd)/coverage/lcov-report/index.html' in your browser"
