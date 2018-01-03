@@ -44,3 +44,11 @@ jobs:
         paths:
           - ./node_modules
     - run: yarn run feature-test -- --profile node-4
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-node-8
+      - test-node-6
+      - test-node-4
