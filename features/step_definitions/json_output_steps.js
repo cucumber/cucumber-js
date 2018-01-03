@@ -89,7 +89,7 @@ defineSupportCode(({ Then }) => {
     const tableRowData = table.hashes()[0]
     const expectedAttachment = {
       data: tableRowData.DATA,
-      media: { type: tableRowData['MEDIA TYPE'] }
+      mime_type: tableRowData['MIME TYPE']
     }
     if (tableRowData['MEDIA ENCODING']) {
       expectedAttachment.media.encoding = tableRowData['MEDIA ENCODING']
@@ -105,7 +105,7 @@ defineSupportCode(({ Then }) => {
     const tableRowData = table.hashes()[0]
     const expectedAttachment = {
       data: tableRowData.DATA,
-      media: { type: tableRowData['MEDIA TYPE'] }
+      mime_type: tableRowData['MIME TYPE']
     }
     if (tableRowData['MEDIA ENCODING']) {
       expectedAttachment.media.encoding = tableRowData['MEDIA ENCODING']
