@@ -26,15 +26,6 @@ export default class JsonFormatter extends Formatter {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatAttachments(attachments) {
-    return attachments.map(function(attachment) {
-      return {
-        data: attachment.data,
-        mime_type: attachment.mimeType
-      }
-    })
-  }
-
   formatDataTable(dataTable) {
     return {
       rows: dataTable.rows.map(row => {
