@@ -29,8 +29,8 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the "Before" hook has the attachment
-      | DATA     | MIME TYPE  |
-      | iVBORw== | image/png  |
+      | DATA     | MIME TYPE |
+      | iVBORw== | image/png |
 
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
@@ -50,8 +50,8 @@ Feature: Attachments
       """
     When I run cucumber.js
     Then the "Before" hook has the attachment
-      | DATA     | MIME TYPE  |
-      | iVBORw== | image/png  |
+      | DATA     | MIME TYPE |
+      | iVBORw== | image/png |
 
     Scenario: Attach a stream (promise)
       Given a file named "features/support/hooks.js" with:
@@ -72,8 +72,8 @@ Feature: Attachments
         """
       When I run cucumber.js
       Then the "Before" hook has the attachment
-        | DATA     | MIME TYPE  |
-        | iVBORw== | image/png  |
+        | DATA     | MIME TYPE |
+        | iVBORw== | image/png |
 
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
