@@ -1,0 +1,46 @@
+version: 2
+
+jobs:
+  test-node-8:
+    working_directory: ~/cucumber-js
+    docker:
+      - image: circleci/node:8
+   steps:
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+    - run: yarn install
+    - save_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+        paths:
+          - ./node_modules
+    - run: yarn test-coverage
+    - run: nyc report --reporter=text-lcov | coveralls
+  test-node-6:
+    working_directory: ~/cucumber-js
+    docker:
+      - image: circleci/node:6
+   steps:
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+    - run: yarn install
+    - save_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+        paths:
+          - ./node_modules
+    - run: yarn test
+  test-node-4:
+    working_directory: ~/cucumber-js
+    docker:
+      - image: circleci/node:4
+   steps:
+    - checkout
+    - restore_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+    - run: yarn install
+    - save_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+        paths:
+          - ./node_modules
+    - run: yarn run feature-test -- --profile node-4
