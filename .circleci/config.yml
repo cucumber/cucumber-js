@@ -21,7 +21,7 @@ jobs:
       - run: yarn install
       - *save_cache_step
       - run: yarn test-coverage
-      - run: nyc report --reporter=text-lcov | coveralls
+      - run: yarn upload-coverage
   test-node-6:
     working_directory: ~/cucumber-js
     docker:
