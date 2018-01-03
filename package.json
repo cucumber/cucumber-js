@@ -211,7 +211,7 @@
     "test-coverage": "yarn run lint && ./scripts/test-coverage.sh",
     "test": "yarn run lint && yarn run unit-test && yarn run feature-test",
     "unit-test": "mocha src",
-    "upload-coverage": "nyc report --reporter=text-lcov | coveralls",
+    "upload-coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "bin": {
     "cucumber.js": "./bin/cucumber.js",
