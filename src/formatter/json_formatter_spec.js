@@ -253,8 +253,8 @@ describe('JsonFormatter', function() {
       it('outputs the step with embeddings', function() {
         const features = JSON.parse(this.output)
         expect(features[0].elements[0].steps[0].embeddings).to.eql([
-          { data: 'first data', media: { type: 'first media type' } },
-          { data: 'second data', media: { type: 'second media type' } }
+          { data: 'first data', mime_type: 'first media type' },
+          { data: 'second data', mime_type: 'second media type' }
         ])
       })
     })
