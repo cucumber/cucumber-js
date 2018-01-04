@@ -1078,13 +1078,17 @@ format = format;var _inline_diff = require('./helpers/inline_diff');var _inline_
     message = err.message + '';
   } else if (typeof err.inspect === 'function') {
     message = err.inspect() + '';
-  } else {
+  } else if (typeof err === 'string') {
     message = err;
+  } else {
+    message = JSON.stringify(err);
   }
 
   var stack = err.stack || message;
   var startOfMessageIndex = stack.indexOf(message);
-  if (startOfMessageIndex !== -1) {
+  if (startOfMessageIndex === -1) {
+    stack = '\n' + stack;
+  } else {
     var endOfMessageIndex = startOfMessageIndex + message.length;
     message = stack.slice(0, endOfMessageIndex);
     stack = stack.slice(endOfMessageIndex); // remove message from stack
@@ -13899,9 +13903,11 @@ var CucumberExpression = function () {
   function CucumberExpression(expression, parameterTypeRegistry) {
     _classCallCheck(this, CucumberExpression);
 
+    // Does not include (){} characters because they have special meaning
+    var ESCAPE_REGEXP = /([\\^[$.|?*+])/g;
     var PARAMETER_REGEXP = /{([^}]+)}/g;
     var OPTIONAL_REGEXP = /\(([^)]+)\)/g;
-    var ALTERNATIVE_WORD_REGEXP = /(\w+)((\/\w+)+)/g;
+    var ALTERNATIVE_NON_WHITESPACE_TEXT_REGEXP = /([^\s^/]+)((\/[^\s^/]+)+)/g;
 
     this._expression = expression;
     this._parameterTypes = [];
@@ -13910,12 +13916,13 @@ var CucumberExpression = function () {
     var matchOffset = 0;
 
     // Does not include (){} because they have special meaning
-    expression = expression.replace(/([\\^[$.|?*+])/g, '\\$1');
+
+    expression = expression.replace(ESCAPE_REGEXP, '\\$1');
 
     // Create non-capturing, optional capture groups from parenthesis
     expression = expression.replace(OPTIONAL_REGEXP, '(?:$1)?');
 
-    expression = expression.replace(ALTERNATIVE_WORD_REGEXP, function (_, p1, p2) {
+    expression = expression.replace(ALTERNATIVE_NON_WHITESPACE_TEXT_REGEXP, function (_, p1, p2) {
       return '(?:' + p1 + p2.replace(/\//g, '|') + ')';
     });
 
@@ -14395,8 +14402,8 @@ var GroupBuilder = function () {
 
   _createClass(GroupBuilder, [{
     key: 'add',
-    value: function add(group_builder) {
-      this._groupBuilders.push(group_builder);
+    value: function add(groupBuilder) {
+      this._groupBuilders.push(groupBuilder);
     }
   }, {
     key: 'build',
@@ -14547,13 +14554,41 @@ var ParameterType = function () {
 function stringArray(regexps) {
   var array = Array.isArray(regexps) ? regexps : [regexps];
   return array.map(function (r) {
-    return typeof r === 'string' ? r : r.source;
+    return typeof r === 'string' ? r : regexpSource(r);
   });
+}
+
+function regexpSource(regexp) {
+  var flags = regexpFlags(regexp);
+
+  var _arr = ['g', 'i', 'm', 'y'];
+  for (var _i = 0; _i < _arr.length; _i++) {
+    var flag = _arr[_i];
+    if (flags.indexOf(flag) !== -1) throw new CucumberExpressionError('ParameterType Regexps can\'t use flag \'' + flag + '\'');
+  }
+  return regexp.source;
+}
+
+// Backport RegExp.flags for Node 4.x
+// https://github.com/nodejs/node/issues/8390
+//
+// For some strange reason this is not needed for
+// `./mocha dist/test`, but it is needed for
+// `./mocha dist/test/parameter_type_test.js`
+function regexpFlags(regexp) {
+  var flags = regexp.flags;
+  if (flags === undefined) {
+    flags = '';
+    if (regexp.ignoreCase) flags += 'i';
+    if (regexp.global) flags += 'g';
+    if (regexp.multiline) flags += 'm';
+  }
+  return flags;
 }
 
 module.exports = ParameterType;
 },{"./errors":149}],155:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -14568,37 +14603,37 @@ var ParameterTypeMatcher = function () {
     this._text = text;
     this._matchPosition = matchPosition || 0;
 
-    var captureGroupRegexp = new RegExp("(" + regexp + ")");
+    var captureGroupRegexp = new RegExp('(' + regexp + ')');
     this._match = captureGroupRegexp.exec(text.slice(this._matchPosition));
   }
 
   _createClass(ParameterTypeMatcher, [{
-    key: "advanceTo",
+    key: 'advanceTo',
     value: function advanceTo(newMatchPosition) {
       return new ParameterTypeMatcher(this._parameterType, this._treeRegexp, this._text, newMatchPosition);
     }
   }, {
-    key: "parameterType",
+    key: 'parameterType',
     get: function get() {
       return this._parameterType;
     }
   }, {
-    key: "find",
+    key: 'find',
     get: function get() {
-      return this._match;
+      return this._match && this.group !== '';
     }
   }, {
-    key: "start",
+    key: 'start',
     get: function get() {
       return this._matchPosition + this._match.index;
     }
   }, {
-    key: "group",
+    key: 'group',
     get: function get() {
-      return this._match[1];
+      return this._match[0];
     }
   }], [{
-    key: "compare",
+    key: 'compare',
     value: function compare(a, b) {
       var posComparison = a.start - b.start;
       if (posComparison !== 0) return posComparison;
@@ -14788,7 +14823,7 @@ var TreeRegexp = function () {
     _classCallCheck(this, TreeRegexp);
 
     this._re = 'string' === typeof regexp ? new RegExp(regexp) : regexp;
-    this._regex = new Regex(this._re);
+    this._regex = new Regex(this._re.source, this._re.flags);
 
     var stack = [new GroupBuilder()];
     var groupStartStack = [];
@@ -14854,6 +14889,9 @@ module.exports = {
 };
 
 },{"./lib/tag_expression_parser":160}],160:[function(require,module,exports){
+const OPERAND = 'operand'
+const OPERATOR = 'operator'
+
 module.exports = function TagExpressionParser() {
   /**
    * Parses infix boolean expression (using Dijkstra's Shunting Yard algorithm)
@@ -14862,54 +14900,60 @@ module.exports = function TagExpressionParser() {
    * This expression can be evaluated by passing in an array of literals that resolve to true
    */
   this.parse = function(infix) {
-    var tokens = infix
-      .replace(/\(/g, ' ( ')
-      .replace(/\)/g, ' ) ')
-      .trim()
-      .split(/\s+/)
-    var exprs = []
-    var ops = []
+    var tokens = tokenize(infix)
+    if (tokens.length === 0) return new True()
+    var expressions = []
+    var operators = []
+    var expectedTokenType = OPERAND
 
     tokens.forEach(function(token) {
-      if (isOp(token)) {
+      if (isUnary(token)) {
+        check(expectedTokenType, OPERAND)
+        operators.push(token)
+        expectedTokenType = OPERAND
+      } else if (isBinary(token)) {
+        check(expectedTokenType, OPERATOR)
         while (
-          ops.length > 0 &&
-          isOp(peek(ops)) &&
-          ((ASSOC[token] === 'left' && PREC[token] <= PREC[peek(ops)]) ||
-            (ASSOC[token] === 'right' && PREC[token] < PREC[peek(ops)]))
+          operators.length > 0 &&
+          isOp(peek(operators)) &&
+          ((ASSOC[token] === 'left' && PREC[token] <= PREC[peek(operators)]) ||
+            (ASSOC[token] === 'right' && PREC[token] < PREC[peek(operators)]))
         ) {
-          pushExpr(pop(ops), exprs)
+          pushExpr(pop(operators), expressions)
         }
-        ops.push(token)
+        operators.push(token)
+        expectedTokenType = OPERAND
       } else if ('(' === token) {
-        ops.push(token)
+        check(expectedTokenType, OPERAND)
+        operators.push(token)
+        expectedTokenType = OPERAND
       } else if (')' === token) {
-        while (ops.length > 0 && peek(ops) !== '(') {
-          pushExpr(pop(ops), exprs)
+        check(expectedTokenType, OPERATOR)
+        while (operators.length > 0 && peek(operators) !== '(') {
+          pushExpr(pop(operators), expressions)
         }
-        if (ops.length === 0) {
-          throw Error('Unclosed (')
+        if (operators.length === 0) {
+          throw Error('Syntax error. Unmatched )')
         }
-        if (peek(ops) === '(') {
-          pop(ops)
+        if (peek(operators) === '(') {
+          pop(operators)
         }
+        expectedTokenType = OPERATOR
       } else {
-        pushExpr(token, exprs)
+        check(expectedTokenType, OPERAND)
+        pushExpr(token, expressions)
+        expectedTokenType = OPERATOR
       }
     })
 
-    while (ops.length > 0) {
-      if (peek(ops) === '(') {
-        throw Error('Unclosed (')
+    while (operators.length > 0) {
+      if (peek(operators) === '(') {
+        throw Error('Syntax error. Unmatched (')
       }
-      pushExpr(pop(ops), exprs)
+      pushExpr(pop(operators), expressions)
     }
 
-    var expr = pop(exprs)
-    if (exprs.length > 0) {
-      throw new Error('Not empty')
-    }
-    return expr
+    return pop(expressions)
   }
 
   var ASSOC = {
@@ -14926,8 +14970,66 @@ module.exports = function TagExpressionParser() {
     not: 2,
   }
 
+  function tokenize(expr) {
+    var tokens = []
+    var isEscaped = false
+    var token = undefined
+    for (var i = 0; i < expr.length; i++) {
+      var c = expr.charAt(i)
+      if ('\\' === c) {
+        isEscaped = true
+      } else {
+        if (/\s/.test(c)) {
+          // skip
+          if (token) {
+            // end of token
+            tokens.push(token.join(''))
+            token = undefined
+          }
+        } else {
+          switch (c) {
+            case '(':
+            case ')':
+              if (!isEscaped) {
+                if (token) {
+                  // end of token
+                  tokens.push(token.join(''))
+                  token = undefined
+                }
+                tokens.push(c)
+                break
+              }
+            default:
+              token = token ? token : [] // start of token
+              token.push(c)
+              break
+          }
+        }
+        isEscaped = false
+      }
+    }
+    if (token) {
+      tokens.push(token.join(''))
+    }
+    return tokens
+  }
+
+  function isUnary(token) {
+    return 'not' === token
+  }
+
+  function isBinary(token) {
+    return 'or' === token || 'and' === token
+  }
+
   function isOp(token) {
     return ASSOC[token] !== undefined
+  }
+
+  function check(expectedTokenType, tokenType) {
+    if (expectedTokenType !== tokenType) {
+      throw new Error('Syntax error. Expected ' + expectedTokenType)
+    }
   }
 
   function peek(stack) {
@@ -14959,7 +15061,7 @@ module.exports = function TagExpressionParser() {
     }
 
     this.toString = function() {
-      return value
+      return value.replace(/\(/g, '\\(').replace(/\)/g, '\\)')
     }
   }
 
@@ -14990,6 +15092,16 @@ module.exports = function TagExpressionParser() {
 
     this.toString = function() {
       return 'not ( ' + expr.toString() + ' )'
+    }
+  }
+
+  function True() {
+    this.evaluate = function() {
+      return true
+    }
+
+    this.toString = function() {
+      return 'true'
     }
   }
 }
@@ -19099,7 +19211,7 @@ var compiler = new Compiler()
 var parser = new Parser()
 parser.stopAtFirstError = false
 
-function generateEvents(data, uri, types) {
+function generateEvents(data, uri, types, language) {
   types = Object.assign({
     'source': true,
     'gherkin-document': true,
@@ -19116,7 +19228,7 @@ function generateEvents(data, uri, types) {
         data: data,
         media: {
           encoding: 'utf-8',
-          type: 'text/vnd.cucumber.gherkin+plain'
+          type: 'text/x.cucumber.gherkin+plain'
         }
       })
     }
@@ -19124,7 +19236,7 @@ function generateEvents(data, uri, types) {
     if (!types['gherkin-document'] && !types['pickle'])
       return result
 
-    var gherkinDocument = parser.parse(data)
+    var gherkinDocument = parser.parse(data, language)
 
     if (types['gherkin-document']) {
       result.push({
@@ -19159,7 +19271,7 @@ function generateEvents(data, uri, types) {
         data: errors[e].message,
         media: {
           encoding: "utf-8",
-          type: "text/vnd.cucumber.stacktrace+plain"
+          type: "text/x.cucumber.stacktrace+plain"
         }
       })
     }
@@ -19746,7 +19858,8 @@ module.exports={
       "Σενάριο"
     ],
     "scenarioOutline": [
-      "Περιγραφή Σεναρίου"
+      "Περιγραφή Σεναρίου",
+      "Περίγραμμα Σεναρίου"
     ],
     "then": [
       "* ",
@@ -21518,6 +21631,7 @@ module.exports={
       "* ",
       "Date fiind ",
       "Dat fiind ",
+      "Dată fiind",
       "Dati fiind ",
       "Dați fiind ",
       "Daţi fiind "
@@ -22472,26 +22586,19 @@ var RULE_TYPES = [
   '_Other', // #Other
   'GherkinDocument', // GherkinDocument! := Feature?
   'Feature', // Feature! := Feature_Header Background? Scenario_Definition*
-  'Feature_Header', // Feature_Header! := #Language? Tags? #FeatureLine Feature_Description
-  'Background', // Background! := #BackgroundLine Background_Description Scenario_Step*
+  'Feature_Header', // Feature_Header! := #Language? Tags? #FeatureLine Description_Helper
+  'Background', // Background! := #BackgroundLine Description_Helper Step*
   'Scenario_Definition', // Scenario_Definition! := Tags? (Scenario | ScenarioOutline)
-  'Scenario', // Scenario! := #ScenarioLine Scenario_Description Scenario_Step*
-  'ScenarioOutline', // ScenarioOutline! := #ScenarioOutlineLine ScenarioOutline_Description ScenarioOutline_Step* Examples_Definition*
+  'Scenario', // Scenario! := #ScenarioLine Description_Helper Step*
+  'ScenarioOutline', // ScenarioOutline! := #ScenarioOutlineLine Description_Helper Step* Examples_Definition*
   'Examples_Definition', // Examples_Definition! [#Empty|#Comment|#TagLine-&gt;#ExamplesLine] := Tags? Examples
-  'Examples', // Examples! := #ExamplesLine Examples_Description Examples_Table?
+  'Examples', // Examples! := #ExamplesLine Description_Helper Examples_Table?
   'Examples_Table', // Examples_Table! := #TableRow #TableRow*
-  'Scenario_Step', // Scenario_Step := Step
-  'ScenarioOutline_Step', // ScenarioOutline_Step := Step
   'Step', // Step! := #StepLine Step_Arg?
   'Step_Arg', // Step_Arg := (DataTable | DocString)
   'DataTable', // DataTable! := #TableRow+
   'DocString', // DocString! := #DocStringSeparator #Other* #DocStringSeparator
   'Tags', // Tags! := #TagLine+
-  'Feature_Description', // Feature_Description := Description_Helper
-  'Background_Description', // Background_Description := Description_Helper
-  'Scenario_Description', // Scenario_Description := Description_Helper
-  'ScenarioOutline_Description', // ScenarioOutline_Description := Description_Helper
-  'Examples_Description', // Examples_Description := Description_Helper
   'Description_Helper', // Description_Helper := #Empty* Description? #Comment*
   'Description', // Description! := #Other+
 ];
@@ -22504,6 +22611,9 @@ module.exports = function Parser(builder) {
   this.parse = function(tokenScanner, tokenMatcher) {
     if(typeof tokenScanner == 'string') {
       tokenScanner = new TokenScanner(tokenScanner);
+    }
+    if(typeof tokenMatcher == 'string') {
+      tokenMatcher = new TokenMatcher(tokenMatcher);
     }
     tokenMatcher = tokenMatcher || new TokenMatcher();
     builder.reset();
@@ -22838,7 +22948,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:0>Feature_Header:3>Feature_Description:0>Description_Helper:1>Description:0>#Other:0
+  // GherkinDocument:0>Feature:0>Feature_Header:3>Description_Helper:1>Description:0>#Other:0
   function matchTokenAt_4(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Description');
@@ -22888,7 +22998,7 @@ module.exports = function Parser(builder) {
       return 4;
     }
     
-    var stateComment = "State: 4 - GherkinDocument:0>Feature:0>Feature_Header:3>Feature_Description:0>Description_Helper:1>Description:0>#Other:0";
+    var stateComment = "State: 4 - GherkinDocument:0>Feature:0>Feature_Header:3>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#BackgroundLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
     var error = token.isEof ?
@@ -22900,7 +23010,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:0>Feature_Header:3>Feature_Description:0>Description_Helper:2>#Comment:0
+  // GherkinDocument:0>Feature:0>Feature_Header:3>Description_Helper:2>#Comment:0
   function matchTokenAt_5(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Feature_Header');
@@ -22944,7 +23054,7 @@ module.exports = function Parser(builder) {
       return 5;
     }
     
-    var stateComment = "State: 5 - GherkinDocument:0>Feature:0>Feature_Header:3>Feature_Description:0>Description_Helper:2>#Comment:0";
+    var stateComment = "State: 5 - GherkinDocument:0>Feature:0>Feature_Header:3>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#BackgroundLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
     var error = token.isEof ?
@@ -23016,7 +23126,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:1>Background:1>Background_Description:0>Description_Helper:1>Description:0>#Other:0
+  // GherkinDocument:0>Feature:1>Background:1>Description_Helper:1>Description:0>#Other:0
   function matchTokenAt_7(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Description');
@@ -23065,7 +23175,7 @@ module.exports = function Parser(builder) {
       return 7;
     }
     
-    var stateComment = "State: 7 - GherkinDocument:0>Feature:1>Background:1>Background_Description:0>Description_Helper:1>Description:0>#Other:0";
+    var stateComment = "State: 7 - GherkinDocument:0>Feature:1>Background:1>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
     var error = token.isEof ?
@@ -23077,7 +23187,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:1>Background:1>Background_Description:0>Description_Helper:2>#Comment:0
+  // GherkinDocument:0>Feature:1>Background:1>Description_Helper:2>#Comment:0
   function matchTokenAt_8(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Background');
@@ -23120,7 +23230,7 @@ module.exports = function Parser(builder) {
       return 8;
     }
     
-    var stateComment = "State: 8 - GherkinDocument:0>Feature:1>Background:1>Background_Description:0>Description_Helper:2>#Comment:0";
+    var stateComment = "State: 8 - GherkinDocument:0>Feature:1>Background:1>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
     var error = token.isEof ?
@@ -23132,7 +23242,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:0>#StepLine:0
+  // GherkinDocument:0>Feature:1>Background:2>Step:0>#StepLine:0
   function matchTokenAt_9(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Step');
@@ -23190,7 +23300,7 @@ module.exports = function Parser(builder) {
       return 9;
     }
     
-    var stateComment = "State: 9 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:0>#StepLine:0";
+    var stateComment = "State: 9 - GherkinDocument:0>Feature:1>Background:2>Step:0>#StepLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#DocStringSeparator", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -23202,7 +23312,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0
+  // GherkinDocument:0>Feature:1>Background:2>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0
   function matchTokenAt_10(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'DataTable');
@@ -23259,7 +23369,7 @@ module.exports = function Parser(builder) {
       return 10;
     }
     
-    var stateComment = "State: 10 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
+    var stateComment = "State: 10 - GherkinDocument:0>Feature:1>Background:2>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -23374,7 +23484,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Scenario_Description:0>Description_Helper:1>Description:0>#Other:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Description_Helper:1>Description:0>#Other:0
   function matchTokenAt_13(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Description');
@@ -23427,7 +23537,7 @@ module.exports = function Parser(builder) {
       return 13;
     }
     
-    var stateComment = "State: 13 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Scenario_Description:0>Description_Helper:1>Description:0>#Other:0";
+    var stateComment = "State: 13 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
     var error = token.isEof ?
@@ -23439,7 +23549,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Scenario_Description:0>Description_Helper:2>#Comment:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Description_Helper:2>#Comment:0
   function matchTokenAt_14(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Scenario');
@@ -23486,7 +23596,7 @@ module.exports = function Parser(builder) {
       return 14;
     }
     
-    var stateComment = "State: 14 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Scenario_Description:0>Description_Helper:2>#Comment:0";
+    var stateComment = "State: 14 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:1>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
     var error = token.isEof ?
@@ -23498,7 +23608,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:0>#StepLine:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:0>#StepLine:0
   function matchTokenAt_15(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Step');
@@ -23560,7 +23670,7 @@ module.exports = function Parser(builder) {
       return 15;
     }
     
-    var stateComment = "State: 15 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:0>#StepLine:0";
+    var stateComment = "State: 15 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:0>#StepLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#DocStringSeparator", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -23572,7 +23682,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0
   function matchTokenAt_16(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'DataTable');
@@ -23633,7 +23743,7 @@ module.exports = function Parser(builder) {
       return 16;
     }
     
-    var stateComment = "State: 16 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
+    var stateComment = "State: 16 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -23723,7 +23833,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>ScenarioOutline_Description:0>Description_Helper:1>Description:0>#Other:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>Description_Helper:1>Description:0>#Other:0
   function matchTokenAt_18(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Description');
@@ -23792,7 +23902,7 @@ module.exports = function Parser(builder) {
       return 18;
     }
     
-    var stateComment = "State: 18 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>ScenarioOutline_Description:0>Description_Helper:1>Description:0>#Other:0";
+    var stateComment = "State: 18 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
     var error = token.isEof ?
@@ -23804,7 +23914,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>ScenarioOutline_Description:0>Description_Helper:2>#Comment:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>Description_Helper:2>#Comment:0
   function matchTokenAt_19(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'ScenarioOutline');
@@ -23865,7 +23975,7 @@ module.exports = function Parser(builder) {
       return 19;
     }
     
-    var stateComment = "State: 19 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>ScenarioOutline_Description:0>Description_Helper:2>#Comment:0";
+    var stateComment = "State: 19 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:1>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
     var error = token.isEof ?
@@ -23877,7 +23987,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:0>#StepLine:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:0>#StepLine:0
   function matchTokenAt_20(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Step');
@@ -23955,7 +24065,7 @@ module.exports = function Parser(builder) {
       return 20;
     }
     
-    var stateComment = "State: 20 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:0>#StepLine:0";
+    var stateComment = "State: 20 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:0>#StepLine:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#DocStringSeparator", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -23967,7 +24077,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0
   function matchTokenAt_21(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'DataTable');
@@ -24046,7 +24156,7 @@ module.exports = function Parser(builder) {
       return 21;
     }
     
-    var stateComment = "State: 21 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
+    var stateComment = "State: 21 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:1>Step_Arg:0>__alt1:0>DataTable:0>#TableRow:0";
     token.detach();
     var expectedTokens = ["#EOF", "#TableRow", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -24181,7 +24291,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Examples_Description:0>Description_Helper:1>Description:0>#Other:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Description_Helper:1>Description:0>#Other:0
   function matchTokenAt_24(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Description');
@@ -24262,7 +24372,7 @@ module.exports = function Parser(builder) {
       return 24;
     }
     
-    var stateComment = "State: 24 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Examples_Description:0>Description_Helper:1>Description:0>#Other:0";
+    var stateComment = "State: 24 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Description_Helper:1>Description:0>#Other:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#TableRow", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Other"];
     var error = token.isEof ?
@@ -24274,7 +24384,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Examples_Description:0>Description_Helper:2>#Comment:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Description_Helper:2>#Comment:0
   function matchTokenAt_25(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'Examples');
@@ -24347,7 +24457,7 @@ module.exports = function Parser(builder) {
       return 25;
     }
     
-    var stateComment = "State: 25 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Examples_Description:0>Description_Helper:2>#Comment:0";
+    var stateComment = "State: 25 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:3>Examples_Definition:1>Examples:1>Description_Helper:2>#Comment:0";
     token.detach();
     var expectedTokens = ["#EOF", "#Comment", "#TableRow", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Empty"];
     var error = token.isEof ?
@@ -24449,7 +24559,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0
   function matchTokenAt_28(token, context) {
     if(match_DocStringSeparator(context, token)) {
       build(context, token);
@@ -24460,7 +24570,7 @@ module.exports = function Parser(builder) {
       return 28;
     }
     
-    var stateComment = "State: 28 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
+    var stateComment = "State: 28 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#DocStringSeparator", "#Other"];
     var error = token.isEof ?
@@ -24472,7 +24582,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0
   function matchTokenAt_29(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'DocString');
@@ -24547,7 +24657,7 @@ module.exports = function Parser(builder) {
       return 29;
     }
     
-    var stateComment = "State: 29 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>ScenarioOutline_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
+    var stateComment = "State: 29 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:1>ScenarioOutline:2>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#EOF", "#StepLine", "#TagLine", "#ExamplesLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -24559,7 +24669,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0
   function matchTokenAt_30(token, context) {
     if(match_DocStringSeparator(context, token)) {
       build(context, token);
@@ -24570,7 +24680,7 @@ module.exports = function Parser(builder) {
       return 30;
     }
     
-    var stateComment = "State: 30 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
+    var stateComment = "State: 30 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#DocStringSeparator", "#Other"];
     var error = token.isEof ?
@@ -24582,7 +24692,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0
+  // GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0
   function matchTokenAt_31(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'DocString');
@@ -24639,7 +24749,7 @@ module.exports = function Parser(builder) {
       return 31;
     }
     
-    var stateComment = "State: 31 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
+    var stateComment = "State: 31 - GherkinDocument:0>Feature:2>Scenario_Definition:1>__alt0:0>Scenario:2>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#EOF", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -24651,7 +24761,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0
+  // GherkinDocument:0>Feature:1>Background:2>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0
   function matchTokenAt_32(token, context) {
     if(match_DocStringSeparator(context, token)) {
       build(context, token);
@@ -24662,7 +24772,7 @@ module.exports = function Parser(builder) {
       return 32;
     }
     
-    var stateComment = "State: 32 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
+    var stateComment = "State: 32 - GherkinDocument:0>Feature:1>Background:2>Step:1>Step_Arg:0>__alt1:1>DocString:0>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#DocStringSeparator", "#Other"];
     var error = token.isEof ?
@@ -24674,7 +24784,7 @@ module.exports = function Parser(builder) {
   }
 
 
-  // GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0
+  // GherkinDocument:0>Feature:1>Background:2>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0
   function matchTokenAt_33(token, context) {
     if(match_EOF(context, token)) {
       endRule(context, 'DocString');
@@ -24727,7 +24837,7 @@ module.exports = function Parser(builder) {
       return 33;
     }
     
-    var stateComment = "State: 33 - GherkinDocument:0>Feature:1>Background:2>Scenario_Step:0>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
+    var stateComment = "State: 33 - GherkinDocument:0>Feature:1>Background:2>Step:1>Step_Arg:0>__alt1:1>DocString:2>#DocStringSeparator:0";
     token.detach();
     var expectedTokens = ["#EOF", "#StepLine", "#TagLine", "#ScenarioLine", "#ScenarioOutlineLine", "#Comment", "#Empty"];
     var error = token.isEof ?
@@ -24903,9 +25013,7 @@ function Compiler() {
   };
 
   function compileScenario(featureTags, backgroundSteps, scenario, language, pickles) {
-    if (scenario.steps.length == 0) return;
-
-    var steps = [].concat(backgroundSteps);
+    var steps = scenario.steps.length == 0 ? [] : [].concat(backgroundSteps);
 
     var tags = [].concat(featureTags).concat(scenario.tags);
 
@@ -24924,13 +25032,11 @@ function Compiler() {
   }
 
   function compileScenarioOutline(featureTags, backgroundSteps, scenarioOutline, language, pickles) {
-    if (scenarioOutline.steps.length == 0) return;
-
     scenarioOutline.examples.filter(function(e) { return e.tableHeader != undefined; }).forEach(function (examples) {
       var variableCells = examples.tableHeader.cells;
       examples.tableBody.forEach(function (values) {
         var valueCells = values.cells;
-        var steps = [].concat(backgroundSteps);
+        var steps = scenarioOutline.steps.length == 0 ? [] : [].concat(backgroundSteps);
         var tags = [].concat(featureTags).concat(scenarioOutline.tags).concat(examples.tags);
 
         scenarioOutline.steps.forEach(function (scenarioOutlineStep) {
@@ -55418,7 +55524,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.2.0",
+  "version": "3.2.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -58371,16 +58477,6 @@ var JsonFormatter = function (_Formatter) {
       return obj.name.replace(/ /g, '-').toLowerCase();
     }
   }, {
-    key: 'formatAttachments',
-    value: function formatAttachments(attachments) {
-      return attachments.map(function (attachment) {
-        return {
-          data: attachment.data,
-          mime_type: attachment.mimeType
-        };
-      });
-    }
-  }, {
     key: 'formatDataTable',
     value: function formatDataTable(dataTable) {
       return {
@@ -58523,7 +58619,12 @@ var JsonFormatter = function (_Formatter) {
         }
       }
       if (_lodash2.default.size(testStep.attachments) > 0) {
-        data.embeddings = testStep.attachments;
+        data.embeddings = testStep.attachments.map(function (attachment) {
+          return {
+            data: attachment.data,
+            mime_type: attachment.media.type
+          };
+        });
       }
       return data;
     }
@@ -58533,48 +58634,6 @@ var JsonFormatter = function (_Formatter) {
       return _lodash2.default.map(obj.tags, function (tagData) {
         return { name: tagData.name, line: tagData.location.line };
       });
-    }
-  }, {
-    key: 'handleStepResult',
-    value: function handleStepResult(stepResult) {
-      var step = stepResult.step;
-      var status = stepResult.status;
-
-      var currentStep = {
-        arguments: this.formatStepArguments(step.arguments),
-        keyword: step.keyword,
-        name: step.name,
-        result: { status: status }
-      };
-
-      if (step.isBackground) {
-        currentStep.isBackground = true;
-      }
-
-      if (step.constructor.name === 'Hook') {
-        currentStep.hidden = true;
-      } else {
-        currentStep.line = step.line;
-      }
-
-      if (status === _status2.default.PASSED || status === _status2.default.FAILED) {
-        currentStep.result.duration = stepResult.duration;
-      }
-
-      if (_lodash2.default.size(stepResult.attachments) > 0) {
-        currentStep.embeddings = this.formatAttachments(stepResult.attachments);
-      }
-
-      if (status === _status2.default.FAILED && stepResult.failureException) {
-        currentStep.result.error_message = stepResult.failureException.stack || stepResult.failureException;
-      }
-
-      if (stepResult.stepDefinition) {
-        var location = stepResult.stepDefinition.uri + ':' + stepResult.stepDefinition.line;
-        currentStep.match = { location: location };
-      }
-
-      this.currentScenario.steps.push(currentStep);
     }
   }]);
   return JsonFormatter;

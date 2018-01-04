@@ -1,6 +1,11 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.0...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
+
+### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
+
+#### Bug Fixes
+* revert json formatter mime type ([#995](https://github.com/cucumber/cucumber-js/pull/995)
 
 ### [3.2.0](https://github.com/cucumber/cucumber-js/compare/v3.1.0...v3.2.0) (2017-12-08)
 
