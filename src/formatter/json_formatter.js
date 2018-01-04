@@ -152,7 +152,12 @@ export default class JsonFormatter extends Formatter {
       }
     }
     if (_.size(testStep.attachments) > 0) {
-      data.embeddings = testStep.attachments
+      data.embeddings = testStep.attachments.map(attachment => {
+        return {
+          data: attachment.data,
+          mime_type: attachment.media.type
+        }
+      })
     }
     return data
   }
