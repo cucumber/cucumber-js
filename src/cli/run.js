@@ -23,7 +23,7 @@ export default async function run() {
 
   const exitCode = success ? 0 : 1
   function exitNow() {
-    process.exit(exitCode)
+    process.exitCode = exitCode
   }
 
   // If stdout.write() returned false, kernel buffer is not empty yet
