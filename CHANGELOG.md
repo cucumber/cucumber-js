@@ -2,6 +2,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
 
+#### BREAKING CHANGES
+
+* cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running (discouraged) use `--exit`. To debug hanging issues please 
+
 ### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
 
 #### Bug Fixes
