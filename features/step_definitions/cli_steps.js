@@ -47,6 +47,12 @@ defineSupportCode(function({ When, Then }) {
     expect(actualOutput).to.include(expectedOutput)
   })
 
+  Then('the output does not contain the text:', function(text) {
+    const actualOutput = normalizeText(this.lastRun.output)
+    const expectedOutput = normalizeText(text)
+    expect(actualOutput).not.to.include(expectedOutput)
+  })
+
   Then(/^the error output contains the text snippets:$/, function(table) {
     const actualOutput = normalizeText(this.lastRun.errorOutput)
     table.rows().forEach(row => {

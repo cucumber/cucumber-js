@@ -96,8 +96,11 @@ export default class Cli {
       supportCodeLibrary,
       testCases
     })
-    const result = await runtime.start()
+    const success = await runtime.start()
     await cleanup()
-    return result
+    return {
+      shouldExitImmediately: configuration.shouldExitImmediately,
+      success
+    }
   }
 }
