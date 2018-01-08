@@ -27,4 +27,5 @@ Feature: step definition snippets custom syntax
       | callback    | function (callback)                     | callback(null, 'pending') |
       | generator   | function *()                            | return 'pending'          |
       | promise     | function ()                             | return 'pending'          |
+      | asyncawait  | async function ()                       | return 'pending'          |
       | synchronous | function ()                             | return 'pending'          |

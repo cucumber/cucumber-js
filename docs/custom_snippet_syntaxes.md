@@ -2,7 +2,7 @@
 
 * See the [JavaScript syntax](/src/formatter/step_definition_snippet_builder/javascript_snippet_syntax.js) and the [custom snippet syntax](/features/step_definition_snippets_custom_syntax.feature) for examples.
   * Arguments passed to the constructor:
-    * `snippetInterface` - string equal to one of the following: 'callback', 'generator', 'promise', or 'synchronous'
+    * `snippetInterface` - string equal to one of the following: 'callback', 'generator', 'promise', 'asyncawait' or 'synchronous'
   * Arguments passed to `build` method:
     * An object with the following keys:
       * `comment`: a comment to be placed at the top of the function

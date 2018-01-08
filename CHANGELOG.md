@@ -2,6 +2,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
 
+* added "asyncawait" option to the snippetInterface formatting option
+
 ### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
 
 #### Bug Fixes

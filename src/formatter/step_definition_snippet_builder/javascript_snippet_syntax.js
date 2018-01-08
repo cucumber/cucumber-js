@@ -10,6 +10,9 @@ export default class JavaScriptSnippetSyntax {
     if (this.snippetInterface === 'generator') {
       functionKeyword += '*'
     }
+    if (this.snippetInterface === 'asyncawait') {
+      functionKeyword = 'async ' + functionKeyword
+    }
 
     let implementation
     if (this.snippetInterface === 'callback') {
