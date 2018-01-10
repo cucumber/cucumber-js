@@ -52,6 +52,10 @@ export default class ArgvParser {
         []
       )
       .option('-d, --dry-run', 'invoke formatters without executing steps')
+      .option(
+        '--exit',
+        'force shutdown of the event loop when the test run has finished: cucumber will call process.exit'
+      )
       .option('--fail-fast', 'abort the run on first failure')
       .option(
         '-f, --format <TYPE[:PATH]>',

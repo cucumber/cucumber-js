@@ -14,22 +14,17 @@ export default async function run() {
     stdout: process.stdout
   })
 
-  let success
+  let result
   try {
-    success = await cli.run()
+    result = await cli.run()
   } catch (error) {
     exitWithError(error)
   }
 
-  const exitCode = success ? 0 : 1
-  function exitNow() {
+  const exitCode = result.success ? 0 : 1
+  if (result.shouldExitImmediately) {
     process.exit(exitCode)
-  }
-
-  // If stdout.write() returned false, kernel buffer is not empty yet
-  if (process.stdout.write('')) {
-    exitNow()
   } else {
-    process.stdout.on('drain', exitNow)
+    process.exitCode = exitCode
   }
 }

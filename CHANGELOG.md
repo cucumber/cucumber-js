@@ -2,6 +2,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
 
+#### BREAKING CHANGES
+
+* cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running use `--exit`. Use of this flag is discouraged. See [here](/docs/cli.md#exiting) for more information
+
 #### Deprecations
 
 * `defineSupportCode` is deprecated. Require/import the individual methods instead

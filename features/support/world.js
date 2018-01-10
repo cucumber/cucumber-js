@@ -38,7 +38,8 @@ class World {
       })
       let error, stderr
       try {
-        if (!await cli.run()) {
+        const { success } = await cli.run()
+        if (!success) {
           error = new Error('CLI exited with non-zero')
           error.code = 42
         }

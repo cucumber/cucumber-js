@@ -70,6 +70,14 @@ You can pass in format options with `--format-options <JSON>`. The JSON string m
 
 Colors can be disabled with `--format-options '{"colorsEnabled": false}'`
 
+## Exiting
+
+By default, cucumber exits when the event loop drains. Use the `--exit` flag in order to force shutdown of the event loop when the test run has finished. This is discouraged, as fixing the issues that causes the hang is a better long term solution. Some potential resources for that are:
+* [Node.js guide to debugging](https://nodejs.org/en/docs/inspector/)
+* NPM package [why-is-node-running](https://www.npmjs.com/package/why-is-node-running)
+* [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
+* Isolating what scenario or scenarios causes the hang
+
 ## Undefined Step Snippets
 
 Undefined steps snippets are printed in javascript using the callback interface by default.
