@@ -58,6 +58,7 @@ export default class ConfigurationBuilder {
         strict: !!this.options.strict,
         worldParameters: this.options.worldParameters
       },
+      shouldExitImmediately: !!this.options.exit,
       supportCodePaths
     }
   }
