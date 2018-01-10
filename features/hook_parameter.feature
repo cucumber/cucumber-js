@@ -10,22 +10,18 @@ Feature: Hook Parameters
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a step$/, function() {})
-      })
+      When(/^a step$/, function() {})
       """
     And a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Before} from 'cucumber'
 
-      defineSupportCode(({Before}) => {
-        Before(function(testCase) {
-          console.log(testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line)
-          console.log('tags: ', testCase.pickle.tags);
-          console.log('name: ', testCase.pickle.name);
-        })
+      Before(function(testCase) {
+        console.log(testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line)
+        console.log('tags: ', testCase.pickle.tags);
+        console.log('name: ', testCase.pickle.name);
       })
       """
     When I run cucumber.js
@@ -49,29 +45,25 @@ Feature: Hook Parameters
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a passing step$/, function() {})
-        When(/^a failing step$/, function() { throw new Error("my error") })
-      })
+      When(/^a passing step$/, function() {})
+      When(/^a failing step$/, function() { throw new Error("my error") })
       """
     And a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode, Status} from 'cucumber'
+      import {After, Status} from 'cucumber'
 
-      defineSupportCode(({After}) => {
-        After(function(testCase) {
-          let message = testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line + " "
-          if (testCase.result.status === Status.FAILED) {
-            message += "failed"
-          } else {
-            message += "did not fail"
-          }
-          console.log(message)
-          console.log('tags: ', testCase.pickle.tags);
-          console.log('name: ', testCase.pickle.name);
-        })
+      After(function(testCase) {
+        let message = testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line + " "
+        if (testCase.result.status === Status.FAILED) {
+          message += "failed"
+        } else {
+          message += "did not fail"
+        }
+        console.log(message)
+        console.log('tags: ', testCase.pickle.tags);
+        console.log('name: ', testCase.pickle.name);
       })
       """
     When I run cucumber.js

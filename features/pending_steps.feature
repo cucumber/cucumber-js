@@ -11,12 +11,10 @@ Feature: Pending steps
   Scenario: Synchronous pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a pending step$/, function() {
-          return 'pending'
-        })
+      Given(/^a pending step$/, function() {
+        return 'pending'
       })
       """
     When I run cucumber.js
@@ -27,12 +25,10 @@ Feature: Pending steps
   Scenario: Callback pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a pending step$/, function(callback) {
-          callback(null, 'pending')
-        })
+      Given(/^a pending step$/, function(callback) {
+        callback(null, 'pending')
       })
       """
     When I run cucumber.js
@@ -42,18 +38,16 @@ Feature: Pending steps
   Scenario: Promise pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a pending step$/, function(){
-          return {
-            then: function(onResolve, onReject) {
-              setTimeout(function() {
-                onResolve('pending')
-              })
-            }
+      Given(/^a pending step$/, function(){
+        return {
+          then: function(onResolve, onReject) {
+            setTimeout(function() {
+              onResolve('pending')
+            })
           }
-        })
+        }
       })
       """
     When I run cucumber.js

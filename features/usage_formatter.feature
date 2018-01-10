@@ -17,20 +17,18 @@ Feature: usage formatter
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When('step A', function(callback) { setTimeout(callback, 100) });
-        When(/^(slow )?step B$/, function(slow, callback) {
-          if (slow) {
-            setTimeout(callback, 100)
-          } else {
-            callback()
-          }
-        });
-        When('step C', function(callback) { setTimeout(callback, 10) });
-        When('step D', function() {});
-      })
+      When('step A', function(callback) { setTimeout(callback, 100) });
+      When(/^(slow )?step B$/, function(slow, callback) {
+        if (slow) {
+          setTimeout(callback, 100)
+        } else {
+          callback()
+        }
+      });
+      When('step C', function(callback) { setTimeout(callback, 10) });
+      When('step D', function() {});
       """
     When I run cucumber-js with `--format usage`
     Then it outputs the text:
@@ -38,17 +36,17 @@ Feature: usage formatter
       ┌────────────────────┬──────────┬───────────────────────────────────────┐
       │ Pattern / Text     │ Duration │ Location                              │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step A             │ <d>ms    │ features/step_definitions/steps.js:4  │
+      │ step A             │ <d>ms    │ features/step_definitions/steps.js:3  │
       │   step A           │ <d>ms    │ features/a.feature:3                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ /^(slow )?step B$/ │ <d>ms    │ features/step_definitions/steps.js:5  │
+      │ /^(slow )?step B$/ │ <d>ms    │ features/step_definitions/steps.js:4  │
       │   slow step B      │ <d>ms    │ features/a.feature:5                  │
       │   step B           │ <d>ms    │ features/a.feature:4                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step C             │ <d>ms    │ features/step_definitions/steps.js:12 │
+      │ step C             │ <d>ms    │ features/step_definitions/steps.js:11 │
       │   step C           │ <d>ms    │ features/a.feature:6                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step D             │ UNUSED   │ features/step_definitions/steps.js:13 │
+      │ step D             │ UNUSED   │ features/step_definitions/steps.js:12 │
       └────────────────────┴──────────┴───────────────────────────────────────┘
       """
 
@@ -70,17 +68,15 @@ Feature: usage formatter
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^(slow )?step$/, function(slow, callback) {
-          if (slow) {
-            setTimeout(callback, 100)
-          } else {
-            callback()
-          }
-        });
-      })
+      When(/^(slow )?step$/, function(slow, callback) {
+        if (slow) {
+          setTimeout(callback, 100)
+        } else {
+          callback()
+        }
+      });
       """
     When I run cucumber-js with `--format usage`
     Then it outputs the text:
@@ -88,7 +84,7 @@ Feature: usage formatter
       ┌──────────────────┬──────────┬──────────────────────────────────────┐
       │ Pattern / Text   │ Duration │ Location                             │
       ├──────────────────┼──────────┼──────────────────────────────────────┤
-      │ /^(slow )?step$/ │ <d>ms    │ features/step_definitions/steps.js:4 │
+      │ /^(slow )?step$/ │ <d>ms    │ features/step_definitions/steps.js:3 │
       │   slow step      │ <d>ms    │ features/a.feature:3                 │
       │   slow step      │ <d>ms    │ features/a.feature:3                 │
       │   slow step      │ <d>ms    │ features/a.feature:3                 │

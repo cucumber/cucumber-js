@@ -2,6 +2,23 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
 
+#### Deprecations
+
+* `defineSupportCode` is deprecated. Require/import the individual methods instead
+  ```js
+  var {defineSupportCode} = require('cucumber');
+
+  defineSupportCode(function({Given}) {
+    Given(/^a step$/, function() {});
+  });
+
+  // Should be updated to
+
+  var {Given} = require('cucumber');
+
+  Given(/^a step$/, function() {});
+  ```
+
 ### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
 
 #### Bug Fixes

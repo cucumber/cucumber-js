@@ -31,6 +31,7 @@ export const Before = methods.Before
 export const BeforeAll = methods.BeforeAll
 export const defineParameterType = methods.defineParameterType
 export const defineStep = methods.defineStep
+export const defineSupportCode = methods.defineSupportCode
 export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
 export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper

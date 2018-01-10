@@ -25,17 +25,15 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
       import sinon from 'sinon'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a faked time step$/, function () {
-          var testFunction = sinon.stub()
-          setTimeout(testFunction, 10000)
-          assert(!testFunction.called)
-          this.clock.tick(10001)
-          assert(testFunction.called)
-        })
+      Given(/^a faked time step$/, function () {
+        var testFunction = sinon.stub()
+        setTimeout(testFunction, 10000)
+        assert(!testFunction.called)
+        this.clock.tick(10001)
+        assert(testFunction.called)
       })
       """
       When I run cucumber.js

@@ -1,4 +1,4 @@
-import { defineSupportCode, Cli } from '../../'
+import { setWorldConstructor, Cli } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
@@ -73,6 +73,4 @@ class World {
   }
 }
 
-defineSupportCode(({ setWorldConstructor }) => {
-  setWorldConstructor(World)
-})
+setWorldConstructor(World)

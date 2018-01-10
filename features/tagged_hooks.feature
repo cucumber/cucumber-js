@@ -16,33 +16,27 @@ Feature: Tagged Hooks
       """
     And a file named "features/step_definitions/world.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {setWorldConstructor} from 'cucumber'
 
-      defineSupportCode(({setWorldConstructor}) => {
-        setWorldConstructor(function() {
-          this.value = 0
-        })
+      setWorldConstructor(function() {
+        this.value = 0
       })
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Then} from 'cucumber'
 
-      defineSupportCode(({Then}) => {
-        Then(/^the value is (\d*)$/, function(number) {
-          assert.equal(number, this.value)
-        })
+      Then(/^the value is (\d*)$/, function(number) {
+        assert.equal(number, this.value)
       })
       """
     And a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Before} from 'cucumber'
 
-      defineSupportCode(({Before}) => {
-        Before({tags: '@foo'}, function() {
-          this.value += 1
-        })
+      Before({tags: '@foo'}, function() {
+        this.value += 1
       })
       """
     When I run cucumber.js

@@ -30,7 +30,7 @@ Feature: before / after all hook timeouts
     And the error output contains the text snippets:
       | a handler errored, process exiting        |
       | function timed out after 500 milliseconds |
-      | features/support/handlers.js:6            |
+      | features/support/handlers.js:5            |
 
     Examples:
       | TYPE      |
