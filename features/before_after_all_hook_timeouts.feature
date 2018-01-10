@@ -9,24 +9,20 @@ Feature: before / after all hook timeouts
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a passing step$/, function() {});
-      })
+      Given(/^a passing step$/, function() {});
       """
 
   Scenario Outline: slow handler timeout
     Given a file named "features/support/handlers.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {<TYPE>, setDefaultTimeout} from 'cucumber'
 
-      defineSupportCode(({<TYPE>, setDefaultTimeout}) => {
-        setDefaultTimeout(500)
+      setDefaultTimeout(500)
 
-        <TYPE>(function(callback) {
-          setTimeout(callback, 1000)
-        })
+      <TYPE>(function(callback) {
+        setTimeout(callback, 1000)
       })
       """
     When I run cucumber.js
@@ -44,14 +40,12 @@ Feature: before / after all hook timeouts
   Scenario Outline: slow handlers can increase their timeout
     Given a file named "features/supports/handlers.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {<TYPE>, setDefaultTimeout} from 'cucumber'
 
-      defineSupportCode(({<TYPE>, setDefaultTimeout}) => {
-        setDefaultTimeout(500)
+      setDefaultTimeout(500)
 
-        <TYPE>({timeout: 1500}, function(callback) {
-          setTimeout(callback, 1000)
-        })
+      <TYPE>({timeout: 1500}, function(callback) {
+        setTimeout(callback, 1000)
       })
       """
     When I run cucumber.js

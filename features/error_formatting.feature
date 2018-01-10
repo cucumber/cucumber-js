@@ -8,19 +8,15 @@ Feature: Error formatting
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a passing step$/, function() {})
-      })
+      Given(/^a passing step$/, function() {})
       """
     And a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Before} from 'cucumber'
 
-      defineSupportCode(({Before}) => {
-        Before(function(_, callback) { callback('Fail') })
-      })
+      Before(function(_, callback) { callback('Fail') })
       """
     When I run cucumber.js
     Then it fails
@@ -56,13 +52,11 @@ Feature: Error formatting
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a basic step$/, function() {})
-        Given(/^a step with a doc string$/, function(str) {})
-        Given(/^a pending step$/, function() { return 'pending' })
-      })
+      Given(/^a basic step$/, function() {})
+      Given(/^a step with a doc string$/, function(str) {})
+      Given(/^a pending step$/, function() { return 'pending' })
       """
     When I run cucumber.js
     Then the output contains the text:
@@ -93,12 +87,10 @@ Feature: Error formatting
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a table:$/, function(table) {})
-        Given(/^a pending step$/, function() { return 'pending' })
-      })
+      Given(/^a table:$/, function(table) {})
+      Given(/^a pending step$/, function() { return 'pending' })
       """
     When I run cucumber.js
     Then the output contains the text:

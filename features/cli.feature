@@ -12,11 +12,9 @@ Feature: Command line interface
       """
     And a file named "step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a step is passing$/, function() {})
-      })
+      When(/^a step is passing$/, function() {})
       """
     When I run cucumber.js with `-r step_definitions/cucumber_steps.js`
 
@@ -29,11 +27,9 @@ Feature: Command line interface
       """
     And a file named "step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a step is passing$/, function() {});
-      })
+      When(/^a step is passing$/, function() {});
       """
     When I run cucumber.js with `-r step_definitions`
 

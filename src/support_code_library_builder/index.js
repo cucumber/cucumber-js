@@ -16,9 +16,6 @@ export class SupportCodeLibraryBuilder {
       AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),
       Before: defineTestCaseHook(this, 'beforeTestCaseHookDefinitions'),
       BeforeAll: defineTestRunHook(this, 'beforeTestRunHookDefinitions'),
-      defineSupportCode: fn => {
-        fn(this.methods)
-      },
       defineStep: defineStep(this),
       setDefaultTimeout: milliseconds => {
         this.options.defaultTimeout = milliseconds

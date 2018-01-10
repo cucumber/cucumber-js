@@ -32,11 +32,9 @@ Feature: Event Protocol Formatter
       """
     Given a file named "features/step_definitions/steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a step$/, function() {})
-      })
+      Given(/^a step$/, function() {})
       """
     When I run cucumber.js with `-f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/passed.ndjson"
@@ -50,11 +48,9 @@ Feature: Event Protocol Formatter
       """
     Given a file named "features/step_definitions/steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a step$/, function(callback) { callback(new Error('my error')) })
-      })
+      Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
     When I run cucumber.js with `-f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/failed.ndjson"

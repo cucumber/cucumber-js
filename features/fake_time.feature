@@ -2,17 +2,15 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
   Background: Before and After hooks to enable faking time.
     Given a file named "features/support/hooks.js" with:
     """
-    import {defineSupportCode} from 'cucumber'
+    import {After, Before} from 'cucumber'
     import sinon from 'sinon'
 
-    defineSupportCode(({After, Before}) => {
-      Before(function(scenario) {
-        this.clock = sinon.useFakeTimers()
-      })
+    Before(function(scenario) {
+      this.clock = sinon.useFakeTimers()
+    })
 
-      After(function(scenario) {
-        this.clock.restore()
-      })
+    After(function(scenario) {
+      this.clock.restore()
     })
     """
 

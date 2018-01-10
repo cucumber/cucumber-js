@@ -12,14 +12,12 @@ Feature: doc string
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
       import assert from 'assert'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a doc string step$/, function(docString) {
-          assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
-                                  "cultivated plant in the gourd family Cucurbitaceae.")
-        })
+      Given(/^a doc string step$/, function(docString) {
+        assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
+                                "cultivated plant in the gourd family Cucurbitaceae.")
       })
       """
     When I run cucumber-js
@@ -37,15 +35,13 @@ Feature: doc string
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
       import assert from 'assert'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a "([^"]*)" step$/, function(type, docString) {
-          assert.equal(type, "doc string")
-          assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
-                                  "cultivated plant in the gourd family Cucurbitaceae.")
-        })
+      Given(/^a "([^"]*)" step$/, function(type, docString) {
+        assert.equal(type, "doc string")
+        assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
+                                "cultivated plant in the gourd family Cucurbitaceae.")
       })
       """
     When I run cucumber-js
