@@ -213,9 +213,7 @@
     "unit-test": "mocha src"
   },
   "bin": {
-    "cucumber.js": "./bin/cucumber.js",
-    "cucumber-js": "./bin/cucumber.js",
-    "cucumberjs": "./bin/cucumber.js"
+    "cucumber-js": "./bin/cucumber.js"
   },
   "license": "MIT",
   "files": [
