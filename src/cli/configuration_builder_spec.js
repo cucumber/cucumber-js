@@ -46,6 +46,7 @@ describe('Configuration', function() {
           strict: true,
           worldParameters: {}
         },
+        shouldExitImmediately: false,
         supportCodePaths: []
       })
     })

@@ -67,11 +67,11 @@ export default class Cli {
     const configuration = await this.getConfiguration()
     if (configuration.listI18nLanguages) {
       this.stdout.write(I18n.getLanguages())
-      return true
+      return { success: true }
     }
     if (configuration.listI18nKeywordsFor) {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
-      return true
+      return { success: true }
     }
     const supportCodeLibrary = this.getSupportCodeLibrary(
       configuration.supportCodePaths
