@@ -13,11 +13,9 @@ Feature: Exit
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode, After} from 'cucumber'
+      import {Given, After} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given('a step', function() {})
-      })
+      Given('a step', function() {})
 
       After(() => {
         setTimeout(() => {

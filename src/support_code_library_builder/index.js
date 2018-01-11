@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import util from 'util'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import {
   defineTestRunHook,
@@ -16,10 +17,10 @@ export class SupportCodeLibraryBuilder {
       AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),
       Before: defineTestCaseHook(this, 'beforeTestCaseHookDefinitions'),
       BeforeAll: defineTestRunHook(this, 'beforeTestRunHookDefinitions'),
-      defineSupportCode: fn => {
-        fn(this.methods)
-      },
       defineStep: defineStep(this),
+      defineSupportCode: util.deprecate(fn => {
+        fn(this.methods)
+      }, 'cucumber: defineSupportCode is deprecated. Please require/import the individual methods instead.'),
       setDefaultTimeout: milliseconds => {
         this.options.defaultTimeout = milliseconds
       },

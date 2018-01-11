@@ -17,31 +17,29 @@ Feature: Environment Hooks
   Scenario: before all / after all hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {AfterAll, BeforeAll, Given} from 'cucumber'
       import {expect} from 'chai'
 
       let counter = 1
 
-      defineSupportCode(({AfterAll, BeforeAll, Given}) => {
-        BeforeAll(function() {
-          expect(counter).to.eql(1)
-          counter += counter
-        })
+      BeforeAll(function() {
+        expect(counter).to.eql(1)
+        counter += counter
+      })
 
-        Given('first step', function() {
-          expect(counter).to.eql(2)
-          counter += counter
-        })
+      Given('first step', function() {
+        expect(counter).to.eql(2)
+        counter += counter
+      })
 
-        Given('second step', function() {
-          expect(counter).to.eql(4)
-          counter += counter
-        })
+      Given('second step', function() {
+        expect(counter).to.eql(4)
+        counter += counter
+      })
 
-        AfterAll(function() {
-          expect(counter).to.eql(8)
-          counter += counter
-        })
+      AfterAll(function() {
+        expect(counter).to.eql(8)
+        counter += counter
       })
       """
     When I run cucumber.js
@@ -50,12 +48,10 @@ Feature: Environment Hooks
   Scenario: Failing before all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {BeforeAll} from 'cucumber'
 
-      defineSupportCode(({BeforeAll}) => {
-        BeforeAll(function(callback) {
-          callback(new Error('my error'))
-        })
+      BeforeAll(function(callback) {
+        callback(new Error('my error'))
       })
       """
     When I run cucumber.js
@@ -68,12 +64,10 @@ Feature: Environment Hooks
   Scenario: Failing after all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {AfterAll} from 'cucumber'
 
-      defineSupportCode(({AfterAll}) => {
-        AfterAll(function(callback) {
-          callback(new Error('my error'))
-        })
+      AfterAll(function(callback) {
+        callback(new Error('my error'))
       })
       """
     When I run cucumber.js

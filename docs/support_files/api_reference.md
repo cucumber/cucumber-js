@@ -2,7 +2,7 @@
 
 ## API Reference
 
-The function passed to `defineSupportCode` is called with an object as the first argument that exposes the following methods:
+Each method can be destructed from the object returned by `require('cucumber')`. 
 
 ---
 

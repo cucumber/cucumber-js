@@ -13,11 +13,9 @@ Feature: Dryrun mode
   Scenario: default behavior
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given('a step', function() {})
-      })
+      Given('a step', function() {})
       """
     When I run cucumber.js with `--dry-run`
     Then all steps have status "skipped"
@@ -25,12 +23,10 @@ Feature: Dryrun mode
   Scenario: ambiguous step
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given('a step', function() { });
-        Given('a(n) step', function() { });
-      })
+      Given('a step', function() {});
+      Given('a(n) step', function() {});
       """
     When I run cucumber.js with `--dry-run`
     Then it fails

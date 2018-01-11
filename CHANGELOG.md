@@ -6,6 +6,23 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running use `--exit`. Use of this flag is discouraged. See [here](/docs/cli.md#exiting) for more information
 
+#### Deprecations
+
+* `defineSupportCode` is deprecated. Require/import the individual methods instead
+  ```js
+  var {defineSupportCode} = require('cucumber');
+
+  defineSupportCode(function({Given}) {
+    Given(/^a step$/, function() {});
+  });
+
+  // Should be updated to
+
+  var {Given} = require('cucumber');
+
+  Given(/^a step$/, function() {});
+  ```
+
 ### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
 
 #### Bug Fixes

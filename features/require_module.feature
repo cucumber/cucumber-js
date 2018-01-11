@@ -14,10 +14,9 @@ Feature: compilers
       """
     Given a file named "features/step_definitions/cucumber_steps.coffee" with:
       """
-      {defineSupportCode} = require 'cucumber'
+      {Given} = require 'cucumber'
 
-      defineSupportCode ({Given}) ->
-        Given /^a step$/, ->
+      Given /^a step$/, ->
       """
     When I run cucumber.js with `--require-module coffee-script/register --require 'features/**/*.coffee'`
     Then the step "a step" has status "passed"
