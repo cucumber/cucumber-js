@@ -1,4 +1,4 @@
-let common = [
+var common = [
   '--require-module babel-register',
   `--format ${process.env.CI ? 'progress' : 'progress-bar'}`,
   '--format rerun:@rerun.txt',
