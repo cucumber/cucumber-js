@@ -96,7 +96,7 @@ export default class ArgvParser {
       )
       .option(
         '--require-module <NODE_MODULE>',
-        'require node module before requiring files (repeatable)',
+        'require node modules before requiring files (repeatable)',
         ArgvParser.collect,
         []
       )
