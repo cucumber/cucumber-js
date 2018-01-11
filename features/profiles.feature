@@ -12,11 +12,9 @@ Feature: default command line arguments
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a passing step$/, function() {})
-      })
+      Given(/^a passing step$/, function() {})
       """
     And a file named "cucumber.js" with:
       """

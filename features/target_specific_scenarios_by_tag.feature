@@ -28,11 +28,9 @@ Feature: Target specific scenarios
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a step is (.*)$/, function() {})
-      })
+      Given(/^a step is (.*)$/, function() {})
       """
 
   Scenario: run a single scenario

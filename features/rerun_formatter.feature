@@ -36,15 +36,13 @@ Feature: Rerun Formatter
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a passing step$/, function() {})
-        Given(/^a failing step$/, function() { throw 'fail' })
-        Given(/^an ambiguous step$/, function() {})
-        Given(/^an? ambiguous step$/, function() {})
-        Given(/^a pending step$/, function() { return 'pending' })
-      })
+      Given(/^a passing step$/, function() {})
+      Given(/^a failing step$/, function() { throw 'fail' })
+      Given(/^an ambiguous step$/, function() {})
+      Given(/^an? ambiguous step$/, function() {})
+      Given(/^a pending step$/, function() { return 'pending' })
       """
 
   Scenario: passing

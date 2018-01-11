@@ -10,11 +10,9 @@ Feature: Global Installs
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a step is passing$/, function() {})
-      })
+      When(/^a step is passing$/, function() {})
       """
     When I run cucumber.js (installed globally)
     Then it fails

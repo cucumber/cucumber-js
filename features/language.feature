@@ -9,11 +9,9 @@ Feature: Multiple Formatters
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^une étape$/, function() {})
-      })
+      Given(/^une étape$/, function() {})
       """
 
   Scenario: Ability to specify multiple formatters

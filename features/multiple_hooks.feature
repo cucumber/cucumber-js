@@ -13,47 +13,41 @@ Feature: Multiple Hooks
       """
     And a file named "features/step_definitions/world.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {setWorldConstructor} from 'cucumber'
 
-      defineSupportCode(({setWorldConstructor}) => {
-        setWorldConstructor(function() {
-          this.value = 0
-        })
+      setWorldConstructor(function() {
+        this.value = 0
       })
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given('a step', function() {})
-      })
+      Given('a step', function() {})
       """
     And a file named "features/step_definitions/hooks.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {After, Before} from 'cucumber'
       import assert from 'assert'
 
-      defineSupportCode(({After, Before}) => {
-        Before(function() {
-          assert.equal(this.value, 0)
-          this.value += 1
-        })
+      Before(function() {
+        assert.equal(this.value, 0)
+        this.value += 1
+      })
 
-        After(function() {
-          assert.equal(this.value, 3)
-        })
+      After(function() {
+        assert.equal(this.value, 3)
+      })
 
-        Before({tags: '@foo'}, function() {
-          assert.equal(this.value, 1)
-          this.value += 1
-        })
+      Before({tags: '@foo'}, function() {
+        assert.equal(this.value, 1)
+        this.value += 1
+      })
 
-        After({tags: '@foo'}, function() {
-          assert.equal(this.value, 2)
-          this.value += 1
-        })
+      After({tags: '@foo'}, function() {
+        assert.equal(this.value, 2)
+        this.value += 1
       })
       """
     When I run cucumber.js
