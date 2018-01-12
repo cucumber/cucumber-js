@@ -1,10 +1,18 @@
 import _ from 'lodash'
-import Status from '../status'
 import childProcess from 'child_process'
+import commandTypes from './command_types'
 import path from 'path'
 import readline from 'readline'
+import Status from '../../status'
 
-const slaveCommand = path.resolve(__dirname, '..', '..', 'bin', 'slave.js')
+const slaveCommand = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'bin',
+  'run_slave'
+)
 
 export default class Master {
   // options - {dryRun, failFast, filterStacktraces, strict}
@@ -31,17 +39,18 @@ export default class Master {
 
   parseSlaveLine(slave, line) {
     const input = JSON.parse(line)
-    if (slave.status === 'initializing' && input.ready) {
-      slave.status = 'ready'
-      this.disperseWork()
-    }
-    if (slave.status === 'running') {
-      this.eventBroadcaster.emit(input.type, input.data)
-      if (input.type === 'test-case-finished') {
-        this.parseTestCaseResult(input.data.result)
-        slave.status = 'ready'
-        this.disperseWork()
-      }
+    switch (input.command) {
+      case commandTypes.READY:
+        this.giveSlaveWork(slave)
+        break
+      case commandTypes.EVENT:
+        this.eventBroadcaster.emit(input.name, input.data)
+        if (input.name === 'test-case-finished') {
+          this.parseTestCaseResult(input.data.result)
+        }
+        break
+      default:
+        throw new Error(`Unexpected message from slave: ${line}`)
     }
   }
 
@@ -54,17 +63,18 @@ export default class Master {
       stdio: ['pipe', 'pipe', process.stderr]
     })
     const rl = readline.createInterface({ input: slaveProcess.stdout })
-    const slave = { id, process: slaveProcess, status: 'initializing' }
+    const slave = { process: slaveProcess }
     this.slaves[id] = slave
     rl.on('line', line => {
       this.parseSlaveLine(slave, line)
     })
     rl.on('close', () => {
-      slave.status = 'closed'
-      this.checkIfDone()
+      slave.closed = true
+      this.onSlaveClose()
     })
     slave.process.stdin.write(
       JSON.stringify({
+        command: commandTypes.INITIALIZE,
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
         supportCodeRequiredModules: this.supportCodeRequiredModules,
@@ -73,8 +83,8 @@ export default class Master {
     )
   }
 
-  checkIfDone() {
-    if (_.every(this.slaves, ['status', 'closed'])) {
+  onSlaveClose() {
+    if (_.every(this.slaves, 'closed')) {
       this.eventBroadcaster.emit('test-run-finished', { result: this.result })
       this.onFinish(this.result.success)
     }
@@ -96,24 +106,20 @@ export default class Master {
     this.onFinish = done
   }
 
-  disperseWork() {
-    if (this.testCasesCompleted === this.testCases.length) {
-      _.each(this.slaves, slave =>
-        slave.process.stdin.write(
-          JSON.stringify({ command: 'finalize' }) + '\n'
-        )
+  giveSlaveWork(slave) {
+    if (this.nextTestCaseIndex === this.testCases.length) {
+      slave.process.stdin.write(
+        JSON.stringify({ command: commandTypes.FINALIZE }) + '\n'
       )
       return
-    } else if (this.nextTestCaseIndex === this.testCases.length) {
-      return // no more work to disperse
     }
     const testCase = this.testCases[this.nextTestCaseIndex]
     this.nextTestCaseIndex += 1
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    const slave = this.getFreeSlave()
-    slave.status = 'running'
-    slave.process.stdin.write(JSON.stringify({ skip, testCase }) + '\n')
+    slave.process.stdin.write(
+      JSON.stringify({ command: commandTypes.RUN, skip, testCase }) + '\n'
+    )
   }
 
   shouldCauseFailure(status) {
@@ -121,9 +127,5 @@ export default class Master {
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)
     )
-  }
-
-  getFreeSlave() {
-    return _.find(this.slaves, ['status', 'ready'])
   }
 }

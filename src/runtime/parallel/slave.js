@@ -1,12 +1,13 @@
-import { formatLocation } from '../formatter/helpers'
+import { formatLocation } from '../../formatter/helpers'
+import commandTypes from './command_types'
 import EventEmitter from 'events'
-import readline from 'readline'
-import supportCodeLibraryBuilder from '../support_code_library_builder'
-import TestCaseRunner from '../runtime/test_case_runner'
-import UserCodeRunner from '../user_code_runner'
-import VError from 'verror'
 import Promise from 'bluebird'
-import StackTraceFilter from '../runtime/stack_trace_filter'
+import readline from 'readline'
+import StackTraceFilter from '../stack_trace_filter'
+import supportCodeLibraryBuilder from '../../support_code_library_builder'
+import TestCaseRunner from '../test_case_runner'
+import UserCodeRunner from '../../user_code_runner'
+import VError from 'verror'
 
 const EVENTS = [
   'test-case-prepared',
@@ -25,9 +26,11 @@ export default class Slave {
     this.cwd = cwd
     this.eventBroadcaster = new EventEmitter()
     this.stackTraceFilter = new StackTraceFilter()
-    EVENTS.forEach(type => {
-      this.eventBroadcaster.on(type, data =>
-        this.stdout.write(JSON.stringify({ type, data }) + '\n')
+    EVENTS.forEach(name => {
+      this.eventBroadcaster.on(name, data =>
+        this.stdout.write(
+          JSON.stringify({ command: commandTypes.EVENT, name, data }) + '\n'
+        )
       )
     })
   }
@@ -48,8 +51,7 @@ export default class Slave {
       this.stackTraceFilter.filter()
     }
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
-    this.stdout.write(JSON.stringify({ ready: true }) + '\n')
-    this.initialized = true
+    this.stdout.write(JSON.stringify({ command: commandTypes.READY }) + '\n')
   }
 
   async finalize() {
@@ -87,6 +89,7 @@ export default class Slave {
       worldParameters: this.worldParameters
     })
     await testCaseRunner.run()
+    this.stdout.write(JSON.stringify({ command: commandTypes.READY }) + '\n')
   }
 
   async runTestRunHooks(key, name) {

@@ -9,7 +9,7 @@ import fs from 'mz/fs'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
 import Promise from 'bluebird'
-import ParallelRuntime from '../parallel_runtime'
+import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 
@@ -92,20 +92,18 @@ export default class Cli {
     })
     let success
     if (configuration.parallel) {
+      const parallelRuntimeMaster = new ParallelRuntimeMaster({
+        eventBroadcaster,
+        options: configuration.runtimeOptions,
+        supportCodePaths: configuration.supportCodePaths,
+        supportCodeRequiredModules: configuration.supportCodeRequiredModules,
+        testCases
+      })
       await new Promise(resolve => {
-        const parallelRuntime = new ParallelRuntime({
-          eventBroadcaster,
-          options: configuration.runtimeOptions,
-          supportCodePaths: configuration.supportCodePaths,
-          supportCodeRequiredModules: configuration.supportCodeRequiredModules,
-          testCases,
-          numberOfSlaves: configuration.parallel,
-          onFinish: s => {
-            success = s
-            resolve()
-          }
+        parallelRuntimeMaster.run(configuration.parallel, s => {
+          success = s
+          resolve()
         })
-        parallelRuntime.run()
       })
     } else {
       const runtime = new Runtime({
