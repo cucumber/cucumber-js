@@ -13,9 +13,7 @@ export default class Master {
     options,
     supportCodePaths,
     supportCodeRequiredModules,
-    testCases,
-    numberOfSlaves,
-    onFinish
+    testCases
   }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
@@ -28,34 +26,42 @@ export default class Master {
       duration: 0,
       success: true
     }
-    this.numberOfSlaves = numberOfSlaves
     this.slaves = {}
-    this.onFinish = onFinish
+  }
+
+  parseSlaveLine(slave, line) {
+    const input = JSON.parse(line)
+    if (slave.status === 'initializing' && input.ready) {
+      slave.status = 'ready'
+      this.disperseWork()
+    }
+    if (slave.status === 'running') {
+      this.eventBroadcaster.emit(input.type, input.data)
+      if (input.type === 'test-case-finished') {
+        this.parseTestCaseResult(input.data.result)
+        slave.status = 'ready'
+        this.disperseWork()
+      }
+    }
   }
 
   startSlave(id) {
     const slaveProcess = childProcess.spawn(slaveCommand, [], {
-      env: _.assign({}, process.env, { CUCUMBER_SLAVE_ID: id }),
+      env: _.assign({}, process.env, {
+        CUCUMBER_PARALLEL: 'true',
+        CUCUMBER_SLAVE_ID: id
+      }),
       stdio: ['pipe', 'pipe', process.stderr]
     })
     const rl = readline.createInterface({ input: slaveProcess.stdout })
     const slave = { id, process: slaveProcess, status: 'initializing' }
     this.slaves[id] = slave
     rl.on('line', line => {
-      // console.log(`Received line from slave ${id}: ${line}`)
-      const input = JSON.parse(line)
-      if (slave.status === 'initializing' && input.ready) {
-        slave.status = 'ready'
-        this.disperseWork()
-      }
-      if (slave.status === 'running') {
-        this.eventBroadcaster.emit(input.type, input.data)
-        if (input.type === 'test-case-finished') {
-          this.parseTestCaseResult(input.data)
-          slave.status = 'ready'
-          this.disperseWork()
-        }
-      }
+      this.parseSlaveLine(slave, line)
+    })
+    rl.on('close', () => {
+      slave.status = 'closed'
+      this.checkIfDone()
     })
     slave.process.stdin.write(
       JSON.stringify({
@@ -67,27 +73,36 @@ export default class Master {
     )
   }
 
-  parseTestCaseResult({ result }) {
-    this.testCasesCompleted += 1
-    if (result.duration) {
-      this.result.duration += result.duration
+  checkIfDone() {
+    if (_.every(this.slaves, ['status', 'closed'])) {
+      this.eventBroadcaster.emit('test-run-finished', { result: this.result })
+      this.onFinish(this.result.success)
     }
-    if (this.shouldCauseFailure(result.status)) {
+  }
+
+  parseTestCaseResult(testCaseResult) {
+    this.testCasesCompleted += 1
+    if (testCaseResult.duration) {
+      this.result.duration += testCaseResult.duration
+    }
+    if (this.shouldCauseFailure(testCaseResult.status)) {
       this.result.success = false
     }
   }
 
-  run() {
+  run(numberOfSlaves, done) {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(this.numberOfSlaves, id => this.startSlave(id))
+    _.times(numberOfSlaves, id => this.startSlave(id))
+    this.onFinish = done
   }
 
   disperseWork() {
-    // console.log(`dispersing work`)
     if (this.testCasesCompleted === this.testCases.length) {
-      this.eventBroadcaster.emit('test-run-finished', { result: this.result })
-      _.each(this.slaves, slave => slave.process.kill())
-      this.onFinish(this.result.success)
+      _.each(this.slaves, slave =>
+        slave.process.stdin.write(
+          JSON.stringify({ command: 'finalize' }) + '\n'
+        )
+      )
       return
     } else if (this.nextTestCaseIndex === this.testCases.length) {
       return // no more work to disperse
@@ -97,7 +112,6 @@ export default class Master {
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     const slave = this.getFreeSlave()
-    // console.log(`dispersing work to slave ${slave.id}`)
     slave.status = 'running'
     slave.process.stdin.write(JSON.stringify({ skip, testCase }) + '\n')
   }

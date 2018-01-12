@@ -32,7 +32,7 @@ export default class Slave {
     })
   }
 
-  initialize({
+  async initialize({
     filterStacktraces,
     supportCodeRequiredModules,
     supportCodePaths,
@@ -44,43 +44,41 @@ export default class Slave {
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
     this.worldParameters = worldParameters
     this.filterStacktraces = filterStacktraces
+    if (this.filterStacktraces) {
+      this.stackTraceFilter.filter()
+    }
+    await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
+    this.stdout.write(JSON.stringify({ ready: true }) + '\n')
+    this.initialized = true
+  }
+
+  async finalize() {
+    await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
+    if (this.filterStacktraces) {
+      this.stackTraceFilter.unfilter()
+    }
+    process.exit()
+  }
+
+  parseMasterLine(line) {
+    const input = JSON.parse(line)
+    if (input.command === 'initialize') {
+      this.initialize(input)
+    } else if (input.command === 'finalize') {
+      this.finalize()
+    } else if (input.command === 'run') {
+      this.runTestCase(input)
+    }
   }
 
   async run() {
-    // console.error(`Running slave ${process.env.CUCUMBER_SLAVE_ID}`)
     this.rl = readline.createInterface({ input: this.stdin })
-    this.rl.on('line', async line => {
-      // console.error(
-      //   `Slave ${process.env.CUCUMBER_SLAVE_ID} received line: ${line}`
-      // )
-      const input = JSON.parse(line)
-      if (this.initialized) {
-        this.runTestCase(input)
-      } else {
-        this.initialize(input)
-        if (this.filterStacktraces) {
-          this.stackTraceFilter.filter()
-        }
-        await this.runTestRunHooks(
-          'beforeTestRunHookDefinitions',
-          'a BeforeAll'
-        )
-        this.stdout.write(JSON.stringify({ ready: true }) + '\n')
-        this.initialized = true
-      }
-    })
-    this.rl.on('close', async () => {
-      await Promise.all(this.runningTestCases)
-      await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
-      if (this.filterStacktraces) {
-        this.stackTraceFilter.unfilter()
-      }
-      process.exit()
+    this.rl.on('line', line => {
+      this.parseMasterLine(line)
     })
   }
 
   async runTestCase({ testCase, skip }) {
-    // console.error(`Slave ${process.env.CUCUMBER_SLAVE_ID} running test case`)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       skip,
