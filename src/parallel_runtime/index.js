@@ -4,7 +4,7 @@ import childProcess from 'child_process'
 import path from 'path'
 import readline from 'readline'
 
-const slaveCommand = path.join(__dirname, 'slave', 'cli.js')
+const slaveCommand = path.resolve(__dirname, '..', '..', 'bin', 'slave.js')
 
 export default class Master {
   // options - {dryRun, failFast, filterStacktraces, strict}
@@ -12,13 +12,15 @@ export default class Master {
     eventBroadcaster,
     options,
     supportCodePaths,
+    supportCodeRequiredModules,
     testCases,
     numberOfSlaves,
-    onFinished
+    onFinish
   }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
     this.supportCodePaths = supportCodePaths
+    this.supportCodeRequiredModules = supportCodeRequiredModules
     this.testCases = testCases || []
     this.nextTestCaseIndex = 0
     this.testCasesCompleted = 0
@@ -28,18 +30,19 @@ export default class Master {
     }
     this.numberOfSlaves = numberOfSlaves
     this.slaves = {}
-    this.onFinished = onFinished
+    this.onFinish = onFinish
   }
 
   startSlave(id) {
-    const slaveProcess = childProcess.spawn(slaveCommand, [], {})
-    const rl = readline.createInterface({
-      input: slaveProcess.stdin,
-      output: slaveProcess.stdout
+    const slaveProcess = childProcess.spawn(slaveCommand, [], {
+      env: _.assign({}, process.env, { CUCUMBER_SLAVE_ID: id }),
+      stdio: ['pipe', 'pipe', process.stderr]
     })
-    const slave = { process: slaveProcess, rl }
+    const rl = readline.createInterface({ input: slaveProcess.stdout })
+    const slave = { id, process: slaveProcess, status: 'initializing' }
     this.slaves[id] = slave
     rl.on('line', line => {
+      // console.log(`Received line from slave ${id}: ${line}`)
       const input = JSON.parse(line)
       if (slave.status === 'initializing' && input.ready) {
         slave.status = 'ready'
@@ -54,11 +57,13 @@ export default class Master {
         }
       }
     })
-    rl.write(
+    slave.process.stdin.write(
       JSON.stringify({
+        filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
-        worldParameters: this.worldParameters
-      })
+        supportCodeRequiredModules: this.supportCodeRequiredModules,
+        worldParameters: this.options.worldParameters
+      }) + '\n'
     )
   }
 
@@ -72,14 +77,16 @@ export default class Master {
     }
   }
 
-  start() {
+  run() {
     this.eventBroadcaster.emit('test-run-started')
     _.times(this.numberOfSlaves, id => this.startSlave(id))
   }
 
   disperseWork() {
+    // console.log(`dispersing work`)
     if (this.testCasesCompleted === this.testCases.length) {
       this.eventBroadcaster.emit('test-run-finished', { result: this.result })
+      _.each(this.slaves, slave => slave.process.kill())
       this.onFinish(this.result.success)
       return
     } else if (this.nextTestCaseIndex === this.testCases.length) {
@@ -90,7 +97,9 @@ export default class Master {
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     const slave = this.getFreeSlave()
-    slave.rl.write(JSON.stringify({ skip, testCase }))
+    // console.log(`dispersing work to slave ${slave.id}`)
+    slave.status = 'running'
+    slave.process.stdin.write(JSON.stringify({ skip, testCase }) + '\n')
   }
 
   shouldCauseFailure(status) {

@@ -9,6 +9,7 @@ import fs from 'mz/fs'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
 import Promise from 'bluebird'
+import ParallelRuntime from '../parallel_runtime'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 
@@ -56,7 +57,8 @@ export default class Cli {
     }
   }
 
-  getSupportCodeLibrary(supportCodePaths) {
+  getSupportCodeLibrary({ supportCodeRequiredModules, supportCodePaths }) {
+    supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd)
     supportCodePaths.forEach(codePath => require(codePath))
     return supportCodeLibraryBuilder.finalize()
@@ -73,9 +75,7 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { success: true }
     }
-    const supportCodeLibrary = this.getSupportCodeLibrary(
-      configuration.supportCodePaths
-    )
+    const supportCodeLibrary = this.getSupportCodeLibrary(configuration)
     const eventBroadcaster = new EventEmitter()
     const cleanup = await this.initializeFormatters({
       eventBroadcaster,
@@ -90,13 +90,32 @@ export default class Cli {
       featurePaths: configuration.featurePaths,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions)
     })
-    const runtime = new Runtime({
-      eventBroadcaster,
-      options: configuration.runtimeOptions,
-      supportCodeLibrary,
-      testCases
-    })
-    const success = await runtime.start()
+    let success
+    if (configuration.parallel) {
+      await new Promise(resolve => {
+        const parallelRuntime = new ParallelRuntime({
+          eventBroadcaster,
+          options: configuration.runtimeOptions,
+          supportCodePaths: configuration.supportCodePaths,
+          supportCodeRequiredModules: configuration.supportCodeRequiredModules,
+          testCases,
+          numberOfSlaves: 7,
+          onFinish: s => {
+            success = s
+            resolve()
+          }
+        })
+        parallelRuntime.run()
+      })
+    } else {
+      const runtime = new Runtime({
+        eventBroadcaster,
+        options: configuration.runtimeOptions,
+        supportCodeLibrary,
+        testCases
+      })
+      success = await runtime.start()
+    }
     await cleanup()
     return {
       shouldExitImmediately: configuration.shouldExitImmediately,

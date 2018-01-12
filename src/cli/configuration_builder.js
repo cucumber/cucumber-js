@@ -27,6 +27,7 @@ export default class ConfigurationBuilder {
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
     let featurePaths = []
     let supportCodePaths = []
+    let supportCodeRequiredModules = []
     if (!listI18nKeywordsFor && !listI18nLanguages) {
       featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
       const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
@@ -34,9 +35,11 @@ export default class ConfigurationBuilder {
         this.options.require.length > 0
           ? this.options.require
           : featureDirectoryPaths
-      supportCodePaths = await this.expandSupportCodePaths(
+      const result = await this.expandSupportCodePaths(
         unexpandedSupportCodePaths
       )
+      supportCodePaths = result.paths
+      supportCodeRequiredModules = result.modules
     }
     return {
       featureDefaultLanguage: this.options.language,
@@ -45,6 +48,7 @@ export default class ConfigurationBuilder {
       formatOptions: this.getFormatOptions(),
       listI18nKeywordsFor,
       listI18nLanguages,
+      parallel: !!this.options.parallel,
       profiles: this.options.profile,
       pickleFilterOptions: {
         featurePaths: unexpandedFeaturePaths,
@@ -59,7 +63,8 @@ export default class ConfigurationBuilder {
         worldParameters: this.options.worldParameters
       },
       shouldExitImmediately: !!this.options.exit,
-      supportCodePaths
+      supportCodePaths,
+      supportCodeRequiredModules
     }
   }
 
@@ -132,14 +137,18 @@ export default class ConfigurationBuilder {
 
   async expandSupportCodePaths(supportCodePaths) {
     const extensions = ['js']
+    const modules = []
     this.options.compiler.forEach(compiler => {
       const [extension, module] = OptionSplitter.split(compiler)
       extensions.push(extension)
-      require(module)
+      modules.push(module)
     })
-    return await this.pathExpander.expandPathsWithExtensions(
-      supportCodePaths,
-      extensions
-    )
+    return {
+      modules,
+      paths: await this.pathExpander.expandPathsWithExtensions(
+        supportCodePaths,
+        extensions
+      )
+    }
   }
 }
