@@ -48,7 +48,7 @@ export default class ConfigurationBuilder {
       formatOptions: this.getFormatOptions(),
       listI18nKeywordsFor,
       listI18nLanguages,
-      parallel: !!this.options.parallel,
+      parallel: this.options.parallel,
       profiles: this.options.profile,
       pickleFilterOptions: {
         featurePaths: unexpandedFeaturePaths,

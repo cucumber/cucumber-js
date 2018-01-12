@@ -99,7 +99,7 @@ export default class Cli {
           supportCodePaths: configuration.supportCodePaths,
           supportCodeRequiredModules: configuration.supportCodeRequiredModules,
           testCases,
-          numberOfSlaves: 7,
+          numberOfSlaves: configuration.parallel,
           onFinish: s => {
             success = s
             resolve()

@@ -94,7 +94,12 @@ export default class ArgvParser {
         ArgvParser.collect,
         []
       )
-      .option('--parallel', 'run in parallel')
+      .option(
+        '--parallel <NUMBER_OF_SLAVES>',
+        'run in parallel with the given number of slaves',
+        parseInt,
+        0
+      )
       .option(
         '-r, --require <FILE|DIR>',
         'require files before executing features (repeatable)',

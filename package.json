@@ -201,7 +201,7 @@
     "build-local-continuous": "babel src --watch -d lib --ignore '**/*_spec.js'",
     "build-local": "babel src -d lib --ignore '**/*_spec.js'",
     "build-release": "BABEL_ENV=browser browserify src/index.js -o dist/cucumber.js -t babelify --standalone Cucumber",
-    "feature-test": "time node ./bin/cucumber.js --parallel",
+    "feature-test": "time node ./bin/cucumber.js",
     "lint-dependencies": "dependency-lint",
     "lint-code": "eslint \"{example,features,scripts,src,test}/**/*.js\"",
     "lint-autofix": "eslint --fix \"{example,features,scripts,src,test}/**/*.js\"",
