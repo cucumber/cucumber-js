@@ -4,7 +4,7 @@ import ansiHTML from 'ansi-html'
 
 let featureEditor, stepDefinitionsEditor, $output
 
-function runFeature() {
+function runFeature () {
   $output.empty()
   $('a[href="#output-tab"]').tab('show')
 
@@ -22,7 +22,7 @@ function runFeature() {
   })
 
   Cucumber.supportCodeLibraryBuilder.reset('')
-  new Function(stepDefinitionsEditor.getValue())()
+  new Function(stepDefinitionsEditor.getValue())() // eslint-disable-line no-new-func
   let supportCodeLibrary = Cucumber.supportCodeLibraryBuilder.finalize()
 
   let formatterOptions = {
@@ -30,7 +30,7 @@ function runFeature() {
     cwd: '/',
     eventBroadcaster,
     eventDataCollector,
-    log(data) {
+    log (data) {
       appendToOutput(ansiHTML(data))
     },
     supportCodeLibrary
@@ -46,18 +46,18 @@ function runFeature() {
   return runtime.start()
 }
 
-function appendToOutput(data) {
+function appendToOutput (data) {
   $output.append(data)
   $output.scrollTop($output.prop('scrollHeight'))
 }
 
-function displayError(error) {
+function displayError (error) {
   let errorContainer = $('<div>')
   errorContainer.addClass('error').text(error.stack || error)
   appendToOutput(errorContainer)
 }
 
-$(function() {
+$(function () {
   featureEditor = ace.edit('feature')
   featureEditor.getSession().setMode('ace/mode/gherkin')
 
@@ -68,9 +68,9 @@ $(function() {
 
   window.onerror = displayError
 
-  $('#run-feature').click(function() {
+  $('#run-feature').click(function () {
     runFeature()
-      .then(function(success) {
+      .then(function (success) {
         let exitStatus = success ? '0' : '1'
         let exitStatusContainer = $('<div>')
         exitStatusContainer

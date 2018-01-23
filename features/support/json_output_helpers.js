@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import util from 'util'
 
-export function getScenarioNames(features) {
+export function getScenarioNames (features) {
   return _.chain(features)
     .map('elements')
     .flatten()
@@ -9,7 +9,7 @@ export function getScenarioNames(features) {
     .value()
 }
 
-export function getSteps(features) {
+export function getSteps (features) {
   return _.chain(features)
     .map('elements')
     .flatten()
@@ -18,7 +18,7 @@ export function getSteps(features) {
     .value()
 }
 
-export function findScenario({ features, scenarioPredicate }) {
+export function findScenario ({ features, scenarioPredicate }) {
   const scenario = _.chain(features)
     .map('elements')
     .flatten()
@@ -31,7 +31,7 @@ export function findScenario({ features, scenarioPredicate }) {
   }
 }
 
-export function findStep({ features, stepPredicate, scenarioPredicate }) {
+export function findStep ({ features, stepPredicate, scenarioPredicate }) {
   let steps
   if (scenarioPredicate) {
     steps = findScenario({ features, scenarioPredicate }).steps
@@ -55,8 +55,8 @@ export function findStep({ features, stepPredicate, scenarioPredicate }) {
   }
 }
 
-export function neutraliseVariableValues(report) {
-  report.forEach(function(item) {
+export function neutraliseVariableValues (report) {
+  report.forEach(function (item) {
     ;(item.elements || []).forEach(element => {
       ;(element.steps || []).forEach(step => {
         if ('result' in step) {

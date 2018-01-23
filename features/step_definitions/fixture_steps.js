@@ -6,7 +6,7 @@ import { normalizeEventProtocolOutput } from '../support/event_protocol_output_h
 import fs from 'mz/fs'
 import path from 'path'
 
-Then('the output matches the fixture {string}', async function(filePath) {
+Then('the output matches the fixture {string}', async function (filePath) {
   const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
   const expected = await fs.readFile(fixturePath, 'utf8')
   const normalizedActual = normalizeEventProtocolOutput(this.lastRun.output)
