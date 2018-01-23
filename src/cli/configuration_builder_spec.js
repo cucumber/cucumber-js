@@ -33,6 +33,7 @@ describe('Configuration', function() {
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
+        parallel: 0,
         pickleFilterOptions: {
           featurePaths: ['features'],
           names: [],
@@ -47,7 +48,8 @@ describe('Configuration', function() {
           worldParameters: {}
         },
         shouldExitImmediately: false,
-        supportCodePaths: []
+        supportCodePaths: [],
+        supportCodeRequiredModules: []
       })
     })
   })
