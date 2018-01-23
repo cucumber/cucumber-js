@@ -10,15 +10,15 @@ const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
-Before('@debug', function () {
+Before('@debug', function() {
   this.debug = true
 })
 
-Before('@spawn', function () {
+Before('@spawn', function() {
   this.spawn = true
 })
 
-Before(function () {
+Before(function() {
   const tmpObject = tmp.dirSync({ unsafeCleanup: true })
   this.tmpDir = fs.realpathSync(tmpObject.name)
 
@@ -47,7 +47,7 @@ Before(function () {
   this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber.js')
 })
 
-Before('@global-install', function () {
+Before('@global-install', function() {
   const tmpObject = tmp.dirSync({ unsafeCleanup: true })
 
   const globalInstallNodeModulesPath = path.join(tmpObject.name, 'node_modules')
@@ -86,14 +86,11 @@ Before('@global-install', function () {
   )
 })
 
-After(function () {
+After(function() {
   if (this.lastRun.error && !this.verifiedLastRunError) {
     throw new Error(
-      'Last run errored unexpectedly. Output:\n\n' +
-        this.lastRun.output +
-        '\n\n' +
-        'Error Output:\n\n' +
-        this.lastRun.errorOutput
+      `Last run errored unexpectedly. Output:\n\n${this.lastRun.output}\n\n` +
+        `Error Output:\n\n${this.lastRun.errorOutput}`
     )
   }
 })

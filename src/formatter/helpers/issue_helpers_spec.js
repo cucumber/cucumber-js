@@ -4,8 +4,8 @@ import { formatIssue } from './issue_helpers'
 import figures from 'figures'
 import Gherkin from 'gherkin'
 
-describe('IssueHelpers', function () {
-  beforeEach(function () {
+describe('IssueHelpers', () => {
+  beforeEach(function() {
     const gherkinDocument = new Gherkin.Parser().parse(
       'Feature: my feature\n' +
         '  Scenario: my scenario\n' +
@@ -43,9 +43,9 @@ describe('IssueHelpers', function () {
     this.skippedStepResult = { status: Status.SKIPPED }
   })
 
-  describe('formatIssue', function () {
-    describe('returns the formatted scenario', function () {
-      beforeEach(function () {
+  describe('formatIssue', () => {
+    describe('returns the formatted scenario', () => {
+      beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
@@ -59,7 +59,7 @@ describe('IssueHelpers', function () {
         this.formattedIssue = formatIssue(this.options)
       })
 
-      it('prints the scenario', function () {
+      it('prints the scenario', function() {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
@@ -70,8 +70,8 @@ describe('IssueHelpers', function () {
       })
     })
 
-    describe('with an ambiguous step', function () {
-      beforeEach(function () {
+    describe('with an ambiguous step', () => {
+      beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
@@ -88,7 +88,7 @@ describe('IssueHelpers', function () {
         this.formattedIssue = formatIssue(this.options)
       })
 
-      it('returns the formatted scenario', function () {
+      it('returns the formatted scenario', function() {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
@@ -101,8 +101,8 @@ describe('IssueHelpers', function () {
       })
     })
 
-    describe('with an undefined step', function () {
-      beforeEach(function () {
+    describe('with an undefined step', () => {
+      beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
           sourceLocation: { line: 4, uri: 'a.feature' },
@@ -112,7 +112,7 @@ describe('IssueHelpers', function () {
         this.formattedIssue = formatIssue(this.options)
       })
 
-      it('returns the formatted scenario', function () {
+      it('returns the formatted scenario', function() {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
@@ -126,8 +126,8 @@ describe('IssueHelpers', function () {
       })
     })
 
-    describe('with a pending step', function () {
-      beforeEach(function () {
+    describe('with a pending step', () => {
+      beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
@@ -138,7 +138,7 @@ describe('IssueHelpers', function () {
         this.formattedIssue = formatIssue(this.options)
       })
 
-      it('returns the formatted scenario', function () {
+      it('returns the formatted scenario', function() {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
@@ -149,8 +149,8 @@ describe('IssueHelpers', function () {
       })
     })
 
-    describe('step with data table', function () {
-      beforeEach(function () {
+    describe('step with data table', () => {
+      beforeEach(function() {
         const gherkinDocument = new Gherkin.Parser().parse(
           'Feature: my feature\n' +
             '  Scenario: my scenario\n' +
@@ -174,7 +174,7 @@ describe('IssueHelpers', function () {
         this.formattedIssue = formatIssue(this.options)
       })
 
-      it('returns the formatted scenario', function () {
+      it('returns the formatted scenario', function() {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
@@ -188,8 +188,8 @@ describe('IssueHelpers', function () {
       })
     })
 
-    describe('step with doc string', function () {
-      beforeEach(function () {
+    describe('step with doc string', () => {
+      beforeEach(function() {
         const gherkinDocument = new Gherkin.Parser().parse(
           'Feature: my feature\n' +
             '  Scenario: my scenario\n' +
@@ -216,7 +216,7 @@ describe('IssueHelpers', function () {
         this.formattedIssue = formatIssue(this.options)
       })
 
-      it('returns the formatted scenario', function () {
+      it('returns the formatted scenario', function() {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +

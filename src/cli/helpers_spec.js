@@ -6,9 +6,9 @@ import path from 'path'
 import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
 
-describe('helpers', function () {
-  describe('getTestCasesFromFilesystem', function () {
-    beforeEach(async function () {
+describe('helpers', () => {
+  describe('getTestCasesFromFilesystem', () => {
+    beforeEach(async function() {
       this.onSource = sinon.stub()
       this.onGherkinDocument = sinon.stub()
       this.onPickle = sinon.stub()
@@ -22,8 +22,8 @@ describe('helpers', function () {
       this.eventBroadcaster.on('pickle-rejected', this.onPickleRejected)
     })
 
-    describe('empty feature', function () {
-      beforeEach(async function () {
+    describe('empty feature', () => {
+      beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
@@ -36,11 +36,11 @@ describe('helpers', function () {
         })
       })
 
-      it('returns an empty array', function () {
+      it('returns an empty array', function() {
         expect(this.result).to.eql([])
       })
 
-      it('emits a source event', function () {
+      it('emits a source event', function() {
         expect(this.onSource).to.have.callCount(1)
         expect(this.onSource).to.have.been.calledWith({
           data: '',
@@ -49,22 +49,22 @@ describe('helpers', function () {
         })
       })
 
-      it('emits a gherkin-document event', function () {
+      it('emits a gherkin-document event', function() {
         expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
         expect(arg).to.have.keys(['document', 'uri'])
         expect(arg.uri).to.eql(this.relativeFeaturePath)
       })
 
-      it('does not emit pickle events', function () {
+      it('does not emit pickle events', function() {
         expect(this.onPickle).to.have.callCount(0)
         expect(this.onPickleAccepted).to.have.callCount(0)
         expect(this.onPickleRejected).to.have.callCount(0)
       })
     })
 
-    describe('feature with scenario that does not match the filter', function () {
-      beforeEach(async function () {
+    describe('feature with scenario that does not match the filter', () => {
+      beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
@@ -82,11 +82,11 @@ describe('helpers', function () {
         })
       })
 
-      it('returns an empty array', function () {
+      it('returns an empty array', function() {
         expect(this.result).to.eql([])
       })
 
-      it('emits a source event', function () {
+      it('emits a source event', function() {
         expect(this.onSource).to.have.callCount(1)
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
@@ -95,7 +95,7 @@ describe('helpers', function () {
         })
       })
 
-      it('emits a gherkin-document event', function () {
+      it('emits a gherkin-document event', function() {
         expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
         expect(arg).to.have.keys(['document', 'uri'])
@@ -103,8 +103,8 @@ describe('helpers', function () {
       })
     })
 
-    describe('feature with scenario that matches the filter', function () {
-      beforeEach(async function () {
+    describe('feature with scenario that matches the filter', () => {
+      beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
@@ -120,13 +120,13 @@ describe('helpers', function () {
         })
       })
 
-      it('returns the test case', function () {
+      it('returns the test case', function() {
         expect(this.result).to.have.lengthOf(1)
         expect(this.result[0]).to.have.keys(['pickle', 'uri'])
         expect(this.result[0].uri).to.eql(this.relativeFeaturePath)
       })
 
-      it('emits a source event', function () {
+      it('emits a source event', function() {
         expect(this.onSource).to.have.callCount(1)
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
@@ -135,14 +135,14 @@ describe('helpers', function () {
         })
       })
 
-      it('emits a gherkin-document event', function () {
+      it('emits a gherkin-document event', function() {
         expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
         expect(arg).to.have.keys(['document', 'uri'])
         expect(arg.uri).to.eql(this.relativeFeaturePath)
       })
 
-      it('emits a pickle and pickle-accepted event', function () {
+      it('emits a pickle and pickle-accepted event', function() {
         expect(this.onPickle).to.have.callCount(1)
         expect(this.onPickleAccepted).to.have.callCount(1)
         expect(this.onPickleRejected).to.have.callCount(0)

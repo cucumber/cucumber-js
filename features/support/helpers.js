@@ -1,7 +1,7 @@
 import path from 'path'
 import figures from 'figures'
 
-export function normalizeText (text) {
+export function normalizeText(text) {
   return figures(text)
     .replace(/\033\[[0-9;]*m/g, '')
     .replace(/\r\n|\r/g, '\n')

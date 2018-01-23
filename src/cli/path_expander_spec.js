@@ -4,15 +4,15 @@ import path from 'path'
 import PathExpander from './path_expander'
 import tmp from 'tmp'
 
-describe('PathExpander', function () {
-  describe('expandPathsWithExtensions', function () {
-    beforeEach(async function () {
+describe('PathExpander', () => {
+  describe('expandPathsWithExtensions', () => {
+    beforeEach(async function() {
       this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
       this.pathExpander = new PathExpander(this.tmpDir)
     })
 
-    describe('with a file', function () {
-      beforeEach(async function () {
+    describe('with a file', () => {
+      beforeEach(async function() {
         await fs.writeFile(path.join(this.tmpDir, 'a.ext'), 'content')
         this.results = await this.pathExpander.expandPathsWithExtensions(
           ['a.ext'],
@@ -20,32 +20,32 @@ describe('PathExpander', function () {
         )
       })
 
-      it('returns the file', async function () {
+      it('returns the file', async function() {
         expect(this.results).to.eql([path.join(this.tmpDir, 'a.ext')])
       })
     })
 
-    describe('with a folder', function () {
-      beforeEach(async function () {
+    describe('with a folder', () => {
+      beforeEach(async function() {
         this.subdirectoryPath = path.join(this.tmpDir, 'subdirectory')
         await fs.mkdir(this.subdirectoryPath)
       })
 
-      describe('no files with the extension', function () {
-        beforeEach(async function () {
+      describe('no files with the extension', () => {
+        beforeEach(async function() {
           this.results = await this.pathExpander.expandPathsWithExtensions(
             ['subdirectory'],
             ['ext']
           )
         })
 
-        it('returns an empty array', function () {
+        it('returns an empty array', function() {
           expect(this.results).to.eql([])
         })
       })
 
-      describe('child file with the extension', function () {
-        beforeEach(async function () {
+      describe('child file with the extension', () => {
+        beforeEach(async function() {
           await fs.writeFile(
             path.join(this.subdirectoryPath, 'a.ext'),
             'content'
@@ -56,15 +56,15 @@ describe('PathExpander', function () {
           )
         })
 
-        it('returns the file', async function () {
+        it('returns the file', async function() {
           expect(this.results).to.eql([
             path.join(this.subdirectoryPath, 'a.ext')
           ])
         })
       })
 
-      describe('nested child file with the extension', function () {
-        beforeEach(async function () {
+      describe('nested child file with the extension', () => {
+        beforeEach(async function() {
           this.nestedSubdirectoryPath = path.join(
             this.subdirectoryPath,
             'nested-subdirectory'
@@ -80,7 +80,7 @@ describe('PathExpander', function () {
           )
         })
 
-        it('returns the file', async function () {
+        it('returns the file', async function() {
           expect(this.results).to.eql([
             path.join(this.nestedSubdirectoryPath, 'a.ext')
           ])

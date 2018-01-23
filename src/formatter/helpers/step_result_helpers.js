@@ -2,19 +2,19 @@ import { formatError } from './error_helpers'
 import Status from '../../status'
 import indentString from 'indent-string'
 
-function getAmbiguousStepResultMessage ({ colorFns, testStep }) {
+function getAmbiguousStepResultMessage({ colorFns, testStep }) {
   return colorFns.ambiguous(testStep.result.exception)
 }
 
-function getFailedStepResultMessage ({ colorFns, testStep }) {
+function getFailedStepResultMessage({ colorFns, testStep }) {
   return formatError(testStep.result.exception, colorFns)
 }
 
-function getPendingStepResultMessage ({ colorFns }) {
+function getPendingStepResultMessage({ colorFns }) {
   return colorFns.pending('Pending')
 }
 
-export function getStepMessage ({
+export function getStepMessage({
   colorFns,
   keywordType,
   snippetBuilder,
@@ -38,17 +38,14 @@ export function getStepMessage ({
   }
 }
 
-function getUndefinedStepResultMessage ({
+function getUndefinedStepResultMessage({
   colorFns,
   keywordType,
   snippetBuilder,
   pickleStep
 }) {
   const snippet = snippetBuilder.build({ keywordType, pickleStep })
-  const message =
-    'Undefined. Implement with the following snippet:' +
-    '\n\n' +
-    indentString(snippet, 2) +
-    '\n'
+  const message = `${'Undefined. Implement with the following snippet:' +
+    '\n\n'}${indentString(snippet, 2)}\n`
   return colorFns.undefined(message)
 }

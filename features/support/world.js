@@ -10,7 +10,7 @@ import VError from 'verror'
 import _ from 'lodash'
 
 class World {
-  async run (executablePath, inputArgs) {
+  async run(executablePath, inputArgs) {
     const args = ['node', executablePath]
       .concat(inputArgs, ['--backtrace', '--format', 'json:out.json'])
       .map(arg => {

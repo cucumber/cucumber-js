@@ -3,9 +3,9 @@ import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('UsageJsonFormatter', function () {
-  describe('handleFeaturesResult', function () {
-    beforeEach(function () {
+describe('UsageJsonFormatter', () => {
+  describe('handleFeaturesResult', () => {
+    beforeEach(function() {
       const eventBroadcaster = new EventEmitter()
       this.output = ''
       const logFn = data => {
@@ -77,7 +77,7 @@ describe('UsageJsonFormatter', function () {
       eventBroadcaster.emit('test-run-finished')
     })
 
-    it('outputs the usage in json format', function () {
+    it('outputs the usage in json format', function() {
       const parsedOutput = JSON.parse(this.output)
       expect(parsedOutput).to.eql([
         {

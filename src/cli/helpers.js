@@ -6,8 +6,8 @@ import path from 'path'
 import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
 
-export async function getExpandedArgv ({ argv, cwd }) {
-  let { options } = ArgvParser.parse(argv)
+export async function getExpandedArgv({ argv, cwd }) {
+  const { options } = ArgvParser.parse(argv)
   let fullArgv = argv
   const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
   if (profileArgv.length > 0) {
@@ -16,7 +16,7 @@ export async function getExpandedArgv ({ argv, cwd }) {
   return fullArgv
 }
 
-export async function getTestCasesFromFilesystem ({
+export async function getTestCasesFromFilesystem({
   cwd,
   eventBroadcaster,
   featureDefaultLanguage,
@@ -39,7 +39,7 @@ export async function getTestCasesFromFilesystem ({
   return result
 }
 
-export async function getTestCases ({
+export async function getTestCases({
   eventBroadcaster,
   language,
   pickleFilter,

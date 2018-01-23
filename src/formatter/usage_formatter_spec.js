@@ -3,9 +3,9 @@ import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('UsageFormatter', function () {
-  describe('handleFeaturesResult', function () {
-    beforeEach(function () {
+describe('UsageFormatter', () => {
+  describe('handleFeaturesResult', () => {
+    beforeEach(function() {
       this.eventBroadcaster = new EventEmitter()
       this.output = ''
       const logFn = data => {
@@ -22,18 +22,18 @@ describe('UsageFormatter', function () {
       })
     })
 
-    describe('no step definitions', function () {
-      beforeEach(function () {
+    describe('no step definitions', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs "No step definitions"', function () {
+      it('outputs "No step definitions"', function() {
         expect(this.output).to.eql('No step definitions')
       })
     })
 
-    describe('with one step definition', function () {
-      beforeEach(function () {
+    describe('with one step definition', () => {
+      beforeEach(function() {
         this.stepDefinition = {
           line: 1,
           pattern: '/^abc?$/',
@@ -42,12 +42,12 @@ describe('UsageFormatter', function () {
         this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
       })
 
-      describe('unused', function () {
-        beforeEach(function () {
+      describe('unused', () => {
+        beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished')
         })
 
-        it('outputs the step definition as unused', function () {
+        it('outputs the step definition as unused', function() {
           expect(this.output).to.eql(
             '┌────────────────┬──────────┬────────────┐\n' +
               '│ Pattern / Text │ Duration │ Location   │\n' +
@@ -58,8 +58,8 @@ describe('UsageFormatter', function () {
         })
       })
 
-      describe('used', function () {
-        beforeEach(function () {
+      describe('used', () => {
+        beforeEach(function() {
           const events = Gherkin.generateEvents(
             'Feature: a\nScenario: b\nWhen abc\nThen ab',
             'a.feature'
@@ -90,8 +90,8 @@ describe('UsageFormatter', function () {
           })
         })
 
-        describe('in dry run', function () {
-          beforeEach(function () {
+        describe('in dry run', () => {
+          beforeEach(function() {
             this.eventBroadcaster.emit('test-step-finished', {
               index: 0,
               testCase: this.testCase,
@@ -105,7 +105,7 @@ describe('UsageFormatter', function () {
             this.eventBroadcaster.emit('test-run-finished')
           })
 
-          it('outputs the step definition without durations', function () {
+          it('outputs the step definition without durations', function() {
             expect(this.output).to.eql(
               '┌────────────────┬──────────┬─────────────┐\n' +
                 '│ Pattern / Text │ Duration │ Location    │\n' +
@@ -118,8 +118,8 @@ describe('UsageFormatter', function () {
           })
         })
 
-        describe('not in dry run', function () {
-          beforeEach(function () {
+        describe('not in dry run', () => {
+          beforeEach(function() {
             this.eventBroadcaster.emit('test-step-finished', {
               index: 0,
               testCase: this.testCase,
@@ -133,7 +133,7 @@ describe('UsageFormatter', function () {
             this.eventBroadcaster.emit('test-run-finished')
           })
 
-          it('outputs the step definition with durations in desending order', function () {
+          it('outputs the step definition with durations in desending order', function() {
             expect(this.output).to.eql(
               '┌────────────────┬──────────┬─────────────┐\n' +
                 '│ Pattern / Text │ Duration │ Location    │\n' +
@@ -148,8 +148,8 @@ describe('UsageFormatter', function () {
       })
     })
 
-    describe('with multiple definition', function () {
-      beforeEach(function () {
+    describe('with multiple definition', () => {
+      beforeEach(function() {
         this.supportCodeLibrary.stepDefinitions = [
           {
             line: 1,
@@ -208,7 +208,7 @@ describe('UsageFormatter', function () {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the step definitions ordered by mean duration descending with unused steps at the end', function () {
+      it('outputs the step definitions ordered by mean duration descending with unused steps at the end', function() {
         expect(this.output).to.eql(
           '┌────────────────┬──────────┬─────────────┐\n' +
             '│ Pattern / Text │ Duration │ Location    │\n' +

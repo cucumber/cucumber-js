@@ -13,18 +13,18 @@ import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 
 export default class Cli {
-  constructor ({ argv, cwd, stdout }) {
+  constructor({ argv, cwd, stdout }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
   }
 
-  async getConfiguration () {
+  async getConfiguration() {
     const fullArgv = await getExpandedArgv({ argv: this.argv, cwd: this.cwd })
     return ConfigurationBuilder.build({ argv: fullArgv, cwd: this.cwd })
   }
 
-  async initializeFormatters ({
+  async initializeFormatters({
     eventBroadcaster,
     formatOptions,
     formats,
@@ -35,7 +35,7 @@ export default class Cli {
     await Promise.map(formats, async ({ type, outputTo }) => {
       let stream = this.stdout
       if (outputTo) {
-        let fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
+        const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
         stream = fs.createWriteStream(null, { fd })
         streamsToClose.push(stream)
       }
@@ -49,20 +49,20 @@ export default class Cli {
       }
       return FormatterBuilder.build(type, typeOptions)
     })
-    return function () {
+    return function() {
       return Promise.each(streamsToClose, stream =>
         Promise.promisify(::stream.end)()
       )
     }
   }
 
-  getSupportCodeLibrary (supportCodePaths) {
+  getSupportCodeLibrary(supportCodePaths) {
     supportCodeLibraryBuilder.reset(this.cwd)
     supportCodePaths.forEach(codePath => require(codePath))
     return supportCodeLibraryBuilder.finalize()
   }
 
-  async run () {
+  async run() {
     await validateInstall(this.cwd)
     const configuration = await this.getConfiguration()
     if (configuration.listI18nLanguages) {

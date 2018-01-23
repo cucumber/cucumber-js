@@ -5,8 +5,8 @@ import { EventEmitter } from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('ProgressBarFormatter', function () {
-  beforeEach(function () {
+describe('ProgressBarFormatter', () => {
+  beforeEach(function() {
     this.eventBroadcaster = new EventEmitter()
     this.output = ''
     const logFn = data => {
@@ -24,8 +24,8 @@ describe('ProgressBarFormatter', function () {
     })
   })
 
-  describe('pickle-accepted, test-case-started', function () {
-    beforeEach(function () {
+  describe('pickle-accepted, test-case-started', () => {
+    beforeEach(function() {
       this.eventBroadcaster.emit('pickle-accepted', {
         pickle: { locations: [{ line: 2 }], steps: [1, 2, 3] },
         uri: 'path/to/feature'
@@ -37,13 +37,13 @@ describe('ProgressBarFormatter', function () {
       this.eventBroadcaster.emit('test-case-started')
     })
 
-    it('initializes a progress bar with the total number of steps', function () {
+    it('initializes a progress bar with the total number of steps', function() {
       expect(this.progressBarFormatter.progressBar.total).to.eql(5)
     })
   })
 
-  describe('test-step-finished', function () {
-    beforeEach(function () {
+  describe('test-step-finished', () => {
+    beforeEach(function() {
       this.progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub()
@@ -60,8 +60,8 @@ describe('ProgressBarFormatter', function () {
       })
     })
 
-    describe('step is a hook', function () {
-      beforeEach(function () {
+    describe('step is a hook', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: {
@@ -71,13 +71,13 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('does not increase the progress bar percentage', function () {
+      it('does not increase the progress bar percentage', function() {
         expect(this.progressBarFormatter.progressBar.tick).to.have.callCount(0)
       })
     })
 
-    describe('step is a normal step', function () {
-      beforeEach(function () {
+    describe('step is a normal step', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 1,
           testCase: {
@@ -87,14 +87,14 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('increases the progress bar percentage', function () {
+      it('increases the progress bar percentage', function() {
         expect(this.progressBarFormatter.progressBar.tick).to.have.callCount(1)
       })
     })
   })
 
-  describe('test-case-finished', function () {
-    beforeEach(function () {
+  describe('test-case-finished', () => {
+    beforeEach(function() {
       this.progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub()
@@ -116,8 +116,8 @@ describe('ProgressBarFormatter', function () {
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
     })
 
-    describe('ambiguous', function () {
-      beforeEach(function () {
+    describe('ambiguous', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -143,13 +143,15 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('prints the error', function () {
-        expect(this.progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+      it('prints the error', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(1)
       })
     })
 
-    describe('failed', function () {
-      beforeEach(function () {
+    describe('failed', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -170,13 +172,15 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('prints the error', function () {
-        expect(this.progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+      it('prints the error', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(1)
       })
     })
 
-    describe('passed', function () {
-      beforeEach(function () {
+    describe('passed', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -197,13 +201,15 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('does not print anything', function () {
-        expect(this.progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
+      it('does not print anything', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(0)
       })
     })
 
-    describe('pending', function () {
-      beforeEach(function () {
+    describe('pending', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -224,13 +230,15 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('prints the warning', function () {
-        expect(this.progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+      it('prints the warning', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(1)
       })
     })
 
-    describe('skipped', function () {
-      beforeEach(function () {
+    describe('skipped', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -251,13 +259,15 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('does not print anything', function () {
-        expect(this.progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
+      it('does not print anything', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(0)
       })
     })
 
-    describe('undefined', function () {
-      beforeEach(function () {
+    describe('undefined', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -277,20 +287,22 @@ describe('ProgressBarFormatter', function () {
         })
       })
 
-      it('prints the warning', function () {
-        expect(this.progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
+      it('prints the warning', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(0)
       })
     })
   })
 
-  describe('test-run-finished', function () {
-    beforeEach(function () {
+  describe('test-run-finished', () => {
+    beforeEach(function() {
       this.eventBroadcaster.emit('test-run-finished', {
         result: { duration: 0 }
       })
     })
 
-    it('outputs step totals, scenario totals, and duration', function () {
+    it('outputs step totals, scenario totals, and duration', function() {
       expect(this.output).to.contain(
         '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
       )

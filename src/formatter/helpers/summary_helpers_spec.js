@@ -2,9 +2,9 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import Status from '../../status'
 
-describe('SummaryHelpers', function () {
-  describe('formatSummary', function () {
-    beforeEach(function () {
+describe('SummaryHelpers', () => {
+  describe('formatSummary', () => {
+    beforeEach(function() {
       this.testCaseMap = {}
       this.testRun = { result: { duration: 0 } }
       this.options = {
@@ -14,20 +14,20 @@ describe('SummaryHelpers', function () {
       }
     })
 
-    describe('with no test cases', function () {
-      beforeEach(function () {
+    describe('with no test cases', () => {
+      beforeEach(function() {
         this.result = formatSummary(this.options)
       })
 
-      it('outputs step totals, scenario totals, and duration', function () {
+      it('outputs step totals, scenario totals, and duration', function() {
         expect(this.result).to.contain(
           '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
         )
       })
     })
 
-    describe('with one passing scenario with one passing step', function () {
-      beforeEach(function () {
+    describe('with one passing scenario with one passing step', () => {
+      beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
             {
@@ -40,15 +40,15 @@ describe('SummaryHelpers', function () {
         this.result = formatSummary(this.options)
       })
 
-      it('outputs the totals and number of each status', function () {
+      it('outputs the totals and number of each status', function() {
         expect(this.result).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
-    describe('with one passing scenario with one step and hook', function () {
-      beforeEach(function () {
+    describe('with one passing scenario with one step and hook', () => {
+      beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
             { result: { status: Status.PASSED } },
@@ -62,15 +62,15 @@ describe('SummaryHelpers', function () {
         this.result = formatSummary(this.options)
       })
 
-      it('filter out the hooks', function () {
+      it('filter out the hooks', function() {
         expect(this.result).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
-    describe('with one passing scenario with multiple passing steps', function () {
-      beforeEach(function () {
+    describe('with one passing scenario with multiple passing steps', () => {
+      beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
             {
@@ -87,15 +87,15 @@ describe('SummaryHelpers', function () {
         this.result = formatSummary(this.options)
       })
 
-      it('outputs the totals and number of each status', function () {
+      it('outputs the totals and number of each status', function() {
         expect(this.result).to.contain(
           '1 scenario (1 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
-    describe('with one of every kind of scenario', function () {
-      beforeEach(function () {
+    describe('with one of every kind of scenario', () => {
+      beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
             {
@@ -153,7 +153,7 @@ describe('SummaryHelpers', function () {
         this.result = formatSummary(this.options)
       })
 
-      it('outputs the totals and number of each status', function () {
+      it('outputs the totals and number of each status', function() {
         expect(this.result).to.contain(
           '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
@@ -162,39 +162,39 @@ describe('SummaryHelpers', function () {
       })
     })
 
-    describe('with a duration of 123 milliseconds', function () {
-      beforeEach(function () {
+    describe('with a duration of 123 milliseconds', () => {
+      beforeEach(function() {
         this.testRun.result.duration = 123
         this.result = formatSummary(this.options)
       })
 
-      it('outputs the duration as 0m00.123s', function () {
+      it('outputs the duration as 0m00.123s', function() {
         expect(this.result).to.contain(
           '0 scenarios\n' + '0 steps\n' + '0m00.123s\n'
         )
       })
     })
 
-    describe('with a duration of 12.3 seconds', function () {
-      beforeEach(function () {
+    describe('with a duration of 12.3 seconds', () => {
+      beforeEach(function() {
         this.testRun.result.duration = 123 * 100
         this.result = formatSummary(this.options)
       })
 
-      it('outputs the duration as 0m12.300s', function () {
+      it('outputs the duration as 0m12.300s', function() {
         expect(this.result).to.contain(
           '0 scenarios\n' + '0 steps\n' + '0m12.300s\n'
         )
       })
     })
 
-    describe('with a duration of 120.3 seconds', function () {
-      beforeEach(function () {
+    describe('with a duration of 120.3 seconds', () => {
+      beforeEach(function() {
         this.testRun.result.duration = 123 * 1000
         this.result = formatSummary(this.options)
       })
 
-      it('outputs the duration as 2m03.000s', function () {
+      it('outputs the duration as 2m03.000s', function() {
         expect(this.result).to.contain(
           '0 scenarios\n' + '0 steps\n' + '2m03.000s\n'
         )

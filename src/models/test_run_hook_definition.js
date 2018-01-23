@@ -1,15 +1,15 @@
 import StepDefinition from './step_definition'
 
 export default class TestRunHookDefinition extends StepDefinition {
-  getInvalidCodeLengthMessage () {
+  getInvalidCodeLengthMessage() {
     return this.buildInvalidCodeLengthMessage('0', '1')
   }
 
-  getInvocationParameters () {
+  getInvocationParameters() {
     return []
   }
 
-  getValidCodeLengths () {
+  getValidCodeLengths() {
     return [0, 1]
   }
 }

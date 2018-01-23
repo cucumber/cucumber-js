@@ -1,8 +1,8 @@
 import TestCaseHookDefinition from './test_case_hook_definition'
 
-describe('TestCaseHookDefinition', function () {
-  describe('appliesToTestCase', function () {
-    beforeEach(function () {
+describe('TestCaseHookDefinition', () => {
+  describe('appliesToTestCase', () => {
+    beforeEach(function() {
       this.input = {
         pickle: {
           tags: []
@@ -11,40 +11,46 @@ describe('TestCaseHookDefinition', function () {
       }
     })
 
-    describe('no tags', function () {
-      beforeEach(function () {
+    describe('no tags', () => {
+      beforeEach(function() {
         this.testCaseHookDefinition = new TestCaseHookDefinition({
           options: {}
         })
       })
 
-      it('returns true', function () {
-        expect(this.testCaseHookDefinition.appliesToTestCase(this.input)).to.eql(true)
+      it('returns true', function() {
+        expect(
+          this.testCaseHookDefinition.appliesToTestCase(this.input)
+        ).to.eql(true)
       })
     })
 
-    describe('tags match', function () {
-      beforeEach(function () {
+    describe('tags match', () => {
+      beforeEach(function() {
         this.input.pickle.tags = [{ name: '@tagA' }]
         this.testCaseHookDefinition = new TestCaseHookDefinition({
           options: { tags: '@tagA' }
         })
       })
 
-      it('returns true', function () {
-        expect(this.testCaseHookDefinition.appliesToTestCase(this.input)).to.eql(true)
+      it('returns true', function() {
+        expect(
+          this.testCaseHookDefinition.appliesToTestCase(this.input)
+        ).to.eql(true)
       })
     })
 
-    describe('tags do not match', function () {
-      beforeEach(function () {
+    describe('tags do not match', () => {
+      beforeEach(function() {
         this.testCaseHookDefinition = new TestCaseHookDefinition({
           options: { tags: '@tagA' }
         })
       })
 
-      it('returns false', function () {
-        expect(this.testCaseHookDefinition.appliesToTestCase(this.input)).to.eql(false)
+      it('returns false', function() {
+        expect(
+          this.testCaseHookDefinition.appliesToTestCase(this.input)
+        ).to.eql(false)
       })
     })
   })

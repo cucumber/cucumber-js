@@ -28,12 +28,12 @@ const IS_ISSUE = {
   [Status.UNDEFINED]: true
 }
 
-function formatDataTable (arg) {
-  const rows = arg.rows.map(row => {
-    return row.cells.map(cell => {
-      return cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
-    })
-  })
+function formatDataTable(arg) {
+  const rows = arg.rows.map(row =>
+    row.cells.map(cell =>
+      cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
+    )
+  )
   const table = new Table({
     chars: {
       bottom: '',
@@ -58,15 +58,15 @@ function formatDataTable (arg) {
       'padding-right': 1
     }
   })
-  table.push.apply(table, rows)
+  table.push(...rows)
   return table.toString()
 }
 
-function formatDocString (arg) {
-  return '"""\n' + arg.content + '\n"""'
+function formatDocString(arg) {
+  return `"""\n${arg.content}\n"""`
 }
 
-function formatStep ({
+function formatStep({
   colorFns,
   isBeforeHook,
   keyword,
@@ -85,11 +85,11 @@ function formatStep ({
     identifier = isBeforeHook ? 'Before' : 'After'
   }
 
-  let text = colorFn(CHARACTERS[status] + ' ' + identifier)
+  let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
 
   const { actionLocation } = testStep
   if (actionLocation) {
-    text += ' # ' + colorFns.location(formatLocation(actionLocation))
+    text += ` # ${colorFns.location(formatLocation(actionLocation))}`
   }
   text += '\n'
 
@@ -101,7 +101,7 @@ function formatStep ({
     })
     _.each(pickleStep.arguments, iterator)
     if (str) {
-      text += indentString(colorFn(str) + '\n', 4)
+      text += indentString(`${colorFn(str)}\n`, 4)
     }
   }
   const message = getStepMessage({
@@ -112,16 +112,16 @@ function formatStep ({
     testStep
   })
   if (message) {
-    text += indentString(message, 4) + '\n'
+    text += `${indentString(message, 4)}\n`
   }
   return text
 }
 
-export function isIssue (status) {
+export function isIssue(status) {
   return IS_ISSUE[status]
 }
 
-export function formatIssue ({
+export function formatIssue({
   colorFns,
   gherkinDocument,
   number,
@@ -129,15 +129,10 @@ export function formatIssue ({
   snippetBuilder,
   testCase
 }) {
-  const prefix = number + ') '
+  const prefix = `${number}) `
   let text = prefix
   const scenarioLocation = formatLocation(testCase.sourceLocation)
-  text +=
-    'Scenario: ' +
-    pickle.name +
-    ' # ' +
-    colorFns.location(scenarioLocation) +
-    '\n'
+  text += `Scenario: ${pickle.name} # ${colorFns.location(scenarioLocation)}\n`
   const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
   const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
   let isBeforeHook = true
@@ -166,5 +161,5 @@ export function formatIssue ({
     text += indentString(formattedStep, prefix.length)
     previousKeywordType = keywordType
   })
-  return text + '\n'
+  return `${text}\n`
 }

@@ -1,7 +1,7 @@
 import colors from 'colors/safe'
 import Status from '../status'
 
-export default function getColorFns (enabled) {
+export default function getColorFns(enabled) {
   colors.enabled = enabled
   colors.setTheme({
     [Status.AMBIGUOUS]: 'red',

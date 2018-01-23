@@ -1,3 +1,3 @@
-export function formatLocation (obj) {
+export function formatLocation(obj) {
   return `${obj.uri}:${obj.line}`
 }

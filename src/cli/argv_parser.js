@@ -5,40 +5,40 @@ import path from 'path'
 import Gherkin from 'gherkin'
 
 export default class ArgvParser {
-  static collect (val, memo) {
+  static collect(val, memo) {
     memo.push(val)
     return memo
   }
 
-  static mergeJson (option) {
-    return function (str, memo) {
+  static mergeJson(option) {
+    return function(str, memo) {
       let val
       try {
         val = JSON.parse(str)
       } catch (error) {
         throw new Error(
-          option + ' passed invalid JSON: ' + error.message + ': ' + str
+          `${option} passed invalid JSON: ${error.message}: ${str}`
         )
       }
       if (!_.isPlainObject(val)) {
-        throw new Error(option + ' must be passed JSON of an object: ' + str)
+        throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
       return _.merge(memo, val)
     }
   }
 
-  static mergeTags (val, memo) {
+  static mergeTags(val, memo) {
     return memo === '' ? `(${val})` : `${memo} and (${val})`
   }
 
-  static validateLanguage (val) {
+  static validateLanguage(val) {
     if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
-      throw new Error('Unsupported ISO 639-1: ' + val)
+      throw new Error(`Unsupported ISO 639-1: ${val}`)
     }
     return val
   }
 
-  static parse (argv) {
+  static parse(argv) {
     const program = new Command(path.basename(argv[1]))
 
     program

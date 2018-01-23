@@ -3,42 +3,41 @@ import stackChain from 'stack-chain'
 import path from 'path'
 
 export default class StackTraceFilter {
-  constructor () {
+  constructor() {
     this.cucumberPath = path.join(__dirname, '..', '..')
   }
 
-  filter () {
-    this.currentFilter = stackChain.filter.attach((_, frames) => {
+  filter() {
+    this.currentFilter = stackChain.filter.attach((_err, frames) => {
       if (this.isErrorInCucumber(frames)) {
         return frames
       }
       const index = _.findIndex(frames, ::this.isFrameInCucumber)
       if (index === -1) {
         return frames
-      } else {
-        return frames.slice(0, index)
       }
+      return frames.slice(0, index)
     })
   }
 
-  isErrorInCucumber (frames) {
+  isErrorInCucumber(frames) {
     const filteredFrames = _.reject(frames, ::this.isFrameInNode)
     return (
       filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
     )
   }
 
-  isFrameInCucumber (frame) {
+  isFrameInCucumber(frame) {
     const fileName = frame.getFileName() || ''
     return _.startsWith(fileName, this.cucumberPath)
   }
 
-  isFrameInNode (frame) {
+  isFrameInNode(frame) {
     const fileName = frame.getFileName() || ''
     return !_.includes(fileName, path.sep)
   }
 
-  unfilter () {
+  unfilter() {
     stackChain.filter.deattach(this.currentFilter)
   }
 }

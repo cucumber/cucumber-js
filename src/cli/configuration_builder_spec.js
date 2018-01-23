@@ -6,8 +6,8 @@ import tmp from 'tmp'
 
 const outputFile = promisify(fsExtra.outputFile)
 
-describe('Configuration', function () {
-  beforeEach(async function () {
+describe('Configuration', () => {
+  beforeEach(async function() {
     this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
     await promisify(fsExtra.mkdirp)(path.join(this.tmpDir, 'features'))
     this.argv = ['path/to/node', 'path/to/cucumber.js']
@@ -17,12 +17,12 @@ describe('Configuration', function () {
     }
   })
 
-  describe('no argv', function () {
-    beforeEach(async function () {
+  describe('no argv', () => {
+    beforeEach(async function() {
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
 
-    it('returns the default configuration', function () {
+    it('returns the default configuration', function() {
       expect(this.result).to.eql({
         featureDefaultLanguage: '',
         featurePaths: [],
@@ -52,8 +52,8 @@ describe('Configuration', function () {
     })
   })
 
-  describe('path to a feature', function () {
-    beforeEach(async function () {
+  describe('path to a feature', () => {
+    beforeEach(async function() {
       this.relativeFeaturePath = path.join('features', 'a.feature')
       this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
       await outputFile(this.featurePath, '')
@@ -63,7 +63,7 @@ describe('Configuration', function () {
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
 
-    it('returns the appropriate feature and support code paths', async function () {
+    it('returns the appropriate feature and support code paths', async function() {
       const {
         featurePaths,
         pickleFilterOptions,
@@ -77,8 +77,8 @@ describe('Configuration', function () {
     })
   })
 
-  describe('path to a nested feature', function () {
-    beforeEach(async function () {
+  describe('path to a nested feature', () => {
+    beforeEach(async function() {
       this.relativeFeaturePath = path.join('features', 'nested', 'a.feature')
       this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
       await outputFile(this.featurePath, '')
@@ -88,7 +88,7 @@ describe('Configuration', function () {
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
 
-    it('returns the appropriate feature and support code paths', async function () {
+    it('returns the appropriate feature and support code paths', async function() {
       const {
         featurePaths,
         pickleFilterOptions,
@@ -102,13 +102,13 @@ describe('Configuration', function () {
     })
   })
 
-  describe('formatters', function () {
-    it('adds a default', async function () {
+  describe('formatters', () => {
+    it('adds a default', async function() {
       const formats = await getFormats(this.configurationOptions)
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
     })
 
-    it('splits relative unix paths', async function () {
+    it('splits relative unix paths', async function() {
       this.argv.push('-f', '../custom/formatter:../formatter/output.txt')
       const formats = await getFormats(this.configurationOptions)
 
@@ -118,7 +118,7 @@ describe('Configuration', function () {
       ])
     })
 
-    it('splits absolute unix paths', async function () {
+    it('splits absolute unix paths', async function() {
       this.argv.push('-f', '/custom/formatter:/formatter/output.txt')
       const formats = await getFormats(this.configurationOptions)
 
@@ -128,7 +128,7 @@ describe('Configuration', function () {
       ])
     })
 
-    it('splits absolute windows paths', async function () {
+    it('splits absolute windows paths', async function() {
       this.argv.push('-f', 'C:\\custom\\formatter:D:\\formatter\\output.txt')
       const formats = await getFormats(this.configurationOptions)
 
@@ -138,14 +138,14 @@ describe('Configuration', function () {
       ])
     })
 
-    it('does not split absolute windows paths without an output', async function () {
+    it('does not split absolute windows paths without an output', async function() {
       this.argv.push('-f', 'C:\\custom\\formatter')
       const formats = await getFormats(this.configurationOptions)
 
       expect(formats).to.eql([{ outputTo: '', type: 'C:\\custom\\formatter' }])
     })
 
-    async function getFormats (options) {
+    async function getFormats(options) {
       const result = await ConfigurationBuilder.build(options)
       return result.formats
     }

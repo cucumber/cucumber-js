@@ -1,13 +1,13 @@
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 
-describe('JavascriptSnippetSyntax', function () {
-  describe('build()', function () {
-    describe('callback interface', function () {
-      beforeEach(function () {
+describe('JavascriptSnippetSyntax', () => {
+  describe('build()', () => {
+    describe('callback interface', () => {
+      beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('callback')
       })
 
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', function() {
         const actual = this.syntax.build({
           comment: 'comment',
           functionName: 'functionName',
@@ -28,12 +28,12 @@ describe('JavascriptSnippetSyntax', function () {
       })
     })
 
-    describe('generator interface', function () {
-      beforeEach(function () {
+    describe('generator interface', () => {
+      beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('generator')
       })
 
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', function() {
         const actual = this.syntax.build({
           comment: 'comment',
           functionName: 'functionName',
@@ -54,12 +54,12 @@ describe('JavascriptSnippetSyntax', function () {
       })
     })
 
-    describe('promise interface', function () {
-      beforeEach(function () {
+    describe('promise interface', () => {
+      beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('promise')
       })
 
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', function() {
         const actual = this.syntax.build({
           comment: 'comment',
           functionName: 'functionName',
@@ -80,12 +80,12 @@ describe('JavascriptSnippetSyntax', function () {
       })
     })
 
-    describe('synchronous interface', function () {
-      beforeEach(function () {
+    describe('synchronous interface', () => {
+      beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')
       })
 
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', function() {
         const actual = this.syntax.build({
           comment: 'comment',
           functionName: 'functionName',
@@ -106,12 +106,12 @@ describe('JavascriptSnippetSyntax', function () {
       })
     })
 
-    describe('pattern contains single quote', function () {
-      beforeEach(function () {
+    describe('pattern contains single quote', () => {
+      beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')
       })
 
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', function() {
         const actual = this.syntax.build({
           comment: 'comment',
           functionName: 'functionName',
@@ -132,12 +132,12 @@ describe('JavascriptSnippetSyntax', function () {
       })
     })
 
-    describe('multiple patterns', function () {
-      beforeEach(function () {
+    describe('multiple patterns', () => {
+      beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')
       })
 
-      it('returns the snippet with the other choices commented out', function () {
+      it('returns the snippet with the other choices commented out', function() {
         const actual = this.syntax.build({
           comment: 'comment',
           functionName: 'functionName',

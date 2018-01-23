@@ -1,11 +1,11 @@
 const CALLBACK_NAME = 'callback'
 
 export default class JavaScriptSnippetSyntax {
-  constructor (snippetInterface) {
+  constructor(snippetInterface) {
     this.snippetInterface = snippetInterface
   }
 
-  build ({ comment, generatedExpressions, functionName, stepParameterNames }) {
+  build({ comment, generatedExpressions, functionName, stepParameterNames }) {
     let functionKeyword = 'function '
     if (this.snippetInterface === 'generator') {
       functionKeyword += '*'
@@ -27,25 +27,17 @@ export default class JavaScriptSnippetSyntax {
         if (this.snippetInterface === 'callback') {
           allParameterNames.push(CALLBACK_NAME)
         }
-        return (
-          prefix +
-          functionName +
-          "('" +
-          generatedExpression.source.replace(/'/g, "\\'") +
-          "', " +
-          functionKeyword +
-          '(' +
-          allParameterNames.join(', ') +
-          ') {\n'
-        )
+        return `${prefix + functionName}('${generatedExpression.source.replace(
+          /'/g,
+          "\\'"
+        )}', ${functionKeyword}(${allParameterNames.join(', ')}) {\n`
       }
     )
 
     return (
-      definitionChoices.join('') +
-      `  // ${comment}\n` +
+      `${definitionChoices.join('')}  // ${comment}\n` +
       `  ${implementation}\n` +
-      '});'
+      `});`
     )
   }
 }

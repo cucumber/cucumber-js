@@ -6,13 +6,11 @@ import sinonChai from 'sinon-chai'
 
 chai.use(sinonChai)
 
-function createMock (input) {
+function createMock(input) {
   if (_.isArray(input)) {
     input = _.zipObject(input)
   }
-  return _.mapValues(input, value => {
-    return sinon.stub().returns(value)
-  })
+  return _.mapValues(input, value => sinon.stub().returns(value))
 }
 
 _.assign(global, {

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-export function getScenarioDescription ({
+export function getScenarioDescription({
   pickle,
   scenarioLineToDescriptionMap
 }) {
@@ -11,7 +11,7 @@ export function getScenarioDescription ({
     .value()
 }
 
-export function getStepKeyword ({ pickleStep, stepLineToKeywordMap }) {
+export function getStepKeyword({ pickleStep, stepLineToKeywordMap }) {
   return _.chain(pickleStep.locations)
     .map(({ line }) => stepLineToKeywordMap[line])
     .compact()
@@ -19,7 +19,7 @@ export function getStepKeyword ({ pickleStep, stepLineToKeywordMap }) {
     .value()
 }
 
-export function getStepLineToPickledStepMap (pickle) {
+export function getStepLineToPickledStepMap(pickle) {
   return _.chain(pickle.steps)
     .map(step => [_.last(step.locations).line, step])
     .fromPairs()

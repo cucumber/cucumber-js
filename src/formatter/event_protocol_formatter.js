@@ -20,7 +20,7 @@ const EVENT_NAMES = [
 ]
 
 export default class EventProtocolFormatter extends Formatter {
-  constructor (options) {
+  constructor(options) {
     super(options)
     EVENT_NAMES.forEach(eventName => {
       options.eventBroadcaster.on(eventName, data =>
@@ -34,19 +34,18 @@ export default class EventProtocolFormatter extends Formatter {
     this.pathRegexp = new RegExp(escapeStringRegexp(pathToRemove), 'g')
   }
 
-  logEvent (eventName, data) {
+  logEvent(eventName, data) {
     const text = JSON.stringify(
       { type: eventName, ...data },
       ::this.formatJsonData
     )
-    this.log(text + '\n')
+    this.log(`${text}\n`)
   }
 
-  formatJsonData (key, value) {
+  formatJsonData(key, value) {
     if (value instanceof Error) {
       return value.stack.replace(this.pathRegexp, '')
-    } else {
-      return value
     }
+    return value
   }
 }

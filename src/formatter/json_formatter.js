@@ -17,31 +17,29 @@ const {
 } = PickleParser
 
 export default class JsonFormatter extends Formatter {
-  constructor (options) {
+  constructor(options) {
     super(options)
     options.eventBroadcaster.on('test-run-finished', ::this.onTestRunFinished)
   }
 
-  convertNameToId (obj) {
+  convertNameToId(obj) {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable (dataTable) {
+  formatDataTable(dataTable) {
     return {
-      rows: dataTable.rows.map(row => {
-        return { cells: _.map(row.cells, 'value') }
-      })
+      rows: dataTable.rows.map(row => ({ cells: _.map(row.cells, 'value') }))
     }
   }
 
-  formatDocString (docString) {
+  formatDocString(docString) {
     return {
       content: docString.content,
       line: docString.location.line
     }
   }
 
-  formatStepArguments (stepArguments) {
+  formatStepArguments(stepArguments) {
     const iterator = buildStepArgumentIterator({
       dataTable: this.formatDataTable.bind(this),
       docString: this.formatDocString.bind(this)
@@ -49,7 +47,7 @@ export default class JsonFormatter extends Formatter {
     return _.map(stepArguments, iterator)
   }
 
-  onTestRunFinished () {
+  onTestRunFinished() {
     const groupedTestCases = {}
     _.each(this.eventDataCollector.testCaseMap, testCase => {
       const { sourceLocation: { uri } } = testCase
@@ -92,7 +90,7 @@ export default class JsonFormatter extends Formatter {
     this.log(JSON.stringify(features, null, 2))
   }
 
-  getFeatureData (feature, uri) {
+  getFeatureData(feature, uri) {
     return {
       description: feature.description,
       keyword: feature.keyword,
@@ -104,14 +102,14 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  getScenarioData ({ featureId, pickle, scenarioLineToDescriptionMap }) {
+  getScenarioData({ featureId, pickle, scenarioLineToDescriptionMap }) {
     const description = getScenarioDescription({
       pickle,
       scenarioLineToDescriptionMap
     })
     return {
       description,
-      id: featureId + ';' + this.convertNameToId(pickle),
+      id: `${featureId};${this.convertNameToId(pickle)}`,
       keyword: 'Scenario',
       line: pickle.locations[0].line,
       name: pickle.name,
@@ -120,7 +118,7 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  getStepData ({
+  getStepData({
     isBeforeHook,
     stepLineToKeywordMap,
     stepLineToPickledStepMap,
@@ -152,19 +150,18 @@ export default class JsonFormatter extends Formatter {
       }
     }
     if (_.size(testStep.attachments) > 0) {
-      data.embeddings = testStep.attachments.map(attachment => {
-        return {
-          data: attachment.data,
-          mime_type: attachment.media.type
-        }
-      })
+      data.embeddings = testStep.attachments.map(attachment => ({
+        data: attachment.data,
+        mime_type: attachment.media.type
+      }))
     }
     return data
   }
 
-  getTags (obj) {
-    return _.map(obj.tags, tagData => {
-      return { name: tagData.name, line: tagData.location.line }
-    })
+  getTags(obj) {
+    return _.map(obj.tags, tagData => ({
+      name: tagData.name,
+      line: tagData.location.line
+    }))
   }
 }

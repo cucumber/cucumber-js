@@ -1,20 +1,23 @@
 import AttachmentManager from './'
 import stream from 'stream'
 
-describe('AttachmentManager', function () {
-  describe('create()', function () {
-    beforeEach(function () {
+describe('AttachmentManager', () => {
+  describe('create()', () => {
+    beforeEach(function() {
       this.onAttachment = sinon.stub()
       this.attachmentManager = new AttachmentManager(this.onAttachment)
     })
 
-    describe('buffer', function () {
-      describe('with mime type', function () {
-        beforeEach(function () {
-          this.attachmentManager.create(Buffer.from('my string'), 'text/special')
+    describe('buffer', () => {
+      describe('with mime type', () => {
+        beforeEach(function() {
+          this.attachmentManager.create(
+            Buffer.from('my string'),
+            'text/special'
+          )
         })
 
-        it('adds the data and media', function () {
+        it('adds the data and media', function() {
           expect(this.onAttachment).to.have.callCount(1)
           const attachment = this.onAttachment.firstCall.args[0]
           const encodedData = attachment.data
@@ -28,8 +31,8 @@ describe('AttachmentManager', function () {
         })
       })
 
-      describe('without media type', function () {
-        it('throws', function () {
+      describe('without media type', () => {
+        it('throws', function() {
           expect(() => {
             this.attachmentManager.create(Buffer.from('my string'))
           }).to.throw('Buffer attachments must specify a media type')
@@ -37,27 +40,27 @@ describe('AttachmentManager', function () {
       })
     })
 
-    describe('readable stream', function () {
-      describe('with mime type', function () {
-        describe('with callback', function () {
-          beforeEach(function (done) {
+    describe('readable stream', () => {
+      describe('with mime type', () => {
+        describe('with callback', () => {
+          beforeEach(function(done) {
             const readableStream = new stream.PassThrough()
             this.result = this.attachmentManager.create(
               readableStream,
               'text/special',
               done
             )
-            setTimeout(function () {
+            setTimeout(() => {
               readableStream.write('my string')
               readableStream.end()
             }, 25)
           })
 
-          it('does not return a promise', function () {
+          it('does not return a promise', function() {
             expect(this.result).to.eql(undefined)
           })
 
-          it('adds the data and media', function () {
+          it('adds the data and media', function() {
             expect(this.onAttachment).to.have.callCount(1)
             const attachment = this.onAttachment.firstCall.args[0]
             const encodedData = attachment.data
@@ -71,25 +74,25 @@ describe('AttachmentManager', function () {
           })
         })
 
-        describe('without callback', function () {
-          beforeEach(function () {
+        describe('without callback', () => {
+          beforeEach(function() {
             const readableStream = new stream.PassThrough()
             this.result = this.attachmentManager.create(
               readableStream,
               'text/special'
             )
-            setTimeout(function () {
+            setTimeout(() => {
               readableStream.write('my string')
               readableStream.end()
             }, 25)
             return this.result
           })
 
-          it('returns a promise', function () {
+          it('returns a promise', function() {
             expect(this.result.then).to.be.a('function')
           })
 
-          it('adds the data and media', function () {
+          it('adds the data and media', function() {
             expect(this.onAttachment).to.have.callCount(1)
             const attachment = this.onAttachment.firstCall.args[0]
             const encodedData = attachment.data
@@ -104,8 +107,8 @@ describe('AttachmentManager', function () {
         })
       })
 
-      describe('without media type', function () {
-        it('throws', function () {
+      describe('without media type', () => {
+        it('throws', function() {
           expect(() => {
             const readableStream = new stream.PassThrough()
             this.attachmentManager.create(readableStream)
@@ -114,13 +117,13 @@ describe('AttachmentManager', function () {
       })
     })
 
-    describe('string', function () {
-      describe('with media type', function () {
-        beforeEach(function () {
+    describe('string', () => {
+      describe('with media type', () => {
+        beforeEach(function() {
           this.attachmentManager.create('my string', 'text/special')
         })
 
-        it('adds the data and media', function () {
+        it('adds the data and media', function() {
           expect(this.onAttachment).to.have.callCount(1)
           const attachment = this.onAttachment.firstCall.args[0]
           expect(attachment.data).to.eql('my string')
@@ -128,12 +131,12 @@ describe('AttachmentManager', function () {
         })
       })
 
-      describe('without mime type', function () {
-        beforeEach(function () {
+      describe('without mime type', () => {
+        beforeEach(function() {
           this.attachmentManager.create('my string')
         })
 
-        it('adds the data with the default mime type', function () {
+        it('adds the data with the default mime type', function() {
           expect(this.onAttachment).to.have.callCount(1)
           const attachment = this.onAttachment.firstCall.args[0]
           expect(attachment.data).to.eql('my string')
@@ -142,8 +145,8 @@ describe('AttachmentManager', function () {
       })
     })
 
-    describe('unsupported data type', function () {
-      it('throws', function () {
+    describe('unsupported data type', () => {
+      it('throws', function() {
         expect(() => {
           this.attachmentManager.create({}, 'object/special')
         }).to.throw(

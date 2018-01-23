@@ -4,8 +4,8 @@ import Status from '../status'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from './helpers'
 
-describe('ProgressFormatter', function () {
-  beforeEach(function () {
+describe('ProgressFormatter', () => {
+  beforeEach(function() {
     this.eventBroadcaster = new EventEmitter()
     this.output = ''
     const colorFns = getColorFns(false)
@@ -20,8 +20,8 @@ describe('ProgressFormatter', function () {
     })
   })
 
-  describe('test step finished', function () {
-    beforeEach(function () {
+  describe('test step finished', () => {
+    beforeEach(function() {
       this.testCase = { sourceLocation: { uri: 'path/to/feature', line: 1 } }
       this.eventBroadcaster.emit('test-case-prepared', {
         sourceLocation: this.testCase.sourceLocation,
@@ -29,8 +29,8 @@ describe('ProgressFormatter', function () {
       })
     })
 
-    describe('ambiguous', function () {
-      beforeEach(function () {
+    describe('ambiguous', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.AMBIGUOUS },
@@ -38,13 +38,13 @@ describe('ProgressFormatter', function () {
         })
       })
 
-      it('outputs A', function () {
+      it('outputs A', function() {
         expect(this.output).to.eql('A')
       })
     })
 
-    describe('failed', function () {
-      beforeEach(function () {
+    describe('failed', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.FAILED },
@@ -52,13 +52,13 @@ describe('ProgressFormatter', function () {
         })
       })
 
-      it('outputs F', function () {
+      it('outputs F', function() {
         expect(this.output).to.eql('F')
       })
     })
 
-    describe('passed', function () {
-      beforeEach(function () {
+    describe('passed', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.PASSED },
@@ -66,13 +66,13 @@ describe('ProgressFormatter', function () {
         })
       })
 
-      it('outputs .', function () {
+      it('outputs .', function() {
         expect(this.output).to.eql('.')
       })
     })
 
-    describe('pending', function () {
-      beforeEach(function () {
+    describe('pending', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.PENDING },
@@ -80,13 +80,13 @@ describe('ProgressFormatter', function () {
         })
       })
 
-      it('outputs P', function () {
+      it('outputs P', function() {
         expect(this.output).to.eql('P')
       })
     })
 
-    describe('skipped', function () {
-      beforeEach(function () {
+    describe('skipped', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.SKIPPED },
@@ -94,13 +94,13 @@ describe('ProgressFormatter', function () {
         })
       })
 
-      it('outputs -', function () {
+      it('outputs -', function() {
         expect(this.output).to.eql('-')
       })
     })
 
-    describe('undefined', function () {
-      beforeEach(function () {
+    describe('undefined', () => {
+      beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.UNDEFINED },
@@ -108,20 +108,20 @@ describe('ProgressFormatter', function () {
         })
       })
 
-      it('outputs U', function () {
+      it('outputs U', function() {
         expect(this.output).to.eql('U')
       })
     })
   })
 
-  describe('test run finished', function () {
-    beforeEach(function () {
+  describe('test run finished', () => {
+    beforeEach(function() {
       this.eventBroadcaster.emit('test-run-finished', {
         result: { duration: 0 }
       })
     })
 
-    it('outputs two newlines before the summary', function () {
+    it('outputs two newlines before the summary', function() {
       expect(this.output).to.eql('\n\n0 scenarios\n0 steps\n0m00.000s\n')
     })
   })

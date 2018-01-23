@@ -9,7 +9,7 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import validateArguments from './validate_arguments'
 
-export function defineTestCaseHook (builder, collectionName) {
+export function defineTestCaseHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -33,7 +33,7 @@ export function defineTestCaseHook (builder, collectionName) {
   }
 }
 
-export function defineTestRunHook (builder, collectionName) {
+export function defineTestRunHook(builder, collectionName) {
   return (options, code) => {
     if (typeof options === 'string') {
       options = { tags: options }
@@ -57,7 +57,7 @@ export function defineTestRunHook (builder, collectionName) {
   }
 }
 
-export function defineStep (builder) {
+export function defineStep(builder) {
   return (pattern, options, code) => {
     if (typeof options === 'function') {
       code = options
@@ -84,7 +84,7 @@ const projectPath = path.join(__dirname, '..', '..')
 const projectSrcPath = path.join(projectPath, 'src')
 const projectLibPath = path.join(projectPath, 'lib')
 
-function getDefinitionLineAndUri (cwd) {
+function getDefinitionLineAndUri(cwd) {
   let line = 'unknown'
   let uri = 'unknown'
   const stackframes = StackTrace.getSync()
@@ -105,7 +105,7 @@ function getDefinitionLineAndUri (cwd) {
   return { line, uri }
 }
 
-export function defineParameterType (builder) {
+export function defineParameterType(builder) {
   return ({
     name,
     typeName,

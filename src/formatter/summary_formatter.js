@@ -4,23 +4,23 @@ import Formatter from './'
 import Status from '../status'
 
 export default class SummaryFormatter extends Formatter {
-  constructor (options) {
+  constructor(options) {
     super(options)
     options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
   }
 
-  isTestCaseFailure (testCase) {
+  isTestCaseFailure(testCase) {
     return _.includes([Status.AMBIGUOUS, Status.FAILED], testCase.result.status)
   }
 
-  isTestCaseWarning (testCase) {
+  isTestCaseWarning(testCase) {
     return _.includes(
       [Status.PENDING, Status.UNDEFINED],
       testCase.result.status
     )
   }
 
-  logSummary (testRun) {
+  logSummary(testRun) {
     const failures = []
     const warnings = []
     _.each(this.eventDataCollector.testCaseMap, testCase => {
@@ -45,8 +45,8 @@ export default class SummaryFormatter extends Formatter {
     )
   }
 
-  logIssues ({ issues, title }) {
-    this.log(title + ':\n\n')
+  logIssues({ issues, title }) {
+    this.log(`${title}:\n\n`)
     issues.forEach((testCase, index) => {
       const {
         gherkinDocument,
