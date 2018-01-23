@@ -75,15 +75,13 @@ export default class ConfigurationBuilder {
         })
         return await Promise.map(matches, async match => {
           if (path.extname(match) === '') {
-            return await globP(`${match}/**/*${defaultExtension}`, {
-              absolute: true
-            })
+            return await globP(`${match}/**/*${defaultExtension}`)
           }
           return match
         })
       }
     )
-    return _.flattenDepth(expandedPaths, 2)
+    return _.flattenDepth(expandedPaths, 2).map(x => path.normalize(x))
   }
 
   async expandFeaturePaths(featurePaths) {
