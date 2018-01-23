@@ -3,7 +3,7 @@ env:
   es6: true
   node: true
 extends:
-  - 'eslint:recommended'
+  - standard
   - prettier
 globals:
   afterEach: false
@@ -20,19 +20,6 @@ plugins:
   - babel
   - prettier
 rules:
-  babel/new-cap: error
-  complexity: error
-  eqeqeq: [error, always]
-  no-await-in-loop: error
-  no-negated-condition: error
-  no-nested-ternary: error
-  no-plusplus: error
-  no-return-await: error
-  no-shadow: error
-  no-unneeded-ternary: [error, {defaultAssignment: false}]
-  no-unused-expressions: error
-  no-var: error
-  object-shorthand: [error, always]
   prettier/prettier:
     - error
     - trailingComma: none
