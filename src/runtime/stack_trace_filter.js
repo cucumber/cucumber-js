@@ -8,10 +8,7 @@ export default class StackTraceFilter {
   }
 
   filter () {
-    this.currentFilter = stackChain.filter.attach((error, frames) => {
-      if (error) {
-        throw error
-      }
+    this.currentFilter = stackChain.filter.attach((_, frames) => {
       if (this.isErrorInCucumber(frames)) {
         return frames
       }
