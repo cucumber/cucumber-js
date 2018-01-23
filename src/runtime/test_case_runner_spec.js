@@ -483,7 +483,7 @@ describe('TestCaseRunner', function () {
       })
 
       it('emits test-step-started', function () {
-        expect(this.onTestStepStarted).to.have.calledCount(2)
+        expect(this.onTestStepStarted).to.have.callCount(2)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
@@ -495,7 +495,7 @@ describe('TestCaseRunner', function () {
       })
 
       it('emits test-step-finished', function () {
-        expect(this.onTestStepFinished).to.have.calledCount(2)
+        expect(this.onTestStepFinished).to.have.callCount(2)
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
@@ -569,7 +569,7 @@ describe('TestCaseRunner', function () {
       })
 
       it('emits test-step-started', function () {
-        expect(this.onTestStepStarted).to.have.calledCount(2)
+        expect(this.onTestStepStarted).to.have.callCount(2)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
@@ -581,7 +581,7 @@ describe('TestCaseRunner', function () {
       })
 
       it('emits test-step-finished', function () {
-        expect(this.onTestStepFinished).to.have.calledCount(2)
+        expect(this.onTestStepFinished).to.have.callCount(2)
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
