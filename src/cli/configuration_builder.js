@@ -75,7 +75,9 @@ export default class ConfigurationBuilder {
         })
         return await Promise.map(matches, async match => {
           if (path.extname(match) === '') {
-            return await globP(`${match}/**/*${defaultExtension}`)
+            return await globP(`${match}/**/*${defaultExtension}`, {
+              absolute: true
+            })
           }
           return match
         })
