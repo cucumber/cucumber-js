@@ -1,15 +1,15 @@
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 import supportCodeLibraryBuilder from './'
 
-describe('supportCodeLibraryBuilder', function() {
-  describe('no support code fns', function() {
-    beforeEach(function() {
+describe('supportCodeLibraryBuilder', function () {
+  describe('no support code fns', function () {
+    beforeEach(function () {
       this.attachFn = sinon.stub()
       supportCodeLibraryBuilder.reset('path/to/project')
       this.options = supportCodeLibraryBuilder.finalize()
     })
 
-    it('returns the default options', function() {
+    it('returns the default options', function () {
       expect(this.options.afterTestRunHookDefinitions).to.eql([])
       expect(this.options.afterTestCaseHookDefinitions).to.eql([])
       expect(this.options.beforeTestRunHookDefinitions).to.eql([])
@@ -28,16 +28,16 @@ describe('supportCodeLibraryBuilder', function() {
     })
   })
 
-  describe('After', function() {
-    describe('function only', function() {
-      beforeEach(function() {
-        this.hook = function() {}
+  describe('After', function () {
+    describe('function only', function () {
+      beforeEach(function () {
+        this.hook = function () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.After(this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         expect(this.options.afterTestCaseHookDefinitions).to.have.lengthOf(1)
         expect(this.options.afterTestCaseHookDefinitions[0].code).to.eql(
           this.hook
@@ -45,15 +45,15 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('tag and function', function() {
-      beforeEach(function() {
-        this.hook = function() {}
+    describe('tag and function', function () {
+      beforeEach(function () {
+        this.hook = function () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.After('@tagA', this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         expect(this.options.afterTestCaseHookDefinitions).to.have.lengthOf(1)
         expect(
           this.options.afterTestCaseHookDefinitions[0].options.tags
@@ -64,15 +64,15 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('options and function', function() {
-      beforeEach(function() {
-        this.hook = function() {}
+    describe('options and function', function () {
+      beforeEach(function () {
+        this.hook = function () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         expect(this.options.afterTestCaseHookDefinitions).to.have.lengthOf(1)
         expect(
           this.options.afterTestCaseHookDefinitions[0].options.tags
@@ -83,17 +83,17 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('multiple', function() {
-      beforeEach(function() {
-        this.hook1 = function hook1() {}
-        this.hook2 = function hook2() {}
+    describe('multiple', function () {
+      beforeEach(function () {
+        this.hook1 = function hook1 () {}
+        this.hook2 = function hook2 () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.After(this.hook1) // eslint-disable-line babel/new-cap
         supportCodeLibraryBuilder.methods.After(this.hook2) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds the scenario hook definitions in the reverse order of definition', function() {
+      it('adds the scenario hook definitions in the reverse order of definition', function () {
         expect(this.options.afterTestCaseHookDefinitions).to.have.lengthOf(2)
         expect(this.options.afterTestCaseHookDefinitions[0].code).to.eql(
           this.hook2
@@ -105,16 +105,16 @@ describe('supportCodeLibraryBuilder', function() {
     })
   })
 
-  describe('this.Before', function() {
-    describe('function only', function() {
-      beforeEach(function() {
-        this.hook = function() {}
+  describe('this.Before', function () {
+    describe('function only', function () {
+      beforeEach(function () {
+        this.hook = function () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.Before(this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         expect(this.options.beforeTestCaseHookDefinitions).to.have.lengthOf(1)
         expect(this.options.beforeTestCaseHookDefinitions[0].code).to.eql(
           this.hook
@@ -122,15 +122,15 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('tag and function', function() {
-      beforeEach(function() {
-        this.hook = function() {}
+    describe('tag and function', function () {
+      beforeEach(function () {
+        this.hook = function () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.Before('@tagA', this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         expect(this.options.beforeTestCaseHookDefinitions).to.have.lengthOf(1)
         expect(
           this.options.beforeTestCaseHookDefinitions[0].options.tags
@@ -141,15 +141,15 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('options and function', function() {
-      beforeEach(function() {
-        this.hook = function() {}
+    describe('options and function', function () {
+      beforeEach(function () {
+        this.hook = function () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         expect(this.options.beforeTestCaseHookDefinitions).to.have.lengthOf(1)
         expect(
           this.options.beforeTestCaseHookDefinitions[0].options.tags
@@ -160,17 +160,17 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('multiple', function() {
-      beforeEach(function() {
-        this.hook1 = function hook1() {}
-        this.hook2 = function hook2() {}
+    describe('multiple', function () {
+      beforeEach(function () {
+        this.hook1 = function hook1 () {}
+        this.hook2 = function hook2 () {}
         supportCodeLibraryBuilder.reset('path/to/project')
         supportCodeLibraryBuilder.methods.Before(this.hook1) // eslint-disable-line babel/new-cap
         supportCodeLibraryBuilder.methods.Before(this.hook2) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
-      it('adds the scenario hook definitions in the order of definition', function() {
+      it('adds the scenario hook definitions in the order of definition', function () {
         expect(this.options.beforeTestCaseHookDefinitions).to.have.lengthOf(2)
         expect(this.options.beforeTestCaseHookDefinitions[0].code).to.eql(
           this.hook1

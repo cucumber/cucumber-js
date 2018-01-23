@@ -1,5 +1,5 @@
 export default class OptionSplitter {
-  static split(option) {
+  static split (option) {
     const parts = option.split(/([^A-Z]):(?!\\)/)
 
     return parts.reduce((memo, part, i) => {
@@ -12,6 +12,6 @@ export default class OptionSplitter {
   }
 }
 
-function partNeedsRecombined(i) {
+function partNeedsRecombined (i) {
   return i % 2 === 0
 }

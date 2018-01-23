@@ -2,7 +2,7 @@ import { formatLocation } from '../formatter/helpers/location_helpers'
 import Table from 'cli-table'
 import indentString from 'indent-string'
 
-export function getAmbiguousStepException(stepDefinitions) {
+export function getAmbiguousStepException (stepDefinitions) {
   const table = new Table({
     chars: {
       bottom: '',

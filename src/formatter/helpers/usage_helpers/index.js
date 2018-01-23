@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { formatLocation } from '../location_helpers'
 import { getStepLineToPickledStepMap } from '../pickle_parser'
 
-function buildEmptyMapping(stepDefinitions) {
+function buildEmptyMapping (stepDefinitions) {
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
     const location = formatLocation(stepDefinition)
@@ -16,7 +16,7 @@ function buildEmptyMapping(stepDefinitions) {
   return mapping
 }
 
-function buildMapping({ stepDefinitions, eventDataCollector }) {
+function buildMapping ({ stepDefinitions, eventDataCollector }) {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.testCaseMap, testCase => {
     const { pickle } = eventDataCollector.getTestCaseData(
@@ -44,7 +44,7 @@ function buildMapping({ stepDefinitions, eventDataCollector }) {
   return mapping
 }
 
-function invertNumber(key) {
+function invertNumber (key) {
   return obj => {
     const value = obj[key]
     if (isFinite(value)) {
@@ -54,7 +54,7 @@ function invertNumber(key) {
   }
 }
 
-function buildResult(mapping) {
+function buildResult (mapping) {
   return _.chain(mapping)
     .map(({ line, matches, pattern, uri }) => {
       const sortedMatches = _.sortBy(matches, [
@@ -72,7 +72,7 @@ function buildResult(mapping) {
     .value()
 }
 
-export function getUsage({ stepDefinitions, eventDataCollector }) {
+export function getUsage ({ stepDefinitions, eventDataCollector }) {
   const mapping = buildMapping({ stepDefinitions, eventDataCollector })
   return buildResult(mapping)
 }

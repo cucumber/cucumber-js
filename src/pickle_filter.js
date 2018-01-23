@@ -6,7 +6,7 @@ const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 const tagExpressionParser = new TagExpressionParser()
 
 export default class PickleFilter {
-  constructor({ featurePaths, names, tagExpression }) {
+  constructor ({ featurePaths, names, tagExpression }) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping(
       featurePaths || []
     )
@@ -16,7 +16,7 @@ export default class PickleFilter {
     }
   }
 
-  getFeatureUriToLinesMapping(featurePaths) {
+  getFeatureUriToLinesMapping (featurePaths) {
     const mapping = {}
     featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
@@ -30,7 +30,7 @@ export default class PickleFilter {
           linesExpression
             .slice(1)
             .split(':')
-            .forEach(function(line) {
+            .forEach(function (line) {
               mapping[uri].push(parseInt(line))
             })
         }
@@ -39,7 +39,7 @@ export default class PickleFilter {
     return mapping
   }
 
-  matches({ pickle, uri }) {
+  matches ({ pickle, uri }) {
     return (
       this.matchesAnyLine({ pickle, uri }) &&
       this.matchesAnyName(pickle) &&
@@ -47,7 +47,7 @@ export default class PickleFilter {
     )
   }
 
-  matchesAnyLine({ pickle, uri }) {
+  matchesAnyLine ({ pickle, uri }) {
     const lines = this.featureUriToLinesMapping[path.resolve(uri)]
     if (lines) {
       return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
@@ -56,16 +56,16 @@ export default class PickleFilter {
     }
   }
 
-  matchesAnyName(pickle) {
+  matchesAnyName (pickle) {
     if (this.names.length === 0) {
       return true
     }
-    return _.some(this.names, function(name) {
+    return _.some(this.names, function (name) {
       return pickle.name.match(name)
     })
   }
 
-  matchesAllTagExpressions(pickle) {
+  matchesAllTagExpressions (pickle) {
     if (!this.tagExpressionNode) {
       return true
     }

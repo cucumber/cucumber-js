@@ -1,13 +1,13 @@
 let previousTimestamp
 
 const methods = {
-  beginTiming() {
+  beginTiming () {
     previousTimestamp = getTimestamp()
   },
   clearInterval: clearInterval.bind(global),
   clearTimeout: clearTimeout.bind(global),
   Date,
-  endTiming() {
+  endTiming () {
     return getTimestamp() - previousTimestamp
   },
   setInterval: setInterval.bind(global),
@@ -19,7 +19,7 @@ if (typeof setImmediate !== 'undefined') {
   methods.clearImmediate = clearImmediate.bind(global)
 }
 
-function getTimestamp() {
+function getTimestamp () {
   return new methods.Date().getTime()
 }
 

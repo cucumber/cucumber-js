@@ -6,7 +6,7 @@ import Promise from 'bluebird'
 
 const { beginTiming, endTiming } = Time
 
-async function run({
+async function run ({
   defaultTimeout,
   hookParameter,
   parameterTypeRegistry,

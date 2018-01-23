@@ -2,26 +2,26 @@ import PickleFilter from '../pickle_filter'
 import StepDefinition from './step_definition'
 
 export default class TestCaseHookDefinition extends StepDefinition {
-  constructor(data) {
+  constructor (data) {
     super(data)
     this.pickleFilter = new PickleFilter({
       tagExpression: this.options.tags
     })
   }
 
-  appliesToTestCase({ pickle, uri }) {
+  appliesToTestCase ({ pickle, uri }) {
     return this.pickleFilter.matches({ pickle, uri })
   }
 
-  getInvalidCodeLengthMessage() {
+  getInvalidCodeLengthMessage () {
     return this.buildInvalidCodeLengthMessage('0 or 1', '2')
   }
 
-  getInvocationParameters({ hookParameter }) {
+  getInvocationParameters ({ hookParameter }) {
     return [hookParameter]
   }
 
-  getValidCodeLengths() {
+  getValidCodeLengths () {
     return [0, 1, 2]
   }
 }

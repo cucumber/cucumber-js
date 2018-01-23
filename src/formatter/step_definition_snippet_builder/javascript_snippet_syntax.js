@@ -1,11 +1,11 @@
 const CALLBACK_NAME = 'callback'
 
 export default class JavaScriptSnippetSyntax {
-  constructor(snippetInterface) {
+  constructor (snippetInterface) {
     this.snippetInterface = snippetInterface
   }
 
-  build({ comment, generatedExpressions, functionName, stepParameterNames }) {
+  build ({ comment, generatedExpressions, functionName, stepParameterNames }) {
     let functionKeyword = 'function '
     if (this.snippetInterface === 'generator') {
       functionKeyword += '*'

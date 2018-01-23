@@ -5,28 +5,28 @@ import path from 'path'
 import Promise from 'bluebird'
 
 export default class PathExpander {
-  constructor(directory) {
+  constructor (directory) {
     this.directory = directory
   }
 
-  async expandPathsWithExtensions(paths, extensions) {
+  async expandPathsWithExtensions (paths, extensions) {
     const expandedPaths = await Promise.map(paths, async p => {
-      return await this.expandPathWithExtensions(p, extensions)
+      return this.expandPathWithExtensions(p, extensions)
     })
     return _.uniq(_.flatten(expandedPaths))
   }
 
-  async expandPathWithExtensions(p, extensions) {
+  async expandPathWithExtensions (p, extensions) {
     const fullPath = path.resolve(this.directory, p)
     const stats = await fs.stat(fullPath)
     if (stats.isDirectory()) {
-      return await this.expandDirectoryWithExtensions(fullPath, extensions)
+      return this.expandDirectoryWithExtensions(fullPath, extensions)
     } else {
       return [fullPath]
     }
   }
 
-  async expandDirectoryWithExtensions(realPath, extensions) {
+  async expandDirectoryWithExtensions (realPath, extensions) {
     let pattern = realPath + '/**/*.'
     if (extensions.length > 1) {
       pattern += '{' + extensions.join(',') + '}'

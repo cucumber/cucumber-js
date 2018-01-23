@@ -13,7 +13,7 @@ import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
 
 export default class FormatterBuilder {
-  static build(type, options) {
+  static build (type, options) {
     const Formatter = FormatterBuilder.getConstructorByType(type, options)
     const extendedOptions = {
       colorFns: getColorFns(options.colorsEnabled),
@@ -23,7 +23,7 @@ export default class FormatterBuilder {
     return new Formatter(extendedOptions)
   }
 
-  static getConstructorByType(type, options) {
+  static getConstructorByType (type, options) {
     switch (type) {
       case 'event-protocol':
         return EventProtocolFormatter
@@ -48,7 +48,7 @@ export default class FormatterBuilder {
     }
   }
 
-  static getStepDefinitionSnippetBuilder({
+  static getStepDefinitionSnippetBuilder ({
     cwd,
     snippetInterface,
     snippetSyntax,
@@ -68,7 +68,7 @@ export default class FormatterBuilder {
     })
   }
 
-  static loadCustomFormatter(customFormatterPath, { cwd }) {
+  static loadCustomFormatter (customFormatterPath, { cwd }) {
     const fullCustomFormatterPath = path.resolve(cwd, customFormatterPath)
     const CustomFormatter = require(fullCustomFormatterPath)
     if (typeof CustomFormatter === 'function') {

@@ -11,7 +11,7 @@ const STATUS_CHARACTER_MAPPING = {
 }
 
 export default class ProgressFormatter extends SummaryFormatter {
-  constructor(options) {
+  constructor (options) {
     options.eventBroadcaster.on('test-run-finished', () => {
       this.log('\n\n')
     })
@@ -19,7 +19,7 @@ export default class ProgressFormatter extends SummaryFormatter {
     options.eventBroadcaster.on('test-step-finished', ::this.logProgress)
   }
 
-  logProgress({ result }) {
+  logProgress ({ result }) {
     const { status } = result
     const character = this.colorFns[status](STATUS_CHARACTER_MAPPING[status])
     this.log(character)

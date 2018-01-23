@@ -3,7 +3,7 @@ import Status from '../status'
 import { KeywordType, getStepKeywordType } from './helpers'
 
 export default class SnippetsFormatter extends Formatter {
-  constructor(options) {
+  constructor (options) {
     super(options)
     options.eventBroadcaster.on(
       'test-step-finished',
@@ -11,7 +11,7 @@ export default class SnippetsFormatter extends Formatter {
     )
   }
 
-  logUndefinedTestStepSnippet({ testCase: { sourceLocation }, index, result }) {
+  logUndefinedTestStepSnippet ({ testCase: { sourceLocation }, index, result }) {
     if (result.status === Status.UNDEFINED) {
       const {
         gherkinDocument,
@@ -36,7 +36,7 @@ export default class SnippetsFormatter extends Formatter {
     }
   }
 
-  getPreviousKeywordType({ gherkinDocument, testCase, index }) {
+  getPreviousKeywordType ({ gherkinDocument, testCase, index }) {
     let previousKeywordType = KeywordType.PRECONDITION
     for (let i = 0; i < index; i += 1) {
       const { gherkinKeyword } = this.eventDataCollector.getTestStepData({

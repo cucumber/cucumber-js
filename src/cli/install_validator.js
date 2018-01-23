@@ -3,7 +3,7 @@ import fs from 'mz/fs'
 import path from 'path'
 import resolve from 'resolve'
 
-export async function validateInstall(cwd) {
+export async function validateInstall (cwd) {
   const projectPath = path.join(__dirname, '..', '..')
   if (projectPath === cwd) {
     return // cucumber testing itself

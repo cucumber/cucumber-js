@@ -1,8 +1,8 @@
 import { getAmbiguousStepException } from './helpers'
 
-describe('Helpers', function() {
-  describe('getAmbiguousStepException', function() {
-    beforeEach(function() {
+describe('Helpers', function () {
+  describe('getAmbiguousStepException', function () {
+    beforeEach(function () {
       this.result = getAmbiguousStepException([
         { line: 3, pattern: 'pattern1', uri: 'steps1.js' },
         {
@@ -13,7 +13,7 @@ describe('Helpers', function() {
       ])
     })
 
-    it('returns a nicely formatted error', function() {
+    it('returns a nicely formatted error', function () {
       expect(this.result).to.eql(
         'Multiple step definitions match:\n' +
           '  pattern1        - steps1.js:3\n' +

@@ -3,7 +3,7 @@ import DataTable from './data_table'
 import { buildStepArgumentIterator } from '../step_arguments'
 
 export default class StepDefinition {
-  constructor({ code, line, options, pattern, uri }) {
+  constructor ({ code, line, options, pattern, uri }) {
     this.code = code
     this.line = line
     this.options = options
@@ -11,7 +11,7 @@ export default class StepDefinition {
     this.uri = uri
   }
 
-  buildInvalidCodeLengthMessage(syncOrPromiseLength, callbackLength) {
+  buildInvalidCodeLengthMessage (syncOrPromiseLength, callbackLength) {
     return (
       'function has ' +
       this.code.length +
@@ -25,14 +25,14 @@ export default class StepDefinition {
     )
   }
 
-  getInvalidCodeLengthMessage(parameters) {
+  getInvalidCodeLengthMessage (parameters) {
     return this.buildInvalidCodeLengthMessage(
       parameters.length,
       parameters.length + 1
     )
   }
 
-  getInvocationParameters({ step, parameterTypeRegistry, world }) {
+  getInvocationParameters ({ step, parameterTypeRegistry, world }) {
     const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
     const stepNameParameters = cucumberExpression
       .match(step.text)
@@ -45,7 +45,7 @@ export default class StepDefinition {
     return stepNameParameters.concat(stepArgumentParameters)
   }
 
-  getCucumberExpression(parameterTypeRegistry) {
+  getCucumberExpression (parameterTypeRegistry) {
     if (typeof this.pattern === 'string') {
       return new CucumberExpression(this.pattern, parameterTypeRegistry)
     } else {
@@ -53,11 +53,11 @@ export default class StepDefinition {
     }
   }
 
-  getValidCodeLengths(parameters) {
+  getValidCodeLengths (parameters) {
     return [parameters.length, parameters.length + 1]
   }
 
-  matchesStepName({ stepName, parameterTypeRegistry }) {
+  matchesStepName ({ stepName, parameterTypeRegistry }) {
     const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
     return Boolean(cucumberExpression.match(stepName))
   }

@@ -4,9 +4,9 @@ import UncaughtExceptionManager from './uncaught_exception_manager'
 import util from 'util'
 
 export default class UserCodeRunner {
-  static async run({ argsArray, thisArg, fn, timeoutInMilliseconds }) {
-    const callbackPromise = new Promise(function(resolve, reject) {
-      argsArray.push(function(error, result) {
+  static async run ({ argsArray, thisArg, fn, timeoutInMilliseconds }) {
+    const callbackPromise = new Promise(function (resolve, reject) {
+      argsArray.push(function (error, result) {
         if (error) {
           reject(error)
         } else {
@@ -44,7 +44,7 @@ export default class UserCodeRunner {
     }
 
     let exceptionHandler
-    const uncaughtExceptionPromise = new Promise(function(resolve, reject) {
+    const uncaughtExceptionPromise = new Promise(function (resolve, reject) {
       exceptionHandler = reject
       UncaughtExceptionManager.registerHandler(exceptionHandler)
     })
@@ -52,8 +52,8 @@ export default class UserCodeRunner {
 
     let timeoutId
     if (timeoutInMilliseconds >= 0) {
-      const timeoutPromise = new Promise(function(resolve, reject) {
-        timeoutId = Time.setTimeout(function() {
+      const timeoutPromise = new Promise(function (resolve, reject) {
+        timeoutId = Time.setTimeout(function () {
           const timeoutMessage =
             'function timed out after ' +
             timeoutInMilliseconds +

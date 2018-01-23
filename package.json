@@ -180,19 +180,15 @@
     "connect": "^3.4.0",
     "coveralls": "^3.0.0",
     "dependency-lint": "^5.0.1",
-    "eslint": "^4.1.1",
-    "eslint-config-prettier": "^2.2.0",
-    "eslint-plugin-babel": "^4.0.0",
-    "eslint-plugin-prettier": "^2.1.2",
     "fs-extra": "^4.0.2",
     "mocha": "^4.0.1",
     "mustache": "^2.3.0",
     "nyc": "^11.0.2",
-    "prettier": "^1.5.2",
     "regenerator-runtime": "^0.11.0",
     "serve-static": "^1.10.0",
     "sinon": "^4.0.1",
     "sinon-chai": "^2.11.0",
+    "standard": "^10.0.3",
     "stream-to-string": "^1.1.0",
     "tmp": "^0.0.33"
   },
@@ -222,5 +218,17 @@
     "bin/",
     "dist/",
     "lib/"
-  ]
+  ],
+  "standard": {
+    "globals": [
+      "afterEach",
+      "beforeEach",
+      "createMock",
+      "describe",
+      "expect",
+      "it",
+      "sinon"
+    ],
+    "parser": "babel-eslint"
+  }
 }

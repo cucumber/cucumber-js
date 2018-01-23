@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 export default class Formatter {
-  constructor(options) {
+  constructor (options) {
     _.assign(
       this,
       _.pick(options, [

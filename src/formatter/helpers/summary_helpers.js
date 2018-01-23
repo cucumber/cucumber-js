@@ -11,7 +11,7 @@ const STATUS_REPORT_ORDER = [
   Status.PASSED
 ]
 
-export function formatSummary({ colorFns, testCaseMap, testRun }) {
+export function formatSummary ({ colorFns, testCaseMap, testRun }) {
   const testCaseResults = []
   const testStepResults = []
   _.each(testCaseMap, ({ result, steps }) => {
@@ -36,7 +36,7 @@ export function formatSummary({ colorFns, testCaseMap, testRun }) {
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
-function getCountSummary({ colorFns, objects, type }) {
+function getCountSummary ({ colorFns, objects, type }) {
   const counts = _.chain(objects)
     .groupBy('status')
     .mapValues('length')
@@ -55,7 +55,7 @@ function getCountSummary({ colorFns, objects, type }) {
   return text
 }
 
-function getDuration(milliseconds) {
+function getDuration (milliseconds) {
   const start = new Date(0)
   const end = new Date(milliseconds)
   const duration = new Duration(start, end)

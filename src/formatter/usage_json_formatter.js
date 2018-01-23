@@ -2,12 +2,12 @@ import { getUsage } from './helpers'
 import Formatter from './'
 
 export default class UsageJsonFormatter extends Formatter {
-  constructor(options) {
+  constructor (options) {
     super(options)
     options.eventBroadcaster.on('test-run-finished', ::this.logUsage)
   }
 
-  logUsage() {
+  logUsage () {
     const usage = getUsage({
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       eventDataCollector: this.eventDataCollector

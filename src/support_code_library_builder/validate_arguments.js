@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 const optionsValidation = {
   expectedType: 'object or function',
-  predicate({ options }) {
+  predicate ({ options }) {
     return _.isPlainObject(options)
   }
 }
@@ -10,14 +10,14 @@ const optionsValidation = {
 const optionsTimeoutValidation = {
   identifier: '"options.timeout"',
   expectedType: 'integer',
-  predicate({ options }) {
+  predicate ({ options }) {
     return !options.timeout || _.isInteger(options.timeout)
   }
 }
 
 const fnValidation = {
   expectedType: 'function',
-  predicate({ code }) {
+  predicate ({ code }) {
     return _.isFunction(code)
   }
 }
@@ -33,7 +33,7 @@ const validations = {
     {
       identifier: '"options.tags"',
       expectedType: 'string',
-      predicate({ options }) {
+      predicate ({ options }) {
         return !options.tags || _.isString(options.tags)
       }
     },
@@ -44,7 +44,7 @@ const validations = {
     {
       identifier: 'first argument',
       expectedType: 'string or regular expression',
-      predicate({ pattern }) {
+      predicate ({ pattern }) {
         return _.isRegExp(pattern) || _.isString(pattern)
       }
     },
@@ -54,7 +54,7 @@ const validations = {
   ]
 }
 
-export default function validateArguments({ args, fnName, location }) {
+export default function validateArguments ({ args, fnName, location }) {
   validations[fnName].forEach(({ identifier, expectedType, predicate }) => {
     if (!predicate(args)) {
       throw new Error(

@@ -2,11 +2,11 @@ import isStream from 'is-stream'
 import Promise from 'bluebird'
 
 export default class AttachmentManager {
-  constructor(onAttachment) {
+  constructor (onAttachment) {
     this.onAttachment = onAttachment
   }
 
-  create(data, mediaType, callback) {
+  create (data, mediaType, callback) {
     if (Buffer.isBuffer(data)) {
       if (!mediaType) {
         throw Error('Buffer attachments must specify a media type')
@@ -29,14 +29,14 @@ export default class AttachmentManager {
     }
   }
 
-  createBufferAttachment(data, mediaType) {
+  createBufferAttachment (data, mediaType) {
     this.createStringAttachment(data.toString('base64'), {
       encoding: 'base64',
       type: mediaType
     })
   }
 
-  createStreamAttachment(data, mediaType, callback) {
+  createStreamAttachment (data, mediaType, callback) {
     const promise = new Promise((resolve, reject) => {
       const buffers = []
       data.on('data', chunk => {
@@ -55,7 +55,7 @@ export default class AttachmentManager {
     }
   }
 
-  createStringAttachment(data, media) {
+  createStringAttachment (data, media) {
     this.onAttachment({ data, media })
   }
 }

@@ -5,7 +5,7 @@ import Status from '../status'
 const DEFAULT_SEPARATOR = '\n'
 
 export default class RerunFormatter extends Formatter {
-  constructor(options) {
+  constructor (options) {
     super(options)
     options.eventBroadcaster
       .on('test-case-finished', ::this.storeFailedTestCases)
@@ -14,7 +14,7 @@ export default class RerunFormatter extends Formatter {
     this.separator = _.get(options, 'rerun.separator', DEFAULT_SEPARATOR)
   }
 
-  storeFailedTestCases({ sourceLocation: { line, uri }, result: { status } }) {
+  storeFailedTestCases ({ sourceLocation: { line, uri }, result: { status } }) {
     if (status !== Status.PASSED) {
       if (!this.mapping[uri]) {
         this.mapping[uri] = []
@@ -23,7 +23,7 @@ export default class RerunFormatter extends Formatter {
     }
   }
 
-  logFailedTestCases() {
+  logFailedTestCases () {
     const text = _.chain(this.mapping)
       .map((lines, uri) => uri + ':' + lines.join(':'))
       .join(this.separator)

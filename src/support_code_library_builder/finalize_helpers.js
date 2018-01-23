@@ -3,7 +3,7 @@ import arity from 'util-arity'
 import isGenerator from 'is-generator'
 import path from 'path'
 
-export function wrapDefinitions({
+export function wrapDefinitions ({
   cwd,
   definitionFunctionWrapper,
   definitions

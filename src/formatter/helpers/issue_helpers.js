@@ -28,7 +28,7 @@ const IS_ISSUE = {
   [Status.UNDEFINED]: true
 }
 
-function formatDataTable(arg) {
+function formatDataTable (arg) {
   const rows = arg.rows.map(row => {
     return row.cells.map(cell => {
       return cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
@@ -62,11 +62,11 @@ function formatDataTable(arg) {
   return table.toString()
 }
 
-function formatDocString(arg) {
+function formatDocString (arg) {
   return '"""\n' + arg.content + '\n"""'
 }
 
-function formatStep({
+function formatStep ({
   colorFns,
   isBeforeHook,
   keyword,
@@ -117,11 +117,11 @@ function formatStep({
   return text
 }
 
-export function isIssue(status) {
+export function isIssue (status) {
   return IS_ISSUE[status]
 }
 
-export function formatIssue({
+export function formatIssue ({
   colorFns,
   gherkinDocument,
   number,

@@ -1,12 +1,12 @@
 import Cli from './'
 import VError from 'verror'
 
-function exitWithError(error) {
+function exitWithError (error) {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
   process.exit(1)
 }
 
-export default async function run() {
+export default async function run () {
   const cwd = process.cwd()
   const cli = new Cli({
     argv: process.argv,

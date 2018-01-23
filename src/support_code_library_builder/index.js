@@ -10,7 +10,7 @@ import {
 import { wrapDefinitions } from './finalize_helpers'
 
 export class SupportCodeLibraryBuilder {
-  constructor() {
+  constructor () {
     this.methods = {
       defineParameterType: defineParameterType(this),
       After: defineTestCaseHook(this, 'afterTestCaseHookDefinitions'),
@@ -34,7 +34,7 @@ export class SupportCodeLibraryBuilder {
     this.methods.Given = this.methods.When = this.methods.Then = this.methods.defineStep
   }
 
-  finalize() {
+  finalize () {
     wrapDefinitions({
       cwd: this.cwd,
       definitionFunctionWrapper: this.options.definitionFunctionWrapper,
@@ -54,7 +54,7 @@ export class SupportCodeLibraryBuilder {
     return this.options
   }
 
-  reset(cwd) {
+  reset (cwd) {
     this.cwd = cwd
     this.options = _.cloneDeep({
       afterTestCaseHookDefinitions: [],
@@ -65,7 +65,7 @@ export class SupportCodeLibraryBuilder {
       definitionFunctionWrapper: null,
       stepDefinitions: [],
       parameterTypeRegistry: TransformLookupBuilder.build(),
-      World({ attach, parameters }) {
+      World ({ attach, parameters }) {
         this.attach = attach
         this.parameters = parameters
       }

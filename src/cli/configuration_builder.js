@@ -7,12 +7,12 @@ import OptionSplitter from './option_splitter'
 import Promise from 'bluebird'
 
 export default class ConfigurationBuilder {
-  static async build(options) {
+  static async build (options) {
     const builder = new ConfigurationBuilder(options)
-    return await builder.build()
+    return builder.build()
   }
 
-  constructor({ argv, cwd }) {
+  constructor ({ argv, cwd }) {
     this.cwd = cwd
     this.pathExpander = new PathExpander(cwd)
 
@@ -21,7 +21,7 @@ export default class ConfigurationBuilder {
     this.options = parsedArgv.options
   }
 
-  async build() {
+  async build () {
     const listI18nKeywordsFor = this.options.i18nKeywords
     const listI18nLanguages = !!this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
@@ -63,14 +63,14 @@ export default class ConfigurationBuilder {
     }
   }
 
-  async expandFeaturePaths(featurePaths) {
+  async expandFeaturePaths (featurePaths) {
     featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-    return await this.pathExpander.expandPathsWithExtensions(featurePaths, [
+    return this.pathExpander.expandPathsWithExtensions(featurePaths, [
       'feature'
     ])
   }
 
-  getFeatureDirectoryPaths(featurePaths) {
+  getFeatureDirectoryPaths (featurePaths) {
     const featureDirs = featurePaths.map(featurePath => {
       let featureDir = path.dirname(featurePath)
       let childDir
@@ -88,25 +88,25 @@ export default class ConfigurationBuilder {
     return _.uniq(featureDirs)
   }
 
-  getFormatOptions() {
+  getFormatOptions () {
     const formatOptions = _.clone(this.options.formatOptions)
     formatOptions.cwd = this.cwd
     _.defaults(formatOptions, { colorsEnabled: true })
     return formatOptions
   }
 
-  getFormats() {
+  getFormats () {
     const mapping = { '': 'progress' }
     this.options.format.forEach(format => {
       const [type, outputTo] = OptionSplitter.split(format)
       mapping[outputTo || ''] = type
     })
-    return _.map(mapping, function(type, outputTo) {
+    return _.map(mapping, function (type, outputTo) {
       return { outputTo, type }
     })
   }
 
-  async getUnexpandedFeaturePaths() {
+  async getUnexpandedFeaturePaths () {
     if (this.args.length > 0) {
       const nestedFeaturePaths = await Promise.map(this.args, async arg => {
         const filename = path.basename(arg)
@@ -130,14 +130,14 @@ export default class ConfigurationBuilder {
     return ['features']
   }
 
-  async expandSupportCodePaths(supportCodePaths) {
+  async expandSupportCodePaths (supportCodePaths) {
     const extensions = ['js']
     this.options.compiler.forEach(compiler => {
       const [extension, module] = OptionSplitter.split(compiler)
       extensions.push(extension)
       require(module)
     })
-    return await this.pathExpander.expandPathsWithExtensions(
+    return this.pathExpander.expandPathsWithExtensions(
       supportCodePaths,
       extensions
     )

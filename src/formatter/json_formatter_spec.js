@@ -4,8 +4,8 @@ import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('JsonFormatter', function() {
-  beforeEach(function() {
+describe('JsonFormatter', function () {
+  beforeEach(function () {
     this.eventBroadcaster = new EventEmitter()
     this.output = ''
     const logFn = data => {
@@ -18,18 +18,18 @@ describe('JsonFormatter', function() {
     })
   })
 
-  describe('no features', function() {
-    beforeEach(function() {
+  describe('no features', function () {
+    beforeEach(function () {
       this.eventBroadcaster.emit('test-run-finished')
     })
 
-    it('outputs an empty array', function() {
+    it('outputs an empty array', function () {
       expect(JSON.parse(this.output)).to.eql([])
     })
   })
 
-  describe('one scenario with one step', function() {
-    beforeEach(function() {
+  describe('one scenario with one step', function () {
+    beforeEach(function () {
       const events = Gherkin.generateEvents(
         '@tag1 @tag2\n' +
           'Feature: my feature\n' +
@@ -52,8 +52,8 @@ describe('JsonFormatter', function() {
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 4 } }
     })
 
-    describe('passed', function() {
-      beforeEach(function() {
+    describe('passed', function () {
+      beforeEach(function () {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -74,7 +74,7 @@ describe('JsonFormatter', function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the feature', function() {
+      it('outputs the feature', function () {
         expect(JSON.parse(this.output)).to.eql([
           {
             description: 'my feature description',
@@ -112,8 +112,8 @@ describe('JsonFormatter', function() {
       })
     })
 
-    describe('failed', function() {
-      beforeEach(function() {
+    describe('failed', function () {
+      beforeEach(function () {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -134,7 +134,7 @@ describe('JsonFormatter', function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('includes the error message', function() {
+      it('includes the error message', function () {
         const features = JSON.parse(this.output)
         expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'failed',
@@ -144,8 +144,8 @@ describe('JsonFormatter', function() {
       })
     })
 
-    describe('with a step definition', function() {
-      beforeEach(function() {
+    describe('with a step definition', function () {
+      beforeEach(function () {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -167,7 +167,7 @@ describe('JsonFormatter', function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the step with a match attribute', function() {
+      it('outputs the step with a match attribute', function () {
         const features = JSON.parse(this.output)
         expect(features[0].elements[0].steps[0].match).to.eql({
           location: 'steps.js:10'
@@ -175,8 +175,8 @@ describe('JsonFormatter', function() {
       })
     })
 
-    describe('with hooks', function() {
-      beforeEach(function() {
+    describe('with hooks', function () {
+      beforeEach(function () {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -199,25 +199,25 @@ describe('JsonFormatter', function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the before hook with special properties', function() {
+      it('outputs the before hook with special properties', function () {
         const features = JSON.parse(this.output)
         const beforeHook = features[0].elements[0].steps[0]
         expect(beforeHook).to.not.have.ownProperty('line')
         expect(beforeHook.keyword).to.eql('Before')
-        expect(beforeHook.hidden).to.be.true
+        expect(beforeHook.hidden).to.eql(true)
       })
 
-      it('outputs the after hook with special properties', function() {
+      it('outputs the after hook with special properties', function () {
         const features = JSON.parse(this.output)
         const beforeHook = features[0].elements[0].steps[2]
         expect(beforeHook).to.not.have.ownProperty('line')
         expect(beforeHook.keyword).to.eql('After')
-        expect(beforeHook.hidden).to.be.true
+        expect(beforeHook.hidden).to.eql(true)
       })
     })
 
-    describe('with attachments', function() {
-      beforeEach(function() {
+    describe('with attachments', function () {
+      beforeEach(function () {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
@@ -250,7 +250,7 @@ describe('JsonFormatter', function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the step with embeddings', function() {
+      it('outputs the step with embeddings', function () {
         const features = JSON.parse(this.output)
         expect(features[0].elements[0].steps[0].embeddings).to.eql([
           { data: 'first data', mime_type: 'first media type' },
@@ -260,8 +260,8 @@ describe('JsonFormatter', function() {
     })
   })
 
-  describe('one scenario with one step with a doc string', function() {
-    beforeEach(function() {
+  describe('one scenario with one step with a doc string', function () {
+    beforeEach(function () {
       const events = Gherkin.generateEvents(
         'Feature: my feature\n' +
           '  Scenario: my scenario\n' +
@@ -303,7 +303,7 @@ describe('JsonFormatter', function() {
       this.eventBroadcaster.emit('test-run-finished')
     })
 
-    it('outputs the doc string as a step argument', function() {
+    it('outputs the doc string as a step argument', function () {
       const features = JSON.parse(this.output)
       expect(features[0].elements[0].steps[0].arguments).to.eql([
         {
@@ -314,8 +314,8 @@ describe('JsonFormatter', function() {
     })
   })
 
-  describe('one scenario with one step with a data table string', function() {
-    beforeEach(function() {
+  describe('one scenario with one step with a data table string', function () {
+    beforeEach(function () {
       const events = Gherkin.generateEvents(
         'Feature: my feature\n' +
           '  Scenario: my scenario\n' +
@@ -357,7 +357,7 @@ describe('JsonFormatter', function() {
       this.eventBroadcaster.emit('test-run-finished')
     })
 
-    it('outputs the data table as a step argument', function() {
+    it('outputs the data table as a step argument', function () {
       const features = JSON.parse(this.output)
       expect(features[0].elements[0].steps[0].arguments).to.eql([
         {

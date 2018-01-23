@@ -1,6 +1,6 @@
 import OptionSplitter from './option_splitter'
 
-describe('OptionSplitter', function() {
+describe('OptionSplitter', function () {
   const examples = [
     {
       description: "doesn't split when nothing to split on",
@@ -45,7 +45,7 @@ describe('OptionSplitter', function() {
   ]
 
   examples.forEach(({ description, input, output }) => {
-    it(description, function() {
+    it(description, function () {
       expect(OptionSplitter.split(input)).to.eql(output)
     })
   })

@@ -9,7 +9,7 @@ import VError from 'verror'
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, strict}
-  constructor({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
+  constructor ({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
     this.stackTraceFilter = new StackTraceFilter()
@@ -21,7 +21,7 @@ export default class Runtime {
     }
   }
 
-  async runTestRunHooks(key, name) {
+  async runTestRunHooks (key, name) {
     await Promise.each(this.supportCodeLibrary[key], async hookDefinition => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
@@ -41,7 +41,7 @@ export default class Runtime {
     })
   }
 
-  async runTestCase(testCase) {
+  async runTestCase (testCase) {
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     const testCaseRunner = new TestCaseRunner({
@@ -60,7 +60,7 @@ export default class Runtime {
     }
   }
 
-  async start() {
+  async start () {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
@@ -75,7 +75,7 @@ export default class Runtime {
     return this.result.success
   }
 
-  shouldCauseFailure(status) {
+  shouldCauseFailure (status) {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

@@ -17,16 +17,16 @@ const {
 } = PickleParser
 
 export default class JsonFormatter extends Formatter {
-  constructor(options) {
+  constructor (options) {
     super(options)
     options.eventBroadcaster.on('test-run-finished', ::this.onTestRunFinished)
   }
 
-  convertNameToId(obj) {
+  convertNameToId (obj) {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable) {
+  formatDataTable (dataTable) {
     return {
       rows: dataTable.rows.map(row => {
         return { cells: _.map(row.cells, 'value') }
@@ -34,14 +34,14 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  formatDocString(docString) {
+  formatDocString (docString) {
     return {
       content: docString.content,
       line: docString.location.line
     }
   }
 
-  formatStepArguments(stepArguments) {
+  formatStepArguments (stepArguments) {
     const iterator = buildStepArgumentIterator({
       dataTable: this.formatDataTable.bind(this),
       docString: this.formatDocString.bind(this)
@@ -49,7 +49,7 @@ export default class JsonFormatter extends Formatter {
     return _.map(stepArguments, iterator)
   }
 
-  onTestRunFinished() {
+  onTestRunFinished () {
     const groupedTestCases = {}
     _.each(this.eventDataCollector.testCaseMap, testCase => {
       const { sourceLocation: { uri } } = testCase
@@ -92,7 +92,7 @@ export default class JsonFormatter extends Formatter {
     this.log(JSON.stringify(features, null, 2))
   }
 
-  getFeatureData(feature, uri) {
+  getFeatureData (feature, uri) {
     return {
       description: feature.description,
       keyword: feature.keyword,
@@ -104,7 +104,7 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  getScenarioData({ featureId, pickle, scenarioLineToDescriptionMap }) {
+  getScenarioData ({ featureId, pickle, scenarioLineToDescriptionMap }) {
     const description = getScenarioDescription({
       pickle,
       scenarioLineToDescriptionMap
@@ -120,7 +120,7 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  getStepData({
+  getStepData ({
     isBeforeHook,
     stepLineToKeywordMap,
     stepLineToPickledStepMap,
@@ -162,7 +162,7 @@ export default class JsonFormatter extends Formatter {
     return data
   }
 
-  getTags(obj) {
+  getTags (obj) {
     return _.map(obj.tags, tagData => {
       return { name: tagData.name, line: tagData.location.line }
     })

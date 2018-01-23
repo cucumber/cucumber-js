@@ -1,6 +1,6 @@
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 
-function build() {
+function build () {
   return new ParameterTypeRegistry()
 }
 

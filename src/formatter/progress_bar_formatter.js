@@ -4,7 +4,7 @@ import ProgressBar from 'progress'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
-  constructor(options) {
+  constructor (options) {
     super(options)
     options.eventBroadcaster
       .on('pickle-accepted', ::this.incrementStepCount)
@@ -16,11 +16,11 @@ export default class ProgressBarFormatter extends Formatter {
     this.issueCount = 0
   }
 
-  incrementStepCount({ pickle }) {
+  incrementStepCount ({ pickle }) {
     this.numberOfSteps += pickle.steps.length
   }
 
-  initializeProgressBar() {
+  initializeProgressBar () {
     this.progressBar = new ProgressBar(':current/:total steps [:bar] ', {
       clear: true,
       incomplete: ' ',
@@ -30,14 +30,14 @@ export default class ProgressBarFormatter extends Formatter {
     })
   }
 
-  logProgress({ index, testCase: { sourceLocation } }) {
+  logProgress ({ index, testCase: { sourceLocation } }) {
     const { testCase } = this.eventDataCollector.getTestCaseData(sourceLocation)
     if (testCase.steps[index].sourceLocation) {
       this.progressBar.tick()
     }
   }
 
-  logErrorIfNeeded({ sourceLocation, result }) {
+  logErrorIfNeeded ({ sourceLocation, result }) {
     if (isIssue(result.status)) {
       this.issueCount += 1
       const {
@@ -58,7 +58,7 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logSummary(testRun) {
+  logSummary (testRun) {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
