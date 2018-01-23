@@ -10,6 +10,10 @@ import VError from 'verror'
 import _ from 'lodash'
 
 class World {
+  getTimestamp() {
+    return new Date().getTime()
+  }
+
   async run(executablePath, inputArgs) {
     const args = ['node', executablePath]
       .concat(inputArgs, ['--backtrace', '--format', 'json:out.json'])
@@ -25,8 +29,9 @@ class World {
 
     if (this.spawn) {
       result = await new Promise(resolve => {
+        const start = this.getTimestamp()
         execFile(args[0], args.slice(1), { cwd }, (error, stdout, stderr) => {
-          resolve({ error, stdout, stderr })
+          resolve({ error, stdout, stderr, time: this.getTimestamp() - start })
         })
       })
     } else {
@@ -36,8 +41,9 @@ class World {
         cwd,
         stdout
       })
-      let error, stderr
+      let error, stderr, start
       try {
+        start = this.getTimestamp()
         const { success } = await cli.run()
         if (!success) {
           error = new Error('CLI exited with non-zero')
@@ -49,7 +55,12 @@ class World {
         stderr = VError.fullStack(error)
       }
       stdout.end()
-      result = { error, stdout: await toString(stdout), stderr }
+      result = {
+        error,
+        stdout: await toString(stdout),
+        stderr,
+        time: this.getTimestamp() - start
+      }
     }
 
     let jsonOutput = []
@@ -67,7 +78,8 @@ class World {
       error: result.error,
       errorOutput: result.stderr,
       jsonOutput,
-      output: colors.strip(result.stdout)
+      output: colors.strip(result.stdout),
+      time: result.time
     }
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')

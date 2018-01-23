@@ -78,3 +78,11 @@ Then(/^I see the help text for Cucumber$/, function() {
   const expectedOutput = 'Usage: cucumber.js'
   expect(actualOutput).to.include(expectedOutput)
 })
+
+Then('it finishs in less than {int} seconds', function(count) {
+  expect(this.lastRun.time).to.be.below(count * 1000)
+})
+
+Then('it finishs in more than {int} seconds', function(count) {
+  expect(this.lastRun.time).to.be.above(count * 1000)
+})
