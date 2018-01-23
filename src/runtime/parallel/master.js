@@ -54,10 +54,11 @@ export default class Master {
     }
   }
 
-  startSlave(id) {
+  startSlave(id, total) {
     const slaveProcess = childProcess.spawn(slaveCommand, [], {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
+        CUCUMBER_TOTAL_SLAVES: total,
         CUCUMBER_SLAVE_ID: id
       }),
       stdio: ['pipe', 'pipe', process.stderr]
@@ -102,7 +103,7 @@ export default class Master {
 
   run(numberOfSlaves, done) {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(numberOfSlaves, id => this.startSlave(id))
+    _.times(numberOfSlaves, id => this.startSlave(id, numberOfSlaves))
     this.onFinish = done
   }
 
