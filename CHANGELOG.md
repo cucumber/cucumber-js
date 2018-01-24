@@ -11,7 +11,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * can now use glob patterns for selecting what features to run
 * update `--require` to support glob patterns
-* add `--require-module` to require node modules before support code is loaded
+* add `--require-module <NODE_MODULE>` to require node modules before support code is loaded
+* add `--parallel <NUMBER_OF_SLAVES>` option to run tests in parallel. Note this is an experimental feature. See [here](/docs/cli.md#parallel) for more information
 
 #### Deprecations
 

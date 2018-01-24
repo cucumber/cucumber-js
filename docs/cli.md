@@ -102,7 +102,7 @@ This is useful when one needs to rerun failed tests locally by copying a line fr
 The default separator is a newline character.
 Note that the rerun file parser can only work with the default separator for now.
 
-## Parallel
+## Parallel (experimental)
 
 You can run your scenarios in parallel with `--parallel <NUMBER_OF_SLAVES>`. Each slave is run in a separate node process and receives the following env variables:
 * `CUCUMBER_PARALLEL` - set to 'true'
