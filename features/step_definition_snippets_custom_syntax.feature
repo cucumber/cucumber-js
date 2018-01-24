@@ -55,8 +55,9 @@ Feature: step definition snippets custom syntax
       """
 
     Examples:
-      | INTERFACE   | SNIPPET_PARAMETERS_AND_ARROW | SNIPPET_IMPLEMENTATION   |
-      | callback    | (done) ->                    | done null, 'pending' |
-      | generator   | ->                           | 'pending'                |
-      | promise     | ->                           | 'pending'                |
-      | synchronous | ->                           | 'pending'                |
+      | INTERFACE   | SNIPPET_PARAMETERS_AND_ARROW | SNIPPET_IMPLEMENTATION |
+      | callback    | (done) ->                    | done null, 'pending'   |
+      | generator   | ->                           | 'pending'              |
+      | promise     | ->                           | 'pending'              |
+      | async-await | ->                           | 'pending'              |
+      | synchronous | ->                           | 'pending'              |
