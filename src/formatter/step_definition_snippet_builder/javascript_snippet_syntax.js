@@ -7,7 +7,9 @@ export default class JavaScriptSnippetSyntax {
 
   build({ comment, generatedExpressions, functionName, stepParameterNames }) {
     let functionKeyword = 'function '
-    if (this.snippetInterface === 'generator') {
+    if (this.snippetInterface === 'async-await') {
+      functionKeyword = 'async ' + functionKeyword
+    } else if (this.snippetInterface === 'generator') {
       functionKeyword += '*'
     }
 

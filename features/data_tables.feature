@@ -22,7 +22,7 @@ Feature: Data Tables
         assert.deepEqual(table.raw(), expected)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
   Scenario: rows
@@ -50,7 +50,7 @@ Feature: Data Tables
         assert.deepEqual(table.rows(), expected)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
   Scenario: rowsHash
@@ -75,7 +75,7 @@ Feature: Data Tables
         assert.deepEqual(table.rowsHash(), expected)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
   Scenario: hashes
@@ -103,5 +103,5 @@ Feature: Data Tables
         assert.deepEqual(table.hashes(), expected)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes

@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "3.2.1",
+  "version": "4.0.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -115,7 +115,9 @@
     "Ilya Kozhevnikov <github@kozhevnikov.com>",
     "Giuseppe DiBella <gd46@njit.edu>",
     "Marco Muller <marco@remotemetering.net>",
-    "Valerio Innocenti Sedili <valerio.innocenti.ext@yoox.com>"
+    "Valerio Innocenti Sedili <valerio.innocenti.ext@yoox.com>",
+    "Alon Diamant <diamant.alon@gmail.com>",
+    "RolandArgos <roland.ormrod@argos.co.uk>"
   ],
   "repository": {
     "type": "git",
@@ -206,7 +208,7 @@
     "build-local-continuous": "babel src --watch -d lib --ignore '**/*_spec.js'",
     "build-local": "babel src -d lib --ignore '**/*_spec.js'",
     "build-release": "BABEL_ENV=browser browserify src/index.js -o dist/cucumber.js -t babelify --standalone Cucumber",
-    "feature-test": "node ./bin/cucumber.js",
+    "feature-test": "node ./bin/cucumber-js",
     "lint-dependencies": "dependency-lint",
     "lint-code": "eslint \"{example,features,scripts,src,test}/**/*.js\"",
     "lint-autofix": "eslint --fix \"{example,features,scripts,src,test}/**/*.js\"",
@@ -218,9 +220,7 @@
     "unit-test": "mocha src"
   },
   "bin": {
-    "cucumber.js": "./bin/cucumber.js",
-    "cucumber-js": "./bin/cucumber.js",
-    "cucumberjs": "./bin/cucumber.js"
+    "cucumber-js": "./bin/cucumber-js"
   },
   "license": "MIT",
   "files": [

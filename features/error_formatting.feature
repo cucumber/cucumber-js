@@ -18,7 +18,7 @@ Feature: Error formatting
 
       Before(function(_, callback) { callback('Fail') })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -58,7 +58,7 @@ Feature: Error formatting
       Given(/^a step with a doc string$/, function(str) {})
       Given(/^a pending step$/, function() { return 'pending' })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the output contains the text:
       """
       Warnings:
@@ -92,7 +92,7 @@ Feature: Error formatting
       Given(/^a table:$/, function(table) {})
       Given(/^a pending step$/, function() { return 'pending' })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the output contains the text:
       """
       Warnings:

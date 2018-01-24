@@ -42,15 +42,9 @@ export default class ArgvParser {
     const program = new Command(path.basename(argv[1]))
 
     program
-      .usage('[options] [<DIR|FILE[:LINE]>...]')
+      .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
-      .option(
-        '--compiler <EXTENSION:MODULE>',
-        'require files with the given EXTENSION after requiring MODULE (repeatable)',
-        ArgvParser.collect,
-        []
-      )
       .option('-d, --dry-run', 'invoke formatters without executing steps')
       .option(
         '--exit',
@@ -95,8 +89,20 @@ export default class ArgvParser {
         []
       )
       .option(
-        '-r, --require <FILE|DIR>',
+        '--parallel <NUMBER_OF_SLAVES>',
+        'run in parallel with the given number of slaves',
+        parseInt,
+        0
+      )
+      .option(
+        '-r, --require <GLOB|DIR|FILE>',
         'require files before executing features (repeatable)',
+        ArgvParser.collect,
+        []
+      )
+      .option(
+        '--require-module <NODE_MODULE>',
+        'require node modules before requiring files (repeatable)',
         ArgvParser.collect,
         []
       )

@@ -17,7 +17,7 @@ Feature: Pending steps
         return 'pending'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a pending step" has status "pending"
 
@@ -31,7 +31,7 @@ Feature: Pending steps
         callback(null, 'pending')
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a pending step" has status "pending"
 
@@ -50,6 +50,6 @@ Feature: Pending steps
         }
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a pending step" has status "pending"

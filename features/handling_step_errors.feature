@@ -19,7 +19,7 @@ Feature: Handling step errors
         cb(unusualErrorObject)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "I pass an error to the callback" failed with:
       """
       { member: [Circular] }

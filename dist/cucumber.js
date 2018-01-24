@@ -55524,7 +55524,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "3.2.1",
+  "version": "4.0.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -55631,7 +55631,9 @@ module.exports={
     "Ilya Kozhevnikov <github@kozhevnikov.com>",
     "Giuseppe DiBella <gd46@njit.edu>",
     "Marco Muller <marco@remotemetering.net>",
-    "Valerio Innocenti Sedili <valerio.innocenti.ext@yoox.com>"
+    "Valerio Innocenti Sedili <valerio.innocenti.ext@yoox.com>",
+    "Alon Diamant <diamant.alon@gmail.com>",
+    "RolandArgos <roland.ormrod@argos.co.uk>"
   ],
   "repository": {
     "type": "git",
@@ -55665,7 +55667,7 @@ module.exports={
     "indent-string": "^3.1.0",
     "is-generator": "^1.0.2",
     "is-stream": "^1.1.0",
-    "lodash": "^4.0.0",
+    "lodash": "^4.17.4",
     "mz": "^2.4.0",
     "progress": "^2.0.0",
     "resolve": "^1.3.3",
@@ -55717,7 +55719,7 @@ module.exports={
     "build-local-continuous": "babel src --watch -d lib --ignore '**/*_spec.js'",
     "build-local": "babel src -d lib --ignore '**/*_spec.js'",
     "build-release": "BABEL_ENV=browser browserify src/index.js -o dist/cucumber.js -t babelify --standalone Cucumber",
-    "feature-test": "node ./bin/cucumber.js",
+    "feature-test": "node ./bin/cucumber-js",
     "lint-dependencies": "dependency-lint",
     "lint-code": "eslint \"{example,features,scripts,src,test}/**/*.js\"",
     "lint-autofix": "eslint --fix \"{example,features,scripts,src,test}/**/*.js\"",
@@ -55729,9 +55731,7 @@ module.exports={
     "unit-test": "mocha src"
   },
   "bin": {
-    "cucumber.js": "./bin/cucumber.js",
-    "cucumber-js": "./bin/cucumber.js",
-    "cucumberjs": "./bin/cucumber.js"
+    "cucumber-js": "./bin/cucumber-js"
   },
   "license": "MIT",
   "files": [
@@ -55819,7 +55819,7 @@ var ArgvParser = function () {
     value: function parse(argv) {
       var program = new _commander.Command(_path2.default.basename(argv[1]));
 
-      program.usage('[options] [<DIR|FILE[:LINE]>...]').version(_package.version, '-v, --version').option('-b, --backtrace', 'show full backtrace for errors').option('--compiler <EXTENSION:MODULE>', 'require files with the given EXTENSION after requiring MODULE (repeatable)', ArgvParser.collect, []).option('-d, --dry-run', 'invoke formatters without executing steps').option('--fail-fast', 'abort the run on first failure').option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, []).option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {}).option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage, '').option('--i18n-languages', 'list languages').option('--language <ISO 639-1>', 'provide the default language for feature files', '').option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, []).option('--no-strict', 'succeed even if there are pending steps').option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, []).option('-r, --require <FILE|DIR>', 'require files before executing features (repeatable)', ArgvParser.collect, []).option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression (repeatable)', ArgvParser.mergeTags, '').option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {});
+      program.usage('[options] [<GLOB|DIR|FILE[:LINE]>...]').version(_package.version, '-v, --version').option('-b, --backtrace', 'show full backtrace for errors').option('-d, --dry-run', 'invoke formatters without executing steps').option('--exit', 'force shutdown of the event loop when the test run has finished: cucumber will call process.exit').option('--fail-fast', 'abort the run on first failure').option('-f, --format <TYPE[:PATH]>', 'specify the output format, optionally supply PATH to redirect formatter output (repeatable)', ArgvParser.collect, []).option('--format-options <JSON>', 'provide options for formatters (repeatable)', ArgvParser.mergeJson('--format-options'), {}).option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage, '').option('--i18n-languages', 'list languages').option('--language <ISO 639-1>', 'provide the default language for feature files', '').option('--name <REGEXP>', 'only execute the scenarios with name matching the expression (repeatable)', ArgvParser.collect, []).option('--no-strict', 'succeed even if there are pending steps').option('-p, --profile <NAME>', 'specify the profile to use (repeatable)', ArgvParser.collect, []).option('--parallel <NUMBER_OF_SLAVES>', 'run in parallel with the given number of slaves', parseInt, 0).option('-r, --require <GLOB|DIR|FILE>', 'require files before executing features (repeatable)', ArgvParser.collect, []).option('--require-module <NODE_MODULE>', 'require node modules before requiring files (repeatable)', ArgvParser.collect, []).option('-t, --tags <EXPRESSION>', 'only execute the features or scenarios with tags matching the expression (repeatable)', ArgvParser.mergeTags, '').option('--world-parameters <JSON>', 'provide parameters that will be passed to the world constructor (repeatable)', ArgvParser.mergeJson('--world-parameters'), {});
 
       program.on('--help', function () {
         /* eslint-disable no-console */
@@ -55883,15 +55883,17 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _path_expander = require('./path_expander');
-
-var _path_expander2 = _interopRequireDefault(_path_expander);
-
 var _option_splitter = require('./option_splitter');
 
 var _option_splitter2 = _interopRequireDefault(_option_splitter);
 
+var _glob = require('glob');
+
+var _glob2 = _interopRequireDefault(_glob);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var globP = (0, _bluebird.promisify)(_glob2.default);
 
 var ConfigurationBuilder = function () {
   (0, _createClass3.default)(ConfigurationBuilder, null, [{
@@ -55932,7 +55934,6 @@ var ConfigurationBuilder = function () {
     (0, _classCallCheck3.default)(this, ConfigurationBuilder);
 
     this.cwd = cwd;
-    this.pathExpander = new _path_expander2.default(cwd);
 
     var parsedArgv = _argv_parser2.default.parse(argv);
     this.args = parsedArgv.args;
@@ -55943,7 +55944,7 @@ var ConfigurationBuilder = function () {
     key: 'build',
     value: function () {
       var _ref3 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
-        var listI18nKeywordsFor, listI18nLanguages, unexpandedFeaturePaths, featurePaths, supportCodePaths, featureDirectoryPaths, unexpandedSupportCodePaths;
+        var listI18nKeywordsFor, listI18nLanguages, unexpandedFeaturePaths, featurePaths, supportCodePaths, unexpandedSupportCodePaths;
         return _regenerator2.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -55968,10 +55969,13 @@ var ConfigurationBuilder = function () {
 
               case 10:
                 featurePaths = _context2.sent;
-                featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths);
-                unexpandedSupportCodePaths = this.options.require.length > 0 ? this.options.require : featureDirectoryPaths;
+                unexpandedSupportCodePaths = this.options.require;
+
+                if (unexpandedSupportCodePaths.length === 0) {
+                  unexpandedSupportCodePaths = this.getFeatureDirectoryPaths(featurePaths);
+                }
                 _context2.next = 15;
-                return this.expandSupportCodePaths(unexpandedSupportCodePaths);
+                return this.expandPaths(unexpandedSupportCodePaths, '.js');
 
               case 15:
                 supportCodePaths = _context2.sent;
@@ -55984,6 +55988,7 @@ var ConfigurationBuilder = function () {
                   formatOptions: this.getFormatOptions(),
                   listI18nKeywordsFor: listI18nKeywordsFor,
                   listI18nLanguages: listI18nLanguages,
+                  parallel: this.options.parallel,
                   profiles: this.options.profile,
                   pickleFilterOptions: {
                     featurePaths: unexpandedFeaturePaths,
@@ -55997,7 +56002,9 @@ var ConfigurationBuilder = function () {
                     strict: !!this.options.strict,
                     worldParameters: this.options.worldParameters
                   },
-                  supportCodePaths: supportCodePaths
+                  shouldExitImmediately: !!this.options.exit,
+                  supportCodePaths: supportCodePaths,
+                  supportCodeRequiredModules: this.options.requireModule
                 });
 
               case 17:
@@ -56015,32 +56022,129 @@ var ConfigurationBuilder = function () {
       return build;
     }()
   }, {
+    key: 'expandPaths',
+    value: function () {
+      var _ref4 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(unexpandedPaths, defaultExtension) {
+        var _this = this;
+
+        var expandedPaths;
+        return _regenerator2.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return _bluebird2.default.map(unexpandedPaths, function () {
+                  var _ref5 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(unexpandedPath) {
+                    var matches;
+                    return _regenerator2.default.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            _context4.next = 2;
+                            return globP(unexpandedPath, {
+                              absolute: true,
+                              cwd: _this.cwd
+                            });
+
+                          case 2:
+                            matches = _context4.sent;
+                            _context4.next = 5;
+                            return _bluebird2.default.map(matches, function () {
+                              var _ref6 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(match) {
+                                return _regenerator2.default.wrap(function _callee3$(_context3) {
+                                  while (1) {
+                                    switch (_context3.prev = _context3.next) {
+                                      case 0:
+                                        if (!(_path2.default.extname(match) === '')) {
+                                          _context3.next = 4;
+                                          break;
+                                        }
+
+                                        _context3.next = 3;
+                                        return globP(match + '/**/*' + defaultExtension);
+
+                                      case 3:
+                                        return _context3.abrupt('return', _context3.sent);
+
+                                      case 4:
+                                        return _context3.abrupt('return', match);
+
+                                      case 5:
+                                      case 'end':
+                                        return _context3.stop();
+                                    }
+                                  }
+                                }, _callee3, _this);
+                              }));
+
+                              return function (_x5) {
+                                return _ref6.apply(this, arguments);
+                              };
+                            }());
+
+                          case 5:
+                            return _context4.abrupt('return', _context4.sent);
+
+                          case 6:
+                          case 'end':
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4, _this);
+                  }));
+
+                  return function (_x4) {
+                    return _ref5.apply(this, arguments);
+                  };
+                }());
+
+              case 2:
+                expandedPaths = _context5.sent;
+                return _context5.abrupt('return', _lodash2.default.flattenDepth(expandedPaths, 2).map(function (x) {
+                  return _path2.default.normalize(x);
+                }));
+
+              case 4:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function expandPaths(_x2, _x3) {
+        return _ref4.apply(this, arguments);
+      }
+
+      return expandPaths;
+    }()
+  }, {
     key: 'expandFeaturePaths',
     value: function () {
-      var _ref4 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(featurePaths) {
-        return _regenerator2.default.wrap(function _callee3$(_context3) {
+      var _ref7 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(featurePaths) {
+        return _regenerator2.default.wrap(function _callee6$(_context6) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context6.prev = _context6.next) {
               case 0:
                 featurePaths = featurePaths.map(function (p) {
                   return p.replace(/(:\d+)*$/g, '');
                 }); // Strip line numbers
-                _context3.next = 3;
-                return this.pathExpander.expandPathsWithExtensions(featurePaths, ['feature']);
+                _context6.next = 3;
+                return this.expandPaths(featurePaths, '.feature');
 
               case 3:
-                return _context3.abrupt('return', _context3.sent);
+                return _context6.abrupt('return', _context6.sent);
 
               case 4:
               case 'end':
-                return _context3.stop();
+                return _context6.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee6, this);
       }));
 
-      function expandFeaturePaths(_x2) {
-        return _ref4.apply(this, arguments);
+      function expandFeaturePaths(_x6) {
+        return _ref7.apply(this, arguments);
       }
 
       return expandFeaturePaths;
@@ -56048,7 +56152,7 @@ var ConfigurationBuilder = function () {
   }, {
     key: 'getFeatureDirectoryPaths',
     value: function getFeatureDirectoryPaths(featurePaths) {
-      var _this = this;
+      var _this2 = this;
 
       var featureDirs = featurePaths.map(function (featurePath) {
         var featureDir = _path2.default.dirname(featurePath);
@@ -56062,7 +56166,7 @@ var ConfigurationBuilder = function () {
             break;
           }
         }
-        return _path2.default.relative(_this.cwd, featureDir);
+        return _path2.default.relative(_this2.cwd, featureDir);
       });
       return _lodash2.default.uniq(featureDirs);
     }
@@ -56093,125 +56197,85 @@ var ConfigurationBuilder = function () {
   }, {
     key: 'getUnexpandedFeaturePaths',
     value: function () {
-      var _ref5 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
-        var _this2 = this;
+      var _ref8 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee8() {
+        var _this3 = this;
 
         var nestedFeaturePaths, featurePaths;
-        return _regenerator2.default.wrap(function _callee5$(_context5) {
+        return _regenerator2.default.wrap(function _callee8$(_context8) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context8.prev = _context8.next) {
               case 0:
                 if (!(this.args.length > 0)) {
-                  _context5.next = 7;
+                  _context8.next = 7;
                   break;
                 }
 
-                _context5.next = 3;
+                _context8.next = 3;
                 return _bluebird2.default.map(this.args, function () {
-                  var _ref6 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(arg) {
+                  var _ref9 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(arg) {
                     var filename, filePath, content;
-                    return _regenerator2.default.wrap(function _callee4$(_context4) {
+                    return _regenerator2.default.wrap(function _callee7$(_context7) {
                       while (1) {
-                        switch (_context4.prev = _context4.next) {
+                        switch (_context7.prev = _context7.next) {
                           case 0:
                             filename = _path2.default.basename(arg);
 
                             if (!(filename[0] === '@')) {
-                              _context4.next = 9;
+                              _context7.next = 9;
                               break;
                             }
 
-                            filePath = _path2.default.join(_this2.cwd, arg);
-                            _context4.next = 5;
+                            filePath = _path2.default.join(_this3.cwd, arg);
+                            _context7.next = 5;
                             return _fs2.default.readFile(filePath, 'utf8');
 
                           case 5:
-                            content = _context4.sent;
-                            return _context4.abrupt('return', _lodash2.default.chain(content).split('\n').map(_lodash2.default.trim).compact().value());
+                            content = _context7.sent;
+                            return _context7.abrupt('return', _lodash2.default.chain(content).split('\n').map(_lodash2.default.trim).compact().value());
 
                           case 9:
-                            return _context4.abrupt('return', arg);
+                            return _context7.abrupt('return', arg);
 
                           case 10:
                           case 'end':
-                            return _context4.stop();
+                            return _context7.stop();
                         }
                       }
-                    }, _callee4, _this2);
+                    }, _callee7, _this3);
                   }));
 
-                  return function (_x3) {
-                    return _ref6.apply(this, arguments);
+                  return function (_x7) {
+                    return _ref9.apply(this, arguments);
                   };
                 }());
 
               case 3:
-                nestedFeaturePaths = _context5.sent;
+                nestedFeaturePaths = _context8.sent;
                 featurePaths = _lodash2.default.flatten(nestedFeaturePaths);
 
                 if (!(featurePaths.length > 0)) {
-                  _context5.next = 7;
+                  _context8.next = 7;
                   break;
                 }
 
-                return _context5.abrupt('return', featurePaths);
+                return _context8.abrupt('return', featurePaths);
 
               case 7:
-                return _context5.abrupt('return', ['features']);
+                return _context8.abrupt('return', ['features/**/*.feature']);
 
               case 8:
               case 'end':
-                return _context5.stop();
+                return _context8.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee8, this);
       }));
 
       function getUnexpandedFeaturePaths() {
-        return _ref5.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       }
 
       return getUnexpandedFeaturePaths;
-    }()
-  }, {
-    key: 'expandSupportCodePaths',
-    value: function () {
-      var _ref7 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(supportCodePaths) {
-        var extensions;
-        return _regenerator2.default.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                extensions = ['js'];
-
-                this.options.compiler.forEach(function (compiler) {
-                  var _OptionSplitter$split3 = _option_splitter2.default.split(compiler),
-                      _OptionSplitter$split4 = (0, _slicedToArray3.default)(_OptionSplitter$split3, 2),
-                      extension = _OptionSplitter$split4[0],
-                      module = _OptionSplitter$split4[1];
-
-                  extensions.push(extension);
-                  require(module);
-                });
-                _context6.next = 4;
-                return this.pathExpander.expandPathsWithExtensions(supportCodePaths, extensions);
-
-              case 4:
-                return _context6.abrupt('return', _context6.sent);
-
-              case 5:
-              case 'end':
-                return _context6.stop();
-            }
-          }
-        }, _callee6, this);
-      }));
-
-      function expandSupportCodePaths(_x4) {
-        return _ref7.apply(this, arguments);
-      }
-
-      return expandSupportCodePaths;
     }()
   }]);
   return ConfigurationBuilder;
@@ -56219,7 +56283,7 @@ var ConfigurationBuilder = function () {
 
 exports.default = ConfigurationBuilder;
 
-},{"./argv_parser":303,"./option_splitter":309,"./path_expander":310,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/slicedToArray":28,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232,"mz/fs":235,"path":242}],305:[function(require,module,exports){
+},{"./argv_parser":303,"./option_splitter":309,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/slicedToArray":28,"babel-runtime/regenerator":30,"bluebird":34,"glob":218,"lodash":232,"mz/fs":235,"path":242}],305:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56415,7 +56479,7 @@ var _profile_loader2 = _interopRequireDefault(_profile_loader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./argv_parser":303,"./profile_loader":311,"babel-runtime/regenerator":30,"bluebird":34,"gherkin":203,"lodash":232,"mz/fs":235,"path":242}],306:[function(require,module,exports){
+},{"./argv_parser":303,"./profile_loader":310,"babel-runtime/regenerator":30,"bluebird":34,"gherkin":203,"lodash":232,"mz/fs":235,"path":242}],306:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -56552,6 +56616,10 @@ var _path2 = _interopRequireDefault(_path);
 var _pickle_filter = require('../pickle_filter');
 
 var _pickle_filter2 = _interopRequireDefault(_pickle_filter);
+
+var _master = require('../runtime/parallel/master');
+
+var _master2 = _interopRequireDefault(_master);
 
 var _runtime = require('../runtime');
 
@@ -56702,7 +56770,13 @@ var Cli = function () {
     }()
   }, {
     key: 'getSupportCodeLibrary',
-    value: function getSupportCodeLibrary(supportCodePaths) {
+    value: function getSupportCodeLibrary(_ref7) {
+      var supportCodeRequiredModules = _ref7.supportCodeRequiredModules,
+          supportCodePaths = _ref7.supportCodePaths;
+
+      supportCodeRequiredModules.map(function (module) {
+        return require(module);
+      });
       _support_code_library_builder2.default.reset(this.cwd);
       supportCodePaths.forEach(function (codePath) {
         return require(codePath);
@@ -56712,8 +56786,8 @@ var Cli = function () {
   }, {
     key: 'run',
     value: function () {
-      var _ref7 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
-        var configuration, supportCodeLibrary, eventBroadcaster, cleanup, testCases, runtime, result;
+      var _ref8 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
+        var configuration, supportCodeLibrary, eventBroadcaster, cleanup, testCases, success, parallelRuntimeMaster, runtime;
         return _regenerator2.default.wrap(function _callee4$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -56734,7 +56808,7 @@ var Cli = function () {
                 }
 
                 this.stdout.write(I18n.getLanguages());
-                return _context5.abrupt('return', true);
+                return _context5.abrupt('return', { success: true });
 
               case 8:
                 if (!configuration.listI18nKeywordsFor) {
@@ -56743,10 +56817,10 @@ var Cli = function () {
                 }
 
                 this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor));
-                return _context5.abrupt('return', true);
+                return _context5.abrupt('return', { success: true });
 
               case 11:
-                supportCodeLibrary = this.getSupportCodeLibrary(configuration.supportCodePaths);
+                supportCodeLibrary = this.getSupportCodeLibrary(configuration);
                 eventBroadcaster = new _events2.default();
                 _context5.next = 15;
                 return this.initializeFormatters({
@@ -56769,24 +56843,56 @@ var Cli = function () {
 
               case 18:
                 testCases = _context5.sent;
+                success = void 0;
+
+                if (!configuration.parallel) {
+                  _context5.next = 26;
+                  break;
+                }
+
+                parallelRuntimeMaster = new _master2.default({
+                  eventBroadcaster: eventBroadcaster,
+                  options: configuration.runtimeOptions,
+                  supportCodePaths: configuration.supportCodePaths,
+                  supportCodeRequiredModules: configuration.supportCodeRequiredModules,
+                  testCases: testCases
+                });
+                _context5.next = 24;
+                return new _bluebird2.default(function (resolve) {
+                  parallelRuntimeMaster.run(configuration.parallel, function (s) {
+                    success = s;
+                    resolve();
+                  });
+                });
+
+              case 24:
+                _context5.next = 30;
+                break;
+
+              case 26:
                 runtime = new _runtime2.default({
                   eventBroadcaster: eventBroadcaster,
                   options: configuration.runtimeOptions,
                   supportCodeLibrary: supportCodeLibrary,
                   testCases: testCases
                 });
-                _context5.next = 22;
+                _context5.next = 29;
                 return runtime.start();
 
-              case 22:
-                result = _context5.sent;
-                _context5.next = 25;
+              case 29:
+                success = _context5.sent;
+
+              case 30:
+                _context5.next = 32;
                 return cleanup();
 
-              case 25:
-                return _context5.abrupt('return', result);
+              case 32:
+                return _context5.abrupt('return', {
+                  shouldExitImmediately: configuration.shouldExitImmediately,
+                  success: success
+                });
 
-              case 26:
+              case 33:
               case 'end':
                 return _context5.stop();
             }
@@ -56795,7 +56901,7 @@ var Cli = function () {
       }));
 
       function run() {
-        return _ref7.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       }
 
       return run;
@@ -56806,7 +56912,7 @@ var Cli = function () {
 
 exports.default = Cli;
 
-},{"../formatter/builder":312,"../formatter/helpers":318,"../pickle_filter":342,"../runtime":345,"../support_code_library_builder":353,"./configuration_builder":304,"./helpers":305,"./i18n":306,"./install_validator":308,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"babel-runtime/regenerator":30,"bluebird":34,"events":198,"mz/fs":235,"path":242}],308:[function(require,module,exports){
+},{"../formatter/builder":311,"../formatter/helpers":317,"../pickle_filter":341,"../runtime":344,"../runtime/parallel/master":346,"../support_code_library_builder":354,"./configuration_builder":304,"./helpers":305,"./i18n":306,"./install_validator":308,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"babel-runtime/regenerator":30,"bluebird":34,"events":198,"mz/fs":235,"path":242}],308:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -56934,198 +57040,6 @@ function partNeedsRecombined(i) {
 }
 
 },{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],310:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _regenerator = require('babel-runtime/regenerator');
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
-
-var _bluebird = require('bluebird');
-
-var _bluebird2 = _interopRequireDefault(_bluebird);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _fs = require('mz/fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _glob = require('glob');
-
-var _glob2 = _interopRequireDefault(_glob);
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var PathExpander = function () {
-  function PathExpander(directory) {
-    (0, _classCallCheck3.default)(this, PathExpander);
-
-    this.directory = directory;
-  }
-
-  (0, _createClass3.default)(PathExpander, [{
-    key: 'expandPathsWithExtensions',
-    value: function () {
-      var _ref = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(paths, extensions) {
-        var _this = this;
-
-        var expandedPaths;
-        return _regenerator2.default.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return _bluebird2.default.map(paths, function () {
-                  var _ref2 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee(p) {
-                    return _regenerator2.default.wrap(function _callee$(_context) {
-                      while (1) {
-                        switch (_context.prev = _context.next) {
-                          case 0:
-                            _context.next = 2;
-                            return _this.expandPathWithExtensions(p, extensions);
-
-                          case 2:
-                            return _context.abrupt('return', _context.sent);
-
-                          case 3:
-                          case 'end':
-                            return _context.stop();
-                        }
-                      }
-                    }, _callee, _this);
-                  }));
-
-                  return function (_x3) {
-                    return _ref2.apply(this, arguments);
-                  };
-                }());
-
-              case 2:
-                expandedPaths = _context2.sent;
-                return _context2.abrupt('return', _lodash2.default.uniq(_lodash2.default.flatten(expandedPaths)));
-
-              case 4:
-              case 'end':
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function expandPathsWithExtensions(_x, _x2) {
-        return _ref.apply(this, arguments);
-      }
-
-      return expandPathsWithExtensions;
-    }()
-  }, {
-    key: 'expandPathWithExtensions',
-    value: function () {
-      var _ref3 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(p, extensions) {
-        var fullPath, stats;
-        return _regenerator2.default.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                fullPath = _path2.default.resolve(this.directory, p);
-                _context3.next = 3;
-                return _fs2.default.stat(fullPath);
-
-              case 3:
-                stats = _context3.sent;
-
-                if (!stats.isDirectory()) {
-                  _context3.next = 10;
-                  break;
-                }
-
-                _context3.next = 7;
-                return this.expandDirectoryWithExtensions(fullPath, extensions);
-
-              case 7:
-                return _context3.abrupt('return', _context3.sent);
-
-              case 10:
-                return _context3.abrupt('return', [fullPath]);
-
-              case 11:
-              case 'end':
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function expandPathWithExtensions(_x4, _x5) {
-        return _ref3.apply(this, arguments);
-      }
-
-      return expandPathWithExtensions;
-    }()
-  }, {
-    key: 'expandDirectoryWithExtensions',
-    value: function () {
-      var _ref4 = (0, _bluebird.coroutine)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(realPath, extensions) {
-        var pattern, results;
-        return _regenerator2.default.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                pattern = realPath + '/**/*.';
-
-                if (extensions.length > 1) {
-                  pattern += '{' + extensions.join(',') + '}';
-                } else {
-                  pattern += extensions[0];
-                }
-                _context4.next = 4;
-                return _bluebird2.default.promisify(_glob2.default)(pattern);
-
-              case 4:
-                results = _context4.sent;
-                return _context4.abrupt('return', results.map(function (filePath) {
-                  return filePath.replace(/\//g, _path2.default.sep);
-                }));
-
-              case 6:
-              case 'end':
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-
-      function expandDirectoryWithExtensions(_x6, _x7) {
-        return _ref4.apply(this, arguments);
-      }
-
-      return expandDirectoryWithExtensions;
-    }()
-  }]);
-  return PathExpander;
-}();
-
-exports.default = PathExpander;
-
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/regenerator":30,"bluebird":34,"glob":218,"lodash":232,"mz/fs":235,"path":242}],311:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57271,7 +57185,7 @@ var ProfileLoader = function () {
 
 exports.default = ProfileLoader;
 
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/typeof":29,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232,"mz/fs":235,"path":242,"string-argv":289}],312:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/typeof":29,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232,"mz/fs":235,"path":242,"string-argv":289}],311:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57427,7 +57341,7 @@ var FormatterBuilder = function () {
 
 exports.default = FormatterBuilder;
 
-},{"./event_protocol_formatter":313,"./get_color_fns":314,"./json_formatter":327,"./progress_bar_formatter":328,"./progress_formatter":329,"./rerun_formatter":330,"./snippets_formatter":331,"./step_definition_snippet_builder":332,"./step_definition_snippet_builder/javascript_snippet_syntax":333,"./summary_formatter":334,"./usage_formatter":335,"./usage_json_formatter":336,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"path":242}],313:[function(require,module,exports){
+},{"./event_protocol_formatter":312,"./get_color_fns":313,"./json_formatter":326,"./progress_bar_formatter":327,"./progress_formatter":328,"./rerun_formatter":329,"./snippets_formatter":330,"./step_definition_snippet_builder":331,"./step_definition_snippet_builder/javascript_snippet_syntax":332,"./summary_formatter":333,"./usage_formatter":334,"./usage_json_formatter":335,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"path":242}],312:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57511,7 +57425,7 @@ var EventProtocolFormatter = function (_Formatter) {
 
 exports.default = EventProtocolFormatter;
 
-},{"./":326,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"escape-string-regexp":197,"path":242}],314:[function(require,module,exports){
+},{"./":325,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"escape-string-regexp":197,"path":242}],313:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57542,7 +57456,7 @@ function getColorFns(enabled) {
   return _safe2.default;
 }
 
-},{"../status":349,"babel-runtime/helpers/defineProperty":24,"colors/safe":60}],315:[function(require,module,exports){
+},{"../status":350,"babel-runtime/helpers/defineProperty":24,"colors/safe":60}],314:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57563,7 +57477,7 @@ function formatError(error, colorFns) {
   });
 }
 
-},{"assertion-error-formatter":13}],316:[function(require,module,exports){
+},{"assertion-error-formatter":13}],315:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57696,7 +57610,7 @@ var EventDataCollector = function () {
 
 exports.default = EventDataCollector;
 
-},{"./gherkin_document_parser":317,"./pickle_parser":322,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],317:[function(require,module,exports){
+},{"./gherkin_document_parser":316,"./pickle_parser":321,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],316:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57723,7 +57637,7 @@ function getScenarioLineToDescriptionMap(gherkinDocument) {
   }).fromPairs().value();
 }
 
-},{"lodash":232}],318:[function(require,module,exports){
+},{"lodash":232}],317:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -57821,7 +57735,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.GherkinDocumentParser = GherkinDocumentParser;
 exports.PickleParser = PickleParser;
 
-},{"./error_helpers":315,"./event_data_collector":316,"./gherkin_document_parser":317,"./issue_helpers":319,"./keyword_type":320,"./location_helpers":321,"./pickle_parser":322,"./summary_helpers":324,"./usage_helpers":325}],319:[function(require,module,exports){
+},{"./error_helpers":314,"./event_data_collector":315,"./gherkin_document_parser":316,"./issue_helpers":318,"./keyword_type":319,"./location_helpers":320,"./pickle_parser":321,"./summary_helpers":323,"./usage_helpers":324}],318:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58020,7 +57934,7 @@ function formatIssue(_ref2) {
   return text + '\n';
 }
 
-},{"../../status":349,"../../step_arguments":350,"./gherkin_document_parser":317,"./keyword_type":320,"./location_helpers":321,"./pickle_parser":322,"./step_result_helpers":323,"babel-runtime/helpers/defineProperty":24,"cli-table":39,"figures":200,"indent-string":225,"lodash":232}],320:[function(require,module,exports){
+},{"../../status":350,"../../step_arguments":351,"./gherkin_document_parser":316,"./keyword_type":319,"./location_helpers":320,"./pickle_parser":321,"./step_result_helpers":322,"babel-runtime/helpers/defineProperty":24,"cli-table":39,"figures":200,"indent-string":225,"lodash":232}],319:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58070,7 +57984,7 @@ function getStepKeywordType(_ref) {
   }
 }
 
-},{"gherkin":203,"lodash":232}],321:[function(require,module,exports){
+},{"gherkin":203,"lodash":232}],320:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58081,7 +57995,7 @@ function formatLocation(obj) {
   return obj.uri + ":" + obj.line;
 }
 
-},{}],322:[function(require,module,exports){
+},{}],321:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58123,7 +58037,7 @@ function getStepLineToPickledStepMap(pickle) {
   }).fromPairs().value();
 }
 
-},{"lodash":232}],323:[function(require,module,exports){
+},{"lodash":232}],322:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58198,7 +58112,7 @@ function getUndefinedStepResultMessage(_ref5) {
   return colorFns.undefined(message);
 }
 
-},{"../../status":349,"./error_helpers":315,"indent-string":225}],324:[function(require,module,exports){
+},{"../../status":350,"./error_helpers":314,"indent-string":225}],323:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58284,7 +58198,7 @@ function getDuration(milliseconds) {
   return duration.minutes + 'm' + duration.toString('%S') + '.' + duration.toString('%L') + 's' + '\n';
 }
 
-},{"../../status":349,"duration":162,"lodash":232}],325:[function(require,module,exports){
+},{"../../status":350,"duration":162,"lodash":232}],324:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58385,7 +58299,7 @@ function getUsage(_ref3) {
   return buildResult(mapping);
 }
 
-},{"../location_helpers":321,"../pickle_parser":322,"lodash":232}],326:[function(require,module,exports){
+},{"../location_helpers":320,"../pickle_parser":321,"lodash":232}],325:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58410,7 +58324,7 @@ var Formatter = function Formatter(options) {
 
 exports.default = Formatter;
 
-},{"babel-runtime/helpers/classCallCheck":22,"lodash":232}],327:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"lodash":232}],326:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58612,7 +58526,7 @@ var JsonFormatter = function (_Formatter) {
 
         data.result = { status: status };
         if (testStep.result.duration) {
-          data.result.duration = testStep.result.duration;
+          data.result.duration = testStep.result.duration * 1000000;
         }
         if (status === _status2.default.FAILED && exception) {
           data.result.error_message = (0, _assertionErrorFormatter.format)(exception);
@@ -58641,7 +58555,7 @@ var JsonFormatter = function (_Formatter) {
 
 exports.default = JsonFormatter;
 
-},{"../status":349,"../step_arguments":350,"./":326,"./helpers":318,"assertion-error-formatter":13,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"lodash":232}],328:[function(require,module,exports){
+},{"../status":350,"../step_arguments":351,"./":325,"./helpers":317,"assertion-error-formatter":13,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"lodash":232}],327:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58761,7 +58675,7 @@ var ProgressBarFormatter = function (_Formatter) {
 
 exports.default = ProgressBarFormatter;
 
-},{"./":326,"./helpers":318,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"progress":247}],329:[function(require,module,exports){
+},{"./":325,"./helpers":317,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"progress":247}],328:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58833,7 +58747,7 @@ var ProgressFormatter = function (_SummaryFormatter) {
 
 exports.default = ProgressFormatter;
 
-},{"../status":349,"./summary_formatter":334,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/defineProperty":24,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],330:[function(require,module,exports){
+},{"../status":350,"./summary_formatter":333,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/defineProperty":24,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],329:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -58915,7 +58829,7 @@ var RerunFormatter = function (_Formatter) {
 
 exports.default = RerunFormatter;
 
-},{"../status":349,"./":326,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"lodash":232}],331:[function(require,module,exports){
+},{"../status":350,"./":325,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"lodash":232}],330:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59021,7 +58935,7 @@ var SnippetsFormatter = function (_Formatter) {
 
 exports.default = SnippetsFormatter;
 
-},{"../status":349,"./":326,"./helpers":318,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],332:[function(require,module,exports){
+},{"../status":350,"./":325,"./helpers":317,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],331:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59102,7 +59016,7 @@ var StepDefinitionSnippetBuilder = function () {
 
 exports.default = StepDefinitionSnippetBuilder;
 
-},{"../../step_arguments":350,"../helpers":318,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"cucumber-expressions":153}],333:[function(require,module,exports){
+},{"../../step_arguments":351,"../helpers":317,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"cucumber-expressions":153}],332:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59139,7 +59053,9 @@ var JavaScriptSnippetSyntax = function () {
           stepParameterNames = _ref.stepParameterNames;
 
       var functionKeyword = 'function ';
-      if (this.snippetInterface === 'generator') {
+      if (this.snippetInterface === 'async-await') {
+        functionKeyword = 'async ' + functionKeyword;
+      } else if (this.snippetInterface === 'generator') {
         functionKeyword += '*';
       }
 
@@ -59167,7 +59083,7 @@ var JavaScriptSnippetSyntax = function () {
 
 exports.default = JavaScriptSnippetSyntax;
 
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],334:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],333:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59284,7 +59200,7 @@ var SummaryFormatter = function (_Formatter) {
 
 exports.default = SummaryFormatter;
 
-},{"../status":349,"./":326,"./helpers":318,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"lodash":232}],335:[function(require,module,exports){
+},{"../status":350,"./":325,"./helpers":317,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"lodash":232}],334:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59394,7 +59310,7 @@ var UsageFormatter = function (_Formatter) {
 
 exports.default = UsageFormatter;
 
-},{"./":326,"./helpers":318,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"cli-table":39,"lodash":232}],336:[function(require,module,exports){
+},{"./":325,"./helpers":317,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27,"cli-table":39,"lodash":232}],335:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59452,13 +59368,13 @@ var UsageJsonFormatter = function (_Formatter) {
 
 exports.default = UsageJsonFormatter;
 
-},{"./":326,"./helpers":318,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],337:[function(require,module,exports){
+},{"./":325,"./helpers":317,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],336:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.When = exports.Then = exports.setWorldConstructor = exports.setDefinitionFunctionWrapper = exports.setDefaultTimeout = exports.registerListener = exports.registerHandler = exports.Given = exports.defineSupportCode = exports.defineStep = exports.defineParameterType = exports.BeforeAll = exports.Before = exports.AfterAll = exports.After = exports.formatterHelpers = exports.UsageJsonFormatter = exports.UsageFormatter = exports.SummaryFormatter = exports.SnippetsFormatter = exports.RerunFormatter = exports.ProgressFormatter = exports.JsonFormatter = exports.FormatterBuilder = exports.Formatter = exports.supportCodeLibraryBuilder = exports.Status = exports.Runtime = exports.PickleFilter = exports.getTestCasesFromFilesystem = exports.getTestCases = exports.Cli = undefined;
+exports.When = exports.Then = exports.setWorldConstructor = exports.setDefinitionFunctionWrapper = exports.setDefaultTimeout = exports.Given = exports.defineSupportCode = exports.defineStep = exports.defineParameterType = exports.BeforeAll = exports.Before = exports.AfterAll = exports.After = exports.formatterHelpers = exports.UsageJsonFormatter = exports.UsageFormatter = exports.SummaryFormatter = exports.SnippetsFormatter = exports.RerunFormatter = exports.ProgressFormatter = exports.JsonFormatter = exports.FormatterBuilder = exports.Formatter = exports.supportCodeLibraryBuilder = exports.Status = exports.Runtime = exports.PickleFilter = exports.getTestCasesFromFilesystem = exports.getTestCases = exports.Cli = undefined;
 
 var _cli = require('./cli');
 
@@ -59624,15 +59540,13 @@ var defineParameterType = exports.defineParameterType = methods.defineParameterT
 var defineStep = exports.defineStep = methods.defineStep;
 var defineSupportCode = exports.defineSupportCode = methods.defineSupportCode;
 var Given = exports.Given = methods.Given;
-var registerHandler = exports.registerHandler = methods.registerHandler;
-var registerListener = exports.registerListener = methods.registerListener;
 var setDefaultTimeout = exports.setDefaultTimeout = methods.setDefaultTimeout;
 var setDefinitionFunctionWrapper = exports.setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper;
 var setWorldConstructor = exports.setWorldConstructor = methods.setWorldConstructor;
 var Then = exports.Then = methods.Then;
 var When = exports.When = methods.When;
 
-},{"./cli":307,"./cli/helpers":305,"./formatter":326,"./formatter/builder":312,"./formatter/helpers":318,"./formatter/json_formatter":327,"./formatter/progress_formatter":329,"./formatter/rerun_formatter":330,"./formatter/snippets_formatter":331,"./formatter/summary_formatter":334,"./formatter/usage_formatter":335,"./formatter/usage_json_formatter":336,"./pickle_filter":342,"./runtime":345,"./status":349,"./support_code_library_builder":353}],338:[function(require,module,exports){
+},{"./cli":307,"./cli/helpers":305,"./formatter":325,"./formatter/builder":311,"./formatter/helpers":317,"./formatter/json_formatter":326,"./formatter/progress_formatter":328,"./formatter/rerun_formatter":329,"./formatter/snippets_formatter":330,"./formatter/summary_formatter":333,"./formatter/usage_formatter":334,"./formatter/usage_json_formatter":335,"./pickle_filter":341,"./runtime":344,"./status":350,"./support_code_library_builder":354}],337:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59704,7 +59618,7 @@ var DataTable = function () {
 
 exports.default = DataTable;
 
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"lodash":232}],339:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"lodash":232}],338:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59806,7 +59720,7 @@ var StepDefinition = function () {
 
 exports.default = StepDefinition;
 
-},{"../step_arguments":350,"./data_table":338,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"cucumber-expressions":153}],340:[function(require,module,exports){
+},{"../step_arguments":351,"./data_table":337,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"cucumber-expressions":153}],339:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59884,7 +59798,7 @@ var TestCaseHookDefinition = function (_StepDefinition) {
 
 exports.default = TestCaseHookDefinition;
 
-},{"../pickle_filter":342,"./step_definition":339,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],341:[function(require,module,exports){
+},{"../pickle_filter":341,"./step_definition":338,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],340:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -59942,7 +59856,7 @@ var TestRunHookDefinition = function (_StepDefinition) {
 
 exports.default = TestRunHookDefinition;
 
-},{"./step_definition":339,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],342:[function(require,module,exports){
+},{"./step_definition":338,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/inherits":26,"babel-runtime/helpers/possibleConstructorReturn":27}],341:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60052,7 +59966,7 @@ var PickleFilter = function () {
 
 exports.default = PickleFilter;
 
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"cucumber-tag-expressions":159,"lodash":232,"path":242}],343:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"cucumber-tag-expressions":159,"lodash":232,"path":242}],342:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -60149,7 +60063,7 @@ var AttachmentManager = function () {
 exports.default = AttachmentManager;
 
 }).call(this,require("buffer").Buffer)
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"bluebird":34,"buffer":38,"is-stream":230}],344:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"bluebird":34,"buffer":38,"is-stream":230}],343:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60201,7 +60115,7 @@ function getAmbiguousStepException(stepDefinitions) {
   return 'Multiple step definitions match:' + '\n' + (0, _indentString2.default)(table.toString(), 2);
 }
 
-},{"../formatter/helpers/location_helpers":321,"cli-table":39,"indent-string":225}],345:[function(require,module,exports){
+},{"../formatter/helpers/location_helpers":320,"cli-table":39,"indent-string":225}],344:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60437,7 +60351,194 @@ var Runtime = function () {
 
 exports.default = Runtime;
 
-},{"../formatter/helpers":318,"../status":349,"../user_code_runner":358,"./stack_trace_filter":346,"./test_case_runner":348,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232,"verror":300}],346:[function(require,module,exports){
+},{"../formatter/helpers":317,"../status":350,"../user_code_runner":359,"./stack_trace_filter":347,"./test_case_runner":349,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232,"verror":300}],345:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var commandTypes = {
+  INITIALIZE: 'initialize',
+  RUN: 'run',
+  READY: 'ready',
+  FINALIZE: 'finalize',
+  EVENT: 'event'
+};
+
+exports.default = commandTypes;
+
+},{}],346:[function(require,module,exports){
+(function (process,__dirname){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _child_process = require('child_process');
+
+var _child_process2 = _interopRequireDefault(_child_process);
+
+var _command_types = require('./command_types');
+
+var _command_types2 = _interopRequireDefault(_command_types);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _readline = require('readline');
+
+var _readline2 = _interopRequireDefault(_readline);
+
+var _status = require('../../status');
+
+var _status2 = _interopRequireDefault(_status);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var slaveCommand = _path2.default.resolve(__dirname, '..', '..', '..', 'bin', 'run_slave');
+
+var Master = function () {
+  // options - {dryRun, failFast, filterStacktraces, strict}
+  function Master(_ref) {
+    var eventBroadcaster = _ref.eventBroadcaster,
+        options = _ref.options,
+        supportCodePaths = _ref.supportCodePaths,
+        supportCodeRequiredModules = _ref.supportCodeRequiredModules,
+        testCases = _ref.testCases;
+    (0, _classCallCheck3.default)(this, Master);
+
+    this.eventBroadcaster = eventBroadcaster;
+    this.options = options || {};
+    this.supportCodePaths = supportCodePaths;
+    this.supportCodeRequiredModules = supportCodeRequiredModules;
+    this.testCases = testCases || [];
+    this.nextTestCaseIndex = 0;
+    this.testCasesCompleted = 0;
+    this.result = {
+      duration: 0,
+      success: true
+    };
+    this.slaves = {};
+  }
+
+  (0, _createClass3.default)(Master, [{
+    key: 'parseSlaveLine',
+    value: function parseSlaveLine(slave, line) {
+      var input = JSON.parse(line);
+      switch (input.command) {
+        case _command_types2.default.READY:
+          this.giveSlaveWork(slave);
+          break;
+        case _command_types2.default.EVENT:
+          this.eventBroadcaster.emit(input.name, input.data);
+          if (input.name === 'test-case-finished') {
+            this.parseTestCaseResult(input.data.result);
+          }
+          break;
+        default:
+          throw new Error('Unexpected message from slave: ' + line);
+      }
+    }
+  }, {
+    key: 'startSlave',
+    value: function startSlave(id, total) {
+      var _this = this;
+
+      var slaveProcess = _child_process2.default.spawn(slaveCommand, [], {
+        env: _lodash2.default.assign({}, process.env, {
+          CUCUMBER_PARALLEL: 'true',
+          CUCUMBER_TOTAL_SLAVES: total,
+          CUCUMBER_SLAVE_ID: id
+        }),
+        stdio: ['pipe', 'pipe', process.stderr]
+      });
+      var rl = _readline2.default.createInterface({ input: slaveProcess.stdout });
+      var slave = { process: slaveProcess };
+      this.slaves[id] = slave;
+      rl.on('line', function (line) {
+        _this.parseSlaveLine(slave, line);
+      });
+      rl.on('close', function () {
+        slave.closed = true;
+        _this.onSlaveClose();
+      });
+      slave.process.stdin.write(JSON.stringify({
+        command: _command_types2.default.INITIALIZE,
+        filterStacktraces: this.options.filterStacktraces,
+        supportCodePaths: this.supportCodePaths,
+        supportCodeRequiredModules: this.supportCodeRequiredModules,
+        worldParameters: this.options.worldParameters
+      }) + '\n');
+    }
+  }, {
+    key: 'onSlaveClose',
+    value: function onSlaveClose() {
+      if (_lodash2.default.every(this.slaves, 'closed')) {
+        this.eventBroadcaster.emit('test-run-finished', { result: this.result });
+        this.onFinish(this.result.success);
+      }
+    }
+  }, {
+    key: 'parseTestCaseResult',
+    value: function parseTestCaseResult(testCaseResult) {
+      this.testCasesCompleted += 1;
+      if (testCaseResult.duration) {
+        this.result.duration += testCaseResult.duration;
+      }
+      if (this.shouldCauseFailure(testCaseResult.status)) {
+        this.result.success = false;
+      }
+    }
+  }, {
+    key: 'run',
+    value: function run(numberOfSlaves, done) {
+      var _this2 = this;
+
+      this.eventBroadcaster.emit('test-run-started');
+      _lodash2.default.times(numberOfSlaves, function (id) {
+        return _this2.startSlave(id, numberOfSlaves);
+      });
+      this.onFinish = done;
+    }
+  }, {
+    key: 'giveSlaveWork',
+    value: function giveSlaveWork(slave) {
+      if (this.nextTestCaseIndex === this.testCases.length) {
+        slave.process.stdin.write(JSON.stringify({ command: _command_types2.default.FINALIZE }) + '\n');
+        return;
+      }
+      var testCase = this.testCases[this.nextTestCaseIndex];
+      this.nextTestCaseIndex += 1;
+      var skip = this.options.dryRun || this.options.failFast && !this.result.success;
+      slave.process.stdin.write(JSON.stringify({ command: _command_types2.default.RUN, skip: skip, testCase: testCase }) + '\n');
+    }
+  }, {
+    key: 'shouldCauseFailure',
+    value: function shouldCauseFailure(status) {
+      return _lodash2.default.includes([_status2.default.AMBIGUOUS, _status2.default.FAILED, _status2.default.UNDEFINED], status) || status === _status2.default.PENDING && this.options.strict;
+    }
+  }]);
+  return Master;
+}();
+
+exports.default = Master;
+
+}).call(this,require('_process'),"/src/runtime/parallel")
+},{"../../status":350,"./command_types":345,"_process":246,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"child_process":37,"lodash":232,"path":242,"readline":37}],347:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -60521,7 +60622,7 @@ var StackTraceFilter = function () {
 exports.default = StackTraceFilter;
 
 }).call(this,"/src/runtime")
-},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"lodash":232,"path":242,"stack-chain":274}],347:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"lodash":232,"path":242,"stack-chain":274}],348:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -60656,7 +60757,7 @@ var beginTiming = _time2.default.beginTiming,
     endTiming = _time2.default.endTiming;
 exports.default = { run: run };
 
-},{"../status":349,"../time":356,"../user_code_runner":358,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232}],348:[function(require,module,exports){
+},{"../status":350,"../time":357,"../user_code_runner":359,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232}],349:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61133,7 +61234,7 @@ var TestCaseRunner = function () {
 
 exports.default = TestCaseRunner;
 
-},{"../status":349,"./attachment_manager":343,"./helpers":344,"./step_runner":347,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232}],349:[function(require,module,exports){
+},{"../status":350,"./attachment_manager":342,"./helpers":343,"./step_runner":348,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/helpers/extends":25,"babel-runtime/regenerator":30,"bluebird":34,"lodash":232}],350:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61163,7 +61264,7 @@ function getStatusMapping(initialValue) {
   }).fromPairs().value();
 }
 
-},{"lodash":232}],350:[function(require,module,exports){
+},{"lodash":232}],351:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61189,7 +61290,7 @@ function buildStepArgumentIterator(mapping) {
   };
 }
 
-},{"util":299}],351:[function(require,module,exports){
+},{"util":299}],352:[function(require,module,exports){
 (function (__dirname){
 'use strict';
 
@@ -61363,7 +61464,7 @@ function defineParameterType(builder) {
 }
 
 }).call(this,"/src/support_code_library_builder")
-},{"../formatter/helpers":318,"../models/step_definition":339,"../models/test_case_hook_definition":340,"../models/test_run_hook_definition":341,"./validate_arguments":355,"cucumber-expressions":153,"lodash":232,"path":242,"stacktrace-js":287,"util":299}],352:[function(require,module,exports){
+},{"../formatter/helpers":317,"../models/step_definition":338,"../models/test_case_hook_definition":339,"../models/test_run_hook_definition":340,"./validate_arguments":356,"cucumber-expressions":153,"lodash":232,"path":242,"stacktrace-js":287,"util":299}],353:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61416,7 +61517,7 @@ function wrapDefinitions(_ref) {
   }
 }
 
-},{"is-generator":229,"lodash":232,"path":242,"util-arity":295}],353:[function(require,module,exports){
+},{"is-generator":229,"lodash":232,"path":242,"util-arity":295}],354:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61435,6 +61536,10 @@ var _createClass3 = _interopRequireDefault(_createClass2);
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _util = require('util');
+
+var _util2 = _interopRequireDefault(_util);
 
 var _parameter_type_registry_builder = require('./parameter_type_registry_builder');
 
@@ -61458,10 +61563,10 @@ var SupportCodeLibraryBuilder = exports.SupportCodeLibraryBuilder = function () 
       AfterAll: (0, _define_helpers.defineTestRunHook)(this, 'afterTestRunHookDefinitions'),
       Before: (0, _define_helpers.defineTestCaseHook)(this, 'beforeTestCaseHookDefinitions'),
       BeforeAll: (0, _define_helpers.defineTestRunHook)(this, 'beforeTestRunHookDefinitions'),
-      defineSupportCode: function defineSupportCode(fn) {
-        fn(_this.methods);
-      },
       defineStep: (0, _define_helpers.defineStep)(this),
+      defineSupportCode: _util2.default.deprecate(function (fn) {
+        fn(_this.methods);
+      }, 'cucumber: defineSupportCode is deprecated. Please require/import the individual methods instead.'),
       setDefaultTimeout: function setDefaultTimeout(milliseconds) {
         _this.options.defaultTimeout = milliseconds;
       },
@@ -61519,7 +61624,7 @@ var SupportCodeLibraryBuilder = exports.SupportCodeLibraryBuilder = function () 
 
 exports.default = new SupportCodeLibraryBuilder();
 
-},{"./define_helpers":351,"./finalize_helpers":352,"./parameter_type_registry_builder":354,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"lodash":232}],354:[function(require,module,exports){
+},{"./define_helpers":352,"./finalize_helpers":353,"./parameter_type_registry_builder":355,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"lodash":232,"util":299}],355:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61534,7 +61639,7 @@ function build() {
 
 exports.default = { build: build };
 
-},{"cucumber-expressions":153}],355:[function(require,module,exports){
+},{"cucumber-expressions":153}],356:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61619,7 +61724,7 @@ function validateArguments(_ref6) {
   });
 }
 
-},{"babel-runtime/helpers/extends":25,"lodash":232}],356:[function(require,module,exports){
+},{"babel-runtime/helpers/extends":25,"lodash":232}],357:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -61656,7 +61761,7 @@ function getTimestamp() {
 exports.default = methods;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],357:[function(require,module,exports){
+},{}],358:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -61704,7 +61809,7 @@ var UncaughtExceptionManager = function () {
 exports.default = UncaughtExceptionManager;
 
 }).call(this,require('_process'))
-},{"_process":246,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],358:[function(require,module,exports){
+},{"_process":246,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23}],359:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61891,5 +61996,5 @@ var UserCodeRunner = function () {
 
 exports.default = UserCodeRunner;
 
-},{"./time":356,"./uncaught_exception_manager":357,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/regenerator":30,"bluebird":34,"util":299}]},{},[337])(337)
+},{"./time":357,"./uncaught_exception_manager":358,"babel-runtime/helpers/classCallCheck":22,"babel-runtime/helpers/createClass":23,"babel-runtime/regenerator":30,"bluebird":34,"util":299}]},{},[336])(336)
 });

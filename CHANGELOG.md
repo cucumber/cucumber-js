@@ -1,10 +1,26 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v4.0.0...master) (In Git)
+
+### [4.0.0](https://github.com/cucumber/cucumber-js/compare/v3.2.1...v4.0.0) (2017-01-24)
 
 #### BREAKING CHANGES
 
 * cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running use `--exit`. Use of this flag is discouraged. See [here](/docs/cli.md#exiting) for more information
+* remove `--compiler` option. See [here](/docs/cli.md#transpilers) for the new way to use transpilers
+* remove binaries `cucumber.js` and `cucumberjs`. Use `cucumber-js`
+
+#### New Features
+
+* can now use glob patterns for selecting what features to run
+* update `--require` to support glob patterns
+* add `--require-module <NODE_MODULE>` to require node modules before support code is loaded
+* add snippet interface "async-await"
+* add `--parallel <NUMBER_OF_SLAVES>` option to run tests in parallel. Note this is an experimental feature. See [here](/docs/cli.md#parallel-experimental) for more information
+
+#### Bug Fixes
+
+* revert json formatter duration to nanoseconds
 
 #### Deprecations
 

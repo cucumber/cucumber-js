@@ -6,7 +6,7 @@ import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
 import Mustache from 'mustache'
 
-When(/^I run cucumber.js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
+When(/^I run cucumber-js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
   args
 ) {
   args = Mustache.render(args || '', this)
@@ -15,7 +15,7 @@ When(/^I run cucumber.js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
 })
 
 When(
-  /^I run cucumber.js \(installed (locally|globally)\)$/,
+  /^I run cucumber-js \(installed (locally|globally)\)$/,
   { timeout: 10000 },
   function(location) {
     if (location === 'locally') {
@@ -74,6 +74,6 @@ Then(/^I see the version of Cucumber$/, function() {
 
 Then(/^I see the help text for Cucumber$/, function() {
   const actualOutput = this.lastRun.output
-  const expectedOutput = 'Usage: cucumber.js'
+  const expectedOutput = 'Usage: cucumber-js'
   expect(actualOutput).to.include(expectedOutput)
 })

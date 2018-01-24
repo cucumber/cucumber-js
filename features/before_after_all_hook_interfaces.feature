@@ -28,7 +28,7 @@ Feature: before / after all hook interfaces
 
       <TYPE>(function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -45,7 +45,7 @@ Feature: before / after all hook interfaces
         throw new Error('my error')
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
     Examples:
@@ -62,7 +62,7 @@ Feature: before / after all hook interfaces
         setTimeout(callback)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -81,7 +81,7 @@ Feature: before / after all hook interfaces
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
@@ -105,7 +105,7 @@ Feature: before / after all hook interfaces
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
@@ -127,7 +127,7 @@ Feature: before / after all hook interfaces
         return Promise.resolve()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
@@ -151,7 +151,7 @@ Feature: before / after all hook interfaces
         return Promise.resolve()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -169,7 +169,7 @@ Feature: before / after all hook interfaces
         return Promise.reject(new Error('my error'))
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
@@ -191,7 +191,7 @@ Feature: before / after all hook interfaces
         return Promise.reject()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
@@ -218,7 +218,7 @@ Feature: before / after all hook interfaces
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """

@@ -24,7 +24,7 @@ Before(function() {
 
   const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
   const profileContent =
-    'module.exports = {default: "--compiler js:babel-register"}'
+    'module.exports = {default: "--require-module babel-register"}'
   fs.writeFileSync(tmpDirProfilePath, profileContent)
 
   const tmpDirBabelRcPath = path.join(this.tmpDir, '.babelrc')
@@ -44,7 +44,7 @@ Before(function() {
 
   const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
   fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
-  this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber.js')
+  this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber-js')
 })
 
 Before('@global-install', function() {
@@ -82,7 +82,7 @@ Before('@global-install', function() {
   this.globalExecutablePath = path.join(
     globalInstallCucumberPath,
     'bin',
-    'cucumber.js'
+    'cucumber-js'
   )
 })
 

@@ -3,39 +3,36 @@
 Cucumber.js includes a executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
-$ ./node_modules/.bin/cucumber.js
+$ ./node_modules/.bin/cucumber-js
 ```
-
-The executable is also aliased as `cucumber-js` and `cucumberjs`.
-
-**Note to Windows users:** Use `cucumber-js` or `cucumberjs` instead of `cucumber.js`.
-The latter is causing the operating system to invoke JScript instead of Node.js,
-because of the file extension.
 
 **Note on global installs:** Cucumber does not work when installed globally because cucumber
 needs to be required in your support files and globally installed modules cannot be required.
 
 ## Running specific features
 
+* Specify a [glob](https://github.com/isaacs/node-glob) pattern
+  * `$ cucumber-js features/**/*.feature`
+* Specify a feature directory
+  * `$ cucumber-js features/dir`
 * Specify a feature file
-  * `$ cucumber.js features/my_feature.feature`
+  * `$ cucumber-js features/my_feature.feature`
 * Specify a scenario by its line number
-  * `$ cucumber.js features/my_feature.feature:3`
+  * `$ cucumber-js features/my_feature.feature:3`
 * Specify a scenario by its name matching a regular expression
-  * `$ cucumber.js --name "topic 1"`
+  * `$ cucumber-js --name "topic 1"`
   * If used multiple times, the scenario name needs to match only one of the names supplied
 * Use [Tags](#tags)
 
 ## Requiring support files
 
-Use `--require <FILE|DIR>` to require files before executing the features.
+Use `--require <GLOB|DIR|FILE>` to require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
 If not used, the following files are required:
 * If the features live in a `features` directory (at any level)
-  * all support files in the `features` directory
+  * `features/**/*.js`
 * Otherwise
-  * all support files in the directories of the features
+  * `<DIR>/**/*.js` for each directory containing the selected features
 
-Support files are defined as all `*.js` files and other extensions specified by `--compiler`.
 Automatic loading is disabled when this option is specified, and all loading becomes explicit.
 
 ## Formats
@@ -85,7 +82,7 @@ Undefined steps snippets are printed in javascript using the callback interface 
 ### Interface
 
 Override the snippet interface with `--format-options '{"snippetInterface": "<interface>"}'`.
-Valid interfaces are 'callback', 'generator', 'promise', or 'synchronous'.
+Valid interfaces are 'async-await', 'callback', 'generator', 'promise', or 'synchronous'.
 
 ### Syntax
 
@@ -99,6 +96,13 @@ This is useful when one needs to rerun failed tests locally by copying a line fr
 The default separator is a newline character.
 Note that the rerun file parser can only work with the default separator for now.
 
+## Parallel (experimental)
+
+You can run your scenarios in parallel with `--parallel <NUMBER_OF_SLAVES>`. Each slave is run in a separate node process and receives the following env variables:
+* `CUCUMBER_PARALLEL` - set to 'true'
+* `CUCUMBER_TOTAL_SLAVES` - set to the number of slaves
+* `CUCUMBER_SLAVE_ID` - id for slave ('0', '1', '2', etc)
+
 ## Profiles
 
 In order to store and reuse commonly used CLI options, you can add a `cucumber.js` file to your project root directory. The file should export an object where the key is the profile name and the value is a string of CLI options. The profile can be applied with `-p <NAME>` or `--profile <NAME>`. This will prepend the profile's CLI options to the ones provided by the command line. Multiple profiles can be specified at a time. If no profile is specified and a profile named `default` exists, it will be applied.
@@ -110,7 +114,7 @@ Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is 
 
 ## Transpilers
 
-Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--compiler <file_extension>:<module_name>`. Running `require("<module_name>")`, should make it possible to require files with the given extension. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--compiler coffee:coffee-script/register`.
+Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require features/**/*.<ext>` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require features/**/*.coffee`.
 
 ## World Parameters
 
