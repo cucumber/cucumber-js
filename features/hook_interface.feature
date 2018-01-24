@@ -23,7 +23,7 @@ Feature: After hook interface
 
       <TYPE>(function(arg1, arg2, arg3) {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -43,7 +43,7 @@ Feature: After hook interface
 
       <TYPE>(function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -60,7 +60,7 @@ Feature: After hook interface
         throw new Error('my error')
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
     Examples:
@@ -78,7 +78,7 @@ Feature: After hook interface
         setTimeout(callback)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -97,7 +97,7 @@ Feature: After hook interface
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
     Examples:
@@ -117,7 +117,7 @@ Feature: After hook interface
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
     Examples:
@@ -135,7 +135,7 @@ Feature: After hook interface
         return Promise.resolve()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -159,7 +159,7 @@ Feature: After hook interface
         return Promise.resolve()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -177,7 +177,7 @@ Feature: After hook interface
         return Promise.reject(new Error('my error'))
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -199,7 +199,7 @@ Feature: After hook interface
         return Promise.reject()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -226,7 +226,7 @@ Feature: After hook interface
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """

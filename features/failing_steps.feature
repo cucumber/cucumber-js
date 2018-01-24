@@ -15,7 +15,7 @@ Feature: Failing steps
 
       When(/^a (.*) step$/, function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -29,7 +29,7 @@ Feature: Failing steps
 
       When(/^a failing step$/, function(arg1, arg2) {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -45,7 +45,7 @@ Feature: Failing steps
         throw new Error('my error');
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -64,7 +64,7 @@ Feature: Failing steps
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -82,7 +82,7 @@ Feature: Failing steps
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -99,7 +99,7 @@ Feature: Failing steps
         return Promise.resolve()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -123,7 +123,7 @@ Feature: Failing steps
         })
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """
@@ -140,7 +140,7 @@ Feature: Failing steps
         return Promise.reject(new Error('my error'))
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a failing step" failed with:
       """

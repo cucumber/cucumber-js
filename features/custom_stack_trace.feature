@@ -18,5 +18,5 @@ Feature: Custom stack trace
 
       Error.prepareStackTrace = _prepareStackTrace
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes

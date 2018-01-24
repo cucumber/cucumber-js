@@ -50,5 +50,5 @@ Feature: Multiple Hooks
         this.value += 1
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes

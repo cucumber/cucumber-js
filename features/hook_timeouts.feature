@@ -30,7 +30,7 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -46,7 +46,7 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
 
@@ -59,7 +59,7 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -75,5 +75,5 @@ Feature: Step definition timeouts
         Scenario:
           Given a passing step
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
