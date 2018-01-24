@@ -59,5 +59,5 @@ Feature: step definition snippets custom syntax
       | callback    | (done) ->                    | done null, 'pending'   |
       | generator   | ->                           | 'pending'              |
       | promise     | ->                           | 'pending'              |
-      | asyncawait  | ->                           | 'pending'              |
+      | async-await | ->                           | 'pending'              |
       | synchronous | ->                           | 'pending'              |
