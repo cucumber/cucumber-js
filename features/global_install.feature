@@ -14,7 +14,7 @@ Feature: Global Installs
 
       When(/^a step is passing$/, function() {})
       """
-    When I run cucumber.js (installed globally)
+    When I run cucumber-js (installed globally)
     Then it fails
     And the error output contains the text:
       """
@@ -23,5 +23,5 @@ Feature: Global Installs
       For cucumber to work, you need to execute the same install that is required in your support files.
       Please execute the locally installed version to run your tests.
       """
-    When I run cucumber.js (installed locally)
+    When I run cucumber-js (installed locally)
     Then it passes

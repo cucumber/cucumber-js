@@ -15,7 +15,7 @@ Feature: Passing steps
 
       Given(/^a passing step$/, function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a passing step" has status "passed"
 
   Scenario: asynchronous
@@ -27,7 +27,7 @@ Feature: Passing steps
         setTimeout(callback)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a passing step" has status "passed"
 
   Scenario: promise
@@ -40,5 +40,5 @@ Feature: Passing steps
         return Promise.resolve()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a passing step" has status "passed"

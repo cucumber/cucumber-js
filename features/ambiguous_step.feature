@@ -14,7 +14,7 @@ Feature: Ambiguous Steps
       When(/^a ambiguous step$/, function() {});
       When(/^a (.*) step$/, function(status) {});
       """
-    When I run cucumber.js with `-f progress`
+    When I run cucumber-js with `-f progress`
     Then it outputs the text:
       """
       A

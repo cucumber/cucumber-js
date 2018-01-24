@@ -15,7 +15,7 @@ Feature: Multiple Formatters
       """
 
   Scenario: Ability to specify multiple formatters
-    When I run cucumber.js with `--language fr`
+    When I run cucumber-js with `--language fr`
     Then it outputs the text:
       """
       .

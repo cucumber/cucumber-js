@@ -17,7 +17,7 @@ Feature: Dryrun mode
 
       Given('a step', function() {})
       """
-    When I run cucumber.js with `--dry-run`
+    When I run cucumber-js with `--dry-run`
     Then all steps have status "skipped"
 
   Scenario: ambiguous step
@@ -28,11 +28,11 @@ Feature: Dryrun mode
       Given('a step', function() {});
       Given('a(n) step', function() {});
       """
-    When I run cucumber.js with `--dry-run`
+    When I run cucumber-js with `--dry-run`
     Then it fails
     And the step "a step" has status "ambiguous"
 
   Scenario: undefined step
-    When I run cucumber.js with `--dry-run`
+    When I run cucumber-js with `--dry-run`
     Then it fails
     And the step "a step" has status "undefined"

@@ -46,13 +46,13 @@ Feature: Rerun Formatter
       """
 
   Scenario: passing
-    When I run cucumber.js with `--format rerun:@rerun.txt features/a.feature:2`
+    When I run cucumber-js with `--format rerun:@rerun.txt features/a.feature:2`
     And the file "@rerun.txt" has the text:
       """
       """
 
   Scenario: multiple scenarios failing
-    When I run cucumber.js with `--format rerun:@rerun.txt`
+    When I run cucumber-js with `--format rerun:@rerun.txt`
     Then it fails
     And it runs the scenarios:
       | NAME          |
@@ -77,7 +77,7 @@ Feature: Rerun Formatter
       features/b.feature:5
       features/c.feature:5
       """
-    When I run cucumber.js with `@rerun.txt`
+    When I run cucumber-js with `@rerun.txt`
     Then it fails
     And it runs the scenarios:
       | NAME          |
@@ -92,12 +92,12 @@ Feature: Rerun Formatter
       features/c.feature:2
 
       """
-    When I run cucumber.js with `@rerun.txt`
+    When I run cucumber-js with `@rerun.txt`
     Then it runs the scenario "C - passing"
 
   Scenario: empty rerun file
     Given an empty file named "@rerun.txt"
-    When I run cucumber.js with `@rerun.txt`
+    When I run cucumber-js with `@rerun.txt`
     Then it fails
     And it runs the scenarios:
       | NAME          |
@@ -110,7 +110,7 @@ Feature: Rerun Formatter
       | C - undefined |
 
   Scenario: rerun with fail fast outputs all skipped scenarios
-    When I run cucumber.js with `--fail-fast --format rerun:@rerun.txt`
+    When I run cucumber-js with `--fail-fast --format rerun:@rerun.txt`
     Then it fails
     And the file "@rerun.txt" has the text:
       """

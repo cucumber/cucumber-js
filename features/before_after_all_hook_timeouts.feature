@@ -25,7 +25,7 @@ Feature: before / after all hook timeouts
         setTimeout(callback, 1000)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text snippets:
       | a handler errored, process exiting        |
@@ -48,7 +48,7 @@ Feature: before / after all hook timeouts
         setTimeout(callback, 1000)
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:

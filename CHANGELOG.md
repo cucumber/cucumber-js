@@ -6,6 +6,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running use `--exit`. Use of this flag is discouraged. See [here](/docs/cli.md#exiting) for more information
 * remove `--compiler` option. See [here](/docs/cli.md#transpilers) for the new way to use transpilers
+* remove binaries `cucumber.js` and `cucumberjs`. Use `cucumber-js`
 
 #### New Features
 

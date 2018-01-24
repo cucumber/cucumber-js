@@ -24,7 +24,7 @@ Feature: Hook Parameters
         console.log('name: ', testCase.pickle.name);
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the output contains the text:
       """
       features/my_feature.feature:2
@@ -66,7 +66,7 @@ Feature: Hook Parameters
         console.log('name: ', testCase.pickle.name);
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """

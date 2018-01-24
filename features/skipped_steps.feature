@@ -23,7 +23,7 @@ Feature: Skipped steps
         return 'skipped'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
 
@@ -37,7 +37,7 @@ Feature: Skipped steps
         callback(null, 'skipped')
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
 
@@ -56,7 +56,7 @@ Feature: Skipped steps
         }
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
 
@@ -75,6 +75,6 @@ Feature: Skipped steps
         var a = 1;
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"

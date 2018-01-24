@@ -9,7 +9,7 @@ Feature: Event Protocol Formatter
           Examples:
             | a | b |
       """
-    When I run cucumber.js with `--tags @a -f event-protocol`
+    When I run cucumber-js with `--tags @a -f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/gherkin-error.ndjson"
     And it fails
 
@@ -20,7 +20,7 @@ Feature: Event Protocol Formatter
         Scenario: a scenario
           Given a step
       """
-    When I run cucumber.js with `--tags @a -f event-protocol`
+    When I run cucumber-js with `--tags @a -f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/rejected-pickle.ndjson"
 
   Scenario: passed
@@ -36,7 +36,7 @@ Feature: Event Protocol Formatter
 
       Given(/^a step$/, function() {})
       """
-    When I run cucumber.js with `-f event-protocol`
+    When I run cucumber-js with `-f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/passed.ndjson"
 
   Scenario: failed
@@ -52,6 +52,6 @@ Feature: Event Protocol Formatter
 
       Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
-    When I run cucumber.js with `-f event-protocol`
+    When I run cucumber-js with `-f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/failed.ndjson"
     And it fails

@@ -44,7 +44,7 @@ Before(function() {
 
   const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
   fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
-  this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber.js')
+  this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber-js')
 })
 
 Before('@global-install', function() {
@@ -82,7 +82,7 @@ Before('@global-install', function() {
   this.globalExecutablePath = path.join(
     globalInstallCucumberPath,
     'bin',
-    'cucumber.js'
+    'cucumber-js'
   )
 })
 

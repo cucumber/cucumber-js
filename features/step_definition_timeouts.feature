@@ -40,7 +40,7 @@ Feature: Step definition timeouts
         Scenario:
           When a <TYPE> step runs slowly
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -60,7 +60,7 @@ Feature: Step definition timeouts
         Scenario:
           When a <TYPE> step runs slowly with an increased timeout
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
@@ -77,7 +77,7 @@ Feature: Step definition timeouts
           When a <TYPE> step runs slowly with an increased timeout
           And a <TYPE> step runs slowly
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the output contains the text:
       """
@@ -97,7 +97,7 @@ Feature: Step definition timeouts
         Scenario:
           When a <TYPE> step with a disabled timeout
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
     Examples:
