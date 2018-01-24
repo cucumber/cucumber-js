@@ -1,3 +1,6 @@
+import { beforeEach, describe, it } from 'mocha'
+import { expect } from 'chai'
+import sinon from 'sinon'
 import AttachmentManager from './'
 import stream from 'stream'
 

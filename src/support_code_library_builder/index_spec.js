@@ -1,3 +1,6 @@
+import { beforeEach, describe, it } from 'mocha'
+import { expect } from 'chai'
+import sinon from 'sinon'
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 import supportCodeLibraryBuilder from './'
 
