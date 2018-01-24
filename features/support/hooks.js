@@ -24,7 +24,7 @@ Before(function() {
 
   const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
   const profileContent =
-    'module.exports = {default: "--compiler js:babel-register"}'
+    'module.exports = {default: "--require-module babel-register"}'
   fs.writeFileSync(tmpDirProfilePath, profileContent)
 
   const tmpDirBabelRcPath = path.join(this.tmpDir, '.babelrc')

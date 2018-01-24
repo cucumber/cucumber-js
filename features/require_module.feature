@@ -18,5 +18,5 @@ Feature: compilers
 
       Given /^a step$/, ->
       """
-    When I run cucumber.js with `--compiler coffee:coffee-script/register`
+    When I run cucumber.js with `--require-module coffee-script/register --require 'features/**/*.coffee'`
     Then the step "a step" has status "passed"
