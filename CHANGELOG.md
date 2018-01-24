@@ -14,6 +14,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * add `--require-module` to require node modules before support code is loaded
 * add snippet interface "async-await"
 
+#### Bug Fixes
+
+* revert json formatter duration to nanoseconds
+
 #### Deprecations
 
 * `defineSupportCode` is deprecated. Require/import the individual methods instead
