@@ -129,7 +129,7 @@ Feature: Parameter types
       """
 
   Scenario: undefined parameter type
-    When I run cucumber.js with `-f progress`
+    When I run cucumber-js with `-f progress`
     Then the error output contains the text:
       """
       Undefined parameter type {param}

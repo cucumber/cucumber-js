@@ -16,7 +16,7 @@ Feature: Command line interface
 
       When(/^a step is passing$/, function() {})
       """
-    When I run cucumber.js with `-r step_definitions/cucumber_steps.js`
+    When I run cucumber-js with `-r step_definitions/cucumber_steps.js`
 
   Scenario: run feature with step definitions in required directory (-r option)
     Given a file named "features/a.feature" with:
@@ -31,14 +31,14 @@ Feature: Command line interface
 
       When(/^a step is passing$/, function() {});
       """
-    When I run cucumber.js with `-r step_definitions`
+    When I run cucumber-js with `-r step_definitions`
 
   @spawn
   Scenario: display Cucumber version
-    When I run cucumber.js with `--version`
+    When I run cucumber-js with `--version`
     Then I see the version of Cucumber
 
   @spawn
   Scenario: display help
-    When I run cucumber.js with `--help`
+    When I run cucumber-js with `--help`
     Then I see the help text for Cucumber

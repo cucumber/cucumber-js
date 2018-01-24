@@ -20,12 +20,12 @@ Feature: Target specific scenarios
       """
 
   Scenario: run a single scenario
-    When I run cucumber.js with `features/a.feature:2`
+    When I run cucumber-js with `features/a.feature:2`
     Then it fails
     And it runs the scenario "first scenario"
 
   Scenario: run a single scenario outline
-    When I run cucumber.js with `features/a.feature:5`
+    When I run cucumber-js with `features/a.feature:5`
     Then it fails
     And it runs the scenarios:
       | NAME                |
@@ -33,12 +33,12 @@ Feature: Target specific scenarios
       | second scenario - Y |
 
   Scenario: run a single scenario outline example
-    When I run cucumber.js with `features/a.feature:10`
+    When I run cucumber-js with `features/a.feature:10`
     Then it fails
     And it runs the scenario "second scenario - X"
 
   Scenario: run multiple scenarios
-    When I run cucumber.js with `features/a.feature:2:10`
+    When I run cucumber-js with `features/a.feature:2:10`
     Then it fails
     And it runs the scenarios:
       | NAME                |

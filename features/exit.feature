@@ -32,7 +32,7 @@ Feature: Exit
       """
 
   Scenario: exit immediately without waiting for the even loop to drain
-    When I run cucumber.js with `--exit`
+    When I run cucumber-js with `--exit`
     Then the output does not contain the text:
       """
       external process done

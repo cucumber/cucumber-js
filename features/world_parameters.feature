@@ -13,7 +13,7 @@ Feature: World Parameters
 
   @spawn
   Scenario: Invalid JSON
-    When I run cucumber.js with `--world-parameters '{"a":}'`
+    When I run cucumber-js with `--world-parameters '{"a":}'`
     Then it fails
     And the error output contains the text:
       """
@@ -26,7 +26,7 @@ Feature: World Parameters
 
   @spawn
   Scenario: Non-object
-    When I run cucumber.js with `--world-parameters '[1,2]'`
+    When I run cucumber-js with `--world-parameters '[1,2]'`
     Then it fails
     And the error output contains the text:
       """
@@ -56,7 +56,7 @@ Feature: World Parameters
         assert.equal(this.parameters.a, 1)
       })
       """
-    When I run cucumber.js with `--world-parameters '{"a":1}'`
+    When I run cucumber-js with `--world-parameters '{"a":1}'`
     Then the step "the world parameters are correct" has status "passed"
 
   Scenario: multiple world parameters are merged with the last taking precedence
@@ -70,7 +70,7 @@ Feature: World Parameters
         assert.equal(this.parameters.b, 2)
       })
       """
-    When I run cucumber.js with `--world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
+    When I run cucumber-js with `--world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
     Then the step "the world parameters are correct" has status "passed"
 
   Scenario: custom world constructor is passed the parameters
@@ -95,5 +95,5 @@ Feature: World Parameters
         assert.equal(this.a, 1)
       })
       """
-    When I run cucumber.js with `--world-parameters '{"a":1}'`
+    When I run cucumber-js with `--world-parameters '{"a":1}'`
     Then the step "the world parameters are correct" has status "passed"

@@ -15,7 +15,7 @@ Feature: Multiple Formatters
       """
 
   Scenario: Ability to specify multiple formatters
-    When I run cucumber.js with `-f progress -f summary:summary.txt`
+    When I run cucumber-js with `-f progress -f summary:summary.txt`
     Then it outputs the text:
       """
       .

@@ -19,6 +19,6 @@ Feature: Fail fast
       Given(/^a failing step$/, function() { throw 'fail' })
       Given(/^a passing step$/, function() {})
       """
-    When I run cucumber.js with `--fail-fast`
+    When I run cucumber-js with `--fail-fast`
     Then the step "a passing step" has status "skipped"
     And it fails

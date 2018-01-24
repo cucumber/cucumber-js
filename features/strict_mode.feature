@@ -28,5 +28,5 @@ Feature: Strict mode
 
       Given(/^a step$/, function() { return 'pending' })
       """
-    When I run cucumber.js with `--no-strict`
+    When I run cucumber-js with `--no-strict`
     Then it passes
