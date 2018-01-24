@@ -94,7 +94,7 @@ describe('JsonFormatter', function() {
                     name: 'my step',
                     result: {
                       status: 'passed',
-                      duration: 1
+                      duration: 1000000
                     }
                   }
                 ],
@@ -139,7 +139,7 @@ describe('JsonFormatter', function() {
         expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'failed',
           error_message: 'my error',
-          duration: 1
+          duration: 1000000
         })
       })
     })

@@ -16,6 +16,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * add snippet interface "async-await"
 * add `--parallel <NUMBER_OF_SLAVES>` option to run tests in parallel. Note this is an experimental feature. See [here](/docs/cli.md#parallel-experimental) for more information
 
+#### Bug Fixes
+
+* revert json formatter duration to nanoseconds
+
 #### Deprecations
 
 * `defineSupportCode` is deprecated. Require/import the individual methods instead
