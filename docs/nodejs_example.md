@@ -1,77 +1,73 @@
 ## Setup
 
-* Install [Chrome](https://www.google.com/chrome/)
 * Install [Node.js](https://nodejs.org) (6 or higher)
 * Install the following node modules with [yarn](https://yarnpkg.com/en/) or [npm](https://www.npmjs.com/)
+  * chai@latest
   * cucumber@latest
-  * selenium-webdriver@3.4.0 
-  * chromedriver@2.29.0
 
 * Add the following files
 
     ```gherkin
-    # features/documentation.feature
-    Feature: Example feature
-      As a user of Cucumber.js
-      I want to have documentation on Cucumber
-      So that I can concentrate on building awesome applications
+    # features/simple_math.feature
+    Feature: Simple maths
+      In order to do maths
+      As a developer
+      I want to increment variables
 
-      Scenario: Reading documentation
-        Given I am on the Cucumber.js GitHub repository
-        When I click on "CLI"
-        Then I should see "Running specific features"
+      Scenario: easy maths
+        Given a variable set to 1
+        When I increment the variable by 1
+        Then the variable should contain 2
+
+      Scenario Outline: much more complex stuff
+        Given a variable set to <var>
+        When I increment the variable by <increment>
+        Then the variable should contain <result>
+
+        Examples:
+          | var | increment | result |
+          | 100 |         5 |    105 |
+          |  99 |      1234 |   1333 |
+          |  12 |         5 |     17 |
     ```
 
     ```javascript
     // features/support/world.js
-    require('chromedriver')
-    var seleniumWebdriver = require('selenium-webdriver');
-    var {defineSupportCode} = require('cucumber');
+    const { setWorldConstructor } = require('cucumber')
 
-    function CustomWorld() {
-      this.driver = new seleniumWebdriver.Builder()
-        .forBrowser('chrome')
-        .build();
+    class CustomWorld {
+      constructor() {
+        this.variable = 0
+      }
+
+      setTo(number) {
+        this.variable = number
+      }
+
+      incrementBy(number) {
+        this.variable += number
+      }
     }
 
-    defineSupportCode(function({setWorldConstructor}) {
-      setWorldConstructor(CustomWorld)
+    setWorldConstructor(CustomWorld)
+    ```
+
+    ```javascript
+    // features/support/steps.js
+    const { Given, When, Then } = require('cucumber')
+    const { expect } = require('chai')
+
+    Given('a variable set to {int}', function(number) {
+      this.setTo(number)
     })
-    ```
 
-    ```javascript
-    // features/step_definitions/hooks.js
-    var {defineSupportCode} = require('cucumber');
+    When('I increment the variable by {int}', function(number) {
+      this.incrementBy(number)
+    })
 
-    defineSupportCode(function({After}) {
-      After(function() {
-        return this.driver.quit();
-      });
-    });
-    ```
-
-    ```javascript
-    // features/step_definitions/browser_steps.js
-    var seleniumWebdriver = require('selenium-webdriver');
-    var {defineSupportCode} = require('cucumber');
-
-    defineSupportCode(function({Given, When, Then}) {
-      Given('I am on the Cucumber.js GitHub repository', function() {
-        return this.driver.get('https://github.com/cucumber/cucumber-js/tree/master');
-      });
-
-      When('I click on {string}', function (text) {
-        return this.driver.findElement({linkText: text}).then(function(element) {
-          return element.click();
-        });
-      });
-
-      Then('I should see {string}', function (text) {
-        var xpath = "//*[contains(text(),'" + text + "')]";
-        var condition = seleniumWebdriver.until.elementLocated({xpath: xpath});
-        return this.driver.wait(condition, 5000);
-      });
-    });
+    Then('the variable should contain {int}', function(number) {
+      expect(this.variable).to.eql(number)
+    })
     ```
 
 * Run `./node_modules/.bin/cucumber-js`

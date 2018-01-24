@@ -13,11 +13,9 @@ Feature: Automatically required support files for nested features
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a step$/, function() {})
-      })
+      Given(/^a step$/, function() {})
       """
     When I run cucumber.js
     Then it passes

@@ -2,7 +2,11 @@ import _ from 'lodash'
 import util from 'util'
 
 export function getScenarioNames(features) {
-  return _.chain(features).map('elements').flatten().map('name').value()
+  return _.chain(features)
+    .map('elements')
+    .flatten()
+    .map('name')
+    .value()
 }
 
 export function getSteps(features) {

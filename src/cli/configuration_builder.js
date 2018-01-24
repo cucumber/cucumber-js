@@ -2,8 +2,11 @@ import _ from 'lodash'
 import ArgvParser from './argv_parser'
 import fs from 'mz/fs'
 import path from 'path'
-import PathExpander from './path_expander'
-import Promise from 'bluebird'
+import OptionSplitter from './option_splitter'
+import Promise, { promisify } from 'bluebird'
+import glob from 'glob'
+
+const globP = promisify(glob)
 
 export default class ConfigurationBuilder {
   static async build(options) {
@@ -13,7 +16,6 @@ export default class ConfigurationBuilder {
 
   constructor({ argv, cwd }) {
     this.cwd = cwd
-    this.pathExpander = new PathExpander(cwd)
 
     const parsedArgv = ArgvParser.parse(argv)
     this.args = parsedArgv.args
@@ -28,16 +30,18 @@ export default class ConfigurationBuilder {
     let supportCodePaths = []
     if (!listI18nKeywordsFor && !listI18nLanguages) {
       featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
-      const featureDirectoryPaths = this.getFeatureDirectoryPaths(featurePaths)
-      const unexpandedSupportCodePaths =
-        this.options.require.length > 0
-          ? this.options.require
-          : featureDirectoryPaths
-      supportCodePaths = await this.expandSupportCodePaths(
-        unexpandedSupportCodePaths
+      let unexpandedSupportCodePaths = this.options.require
+      if (unexpandedSupportCodePaths.length === 0) {
+        unexpandedSupportCodePaths = this.getFeatureDirectoryPaths(featurePaths)
+      }
+      supportCodePaths = await this.expandPaths(
+        unexpandedSupportCodePaths,
+        '.js'
       )
     }
+    this.options.requireModule.forEach(module => require(module))
     return {
+      featureDefaultLanguage: this.options.language,
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.getFormatOptions(),
@@ -56,15 +60,33 @@ export default class ConfigurationBuilder {
         strict: !!this.options.strict,
         worldParameters: this.options.worldParameters
       },
+      shouldExitImmediately: !!this.options.exit,
       supportCodePaths
     }
   }
 
+  async expandPaths(unexpandedPaths, defaultExtension) {
+    const expandedPaths = await Promise.map(
+      unexpandedPaths,
+      async unexpandedPath => {
+        const matches = await globP(unexpandedPath, {
+          absolute: true,
+          cwd: this.cwd
+        })
+        return await Promise.map(matches, async match => {
+          if (path.extname(match) === '') {
+            return await globP(`${match}/**/*${defaultExtension}`)
+          }
+          return match
+        })
+      }
+    )
+    return _.flattenDepth(expandedPaths, 2).map(x => path.normalize(x))
+  }
+
   async expandFeaturePaths(featurePaths) {
     featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-    return await this.pathExpander.expandPathsWithExtensions(featurePaths, [
-      'feature'
-    ])
+    return await this.expandPaths(featurePaths, '.feature')
   }
 
   getFeatureDirectoryPaths(featurePaths) {
@@ -94,11 +116,9 @@ export default class ConfigurationBuilder {
 
   getFormats() {
     const mapping = { '': 'progress' }
-    this.options.format.forEach(function(format) {
-      const parts = format.split(':')
-      const type = parts[0]
-      const outputTo = parts.slice(1).join(':')
-      mapping[outputTo] = type
+    this.options.format.forEach(format => {
+      const [type, outputTo] = OptionSplitter.split(format)
+      mapping[outputTo || ''] = type
     })
     return _.map(mapping, function(type, outputTo) {
       return { outputTo, type }
@@ -112,7 +132,11 @@ export default class ConfigurationBuilder {
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
           const content = await fs.readFile(filePath, 'utf8')
-          return _.chain(content).split('\n').map(_.trim).compact().value()
+          return _.chain(content)
+            .split('\n')
+            .map(_.trim)
+            .compact()
+            .value()
         } else {
           return arg
         }
@@ -122,19 +146,6 @@ export default class ConfigurationBuilder {
         return featurePaths
       }
     }
-    return ['features']
-  }
-
-  async expandSupportCodePaths(supportCodePaths) {
-    const extensions = ['js']
-    this.options.compiler.forEach(compiler => {
-      const parts = compiler.split(':')
-      extensions.push(parts[0])
-      require(parts[1])
-    })
-    return await this.pathExpander.expandPathsWithExtensions(
-      supportCodePaths,
-      extensions
-    )
+    return ['features/**/*.feature']
   }
 }

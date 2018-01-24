@@ -24,6 +24,7 @@ describe('Configuration', function() {
 
     it('returns the default configuration', function() {
       expect(this.result).to.eql({
+        featureDefaultLanguage: '',
         featurePaths: [],
         formatOptions: {
           colorsEnabled: true,
@@ -33,7 +34,7 @@ describe('Configuration', function() {
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         pickleFilterOptions: {
-          featurePaths: ['features'],
+          featurePaths: ['features/**/*.feature'],
           names: [],
           tagExpression: ''
         },
@@ -45,6 +46,7 @@ describe('Configuration', function() {
           strict: true,
           worldParameters: {}
         },
+        shouldExitImmediately: false,
         supportCodePaths: []
       })
     })
@@ -98,5 +100,54 @@ describe('Configuration', function() {
       ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
     })
+  })
+
+  describe('formatters', function() {
+    it('adds a default', async function() {
+      const formats = await getFormats(this.configurationOptions)
+      expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
+    })
+
+    it('splits relative unix paths', async function() {
+      this.argv.push('-f', '../custom/formatter:../formatter/output.txt')
+      const formats = await getFormats(this.configurationOptions)
+
+      expect(formats).to.eql([
+        { outputTo: '', type: 'progress' },
+        { outputTo: '../formatter/output.txt', type: '../custom/formatter' }
+      ])
+    })
+
+    it('splits absolute unix paths', async function() {
+      this.argv.push('-f', '/custom/formatter:/formatter/output.txt')
+      const formats = await getFormats(this.configurationOptions)
+
+      expect(formats).to.eql([
+        { outputTo: '', type: 'progress' },
+        { outputTo: '/formatter/output.txt', type: '/custom/formatter' }
+      ])
+    })
+
+    it('splits absolute windows paths', async function() {
+      this.argv.push('-f', 'C:\\custom\\formatter:D:\\formatter\\output.txt')
+      const formats = await getFormats(this.configurationOptions)
+
+      expect(formats).to.eql([
+        { outputTo: '', type: 'progress' },
+        { outputTo: 'D:\\formatter\\output.txt', type: 'C:\\custom\\formatter' }
+      ])
+    })
+
+    it('does not split absolute windows paths without an output', async function() {
+      this.argv.push('-f', 'C:\\custom\\formatter')
+      const formats = await getFormats(this.configurationOptions)
+
+      expect(formats).to.eql([{ outputTo: '', type: 'C:\\custom\\formatter' }])
+    })
+
+    async function getFormats(options) {
+      const result = await ConfigurationBuilder.build(options)
+      return result.formats
+    }
   })
 })

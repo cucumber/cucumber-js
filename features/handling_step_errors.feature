@@ -11,14 +11,12 @@ Feature: Handling step errors
       """
     Given a file named "features/step_definitions/step_definitions.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given('I pass an error to the callback', function (cb) {
-          var unusualErrorObject = {}
-          unusualErrorObject.member = unusualErrorObject
-          cb(unusualErrorObject)
-        })
+      Given('I pass an error to the callback', function (cb) {
+        var unusualErrorObject = {}
+        unusualErrorObject.member = unusualErrorObject
+        cb(unusualErrorObject)
       })
       """
     When I run cucumber.js

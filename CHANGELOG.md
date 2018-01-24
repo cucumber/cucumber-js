@@ -1,5 +1,99 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
+
+#### BREAKING CHANGES
+
+* cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running use `--exit`. Use of this flag is discouraged. See [here](/docs/cli.md#exiting) for more information
+* remove `--compiler` option. See [here](/docs/cli.md#transpilers) for the new way to use transpilers
+
+#### New Features
+
+* can now use glob patterns for selecting what features to run
+* update `--require` to support glob patterns
+* add `--require-module` to require node modules before support code is loaded
+* add snippet interface "async-await"
+
+#### Deprecations
+
+* `defineSupportCode` is deprecated. Require/import the individual methods instead
+  ```js
+  var {defineSupportCode} = require('cucumber');
+
+  defineSupportCode(function({Given}) {
+    Given(/^a step$/, function() {});
+  });
+
+  // Should be updated to
+
+  var {Given} = require('cucumber');
+
+  Given(/^a step$/, function() {});
+  ```
+
+### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
+
+#### Bug Fixes
+* revert json formatter mime type ([#995](https://github.com/cucumber/cucumber-js/pull/995)
+
+### [3.2.0](https://github.com/cucumber/cucumber-js/compare/v3.1.0...v3.2.0) (2017-12-08)
+
+#### New Features
+* add exception to `test-case-finished` event ([#952](https://github.com/cucumber/cucumber-js/pull/952) Giuseppe DiBella)
+* compiler option - allow `:` in module name to support specifying an absolute path on Windows ([#958](https://github.com/cucumber/cucumber-js/pull/958) Darrin Holst)
+* json formatter: format step result exception ([#973](https://github.com/cucumber/cucumber-js/pull/973) Valerio Innocenti Sedili)
+
+#### Bug Fixes
+* cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
+* tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#111---2017-12-01)
+
+### [3.1.0](https://github.com/cucumber/cucumber-js/compare/v3.0.6...v3.1.0) (2017-10-25)
+
+#### New Features
+* add `--language` cli option to provide the default language for feature files
+
+#### Bug Fixes
+* pickle filter: support relative paths ([#962](https://github.com/cucumber/cucumber-js/pull/962) Marco Muller)
+
+### [3.0.6](https://github.com/cucumber/cucumber-js/compare/v3.0.5...v3.0.6) (2017-10-18)
+
+* cli: fix `--format` option parsing on Windows ([#954](https://github.com/cucumber/cucumber-js/pull/954) Darrin Holst)
+
+### [3.0.5](https://github.com/cucumber/cucumber-js/compare/v3.0.4...v3.0.5) (2017-10-14)
+
+#### New Features
+
+* `defineParameterType`: The `transformer` function's `this` object is now the current World (as long as it's not an arrow function). ([#948](https://github.com/cucumber/cucumber-js/pull/948) Aslak Hellesøy)
+* `Before` / `After`: The first argument now includes a `pickle` property which can
+be used to get the name / tags of the running scenario. ([#947](https://github.com/cucumber/cucumber-js/pull/947) Giuseppe DiBella)
+
+### [3.0.4](https://github.com/cucumber/cucumber-js/compare/v3.0.3...v3.0.4) (2017-10-04)
+
+#### New Features
+
+* cli: make `--tags` option repeatable (joined with `and`) ([#940](https://github.com/cucumber/cucumber-js/issues/940), Ilya Kozhevnikov)
+* rerun formatter: make separator configurable. See docs [here](https://github.com/cucumber/cucumber-js/blob/fb9e8fc2e68d4395b9b0a124d18e036d00a8c69f/docs/cli.md) ([#930](https://github.com/cucumber/cucumber-js/issues/930), Máté Karácsony)
+
+### [3.0.3](https://github.com/cucumber/cucumber-js/compare/v3.0.2...v3.0.3) (2017-09-23)
+
+#### New Features
+
+* support to imperatively skip steps. See documentation [here](/docs/support_files/step_definitions.md#skipped-steps) ([#912](https://github.com/cucumber/cucumber-js/issues/912), jshifflet)
+
+### [3.0.2](https://github.com/cucumber/cucumber-js/compare/v3.0.1...v3.0.2) (2017-09-13)
+
+#### New Features
+
+* `defineParameterType`: new options `useForSnippets` and `preferForRegexpMatch`. Please see documentation for usage.
+
+#### Bug Fixes
+
+* fix `usage` and `usage-json` formatters when there are undefined steps
+
+#### Deprecations
+
+* `defineParameterType`: `typeName` option is deprecated in favor of `name`
+
 ### [3.0.1](https://github.com/cucumber/cucumber-js/compare/v3.0.0...v3.0.1) (2017-08-28)
 
 #### Bug Fixes

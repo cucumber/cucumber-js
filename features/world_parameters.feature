@@ -37,12 +37,10 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^the world parameters are correct$/, function() {
-          assert.deepEqual(this.parameters, {})
-        })
+      Given(/^the world parameters are correct$/, function() {
+        assert.deepEqual(this.parameters, {})
       })
       """
     When I run cucumber.js
@@ -52,12 +50,10 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^the world parameters are correct$/, function() {
-          assert.equal(this.parameters.a, 1)
-        })
+      Given(/^the world parameters are correct$/, function() {
+        assert.equal(this.parameters.a, 1)
       })
       """
     When I run cucumber.js with `--world-parameters '{"a":1}'`
@@ -67,13 +63,11 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^the world parameters are correct$/, function() {
-          assert.equal(this.parameters.a, 3)
-          assert.equal(this.parameters.b, 2)
-        })
+      Given(/^the world parameters are correct$/, function() {
+        assert.equal(this.parameters.a, 3)
+        assert.equal(this.parameters.b, 2)
       })
       """
     When I run cucumber.js with `--world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
@@ -82,7 +76,7 @@ Feature: World Parameters
   Scenario: custom world constructor is passed the parameters
     Given a file named "features/support/world.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {setWorldConstructor} from 'cucumber'
 
       function CustomWorld(options) {
         for(const key in options.parameters) {
@@ -90,19 +84,15 @@ Feature: World Parameters
         }
       }
 
-      defineSupportCode(({setWorldConstructor}) => {
-        setWorldConstructor(CustomWorld)
-      })
+      setWorldConstructor(CustomWorld)
       """
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^the world parameters are correct$/, function() {
-          assert.equal(this.a, 1)
-        })
+      Given(/^the world parameters are correct$/, function() {
+        assert.equal(this.a, 1)
       })
       """
     When I run cucumber.js with `--world-parameters '{"a":1}'`

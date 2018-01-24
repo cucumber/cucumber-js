@@ -27,6 +27,10 @@ export default class ArgvParser {
     }
   }
 
+  static mergeTags(val, memo) {
+    return memo === '' ? `(${val})` : `${memo} and (${val})`
+  }
+
   static validateLanguage(val) {
     if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
       throw new Error('Unsupported ISO 639-1: ' + val)
@@ -38,16 +42,14 @@ export default class ArgvParser {
     const program = new Command(path.basename(argv[1]))
 
     program
-      .usage('[options] [<DIR|FILE[:LINE]>...]')
+      .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
-      .option(
-        '--compiler <EXTENSION:MODULE>',
-        'require files with the given EXTENSION after requiring MODULE (repeatable)',
-        ArgvParser.collect,
-        []
-      )
       .option('-d, --dry-run', 'invoke formatters without executing steps')
+      .option(
+        '--exit',
+        'force shutdown of the event loop when the test run has finished: cucumber will call process.exit'
+      )
       .option('--fail-fast', 'abort the run on first failure')
       .option(
         '-f, --format <TYPE[:PATH]>',
@@ -69,6 +71,11 @@ export default class ArgvParser {
       )
       .option('--i18n-languages', 'list languages')
       .option(
+        '--language <ISO 639-1>',
+        'provide the default language for feature files',
+        ''
+      )
+      .option(
         '--name <REGEXP>',
         'only execute the scenarios with name matching the expression (repeatable)',
         ArgvParser.collect,
@@ -82,14 +89,21 @@ export default class ArgvParser {
         []
       )
       .option(
-        '-r, --require <FILE|DIR>',
+        '-r, --require <GLOB|DIR|FILE>',
         'require files before executing features (repeatable)',
         ArgvParser.collect,
         []
       )
       .option(
+        '--require-module <NODE_MODULE>',
+        'require node modules before requiring files (repeatable)',
+        ArgvParser.collect,
+        []
+      )
+      .option(
         '-t, --tags <EXPRESSION>',
-        'only execute the features or scenarios with tags matching the expression',
+        'only execute the features or scenarios with tags matching the expression (repeatable)',
+        ArgvParser.mergeTags,
         ''
       )
       .option(

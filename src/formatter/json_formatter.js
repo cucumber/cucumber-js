@@ -3,6 +3,7 @@ import Formatter from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { buildStepArgumentIterator } from '../step_arguments'
+import { format } from 'assertion-error-formatter'
 
 const {
   getStepLineToKeywordMap,
@@ -23,15 +24,6 @@ export default class JsonFormatter extends Formatter {
 
   convertNameToId(obj) {
     return obj.name.replace(/ /g, '-').toLowerCase()
-  }
-
-  formatAttachments(attachments) {
-    return attachments.map(function(attachment) {
-      return {
-        data: attachment.data,
-        mime_type: attachment.mimeType
-      }
-    })
   }
 
   formatDataTable(dataTable) {
@@ -156,11 +148,16 @@ export default class JsonFormatter extends Formatter {
         data.result.duration = testStep.result.duration * 1000000
       }
       if (status === Status.FAILED && exception) {
-        data.result.error_message = exception.stack || exception
+        data.result.error_message = format(exception)
       }
     }
     if (_.size(testStep.attachments) > 0) {
-      data.embeddings = testStep.attachments
+      data.embeddings = testStep.attachments.map(attachment => {
+        return {
+          data: attachment.data,
+          mime_type: attachment.media.type
+        }
+      })
     }
     return data
   }
@@ -169,48 +166,5 @@ export default class JsonFormatter extends Formatter {
     return _.map(obj.tags, tagData => {
       return { name: tagData.name, line: tagData.location.line }
     })
-  }
-
-  handleStepResult(stepResult) {
-    const step = stepResult.step
-    const status = stepResult.status
-
-    const currentStep = {
-      arguments: this.formatStepArguments(step.arguments),
-      keyword: step.keyword,
-      name: step.name,
-      result: { status }
-    }
-
-    if (step.isBackground) {
-      currentStep.isBackground = true
-    }
-
-    if (step.constructor.name === 'Hook') {
-      currentStep.hidden = true
-    } else {
-      currentStep.line = step.line
-    }
-
-    if (status === Status.PASSED || status === Status.FAILED) {
-      currentStep.result.duration = stepResult.duration * 1000000
-    }
-
-    if (_.size(stepResult.attachments) > 0) {
-      currentStep.embeddings = this.formatAttachments(stepResult.attachments)
-    }
-
-    if (status === Status.FAILED && stepResult.failureException) {
-      currentStep.result.error_message =
-        stepResult.failureException.stack || stepResult.failureException
-    }
-
-    if (stepResult.stepDefinition) {
-      const location =
-        stepResult.stepDefinition.uri + ':' + stepResult.stepDefinition.line
-      currentStep.match = { location }
-    }
-
-    this.currentScenario.steps.push(currentStep)
   }
 }

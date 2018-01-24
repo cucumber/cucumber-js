@@ -1,5 +1,6 @@
 import _ from 'lodash'
-import TagExpressionParser from 'cucumber-tag-expressions/lib/tag_expression_parser'
+import path from 'path'
+import { TagExpressionParser } from 'cucumber-tag-expressions'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 const tagExpressionParser = new TagExpressionParser()
@@ -20,15 +21,18 @@ export default class PickleFilter {
     featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (match) {
-        const uri = match[1]
+        const uri = path.resolve(match[1])
         const linesExpression = match[2]
         if (linesExpression) {
           if (!mapping[uri]) {
             mapping[uri] = []
           }
-          linesExpression.slice(1).split(':').forEach(function(line) {
-            mapping[uri].push(parseInt(line))
-          })
+          linesExpression
+            .slice(1)
+            .split(':')
+            .forEach(function(line) {
+              mapping[uri].push(parseInt(line))
+            })
         }
       }
     })
@@ -44,7 +48,7 @@ export default class PickleFilter {
   }
 
   matchesAnyLine({ pickle, uri }) {
-    const lines = this.featureUriToLinesMapping[uri]
+    const lines = this.featureUriToLinesMapping[path.resolve(uri)]
     if (lines) {
       return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
     } else {

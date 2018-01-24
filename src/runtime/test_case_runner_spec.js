@@ -217,7 +217,8 @@ describe('TestCaseRunner', function() {
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: {
             duration: 1,
-            status: Status.FAILED
+            status: Status.FAILED,
+            exception: this.error
           },
           sourceLocation: { line: 1, uri: 'path/to/feature' }
         })
@@ -298,7 +299,14 @@ describe('TestCaseRunner', function() {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.been.calledOnce
         expect(this.onTestCaseFinished).to.have.been.calledWith({
-          result: { duration: 0, status: Status.AMBIGUOUS },
+          result: {
+            duration: 0,
+            status: Status.AMBIGUOUS,
+            exception:
+              'Multiple step definitions match:\n' +
+              '  pattern1 - path/to/steps:3\n' +
+              '  pattern2 - path/to/steps:4'
+          },
           sourceLocation: { line: 1, uri: 'path/to/feature' }
         })
       })

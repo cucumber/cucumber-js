@@ -14,11 +14,9 @@ Feature: Strict mode
   Scenario: Fail with pending step by default
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a step$/, function() { return 'pending' })
-      })
+      Given(/^a step$/, function() { return 'pending' })
       """
     When I run cucumber.js
     Then it fails
@@ -26,11 +24,9 @@ Feature: Strict mode
   Scenario: Succeed with pending step with --no-strict
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given(/^a step$/, function() { return 'pending' })
-      })
+      Given(/^a step$/, function() { return 'pending' })
       """
     When I run cucumber.js with `--no-strict`
     Then it passes

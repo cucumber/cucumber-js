@@ -25,7 +25,7 @@ function buildMapping({ stepDefinitions, eventDataCollector }) {
     const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
     testCase.steps.forEach(testStep => {
       const { actionLocation, sourceLocation, result: { duration } } = testStep
-      if (sourceLocation) {
+      if (actionLocation && sourceLocation) {
         const location = formatLocation(actionLocation)
         const match = {
           line: sourceLocation.line,

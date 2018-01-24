@@ -13,23 +13,19 @@ Feature: Step Wrapper with Options
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({Then, When}) => {
-        When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {})
-      })
+      When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {})
       """
     And a file named "features/support/setup.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {setDefinitionFunctionWrapper} from 'cucumber'
 
-      defineSupportCode(({setDefinitionFunctionWrapper}) => {
-        setDefinitionFunctionWrapper(function (fn, options = {}) {
-          if (options.retry) {
-            console.log("Max retries: ", options.retry);
-          }
-          return fn;
-        })
+      setDefinitionFunctionWrapper(function (fn, options = {}) {
+        if (options.retry) {
+          console.log("Max retries: ", options.retry);
+        }
+        return fn;
       })
       """
     When I run cucumber-js

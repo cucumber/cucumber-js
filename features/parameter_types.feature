@@ -14,26 +14,45 @@ Feature: Parameter types
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {Given} from 'cucumber'
 
-      defineSupportCode(({Given}) => {
-        Given('a {param} step', function(param) {
-          assert.equal(param, 'PARTICULAR')
-        })
+      Given('a {param} step', function(param) {
+        assert.equal(param, 'PARTICULAR')
       })
       """
+
+  Scenario: delegate transform to world
+    Given a file named "features/support/transforms.js" with:
+      """
+      import {setWorldConstructor, defineParameterType} from 'cucumber'
+
+      defineParameterType({
+        regexp: /particular/,
+        transformer(s) {
+          return this.upcase(s)
+        },
+        name: 'param'
+      })
+
+      class MyWorld {
+        upcase(s) {
+          return s.toUpperCase()
+        }
+      }
+      setWorldConstructor(MyWorld)
+      """
+    When I run cucumber.js
+    Then the step "a particular step" has status "passed"
 
   Scenario: sync transform (success)
     Given a file named "features/support/transforms.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {defineParameterType} from 'cucumber'
 
-      defineSupportCode(({defineParameterType}) => {
-        defineParameterType({
-          regexp: /particular/,
-          transformer: s => s.toUpperCase(),
-          typeName: 'param'
-        })
+      defineParameterType({
+        regexp: /particular/,
+        transformer: s => s.toUpperCase(),
+        name: 'param'
       })
       """
     When I run cucumber.js
@@ -42,16 +61,14 @@ Feature: Parameter types
   Scenario: sync transform (error)
     Given a file named "features/support/transforms.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {defineParameterType} from 'cucumber'
 
-      defineSupportCode(({defineParameterType}) => {
-        defineParameterType({
-          regexp: /particular/,
-          transformer: s => {
-            throw new Error('transform error')
-          },
-          typeName: 'param'
-        })
+      defineParameterType({
+        regexp: /particular/,
+        transformer: s => {
+          throw new Error('transform error')
+        },
+        name: 'param'
       })
       """
     When I run cucumber.js
@@ -64,13 +81,11 @@ Feature: Parameter types
   Scenario: no transform
     Given a file named "features/support/transforms.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {defineParameterType} from 'cucumber'
 
-      defineSupportCode(({defineParameterType}) => {
-        defineParameterType({
-          regexp: /particular/,
-          typeName: 'param'
-        })
+      defineParameterType({
+        regexp: /particular/,
+        name: 'param'
       })
       """
     When I run cucumber.js
@@ -83,15 +98,12 @@ Feature: Parameter types
   Scenario: async transform (success)
     Given a file named "features/step_definitions/particular_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
-      import Promise from 'bluebird'
+      import {defineParameterType} from 'cucumber'
 
-      defineSupportCode(({defineParameterType}) => {
-        defineParameterType({
-          regexp: /particular/,
-          transformer: s => Promise.resolve(s.toUpperCase()),
-          typeName: 'param'
-        })
+      defineParameterType({
+        regexp: /particular/,
+        transformer: s => Promise.resolve(s.toUpperCase()),
+        name: 'param'
       })
       """
     When I run cucumber.js
@@ -100,15 +112,13 @@ Feature: Parameter types
   Scenario: async transform (error)
     Given a file named "features/step_definitions/particular_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {defineParameterType} from 'cucumber'
       import Promise from 'bluebird'
 
-      defineSupportCode(({defineParameterType}) => {
-        defineParameterType({
-          regexp: /particular/,
-          transformer: s => Promise.reject(new Error('transform error')),
-          typeName: 'param'
-        })
+      defineParameterType({
+        regexp: /particular/,
+        transformer: s => Promise.reject(new Error('transform error')),
+        name: 'param'
       })
       """
     When I run cucumber.js

@@ -71,6 +71,32 @@ describe('PickleFilter', function() {
           })
         })
       })
+
+      describe('scenario line using current directory path representation', function() {
+        beforeEach(function() {
+          this.input.uri = './features/b.feature'
+        })
+
+        describe('scenario line matches', function() {
+          beforeEach(function() {
+            this.input.pickle.locations = [{ line: 1 }]
+          })
+
+          it('returns true', function() {
+            expect(this.pickleFilter.matches(this.input)).to.be.true
+          })
+        })
+
+        describe('scenario line does not match', function() {
+          beforeEach(function() {
+            this.input.pickle.locations = [{ line: 3 }]
+          })
+
+          it('returns false', function() {
+            expect(this.pickleFilter.matches(this.input)).to.be.false
+          })
+        })
+      })
     })
 
     describe('name filters', function() {
@@ -321,7 +347,6 @@ describe('PickleFilter', function() {
             tagExpressions: ['tagA']
           })
           this.input.pickle.locations = [{ line: 1 }]
-          this.input.uri = this.scenarioPath
         })
 
         it('returns false', function() {
@@ -337,7 +362,6 @@ describe('PickleFilter', function() {
             tagExpression: '@tagA'
           })
           this.input.pickle.locations = [{ line: 1 }]
-          this.input.uri = this.scenarioPath
         })
 
         it('returns false', function() {

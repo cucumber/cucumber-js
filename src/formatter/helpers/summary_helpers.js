@@ -37,7 +37,10 @@ export function formatSummary({ colorFns, testCaseMap, testRun }) {
 }
 
 function getCountSummary({ colorFns, objects, type }) {
-  const counts = _.chain(objects).groupBy('status').mapValues('length').value()
+  const counts = _.chain(objects)
+    .groupBy('status')
+    .mapValues('length')
+    .value()
   const total = _.reduce(counts, (memo, value) => memo + value) || 0
   let text = total + ' ' + type + (total === 1 ? '' : 's')
   if (total > 0) {

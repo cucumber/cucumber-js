@@ -67,11 +67,11 @@ export default class Cli {
     const configuration = await this.getConfiguration()
     if (configuration.listI18nLanguages) {
       this.stdout.write(I18n.getLanguages())
-      return true
+      return { success: true }
     }
     if (configuration.listI18nKeywordsFor) {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
-      return true
+      return { success: true }
     }
     const supportCodeLibrary = this.getSupportCodeLibrary(
       configuration.supportCodePaths
@@ -86,6 +86,7 @@ export default class Cli {
     const testCases = await getTestCasesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
+      featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions)
     })
@@ -95,8 +96,11 @@ export default class Cli {
       supportCodeLibrary,
       testCases
     })
-    const result = await runtime.start()
+    const success = await runtime.start()
     await cleanup()
-    return result
+    return {
+      shouldExitImmediately: configuration.shouldExitImmediately,
+      success
+    }
   }
 }

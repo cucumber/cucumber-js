@@ -3,29 +3,23 @@ Feature: Multiple Formatters
   Background:
     Given a file named "features/a.feature" with:
       """
-      Feature: some feature
-        Scenario: some scenario
-          Given a passing step
+      Fonctionnalité: Bonjour
+        Scénario: Monde
+          Soit une étape
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       import {Given} from 'cucumber'
 
-      Given(/^a passing step$/, function() {})
+      Given(/^une étape$/, function() {})
       """
 
   Scenario: Ability to specify multiple formatters
-    When I run cucumber.js with `-f progress -f summary:summary.txt`
+    When I run cucumber.js with `--language fr`
     Then it outputs the text:
       """
       .
 
-      1 scenario (1 passed)
-      1 step (1 passed)
-      <duration-stat>
-      """
-    And the file "summary.txt" has the text:
-      """
       1 scenario (1 passed)
       1 step (1 passed)
       <duration-stat>

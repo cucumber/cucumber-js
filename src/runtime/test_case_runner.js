@@ -143,6 +143,9 @@ export default class TestCaseRunner {
     if (this.shouldUpdateStatus(testStepResult)) {
       this.result.status = testStepResult.status
     }
+    if (testStepResult.exception) {
+      this.result.exception = testStepResult.exception
+    }
     this.emit('test-step-finished', {
       index: this.testStepIndex,
       result: testStepResult
@@ -154,11 +157,13 @@ export default class TestCaseRunner {
     this.emitPrepared()
     this.emit('test-case-started', {})
     await this.runHooks(this.beforeHookDefinitions, {
-      sourceLocation: this.testCaseSourceLocation
+      sourceLocation: this.testCaseSourceLocation,
+      pickle: this.testCase.pickle
     })
     await this.runSteps()
     await this.runHooks(this.afterHookDefinitions, {
       sourceLocation: this.testCaseSourceLocation,
+      pickle: this.testCase.pickle,
       result: this.result
     })
     this.emit('test-case-finished', { result: this.result })
