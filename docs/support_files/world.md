@@ -16,7 +16,7 @@ function World({attach, parameters}) {
 The default can be overridden with `setWorldConstructor`.
 
 ```javascript
-var {defineSupportCode} = require('cucumber');
+var {setWorldConstructor} = require('cucumber');
 var seleniumWebdriver = require('selenium-webdriver');
 
 function CustomWorld() {
@@ -31,9 +31,7 @@ function CustomWorld() {
   }
 }
 
-defineSupportCode(function({setWorldConstructor}) {
-  setWorldConstructor(CustomWorld)
-});
+setWorldConstructor(CustomWorld)
 ```
 
 **Note:** The World constructor was made strictly synchronous in *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*.

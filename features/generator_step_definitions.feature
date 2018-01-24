@@ -14,20 +14,18 @@ Feature: Generator Step Definitions
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       import assert from 'assert'
-      import {defineSupportCode} from 'cucumber'
+      import {setWorldConstructor, Then, When} from 'cucumber'
 
-      defineSupportCode(({setWorldConstructor, Then, When}) => {
-        setWorldConstructor(function () {
-          this.context = ""
-        })
+      setWorldConstructor(function () {
+        this.context = ""
+      })
 
-        When(/^I call a step which is a generator with return value "([^"]*)"$/, function *(return_value) {
-          this.context = yield Promise.resolve(return_value);
-        })
+      When(/^I call a step which is a generator with return value "([^"]*)"$/, function *(return_value) {
+        this.context = yield Promise.resolve(return_value);
+      })
 
-        Then(/^I can see the yielded "([^"]*)" value in the context$/, function(return_value) {
-          assert.equal(this.context, return_value)
-        })
+      Then(/^I can see the yielded "([^"]*)" value in the context$/, function(return_value) {
+        assert.equal(this.context, return_value)
       })
       """
 
@@ -39,7 +37,7 @@ Feature: Generator Step Definitions
       """
       The following hook/step definitions use generator functions:
 
-        features/step_definitions/cucumber_steps.js:9
+        features/step_definitions/cucumber_steps.js:8
 
       Use 'this.setDefinitionFunctionWrapper(fn)' to wrap then in a function that returns a promise
       """
@@ -49,16 +47,14 @@ Feature: Generator Step Definitions
       """
       import isGenerator from 'is-generator'
       import {coroutine} from 'bluebird'
-      import {defineSupportCode} from 'cucumber'
+      import {setDefinitionFunctionWrapper} from 'cucumber'
 
-      defineSupportCode(({setDefinitionFunctionWrapper}) => {
-        setDefinitionFunctionWrapper(function (fn) {
-          if (isGenerator.fn(fn)) {
-            return coroutine(fn)
-          } else {
-            return fn
-          }
-        })
+      setDefinitionFunctionWrapper(function (fn) {
+        if (isGenerator.fn(fn)) {
+          return coroutine(fn)
+        } else {
+          return fn
+        }
       })
       """
     When I run cucumber-js

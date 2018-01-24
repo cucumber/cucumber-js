@@ -9,12 +9,10 @@ Feature: Ambiguous Steps
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {defineSupportCode} from 'cucumber'
+      import {When} from 'cucumber'
 
-      defineSupportCode(({When}) => {
-        When(/^a ambiguous step$/, function() {});
-        When(/^a (.*) step$/, function(status) {});
-      })
+      When(/^a ambiguous step$/, function() {});
+      When(/^a (.*) step$/, function(status) {});
       """
     When I run cucumber.js with `-f progress`
     Then it outputs the text:
@@ -26,8 +24,8 @@ Feature: Ambiguous Steps
       1) Scenario: a scenario name # features/a.feature:2
          ✖ Given a ambiguous step
              Multiple step definitions match:
-               /^a ambiguous step$/ - features/step_definitions/cucumber_steps.js:4
-               /^a (.*) step$/      - features/step_definitions/cucumber_steps.js:5
+               /^a ambiguous step$/ - features/step_definitions/cucumber_steps.js:3
+               /^a (.*) step$/      - features/step_definitions/cucumber_steps.js:4
 
       1 scenario (1 ambiguous)
       1 step (1 ambiguous)

@@ -1,4 +1,4 @@
-import { defineSupportCode, Cli } from '../../'
+import { setWorldConstructor, Cli } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
@@ -38,7 +38,8 @@ class World {
       })
       let error, stderr
       try {
-        if (!await cli.run()) {
+        const { success } = await cli.run()
+        if (!success) {
           error = new Error('CLI exited with non-zero')
           error.code = 42
         }
@@ -73,6 +74,4 @@ class World {
   }
 }
 
-defineSupportCode(({ setWorldConstructor }) => {
-  setWorldConstructor(World)
-})
+setWorldConstructor(World)

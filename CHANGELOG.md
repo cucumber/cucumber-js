@@ -2,7 +2,34 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v3.2.1...master) (In Git)
 
-* added "asyncawait" option to the snippetInterface formatting option
+#### BREAKING CHANGES
+
+* cucumber now waits for the event loop to drain before exiting. To exit immediately when the tests finish running use `--exit`. Use of this flag is discouraged. See [here](/docs/cli.md#exiting) for more information
+* remove `--compiler` option. See [here](/docs/cli.md#transpilers) for the new way to use transpilers
+
+#### New Features
+
+* can now use glob patterns for selecting what features to run
+* update `--require` to support glob patterns
+* add `--require-module` to require node modules before support code is loaded
+* add snippet interface "async-await"
+
+#### Deprecations
+
+* `defineSupportCode` is deprecated. Require/import the individual methods instead
+  ```js
+  var {defineSupportCode} = require('cucumber');
+
+  defineSupportCode(function({Given}) {
+    Given(/^a step$/, function() {});
+  });
+
+  // Should be updated to
+
+  var {Given} = require('cucumber');
+
+  Given(/^a step$/, function() {});
+  ```
 
 ### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
 
