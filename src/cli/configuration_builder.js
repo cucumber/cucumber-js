@@ -39,7 +39,6 @@ export default class ConfigurationBuilder {
         '.js'
       )
     }
-    this.options.requireModule.forEach(module => require(module))
     return {
       featureDefaultLanguage: this.options.language,
       featurePaths,
@@ -47,6 +46,7 @@ export default class ConfigurationBuilder {
       formatOptions: this.getFormatOptions(),
       listI18nKeywordsFor,
       listI18nLanguages,
+      parallel: this.options.parallel,
       profiles: this.options.profile,
       pickleFilterOptions: {
         featurePaths: unexpandedFeaturePaths,
@@ -61,7 +61,8 @@ export default class ConfigurationBuilder {
         worldParameters: this.options.worldParameters
       },
       shouldExitImmediately: !!this.options.exit,
-      supportCodePaths
+      supportCodePaths,
+      supportCodeRequiredModules: this.options.requireModule
     }
   }
 
