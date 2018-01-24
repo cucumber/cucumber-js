@@ -88,7 +88,7 @@ Undefined steps snippets are printed in javascript using the callback interface 
 ### Interface
 
 Override the snippet interface with `--format-options '{"snippetInterface": "<interface>"}'`.
-Valid interfaces are 'callback', 'generator', 'promise', 'asyncawait' or 'synchronous'.
+Valid interfaces are 'async-await', 'callback', 'generator', 'promise', or 'synchronous'.
 
 ### Syntax
 
