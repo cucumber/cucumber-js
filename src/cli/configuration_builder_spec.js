@@ -34,7 +34,7 @@ describe('Configuration', function() {
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         pickleFilterOptions: {
-          featurePaths: ['features'],
+          featurePaths: ['features/**/*.feature'],
           names: [],
           tagExpression: ''
         },

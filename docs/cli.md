@@ -17,6 +17,10 @@ needs to be required in your support files and globally installed modules cannot
 
 ## Running specific features
 
+* Specify a [glob](https://github.com/isaacs/node-glob) pattern
+  * `$ cucumber.js features/**/*.feature`
+* Specify a feature directory
+  * `$ cucumber.js features/dir`
 * Specify a feature file
   * `$ cucumber.js features/my_feature.feature`
 * Specify a scenario by its line number
@@ -28,14 +32,13 @@ needs to be required in your support files and globally installed modules cannot
 
 ## Requiring support files
 
-Use `--require <FILE|DIR>` to require files before executing the features.
+Use `--require <GLOB|DIR|FILE>` to require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
 If not used, the following files are required:
 * If the features live in a `features` directory (at any level)
-  * all support files in the `features` directory
+  * `features/**/*.js`
 * Otherwise
-  * all support files in the directories of the features
+  * `<DIR>/**/*.js` for each directory containing the selected features
 
-Support files are defined as all `*.js` files and other extensions specified by `--compiler`.
 Automatic loading is disabled when this option is specified, and all loading becomes explicit.
 
 ## Formats
@@ -110,7 +113,7 @@ Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is 
 
 ## Transpilers
 
-Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--compiler <file_extension>:<module_name>`. Running `require("<module_name>")`, should make it possible to require files with the given extension. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--compiler coffee:coffee-script/register`.
+Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require features/**/*.<ext>` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require features/**/*.coffee`.
 
 ## World Parameters
 

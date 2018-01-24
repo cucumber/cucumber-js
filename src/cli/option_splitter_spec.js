@@ -26,21 +26,6 @@ describe('OptionSplitter', function() {
       description: 'does not split a single absolute windows paths',
       input: 'C:\\custom\\formatter',
       output: ['C:\\custom\\formatter']
-    },
-    {
-      description: 'splits extensions and modules',
-      input: 'ts:typescript',
-      output: ['ts', 'typescript']
-    },
-    {
-      description: 'splits extension and module with an absolute windows path',
-      input: 'ts:C:/typescript',
-      output: ['ts', 'C:/typescript']
-    },
-    {
-      description: 'splits more than 2 parts',
-      input: 'part1:part2:part3',
-      output: ['part1', 'part2', 'part3']
     }
   ]
 
