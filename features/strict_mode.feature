@@ -18,7 +18,7 @@ Feature: Strict mode
 
       Given(/^a step$/, function() { return 'pending' })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
   Scenario: Succeed with pending step with --no-strict

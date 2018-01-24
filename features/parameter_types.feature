@@ -41,7 +41,7 @@ Feature: Parameter types
       }
       setWorldConstructor(MyWorld)
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a particular step" has status "passed"
 
   Scenario: sync transform (success)
@@ -55,7 +55,7 @@ Feature: Parameter types
         name: 'param'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a particular step" has status "passed"
 
   Scenario: sync transform (error)
@@ -71,7 +71,7 @@ Feature: Parameter types
         name: 'param'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a particular step" failed with:
       """
@@ -88,7 +88,7 @@ Feature: Parameter types
         name: 'param'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a particular step" failed with:
       """
@@ -106,7 +106,7 @@ Feature: Parameter types
         name: 'param'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a particular step" has status "passed"
 
   Scenario: async transform (error)
@@ -121,7 +121,7 @@ Feature: Parameter types
         name: 'param'
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the step "a particular step" failed with:
       """

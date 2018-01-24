@@ -22,7 +22,7 @@ Feature: Environment Hooks
       Before(function() {})
       After(function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the scenario "some scenario" has the steps
       | IDENTIFIER   |
       | Before       |
@@ -36,7 +36,7 @@ Feature: Environment Hooks
 
       Before(function() { throw 'Fail' })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
   @spawn
@@ -47,7 +47,7 @@ Feature: Environment Hooks
 
       After(function() { throw 'Fail' })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
 
   @spawn
@@ -59,7 +59,7 @@ Feature: Environment Hooks
       Before(function() { throw 'Fail' })
       After(function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the "After" hook has status "passed"
 
@@ -92,5 +92,5 @@ Feature: Environment Hooks
         }
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes

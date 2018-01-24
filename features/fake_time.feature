@@ -36,5 +36,5 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
         assert(testFunction.called)
       })
       """
-      When I run cucumber.js
+      When I run cucumber-js
       Then it passes

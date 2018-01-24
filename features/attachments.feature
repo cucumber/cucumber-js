@@ -23,7 +23,7 @@ Feature: Attachments
         this.attach(new Buffer([137, 80, 78, 71]), 'image/png')
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the "Before" hook has the attachment
       | DATA     | MIME TYPE |
       | iVBORw== | image/png |
@@ -42,7 +42,7 @@ Feature: Attachments
         passThroughStream.end()
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the "Before" hook has the attachment
       | DATA     | MIME TYPE |
       | iVBORw== | image/png |
@@ -62,7 +62,7 @@ Feature: Attachments
           return promise
         })
         """
-      When I run cucumber.js
+      When I run cucumber-js
       Then the "Before" hook has the attachment
         | DATA     | MIME TYPE |
         | iVBORw== | image/png |
@@ -76,7 +76,7 @@ Feature: Attachments
         this.attach("text")
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the "Before" hook has the attachment
       | DATA | MIME TYPE  |
       | text | text/plain |
@@ -90,7 +90,7 @@ Feature: Attachments
         this.attach("text")
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the "After" hook has the attachment
       | DATA | MIME TYPE  |
       | text | text/plain |
@@ -104,7 +104,7 @@ Feature: Attachments
         this.attach("text")
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "a step" has the attachment
       | DATA | MIME TYPE  |
       | text | text/plain |

@@ -17,5 +17,5 @@ Feature: Automatically required support files for nested features
 
       Given(/^a step$/, function() {})
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes

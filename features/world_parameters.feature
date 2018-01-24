@@ -43,7 +43,7 @@ Feature: World Parameters
         assert.deepEqual(this.parameters, {})
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then the step "the world parameters are correct" has status "passed"
 
   Scenario: default world constructor saves the parameters

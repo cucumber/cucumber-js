@@ -6,7 +6,7 @@ import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
 import Mustache from 'mustache'
 
-When(/^I run cucumber.js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
+When(/^I run cucumber-js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
   args
 ) {
   args = Mustache.render(args || '', this)

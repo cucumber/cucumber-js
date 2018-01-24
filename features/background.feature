@@ -16,7 +16,7 @@ Feature: Background
         Scenario: a scenario
           When a scenario step
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the scenario "a scenario" has the steps
       | IDENTIFIER              |
@@ -36,7 +36,7 @@ Feature: Background
         Scenario: another scenario
           When another scenario step
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the scenario "a scenario" has the steps
       | IDENTIFIER              |

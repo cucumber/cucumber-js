@@ -25,7 +25,7 @@ Feature: Exit
       """
 
   Scenario: by default wait for the event loop to drain
-    When I run cucumber.js
+    When I run cucumber-js
     Then the output contains the text:
       """
       external process done

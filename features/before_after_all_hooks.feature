@@ -42,7 +42,7 @@ Feature: Environment Hooks
         counter += counter
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it passes
 
   Scenario: Failing before all hook kills the suite
@@ -54,7 +54,7 @@ Feature: Environment Hooks
         callback(new Error('my error'))
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text snippets:
       | a BeforeAll hook errored, process exiting |
@@ -70,7 +70,7 @@ Feature: Environment Hooks
         callback(new Error('my error'))
       })
       """
-    When I run cucumber.js
+    When I run cucumber-js
     Then it fails
     And the error output contains the text snippets:
       | an AfterAll hook errored, process exiting |
