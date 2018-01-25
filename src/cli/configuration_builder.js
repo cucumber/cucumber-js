@@ -51,18 +51,18 @@ export default class ConfigurationBuilder {
       pickleFilterOptions: {
         featurePaths: unexpandedFeaturePaths,
         names: this.options.name,
-        tagExpression: this.options.tags
+        tagExpression: this.options.tags,
       },
       runtimeOptions: {
         dryRun: !!this.options.dryRun,
         failFast: !!this.options.failFast,
         filterStacktraces: !this.options.backtrace,
         strict: !!this.options.strict,
-        worldParameters: this.options.worldParameters
+        worldParameters: this.options.worldParameters,
       },
       shouldExitImmediately: !!this.options.exit,
       supportCodePaths,
-      supportCodeRequiredModules: this.options.requireModule
+      supportCodeRequiredModules: this.options.requireModule,
     }
   }
 
@@ -72,7 +72,7 @@ export default class ConfigurationBuilder {
       async unexpandedPath => {
         const matches = await globP(unexpandedPath, {
           absolute: true,
-          cwd: this.cwd
+          cwd: this.cwd,
         })
         return Promise.map(matches, async match => {
           if (path.extname(match) === '') {

@@ -19,13 +19,13 @@ export function getAmbiguousStepException(stepDefinitions) {
       top: '',
       'top-left': '',
       'top-mid': '',
-      'top-right': ''
+      'top-right': '',
     },
     style: {
       border: [],
       'padding-left': 0,
-      'padding-right': 0
-    }
+      'padding-right': 0,
+    },
   })
   table.push(
     ...stepDefinitions.map(stepDefinition => {

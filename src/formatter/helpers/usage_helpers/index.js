@@ -10,7 +10,7 @@ function buildEmptyMapping(stepDefinitions) {
       line: stepDefinition.line,
       pattern: stepDefinition.pattern,
       matches: [],
-      uri: stepDefinition.uri
+      uri: stepDefinition.uri,
     }
   })
   return mapping
@@ -30,7 +30,7 @@ function buildMapping({ stepDefinitions, eventDataCollector }) {
         const match = {
           line: sourceLocation.line,
           text: stepLineToPickledStepMap[sourceLocation.line].text,
-          uri: sourceLocation.uri
+          uri: sourceLocation.uri,
         }
         if (isFinite(duration)) {
           match.duration = duration
@@ -59,7 +59,7 @@ function buildResult(mapping) {
     .map(({ line, matches, pattern, uri }) => {
       const sortedMatches = _.sortBy(matches, [
         invertNumber('duration'),
-        'text'
+        'text',
       ])
       const result = { line, matches: sortedMatches, pattern, uri }
       const meanDuration = _.meanBy(matches, 'duration')

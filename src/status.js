@@ -6,7 +6,7 @@ const statuses = {
   PASSED: 'passed',
   PENDING: 'pending',
   SKIPPED: 'skipped',
-  UNDEFINED: 'undefined'
+  UNDEFINED: 'undefined',
 }
 
 export default statuses

@@ -29,7 +29,7 @@ export default class Cli {
     eventBroadcaster,
     formatOptions,
     formats,
-    supportCodeLibrary
+    supportCodeLibrary,
   }) {
     const streamsToClose = []
     const eventDataCollector = new EventDataCollector(eventBroadcaster)
@@ -46,7 +46,7 @@ export default class Cli {
         log: ::stream.write,
         stream,
         supportCodeLibrary,
-        ...formatOptions
+        ...formatOptions,
       }
       return FormatterBuilder.build(type, typeOptions)
     })
@@ -81,14 +81,14 @@ export default class Cli {
       eventBroadcaster,
       formatOptions: configuration.formatOptions,
       formats: configuration.formats,
-      supportCodeLibrary
+      supportCodeLibrary,
     })
     const testCases = await getTestCasesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
-      pickleFilter: new PickleFilter(configuration.pickleFilterOptions)
+      pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
     })
     let success
     if (configuration.parallel) {
@@ -97,7 +97,7 @@ export default class Cli {
         options: configuration.runtimeOptions,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
-        testCases
+        testCases,
       })
       await new Promise(resolve => {
         parallelRuntimeMaster.run(configuration.parallel, s => {
@@ -110,14 +110,14 @@ export default class Cli {
         eventBroadcaster,
         options: configuration.runtimeOptions,
         supportCodeLibrary,
-        testCases
+        testCases,
       })
       success = await runtime.start()
     }
     await cleanup()
     return {
       shouldExitImmediately: configuration.shouldExitImmediately,
-      success
+      success,
     }
   }
 }

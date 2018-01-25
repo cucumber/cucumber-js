@@ -18,25 +18,25 @@ describe('UsageJsonFormatter', () => {
           {
             line: 1,
             pattern: '/abc/',
-            uri: 'steps.js'
+            uri: 'steps.js',
           },
           {
             line: 2,
             pattern: '/def/',
-            uri: 'steps.js'
+            uri: 'steps.js',
           },
           {
             line: 3,
             pattern: '/ghi/',
-            uri: 'steps.js'
-          }
-        ]
+            uri: 'steps.js',
+          },
+        ],
       }
       this.usageJsonFormatter = new UsageJsonFormatter({
         eventBroadcaster,
         eventDataCollector: new EventDataCollector(eventBroadcaster),
         log: logFn,
-        supportCodeLibrary
+        supportCodeLibrary,
       })
       const events = Gherkin.generateEvents(
         'Feature: a\nScenario: b\nGiven abc\nWhen def',
@@ -48,7 +48,7 @@ describe('UsageJsonFormatter', () => {
           eventBroadcaster.emit('pickle-accepted', {
             type: 'pickle-accepted',
             pickle: event.pickle,
-            uri: event.uri
+            uri: event.uri,
           })
         }
       })
@@ -58,23 +58,23 @@ describe('UsageJsonFormatter', () => {
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
-            actionLocation: { uri: 'steps.js', line: 1 }
+            actionLocation: { uri: 'steps.js', line: 1 },
           },
           {
             sourceLocation: { uri: 'a.feature', line: 4 },
-            actionLocation: { uri: 'steps.js', line: 2 }
-          }
-        ]
+            actionLocation: { uri: 'steps.js', line: 2 },
+          },
+        ],
       })
       eventBroadcaster.emit('test-step-finished', {
         index: 0,
         testCase,
-        result: { duration: 1 }
+        result: { duration: 1 },
       })
       eventBroadcaster.emit('test-step-finished', {
         index: 1,
         testCase,
-        result: { duration: 2 }
+        result: { duration: 2 },
       })
       eventBroadcaster.emit('test-run-finished')
     })
@@ -89,12 +89,12 @@ describe('UsageJsonFormatter', () => {
               duration: 2,
               line: 4,
               text: 'def',
-              uri: 'a.feature'
-            }
+              uri: 'a.feature',
+            },
           ],
           meanDuration: 2,
           pattern: '/def/',
-          uri: 'steps.js'
+          uri: 'steps.js',
         },
         {
           line: 1,
@@ -103,19 +103,19 @@ describe('UsageJsonFormatter', () => {
               duration: 1,
               line: 3,
               text: 'abc',
-              uri: 'a.feature'
-            }
+              uri: 'a.feature',
+            },
           ],
           meanDuration: 1,
           pattern: '/abc/',
-          uri: 'steps.js'
+          uri: 'steps.js',
         },
         {
           line: 3,
           matches: [],
           pattern: '/ghi/',
-          uri: 'steps.js'
-        }
+          uri: 'steps.js',
+        },
       ])
     })
   })

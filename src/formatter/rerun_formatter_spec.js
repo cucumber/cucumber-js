@@ -17,7 +17,7 @@ function prepareFormatter(options = {}) {
   this.rerunFormatter = new RerunFormatter({
     ...options,
     eventBroadcaster: this.eventBroadcaster,
-    log: logFn
+    log: logFn,
   })
 }
 
@@ -39,7 +39,7 @@ describe('RerunFormatter', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: { uri: this.feature1Path, line: 1 },
-          result: { status }
+          result: { status },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -56,14 +56,14 @@ describe('RerunFormatter', () => {
       Status.FAILED,
       Status.PENDING,
       Status.SKIPPED,
-      Status.UNDEFINED
+      Status.UNDEFINED,
     ],
     status => {
       describe(`with one ${status} scenario`, () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-case-finished', {
             sourceLocation: { uri: this.feature1Path, line: 1 },
-            result: { status }
+            result: { status },
           })
           this.eventBroadcaster.emit('test-run-finished')
         })
@@ -79,11 +79,11 @@ describe('RerunFormatter', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit('test-case-finished', {
         sourceLocation: { uri: this.feature1Path, line: 1 },
-        result: { status: Status.FAILED }
+        result: { status: Status.FAILED },
       })
       this.eventBroadcaster.emit('test-case-finished', {
         sourceLocation: { uri: this.feature1Path, line: 2 },
-        result: { status: Status.FAILED }
+        result: { status: Status.FAILED },
       })
       this.eventBroadcaster.emit('test-run-finished')
     })
@@ -97,23 +97,23 @@ describe('RerunFormatter', () => {
     [
       { separator: { opt: undefined, expected: '\n' }, label: 'default' },
       { separator: { opt: '\n', expected: '\n' }, label: 'newline' },
-      { separator: { opt: ' ', expected: ' ' }, label: 'space' }
+      { separator: { opt: ' ', expected: ' ' }, label: 'space' },
     ],
     ({ separator, label }) => {
       describe(`using ${label} separator`, () => {
         describe('with two failing scenarios in different files', () => {
           beforeEach(function() {
             prepareFormatter.apply(this, [
-              { rerun: { separator: separator.opt } }
+              { rerun: { separator: separator.opt } },
             ])
 
             this.eventBroadcaster.emit('test-case-finished', {
               sourceLocation: { uri: this.feature1Path, line: 1 },
-              result: { status: Status.FAILED }
+              result: { status: Status.FAILED },
             })
             this.eventBroadcaster.emit('test-case-finished', {
               sourceLocation: { uri: this.feature2Path, line: 2 },
-              result: { status: Status.FAILED }
+              result: { status: Status.FAILED },
             })
             this.eventBroadcaster.emit('test-run-finished')
           })

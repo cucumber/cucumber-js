@@ -4,7 +4,7 @@ const optionsValidation = {
   expectedType: 'object or function',
   predicate({ options }) {
     return _.isPlainObject(options)
-  }
+  },
 }
 
 const optionsTimeoutValidation = {
@@ -12,21 +12,21 @@ const optionsTimeoutValidation = {
   expectedType: 'integer',
   predicate({ options }) {
     return !options.timeout || _.isInteger(options.timeout)
-  }
+  },
 }
 
 const fnValidation = {
   expectedType: 'function',
   predicate({ code }) {
     return _.isFunction(code)
-  }
+  },
 }
 
 const validations = {
   defineTestRunHook: [
     { identifier: 'first argument', ...optionsValidation },
     optionsTimeoutValidation,
-    { identifier: 'second argument', ...fnValidation }
+    { identifier: 'second argument', ...fnValidation },
   ],
   defineTestCaseHook: [
     { identifier: 'first argument', ...optionsValidation },
@@ -35,10 +35,10 @@ const validations = {
       expectedType: 'string',
       predicate({ options }) {
         return !options.tags || _.isString(options.tags)
-      }
+      },
     },
     optionsTimeoutValidation,
-    { identifier: 'second argument', ...fnValidation }
+    { identifier: 'second argument', ...fnValidation },
   ],
   defineStep: [
     {
@@ -46,12 +46,12 @@ const validations = {
       expectedType: 'string or regular expression',
       predicate({ pattern }) {
         return _.isRegExp(pattern) || _.isString(pattern)
-      }
+      },
     },
     { identifier: 'second argument', ...optionsValidation },
     optionsTimeoutValidation,
-    { identifier: 'third argument', ...fnValidation }
-  ]
+    { identifier: 'third argument', ...fnValidation },
+  ],
 }
 
 export default function validateArguments({ args, fnName, location }) {

@@ -15,7 +15,7 @@ describe('Configuration', () => {
     this.argv = ['path/to/node', 'path/to/cucumber.js']
     this.configurationOptions = {
       argv: this.argv,
-      cwd: this.tmpDir
+      cwd: this.tmpDir,
     }
   })
 
@@ -30,7 +30,7 @@ describe('Configuration', () => {
         featurePaths: [],
         formatOptions: {
           colorsEnabled: true,
-          cwd: this.tmpDir
+          cwd: this.tmpDir,
         },
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',
@@ -39,7 +39,7 @@ describe('Configuration', () => {
         pickleFilterOptions: {
           featurePaths: ['features/**/*.feature'],
           names: [],
-          tagExpression: ''
+          tagExpression: '',
         },
         profiles: [],
         runtimeOptions: {
@@ -47,11 +47,11 @@ describe('Configuration', () => {
           failFast: false,
           filterStacktraces: true,
           strict: true,
-          worldParameters: {}
+          worldParameters: {},
         },
         shouldExitImmediately: false,
         supportCodePaths: [],
-        supportCodeRequiredModules: []
+        supportCodeRequiredModules: [],
       })
     })
   })
@@ -71,11 +71,11 @@ describe('Configuration', () => {
       const {
         featurePaths,
         pickleFilterOptions,
-        supportCodePaths
+        supportCodePaths,
       } = this.result
       expect(featurePaths).to.eql([this.featurePath])
       expect(pickleFilterOptions.featurePaths).to.eql([
-        this.relativeFeaturePath
+        this.relativeFeaturePath,
       ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
     })
@@ -96,11 +96,11 @@ describe('Configuration', () => {
       const {
         featurePaths,
         pickleFilterOptions,
-        supportCodePaths
+        supportCodePaths,
       } = this.result
       expect(featurePaths).to.eql([this.featurePath])
       expect(pickleFilterOptions.featurePaths).to.eql([
-        this.relativeFeaturePath
+        this.relativeFeaturePath,
       ])
       expect(supportCodePaths).to.eql([this.supportCodePath])
     })
@@ -118,7 +118,7 @@ describe('Configuration', () => {
 
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
-        { outputTo: '../formatter/output.txt', type: '../custom/formatter' }
+        { outputTo: '../formatter/output.txt', type: '../custom/formatter' },
       ])
     })
 
@@ -128,7 +128,7 @@ describe('Configuration', () => {
 
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
-        { outputTo: '/formatter/output.txt', type: '/custom/formatter' }
+        { outputTo: '/formatter/output.txt', type: '/custom/formatter' },
       ])
     })
 
@@ -138,7 +138,10 @@ describe('Configuration', () => {
 
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
-        { outputTo: 'D:\\formatter\\output.txt', type: 'C:\\custom\\formatter' }
+        {
+          outputTo: 'D:\\formatter\\output.txt',
+          type: 'C:\\custom\\formatter',
+        },
       ])
     })
 

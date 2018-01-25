@@ -11,7 +11,7 @@ describe('StepDefinitionSnippetBuilder', () => {
     this.transformsLookup = TransformLookupBuilder.build()
     this.snippetBuilder = new StepDefinitionSnippetBuilder({
       snippetSyntax: this.snippetSyntax,
-      parameterTypeRegistry: this.transformsLookup
+      parameterTypeRegistry: this.transformsLookup,
     })
   })
 
@@ -21,8 +21,8 @@ describe('StepDefinitionSnippetBuilder', () => {
         keywordType: KeywordType.PRECONDITION,
         pickleStep: {
           arguments: [],
-          text: ''
-        }
+          text: '',
+        },
       }
     })
 

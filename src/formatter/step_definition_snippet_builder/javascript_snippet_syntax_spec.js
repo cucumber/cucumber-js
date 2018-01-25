@@ -16,10 +16,10 @@ describe('JavascriptSnippetSyntax', () => {
           generatedExpressions: [
             {
               source: 'pattern',
-              parameterNames: ['arg1', 'arg2']
-            }
+              parameterNames: ['arg1', 'arg2'],
+            },
           ],
-          stepParameterNames: []
+          stepParameterNames: [],
         })
         const expected =
           "functionName('pattern', function (arg1, arg2, callback) {\n" +
@@ -42,10 +42,10 @@ describe('JavascriptSnippetSyntax', () => {
           generatedExpressions: [
             {
               source: 'pattern',
-              parameterNames: ['arg1', 'arg2']
-            }
+              parameterNames: ['arg1', 'arg2'],
+            },
           ],
-          stepParameterNames: []
+          stepParameterNames: [],
         })
         const expected =
           "functionName('pattern', function *(arg1, arg2) {\n" +
@@ -68,10 +68,10 @@ describe('JavascriptSnippetSyntax', () => {
           generatedExpressions: [
             {
               source: 'pattern',
-              parameterNames: ['arg1', 'arg2']
-            }
+              parameterNames: ['arg1', 'arg2'],
+            },
           ],
-          stepParameterNames: []
+          stepParameterNames: [],
         })
         const expected =
           "functionName('pattern', function (arg1, arg2) {\n" +
@@ -94,10 +94,10 @@ describe('JavascriptSnippetSyntax', () => {
           generatedExpressions: [
             {
               source: 'pattern',
-              parameterNames: ['arg1', 'arg2']
-            }
+              parameterNames: ['arg1', 'arg2'],
+            },
           ],
-          stepParameterNames: []
+          stepParameterNames: [],
         })
         const expected =
           "functionName('pattern', function (arg1, arg2) {\n" +
@@ -120,10 +120,10 @@ describe('JavascriptSnippetSyntax', () => {
           generatedExpressions: [
             {
               source: "pattern'",
-              parameterNames: ['arg1', 'arg2']
-            }
+              parameterNames: ['arg1', 'arg2'],
+            },
           ],
-          stepParameterNames: []
+          stepParameterNames: [],
         })
         const expected =
           "functionName('pattern\\'', function (arg1, arg2) {\n" +
@@ -146,18 +146,18 @@ describe('JavascriptSnippetSyntax', () => {
           generatedExpressions: [
             {
               parameterNames: ['argA', 'argB'],
-              source: 'pattern1'
+              source: 'pattern1',
             },
             {
               parameterNames: ['argC', 'argD'],
-              source: 'pattern2'
+              source: 'pattern2',
             },
             {
               parameterNames: ['argE', 'argF'],
-              source: 'pattern3'
-            }
+              source: 'pattern3',
+            },
           ],
-          stepParameterNames: []
+          stepParameterNames: [],
         })
         const expected =
           "functionName('pattern1', function (argA, argB) {\n" +

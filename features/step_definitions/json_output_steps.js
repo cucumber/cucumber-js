@@ -7,7 +7,7 @@ import {
   getScenarioNames,
   getSteps,
   findScenario,
-  findStep
+  findStep,
 } from '../support/json_output_helpers'
 
 Then(/^it runs (\d+) scenarios$/, function(count) {
@@ -33,7 +33,7 @@ Then(/^it runs the scenarios:$/, function(table) {
 Then(/^the scenario "([^"]*)" has the steps$/, function(name, table) {
   const scenario = findScenario({
     features: this.lastRun.jsonOutput,
-    scenarioPredicate: ['name', name]
+    scenarioPredicate: ['name', name],
   })
   const expectedNames = table.rows().map(row => row[0])
   const actualNames = scenario.steps.map(step =>
@@ -45,7 +45,7 @@ Then(/^the scenario "([^"]*)" has the steps$/, function(name, table) {
 Then(/^the step "([^"]*)" failed with:$/, function(name, errorMessage) {
   const step = findStep({
     features: this.lastRun.jsonOutput,
-    stepPredicate: ['name', name]
+    stepPredicate: ['name', name],
   })
   expect(step.result.status).to.eql('failed')
   expect(step.result.error_message).to.include(errorMessage)
@@ -64,7 +64,7 @@ Then(/^all steps have status "([^"]*)"$/, function(status) {
 Then(/^the step "([^"]*)" has status "([^"]*)"$/, function(name, status) {
   const step = findStep({
     features: this.lastRun.jsonOutput,
-    stepPredicate: ['name', name]
+    stepPredicate: ['name', name],
   })
   expect(step.result.status).to.eql(status)
 })
@@ -72,7 +72,7 @@ Then(/^the step "([^"]*)" has status "([^"]*)"$/, function(name, status) {
 Then(/^the "([^"]*)" hook has status "([^"]*)"$/, function(keyword, status) {
   const step = findStep({
     features: this.lastRun.jsonOutput,
-    stepPredicate: ['keyword', keyword]
+    stepPredicate: ['keyword', keyword],
   })
   expect(step.result.status).to.eql(status)
 })
@@ -80,12 +80,12 @@ Then(/^the "([^"]*)" hook has status "([^"]*)"$/, function(keyword, status) {
 Then('the step {string} has the attachment', function(name, table) {
   const step = findStep({
     features: this.lastRun.jsonOutput,
-    stepPredicate: ['name', name]
+    stepPredicate: ['name', name],
   })
   const tableRowData = table.hashes()[0]
   const expectedAttachment = {
     data: tableRowData.DATA,
-    mime_type: tableRowData['MIME TYPE']
+    mime_type: tableRowData['MIME TYPE'],
   }
   expect(step.embeddings[0]).to.eql(expectedAttachment)
 })
@@ -93,12 +93,12 @@ Then('the step {string} has the attachment', function(name, table) {
 Then('the {string} hook has the attachment', function(keyword, table) {
   const hook = findStep({
     features: this.lastRun.jsonOutput,
-    stepPredicate: ['keyword', keyword]
+    stepPredicate: ['keyword', keyword],
   })
   const tableRowData = table.hashes()[0]
   const expectedAttachment = {
     data: tableRowData.DATA,
-    mime_type: tableRowData['MIME TYPE']
+    mime_type: tableRowData['MIME TYPE'],
   }
   expect(hook.embeddings[0]).to.eql(expectedAttachment)
 })
@@ -107,7 +107,7 @@ Then(/^the (first|second) scenario has the steps$/, function(cardinal, table) {
   const scenarioIndex = cardinal === 'first' ? 0 : 1
   const scenario = findScenario({
     features: this.lastRun.jsonOutput,
-    scenarioPredicate: (element, index) => index === scenarioIndex
+    scenarioPredicate: (element, index) => index === scenarioIndex,
   })
   const stepNames = scenario.steps.map(step => [step.name])
   expect(stepNames).to.eql(table.rows())
@@ -122,7 +122,7 @@ Then(
       scenarioPredicate(element, index) {
         return index === scenarioIndex
       },
-      stepPredicate: ['name', name]
+      stepPredicate: ['name', name],
     })
     expect(step.arguments[0].content).to.eql(docString)
   }
@@ -137,7 +137,7 @@ Then(
       scenarioPredicate(element, index) {
         return index === scenarioIndex
       },
-      stepPredicate: ['name', name]
+      stepPredicate: ['name', name],
     })
     const expected = table.raw().map(row => ({ cells: row }))
     expect(step.arguments[0].rows).to.eql(expected)
@@ -153,7 +153,7 @@ Then(/^the (first|second) scenario has the name "([^"]*)"$/, function(
     features: this.lastRun.jsonOutput,
     scenarioPredicate(element, index) {
       return index === scenarioIndex
-    }
+    },
   })
   expect(scenario.name).to.eql(name)
 })

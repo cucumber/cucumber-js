@@ -35,7 +35,7 @@ describe('helpers', () => {
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
-          pickleFilter: new PickleFilter({})
+          pickleFilter: new PickleFilter({}),
         })
       })
 
@@ -48,7 +48,7 @@ describe('helpers', () => {
         expect(this.onSource).to.have.been.calledWith({
           data: '',
           media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
-          uri: this.relativeFeaturePath
+          uri: this.relativeFeaturePath,
         })
       })
 
@@ -80,8 +80,8 @@ describe('helpers', () => {
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
           pickleFilter: new PickleFilter({
-            featurePaths: [`${this.relativeFeaturePath}:5`]
-          })
+            featurePaths: [`${this.relativeFeaturePath}:5`],
+          }),
         })
       })
 
@@ -94,7 +94,7 @@ describe('helpers', () => {
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
           media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
-          uri: this.relativeFeaturePath
+          uri: this.relativeFeaturePath,
         })
       })
 
@@ -119,7 +119,7 @@ describe('helpers', () => {
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
-          pickleFilter: new PickleFilter({})
+          pickleFilter: new PickleFilter({}),
         })
       })
 
@@ -134,7 +134,7 @@ describe('helpers', () => {
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
           media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
-          uri: this.relativeFeaturePath
+          uri: this.relativeFeaturePath,
         })
       })
 

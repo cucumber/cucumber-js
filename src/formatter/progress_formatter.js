@@ -7,7 +7,7 @@ const STATUS_CHARACTER_MAPPING = {
   [Status.PASSED]: '.',
   [Status.PENDING]: 'P',
   [Status.SKIPPED]: '-',
-  [Status.UNDEFINED]: 'U'
+  [Status.UNDEFINED]: 'U',
 }
 
 export default class ProgressFormatter extends SummaryFormatter {

@@ -14,6 +14,6 @@ plugins:
 rules:
   prettier/prettier:
     - error
-    - trailingComma: none
+    - trailingComma: es5
       singleQuote: true
       semi: false

@@ -14,7 +14,7 @@ describe('KeywordType', () => {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
           keyword: 'Given ',
-          language: 'en'
+          language: 'en',
         })
       })
 
@@ -27,7 +27,7 @@ describe('KeywordType', () => {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
           keyword: 'When ',
-          language: 'en'
+          language: 'en',
         })
       })
 
@@ -40,7 +40,7 @@ describe('KeywordType', () => {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
           keyword: 'Then ',
-          language: 'en'
+          language: 'en',
         })
       })
 
@@ -53,7 +53,7 @@ describe('KeywordType', () => {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
           keyword: 'And ',
-          language: 'en'
+          language: 'en',
         })
       })
 
@@ -67,7 +67,7 @@ describe('KeywordType', () => {
         this.keywordType = getStepKeywordType({
           keyword: 'And ',
           language: 'en',
-          previousKeywordType: KeywordType.EVENT
+          previousKeywordType: KeywordType.EVENT,
         })
       })
 
@@ -80,7 +80,7 @@ describe('KeywordType', () => {
       beforeEach(function() {
         this.keywordType = getStepKeywordType({
           keyword: 'But ',
-          language: 'en'
+          language: 'en',
         })
       })
 
@@ -94,7 +94,7 @@ describe('KeywordType', () => {
         this.keywordType = getStepKeywordType({
           keyword: 'But ',
           language: 'en',
-          previousKeywordType: KeywordType.OUTCOME
+          previousKeywordType: KeywordType.OUTCOME,
         })
       })
 
@@ -108,7 +108,7 @@ describe('KeywordType', () => {
         this.keywordType = getStepKeywordType({
           index: 0,
           language: 'en',
-          stepKeywords: ['other ']
+          stepKeywords: ['other '],
         })
       })
 

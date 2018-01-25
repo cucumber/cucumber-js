@@ -7,16 +7,16 @@ describe('TestCaseHookDefinition', () => {
     beforeEach(function() {
       this.input = {
         pickle: {
-          tags: []
+          tags: [],
         },
-        uri: ''
+        uri: '',
       }
     })
 
     describe('no tags', () => {
       beforeEach(function() {
         this.testCaseHookDefinition = new TestCaseHookDefinition({
-          options: {}
+          options: {},
         })
       })
 
@@ -31,7 +31,7 @@ describe('TestCaseHookDefinition', () => {
       beforeEach(function() {
         this.input.pickle.tags = [{ name: '@tagA' }]
         this.testCaseHookDefinition = new TestCaseHookDefinition({
-          options: { tags: '@tagA' }
+          options: { tags: '@tagA' },
         })
       })
 
@@ -45,7 +45,7 @@ describe('TestCaseHookDefinition', () => {
     describe('tags do not match', () => {
       beforeEach(function() {
         this.testCaseHookDefinition = new TestCaseHookDefinition({
-          options: { tags: '@tagA' }
+          options: { tags: '@tagA' },
         })
       })
 

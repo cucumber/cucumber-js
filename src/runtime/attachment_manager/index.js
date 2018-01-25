@@ -32,7 +32,7 @@ export default class AttachmentManager {
   createBufferAttachment(data, mediaType) {
     this.createStringAttachment(data.toString('base64'), {
       encoding: 'base64',
-      type: mediaType
+      type: mediaType,
     })
   }
 

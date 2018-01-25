@@ -12,7 +12,7 @@ async function run({
   parameterTypeRegistry,
   step,
   stepDefinition,
-  world
+  world,
 }) {
   beginTiming()
   let error, result, parameters
@@ -23,7 +23,7 @@ async function run({
         hookParameter,
         parameterTypeRegistry,
         step,
-        world
+        world,
       })
     )
   } catch (err) {
@@ -40,7 +40,7 @@ async function run({
         argsArray: parameters,
         fn: stepDefinition.code,
         thisArg: world,
-        timeoutInMilliseconds
+        timeoutInMilliseconds,
       })
       error = data.error
       result = data.result

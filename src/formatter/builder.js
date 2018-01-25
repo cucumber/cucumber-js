@@ -18,7 +18,7 @@ export default class FormatterBuilder {
     const extendedOptions = {
       colorFns: getColorFns(options.colorsEnabled),
       snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder(options),
-      ...options
+      ...options,
     }
     return new Formatter(extendedOptions)
   }
@@ -52,7 +52,7 @@ export default class FormatterBuilder {
     cwd,
     snippetInterface,
     snippetSyntax,
-    supportCodeLibrary
+    supportCodeLibrary,
   }) {
     if (!snippetInterface) {
       snippetInterface = 'callback'
@@ -64,7 +64,7 @@ export default class FormatterBuilder {
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
-      parameterTypeRegistry: supportCodeLibrary.parameterTypeRegistry
+      parameterTypeRegistry: supportCodeLibrary.parameterTypeRegistry,
     })
   }
 

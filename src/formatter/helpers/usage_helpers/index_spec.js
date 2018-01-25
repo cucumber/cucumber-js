@@ -14,7 +14,7 @@ describe('Usage Helpers', () => {
       this.getResult = () =>
         getUsage({
           eventDataCollector: this.eventDataCollector,
-          stepDefinitions: this.stepDefinitions
+          stepDefinitions: this.stepDefinitions,
         })
     })
 
@@ -41,7 +41,7 @@ describe('Usage Helpers', () => {
               this.eventBroadcaster.emit('pickle-accepted', {
                 type: 'pickle-accepted',
                 pickle: event.pickle,
-                uri: event.uri
+                uri: event.uri,
               })
             }
           })
@@ -50,18 +50,18 @@ describe('Usage Helpers', () => {
             ...testCase,
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 3 } },
-              { sourceLocation: { uri: 'a.feature', line: 4 } }
-            ]
+              { sourceLocation: { uri: 'a.feature', line: 4 } },
+            ],
           })
           this.eventBroadcaster.emit('test-step-finished', {
             index: 0,
             testCase,
-            result: {}
+            result: {},
           })
           this.eventBroadcaster.emit('test-step-finished', {
             index: 1,
             testCase,
-            result: {}
+            result: {},
           })
           this.eventBroadcaster.emit('test-run-finished')
         })

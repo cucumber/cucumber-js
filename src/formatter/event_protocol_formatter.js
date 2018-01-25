@@ -16,7 +16,7 @@ const EVENT_NAMES = [
   'test-step-attachment',
   'test-step-finished',
   'test-case-finished',
-  'test-run-finished'
+  'test-run-finished',
 ]
 
 export default class EventProtocolFormatter extends Formatter {

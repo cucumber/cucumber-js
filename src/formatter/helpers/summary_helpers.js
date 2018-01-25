@@ -8,7 +8,7 @@ const STATUS_REPORT_ORDER = [
   Status.UNDEFINED,
   Status.PENDING,
   Status.SKIPPED,
-  Status.PASSED
+  Status.PASSED,
 ]
 
 export function formatSummary({ colorFns, testCaseMap, testRun }) {
@@ -25,12 +25,12 @@ export function formatSummary({ colorFns, testCaseMap, testRun }) {
   const scenarioSummary = getCountSummary({
     colorFns,
     objects: testCaseResults,
-    type: 'scenario'
+    type: 'scenario',
   })
   const stepSummary = getCountSummary({
     colorFns,
     objects: testStepResults,
-    type: 'step'
+    type: 'step',
   })
   const durationSummary = getDuration(testRun.result.duration)
   return [scenarioSummary, stepSummary, durationSummary].join('\n')

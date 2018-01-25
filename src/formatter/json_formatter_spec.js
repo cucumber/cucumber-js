@@ -16,7 +16,7 @@ describe('JsonFormatter', () => {
     this.jsonFormatter = new JsonFormatter({
       eventBroadcaster: this.eventBroadcaster,
       eventDataCollector: new EventDataCollector(this.eventBroadcaster),
-      log: logFn
+      log: logFn,
     })
   })
 
@@ -47,7 +47,7 @@ describe('JsonFormatter', () => {
           this.eventBroadcaster.emit('pickle-accepted', {
             type: 'pickle-accepted',
             pickle: event.pickle,
-            uri: event.uri
+            uri: event.uri,
           })
         }
       })
@@ -60,18 +60,18 @@ describe('JsonFormatter', () => {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
-              sourceLocation: { uri: 'a.feature', line: 6 }
-            }
-          ]
+              sourceLocation: { uri: 'a.feature', line: 6 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -96,20 +96,20 @@ describe('JsonFormatter', () => {
                     name: 'my step',
                     result: {
                       status: 'passed',
-                      duration: 1000000
-                    }
-                  }
+                      duration: 1000000,
+                    },
+                  },
                 ],
-                tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }]
-              }
+                tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
+              },
             ],
             id: 'my-feature',
             keyword: 'Feature',
             line: 2,
             name: 'my feature',
             tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
-            uri: 'a.feature'
-          }
+            uri: 'a.feature',
+          },
         ])
       })
     })
@@ -120,18 +120,18 @@ describe('JsonFormatter', () => {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
-              sourceLocation: { uri: 'a.feature', line: 6 }
-            }
-          ]
+              sourceLocation: { uri: 'a.feature', line: 6 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1, exception: 'my error', status: Status.FAILED }
+          result: { duration: 1, exception: 'my error', status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { duration: 1, status: Status.FAILED }
+          result: { duration: 1, status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -141,7 +141,7 @@ describe('JsonFormatter', () => {
         expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'failed',
           error_message: 'my error',
-          duration: 1000000
+          duration: 1000000,
         })
       })
     })
@@ -153,18 +153,18 @@ describe('JsonFormatter', () => {
           steps: [
             {
               actionLocation: { uri: 'steps.js', line: 10 },
-              sourceLocation: { uri: 'a.feature', line: 6 }
-            }
-          ]
+              sourceLocation: { uri: 'a.feature', line: 6 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -172,7 +172,7 @@ describe('JsonFormatter', () => {
       it('outputs the step with a match attribute', function() {
         const features = JSON.parse(this.output)
         expect(features[0].elements[0].steps[0].match).to.eql({
-          location: 'steps.js:10'
+          location: 'steps.js:10',
         })
       })
     })
@@ -183,20 +183,20 @@ describe('JsonFormatter', () => {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
-              actionLocation: { uri: 'steps.js', line: 10 }
+              actionLocation: { uri: 'steps.js', line: 10 },
             },
             {
               sourceLocation: { uri: 'a.feature', line: 6 },
-              actionLocation: { uri: 'steps.js', line: 11 }
+              actionLocation: { uri: 'steps.js', line: 11 },
             },
             {
-              actionLocation: { uri: 'steps.js', line: 12 }
-            }
-          ]
+              actionLocation: { uri: 'steps.js', line: 12 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -225,29 +225,29 @@ describe('JsonFormatter', () => {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 6 },
-              actionLocation: { uri: 'steps.js', line: 11 }
-            }
-          ]
+              actionLocation: { uri: 'steps.js', line: 11 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-attachment', {
           testCase: {
-            sourceLocation: this.testCase.sourceLocation
+            sourceLocation: this.testCase.sourceLocation,
           },
           index: 0,
           data: 'first data',
-          media: { type: 'first media type' }
+          media: { type: 'first media type' },
         })
         this.eventBroadcaster.emit('test-step-attachment', {
           testCase: {
-            sourceLocation: this.testCase.sourceLocation
+            sourceLocation: this.testCase.sourceLocation,
           },
           index: 0,
           data: 'second data',
-          media: { type: 'second media type' }
+          media: { type: 'second media type' },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -256,7 +256,7 @@ describe('JsonFormatter', () => {
         const features = JSON.parse(this.output)
         expect(features[0].elements[0].steps[0].embeddings).to.eql([
           { data: 'first data', mime_type: 'first media type' },
-          { data: 'second data', mime_type: 'second media type' }
+          { data: 'second data', mime_type: 'second media type' },
         ])
       })
     })
@@ -279,7 +279,7 @@ describe('JsonFormatter', () => {
           this.eventBroadcaster.emit('pickle-accepted', {
             type: 'pickle-accepted',
             pickle: event.pickle,
-            uri: event.uri
+            uri: event.uri,
           })
         }
       })
@@ -289,18 +289,18 @@ describe('JsonFormatter', () => {
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
-            actionLocation: { uri: 'steps.js', line: 10 }
-          }
-        ]
+            actionLocation: { uri: 'steps.js', line: 10 },
+          },
+        ],
       })
       this.eventBroadcaster.emit('test-step-finished', {
         index: 0,
         testCase: this.testCase,
-        result: { duration: 1, status: Status.PASSED }
+        result: { duration: 1, status: Status.PASSED },
       })
       this.eventBroadcaster.emit('test-case-finished', {
         ...this.testCase,
-        result: { duration: 1, status: Status.PASSED }
+        result: { duration: 1, status: Status.PASSED },
       })
       this.eventBroadcaster.emit('test-run-finished')
     })
@@ -310,8 +310,8 @@ describe('JsonFormatter', () => {
       expect(features[0].elements[0].steps[0].arguments).to.eql([
         {
           line: 4,
-          content: 'This is a DocString'
-        }
+          content: 'This is a DocString',
+        },
       ])
     })
   })
@@ -333,7 +333,7 @@ describe('JsonFormatter', () => {
           this.eventBroadcaster.emit('pickle-accepted', {
             type: 'pickle-accepted',
             pickle: event.pickle,
-            uri: event.uri
+            uri: event.uri,
           })
         }
       })
@@ -343,18 +343,18 @@ describe('JsonFormatter', () => {
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
-            actionLocation: { uri: 'steps.js', line: 10 }
-          }
-        ]
+            actionLocation: { uri: 'steps.js', line: 10 },
+          },
+        ],
       })
       this.eventBroadcaster.emit('test-step-finished', {
         index: 0,
         testCase: this.testCase,
-        result: { duration: 1, status: Status.PASSED }
+        result: { duration: 1, status: Status.PASSED },
       })
       this.eventBroadcaster.emit('test-case-finished', {
         ...this.testCase,
-        result: { duration: 1, status: Status.PASSED }
+        result: { duration: 1, status: Status.PASSED },
       })
       this.eventBroadcaster.emit('test-run-finished')
     })
@@ -366,9 +366,9 @@ describe('JsonFormatter', () => {
           rows: [
             { cells: ['aaa', 'b', 'c'] },
             { cells: ['d', 'e', 'ff'] },
-            { cells: ['gg', 'h', 'iii'] }
-          ]
-        }
+            { cells: ['gg', 'h', 'iii'] },
+          ],
+        },
       ])
     })
   })

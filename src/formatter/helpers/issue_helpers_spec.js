@@ -20,19 +20,19 @@ describe('IssueHelpers', () => {
     this.testCase = {
       sourceLocation: {
         uri: 'a.feature',
-        line: 2
+        line: 2,
       },
       steps: [
         {
           actionLocation: { line: 2, uri: 'steps.js' },
-          sourceLocation: { line: 3, uri: 'a.feature' }
+          sourceLocation: { line: 3, uri: 'a.feature' },
         },
         {},
         {
           actionLocation: { line: 4, uri: 'steps.js' },
-          sourceLocation: { line: 5, uri: 'a.feature' }
-        }
-      ]
+          sourceLocation: { line: 5, uri: 'a.feature' },
+        },
+      ],
     }
     this.options = {
       colorFns: getColorFns(false),
@@ -40,7 +40,7 @@ describe('IssueHelpers', () => {
       number: 1,
       pickle,
       snippetBuilder: createMock({ build: 'snippet' }),
-      testCase: this.testCase
+      testCase: this.testCase,
     }
     this.passedStepResult = { duration: 0, status: Status.PASSED }
     this.skippedStepResult = { status: Status.SKIPPED }
@@ -55,8 +55,8 @@ describe('IssueHelpers', () => {
           sourceLocation: { line: 4, uri: 'a.feature' },
           result: {
             exception: 'error',
-            status: Status.FAILED
-          }
+            status: Status.FAILED,
+          },
         }
         this.testCase.steps[2].result = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
@@ -84,8 +84,8 @@ describe('IssueHelpers', () => {
               'Multiple step definitions match:\n' +
               '  pattern1        - steps.js:5\n' +
               '  longer pattern2 - steps.js:6',
-            status: Status.FAILED
-          }
+            status: Status.FAILED,
+          },
         }
         this.testCase.steps[2].result = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
@@ -109,7 +109,7 @@ describe('IssueHelpers', () => {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
           sourceLocation: { line: 4, uri: 'a.feature' },
-          result: { status: Status.UNDEFINED }
+          result: { status: Status.UNDEFINED },
         }
         this.testCase.steps[2].result = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
@@ -135,7 +135,7 @@ describe('IssueHelpers', () => {
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
-          result: { status: Status.PENDING }
+          result: { status: Status.PENDING },
         }
         this.testCase.steps[2].result = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
@@ -171,7 +171,7 @@ describe('IssueHelpers', () => {
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
-          result: { status: Status.PENDING }
+          result: { status: Status.PENDING },
         }
         this.testCase.steps[2].result = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
@@ -213,7 +213,7 @@ describe('IssueHelpers', () => {
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
-          result: { status: Status.PENDING }
+          result: { status: Status.PENDING },
         }
         this.testCase.steps[2].result = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)

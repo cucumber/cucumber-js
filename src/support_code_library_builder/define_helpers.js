@@ -21,13 +21,13 @@ export function defineTestCaseHook(builder, collectionName) {
     validateArguments({
       args: { code, options },
       fnName: 'defineTestCaseHook',
-      location: formatLocation({ line, uri })
+      location: formatLocation({ line, uri }),
     })
     const hookDefinition = new TestCaseHookDefinition({
       code,
       line,
       options,
-      uri
+      uri,
     })
     builder.options[collectionName].push(hookDefinition)
   }
@@ -45,13 +45,13 @@ export function defineTestRunHook(builder, collectionName) {
     validateArguments({
       args: { code, options },
       fnName: 'defineTestRunHook',
-      location: formatLocation({ line, uri })
+      location: formatLocation({ line, uri }),
     })
     const hookDefinition = new TestRunHookDefinition({
       code,
       line,
       options,
-      uri
+      uri,
     })
     builder.options[collectionName].push(hookDefinition)
   }
@@ -67,14 +67,14 @@ export function defineStep(builder) {
     validateArguments({
       args: { code, pattern, options },
       fnName: 'defineStep',
-      location: formatLocation({ line, uri })
+      location: formatLocation({ line, uri }),
     })
     const stepDefinition = new StepDefinition({
       code,
       line,
       options,
       pattern,
-      uri
+      uri,
     })
     builder.options.stepDefinitions.push(stepDefinition)
   }
@@ -112,7 +112,7 @@ export function defineParameterType(builder) {
     regexp,
     transformer,
     useForSnippets,
-    preferForRegexpMatch
+    preferForRegexpMatch,
   }) => {
     const getTypeName = deprecate(
       () => typeName,

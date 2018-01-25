@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 export function getScenarioDescription({
   pickle,
-  scenarioLineToDescriptionMap
+  scenarioLineToDescriptionMap,
 }) {
   return _.chain(pickle.locations)
     .map(({ line }) => scenarioLineToDescriptionMap[line])

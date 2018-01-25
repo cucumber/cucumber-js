@@ -29,7 +29,7 @@ describe('AttachmentManager', () => {
           expect(decodedData).to.eql('my string')
           expect(attachment.media).to.eql({
             encoding: 'base64',
-            type: 'text/special'
+            type: 'text/special',
           })
         })
       })
@@ -72,7 +72,7 @@ describe('AttachmentManager', () => {
             expect(decodedData).to.eql('my string')
             expect(attachment.media).to.eql({
               encoding: 'base64',
-              type: 'text/special'
+              type: 'text/special',
             })
           })
         })
@@ -104,7 +104,7 @@ describe('AttachmentManager', () => {
             expect(decodedData).to.eql('my string')
             expect(attachment.media).to.eql({
               encoding: 'base64',
-              type: 'text/special'
+              type: 'text/special',
             })
           })
         })

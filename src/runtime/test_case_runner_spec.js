@@ -23,9 +23,9 @@ describe('TestCaseRunner', () => {
     this.testCase = {
       pickle: {
         steps: [],
-        locations: [{ line: 1 }]
+        locations: [{ line: 1 }],
       },
-      uri: 'path/to/feature'
+      uri: 'path/to/feature',
     }
     this.supportCodeLibrary = {
       afterTestCaseHookDefinitions: [],
@@ -33,7 +33,7 @@ describe('TestCaseRunner', () => {
       defaultTimeout: 5000,
       stepDefinitions: [],
       parameterTypeRegistry: {},
-      World() {}
+      World() {},
     }
     sinon.stub(StepRunner, 'run')
   })
@@ -49,7 +49,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -58,14 +58,14 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCasePrepared).to.have.callCount(1)
         expect(this.onTestCasePrepared).to.have.been.calledWith({
           steps: [],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -73,7 +73,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: { duration: 0, status: Status.PASSED },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -83,12 +83,12 @@ describe('TestCaseRunner', () => {
         this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
         this.stepResult = {
           duration: 1,
-          status: Status.PASSED
+          status: Status.PASSED,
         }
         const stepDefinition = {
           uri: 'path/to/steps',
           line: 3,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         StepRunner.run.resolves(this.stepResult)
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
@@ -97,7 +97,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -108,17 +108,17 @@ describe('TestCaseRunner', () => {
           steps: [
             {
               actionLocation: { line: 3, uri: 'path/to/steps' },
-              sourceLocation: { line: 2, uri: 'path/to/feature' }
-            }
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
+            },
           ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -126,7 +126,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(1)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -135,7 +135,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { duration: 1, status: Status.PASSED }
+          result: { duration: 1, status: Status.PASSED },
         })
       })
 
@@ -143,7 +143,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: { duration: 1, status: Status.PASSED },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -155,12 +155,12 @@ describe('TestCaseRunner', () => {
         this.stepResult = {
           duration: 1,
           status: Status.FAILED,
-          exception: this.error
+          exception: this.error,
         }
         const stepDefinition = {
           uri: 'path/to/steps',
           line: 3,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         StepRunner.run.resolves(this.stepResult)
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
@@ -169,7 +169,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -180,17 +180,17 @@ describe('TestCaseRunner', () => {
           steps: [
             {
               actionLocation: { line: 3, uri: 'path/to/steps' },
-              sourceLocation: { line: 2, uri: 'path/to/feature' }
-            }
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
+            },
           ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -198,7 +198,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(1)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -210,8 +210,8 @@ describe('TestCaseRunner', () => {
           result: {
             duration: 1,
             status: Status.FAILED,
-            exception: this.error
-          }
+            exception: this.error,
+          },
         })
       })
 
@@ -221,9 +221,9 @@ describe('TestCaseRunner', () => {
           result: {
             duration: 1,
             status: Status.FAILED,
-            exception: this.error
+            exception: this.error,
           },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -235,24 +235,24 @@ describe('TestCaseRunner', () => {
           pattern: 'pattern1',
           uri: 'path/to/steps',
           line: 3,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         const stepDefinition2 = {
           pattern: 'pattern2',
           uri: 'path/to/steps',
           line: 4,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [
           stepDefinition1,
-          stepDefinition2
+          stepDefinition2,
         ]
         this.testCase.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -262,17 +262,17 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCasePrepared).to.have.been.calledWith({
           steps: [
             {
-              sourceLocation: { line: 2, uri: 'path/to/feature' }
-            }
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
+            },
           ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -280,7 +280,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(1)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -294,8 +294,8 @@ describe('TestCaseRunner', () => {
               'Multiple step definitions match:\n' +
               '  pattern1 - path/to/steps:3\n' +
               '  pattern2 - path/to/steps:4',
-            status: Status.AMBIGUOUS
-          }
+            status: Status.AMBIGUOUS,
+          },
         })
       })
 
@@ -308,9 +308,9 @@ describe('TestCaseRunner', () => {
             exception:
               'Multiple step definitions match:\n' +
               '  pattern1 - path/to/steps:3\n' +
-              '  pattern2 - path/to/steps:4'
+              '  pattern2 - path/to/steps:4',
           },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -323,7 +323,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -332,14 +332,14 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCasePrepared).to.have.callCount(1)
         expect(this.onTestCasePrepared).to.have.been.calledWith({
           steps: [{ sourceLocation: { line: 2, uri: 'path/to/feature' } }],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -347,7 +347,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(1)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -356,7 +356,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { status: Status.UNDEFINED }
+          result: { status: Status.UNDEFINED },
         })
       })
 
@@ -364,7 +364,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: { duration: 0, status: Status.UNDEFINED },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -375,7 +375,7 @@ describe('TestCaseRunner', () => {
         const stepDefinition = {
           uri: 'path/to/steps',
           line: 3,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.testCase.pickle.steps = [this.step]
@@ -383,7 +383,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: true,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -394,17 +394,17 @@ describe('TestCaseRunner', () => {
           steps: [
             {
               actionLocation: { line: 3, uri: 'path/to/steps' },
-              sourceLocation: { line: 2, uri: 'path/to/feature' }
-            }
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
+            },
           ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -412,7 +412,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(1)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -421,7 +421,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { status: Status.SKIPPED }
+          result: { status: Status.SKIPPED },
         })
       })
 
@@ -429,7 +429,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: { duration: 0, status: Status.SKIPPED },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -442,16 +442,16 @@ describe('TestCaseRunner', () => {
           },
           line: 4,
           options: {},
-          uri: 'path/to/hooks'
+          uri: 'path/to/hooks',
         })
         this.supportCodeLibrary.beforeTestCaseHookDefinitions = [
-          testCaseHookDefinition
+          testCaseHookDefinition,
         ]
         this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
         const stepDefinition = {
           uri: 'path/to/steps',
           line: 3,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.testCase.pickle.steps = [this.step]
@@ -459,7 +459,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: true,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -471,17 +471,17 @@ describe('TestCaseRunner', () => {
             { actionLocation: { line: 4, uri: 'path/to/hooks' } },
             {
               actionLocation: { line: 3, uri: 'path/to/steps' },
-              sourceLocation: { line: 2, uri: 'path/to/feature' }
-            }
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
+            },
           ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -489,11 +489,11 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(2)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 1,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -502,12 +502,12 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { status: Status.SKIPPED }
+          result: { status: Status.SKIPPED },
         })
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 1,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { status: Status.SKIPPED }
+          result: { status: Status.SKIPPED },
         })
       })
 
@@ -515,7 +515,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: { duration: 0, status: Status.SKIPPED },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })
@@ -528,16 +528,16 @@ describe('TestCaseRunner', () => {
           },
           line: 4,
           options: {},
-          uri: 'path/to/hooks'
+          uri: 'path/to/hooks',
         })
         this.supportCodeLibrary.afterTestCaseHookDefinitions = [
-          testCaseHookDefinition
+          testCaseHookDefinition,
         ]
         this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
         const stepDefinition = {
           uri: 'path/to/steps',
           line: 3,
-          matchesStepName: sinon.stub().returns(true)
+          matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.testCase.pickle.steps = [this.step]
@@ -545,7 +545,7 @@ describe('TestCaseRunner', () => {
           eventBroadcaster: this.eventBroadcaster,
           skip: true,
           testCase: this.testCase,
-          supportCodeLibrary: this.supportCodeLibrary
+          supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
       })
@@ -556,18 +556,18 @@ describe('TestCaseRunner', () => {
           steps: [
             {
               actionLocation: { line: 3, uri: 'path/to/steps' },
-              sourceLocation: { line: 2, uri: 'path/to/feature' }
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
             },
-            { actionLocation: { line: 4, uri: 'path/to/hooks' } }
+            { actionLocation: { line: 4, uri: 'path/to/hooks' } },
           ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
 
@@ -575,11 +575,11 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepStarted).to.have.callCount(2)
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 0,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
         expect(this.onTestStepStarted).to.have.been.calledWith({
           index: 1,
-          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } }
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         })
       })
 
@@ -588,12 +588,12 @@ describe('TestCaseRunner', () => {
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { status: Status.SKIPPED }
+          result: { status: Status.SKIPPED },
         })
         expect(this.onTestStepFinished).to.have.been.calledWith({
           index: 1,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
-          result: { status: Status.SKIPPED }
+          result: { status: Status.SKIPPED },
         })
       })
 
@@ -601,7 +601,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: { duration: 0, status: Status.SKIPPED },
-          sourceLocation: { line: 1, uri: 'path/to/feature' }
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
     })

@@ -131,7 +131,7 @@ export default class ArgvParser {
 
     return {
       options: program.opts(),
-      args: program.args
+      args: program.args,
     }
   }
 }

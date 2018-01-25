@@ -10,8 +10,8 @@ describe('Helpers', () => {
         {
           line: 4,
           pattern: 'longer pattern2',
-          uri: 'steps2.js'
-        }
+          uri: 'steps2.js',
+        },
       ])
     })
 

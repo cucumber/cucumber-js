@@ -12,7 +12,7 @@ describe('SummaryHelpers', () => {
       this.options = {
         colorFns: getColorFns(false),
         testCaseMap: this.testCaseMap,
-        testRun: this.testRun
+        testRun: this.testRun,
       }
     })
 
@@ -34,10 +34,10 @@ describe('SummaryHelpers', () => {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED }
-            }
+              result: { status: Status.PASSED },
+            },
           ],
-          result: { status: Status.PASSED }
+          result: { status: Status.PASSED },
         }
         this.result = formatSummary(this.options)
       })
@@ -56,10 +56,10 @@ describe('SummaryHelpers', () => {
             { result: { status: Status.PASSED } },
             {
               sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED }
-            }
+              result: { status: Status.PASSED },
+            },
           ],
-          result: { status: Status.PASSED }
+          result: { status: Status.PASSED },
         }
         this.result = formatSummary(this.options)
       })
@@ -77,14 +77,14 @@ describe('SummaryHelpers', () => {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED }
+              result: { status: Status.PASSED },
             },
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
-              result: { status: Status.PASSED }
-            }
+              result: { status: Status.PASSED },
+            },
           ],
-          result: { status: Status.PASSED }
+          result: { status: Status.PASSED },
         }
         this.result = formatSummary(this.options)
       })
@@ -102,55 +102,55 @@ describe('SummaryHelpers', () => {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.AMBIGUOUS }
-            }
+              result: { status: Status.AMBIGUOUS },
+            },
           ],
-          result: { status: Status.AMBIGUOUS }
+          result: { status: Status.AMBIGUOUS },
         }
         this.testCaseMap['a.feature:3'] = {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 4 },
-              result: { status: Status.FAILED }
-            }
+              result: { status: Status.FAILED },
+            },
           ],
-          result: { status: Status.FAILED }
+          result: { status: Status.FAILED },
         }
         this.testCaseMap['a.feature:5'] = {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 6 },
-              result: { status: Status.PENDING }
-            }
+              result: { status: Status.PENDING },
+            },
           ],
-          result: { status: Status.PENDING }
+          result: { status: Status.PENDING },
         }
         this.testCaseMap['a.feature:7'] = {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 8 },
-              result: { status: Status.PASSED }
-            }
+              result: { status: Status.PASSED },
+            },
           ],
-          result: { status: Status.PASSED }
+          result: { status: Status.PASSED },
         }
         this.testCaseMap['a.feature:9'] = {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 10 },
-              result: { status: Status.SKIPPED }
-            }
+              result: { status: Status.SKIPPED },
+            },
           ],
-          result: { status: Status.SKIPPED }
+          result: { status: Status.SKIPPED },
         }
         this.testCaseMap['a.feature:11'] = {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 12 },
-              result: { status: Status.UNDEFINED }
-            }
+              result: { status: Status.UNDEFINED },
+            },
           ],
-          result: { status: Status.UNDEFINED }
+          result: { status: Status.UNDEFINED },
         }
         this.result = formatSummary(this.options)
       })
