@@ -51,6 +51,7 @@ requiredModules:
       - '{features,scripts,test}/**/*'
       - '**/*_spec.js'
       - 'example/index.js'
+      - '**/test_helpers.js'
     ignore:
       - 'dist/**/*'
       - 'node_modules/**/*'

@@ -1,3 +1,5 @@
+import { beforeEach, describe, it } from 'mocha'
+import { expect } from 'chai'
 import DataTable from './data_table'
 
 describe('DataTable', () => {

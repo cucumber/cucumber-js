@@ -1,3 +1,5 @@
+import { beforeEach, describe, it } from 'mocha'
+import { expect } from 'chai'
 import getColorFns from './get_color_fns'
 import ProgressFormatter from './progress_formatter'
 import Status from '../status'

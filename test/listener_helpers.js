@@ -1,3 +1,5 @@
+import { expect } from 'chai'
+
 export function expectToHearEvents(listener, expectedEvents) {
   let previousStub = null
   const callNumberMapping = {}

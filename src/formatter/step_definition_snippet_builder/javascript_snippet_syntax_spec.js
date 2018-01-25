@@ -1,3 +1,5 @@
+import { beforeEach, describe, it } from 'mocha'
+import { expect } from 'chai'
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 
 describe('JavascriptSnippetSyntax', () => {
