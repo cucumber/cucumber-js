@@ -78,10 +78,9 @@ export default class FormatterBuilder {
       typeof CustomFormatter.default === 'function'
     ) {
       return CustomFormatter.default
-    } else {
-      throw new Error(
-        `Custom formatter (${customFormatterPath}) does not export a function`
-      )
     }
+    throw new Error(
+      `Custom formatter (${customFormatterPath}) does not export a function`
+    )
   }
 }

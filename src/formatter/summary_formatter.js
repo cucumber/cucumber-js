@@ -46,7 +46,7 @@ export default class SummaryFormatter extends Formatter {
   }
 
   logIssues({ issues, title }) {
-    this.log(title + ':\n\n')
+    this.log(`${title}:\n\n`)
     issues.forEach((testCase, index) => {
       const {
         gherkinDocument,

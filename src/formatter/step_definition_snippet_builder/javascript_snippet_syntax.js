@@ -29,25 +29,17 @@ export default class JavaScriptSnippetSyntax {
         if (this.snippetInterface === 'callback') {
           allParameterNames.push(CALLBACK_NAME)
         }
-        return (
-          prefix +
-          functionName +
-          "('" +
-          generatedExpression.source.replace(/'/g, "\\'") +
-          "', " +
-          functionKeyword +
-          '(' +
-          allParameterNames.join(', ') +
-          ') {\n'
-        )
+        return `${prefix + functionName}('${generatedExpression.source.replace(
+          /'/g,
+          "\\'"
+        )}', ${functionKeyword}(${allParameterNames.join(', ')}) {\n`
       }
     )
 
     return (
-      definitionChoices.join('') +
-      `  // ${comment}\n` +
+      `${definitionChoices.join('')}  // ${comment}\n` +
       `  ${implementation}\n` +
-      '});'
+      `});`
     )
   }
 }

@@ -26,8 +26,8 @@ export default class UsageFormatter extends Formatter {
       }
     })
     usage.forEach(({ line, matches, meanDuration, pattern, uri }) => {
-      let col1 = [pattern.toString()]
-      let col2 = []
+      const col1 = [pattern.toString()]
+      const col2 = []
       if (matches.length > 0) {
         if (isFinite(meanDuration)) {
           col2.push(`${parseFloat(meanDuration.toFixed(2))}ms`)
@@ -37,7 +37,7 @@ export default class UsageFormatter extends Formatter {
       } else {
         col2.push('UNUSED')
       }
-      let col3 = [formatLocation({ line, uri })]
+      const col3 = [formatLocation({ line, uri })]
       _.take(matches, 5).forEach(match => {
         col1.push(`  ${match.text}`)
         if (isFinite(match.duration)) {
@@ -52,6 +52,6 @@ export default class UsageFormatter extends Formatter {
       }
       table.push([col1.join('\n'), col2.join('\n'), col3.join('\n')])
     })
-    this.log(table.toString() + '\n')
+    this.log(`${table.toString()}\n`)
   }
 }

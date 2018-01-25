@@ -7,7 +7,7 @@ import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
 
 export async function getExpandedArgv({ argv, cwd }) {
-  let { options } = ArgvParser.parse(argv)
+  const { options } = ArgvParser.parse(argv)
   let fullArgv = argv
   const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
   if (profileArgv.length > 0) {

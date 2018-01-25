@@ -39,14 +39,13 @@ export default class EventProtocolFormatter extends Formatter {
       { type: eventName, ...data },
       ::this.formatJsonData
     )
-    this.log(text + '\n')
+    this.log(`${text}\n`)
   }
 
   formatJsonData(key, value) {
     if (value instanceof Error) {
       return value.stack.replace(this.pathRegexp, '')
-    } else {
-      return value
     }
+    return value
   }
 }

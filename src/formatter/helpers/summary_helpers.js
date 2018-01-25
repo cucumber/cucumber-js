@@ -42,15 +42,15 @@ function getCountSummary({ colorFns, objects, type }) {
     .mapValues('length')
     .value()
   const total = _.reduce(counts, (memo, value) => memo + value) || 0
-  let text = total + ' ' + type + (total === 1 ? '' : 's')
+  let text = `${total} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
     const details = []
     STATUS_REPORT_ORDER.forEach(status => {
       if (counts[status] > 0) {
-        details.push(colorFns[status](counts[status] + ' ' + status))
+        details.push(colorFns[status](`${counts[status]} ${status}`))
       }
     })
-    text += ' (' + details.join(', ') + ')'
+    text += ` (${details.join(', ')})`
   }
   return text
 }
@@ -61,12 +61,8 @@ function getDuration(milliseconds) {
   const duration = new Duration(start, end)
 
   return (
-    duration.minutes +
-    'm' +
-    duration.toString('%S') +
-    '.' +
-    duration.toString('%L') +
-    's' +
-    '\n'
+    `${duration.minutes}m${duration.toString('%S')}.${duration.toString(
+      '%L'
+    )}s` + `\n`
   )
 }

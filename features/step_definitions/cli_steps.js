@@ -20,13 +20,12 @@ When(
   function(location) {
     if (location === 'locally') {
       return this.run(this.localExecutablePath, [])
-    } else {
-      return this.run(this.globalExecutablePath, [])
     }
+    return this.run(this.globalExecutablePath, [])
   }
 )
 
-Then(/^it passes$/, function() {})
+Then(/^it passes$/, () => {})
 
 Then(/^it fails$/, function() {
   const actualCode = this.lastRun.error ? this.lastRun.error.code : 0
@@ -69,7 +68,7 @@ Then(/^the error output contains the text:$/, function(text) {
 Then(/^I see the version of Cucumber$/, function() {
   const version = require('../../package.json').version
   const actualOutput = this.lastRun.output
-  const expectedOutput = version + '\n'
+  const expectedOutput = `${version}\n`
   expect(actualOutput).to.eql(expectedOutput)
 })
 

@@ -1,8 +1,8 @@
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 
-describe('JavascriptSnippetSyntax', function() {
-  describe('build()', function() {
-    describe('callback interface', function() {
+describe('JavascriptSnippetSyntax', () => {
+  describe('build()', () => {
+    describe('callback interface', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('callback')
       })
@@ -28,7 +28,7 @@ describe('JavascriptSnippetSyntax', function() {
       })
     })
 
-    describe('generator interface', function() {
+    describe('generator interface', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('generator')
       })
@@ -54,7 +54,7 @@ describe('JavascriptSnippetSyntax', function() {
       })
     })
 
-    describe('promise interface', function() {
+    describe('promise interface', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('promise')
       })
@@ -80,7 +80,7 @@ describe('JavascriptSnippetSyntax', function() {
       })
     })
 
-    describe('synchronous interface', function() {
+    describe('synchronous interface', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')
       })
@@ -106,7 +106,7 @@ describe('JavascriptSnippetSyntax', function() {
       })
     })
 
-    describe('pattern contains single quote', function() {
+    describe('pattern contains single quote', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')
       })
@@ -132,7 +132,7 @@ describe('JavascriptSnippetSyntax', function() {
       })
     })
 
-    describe('multiple patterns', function() {
+    describe('multiple patterns', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')
       })

@@ -26,9 +26,8 @@ export function findScenario({ features, scenarioPredicate }) {
     .value()
   if (scenario) {
     return scenario
-  } else {
-    throw new Error('Could not find scenario matching predicate')
   }
+  throw new Error('Could not find scenario matching predicate')
 }
 
 export function findStep({ features, stepPredicate, scenarioPredicate }) {
@@ -46,17 +45,16 @@ export function findStep({ features, stepPredicate, scenarioPredicate }) {
   const step = _.find(steps, stepPredicate)
   if (step) {
     return step
-  } else {
-    throw new Error(
-      `Could not find step matching predicate: ${util.inspect(features, {
-        depth: null
-      })}`
-    )
   }
+  throw new Error(
+    `Could not find step matching predicate: ${util.inspect(features, {
+      depth: null
+    })}`
+  )
 }
 
 export function neutraliseVariableValues(report) {
-  report.forEach(function(item) {
+  report.forEach(item => {
     ;(item.elements || []).forEach(element => {
       ;(element.steps || []).forEach(step => {
         if ('result' in step) {

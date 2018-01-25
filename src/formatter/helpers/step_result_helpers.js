@@ -45,10 +45,7 @@ function getUndefinedStepResultMessage({
   pickleStep
 }) {
   const snippet = snippetBuilder.build({ keywordType, pickleStep })
-  const message =
-    'Undefined. Implement with the following snippet:' +
-    '\n\n' +
-    indentString(snippet, 2) +
-    '\n'
+  const message = `${'Undefined. Implement with the following snippet:' +
+    '\n\n'}${indentString(snippet, 2)}\n`
   return colorFns.undefined(message)
 }

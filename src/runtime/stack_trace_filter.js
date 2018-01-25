@@ -8,16 +8,15 @@ export default class StackTraceFilter {
   }
 
   filter() {
-    this.currentFilter = stackChain.filter.attach((error, frames) => {
+    this.currentFilter = stackChain.filter.attach((_err, frames) => {
       if (this.isErrorInCucumber(frames)) {
         return frames
       }
       const index = _.findIndex(frames, ::this.isFrameInCucumber)
       if (index === -1) {
         return frames
-      } else {
-        return frames.slice(0, index)
       }
+      return frames.slice(0, index)
     })
   }
 

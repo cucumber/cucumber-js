@@ -4,7 +4,7 @@ import { formatIssue } from './issue_helpers'
 import figures from 'figures'
 import Gherkin from 'gherkin'
 
-describe('IssueHelpers', function() {
+describe('IssueHelpers', () => {
   beforeEach(function() {
     const gherkinDocument = new Gherkin.Parser().parse(
       'Feature: my feature\n' +
@@ -43,8 +43,8 @@ describe('IssueHelpers', function() {
     this.skippedStepResult = { status: Status.SKIPPED }
   })
 
-  describe('formatIssue', function() {
-    describe('returns the formatted scenario', function() {
+  describe('formatIssue', () => {
+    describe('returns the formatted scenario', () => {
       beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
@@ -70,7 +70,7 @@ describe('IssueHelpers', function() {
       })
     })
 
-    describe('with an ambiguous step', function() {
+    describe('with an ambiguous step', () => {
       beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
@@ -101,7 +101,7 @@ describe('IssueHelpers', function() {
       })
     })
 
-    describe('with an undefined step', function() {
+    describe('with an undefined step', () => {
       beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
@@ -126,7 +126,7 @@ describe('IssueHelpers', function() {
       })
     })
 
-    describe('with a pending step', function() {
+    describe('with a pending step', () => {
       beforeEach(function() {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
@@ -149,7 +149,7 @@ describe('IssueHelpers', function() {
       })
     })
 
-    describe('step with data table', function() {
+    describe('step with data table', () => {
       beforeEach(function() {
         const gherkinDocument = new Gherkin.Parser().parse(
           'Feature: my feature\n' +
@@ -188,7 +188,7 @@ describe('IssueHelpers', function() {
       })
     })
 
-    describe('step with doc string', function() {
+    describe('step with doc string', () => {
       beforeEach(function() {
         const gherkinDocument = new Gherkin.Parser().parse(
           'Feature: my feature\n' +

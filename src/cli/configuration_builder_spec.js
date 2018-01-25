@@ -6,7 +6,7 @@ import tmp from 'tmp'
 
 const outputFile = promisify(fsExtra.outputFile)
 
-describe('Configuration', function() {
+describe('Configuration', () => {
   beforeEach(async function() {
     this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
     await promisify(fsExtra.mkdirp)(path.join(this.tmpDir, 'features'))
@@ -17,7 +17,7 @@ describe('Configuration', function() {
     }
   })
 
-  describe('no argv', function() {
+  describe('no argv', () => {
     beforeEach(async function() {
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
@@ -54,7 +54,7 @@ describe('Configuration', function() {
     })
   })
 
-  describe('path to a feature', function() {
+  describe('path to a feature', () => {
     beforeEach(async function() {
       this.relativeFeaturePath = path.join('features', 'a.feature')
       this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
@@ -79,7 +79,7 @@ describe('Configuration', function() {
     })
   })
 
-  describe('path to a nested feature', function() {
+  describe('path to a nested feature', () => {
     beforeEach(async function() {
       this.relativeFeaturePath = path.join('features', 'nested', 'a.feature')
       this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
@@ -104,7 +104,7 @@ describe('Configuration', function() {
     })
   })
 
-  describe('formatters', function() {
+  describe('formatters', () => {
     it('adds a default', async function() {
       const formats = await getFormats(this.configurationOptions)
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])

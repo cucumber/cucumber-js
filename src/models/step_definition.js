@@ -13,15 +13,9 @@ export default class StepDefinition {
 
   buildInvalidCodeLengthMessage(syncOrPromiseLength, callbackLength) {
     return (
-      'function has ' +
-      this.code.length +
-      ' arguments' +
-      ', should have ' +
-      syncOrPromiseLength +
-      ' (if synchronous or returning a promise)' +
-      ' or ' +
-      callbackLength +
-      ' (if accepting a callback)'
+      `function has ${this.code.length} arguments` +
+      `, should have ${syncOrPromiseLength} (if synchronous or returning a promise)` +
+      ` or ${callbackLength} (if accepting a callback)`
     )
   }
 
@@ -48,9 +42,8 @@ export default class StepDefinition {
   getCucumberExpression(parameterTypeRegistry) {
     if (typeof this.pattern === 'string') {
       return new CucumberExpression(this.pattern, parameterTypeRegistry)
-    } else {
-      return new RegularExpression(this.pattern, parameterTypeRegistry)
     }
+    return new RegularExpression(this.pattern, parameterTypeRegistry)
   }
 
   getValidCodeLengths(parameters) {

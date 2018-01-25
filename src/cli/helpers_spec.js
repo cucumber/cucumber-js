@@ -6,8 +6,8 @@ import path from 'path'
 import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
 
-describe('helpers', function() {
-  describe('getTestCasesFromFilesystem', function() {
+describe('helpers', () => {
+  describe('getTestCasesFromFilesystem', () => {
     beforeEach(async function() {
       this.onSource = sinon.stub()
       this.onGherkinDocument = sinon.stub()
@@ -22,7 +22,7 @@ describe('helpers', function() {
       this.eventBroadcaster.on('pickle-rejected', this.onPickleRejected)
     })
 
-    describe('empty feature', function() {
+    describe('empty feature', () => {
       beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
@@ -41,7 +41,7 @@ describe('helpers', function() {
       })
 
       it('emits a source event', function() {
-        expect(this.onSource).to.have.been.calledOnce
+        expect(this.onSource).to.have.callCount(1)
         expect(this.onSource).to.have.been.calledWith({
           data: '',
           media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
@@ -50,20 +50,20 @@ describe('helpers', function() {
       })
 
       it('emits a gherkin-document event', function() {
-        expect(this.onGherkinDocument).to.have.been.calledOnce
+        expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
         expect(arg).to.have.keys(['document', 'uri'])
         expect(arg.uri).to.eql(this.relativeFeaturePath)
       })
 
       it('does not emit pickle events', function() {
-        expect(this.onPickle).not.to.have.been.called
-        expect(this.onPickleAccepted).not.to.have.been.called
-        expect(this.onPickleRejected).not.to.have.been.called
+        expect(this.onPickle).to.have.callCount(0)
+        expect(this.onPickleAccepted).to.have.callCount(0)
+        expect(this.onPickleRejected).to.have.callCount(0)
       })
     })
 
-    describe('feature with scenario that does not match the filter', function() {
+    describe('feature with scenario that does not match the filter', () => {
       beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
@@ -87,7 +87,7 @@ describe('helpers', function() {
       })
 
       it('emits a source event', function() {
-        expect(this.onSource).to.have.been.calledOnce
+        expect(this.onSource).to.have.callCount(1)
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
           media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
@@ -96,14 +96,14 @@ describe('helpers', function() {
       })
 
       it('emits a gherkin-document event', function() {
-        expect(this.onGherkinDocument).to.have.been.calledOnce
+        expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
         expect(arg).to.have.keys(['document', 'uri'])
         expect(arg.uri).to.eql(this.relativeFeaturePath)
       })
     })
 
-    describe('feature with scenario that matches the filter', function() {
+    describe('feature with scenario that matches the filter', () => {
       beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
@@ -127,7 +127,7 @@ describe('helpers', function() {
       })
 
       it('emits a source event', function() {
-        expect(this.onSource).to.have.been.calledOnce
+        expect(this.onSource).to.have.callCount(1)
         expect(this.onSource).to.have.been.calledWith({
           data: 'Feature: a\nScenario: b\nGiven a step',
           media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
@@ -136,16 +136,16 @@ describe('helpers', function() {
       })
 
       it('emits a gherkin-document event', function() {
-        expect(this.onGherkinDocument).to.have.been.calledOnce
+        expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
         expect(arg).to.have.keys(['document', 'uri'])
         expect(arg.uri).to.eql(this.relativeFeaturePath)
       })
 
       it('emits a pickle and pickle-accepted event', function() {
-        expect(this.onPickle).to.have.been.calledOnce
-        expect(this.onPickleAccepted).to.have.been.calledOnce
-        expect(this.onPickleRejected).not.to.have.been.called
+        expect(this.onPickle).to.have.callCount(1)
+        expect(this.onPickleAccepted).to.have.callCount(1)
+        expect(this.onPickleRejected).to.have.callCount(0)
         const onPickleArg = this.onPickle.firstCall.args[0]
         expect(onPickleArg).to.have.keys(['pickle', 'uri'])
         expect(onPickleArg.uri).to.eql(this.relativeFeaturePath)

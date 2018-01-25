@@ -6,7 +6,7 @@ import { EventEmitter } from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('SummaryFormatter', function() {
+describe('SummaryFormatter', () => {
   beforeEach(function() {
     this.output = ''
     const logFn = data => {
@@ -22,7 +22,7 @@ describe('SummaryFormatter', function() {
     })
   })
 
-  describe('issues', function() {
+  describe('issues', () => {
     beforeEach(function() {
       const events = Gherkin.generateEvents(
         'Feature: a\nScenario: b\nGiven a step',
@@ -41,7 +41,7 @@ describe('SummaryFormatter', function() {
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
     })
 
-    describe('with a failing scenario', function() {
+    describe('with a failing scenario', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
@@ -81,7 +81,7 @@ describe('SummaryFormatter', function() {
       })
     })
 
-    describe('with an ambiguous step', function() {
+    describe('with an ambiguous step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
@@ -128,7 +128,7 @@ describe('SummaryFormatter', function() {
       })
     })
 
-    describe('with an undefined step', function() {
+    describe('with an undefined step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
@@ -170,7 +170,7 @@ describe('SummaryFormatter', function() {
       })
     })
 
-    describe('with a pending step', function() {
+    describe('with a pending step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
@@ -210,8 +210,8 @@ describe('SummaryFormatter', function() {
       })
     })
 
-    describe('summary', function() {
-      describe('with a duration of 123 milliseconds', function() {
+    describe('summary', () => {
+      describe('with a duration of 123 milliseconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
             result: { duration: 123 }
@@ -223,7 +223,7 @@ describe('SummaryFormatter', function() {
         })
       })
 
-      describe('with a duration of 12.3 seconds', function() {
+      describe('with a duration of 12.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
             result: { duration: 123 * 100 }
@@ -235,7 +235,7 @@ describe('SummaryFormatter', function() {
         })
       })
 
-      describe('with a duration of 120.3 seconds', function() {
+      describe('with a duration of 120.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
             result: { duration: 123 * 1000 }

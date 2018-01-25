@@ -1,8 +1,8 @@
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 import supportCodeLibraryBuilder from './'
 
-describe('supportCodeLibraryBuilder', function() {
-  describe('no support code fns', function() {
+describe('supportCodeLibraryBuilder', () => {
+  describe('no support code fns', () => {
     beforeEach(function() {
       this.attachFn = sinon.stub()
       supportCodeLibraryBuilder.reset('path/to/project')
@@ -28,8 +28,8 @@ describe('supportCodeLibraryBuilder', function() {
     })
   })
 
-  describe('After', function() {
-    describe('function only', function() {
+  describe('After', () => {
+    describe('function only', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project')
@@ -45,7 +45,7 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('tag and function', function() {
+    describe('tag and function', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project')
@@ -64,7 +64,7 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('options and function', function() {
+    describe('options and function', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project')
@@ -83,7 +83,7 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('multiple', function() {
+    describe('multiple', () => {
       beforeEach(function() {
         this.hook1 = function hook1() {}
         this.hook2 = function hook2() {}
@@ -105,8 +105,8 @@ describe('supportCodeLibraryBuilder', function() {
     })
   })
 
-  describe('this.Before', function() {
-    describe('function only', function() {
+  describe('this.Before', () => {
+    describe('function only', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project')
@@ -122,7 +122,7 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('tag and function', function() {
+    describe('tag and function', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project')
@@ -141,7 +141,7 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('options and function', function() {
+    describe('options and function', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project')
@@ -160,7 +160,7 @@ describe('supportCodeLibraryBuilder', function() {
       })
     })
 
-    describe('multiple', function() {
+    describe('multiple', () => {
       beforeEach(function() {
         this.hook1 = function hook1() {}
         this.hook2 = function hook2() {}

@@ -20,14 +20,15 @@ export function wrapDefinitions({
       }
     })
   } else {
-    const generatorDefinitions = _.filter(definitions, definition => {
-      return isGenerator.fn(definition.code)
-    })
+    const generatorDefinitions = _.filter(definitions, definition =>
+      isGenerator.fn(definition.code)
+    )
     if (generatorDefinitions.length > 0) {
       const references = generatorDefinitions
-        .map(definition => {
-          return path.relative(cwd, definition.uri) + ':' + definition.line
-        })
+        .map(
+          definition =>
+            `${path.relative(cwd, definition.uri)}:${definition.line}`
+        )
         .join('\n  ')
       const message = `
         The following hook/step definitions use generator functions:

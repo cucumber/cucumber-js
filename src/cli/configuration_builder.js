@@ -11,7 +11,7 @@ const globP = promisify(glob)
 export default class ConfigurationBuilder {
   static async build(options) {
     const builder = new ConfigurationBuilder(options)
-    return await builder.build()
+    return builder.build()
   }
 
   constructor({ argv, cwd }) {
@@ -74,9 +74,9 @@ export default class ConfigurationBuilder {
           absolute: true,
           cwd: this.cwd
         })
-        return await Promise.map(matches, async match => {
+        return Promise.map(matches, async match => {
           if (path.extname(match) === '') {
-            return await globP(`${match}/**/*${defaultExtension}`)
+            return globP(`${match}/**/*${defaultExtension}`)
           }
           return match
         })
@@ -87,7 +87,7 @@ export default class ConfigurationBuilder {
 
   async expandFeaturePaths(featurePaths) {
     featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-    return await this.expandPaths(featurePaths, '.feature')
+    return this.expandPaths(featurePaths, '.feature')
   }
 
   getFeatureDirectoryPaths(featurePaths) {
@@ -121,9 +121,7 @@ export default class ConfigurationBuilder {
       const [type, outputTo] = OptionSplitter.split(format)
       mapping[outputTo || ''] = type
     })
-    return _.map(mapping, function(type, outputTo) {
-      return { outputTo, type }
-    })
+    return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
   }
 
   async getUnexpandedFeaturePaths() {
@@ -138,9 +136,8 @@ export default class ConfigurationBuilder {
             .map(_.trim)
             .compact()
             .value()
-        } else {
-          return arg
         }
+        return arg
       })
       const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {

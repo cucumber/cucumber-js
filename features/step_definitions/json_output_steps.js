@@ -36,9 +36,9 @@ Then(/^the scenario "([^"]*)" has the steps$/, function(name, table) {
     scenarioPredicate: ['name', name]
   })
   const expectedNames = table.rows().map(row => row[0])
-  const actualNames = scenario.steps.map(function(step) {
-    return _.compact([step.keyword, step.name]).join('')
-  })
+  const actualNames = scenario.steps.map(step =>
+    _.compact([step.keyword, step.name]).join('')
+  )
   expect(actualNames).to.eql(expectedNames)
 })
 
@@ -109,9 +109,7 @@ Then(/^the (first|second) scenario has the steps$/, function(cardinal, table) {
     features: this.lastRun.jsonOutput,
     scenarioPredicate: (element, index) => index === scenarioIndex
   })
-  const stepNames = scenario.steps.map(function(step) {
-    return [step.name]
-  })
+  const stepNames = scenario.steps.map(step => [step.name])
   expect(stepNames).to.eql(table.rows())
 })
 
@@ -141,9 +139,7 @@ Then(
       },
       stepPredicate: ['name', name]
     })
-    const expected = table.raw().map(function(row) {
-      return { cells: row }
-    })
+    const expected = table.raw().map(row => ({ cells: row }))
     expect(step.arguments[0].rows).to.eql(expected)
   }
 )

@@ -42,7 +42,7 @@ export default class TestCaseRunner {
   }
 
   emit(name, data) {
-    let eventData = { ...data }
+    const eventData = { ...data }
     if (_.startsWith(name, 'test-case')) {
       eventData.sourceLocation = this.testCaseSourceLocation
     } else {
@@ -58,9 +58,10 @@ export default class TestCaseRunner {
       steps.push({ actionLocation })
     })
     this.testCase.pickle.steps.forEach(step => {
-      const actionLocations = this.getStepDefinitions(step).map(definition => {
-        return { uri: definition.uri, line: definition.line }
-      })
+      const actionLocations = this.getStepDefinitions(step).map(definition => ({
+        uri: definition.uri,
+        line: definition.line
+      }))
       const sourceLocation = {
         uri: this.testCase.uri,
         line: _.last(step.locations).line
@@ -80,27 +81,23 @@ export default class TestCaseRunner {
 
   getAfterHookDefinitions() {
     return this.supportCodeLibrary.afterTestCaseHookDefinitions.filter(
-      hookDefinition => {
-        return hookDefinition.appliesToTestCase(this.testCase)
-      }
+      hookDefinition => hookDefinition.appliesToTestCase(this.testCase)
     )
   }
 
   getBeforeHookDefinitions() {
     return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
-      hookDefinition => {
-        return hookDefinition.appliesToTestCase(this.testCase)
-      }
+      hookDefinition => hookDefinition.appliesToTestCase(this.testCase)
     )
   }
 
   getStepDefinitions(step) {
-    return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition => {
-      return stepDefinition.matchesStepName({
+    return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition =>
+      stepDefinition.matchesStepName({
         stepName: step.text,
         parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry
       })
-    })
+    )
   }
 
   invokeStep(step, stepDefinition, hookParameter) {
@@ -173,16 +170,15 @@ export default class TestCaseRunner {
   async runHook(hookDefinition, hookParameter) {
     if (this.skip) {
       return { status: Status.SKIPPED }
-    } else {
-      return await this.invokeStep(null, hookDefinition, hookParameter)
     }
+    return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
   async runHooks(hookDefinitions, hookParameter) {
     await Promise.each(hookDefinitions, async hookDefinition => {
-      await this.aroundTestStep(() => {
-        return this.runHook(hookDefinition, hookParameter)
-      })
+      await this.aroundTestStep(() =>
+        this.runHook(hookDefinition, hookParameter)
+      )
     })
   }
 
@@ -197,16 +193,13 @@ export default class TestCaseRunner {
       }
     } else if (this.isSkippingSteps()) {
       return { status: Status.SKIPPED }
-    } else {
-      return await this.invokeStep(step, stepDefinitions[0])
     }
+    return this.invokeStep(step, stepDefinitions[0])
   }
 
   async runSteps() {
     await Promise.each(this.testCase.pickle.steps, async step => {
-      await this.aroundTestStep(() => {
-        return this.runStep(step)
-      })
+      await this.aroundTestStep(() => this.runStep(step))
     })
   }
 }

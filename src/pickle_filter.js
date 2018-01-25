@@ -30,7 +30,7 @@ export default class PickleFilter {
           linesExpression
             .slice(1)
             .split(':')
-            .forEach(function(line) {
+            .forEach(line => {
               mapping[uri].push(parseInt(line))
             })
         }
@@ -51,18 +51,15 @@ export default class PickleFilter {
     const lines = this.featureUriToLinesMapping[path.resolve(uri)]
     if (lines) {
       return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
-    } else {
-      return true
     }
+    return true
   }
 
   matchesAnyName(pickle) {
     if (this.names.length === 0) {
       return true
     }
-    return _.some(this.names, function(name) {
-      return pickle.name.match(name)
-    })
+    return _.some(this.names, name => pickle.name.match(name))
   }
 
   matchesAllTagExpressions(pickle) {

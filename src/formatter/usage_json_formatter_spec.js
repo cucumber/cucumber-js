@@ -3,8 +3,8 @@ import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('UsageJsonFormatter', function() {
-  describe('handleFeaturesResult', function() {
+describe('UsageJsonFormatter', () => {
+  describe('handleFeaturesResult', () => {
     beforeEach(function() {
       const eventBroadcaster = new EventEmitter()
       this.output = ''
@@ -30,7 +30,7 @@ describe('UsageJsonFormatter', function() {
           }
         ]
       }
-      new UsageJsonFormatter({
+      this.usageJsonFormatter = new UsageJsonFormatter({
         eventBroadcaster,
         eventDataCollector: new EventDataCollector(eventBroadcaster),
         log: logFn,

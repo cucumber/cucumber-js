@@ -3,8 +3,8 @@ import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import EventDataCollector from '../event_data_collector'
 
-describe('Usage Helpers', function() {
-  describe('getUsage', function() {
+describe('Usage Helpers', () => {
+  describe('getUsage', () => {
     beforeEach(function() {
       this.eventBroadcaster = new EventEmitter()
       this.eventDataCollector = new EventDataCollector(this.eventBroadcaster)
@@ -16,8 +16,8 @@ describe('Usage Helpers', function() {
         })
     })
 
-    describe('no step definitions', function() {
-      describe('without steps', function() {
+    describe('no step definitions', () => {
+      describe('without steps', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished')
         })
@@ -27,7 +27,7 @@ describe('Usage Helpers', function() {
         })
       })
 
-      describe('with a step', function() {
+      describe('with a step', () => {
         beforeEach(function() {
           const events = Gherkin.generateEvents(
             'Feature: a\nScenario: b\nWhen abc\nThen ab',

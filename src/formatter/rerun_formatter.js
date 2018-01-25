@@ -25,7 +25,7 @@ export default class RerunFormatter extends Formatter {
 
   logFailedTestCases() {
     const text = _.chain(this.mapping)
-      .map((lines, uri) => uri + ':' + lines.join(':'))
+      .map((lines, uri) => `${uri}:${lines.join(':')}`)
       .join(this.separator)
       .value()
     this.log(text)

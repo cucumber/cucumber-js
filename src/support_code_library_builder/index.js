@@ -45,7 +45,7 @@ export class SupportCodeLibraryBuilder {
         'beforeTestRunHook',
         'step'
       ])
-        .map(key => this.options[key + 'Definitions'])
+        .map(key => this.options[`${key}Definitions`])
         .flatten()
         .value()
     })

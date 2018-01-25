@@ -17,11 +17,11 @@ export default class ArgvParser {
         val = JSON.parse(str)
       } catch (error) {
         throw new Error(
-          option + ' passed invalid JSON: ' + error.message + ': ' + str
+          `${option} passed invalid JSON: ${error.message}: ${str}`
         )
       }
       if (!_.isPlainObject(val)) {
-        throw new Error(option + ' must be passed JSON of an object: ' + str)
+        throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
       return _.merge(memo, val)
     }
@@ -33,7 +33,7 @@ export default class ArgvParser {
 
   static validateLanguage(val) {
     if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
-      throw new Error('Unsupported ISO 639-1: ' + val)
+      throw new Error(`Unsupported ISO 639-1: ${val}`)
     }
     return val
   }

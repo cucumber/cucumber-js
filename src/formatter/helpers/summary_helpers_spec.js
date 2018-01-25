@@ -2,8 +2,8 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import Status from '../../status'
 
-describe('SummaryHelpers', function() {
-  describe('formatSummary', function() {
+describe('SummaryHelpers', () => {
+  describe('formatSummary', () => {
     beforeEach(function() {
       this.testCaseMap = {}
       this.testRun = { result: { duration: 0 } }
@@ -14,7 +14,7 @@ describe('SummaryHelpers', function() {
       }
     })
 
-    describe('with no test cases', function() {
+    describe('with no test cases', () => {
       beforeEach(function() {
         this.result = formatSummary(this.options)
       })
@@ -26,7 +26,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with one passing scenario with one passing step', function() {
+    describe('with one passing scenario with one passing step', () => {
       beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
@@ -47,7 +47,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with one passing scenario with one step and hook', function() {
+    describe('with one passing scenario with one step and hook', () => {
       beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
@@ -69,7 +69,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with one passing scenario with multiple passing steps', function() {
+    describe('with one passing scenario with multiple passing steps', () => {
       beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
@@ -94,7 +94,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with one of every kind of scenario', function() {
+    describe('with one of every kind of scenario', () => {
       beforeEach(function() {
         this.testCaseMap['a.feature:1'] = {
           steps: [
@@ -162,7 +162,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with a duration of 123 milliseconds', function() {
+    describe('with a duration of 123 milliseconds', () => {
       beforeEach(function() {
         this.testRun.result.duration = 123
         this.result = formatSummary(this.options)
@@ -175,7 +175,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with a duration of 12.3 seconds', function() {
+    describe('with a duration of 12.3 seconds', () => {
       beforeEach(function() {
         this.testRun.result.duration = 123 * 100
         this.result = formatSummary(this.options)
@@ -188,7 +188,7 @@ describe('SummaryHelpers', function() {
       })
     })
 
-    describe('with a duration of 120.3 seconds', function() {
+    describe('with a duration of 120.3 seconds', () => {
       beforeEach(function() {
         this.testRun.result.duration = 123 * 1000
         this.result = formatSummary(this.options)

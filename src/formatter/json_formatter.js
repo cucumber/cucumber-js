@@ -28,9 +28,7 @@ export default class JsonFormatter extends Formatter {
 
   formatDataTable(dataTable) {
     return {
-      rows: dataTable.rows.map(row => {
-        return { cells: _.map(row.cells, 'value') }
-      })
+      rows: dataTable.rows.map(row => ({ cells: _.map(row.cells, 'value') }))
     }
   }
 
@@ -111,7 +109,7 @@ export default class JsonFormatter extends Formatter {
     })
     return {
       description,
-      id: featureId + ';' + this.convertNameToId(pickle),
+      id: `${featureId};${this.convertNameToId(pickle)}`,
       keyword: 'Scenario',
       line: pickle.locations[0].line,
       name: pickle.name,
@@ -152,19 +150,18 @@ export default class JsonFormatter extends Formatter {
       }
     }
     if (_.size(testStep.attachments) > 0) {
-      data.embeddings = testStep.attachments.map(attachment => {
-        return {
-          data: attachment.data,
-          mime_type: attachment.media.type
-        }
-      })
+      data.embeddings = testStep.attachments.map(attachment => ({
+        data: attachment.data,
+        mime_type: attachment.media.type
+      }))
     }
     return data
   }
 
   getTags(obj) {
-    return _.map(obj.tags, tagData => {
-      return { name: tagData.name, line: tagData.location.line }
-    })
+    return _.map(obj.tags, tagData => ({
+      name: tagData.name,
+      line: tagData.location.line
+    }))
   }
 }

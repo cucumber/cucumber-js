@@ -36,8 +36,13 @@ ignoreErrors:
     - coffee-script # features/compiler.feature
     - coveralls # .travis.yml
     - eslint-config-prettier # .eslintrc.yml - extends
+    - eslint-config-standard # .eslintrc.yml - extends
     - eslint-plugin-babel # .eslintrc.yml - parser
+    - eslint-plugin-import # peer dependency of eslint-config-standard
+    - eslint-plugin-node # peer dependency of eslint-config-standard
     - eslint-plugin-prettier # .eslintrc.yml - plugins
+    - eslint-plugin-promise # peer dependency of eslint-config-standard
+    - eslint-plugin-standard # peer dependency of eslint-config-standard
     - prettier # peer dependency of eslint-plugin-prettier
 
 requiredModules:

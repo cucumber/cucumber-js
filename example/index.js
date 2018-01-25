@@ -13,7 +13,7 @@ function runFeature() {
     eventBroadcaster
   )
 
-  let featureSource = featureEditor.getValue()
+  const featureSource = featureEditor.getValue()
   const testCases = Cucumber.getTestCases({
     eventBroadcaster,
     pickleFilter: new Cucumber.PickleFilter({}),
@@ -22,10 +22,10 @@ function runFeature() {
   })
 
   Cucumber.supportCodeLibraryBuilder.reset('')
-  new Function(stepDefinitionsEditor.getValue())()
-  let supportCodeLibrary = Cucumber.supportCodeLibraryBuilder.finalize()
+  new Function(stepDefinitionsEditor.getValue())() // eslint-disable-line no-new-func
+  const supportCodeLibrary = Cucumber.supportCodeLibraryBuilder.finalize()
 
-  let formatterOptions = {
+  const formatterOptions = {
     colorsEnabled: true,
     cwd: '/',
     eventBroadcaster,
@@ -37,7 +37,7 @@ function runFeature() {
   }
   Cucumber.FormatterBuilder.build('progress', formatterOptions)
 
-  let runtime = new Cucumber.Runtime({
+  const runtime = new Cucumber.Runtime({
     eventBroadcaster,
     options: {},
     testCases,
@@ -52,12 +52,12 @@ function appendToOutput(data) {
 }
 
 function displayError(error) {
-  let errorContainer = $('<div>')
+  const errorContainer = $('<div>')
   errorContainer.addClass('error').text(error.stack || error)
   appendToOutput(errorContainer)
 }
 
-$(function() {
+$(() => {
   featureEditor = ace.edit('feature')
   featureEditor.getSession().setMode('ace/mode/gherkin')
 
@@ -68,14 +68,14 @@ $(function() {
 
   window.onerror = displayError
 
-  $('#run-feature').click(function() {
+  $('#run-feature').click(() => {
     runFeature()
-      .then(function(success) {
-        let exitStatus = success ? '0' : '1'
-        let exitStatusContainer = $('<div>')
+      .then(success => {
+        const exitStatus = success ? '0' : '1'
+        const exitStatusContainer = $('<div>')
         exitStatusContainer
           .addClass('exit-status')
-          .text('Exit Status: ' + exitStatus)
+          .text(`Exit Status: ${exitStatus}`)
         appendToOutput(exitStatusContainer)
       })
       .catch(displayError)

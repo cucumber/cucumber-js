@@ -4,7 +4,7 @@ import Status from '../status'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from './helpers'
 
-describe('ProgressFormatter', function() {
+describe('ProgressFormatter', () => {
   beforeEach(function() {
     this.eventBroadcaster = new EventEmitter()
     this.output = ''
@@ -20,7 +20,7 @@ describe('ProgressFormatter', function() {
     })
   })
 
-  describe('test step finished', function() {
+  describe('test step finished', () => {
     beforeEach(function() {
       this.testCase = { sourceLocation: { uri: 'path/to/feature', line: 1 } }
       this.eventBroadcaster.emit('test-case-prepared', {
@@ -29,7 +29,7 @@ describe('ProgressFormatter', function() {
       })
     })
 
-    describe('ambiguous', function() {
+    describe('ambiguous', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -43,7 +43,7 @@ describe('ProgressFormatter', function() {
       })
     })
 
-    describe('failed', function() {
+    describe('failed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -57,7 +57,7 @@ describe('ProgressFormatter', function() {
       })
     })
 
-    describe('passed', function() {
+    describe('passed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -71,7 +71,7 @@ describe('ProgressFormatter', function() {
       })
     })
 
-    describe('pending', function() {
+    describe('pending', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -85,7 +85,7 @@ describe('ProgressFormatter', function() {
       })
     })
 
-    describe('skipped', function() {
+    describe('skipped', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -99,7 +99,7 @@ describe('ProgressFormatter', function() {
       })
     })
 
-    describe('undefined', function() {
+    describe('undefined', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -114,7 +114,7 @@ describe('ProgressFormatter', function() {
     })
   })
 
-  describe('test run finished', function() {
+  describe('test run finished', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit('test-run-finished', {
         result: { duration: 0 }

@@ -1,7 +1,7 @@
 import TestCaseHookDefinition from './test_case_hook_definition'
 
-describe('TestCaseHookDefinition', function() {
-  describe('appliesToTestCase', function() {
+describe('TestCaseHookDefinition', () => {
+  describe('appliesToTestCase', () => {
     beforeEach(function() {
       this.input = {
         pickle: {
@@ -11,7 +11,7 @@ describe('TestCaseHookDefinition', function() {
       }
     })
 
-    describe('no tags', function() {
+    describe('no tags', () => {
       beforeEach(function() {
         this.testCaseHookDefinition = new TestCaseHookDefinition({
           options: {}
@@ -19,12 +19,13 @@ describe('TestCaseHookDefinition', function() {
       })
 
       it('returns true', function() {
-        expect(this.testCaseHookDefinition.appliesToTestCase(this.input)).to.be
-          .true
+        expect(
+          this.testCaseHookDefinition.appliesToTestCase(this.input)
+        ).to.eql(true)
       })
     })
 
-    describe('tags match', function() {
+    describe('tags match', () => {
       beforeEach(function() {
         this.input.pickle.tags = [{ name: '@tagA' }]
         this.testCaseHookDefinition = new TestCaseHookDefinition({
@@ -33,12 +34,13 @@ describe('TestCaseHookDefinition', function() {
       })
 
       it('returns true', function() {
-        expect(this.testCaseHookDefinition.appliesToTestCase(this.input)).to.be
-          .true
+        expect(
+          this.testCaseHookDefinition.appliesToTestCase(this.input)
+        ).to.eql(true)
       })
     })
 
-    describe('tags do not match', function() {
+    describe('tags do not match', () => {
       beforeEach(function() {
         this.testCaseHookDefinition = new TestCaseHookDefinition({
           options: { tags: '@tagA' }
@@ -46,8 +48,9 @@ describe('TestCaseHookDefinition', function() {
       })
 
       it('returns false', function() {
-        expect(this.testCaseHookDefinition.appliesToTestCase(this.input)).to.be
-          .false
+        expect(
+          this.testCaseHookDefinition.appliesToTestCase(this.input)
+        ).to.eql(false)
       })
     })
   })

@@ -3,8 +3,8 @@ import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
 
-describe('UsageFormatter', function() {
-  describe('handleFeaturesResult', function() {
+describe('UsageFormatter', () => {
+  describe('handleFeaturesResult', () => {
     beforeEach(function() {
       this.eventBroadcaster = new EventEmitter()
       this.output = ''
@@ -14,7 +14,7 @@ describe('UsageFormatter', function() {
       this.supportCodeLibrary = {
         stepDefinitions: []
       }
-      new UsageFormatter({
+      this.usageFormatter = new UsageFormatter({
         eventBroadcaster: this.eventBroadcaster,
         eventDataCollector: new EventDataCollector(this.eventBroadcaster),
         log: logFn,
@@ -22,7 +22,7 @@ describe('UsageFormatter', function() {
       })
     })
 
-    describe('no step definitions', function() {
+    describe('no step definitions', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -32,7 +32,7 @@ describe('UsageFormatter', function() {
       })
     })
 
-    describe('with one step definition', function() {
+    describe('with one step definition', () => {
       beforeEach(function() {
         this.stepDefinition = {
           line: 1,
@@ -42,7 +42,7 @@ describe('UsageFormatter', function() {
         this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
       })
 
-      describe('unused', function() {
+      describe('unused', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished')
         })
@@ -58,7 +58,7 @@ describe('UsageFormatter', function() {
         })
       })
 
-      describe('used', function() {
+      describe('used', () => {
         beforeEach(function() {
           const events = Gherkin.generateEvents(
             'Feature: a\nScenario: b\nWhen abc\nThen ab',
@@ -90,7 +90,7 @@ describe('UsageFormatter', function() {
           })
         })
 
-        describe('in dry run', function() {
+        describe('in dry run', () => {
           beforeEach(function() {
             this.eventBroadcaster.emit('test-step-finished', {
               index: 0,
@@ -118,7 +118,7 @@ describe('UsageFormatter', function() {
           })
         })
 
-        describe('not in dry run', function() {
+        describe('not in dry run', () => {
           beforeEach(function() {
             this.eventBroadcaster.emit('test-step-finished', {
               index: 0,
@@ -148,7 +148,7 @@ describe('UsageFormatter', function() {
       })
     })
 
-    describe('with multiple definition', function() {
+    describe('with multiple definition', () => {
       beforeEach(function() {
         this.supportCodeLibrary.stepDefinitions = [
           {

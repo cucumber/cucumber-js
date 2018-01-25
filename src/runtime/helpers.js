@@ -27,16 +27,14 @@ export function getAmbiguousStepException(stepDefinitions) {
       'padding-right': 0
     }
   })
-  table.push.apply(
-    table,
-    stepDefinitions.map(stepDefinition => {
+  table.push(
+    ...stepDefinitions.map(stepDefinition => {
       const pattern = stepDefinition.pattern.toString()
       return [pattern, formatLocation(stepDefinition)]
     })
   )
-  return (
-    'Multiple step definitions match:' +
-    '\n' +
-    indentString(table.toString(), 2)
-  )
+  return `${'Multiple step definitions match:' + '\n'}${indentString(
+    table.toString(),
+    2
+  )}`
 }

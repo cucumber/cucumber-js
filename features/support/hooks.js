@@ -89,11 +89,8 @@ Before('@global-install', function() {
 After(function() {
   if (this.lastRun.error && !this.verifiedLastRunError) {
     throw new Error(
-      'Last run errored unexpectedly. Output:\n\n' +
-        this.lastRun.output +
-        '\n\n' +
-        'Error Output:\n\n' +
-        this.lastRun.errorOutput
+      `Last run errored unexpectedly. Output:\n\n${this.lastRun.output}\n\n` +
+        `Error Output:\n\n${this.lastRun.errorOutput}`
     )
   }
 })

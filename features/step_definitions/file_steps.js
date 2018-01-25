@@ -29,7 +29,7 @@ Given(/^a directory named "(.*)"$/, function(filePath) {
 
 Given(/^"([^"]*)" is an absolute path$/, function(filePath) {
   filePath = Mustache.render(filePath, this)
-  expect(path.isAbsolute(filePath)).to.be.true
+  expect(path.isAbsolute(filePath)).to.eql(true)
 })
 
 Then(/^the file "([^"]*)" has the text:$/, async function(filePath, text) {

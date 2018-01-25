@@ -1,8 +1,8 @@
 import Status, { getStatusMapping } from './status'
 
-describe('Status', function() {
-  describe('constants', function() {
-    it('exposes the proper constants', function() {
+describe('Status', () => {
+  describe('constants', () => {
+    it('exposes the proper constants', () => {
       expect(Status).to.include.keys([
         'AMBIGUOUS',
         'FAILED',
@@ -14,8 +14,8 @@ describe('Status', function() {
     })
   })
 
-  describe('getStatusMapping', function() {
-    it('returns a mapping of the statuses with the given initial value', function() {
+  describe('getStatusMapping', () => {
+    it('returns a mapping of the statuses with the given initial value', () => {
       const result = getStatusMapping(0)
       expect(result).to.eql({
         [Status.AMBIGUOUS]: 0,

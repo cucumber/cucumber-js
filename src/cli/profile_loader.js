@@ -16,19 +16,19 @@ export default class ProfileLoader {
     }
     const definitions = require(definitionsFilePath)
     if (typeof definitions !== 'object') {
-      throw new Error(definitionsFilePath + ' does not export an object')
+      throw new Error(`${definitionsFilePath} does not export an object`)
     }
     return definitions
   }
 
   async getArgv(profiles) {
     const definitions = await this.getDefinitions()
-    if (profiles.length === 0 && definitions['default']) {
+    if (profiles.length === 0 && definitions.default) {
       profiles = ['default']
     }
-    const argvs = profiles.map(function(profile) {
+    const argvs = profiles.map(profile => {
       if (!definitions[profile]) {
-        throw new Error('Undefined profile: ' + profile)
+        throw new Error(`Undefined profile: ${profile}`)
       }
       return stringArgv(definitions[profile])
     })

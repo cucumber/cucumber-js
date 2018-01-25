@@ -1,7 +1,7 @@
 import { getAmbiguousStepException } from './helpers'
 
-describe('Helpers', function() {
-  describe('getAmbiguousStepException', function() {
+describe('Helpers', () => {
+  describe('getAmbiguousStepException', () => {
     beforeEach(function() {
       this.result = getAmbiguousStepException([
         { line: 3, pattern: 'pattern1', uri: 'steps1.js' },

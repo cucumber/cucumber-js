@@ -32,7 +32,7 @@ export default class SnippetsFormatter extends Formatter {
         previousKeywordType
       })
       const snippet = this.snippetBuilder.build({ keywordType, pickleStep })
-      this.log(snippet + '\n\n')
+      this.log(`${snippet}\n\n`)
     }
   }
 

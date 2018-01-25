@@ -22,7 +22,7 @@ export default class Cli {
 
   async getConfiguration() {
     const fullArgv = await getExpandedArgv({ argv: this.argv, cwd: this.cwd })
-    return await ConfigurationBuilder.build({ argv: fullArgv, cwd: this.cwd })
+    return ConfigurationBuilder.build({ argv: fullArgv, cwd: this.cwd })
   }
 
   async initializeFormatters({
@@ -36,7 +36,7 @@ export default class Cli {
     await Promise.map(formats, async ({ type, outputTo }) => {
       let stream = this.stdout
       if (outputTo) {
-        let fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
+        const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
         stream = fs.createWriteStream(null, { fd })
         streamsToClose.push(stream)
       }
