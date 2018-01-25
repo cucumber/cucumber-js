@@ -50,9 +50,7 @@ $ npm install cucumber
 
 ## Documentation
 
-The following documentation is for master.
-Documentation for `2.x`  is available [here](https://github.com/cucumber/cucumber-js/tree/2.x).
-Documentation for `1.x`  is available [here](https://github.com/cucumber/cucumber-js/tree/1.x).
+The following documentation is for master. See below for documentation for older versions. 
 
 * [CLI](/docs/cli.md)
 * [Custom Formatters](/docs/custom_formatters.md)
@@ -67,3 +65,9 @@ Documentation for `1.x`  is available [here](https://github.com/cucumber/cucumbe
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
 * [FAQ](/docs/faq.md)
+
+#### Documentation for older versions
+
+* [`3.x`](https://github.com/cucumber/cucumber-js/tree/3.x)
+* [`2.x`](https://github.com/cucumber/cucumber-js/tree/2.x)
+* [`1.x`](https://github.com/cucumber/cucumber-js/tree/1.x)
