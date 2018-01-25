@@ -290,7 +290,7 @@ describe('ProgressBarFormatter', () => {
       it('prints the warning', function() {
         expect(
           this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(0)
+        ).to.have.callCount(1)
       })
     })
   })
