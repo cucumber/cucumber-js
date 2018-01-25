@@ -6,7 +6,7 @@ export function formatError(error, colorFns) {
       diffAdded: colorFns.red,
       diffRemoved: colorFns.green,
       errorMessage: colorFns.red,
-      errorStack: colorFns.gray
-    }
+      errorStack: colorFns.gray,
+    },
   })
 }

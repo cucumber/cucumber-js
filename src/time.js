@@ -11,7 +11,7 @@ const methods = {
     return getTimestamp() - previousTimestamp
   },
   setInterval: setInterval.bind(global),
-  setTimeout: setTimeout.bind(global)
+  setTimeout: setTimeout.bind(global),
 }
 
 if (typeof setImmediate !== 'undefined') {

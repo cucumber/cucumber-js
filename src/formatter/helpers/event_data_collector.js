@@ -23,7 +23,7 @@ export default class EventDataCollector {
     return {
       gherkinDocument: this.gherkinDocumentMap[sourceLocation.uri],
       pickle: this.pickleMap[this.getTestCaseKey(sourceLocation)],
-      testCase: this.testCaseMap[this.getTestCaseKey(sourceLocation)]
+      testCase: this.testCaseMap[this.getTestCaseKey(sourceLocation)],
     }
   }
 

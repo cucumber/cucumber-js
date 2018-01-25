@@ -11,7 +11,7 @@ export default async function run() {
   const cli = new Cli({
     argv: process.argv,
     cwd,
-    stdout: process.stdout
+    stdout: process.stdout,
   })
 
   let result

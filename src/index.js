@@ -8,7 +8,7 @@ export { default as PickleFilter } from './pickle_filter'
 export { default as Runtime } from './runtime'
 export { default as Status } from './status'
 export {
-  default as supportCodeLibraryBuilder
+  default as supportCodeLibraryBuilder,
 } from './support_code_library_builder'
 
 // Formatters

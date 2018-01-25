@@ -7,13 +7,13 @@ import { format } from 'assertion-error-formatter'
 
 const {
   getStepLineToKeywordMap,
-  getScenarioLineToDescriptionMap
+  getScenarioLineToDescriptionMap,
 } = GherkinDocumentParser
 
 const {
   getScenarioDescription,
   getStepLineToPickledStepMap,
-  getStepKeyword
+  getStepKeyword,
 } = PickleParser
 
 export default class JsonFormatter extends Formatter {
@@ -28,21 +28,21 @@ export default class JsonFormatter extends Formatter {
 
   formatDataTable(dataTable) {
     return {
-      rows: dataTable.rows.map(row => ({ cells: _.map(row.cells, 'value') }))
+      rows: dataTable.rows.map(row => ({ cells: _.map(row.cells, 'value') })),
     }
   }
 
   formatDocString(docString) {
     return {
       content: docString.content,
-      line: docString.location.line
+      line: docString.location.line,
     }
   }
 
   formatStepArguments(stepArguments) {
     const iterator = buildStepArgumentIterator({
       dataTable: this.formatDataTable.bind(this),
-      docString: this.formatDocString.bind(this)
+      docString: this.formatDocString.bind(this),
     })
     return _.map(stepArguments, iterator)
   }
@@ -70,7 +70,7 @@ export default class JsonFormatter extends Formatter {
         const scenarioData = this.getScenarioData({
           featureId: featureData.id,
           pickle,
-          scenarioLineToDescriptionMap
+          scenarioLineToDescriptionMap,
         })
         const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
         let isBeforeHook = true
@@ -80,7 +80,7 @@ export default class JsonFormatter extends Formatter {
             isBeforeHook,
             stepLineToKeywordMap,
             stepLineToPickledStepMap,
-            testStep
+            testStep,
           })
         })
         return scenarioData
@@ -98,14 +98,14 @@ export default class JsonFormatter extends Formatter {
       line: feature.location.line,
       id: this.convertNameToId(feature),
       tags: this.getTags(feature),
-      uri
+      uri,
     }
   }
 
   getScenarioData({ featureId, pickle, scenarioLineToDescriptionMap }) {
     const description = getScenarioDescription({
       pickle,
-      scenarioLineToDescriptionMap
+      scenarioLineToDescriptionMap,
     })
     return {
       description,
@@ -114,7 +114,7 @@ export default class JsonFormatter extends Formatter {
       line: pickle.locations[0].line,
       name: pickle.name,
       tags: this.getTags(pickle),
-      type: 'scenario'
+      type: 'scenario',
     }
   }
 
@@ -122,7 +122,7 @@ export default class JsonFormatter extends Formatter {
     isBeforeHook,
     stepLineToKeywordMap,
     stepLineToPickledStepMap,
-    testStep
+    testStep,
   }) {
     const data = {}
     if (testStep.sourceLocation) {
@@ -152,7 +152,7 @@ export default class JsonFormatter extends Formatter {
     if (_.size(testStep.attachments) > 0) {
       data.embeddings = testStep.attachments.map(attachment => ({
         data: attachment.data,
-        mime_type: attachment.media.type
+        mime_type: attachment.media.type,
       }))
     }
     return data
@@ -161,7 +161,7 @@ export default class JsonFormatter extends Formatter {
   getTags(obj) {
     return _.map(obj.tags, tagData => ({
       name: tagData.name,
-      line: tagData.location.line
+      line: tagData.location.line,
     }))
   }
 }

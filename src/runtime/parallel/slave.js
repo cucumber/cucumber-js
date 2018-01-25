@@ -15,7 +15,7 @@ const EVENTS = [
   'test-step-started',
   'test-step-attachment',
   'test-step-finished',
-  'test-case-finished'
+  'test-case-finished',
 ]
 
 export default class Slave {
@@ -39,7 +39,7 @@ export default class Slave {
     filterStacktraces,
     supportCodeRequiredModules,
     supportCodePaths,
-    worldParameters
+    worldParameters,
   }) {
     supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd)
@@ -86,7 +86,7 @@ export default class Slave {
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       testCase,
-      worldParameters: this.worldParameters
+      worldParameters: this.worldParameters,
     })
     await testCaseRunner.run()
     this.stdout.write(JSON.stringify({ command: commandTypes.READY }) + '\n')
@@ -100,7 +100,7 @@ export default class Slave {
         thisArg: null,
         timeoutInMilliseconds:
           hookDefinition.options.timeout ||
-          this.supportCodeLibrary.defaultTimeout
+          this.supportCodeLibrary.defaultTimeout,
       })
       if (error) {
         const location = formatLocation(hookDefinition)

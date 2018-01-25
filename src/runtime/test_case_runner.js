@@ -11,13 +11,13 @@ export default class TestCaseRunner {
     skip,
     testCase,
     supportCodeLibrary,
-    worldParameters
+    worldParameters,
   }) {
     const attachmentManager = new AttachmentManager(({ data, media }) => {
       this.emit('test-step-attachment', {
         index: this.testStepIndex,
         data,
-        media
+        media,
       })
     })
     this.eventBroadcaster = eventBroadcaster
@@ -26,18 +26,18 @@ export default class TestCaseRunner {
     this.supportCodeLibrary = supportCodeLibrary
     this.world = new supportCodeLibrary.World({
       attach: ::attachmentManager.create,
-      parameters: worldParameters
+      parameters: worldParameters,
     })
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
     this.testStepIndex = 0
     this.result = {
       duration: 0,
-      status: this.skip ? Status.SKIPPED : Status.PASSED
+      status: this.skip ? Status.SKIPPED : Status.PASSED,
     }
     this.testCaseSourceLocation = {
       uri: this.testCase.uri,
-      line: this.testCase.pickle.locations[0].line
+      line: this.testCase.pickle.locations[0].line,
     }
   }
 
@@ -60,11 +60,11 @@ export default class TestCaseRunner {
     this.testCase.pickle.steps.forEach(step => {
       const actionLocations = this.getStepDefinitions(step).map(definition => ({
         uri: definition.uri,
-        line: definition.line
+        line: definition.line,
       }))
       const sourceLocation = {
         uri: this.testCase.uri,
-        line: _.last(step.locations).line
+        line: _.last(step.locations).line,
       }
       const data = { sourceLocation }
       if (actionLocations.length === 1) {
@@ -95,7 +95,7 @@ export default class TestCaseRunner {
     return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition =>
       stepDefinition.matchesStepName({
         stepName: step.text,
-        parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry
+        parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       })
     )
   }
@@ -107,7 +107,7 @@ export default class TestCaseRunner {
       parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
-      world: this.world
+      world: this.world,
     })
   }
 
@@ -145,7 +145,7 @@ export default class TestCaseRunner {
     }
     this.emit('test-step-finished', {
       index: this.testStepIndex,
-      result: testStepResult
+      result: testStepResult,
     })
     this.testStepIndex += 1
   }
@@ -155,13 +155,13 @@ export default class TestCaseRunner {
     this.emit('test-case-started', {})
     await this.runHooks(this.beforeHookDefinitions, {
       sourceLocation: this.testCaseSourceLocation,
-      pickle: this.testCase.pickle
+      pickle: this.testCase.pickle,
     })
     await this.runSteps()
     await this.runHooks(this.afterHookDefinitions, {
       sourceLocation: this.testCaseSourceLocation,
       pickle: this.testCase.pickle,
-      result: this.result
+      result: this.result,
     })
     this.emit('test-case-finished', { result: this.result })
     return this.result
@@ -189,7 +189,7 @@ export default class TestCaseRunner {
     } else if (stepDefinitions.length > 1) {
       return {
         exception: getAmbiguousStepException(stepDefinitions),
-        status: Status.AMBIGUOUS
+        status: Status.AMBIGUOUS,
       }
     } else if (this.isSkippingSteps()) {
       return { status: Status.SKIPPED }

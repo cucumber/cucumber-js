@@ -21,7 +21,7 @@ export default class Master {
     options,
     supportCodePaths,
     supportCodeRequiredModules,
-    testCases
+    testCases,
   }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
@@ -32,7 +32,7 @@ export default class Master {
     this.testCasesCompleted = 0
     this.result = {
       duration: 0,
-      success: true
+      success: true,
     }
     this.slaves = {}
   }
@@ -59,9 +59,9 @@ export default class Master {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
-        CUCUMBER_SLAVE_ID: id
+        CUCUMBER_SLAVE_ID: id,
       }),
-      stdio: ['pipe', 'pipe', process.stderr]
+      stdio: ['pipe', 'pipe', process.stderr],
     })
     const rl = readline.createInterface({ input: slaveProcess.stdout })
     const slave = { process: slaveProcess }
@@ -79,7 +79,7 @@ export default class Master {
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
         supportCodeRequiredModules: this.supportCodeRequiredModules,
-        worldParameters: this.options.worldParameters
+        worldParameters: this.options.worldParameters,
       }) + '\n'
     )
   }

@@ -3,7 +3,7 @@ const commandTypes = {
   RUN: 'run',
   READY: 'ready',
   FINALIZE: 'finalize',
-  EVENT: 'event'
+  EVENT: 'event',
 }
 
 export default commandTypes

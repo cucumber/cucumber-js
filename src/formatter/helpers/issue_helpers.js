@@ -16,7 +16,7 @@ const CHARACTERS = {
   [Status.PASSED]: figures.tick,
   [Status.PENDING]: '?',
   [Status.SKIPPED]: '-',
-  [Status.UNDEFINED]: '?'
+  [Status.UNDEFINED]: '?',
 }
 
 const IS_ISSUE = {
@@ -25,7 +25,7 @@ const IS_ISSUE = {
   [Status.PASSED]: false,
   [Status.PENDING]: true,
   [Status.SKIPPED]: false,
-  [Status.UNDEFINED]: true
+  [Status.UNDEFINED]: true,
 }
 
 function formatDataTable(arg) {
@@ -50,13 +50,13 @@ function formatDataTable(arg) {
       top: '',
       'top-left': '',
       'top-mid': '',
-      'top-right': ''
+      'top-right': '',
     },
     style: {
       border: [],
       'padding-left': 1,
-      'padding-right': 1
-    }
+      'padding-right': 1,
+    },
   })
   table.push(...rows)
   return table.toString()
@@ -73,7 +73,7 @@ function formatStep({
   keywordType,
   pickleStep,
   snippetBuilder,
-  testStep
+  testStep,
 }) {
   const { status } = testStep.result
   const colorFn = colorFns[status]
@@ -97,7 +97,7 @@ function formatStep({
     let str
     const iterator = buildStepArgumentIterator({
       dataTable: arg => (str = formatDataTable(arg)),
-      docString: arg => (str = formatDocString(arg))
+      docString: arg => (str = formatDocString(arg)),
     })
     _.each(pickleStep.arguments, iterator)
     if (str) {
@@ -109,7 +109,7 @@ function formatStep({
     keywordType,
     pickleStep,
     snippetBuilder,
-    testStep
+    testStep,
   })
   if (message) {
     text += `${indentString(message, 4)}\n`
@@ -127,7 +127,7 @@ export function formatIssue({
   number,
   pickle,
   snippetBuilder,
-  testCase
+  testCase,
 }) {
   const prefix = `${number}) `
   let text = prefix
@@ -146,7 +146,7 @@ export function formatIssue({
       keywordType = getStepKeywordType({
         keyword,
         language: gherkinDocument.feature.language,
-        previousKeywordType
+        previousKeywordType,
       })
     }
     const formattedStep = formatStep({
@@ -156,7 +156,7 @@ export function formatIssue({
       keywordType,
       pickleStep,
       snippetBuilder,
-      testStep
+      testStep,
     })
     text += indentString(formattedStep, prefix.length)
     previousKeywordType = keywordType

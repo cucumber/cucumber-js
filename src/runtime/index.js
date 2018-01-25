@@ -17,7 +17,7 @@ export default class Runtime {
     this.testCases = testCases || []
     this.result = {
       duration: 0,
-      success: true
+      success: true,
     }
   }
 
@@ -29,7 +29,7 @@ export default class Runtime {
         thisArg: null,
         timeoutInMilliseconds:
           hookDefinition.options.timeout ||
-          this.supportCodeLibrary.defaultTimeout
+          this.supportCodeLibrary.defaultTimeout,
       })
       if (error) {
         const location = formatLocation(hookDefinition)
@@ -49,7 +49,7 @@ export default class Runtime {
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       testCase,
-      worldParameters: this.options.worldParameters
+      worldParameters: this.options.worldParameters,
     })
     const testCaseResult = await testCaseRunner.run()
     if (testCaseResult.duration) {

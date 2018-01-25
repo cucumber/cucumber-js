@@ -33,7 +33,7 @@ export default class StepDefinition {
       .map(arg => arg.getValue(world))
     const iterator = buildStepArgumentIterator({
       dataTable: arg => new DataTable(arg),
-      docString: arg => arg.content
+      docString: arg => arg.content,
     })
     const stepArgumentParameters = step.arguments.map(iterator)
     return stepNameParameters.concat(stepArgumentParameters)

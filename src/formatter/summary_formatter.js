@@ -40,7 +40,7 @@ export default class SummaryFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseMap: this.eventDataCollector.testCaseMap,
-        testRun
+        testRun,
       })
     )
   }
@@ -50,7 +50,7 @@ export default class SummaryFormatter extends Formatter {
     issues.forEach((testCase, index) => {
       const {
         gherkinDocument,
-        pickle
+        pickle,
       } = this.eventDataCollector.getTestCaseData(testCase.sourceLocation)
       this.log(
         formatIssue({
@@ -59,7 +59,7 @@ export default class SummaryFormatter extends Formatter {
           number: index + 1,
           pickle,
           snippetBuilder: this.snippetBuilder,
-          testCase
+          testCase,
         })
       )
     })

@@ -18,7 +18,7 @@ describe('ProgressFormatter', () => {
       colorFns,
       eventBroadcaster: this.eventBroadcaster,
       eventDataCollector: new EventDataCollector(this.eventBroadcaster),
-      log: logFn
+      log: logFn,
     })
   })
 
@@ -27,7 +27,7 @@ describe('ProgressFormatter', () => {
       this.testCase = { sourceLocation: { uri: 'path/to/feature', line: 1 } }
       this.eventBroadcaster.emit('test-case-prepared', {
         sourceLocation: this.testCase.sourceLocation,
-        steps: [{}]
+        steps: [{}],
       })
     })
 
@@ -36,7 +36,7 @@ describe('ProgressFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.AMBIGUOUS },
-          testCase: this.testCase
+          testCase: this.testCase,
         })
       })
 
@@ -50,7 +50,7 @@ describe('ProgressFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.FAILED },
-          testCase: this.testCase
+          testCase: this.testCase,
         })
       })
 
@@ -64,7 +64,7 @@ describe('ProgressFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.PASSED },
-          testCase: this.testCase
+          testCase: this.testCase,
         })
       })
 
@@ -78,7 +78,7 @@ describe('ProgressFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.PENDING },
-          testCase: this.testCase
+          testCase: this.testCase,
         })
       })
 
@@ -92,7 +92,7 @@ describe('ProgressFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.SKIPPED },
-          testCase: this.testCase
+          testCase: this.testCase,
         })
       })
 
@@ -106,7 +106,7 @@ describe('ProgressFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           result: { status: Status.UNDEFINED },
-          testCase: this.testCase
+          testCase: this.testCase,
         })
       })
 
@@ -119,7 +119,7 @@ describe('ProgressFormatter', () => {
   describe('test run finished', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit('test-run-finished', {
-        result: { duration: 0 }
+        result: { duration: 0 },
       })
     })
 

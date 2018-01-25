@@ -5,7 +5,7 @@ import {
   defineTestRunHook,
   defineParameterType,
   defineTestCaseHook,
-  defineStep
+  defineStep,
 } from './define_helpers'
 import { wrapDefinitions } from './finalize_helpers'
 
@@ -29,7 +29,7 @@ export class SupportCodeLibraryBuilder {
       },
       setWorldConstructor: fn => {
         this.options.World = fn
-      }
+      },
     }
     this.methods.Given = this.methods.When = this.methods.Then = this.methods.defineStep
   }
@@ -43,11 +43,11 @@ export class SupportCodeLibraryBuilder {
         'afterTestRunHook',
         'beforeTestCaseHook',
         'beforeTestRunHook',
-        'step'
+        'step',
       ])
         .map(key => this.options[`${key}Definitions`])
         .flatten()
-        .value()
+        .value(),
     })
     this.options.afterTestCaseHookDefinitions.reverse()
     this.options.afterTestRunHookDefinitions.reverse()
@@ -68,7 +68,7 @@ export class SupportCodeLibraryBuilder {
       World({ attach, parameters }) {
         this.attach = attach
         this.parameters = parameters
-      }
+      },
     })
   }
 }

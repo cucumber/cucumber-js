@@ -6,7 +6,7 @@ import path from 'path'
 export function wrapDefinitions({
   cwd,
   definitionFunctionWrapper,
-  definitions
+  definitions,
 }) {
   if (definitionFunctionWrapper) {
     definitions.forEach(definition => {

@@ -12,7 +12,7 @@ export default class UsageFormatter extends Formatter {
   logUsage() {
     const usage = getUsage({
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
-      eventDataCollector: this.eventDataCollector
+      eventDataCollector: this.eventDataCollector,
     })
     if (usage.length === 0) {
       this.log('No step definitions')
@@ -22,8 +22,8 @@ export default class UsageFormatter extends Formatter {
       head: ['Pattern / Text', 'Duration', 'Location'],
       style: {
         border: [],
-        head: []
-      }
+        head: [],
+      },
     })
     usage.forEach(({ line, matches, meanDuration, pattern, uri }) => {
       const col1 = [pattern.toString()]

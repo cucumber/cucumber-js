@@ -24,7 +24,7 @@ describe('supportCodeLibraryBuilder', () => {
       )
       const worldInstance = new this.options.World({
         attach: this.attachFn,
-        parameters: { some: 'data' }
+        parameters: { some: 'data' },
       })
       expect(worldInstance.attach).to.eql(this.attachFn)
       expect(worldInstance.parameters).to.eql({ some: 'data' })

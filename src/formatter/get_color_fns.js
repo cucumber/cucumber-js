@@ -11,7 +11,7 @@ export default function getColorFns(enabled) {
     [Status.SKIPPED]: 'cyan',
     [Status.UNDEFINED]: 'yellow',
     location: 'grey',
-    tag: 'cyan'
+    tag: 'cyan',
   })
   return colors
 }

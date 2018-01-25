@@ -26,7 +26,7 @@ export default class ProgressBarFormatter extends Formatter {
       incomplete: ' ',
       stream: this.stream,
       total: this.numberOfSteps,
-      width: this.stream.columns || 80
+      width: this.stream.columns || 80,
     })
   }
 
@@ -43,7 +43,7 @@ export default class ProgressBarFormatter extends Formatter {
       const {
         gherkinDocument,
         pickle,
-        testCase
+        testCase,
       } = this.eventDataCollector.getTestCaseData(sourceLocation)
       this.progressBar.interrupt(
         formatIssue({
@@ -52,7 +52,7 @@ export default class ProgressBarFormatter extends Formatter {
           number: this.issueCount,
           pickle,
           snippetBuilder: this.snippetBuilder,
-          testCase
+          testCase,
         })
       )
     }
@@ -63,7 +63,7 @@ export default class ProgressBarFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseMap: this.eventDataCollector.testCaseMap,
-        testRun
+        testRun,
       })
     )
   }

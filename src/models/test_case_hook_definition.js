@@ -5,7 +5,7 @@ export default class TestCaseHookDefinition extends StepDefinition {
   constructor(data) {
     super(data)
     this.pickleFilter = new PickleFilter({
-      tagExpression: this.options.tags
+      tagExpression: this.options.tags,
     })
   }
 

@@ -10,7 +10,7 @@ export default class UsageJsonFormatter extends Formatter {
   logUsage() {
     const usage = getUsage({
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
-      eventDataCollector: this.eventDataCollector
+      eventDataCollector: this.eventDataCollector,
     })
     this.log(JSON.stringify(usage, null, 2))
   }

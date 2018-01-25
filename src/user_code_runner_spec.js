@@ -9,7 +9,7 @@ describe('UserCodeRunner', () => {
       this.options = {
         argsArray: [],
         thisArg: {},
-        timeoutInMilliseconds: 100
+        timeoutInMilliseconds: 100,
       }
     })
 

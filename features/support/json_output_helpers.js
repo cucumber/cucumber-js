@@ -48,7 +48,7 @@ export function findStep({ features, stepPredicate, scenarioPredicate }) {
   }
   throw new Error(
     `Could not find step matching predicate: ${util.inspect(features, {
-      depth: null
+      depth: null,
     })}`
   )
 }

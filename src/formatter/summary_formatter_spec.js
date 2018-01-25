@@ -21,7 +21,7 @@ describe('SummaryFormatter', () => {
       eventBroadcaster: this.eventBroadcaster,
       eventDataCollector: new EventDataCollector(this.eventBroadcaster),
       log: logFn,
-      snippetBuilder: createMock({ build: 'snippet' })
+      snippetBuilder: createMock({ build: 'snippet' }),
     })
   })
 
@@ -37,7 +37,7 @@ describe('SummaryFormatter', () => {
           this.eventBroadcaster.emit('pickle-accepted', {
             type: 'pickle-accepted',
             pickle: event.pickle,
-            uri: event.uri
+            uri: event.uri,
           })
         }
       })
@@ -51,21 +51,21 @@ describe('SummaryFormatter', () => {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 }
-            }
-          ]
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED }
+          result: { exception: 'error', status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.FAILED }
+          result: { status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 }
+          result: { duration: 0 },
         })
       })
 
@@ -90,9 +90,9 @@ describe('SummaryFormatter', () => {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
-              sourceLocation: { uri: 'a.feature', line: 3 }
-            }
-          ]
+              sourceLocation: { uri: 'a.feature', line: 3 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -102,15 +102,15 @@ describe('SummaryFormatter', () => {
               'Multiple step definitions match:\n' +
               '  pattern1        - steps.js:3\n' +
               '  longer pattern2 - steps.js:4',
-            status: Status.AMBIGUOUS
-          }
+            status: Status.AMBIGUOUS,
+          },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.AMBIGUOUS }
+          result: { status: Status.AMBIGUOUS },
         })
         this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 }
+          result: { duration: 0 },
         })
       })
 
@@ -137,21 +137,21 @@ describe('SummaryFormatter', () => {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
-              sourceLocation: { uri: 'a.feature', line: 3 }
-            }
-          ]
+              sourceLocation: { uri: 'a.feature', line: 3 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { status: Status.UNDEFINED }
+          result: { status: Status.UNDEFINED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.UNDEFINED }
+          result: { status: Status.UNDEFINED },
         })
         this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 }
+          result: { duration: 0 },
         })
       })
 
@@ -180,21 +180,21 @@ describe('SummaryFormatter', () => {
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 }
-            }
-          ]
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { status: Status.PENDING }
+          result: { status: Status.PENDING },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.PENDING }
+          result: { status: Status.PENDING },
         })
         this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 }
+          result: { duration: 0 },
         })
       })
 
@@ -217,7 +217,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 123 milliseconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 }
+            result: { duration: 123 },
           })
         })
 
@@ -229,7 +229,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 12.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 100 }
+            result: { duration: 123 * 100 },
           })
         })
 
@@ -241,7 +241,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 120.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 1000 }
+            result: { duration: 123 * 1000 },
           })
         })
 

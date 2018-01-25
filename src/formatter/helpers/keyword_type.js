@@ -4,7 +4,7 @@ import Gherkin from 'gherkin'
 const types = {
   EVENT: 'event',
   OUTCOME: 'outcome',
-  PRECONDITION: 'precondition'
+  PRECONDITION: 'precondition',
 }
 
 export default types

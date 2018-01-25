@@ -23,7 +23,7 @@ export default class StepDefinitionSnippetBuilder {
       comment,
       functionName,
       generatedExpressions,
-      stepParameterNames
+      stepParameterNames,
     })
   }
 
@@ -41,7 +41,7 @@ export default class StepDefinitionSnippetBuilder {
   getStepParameterNames(step) {
     const iterator = buildStepArgumentIterator({
       dataTable: () => 'dataTable',
-      docString: () => 'docString'
+      docString: () => 'docString',
     })
     return step.arguments.map(iterator)
   }

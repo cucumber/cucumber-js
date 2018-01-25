@@ -34,7 +34,7 @@ class World {
       const cli = new Cli({
         argv: args,
         cwd,
-        stdout
+        stdout,
       })
       let error, stderr
       try {
@@ -67,7 +67,7 @@ class World {
       error: result.error,
       errorOutput: result.stderr,
       jsonOutput,
-      output: colors.strip(result.stdout)
+      output: colors.strip(result.stdout),
     }
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')

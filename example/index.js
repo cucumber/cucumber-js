@@ -18,7 +18,7 @@ function runFeature() {
     eventBroadcaster,
     pickleFilter: new Cucumber.PickleFilter({}),
     source: featureSource,
-    uri: '/feature'
+    uri: '/feature',
   })
 
   Cucumber.supportCodeLibraryBuilder.reset('')
@@ -33,7 +33,7 @@ function runFeature() {
     log(data) {
       appendToOutput(ansiHTML(data))
     },
-    supportCodeLibrary
+    supportCodeLibrary,
   }
   Cucumber.FormatterBuilder.build('progress', formatterOptions)
 
@@ -41,7 +41,7 @@ function runFeature() {
     eventBroadcaster,
     options: {},
     testCases,
-    supportCodeLibrary
+    supportCodeLibrary,
   })
   return runtime.start()
 }

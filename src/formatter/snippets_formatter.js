@@ -15,21 +15,21 @@ export default class SnippetsFormatter extends Formatter {
     if (result.status === Status.UNDEFINED) {
       const {
         gherkinDocument,
-        testCase
+        testCase,
       } = this.eventDataCollector.getTestCaseData(sourceLocation)
       const {
         pickleStep,
-        gherkinKeyword
+        gherkinKeyword,
       } = this.eventDataCollector.getTestStepData({ testCase, index })
       const previousKeywordType = this.getPreviousKeywordType({
         gherkinDocument,
         testCase,
-        index
+        index,
       })
       const keywordType = getStepKeywordType({
         keyword: gherkinKeyword,
         language: gherkinDocument.feature.language,
-        previousKeywordType
+        previousKeywordType,
       })
       const snippet = this.snippetBuilder.build({ keywordType, pickleStep })
       this.log(`${snippet}\n\n`)
@@ -41,12 +41,12 @@ export default class SnippetsFormatter extends Formatter {
     for (let i = 0; i < index; i += 1) {
       const { gherkinKeyword } = this.eventDataCollector.getTestStepData({
         testCase,
-        index: i
+        index: i,
       })
       previousKeywordType = getStepKeywordType({
         keyword: gherkinKeyword,
         language: gherkinDocument.feature.language,
-        previousKeywordType
+        previousKeywordType,
       })
     }
     return previousKeywordType

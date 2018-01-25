@@ -13,7 +13,7 @@ const keywords = [
   'when',
   'then',
   'and',
-  'but'
+  'but',
 ]
 
 function getAsTable(header, rows) {
@@ -33,13 +33,13 @@ function getAsTable(header, rows) {
       top: '',
       'top-left': '',
       'top-mid': '',
-      'top-right': ''
+      'top-right': '',
     },
     style: {
       border: [],
       'padding-left': 0,
-      'padding-right': 0
-    }
+      'padding-right': 0,
+    },
   })
   table.push(header)
   table.push(...rows)
@@ -50,7 +50,7 @@ export function getLanguages() {
   const rows = _.map(Gherkin.DIALECTS, (data, isoCode) => [
     isoCode,
     data.name,
-    data.native
+    data.native,
   ])
   return getAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
 }
