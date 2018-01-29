@@ -34,7 +34,7 @@ Feature: Step definition timeouts
     Then it fails
     And the output contains the text:
       """
-      function timed out after 500 milliseconds
+      function timed out, ensure the callback is executed within 500 milliseconds
       """
 
 
@@ -63,7 +63,7 @@ Feature: Step definition timeouts
     Then it fails
     And the output contains the text:
       """
-      function timed out after 500 milliseconds
+      function timed out, ensure the callback is executed within 500 milliseconds
       """
 
 

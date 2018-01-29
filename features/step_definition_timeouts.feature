@@ -44,13 +44,13 @@ Feature: Step definition timeouts
     Then it fails
     And the output contains the text:
       """
-      function timed out after 500 milliseconds
+      function timed out, ensure the <TYPE> <ASSERT> within 500 milliseconds
       """
 
     Examples:
-      | TYPE     |
-      | callback |
-      | promise  |
+      | TYPE     | ASSERT      |
+      | callback | is executed |
+      | promise  | resolves    |
 
 
   Scenario Outline: slow steps can increase their timeout
@@ -81,7 +81,7 @@ Feature: Step definition timeouts
     Then it fails
     And the output contains the text:
       """
-      function timed out after 500 milliseconds
+      function timed out
       """
 
     Examples:
