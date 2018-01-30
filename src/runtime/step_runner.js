@@ -12,7 +12,6 @@ async function run({
   parameterTypeRegistry,
   step,
   stepDefinition,
-  state,
   world,
 }) {
   beginTiming()
@@ -37,7 +36,6 @@ async function run({
 
     const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
     if (_.includes(validCodeLengths, stepDefinition.code.length)) {
-      parameters.unshift(state)
       const data = await UserCodeRunner.run({
         argsArray: parameters,
         fn: stepDefinition.code,
@@ -62,7 +60,6 @@ async function run({
     testStepResult.status = Status.FAILED
   } else {
     testStepResult.status = Status.PASSED
-    testStepResult.state = result
   }
 
   return testStepResult

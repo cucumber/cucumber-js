@@ -24,7 +24,7 @@ export default class UserCodeRunner {
     }
 
     const racingPromises = []
-    const callbackInterface = false // fn.length === argsArray.length
+    const callbackInterface = fn.length === argsArray.length
     const promiseInterface = fnReturn && typeof fnReturn.then === 'function'
 
     if (callbackInterface && promiseInterface) {

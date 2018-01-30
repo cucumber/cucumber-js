@@ -39,7 +39,6 @@ export default class TestCaseRunner {
       uri: this.testCase.uri,
       line: this.testCase.pickle.locations[0].line,
     }
-    this.state = null
   }
 
   emit(name, data) {
@@ -101,18 +100,15 @@ export default class TestCaseRunner {
     )
   }
 
-  async invokeStep(step, stepDefinition, hookParameter) {
-    const testStepResult = await StepRunner.run({
+  invokeStep(step, stepDefinition, hookParameter) {
+    return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
       parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
-      state: this.state,
       world: this.world,
     })
-    this.state = testStepResult.state || this.state
-    return testStepResult
   }
 
   isSkippingSteps() {
