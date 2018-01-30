@@ -111,7 +111,7 @@ export default class TestCaseRunner {
       state: this.state,
       world: this.world,
     })
-    this.state = testStepResult.state
+    this.state = testStepResult.state || this.state
     return testStepResult
   }
 
