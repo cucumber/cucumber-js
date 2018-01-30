@@ -8,7 +8,7 @@ import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 
 export default class Runtime {
-  // options - {dryRun, failFast, filterStacktraces, strict}
+  // options - {dryRun, failFast, filterStacktraces, strict, pure}
   constructor({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
@@ -49,6 +49,7 @@ export default class Runtime {
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       testCase,
+      pure: this.options.pure,
       worldParameters: this.options.worldParameters,
     })
     const testCaseResult = await testCaseRunner.run()

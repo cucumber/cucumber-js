@@ -11,6 +11,7 @@ export default class TestCaseRunner {
     skip,
     testCase,
     supportCodeLibrary,
+    pure,
     worldParameters,
   }) {
     const attachmentManager = new AttachmentManager(({ data, media }) => {
@@ -24,10 +25,16 @@ export default class TestCaseRunner {
     this.skip = skip
     this.testCase = testCase
     this.supportCodeLibrary = supportCodeLibrary
-    this.world = new supportCodeLibrary.World({
-      attach: ::attachmentManager.create,
-      parameters: worldParameters,
-    })
+    this.pure = pure
+    if (pure) {
+      // TODO: Disallow callbacks too
+      this.state = null
+    } else {
+      this.world = new supportCodeLibrary.World({
+        attach: ::attachmentManager.create,
+        parameters: worldParameters,
+      })
+    }
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
     this.testStepIndex = 0
@@ -100,15 +107,19 @@ export default class TestCaseRunner {
     )
   }
 
-  invokeStep(step, stepDefinition, hookParameter) {
-    return StepRunner.run({
+  async invokeStep(step, stepDefinition, hookParameter) {
+    const testStepResult = await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
       parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
+      pure: this.pure,
+      state: this.state,
       world: this.world,
     })
+    this.state = testStepResult.state || this.state
+    return testStepResult
   }
 
   isSkippingSteps() {

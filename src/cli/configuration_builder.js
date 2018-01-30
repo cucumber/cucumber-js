@@ -58,6 +58,7 @@ export default class ConfigurationBuilder {
         failFast: !!this.options.failFast,
         filterStacktraces: !this.options.backtrace,
         strict: !!this.options.strict,
+        pure: !!this.options.pure,
         worldParameters: this.options.worldParameters,
       },
       shouldExitImmediately: !!this.options.exit,

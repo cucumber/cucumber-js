@@ -82,6 +82,7 @@ export default class ArgvParser {
         []
       )
       .option('--no-strict', 'succeed even if there are pending steps')
+      .option('--pure', 'use pure (stateless) step definition functions')
       .option(
         '-p, --profile <NAME>',
         'specify the profile to use (repeatable)',

@@ -12,6 +12,8 @@ async function run({
   parameterTypeRegistry,
   step,
   stepDefinition,
+  pure,
+  state,
   world,
 }) {
   beginTiming()
@@ -26,6 +28,7 @@ async function run({
         world,
       })
     )
+    if (pure) parameters.unshift(state)
   } catch (err) {
     error = err
   }
@@ -60,6 +63,7 @@ async function run({
     testStepResult.status = Status.FAILED
   } else {
     testStepResult.status = Status.PASSED
+    testStepResult.state = result
   }
 
   return testStepResult

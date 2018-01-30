@@ -23,11 +23,12 @@ After((state, res) => {
     )
 })
 
-Given(/^my number is (\d+)$/, (state, myNewNumber) =>
-  state.with({
+Given(/^my number is (\d+)$/, (state, myNewNumber) => {
+  console.log('THIS', this)
+  return state.with({
     myNumber: myNewNumber,
   })
-)
+})
 
 When(/^my number is multiplied by (\d+)$/, (state, multiplier) =>
   state.with({
