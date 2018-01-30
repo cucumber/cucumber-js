@@ -82,6 +82,32 @@ describe('JavascriptSnippetSyntax', () => {
       })
     })
 
+    describe('pure interface', () => {
+      beforeEach(function() {
+        this.syntax = new JavascriptSnippetSyntax('pure')
+      })
+
+      it('returns the proper snippet', function() {
+        const actual = this.syntax.build({
+          comment: 'comment',
+          functionName: 'functionName',
+          generatedExpressions: [
+            {
+              source: 'pattern',
+              parameterNames: ['arg1', 'arg2'],
+            },
+          ],
+          stepParameterNames: [],
+        })
+        const expected =
+          "functionName('pattern', (state, arg1, arg2) => {\n" +
+          '  // comment\n' +
+          "  return 'pending';\n" +
+          '});'
+        expect(actual).to.eql(expected)
+      })
+    })
+
     describe('synchronous interface', () => {
       beforeEach(function() {
         this.syntax = new JavascriptSnippetSyntax('synchronous')

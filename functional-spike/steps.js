@@ -1,6 +1,7 @@
 const assert = require('assert')
 const { After, Before, Given, When, Then } = require('../lib')
 
+// We're using our own State class here, but Immutable.js can be used too
 class State {
   constructor(props = {}) {
     Object.keys(props).forEach(key => {
@@ -24,7 +25,6 @@ After((state, res) => {
 })
 
 Given(/^my number is (\d+)$/, (state, myNewNumber) => {
-  console.log('THIS', this)
   return state.with({
     myNumber: myNewNumber,
   })

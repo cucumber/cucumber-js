@@ -6,11 +6,15 @@ export default class JavaScriptSnippetSyntax {
   }
 
   build({ comment, generatedExpressions, functionName, stepParameterNames }) {
-    let functionKeyword = 'function '
+    let functionKeyword
     if (this.snippetInterface === 'async-await') {
-      functionKeyword = 'async ' + functionKeyword
+      functionKeyword = 'async function '
     } else if (this.snippetInterface === 'generator') {
-      functionKeyword += '*'
+      functionKeyword = 'function *'
+    } else if (this.snippetInterface === 'pure') {
+      functionKeyword = ''
+    } else {
+      functionKeyword = 'function '
     }
 
     let implementation
@@ -26,13 +30,18 @@ export default class JavaScriptSnippetSyntax {
         const allParameterNames = generatedExpression.parameterNames.concat(
           stepParameterNames
         )
+        if (this.snippetInterface === 'pure') {
+          allParameterNames.unshift('state')
+        }
         if (this.snippetInterface === 'callback') {
           allParameterNames.push(CALLBACK_NAME)
         }
+        const functionEol =
+          this.snippetInterface === 'pure' ? ' => {\n' : ' {\n'
         return `${prefix + functionName}('${generatedExpression.source.replace(
           /'/g,
           "\\'"
-        )}', ${functionKeyword}(${allParameterNames.join(', ')}) {\n`
+        )}', ${functionKeyword}(${allParameterNames.join(', ')})${functionEol}`
       }
     )
 

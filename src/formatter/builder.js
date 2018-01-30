@@ -54,9 +54,6 @@ export default class FormatterBuilder {
     snippetSyntax,
     supportCodeLibrary,
   }) {
-    if (!snippetInterface) {
-      snippetInterface = 'callback'
-    }
     let Syntax = JavascriptSnippetSyntax
     if (snippetSyntax) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)

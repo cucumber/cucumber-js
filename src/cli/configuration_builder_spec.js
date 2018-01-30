@@ -31,6 +31,7 @@ describe('Configuration', () => {
         formatOptions: {
           colorsEnabled: true,
           cwd: this.tmpDir,
+          snippetInterface: 'callback',
         },
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',

@@ -112,7 +112,10 @@ export default class ConfigurationBuilder {
   getFormatOptions() {
     const formatOptions = _.clone(this.options.formatOptions)
     formatOptions.cwd = this.cwd
-    _.defaults(formatOptions, { colorsEnabled: true })
+    _.defaults(formatOptions, {
+      colorsEnabled: true,
+      snippetInterface: this.options.pure ? 'pure' : 'callback',
+    })
     return formatOptions
   }
 
