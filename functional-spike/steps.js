@@ -24,7 +24,8 @@ After((state, res) => {
     )
 })
 
-Given(/^my number is (\d+)$/, (state, myNewNumber) => {
+Given(/^my number is (\d+)$/, function(state, myNewNumber) {
+  this.foo = 1
   return state.with({
     myNumber: myNewNumber,
   })
@@ -54,3 +55,9 @@ Then(/^my number should not be (\d+)$/, (state, unexpectedNumber) =>
 Then('my remainder should be {int}', (state, expectedRemainder) =>
   assert.equal(state.myRemainder, expectedRemainder)
 )
+
+Given('{word} is around', (state, actorName) =>
+  state.with({ actors: { actorName } })
+)
+
+Then('{actor} should be around', (state, actor) => assert.equal(actor, 'Joe'))

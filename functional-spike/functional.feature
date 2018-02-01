@@ -17,3 +17,7 @@ Feature: some feature
     When my number is divided by 2
     Then my number should be 11
     And my remainder should be 1
+
+  Scenario: parameter types
+    Given Joe is around
+    Then Joe should be around
