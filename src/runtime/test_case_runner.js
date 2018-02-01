@@ -27,8 +27,8 @@ export default class TestCaseRunner {
     this.supportCodeLibrary = supportCodeLibrary
     this.pure = pure
     if (pure) {
-      // TODO: Disallow callbacks too
-      this.state = null
+      // There's no World instance in pure mode, so `this` is undefined in stepdefs
+      this.state = undefined
     } else {
       this.world = new supportCodeLibrary.World({
         attach: ::attachmentManager.create,
