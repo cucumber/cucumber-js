@@ -54,7 +54,7 @@ Feature: Error formatting
       """
       import {Given} from 'cucumber'
 
-      Given(/^a basic step$/, function() {})
+      Given(/^a basic step$/, function() { this.attach('Basic info.') })
       Given(/^a step with a doc string$/, function(str) {})
       Given(/^a pending step$/, function() { return 'pending' })
       """
@@ -65,6 +65,7 @@ Feature: Error formatting
 
       1) Scenario: some scenario # features/a.feature:3
          ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
+            ℹ Basic info.
          ✔ And a step with a doc string # features/step_definitions/cucumber_steps.js:4
              \"\"\"
              my doc string
