@@ -39,7 +39,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   Given(/^a step$/, function() {});
   ```
 
-### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2017-01-03)
+### [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2018-01-03)
 
 #### Bug Fixes
 * revert json formatter mime type ([#995](https://github.com/cucumber/cucumber-js/pull/995)
