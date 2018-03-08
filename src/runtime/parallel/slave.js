@@ -8,6 +8,8 @@ import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import TestCaseRunner from '../test_case_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
+import escapeStringRegexp from 'escape-string-regexp'
+import path from 'path'
 
 const EVENTS = [
   'test-case-prepared',
@@ -26,12 +28,26 @@ export default class Slave {
     this.cwd = cwd
     this.eventBroadcaster = new EventEmitter()
     this.stackTraceFilter = new StackTraceFilter()
+
+    const pathSepRegexp = new RegExp(escapeStringRegexp(path.sep), 'g')
+    const pathToRemove =
+      cwd.replace(pathSepRegexp, path.posix.sep) + path.posix.sep
+    this.pathRegexp = new RegExp(escapeStringRegexp(pathToRemove), 'g')
+
     EVENTS.forEach(name => {
-      this.eventBroadcaster.on(name, data =>
-        this.stdout.write(
+      this.eventBroadcaster.on(name, data => {
+        // Format error instance
+        if (data.result && data.result.exception instanceof Error) {
+          data.result.exception = data.result.exception.stack.replace(
+            this.pathRegexp,
+            ''
+          )
+        }
+
+        return this.stdout.write(
           JSON.stringify({ command: commandTypes.EVENT, name, data }) + '\n'
         )
-      )
+      })
     })
   }
 
