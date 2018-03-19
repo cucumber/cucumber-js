@@ -28,9 +28,9 @@ Feature: before / after all hook timeouts
     When I run cucumber-js
     Then it fails
     And the error output contains the text snippets:
-      | a handler errored, process exiting        |
-      | function timed out after 500 milliseconds |
-      | features/support/handlers.js:5            |
+      | a handler errored, process exiting                                          |
+      | function timed out, ensure the callback is executed within 500 milliseconds |
+      | features/support/handlers.js:5                                              |
 
     Examples:
       | TYPE      |

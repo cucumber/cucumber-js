@@ -54,7 +54,10 @@ export default class UserCodeRunner {
     if (timeoutInMilliseconds >= 0) {
       const timeoutPromise = new Promise((resolve, reject) => {
         timeoutId = Time.setTimeout(() => {
-          const timeoutMessage = `function timed out after ${timeoutInMilliseconds} milliseconds`
+          const timeoutMessage =
+            'function timed out, ensure the ' +
+            (callbackInterface ? 'callback is executed' : 'promise resolves') +
+            ` within ${timeoutInMilliseconds} milliseconds`
           reject(new Error(timeoutMessage))
         }, timeoutInMilliseconds)
       })

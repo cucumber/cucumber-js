@@ -131,7 +131,7 @@ describe('UserCodeRunner', () => {
           const { error, result } = await UserCodeRunner.run(this.options)
           expect(error).to.be.instanceof(Error)
           expect(error.message).to.eql(
-            'function timed out after 100 milliseconds'
+            'function timed out, ensure the callback is executed within 100 milliseconds'
           )
           expect(result).to.eql(undefined)
         })
@@ -204,7 +204,7 @@ describe('UserCodeRunner', () => {
         })
       })
 
-      describe('function times out', () => {
+      describe('promise times out', function() {
         beforeEach(function() {
           this.options.fn = function() {
             return Promise.resolve('result').delay(200)
@@ -215,7 +215,7 @@ describe('UserCodeRunner', () => {
           const { error, result } = await UserCodeRunner.run(this.options)
           expect(error).to.be.instanceof(Error)
           expect(error.message).to.eql(
-            'function timed out after 100 milliseconds'
+            'function timed out, ensure the promise resolves within 100 milliseconds'
           )
           expect(result).to.eql(undefined)
         })
