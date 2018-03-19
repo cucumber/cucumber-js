@@ -69,7 +69,7 @@ Here is an example of saving a screenshot using [Selenium WebDriver](https://www
 when a scenario fails:
 
 ```javascript
-var {After} = require('cucumber');
+var {After, Status} = require('cucumber');
 
 After(function (testCase) {
   var world = this;
