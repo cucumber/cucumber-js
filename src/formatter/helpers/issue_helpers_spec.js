@@ -241,21 +241,21 @@ describe('IssueHelpers', () => {
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[0].attachments = [
           {
-            data: 'First info.',
+            data: 'Some info.',
             media: {
               type: 'text/plain',
             },
           },
           {
-            data: 'Nop',
+            data: '{"name": "some JSON"}',
             media: {
-              type: 'text/special',
+              type: 'application/json',
             },
           },
           {
-            data: 'Second info.',
+            data: Buffer.from([]),
             media: {
-              type: 'text/plain',
+              type: 'image/png',
             },
           },
         ]
@@ -269,7 +269,7 @@ describe('IssueHelpers', () => {
         }
         this.testCase.steps[1].attachments = [
           {
-            data: 'Third info.',
+            data: 'Other info.',
             media: {
               type: 'text/plain',
             },
@@ -283,10 +283,11 @@ describe('IssueHelpers', () => {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `       Attachment (text/plain): First info.\n` +
-            `       Attachment (text/plain): Second info.\n` +
+            `       Attachment (text/plain): Some info.\n` +
+            `       Attachment (application/json)\n` +
+            `       Attachment (image/png)\n` +
             `   ${figures.cross} When step2 # steps.js:3\n` +
-            `       Attachment (text/plain): Third info.\n` +
+            `       Attachment (text/plain): Other info.\n` +
             '       error\n' +
             '   - Then step3 # steps.js:4\n\n'
         )

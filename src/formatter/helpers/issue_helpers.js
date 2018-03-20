@@ -93,14 +93,6 @@ function formatStep({
   }
   text += '\n'
 
-  if (testStep.attachments) {
-    testStep.attachments
-      .filter(({ media }) => media.type === 'text/plain')
-      .forEach(({ data }) => {
-        text += indentString('Attachment (text/plain): ' + data, 4) + '\n'
-      })
-  }
-
   if (pickleStep) {
     let str
     const iterator = buildStepArgumentIterator({
@@ -112,6 +104,14 @@ function formatStep({
       text += indentString(`${colorFn(str)}\n`, 4)
     }
   }
+
+  if (testStep.attachments) {
+    testStep.attachments.forEach(({ media, data }) => {
+      const message = media.type === 'text/plain' ? `: ${data}` : ''
+      text += indentString(`Attachment (${media.type})${message}\n`, 4)
+    })
+  }
+
   const message = getStepMessage({
     colorFns,
     keywordType,
