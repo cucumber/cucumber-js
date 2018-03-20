@@ -93,15 +93,11 @@ function formatStep({
   }
   text += '\n'
 
-  if (Array.isArray(testStep.attachments)) {
+  if (testStep.attachments) {
     testStep.attachments
       .filter(({ media }) => media.type === 'text/plain')
       .forEach(({ data }) => {
-        text +=
-          indentString(
-            colorFns[Status.UNDEFINED](figures.info + ' ' + data),
-            4
-          ) + '\n'
+        text += indentString('Attachment (text/plain): ' + data, 4) + '\n'
       })
   }
 

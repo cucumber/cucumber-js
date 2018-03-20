@@ -65,7 +65,7 @@ Feature: Error formatting
 
       1) Scenario: some scenario # features/a.feature:3
          ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
-            ℹ Basic info.
+            Attachment (text/plain): Basic info.
          ✔ And a step with a doc string # features/step_definitions/cucumber_steps.js:4
              \"\"\"
              my doc string

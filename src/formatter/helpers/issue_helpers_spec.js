@@ -283,10 +283,10 @@ describe('IssueHelpers', () => {
         expect(this.formattedIssue).to.eql(
           '1) Scenario: my scenario # a.feature:2\n' +
             `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `       ${figures.info} First info.\n` +
-            `       ${figures.info} Second info.\n` +
+            `       Attachment (text/plain): First info.\n` +
+            `       Attachment (text/plain): Second info.\n` +
             `   ${figures.cross} When step2 # steps.js:3\n` +
-            `       ${figures.info} Third info.\n` +
+            `       Attachment (text/plain): Third info.\n` +
             '       error\n' +
             '   - Then step3 # steps.js:4\n\n'
         )
