@@ -1,8 +1,10 @@
+import _ from 'lodash'
 import { formatLocation } from '../../formatter/helpers'
 import commandTypes from './command_types'
 import EventEmitter from 'events'
 import Promise from 'bluebird'
 import readline from 'readline'
+import serializeError from 'serialize-error'
 import StackTraceFilter from '../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import TestCaseRunner from '../test_case_runner'
@@ -18,6 +20,13 @@ const EVENTS = [
   'test-case-finished',
 ]
 
+function replacerSerializeErrors(key, value) {
+  if (_.isError(value)) {
+    return serializeError(value)
+  }
+  return value
+}
+
 export default class Slave {
   constructor({ cwd, stdin, stdout }) {
     this.initialized = false
@@ -29,7 +38,10 @@ export default class Slave {
     EVENTS.forEach(name => {
       this.eventBroadcaster.on(name, data =>
         this.stdout.write(
-          JSON.stringify({ command: commandTypes.EVENT, name, data }) + '\n'
+          JSON.stringify(
+            { command: commandTypes.EVENT, name, data },
+            replacerSerializeErrors
+          ) + '\n'
         )
       )
     })
