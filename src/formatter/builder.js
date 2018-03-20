@@ -55,7 +55,7 @@ export default class FormatterBuilder {
     supportCodeLibrary,
   }) {
     if (!snippetInterface) {
-      snippetInterface = 'callback'
+      snippetInterface = 'synchronous'
     }
     let Syntax = JavascriptSnippetSyntax
     if (snippetSyntax) {

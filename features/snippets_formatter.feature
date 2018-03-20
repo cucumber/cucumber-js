@@ -18,18 +18,18 @@ Feature: snippets formatter
     Then it fails
     And it outputs the text:
       """
-      Given('undefined step A', function (callback) {
+      Given('undefined step A', function () {
         // Write code here that turns the phrase above into concrete actions
-        callback(null, 'pending');
+        return 'pending';
       });
 
-      When('undefined step B', function (callback) {
+      When('undefined step B', function () {
         // Write code here that turns the phrase above into concrete actions
-        callback(null, 'pending');
+        return 'pending';
       });
 
-      Then('undefined step C', function (callback) {
+      Then('undefined step C', function () {
         // Write code here that turns the phrase above into concrete actions
-        callback(null, 'pending');
+        return 'pending';
       });
       """

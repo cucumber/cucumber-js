@@ -112,9 +112,9 @@ Feature: custom formatter
          ? Given an undefined step
              Undefined. Implement with the following snippet:
 
-               Given('an undefined step', function (callback) {
+               Given('an undefined step', function () {
                  // Write code here that turns the phrase above into concrete actions
-                 callback(null, 'pending');
+                 return 'pending';
                });
 
 

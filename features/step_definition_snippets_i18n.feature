@@ -19,22 +19,22 @@ Feature: step definition snippets i18n
     Then it fails
     And the output contains the text:
       """
-      Given('undefined step A', function (callback) {
+      Given('undefined step A', function () {
         // Write code here that turns the phrase above into concrete actions
-        callback(null, 'pending');
+        return 'pending';
       });
       """
     And the output contains the text:
       """
-      When('undefined step B', function (callback) {
+      When('undefined step B', function () {
         // Write code here that turns the phrase above into concrete actions
-        callback(null, 'pending');
+        return 'pending';
       });
       """
     And the output contains the text:
       """
-      Then('undefined step C', function (callback) {
+      Then('undefined step C', function () {
         // Write code here that turns the phrase above into concrete actions
-        callback(null, 'pending');
+        return 'pending';
       });
       """
