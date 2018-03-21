@@ -104,6 +104,14 @@ function formatStep({
       text += indentString(`${colorFn(str)}\n`, 4)
     }
   }
+
+  if (testStep.attachments) {
+    testStep.attachments.forEach(({ media, data }) => {
+      const message = media.type === 'text/plain' ? `: ${data}` : ''
+      text += indentString(`Attachment (${media.type})${message}\n`, 4)
+    })
+  }
+
   const message = getStepMessage({
     colorFns,
     keywordType,

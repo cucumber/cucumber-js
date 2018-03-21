@@ -54,8 +54,8 @@ Feature: Error formatting
       """
       import {Given} from 'cucumber'
 
-      Given(/^a basic step$/, function() {})
-      Given(/^a step with a doc string$/, function(str) {})
+      Given(/^a basic step$/, function() { this.attach('Some info.') })
+      Given(/^a step with a doc string$/, function(str) { this.attach('{"name": "some JSON"}', 'application/json') })
       Given(/^a pending step$/, function() { return 'pending' })
       """
     When I run cucumber-js
@@ -65,10 +65,12 @@ Feature: Error formatting
 
       1) Scenario: some scenario # features/a.feature:3
          ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
+             Attachment (text/plain): Some info.
          ✔ And a step with a doc string # features/step_definitions/cucumber_steps.js:4
              \"\"\"
              my doc string
              \"\"\"
+             Attachment (application/json)
          ? And a pending step # features/step_definitions/cucumber_steps.js:5
              Pending
       """

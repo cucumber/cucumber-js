@@ -235,5 +235,63 @@ describe('IssueHelpers', () => {
         )
       })
     })
+
+    describe('step with attachment text', () => {
+      beforeEach(function() {
+        this.testCase.steps[0].result = this.passedStepResult
+        this.testCase.steps[0].attachments = [
+          {
+            data: 'Some info.',
+            media: {
+              type: 'text/plain',
+            },
+          },
+          {
+            data: '{"name": "some JSON"}',
+            media: {
+              type: 'application/json',
+            },
+          },
+          {
+            data: Buffer.from([]),
+            media: {
+              type: 'image/png',
+            },
+          },
+        ]
+        this.testCase.steps[1] = {
+          actionLocation: { line: 3, uri: 'steps.js' },
+          sourceLocation: { line: 4, uri: 'a.feature' },
+          result: {
+            exception: 'error',
+            status: Status.FAILED,
+          },
+        }
+        this.testCase.steps[1].attachments = [
+          {
+            data: 'Other info.',
+            media: {
+              type: 'text/plain',
+            },
+          },
+        ]
+        this.testCase.steps[2].result = this.skippedStepResult
+        this.formattedIssue = formatIssue(this.options)
+      })
+
+      it('prints the scenario', function() {
+        expect(this.formattedIssue).to.eql(
+          '1) Scenario: my scenario # a.feature:2\n' +
+            `   ${figures.tick} Given step1 # steps.js:2\n` +
+            `       Attachment (text/plain): Some info.\n` +
+            `       Attachment (application/json)\n` +
+            `       Attachment (image/png)\n` +
+            `   ${figures.cross} When step2 # steps.js:3\n` +
+            `       Attachment (text/plain): Other info.\n` +
+            '       error\n' +
+            '   - Then step3 # steps.js:4\n\n'
+        )
+      })
+    })
   })
 })

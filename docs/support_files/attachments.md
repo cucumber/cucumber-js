@@ -81,3 +81,20 @@ After(function (testCase) {
   }
 });
 ```
+
+Attachments are also printed by the progress, progress-bar and summary formatters.
+They appear right after the step and only `text/plain` content is visible.
+It can be used to debug scenarios, especially in parallel mode.
+
+```javascript
+// Step definition
+Given(/^a basic step$/, function() {
+  this.attach('Some info.')
+  this.attach('{"some", "JSON"}}', 'application/json')
+})
+
+// Result format
+// ✔ Given a basic step # path:line
+//    Attachment (text/plain): Some info.
+//    Attachment (application/json)
+```
