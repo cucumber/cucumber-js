@@ -82,8 +82,8 @@ After(function (testCase) {
 });
 ```
 
-Attachments are also printed by the progress, progress-bar and summary formatter.
-They appears right after the step and only `text/plain` content is visible.
+Attachments are also printed by the progress, progress-bar and summary formatters.
+They appear right after the step and only `text/plain` content is visible.
 It can be used to debug scenarios, especially in parallel mode.
 
 ```javascript
