@@ -8,3 +8,4 @@ dist/browser-example.js
 lib/
 node_modules
 usage.txt
+yarn-error.log

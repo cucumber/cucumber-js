@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "4.0.0",
+  "version": "4.1.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -117,7 +117,11 @@
     "Marco Muller <marco@remotemetering.net>",
     "Valerio Innocenti Sedili <valerio.innocenti.ext@yoox.com>",
     "Alon Diamant <diamant.alon@gmail.com>",
-    "RolandArgos <roland.ormrod@argos.co.uk>"
+    "RolandArgos <roland.ormrod@argos.co.uk>",
+    "Julian <JuloWaks@users.noreply.github.com>",
+    "Bruce Lindsay <skynet1024@gmail.com>",
+    "Josua Schmid <jschmid@fastmail.net>",
+    "DevSide <thomas.triau@gmail.com>"
   ],
   "repository": {
     "type": "git",

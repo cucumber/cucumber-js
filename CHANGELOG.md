@@ -1,6 +1,19 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v4.0.0...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v4.1.0...master) (In Git)
+
+### [4.1.0](https://github.com/cucumber/cucumber-js/compare/v4.0.0...v4.1.0) (2018-03-27)
+
+#### New Features
+
+* update step timeout error message for each interface ([#1028](https://github.com/cucumber/cucumber-js/pull/1028), Bruce Lindsay)
+* default to synchronous snippets
+* print text step attachments ([#1041](https://github.com/cucumber/cucumber-js/pull/1041), DevSide)
+
+#### Bug Fixes
+
+* cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#5013---2018-01-21)
+* fix error serialization in parallel mode
 
 ### [4.0.0](https://github.com/cucumber/cucumber-js/compare/v3.2.1...v4.0.0) (2018-01-24)
 
