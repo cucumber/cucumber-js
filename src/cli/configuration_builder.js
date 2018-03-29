@@ -46,6 +46,7 @@ export default class ConfigurationBuilder {
       formatOptions: this.getFormatOptions(),
       listI18nKeywordsFor,
       listI18nLanguages,
+      order: this.options.order,
       parallel: this.options.parallel,
       profiles: this.options.profile,
       pickleFilterOptions: {
