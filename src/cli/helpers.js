@@ -70,7 +70,7 @@ export async function getTestCases({
 }
 
 // Orders the testCases in place - morphs input
-function orderTestCases(testCases, order) {
+export function orderTestCases(testCases, order) {
   let [type, seed] = order.split(':')
   switch (type) {
     case 'defined':
