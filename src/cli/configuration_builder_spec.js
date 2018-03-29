@@ -35,6 +35,7 @@ describe('Configuration', () => {
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
+        order: 'defined',
         parallel: 0,
         pickleFilterOptions: {
           featurePaths: ['features/**/*.feature'],
