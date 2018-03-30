@@ -116,7 +116,7 @@ Feature: Skipped steps
       """
     And a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given, Then} from 'cucumber'
+      import {Given} from 'cucumber'
       
       Given(/^a skipped step$/, function() {
         var a = 1;
