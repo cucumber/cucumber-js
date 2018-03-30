@@ -115,7 +115,7 @@ Feature: Skipped steps
       """
       import {After, Before} from 'cucumber' 
       
-      Before({tags: "@first_scenario"}, function() {return 'skipped'})
+      Before(function() {return 'skipped'})
 
       Before(function() {})
 
