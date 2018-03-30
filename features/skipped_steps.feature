@@ -103,14 +103,7 @@ Feature: Skipped steps
     And the step "a skipped step" has status "skipped"
 
 
-  Scenario: Skipped before hook should run after hook
-     Given a file named "features/skipped_runs_after_hook.feature" with:
-      """
-      Feature: a feature 
-        Scenario: a scenario
-	  Given a skipped step 
-      """
-
+  Scenario: Skipped before hook should run after hook 
     Given a file named "features/support/hooks.js" with:
       """
       import {After, Before} from 'cucumber' 
