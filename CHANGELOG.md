@@ -2,6 +2,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v4.1.0...master) (In Git)
 
+* add cli option `--order <TYPE[:SEED]>` to run scenarios in the specified order. Type should be `defined` or `random`'
+
 ### [4.1.0](https://github.com/cucumber/cucumber-js/compare/v4.0.0...v4.1.0) (2018-03-27)
 
 #### New Features
