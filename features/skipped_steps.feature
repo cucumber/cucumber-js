@@ -78,3 +78,57 @@ Feature: Skipped steps
     When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
+
+  Scenario: Skipped before hook should skip all before hooks
+    Given a file named "features/support/hooks.js" with:
+      """
+      import {After, Before} from 'cucumber'
+
+      Before(function() {return 'skipped'})
+
+      Before(function() {})
+
+      After(function() {})
+      """
+    And a file named "features/step_definitions/skipped_steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      Given(/^a skipped step$/, function() {
+        var a = 1;
+      })
+      """
+    When I run cucumber-js
+    Then it passes
+    And the step "a skipped step" has status "skipped"
+
+
+  Scenario: Skipped before hook should run after hook
+     Given a file named "features/skipped_runs_after_hook.feature" with:
+      """
+      Feature: a feature 
+        Scenario: a scenario
+	  Given a skipped step 
+      """
+
+    Given a file named "features/support/hooks.js" with:
+      """
+      import {After, Before} from 'cucumber' 
+      
+      Before({tags: "@first_scenario"}, function() {return 'skipped'})
+
+      Before(function() {})
+
+      After(function() {})
+      """
+    And a file named "features/step_definitions/skipped_steps.js" with:
+      """
+      import {Given, Then} from 'cucumber'
+      
+      Given(/^a skipped step$/, function() {
+        var a = 1;
+       }) 
+      """
+    When I run cucumber-js
+    Then it passes
+    And the "After" hook has status "passed"
