@@ -84,7 +84,7 @@ export default class ArgvParser {
       .option('--no-strict', 'succeed even if there are pending steps')
       .option(
         '--order <TYPE[:SEED]>',
-        'run examples in the specified order. Type should be `defined` or `random`',
+        'run scenarios in the specified order. Type should be `defined` or `random`',
         'defined'
       )
       .option(
