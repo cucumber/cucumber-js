@@ -63,6 +63,16 @@ Feature: Environment Hooks
     Then it fails
     And the "After" hook has status "passed"
 
+  Scenario: Failing before step fails the scenario
+    Given a file named "features/support/hooks.js" with:
+      """
+      import {BeforeStep} from 'cucumber'
+
+      BeforeStep(function() { throw 'Fail' })
+      """
+    When I run cucumber-js
+    Then it fails
+
   Scenario: World is this in hooks
     Given a file named "features/support/world.js" with:
       """
@@ -78,9 +88,15 @@ Feature: Environment Hooks
       """
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
+      import {After, Before, BeforeStep } from 'cucumber'
 
       Before(function() {
+        if (!this.isWorld()) {
+          throw Error("Expected this to be world")
+        }
+      })
+
+      BeforeStep(function() {
         if (!this.isWorld()) {
           throw Error("Expected this to be world")
         }

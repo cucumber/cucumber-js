@@ -29,6 +29,7 @@ export default class TestCaseRunner {
       parameters: worldParameters,
     })
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
+    this.beforeStepHookDefinitions = this.getBeforeStepHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
     this.testStepIndex = 0
     this.result = {
@@ -88,6 +89,12 @@ export default class TestCaseRunner {
   getBeforeHookDefinitions() {
     return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
       hookDefinition => hookDefinition.appliesToTestCase(this.testCase)
+    )
+  }
+
+  getBeforeStepHookDefinitions() {
+    return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter(
+      stepHookDefinition => stepHookDefinition.appliesToTestCase(this.testCase)
     )
   }
 
@@ -182,6 +189,12 @@ export default class TestCaseRunner {
     })
   }
 
+  async runStepHooks(hookDefinitions, hookParameter) {
+    await Promise.each(hookDefinitions, async hookDefinition => {
+      await this.runHook(hookDefinition, hookParameter)
+    })
+  }
+
   async runStep(step) {
     const stepDefinitions = this.getStepDefinitions(step)
     if (stepDefinitions.length === 0) {
@@ -199,7 +212,13 @@ export default class TestCaseRunner {
 
   async runSteps() {
     await Promise.each(this.testCase.pickle.steps, async step => {
+      // TODO handle failure
+      await this.runStepHooks(this.beforeStepHookDefinitions, {
+        sourceLocation: this.testCaseSourceLocation,
+        pickle: this.testCase.pickle,
+      })
       await this.aroundTestStep(() => this.runStep(step))
+      // TODO run after step hooks
     })
   }
 }

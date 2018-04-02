@@ -5,9 +5,34 @@ import { ParameterType } from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import validateArguments from './validate_arguments'
+
+export function defineTestStepHook(builder, collectionName) {
+  return (options, code) => {
+    if (typeof options === 'string') {
+      options = { tags: options }
+    } else if (typeof options === 'function') {
+      code = options
+      options = {}
+    }
+    const { line, uri } = getDefinitionLineAndUri(builder.cwd)
+    validateArguments({
+      args: { code, options },
+      fnName: 'defineTestStepHook',
+      location: formatLocation({ line, uri }),
+    })
+    const hookDefinition = new TestStepHookDefinition({
+      code,
+      line,
+      options,
+      uri,
+    })
+    builder.options[collectionName].push(hookDefinition)
+  }
+}
 
 export function defineTestCaseHook(builder, collectionName) {
   return (options, code) => {

@@ -40,6 +40,18 @@ const validations = {
     optionsTimeoutValidation,
     { identifier: 'second argument', ...fnValidation },
   ],
+  defineTestStepHook: [
+    { identifier: 'first argument', ...optionsValidation },
+    {
+      identifier: '"options.tags"',
+      expectedType: 'string',
+      predicate({ options }) {
+        return !options.tags || _.isString(options.tags)
+      },
+    },
+    optionsTimeoutValidation,
+    { identifier: 'second argument', ...fnValidation },
+  ],
   defineStep: [
     {
       identifier: 'first argument',

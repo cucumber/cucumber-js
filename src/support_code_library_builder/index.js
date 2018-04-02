@@ -5,6 +5,7 @@ import {
   defineTestRunHook,
   defineParameterType,
   defineTestCaseHook,
+  defineTestStepHook,
   defineStep,
 } from './define_helpers'
 import { wrapDefinitions } from './finalize_helpers'
@@ -15,6 +16,7 @@ export class SupportCodeLibraryBuilder {
       defineParameterType: defineParameterType(this),
       After: defineTestCaseHook(this, 'afterTestCaseHookDefinitions'),
       AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),
+      BeforeStep: defineTestStepHook(this, 'beforeTestStepHookDefinitions'),
       Before: defineTestCaseHook(this, 'beforeTestCaseHookDefinitions'),
       BeforeAll: defineTestRunHook(this, 'beforeTestRunHookDefinitions'),
       defineStep: defineStep(this),
@@ -41,6 +43,7 @@ export class SupportCodeLibraryBuilder {
       definitions: _.chain([
         'afterTestCaseHook',
         'afterTestRunHook',
+        'beforeTestStepHook',
         'beforeTestCaseHook',
         'beforeTestRunHook',
         'step',
@@ -59,6 +62,7 @@ export class SupportCodeLibraryBuilder {
     this.options = _.cloneDeep({
       afterTestCaseHookDefinitions: [],
       afterTestRunHookDefinitions: [],
+      beforeTestStepHookDefinitions: [],
       beforeTestCaseHookDefinitions: [],
       beforeTestRunHookDefinitions: [],
       defaultTimeout: 5000,

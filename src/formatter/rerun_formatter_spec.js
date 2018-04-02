@@ -120,8 +120,9 @@ describe('RerunFormatter', () => {
 
           it('outputs the references needed to run the scenarios again', function() {
             expect(this.output).to.eql(
-              `${this.feature1Path}:1${separator.expected}${this
-                .feature2Path}:2`
+              `${this.feature1Path}:1${separator.expected}${
+                this.feature2Path
+              }:2`
             )
           })
         })
