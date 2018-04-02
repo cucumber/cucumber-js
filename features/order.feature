@@ -33,8 +33,8 @@ Feature: Set the execution order
   Scenario: run in defined order scenario
     When I run cucumber-js with `--order defined`
     Then it runs the scenarios:
-      | NAME |
-      | first scenario |
+      | NAME                |
+      | first scenario      |
       | second scenario - X |
       | second scenario - Y |
       | second scenario - Z |
@@ -42,8 +42,8 @@ Feature: Set the execution order
   Scenario: run in random order with seed
     When I run cucumber-js with `--order random:234119`
     Then it runs the scenarios:
-      | NAME |
+      | NAME                |
       | second scenario - Z |
       | second scenario - X |
       | second scenario - Y |
-      | first scenario |
+      | first scenario      |
