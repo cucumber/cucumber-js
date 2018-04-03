@@ -155,6 +155,7 @@
     "indent-string": "^3.1.0",
     "is-generator": "^1.0.2",
     "is-stream": "^1.1.0",
+    "knuth-shuffle-seeded": "^1.0.6",
     "lodash": "^4.17.4",
     "mz": "^2.4.0",
     "progress": "^2.0.0",

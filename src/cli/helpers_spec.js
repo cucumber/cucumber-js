@@ -35,6 +35,7 @@ describe('helpers', () => {
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
+          order: 'defined',
           pickleFilter: new PickleFilter({}),
         })
       })
@@ -79,6 +80,7 @@ describe('helpers', () => {
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
+          order: 'defined',
           pickleFilter: new PickleFilter({
             featurePaths: [`${this.relativeFeaturePath}:5`],
           }),
@@ -119,6 +121,7 @@ describe('helpers', () => {
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featurePaths: [featurePath],
+          order: 'defined',
           pickleFilter: new PickleFilter({}),
         })
       })

@@ -88,6 +88,7 @@ export default class Cli {
       eventBroadcaster,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
+      order: configuration.order,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
     })
     let success

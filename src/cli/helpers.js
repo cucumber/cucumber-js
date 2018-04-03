@@ -5,6 +5,7 @@ import Gherkin from 'gherkin'
 import path from 'path'
 import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
+import shuffle from 'knuth-shuffle-seeded'
 
 export async function getExpandedArgv({ argv, cwd }) {
   const { options } = ArgvParser.parse(argv)
@@ -21,6 +22,7 @@ export async function getTestCasesFromFilesystem({
   eventBroadcaster,
   featureDefaultLanguage,
   featurePaths,
+  order,
   pickleFilter,
 }) {
   let result = []
@@ -36,6 +38,7 @@ export async function getTestCasesFromFilesystem({
       })
     )
   })
+  orderTestCases(result, order)
   return result
 }
 
@@ -64,4 +67,24 @@ export async function getTestCases({
     }
   })
   return result
+}
+
+// Orders the testCases in place - morphs input
+export function orderTestCases(testCases, order) {
+  let [type, seed] = order.split(':')
+  switch (type) {
+    case 'defined':
+      break
+    case 'random':
+      if (!seed) {
+        seed = Math.floor(Math.random() * 1000 * 1000).toString()
+        console.warn(`Random order using seed: ${seed}`)
+      }
+      shuffle(testCases, seed)
+      break
+    default:
+      throw new Error(
+        'Unrecgonized order type. Should be `defined` or `random`'
+      )
+  }
 }
