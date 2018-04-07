@@ -181,6 +181,13 @@ export default class TestCaseRunner {
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
+  async runStepHook(step, hookDefinition, hookParameter) {
+    if (this.skip) {
+      return { status: Status.SKIPPED }
+    }
+    return this.invokeStep(step, hookDefinition, hookParameter)
+  }
+
   async runHooks(hookDefinitions, hookParameter) {
     await Promise.each(hookDefinitions, async hookDefinition => {
       await this.aroundTestStep(() =>
@@ -189,10 +196,12 @@ export default class TestCaseRunner {
     })
   }
 
-  async runStepHooks(hookDefinitions, hookParameter) {
-    await Promise.each(hookDefinitions, async hookDefinition => {
-      await this.runHook(hookDefinition, hookParameter)
-    })
+  async runStepHooks(step, hookDefinitions) {
+    return Promise.all(
+      hookDefinitions.map(async hookDefinition =>
+        this.runStepHook(step, hookDefinition)
+      )
+    )
   }
 
   async runStep(step) {
@@ -207,18 +216,24 @@ export default class TestCaseRunner {
     } else if (this.isSkippingSteps()) {
       return { status: Status.SKIPPED }
     }
-    return this.invokeStep(step, stepDefinitions[0])
+    return this.runStepHooks(step, this.beforeStepHookDefinitions).then(
+      responses => {
+        const errors = responses.filter(response => response.exception)
+        if (errors && errors.length) {
+          return {
+            exception: 'BeforeStep hook failed', // TODO return stacktrace(s)?
+            status: Status.FAILED,
+          }
+        } else {
+          return this.invokeStep(step, stepDefinitions[0])
+        }
+      }
+    )
   }
 
   async runSteps() {
     await Promise.each(this.testCase.pickle.steps, async step => {
-      // TODO handle failure
-      await this.runStepHooks(this.beforeStepHookDefinitions, {
-        sourceLocation: this.testCaseSourceLocation,
-        pickle: this.testCase.pickle,
-      })
       await this.aroundTestStep(() => this.runStep(step))
-      // TODO run after step hooks
     })
   }
 }
