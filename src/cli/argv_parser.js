@@ -112,6 +112,11 @@ export default class ArgvParser {
         []
       )
       .option(
+        '--support-file-extension <GLOB>',
+        'the glob of the file extension(s) that will be used to find support files to load',
+        '.js'
+      )
+      .option(
         '-t, --tags <EXPRESSION>',
         'only execute the features or scenarios with tags matching the expression (repeatable)',
         ArgvParser.mergeTags,
