@@ -2,6 +2,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v4.2.0...master) (In Git)
 
+#### Bug Fixes
+
+* improve the error message for gherkin parse errors
+
 ### [4.2.0](https://github.com/cucumber/cucumber-js/compare/v4.1.0...v4.2.0) (2018-04-03)
 
 * add cli option `--order <TYPE[:SEED]>` to run scenarios in the specified order. Type should be `defined` or `random`

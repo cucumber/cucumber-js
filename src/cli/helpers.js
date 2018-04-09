@@ -63,7 +63,7 @@ export async function getTestCases({
       }
     }
     if (event.type === 'attachment') {
-      throw new Error(event.data)
+      throw new Error(`Parse error in '${uri}': ${event.data}`)
     }
   })
   return result
