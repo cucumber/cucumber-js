@@ -55899,7 +55899,7 @@ module.exports={
     "gherkin",
     "tests"
   ],
-  "version": "4.2.0",
+  "version": "4.2.1",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -56812,7 +56812,7 @@ var getTestCases = exports.getTestCases = function () {
                 }
               }
               if (event.type === 'attachment') {
-                throw new Error(event.data);
+                throw new Error('Parse error in \'' + uri + '\': ' + event.data);
               }
             });
             return _context4.abrupt('return', result);
