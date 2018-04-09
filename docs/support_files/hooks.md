@@ -79,7 +79,7 @@ Before(function() {
 
 If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise.
 
-Unlike `Before` / `After` these methods will not have a world instance as `this`. This is becauce each scenario gets its own world instance and these hooks run before / after **all** scenarios.
+Unlike `Before` / `After` these methods will not have a world instance as `this`. This is because each scenario gets its own world instance and these hooks run before / after **all** scenarios.
 
 ```javascript
 var {AfterAll, BeforeAll} = require('cucumber');
