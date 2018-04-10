@@ -17,6 +17,7 @@ export class SupportCodeLibraryBuilder {
       After: defineTestCaseHook(this, 'afterTestCaseHookDefinitions'),
       AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),
       BeforeStep: defineTestStepHook(this, 'beforeTestStepHookDefinitions'),
+      AfterStep: defineTestStepHook(this, 'afterTestStepHookDefinitions'),
       Before: defineTestCaseHook(this, 'beforeTestCaseHookDefinitions'),
       BeforeAll: defineTestRunHook(this, 'beforeTestRunHookDefinitions'),
       defineStep: defineStep(this),
@@ -43,6 +44,7 @@ export class SupportCodeLibraryBuilder {
       definitions: _.chain([
         'afterTestCaseHook',
         'afterTestRunHook',
+        'afterTestStepHook',
         'beforeTestStepHook',
         'beforeTestCaseHook',
         'beforeTestRunHook',
@@ -52,6 +54,7 @@ export class SupportCodeLibraryBuilder {
         .flatten()
         .value(),
     })
+    this.options.afterTestStepHookDefinitions.reverse()
     this.options.afterTestCaseHookDefinitions.reverse()
     this.options.afterTestRunHookDefinitions.reverse()
     return this.options
@@ -63,6 +66,7 @@ export class SupportCodeLibraryBuilder {
       afterTestCaseHookDefinitions: [],
       afterTestRunHookDefinitions: [],
       beforeTestStepHookDefinitions: [],
+      afterTestStepHookDefinitions: [],
       beforeTestCaseHookDefinitions: [],
       beforeTestRunHookDefinitions: [],
       defaultTimeout: 5000,

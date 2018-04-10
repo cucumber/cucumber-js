@@ -263,4 +263,83 @@ describe('supportCodeLibraryBuilder', () => {
       })
     })
   })
+  describe('this.AfterStep', () => {
+    describe('function only', () => {
+      beforeEach(function() {
+        this.hook = function() {}
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.AfterStep(this.hook) // eslint-disable-line babel/new-cap
+        this.options = supportCodeLibraryBuilder.finalize()
+      })
+
+      it('adds a step hook definition', function() {
+        expect(this.options.afterTestStepHookDefinitions).to.have.lengthOf(1)
+        expect(this.options.afterTestStepHookDefinitions[0].code).to.eql(
+          this.hook
+        )
+      })
+    })
+
+    describe('tag and function', () => {
+      beforeEach(function() {
+        this.hook = function() {}
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.AfterStep('@tagA', this.hook) // eslint-disable-line babel/new-cap
+        this.options = supportCodeLibraryBuilder.finalize()
+      })
+
+      it('adds a step hook definition', function() {
+        expect(this.options.afterTestStepHookDefinitions).to.have.lengthOf(1)
+        expect(
+          this.options.afterTestStepHookDefinitions[0].options.tags
+        ).to.eql('@tagA')
+        expect(this.options.afterTestStepHookDefinitions[0].code).to.eql(
+          this.hook
+        )
+      })
+    })
+
+    describe('options and function', () => {
+      beforeEach(function() {
+        this.hook = function() {}
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.AfterStep(
+          { tags: '@tagA' },
+          this.hook
+        ) // eslint-disable-line babel/new-cap
+        this.options = supportCodeLibraryBuilder.finalize()
+      })
+
+      it('adds a step hook definition', function() {
+        expect(this.options.afterTestStepHookDefinitions).to.have.lengthOf(1)
+        expect(
+          this.options.afterTestStepHookDefinitions[0].options.tags
+        ).to.eql('@tagA')
+        expect(this.options.afterTestStepHookDefinitions[0].code).to.eql(
+          this.hook
+        )
+      })
+    })
+
+    describe('multiple', () => {
+      beforeEach(function() {
+        this.hook1 = function hook1() {}
+        this.hook2 = function hook2() {}
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.AfterStep(this.hook1) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.AfterStep(this.hook2) // eslint-disable-line babel/new-cap
+        this.options = supportCodeLibraryBuilder.finalize()
+      })
+
+      it('adds the step hook definitions in the order of definition', function() {
+        expect(this.options.afterTestStepHookDefinitions).to.have.lengthOf(2)
+        expect(this.options.afterTestStepHookDefinitions[0].code).to.eql(
+          this.hook2
+        )
+        expect(this.options.afterTestStepHookDefinitions[1].code).to.eql(
+          this.hook1
+        )
+      })
+    })
+  })
 })

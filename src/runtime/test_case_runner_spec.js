@@ -31,6 +31,7 @@ describe('TestCaseRunner', () => {
     this.supportCodeLibrary = {
       afterTestCaseHookDefinitions: [],
       beforeTestStepHookDefinitions: [],
+      afterTestStepHookDefinitions: [],
       beforeTestCaseHookDefinitions: [],
       defaultTimeout: 5000,
       stepDefinitions: [],
@@ -161,6 +162,87 @@ describe('TestCaseRunner', () => {
           uri: 'path/to/hooks',
         })
         this.supportCodeLibrary.beforeTestStepHookDefinitions = [
+          testStepHookDefinition,
+        ]
+        this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
+        this.stepResult = {
+          duration: 1,
+          status: Status.PASSED,
+        }
+        const stepDefinition = {
+          uri: 'path/to/steps',
+          line: 3,
+          matchesStepName: sinon.stub().returns(true),
+        }
+        StepRunner.run.resolves(this.stepResult)
+        this.supportCodeLibrary.stepDefinitions = [stepDefinition]
+        this.testCase.pickle.steps = [this.step]
+        const scenarioRunner = new TestCaseRunner({
+          eventBroadcaster: this.eventBroadcaster,
+          skip: false,
+          testCase: this.testCase,
+          supportCodeLibrary: this.supportCodeLibrary,
+        })
+        await scenarioRunner.run()
+      })
+
+      it('emits test-case-prepared', function() {
+        expect(this.onTestCasePrepared).to.have.callCount(1)
+        expect(this.onTestCasePrepared).to.have.been.calledWith({
+          steps: [
+            {
+              actionLocation: { line: 3, uri: 'path/to/steps' },
+              sourceLocation: { line: 2, uri: 'path/to/feature' },
+            },
+          ],
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
+        })
+      })
+
+      it('emits test-case-started', function() {
+        expect(this.onTestCaseStarted).to.have.callCount(1)
+        expect(this.onTestCaseStarted).to.have.been.calledWith({
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
+        })
+      })
+
+      it('emits test-step-started', function() {
+        expect(this.onTestStepStarted).to.have.callCount(1)
+        expect(this.onTestStepStarted).to.have.been.calledWith({
+          index: 0,
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
+        })
+      })
+
+      it('emits test-step-finished', function() {
+        expect(this.onTestStepFinished).to.have.callCount(1)
+        expect(this.onTestStepFinished).to.have.been.calledWith({
+          index: 0,
+          testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
+          result: { duration: 1, status: Status.PASSED },
+        })
+      })
+
+      it('emits test-case-finished', function() {
+        expect(this.onTestCaseFinished).to.have.callCount(1)
+        expect(this.onTestCaseFinished).to.have.been.calledWith({
+          result: { duration: 1, status: Status.PASSED },
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
+        })
+      })
+    })
+
+    describe('with a passing step and an after step hook', () => {
+      beforeEach(async function() {
+        const testStepHookDefinition = new TestStepHookDefinition({
+          code() {
+            throw new Error('error')
+          },
+          line: 4,
+          options: {},
+          uri: 'path/to/hooks',
+        })
+        this.supportCodeLibrary.afterTestStepHookDefinitions = [
           testStepHookDefinition,
         ]
         this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }

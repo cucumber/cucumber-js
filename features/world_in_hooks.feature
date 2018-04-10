@@ -13,9 +13,7 @@ Feature: World in Hooks
 
       Given(/^a step$/, function() {})
       """
-
-  Scenario: World is this in hooks
-    Given a file named "features/support/world.js" with:
+    And a file named "features/support/world.js" with:
       """
       import {setWorldConstructor} from 'cucumber'
 
@@ -27,9 +25,11 @@ Feature: World in Hooks
 
       setWorldConstructor(WorldConstructor)
       """
+
+  Scenario: World is this in hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before, BeforeStep } from 'cucumber'
+      import {After, Before } from 'cucumber'
 
       Before(function() {
         if (!this.isWorld()) {
@@ -47,23 +47,25 @@ Feature: World in Hooks
     Then it passes
 
   Scenario: World is this in BeforeStep hooks
-    Given a file named "features/support/world.js" with:
-      """
-      import {setWorldConstructor} from 'cucumber'
-
-      function WorldConstructor() {
-        return {
-          isWorld: function() { return true }
-        }
-      }
-
-      setWorldConstructor(WorldConstructor)
-      """
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before, BeforeStep } from 'cucumber'
+      import {BeforeStep } from 'cucumber'
 
       BeforeStep(function() {
+        if (!this.isWorld()) {
+          throw Error("Expected this to be world")
+        }
+      })
+      """
+    When I run cucumber-js
+    Then it passes
+
+  Scenario: World is this in AfterStep hooks
+    Given a file named "features/support/hooks.js" with:
+      """
+      import {AfterStep } from 'cucumber'
+
+      AfterStep(function() {
         if (!this.isWorld()) {
           throw Error("Expected this to be world")
         }

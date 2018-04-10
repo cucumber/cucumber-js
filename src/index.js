@@ -29,6 +29,7 @@ export const After = methods.After
 export const AfterAll = methods.AfterAll
 export const Before = methods.Before
 export const BeforeStep = methods.BeforeStep
+export const AfterStep = methods.AfterStep
 export const BeforeAll = methods.BeforeAll
 export const defineParameterType = methods.defineParameterType
 export const defineStep = methods.defineStep

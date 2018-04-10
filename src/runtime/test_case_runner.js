@@ -29,6 +29,7 @@ export default class TestCaseRunner {
       parameters: worldParameters,
     })
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
+    this.afterStepHookDefinitions = this.getAfterStepHookDefinitions()
     this.beforeStepHookDefinitions = this.getBeforeStepHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
     this.testStepIndex = 0
@@ -94,6 +95,12 @@ export default class TestCaseRunner {
 
   getBeforeStepHookDefinitions() {
     return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter(
+      stepHookDefinition => stepHookDefinition.appliesToTestCase(this.testCase)
+    )
+  }
+
+  getAfterStepHookDefinitions() {
+    return this.supportCodeLibrary.afterTestStepHookDefinitions.filter(
       stepHookDefinition => stepHookDefinition.appliesToTestCase(this.testCase)
     )
   }
@@ -197,11 +204,22 @@ export default class TestCaseRunner {
   }
 
   async runStepHooks(step, hookDefinitions) {
-    return Promise.all(
+    const stepHookResults = await Promise.all(
       hookDefinitions.map(async hookDefinition =>
         this.runStepHook(step, hookDefinition)
       )
     )
+    const errors = stepHookResults.filter(result => result.exception)
+    if (errors && errors.length) {
+      return {
+        exception: 'Errors running step hooks',
+        status: Status.FAILED,
+      }
+    } else {
+      return {
+        status: Status.PASSED,
+      }
+    }
   }
 
   async runStep(step) {
@@ -216,19 +234,28 @@ export default class TestCaseRunner {
     } else if (this.isSkippingSteps()) {
       return { status: Status.SKIPPED }
     }
-    return this.runStepHooks(step, this.beforeStepHookDefinitions).then(
-      responses => {
-        const errors = responses.filter(response => response.exception)
-        if (errors && errors.length) {
-          return {
-            exception: 'BeforeStep hook failed', // TODO return stacktrace(s)?
-            status: Status.FAILED,
-          }
+    const beforeStepsResult = await this.runStepHooks(
+      step,
+      this.beforeStepHookDefinitions
+    )
+    if (beforeStepsResult.status !== Status.PASSED) {
+      return beforeStepsResult
+    } else {
+      const stepResult = await this.invokeStep(step, stepDefinitions[0])
+      if (stepResult.status !== Status.PASSED) {
+        return stepResult
+      } else {
+        const afterStepResult = await this.runStepHooks(
+          step,
+          this.afterStepHookDefinitions
+        )
+        if (afterStepResult.status === Status.PASSED) {
+          return stepResult
         } else {
-          return this.invokeStep(step, stepDefinitions[0])
+          return afterStepResult
         }
       }
-    )
+    }
   }
 
   async runSteps() {
