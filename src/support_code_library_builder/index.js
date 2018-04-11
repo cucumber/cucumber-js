@@ -2,22 +2,22 @@ import _ from 'lodash'
 import util from 'util'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import {
-  defineTestRunHook,
-  defineParameterType,
-  defineTestCaseHook,
-  defineStep,
-} from './define_helpers'
+  buildParameterType,
+  buildStepDefinition,
+  buildTestCaseHookDefinition,
+  buildTestRunHookDefinition,
+} from './build_helpers'
 import { wrapDefinitions } from './finalize_helpers'
 
 export class SupportCodeLibraryBuilder {
   constructor() {
     this.methods = {
-      defineParameterType: defineParameterType(this),
-      After: defineTestCaseHook(this, 'afterTestCaseHookDefinitions'),
-      AfterAll: defineTestRunHook(this, 'afterTestRunHookDefinitions'),
-      Before: defineTestCaseHook(this, 'beforeTestCaseHookDefinitions'),
-      BeforeAll: defineTestRunHook(this, 'beforeTestRunHookDefinitions'),
-      defineStep: defineStep(this),
+      defineParameterType: this.defineParameterType.bind(this),
+      After: this.defineTestCaseHook('afterTestCaseHookDefinitions'),
+      AfterAll: this.defineTestRunHook('afterTestRunHookDefinitions'),
+      Before: this.defineTestCaseHook('beforeTestCaseHookDefinitions'),
+      BeforeAll: this.defineTestRunHook('beforeTestRunHookDefinitions'),
+      defineStep: this.defineStep.bind(this),
       defineSupportCode: util.deprecate(fn => {
         fn(this.methods)
       }, 'cucumber: defineSupportCode is deprecated. Please require/import the individual methods instead.'),
@@ -32,6 +32,43 @@ export class SupportCodeLibraryBuilder {
       },
     }
     this.methods.Given = this.methods.When = this.methods.Then = this.methods.defineStep
+  }
+
+  defineParameterType(options) {
+    const parameterType = buildParameterType(options)
+    this.options.parameterTypeRegistry.defineParameterType(parameterType)
+  }
+
+  defineStep(pattern, options, code) {
+    const stepDefinition = buildStepDefinition({
+      pattern,
+      options,
+      code,
+      cwd: this.cwd,
+    })
+    this.options.stepDefinitions.push(stepDefinition)
+  }
+
+  defineTestCaseHook(collectionName) {
+    return (options, code) => {
+      const hookDefinition = buildTestCaseHookDefinition({
+        options,
+        code,
+        cwd: this.cwd,
+      })
+      this.options[collectionName].push(hookDefinition)
+    }
+  }
+
+  defineTestRunHook(collectionName) {
+    return (options, code) => {
+      const hookDefinition = buildTestRunHookDefinition({
+        options,
+        code,
+        cwd: this.cwd,
+      })
+      this.options[collectionName].push(hookDefinition)
+    }
   }
 
   finalize() {
