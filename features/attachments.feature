@@ -108,3 +108,23 @@ Feature: Attachments
     Then the step "a step" has the attachment
       | DATA | MIME TYPE  |
       | text | text/plain |
+
+  @spawn
+  Scenario: Attaching after hook/step finishes
+    Given a file named "features/support/hooks.js" with:
+      """
+      import {After} from 'cucumber'
+      import Promise from 'bluebird'
+
+      After(function() {
+        // Do not return the promise so that the attach happens after the hook completes
+        Promise.delay(100).then(() => {
+          this.attach("text")
+        })
+      })
+      """
+    When I run cucumber-js
+    Then the error output contains the text:
+      """
+      Cannot attach after all steps/hooks have finished running. Ensure your step/hook waits for the attach to finish.
+      """

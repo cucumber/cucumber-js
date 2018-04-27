@@ -14,6 +14,11 @@ export default class TestCaseRunner {
     worldParameters,
   }) {
     const attachmentManager = new AttachmentManager(({ data, media }) => {
+      if (this.testStepIndex > this.maxTestStepIndex) {
+        throw new Error(
+          'Cannot attach after all steps/hooks have finished running. Ensure your step/hook waits for the attach to finish.'
+        )
+      }
       this.emit('test-step-attachment', {
         index: this.testStepIndex,
         data,
@@ -31,6 +36,11 @@ export default class TestCaseRunner {
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
     this.testStepIndex = 0
+    this.maxTestStepIndex =
+      this.beforeHookDefinitions.length +
+      this.testCase.pickle.steps.length +
+      this.afterHookDefinitions.length -
+      1
     this.result = {
       duration: 0,
       status: this.skip ? Status.SKIPPED : Status.PASSED,
