@@ -12,14 +12,14 @@ var mzFs = require('mz/fs')
 var seleniumWebdriver = require('selenium-webdriver');
 
 // Synchronous
-Then(/^Then the response status is (.*)$/, function (status) {
+Then(/^the response status is (.*)$/, function (status) {
   assert.equal(this.responseStatus, status)
 });
 
 // Asynchronous - callback
 //
 // Take a callback as an additional argument to execute when the step is done
-Then(/^Then the file named (.*) is empty$/, function (fileName, callback) {
+Then(/^the file named (.*) is empty$/, function (fileName, callback) {
   fs.readFile(fileName, 'utf8', function(error, contents) {
     if (error) {
       callback(error);
@@ -52,7 +52,7 @@ var {Then} = require('cucumber');
 var assert = require('assert');
 var mzFs = require('mz/fs');
 
-Then(/^Then the file named (.*) is empty$/, function *(fileName) {
+Then(/^the file named (.*) is empty$/, function *(fileName) {
   contents = yield mzFs.readFile(fileName, 'utf8');
   assert.equal(contents, '');
 });
