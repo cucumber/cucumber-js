@@ -10,6 +10,14 @@ export default class ArgvParser {
     return memo
   }
 
+  static collectJson(option) {
+    let mergeJson = ArgvParser.mergeJson(option)
+    return function(str, memo) {
+      memo.push(mergeJson(str))
+      return memo
+    }
+  }
+
   static mergeJson(option) {
     return function(str, memo) {
       let val
@@ -109,6 +117,12 @@ export default class ArgvParser {
         '--require-module <NODE_MODULE>',
         'require node modules before requiring files (repeatable)',
         ArgvParser.collect,
+        []
+      )
+      .option(
+        '--require-module-options <NODE_MODULE>',
+        'require node modules options (repeatable)',
+        ArgvParser.collectJson('--require-module-options'),
         []
       )
       .option(
