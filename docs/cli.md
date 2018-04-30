@@ -112,7 +112,7 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 ## Tags
 
 Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with `and` operator.
-`<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/tag-expressions/).
+`<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions).
 
 ## Transpilers
 
