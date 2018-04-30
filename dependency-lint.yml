@@ -32,6 +32,8 @@ ignoreErrors:
     - babel-plugin-transform-runtime # .babelrc
     - babel-preset-es2015 # .babelrc
     - babel-register # test/mocha.opts
+    - babel-polyfill # .package.json - scrips - build-release
+    - babel-preset-env # .babelrc
     - babelify # package.json - scripts - build-browser-example / build-release
     - coffee-script # features/compiler.feature
     - coveralls # .travis.yml

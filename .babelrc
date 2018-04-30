@@ -33,6 +33,12 @@
       ]
     },
     "browser": {
+      "only": [
+        "src",
+        "example",
+        "node_modules/figures",
+        "node_modules/indent-string"
+      ],
       "plugins": [
         "transform-regenerator",
         ["transform-runtime", {"polyfill": false, "regenerator": true}]
