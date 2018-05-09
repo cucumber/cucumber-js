@@ -116,7 +116,7 @@ Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is 
 
 ## Transpilers
 
-Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require features/**/*.<ext>` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require features/**/*.coffee`.
+Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require 'features/**/*.<ext>'` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require 'features/**/*.coffee'`.
 
 ## World Parameters
 
