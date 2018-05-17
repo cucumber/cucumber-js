@@ -358,7 +358,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * Dropped support for Node 0.10
 * CLI
-  * `--colors / --no-colors` has moved to `--format-options '{"colorsEnabled": "<BOOLEAN>"}'`
+  * `--colors / --no-colors` has moved to `--format-options '{"colorsEnabled": <BOOLEAN>}'`
   * `--require <DIR|FILE>`: the required files are no longer reordered to require anything in a `support` directory first
   * `--snippet-interface <INTERFACE>` has moved to `--format-options '{"snippetInterface": "<INTERFACE>"}'`
   * `--snippet-syntax <SYNTAX>` has moved to `--format-options '{"snippetSyntax": "<SYNTAX>"}'`
