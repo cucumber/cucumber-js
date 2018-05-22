@@ -189,9 +189,6 @@ export default class TestCaseRunner {
   }
 
   async runStepHook(step, hookDefinition, hookParameter) {
-    if (this.skip) {
-      return { status: Status.SKIPPED }
-    }
     return this.invokeStep(step, hookDefinition, hookParameter)
   }
 
@@ -240,22 +237,19 @@ export default class TestCaseRunner {
     )
     if (beforeStepsResult.status !== Status.PASSED) {
       return beforeStepsResult
-    } else {
-      const stepResult = await this.invokeStep(step, stepDefinitions[0])
-      if (stepResult.status !== Status.PASSED) {
-        return stepResult
-      } else {
-        const afterStepResult = await this.runStepHooks(
-          step,
-          this.afterStepHookDefinitions
-        )
-        if (afterStepResult.status === Status.PASSED) {
-          return stepResult
-        } else {
-          return afterStepResult
-        }
-      }
     }
+    const stepResult = await this.invokeStep(step, stepDefinitions[0])
+    if (stepResult.status !== Status.PASSED) {
+      return stepResult
+    }
+    const afterStepResult = await this.runStepHooks(
+      step,
+      this.afterStepHookDefinitions
+    )
+    if (afterStepResult.status === Status.PASSED) {
+      return stepResult
+    }
+    return afterStepResult
   }
 
   async runSteps() {
