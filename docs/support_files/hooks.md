@@ -59,7 +59,7 @@ Before("@foo", function () {
 });
 ```
 
-See more documentation on [tag expressions](https://docs.cucumber.io/tag-expressions/)
+See more documentation on [tag expressions](https://docs.cucumber.io/cucumber/api/#tag-expressions)
 
 ## Skipping in a Before Hook
 
