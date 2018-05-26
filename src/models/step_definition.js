@@ -3,7 +3,8 @@ import DataTable from './data_table'
 import { buildStepArgumentIterator } from '../step_arguments'
 
 export default class StepDefinition {
-  constructor({ code, line, options, pattern, uri }) {
+  constructor({ phase, code, line, options, pattern, uri }) {
+    this.phase = phase
     this.code = code
     this.line = line
     this.options = options

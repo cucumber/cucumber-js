@@ -2,7 +2,7 @@
 
 ## API Reference
 
-Each method can be destructed from the object returned by `require('cucumber')`. 
+Each method can be destructured from the object returned by `require('cucumber')`.
 
 ---
 
@@ -75,11 +75,9 @@ Multiple `BeforeAll` hooks are executed in the order that they are defined.
 
 ---
 
-#### `defineStep(pattern[, options], fn)`
+#### `defineStep(pattern[, options], fn, phase)`
 
 Defines a step.
-
-Aliases: `Given`, `When`, `Then`.
 
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
@@ -89,12 +87,13 @@ Aliases: `Given`, `When`, `Then`.
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
   - When using the asynchronous callback interface, have one final argument for the callback function.
+* `phase`: A string equal to `'given'`, `'when'`, `'then'`, or `undefined`.
 
 ---
 
 #### `Given(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Defines a step with the phase `'given'`.
 
 ---
 
@@ -130,10 +129,10 @@ function World({attach, parameters}) {
 
 #### `Then(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Defines a step with the phase `'then'`.
 
 ---
 
 #### `When(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Defines a step with the phase `'when'`.

@@ -51,7 +51,7 @@ export function buildTestRunHookDefinition({ options, code, cwd }) {
   })
 }
 
-export function buildStepDefinition({ pattern, options, code, cwd }) {
+export function buildStepDefinition({ pattern, options, code, phase, cwd }) {
   if (typeof options === 'function') {
     code = options
     options = {}
@@ -63,6 +63,7 @@ export function buildStepDefinition({ pattern, options, code, cwd }) {
     location: formatLocation({ line, uri }),
   })
   return new StepDefinition({
+    phase,
     code,
     line,
     options,
