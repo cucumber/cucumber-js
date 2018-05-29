@@ -53,7 +53,12 @@ export default class Slave {
     supportCodePaths,
     worldParameters,
   }) {
-    supportCodeRequiredModules.map(module => require(module))
+    supportCodeRequiredModules.map(([module, options]) => {
+      let requiredModule = require(module)
+      if (options) {
+        requiredModule(_.clone(options))
+      }
+    })
     supportCodeLibraryBuilder.reset(this.cwd)
     supportCodePaths.forEach(codePath => require(codePath))
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()

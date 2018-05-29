@@ -63,7 +63,12 @@ export default class ConfigurationBuilder {
       },
       shouldExitImmediately: !!this.options.exit,
       supportCodePaths,
-      supportCodeRequiredModules: this.options.requireModule,
+      supportCodeRequiredModules: _.zip(
+        this.options.requireModule,
+        this.options.requireModuleOptions
+      ).filter(([module]) => {
+        return module[0]
+      }),
     }
   }
 

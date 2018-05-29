@@ -2,6 +2,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { getExpandedArgv, getTestCasesFromFilesystem } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
+import _ from 'lodash'
 import ConfigurationBuilder from './configuration_builder'
 import EventEmitter from 'events'
 import FormatterBuilder from '../formatter/builder'
@@ -58,7 +59,12 @@ export default class Cli {
   }
 
   getSupportCodeLibrary({ supportCodeRequiredModules, supportCodePaths }) {
-    supportCodeRequiredModules.map(module => require(module))
+    supportCodeRequiredModules.map(([module, options]) => {
+      let requiredModule = require(module)
+      if (options) {
+        requiredModule(_.clone(options))
+      }
+    })
     supportCodeLibraryBuilder.reset(this.cwd)
     supportCodePaths.forEach(codePath => require(codePath))
     return supportCodeLibraryBuilder.finalize()
