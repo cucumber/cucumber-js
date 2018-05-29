@@ -31,15 +31,14 @@ export class SupportCodeLibraryBuilder {
         this.options.World = fn
       },
     }
-    this.methods.Given = (pattern, options, code) => {
-      return this.methods.defineStep(pattern, options, code, 'given')
-    }
-    this.methods.When = (pattern, options, code) => {
-      return this.methods.defineStep(pattern, options, code, 'when')
-    }
-    this.methods.Then = (pattern, options, code) => {
-      return this.methods.defineStep(pattern, options, code, 'then')
-    }
+    const defineStepWithPhase = phase => (pattern, options, code) =>
+      typeof code === 'function'
+        ? this.methods.defineStep(pattern, _.assign(options, { phase }), code)
+        : this.methods.defineStep(pattern, { phase }, options)
+
+    this.methods.Given = defineStepWithPhase('given')
+    this.methods.When = defineStepWithPhase('when')
+    this.methods.Then = defineStepWithPhase('then')
   }
 
   defineParameterType(options) {
@@ -47,12 +46,11 @@ export class SupportCodeLibraryBuilder {
     this.options.parameterTypeRegistry.defineParameterType(parameterType)
   }
 
-  defineStep(pattern, options, code, phase) {
+  defineStep(pattern, options, code) {
     const stepDefinition = buildStepDefinition({
       pattern,
       options,
       code,
-      phase,
       cwd: this.cwd,
     })
     this.options.stepDefinitions.push(stepDefinition)

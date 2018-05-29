@@ -75,25 +75,25 @@ Multiple `BeforeAll` hooks are executed in the order that they are defined.
 
 ---
 
-#### `defineStep(pattern[, options], fn, phase)`
+#### `defineStep(pattern[, options], fn)`
 
 Defines a step.
 
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
   - `timeout`: A step-specific timeout, to override the default timeout.
-  - `wrapperOptions`: step-specific options that are passed to the definition function wrapper
+  - `wrapperOptions`: step-specific options that are passed to the definition function wrapper.
+  - `phase`: A string equal to `'given'`, `'when'`, `'then'`, or `undefined`.
 * `fn`: A function, which should be defined as follows:
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
   - When using the asynchronous callback interface, have one final argument for the callback function.
-* `phase`: A string equal to `'given'`, `'when'`, `'then'`, or `undefined`.
 
 ---
 
 #### `Given(pattern[, options], fn)`
 
-Defines a step with the phase `'given'`.
+Defines a step with `options.phase` set to `'given'`.
 
 ---
 
@@ -129,10 +129,10 @@ function World({attach, parameters}) {
 
 #### `Then(pattern[, options], fn)`
 
-Defines a step with the phase `'then'`.
+Defines a step with `options.phase` set to `'then'`.
 
 ---
 
 #### `When(pattern[, options], fn)`
 
-Defines a step with the phase `'when'`.
+Defines a step with `options.phase` set to `'when'`.
