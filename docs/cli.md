@@ -1,6 +1,6 @@
 # CLI
 
-Cucumber.js includes a executable file to run the features. After installing Cucumber in your project, you can run it with:
+Cucumber.js includes an executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
 $ ./node_modules/.bin/cucumber-js
@@ -38,7 +38,7 @@ Automatic loading is disabled when this option is specified, and all loading bec
 ## Formats
 
 Use `--format <TYPE[:PATH]>` to specify the format of the output.
-If PATH is not supplied, the formatter prints to stdout.
+If PATH is not supplied, the formatter prints to `stdout`.
 If PATH is supplied, it prints to the given file.
 This option may be used multiple times in order to output different formats to different files.
 If multiple formats are specified with the same output, only the last is used.
@@ -48,9 +48,9 @@ Built-in formatters
 * json - prints the feature as JSON.
 * progress - prints one character per scenario (default).
 * progress-bar - prints a progress bar and outputs errors/warnings along the way.
-* rerun - prints the paths of any non passing scenarios ([example](/features/rerun_formatter.feature))
+* rerun - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
   * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`.
-  * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
+  * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with an `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
   * Use with `--fail-fast` to rerun the failure and the remaining features.
 * snippets - prints just the code snippets for undefined steps.
 * summary - prints a summary only, after all scenarios were executed.
@@ -77,7 +77,7 @@ By default, cucumber exits when the event loop drains. Use the `--exit` flag in 
 
 ## Undefined Step Snippets
 
-Undefined steps snippets are printed in javascript using the callback interface by default.
+Undefined steps snippets are printed in JavaScript using the callback interface by default.
 
 ### Interface
 
@@ -101,7 +101,7 @@ Note that the rerun file parser can only work with the default separator for now
 You can run your scenarios in parallel with `--parallel <NUMBER_OF_SLAVES>`. Each slave is run in a separate node process and receives the following env variables:
 * `CUCUMBER_PARALLEL` - set to 'true'
 * `CUCUMBER_TOTAL_SLAVES` - set to the number of slaves
-* `CUCUMBER_SLAVE_ID` - id for slave ('0', '1', '2', etc)
+* `CUCUMBER_SLAVE_ID` - ID for slave ('0', '1', '2', etc.)
 
 **Note**: Printing to `stdout` (using `console.log` or other means) will cause an error, because the slave processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means).
 
@@ -111,12 +111,12 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 
 ## Tags
 
-Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with `and` operator.
+Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with an `and` operator.
 `<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions).
 
 ## Transpilers
 
-Step definitions and support files can be written in other languages that transpile to javascript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require 'features/**/*.<ext>'` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require 'features/**/*.coffee'`.
+Step definitions and support files can be written in other languages that transpile to JavaScript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require 'features/**/*.<ext>'` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require 'features/**/*.coffee'`.
 
 ## World Parameters
 
