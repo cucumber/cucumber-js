@@ -38,7 +38,7 @@ Automatic loading is disabled when this option is specified, and all loading bec
 ## Formats
 
 Use `--format <TYPE[:PATH]>` to specify the format of the output.
-If PATH is not supplied, the formatter prints to stdout.
+If PATH is not supplied, the formatter prints to `stdout`.
 If PATH is supplied, it prints to the given file.
 This option may be used multiple times in order to output different formats to different files.
 If multiple formats are specified with the same output, only the last is used.
