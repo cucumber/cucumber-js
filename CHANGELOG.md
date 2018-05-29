@@ -8,6 +8,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * improve the error message for gherkin parse errors
 
+### [4.3.0](https://github.com/cucumber/cucumber-js/compare/v4.2.0...v4.3.0) (2018-04-10)
+
+* add cli option `--support-file-extension <GLOB>` to allow a glob for finding support files to be specified. Allows e.g. `.js?(x)` so that `cucumber_steps.jsx` will be loaded. Defaults  to `.js`
+
 ### [4.2.0](https://github.com/cucumber/cucumber-js/compare/v4.1.0...v4.2.0) (2018-04-03)
 
 * add cli option `--order <TYPE[:SEED]>` to run scenarios in the specified order. Type should be `defined` or `random`
