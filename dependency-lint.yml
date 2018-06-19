@@ -54,6 +54,7 @@ requiredModules:
       - '**/test_helpers.js'
     ignore:
       - 'dist/**/*'
+      - 'lib/**/*'
       - 'node_modules/**/*'
     root: '**/*.js'
   stripLoaders: false
