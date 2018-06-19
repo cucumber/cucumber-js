@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import { getTestCasesFromFilesystem } from './helpers'
 import { promisify } from 'bluebird'
 import EventEmitter from 'events'
-import fs from 'fs-extra'
+import fsExtra from 'fs-extra'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
@@ -30,7 +30,7 @@ describe('helpers', () => {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
-        await fs.outputFile(featurePath, '')
+        await fsExtra.outputFile(featurePath, '')
         this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
@@ -72,7 +72,7 @@ describe('helpers', () => {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
-        await fs.outputFile(
+        await fsExtra.outputFile(
           featurePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
@@ -113,7 +113,7 @@ describe('helpers', () => {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
-        await fs.outputFile(
+        await fsExtra.outputFile(
           featurePath,
           'Feature: a\nScenario: b\nGiven a step'
         )

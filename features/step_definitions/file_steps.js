@@ -3,7 +3,6 @@
 import { Given, Then } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
-import { promisify } from 'bluebird'
 import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
@@ -14,17 +13,17 @@ Given(/^a file named "(.*)" with:$/, function(filePath, fileContent) {
   if (filePath === '@rerun.txt') {
     fileContent = fileContent.replace(/\//g, path.sep)
   }
-  return promisify(fsExtra.outputFile)(absoluteFilePath, fileContent)
+  return fsExtra.outputFile(absoluteFilePath, fileContent)
 })
 
 Given(/^an empty file named "(.*)"$/, function(filePath) {
   const absoluteFilePath = path.join(this.tmpDir, filePath)
-  return promisify(fsExtra.outputFile)(absoluteFilePath, '')
+  return fsExtra.outputFile(absoluteFilePath, '')
 })
 
 Given(/^a directory named "(.*)"$/, function(filePath) {
   const absoluteFilePath = path.join(this.tmpDir, filePath)
-  return promisify(fsExtra.mkdirp)(absoluteFilePath)
+  return fsExtra.mkdirp(absoluteFilePath)
 })
 
 Given(/^"([^"]*)" is an absolute path$/, function(filePath) {

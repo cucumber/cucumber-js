@@ -6,8 +6,6 @@ import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
 
-const outputFile = promisify(fsExtra.outputFile)
-
 describe('Configuration', () => {
   beforeEach(async function() {
     this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
@@ -61,9 +59,9 @@ describe('Configuration', () => {
     beforeEach(async function() {
       this.relativeFeaturePath = path.join('features', 'a.feature')
       this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
-      await outputFile(this.featurePath, '')
+      await fsExtra.outputFile(this.featurePath, '')
       this.supportCodePath = path.join(this.tmpDir, 'features', 'a.js')
-      await outputFile(this.supportCodePath, '')
+      await fsExtra.outputFile(this.supportCodePath, '')
       this.argv.push(this.relativeFeaturePath)
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
@@ -86,9 +84,9 @@ describe('Configuration', () => {
     beforeEach(async function() {
       this.relativeFeaturePath = path.join('features', 'nested', 'a.feature')
       this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
-      await outputFile(this.featurePath, '')
+      await fsExtra.outputFile(this.featurePath, '')
       this.supportCodePath = path.join(this.tmpDir, 'features', 'a.js')
-      await outputFile(this.supportCodePath, '')
+      await fsExtra.outputFile(this.supportCodePath, '')
       this.argv.push(this.relativeFeaturePath)
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
