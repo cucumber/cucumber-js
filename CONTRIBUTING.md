@@ -76,3 +76,6 @@ Review the changes, if everything looks good, squash merge into master.
 * commit message should have the format "Release 0.1.2" (replacing *0.1.2* with the actual version)
 * Tag commit as "v0.1.2"
 * CI will publish to NPM
+* Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io) 
+  * Update the cucumber-js version `data/versions.yaml`
+  * Ensure the javascript examples are up to date
