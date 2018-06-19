@@ -50,7 +50,9 @@ export default class JsonFormatter extends Formatter {
   onTestRunFinished() {
     const groupedTestCases = {}
     _.each(this.eventDataCollector.testCaseMap, testCase => {
-      const { sourceLocation: { uri } } = testCase
+      const {
+        sourceLocation: { uri },
+      } = testCase
       if (!groupedTestCases[uri]) {
         groupedTestCases[uri] = []
       }
@@ -140,7 +142,9 @@ export default class JsonFormatter extends Formatter {
       data.match = { location: formatLocation(testStep.actionLocation) }
     }
     if (testStep.result) {
-      const { result: { exception, status } } = testStep
+      const {
+        result: { exception, status },
+      } = testStep
       data.result = { status }
       if (testStep.result.duration) {
         data.result.duration = testStep.result.duration * 1000000
