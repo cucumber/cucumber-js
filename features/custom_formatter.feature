@@ -1,4 +1,3 @@
-@node-6
 Feature: custom formatter
   Background:
     Given a file named "features/a.feature" with:
