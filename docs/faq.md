@@ -3,8 +3,7 @@
 #### The world instance isn’t available in my hooks or step definitions.
 
 This has frequently been caused by the use of ES6 arrow functions.
-You cannot use ES6 arrow functions for step definitions or hooks because they bind `this`
-to the current context which prevents the world instance from being injected.
+If you are using the world instance (which is bound to `this`) in a step definition, then you cannot use ES6 arrow functions for step definitions or hooks because they bind `this` to the current context which prevents the world instance from being injected. 
 
 #### Why do my definition patterns need to be globally unique instead of unique only within `Given`, `When`, `Then`?
 
