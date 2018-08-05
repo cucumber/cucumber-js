@@ -8,6 +8,7 @@ import StepRunner from './step_runner'
 export default class TestCaseRunner {
   constructor({
     eventBroadcaster,
+    retry,
     skip,
     testCase,
     supportCodeLibrary,
@@ -26,6 +27,7 @@ export default class TestCaseRunner {
       })
     })
     this.eventBroadcaster = eventBroadcaster
+    this.retry = !skip && retry > 0 ? retry : 0
     this.skip = skip
     this.testCase = testCase
     this.supportCodeLibrary = supportCodeLibrary
@@ -163,16 +165,26 @@ export default class TestCaseRunner {
   async run() {
     this.emitPrepared()
     this.emit('test-case-started', {})
-    await this.runHooks(this.beforeHookDefinitions, {
-      sourceLocation: this.testCaseSourceLocation,
-      pickle: this.testCase.pickle,
-    })
-    await this.runSteps()
-    await this.runHooks(this.afterHookDefinitions, {
-      sourceLocation: this.testCaseSourceLocation,
-      pickle: this.testCase.pickle,
-      result: this.result,
-    })
+    for (let i = 0; i <= this.retry; i++) {
+      await this.runHooks(this.beforeHookDefinitions, {
+        sourceLocation: this.testCaseSourceLocation,
+        pickle: this.testCase.pickle,
+      })
+      await this.runSteps()
+      await this.runHooks(this.afterHookDefinitions, {
+        sourceLocation: this.testCaseSourceLocation,
+        pickle: this.testCase.pickle,
+        result: this.result,
+      })
+      if (this.result.status !== Status.FAILED) {
+        break
+      }
+      if (i < this.retry) {
+        delete this.result.exception
+        this.result.status = Status.PASSED
+        this.testStepIndex = 0
+      }
+    }
     this.emit('test-case-finished', { result: this.result })
     return this.result
   }

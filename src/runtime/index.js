@@ -46,6 +46,7 @@ export default class Runtime {
       this.options.dryRun || (this.options.failFast && !this.result.success)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
+      retry: this.options.retry,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       testCase,
