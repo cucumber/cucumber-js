@@ -8,8 +8,8 @@
     "gherkin",
     "tests"
   ],
-  "version": "4.2.1",
-  "homepage": "http://github.com/cucumber/cucumber-js",
+  "version": "4.2.2",
+  "homepage": "https://github.com/hurrikam/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
     "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
@@ -221,6 +221,7 @@
     "lint": "yarn run lint-code && yarn run lint-dependencies",
     "prefeature-test": "yarn run build-local",
     "prepublish": "yarn run build-local",
+    "postinstall": "npm run build-local",
     "test-coverage": "yarn run lint && ./scripts/test-coverage.sh",
     "test": "yarn run lint && yarn run unit-test && yarn run feature-test",
     "unit-test": "mocha src"
