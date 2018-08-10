@@ -56757,6 +56757,7 @@ var ConfigurationBuilder = function () {
                     dryRun: !!this.options.dryRun,
                     failFast: !!this.options.failFast,
                     filterStacktraces: !this.options.backtrace,
+                    retry: this.options.retry,
                     strict: !!this.options.strict,
                     worldParameters: this.options.worldParameters
                   },
@@ -61222,7 +61223,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var slaveCommand = _path2.default.resolve(__dirname, '..', '..', '..', 'bin', 'run_slave');
 
 var Master = function () {
-  // options - {dryRun, failFast, filterStacktraces, strict}
+  // options - {dryRun, failFast, filterStacktraces, retry, strict}
   function Master(_ref) {
     var eventBroadcaster = _ref.eventBroadcaster,
         options = _ref.options,
