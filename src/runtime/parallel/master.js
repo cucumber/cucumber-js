@@ -15,7 +15,7 @@ const slaveCommand = path.resolve(
 )
 
 export default class Master {
-  // options - {dryRun, failFast, filterStacktraces, strict}
+  // options - {dryRun, failFast, filterStacktraces, retry, strict}
   constructor({
     eventBroadcaster,
     options,
@@ -116,10 +116,12 @@ export default class Master {
     }
     const testCase = this.testCases[this.nextTestCaseIndex]
     this.nextTestCaseIndex += 1
+    const retry = this.options.retry
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     slave.process.stdin.write(
-      JSON.stringify({ command: commandTypes.RUN, skip, testCase }) + '\n'
+      JSON.stringify({ command: commandTypes.RUN, retry, skip, testCase }) +
+        '\n'
     )
   }
 

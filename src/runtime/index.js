@@ -8,7 +8,7 @@ import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 
 export default class Runtime {
-  // options - {dryRun, failFast, filterStacktraces, strict}
+  // options - {dryRun, failFast, filterStacktraces, retry, strict}
   constructor({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
