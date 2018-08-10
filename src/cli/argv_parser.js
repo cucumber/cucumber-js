@@ -112,6 +112,12 @@ export default class ArgvParser {
         []
       )
       .option(
+        '--retry <NUMBER_OF_RETRIES>',
+        'specify the number of times to retry failing tests (default: 0)',
+        parseInt,
+        0
+      )
+      .option(
         '-t, --tags <EXPRESSION>',
         'only execute the features or scenarios with tags matching the expression (repeatable)',
         ArgvParser.mergeTags,
