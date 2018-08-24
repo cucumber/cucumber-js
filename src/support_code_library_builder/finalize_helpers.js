@@ -13,7 +13,8 @@ export function wrapDefinitions({
       const codeLength = definition.code.length
       const wrappedFn = definitionFunctionWrapper(
         definition.code,
-        definition.options.wrapperOptions
+        definition.options.wrapperOptions,
+        definition.pattern
       )
       if (wrappedFn !== definition.code) {
         definition.code = arity(codeLength, wrappedFn)
