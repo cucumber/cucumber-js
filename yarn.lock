@@ -4575,9 +4575,9 @@ stream-to-string@^1.1.0:
   dependencies:
     promise-polyfill "^1.1.6"
 
-string-argv@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.0.2.tgz#dac30408690c21f3c3630a3ff3a05877bdcbd736"
+string-argv@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.1.1.tgz#66bd5ae3823708eaa1916fa5412703150d4ddfaf"
 
 string-width@^1.0.1, string-width@^1.0.2:
   version "1.0.2"
