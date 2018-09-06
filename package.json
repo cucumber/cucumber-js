@@ -147,7 +147,7 @@
     "commander": "^2.9.0",
     "cucumber-expressions": "^6.0.0",
     "cucumber-tag-expressions": "^1.1.1",
-    "duration": "^0.2.0",
+    "duration": "^0.2.1",
     "escape-string-regexp": "^1.0.5",
     "figures": "2.0.0",
     "gherkin": "^5.0.0",
