@@ -1,10 +1,17 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v4.2.1...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.0...master) (In Git)
+
+### [5.0.0](https://github.com/cucumber/cucumber-js/compare/v4.2.1...v5.0.0) (2018-04-09)
 
 #### BREAKING CHANGES
 
 * Drop support for Node.js 4
+
+#### Bug Fixes
+
+* Update dependencies to avoid licensing problems
+* Provide better error message when trying to attach data after the scenario has finished. This is possible if not waiting for the attach to finish.
 
 #### New features
 
