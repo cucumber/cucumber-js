@@ -1,5 +1,5 @@
 import { formatLocation } from '../formatter/helpers/location_helpers'
-import Table from 'cli-table'
+import Table from 'cli-table2'
 import indentString from 'indent-string'
 
 export function getAmbiguousStepException(stepDefinitions) {
