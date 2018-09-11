@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { formatLocation, getUsage } from './helpers'
 import Formatter from './'
-import Table from 'cli-table2'
+import Table from 'cli-table3'
 
 export default class UsageFormatter extends Formatter {
   constructor(options) {
