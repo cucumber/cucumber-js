@@ -55,7 +55,7 @@ export default class Master {
   }
 
   startSlave(id, total) {
-    const slaveProcess = childProcess.spawn(slaveCommand, [], {
+    const slaveProcess = childProcess.spawn(process.execPath, [slaveCommand], {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
