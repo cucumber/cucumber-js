@@ -125,7 +125,7 @@ export default class TestCaseRunner {
     return this.result.status !== Status.PASSED
   }
 
-  skipHook(isBeforeHook) {
+  shouldSkipHook(isBeforeHook) {
     return this.skip || (this.isSkippingSteps() && isBeforeHook)
   }
 
@@ -190,7 +190,7 @@ export default class TestCaseRunner {
   }
 
   async runHook(hookDefinition, hookParameter, isBeforeHook) {
-    if (this.skipHook(isBeforeHook)) {
+    if (this.shouldSkipHook(isBeforeHook)) {
       return { status: Status.SKIPPED }
     }
     return this.invokeStep(null, hookDefinition, hookParameter)

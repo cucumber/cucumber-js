@@ -80,15 +80,23 @@ Feature: Skipped steps
     And the step "a skipped step" has status "skipped"
 
   Scenario: Skipped before hook should skip all before hooks
-    Given a file named "features/support/hooks.js" with:
+    Given a file named "features/step_definitions/world.js" with:
       """
+      import {setWorldConstructor} from 'cucumber'
+      setWorldConstructor(function() {
+        this.ran = false
+      })
+      """
+    And a file named "features/support/hooks.js" with:
+      """
+      import assert from 'assert'
       import {After, Before} from 'cucumber'
 
       Before(function() {return 'skipped'})
 
-      Before(function() {})
+      Before(function() { this.ran = true })
 
-      After(function() {})
+      After(function() { assert.equal(this.ran, false) })
       """
     And a file named "features/step_definitions/skipped_steps.js" with:
       """
@@ -99,9 +107,7 @@ Feature: Skipped steps
       })
       """
     When I run cucumber-js
-    Then it passes
-    And the step "a skipped step" has status "skipped"
-
+    Then it passes 
 
   Scenario: Skipped before hook should run after hook 
     Given a file named "features/support/hooks.js" with:
