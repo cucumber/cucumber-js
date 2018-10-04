@@ -4,6 +4,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 #### Bug Fixes
 
+* Update default of formatters' colors enabled to be true only if the stream is a TTY
 * Allow writing to stdout when running in parallel
 
 ### [5.0.1](https://github.com/cucumber/cucumber-js/compare/v5.0.0...v5.0.1) (2018-04-09)

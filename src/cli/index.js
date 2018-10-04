@@ -48,6 +48,16 @@ export default class Cli {
         supportCodeLibrary,
         ...formatOptions,
       }
+      if (!formatOptions.hasOwnProperty('colorsEnabled')) {
+        typeOptions.colorsEnabled = !!stream.isTTY
+      }
+      if (type === 'progress-bar' && !stream.isTTY) {
+        console.warn(
+          `Cannot use 'progress-bar' formatter for output to '${outputTo ||
+            'stdout'}' as not a TTY. Switching to 'progress' formatter.`
+        )
+        type = 'progress'
+      }
       return FormatterBuilder.build(type, typeOptions)
     })
     return function() {
