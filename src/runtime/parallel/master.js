@@ -1,8 +1,7 @@
 import _ from 'lodash'
-import childProcess from 'child_process'
+import crossSpawn from 'cross-spawn'
 import commandTypes from './command_types'
 import path from 'path'
-import readline from 'readline'
 import Status from '../../status'
 
 const slaveCommand = path.resolve(
@@ -37,51 +36,47 @@ export default class Master {
     this.slaves = {}
   }
 
-  parseSlaveLine(slave, line) {
-    const input = JSON.parse(line)
-    switch (input.command) {
+  parseSlaveMessage(slave, message) {
+    switch (message.command) {
       case commandTypes.READY:
         this.giveSlaveWork(slave)
         break
       case commandTypes.EVENT:
-        this.eventBroadcaster.emit(input.name, input.data)
-        if (input.name === 'test-case-finished') {
-          this.parseTestCaseResult(input.data.result)
+        this.eventBroadcaster.emit(message.name, message.data)
+        if (message.name === 'test-case-finished') {
+          this.parseTestCaseResult(message.data.result)
         }
         break
       default:
-        throw new Error(`Unexpected message from slave: ${line}`)
+        throw new Error(`Unexpected message from slave: ${message}`)
     }
   }
 
   startSlave(id, total) {
-    const slaveProcess = childProcess.spawn(slaveCommand, [], {
+    const slaveProcess = crossSpawn(slaveCommand, [], {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
         CUCUMBER_SLAVE_ID: id,
       }),
-      stdio: ['pipe', 'pipe', process.stderr],
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-    const rl = readline.createInterface({ input: slaveProcess.stdout })
     const slave = { process: slaveProcess }
     this.slaves[id] = slave
-    rl.on('line', line => {
-      this.parseSlaveLine(slave, line)
+    slave.process.on('message', message => {
+      this.parseSlaveMessage(slave, message)
     })
-    rl.on('close', () => {
+    slave.process.on('close', () => {
       slave.closed = true
       this.onSlaveClose()
     })
-    slave.process.stdin.write(
-      JSON.stringify({
-        command: commandTypes.INITIALIZE,
-        filterStacktraces: this.options.filterStacktraces,
-        supportCodePaths: this.supportCodePaths,
-        supportCodeRequiredModules: this.supportCodeRequiredModules,
-        worldParameters: this.options.worldParameters,
-      }) + '\n'
-    )
+    slave.process.send({
+      command: commandTypes.INITIALIZE,
+      filterStacktraces: this.options.filterStacktraces,
+      supportCodePaths: this.supportCodePaths,
+      supportCodeRequiredModules: this.supportCodeRequiredModules,
+      worldParameters: this.options.worldParameters,
+    })
   }
 
   onSlaveClose() {
@@ -109,18 +104,14 @@ export default class Master {
 
   giveSlaveWork(slave) {
     if (this.nextTestCaseIndex === this.testCases.length) {
-      slave.process.stdin.write(
-        JSON.stringify({ command: commandTypes.FINALIZE }) + '\n'
-      )
+      slave.process.send({ command: commandTypes.FINALIZE })
       return
     }
     const testCase = this.testCases[this.nextTestCaseIndex]
     this.nextTestCaseIndex += 1
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    slave.process.stdin.write(
-      JSON.stringify({ command: commandTypes.RUN, skip, testCase }) + '\n'
-    )
+    slave.process.send({ command: commandTypes.RUN, skip, testCase })
   }
 
   shouldCauseFailure(status) {

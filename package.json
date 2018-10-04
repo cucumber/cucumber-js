@@ -151,6 +151,7 @@
     "cli-table3": "^0.5.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
+    "cross-spawn": "^6.0.5",
     "cucumber-expressions": "^6.0.0",
     "cucumber-tag-expressions": "^1.1.1",
     "duration": "^0.2.1",

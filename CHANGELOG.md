@@ -2,6 +2,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.1...master) (In Git)
 
+#### Bug Fixes
+
+* Allow writing to stdout when running in parallel
+
 ### [5.0.1](https://github.com/cucumber/cucumber-js/compare/v5.0.0...v5.0.1) (2018-04-09)
 
 #### Bug Fixes
