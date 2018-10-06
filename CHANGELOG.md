@@ -1,11 +1,14 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.1...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.2...master) (In Git)
+
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.1...5.0.2) (2018-10-06)
 
 #### Bug Fixes
 
 * Update default of formatters' colors enabled to be true only if the stream is a TTY
 * Allow writing to stdout when running in parallel
+* Skip other before hooks if one returns skipped
 
 ### [5.0.1](https://github.com/cucumber/cucumber-js/compare/v5.0.0...v5.0.1) (2018-04-09)
 

@@ -2,6 +2,8 @@ import _ from 'lodash'
 import colors from 'colors/safe'
 import Status from '../status'
 
+colors.enabled = true
+
 export default function getColorFns(enabled) {
   if (enabled) {
     return {
