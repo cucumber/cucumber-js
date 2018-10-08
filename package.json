@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "4.2.1",
+  "version": "5.0.2",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -121,7 +121,13 @@
     "Julian <JuloWaks@users.noreply.github.com>",
     "Bruce Lindsay <skynet1024@gmail.com>",
     "Josua Schmid <jschmid@fastmail.net>",
-    "DevSide <thomas.triau@gmail.com>"
+    "DevSide <thomas.triau@gmail.com>",
+    "ahulab <alexbaluha@gmail.com>",
+    "Kyle Moore <kyledmoore@gmail.com>",
+    "basemmerink <bas.emmerink@gmail.com>",
+    "David H. Gutteridge <dhgutteridge@users.noreply.github.com>",
+    "lopesc <lopesc@users.noreply.github.com>",
+    "Honza Javorek <mail@honzajavorek.cz>"
   ],
   "repository": {
     "type": "git",
@@ -142,12 +148,13 @@
     "assertion-error-formatter": "^2.0.1",
     "babel-runtime": "^6.11.6",
     "bluebird": "^3.4.1",
-    "cli-table": "^0.3.1",
+    "cli-table3": "^0.5.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
+    "cross-spawn": "^6.0.5",
     "cucumber-expressions": "^6.0.0",
     "cucumber-tag-expressions": "^1.1.1",
-    "duration": "^0.2.0",
+    "duration": "^0.2.1",
     "escape-string-regexp": "^1.0.5",
     "figures": "2.0.0",
     "gherkin": "^5.0.0",
@@ -163,7 +170,7 @@
     "serialize-error": "^2.1.0",
     "stack-chain": "^2.0.0",
     "stacktrace-js": "^2.0.0",
-    "string-argv": "0.0.2",
+    "string-argv": "0.1.1",
     "title-case": "^2.1.1",
     "util-arity": "^1.0.2",
     "verror": "^1.9.0"

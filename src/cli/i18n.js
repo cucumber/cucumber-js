@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Gherkin from 'gherkin'
-import Table from 'cli-table'
+import Table from 'cli-table3'
 import titleCase from 'title-case'
 
 const keywords = [

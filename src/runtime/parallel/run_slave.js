@@ -2,9 +2,9 @@ import Slave from './slave'
 
 export default async function run() {
   const slave = new Slave({
-    stdin: process.stdin,
-    stdout: process.stdout,
+    sendMessage: m => process.send(m),
     cwd: process.cwd(),
+    exit: () => process.exit(),
   })
-  await slave.run()
+  process.on('message', m => slave.receiveMessage(m))
 }

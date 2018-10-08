@@ -6,11 +6,8 @@ cache:
 environment:
   matrix:
     - nodejs_version: '10'
-      test_script: 'test'
     - nodejs_version: '8'
-      test_script: 'test'
     - nodejs_version: '6'
-      test_script: 'test'
 
 install:
   - ps: Install-Product node $env:nodejs_version
@@ -19,4 +16,4 @@ install:
 test_script:
   - node --version
   - yarn --version
-  - yarn run %test_script%
+  - yarn run test

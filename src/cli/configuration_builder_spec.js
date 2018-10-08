@@ -26,10 +26,7 @@ describe('Configuration', () => {
       expect(this.result).to.eql({
         featureDefaultLanguage: '',
         featurePaths: [],
-        formatOptions: {
-          colorsEnabled: true,
-          cwd: this.tmpDir,
-        },
+        formatOptions: { cwd: this.tmpDir },
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
@@ -156,5 +153,16 @@ describe('Configuration', () => {
       const result = await ConfigurationBuilder.build(options)
       return result.formats
     }
+  })
+
+  describe('formatOptions', () => {
+    it('returns the format options passed in with cwd added', async function() {
+      this.argv.push('--format-options', '{"snippetSyntax": "promise"}')
+      const result = await ConfigurationBuilder.build(this.configurationOptions)
+      expect(result.formatOptions).to.eql({
+        snippetSyntax: 'promise',
+        cwd: this.tmpDir,
+      })
+    })
   })
 })

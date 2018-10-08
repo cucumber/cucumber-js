@@ -111,10 +111,7 @@ export default class ConfigurationBuilder {
   }
 
   getFormatOptions() {
-    const formatOptions = _.clone(this.options.formatOptions)
-    formatOptions.cwd = this.cwd
-    _.defaults(formatOptions, { colorsEnabled: true })
-    return formatOptions
+    return _.assign({}, this.options.formatOptions, { cwd: this.cwd })
   }
 
   getFormats() {
