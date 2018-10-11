@@ -38,3 +38,7 @@ export function getAmbiguousStepException(stepDefinitions) {
     2
   )}`
 }
+
+export function hasTestCaseRetryTag(testCase) {
+  return !!testCase.pickle.tags.find(tag => tag.name === 'retry')
+}

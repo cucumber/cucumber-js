@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getAmbiguousStepException } from './helpers'
+import { getAmbiguousStepException, hasTestCaseRetryTag } from './helpers'
 
 describe('Helpers', () => {
   describe('getAmbiguousStepException', () => {
@@ -21,6 +21,24 @@ describe('Helpers', () => {
           '  pattern1        - steps1.js:3\n' +
           '  longer pattern2 - steps2.js:4'
       )
+    })
+  })
+  describe('hasTestCaseRetryTag', () => {
+    it('returns true if a test case is marked wih the retry tag', () => {
+      const testCase = {
+        pickle: {
+          tags: [{ name: 'retry' }],
+        },
+      }
+      expect(hasTestCaseRetryTag(testCase)).to.eql(true)
+    })
+    it('returns false if a test case is not marked wih the retry tag', () => {
+      const testCase = {
+        pickle: {
+          tags: [],
+        },
+      }
+      expect(hasTestCaseRetryTag(testCase)).to.eql(false)
     })
   })
 })

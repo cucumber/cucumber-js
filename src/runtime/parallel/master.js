@@ -3,6 +3,7 @@ import crossSpawn from 'cross-spawn'
 import commandTypes from './command_types'
 import path from 'path'
 import Status from '../../status'
+import { hasTestCaseRetryTag } from '../helpers'
 
 const slaveCommand = path.resolve(
   __dirname,
@@ -14,7 +15,7 @@ const slaveCommand = path.resolve(
 )
 
 export default class Master {
-  // options - {dryRun, failFast, filterStacktraces, retry, strict}
+  // options - {dryRun, failFast, filterStacktraces, retry, retryWithTag, strict}
   constructor({
     eventBroadcaster,
     options,
@@ -109,7 +110,9 @@ export default class Master {
     }
     const testCase = this.testCases[this.nextTestCaseIndex]
     this.nextTestCaseIndex += 1
-    const retry = this.options.retry
+    const retry =
+      this.options.retry ||
+      (this.options.retryWithTag && hasTestCaseRetryTag(testCase))
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     slave.process.send({ command: commandTypes.RUN, retry, skip, testCase })

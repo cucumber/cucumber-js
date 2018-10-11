@@ -113,7 +113,13 @@ export default class ArgvParser {
       )
       .option(
         '--retry <NUMBER_OF_RETRIES>',
-        'specify the number of times to retry failing tests (default: 0)',
+        'specify the number of times to retry failing test cases (default: 0)',
+        parseInt,
+        0
+      )
+      .option(
+        '--retryWithTag <NUMBER_OF_RETRIES>',
+        'specify the number of times to retry failing test cases tagged with @retry (default: 0)',
         parseInt,
         0
       )
