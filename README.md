@@ -7,7 +7,6 @@
 [![AppVeyor Status](https://img.shields.io/appveyor/ci/charlierudolph/cucumber-js/master.svg?label=appveyor)](https://ci.appveyor.com/project/charlierudolph/cucumber-js/history)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
 [![Coverage Status](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=master)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
-[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/cucumber/cucumber-js.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cucumber/cucumber-js/context:javascript)
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/cucumber/cucumber-js.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cucumber/cucumber-js/alerts)
 
 [Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
