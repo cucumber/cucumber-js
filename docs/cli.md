@@ -103,7 +103,7 @@ You can run your scenarios in parallel with `--parallel <NUMBER_OF_SLAVES>`. Eac
 * `CUCUMBER_TOTAL_SLAVES` - set to the number of slaves
 * `CUCUMBER_SLAVE_ID` - ID for slave ('0', '1', '2', etc.)
 
-**Note**: Printing to `stdout` (using `console.log` or other means) will cause an error, because the slave processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means).
+**Note**: Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the slave processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer as issue.
 
 ## Profiles
 
