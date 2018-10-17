@@ -2,7 +2,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.2...master) (In Git)
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.1...5.0.2) (2018-10-06)
+### [5.0.2](https://github.com/cucumber/cucumber-js/compare/v5.0.1...5.0.2) (2018-10-06)
 
 #### Bug Fixes
 
