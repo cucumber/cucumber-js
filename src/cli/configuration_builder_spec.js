@@ -43,7 +43,7 @@ describe('Configuration', () => {
           failFast: false,
           filterStacktraces: true,
           retry: 0,
-          retryWithTag: 0,
+          retryTagFilter: '',
           strict: true,
           worldParameters: {},
         },

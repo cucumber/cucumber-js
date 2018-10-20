@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getAmbiguousStepException, hasTestCaseRetryTag } from './helpers'
+import { getAmbiguousStepException, shouldRetryTestCase } from './helpers'
 
 describe('Helpers', () => {
   describe('getAmbiguousStepException', () => {
@@ -23,22 +23,51 @@ describe('Helpers', () => {
       )
     })
   })
-  describe('hasTestCaseRetryTag', () => {
-    it('returns true if a test case is marked wih the retry tag', () => {
-      const testCase = {
-        pickle: {
-          tags: [{ name: 'retry' }],
-        },
-      }
-      expect(hasTestCaseRetryTag(testCase)).to.eql(true)
-    })
-    it('returns false if a test case is not marked wih the retry tag', () => {
+  describe('shouldRetryTestCase', () => {
+    it('returns false if options.retry is not set', () => {
       const testCase = {
         pickle: {
           tags: [],
         },
       }
-      expect(hasTestCaseRetryTag(testCase)).to.eql(false)
+      expect(shouldRetryTestCase(testCase, {})).to.eql(false)
+    })
+    it('returns true if options.retry is set and no options.retryTagFilter is specified', () => {
+      const testCase = {
+        pickle: {
+          tags: [],
+        },
+      }
+      const options = {
+        retry: 1,
+      }
+      expect(shouldRetryTestCase(testCase, options)).to.eql(true)
+    })
+    it('returns true if options.retry is set and the test case tags match options.retryTagFilter', () => {
+      const testCase = {
+        pickle: {
+          tags: [{ name: '@flaky' }],
+        },
+        uri: 'features/a.feature',
+      }
+      const options = {
+        retry: 1,
+        retryTagFilter: '@flaky',
+      }
+      expect(shouldRetryTestCase(testCase, options)).to.eql(true)
+    })
+    it('returns false if options.retry is set but the test case tags do not match options.retryTagFilter', () => {
+      const testCase = {
+        pickle: {
+          tags: [{ name: '@not_flaky' }],
+        },
+        uri: 'features/a.feature',
+      }
+      const options = {
+        retry: 1,
+        retryTagFilter: '@flaky',
+      }
+      expect(shouldRetryTestCase(testCase, options)).to.eql(false)
     })
   })
 })

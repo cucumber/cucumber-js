@@ -20,7 +20,7 @@ describe('PickleFilter', () => {
         this.pickleFilter = new PickleFilter({
           featurePaths: ['features'],
           names: [],
-          tagExpressions: [],
+          tagExpression: '',
         })
       })
 
@@ -34,7 +34,7 @@ describe('PickleFilter', () => {
         this.pickleFilter = new PickleFilter({
           featurePaths: ['features/a.feature', 'features/b.feature:1:2'],
           names: [],
-          tagExpressions: [],
+          tagExpression: '',
         })
       })
 
@@ -107,7 +107,7 @@ describe('PickleFilter', () => {
           this.pickleFilter = new PickleFilter({
             featurePaths: ['features'],
             names: ['nameA'],
-            tagExpressions: [],
+            tagExpression: '',
           })
         })
 
@@ -137,7 +137,7 @@ describe('PickleFilter', () => {
           this.pickleFilter = new PickleFilter({
             featurePaths: ['features'],
             names: ['nameA', 'nameB'],
-            tagExpressions: [],
+            tagExpression: '',
           })
         })
 
@@ -329,7 +329,7 @@ describe('PickleFilter', () => {
           this.pickleFilter = new PickleFilter({
             featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
-            tagExpressions: ['@tagA'],
+            tagExpression: '@tagA',
           })
           this.input.pickle.locations = [{ line: 1 }]
           this.input.pickle.name = 'nameA descriptionA'
@@ -346,7 +346,7 @@ describe('PickleFilter', () => {
           this.pickleFilter = new PickleFilter({
             featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
-            tagExpressions: ['tagA'],
+            tagExpression: 'tagA',
           })
           this.input.pickle.locations = [{ line: 1 }]
         })
