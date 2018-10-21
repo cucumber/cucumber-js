@@ -169,7 +169,8 @@ export default class TestCaseRunner {
   async run() {
     this.emitPrepared()
     this.emit('test-case-started', {})
-    for (let i = 0; i <= this.retry; i++) {
+    let retries = 0
+    for (; retries <= this.retry; retries++) {
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -191,11 +192,14 @@ export default class TestCaseRunner {
       if (this.result.status !== Status.FAILED) {
         break
       }
-      if (i < this.retry) {
+      if (retries < this.retry) {
         delete this.result.exception
         this.result.status = Status.PASSED
         this.testStepIndex = 0
       }
+    }
+    if (this.result.status === Status.PASSED && retries > 0) {
+      this.result.status = Status.FLAKY
     }
     this.emit('test-case-finished', { result: this.result })
     return this.result

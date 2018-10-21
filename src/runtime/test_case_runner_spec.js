@@ -322,7 +322,7 @@ describe('TestCaseRunner', () => {
         expect(this.onTestCaseFinished).to.have.been.calledWith({
           result: {
             duration: 2,
-            status: Status.PASSED,
+            status: Status.FLAKY,
           },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
