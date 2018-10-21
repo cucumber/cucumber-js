@@ -82,10 +82,10 @@ export default class Slave {
     }
   }
 
-  async runTestCase({ testCase, retry, skip }) {
+  async runTestCase({ testCase, retries, skip }) {
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
-      retry,
+      retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       testCase,

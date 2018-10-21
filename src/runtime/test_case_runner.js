@@ -8,7 +8,7 @@ import StepRunner from './step_runner'
 export default class TestCaseRunner {
   constructor({
     eventBroadcaster,
-    retry,
+    retries,
     skip,
     testCase,
     supportCodeLibrary,
@@ -27,7 +27,7 @@ export default class TestCaseRunner {
       })
     })
     this.eventBroadcaster = eventBroadcaster
-    this.retry = !skip && retry > 0 ? retry : 0
+    this.retries = !skip && retries > 0 ? retries : 0
     this.skip = skip
     this.testCase = testCase
     this.supportCodeLibrary = supportCodeLibrary
@@ -170,7 +170,7 @@ export default class TestCaseRunner {
     this.emitPrepared()
     this.emit('test-case-started', {})
     let retries = 0
-    for (; retries <= this.retry; retries++) {
+    for (; retries <= this.retries; retries++) {
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -192,7 +192,7 @@ export default class TestCaseRunner {
       if (this.result.status !== Status.FAILED) {
         break
       }
-      if (retries < this.retry) {
+      if (retries < this.retries) {
         delete this.result.exception
         this.result.status = Status.PASSED
         this.testStepIndex = 0

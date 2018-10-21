@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { getAmbiguousStepException, shouldRetryTestCase } from './helpers'
+import { getAmbiguousStepException, retriesForTestCase } from './helpers'
 
 describe('Helpers', () => {
   describe('getAmbiguousStepException', () => {
@@ -23,16 +23,16 @@ describe('Helpers', () => {
       )
     })
   })
-  describe('shouldRetryTestCase', () => {
-    it('returns false if options.retry is not set', () => {
+  describe('retriesForTestCase', () => {
+    it('returns 0 if options.retry is not set', () => {
       const testCase = {
         pickle: {
           tags: [],
         },
       }
-      expect(shouldRetryTestCase(testCase, {})).to.eql(false)
+      expect(retriesForTestCase(testCase, {})).to.eql(0)
     })
-    it('returns true if options.retry is set and no options.retryTagFilter is specified', () => {
+    it('returns options.retry if set and no options.retryTagFilter is specified', () => {
       const testCase = {
         pickle: {
           tags: [],
@@ -41,9 +41,9 @@ describe('Helpers', () => {
       const options = {
         retry: 1,
       }
-      expect(shouldRetryTestCase(testCase, options)).to.eql(true)
+      expect(retriesForTestCase(testCase, options)).to.eql(1)
     })
-    it('returns true if options.retry is set and the test case tags match options.retryTagFilter', () => {
+    it('returns options.retry is set and the test case tags match options.retryTagFilter', () => {
       const testCase = {
         pickle: {
           tags: [{ name: '@flaky' }],
@@ -54,9 +54,9 @@ describe('Helpers', () => {
         retry: 1,
         retryTagFilter: '@flaky',
       }
-      expect(shouldRetryTestCase(testCase, options)).to.eql(true)
+      expect(retriesForTestCase(testCase, options)).to.eql(1)
     })
-    it('returns false if options.retry is set but the test case tags do not match options.retryTagFilter', () => {
+    it('returns 0 if options.retry is set but the test case tags do not match options.retryTagFilter', () => {
       const testCase = {
         pickle: {
           tags: [{ name: '@not_flaky' }],
@@ -67,7 +67,7 @@ describe('Helpers', () => {
         retry: 1,
         retryTagFilter: '@flaky',
       }
-      expect(shouldRetryTestCase(testCase, options)).to.eql(false)
+      expect(retriesForTestCase(testCase, options)).to.eql(0)
     })
   })
 })

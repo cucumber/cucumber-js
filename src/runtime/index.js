@@ -6,7 +6,7 @@ import Status from '../status'
 import TestCaseRunner from './test_case_runner'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
-import { shouldRetryTestCase } from './helpers'
+import { retriesForTestCase } from './helpers'
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}
@@ -43,12 +43,12 @@ export default class Runtime {
   }
 
   async runTestCase(testCase) {
+    const retries = retriesForTestCase(testCase, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    const retry = shouldRetryTestCase(testCase, this.options)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
-      retry,
+      retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       testCase,

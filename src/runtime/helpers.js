@@ -40,15 +40,20 @@ export function getAmbiguousStepException(stepDefinitions) {
   )}`
 }
 
-export function shouldRetryTestCase(testCase, options) {
-  if (!options.retry) {
-    return false
+export function retriesForTestCase(testCase, options) {
+  const retries = options.retry
+  if (!retries) {
+    return 0
   }
-  if (options.retryTagFilter) {
-    const pickleFilter = new PickleFilter({
-      tagExpression: options.retryTagFilter,
-    })
-    return pickleFilter.matches(testCase)
+  const retryTagFilter = options.retryTagFilter
+  if (!retryTagFilter) {
+    return retries
   }
-  return true
+  const pickleFilter = new PickleFilter({
+    tagExpression: retryTagFilter,
+  })
+  if (pickleFilter.matches(testCase)) {
+    return retries
+  }
+  return 0
 }

@@ -3,7 +3,7 @@ import crossSpawn from 'cross-spawn'
 import commandTypes from './command_types'
 import path from 'path'
 import Status from '../../status'
-import { shouldRetryTestCase } from '../helpers'
+import { retriesForTestCase } from '../helpers'
 
 const slaveCommand = path.resolve(
   __dirname,
@@ -110,10 +110,10 @@ export default class Master {
     }
     const testCase = this.testCases[this.nextTestCaseIndex]
     this.nextTestCaseIndex += 1
-    const retry = shouldRetryTestCase(testCase, this.options)
+    const retries = retriesForTestCase(testCase, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    slave.process.send({ command: commandTypes.RUN, retry, skip, testCase })
+    slave.process.send({ command: commandTypes.RUN, retries, skip, testCase })
   }
 
   shouldCauseFailure(status) {

@@ -228,7 +228,7 @@ describe('TestCaseRunner', () => {
       })
     })
 
-    describe('with a flaky step and a positive retry number', () => {
+    describe('with a flaky step and a positive retries value', () => {
       beforeEach(async function() {
         this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
         this.error = new Error('a')
@@ -254,7 +254,7 @@ describe('TestCaseRunner', () => {
         this.testCase.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
-          retry: 1,
+          retries: 1,
           skip: false,
           testCase: this.testCase,
           supportCodeLibrary: this.supportCodeLibrary,
