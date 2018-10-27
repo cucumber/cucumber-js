@@ -37,19 +37,23 @@ export default class TestCaseRunner {
     })
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
-    this.testStepIndex = 0
     this.maxTestStepIndex =
       this.beforeHookDefinitions.length +
       this.testCase.pickle.steps.length +
       this.afterHookDefinitions.length -
       1
-    this.result = {
-      duration: 0,
-      status: this.skip ? Status.SKIPPED : Status.PASSED,
-    }
     this.testCaseSourceLocation = {
       uri: this.testCase.uri,
       line: this.testCase.pickle.locations[0].line,
+    }
+    this.resetTestProgressData()
+  }
+
+  resetTestProgressData() {
+    this.testStepIndex = 0
+    this.result = {
+      duration: 0,
+      status: this.skip ? Status.SKIPPED : Status.PASSED,
     }
   }
 
@@ -168,9 +172,13 @@ export default class TestCaseRunner {
 
   async run() {
     this.emitPrepared()
-    this.emit('test-case-started', {})
     let retries = 0
     for (; retries <= this.retries; retries++) {
+      this.emit('test-case-started', {})
+      if (retries > 0) {
+        this.resetTestProgressData()
+        this.result.retryAttempt = retries
+      }
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -189,19 +197,15 @@ export default class TestCaseRunner {
         },
         false
       )
-      if (this.result.status !== Status.FAILED) {
+      const shouldRetryTestCase =
+        this.result.status === Status.FAILED && retries < this.retries
+      if (!shouldRetryTestCase) {
+        this.emit('test-case-finished', { result: this.result })
         break
       }
-      if (retries < this.retries) {
-        delete this.result.exception
-        this.result.status = Status.PASSED
-        this.testStepIndex = 0
-      }
-    }
-    if (this.result.status === Status.PASSED && retries > 0) {
       this.result.status = Status.FLAKY
+      this.emit('test-case-finished', { result: this.result })
     }
-    this.emit('test-case-finished', { result: this.result })
     return this.result
   }
 

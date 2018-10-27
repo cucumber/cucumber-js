@@ -237,19 +237,15 @@ describe('TestCaseRunner', () => {
           line: 3,
           matchesStepName: sinon.stub().returns(true),
         }
-        StepRunner.run.onCall(0).returns(
-          Promise.resolve({
-            duration: 1,
-            status: Status.FAILED,
-            exception: this.error,
-          })
-        )
-        StepRunner.run.onCall(1).returns(
-          Promise.resolve({
-            duration: 1,
-            status: Status.PASSED,
-          })
-        )
+        StepRunner.run.onFirstCall().resolves({
+          duration: 1,
+          status: Status.FAILED,
+          exception: this.error,
+        })
+        StepRunner.run.onSecondCall().resolves({
+          duration: 1,
+          status: Status.PASSED,
+        })
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
         this.testCase.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
@@ -275,11 +271,17 @@ describe('TestCaseRunner', () => {
         })
       })
 
-      it('emits test-case-started', function() {
-        expect(this.onTestCaseStarted).to.have.callCount(1)
-        expect(this.onTestCaseStarted).to.have.been.calledWith({
+      it('emits test-case-started twice', function() {
+        const expectedTestCaseStartedArgs = {
           sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+        }
+        expect(this.onTestCaseStarted).to.have.callCount(2)
+        expect(this.onTestCaseStarted.firstCall).to.have.been.calledWith(
+          expectedTestCaseStartedArgs
+        )
+        expect(this.onTestCaseStarted.secondCall).to.have.been.calledWith(
+          expectedTestCaseStartedArgs
+        )
       })
 
       it('emits test-step-started twice', function() {
@@ -288,17 +290,17 @@ describe('TestCaseRunner', () => {
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
         }
         expect(this.onTestStepStarted).to.have.callCount(2)
-        expect(this.onTestStepStarted.args[0][0]).deep.equals(
+        expect(this.onTestStepStarted.firstCall).to.have.been.calledWith(
           expectedTestStepStartedArgs
         )
-        expect(this.onTestStepStarted.args[1][0]).deep.equals(
+        expect(this.onTestStepStarted.secondCall).to.have.been.calledWith(
           expectedTestStepStartedArgs
         )
       })
 
       it('emits test-step-finished twice', function() {
         expect(this.onTestStepFinished).to.have.callCount(2)
-        expect(this.onTestStepFinished.args[0][0]).deep.equals({
+        expect(this.onTestStepFinished.firstCall).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
           result: {
@@ -307,7 +309,7 @@ describe('TestCaseRunner', () => {
             exception: this.error,
           },
         })
-        expect(this.onTestStepFinished.args[1][0]).deep.equals({
+        expect(this.onTestStepFinished.secondCall).to.have.been.calledWith({
           index: 0,
           testCase: { sourceLocation: { line: 1, uri: 'path/to/feature' } },
           result: {
@@ -317,12 +319,21 @@ describe('TestCaseRunner', () => {
         })
       })
 
-      it('emits test-case-finished', function() {
-        expect(this.onTestCaseFinished).to.have.callCount(1)
-        expect(this.onTestCaseFinished).to.have.been.calledWith({
+      it('emits test-case-finished twice', function() {
+        expect(this.onTestCaseFinished).to.have.callCount(2)
+        expect(this.onTestCaseFinished.firstCall).to.have.been.calledWith({
           result: {
-            duration: 2,
+            duration: 1,
+            exception: this.error,
             status: Status.FLAKY,
+          },
+          sourceLocation: { line: 1, uri: 'path/to/feature' },
+        })
+        expect(this.onTestCaseFinished.secondCall).to.have.been.calledWith({
+          result: {
+            duration: 1,
+            retryAttempt: 1,
+            status: Status.PASSED,
           },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
