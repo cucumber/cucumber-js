@@ -74,6 +74,10 @@ export default class JsonFormatter extends Formatter {
           pickle,
           scenarioLineToDescriptionMap,
         })
+        const result = testCase.result
+        if (result.retryAttempt > 0) {
+          scenarioData.retryAttempt = result.retryAttempt
+        }
         const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
         let isBeforeHook = true
         scenarioData.steps = testCase.steps.map(testStep => {

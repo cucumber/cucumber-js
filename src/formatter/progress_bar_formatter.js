@@ -1,6 +1,7 @@
 import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter from './'
 import ProgressBar from 'progress'
+import { Status } from '../../lib'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
@@ -38,7 +39,9 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded({ sourceLocation, result }) {
-    if (isIssue(result.status)) {
+    const status = result.status
+    const shouldLog = isIssue(status) || status === Status.FLAKY
+    if (shouldLog) {
       this.issueCount += 1
       const {
         gherkinDocument,

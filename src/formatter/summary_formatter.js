@@ -14,9 +14,12 @@ export default class SummaryFormatter extends Formatter {
   }
 
   isTestCaseWarning(testCase) {
-    return _.includes(
-      [Status.FLAKY, Status.PENDING, Status.UNDEFINED],
-      testCase.result.status
+    const testCaseResult = testCase.result
+    return (
+      _.includes(
+        [Status.FLAKY, Status.PENDING, Status.UNDEFINED],
+        testCaseResult.status
+      ) || testCaseResult.retryAttempt > 0
     )
   }
 
