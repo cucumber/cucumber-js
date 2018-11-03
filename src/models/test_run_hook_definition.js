@@ -1,6 +1,6 @@
-import StepDefinition from './step_definition'
+import Definition from './definition'
 
-export default class TestRunHookDefinition extends StepDefinition {
+export default class TestRunHookDefinition extends Definition {
   getInvalidCodeLengthMessage() {
     return this.buildInvalidCodeLengthMessage('0', '1')
   }

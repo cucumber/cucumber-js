@@ -9,7 +9,6 @@ const { beginTiming, endTiming } = Time
 async function run({
   defaultTimeout,
   hookParameter,
-  parameterTypeRegistry,
   step,
   stepDefinition,
   world,
@@ -21,7 +20,6 @@ async function run({
     parameters = await Promise.all(
       stepDefinition.getInvocationParameters({
         hookParameter,
-        parameterTypeRegistry,
         step,
         world,
       })

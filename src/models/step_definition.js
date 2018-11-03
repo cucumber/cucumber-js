@@ -1,34 +1,16 @@
-import { CucumberExpression, RegularExpression } from 'cucumber-expressions'
 import DataTable from './data_table'
 import { buildStepArgumentIterator } from '../step_arguments'
+import Definition from './definition'
 
-export default class StepDefinition {
-  constructor({ code, line, options, pattern, uri }) {
-    this.code = code
-    this.line = line
-    this.options = options
+export default class StepDefinition extends Definition {
+  constructor({ code, line, options, uri, pattern, expression }) {
+    super({ code, line, options, uri })
     this.pattern = pattern
-    this.uri = uri
+    this.expression = expression
   }
 
-  buildInvalidCodeLengthMessage(syncOrPromiseLength, callbackLength) {
-    return (
-      `function has ${this.code.length} arguments` +
-      `, should have ${syncOrPromiseLength} (if synchronous or returning a promise)` +
-      ` or ${callbackLength} (if accepting a callback)`
-    )
-  }
-
-  getInvalidCodeLengthMessage(parameters) {
-    return this.buildInvalidCodeLengthMessage(
-      parameters.length,
-      parameters.length + 1
-    )
-  }
-
-  getInvocationParameters({ step, parameterTypeRegistry, world }) {
-    const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
-    const stepNameParameters = cucumberExpression
+  getInvocationParameters({ step, world }) {
+    const stepNameParameters = this.expression
       .match(step.text)
       .map(arg => arg.getValue(world))
     const iterator = buildStepArgumentIterator({
@@ -39,19 +21,11 @@ export default class StepDefinition {
     return stepNameParameters.concat(stepArgumentParameters)
   }
 
-  getCucumberExpression(parameterTypeRegistry) {
-    if (typeof this.pattern === 'string') {
-      return new CucumberExpression(this.pattern, parameterTypeRegistry)
-    }
-    return new RegularExpression(this.pattern, parameterTypeRegistry)
-  }
-
   getValidCodeLengths(parameters) {
     return [parameters.length, parameters.length + 1]
   }
 
-  matchesStepName({ stepName, parameterTypeRegistry }) {
-    const cucumberExpression = this.getCucumberExpression(parameterTypeRegistry)
-    return Boolean(cucumberExpression.match(stepName))
+  matchesStepName({ stepName }) {
+    return Boolean(this.expression.match(stepName))
   }
 }

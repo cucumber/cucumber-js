@@ -4,7 +4,7 @@ import { formatLocation } from '../formatter/helpers'
 import { ParameterType } from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
-import StepDefinition from '../models/step_definition'
+import UnboundStepDefinition from '../models/unbound_step_definition'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import validateArguments from './validate_arguments'
@@ -62,7 +62,7 @@ export function buildStepDefinition({ pattern, options, code, cwd }) {
     fnName: 'defineStep',
     location: formatLocation({ line, uri }),
   })
-  return new StepDefinition({
+  return new UnboundStepDefinition({
     code,
     line,
     options,

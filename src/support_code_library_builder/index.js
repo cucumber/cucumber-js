@@ -72,6 +72,12 @@ export class SupportCodeLibraryBuilder {
   }
 
   finalize() {
+    this.options.stepDefinitions = this.options.stepDefinitions.map(
+      stepDefinition =>
+        stepDefinition.bindToParameterTypeRegistry(
+          this.options.parameterTypeRegistry
+        )
+    )
     wrapDefinitions({
       cwd: this.cwd,
       definitionFunctionWrapper: this.options.definitionFunctionWrapper,
