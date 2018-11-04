@@ -3,7 +3,7 @@ import _ from 'lodash'
 const statuses = {
   AMBIGUOUS: 'ambiguous',
   FAILED: 'failed',
-  FLAKY: 'flaky',
+  RETRY: 'retry',
   PASSED: 'passed',
   PENDING: 'pending',
   SKIPPED: 'skipped',

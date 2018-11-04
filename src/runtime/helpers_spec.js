@@ -46,26 +46,26 @@ describe('Helpers', () => {
     it('returns options.retry is set and the test case tags match options.retryTagFilter', () => {
       const testCase = {
         pickle: {
-          tags: [{ name: '@flaky' }],
+          tags: [{ name: '@retry' }],
         },
         uri: 'features/a.feature',
       }
       const options = {
         retry: 1,
-        retryTagFilter: '@flaky',
+        retryTagFilter: '@retry',
       }
       expect(retriesForTestCase(testCase, options)).to.eql(1)
     })
     it('returns 0 if options.retry is set but the test case tags do not match options.retryTagFilter', () => {
       const testCase = {
         pickle: {
-          tags: [{ name: '@not_flaky' }],
+          tags: [{ name: '@no_retry' }],
         },
         uri: 'features/a.feature',
       }
       const options = {
         retry: 1,
-        retryTagFilter: '@flaky',
+        retryTagFilter: '@retry',
       }
       expect(retriesForTestCase(testCase, options)).to.eql(0)
     })

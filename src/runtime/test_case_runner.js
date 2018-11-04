@@ -8,7 +8,7 @@ import StepRunner from './step_runner'
 export default class TestCaseRunner {
   constructor({
     eventBroadcaster,
-    retries,
+    retries = 0,
     skip,
     testCase,
     supportCodeLibrary,
@@ -27,7 +27,7 @@ export default class TestCaseRunner {
       })
     })
     this.eventBroadcaster = eventBroadcaster
-    this.retries = !skip && retries > 0 ? retries : 0
+    this.maxAttempts = 1 + (skip ? 0 : retries)
     this.skip = skip
     this.testCase = testCase
     this.supportCodeLibrary = supportCodeLibrary
@@ -172,13 +172,12 @@ export default class TestCaseRunner {
 
   async run() {
     this.emitPrepared()
-    let retries = 0
-    for (; retries <= this.retries; retries++) {
-      this.emit('test-case-started', {})
-      if (retries > 0) {
-        this.resetTestProgressData()
-        this.result.retryAttempt = retries
-      }
+    for (
+      let attemptNumber = 1;
+      attemptNumber <= this.maxAttempts;
+      attemptNumber++
+    ) {
+      this.emit('test-case-started', { attemptNumber })
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -197,14 +196,15 @@ export default class TestCaseRunner {
         },
         false
       )
-      const shouldRetryTestCase =
-        this.result.status === Status.FAILED && retries < this.retries
-      if (!shouldRetryTestCase) {
-        this.emit('test-case-finished', { result: this.result })
+      const shouldRetry =
+        this.result.status === Status.FAILED && attemptNumber < this.maxAttempts
+      if (!shouldRetry) {
+        this.emit('test-case-finished', { attemptNumber, result: this.result })
         break
       }
-      this.result.status = Status.FLAKY
-      this.emit('test-case-finished', { result: this.result })
+      this.result.status = Status.RETRY
+      this.emit('test-case-finished', { attemptNumber, result: this.result })
+      this.resetTestProgressData()
     }
     return this.result
   }

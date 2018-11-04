@@ -65,6 +65,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -72,6 +73,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: { duration: 0, status: Status.PASSED },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
@@ -118,6 +120,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -142,6 +145,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: { duration: 1, status: Status.PASSED },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
@@ -190,6 +194,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -218,6 +223,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: {
             duration: 1,
             status: Status.FAILED,
@@ -272,16 +278,16 @@ describe('TestCaseRunner', () => {
       })
 
       it('emits test-case-started twice', function() {
-        const expectedTestCaseStartedArgs = {
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        }
+        const sourceLocation = { line: 1, uri: 'path/to/feature' }
         expect(this.onTestCaseStarted).to.have.callCount(2)
-        expect(this.onTestCaseStarted.firstCall).to.have.been.calledWith(
-          expectedTestCaseStartedArgs
-        )
-        expect(this.onTestCaseStarted.secondCall).to.have.been.calledWith(
-          expectedTestCaseStartedArgs
-        )
+        expect(this.onTestCaseStarted.firstCall).to.have.been.calledWith({
+          attemptNumber: 1,
+          sourceLocation,
+        })
+        expect(this.onTestCaseStarted.secondCall).to.have.been.calledWith({
+          attemptNumber: 2,
+          sourceLocation,
+        })
       })
 
       it('emits test-step-started twice', function() {
@@ -320,22 +326,24 @@ describe('TestCaseRunner', () => {
       })
 
       it('emits test-case-finished twice', function() {
+        const sourceLocation = { line: 1, uri: 'path/to/feature' }
         expect(this.onTestCaseFinished).to.have.callCount(2)
         expect(this.onTestCaseFinished.firstCall).to.have.been.calledWith({
+          attemptNumber: 1,
           result: {
             duration: 1,
             exception: this.error,
-            status: Status.FLAKY,
+            status: Status.RETRY,
           },
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
+          sourceLocation,
         })
         expect(this.onTestCaseFinished.secondCall).to.have.been.calledWith({
+          attemptNumber: 2,
           result: {
             duration: 1,
-            retryAttempt: 1,
             status: Status.PASSED,
           },
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
+          sourceLocation,
         })
       })
     })
@@ -384,6 +392,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -414,6 +423,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: {
             duration: 0,
             status: Status.AMBIGUOUS,
@@ -451,6 +461,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -475,6 +486,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: { duration: 0, status: Status.UNDEFINED },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
@@ -516,6 +528,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -540,6 +553,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: { duration: 0, status: Status.SKIPPED },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
@@ -593,6 +607,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -626,6 +641,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: { duration: 0, status: Status.SKIPPED },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
@@ -679,6 +695,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-started', function() {
         expect(this.onTestCaseStarted).to.have.callCount(1)
         expect(this.onTestCaseStarted).to.have.been.calledWith({
+          attemptNumber: 1,
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
       })
@@ -712,6 +729,7 @@ describe('TestCaseRunner', () => {
       it('emits test-case-finished', function() {
         expect(this.onTestCaseFinished).to.have.callCount(1)
         expect(this.onTestCaseFinished).to.have.been.calledWith({
+          attemptNumber: 1,
           result: { duration: 0, status: Status.SKIPPED },
           sourceLocation: { line: 1, uri: 'path/to/feature' },
         })
