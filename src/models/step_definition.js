@@ -25,7 +25,7 @@ export default class StepDefinition extends Definition {
     return [parameters.length, parameters.length + 1]
   }
 
-  matchesStepName({ stepName }) {
+  matchesStepName(stepName) {
     return Boolean(this.expression.match(stepName))
   }
 }

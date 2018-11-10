@@ -103,9 +103,7 @@ export default class TestCaseRunner {
 
   getStepDefinitions(step) {
     return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition =>
-      stepDefinition.matchesStepName({
-        stepName: step.text,
-      })
+      stepDefinition.matchesStepName(step.text)
     )
   }
 
