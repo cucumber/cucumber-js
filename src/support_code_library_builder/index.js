@@ -3,8 +3,8 @@ import util from 'util'
 import TransformLookupBuilder from './parameter_type_registry_builder'
 import {
   buildParameterType,
-  buildStepDefinitionStruct,
-  buildStepDefinitionFromStruct,
+  buildStepDefinitionConfig,
+  buildStepDefinitionFromConfig,
   buildTestCaseHookDefinition,
   buildTestRunHookDefinition,
 } from './build_helpers'
@@ -41,13 +41,13 @@ export class SupportCodeLibraryBuilder {
   }
 
   defineStep(pattern, options, code) {
-    const stepDefinitionStruct = buildStepDefinitionStruct({
+    const stepDefinitionConfig = buildStepDefinitionConfig({
       pattern,
       options,
       code,
       cwd: this.cwd,
     })
-    this.options.stepDefinitions.push(stepDefinitionStruct)
+    this.options.stepDefinitionConfigs.push(stepDefinitionConfig)
   }
 
   defineTestCaseHook(collectionName) {
@@ -73,9 +73,14 @@ export class SupportCodeLibraryBuilder {
   }
 
   finalize() {
-    this.options.stepDefinitions = this.options.stepDefinitions.map(struct =>
-      buildStepDefinitionFromStruct(struct, this.options.parameterTypeRegistry)
+    this.options.stepDefinitions = this.options.stepDefinitionConfigs.map(
+      config =>
+        buildStepDefinitionFromConfig({
+          config,
+          parameterTypeRegistry: this.options.parameterTypeRegistry,
+        })
     )
+    delete this.options.stepDefinitionConfigs
     wrapDefinitions({
       cwd: this.cwd,
       definitionFunctionWrapper: this.options.definitionFunctionWrapper,
@@ -104,7 +109,7 @@ export class SupportCodeLibraryBuilder {
       beforeTestRunHookDefinitions: [],
       defaultTimeout: 5000,
       definitionFunctionWrapper: null,
-      stepDefinitions: [],
+      stepDefinitionConfigs: [],
       parameterTypeRegistry: TransformLookupBuilder.build(),
       World({ attach, parameters }) {
         this.attach = attach

@@ -55,7 +55,7 @@ export function buildTestRunHookDefinition({ options, code, cwd }) {
   })
 }
 
-export function buildStepDefinitionStruct({ pattern, options, code, cwd }) {
+export function buildStepDefinitionConfig({ pattern, options, code, cwd }) {
   if (typeof options === 'function') {
     code = options
     options = {}
@@ -75,8 +75,11 @@ export function buildStepDefinitionStruct({ pattern, options, code, cwd }) {
   }
 }
 
-export function buildStepDefinitionFromStruct(struct, parameterTypeRegistry) {
-  const { code, line, options, uri, pattern } = struct
+export function buildStepDefinitionFromConfig({
+  config,
+  parameterTypeRegistry,
+}) {
+  const { code, line, options, uri, pattern } = config
   const Expression =
     typeof pattern === 'string' ? CucumberExpression : RegularExpression
 
