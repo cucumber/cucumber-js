@@ -1,9 +1,17 @@
 ## Setup
 
 * Install [Node.js](https://nodejs.org) (6 or higher)
-* Install the following node modules with [yarn](https://yarnpkg.com/en/) or [npm](https://www.npmjs.com/)
-  * chai@latest
-  * cucumber@latest
+* Install the last version of [Chai](https://www.chaijs.com/) and Cucumber modules with [yarn](https://yarnpkg.com/en/) 
+```
+yarn add chai@latest cucumber@latest
+```
+
+or [npm](https://www.npmjs.com/)
+
+```
+npm i -D chai@latest cucumber@latest
+```
+  
 
 * Add the following files
 
