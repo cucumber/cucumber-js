@@ -6,7 +6,7 @@
 yarn add chai@latest cucumber@latest
 ```
 
-or [npm](https://www.npmjs.com/)
+* or with [npm](https://www.npmjs.com/)
 
 ```
 npm i -D chai@latest cucumber@latest
