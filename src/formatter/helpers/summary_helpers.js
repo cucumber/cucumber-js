@@ -8,7 +8,7 @@ const STATUS_REPORT_ORDER = [
   Status.UNDEFINED,
   Status.PENDING,
   Status.SKIPPED,
-  Status.RETRY,
+  Status.FLAKY,
   Status.PASSED,
 ]
 

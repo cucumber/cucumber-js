@@ -9,9 +9,10 @@ export default function getColorFns(enabled) {
     return {
       [Status.AMBIGUOUS]: ::colors.red,
       [Status.FAILED]: ::colors.red,
-      [Status.RETRY]: ::colors.yellow,
+      [Status.FLAKY]: ::colors.yellow,
       [Status.PASSED]: ::colors.green,
       [Status.PENDING]: ::colors.yellow,
+      [Status.RETRY]: ::colors.yellow,
       [Status.SKIPPED]: ::colors.cyan,
       [Status.UNDEFINED]: ::colors.yellow,
       location: ::colors.gray,
@@ -27,7 +28,7 @@ export default function getColorFns(enabled) {
     return {
       [Status.AMBIGUOUS]: _.identity,
       [Status.FAILED]: _.identity,
-      [Status.RETRY]: _.identity,
+      [Status.FLAKY]: _.identity,
       [Status.PASSED]: _.identity,
       [Status.PENDING]: _.identity,
       [Status.SKIPPED]: _.identity,

@@ -333,7 +333,7 @@ describe('TestCaseRunner', () => {
           result: {
             duration: 1,
             exception: this.error,
-            status: Status.RETRY,
+            status: Status.FLAKY,
           },
           sourceLocation,
         })

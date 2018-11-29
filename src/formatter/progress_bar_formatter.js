@@ -39,8 +39,7 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded({ sourceLocation, result }) {
-    const status = result.status
-    const shouldLog = isIssue(status) || status === Status.RETRY
+    const shouldLog = isIssue(result.status)
     if (shouldLog) {
       this.issueCount += 1
       const {

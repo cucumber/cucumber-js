@@ -198,13 +198,16 @@ export default class TestCaseRunner {
       )
       const shouldRetry =
         this.result.status === Status.FAILED && attemptNumber < this.maxAttempts
-      if (!shouldRetry) {
+      if (shouldRetry) {
         this.emit('test-case-finished', { attemptNumber, result: this.result })
-        break
+        this.resetTestProgressData()
+        continue
       }
-      this.result.status = Status.RETRY
+      if (this.result.status === Status.PASSED && attemptNumber > 1) {
+        this.result.status = Status.FLAKY
+      }
       this.emit('test-case-finished', { attemptNumber, result: this.result })
-      this.resetTestProgressData()
+      break      
     }
     return this.result
   }

@@ -8,7 +8,7 @@ describe('Status', () => {
       expect(Status).to.include.keys([
         'AMBIGUOUS',
         'FAILED',
-        'RETRY',
+        'FLAKY',
         'PASSED',
         'PENDING',
         'SKIPPED',
@@ -23,7 +23,7 @@ describe('Status', () => {
       expect(result).to.eql({
         [Status.AMBIGUOUS]: 0,
         [Status.FAILED]: 0,
-        [Status.RETRY]: 0,
+        [Status.FLAKY]: 0,
         [Status.PASSED]: 0,
         [Status.PENDING]: 0,
         [Status.SKIPPED]: 0,
