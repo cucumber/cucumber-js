@@ -3,7 +3,7 @@
 * Install [Node.js](https://nodejs.org) (6 or higher)
 * Install the last version of [Chai](https://www.chaijs.com/) and Cucumber modules with [yarn](https://yarnpkg.com/en/) 
 ```
-yarn add chai@latest cucumber@latest
+yarn add -D chai@latest cucumber@latest
 ```
 
 * or with [npm](https://www.npmjs.com/)
