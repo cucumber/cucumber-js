@@ -22,7 +22,7 @@ const CHARACTERS = {
 const IS_ISSUE = {
   [Status.AMBIGUOUS]: true,
   [Status.FAILED]: true,
-  [Status.FLAKY]: true,
+  [Status.FLAKY]: false,
   [Status.PASSED]: false,
   [Status.PENDING]: true,
   [Status.SKIPPED]: false,
@@ -176,10 +176,9 @@ export function formatIssue({
 }
 
 function getRetryWarningText(testCase, flakyColorFn) {
-  const result = testCase.result
-  const hasRetryStatus = result && result.status === Status.FLAKY
-  if (hasRetryStatus || testCase.attemptNumber > 1) {
-    return flakyColorFn(`(attempt ${testCase.attemptNumber}, retried) `)
+  const attemptNumber = testCase.attemptNumber
+  if (attemptNumber) {
+    return flakyColorFn(`(attempt ${attemptNumber}) `)
   }
   return ''
 }

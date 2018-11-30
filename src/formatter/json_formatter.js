@@ -75,7 +75,7 @@ export default class JsonFormatter extends Formatter {
           scenarioLineToDescriptionMap,
         })
         const attemptNumber = testCase.attemptNumber
-        if (attemptNumber > 1) {
+        if (attemptNumber > 0) {
           scenarioData.attemptNumber = attemptNumber
         }
         const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)

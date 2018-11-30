@@ -1,7 +1,6 @@
 import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter from './'
 import ProgressBar from 'progress'
-import { Status } from '../../lib'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {

@@ -177,7 +177,8 @@ export default class TestCaseRunner {
       attemptNumber <= this.maxAttempts;
       attemptNumber++
     ) {
-      this.emit('test-case-started', { attemptNumber })
+      const attemptEventData = this.maxAttempts > 1 ? { attemptNumber } : {}
+      this.emit('test-case-started', attemptEventData)
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -199,15 +200,22 @@ export default class TestCaseRunner {
       const shouldRetry =
         this.result.status === Status.FAILED && attemptNumber < this.maxAttempts
       if (shouldRetry) {
-        this.emit('test-case-finished', { attemptNumber, result: this.result })
+        this.emit('test-case-finished', {
+          ...attemptEventData,
+          result: this.result,
+        })
         this.resetTestProgressData()
         continue
       }
-      if (this.result.status === Status.PASSED && attemptNumber > 1) {
+      const isFlaky = this.result.status === Status.PASSED && attemptNumber > 1
+      if (isFlaky) {
         this.result.status = Status.FLAKY
       }
-      this.emit('test-case-finished', { attemptNumber, result: this.result })
-      break      
+      this.emit('test-case-finished', {
+        ...attemptEventData,
+        result: this.result,
+      })
+      break
     }
     return this.result
   }

@@ -12,7 +12,6 @@ export default function getColorFns(enabled) {
       [Status.FLAKY]: ::colors.yellow,
       [Status.PASSED]: ::colors.green,
       [Status.PENDING]: ::colors.yellow,
-      [Status.RETRY]: ::colors.yellow,
       [Status.SKIPPED]: ::colors.cyan,
       [Status.UNDEFINED]: ::colors.yellow,
       location: ::colors.gray,

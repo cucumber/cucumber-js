@@ -183,6 +183,72 @@ describe('ProgressBarFormatter', () => {
       })
     })
 
+    describe('flaky', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { exception: 'error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          attemptNumber: 1,
+          sourceLocation: this.testCase.sourceLocation,
+          result: { status: Status.FAILED },
+        })
+      })
+
+      describe('with passing run', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.testCase,
+            result: { status: Status.PASSED },
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            attemptNumber: 2,
+            sourceLocation: this.testCase.sourceLocation,
+            result: { status: Status.FLAKY },
+          })
+        })
+
+        it('prints the error only for the failing run', function() {
+          expect(
+            this.progressBarFormatter.progressBar.interrupt
+          ).to.have.callCount(1)
+        })
+      })
+
+      describe('with all failures', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.testCase,
+            result: { exception: 'error', status: Status.FAILED },
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            attemptNumber: 2,
+            sourceLocation: this.testCase.sourceLocation,
+            result: { status: Status.FAILED },
+          })
+        })
+
+        it('prints the error for all runs', function() {
+          expect(
+            this.progressBarFormatter.progressBar.interrupt
+          ).to.have.callCount(2)
+        })
+      })
+    })
+
     describe('passed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {

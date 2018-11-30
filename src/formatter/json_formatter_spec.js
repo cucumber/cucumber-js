@@ -64,53 +64,118 @@ describe('JsonFormatter', () => {
             },
           ],
         })
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
-          result: { duration: 1, status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the feature', function() {
-        expect(JSON.parse(this.output)).to.eql([
-          {
-            description: 'my feature description',
-            elements: [
-              {
-                description: 'my scenario description',
-                id: 'my-feature;my-scenario',
-                keyword: 'Scenario',
-                line: 4,
-                name: 'my scenario',
-                type: 'scenario',
-                steps: [
-                  {
-                    arguments: [],
-                    line: 6,
-                    keyword: 'Given ',
-                    name: 'my step',
-                    result: {
-                      status: 'passed',
-                      duration: 1000000,
+      describe('with retry', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.testCase,
+            result: { duration: 1, status: Status.PASSED },
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            attemptNumber: 2,
+            sourceLocation: this.testCase.sourceLocation,
+            result: { duration: 1, status: Status.FLAKY },
+          })
+          this.eventBroadcaster.emit('test-run-finished')
+        })
+
+        it('outputs the feature', function() {
+          expect(JSON.parse(this.output)).to.eql([
+            {
+              description: 'my feature description',
+              elements: [
+                {
+                  attemptNumber: 2,
+                  description: 'my scenario description',
+                  id: 'my-feature;my-scenario',
+                  keyword: 'Scenario',
+                  line: 4,
+                  name: 'my scenario',
+                  type: 'scenario',
+                  steps: [
+                    {
+                      arguments: [],
+                      line: 6,
+                      keyword: 'Given ',
+                      name: 'my step',
+                      result: {
+                        status: 'passed',
+                        duration: 1000000,
+                      },
                     },
-                  },
-                ],
-                tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
-              },
-            ],
-            id: 'my-feature',
-            keyword: 'Feature',
-            line: 2,
-            name: 'my feature',
-            tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
-            uri: 'a.feature',
-          },
-        ])
+                  ],
+                  tags: [
+                    { name: '@tag1', line: 1 },
+                    { name: '@tag2', line: 1 },
+                  ],
+                },
+              ],
+              id: 'my-feature',
+              keyword: 'Feature',
+              line: 2,
+              name: 'my feature',
+              tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
+              uri: 'a.feature',
+            },
+          ])
+        })
+      })
+
+      describe('with no retry', function() {
+        beforeEach(function() {
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.testCase,
+            result: { duration: 1, status: Status.PASSED },
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            sourceLocation: this.testCase.sourceLocation,
+            result: { duration: 1, status: Status.PASSED },
+          })
+          this.eventBroadcaster.emit('test-run-finished')
+        })
+
+        it('outputs the feature', function() {
+          expect(JSON.parse(this.output)).to.eql([
+            {
+              description: 'my feature description',
+              elements: [
+                {
+                  description: 'my scenario description',
+                  id: 'my-feature;my-scenario',
+                  keyword: 'Scenario',
+                  line: 4,
+                  name: 'my scenario',
+                  type: 'scenario',
+                  steps: [
+                    {
+                      arguments: [],
+                      line: 6,
+                      keyword: 'Given ',
+                      name: 'my step',
+                      result: {
+                        status: 'passed',
+                        duration: 1000000,
+                      },
+                    },
+                  ],
+                  tags: [
+                    { name: '@tag1', line: 1 },
+                    { name: '@tag2', line: 1 },
+                  ],
+                },
+              ],
+              id: 'my-feature',
+              keyword: 'Feature',
+              line: 2,
+              name: 'my feature',
+              tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
+              uri: 'a.feature',
+            },
+          ])
+        })
       })
     })
 

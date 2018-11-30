@@ -232,7 +232,7 @@ describe('SummaryFormatter', () => {
         this.eventBroadcaster.emit('test-case-finished', {
           attemptNumber: 1,
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.FLAKY },
+          result: { status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -242,7 +242,7 @@ describe('SummaryFormatter', () => {
         this.eventBroadcaster.emit('test-case-finished', {
           attemptNumber: 2,
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.PASSED },
+          result: { status: Status.FLAKY },
         })
         this.eventBroadcaster.emit('test-run-finished', {
           result: { duration: 0 },
@@ -253,10 +253,10 @@ describe('SummaryFormatter', () => {
         expect(this.output).to.eql(
           'Warnings:\n' +
             '\n' +
-            '1) Scenario: b (attempt #2) # a.feature:2\n' +
+            '1) Scenario: b (attempt 2) # a.feature:2\n' +
             '   √ Given a step # steps.js:4\n' +
             '\n' +
-            '1 scenario (1 passed)\n' +
+            '1 scenario (1 flaky)\n' +
             '1 step (1 passed)\n' +
             '0m00.000s\n'
         )
@@ -283,7 +283,7 @@ describe('SummaryFormatter', () => {
         this.eventBroadcaster.emit('test-case-finished', {
           attemptNumber: 1,
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.FLAKY },
+          result: { status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-step-finished', failingStepEventData)
         this.eventBroadcaster.emit('test-case-finished', {
@@ -300,7 +300,7 @@ describe('SummaryFormatter', () => {
         expect(this.output).to.eql(
           'Failures:\n' +
             '\n' +
-            '1) Scenario: b (attempt #2) # a.feature:2\n' +
+            '1) Scenario: b (attempt 2) # a.feature:2\n' +
             `   ${figures.cross} Given a step # steps.js:4\n` +
             '       error\n' +
             '\n' +
