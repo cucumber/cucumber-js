@@ -1,7 +1,11 @@
 import { deprecate } from 'util'
 import _ from 'lodash'
 import { formatLocation } from '../formatter/helpers'
-import { ParameterType } from 'cucumber-expressions'
+import {
+  ParameterType,
+  CucumberExpression,
+  RegularExpression,
+} from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import StepDefinition from '../models/step_definition'
@@ -51,7 +55,7 @@ export function buildTestRunHookDefinition({ options, code, cwd }) {
   })
 }
 
-export function buildStepDefinition({ pattern, options, code, cwd }) {
+export function buildStepDefinitionConfig({ pattern, options, code, cwd }) {
   if (typeof options === 'function') {
     code = options
     options = {}
@@ -62,13 +66,25 @@ export function buildStepDefinition({ pattern, options, code, cwd }) {
     fnName: 'defineStep',
     location: formatLocation({ line, uri }),
   })
-  return new StepDefinition({
+  return {
     code,
     line,
     options,
     pattern,
     uri,
-  })
+  }
+}
+
+export function buildStepDefinitionFromConfig({
+  config,
+  parameterTypeRegistry,
+}) {
+  const { code, line, options, uri, pattern } = config
+  const Expression =
+    typeof pattern === 'string' ? CucumberExpression : RegularExpression
+
+  const expression = new Expression(pattern, parameterTypeRegistry)
+  return new StepDefinition({ code, line, options, uri, pattern, expression })
 }
 
 const projectPath = path.join(__dirname, '..', '..')

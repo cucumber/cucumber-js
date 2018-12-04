@@ -103,10 +103,7 @@ export default class TestCaseRunner {
 
   getStepDefinitions(step) {
     return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition =>
-      stepDefinition.matchesStepName({
-        stepName: step.text,
-        parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
-      })
+      stepDefinition.matchesStepName(step.text)
     )
   }
 
@@ -114,7 +111,6 @@ export default class TestCaseRunner {
     return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
-      parameterTypeRegistry: this.supportCodeLibrary.parameterTypeRegistry,
       step,
       stepDefinition,
       world: this.world,

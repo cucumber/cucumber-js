@@ -1,9 +1,9 @@
 import PickleFilter from '../pickle_filter'
-import StepDefinition from './step_definition'
+import Definition from './definition'
 
-export default class TestCaseHookDefinition extends StepDefinition {
-  constructor(data) {
-    super(data)
+export default class TestCaseHookDefinition extends Definition {
+  constructor(...data) {
+    super(...data)
     this.pickleFilter = new PickleFilter({
       tagExpression: this.options.tags,
     })
