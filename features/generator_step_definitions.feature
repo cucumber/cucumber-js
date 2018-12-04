@@ -39,7 +39,7 @@ Feature: Generator Step Definitions
 
         features/step_definitions/cucumber_steps.js:8
 
-      Use 'this.setDefinitionFunctionWrapper(fn)' to wrap then in a function that returns a promise
+      Use 'this.setDefinitionFunctionWrapper(fn)' to wrap them in a function that returns a promise
       """
 
   Scenario: with generator function wrapper

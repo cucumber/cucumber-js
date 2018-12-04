@@ -35,7 +35,7 @@ export function wrapDefinitions({
 
           ${references}
 
-        Use 'this.setDefinitionFunctionWrapper(fn)' to wrap then in a function that returns a promise.
+        Use 'this.setDefinitionFunctionWrapper(fn)' to wrap them in a function that returns a promise.
         `
       throw new Error(message)
     }
