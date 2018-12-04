@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "5.0.2",
+  "version": "5.0.3",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -127,7 +127,8 @@
     "basemmerink <bas.emmerink@gmail.com>",
     "David H. Gutteridge <dhgutteridge@users.noreply.github.com>",
     "lopesc <lopesc@users.noreply.github.com>",
-    "Honza Javorek <mail@honzajavorek.cz>"
+    "Honza Javorek <mail@honzajavorek.cz>",
+    "Josh Chisholm <joshuachisholm@gmail.com>"
   ],
   "repository": {
     "type": "git",
