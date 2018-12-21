@@ -132,7 +132,13 @@ This will effectivally call `require('@babel/register')` prior to requiring any 
 
 If your files end in an extension other than `js`, make sure to also include the `--require` option to state the support files to require.
 
-For example, with [CoffeeScript](https://www.npmjs.com/package/coffee-script):
+For example, with [TypeScript](https://www.typescriptlang.org/):
+
+```
+--require-module ts-node/register --require step-definitions/**/*.ts
+```
+
+or [CoffeeScript](https://www.npmjs.com/package/coffee-script):
 
 ```
 --require-module coffee-script/register --require 'features/**/*.coffee'
