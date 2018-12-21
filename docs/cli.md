@@ -114,9 +114,48 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with an `and` operator.
 `<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions).
 
-## Transpilers
+## Transpilation
 
-Step definitions and support files can be written in other languages that transpile to JavaScript. To do this use the CLI option `--require-module <module_name>`, where `require("<module_name>")` should make it possible to require files for your language. Also use `--require 'features/**/*.<ext>'` if your files end in an extension other than `js`. As an example, load [CoffeeScript](https://www.npmjs.com/package/coffee-script) support files with `--require-module coffee-script/register --require 'features/**/*.coffee'`.
+Step definitions and support files can be written in other languages that transpile to JavaScript.
+
+### Simple ES6 support
+
+For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
+
+```
+--require-module @babel/register
+```
+
+This will effectivally call `require('@babel/register')` prior to requiring any support files.
+
+### Non JS files
+
+If your files end in an extension other than `js`, make sure to also include the `--require` option to state the support file to require.
+
+For example, with [CoffeeScript](https://www.npmjs.com/package/coffee-script):
+
+```
+--require-module coffee-script/register --require 'features/**/*.coffee'
+```
+
+### Extra configuration
+
+Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `cucumber.config.js`):
+
+```js
+require('@babel/register')({
+  rootMode: 'upward',
+  ignore: ['node_modules'],
+});
+```
+
+And then require it using the `--require` option:
+
+```
+--require cucumber.config.js --require 'features/**/*.js'
+```
+
+Note that since the first `--require cucumber.config.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
 
 ## World Parameters
 
