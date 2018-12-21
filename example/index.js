@@ -4,7 +4,7 @@ import ansiHTML from 'ansi-html'
 
 let featureEditor, stepDefinitionsEditor, $output
 
-function runFeature() {
+async function runFeature() {
   $output.empty()
   $('a[href="#output-tab"]').tab('show')
 
@@ -23,7 +23,7 @@ function runFeature() {
 
   Cucumber.supportCodeLibraryBuilder.reset('')
   new Function(stepDefinitionsEditor.getValue())() // eslint-disable-line no-new-func
-  const supportCodeLibrary = Cucumber.supportCodeLibraryBuilder.finalize()
+  const supportCodeLibrary = await Cucumber.supportCodeLibraryBuilder.finalize()
 
   const formatterOptions = {
     colorsEnabled: true,

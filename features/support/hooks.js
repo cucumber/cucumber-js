@@ -18,33 +18,20 @@ Before('@spawn', function() {
   this.spawn = true
 })
 
-Before(function() {
-  const tmpObject = tmp.dirSync({ unsafeCleanup: true })
-  this.tmpDir = fs.realpathSync(tmpObject.name)
+Before(function({ sourceLocation: { uri, line } }) {
+  this.tmpDir = path.join(projectPath, 'tmp', `${path.basename(uri)}_${line}`)
+
+  fsExtra.removeSync(this.tmpDir)
 
   const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
   const profileContent =
-    'module.exports = {default: "--require-module babel-register"}'
-  fs.writeFileSync(tmpDirProfilePath, profileContent)
-
-  const tmpDirBabelRcPath = path.join(this.tmpDir, '.babelrc')
-  const profileBabelRcPath = path.join(projectPath, '.babelrc')
-  fsExtra.createSymlinkSync(profileBabelRcPath, tmpDirBabelRcPath)
+    'module.exports = {default: "--require-module @babel/register"}'
+  fsExtra.outputFileSync(tmpDirProfilePath, profileContent)
 
   const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-  moduleNames.forEach(moduleName => {
-    const tmpDirNodeModulePath = path.join(tmpDirNodeModulesPath, moduleName)
-    const projectNodeModulePath = path.join(
-      projectPath,
-      'node_modules',
-      moduleName
-    )
-    fsExtra.createSymlinkSync(projectNodeModulePath, tmpDirNodeModulePath)
-  })
-
   const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
   fsExtra.createSymlinkSync(projectPath, tmpDirCucumberPath)
-  this.localExecutablePath = path.join(tmpDirCucumberPath, 'bin', 'cucumber-js')
+  this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
 })
 
 Before('@global-install', function() {

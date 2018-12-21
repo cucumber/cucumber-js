@@ -9,7 +9,10 @@ import path from 'path'
 Then('the output matches the fixture {string}', async function(filePath) {
   const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
   const expected = await fs.readFile(fixturePath, 'utf8')
-  const normalizedActual = normalizeEventProtocolOutput(this.lastRun.output)
-  const normalizedExpected = normalizeEventProtocolOutput(expected)
+  const normalizedActual = normalizeEventProtocolOutput(
+    this.lastRun.output,
+    this.tmpDir
+  )
+  const normalizedExpected = normalizeEventProtocolOutput(expected, this.tmpDir)
   expect(normalizedActual).to.eql(normalizedExpected)
 })

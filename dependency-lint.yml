@@ -21,17 +21,13 @@ ignoreErrors:
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
+    - '@babel/core'
+    - '@babel/polyfill'
+    - '@babel/plugin-proposal-function-bind' # .babelrc
+    - '@babel/preset-env' # .babelrc
+    - '@babel/register' # test/mocha.opts
     - babel-eslint # .eslintrc.yml - plugins
-    - babel-plugin-external-helpers # .babelrc
     - babel-plugin-istanbul # .babelrc
-    - babel-plugin-transform-async-to-module-method # .babelrc
-    - babel-plugin-transform-function-bind # .babelrc
-    - babel-plugin-transform-object-rest-spread # .babelrc
-    - babel-plugin-transform-promise-to-bluebird # .babelrc
-    - babel-plugin-transform-regenerator # .babelrc
-    - babel-plugin-transform-runtime # .babelrc
-    - babel-preset-es2015 # .babelrc
-    - babel-register # test/mocha.opts
     - babelify # package.json - scripts - build-browser-example / build-release
     - coffee-script # features/compiler.feature
     - coveralls # .travis.yml
@@ -56,10 +52,11 @@ requiredModules:
       - 'dist/**/*'
       - 'lib/**/*'
       - 'node_modules/**/*'
+      - 'tmp/**/*'
     root: '**/*.js'
   stripLoaders: false
   transpilers:
     - extension: .js
       fnName: transform
-      module: babel-core # 6.17.0
+      module: '@babel/core' # 7.2.3
       resultKey: code

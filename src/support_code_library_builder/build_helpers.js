@@ -8,6 +8,7 @@ import {
 } from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
+import { isFileNameInCucumber } from '../stack_trace_filter'
 import StepDefinition from '../models/step_definition'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -87,20 +88,12 @@ export function buildStepDefinitionFromConfig({
   return new StepDefinition({ code, line, options, uri, pattern, expression })
 }
 
-const projectPath = path.join(__dirname, '..', '..')
-const projectSrcPath = path.join(projectPath, 'src')
-const projectLibPath = path.join(projectPath, 'lib')
-
 function getDefinitionLineAndUri(cwd) {
   let line = 'unknown'
   let uri = 'unknown'
   const stackframes = StackTrace.getSync()
   const stackframe = _.find(stackframes, frame => {
-    const filename = frame.getFileName()
-    return (
-      !_.includes(filename, projectSrcPath) &&
-      !_.includes(filename, projectLibPath)
-    )
+    return !isFileNameInCucumber(frame.getFileName())
   })
   if (stackframe) {
     line = stackframe.getLineNumber()

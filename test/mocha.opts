@@ -2,5 +2,5 @@
 --fullTrace
 --recursive
 --reporter dot
---require babel-register
+--require @babel/register
 test/test_helper.js

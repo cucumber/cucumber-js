@@ -1,5 +1,5 @@
 var common = [
-  '--require-module babel-register',
+  '--require-module @babel/register',
   `--format ${
     process.env.CI || !process.stdout.isTTY ? 'progress' : 'progress-bar'
   }`,

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { formatLocation } from '../formatter/helpers'
 import Promise from 'bluebird'
-import StackTraceFilter from './stack_trace_filter'
+import StackTraceFilter from '../stack_trace_filter'
 import Status from '../status'
 import TestCaseRunner from './test_case_runner'
 import UserCodeRunner from '../user_code_runner'

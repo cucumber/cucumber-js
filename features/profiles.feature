@@ -18,7 +18,7 @@ Feature: default command line arguments
       """
     And a file named "cucumber.js" with:
       """
-      var common = '--require-module babel-register ';
+      var common = '--require-module @babel/register ';
 
       module.exports = {
         'default': common + '--format summary',

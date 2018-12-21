@@ -2,11 +2,16 @@ import _ from 'lodash'
 import stackChain from 'stack-chain'
 import path from 'path'
 
-export default class StackTraceFilter {
-  constructor() {
-    this.cucumberPath = path.join(__dirname, '..', '..')
-  }
+const projectRootPath = path.join(__dirname, '..')
+const projectChildDirs = ['src', 'lib', 'node_modules']
 
+export function isFileNameInCucumber(fileName) {
+  return _.some(projectChildDirs, dir =>
+    _.startsWith(fileName, path.join(projectRootPath, dir))
+  )
+}
+
+export default class StackTraceFilter {
   filter() {
     this.currentFilter = stackChain.filter.attach((_err, frames) => {
       if (this.isErrorInCucumber(frames)) {
@@ -29,7 +34,7 @@ export default class StackTraceFilter {
 
   isFrameInCucumber(frame) {
     const fileName = frame.getFileName() || ''
-    return _.startsWith(fileName, this.cucumberPath)
+    return isFileNameInCucumber(fileName)
   }
 
   isFrameInNode(frame) {

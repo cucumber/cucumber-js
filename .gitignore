@@ -7,5 +7,6 @@ coverage/
 dist/browser-example.js
 lib/
 node_modules
+tmp/
 usage.txt
 yarn-error.log
