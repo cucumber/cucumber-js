@@ -146,7 +146,7 @@ or [CoffeeScript](https://www.npmjs.com/package/coffee-script):
 
 ### Extra configuration
 
-Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `cucumber.config.js`):
+Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `babel.register.js`):
 
 ```js
 require('@babel/register')({
@@ -161,7 +161,7 @@ And then require it using the `--require` option:
 --require cucumber.config.js --require 'features/**/*.js'
 ```
 
-Note that since the first `--require cucumber.config.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
+Note that since the first `--require babel.register.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
 
 ## World Parameters
 
