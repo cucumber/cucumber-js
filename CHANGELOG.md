@@ -1,6 +1,12 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.0.3...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.1.0...master) (In Git)
+
+### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...5.1.0) (2018-12-28)
+
+#### Internals
+
+* Upgrade to babel 7
 
 ### [5.0.3](https://github.com/cucumber/cucumber-js/compare/v5.0.2...5.0.3) (2018-12-03)
 
