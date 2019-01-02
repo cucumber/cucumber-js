@@ -135,7 +135,7 @@ If your files end in an extension other than `js`, make sure to also include the
 For example, with [TypeScript](https://www.typescriptlang.org/):
 
 ```
---require-module ts-node/register --require step-definitions/**/*.ts
+--require-module ts-node/register --require 'step-definitions/**/*.ts'
 ```
 
 or [CoffeeScript](https://www.npmjs.com/package/coffee-script):
@@ -146,7 +146,7 @@ or [CoffeeScript](https://www.npmjs.com/package/coffee-script):
 
 ### Extra configuration
 
-Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `babel.register.js`):
+Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `tests.setup.js`):
 
 ```js
 require('@babel/register')({
@@ -158,7 +158,7 @@ require('@babel/register')({
 And then require it using the `--require` option:
 
 ```
---require cucumber.config.js --require 'features/**/*.js'
+--require tests.setup.js --require 'features/**/*.js'
 ```
 
 Note that since the first `--require babel.register.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
