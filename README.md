@@ -13,7 +13,7 @@ written in plain language, they can be read by anyone on your team. Because they
 read by anyone, you can use them to help improve communication, collaboration and trust on
 your team.
 
-Cucumber.js is the JavaScript implementation of Cucumber and runs on both Node.js (4 and above) and *modern* web browsers.
+Cucumber.js is the JavaScript implementation of Cucumber and runs on the [maintained Node.js versions](https://github.com/nodejs/Release) and *modern* web browsers.
 
 ## Try it now
 
