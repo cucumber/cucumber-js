@@ -127,6 +127,7 @@ export default class TestCaseRunner {
 
   shouldUpdateStatus(testStepResult) {
     switch (testStepResult.status) {
+      case Status.UNDEFINED:
       case Status.FAILED:
       case Status.AMBIGUOUS:
         return (
