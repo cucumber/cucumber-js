@@ -135,10 +135,7 @@ export default class TestCaseRunner {
           this.result.status !== Status.AMBIGUOUS
         )
       default:
-        return (
-          this.result.status === Status.PASSED ||
-          this.result.status === Status.SKIPPED
-        )
+        return this.result.status === Status.PASSED
     }
   }
 
