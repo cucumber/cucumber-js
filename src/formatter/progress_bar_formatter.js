@@ -38,8 +38,7 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded({ sourceLocation, result }) {
-    const shouldLog = isIssue(result.status)
-    if (shouldLog) {
+    if (isIssue(result.status)) {
       this.issueCount += 1
       const {
         gherkinDocument,

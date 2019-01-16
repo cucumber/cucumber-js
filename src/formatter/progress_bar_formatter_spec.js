@@ -183,7 +183,7 @@ describe('ProgressBarFormatter', () => {
       })
     })
 
-    describe('flaky', () => {
+    describe('retried', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
           sourceLocation: this.testCase.sourceLocation,
@@ -202,7 +202,7 @@ describe('ProgressBarFormatter', () => {
         this.eventBroadcaster.emit('test-case-finished', {
           attemptNumber: 1,
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.FAILED },
+          result: { status: Status.RETRIED },
         })
       })
 
@@ -216,7 +216,7 @@ describe('ProgressBarFormatter', () => {
           this.eventBroadcaster.emit('test-case-finished', {
             attemptNumber: 2,
             sourceLocation: this.testCase.sourceLocation,
-            result: { status: Status.FLAKY },
+            result: { status: Status.PASSED },
           })
         })
 

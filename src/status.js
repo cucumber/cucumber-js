@@ -3,9 +3,9 @@ import _ from 'lodash'
 const statuses = {
   AMBIGUOUS: 'ambiguous',
   FAILED: 'failed',
-  FLAKY: 'flaky',
   PASSED: 'passed',
   PENDING: 'pending',
+  RETRIED: 'retried',
   SKIPPED: 'skipped',
   UNDEFINED: 'undefined',
 }

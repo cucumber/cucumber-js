@@ -232,7 +232,7 @@ describe('SummaryFormatter', () => {
         this.eventBroadcaster.emit('test-case-finished', {
           attemptNumber: 1,
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.FAILED },
+          result: { status: Status.RETRIED },
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
@@ -242,7 +242,7 @@ describe('SummaryFormatter', () => {
         this.eventBroadcaster.emit('test-case-finished', {
           attemptNumber: 2,
           sourceLocation: this.testCase.sourceLocation,
-          result: { status: Status.FLAKY },
+          result: { status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished', {
           result: { duration: 0 },

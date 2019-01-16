@@ -76,7 +76,7 @@ describe('JsonFormatter', () => {
           this.eventBroadcaster.emit('test-case-finished', {
             attemptNumber: 2,
             sourceLocation: this.testCase.sourceLocation,
-            result: { duration: 1, status: Status.FLAKY },
+            result: { duration: 1, status: Status.PASSED },
           })
           this.eventBroadcaster.emit('test-run-finished')
         })

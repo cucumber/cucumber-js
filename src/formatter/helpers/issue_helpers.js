@@ -22,9 +22,9 @@ const CHARACTERS = {
 const IS_ISSUE = {
   [Status.AMBIGUOUS]: true,
   [Status.FAILED]: true,
-  [Status.FLAKY]: false,
   [Status.PASSED]: false,
   [Status.PENDING]: true,
+  [Status.RETRIED]: false,
   [Status.SKIPPED]: false,
   [Status.UNDEFINED]: true,
 }
@@ -142,7 +142,7 @@ export function formatIssue({
   let text = prefix
   const scenarioLocation = formatLocation(testCase.sourceLocation)
   text += `Scenario: ${pickle.name} `
-  text += getRetryWarningText(testCase, colorFns.flaky)
+  text += getRetryWarningText(testCase.attemptNumber, colorFns.retried)
   text += `# ${colorFns.location(scenarioLocation)}\n`
   const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
   const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
@@ -175,10 +175,9 @@ export function formatIssue({
   return `${text}\n`
 }
 
-function getRetryWarningText(testCase, flakyColorFn) {
-  const attemptNumber = testCase.attemptNumber
+function getRetryWarningText(attemptNumber, retriedColorFn) {
   if (attemptNumber) {
-    return flakyColorFn(`(attempt ${attemptNumber}) `)
+    return retriedColorFn(`(attempt ${attemptNumber}) `)
   }
   return ''
 }
