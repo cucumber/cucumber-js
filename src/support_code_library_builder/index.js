@@ -32,7 +32,7 @@ export class SupportCodeLibraryBuilder {
         this.options.World = fn
       },
     }
-    this.methods.Given = this.methods.When = this.methods.Then = this.methods.defineStep
+    this.methods.But = this.methods.And =this.methods.Given = this.methods.When = this.methods.Then = this.methods.defineStep
   }
 
   defineParameterType(options) {

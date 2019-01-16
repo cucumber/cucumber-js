@@ -42,3 +42,5 @@ export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
 export const Then = methods.Then
 export const When = methods.When
+export const And = methods.And
+export const But = methods.But
