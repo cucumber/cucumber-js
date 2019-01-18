@@ -256,7 +256,7 @@ describe('SummaryFormatter', () => {
             '1) Scenario: b (attempt 2) # a.feature:2\n' +
             '   √ Given a step # steps.js:4\n' +
             '\n' +
-            '1 scenario (1 flaky)\n' +
+            '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
             '0m00.000s\n'
         )

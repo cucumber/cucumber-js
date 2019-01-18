@@ -220,10 +220,10 @@ describe('ProgressBarFormatter', () => {
           })
         })
 
-        it('prints the error only for the failing run', function() {
+        it('does not print the error for the failing run', function() {
           expect(
             this.progressBarFormatter.progressBar.interrupt
-          ).to.have.callCount(1)
+          ).to.have.callCount(0)
         })
       })
 
@@ -241,10 +241,10 @@ describe('ProgressBarFormatter', () => {
           })
         })
 
-        it('prints the error for all runs', function() {
+        it('prints the error for the last run', function() {
           expect(
             this.progressBarFormatter.progressBar.interrupt
-          ).to.have.callCount(2)
+          ).to.have.callCount(1)
         })
       })
     })

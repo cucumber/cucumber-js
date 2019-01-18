@@ -209,6 +209,7 @@ export default class TestCaseRunner {
       if (!shouldRetry) {
         break
       }
+      this.resetTestProgressData()
     }
     return this.result
   }
