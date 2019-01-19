@@ -130,9 +130,9 @@ export default class TestCaseRunner {
       case Status.UNDEFINED:
       case Status.FAILED:
       case Status.AMBIGUOUS:
-        return (
-          this.result.status !== Status.FAILED ||
-          this.result.status !== Status.AMBIGUOUS
+        return !_.some(
+          [Status.FAILED, Status.AMBIGUOUS, Status.UNDEFINED],
+          this.result.status
         )
       default:
         return this.result.status === Status.PASSED
