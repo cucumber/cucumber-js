@@ -1,7 +1,32 @@
 # Step Definitions
 
-Step definitions are glue between features written in Gherkin and the actual system under test.
-Use `Given`, `When`, `Then`.
+Step definitions (`Given`, `When`, `Then`) are the glue between features written in Gherkin and the actual tests implemenation.
+
+Cucumber supports two types of expressions:
+
+- **Cucumber expressions**
+- **Regular expressions**
+
+## Cucumber expressions
+
+[Full docs.](https://docs.cucumber.io/cucumber/cucumber-expressions/)
+
+Gherkin:
+```gherkin
+Given I have 42 cucumbers in my belly
+```
+
+JS:
+```js
+import { Given } from 'cucumber';
+
+Given('I have {int} cucumbers in my belly', function (cucumberCount) {
+  assert.equal(this.responseStatus, cucumberCount)
+});
+```
+
+## Regular expressions
+
 Matching groups in the regular expression are passed as parameters to the step definition.
 
 ```javascript
