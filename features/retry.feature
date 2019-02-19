@@ -6,7 +6,11 @@ Feature: Retry flaky tests
   @spawn
   Scenario: running Cucumber JS with --retryTagFilter but no positive --retry will fail
     When I run cucumber-js with `--retryTagFilter @flaky`
-    Then it fails  
+    Then the error output contains the text:
+      """
+      Error: a positive --retry count must be specified when setting --retryTagFilter
+      """
+    And it fails  
 
   Scenario: retrying a flaky test will eventually make it pass
     Given a file named "features/a.feature" with:
