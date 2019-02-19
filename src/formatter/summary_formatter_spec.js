@@ -254,7 +254,7 @@ describe('SummaryFormatter', () => {
           'Warnings:\n' +
             '\n' +
             '1) Scenario: b (attempt 2) # a.feature:2\n' +
-            '   √ Given a step # steps.js:4\n' +
+            '   ✔ Given a step # steps.js:4\n' +
             '\n' +
             '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
