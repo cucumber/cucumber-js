@@ -30,7 +30,20 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1`
-    Then the step "a flaky step" has status "passed"
+    Then it outputs the text:
+      """
+      F.
+      
+      Warnings:
+      
+      1) Scenario: Flaky (attempt 2) # features/a.feature:2
+      ✔ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+
+      1 scenario (1 passed)
+      1 step (1 passed)
+      <duration-stat>
+      """
+    And the step "a flaky step" has status "passed"      
     And it passes
 
   Scenario: retrying a genuinely failing test won't make it pass
@@ -47,7 +60,20 @@ Feature: Retry flaky tests
       Given(/^a failing step$/, function() { throw 'fail' })
       """
     When I run cucumber-js with `--retry 1`
-    Then the step "a failing step" has status "failed"
+    Then the output contains the text:
+      """
+      FF
+      
+      Failures:
+      
+      1) Scenario: Failing (attempt 2) # features/a.feature:2
+      ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
+      Error: fail
+      """    
+    And the step "a failing step" failed with:
+      """
+      Error: fail
+      """    
     And it fails
 
   Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass
