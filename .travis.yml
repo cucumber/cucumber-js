@@ -29,7 +29,5 @@ matrix:
       after_success: "nyc report --reporter=text-lcov | coveralls"
     - node_js: "8"
       script: "yarn test"
-    - node_js: "6"
-      script: "yarn test"
 
 sudo: false
