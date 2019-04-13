@@ -1575,9 +1575,10 @@ crypto-browserify@^3.0.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
 
-cucumber-expressions@^6.0.0:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-6.0.1.tgz#47c9c573781c2ff721d7ad5b2cd1c97f4399ab8e"
+cucumber-expressions@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-7.0.0.tgz#343087f22aac885736a1a22ba3d6c855712519eb"
+  integrity sha512-qJOsxWvt3viMe4Ppb0rm1H7e04RR5Y94PxczR5Oh5Fc0J8gpyEdbRNTcOPXQCTo5u2kddw+SREfjwiLWZkRR7Q==
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.2.0"
 
