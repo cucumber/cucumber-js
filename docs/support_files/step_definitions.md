@@ -30,11 +30,11 @@ Given('I have {int} cucumbers in my belly', function (cucumberCount) {
 Matching groups in the regular expression are passed as parameters to the step definition.
 
 ```javascript
-var {Then, When} = require('cucumber');
-var assert = require('assert');
-var fs = require('fs');
-var mzFs = require('mz/fs')
-var seleniumWebdriver = require('selenium-webdriver');
+const {Then, When} = require('cucumber');
+const assert = require('assert');
+const fs = require('fs');
+const mzFs = require('mz/fs')
+const seleniumWebdriver = require('selenium-webdriver');
 
 // Synchronous
 Then(/^the response status is (.*)$/, function (status) {
