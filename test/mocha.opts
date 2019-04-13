@@ -1,6 +1,0 @@
---colors
---fullTrace
---recursive
---reporter dot
---require @babel/register
-test/test_helper.js
