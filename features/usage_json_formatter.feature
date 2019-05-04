@@ -22,12 +22,12 @@ Feature: usage json formatter
       When('step A', function() {});
       When('step B', function() {});
       When('step C', function() {});
-      When('step D', function() {});
+      When(/step D/, function() {});
       """
     When I run cucumber-js with `--format usage-json`
     Then it outputs the usage data:
-      | PATTERN | URI                                | LINE | NUMBER OF MATCHES |
-      | step A  | features/step_definitions/steps.js | 3    | 2                 |
-      | step B  | features/step_definitions/steps.js | 4    | 1                 |
-      | step C  | features/step_definitions/steps.js | 5    | 1                 |
-      | step D  | features/step_definitions/steps.js | 6    | 0                 |
+      | PATTERN | PATTERN_TYPE       | URI                                | LINE | NUMBER OF MATCHES |
+      | step A  | CucumberExpression | features/step_definitions/steps.js | 3    | 2                 |
+      | step B  | CucumberExpression | features/step_definitions/steps.js | 4    | 1                 |
+      | step C  | CucumberExpression | features/step_definitions/steps.js | 5    | 1                 |
+      | step D  | RegularExpression  | features/step_definitions/steps.js | 6    | 0                 |

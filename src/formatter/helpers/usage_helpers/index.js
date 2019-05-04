@@ -7,8 +7,10 @@ function buildEmptyMapping(stepDefinitions) {
   stepDefinitions.forEach(stepDefinition => {
     const location = formatLocation(stepDefinition)
     mapping[location] = {
+      code: stepDefinition.code.toString(),
       line: stepDefinition.line,
-      pattern: stepDefinition.pattern,
+      pattern: stepDefinition.expression.source,
+      patternType: stepDefinition.expression.constructor.name,
       matches: [],
       uri: stepDefinition.uri,
     }
@@ -60,12 +62,12 @@ function invertNumber(key) {
 
 function buildResult(mapping) {
   return _.chain(mapping)
-    .map(({ line, matches, pattern, uri }) => {
+    .map(({ matches, ...rest }) => {
       const sortedMatches = _.sortBy(matches, [
         invertNumber('duration'),
         'text',
       ])
-      const result = { line, matches: sortedMatches, pattern, uri }
+      const result = { matches: sortedMatches, ...rest }
       const meanDuration = _.meanBy(matches, 'duration')
       if (isFinite(meanDuration)) {
         result.meanDuration = meanDuration

@@ -4,11 +4,17 @@ import UsageFormatter from './usage_formatter'
 import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
+import {
+  CucumberExpression,
+  ParameterTypeRegistry,
+  RegularExpression,
+} from 'cucumber-expressions'
 
 describe('UsageFormatter', () => {
   describe('handleFeaturesResult', () => {
     beforeEach(function() {
       this.eventBroadcaster = new EventEmitter()
+      this.parameterTypeRegistry = new ParameterTypeRegistry()
       this.output = ''
       const logFn = data => {
         this.output += data
@@ -37,8 +43,12 @@ describe('UsageFormatter', () => {
     describe('with one step definition', () => {
       beforeEach(function() {
         this.stepDefinition = {
+          code: function() {},
           line: 1,
-          pattern: '/^abc?$/',
+          expression: new RegularExpression(
+            /^abc?$/,
+            this.parameterTypeRegistry
+          ),
           uri: 'steps.js',
         }
         this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
@@ -154,18 +164,30 @@ describe('UsageFormatter', () => {
       beforeEach(function() {
         this.supportCodeLibrary.stepDefinitions = [
           {
+            code: function(a) {},
             line: 1,
-            pattern: '/abc/',
+            expression: new RegularExpression(
+              /abc/,
+              this.parameterTypeRegistry
+            ),
             uri: 'steps.js',
           },
           {
+            code: function(b) {},
             line: 2,
-            pattern: '/def/',
+            expression: new CucumberExpression(
+              'def',
+              this.parameterTypeRegistry
+            ),
             uri: 'steps.js',
           },
           {
+            code: function(c) {},
             line: 3,
-            pattern: '/ghi/',
+            expression: new CucumberExpression(
+              'ghi',
+              this.parameterTypeRegistry
+            ),
             uri: 'steps.js',
           },
         ]
@@ -215,13 +237,13 @@ describe('UsageFormatter', () => {
           '┌────────────────┬──────────┬─────────────┐\n' +
             '│ Pattern / Text │ Duration │ Location    │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ /def/          │ 2ms      │ steps.js:2  │\n' +
+            '│ def            │ 2ms      │ steps.js:2  │\n' +
             '│   def          │ 2ms      │ a.feature:4 │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
             '│ /abc/          │ 1ms      │ steps.js:1  │\n' +
             '│   abc          │ 1ms      │ a.feature:3 │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ /ghi/          │ UNUSED   │ steps.js:3  │\n' +
+            '│ ghi            │ UNUSED   │ steps.js:3  │\n' +
             '└────────────────┴──────────┴─────────────┘\n'
         )
       })

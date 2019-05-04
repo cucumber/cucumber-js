@@ -4,11 +4,17 @@ import UsageJsonFormatter from './usage_json_formatter'
 import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
+import {
+  CucumberExpression,
+  ParameterTypeRegistry,
+  RegularExpression,
+} from 'cucumber-expressions'
 
 describe('UsageJsonFormatter', () => {
   describe('handleFeaturesResult', () => {
     beforeEach(function() {
       const eventBroadcaster = new EventEmitter()
+      const parameterTypeRegistry = new ParameterTypeRegistry()
       this.output = ''
       const logFn = data => {
         this.output += data
@@ -16,18 +22,21 @@ describe('UsageJsonFormatter', () => {
       const supportCodeLibrary = {
         stepDefinitions: [
           {
+            code: function(a) {},
             line: 1,
-            pattern: '/abc/',
+            expression: new CucumberExpression('abc', parameterTypeRegistry),
             uri: 'steps.js',
           },
           {
+            code: function(b) {},
             line: 2,
-            pattern: '/def/',
+            expression: new RegularExpression(/def/, parameterTypeRegistry),
             uri: 'steps.js',
           },
           {
+            code: function(c) {},
             line: 3,
-            pattern: '/ghi/',
+            expression: new CucumberExpression('ghi', parameterTypeRegistry),
             uri: 'steps.js',
           },
         ],
@@ -83,6 +92,7 @@ describe('UsageJsonFormatter', () => {
       const parsedOutput = JSON.parse(this.output)
       expect(parsedOutput).to.eql([
         {
+          code: 'function (b) {}',
           line: 2,
           matches: [
             {
@@ -93,10 +103,12 @@ describe('UsageJsonFormatter', () => {
             },
           ],
           meanDuration: 2,
-          pattern: '/def/',
+          pattern: 'def',
+          patternType: 'RegularExpression',
           uri: 'steps.js',
         },
         {
+          code: 'function (a) {}',
           line: 1,
           matches: [
             {
@@ -107,13 +119,16 @@ describe('UsageJsonFormatter', () => {
             },
           ],
           meanDuration: 1,
-          pattern: '/abc/',
+          pattern: 'abc',
+          patternType: 'CucumberExpression',
           uri: 'steps.js',
         },
         {
+          code: 'function (c) {}',
           line: 3,
           matches: [],
-          pattern: '/ghi/',
+          pattern: 'ghi',
+          patternType: 'CucumberExpression',
           uri: 'steps.js',
         },
       ])
