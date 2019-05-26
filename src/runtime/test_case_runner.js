@@ -127,17 +127,15 @@ export default class TestCaseRunner {
 
   shouldUpdateStatus(testStepResult) {
     switch (testStepResult.status) {
+      case Status.UNDEFINED:
       case Status.FAILED:
       case Status.AMBIGUOUS:
-        return (
-          this.result.status !== Status.FAILED ||
-          this.result.status !== Status.AMBIGUOUS
+        return !_.some(
+          [Status.FAILED, Status.AMBIGUOUS, Status.UNDEFINED],
+          this.result.status
         )
       default:
-        return (
-          this.result.status === Status.PASSED ||
-          this.result.status === Status.SKIPPED
-        )
+        return this.result.status === Status.PASSED
     }
   }
 

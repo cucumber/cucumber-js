@@ -26,6 +26,14 @@ Feature: Skipped steps
     When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
+    And it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
 
 
   Scenario: Callback skipped step
@@ -40,6 +48,14 @@ Feature: Skipped steps
     When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
+    And it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
 
   Scenario: Promise skipped step
     Given a file named "features/step_definitions/skipped_steps.js" with:
@@ -59,6 +75,14 @@ Feature: Skipped steps
     When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
+    And it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
 
   Scenario: Hook skipped scenario steps
     Given a file named "features/support/hooks.js" with:
@@ -78,6 +102,14 @@ Feature: Skipped steps
     When I run cucumber-js
     Then it passes
     And the step "a skipped step" has status "skipped"
+    And it outputs the text:
+      """
+      --
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
 
   Scenario: Skipped before hook should skip all before hooks
     Given a file named "features/step_definitions/world.js" with:
@@ -108,6 +140,14 @@ Feature: Skipped steps
       """
     When I run cucumber-js
     Then it passes 
+    And it outputs the text:
+      """
+      ---.
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
 
   Scenario: Skipped before hook should run after hook 
     Given a file named "features/support/hooks.js" with:
@@ -131,3 +171,11 @@ Feature: Skipped steps
     When I run cucumber-js
     Then it passes
     And the "After" hook has status "passed"
+    And it outputs the text:
+      """
+      ---.
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
