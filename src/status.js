@@ -5,6 +5,7 @@ const statuses = {
   FAILED: 'failed',
   PASSED: 'passed',
   PENDING: 'pending',
+  RETRIED: 'retried',
   SKIPPED: 'skipped',
   UNDEFINED: 'undefined',
 }

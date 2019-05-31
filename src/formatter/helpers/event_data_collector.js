@@ -67,8 +67,10 @@ export default class EventDataCollector {
     this.testCaseMap[key].steps[index].result = result
   }
 
-  storeTestCaseResult({ sourceLocation, result }) {
+  storeTestCaseResult({ attemptNumber, sourceLocation, result }) {
     const key = this.getTestCaseKey(sourceLocation)
-    this.testCaseMap[key].result = result
+    const testCase = this.testCaseMap[key]
+    testCase.attemptNumber = attemptNumber
+    testCase.result = result
   }
 }
