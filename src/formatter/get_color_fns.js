@@ -9,6 +9,7 @@ export default function getColorFns(enabled) {
     return {
       [Status.AMBIGUOUS]: ::colors.red,
       [Status.FAILED]: ::colors.red,
+      [Status.RETRIED]: ::colors.yellow,
       [Status.PASSED]: ::colors.green,
       [Status.PENDING]: ::colors.yellow,
       [Status.SKIPPED]: ::colors.cyan,
@@ -26,6 +27,7 @@ export default function getColorFns(enabled) {
     return {
       [Status.AMBIGUOUS]: _.identity,
       [Status.FAILED]: _.identity,
+      [Status.RETRIED]: _.identity,
       [Status.PASSED]: _.identity,
       [Status.PENDING]: _.identity,
       [Status.SKIPPED]: _.identity,

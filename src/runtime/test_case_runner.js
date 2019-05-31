@@ -8,6 +8,7 @@ import StepRunner from './step_runner'
 export default class TestCaseRunner {
   constructor({
     eventBroadcaster,
+    retries = 0,
     skip,
     testCase,
     supportCodeLibrary,
@@ -26,6 +27,7 @@ export default class TestCaseRunner {
       })
     })
     this.eventBroadcaster = eventBroadcaster
+    this.maxAttempts = 1 + (skip ? 0 : retries)
     this.skip = skip
     this.testCase = testCase
     this.supportCodeLibrary = supportCodeLibrary
@@ -35,19 +37,23 @@ export default class TestCaseRunner {
     })
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
-    this.testStepIndex = 0
     this.maxTestStepIndex =
       this.beforeHookDefinitions.length +
       this.testCase.pickle.steps.length +
       this.afterHookDefinitions.length -
       1
-    this.result = {
-      duration: 0,
-      status: this.skip ? Status.SKIPPED : Status.PASSED,
-    }
     this.testCaseSourceLocation = {
       uri: this.testCase.uri,
       line: this.testCase.pickle.locations[0].line,
+    }
+    this.resetTestProgressData()
+  }
+
+  resetTestProgressData() {
+    this.testStepIndex = 0
+    this.result = {
+      duration: 0,
+      status: this.skip ? Status.SKIPPED : Status.PASSED,
     }
   }
 
@@ -160,26 +166,45 @@ export default class TestCaseRunner {
 
   async run() {
     this.emitPrepared()
-    this.emit('test-case-started', {})
-    await this.runHooks(
-      this.beforeHookDefinitions,
-      {
-        sourceLocation: this.testCaseSourceLocation,
-        pickle: this.testCase.pickle,
-      },
-      true
-    )
-    await this.runSteps()
-    await this.runHooks(
-      this.afterHookDefinitions,
-      {
-        sourceLocation: this.testCaseSourceLocation,
-        pickle: this.testCase.pickle,
+    for (
+      let attemptNumber = 1;
+      attemptNumber <= this.maxAttempts;
+      attemptNumber++
+    ) {
+      const attemptEventData = this.maxAttempts > 1 ? { attemptNumber } : {}
+      this.emit('test-case-started', attemptEventData)
+      await this.runHooks(
+        this.beforeHookDefinitions,
+        {
+          sourceLocation: this.testCaseSourceLocation,
+          pickle: this.testCase.pickle,
+        },
+        true
+      )
+      await this.runSteps()
+      const shouldRetry =
+        this.result.status === Status.FAILED && attemptNumber < this.maxAttempts
+      if (shouldRetry) {
+        this.result.status = Status.RETRIED
+      }
+      await this.runHooks(
+        this.afterHookDefinitions,
+        {
+          sourceLocation: this.testCaseSourceLocation,
+          pickle: this.testCase.pickle,
+          result: this.result,
+        },
+        false
+      )
+      this.emit('test-case-finished', {
+        ...attemptEventData,
         result: this.result,
-      },
-      false
-    )
-    this.emit('test-case-finished', { result: this.result })
+      })
+      if (!shouldRetry) {
+        break
+      }
+      this.resetTestProgressData()
+    }
     return this.result
   }
 
