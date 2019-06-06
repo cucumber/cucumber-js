@@ -24,7 +24,7 @@ const IS_ISSUE = {
   [Status.FAILED]: true,
   [Status.PASSED]: false,
   [Status.PENDING]: true,
-  [Status.RETRIED]: false,
+  [Status.FLAKY]: false,
   [Status.SKIPPED]: false,
   [Status.UNDEFINED]: true,
 }
