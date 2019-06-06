@@ -11,6 +11,7 @@ describe('Status', () => {
         'PASSED',
         'PENDING',
         'RETRIED',
+        'FLAKY',
         'SKIPPED',
         'UNDEFINED',
       ])
@@ -26,6 +27,7 @@ describe('Status', () => {
         [Status.PASSED]: 0,
         [Status.PENDING]: 0,
         [Status.RETRIED]: 0,
+        [Status.FLAKY]: 0,
         [Status.SKIPPED]: 0,
         [Status.UNDEFINED]: 0,
       })

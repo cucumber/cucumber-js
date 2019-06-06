@@ -184,8 +184,9 @@ export default class TestCaseRunner {
       await this.runSteps()
       const shouldRetry =
         this.result.status === Status.FAILED && attemptNumber < this.maxAttempts
-      if (shouldRetry) {
-        this.result.status = Status.RETRIED
+
+      if (this.result.status === Status.PASSED && attemptNumber > 1) {
+        this.result.status = Status.FLAKY
       }
       await this.runHooks(
         this.afterHookDefinitions,
