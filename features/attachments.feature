@@ -24,9 +24,9 @@ Feature: Attachments
       })
       """
     When I run cucumber-js
-    Then the "Before" hook has the attachment
-      | DATA     | MIME TYPE |
-      | iVBORw== | image/png |
+    Then scenario "some scenario" "Before" hook has the attachments:
+      | DATA     | MEDIA TYPE |
+      | iVBORw== | image/png  |
 
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
@@ -43,9 +43,9 @@ Feature: Attachments
       })
       """
     When I run cucumber-js
-    Then the "Before" hook has the attachment
-      | DATA     | MIME TYPE |
-      | iVBORw== | image/png |
+    Then scenario "some scenario" "Before" hook has the attachments:
+      | DATA     | MEDIA TYPE |
+      | iVBORw== | image/png  |
 
     Scenario: Attach a stream (promise)
       Given a file named "features/support/hooks.js" with:
@@ -63,9 +63,9 @@ Feature: Attachments
         })
         """
       When I run cucumber-js
-      Then the "Before" hook has the attachment
-        | DATA     | MIME TYPE |
-        | iVBORw== | image/png |
+      Then scenario "some scenario" "Before" hook has the attachments:
+        | DATA     | MEDIA TYPE |
+        | iVBORw== | image/png  |
 
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
@@ -77,8 +77,8 @@ Feature: Attachments
       })
       """
     When I run cucumber-js
-    Then the "Before" hook has the attachment
-      | DATA | MIME TYPE  |
+    Then scenario "some scenario" "Before" hook has the attachments:
+      | DATA | MEDIA TYPE |
       | text | text/plain |
 
   Scenario: Attach from an after hook
@@ -91,8 +91,8 @@ Feature: Attachments
       })
       """
     When I run cucumber-js
-    Then the "After" hook has the attachment
-      | DATA | MIME TYPE  |
+    Then scenario "some scenario" "After" hook has the attachments:
+      | DATA | MEDIA TYPE |
       | text | text/plain |
 
   Scenario: Attach from a step definition
@@ -105,8 +105,8 @@ Feature: Attachments
       })
       """
     When I run cucumber-js
-    Then the step "a step" has the attachment
-      | DATA | MIME TYPE  |
+    Then scenario "some scenario" step "Given a step" has the attachments:
+      | DATA | MEDIA TYPE |
       | text | text/plain |
 
   @spawn

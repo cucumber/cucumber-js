@@ -21,7 +21,11 @@ export function getStepKeyword({ pickleStep, stepLineToKeywordMap }) {
 
 export function getStepLineToPickledStepMap(pickle) {
   return _.chain(pickle.steps)
-    .map(step => [_.last(step.locations).line, step])
+    .map(step => [getPickleStepLine(step), step])
     .fromPairs()
     .value()
+}
+
+export function getPickleStepLine(pickleStep) {
+  return _.last(pickleStep.locations).line
 }

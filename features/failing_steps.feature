@@ -17,7 +17,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       function has 0 arguments, should have 1 (if synchronous or returning a promise) or 2 (if accepting a callback)
       """
@@ -31,7 +31,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       function has 2 arguments, should have 0 (if synchronous or returning a promise) or 1 (if accepting a callback)
       """
@@ -47,7 +47,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       my error
       """
@@ -66,7 +66,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       the expected error in an async step
       """
@@ -84,7 +84,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       my error
       """
@@ -101,7 +101,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       function uses multiple asynchronous interfaces: callback and promise
       to use the callback interface: do not return a promise
@@ -125,7 +125,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       my error
       """
@@ -142,7 +142,7 @@ Feature: Failing steps
       """
     When I run cucumber-js
     Then it fails
-    And the step "a failing step" failed with:
+    And scenario "a scenario" step "Given a failing step" failed with:
       """
       my error
       """

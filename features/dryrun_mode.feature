@@ -18,7 +18,8 @@ Feature: Dryrun mode
       Given('a step', function() {})
       """
     When I run cucumber-js with `--dry-run`
-    Then all steps have status "skipped"
+    Then scenario "some scenario" step "Given a step" has status "skipped"
+    And scenario "some scenario" has status "skipped"
 
   Scenario: ambiguous step
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -30,9 +31,9 @@ Feature: Dryrun mode
       """
     When I run cucumber-js with `--dry-run`
     Then it fails
-    And the step "a step" has status "ambiguous"
+    And scenario "some scenario" step "Given a step" has status "ambiguous"
 
   Scenario: undefined step
     When I run cucumber-js with `--dry-run`
     Then it fails
-    And the step "a step" has status "undefined"
+    And scenario "some scenario" step "Given a step" has status "undefined"

@@ -25,15 +25,8 @@ Feature: Skipped steps
       """
     When I run cucumber-js
     Then it passes
-    And the step "a skipped step" has status "skipped"
-    And it outputs the text:
-      """
-      -
-
-      1 scenario (1 skipped)
-      1 step (1 skipped)
-      <duration-stat>
-      """
+    And scenario "a scenario" step "Given a skipped step" has status "skipped"
+    And scenario "a scenario" has status "skipped"
 
 
   Scenario: Callback skipped step
@@ -47,15 +40,8 @@ Feature: Skipped steps
       """
     When I run cucumber-js
     Then it passes
-    And the step "a skipped step" has status "skipped"
-    And it outputs the text:
-      """
-      -
-
-      1 scenario (1 skipped)
-      1 step (1 skipped)
-      <duration-stat>
-      """
+    And scenario "a scenario" step "Given a skipped step" has status "skipped"
+    And scenario "a scenario" has status "skipped"
 
   Scenario: Promise skipped step
     Given a file named "features/step_definitions/skipped_steps.js" with:
@@ -74,15 +60,8 @@ Feature: Skipped steps
       """
     When I run cucumber-js
     Then it passes
-    And the step "a skipped step" has status "skipped"
-    And it outputs the text:
-      """
-      -
-
-      1 scenario (1 skipped)
-      1 step (1 skipped)
-      <duration-stat>
-      """
+    And scenario "a scenario" step "Given a skipped step" has status "skipped"
+    And scenario "a scenario" has status "skipped"
 
   Scenario: Hook skipped scenario steps
     Given a file named "features/support/hooks.js" with:
@@ -101,15 +80,8 @@ Feature: Skipped steps
       """
     When I run cucumber-js
     Then it passes
-    And the step "a skipped step" has status "skipped"
-    And it outputs the text:
-      """
-      --
-
-      1 scenario (1 skipped)
-      1 step (1 skipped)
-      <duration-stat>
-      """
+    And scenario "a scenario" step "Given a skipped step" has status "skipped"
+    And scenario "a scenario" has status "skipped"
 
   Scenario: Skipped before hook should skip all before hooks
     Given a file named "features/step_definitions/world.js" with:
@@ -139,21 +111,14 @@ Feature: Skipped steps
       })
       """
     When I run cucumber-js
-    Then it passes 
-    And it outputs the text:
-      """
-      ---.
+    Then it passes
+    And scenario "a scenario" has status "skipped"
 
-      1 scenario (1 skipped)
-      1 step (1 skipped)
-      <duration-stat>
-      """
-
-  Scenario: Skipped before hook should run after hook 
+  Scenario: Skipped before hook should run after hook
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber' 
-      
+      import {After, Before} from 'cucumber'
+
       Before(function() {return 'skipped'})
 
       Before(function() {})
@@ -163,19 +128,12 @@ Feature: Skipped steps
     And a file named "features/step_definitions/skipped_steps.js" with:
       """
       import {Given} from 'cucumber'
-      
+
       Given(/^a skipped step$/, function() {
         var a = 1;
-       }) 
+       })
       """
     When I run cucumber-js
     Then it passes
-    And the "After" hook has status "passed"
-    And it outputs the text:
-      """
-      ---.
-
-      1 scenario (1 skipped)
-      1 step (1 skipped)
-      <duration-stat>
-      """
+    And scenario "a scenario" "After" hook has status "passed"
+    And scenario "a scenario" has status "skipped"

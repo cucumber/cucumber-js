@@ -20,5 +20,5 @@ Feature: Fail fast
       Given(/^a passing step$/, function() {})
       """
     When I run cucumber-js with `--fail-fast`
-    Then the step "a passing step" has status "skipped"
+    Then scenario "Passing" step "Given a passing step" has status "skipped"
     And it fails

@@ -42,7 +42,7 @@ Feature: Parameter types
       setWorldConstructor(MyWorld)
       """
     When I run cucumber-js
-    Then the step "a particular step" has status "passed"
+    Then scenario "a scenario" step "Given a particular step" has status "passed"
 
   Scenario: sync transform (success)
     Given a file named "features/support/transforms.js" with:
@@ -56,7 +56,7 @@ Feature: Parameter types
       })
       """
     When I run cucumber-js
-    Then the step "a particular step" has status "passed"
+    Then scenario "a scenario" step "Given a particular step" has status "passed"
 
   Scenario: sync transform (error)
     Given a file named "features/support/transforms.js" with:
@@ -73,7 +73,7 @@ Feature: Parameter types
       """
     When I run cucumber-js
     Then it fails
-    And the step "a particular step" failed with:
+    And scenario "a scenario" step "Given a particular step" failed with:
       """
       transform error
       """
@@ -90,7 +90,7 @@ Feature: Parameter types
       """
     When I run cucumber-js
     Then it fails
-    And the step "a particular step" failed with:
+    And scenario "a scenario" step "Given a particular step" failed with:
       """
       AssertionError
       """
@@ -107,7 +107,7 @@ Feature: Parameter types
       })
       """
     When I run cucumber-js
-    Then the step "a particular step" has status "passed"
+    Then scenario "a scenario" step "Given a particular step" has status "passed"
 
   Scenario: async transform (error)
     Given a file named "features/step_definitions/particular_steps.js" with:
@@ -123,7 +123,7 @@ Feature: Parameter types
       """
     When I run cucumber-js
     Then it fails
-    And the step "a particular step" failed with:
+    And scenario "a scenario" step "Given a particular step" failed with:
       """
       transform error
       """

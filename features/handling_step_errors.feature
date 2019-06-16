@@ -5,8 +5,8 @@ Feature: Handling step errors
   Scenario: Complex error object passed to callback
     Given a file named "features/a.feature" with:
       """
-      Feature:
-        Scenario:
+      Feature: a
+        Scenario: b
           Given I pass an error to the callback
       """
     Given a file named "features/step_definitions/step_definitions.js" with:
@@ -20,7 +20,7 @@ Feature: Handling step errors
       })
       """
     When I run cucumber-js
-    Then the step "I pass an error to the callback" failed with:
+    Then scenario "b" step "Given I pass an error to the callback" failed with:
       """
       { member: [Circular] }
       """

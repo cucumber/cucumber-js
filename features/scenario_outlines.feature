@@ -4,7 +4,7 @@ Feature: Scenario Outlines and Examples
     Given a file named "features/scenario_outline.feature" with:
       """
       Feature: a feature
-        Scenario Outline: a scenario
+        Scenario Outline: a <type> scenario
           Given a <type> step
 
         Examples:
@@ -15,18 +15,18 @@ Feature: Scenario Outlines and Examples
     When I run cucumber-js
     Then it fails
     And it runs 2 scenarios
-    And the first scenario has the steps
-      | STEP           |
-      | a passing step |
-    And the second scenario has the steps
-      | STEP           |
-      | a failing step |
+    And the scenario "a passing scenario" has the steps:
+      | STEP                 |
+      | Given a passing step |
+    And the scenario "a failing scenario" has the steps:
+      | STEP                 |
+      | Given a failing step |
 
   Scenario: placeholder in docstring
     Given a file named "features/scenario_outline.feature" with:
       """
       Feature: a feature
-        Scenario Outline: a scenario
+        Scenario Outline: a <type> scenario
           Given a doc string step
             \"\"\"
             a <type> doc string
@@ -40,11 +40,11 @@ Feature: Scenario Outlines and Examples
     When I run cucumber-js
     Then it fails
     And it runs 2 scenarios
-    And the first scenario has the step "a doc string step" with the doc string
+    And scenario "a passing scenario" step "Given a doc string step" has the doc string:
       """
       a passing doc string
       """
-    And the second scenario has the step "a doc string step" with the doc string
+    And scenario "a failing scenario" step "Given a doc string step" has the doc string:
       """
       a failing doc string
       """
@@ -53,7 +53,7 @@ Feature: Scenario Outlines and Examples
     Given a file named "features/scenario_outline.feature" with:
       """
       Feature: a feature
-        Scenario Outline: a scenario
+        Scenario Outline: a <type> scenario
           Given a table step
             | <type> |
 
@@ -65,28 +65,10 @@ Feature: Scenario Outlines and Examples
     When I run cucumber-js
     Then it fails
     And it runs 2 scenarios
-    And the first scenario has the step "a table step" with the table
+    And scenario "a passing scenario" step "Given a table step" has the data table:
       | passing |
-    And the second scenario has the step "a table step" with the table
+    And scenario "a failing scenario" step "Given a table step" has the data table:
       | failing |
-
-  Scenario: placeholder in title
-    Given a file named "features/scenario_outline.feature" with:
-      """
-      Feature: a feature
-        Scenario Outline: a <type> scenario
-          Given a step
-
-        Examples:
-          | type    |
-          | passing |
-          | failing |
-      """
-    When I run cucumber-js
-    Then it fails
-    And it runs 2 scenarios
-    And the first scenario has the name "a passing scenario"
-    And the second scenario has the name "a failing scenario"
 
   Scenario: several scenario outlines
     Given a file named "features/scenario_outline.feature" with:

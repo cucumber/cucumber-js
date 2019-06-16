@@ -16,7 +16,7 @@ Feature: Passing steps
       Given(/^a passing step$/, function() {})
       """
     When I run cucumber-js
-    Then the step "a passing step" has status "passed"
+    Then scenario "a scenario" step "Given a passing step" has status "passed"
 
   Scenario: asynchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
@@ -28,7 +28,7 @@ Feature: Passing steps
       })
       """
     When I run cucumber-js
-    Then the step "a passing step" has status "passed"
+    Then scenario "a scenario" step "Given a passing step" has status "passed"
 
   Scenario: promise
     Given a file named "features/step_definitions/passing_steps.js" with:
@@ -41,4 +41,4 @@ Feature: Passing steps
       })
       """
     When I run cucumber-js
-    Then the step "a passing step" has status "passed"
+    Then scenario "a scenario" step "Given a passing step" has status "passed"

@@ -7,7 +7,7 @@ Feature: Core feature elements execution using direct imports
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-        Scenario:
+        Scenario: some scenario
           Given a step passes
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
@@ -23,7 +23,7 @@ Feature: Core feature elements execution using direct imports
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
-        Scenario:
+        Scenario: some scenario
           Given a step fails
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
@@ -36,7 +36,7 @@ Feature: Core feature elements execution using direct imports
       """
     When I run cucumber-js
     Then it fails
-    And the step "a step fails" failed with:
+    And scenario "some scenario" step "Given a step fails" failed with:
       """
       my error
       """

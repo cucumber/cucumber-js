@@ -23,7 +23,7 @@ Feature: Environment Hooks
       After(function() {})
       """
     When I run cucumber-js
-    Then the scenario "some scenario" has the steps
+    Then the scenario "some scenario" has the steps:
       | IDENTIFIER   |
       | Before       |
       | Given a step |
@@ -61,7 +61,7 @@ Feature: Environment Hooks
       """
     When I run cucumber-js
     Then it fails
-    And the "After" hook has status "passed"
+    And scenario "some scenario" "After" hook has status "passed"
 
   Scenario: World is this in hooks
     Given a file named "features/support/world.js" with:
