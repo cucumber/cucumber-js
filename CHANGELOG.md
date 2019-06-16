@@ -2,6 +2,18 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.1.0...master) (In Git)
 
+#### BREAKING CHANGES
+
+* Drop support for Node.js 6
+
+#### Bug fixes
+
+* Prevent after hooks from updating skipped scenarios to passed
+
+#### New features
+
+* usage-json formatter: add code and patternType
+
 ### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...5.1.0) (2018-12-28)
 
 #### Internals
