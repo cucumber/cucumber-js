@@ -127,7 +127,7 @@ export default class ArgvParser {
     program.on('--help', () => {
       /* eslint-disable no-console */
       console.log(
-        '  For more details please visit https://github.com/cucumber/cucumber-js#cli\n'
+        '  For more details please visit https://github.com/cucumber/cucumber-js/blob/master/docs/cli.md\n'
       )
       /* eslint-enable no-console */
     })
