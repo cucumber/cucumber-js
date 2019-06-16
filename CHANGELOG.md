@@ -9,6 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 #### Bug fixes
 
 * Prevent after hooks from updating skipped scenarios to passed
+* Fix CLI help link
 
 #### New features
 
