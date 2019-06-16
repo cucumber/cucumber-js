@@ -14,6 +14,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 #### New features
 
 * usage-json formatter: add code and patternType
+* Add support for Node.js 12
 
 ### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...5.1.0) (2018-12-28)
 
