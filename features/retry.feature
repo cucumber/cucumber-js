@@ -47,7 +47,7 @@ Feature: Retry flaky tests
       1 step (1 passed)
       <duration-stat>
       """
-    And the step "a flaky step" has status "passed"
+    And scenario "Flaky" step "Given a flaky step" has status "passed"
     And it passes
 
   Scenario: Out of two tests one is a flaky test (containing only one flaky step), retrying will eventually make it pass
@@ -91,7 +91,7 @@ Feature: Retry flaky tests
       2 steps (2 passed)
       <duration-stat>
       """
-    And the step "a flaky step" has status "passed"
+    And scenario "Flaky" step "Given a flaky step" has status "passed"
     And it passes
 
   Scenario: Out of two tests one test has one flaky step, retrying will eventually make it pass
@@ -137,7 +137,7 @@ Feature: Retry flaky tests
       3 steps (3 passed)
       <duration-stat>
       """
-    And the step "a flaky step" has status "passed"
+    And scenario "Flaky" step "Given a flaky step" has status "passed"
     And it passes
 
   Scenario: Out of three tests one passes, one is flaky and one fails, retrying the flaky test will eventually make it pass
@@ -195,8 +195,8 @@ Feature: Retry flaky tests
       3 steps (1 failed, 2 passed)
       <duration-stat>
       """
-    And the step "a flaky step" has status "passed"
-    And the step "a bad step" has status "failed"
+    And scenario "Flaky" step "Given a flaky step" has status "passed"
+    And scenario "Bad" step "Given a bad step" has status "failed"
     And it fails
 
   Scenario: retrying a genuinely failing test won't make it pass
@@ -223,7 +223,7 @@ Feature: Retry flaky tests
       ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
       Error: fail
       """    
-    And the step "a failing step" failed with:
+    And scenario "Failing" step "Given a failing step" failed with:
       """
       Error: fail
       """    
@@ -252,7 +252,7 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1 --retryTagFilter '@flaky'`
-    Then the step "a flaky step" has status "passed"
+    Then scenario "Flaky" step "Given a flaky step" has status "passed"
     And it passes
 
   Scenario: a flaky test not matching --retryTagFilter won't re-run and just fail
@@ -278,5 +278,5 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1 --retryTagFilter '@not_flaky'`
-    Then the step "a flaky step" has status "failed"
+    Then scenario "Flaky" step "Given a flaky step" has status "failed"
     And it fails
