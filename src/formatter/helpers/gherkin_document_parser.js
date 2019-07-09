@@ -9,6 +9,13 @@ export function getStepLineToKeywordMap(gherkinDocument) {
     .value()
 }
 
+export function getScenarioLineToKeywordMap(gherkinDocument) {
+  return _.chain(gherkinDocument.feature.children)
+    .map(element => [element.location.line, element.keyword])
+    .fromPairs()
+    .value()
+}
+
 export function getScenarioLineToDescriptionMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
     .map(element => [element.location.line, element.description])

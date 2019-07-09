@@ -251,4 +251,66 @@ describe('SummaryFormatter', () => {
       })
     })
   })
+
+  describe('issues with localization', () => {
+    beforeEach(function() {
+      const events = Gherkin.generateEvents(
+        'Функционал: a\nСценарий: b\nДано a step',
+        'a.feature',
+        null,
+        'ru'
+      )
+      events.forEach(event => {
+        this.eventBroadcaster.emit(event.type, event)
+        if (event.type === 'pickle') {
+          this.eventBroadcaster.emit('pickle-accepted', {
+            type: 'pickle-accepted',
+            pickle: event.pickle,
+            uri: event.uri,
+          })
+        }
+      })
+      this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+    })
+
+    describe('with a failing scenario', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { exception: 'error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: this.testCase.sourceLocation,
+          result: { status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 },
+        })
+      })
+
+      it('logs the issue', function() {
+        expect(this.output).to.eql(
+          'Failures:\n' +
+            '\n' +
+            '1) Сценарий: b # a.feature:2\n' +
+            `   ${figures.cross} Дано a step # steps.js:4\n` +
+            '       error\n' +
+            '\n' +
+            '1 scenario (1 failed)\n' +
+            '1 step (1 failed)\n' +
+            '0m00.000s\n'
+        )
+      })
+    })
+  })
 })

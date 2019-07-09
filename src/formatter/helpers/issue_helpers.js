@@ -7,8 +7,15 @@ import figures from 'figures'
 import Table from 'cli-table3'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
-import { getStepLineToKeywordMap } from './gherkin_document_parser'
-import { getStepLineToPickledStepMap, getStepKeyword } from './pickle_parser'
+import {
+  getStepLineToKeywordMap,
+  getScenarioLineToKeywordMap,
+} from './gherkin_document_parser'
+import {
+  getStepLineToPickledStepMap,
+  getStepKeyword,
+  getScenarioKeyword,
+} from './pickle_parser'
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,
@@ -139,8 +146,10 @@ export function formatIssue({
 }) {
   const prefix = `${number}) `
   let text = prefix
-  const scenarioLocation = formatLocation(testCase.sourceLocation)
-  text += `Scenario: ${pickle.name} # ${colorFns.location(scenarioLocation)}\n`
+  const scenarioLineToKeywordMap = getScenarioLineToKeywordMap(gherkinDocument)
+  const keyword = getScenarioKeyword({ pickle, scenarioLineToKeywordMap })
+  const scenarioLoc = formatLocation(testCase.sourceLocation)
+  text += `${keyword}: ${pickle.name} # ${colorFns.location(scenarioLoc)}\n`
   const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
   const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
   let isBeforeHook = true

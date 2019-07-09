@@ -372,4 +372,91 @@ describe('JsonFormatter', () => {
       ])
     })
   })
+
+  describe('one scenario with one step with localization', () => {
+    beforeEach(function() {
+      const events = Gherkin.generateEvents(
+        '@tag1 @tag2\n' +
+          'Функционал: my feature\n' +
+          'my feature description\n' +
+          'Сценарий: my scenario\n' +
+          'my scenario description\n' +
+          'Дано my step',
+        'a.feature',
+        null,
+        'ru'
+      )
+      events.forEach(event => {
+        this.eventBroadcaster.emit(event.type, event)
+        if (event.type === 'pickle') {
+          this.eventBroadcaster.emit('pickle-accepted', {
+            type: 'pickle-accepted',
+            pickle: event.pickle,
+            uri: event.uri,
+          })
+        }
+      })
+      this.testCase = { sourceLocation: { uri: 'a.feature', line: 4 } }
+    })
+
+    describe('passed', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 6 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          sourceLocation: this.testCase.sourceLocation,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-run-finished')
+      })
+
+      it('outputs the feature', function() {
+        expect(JSON.parse(this.output)).to.eql([
+          {
+            description: 'my feature description',
+            elements: [
+              {
+                description: 'my scenario description',
+                id: 'my-feature;my-scenario',
+                keyword: 'Сценарий',
+                line: 4,
+                name: 'my scenario',
+                type: 'scenario',
+                steps: [
+                  {
+                    arguments: [],
+                    line: 6,
+                    keyword: 'Дано ',
+                    name: 'my step',
+                    result: {
+                      status: 'passed',
+                      duration: 1000000,
+                    },
+                  },
+                ],
+                tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
+              },
+            ],
+            id: 'my-feature',
+            keyword: 'Функционал',
+            line: 2,
+            name: 'my feature',
+            tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
+            uri: 'a.feature',
+          },
+        ])
+      })
+    })
+  })
 })

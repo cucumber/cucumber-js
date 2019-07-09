@@ -8,10 +8,12 @@ import { format } from 'assertion-error-formatter'
 const {
   getStepLineToKeywordMap,
   getScenarioLineToDescriptionMap,
+  getScenarioLineToKeywordMap,
 } = GherkinDocumentParser
 
 const {
   getScenarioDescription,
+  getScenarioKeyword,
   getStepLineToPickledStepMap,
   getStepKeyword,
 } = PickleParser
@@ -62,6 +64,9 @@ export default class JsonFormatter extends Formatter {
       const gherkinDocument = this.eventDataCollector.gherkinDocumentMap[uri]
       const featureData = this.getFeatureData(gherkinDocument.feature, uri)
       const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
+      const scenarioLineToKeywordMap = getScenarioLineToKeywordMap(
+        gherkinDocument
+      )
       const scenarioLineToDescriptionMap = getScenarioLineToDescriptionMap(
         gherkinDocument
       )
@@ -73,6 +78,7 @@ export default class JsonFormatter extends Formatter {
           featureId: featureData.id,
           pickle,
           scenarioLineToDescriptionMap,
+          scenarioLineToKeywordMap,
         })
         const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
         let isBeforeHook = true
@@ -104,15 +110,21 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  getScenarioData({ featureId, pickle, scenarioLineToDescriptionMap }) {
+  getScenarioData({
+    featureId,
+    pickle,
+    scenarioLineToDescriptionMap,
+    scenarioLineToKeywordMap,
+  }) {
     const description = getScenarioDescription({
       pickle,
       scenarioLineToDescriptionMap,
     })
+    const keyword = getScenarioKeyword({ pickle, scenarioLineToKeywordMap })
     return {
       description,
       id: `${featureId};${this.convertNameToId(pickle)}`,
-      keyword: 'Scenario',
+      keyword: keyword,
       line: pickle.locations[0].line,
       name: pickle.name,
       tags: this.getTags(pickle),

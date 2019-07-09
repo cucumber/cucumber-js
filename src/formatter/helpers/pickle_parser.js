@@ -11,6 +11,14 @@ export function getScenarioDescription({
     .value()
 }
 
+export function getScenarioKeyword({ pickle, scenarioLineToKeywordMap }) {
+  return _.chain(pickle.locations)
+    .map(({ line }) => scenarioLineToKeywordMap[line])
+    .compact()
+    .first()
+    .value()
+}
+
 export function getStepKeyword({ pickleStep, stepLineToKeywordMap }) {
   return _.chain(pickleStep.locations)
     .map(({ line }) => stepLineToKeywordMap[line])
