@@ -3,6 +3,7 @@ import * as PickleParser from './pickle_parser'
 
 export { default as EventDataCollector } from './event_data_collector'
 export { default as KeywordType, getStepKeywordType } from './keyword_type'
+export { normalizeScenarioKeyword } from './keyword_helpers'
 export { formatError } from './error_helpers'
 export { formatIssue, isIssue } from './issue_helpers'
 export { formatLocation } from './location_helpers'

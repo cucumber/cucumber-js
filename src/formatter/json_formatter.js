@@ -1,7 +1,12 @@
 import _ from 'lodash'
 import Formatter from './'
 import Status from '../status'
-import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
+import {
+  formatLocation,
+  GherkinDocumentParser,
+  PickleParser,
+  normalizeScenarioKeyword,
+} from './helpers'
 import { buildStepArgumentIterator } from '../step_arguments'
 import { format } from 'assertion-error-formatter'
 
@@ -75,6 +80,7 @@ export default class JsonFormatter extends Formatter {
           testCase.sourceLocation
         )
         const scenarioData = this.getScenarioData({
+          language: gherkinDocument.feature.language,
           featureId: featureData.id,
           pickle,
           scenarioLineToDescriptionMap,
@@ -111,6 +117,7 @@ export default class JsonFormatter extends Formatter {
   }
 
   getScenarioData({
+    language,
     featureId,
     pickle,
     scenarioLineToDescriptionMap,
@@ -120,7 +127,8 @@ export default class JsonFormatter extends Formatter {
       pickle,
       scenarioLineToDescriptionMap,
     })
-    const keyword = getScenarioKeyword({ pickle, scenarioLineToKeywordMap })
+    let keyword = getScenarioKeyword({ pickle, scenarioLineToKeywordMap })
+    keyword = normalizeScenarioKeyword(keyword, language)
     return {
       description,
       id: `${featureId};${this.convertNameToId(pickle)}`,

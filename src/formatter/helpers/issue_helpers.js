@@ -6,6 +6,7 @@ import Status from '../../status'
 import figures from 'figures'
 import Table from 'cli-table3'
 import KeywordType, { getStepKeywordType } from './keyword_type'
+import { normalizeScenarioKeyword } from './keyword_helpers'
 import { buildStepArgumentIterator } from '../../step_arguments'
 import {
   getStepLineToKeywordMap,
@@ -147,7 +148,8 @@ export function formatIssue({
   const prefix = `${number}) `
   let text = prefix
   const scenarioLineToKeywordMap = getScenarioLineToKeywordMap(gherkinDocument)
-  const keyword = getScenarioKeyword({ pickle, scenarioLineToKeywordMap })
+  let keyword = getScenarioKeyword({ pickle, scenarioLineToKeywordMap })
+  keyword = normalizeScenarioKeyword(keyword, gherkinDocument.feature.language)
   const scenarioLoc = formatLocation(testCase.sourceLocation)
   text += `${keyword}: ${pickle.name} # ${colorFns.location(scenarioLoc)}\n`
   const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
