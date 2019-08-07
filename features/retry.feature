@@ -10,7 +10,75 @@ Feature: Retry flaky tests
       """
       Error: a positive --retry count must be specified when setting --retryTagFilter
       """
-    And it fails  
+    And it fails
+
+  Scenario: running Cucumber JS with negative --retry will fail
+    When I run cucumber-js with `--retry -1`
+    Then the error output contains the text:
+      """
+      Error: --retry must be a non negative integer
+      """
+    And it fails
+
+  Scenario: running Cucumber JS with --retry 0 will let a failing test fail and not retry
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Failing
+          Given a failing step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      Given(/^a failing step$/, function() { throw 'fail' })
+      """
+    When I run cucumber-js with `--retry 0`
+    Then the output contains the text:
+      """
+      F
+
+      Failures:
+
+      1) Scenario: Failing # features/a.feature:2
+      ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
+      Error: fail
+      """
+    And scenario "Failing" step "Given a failing step" failed with:
+      """
+      Error: fail
+      """
+    And it fails
+
+  Scenario: running Cucumber JS without --retry will let a failing test fail and not retry
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Failing
+          Given a failing step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      Given(/^a failing step$/, function() { throw 'fail' })
+      """
+    When I run cucumber-js
+    Then the output contains the text:
+      """
+      F
+
+      Failures:
+
+      1) Scenario: Failing # features/a.feature:2
+      ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
+      Error: fail
+      """
+    And scenario "Failing" step "Given a failing step" failed with:
+      """
+      Error: fail
+      """
+    And it fails
 
   Scenario: retrying a flaky test will eventually make it pass
     Given a file named "features/a.feature" with:
@@ -279,4 +347,98 @@ Feature: Retry flaky tests
       """
     When I run cucumber-js with `--retry 1 --retryTagFilter '@not_flaky'`
     Then scenario "Flaky" step "Given a flaky step" has status "failed"
+    And it fails
+
+  Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass but not-matching will not be retried (AND operator between tags)
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        @flaky @anOtherTag @oneMoreTag
+        Scenario: Flaky
+          Given a flaky step
+        @flaky @oneMoreTag
+        Scenario: Also Flaky
+          Given an other flaky step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      let willPass = false
+
+      Given(/^a flaky step$/, function() {
+        if (willPass) {
+          return
+        }
+        willPass = true
+        throw 'fail'
+      })
+
+      let willPass2 = false
+
+      Given(/^an other flaky step$/, function() {
+        if (willPass2) {
+          return
+        }
+        willPass2 = true
+        throw 'fail'
+      })
+      """
+    When I run cucumber-js with `--retry 1 --retryTagFilter '@flaky and @anOtherTag'`
+    Then scenario "Flaky" step "Given a flaky step" has status "passed"
+    And scenario "Also Flaky" step "Given an other flaky step" has status "failed"
+    And it fails
+
+  Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass but not-matching will not be retried (OR operator between tags)
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        @flaky @anOtherTag @oneMoreTag
+        Scenario: Flaky
+          Given a flaky step
+        @flaky @oneMoreTag
+        Scenario: Also Flaky
+          Given an other flaky step
+        @flaky
+        Scenario: Third Flaky
+          Given one more flaky step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      let willPass = false
+
+      Given(/^a flaky step$/, function() {
+        if (willPass) {
+          return
+        }
+        willPass = true
+        throw 'fail'
+      })
+
+      let willPass2 = false
+
+      Given(/^an other flaky step$/, function() {
+        if (willPass2) {
+          return
+        }
+        willPass2 = true
+        throw 'fail'
+      })
+
+      let willPass3 = false
+
+      Given(/^one more flaky step$/, function() {
+        if (willPass3) {
+          return
+        }
+        willPass3 = true
+        throw 'fail'
+      })
+      """
+    When I run cucumber-js with `--retry 1 --retryTagFilter '@anOtherTag or @oneMoreTag'`
+    Then scenario "Flaky" step "Given a flaky step" has status "passed"
+    And scenario "Also Flaky" step "Given an other flaky step" has status "passed"
+    And scenario "Third Flaky" step "Given one more flaky step" has status "failed"
     And it fails
