@@ -116,6 +116,11 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with an `and` operator.
 `<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions).
 
+## Retry failing tests
+
+Use `--retry <int>` to rerun tests that have been failing. This can be very helpful for flaky tests.
+To only retry failing tests in a subset of test use `--retryTagFilter <EXPRESSION>` (use the same as in Use [Tags](#tags))
+
 ## Transpilation
 
 Step definitions and support files can be written in other languages that transpile to JavaScript.
