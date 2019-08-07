@@ -187,6 +187,7 @@ export default class TestCaseRunner {
 
       if (this.result.status === Status.PASSED && attemptNumber > 1) {
         this.result.status = Status.FLAKY
+        this.result.retried = true
       }
       await this.runHooks(
         this.afterHookDefinitions,
