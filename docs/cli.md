@@ -130,7 +130,7 @@ For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
 
 This will effectivally call `require('@babel/register')` prior to requiring any support files.
 
-Note: You `.babelrc` should target node environment. For example:
+Note: Your `.babelrc` should target a node environment. For example:
 
 ```json
 {
