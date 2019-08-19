@@ -130,6 +130,20 @@ For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
 
 This will effectivally call `require('@babel/register')` prior to requiring any support files.
 
+Note: You `.babelrc` should target node environment. For example:
+
+```json
+{
+  "presets": [
+    [ "@babel/preset-env", {
+      "targets": {
+        "node": 4
+      }
+    }]
+  ]
+}
+```
+
 ### Non JS files
 
 If your files end in an extension other than `js`, make sure to also include the `--require` option to state the support files to require.
