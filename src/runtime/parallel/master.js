@@ -43,9 +43,10 @@ export default class Master {
         this.giveSlaveWork(slave)
         break
       case commandTypes.EVENT:
-        this.eventBroadcaster.emit(message.name, message.data)
+        const data = message.data
+        this.eventBroadcaster.emit(message.name, data)
         if (message.name === 'test-case-finished') {
-          this.parseTestCaseResult(message.data.result)
+          this.parseTestCaseResult(data.result, data.attemptNumber)
         }
         break
       default:
@@ -87,12 +88,12 @@ export default class Master {
     }
   }
 
-  parseTestCaseResult(testCaseResult) {
+  parseTestCaseResult(testCaseResult, attemptNumber) {
     this.testCasesCompleted += 1
     if (testCaseResult.duration) {
       this.result.duration += testCaseResult.duration
     }
-    if (this.shouldCauseFailure(testCaseResult.status)) {
+    if (this.shouldCauseFailure(testCaseResult.status, attemptNumber)) {
       this.result.success = false
     }
   }
@@ -116,7 +117,12 @@ export default class Master {
     slave.process.send({ command: commandTypes.RUN, retries, skip, testCase })
   }
 
-  shouldCauseFailure(status) {
+  shouldCauseFailure(status, attemptNumber) {
+    const shouldRetry =
+      status === Status.FAILED && attemptNumber <= this.options.retry
+    if (shouldRetry) {
+      return false
+    }
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)
