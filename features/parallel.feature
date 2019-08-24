@@ -1,6 +1,6 @@
 Feature: Running scenarios in parallel
 
-  Background:
+  Scenario: running in parallel can improve speed if there are async operations
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       import {Given} from 'cucumber'
@@ -10,9 +10,7 @@ Feature: Running scenarios in parallel
         setTimeout(callback, 1000)
       })
       """
-
-  Scenario: running in parallel can improve speed if there are async operations
-    Given a file named "features/a.feature" with:
+    And a file named "features/a.feature" with:
       """
       Feature: slow
         Scenario: a
@@ -23,3 +21,26 @@ Feature: Running scenarios in parallel
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
+
+  Scenario: an error in BeforeAll fails the test
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {BeforeAll, Given} from 'cucumber'
+      import Promise from 'bluebird'
+
+      Given(/^a slow step$/, function(callback) {
+        setTimeout(callback, 1000)
+      })
+
+      BeforeAll(function() {
+        throw new Error('fail')
+      })
+      """
+    And a file named "features/a.feature" with:
+      """
+      Feature: slow
+        Scenario: a
+          Given a slow step
+      """
+    When I run cucumber-js with `--parallel 2`
+    Then it fails

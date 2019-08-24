@@ -66,8 +66,11 @@ export default class Master {
     slave.process.on('message', message => {
       this.parseSlaveMessage(slave, message)
     })
-    slave.process.on('close', () => {
+    slave.process.on('close', error => {
       slave.closed = true
+      if (error) {
+        this.result.success = false
+      }
       this.onSlaveClose()
     })
     slave.process.send({
