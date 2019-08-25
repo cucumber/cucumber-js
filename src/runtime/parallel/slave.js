@@ -107,10 +107,15 @@ export default class Slave {
       })
       if (error) {
         const location = formatLocation(hookDefinition)
-        throw new VError(
-          error,
-          `${name} hook errored, process exiting: ${location}`
-        )
+        console.error(
+          VError.fullStack(
+            new VError(
+              error,
+              `${name} hook errored, process exiting: ${location}`
+            )
+          )
+        ) // eslint-disable-line no-console
+        this.exit(1)
       }
     })
   }
