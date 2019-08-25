@@ -21,6 +21,7 @@ Feature: Running scenarios in parallel
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
+    And the reported duration is less than 2000ms
 
   Scenario: an error in BeforeAll fails the test
     Given a file named "features/step_definitions/cucumber_steps.js" with:

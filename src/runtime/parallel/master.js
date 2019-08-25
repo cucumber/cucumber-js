@@ -29,6 +29,7 @@ export default class Master {
     this.testCases = testCases || []
     this.nextTestCaseIndex = 0
     this.testCasesCompleted = 0
+    this.startTime = 0;
     this.result = {
       duration: 0,
       success: true,
@@ -39,6 +40,9 @@ export default class Master {
   parseSlaveMessage(slave, message) {
     switch (message.command) {
       case commandTypes.READY:
+        if (!this.startTime) {
+          this.startTime = Date.now()
+        }
         this.giveSlaveWork(slave)
         break
       case commandTypes.EVENT:
@@ -84,6 +88,7 @@ export default class Master {
 
   onSlaveClose() {
     if (_.every(this.slaves, 'closed')) {
+      this.result.duration = Date.now() - this.startTime
       this.eventBroadcaster.emit('test-run-finished', { result: this.result })
       this.onFinish(this.result.success)
     }
@@ -91,9 +96,6 @@ export default class Master {
 
   parseTestCaseResult(testCaseResult) {
     this.testCasesCompleted += 1
-    if (testCaseResult.duration) {
-      this.result.duration += testCaseResult.duration
-    }
     if (this.shouldCauseFailure(testCaseResult.status)) {
       this.result.success = false
     }
