@@ -29,7 +29,7 @@ export default class Master {
     this.testCases = testCases || []
     this.nextTestCaseIndex = 0
     this.testCasesCompleted = 0
-    this.startTime = 0;
+    this.startTime = 0
     this.result = {
       duration: 0,
       success: true,
