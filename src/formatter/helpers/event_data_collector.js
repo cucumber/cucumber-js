@@ -8,15 +8,21 @@ export default class EventDataCollector {
       .on('pickle-accepted', ::this.storePickle)
       .on('test-case-prepared', ::this.storeTestCase)
       .on('test-step-attachment', ::this.storeTestStepAttachment)
+      .on('test-case-started', ::this.initTestCaseResult)
       .on('test-step-finished', ::this.storeTestStepResult)
       .on('test-case-finished', ::this.storeTestCaseResult)
     this.gherkinDocumentMap = {} // uri to gherkinDocument
     this.pickleMap = {} // uri:line to {pickle, uri}
-    this.testCaseMap = {} // uri:line to {sourceLocation, steps, result}
+    this.testCaseMap = {} // uri:line to {sourceLocation, steps}
+    this.testCaseAttemptMap = {} // uri:line:attemptNumber to {result, stepAttachments, stepResults, testCase}
   }
 
   getTestCaseKey({ uri, line }) {
     return `${uri}:${line}`
+  }
+
+  getTestCaseAttemptKey({ attemptNumber, sourceLocation: { uri, line } }) {
+    return `${uri}:${line}:${attemptNumber}`
   }
 
   getTestCaseData(sourceLocation) {
@@ -53,24 +59,31 @@ export default class EventDataCollector {
     this.testCaseMap[key] = { sourceLocation, steps }
   }
 
-  storeTestStepAttachment({ index, testCase, data, media }) {
-    const key = this.getTestCaseKey(testCase.sourceLocation)
-    const step = this.testCaseMap[key].steps[index]
-    if (!step.attachments) {
-      step.attachments = []
+  initTestCaseResult(testCaseStartedEvent) {
+    const testCaseKey = this.getTestCaseKey(testCaseStartedEvent.sourceLocation)
+    const testCase = this.testCaseMap[testCaseKey]
+    const testCaseAttemptKey = this.getTestCaseAttemptKey(testCaseStartedEvent)
+    this.testCaseAttemptMap[testCaseAttemptKey] = {
+      attemptNumber: testCaseStartedEvent.attemptNumber,
+      result: {},
+      stepAttachments: testCase.steps.map(_ => []),
+      stepResults: testCase.steps.map(_ => null),
+      testCase,
     }
-    step.attachments.push({ data, media })
+  }
+
+  storeTestStepAttachment({ index, testCase, data, media }) {
+    const key = this.getTestCaseAttemptKey(testCase)
+    this.testCaseAttemptMap[key].stepAttachments[index].push({ data, media })
   }
 
   storeTestStepResult({ index, testCase, result }) {
-    const key = this.getTestCaseKey(testCase.sourceLocation)
-    this.testCaseMap[key].steps[index].result = result
+    const key = this.getTestCaseAttemptKey(testCase)
+    this.testCaseAttemptMap[key].stepResults[index] = result
   }
 
-  storeTestCaseResult({ attemptNumber, sourceLocation, result }) {
-    const key = this.getTestCaseKey(sourceLocation)
-    const testCase = this.testCaseMap[key]
-    testCase.attemptNumber = attemptNumber
-    testCase.result = result
+  storeTestCaseResult(testCaseFinishedEvent) {
+    const key = this.getTestCaseAttemptKey(testCaseFinishedEvent)
+    this.testCaseAttemptMap[key].result = testCaseFinishedEvent.result
   }
 }

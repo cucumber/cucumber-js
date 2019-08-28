@@ -59,10 +59,14 @@ export default class TestCaseRunner {
 
   emit(name, data) {
     const eventData = { ...data }
+    const testCaseData = {
+      attemptNumber: this.currentAttemptNumber,
+      sourceLocation: this.testCaseSourceLocation,
+    }
     if (_.startsWith(name, 'test-case')) {
-      eventData.sourceLocation = this.testCaseSourceLocation
+      _.merge(eventData, testCaseData)
     } else {
-      eventData.testCase = { sourceLocation: this.testCaseSourceLocation }
+      eventData.testCase = testCaseData
     }
     this.eventBroadcaster.emit(name, eventData)
   }
@@ -167,12 +171,11 @@ export default class TestCaseRunner {
   async run() {
     this.emitPrepared()
     for (
-      let attemptNumber = 1;
-      attemptNumber <= this.maxAttempts;
-      attemptNumber++
+      this.currentAttemptNumber = 1;
+      this.currentAttemptNumber <= this.maxAttempts;
+      this.currentAttemptNumber++
     ) {
-      const attemptEventData = this.maxAttempts > 1 ? { attemptNumber } : {}
-      this.emit('test-case-started', attemptEventData)
+      this.emit('test-case-started')
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -183,10 +186,9 @@ export default class TestCaseRunner {
       )
       await this.runSteps()
       const shouldRetry =
-        this.result.status === Status.FAILED && attemptNumber < this.maxAttempts
-
-      if (this.result.status === Status.PASSED && attemptNumber > 1) {
-        this.result.status = Status.FLAKY
+        this.result.status === Status.FAILED &&
+        this.currentAttemptNumber < this.maxAttempts
+      if (shouldRetry) {
         this.result.retried = true
       }
       await this.runHooks(
@@ -198,10 +200,7 @@ export default class TestCaseRunner {
         },
         false
       )
-      this.emit('test-case-finished', {
-        ...attemptEventData,
-        result: this.result,
-      })
+      this.emit('test-case-finished', { result: this.result })
       if (!shouldRetry) {
         break
       }

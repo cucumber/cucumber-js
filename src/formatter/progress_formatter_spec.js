@@ -24,11 +24,15 @@ describe('ProgressFormatter', () => {
 
   describe('test step finished', () => {
     beforeEach(function() {
-      this.testCase = { sourceLocation: { uri: 'path/to/feature', line: 1 } }
+      this.testCase = {
+        attemptNumber: 1,
+        sourceLocation: { uri: 'path/to/feature', line: 1 },
+      }
       this.eventBroadcaster.emit('test-case-prepared', {
-        sourceLocation: this.testCase.sourceLocation,
+        ...this.testCase,
         steps: [{}],
       })
+      this.eventBroadcaster.emit('test-case-started', this.testCase)
     })
 
     describe('ambiguous', () => {

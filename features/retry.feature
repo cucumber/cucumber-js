@@ -98,17 +98,17 @@ Feature: Retry flaky tests
           return
         }
         willPass = true
-        throw 'fail'        
+        throw 'fail'
       })
       """
     When I run cucumber-js with `--retry 1`
     Then it outputs the text:
       """
       F.
-      
+
       Warnings:
-      
-      1) Scenario: Flaky (attempt 2) # features/a.feature:2
+
+      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
       ✔ Given a flaky step # features/step_definitions/cucumber_steps.js:5
 
       1 scenario (1 flaky)
@@ -284,17 +284,17 @@ Feature: Retry flaky tests
     Then the output contains the text:
       """
       FF
-      
+
       Failures:
-      
+
       1) Scenario: Failing (attempt 2) # features/a.feature:2
       ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
       Error: fail
-      """    
+      """
     And scenario "Failing" step "Given a failing step" failed with:
       """
       Error: fail
-      """    
+      """
     And it fails
 
   Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass

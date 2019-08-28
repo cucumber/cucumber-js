@@ -2,12 +2,12 @@ import { formatError } from './error_helpers'
 import Status from '../../status'
 import indentString from 'indent-string'
 
-function getAmbiguousStepResultMessage({ colorFns, testStep }) {
-  return colorFns.ambiguous(testStep.result.exception)
+function getAmbiguousStepResultMessage({ colorFns, testStepResult }) {
+  return colorFns.ambiguous(testStepResult.exception)
 }
 
-function getFailedStepResultMessage({ colorFns, testStep }) {
-  return formatError(testStep.result.exception, colorFns)
+function getFailedStepResultMessage({ colorFns, testStepResult }) {
+  return formatError(testStepResult.exception, colorFns)
 }
 
 function getPendingStepResultMessage({ colorFns }) {
@@ -18,14 +18,14 @@ export function getStepMessage({
   colorFns,
   keywordType,
   snippetBuilder,
-  testStep,
+  testStepResult,
   pickleStep,
 }) {
-  switch (testStep.result.status) {
+  switch (testStepResult.status) {
     case Status.AMBIGUOUS:
-      return getAmbiguousStepResultMessage({ colorFns, testStep })
+      return getAmbiguousStepResultMessage({ colorFns, testStepResult })
     case Status.FAILED:
-      return getFailedStepResultMessage({ colorFns, testStep })
+      return getFailedStepResultMessage({ colorFns, testStepResult })
     case Status.UNDEFINED:
       return getUndefinedStepResultMessage({
         colorFns,

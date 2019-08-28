@@ -9,27 +9,33 @@ export default class SummaryFormatter extends Formatter {
     options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
   }
 
-  isTestCaseFailure(testCase) {
-    return _.includes([Status.AMBIGUOUS, Status.FAILED], testCase.result.status)
+  isTestCaseFailure(testCaseAttempt) {
+    return (
+      testCaseAttempt.result.status === Status.AMBIGUOUS ||
+      (testCaseAttempt.result.status === Status.FAILED &&
+        !testCaseAttempt.result.retried)
+    )
   }
 
-  isTestCaseWarning(testCase) {
+  isTestCaseWarning(testCaseAttempt) {
     return (
       _.includes(
-        [Status.FLAKY, Status.PENDING, Status.UNDEFINED],
-        testCase.result.status
-      ) || testCase.attemptNumber > 1
+        [Status.PENDING, Status.UNDEFINED],
+        testCaseAttempt.result.status
+      ) ||
+      (testCaseAttempt.result.status === Status.FAILED &&
+        testCaseAttempt.result.retried)
     )
   }
 
   logSummary(testRun) {
     const failures = []
     const warnings = []
-    _.each(this.eventDataCollector.testCaseMap, testCase => {
-      if (this.isTestCaseFailure(testCase)) {
-        failures.push(testCase)
-      } else if (this.isTestCaseWarning(testCase)) {
-        warnings.push(testCase)
+    _.each(this.eventDataCollector.testCaseAttemptMap, testCaseAttempt => {
+      if (this.isTestCaseFailure(testCaseAttempt)) {
+        failures.push(testCaseAttempt)
+      } else if (this.isTestCaseWarning(testCaseAttempt)) {
+        warnings.push(testCaseAttempt)
       }
     })
     if (failures.length > 0) {
@@ -41,7 +47,7 @@ export default class SummaryFormatter extends Formatter {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        testCaseMap: this.eventDataCollector.testCaseMap,
+        testCaseAttemptMap: this.eventDataCollector.testCaseAttemptMap,
         testRun,
       })
     )
@@ -49,11 +55,13 @@ export default class SummaryFormatter extends Formatter {
 
   logIssues({ issues, title }) {
     this.log(`${title}:\n\n`)
-    issues.forEach((testCase, index) => {
+    issues.forEach((testCaseAttempt, index) => {
       const {
         gherkinDocument,
         pickle,
-      } = this.eventDataCollector.getTestCaseData(testCase.sourceLocation)
+      } = this.eventDataCollector.getTestCaseData(
+        testCaseAttempt.testCase.sourceLocation
+      )
       this.log(
         formatIssue({
           colorFns: this.colorFns,
@@ -61,7 +69,7 @@ export default class SummaryFormatter extends Formatter {
           number: index + 1,
           pickle,
           snippetBuilder: this.snippetBuilder,
-          testCase,
+          testCaseAttempt,
         })
       )
     })

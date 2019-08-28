@@ -7,11 +7,11 @@ import Status from '../../status'
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
     beforeEach(function() {
-      this.testCaseMap = {}
+      this.testCaseAttemptMap = {}
       this.testRun = { result: { duration: 0 } }
       this.options = {
         colorFns: getColorFns(false),
-        testCaseMap: this.testCaseMap,
+        testCaseAttemptMap: this.testCaseAttemptMap,
         testRun: this.testRun,
       }
     })
@@ -30,14 +30,12 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one passing step', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:1:1'] = {
           result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
         }
         this.result = formatSummary(this.options)
       })
@@ -51,15 +49,12 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one step and hook', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            { result: { status: Status.PASSED } },
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:1:1'] = {
           result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          testCase: {
+            steps: [{}, { sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
         }
         this.result = formatSummary(this.options)
       })
@@ -71,20 +66,43 @@ describe('SummaryHelpers', () => {
       })
     })
 
+    describe('with one scenario that failed and was retried then passed', () => {
+      beforeEach(function() {
+        this.testCaseAttemptMap['a.feature:1:1'] = {
+          result: { status: Status.FAILED, retried: true },
+          stepResults: [{ status: Status.FAILED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        }
+        this.testCaseAttemptMap['a.feature:1:2'] = {
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        }
+        this.result = formatSummary(this.options)
+      })
+
+      it('filters out the retried attempts', function() {
+        expect(this.result).to.contain(
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+        )
+      })
+    })
+
     describe('with one passing scenario with multiple passing steps', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED },
-            },
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:1:1'] = {
           result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          testCase: {
+            steps: [
+              { sourceLocation: { uri: 'a.feature', line: 2 } },
+              { sourceLocation: { uri: 'a.feature', line: 3 } },
+            ],
+          },
         }
         this.result = formatSummary(this.options)
       })
@@ -98,59 +116,47 @@ describe('SummaryHelpers', () => {
 
     describe('with one of every kind of scenario', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.AMBIGUOUS },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:1:1'] = {
           result: { status: Status.AMBIGUOUS },
+          stepResults: [{ status: Status.AMBIGUOUS }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
         }
-        this.testCaseMap['a.feature:3'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 4 },
-              result: { status: Status.FAILED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:3:1'] = {
           result: { status: Status.FAILED },
+          stepResults: [{ status: Status.FAILED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 4 } }],
+          },
         }
-        this.testCaseMap['a.feature:5'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 6 },
-              result: { status: Status.PENDING },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:5:1'] = {
           result: { status: Status.PENDING },
+          stepResults: [{ status: Status.PENDING }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 6 } }],
+          },
         }
-        this.testCaseMap['a.feature:7'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 8 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:7:1'] = {
           result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 8 } }],
+          },
         }
-        this.testCaseMap['a.feature:9'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 10 },
-              result: { status: Status.SKIPPED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:9:1'] = {
           result: { status: Status.SKIPPED },
+          stepResults: [{ status: Status.SKIPPED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 10 } }],
+          },
         }
-        this.testCaseMap['a.feature:11'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 12 },
-              result: { status: Status.UNDEFINED },
-            },
-          ],
+        this.testCaseAttemptMap['a.feature:11:1'] = {
           result: { status: Status.UNDEFINED },
+          stepResults: [{ status: Status.UNDEFINED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 12 } }],
+          },
         }
         this.result = formatSummary(this.options)
       })

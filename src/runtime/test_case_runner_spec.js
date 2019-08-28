@@ -327,6 +327,7 @@ describe('TestCaseRunner', () => {
           result: {
             duration: 1,
             exception: this.error,
+            retried: true,
             status: Status.FAILED,
           },
           sourceLocation,
@@ -335,8 +336,7 @@ describe('TestCaseRunner', () => {
           attemptNumber: 2,
           result: {
             duration: 1,
-            retried: true,
-            status: Status.FLAKY,
+            status: Status.PASSED,
           },
           sourceLocation,
         })

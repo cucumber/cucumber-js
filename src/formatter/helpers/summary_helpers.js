@@ -8,20 +8,21 @@ const STATUS_REPORT_ORDER = [
   Status.UNDEFINED,
   Status.PENDING,
   Status.SKIPPED,
-  Status.FLAKY,
   Status.PASSED,
 ]
 
-export function formatSummary({ colorFns, testCaseMap, testRun }) {
+export function formatSummary({ colorFns, testCaseAttemptMap, testRun }) {
   const testCaseResults = []
   const testStepResults = []
-  _.each(testCaseMap, ({ result, steps }) => {
-    testCaseResults.push(result)
-    _.each(steps, testStep => {
-      if (testStep.sourceLocation) {
-        testStepResults.push(testStep.result)
-      }
-    })
+  _.each(testCaseAttemptMap, ({ result, stepResults, testCase }) => {
+    if (!result.retried) {
+      testCaseResults.push(result)
+      _.each(stepResults, (stepResult, index) => {
+        if (testCase.steps[index].sourceLocation) {
+          testStepResults.push(stepResult)
+        }
+      })
+    }
   })
   const scenarioSummary = getCountSummary({
     colorFns,

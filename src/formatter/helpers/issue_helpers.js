@@ -24,7 +24,6 @@ const IS_ISSUE = {
   [Status.FAILED]: true,
   [Status.PASSED]: false,
   [Status.PENDING]: true,
-  [Status.FLAKY]: false,
   [Status.SKIPPED]: false,
   [Status.UNDEFINED]: true,
 }
@@ -75,8 +74,10 @@ function formatStep({
   pickleStep,
   snippetBuilder,
   testStep,
+  testStepResult,
+  testStepAttachments,
 }) {
-  const { status } = testStep.result
+  const { status } = testStepResult
   const colorFn = colorFns[status]
 
   let identifier
@@ -106,8 +107,8 @@ function formatStep({
     }
   }
 
-  if (testStep.attachments) {
-    testStep.attachments.forEach(({ media, data }) => {
+  if (testStepAttachments) {
+    testStepAttachments.forEach(({ media, data }) => {
       const message = media.type === 'text/plain' ? `: ${data}` : ''
       text += indentString(`Attachment (${media.type})${message}\n`, 4)
     })
@@ -118,7 +119,7 @@ function formatStep({
     keywordType,
     pickleStep,
     snippetBuilder,
-    testStep,
+    testStepResult,
   })
   if (message) {
     text += `${indentString(message, 4)}\n`
@@ -136,19 +137,25 @@ export function formatIssue({
   number,
   pickle,
   snippetBuilder,
-  testCase,
+  testCaseAttempt,
 }) {
   const prefix = `${number}) `
   let text = prefix
-  const scenarioLocation = formatLocation(testCase.sourceLocation)
+  const scenarioLocation = formatLocation(
+    testCaseAttempt.testCase.sourceLocation
+  )
   text += `Scenario: ${pickle.name} `
-  text += getRetryWarningText(testCase.attemptNumber, colorFns.retried)
+  text += getAttemptText(
+    testCaseAttempt.attemptNumber,
+    testCaseAttempt.result.retried
+  )
   text += `# ${colorFns.location(scenarioLocation)}\n`
   const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
   const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
   let isBeforeHook = true
   let previousKeywordType = KeywordType.PRECONDITION
-  _.each(testCase.steps, testStep => {
+  _.each(testCaseAttempt.stepResults, (testStepResult, index) => {
+    const testStep = testCaseAttempt.testCase.steps[index]
     isBeforeHook = isBeforeHook && !testStep.sourceLocation
     let keyword, keywordType, pickleStep
     if (testStep.sourceLocation) {
@@ -168,6 +175,8 @@ export function formatIssue({
       pickleStep,
       snippetBuilder,
       testStep,
+      testStepResult,
+      testStepAttachments: testCaseAttempt.stepAttachments[index],
     })
     text += indentString(formattedStep, prefix.length)
     previousKeywordType = keywordType
@@ -175,9 +184,12 @@ export function formatIssue({
   return `${text}\n`
 }
 
-function getRetryWarningText(attemptNumber, retriedColorFn) {
-  if (attemptNumber) {
-    return retriedColorFn(`(attempt ${attemptNumber}) `)
+function getAttemptText(attemptNumber, retried) {
+  if (retried) {
+    return `(attempt ${attemptNumber}, retried) `
+  }
+  if (attemptNumber > 1) {
+    return `(attempt ${attemptNumber}) `
   }
   return ''
 }

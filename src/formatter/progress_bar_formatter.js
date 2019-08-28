@@ -8,7 +8,7 @@ export default class ProgressBarFormatter extends Formatter {
     super(options)
     options.eventBroadcaster
       .on('pickle-accepted', ::this.incrementStepCount)
-      .once('test-case-started', ::this.initializeProgressBar)
+      .once('test-step-started', ::this.initializeProgressBar)
       .on('test-step-finished', ::this.logProgress)
       .on('test-case-finished', ::this.logErrorIfNeeded)
       .on('test-run-finished', ::this.logSummary)
@@ -37,14 +37,19 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logErrorIfNeeded({ sourceLocation, result }) {
-    if (isIssue(result.status)) {
+  logErrorIfNeeded(testCaseFinishedEvent) {
+    if (isIssue(testCaseFinishedEvent.result.status)) {
+      const key = this.eventDataCollector.getTestCaseAttemptKey(
+        testCaseFinishedEvent
+      )
+      const testCaseAttempt = this.eventDataCollector.testCaseAttemptMap[key]
       this.issueCount += 1
       const {
         gherkinDocument,
         pickle,
-        testCase,
-      } = this.eventDataCollector.getTestCaseData(sourceLocation)
+      } = this.eventDataCollector.getTestCaseData(
+        testCaseAttempt.testCase.sourceLocation
+      )
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
@@ -52,7 +57,7 @@ export default class ProgressBarFormatter extends Formatter {
           number: this.issueCount,
           pickle,
           snippetBuilder: this.snippetBuilder,
-          testCase,
+          testCaseAttempt,
         })
       )
     }

@@ -1,4 +1,3 @@
-colors: true
 file:
   - test/test_helper.js
 full-trace: true
