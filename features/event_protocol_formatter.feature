@@ -55,3 +55,28 @@ Feature: Event Protocol Formatter
     When I run cucumber-js with `-f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/failed.ndjson"
     And it fails
+
+  Scenario: retrying a flaky test will eventually make it pass
+    Given a file named "features/a.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a step
+      """
+    Given a file named "features/step_definitions/steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      let willPass = false
+
+      Given(/^a step$/, function(callback) {
+        if (willPass) {
+          callback()
+          return
+        }
+        willPass = true
+        callback(new Error('my error'))
+      })
+      """
+    When I run cucumber-js with `--retry 1 -f event-protocol`
+    Then the output matches the fixture "event_protocol_formatter/retried.ndjson"
