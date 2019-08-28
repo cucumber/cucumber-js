@@ -60,8 +60,10 @@ export default class TestCaseRunner {
   emit(name, data) {
     const eventData = { ...data }
     const testCaseData = {
-      attemptNumber: this.currentAttemptNumber,
       sourceLocation: this.testCaseSourceLocation,
+    }
+    if (this.currentAttemptNumber) {
+      testCaseData.attemptNumber = this.currentAttemptNumber
     }
     if (_.startsWith(name, 'test-case')) {
       _.merge(eventData, testCaseData)

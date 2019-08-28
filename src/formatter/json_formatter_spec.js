@@ -51,23 +51,32 @@ describe('JsonFormatter', () => {
           })
         }
       })
-      this.testCase = { sourceLocation: { uri: 'a.feature', line: 4 } }
+      this.testCase = {
+        attemptNumber: 1,
+        sourceLocation: { uri: 'a.feature', line: 4 },
+      }
     })
 
     describe('passed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 6 },
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
       })
 
       describe('with retry', function() {
         beforeEach(function() {
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.testCase,
+            result: { duration: 1, status: Status.FAILED, exception:  },
+          })
           this.eventBroadcaster.emit('test-step-finished', {
             index: 0,
             testCase: this.testCase,

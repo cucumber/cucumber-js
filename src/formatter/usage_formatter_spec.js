@@ -86,7 +86,10 @@ describe('UsageFormatter', () => {
               })
             }
           })
-          this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+          this.testCase = {
+            attemptNumber: 1,
+            sourceLocation: { uri: 'a.feature', line: 2 },
+          }
           this.eventBroadcaster.emit('test-case-prepared', {
             ...this.testCase,
             steps: [
@@ -100,6 +103,7 @@ describe('UsageFormatter', () => {
               },
             ],
           })
+          this.eventBroadcaster.emit('test-case-started', this.testCase)
         })
 
         describe('in dry run', () => {
@@ -205,7 +209,10 @@ describe('UsageFormatter', () => {
             })
           }
         })
-        const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+        const testCase = {
+          attemptNumber: 1,
+          sourceLocation: { uri: 'a.feature', line: 2 },
+        }
         this.eventBroadcaster.emit('test-case-prepared', {
           ...testCase,
           steps: [
@@ -219,6 +226,7 @@ describe('UsageFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase,
