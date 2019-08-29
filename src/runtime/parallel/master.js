@@ -58,7 +58,7 @@ export default class Master {
   }
 
   startSlave(id, total) {
-    const slaveProcess = crossSpawn(`node`, [slaveCommand], {
+    const slaveProcess = crossSpawn(slaveCommand, [], {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
