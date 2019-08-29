@@ -38,7 +38,7 @@ export function formatSummary({ colorFns, testCaseMap, testRun, slaveCount }) {
       testRun.result.masterDuration
     )} (${durationSummary} across ${slaveCount} slaves)`
   }
-  return [scenarioSummary, stepSummary, durationSummary, `\n`].join('\n')
+  return [scenarioSummary, stepSummary, durationSummary + `\n`].join('\n')
 }
 
 function getCountSummary({ colorFns, objects, type }) {
