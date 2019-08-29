@@ -49,7 +49,7 @@ export default class SummaryFormatter extends Formatter {
         colorFns: this.colorFns,
         testCaseMap: this.eventDataCollector.testCaseMap,
         testRun,
-        slaveCount: this.slaves
+        slaveCount: this.slaves,
       })
     )
   }

@@ -32,9 +32,11 @@ export function formatSummary({ colorFns, testCaseMap, testRun, slaveCount }) {
     objects: testStepResults,
     type: 'step',
   })
-  let durationSummary = getDuration(testRun.result.duration);
+  let durationSummary = getDuration(testRun.result.duration)
   if (testRun.result.masterDuration) {
-    durationSummary = `${getDuration(testRun.result.masterDuration)} (${durationSummary} across ${slaveCount} slaves)`
+    durationSummary = `${getDuration(
+      testRun.result.masterDuration
+    )} (${durationSummary} across ${slaveCount} slaves)`
   }
   return [scenarioSummary, stepSummary, durationSummary, `\n`].join('\n')
 }
@@ -63,9 +65,7 @@ function getDuration(milliseconds) {
   const end = new Date(milliseconds)
   const duration = new Duration(start, end)
 
-  return (
-    `${duration.minutes}m${duration.toString('%S')}.${duration.toString(
-      '%L'
-    )}s`
-  )
+  return `${duration.minutes}m${duration.toString('%S')}.${duration.toString(
+    '%L'
+  )}s`
 }
