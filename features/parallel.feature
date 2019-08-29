@@ -19,9 +19,15 @@ Feature: Running scenarios in parallel
         Scenario: b
           Given a slow step
       """
-    When I run cucumber-js with `--parallel 2`
+    When I run cucumber-js with `--parallel 2 -f summary`
     Then it passes
-    And the reported duration is less than 2000ms
+    And the reported masterDuration is less than 2000ms
+    And it outputs the text:
+      """
+      2 scenarios (2 passed)
+      2 steps (2 passed)
+      <duration-stat> (<duration-stat> across 2 slaves)
+      """
 
   Scenario: an error in BeforeAll fails the test
     Given a file named "features/step_definitions/cucumber_steps.js" with:

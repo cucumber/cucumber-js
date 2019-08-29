@@ -31,6 +31,7 @@ export default class Master {
     this.testCasesCompleted = 0
     this.startTime = 0
     this.result = {
+      masterDuration: 0,
       duration: 0,
       success: true,
     }
@@ -57,7 +58,7 @@ export default class Master {
   }
 
   startSlave(id, total) {
-    const slaveProcess = crossSpawn(slaveCommand, [], {
+    const slaveProcess = crossSpawn(`node`, [slaveCommand], {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
@@ -88,7 +89,7 @@ export default class Master {
 
   onSlaveClose() {
     if (_.every(this.slaves, 'closed')) {
-      this.result.duration = Date.now() - this.startTime
+      this.result.masterDuration = Date.now() - this.startTime
       this.eventBroadcaster.emit('test-run-finished', { result: this.result })
       this.onFinish(this.result.success)
     }
@@ -96,13 +97,16 @@ export default class Master {
 
   parseTestCaseResult(testCaseResult) {
     this.testCasesCompleted += 1
+    if (testCaseResult.duration) {
+      this.result.duration += testCaseResult.duration
+    }
     if (this.shouldCauseFailure(testCaseResult.status)) {
       this.result.success = false
     }
   }
 
   run(numberOfSlaves, done) {
-    this.eventBroadcaster.emit('test-run-started')
+    this.eventBroadcaster.emit('test-run-started', { numberOfSlaves })
     _.times(numberOfSlaves, id => this.startSlave(id, numberOfSlaves))
     this.onFinish = done
   }

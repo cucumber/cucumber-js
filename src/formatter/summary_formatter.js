@@ -6,7 +6,9 @@ import Status from '../status'
 export default class SummaryFormatter extends Formatter {
   constructor(options) {
     super(options)
+    options.eventBroadcaster.on('test-run-started', ::this.setParallelCount)
     options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
+    this.slaves = 0
   }
 
   isTestCaseFailure(testCase) {
@@ -18,6 +20,12 @@ export default class SummaryFormatter extends Formatter {
       [Status.PENDING, Status.UNDEFINED],
       testCase.result.status
     )
+  }
+
+  setParallelCount(data) {
+    if (data && data.numberOfSlaves) {
+      this.slaves = data.numberOfSlaves
+    }
   }
 
   logSummary(testRun) {
@@ -41,6 +49,7 @@ export default class SummaryFormatter extends Formatter {
         colorFns: this.colorFns,
         testCaseMap: this.eventDataCollector.testCaseMap,
         testRun,
+        slaveCount: this.slaves
       })
     )
   }

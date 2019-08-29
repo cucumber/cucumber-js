@@ -78,11 +78,11 @@ Then(/^I see the help text for Cucumber$/, function() {
   expect(actualOutput).to.include(expectedOutput)
 })
 
-Then(/^the reported duration is less than (\d+)ms$/, function(duration) {
+Then(/^the reported masterDuration is less than (\d+)ms$/, function(duration) {
   const testRunFinishedEvent = this.lastRun.events.find(
     e => e.type === 'test-run-finished'
   )
-  expect(testRunFinishedEvent.result.duration).to.be.lessThan(
+  expect(testRunFinishedEvent.result.masterDuration).to.be.lessThan(
     parseInt(duration, 10)
   )
 })

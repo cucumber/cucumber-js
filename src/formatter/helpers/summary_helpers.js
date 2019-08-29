@@ -11,7 +11,7 @@ const STATUS_REPORT_ORDER = [
   Status.PASSED,
 ]
 
-export function formatSummary({ colorFns, testCaseMap, testRun }) {
+export function formatSummary({ colorFns, testCaseMap, testRun, slaveCount }) {
   const testCaseResults = []
   const testStepResults = []
   _.each(testCaseMap, ({ result, steps }) => {
@@ -32,8 +32,11 @@ export function formatSummary({ colorFns, testCaseMap, testRun }) {
     objects: testStepResults,
     type: 'step',
   })
-  const durationSummary = getDuration(testRun.result.duration)
-  return [scenarioSummary, stepSummary, durationSummary].join('\n')
+  let durationSummary = getDuration(testRun.result.duration);
+  if (testRun.result.masterDuration) {
+    durationSummary = `${getDuration(testRun.result.masterDuration)} (${durationSummary} across ${slaveCount} slaves)`
+  }
+  return [scenarioSummary, stepSummary, durationSummary, `\n`].join('\n')
 }
 
 function getCountSummary({ colorFns, objects, type }) {
@@ -63,6 +66,6 @@ function getDuration(milliseconds) {
   return (
     `${duration.minutes}m${duration.toString('%S')}.${duration.toString(
       '%L'
-    )}s` + `\n`
+    )}s`
   )
 }
