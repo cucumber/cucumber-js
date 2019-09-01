@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import crossSpawn from 'cross-spawn'
+import { fork } from 'child_process'
 import commandTypes from './command_types'
 import path from 'path'
 import Status from '../../status'
@@ -53,7 +53,7 @@ export default class Master {
   }
 
   startSlave(id, total) {
-    const slaveProcess = crossSpawn(slaveCommand, [], {
+    const slaveProcess = fork(slaveCommand, [], {
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
@@ -68,10 +68,7 @@ export default class Master {
     })
     slave.process.on('close', error => {
       slave.closed = true
-      if (error) {
-        this.result.success = false
-      }
-      this.onSlaveClose()
+      this.onSlaveClose(error)
     })
     slave.process.send({
       command: commandTypes.INITIALIZE,
@@ -82,7 +79,10 @@ export default class Master {
     })
   }
 
-  onSlaveClose() {
+  onSlaveClose(error) {
+    if (error) {
+      this.result.success = false
+    }
     if (_.every(this.slaves, 'closed')) {
       this.eventBroadcaster.emit('test-run-finished', { result: this.result })
       this.onFinish(this.result.success)
