@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import ArgvParser from './argv_parser'
 import fs from 'mz/fs'
-import Gherkin from 'gherkin'
+import { fromPaths as gherkinFromPaths } from 'gherkin'
 import path from 'path'
 import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
@@ -17,7 +17,7 @@ export async function getExpandedArgv({ argv, cwd }) {
   return fullArgv
 }
 
-export async function getTestCasesFromFilesystem({
+export function getTestCasesFromFilesystem({
   cwd,
   eventBroadcaster,
   featureDefaultLanguage,
@@ -25,48 +25,28 @@ export async function getTestCasesFromFilesystem({
   order,
   pickleFilter,
 }) {
-  let result = []
-  await Promise.each(featurePaths, async featurePath => {
-    const source = await fs.readFile(featurePath, 'utf8')
-    result = result.concat(
-      await getTestCases({
-        eventBroadcaster,
-        language: featureDefaultLanguage,
-        source,
-        pickleFilter,
-        uri: path.relative(cwd, featurePath),
-      })
-    )
-  })
-  orderTestCases(result, order)
-  return result
-}
-
-export async function getTestCases({
-  eventBroadcaster,
-  language,
-  pickleFilter,
-  source,
-  uri,
-}) {
-  const result = []
-  const events = Gherkin.generateEvents(source, uri, {}, language)
-  events.forEach(event => {
-    eventBroadcaster.emit(event.type, _.omit(event, 'type'))
-    if (event.type === 'pickle') {
-      const { pickle } = event
-      if (pickleFilter.matches({ pickle, uri })) {
-        eventBroadcaster.emit('pickle-accepted', { pickle, uri })
-        result.push({ pickle, uri })
-      } else {
-        eventBroadcaster.emit('pickle-rejected', { pickle, uri })
+  return new Promise((resolve, reject) => {
+    let result = []
+    const messageStream = gherkinFromPaths(featurePaths, {
+      defaultDialect: featureDefaultLanguage,
+    })
+    messageStream.on('data', envelope => {
+      if (envelope.source) {
+        eventBroadcaster.emit('source', envelope.source.Source)
       }
-    }
-    if (event.type === 'attachment') {
-      throw new Error(`Parse error in '${uri}': ${event.data}`)
-    }
+      if (envelope.gherkinDocument) {
+        eventBroadcaster.emit(
+          'gherkin-document',
+          envelope.gherkinDocument.GherkinDocument
+        )
+      }
+    })
+    messageStream.on('close', () => {
+      orderTestCases(result, order)
+      resolve(result)
+    })
+    messageStream.on('error', reject)
   })
-  return result
 }
 
 // Orders the testCases in place - morphs input

@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { Command } from 'commander'
 import { version } from '../../package.json'
 import path from 'path'
-import Gherkin from 'gherkin'
+import { dialects as gherkinDialects } from 'gherkin'
 
 export default class ArgvParser {
   static collect(val, memo) {
@@ -32,7 +32,7 @@ export default class ArgvParser {
   }
 
   static validateLanguage(val) {
-    if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
+    if (!_.includes(_.keys(gherkinDialects()), val)) {
       throw new Error(`Unsupported ISO 639-1: ${val}`)
     }
     return val

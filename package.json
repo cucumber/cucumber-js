@@ -157,7 +157,7 @@
     "duration": "^0.2.1",
     "escape-string-regexp": "^2.0.0",
     "figures": "^3.0.0",
-    "gherkin": "5.0.0",
+    "gherkin": "^7.0.4",
     "glob": "^7.1.3",
     "indent-string": "^4.0.0",
     "is-generator": "^1.0.2",
