@@ -11,7 +11,7 @@ export default class UncaughtExceptionManager {
     if (typeof window === 'undefined') {
       process.removeListener('uncaughtException', handler)
     } else {
-      window.onerror = void 0
+      window.onerror = undefined
     }
   }
 }
