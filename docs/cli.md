@@ -145,10 +145,10 @@ For example, with [TypeScript](https://www.typescriptlang.org/):
 --require-module ts-node/register --require 'step-definitions/**/*.ts'
 ```
 
-or [CoffeeScript](https://www.npmjs.com/package/coffee-script):
+or [CoffeeScript](https://www.npmjs.com/package/coffeescript):
 
 ```
---require-module coffee-script/register --require 'features/**/*.coffee'
+--require-module coffeescript/register --require 'features/**/*.coffee'
 ```
 
 ### Extra configuration

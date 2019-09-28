@@ -30,7 +30,8 @@ function serializeResultExceptionIfNecessary(data) {
 }
 
 export default class Slave {
-  constructor({ cwd, exit, sendMessage }) {
+  constructor({ cwd, exit, id, sendMessage }) {
+    this.id = id
     this.initialized = false
     this.cwd = cwd
     this.exit = exit
@@ -111,7 +112,7 @@ export default class Slave {
           VError.fullStack(
             new VError(
               error,
-              `${name} hook errored, process exiting: ${location}`
+              `${name} hook errored on slave ${this.id}, process exiting: ${location}`
             )
           )
         ) // eslint-disable-line no-console

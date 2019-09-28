@@ -48,7 +48,9 @@ export default class Cli {
         supportCodeLibrary,
         ...formatOptions,
       }
-      if (!formatOptions.hasOwnProperty('colorsEnabled')) {
+      if (
+        !Object.prototype.hasOwnProperty.call(formatOptions, 'colorsEnabled')
+      ) {
         typeOptions.colorsEnabled = !!stream.isTTY
       }
       if (type === 'progress-bar' && !stream.isTTY) {
