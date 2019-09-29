@@ -20,5 +20,8 @@ export function normalizeEventProtocolOutput(str, cwd) {
           .replace('/features', 'features')
         return `"exception":"${updatedException}"`
       })
+      .split('\n')
+      .filter(x => x)
+      .map(x => JSON.parse(x))
   )
 }

@@ -7,11 +7,11 @@ import Status from '../../status'
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
     beforeEach(function() {
-      this.testCaseAttemptMap = {}
+      this.collatedEvents = []
       this.testRun = { result: { duration: 0 } }
       this.options = {
         colorFns: getColorFns(false),
-        testCaseAttemptMap: this.testCaseAttemptMap,
+        collatedEvents: this.collatedEvents,
         testRun: this.testRun,
       }
     })
@@ -30,13 +30,15 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one passing step', () => {
       beforeEach(function() {
-        this.testCaseAttemptMap['a.feature:1:1'] = {
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
           },
-        }
+          testCaseAttempt: {
+            result: { status: Status.PASSED },
+            stepResults: [{ status: Status.PASSED }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -49,13 +51,15 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one step and hook', () => {
       beforeEach(function() {
-        this.testCaseAttemptMap['a.feature:1:1'] = {
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+        this.collatedEvents.push({
           testCase: {
             steps: [{}, { sourceLocation: { uri: 'a.feature', line: 2 } }],
           },
-        }
+          testCaseAttempt: {
+            result: { status: Status.PASSED },
+            stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -68,20 +72,24 @@ describe('SummaryHelpers', () => {
 
     describe('with one scenario that failed and was retried then passed', () => {
       beforeEach(function() {
-        this.testCaseAttemptMap['a.feature:1:1'] = {
-          result: { status: Status.FAILED, retried: true },
-          stepResults: [{ status: Status.FAILED }],
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
           },
-        }
-        this.testCaseAttemptMap['a.feature:1:2'] = {
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
+          testCaseAttempt: {
+            result: { status: Status.FAILED, retried: true },
+            stepResults: [{ status: Status.FAILED }],
+          },
+        })
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
           },
-        }
+          testCaseAttempt: {
+            result: { status: Status.PASSED },
+            stepResults: [{ status: Status.PASSED }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -94,16 +102,18 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with multiple passing steps', () => {
       beforeEach(function() {
-        this.testCaseAttemptMap['a.feature:1:1'] = {
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+        this.collatedEvents.push({
           testCase: {
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 2 } },
               { sourceLocation: { uri: 'a.feature', line: 3 } },
             ],
           },
-        }
+          testCaseAttempt: {
+            result: { status: Status.PASSED },
+            stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -116,48 +126,60 @@ describe('SummaryHelpers', () => {
 
     describe('with one of every kind of scenario', () => {
       beforeEach(function() {
-        this.testCaseAttemptMap['a.feature:1:1'] = {
-          result: { status: Status.AMBIGUOUS },
-          stepResults: [{ status: Status.AMBIGUOUS }],
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
           },
-        }
-        this.testCaseAttemptMap['a.feature:3:1'] = {
-          result: { status: Status.FAILED },
-          stepResults: [{ status: Status.FAILED }],
+          testCaseAttempt: {
+            result: { status: Status.AMBIGUOUS },
+            stepResults: [{ status: Status.AMBIGUOUS }],
+          },
+        })
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 4 } }],
           },
-        }
-        this.testCaseAttemptMap['a.feature:5:1'] = {
-          result: { status: Status.PENDING },
-          stepResults: [{ status: Status.PENDING }],
+          testCaseAttempt: {
+            result: { status: Status.FAILED },
+            stepResults: [{ status: Status.FAILED }],
+          },
+        })
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 6 } }],
           },
-        }
-        this.testCaseAttemptMap['a.feature:7:1'] = {
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
+          testCaseAttempt: {
+            result: { status: Status.PENDING },
+            stepResults: [{ status: Status.PENDING }],
+          },
+        })
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 8 } }],
           },
-        }
-        this.testCaseAttemptMap['a.feature:9:1'] = {
-          result: { status: Status.SKIPPED },
-          stepResults: [{ status: Status.SKIPPED }],
+          testCaseAttempt: {
+            result: { status: Status.PASSED },
+            stepResults: [{ status: Status.PASSED }],
+          },
+        })
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 10 } }],
           },
-        }
-        this.testCaseAttemptMap['a.feature:11:1'] = {
-          result: { status: Status.UNDEFINED },
-          stepResults: [{ status: Status.UNDEFINED }],
+          testCaseAttempt: {
+            result: { status: Status.SKIPPED },
+            stepResults: [{ status: Status.SKIPPED }],
+          },
+        })
+        this.collatedEvents.push({
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 12 } }],
           },
-        }
+          testCaseAttempt: {
+            result: { status: Status.UNDEFINED },
+            stepResults: [{ status: Status.UNDEFINED }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 

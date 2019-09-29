@@ -274,11 +274,6 @@ describe('SummaryFormatter', () => {
 
     describe('with a failed flaky step', () => {
       beforeEach(function() {
-        const failingStepEventData = {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        }
         this.eventBroadcaster.emit('test-case-prepared', {
           ...this.testCase,
           steps: [

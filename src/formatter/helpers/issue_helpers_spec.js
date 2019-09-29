@@ -17,36 +17,39 @@ describe('IssueHelpers', () => {
         '    Then step3\n'
     )
     const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
+    this.testCase = {
+      sourceLocation: {
+        uri: 'a.feature',
+        line: 2,
+      },
+      steps: [
+        {
+          actionLocation: { line: 2, uri: 'steps.js' },
+          sourceLocation: { line: 3, uri: 'a.feature' },
+        },
+        {},
+        {
+          actionLocation: { line: 4, uri: 'steps.js' },
+          sourceLocation: { line: 5, uri: 'a.feature' },
+        },
+      ],
+    }
     this.testCaseAttempt = {
       attemptNumber: 1,
       result: {},
       stepAttachments: [[], [], []],
       stepResults: [null, null, null],
-      testCase: {
-        sourceLocation: {
-          uri: 'a.feature',
-          line: 2,
-        },
-        steps: [
-          {
-            actionLocation: { line: 2, uri: 'steps.js' },
-            sourceLocation: { line: 3, uri: 'a.feature' },
-          },
-          {},
-          {
-            actionLocation: { line: 4, uri: 'steps.js' },
-            sourceLocation: { line: 5, uri: 'a.feature' },
-          },
-        ],
-      },
     }
     this.options = {
       colorFns: getColorFns(false),
-      gherkinDocument,
+      collatedEvent: {
+        gherkinDocument,
+        pickle,
+        testCase: this.testCase,
+        testCaseAttempt: this.testCaseAttempt,
+      },
       number: 1,
-      pickle,
       snippetBuilder: createMock({ build: 'snippet' }),
-      testCaseAttempt: this.testCaseAttempt,
     }
     this.passedStepResult = { duration: 0, status: Status.PASSED }
     this.skippedStepResult = { status: Status.SKIPPED }
@@ -55,7 +58,7 @@ describe('IssueHelpers', () => {
   describe('formatIssue', () => {
     describe('returns the formatted scenario', () => {
       beforeEach(function() {
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
         }
@@ -81,7 +84,7 @@ describe('IssueHelpers', () => {
 
     describe('with an ambiguous step', () => {
       beforeEach(function() {
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
         }
@@ -112,7 +115,7 @@ describe('IssueHelpers', () => {
 
     describe('with an undefined step', () => {
       beforeEach(function() {
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.testCase.steps[1] = {
           sourceLocation: { line: 4, uri: 'a.feature' },
         }
         this.testCaseAttempt.stepResults[0] = this.passedStepResult
@@ -137,7 +140,7 @@ describe('IssueHelpers', () => {
 
     describe('with a pending step', () => {
       beforeEach(function() {
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
         }
@@ -170,10 +173,10 @@ describe('IssueHelpers', () => {
             '      |d|e|ff|\n' +
             '      |gg|h|iii|\n'
         )
-        this.options.gherkinDocument = gherkinDocument
+        this.options.collatedEvent.gherkinDocument = gherkinDocument
         const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-        this.options.pickle = pickle
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.options.collatedEvent.pickle = pickle
+        this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
         }
@@ -212,10 +215,10 @@ describe('IssueHelpers', () => {
             '       :-)\n' +
             '       """\n'
         )
-        this.options.gherkinDocument = gherkinDocument
+        this.options.collatedEvent.gherkinDocument = gherkinDocument
         const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-        this.options.pickle = pickle
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.options.collatedEvent.pickle = pickle
+        this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
         }
@@ -244,7 +247,7 @@ describe('IssueHelpers', () => {
 
     describe('step with attachment text', () => {
       beforeEach(function() {
-        this.testCaseAttempt.testCase.steps[1] = {
+        this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
         }

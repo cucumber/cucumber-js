@@ -11,19 +11,21 @@ const STATUS_REPORT_ORDER = [
   Status.PASSED,
 ]
 
-export function formatSummary({ colorFns, testCaseAttemptMap, testRun }) {
+export function formatSummary({ colorFns, collatedEvents, testRun }) {
   const testCaseResults = []
   const testStepResults = []
-  _.each(testCaseAttemptMap, ({ result, stepResults, testCase }) => {
-    if (!result.retried) {
-      testCaseResults.push(result)
-      _.each(stepResults, (stepResult, index) => {
-        if (testCase.steps[index].sourceLocation) {
-          testStepResults.push(stepResult)
-        }
-      })
+  collatedEvents.forEach(
+    ({ testCase, testCaseAttempt: { result, stepResults } }) => {
+      if (!result.retried) {
+        testCaseResults.push(result)
+        _.each(stepResults, (stepResult, index) => {
+          if (testCase.steps[index].sourceLocation) {
+            testStepResults.push(stepResult)
+          }
+        })
+      }
     }
-  })
+  )
   const scenarioSummary = getCountSummary({
     colorFns,
     objects: testCaseResults,

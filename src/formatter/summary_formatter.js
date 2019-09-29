@@ -1,7 +1,6 @@
 import _ from 'lodash'
-import { formatIssue, formatSummary } from './helpers'
+import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
 import Formatter from './'
-import Status from '../status'
 
 export default class SummaryFormatter extends Formatter {
   constructor(options) {
@@ -9,33 +8,15 @@ export default class SummaryFormatter extends Formatter {
     options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
   }
 
-  isTestCaseFailure(testCaseAttempt) {
-    return (
-      testCaseAttempt.result.status === Status.AMBIGUOUS ||
-      (testCaseAttempt.result.status === Status.FAILED &&
-        !testCaseAttempt.result.retried)
-    )
-  }
-
-  isTestCaseWarning(testCaseAttempt) {
-    return (
-      _.includes(
-        [Status.PENDING, Status.UNDEFINED],
-        testCaseAttempt.result.status
-      ) ||
-      (testCaseAttempt.result.status === Status.FAILED &&
-        testCaseAttempt.result.retried)
-    )
-  }
-
   logSummary(testRun) {
     const failures = []
     const warnings = []
-    _.each(this.eventDataCollector.testCaseAttemptMap, testCaseAttempt => {
-      if (this.isTestCaseFailure(testCaseAttempt)) {
-        failures.push(testCaseAttempt)
-      } else if (this.isTestCaseWarning(testCaseAttempt)) {
-        warnings.push(testCaseAttempt)
+    const collatedEvents = this.eventDataCollector.getCollatedEvents()
+    _.each(collatedEvents, collatedEvent => {
+      if (isFailure(collatedEvent.testCaseAttempt.result)) {
+        failures.push(collatedEvent)
+      } else if (isWarning(collatedEvent.testCaseAttempt.result)) {
+        warnings.push(collatedEvent)
       }
     })
     if (failures.length > 0) {
@@ -47,7 +28,7 @@ export default class SummaryFormatter extends Formatter {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        testCaseAttemptMap: this.eventDataCollector.testCaseAttemptMap,
+        collatedEvents,
         testRun,
       })
     )
@@ -55,21 +36,13 @@ export default class SummaryFormatter extends Formatter {
 
   logIssues({ issues, title }) {
     this.log(`${title}:\n\n`)
-    issues.forEach((testCaseAttempt, index) => {
-      const {
-        gherkinDocument,
-        pickle,
-      } = this.eventDataCollector.getTestCaseData(
-        testCaseAttempt.testCase.sourceLocation
-      )
+    issues.forEach((collatedEvent, index) => {
       this.log(
         formatIssue({
           colorFns: this.colorFns,
-          gherkinDocument,
+          collatedEvent: collatedEvent,
           number: index + 1,
-          pickle,
           snippetBuilder: this.snippetBuilder,
-          testCaseAttempt,
         })
       )
     })

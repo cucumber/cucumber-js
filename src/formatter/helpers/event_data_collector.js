@@ -1,5 +1,4 @@
-import { getStepLineToKeywordMap } from './gherkin_document_parser'
-import { getStepLineToPickledStepMap } from './pickle_parser'
+import _ from 'lodash'
 
 export default class EventDataCollector {
   constructor(eventBroadcaster) {
@@ -12,9 +11,52 @@ export default class EventDataCollector {
       .on('test-step-finished', ::this.storeTestStepResult)
       .on('test-case-finished', ::this.storeTestCaseResult)
     this.gherkinDocumentMap = {} // uri to gherkinDocument
-    this.pickleMap = {} // uri:line to {pickle, uri}
+    this.pickleMap = {} // uri:line to pickle
     this.testCaseMap = {} // uri:line to {sourceLocation, steps}
-    this.testCaseAttemptMap = {} // uri:line:attemptNumber to {result, stepAttachments, stepResults, testCase}
+    this.testCaseAttemptMap = {} // uri:line:attemptNumber to {result, stepAttachments, stepResults}
+  }
+
+  export() {
+    return {
+      gherkinDocumentMap: this.gherkinDocumentMap,
+      pickleMap: this.pickleMap,
+      testCaseMap: this.testCaseMap,
+      testCaseAttemptMap: this.testCaseAttemptMap,
+    }
+  }
+
+  getCollatedEvents() {
+    return _.keys(this.testCaseAttemptMap).map(testCaseAttemptKey => {
+      const [uri, line] = testCaseAttemptKey.split(':')
+      const testCaseKey = this.getTestCaseKey({ uri, line })
+      return this.internalGetCollatedEvent({
+        uri,
+        testCaseKey,
+        testCaseAttemptKey,
+      })
+    })
+  }
+
+  getCollatedEvent({ attemptNumber, sourceLocation }) {
+    const testCaseKey = this.getTestCaseKey(sourceLocation)
+    const testCaseAttemptKey = this.getTestCaseAttemptKey({
+      attemptNumber,
+      sourceLocation,
+    })
+    return this.internalGetCollatedEvent({
+      uri: sourceLocation.uri,
+      testCaseKey,
+      testCaseAttemptKey,
+    })
+  }
+
+  internalGetCollatedEvent({ uri, testCaseKey, testCaseAttemptKey }) {
+    return {
+      gherkinDocument: this.gherkinDocumentMap[uri],
+      pickle: this.pickleMap[testCaseKey],
+      testCase: this.testCaseMap[testCaseKey],
+      testCaseAttempt: this.testCaseAttemptMap[testCaseAttemptKey],
+    }
   }
 
   getTestCaseKey({ uri, line }) {
@@ -23,27 +65,6 @@ export default class EventDataCollector {
 
   getTestCaseAttemptKey({ attemptNumber, sourceLocation: { uri, line } }) {
     return `${uri}:${line}:${attemptNumber}`
-  }
-
-  getTestCaseData(sourceLocation) {
-    return {
-      gherkinDocument: this.gherkinDocumentMap[sourceLocation.uri],
-      pickle: this.pickleMap[this.getTestCaseKey(sourceLocation)],
-      testCase: this.testCaseMap[this.getTestCaseKey(sourceLocation)],
-    }
-  }
-
-  getTestStepData({ testCase: { sourceLocation }, index }) {
-    const { gherkinDocument, pickle, testCase } = this.getTestCaseData(
-      sourceLocation
-    )
-    const result = { testStep: testCase.steps[index] }
-    if (result.testStep.sourceLocation) {
-      const { line } = result.testStep.sourceLocation
-      result.gherkinKeyword = getStepLineToKeywordMap(gherkinDocument)[line]
-      result.pickleStep = getStepLineToPickledStepMap(pickle)[line]
-    }
-    return result
   }
 
   storeGherkinDocument({ document, uri }) {
@@ -68,7 +89,6 @@ export default class EventDataCollector {
       result: {},
       stepAttachments: testCase.steps.map(_ => []),
       stepResults: testCase.steps.map(_ => null),
-      testCase,
     }
   }
 
