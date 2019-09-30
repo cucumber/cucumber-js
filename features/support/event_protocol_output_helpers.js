@@ -4,9 +4,13 @@ export function normalizeEventProtocolOutput(str, cwd) {
   return (
     str
       .replace(/"duration":\d*/g, '"duration":0')
+      // Converting windows stack trace
+      //   features\\a.feature
+      //     to
+      //   features/a.feature
       .replace(
         /"uri":"([^"]*)"/g,
-        (match, uri) => `"uri":"${path.normalize(uri)}"`
+        (match, uri) => `"uri":"${uri.replace(/\\\\/g, '/')}"`
       )
       // Converting windows stack trace
       //    C:\\project\\path\\features\\support/code.js
