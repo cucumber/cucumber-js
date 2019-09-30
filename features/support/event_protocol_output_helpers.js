@@ -1,5 +1,3 @@
-import path from 'path'
-
 export function normalizeEventProtocolOutput(str, cwd) {
   return (
     str
