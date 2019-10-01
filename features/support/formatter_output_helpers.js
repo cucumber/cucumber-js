@@ -19,12 +19,12 @@ function normalizeException(exception, cwd) {
 }
 
 function normalizeObject(obj, cwd) {
-  if (obj.actionLocation) {
-    obj.actionLocation.uri = normalizeUri(obj.actionLocation.uri, cwd)
-  }
-  if (obj.sourceLocation) {
-    obj.sourceLocation.uri = normalizeUri(obj.sourceLocation.uri, cwd)
-  }
+  const uriParentKeys = ['actionLocation', 'sourceLocation', 'source']
+  uriParentKeys.forEach(key => {
+    if (obj[key] && obj[key].uri) {
+      obj[key].uri = normalizeUri(obj[key].uri, cwd)
+    }
+  })
   if (obj.result) {
     if (obj.result.duration) {
       obj.result.duration = 0
