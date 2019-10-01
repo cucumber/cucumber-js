@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { formatLocation } from './location_helpers'
 import Status from '../../status'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
@@ -29,36 +28,31 @@ function parseCollatedEventStep({
   testStepResult,
   testStepAttachments,
 }) {
-  const result = {
+  const out = {
     attachments: testStepAttachments,
     result: testStepResult,
   }
-
-  if (testStep.sourceLocation) {
-    result.keyword = keyword
-    result.text = pickleStep.text
-    result.sourceLocation = formatLocation(testStep.sourceLocation)
-  } else {
-    result.keyword = isBeforeHook ? 'Before' : 'After'
-  }
-
   if (testStep.actionLocation) {
-    result.actionLocation = formatLocation(testStep.actionLocation)
+    out.actionLocation = testStep.actionLocation
   }
-
+  if (testStep.sourceLocation) {
+    out.keyword = keyword
+    out.sourceLocation = testStep.sourceLocation
+    out.text = pickleStep.text
+  } else {
+    out.keyword = isBeforeHook ? 'Before' : 'After'
+  }
   if (pickleStep) {
     const iterator = buildStepArgumentIterator({
       dataTable: arg => parseDataTable(arg),
       docString: arg => parseDocString(arg),
     })
-    result.arguments = pickleStep.arguments.map(iterator)
+    out.arguments = pickleStep.arguments.map(iterator)
   }
-
   if (testStepResult.status === Status.UNDEFINED) {
-    result.snippet = snippetBuilder.build({ keywordType, pickleStep })
+    out.snippet = snippetBuilder.build({ keywordType, pickleStep })
   }
-
-  return result
+  return out
 }
 
 // Converts a collated event into a json object with all data needed for
@@ -76,12 +70,12 @@ export function parseCollatedEvent({
   collatedEvent: { gherkinDocument, pickle, testCase, testCaseAttempt },
   snippetBuilder,
 }) {
-  const result = {
+  const out = {
     testCase: {
-      sourceLocation: formatLocation(testCase.sourceLocation),
-      name: pickle.name,
       attemptNumber: testCaseAttempt.attemptNumber,
+      name: pickle.name,
       result: testCaseAttempt.result,
+      sourceLocation: testCase.sourceLocation,
     },
     testSteps: [],
   }
@@ -112,8 +106,8 @@ export function parseCollatedEvent({
       testStepResult,
       testStepAttachments: testCaseAttempt.stepAttachments[index],
     })
-    result.testSteps.push(parsedStep)
+    out.testSteps.push(parsedStep)
     previousKeywordType = keywordType
   })
-  return result
+  return out
 }

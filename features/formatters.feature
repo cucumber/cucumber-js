@@ -1,4 +1,4 @@
-Feature: Event Protocol Formatter
+Feature: Formatters
 
   Scenario: gherkin error
     Given a file named "features/a.feature" with:
@@ -9,8 +9,9 @@ Feature: Event Protocol Formatter
           Examples:
             | a | b |
       """
-    When I run cucumber-js with `--tags @a -f event-protocol`
-    Then the output matches the fixture "event_protocol_formatter/gherkin-error.ndjson"
+    When I run cucumber-js with all formatters
+    Then the "event-protocol" formatter output matches the fixture "formatters/gherkin-error.ndjson"
+    Then the "json" formatter output matches the fixture "formatters/gherkin-error.json"
     And it fails
 
   Scenario: rejected pickle
@@ -20,8 +21,9 @@ Feature: Event Protocol Formatter
         Scenario: a scenario
           Given a step
       """
-    When I run cucumber-js with `--tags @a -f event-protocol`
-    Then the output matches the fixture "event_protocol_formatter/rejected-pickle.ndjson"
+    When I run cucumber-js with all formatters and `--tags @a`
+    Then the "event-protocol" formatter output matches the fixture "formatters/rejected-pickle.ndjson"
+    Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
   Scenario: passed
     Given a file named "features/a.feature" with:
@@ -36,8 +38,9 @@ Feature: Event Protocol Formatter
 
       Given(/^a step$/, function() {})
       """
-    When I run cucumber-js with `-f event-protocol`
-    Then the output matches the fixture "event_protocol_formatter/passed.ndjson"
+    When I run cucumber-js with all formatters
+    Then the "event-protocol" formatter output matches the fixture "formatters/passed.ndjson"
+    Then the "json" formatter output matches the fixture "formatters/passed.json"
 
   Scenario: failed
     Given a file named "features/a.feature" with:
@@ -52,11 +55,12 @@ Feature: Event Protocol Formatter
 
       Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
-    When I run cucumber-js with `-f event-protocol`
-    Then the output matches the fixture "event_protocol_formatter/failed.ndjson"
+    When I run cucumber-js with all formatters
+    Then the "event-protocol" formatter output matches the fixture "formatters/failed.ndjson"
+    Then the "json" formatter output matches the fixture "formatters/failed.json"
     And it fails
 
-  Scenario: retrying a flaky test will eventually make it pass
+  Scenario: retried and passed
     Given a file named "features/a.feature" with:
       """
       Feature: a feature
@@ -78,5 +82,6 @@ Feature: Event Protocol Formatter
         callback(new Error('my error'))
       })
       """
-    When I run cucumber-js with `--retry 1 -f event-protocol`
-    Then the output matches the fixture "event_protocol_formatter/retried.ndjson"
+    When I run cucumber-js with all formatters and `--retry 1`
+    Then the "event-protocol" formatter output matches the fixture "formatters/retried.ndjson"
+    Then the "json" formatter output matches the fixture "formatters/retried.json"

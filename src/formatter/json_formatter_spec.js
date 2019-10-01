@@ -87,23 +87,17 @@ describe('JsonFormatter', () => {
             testCase: {
               attemptNumber: 1,
               name: 'my scenario',
-              result: {
-                duration: 1,
-                status: 'passed',
-              },
-              sourceLocation: 'a.feature:4',
+              result: { duration: 1, status: 'passed' },
+              sourceLocation: { uri: 'a.feature', line: 4 },
             },
             testSteps: [
               {
-                attachments: [],
+                actionLocation: { uri: 'steps.js', line: 2 },
                 arguments: [],
+                attachments: [],
                 keyword: 'Given ',
-                result: {
-                  duration: 1,
-                  status: 'passed',
-                },
-                actionLocation: 'steps.js:2',
-                sourceLocation: 'a.feature:6',
+                result: { duration: 1, status: 'passed' },
+                sourceLocation: { uri: 'a.feature', line: 6 },
                 text: 'my step',
               },
             ],
@@ -188,14 +182,14 @@ describe('JsonFormatter', () => {
       it('outputs the before hook with proper keyword and action location', function() {
         const results = JSON.parse(this.output)
         const beforeHook = results[0].testSteps[0]
-        expect(beforeHook.actionLocation).to.eql('steps.js:10')
+        expect(beforeHook.actionLocation).to.eql({ uri: 'steps.js', line: 10 })
         expect(beforeHook.keyword).to.eql('Before')
       })
 
       it('outputs the after hook with special properties', function() {
         const results = JSON.parse(this.output)
         const beforeHook = results[0].testSteps[2]
-        expect(beforeHook.actionLocation).to.eql('steps.js:12')
+        expect(beforeHook.actionLocation).to.eql({ uri: 'steps.js', line: 12 })
         expect(beforeHook.keyword).to.eql('After')
       })
     })

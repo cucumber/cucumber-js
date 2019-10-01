@@ -2,6 +2,7 @@ import indentString from 'indent-string'
 import Status from '../../status'
 import figures from 'figures'
 import { formatError } from './error_helpers'
+import { formatLocation } from './location_helpers'
 import { parseCollatedEvent } from './collated_event_parser'
 import { formatStepArguments } from './step_argument_formatter'
 
@@ -39,7 +40,7 @@ function formatCollatedEventTestStep({ colorFns, testStep }) {
   const identifier = testStep.keyword + (testStep.text || '')
   let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
   if (actionLocation) {
-    text += ` # ${colorFns.location(actionLocation)}`
+    text += ` # ${colorFns.location(formatLocation(actionLocation))}`
   }
   text += '\n'
   if (testStep.arguments) {
@@ -72,7 +73,9 @@ export function formatCollatedEvent({
     parsed.testCase.attemptNumber,
     parsed.testCase.result.retried
   )
-  text += ` # ${colorFns.location(parsed.testCase.sourceLocation)}\n`
+  text += ` # ${colorFns.location(
+    formatLocation(parsed.testCase.sourceLocation)
+  )}\n`
   parsed.testSteps.forEach(testStep => {
     text += formatCollatedEventTestStep({ colorFns, testStep })
   })
