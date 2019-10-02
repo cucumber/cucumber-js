@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { getStepLineToKeywordMap } from './gherkin_document_parser'
 import { getStepLineToPickledStepMap } from './pickle_parser'
 
@@ -40,12 +41,13 @@ export default class EventDataCollector {
     return result
   }
 
-  storeGherkinDocument({ document, uri }) {
-    this.gherkinDocumentMap[uri] = document
+  storeGherkinDocument(gherkinDocument) {
+    this.gherkinDocumentMap[gherkinDocument.uri] = gherkinDocument
   }
 
-  storePickle({ pickle, uri }) {
-    this.pickleMap[`${uri}:${pickle.locations[0].line}`] = pickle
+  storePickle(pickle) {
+    const key = `${pickle.uri}:${_.last(pickle.locations).line}`
+    this.pickleMap[key] = pickle
   }
 
   storeTestCase({ sourceLocation, steps }) {

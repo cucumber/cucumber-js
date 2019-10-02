@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import JsonFormatter from './json_formatter'
 import Status from '../status'
 import EventEmitter from 'events'
-import Gherkin from 'gherkin'
+import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 
 describe('JsonFormatter', () => {
@@ -31,25 +31,17 @@ describe('JsonFormatter', () => {
   })
 
   describe('one scenario with one step', () => {
-    beforeEach(function() {
-      const events = Gherkin.generateEvents(
-        '@tag1 @tag2\n' +
+    beforeEach(async function() {
+      await generateEvents({
+        data:
+          '@tag1 @tag2\n' +
           'Feature: my feature\n' +
           'my feature description\n' +
           'Scenario: my scenario\n' +
           'my scenario description\n' +
           'Given my step',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
+        eventBroadcaster: this.eventBroadcaster,
+        uri: 'a.feature',
       })
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 4 } }
     })
@@ -263,25 +255,17 @@ describe('JsonFormatter', () => {
   })
 
   describe('one scenario with one step with a doc string', () => {
-    beforeEach(function() {
-      const events = Gherkin.generateEvents(
-        'Feature: my feature\n' +
+    beforeEach(async function() {
+      await generateEvents({
+        data:
+          'Feature: my feature\n' +
           '  Scenario: my scenario\n' +
           '    Given my step\n' +
           '      """\n' +
           '      This is a DocString\n' +
           '      """\n',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
+        eventBroadcaster: this.eventBroadcaster,
+        uri: 'a.feature',
       })
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
       this.eventBroadcaster.emit('test-case-prepared', {
@@ -317,25 +301,17 @@ describe('JsonFormatter', () => {
   })
 
   describe('one scenario with one step with a data table string', () => {
-    beforeEach(function() {
-      const events = Gherkin.generateEvents(
-        'Feature: my feature\n' +
+    beforeEach(async function() {
+      await generateEvents({
+        data:
+          'Feature: my feature\n' +
           '  Scenario: my scenario\n' +
           '    Given my step\n' +
           '      |aaa|b|c|\n' +
           '      |d|e|ff|\n' +
           '      |gg|h|iii|\n',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
+        eventBroadcaster: this.eventBroadcaster,
+        uri: 'a.feature',
       })
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
       this.eventBroadcaster.emit('test-case-prepared', {

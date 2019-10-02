@@ -55,6 +55,7 @@ export default class SummaryFormatter extends Formatter {
       this.log(
         formatIssue({
           colorFns: this.colorFns,
+          cwd: this.cwd,
           gherkinDocument,
           number: index + 1,
           pickle,

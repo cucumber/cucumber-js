@@ -5,22 +5,23 @@ import parse from 'cucumber-tag-expressions'
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
 export default class PickleFilter {
-  constructor({ featurePaths, names, tagExpression }) {
-    this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping(
-      featurePaths || []
-    )
+  constructor({ cwd, featurePaths, names, tagExpression }) {
+    this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
+      cwd,
+      featurePaths: featurePaths || [],
+    })
     this.names = names || []
     if (tagExpression) {
       this.tagExpressionNode = parse(tagExpression || '')
     }
   }
 
-  getFeatureUriToLinesMapping(featurePaths) {
+  getFeatureUriToLinesMapping({ cwd, featurePaths }) {
     const mapping = {}
     featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (match) {
-        const uri = path.resolve(match[1])
+        const uri = path.resolve(cwd, match[1])
         const linesExpression = match[2]
         if (linesExpression) {
           if (!mapping[uri]) {
@@ -38,16 +39,16 @@ export default class PickleFilter {
     return mapping
   }
 
-  matches({ pickle, uri }) {
+  matches(pickle, cwd) {
     return (
-      this.matchesAnyLine({ pickle, uri }) &&
+      this.matchesAnyLine(pickle, cwd) &&
       this.matchesAnyName(pickle) &&
       this.matchesAllTagExpressions(pickle)
     )
   }
 
-  matchesAnyLine({ pickle, uri }) {
-    const lines = this.featureUriToLinesMapping[path.resolve(uri)]
+  matchesAnyLine(pickle) {
+    const lines = this.featureUriToLinesMapping[pickle.uri]
     if (lines) {
       return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
     }

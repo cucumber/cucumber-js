@@ -3,7 +3,6 @@
 import _ from 'lodash'
 import { Then } from '../../'
 import { expect } from 'chai'
-import { buildStepArgumentIterator } from '../../src/step_arguments'
 import DataTable from '../../src/models/data_table'
 import {
   getPickleStep,
@@ -88,13 +87,7 @@ Then('scenario {string} step {string} has the doc string:', function(
   docString
 ) {
   const pickleStep = getPickleStep(this.lastRun.events, pickleName, stepText)
-  expect(pickleStep.arguments).to.have.lengthOf(1)
-  let actual
-  const iterator = buildStepArgumentIterator({
-    docString: arg => (actual = arg.content),
-  })
-  _.each(pickleStep.arguments, iterator)
-  expect(actual).to.eql(docString)
+  expect(pickleStep.argument.docString.content).to.eql(docString)
 })
 
 Then('scenario {string} step {string} has the data table:', function(
@@ -103,13 +96,7 @@ Then('scenario {string} step {string} has the data table:', function(
   dataTable
 ) {
   const pickleStep = getPickleStep(this.lastRun.events, pickleName, stepText)
-  expect(pickleStep.arguments).to.have.lengthOf(1)
-  let actual
-  const iterator = buildStepArgumentIterator({
-    dataTable: arg => (actual = new DataTable(arg)),
-  })
-  _.each(pickleStep.arguments, iterator)
-  expect(actual).to.eql(dataTable)
+  expect(new DataTable(pickleStep.argument.dataTable)).to.eql(dataTable)
 })
 
 Then('scenario {string} step {string} has the attachments:', function(

@@ -5,10 +5,8 @@ import TestCaseHookDefinition from './test_case_hook_definition'
 describe('TestCaseHookDefinition', () => {
   describe('appliesToTestCase', () => {
     beforeEach(function() {
-      this.input = {
-        pickle: {
-          tags: [],
-        },
+      this.pickle = {
+        tags: [],
         uri: '',
       }
     })
@@ -22,14 +20,14 @@ describe('TestCaseHookDefinition', () => {
 
       it('returns true', function() {
         expect(
-          this.testCaseHookDefinition.appliesToTestCase(this.input)
+          this.testCaseHookDefinition.appliesToTestCase(this.pickle)
         ).to.eql(true)
       })
     })
 
     describe('tags match', () => {
       beforeEach(function() {
-        this.input.pickle.tags = [{ name: '@tagA' }]
+        this.pickle.tags = [{ name: '@tagA' }]
         this.testCaseHookDefinition = new TestCaseHookDefinition({
           options: { tags: '@tagA' },
         })
@@ -37,7 +35,7 @@ describe('TestCaseHookDefinition', () => {
 
       it('returns true', function() {
         expect(
-          this.testCaseHookDefinition.appliesToTestCase(this.input)
+          this.testCaseHookDefinition.appliesToTestCase(this.pickle)
         ).to.eql(true)
       })
     })
@@ -51,7 +49,7 @@ describe('TestCaseHookDefinition', () => {
 
       it('returns false', function() {
         expect(
-          this.testCaseHookDefinition.appliesToTestCase(this.input)
+          this.testCaseHookDefinition.appliesToTestCase(this.pickle)
         ).to.eql(false)
       })
     })

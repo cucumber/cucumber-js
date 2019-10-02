@@ -1741,7 +1741,7 @@ cucumber-expressions@^7.0.0:
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.2.0"
 
-cucumber-messages@5.0.1:
+cucumber-messages@5.0.1, cucumber-messages@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/cucumber-messages/-/cucumber-messages-5.0.1.tgz#dd867b4d62ce292fe32a07e5fb9a87604bdd7511"
   integrity sha512-XzgvzWFNUHw96V7Nfot4uirHEiXW3x9N7tnUPL6DXt+cSg+F8oP6zyULqK+LjYjJvopd1Kg6OEupeh6yJWaTDA==

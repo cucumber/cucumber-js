@@ -9,10 +9,10 @@ import {
 export function getPickleNamesInOrderOfExecution(events) {
   const pickleLocationToName = _.chain(events)
     .filter(['type', 'pickle-accepted'])
-    .map(e => {
-      const location = `${e.uri}:${e.pickle.locations[0].line}`
-      return [location, e.pickle.name]
-    })
+    .map(e =>
+      e.locations.map(location => [`${e.uri}:${location.line}`, e.name])
+    )
+    .flatten()
     .fromPairs()
     .value()
   return _.chain(events)
@@ -52,12 +52,8 @@ export function getTestStepResults(events, pickleName) {
     .map(e => [e.index, e.result])
     .fromPairs()
     .value()
-  const stepLineToKeywordMap = getStepLineToKeywordMap(
-    gherkinDocumentEvent.document
-  )
-  const stepLineToPickleStepMap = getStepLineToPickledStepMap(
-    pickleEvent.pickle
-  )
+  const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocumentEvent)
+  const stepLineToPickleStepMap = getStepLineToPickledStepMap(pickleEvent)
   let isBeforeHook = true
   return testCasePreparedEvent.steps.map((s, index) => {
     let text = ''
@@ -112,10 +108,11 @@ export function getTestStepAttachmentEventsForHook(
 }
 
 function getPickleAcceptedEvent(events, pickleName) {
-  return _.find(
+  const pickleEvent = _.find(
     events,
-    e => e.type === 'pickle-accepted' && e.pickle.name === pickleName
+    e => e.type === 'pickle-accepted' && e.name === pickleName
   )
+  return pickleEvent
 }
 
 function getGherkinDocumentEvent(events, pickleEvent) {
@@ -135,15 +132,13 @@ function getTestCaseEvent(events, eventName, pickleEvent) {
     e =>
       e.type === eventName &&
       e.sourceLocation.uri === pickleEvent.uri &&
-      e.sourceLocation.line === pickleEvent.pickle.locations[0].line
+      _.some(pickleEvent.locations, l => l.line === e.sourceLocation.line)
   )
 }
 
 function getPickleStepByStepText(pickleEvent, gherkinDocumentEvent, stepText) {
-  const stepLineToKeywordMap = getStepLineToKeywordMap(
-    gherkinDocumentEvent.document
-  )
-  return _.find(pickleEvent.pickle.steps, s => {
+  const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocumentEvent)
+  return _.find(pickleEvent.steps, s => {
     const keyword = getStepKeyword({ pickleStep: s, stepLineToKeywordMap })
     return `${keyword}${s.text}` === stepText
   })

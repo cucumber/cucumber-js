@@ -27,7 +27,7 @@ export default class TestCaseRunner {
     })
     this.eventBroadcaster = eventBroadcaster
     this.skip = skip
-    this.testCase = testCase
+    this.pickle = testCase
     this.supportCodeLibrary = supportCodeLibrary
     this.world = new supportCodeLibrary.World({
       attach: ::attachmentManager.create,
@@ -38,7 +38,7 @@ export default class TestCaseRunner {
     this.testStepIndex = 0
     this.maxTestStepIndex =
       this.beforeHookDefinitions.length +
-      this.testCase.pickle.steps.length +
+      this.pickle.steps.length +
       this.afterHookDefinitions.length -
       1
     this.result = {
@@ -46,8 +46,8 @@ export default class TestCaseRunner {
       status: this.skip ? Status.SKIPPED : Status.PASSED,
     }
     this.testCaseSourceLocation = {
-      uri: this.testCase.uri,
-      line: this.testCase.pickle.locations[0].line,
+      uri: this.pickle.uri,
+      line: _.last(this.pickle.locations).line,
     }
   }
 
@@ -67,14 +67,14 @@ export default class TestCaseRunner {
       const actionLocation = { uri: definition.uri, line: definition.line }
       steps.push({ actionLocation })
     })
-    this.testCase.pickle.steps.forEach(step => {
+    this.pickle.steps.forEach(step => {
       const actionLocations = this.getStepDefinitions(step).map(definition => ({
         uri: definition.uri,
         line: definition.line,
       }))
       const sourceLocation = {
-        uri: this.testCase.uri,
-        line: _.last(step.locations).line,
+        uri: this.pickle.uri,
+        line: _.first(step.locations).line,
       }
       const data = { sourceLocation }
       if (actionLocations.length === 1) {
@@ -91,13 +91,13 @@ export default class TestCaseRunner {
 
   getAfterHookDefinitions() {
     return this.supportCodeLibrary.afterTestCaseHookDefinitions.filter(
-      hookDefinition => hookDefinition.appliesToTestCase(this.testCase)
+      hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
   getBeforeHookDefinitions() {
     return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
-      hookDefinition => hookDefinition.appliesToTestCase(this.testCase)
+      hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
@@ -165,7 +165,7 @@ export default class TestCaseRunner {
       this.beforeHookDefinitions,
       {
         sourceLocation: this.testCaseSourceLocation,
-        pickle: this.testCase.pickle,
+        pickle: this.pickle,
       },
       true
     )
@@ -174,7 +174,7 @@ export default class TestCaseRunner {
       this.afterHookDefinitions,
       {
         sourceLocation: this.testCaseSourceLocation,
-        pickle: this.testCase.pickle,
+        pickle: this.pickle,
         result: this.result,
       },
       false
@@ -214,7 +214,7 @@ export default class TestCaseRunner {
   }
 
   async runSteps() {
-    await Promise.each(this.testCase.pickle.steps, async step => {
+    await Promise.each(this.pickle.steps, async step => {
       await this.aroundTestStep(() => this.runStep(step))
     })
   }

@@ -43,6 +43,9 @@ export default class StepDefinitionSnippetBuilder {
       dataTable: () => 'dataTable',
       docString: () => 'docString',
     })
-    return step.arguments.map(iterator)
+    if (step.argument) {
+      return [iterator(step.argument)]
+    }
+    return []
   }
 }

@@ -18,6 +18,8 @@ class World {
         'json:out.json',
         '--format',
         'event-protocol:events.ndjson',
+        '--format',
+        'usage:usage.txt',
       ])
       .map(arg => {
         if (_.includes(arg, '/')) {

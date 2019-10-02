@@ -16,7 +16,7 @@ export default class ProgressBarFormatter extends Formatter {
     this.issueCount = 0
   }
 
-  incrementStepCount({ pickle }) {
+  incrementStepCount(pickle) {
     this.numberOfSteps += pickle.steps.length
   }
 
@@ -48,6 +48,7 @@ export default class ProgressBarFormatter extends Formatter {
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
+          cwd: this.cwd,
           gherkinDocument,
           number: this.issueCount,
           pickle,

@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import UsageJsonFormatter from './usage_json_formatter'
 import EventEmitter from 'events'
-import Gherkin from 'gherkin'
+import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import {
   CucumberExpression,
@@ -12,7 +12,7 @@ import {
 
 describe('UsageJsonFormatter', () => {
   describe('handleFeaturesResult', () => {
-    beforeEach(function() {
+    beforeEach(async function() {
       const eventBroadcaster = new EventEmitter()
       const parameterTypeRegistry = new ParameterTypeRegistry()
       this.output = ''
@@ -42,24 +42,16 @@ describe('UsageJsonFormatter', () => {
         ],
       }
       this.usageJsonFormatter = new UsageJsonFormatter({
+        cwd: '',
         eventBroadcaster,
         eventDataCollector: new EventDataCollector(eventBroadcaster),
         log: logFn,
         supportCodeLibrary,
       })
-      const events = Gherkin.generateEvents(
-        'Feature: a\nScenario: b\nGiven abc\nWhen def',
-        'a.feature'
-      )
-      events.forEach(event => {
-        eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
+      await generateEvents({
+        data: 'Feature: a\nScenario: b\nGiven abc\nWhen def',
+        eventBroadcaster,
+        uri: 'a.feature',
       })
       const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
       eventBroadcaster.emit('test-case-prepared', {

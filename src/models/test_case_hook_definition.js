@@ -9,8 +9,8 @@ export default class TestCaseHookDefinition extends Definition {
     })
   }
 
-  appliesToTestCase({ pickle, uri }) {
-    return this.pickleFilter.matches({ pickle, uri })
+  appliesToTestCase(pickle) {
+    return this.pickleFilter.matches(pickle)
   }
 
   getInvalidCodeLengthMessage() {

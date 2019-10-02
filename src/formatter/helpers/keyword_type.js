@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Gherkin from 'gherkin'
+import { dialects } from 'gherkin'
 
 const types = {
   EVENT: 'event',
@@ -10,7 +10,7 @@ const types = {
 export default types
 
 export function getStepKeywordType({ keyword, language, previousKeywordType }) {
-  const dialect = Gherkin.DIALECTS[language]
+  const dialect = dialects()[language]
   const type = _.find(['given', 'when', 'then', 'and', 'but'], key =>
     _.includes(dialect[key], keyword)
   )

@@ -6,7 +6,7 @@ import Status from '../status'
 import SummaryFormatter from './summary_formatter'
 import figures from 'figures'
 import { EventEmitter } from 'events'
-import Gherkin from 'gherkin'
+import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 
 describe('SummaryFormatter', () => {
@@ -26,20 +26,11 @@ describe('SummaryFormatter', () => {
   })
 
   describe('issues', () => {
-    beforeEach(function() {
-      const events = Gherkin.generateEvents(
-        'Feature: a\nScenario: b\nGiven a step',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
+    beforeEach(async function() {
+      await generateEvents({
+        data: 'Feature: a\nScenario: b\nGiven a step',
+        eventBroadcaster: this.eventBroadcaster,
+        uri: 'a.feature',
       })
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
     })

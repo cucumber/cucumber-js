@@ -11,6 +11,7 @@ export default class UsageFormatter extends Formatter {
 
   logUsage() {
     const usage = getUsage({
+      cwd: this.cwd,
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       eventDataCollector: this.eventDataCollector,
     })

@@ -68,6 +68,7 @@ function formatDocString(arg) {
 
 function formatStep({
   colorFns,
+  cwd,
   isBeforeHook,
   keyword,
   keywordType,
@@ -89,20 +90,16 @@ function formatStep({
 
   const { actionLocation } = testStep
   if (actionLocation) {
-    text += ` # ${colorFns.location(formatLocation(actionLocation))}`
+    text += ` # ${colorFns.location(formatLocation(actionLocation, cwd))}`
   }
   text += '\n'
 
-  if (pickleStep) {
-    let str
+  if (pickleStep && pickleStep.argument) {
     const iterator = buildStepArgumentIterator({
-      dataTable: arg => (str = formatDataTable(arg)),
-      docString: arg => (str = formatDocString(arg)),
+      dataTable: arg => formatDataTable(arg),
+      docString: arg => formatDocString(arg),
     })
-    _.each(pickleStep.arguments, iterator)
-    if (str) {
-      text += indentString(`${colorFn(str)}\n`, 4)
-    }
+    text += indentString(`${colorFn(iterator(pickleStep.argument))}\n`, 4)
   }
 
   if (testStep.attachments) {
@@ -131,6 +128,7 @@ export function isIssue(status) {
 
 export function formatIssue({
   colorFns,
+  cwd,
   gherkinDocument,
   number,
   pickle,
@@ -139,7 +137,7 @@ export function formatIssue({
 }) {
   const prefix = `${number}) `
   let text = prefix
-  const scenarioLocation = formatLocation(testCase.sourceLocation)
+  const scenarioLocation = formatLocation(testCase.sourceLocation, cwd)
   text += `Scenario: ${pickle.name} # ${colorFns.location(scenarioLocation)}\n`
   const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
   const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)

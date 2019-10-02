@@ -13,11 +13,14 @@ export default class StepDefinition extends Definition {
     const stepNameParameters = this.expression
       .match(step.text)
       .map(arg => arg.getValue(world))
+    const stepArgumentParameters = []
     const iterator = buildStepArgumentIterator({
       dataTable: arg => new DataTable(arg),
       docString: arg => arg.content,
     })
-    const stepArgumentParameters = step.arguments.map(iterator)
+    if (step.argument) {
+      stepArgumentParameters.push(iterator(step.argument))
+    }
     return stepNameParameters.concat(stepArgumentParameters)
   }
 

@@ -1,24 +1,21 @@
-import path from 'path'
+// Converting windows stack trace to posix
+// Removing cwd + '/'
+function normalizePaths(str, cwd) {
+  return str
+    .replace(/\\\\/g, '\\')
+    .replace(/\\/g, '/')
+    .replace(cwd + '/', '')
+}
 
 export function normalizeEventProtocolOutput(str, cwd) {
-  return (
-    str
-      .replace(/"duration":\d*/g, '"duration":0')
-      .replace(
-        /"uri":"([^"]*)"/g,
-        (match, uri) => `"uri":"${path.normalize(uri)}"`
-      )
-      // Converting windows stack trace
-      //    C:\\project\\path\\features\\support/code.js
-      //      to
-      //    features/support/code.js
-      .replace(/"exception":"([^"]*)"/g, (match, exception) => {
-        const updatedException = exception
-          .replace(/\\\\/g, '\\')
-          .replace(cwd, '')
-          .replace(/\\/g, '/')
-          .replace('/features', 'features')
-        return `"exception":"${updatedException}"`
-      })
-  )
+  return str
+    .replace(/"duration":\d*/g, '"duration":0')
+    .replace(/"id":"[^"]*"/g, `"id":"abc123"`)
+    .replace(
+      /"uri":"([^"]*)"/g,
+      (match, uri) => `"uri":"${normalizePaths(uri, cwd)}"`
+    )
+    .replace(/"exception":"([^"]*)"/g, (match, exception) => {
+      return `"exception":"${normalizePaths(exception, cwd)}"`
+    })
 }

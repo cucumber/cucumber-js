@@ -27,5 +27,5 @@ export function getStepLineToPickledStepMap(pickle) {
 }
 
 export function getPickleStepLine(pickleStep) {
-  return _.last(pickleStep.locations).line
+  return _.first(pickleStep.locations).line
 }

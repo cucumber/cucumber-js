@@ -39,12 +39,15 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  formatStepArguments(stepArguments) {
+  formatStepArgument(stepArgument) {
+    if (!stepArgument) {
+      return []
+    }
     const iterator = buildStepArgumentIterator({
       dataTable: this.formatDataTable.bind(this),
       docString: this.formatDocString.bind(this),
     })
-    return _.map(stepArguments, iterator)
+    return [iterator(stepArgument)]
   }
 
   onTestRunFinished() {
@@ -130,7 +133,7 @@ export default class JsonFormatter extends Formatter {
     if (testStep.sourceLocation) {
       const { line } = testStep.sourceLocation
       const pickleStep = stepLineToPickledStepMap[line]
-      data.arguments = this.formatStepArguments(pickleStep.arguments)
+      data.arguments = this.formatStepArgument(pickleStep.argument)
       data.keyword = getStepKeyword({ pickleStep, stepLineToKeywordMap })
       data.line = line
       data.name = pickleStep.text

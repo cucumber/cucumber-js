@@ -8,6 +8,7 @@ import fsExtra from 'fs-extra'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
+import { messages } from 'cucumber-messages'
 
 describe('helpers', () => {
   describe('getTestCasesFromFilesystem', () => {
@@ -29,14 +30,18 @@ describe('helpers', () => {
       beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
-        const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
-        await fsExtra.outputFile(featurePath, '')
+        this.absoluteFeaturePath = path.join(
+          this.tmpDir,
+          this.relativeFeaturePath
+        )
+        await fsExtra.outputFile(this.absoluteFeaturePath, '')
         this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
-          featurePaths: [featurePath],
+          featureDefaultLanguage: 'en',
+          featurePaths: [this.absoluteFeaturePath],
           order: 'defined',
-          pickleFilter: new PickleFilter({}),
+          pickleFilter: new PickleFilter({ cwd: this.tmpDir }),
         })
       })
 
@@ -46,18 +51,22 @@ describe('helpers', () => {
 
       it('emits a source event', function() {
         expect(this.onSource).to.have.callCount(1)
-        expect(this.onSource).to.have.been.calledWith({
-          data: '',
-          media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
-          uri: this.relativeFeaturePath,
-        })
+        expect(this.onSource).to.have.been.calledWith(
+          messages.Source.fromObject({
+            media: {
+              contentType: 'text/x.cucumber.gherkin+plain',
+              encoding: messages.Media.Encoding.UTF8,
+            },
+            uri: this.absoluteFeaturePath,
+          })
+        )
       })
 
       it('emits a gherkin-document event', function() {
         expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
-        expect(arg).to.have.keys(['document', 'uri'])
-        expect(arg.uri).to.eql(this.relativeFeaturePath)
+        expect(arg).to.have.keys(['comments', 'uri'])
+        expect(arg.uri).to.eql(this.absoluteFeaturePath)
       })
 
       it('does not emit pickle events', function() {
@@ -71,17 +80,22 @@ describe('helpers', () => {
       beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
-        const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
+        this.absoluteFeaturePath = path.join(
+          this.tmpDir,
+          this.relativeFeaturePath
+        )
         await fsExtra.outputFile(
-          featurePath,
+          this.absoluteFeaturePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
         this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
-          featurePaths: [featurePath],
+          featureDefaultLanguage: 'en',
+          featurePaths: [this.absoluteFeaturePath],
           order: 'defined',
           pickleFilter: new PickleFilter({
+            cwd: this.tmpDir,
             featurePaths: [`${this.relativeFeaturePath}:5`],
           }),
         })
@@ -93,18 +107,23 @@ describe('helpers', () => {
 
       it('emits a source event', function() {
         expect(this.onSource).to.have.callCount(1)
-        expect(this.onSource).to.have.been.calledWith({
-          data: 'Feature: a\nScenario: b\nGiven a step',
-          media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
-          uri: this.relativeFeaturePath,
-        })
+        expect(this.onSource).to.have.been.calledWith(
+          messages.Source.fromObject({
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            media: {
+              encoding: messages.Media.Encoding.UTF8,
+              contentType: 'text/x.cucumber.gherkin+plain',
+            },
+            uri: this.absoluteFeaturePath,
+          })
+        )
       })
 
       it('emits a gherkin-document event', function() {
         expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
-        expect(arg).to.have.keys(['document', 'uri'])
-        expect(arg.uri).to.eql(this.relativeFeaturePath)
+        expect(arg).to.have.keys(['comments', 'feature', 'uri'])
+        expect(arg.uri).to.eql(this.absoluteFeaturePath)
       })
     })
 
@@ -112,15 +131,19 @@ describe('helpers', () => {
       beforeEach(async function() {
         this.tmpDir = await promisify(tmp.dir)()
         this.relativeFeaturePath = path.join('features', 'a.feature')
-        const featurePath = path.join(this.tmpDir, 'features', 'a.feature')
+        this.absoluteFeaturePath = path.join(
+          this.tmpDir,
+          this.relativeFeaturePath
+        )
         await fsExtra.outputFile(
-          featurePath,
+          this.absoluteFeaturePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
         this.result = await getTestCasesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
-          featurePaths: [featurePath],
+          featureDefaultLanguage: 'en',
+          featurePaths: [this.absoluteFeaturePath],
           order: 'defined',
           pickleFilter: new PickleFilter({}),
         })
@@ -128,24 +151,37 @@ describe('helpers', () => {
 
       it('returns the test case', function() {
         expect(this.result).to.have.lengthOf(1)
-        expect(this.result[0]).to.have.keys(['pickle', 'uri'])
-        expect(this.result[0].uri).to.eql(this.relativeFeaturePath)
+        expect(this.result[0]).to.have.keys([
+          'id',
+          'language',
+          'locations',
+          'name',
+          'steps',
+          'tags',
+          'uri',
+        ])
+        expect(this.result[0].uri).to.eql(this.absoluteFeaturePath)
       })
 
       it('emits a source event', function() {
         expect(this.onSource).to.have.callCount(1)
-        expect(this.onSource).to.have.been.calledWith({
-          data: 'Feature: a\nScenario: b\nGiven a step',
-          media: { encoding: 'utf-8', type: 'text/x.cucumber.gherkin+plain' },
-          uri: this.relativeFeaturePath,
-        })
+        expect(this.onSource).to.have.been.calledWith(
+          messages.Source.fromObject({
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            media: {
+              encoding: messages.Media.Encoding.UTF8,
+              contentType: 'text/x.cucumber.gherkin+plain',
+            },
+            uri: this.absoluteFeaturePath,
+          })
+        )
       })
 
       it('emits a gherkin-document event', function() {
         expect(this.onGherkinDocument).to.have.callCount(1)
         const arg = this.onGherkinDocument.firstCall.args[0]
-        expect(arg).to.have.keys(['document', 'uri'])
-        expect(arg.uri).to.eql(this.relativeFeaturePath)
+        expect(arg).to.have.keys(['comments', 'feature', 'uri'])
+        expect(arg.uri).to.eql(this.absoluteFeaturePath)
       })
 
       it('emits a pickle and pickle-accepted event', function() {
@@ -153,8 +189,16 @@ describe('helpers', () => {
         expect(this.onPickleAccepted).to.have.callCount(1)
         expect(this.onPickleRejected).to.have.callCount(0)
         const onPickleArg = this.onPickle.firstCall.args[0]
-        expect(onPickleArg).to.have.keys(['pickle', 'uri'])
-        expect(onPickleArg.uri).to.eql(this.relativeFeaturePath)
+        expect(onPickleArg).to.have.keys([
+          'id',
+          'language',
+          'locations',
+          'name',
+          'steps',
+          'tags',
+          'uri',
+        ])
+        expect(onPickleArg.uri).to.eql(this.absoluteFeaturePath)
         const onPickleAcceptedArg = this.onPickleAccepted.firstCall.args[0]
         expect(onPickleAcceptedArg).to.eql(onPickleArg)
       })

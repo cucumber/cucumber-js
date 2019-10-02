@@ -24,7 +24,7 @@ describe('Configuration', () => {
 
     it('returns the default configuration', function() {
       expect(this.result).to.eql({
-        featureDefaultLanguage: '',
+        featureDefaultLanguage: 'en',
         featurePaths: [],
         formatOptions: { cwd: this.tmpDir },
         formats: [{ outputTo: '', type: 'progress' }],
@@ -33,6 +33,7 @@ describe('Configuration', () => {
         order: 'defined',
         parallel: 0,
         pickleFilterOptions: {
+          cwd: this.tmpDir,
           featurePaths: ['features/**/*.feature'],
           names: [],
           tagExpression: '',

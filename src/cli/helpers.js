@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import ArgvParser from './argv_parser'
-import fs from 'mz/fs'
 import { fromPaths as gherkinFromPaths } from 'gherkin'
-import path from 'path'
 import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
 import shuffle from 'knuth-shuffle-seeded'
+import path from 'path'
 
 export async function getExpandedArgv({ argv, cwd }) {
   const { options } = ArgvParser.parse(argv)
@@ -26,22 +25,40 @@ export function getTestCasesFromFilesystem({
   pickleFilter,
 }) {
   return new Promise((resolve, reject) => {
-    let result = []
+    const result = []
     const messageStream = gherkinFromPaths(featurePaths, {
       defaultDialect: featureDefaultLanguage,
     })
     messageStream.on('data', envelope => {
       if (envelope.source) {
-        eventBroadcaster.emit('source', envelope.source.Source)
+        eventBroadcaster.emit('source', envelope.source)
       }
       if (envelope.gherkinDocument) {
-        eventBroadcaster.emit(
-          'gherkin-document',
-          envelope.gherkinDocument.GherkinDocument
+        eventBroadcaster.emit('gherkin-document', envelope.gherkinDocument)
+      }
+      if (envelope.pickle) {
+        const pickle = envelope.pickle
+        eventBroadcaster.emit('pickle', pickle)
+        if (pickleFilter.matches(pickle)) {
+          eventBroadcaster.emit('pickle-accepted', pickle)
+          result.push(pickle)
+        } else {
+          eventBroadcaster.emit('pickle-rejected', pickle)
+        }
+      }
+      if (envelope.attachment) {
+        eventBroadcaster.emit('attachment', envelope.attachment)
+        reject(
+          new Error(
+            `Parse error in '${path.relative(
+              cwd,
+              envelope.attachment.source.uri
+            )}': ${envelope.attachment.data}`
+          )
         )
       }
     })
-    messageStream.on('close', () => {
+    messageStream.on('end', () => {
       orderTestCases(result, order)
       resolve(result)
     })

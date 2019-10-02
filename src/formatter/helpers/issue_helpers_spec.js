@@ -5,18 +5,19 @@ import getColorFns from '../get_color_fns'
 import Status from '../../status'
 import { formatIssue } from './issue_helpers'
 import figures from 'figures'
-import Gherkin from 'gherkin'
+import { parse } from '../../../test/gherkin_helpers'
 
 describe('IssueHelpers', () => {
-  beforeEach(function() {
-    const gherkinDocument = new Gherkin.Parser().parse(
-      'Feature: my feature\n' +
+  beforeEach(async function() {
+    const { gherkinDocument, pickle } = await parse({
+      data:
+        'Feature: my feature\n' +
         '  Scenario: my scenario\n' +
         '    Given step1\n' +
         '    When step2\n' +
-        '    Then step3\n'
-    )
-    const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
+        '    Then step3\n',
+      uri: 'a.feature',
+    })
     this.testCase = {
       sourceLocation: {
         uri: 'a.feature',
@@ -153,19 +154,20 @@ describe('IssueHelpers', () => {
     })
 
     describe('step with data table', () => {
-      beforeEach(function() {
-        const gherkinDocument = new Gherkin.Parser().parse(
-          'Feature: my feature\n' +
+      beforeEach(async function() {
+        const { gherkinDocument, pickle } = await parse({
+          data:
+            'Feature: my feature\n' +
             '  Scenario: my scenario\n' +
             '    Given step1\n' +
             '    When step2\n' +
             '    Then step3\n' +
             '      |aaa|b|c|\n' +
             '      |d|e|ff|\n' +
-            '      |gg|h|iii|\n'
-        )
+            '      |gg|h|iii|\n',
+          uri: 'a.feature',
+        })
         this.options.gherkinDocument = gherkinDocument
-        const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
         this.options.pickle = pickle
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {
@@ -192,9 +194,10 @@ describe('IssueHelpers', () => {
     })
 
     describe('step with doc string', () => {
-      beforeEach(function() {
-        const gherkinDocument = new Gherkin.Parser().parse(
-          'Feature: my feature\n' +
+      beforeEach(async function() {
+        const { gherkinDocument, pickle } = await parse({
+          data:
+            'Feature: my feature\n' +
             '  Scenario: my scenario\n' +
             '    Given step1\n' +
             '    When step2\n' +
@@ -204,10 +207,10 @@ describe('IssueHelpers', () => {
             '       doc string\n' +
             '\n' +
             '       :-)\n' +
-            '       """\n'
-        )
+            '       """\n',
+          uri: 'a.feature',
+        })
         this.options.gherkinDocument = gherkinDocument
-        const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
         this.options.pickle = pickle
         this.testCase.steps[0].result = this.passedStepResult
         this.testCase.steps[1] = {

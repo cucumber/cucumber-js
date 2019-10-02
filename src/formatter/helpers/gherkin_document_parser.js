@@ -2,6 +2,7 @@ import _ from 'lodash'
 
 export function getStepLineToKeywordMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
+    .map(child => child.background || child.scenario)
     .map('steps')
     .flatten()
     .map(step => [step.location.line, step.keyword])
@@ -11,7 +12,9 @@ export function getStepLineToKeywordMap(gherkinDocument) {
 
 export function getScenarioLineToDescriptionMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
-    .map(element => [element.location.line, element.description])
+    .filter('scenario')
+    .map('scenario')
+    .map(scenario => [scenario.location.line, scenario.description])
     .fromPairs()
     .value()
 }

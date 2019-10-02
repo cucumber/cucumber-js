@@ -20,11 +20,9 @@ describe('TestCaseRunner', () => {
     this.eventBroadcaster.on('test-step-started', this.onTestStepStarted)
     this.eventBroadcaster.on('test-step-finished', this.onTestStepFinished)
     this.eventBroadcaster.on('test-case-finished', this.onTestCaseFinished)
-    this.testCase = {
-      pickle: {
-        steps: [],
-        locations: [{ line: 1 }],
-      },
+    this.pickle = {
+      steps: [],
+      locations: [{ line: 1 }],
       uri: 'path/to/feature',
     }
     this.supportCodeLibrary = {
@@ -48,7 +46,7 @@ describe('TestCaseRunner', () => {
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -92,11 +90,11 @@ describe('TestCaseRunner', () => {
         }
         StepRunner.run.resolves(this.stepResult)
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -164,11 +162,11 @@ describe('TestCaseRunner', () => {
         }
         StepRunner.run.resolves(this.stepResult)
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -247,11 +245,11 @@ describe('TestCaseRunner', () => {
           stepDefinition1,
           stepDefinition2,
         ]
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -318,11 +316,11 @@ describe('TestCaseRunner', () => {
     describe('with an undefined step', () => {
       beforeEach(async function() {
         this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -378,11 +376,11 @@ describe('TestCaseRunner', () => {
           matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: true,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -454,11 +452,11 @@ describe('TestCaseRunner', () => {
           matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: true,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()
@@ -540,11 +538,11 @@ describe('TestCaseRunner', () => {
           matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [stepDefinition]
-        this.testCase.pickle.steps = [this.step]
+        this.pickle.steps = [this.step]
         const scenarioRunner = new TestCaseRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: true,
-          testCase: this.testCase,
+          testCase: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
         await scenarioRunner.run()

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Formatter from './'
 import Status from '../status'
+import path from 'path'
 
 const DEFAULT_SEPARATOR = '\n'
 
@@ -16,10 +17,11 @@ export default class RerunFormatter extends Formatter {
 
   storeFailedTestCases({ sourceLocation: { line, uri }, result: { status } }) {
     if (status !== Status.PASSED) {
-      if (!this.mapping[uri]) {
-        this.mapping[uri] = []
+      const relativeUri = path.relative(this.cwd, uri)
+      if (!this.mapping[relativeUri]) {
+        this.mapping[relativeUri] = []
       }
-      this.mapping[uri].push(line)
+      this.mapping[relativeUri].push(line)
     }
   }
 

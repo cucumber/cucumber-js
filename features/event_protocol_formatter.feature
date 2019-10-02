@@ -6,8 +6,8 @@ Feature: Event Protocol Formatter
       Feature: a feature
         Scenario: a scenario
           Given a step
-          Examples:
-            | a | b |
+
+      Feature: error
       """
     When I run cucumber-js with `--tags @a -f event-protocol`
     Then the output matches the fixture "event_protocol_formatter/gherkin-error.ndjson"

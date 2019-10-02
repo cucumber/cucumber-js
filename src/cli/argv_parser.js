@@ -73,7 +73,7 @@ export default class ArgvParser {
       .option(
         '--language <ISO 639-1>',
         'provide the default language for feature files',
-        ''
+        'en'
       )
       .option(
         '--name <REGEXP>',

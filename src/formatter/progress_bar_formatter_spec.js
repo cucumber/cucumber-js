@@ -6,7 +6,7 @@ import getColorFns from './get_color_fns'
 import ProgressBarFormatter from './progress_bar_formatter'
 import Status from '../status'
 import { EventEmitter } from 'events'
-import Gherkin from 'gherkin'
+import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 
 describe('ProgressBarFormatter', () => {
@@ -31,11 +31,13 @@ describe('ProgressBarFormatter', () => {
   describe('pickle-accepted, test-case-started', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit('pickle-accepted', {
-        pickle: { locations: [{ line: 2 }], steps: [1, 2, 3] },
+        locations: [{ line: 2 }],
+        steps: [1, 2, 3],
         uri: 'path/to/feature',
       })
       this.eventBroadcaster.emit('pickle-accepted', {
-        pickle: { locations: [{ line: 7 }], steps: [4, 5] },
+        locations: [{ line: 7 }],
+        steps: [4, 5],
         uri: 'path/to/feature',
       })
       this.eventBroadcaster.emit('test-case-started')
@@ -98,24 +100,15 @@ describe('ProgressBarFormatter', () => {
   })
 
   describe('test-case-finished', () => {
-    beforeEach(function() {
+    beforeEach(async function() {
       this.progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
       }
-      const events = Gherkin.generateEvents(
-        'Feature: a\nScenario: b\nGiven a step',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
+      await generateEvents({
+        data: 'Feature: a\nScenario: b\nGiven a step',
+        eventBroadcaster: this.eventBroadcaster,
+        uri: 'a.feature',
       })
       this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
     })

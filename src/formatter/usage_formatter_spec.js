@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import UsageFormatter from './usage_formatter'
 import EventEmitter from 'events'
-import Gherkin from 'gherkin'
+import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import {
   CucumberExpression,
@@ -23,6 +23,7 @@ describe('UsageFormatter', () => {
         stepDefinitions: [],
       }
       this.usageFormatter = new UsageFormatter({
+        cwd: '',
         eventBroadcaster: this.eventBroadcaster,
         eventDataCollector: new EventDataCollector(this.eventBroadcaster),
         log: logFn,
@@ -71,20 +72,11 @@ describe('UsageFormatter', () => {
       })
 
       describe('used', () => {
-        beforeEach(function() {
-          const events = Gherkin.generateEvents(
-            'Feature: a\nScenario: b\nWhen abc\nThen ab',
-            'a.feature'
-          )
-          events.forEach(event => {
-            this.eventBroadcaster.emit(event.type, event)
-            if (event.type === 'pickle') {
-              this.eventBroadcaster.emit('pickle-accepted', {
-                type: 'pickle-accepted',
-                pickle: event.pickle,
-                uri: event.uri,
-              })
-            }
+        beforeEach(async function() {
+          await generateEvents({
+            data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
+            eventBroadcaster: this.eventBroadcaster,
+            uri: 'a.feature',
           })
           this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
           this.eventBroadcaster.emit('test-case-prepared', {
@@ -161,7 +153,7 @@ describe('UsageFormatter', () => {
     })
 
     describe('with multiple definition', () => {
-      beforeEach(function() {
+      beforeEach(async function() {
         this.supportCodeLibrary.stepDefinitions = [
           {
             code: function(a) {},
@@ -191,19 +183,10 @@ describe('UsageFormatter', () => {
             uri: 'steps.js',
           },
         ]
-        const events = Gherkin.generateEvents(
-          'Feature: a\nScenario: b\nGiven abc\nWhen def',
-          'a.feature'
-        )
-        events.forEach(event => {
-          this.eventBroadcaster.emit(event.type, event)
-          if (event.type === 'pickle') {
-            this.eventBroadcaster.emit('pickle-accepted', {
-              type: 'pickle-accepted',
-              pickle: event.pickle,
-              uri: event.uri,
-            })
-          }
+        await generateEvents({
+          data: 'Feature: a\nScenario: b\nGiven abc\nWhen def',
+          eventBroadcaster: this.eventBroadcaster,
+          uri: 'a.feature',
         })
         const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
         this.eventBroadcaster.emit('test-case-prepared', {

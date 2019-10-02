@@ -50,6 +50,7 @@ export default class ConfigurationBuilder {
       parallel: this.options.parallel,
       profiles: this.options.profile,
       pickleFilterOptions: {
+        cwd: this.cwd,
         featurePaths: unexpandedFeaturePaths,
         names: this.options.name,
         tagExpression: this.options.tags,

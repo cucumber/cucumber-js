@@ -16,6 +16,7 @@ function prepareFormatter(options = {}) {
   this.feature2Path = path.join('features', 'b.feature')
   this.rerunFormatter = new RerunFormatter({
     ...options,
+    cwd: '',
     eventBroadcaster: this.eventBroadcaster,
     log: logFn,
   })

@@ -190,6 +190,7 @@
     "coffeescript": "^2.4.1",
     "connect": "^3.4.0",
     "coveralls": "^3.0.0",
+    "cucumber-messages": "^5.0.1",
     "dependency-lint": "^6.0.0",
     "eslint": "^6.3.0",
     "eslint-config-prettier": "^6.1.0",

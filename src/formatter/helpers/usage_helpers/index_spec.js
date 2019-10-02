@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getUsage } from './'
 import EventEmitter from 'events'
-import Gherkin from 'gherkin'
+import { generateEvents } from '../../../../test/gherkin_helpers'
 import EventDataCollector from '../event_data_collector'
 
 describe('Usage Helpers', () => {
@@ -30,20 +30,11 @@ describe('Usage Helpers', () => {
       })
 
       describe('with a step', () => {
-        beforeEach(function() {
-          const events = Gherkin.generateEvents(
-            'Feature: a\nScenario: b\nWhen abc\nThen ab',
-            'a.feature'
-          )
-          events.forEach(event => {
-            this.eventBroadcaster.emit(event.type, event)
-            if (event.type === 'pickle') {
-              this.eventBroadcaster.emit('pickle-accepted', {
-                type: 'pickle-accepted',
-                pickle: event.pickle,
-                uri: event.uri,
-              })
-            }
+        beforeEach(async function() {
+          await generateEvents({
+            data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
+            eventBroadcaster: this.eventBroadcaster,
+            uri: 'a.feature',
           })
           const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
           this.eventBroadcaster.emit('test-case-prepared', {
