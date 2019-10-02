@@ -29,7 +29,7 @@ ignoreErrors:
     - babel-eslint # .eslintrc.yml - plugins
     - babel-plugin-istanbul # .babelrc
     - babelify # package.json - scripts - build-browser-example / build-release
-    - coffee-script # features/compiler.feature
+    - coffeescript # features/compiler.feature
     - coveralls # .travis.yml
     - eslint-config-prettier # .eslintrc.yml - extends
     - eslint-config-standard # .eslintrc.yml - extends

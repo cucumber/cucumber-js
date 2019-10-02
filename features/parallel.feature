@@ -29,6 +29,7 @@ Feature: Running scenarios in parallel
       <duration-stat> (<duration-stat> across 2 slaves)
       """
 
+  @spawn
   Scenario: an error in BeforeAll fails the test
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
@@ -40,7 +41,7 @@ Feature: Running scenarios in parallel
       })
 
       BeforeAll(function() {
-        throw new Error('fail')
+        throw new Error('my error')
       })
       """
     And a file named "features/a.feature" with:
@@ -50,4 +51,16 @@ Feature: Running scenarios in parallel
           Given a slow step
       """
     When I run cucumber-js with `--parallel 2`
+    And the error output contains the text:
+      """
+      BeforeAll hook errored on slave 0, process exiting:
+      """
+    And the error output contains the text:
+      """
+      BeforeAll hook errored on slave 1, process exiting:
+      """
+    And the error output contains the text:
+      """
+      my error
+      """
     Then it fails

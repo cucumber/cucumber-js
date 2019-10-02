@@ -1,9 +1,8 @@
 import _ from 'lodash'
 import path from 'path'
-import { TagExpressionParser } from 'cucumber-tag-expressions'
+import parse from 'cucumber-tag-expressions'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
-const tagExpressionParser = new TagExpressionParser()
 
 export default class PickleFilter {
   constructor({ featurePaths, names, tagExpression }) {
@@ -12,7 +11,7 @@ export default class PickleFilter {
     )
     this.names = names || []
     if (tagExpression) {
-      this.tagExpressionNode = tagExpressionParser.parse(tagExpression || '')
+      this.tagExpressionNode = parse(tagExpression || '')
     }
   }
 
