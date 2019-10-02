@@ -22,7 +22,6 @@ ignoreErrors:
   shouldBeDevDependency: []
   unused:
     - '@babel/core'
-    - '@babel/polyfill'
     - '@babel/plugin-proposal-function-bind' # .babelrc
     - '@babel/preset-env' # .babelrc
     - '@babel/register' # test/mocha.opts
