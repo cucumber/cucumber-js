@@ -3,7 +3,7 @@
 //     becomes
 //   features/a.feature
 function normalizeUri(uri) {
-  return uri.replace(/\\\\/g, '/')
+  return uri.replace(/\\/g, '/')
 }
 
 // Converting windows stack trace to posix
