@@ -50,9 +50,12 @@ export function normalizeEventProtocolOutput(str, cwd) {
   events.forEach(e => {
     normalizeObject(e)
     if (e.steps) {
-      e.steps.forEach(e => {
-        normalizeObject(e)
+      e.steps.forEach(s => {
+        normalizeObject(s)
       })
+    }
+    if (e.testCase) {
+      normalizeObject(e.testCase)
     }
   })
   return events
