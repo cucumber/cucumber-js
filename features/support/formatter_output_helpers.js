@@ -12,7 +12,6 @@ function normalizeUri(uri) {
 //    features/support/code.js
 function normalizeException(exception, cwd) {
   const out = exception
-    .replace(/\\\\/g, '\\')
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
@@ -50,14 +49,14 @@ export function parseEventProtocolOutput(str) {
 export function normalizeEventProtocolOutput(str, cwd) {
   const events = parseEventProtocolOutput(str)
   events.forEach(e => {
-    normalizeObject(e)
+    normalizeObject(e, cwd)
     if (e.steps) {
       e.steps.forEach(s => {
-        normalizeObject(s)
+        normalizeObject(s, cwd)
       })
     }
     if (e.testCase) {
-      normalizeObject(e.testCase)
+      normalizeObject(e.testCase, cwd)
     }
   })
   return events
