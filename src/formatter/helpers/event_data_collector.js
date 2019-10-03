@@ -4,7 +4,7 @@ export default class EventDataCollector {
   constructor(eventBroadcaster) {
     eventBroadcaster
       .on('gherkin-document', ::this.storeGherkinDocument)
-      .on('pickle-accepted', ::this.storePickle)
+      .on('pickle', ::this.storePickle)
       .on('test-case-prepared', ::this.storeTestCase)
       .on('test-step-attachment', ::this.storeTestStepAttachment)
       .on('test-case-started', ::this.initTestCaseResult)
@@ -59,11 +59,11 @@ export default class EventDataCollector {
   }
 
   storeGherkinDocument({ document, uri }) {
-    this.gherkinDocumentMap[uri] = document
+    this.gherkinDocumentMap[uri] = { ...document, uri }
   }
 
   storePickle({ pickle, uri }) {
-    this.pickleMap[`${uri}:${pickle.locations[0].line}`] = pickle
+    this.pickleMap[`${uri}:${pickle.locations[0].line}`] = { ...pickle, uri }
   }
 
   storeTestCase({ sourceLocation, steps }) {

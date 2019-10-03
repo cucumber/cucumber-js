@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 // Converts windows uri to posix
 //   features\\a.feature
 //     becomes
@@ -37,15 +39,11 @@ function normalizeObject(obj, cwd) {
   }
 }
 
-export function parseEventProtocolOutput(str) {
-  return str
+export function normalizeEventProtocolOutput(str, cwd) {
+  const events = str
     .split('\n')
     .filter(x => x)
     .map(x => JSON.parse(x))
-}
-
-export function normalizeEventProtocolOutput(str, cwd) {
-  const events = parseEventProtocolOutput(str)
   events.forEach(e => {
     normalizeObject(e, cwd)
     if (e.steps) {
@@ -61,8 +59,14 @@ export function normalizeEventProtocolOutput(str, cwd) {
 }
 
 export function normalizeJsonOutput(str, cwd) {
-  const json = JSON.parse(str || '[]')
-  json.forEach(obj => {
+  const json = JSON.parse(str || '{}')
+  _.each(json.gherkinDocuments, obj => {
+    normalizeObject(obj, cwd)
+  })
+  _.each(json.pickle, obj => {
+    normalizeObject(obj, cwd)
+  })
+  _.each(json.testCaseAttempts, obj => {
     normalizeObject(obj.testCase, cwd)
     obj.testSteps.forEach(s => {
       normalizeObject(s, cwd)

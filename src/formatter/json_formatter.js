@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import Formatter from './'
 import { parseTestCaseAttempt, formatError } from './helpers'
 
@@ -15,7 +16,7 @@ export default class JsonFormatter extends Formatter {
 
   onTestRunFinished() {
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
-    const data = testCaseAttempts.map(testCaseAttempt => {
+    const testCaseAttemptsData = testCaseAttempts.map(testCaseAttempt => {
       const parsed = parseTestCaseAttempt({
         snippetBuilder: this.snippetBuilder,
         testCaseAttempt,
@@ -24,6 +25,11 @@ export default class JsonFormatter extends Formatter {
       parsed.testSteps.forEach(s => this.formatExceptionIfNeeded(s))
       return parsed
     })
+    const data = {
+      gherkinDocuments: _.values(this.eventDataCollector.gherkinDocumentMap),
+      pickles: _.values(this.eventDataCollector.pickleMap),
+      testCaseAttempts: testCaseAttemptsData,
+    }
     this.log(JSON.stringify(data, null, 2))
   }
 }
