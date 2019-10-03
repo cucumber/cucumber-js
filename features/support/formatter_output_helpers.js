@@ -5,7 +5,7 @@ import _ from 'lodash'
 //     becomes
 //   features/a.feature
 function normalizeUri(uri) {
-  return uri.replace(/\\/g, '/')
+  return uri.replace(/\\\\/g, '\\').replace(/\\/g, '/')
 }
 
 // Converting windows stack trace to posix and removing cwd
@@ -14,6 +14,7 @@ function normalizeUri(uri) {
 //    features/support/code.js
 function normalizeException(exception, cwd) {
   return exception
+    .replace(/\\\\/g, '\\')
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')

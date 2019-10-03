@@ -17,19 +17,20 @@ const slaveCommand = path.resolve(
 export default class Master {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}
   constructor({
+    cwd,
     eventBroadcaster,
     options,
     supportCodePaths,
     supportCodeRequiredModules,
     testCases,
   }) {
+    this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
     this.testCases = testCases || []
     this.nextTestCaseIndex = 0
-    this.testCasesCompleted = 0
     this.result = {
       duration: 0,
       success: true,
@@ -55,6 +56,7 @@ export default class Master {
 
   startSlave(id, total) {
     const slaveProcess = fork(slaveCommand, [], {
+      cwd: this.cwd,
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_SLAVES: total,
@@ -91,11 +93,13 @@ export default class Master {
   }
 
   parseTestCaseResult(testCaseResult) {
-    this.testCasesCompleted += 1
     if (testCaseResult.duration) {
       this.result.duration += testCaseResult.duration
     }
-    if (this.shouldCauseFailure(testCaseResult.status)) {
+    if (
+      !testCaseResult.retried &&
+      this.shouldCauseFailure(testCaseResult.status)
+    ) {
       this.result.success = false
     }
   }

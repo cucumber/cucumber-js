@@ -119,6 +119,45 @@ Feature: Retry flaky tests
     And scenario "Flaky" step "Given a flaky step" has status "passed"
     And it passes
 
+  Scenario: retrying a flaky test will eventually make it pass (parallel)
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Flaky
+          Given a flaky step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from 'cucumber'
+
+      let willPass = false
+
+      Given(/^a flaky step$/, function() {
+        if (willPass) {
+          return
+        }
+        willPass = true
+        throw 'fail'
+      })
+      """
+    When I run cucumber-js with `--retry 1 --parallel 2`
+    Then the output contains the text:
+      """
+      F.
+
+      Warnings:
+
+      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+      ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+      """
+    And the output contains the text:
+      """
+      1 scenario (1 passed)
+      1 step (1 passed)
+      """
+    And scenario "Flaky" step "Given a flaky step" has status "passed"
+    And it passes
+
   Scenario: Out of two tests one is a flaky test (containing only one flaky step), retrying will eventually make it pass
     Given a file named "features/a.feature" with:
       """
