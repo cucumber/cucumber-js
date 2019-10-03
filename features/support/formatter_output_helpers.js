@@ -6,17 +6,15 @@ function normalizeUri(uri) {
   return uri.replace(/\\/g, '/')
 }
 
-// Converting windows stack trace to posix
+// Converting windows stack trace to posix and removing cwd
 //    C:\\project\\path\\features\\support/code.js
 //      becomes
 //    features/support/code.js
 function normalizeException(exception, cwd) {
-  const out = exception
+  return exception
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
-  console.log(exception, cwd, 'normalized to', out)
-  return out
 }
 
 function normalizeObject(obj, cwd) {
