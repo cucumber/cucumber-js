@@ -5,7 +5,7 @@ import _ from 'lodash'
 //     becomes
 //   features/a.feature
 function normalizeUri(uri) {
-  return uri.replace(/\\\\/g, '\\').replace(/\\/g, '/')
+  return uri.replace(/\\/g, '/')
 }
 
 // Converting windows stack trace to posix and removing cwd
@@ -14,7 +14,6 @@ function normalizeUri(uri) {
 //    features/support/code.js
 function normalizeException(exception, cwd) {
   return exception
-    .replace(/\\\\/g, '\\')
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
@@ -64,7 +63,7 @@ export function normalizeJsonOutput(str, cwd) {
   _.each(json.gherkinDocuments, obj => {
     normalizeObject(obj, cwd)
   })
-  _.each(json.pickle, obj => {
+  _.each(json.pickles, obj => {
     normalizeObject(obj, cwd)
   })
   _.each(json.testCaseAttempts, obj => {
