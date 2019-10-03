@@ -11,11 +11,13 @@ function normalizeUri(uri) {
 //      becomes
 //    features/support/code.js
 function normalizeException(exception, cwd) {
-  return exception
+  const out = exception
     .replace(/\\\\/g, '\\')
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
+  console.log(exception, cwd, 'normalized to', out)
+  return out
 }
 
 function normalizeObject(obj, cwd) {
