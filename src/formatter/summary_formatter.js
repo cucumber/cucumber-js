@@ -11,12 +11,12 @@ export default class SummaryFormatter extends Formatter {
   logSummary(testRun) {
     const failures = []
     const warnings = []
-    const collatedEvents = this.eventDataCollector.getCollatedEvents()
-    _.each(collatedEvents, collatedEvent => {
-      if (isFailure(collatedEvent.testCaseAttempt.result)) {
-        failures.push(collatedEvent)
-      } else if (isWarning(collatedEvent.testCaseAttempt.result)) {
-        warnings.push(collatedEvent)
+    const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
+    _.each(testCaseAttempts, testCaseAttempt => {
+      if (isFailure(testCaseAttempt.result)) {
+        failures.push(testCaseAttempt)
+      } else if (isWarning(testCaseAttempt.result)) {
+        warnings.push(testCaseAttempt)
       }
     })
     if (failures.length > 0) {
@@ -28,7 +28,7 @@ export default class SummaryFormatter extends Formatter {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        collatedEvents,
+        testCaseAttempts,
         testRun,
       })
     )
@@ -36,13 +36,13 @@ export default class SummaryFormatter extends Formatter {
 
   logIssues({ issues, title }) {
     this.log(`${title}:\n\n`)
-    issues.forEach((collatedEvent, index) => {
+    issues.forEach((testCaseAttempt, index) => {
       this.log(
         formatIssue({
           colorFns: this.colorFns,
-          collatedEvent: collatedEvent,
           number: index + 1,
           snippetBuilder: this.snippetBuilder,
+          testCaseAttempt,
         })
       )
     })

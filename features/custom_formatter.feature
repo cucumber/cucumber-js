@@ -21,9 +21,9 @@ Feature: custom formatter
         }
 
         logTestCase(testCaseFinishedEvent) {
-          const collatedEvent = this.eventDataCollector.getCollatedEvent(testCaseFinishedEvent)
-          this.log(collatedEvent.gherkinDocument.feature.name + ' / ' + collatedEvent.pickle.name + '\n')
-          const parsed = formatterHelpers.parseCollatedEvent({ collatedEvent, snippetBuilder: this.snippetBuilder })
+          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+          this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
+          const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
           parsed.testSteps.forEach(testStep => {
             this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
           })
@@ -66,9 +66,9 @@ Feature: custom formatter
         }
 
         logTestCase(testCaseFinishedEvent) {
-          const collatedEvent = this.eventDataCollector.getCollatedEvent(testCaseFinishedEvent)
-          this.log(collatedEvent.gherkinDocument.feature.name + ' / ' + collatedEvent.pickle.name + '\n')
-          const parsed = formatterHelpers.parseCollatedEvent({ collatedEvent, snippetBuilder: this.snippetBuilder })
+          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+          this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
+          const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
           parsed.testSteps.forEach(testStep => {
             this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
           })

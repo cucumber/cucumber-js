@@ -36,20 +36,18 @@ describe('IssueHelpers', () => {
     }
     this.testCaseAttempt = {
       attemptNumber: 1,
+      gherkinDocument,
+      pickle,
       result: {},
       stepAttachments: [[], [], []],
       stepResults: [null, null, null],
+      testCase: this.testCase,
     }
     this.options = {
       colorFns: getColorFns(false),
-      collatedEvent: {
-        gherkinDocument,
-        pickle,
-        testCase: this.testCase,
-        testCaseAttempt: this.testCaseAttempt,
-      },
       number: 1,
       snippetBuilder: createMock({ build: 'snippet' }),
+      testCaseAttempt: this.testCaseAttempt,
     }
     this.passedStepResult = { duration: 0, status: Status.PASSED }
     this.skippedStepResult = { status: Status.SKIPPED }
@@ -173,9 +171,9 @@ describe('IssueHelpers', () => {
             '      |d|e|ff|\n' +
             '      |gg|h|iii|\n'
         )
-        this.options.collatedEvent.gherkinDocument = gherkinDocument
+        this.testCaseAttempt.gherkinDocument = gherkinDocument
         const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-        this.options.collatedEvent.pickle = pickle
+        this.testCaseAttempt.pickle = pickle
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },
@@ -215,9 +213,9 @@ describe('IssueHelpers', () => {
             '       :-)\n' +
             '       """\n'
         )
-        this.options.collatedEvent.gherkinDocument = gherkinDocument
+        this.testCaseAttempt.gherkinDocument = gherkinDocument
         const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-        this.options.collatedEvent.pickle = pickle
+        this.testCaseAttempt.pickle = pickle
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
           sourceLocation: { line: 4, uri: 'a.feature' },

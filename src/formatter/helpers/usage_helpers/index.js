@@ -20,32 +20,30 @@ function buildEmptyMapping(stepDefinitions) {
 
 function buildMapping({ stepDefinitions, eventDataCollector }) {
   const mapping = buildEmptyMapping(stepDefinitions)
-  _.each(eventDataCollector.getCollatedEvents(), collatedEvent => {
+  _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
     const stepLineToPickledStepMap = getStepLineToPickledStepMap(
-      collatedEvent.pickle
+      testCaseAttempt.pickle
     )
-    collatedEvent.testCaseAttempt.stepResults.forEach(
-      (testStepResult, index) => {
-        const { actionLocation, sourceLocation } = collatedEvent.testCase.steps[
-          index
-        ]
-        const { duration } = testStepResult
-        if (actionLocation && sourceLocation) {
-          const location = formatLocation(actionLocation)
-          const match = {
-            line: sourceLocation.line,
-            text: stepLineToPickledStepMap[sourceLocation.line].text,
-            uri: sourceLocation.uri,
-          }
-          if (isFinite(duration)) {
-            match.duration = duration
-          }
-          if (mapping[location]) {
-            mapping[location].matches.push(match)
-          }
+    testCaseAttempt.stepResults.forEach((testStepResult, index) => {
+      const { actionLocation, sourceLocation } = testCaseAttempt.testCase.steps[
+        index
+      ]
+      const { duration } = testStepResult
+      if (actionLocation && sourceLocation) {
+        const location = formatLocation(actionLocation)
+        const match = {
+          line: sourceLocation.line,
+          text: stepLineToPickledStepMap[sourceLocation.line].text,
+          uri: sourceLocation.uri,
+        }
+        if (isFinite(duration)) {
+          match.duration = duration
+        }
+        if (mapping[location]) {
+          mapping[location].matches.push(match)
         }
       }
-    )
+    })
   })
   return mapping
 }

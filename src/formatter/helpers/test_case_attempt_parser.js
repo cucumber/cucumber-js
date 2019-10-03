@@ -18,7 +18,7 @@ function parseDocString(arg) {
   return { content: arg.content }
 }
 
-function parseCollatedEventStep({
+function parseStep({
   isBeforeHook,
   keyword,
   keywordType,
@@ -55,7 +55,7 @@ function parseCollatedEventStep({
   return out
 }
 
-// Converts a collated event into a json object with all data needed for
+// Converts a testCaseAttempt into a json object with all data needed for
 // displaying it in a pretty format
 //
 // Returns the following
@@ -66,10 +66,8 @@ function parseCollatedEventStep({
 //     ...
 //   ]
 // }
-export function parseCollatedEvent({
-  collatedEvent: { gherkinDocument, pickle, testCase, testCaseAttempt },
-  snippetBuilder,
-}) {
+export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder }) {
+  const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const out = {
     testCase: {
       attemptNumber: testCaseAttempt.attemptNumber,
@@ -96,7 +94,7 @@ export function parseCollatedEvent({
         previousKeywordType,
       })
     }
-    const parsedStep = parseCollatedEventStep({
+    const parsedStep = parseStep({
       isBeforeHook,
       keyword,
       keywordType,

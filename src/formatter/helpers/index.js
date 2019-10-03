@@ -1,7 +1,7 @@
 import * as GherkinDocumentParser from './gherkin_document_parser'
 import * as PickleParser from './pickle_parser'
 
-export { parseCollatedEvent } from './collated_event_parser'
+export { parseTestCaseAttempt } from './test_case_attempt_parser'
 export { default as EventDataCollector } from './event_data_collector'
 export { default as KeywordType, getStepKeywordType } from './keyword_type'
 export { formatError } from './error_helpers'

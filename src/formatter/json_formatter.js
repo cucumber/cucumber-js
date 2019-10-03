@@ -1,6 +1,5 @@
 import Formatter from './'
-import { parseCollatedEvent } from './helpers/collated_event_parser'
-import { formatError } from './helpers/error_helpers'
+import { parseTestCaseAttempt, formatError } from './helpers'
 
 export default class JsonFormatter extends Formatter {
   constructor(options) {
@@ -15,11 +14,11 @@ export default class JsonFormatter extends Formatter {
   }
 
   onTestRunFinished() {
-    const collatedEvents = this.eventDataCollector.getCollatedEvents()
-    const data = collatedEvents.map(collatedEvent => {
-      const parsed = parseCollatedEvent({
-        collatedEvent,
+    const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
+    const data = testCaseAttempts.map(testCaseAttempt => {
+      const parsed = parseTestCaseAttempt({
         snippetBuilder: this.snippetBuilder,
+        testCaseAttempt,
       })
       this.formatExceptionIfNeeded(parsed.testCase)
       parsed.testSteps.forEach(s => this.formatExceptionIfNeeded(s))

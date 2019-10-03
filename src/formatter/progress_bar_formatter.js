@@ -31,8 +31,8 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logProgress({ index, testCase }) {
-    const collatedEvent = this.eventDataCollector.getCollatedEvent(testCase)
-    if (collatedEvent.testCase.steps[index].sourceLocation) {
+    const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCase)
+    if (testCaseAttempt.testCase.steps[index].sourceLocation) {
       this.progressBar.tick()
     }
   }
@@ -40,19 +40,19 @@ export default class ProgressBarFormatter extends Formatter {
   logErrorIfNeeded(testCaseFinishedEvent) {
     if (isIssue(testCaseFinishedEvent.result)) {
       this.issueCount += 1
-      const collatedEvent = this.eventDataCollector.getCollatedEvent(
+      const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
         testCaseFinishedEvent
       )
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
-          collatedEvent,
           number: this.issueCount,
           snippetBuilder: this.snippetBuilder,
+          testCaseAttempt,
         })
       )
       if (testCaseFinishedEvent.result.retried) {
-        const stepsToRetry = collatedEvent.testCase.steps.filter(
+        const stepsToRetry = testCaseAttempt.testCase.steps.filter(
           s => s.sourceLocation
         ).length
         this.progressBar.tick(-stepsToRetry)
@@ -64,7 +64,7 @@ export default class ProgressBarFormatter extends Formatter {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        collatedEvents: this.eventDataCollector.getCollatedEvents(),
+        testCaseAttempts: this.eventDataCollector.getTestCaseAttempts(),
         testRun,
       })
     )

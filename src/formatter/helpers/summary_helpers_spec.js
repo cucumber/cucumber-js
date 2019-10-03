@@ -7,11 +7,11 @@ import Status from '../../status'
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
     beforeEach(function() {
-      this.collatedEvents = []
+      this.testCaseAttempts = []
       this.testRun = { result: { duration: 0 } }
       this.options = {
         colorFns: getColorFns(false),
-        collatedEvents: this.collatedEvents,
+        testCaseAttempts: this.testCaseAttempts,
         testRun: this.testRun,
       }
     })
@@ -30,13 +30,11 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one passing step', () => {
       beforeEach(function() {
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-          testCaseAttempt: {
-            result: { status: Status.PASSED },
-            stepResults: [{ status: Status.PASSED }],
           },
         })
         this.result = formatSummary(this.options)
@@ -51,13 +49,11 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one step and hook', () => {
       beforeEach(function() {
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
           testCase: {
             steps: [{}, { sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-          testCaseAttempt: {
-            result: { status: Status.PASSED },
-            stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
           },
         })
         this.result = formatSummary(this.options)
@@ -72,22 +68,18 @@ describe('SummaryHelpers', () => {
 
     describe('with one scenario that failed and was retried then passed', () => {
       beforeEach(function() {
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.FAILED, retried: true },
+          stepResults: [{ status: Status.FAILED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-          testCaseAttempt: {
-            result: { status: Status.FAILED, retried: true },
-            stepResults: [{ status: Status.FAILED }],
           },
         })
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-          testCaseAttempt: {
-            result: { status: Status.PASSED },
-            stepResults: [{ status: Status.PASSED }],
           },
         })
         this.result = formatSummary(this.options)
@@ -102,16 +94,14 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with multiple passing steps', () => {
       beforeEach(function() {
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
           testCase: {
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 2 } },
               { sourceLocation: { uri: 'a.feature', line: 3 } },
             ],
-          },
-          testCaseAttempt: {
-            result: { status: Status.PASSED },
-            stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
           },
         })
         this.result = formatSummary(this.options)
@@ -126,58 +116,46 @@ describe('SummaryHelpers', () => {
 
     describe('with one of every kind of scenario', () => {
       beforeEach(function() {
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.AMBIGUOUS },
+          stepResults: [{ status: Status.AMBIGUOUS }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
           },
-          testCaseAttempt: {
-            result: { status: Status.AMBIGUOUS },
-            stepResults: [{ status: Status.AMBIGUOUS }],
-          },
         })
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.FAILED },
+          stepResults: [{ status: Status.FAILED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 4 } }],
           },
-          testCaseAttempt: {
-            result: { status: Status.FAILED },
-            stepResults: [{ status: Status.FAILED }],
-          },
         })
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.PENDING },
+          stepResults: [{ status: Status.PENDING }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 6 } }],
           },
-          testCaseAttempt: {
-            result: { status: Status.PENDING },
-            stepResults: [{ status: Status.PENDING }],
-          },
         })
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 8 } }],
           },
-          testCaseAttempt: {
-            result: { status: Status.PASSED },
-            stepResults: [{ status: Status.PASSED }],
-          },
         })
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.SKIPPED },
+          stepResults: [{ status: Status.SKIPPED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 10 } }],
           },
-          testCaseAttempt: {
-            result: { status: Status.SKIPPED },
-            stepResults: [{ status: Status.SKIPPED }],
-          },
         })
-        this.collatedEvents.push({
+        this.testCaseAttempts.push({
+          result: { status: Status.UNDEFINED },
+          stepResults: [{ status: Status.UNDEFINED }],
           testCase: {
             steps: [{ sourceLocation: { uri: 'a.feature', line: 12 } }],
-          },
-          testCaseAttempt: {
-            result: { status: Status.UNDEFINED },
-            stepResults: [{ status: Status.UNDEFINED }],
           },
         })
         this.result = formatSummary(this.options)

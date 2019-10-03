@@ -1,6 +1,6 @@
 import Formatter from './'
 import Status from '../status'
-import { parseCollatedEvent } from './helpers'
+import { parseTestCaseAttempt } from './helpers'
 
 export default class SnippetsFormatter extends Formatter {
   constructor(options) {
@@ -10,11 +10,10 @@ export default class SnippetsFormatter extends Formatter {
 
   logSnippets() {
     const snippets = []
-    const collatedEvents = this.eventDataCollector.getCollatedEvents()
-    collatedEvents.map(collatedEvent => {
-      const parsed = parseCollatedEvent({
-        collatedEvent,
+    this.eventDataCollector.getTestCaseAttempts().map(testCaseAttempt => {
+      const parsed = parseTestCaseAttempt({
         snippetBuilder: this.snippetBuilder,
+        testCaseAttempt,
       })
       parsed.testSteps.forEach(testStep => {
         if (testStep.result.status === Status.UNDEFINED) {

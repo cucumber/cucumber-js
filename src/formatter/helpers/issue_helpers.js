@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import indentString from 'indent-string'
 import Status from '../../status'
-import { formatCollatedEvent } from './collated_event_formatter'
+import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 
 export function isFailure(result) {
   return (
@@ -23,17 +23,17 @@ export function isIssue(result) {
 
 export function formatIssue({
   colorFns,
-  collatedEvent,
   number,
   snippetBuilder,
+  testCaseAttempt,
 }) {
   const prefix = `${number}) `
-  const formattedCollatedEvent = formatCollatedEvent({
+  const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
-    collatedEvent,
     snippetBuilder,
+    testCaseAttempt,
   })
-  const lines = formattedCollatedEvent.split('\n')
+  const lines = formattedTestCaseAttempt.split('\n')
   const updatedLines = lines.map((line, index) => {
     if (index === 0) {
       return `${prefix}${line}`

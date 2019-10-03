@@ -3,7 +3,7 @@ import Status from '../../status'
 import figures from 'figures'
 import { formatError } from './error_helpers'
 import { formatLocation } from './location_helpers'
-import { parseCollatedEvent } from './collated_event_parser'
+import { parseTestCaseAttempt } from './test_case_attempt_parser'
 import { formatStepArguments } from './step_argument_formatter'
 
 const CHARACTERS = {
@@ -30,7 +30,7 @@ function getStepMessage({ colorFns, testStep }) {
   return ''
 }
 
-function formatCollatedEventTestStep({ colorFns, testStep }) {
+function formatStep({ colorFns, testStep }) {
   const {
     result: { status },
     actionLocation,
@@ -62,12 +62,12 @@ function formatCollatedEventTestStep({ colorFns, testStep }) {
   return text
 }
 
-export function formatCollatedEvent({
+export function formatTestCaseAttempt({
   colorFns,
-  collatedEvent,
   snippetBuilder,
+  testCaseAttempt,
 }) {
-  const parsed = parseCollatedEvent({ collatedEvent, snippetBuilder })
+  const parsed = parseTestCaseAttempt({ snippetBuilder, testCaseAttempt })
   let text = `Scenario: ${parsed.testCase.name}`
   text += getAttemptText(
     parsed.testCase.attemptNumber,
@@ -77,7 +77,7 @@ export function formatCollatedEvent({
     formatLocation(parsed.testCase.sourceLocation)
   )}\n`
   parsed.testSteps.forEach(testStep => {
-    text += formatCollatedEventTestStep({ colorFns, testStep })
+    text += formatStep({ colorFns, testStep })
   })
   return `${text}\n`
 }
