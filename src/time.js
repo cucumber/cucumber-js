@@ -1,3 +1,5 @@
+export const MILLISECONDS_IN_NANOSECOND = 1000 * 1000
+
 let previousTimestamp
 
 const methods = {

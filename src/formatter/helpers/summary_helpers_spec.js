@@ -3,15 +3,16 @@ import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import Status from '../../status'
+import { MILLISECONDS_IN_NANOSECOND } from '../../time'
 
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
     beforeEach(function() {
-      this.testCaseMap = {}
+      this.testCaseAttempts = []
       this.testRun = { result: { duration: 0 } }
       this.options = {
         colorFns: getColorFns(false),
-        testCaseMap: this.testCaseMap,
+        testCaseAttempts: this.testCaseAttempts,
         testRun: this.testRun,
       }
     })
@@ -30,15 +31,13 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one passing step', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-        }
+          stepResults: [{ status: Status.PASSED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -51,16 +50,13 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one step and hook', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            { result: { status: Status.PASSED } },
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-        }
+          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          testCase: {
+            steps: [{}, { sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -71,21 +67,44 @@ describe('SummaryHelpers', () => {
       })
     })
 
+    describe('with one scenario that failed and was retried then passed', () => {
+      beforeEach(function() {
+        this.testCaseAttempts.push({
+          result: { status: Status.FAILED, retried: true },
+          stepResults: [{ status: Status.FAILED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        })
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED },
+          stepResults: [{ status: Status.PASSED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        })
+        this.result = formatSummary(this.options)
+      })
+
+      it('filters out the retried attempts', function() {
+        expect(this.result).to.contain(
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+        )
+      })
+    })
+
     describe('with one passing scenario with multiple passing steps', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.PASSED },
-            },
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              result: { status: Status.PASSED },
-            },
-          ],
+        this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-        }
+          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          testCase: {
+            steps: [
+              { sourceLocation: { uri: 'a.feature', line: 2 } },
+              { sourceLocation: { uri: 'a.feature', line: 3 } },
+            ],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -98,60 +117,48 @@ describe('SummaryHelpers', () => {
 
     describe('with one of every kind of scenario', () => {
       beforeEach(function() {
-        this.testCaseMap['a.feature:1'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 2 },
-              result: { status: Status.AMBIGUOUS },
-            },
-          ],
+        this.testCaseAttempts.push({
           result: { status: Status.AMBIGUOUS },
-        }
-        this.testCaseMap['a.feature:3'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 4 },
-              result: { status: Status.FAILED },
-            },
-          ],
+          stepResults: [{ status: Status.AMBIGUOUS }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+          },
+        })
+        this.testCaseAttempts.push({
           result: { status: Status.FAILED },
-        }
-        this.testCaseMap['a.feature:5'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 6 },
-              result: { status: Status.PENDING },
-            },
-          ],
+          stepResults: [{ status: Status.FAILED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 4 } }],
+          },
+        })
+        this.testCaseAttempts.push({
           result: { status: Status.PENDING },
-        }
-        this.testCaseMap['a.feature:7'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 8 },
-              result: { status: Status.PASSED },
-            },
-          ],
+          stepResults: [{ status: Status.PENDING }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 6 } }],
+          },
+        })
+        this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-        }
-        this.testCaseMap['a.feature:9'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 10 },
-              result: { status: Status.SKIPPED },
-            },
-          ],
+          stepResults: [{ status: Status.PASSED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 8 } }],
+          },
+        })
+        this.testCaseAttempts.push({
           result: { status: Status.SKIPPED },
-        }
-        this.testCaseMap['a.feature:11'] = {
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 12 },
-              result: { status: Status.UNDEFINED },
-            },
-          ],
+          stepResults: [{ status: Status.SKIPPED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 10 } }],
+          },
+        })
+        this.testCaseAttempts.push({
           result: { status: Status.UNDEFINED },
-        }
+          stepResults: [{ status: Status.UNDEFINED }],
+          testCase: {
+            steps: [{ sourceLocation: { uri: 'a.feature', line: 12 } }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
@@ -166,7 +173,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 123 milliseconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123
+        this.testRun.result.duration = 123 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 
@@ -179,7 +186,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 12.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * 100
+        this.testRun.result.duration = 123 * 100 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 
@@ -192,7 +199,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 120.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * 1000
+        this.testRun.result.duration = 123 * 1000 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 

@@ -106,6 +106,7 @@ export default class Cli {
     let success
     if (configuration.parallel) {
       const parallelRuntimeMaster = new ParallelRuntimeMaster({
+        cwd: this.cwd,
         eventBroadcaster,
         options: configuration.runtimeOptions,
         supportCodePaths: configuration.supportCodePaths,

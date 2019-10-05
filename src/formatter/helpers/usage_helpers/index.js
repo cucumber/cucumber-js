@@ -20,17 +20,15 @@ function buildEmptyMapping(stepDefinitions) {
 
 function buildMapping({ stepDefinitions, eventDataCollector }) {
   const mapping = buildEmptyMapping(stepDefinitions)
-  _.each(eventDataCollector.testCaseMap, testCase => {
-    const { pickle } = eventDataCollector.getTestCaseData(
-      testCase.sourceLocation
+  _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
+    const stepLineToPickledStepMap = getStepLineToPickledStepMap(
+      testCaseAttempt.pickle
     )
-    const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
-    testCase.steps.forEach(testStep => {
-      const {
-        actionLocation,
-        sourceLocation,
-        result: { duration },
-      } = testStep
+    testCaseAttempt.stepResults.forEach((testStepResult, index) => {
+      const { actionLocation, sourceLocation } = testCaseAttempt.testCase.steps[
+        index
+      ]
+      const { duration } = testStepResult
       if (actionLocation && sourceLocation) {
         const location = formatLocation(actionLocation)
         const match = {

@@ -9,6 +9,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from 'cucumber-expressions'
+import { MILLISECONDS_IN_NANOSECOND } from '../time'
 
 describe('UsageFormatter', () => {
   describe('handleFeaturesResult', () => {
@@ -86,7 +87,10 @@ describe('UsageFormatter', () => {
               })
             }
           })
-          this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+          this.testCase = {
+            attemptNumber: 1,
+            sourceLocation: { uri: 'a.feature', line: 2 },
+          }
           this.eventBroadcaster.emit('test-case-prepared', {
             ...this.testCase,
             steps: [
@@ -100,6 +104,7 @@ describe('UsageFormatter', () => {
               },
             ],
           })
+          this.eventBroadcaster.emit('test-case-started', this.testCase)
         })
 
         describe('in dry run', () => {
@@ -135,12 +140,12 @@ describe('UsageFormatter', () => {
             this.eventBroadcaster.emit('test-step-finished', {
               index: 0,
               testCase: this.testCase,
-              result: { duration: 1 },
+              result: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
             })
             this.eventBroadcaster.emit('test-step-finished', {
               index: 1,
               testCase: this.testCase,
-              result: { duration: 0 },
+              result: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
             })
             this.eventBroadcaster.emit('test-run-finished')
           })
@@ -150,9 +155,9 @@ describe('UsageFormatter', () => {
               '┌────────────────┬──────────┬─────────────┐\n' +
                 '│ Pattern / Text │ Duration │ Location    │\n' +
                 '├────────────────┼──────────┼─────────────┤\n' +
-                '│ /^abc?$/       │ 0.5ms    │ steps.js:1  │\n' +
-                '│   abc          │ 1ms      │ a.feature:3 │\n' +
-                '│   ab           │ 0ms      │ a.feature:4 │\n' +
+                '│ /^abc?$/       │ 1.50ms   │ steps.js:1  │\n' +
+                '│   abc          │ 2ms      │ a.feature:3 │\n' +
+                '│   ab           │ 1ms      │ a.feature:4 │\n' +
                 '└────────────────┴──────────┴─────────────┘\n'
             )
           })
@@ -205,7 +210,10 @@ describe('UsageFormatter', () => {
             })
           }
         })
-        const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+        const testCase = {
+          attemptNumber: 1,
+          sourceLocation: { uri: 'a.feature', line: 2 },
+        }
         this.eventBroadcaster.emit('test-case-prepared', {
           ...testCase,
           steps: [
@@ -219,15 +227,16 @@ describe('UsageFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase,
-          result: { duration: 1 },
+          result: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
         })
         this.eventBroadcaster.emit('test-step-finished', {
           index: 1,
           testCase,
-          result: { duration: 2 },
+          result: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -237,10 +246,10 @@ describe('UsageFormatter', () => {
           '┌────────────────┬──────────┬─────────────┐\n' +
             '│ Pattern / Text │ Duration │ Location    │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ def            │ 2ms      │ steps.js:2  │\n' +
+            '│ def            │ 2.00ms   │ steps.js:2  │\n' +
             '│   def          │ 2ms      │ a.feature:4 │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
-            '│ /abc/          │ 1ms      │ steps.js:1  │\n' +
+            '│ /abc/          │ 1.00ms   │ steps.js:1  │\n' +
             '│   abc          │ 1ms      │ a.feature:3 │\n' +
             '├────────────────┼──────────┼─────────────┤\n' +
             '│ ghi            │ UNUSED   │ steps.js:3  │\n' +
