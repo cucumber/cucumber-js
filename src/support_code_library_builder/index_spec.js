@@ -31,6 +31,43 @@ describe('supportCodeLibraryBuilder', () => {
     })
   })
 
+  describe('step', () => {
+    describe('without definition function wrapper', () => {
+      beforeEach(function() {
+        this.hook = function() {}
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
+        this.options = supportCodeLibraryBuilder.finalize()
+      })
+
+      it('adds a step definition and makes original code available', function() {
+        expect(this.options.stepDefinitions).to.have.lengthOf(1)
+        expect(this.options.stepDefinitions[0].code).to.eql(this.hook)
+        expect(this.options.stepDefinitions[0].unwrappedCode).to.eql(undefined)
+      })
+    })
+
+    describe('with definition function wrapper', () => {
+      beforeEach(function() {
+        this.hook = function() {}
+        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
+        supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(function(
+          fn
+        ) {
+          return fn.apply(this, arguments)
+        })
+        this.options = supportCodeLibraryBuilder.finalize()
+      })
+
+      it('adds a step definition and makes original code available', function() {
+        expect(this.options.stepDefinitions).to.have.lengthOf(1)
+        expect(this.options.stepDefinitions[0].code).not.to.eql(this.hook)
+        expect(this.options.stepDefinitions[0].unwrappedCode).to.eql(this.hook)
+      })
+    })
+  })
+
   describe('After', () => {
     describe('function only', () => {
       beforeEach(function() {
