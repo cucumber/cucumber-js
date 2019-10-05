@@ -2,12 +2,19 @@ import _ from 'lodash'
 import { formatLocation } from '../location_helpers'
 import { getStepLineToPickledStepMap } from '../pickle_parser'
 
+function getCodeAsString(stepDefinition) {
+  if (typeof stepDefinition.unwrappedCode === 'function') {
+    return stepDefinition.unwrappedCode.toString()
+  }
+  return stepDefinition.code.toString()
+}
+
 function buildEmptyMapping(stepDefinitions) {
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
     const location = formatLocation(stepDefinition)
     mapping[location] = {
-      code: stepDefinition.code.toString(),
+      code: getCodeAsString(stepDefinition),
       line: stepDefinition.line,
       pattern: stepDefinition.expression.source,
       patternType: stepDefinition.expression.constructor.name,

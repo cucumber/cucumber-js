@@ -16,6 +16,7 @@ export function wrapDefinitions({
         definition.options.wrapperOptions
       )
       if (wrappedFn !== definition.code) {
+        definition.unwrappedCode = definition.code
         definition.code = arity(codeLength, wrappedFn)
       }
     })
