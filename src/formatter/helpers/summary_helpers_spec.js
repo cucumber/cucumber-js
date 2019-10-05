@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import Status from '../../status'
+import { MILLISECONDS_IN_NANOSECOND } from '../../time'
 
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
@@ -172,7 +173,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 123 milliseconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123
+        this.testRun.result.duration = 123 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 
@@ -185,7 +186,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 12.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * 100
+        this.testRun.result.duration = 123 * 100 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 
@@ -198,7 +199,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 120.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * 1000
+        this.testRun.result.duration = 123 * 1000 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 

@@ -8,6 +8,7 @@ import figures from 'figures'
 import { EventEmitter } from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
+import { MILLISECONDS_IN_NANOSECOND } from '../time'
 
 describe('SummaryFormatter', () => {
   beforeEach(function() {
@@ -334,7 +335,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 123 milliseconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 },
+            result: { duration: 123 * MILLISECONDS_IN_NANOSECOND },
           })
         })
 
@@ -346,7 +347,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 12.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 100 },
+            result: { duration: 123 * 100 * MILLISECONDS_IN_NANOSECOND },
           })
         })
 
@@ -358,7 +359,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 120.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 1000 },
+            result: { duration: 123 * 1000 * MILLISECONDS_IN_NANOSECOND },
           })
         })
 

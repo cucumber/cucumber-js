@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Duration from 'duration'
 import Status from '../../status'
+import { MILLISECONDS_IN_NANOSECOND } from '../../time'
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,
@@ -57,9 +58,9 @@ function getCountSummary({ colorFns, objects, type }) {
   return text
 }
 
-function getDuration(milliseconds) {
+function getDuration(nanoseconds) {
   const start = new Date(0)
-  const end = new Date(milliseconds)
+  const end = new Date(nanoseconds / MILLISECONDS_IN_NANOSECOND)
   const duration = new Duration(start, end)
 
   return (

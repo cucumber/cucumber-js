@@ -5,6 +5,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 #### BREAKING CHANGES
 
 * Drop support for Node.js 6
+* JSON formatter has major breaking changes. View some sample outputs [here](/features/fixtures/formatters/). The `*.json.js` files contain the js objects the json parses to.
+* Duration is now in nanoseconds in event-protocol formatter and in events sent to custom formatters
 
 #### Bug fixes
 
@@ -13,6 +15,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 #### New features
 
+* Add ability to retry flaky tests
+  * Use `--retry <NUMBER>` and limit what tests will be retried with `--retryTagFilter <EXPRESSION>`
 * usage-json formatter: add code and patternType
 * Add support for Node.js 12
 
