@@ -43,7 +43,7 @@ describe('ProgressBarFormatter', () => {
         sourceLocation: { line: 2, uri: 'path/to/feature' },
       }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...testCase,
+        sourceLocation: testCase.sourceLocation,
         steps: [
           { actionLocation: { line: 2, uri: 'path/to/steps' } },
           {
@@ -71,7 +71,7 @@ describe('ProgressBarFormatter', () => {
         sourceLocation: { line: 2, uri: 'path/to/feature' },
       }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...this.testCase,
+        sourceLocation: this.testCase.sourceLocation,
         steps: [
           { actionLocation: { line: 2, uri: 'path/to/steps' } },
           {
@@ -141,7 +141,7 @@ describe('ProgressBarFormatter', () => {
     describe('ambiguous', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -176,7 +176,7 @@ describe('ProgressBarFormatter', () => {
     describe('failed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -206,7 +206,7 @@ describe('ProgressBarFormatter', () => {
     describe('retried', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -281,7 +281,7 @@ describe('ProgressBarFormatter', () => {
     describe('passed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -311,7 +311,7 @@ describe('ProgressBarFormatter', () => {
     describe('pending', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -341,7 +341,7 @@ describe('ProgressBarFormatter', () => {
     describe('skipped', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -371,7 +371,7 @@ describe('ProgressBarFormatter', () => {
     describe('undefined', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },

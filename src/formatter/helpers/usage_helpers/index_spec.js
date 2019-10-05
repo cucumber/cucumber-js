@@ -52,7 +52,7 @@ describe('Usage Helpers', () => {
             sourceLocation: { uri: 'a.feature', line: 2 },
           }
           this.eventBroadcaster.emit('test-case-prepared', {
-            ...testCase,
+            sourceLocation: testCase.sourceLocation,
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 3 } },
               { sourceLocation: { uri: 'a.feature', line: 4 } },
@@ -133,14 +133,18 @@ describe('Usage Helpers', () => {
               })
             }
           })
-          const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+          const testCase = {
+            attemptNumber: 1,
+            sourceLocation: { uri: 'a.feature', line: 2 },
+          }
           this.eventBroadcaster.emit('test-case-prepared', {
-            ...testCase,
+            sourceLocation: testCase.sourceLocation,
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 3 } },
               { sourceLocation: { uri: 'a.feature', line: 4 } },
             ],
           })
+          this.eventBroadcaster.emit('test-case-started', testCase)
           this.eventBroadcaster.emit('test-step-finished', {
             index: 0,
             testCase,

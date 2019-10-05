@@ -51,7 +51,7 @@ describe('SummaryFormatter', () => {
     describe('with a failing scenario', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -92,7 +92,7 @@ describe('SummaryFormatter', () => {
     describe('with an ambiguous step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -140,7 +140,7 @@ describe('SummaryFormatter', () => {
     describe('with an undefined step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -183,7 +183,7 @@ describe('SummaryFormatter', () => {
     describe('with a pending step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -224,7 +224,7 @@ describe('SummaryFormatter', () => {
     describe('with a passing flaky step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
@@ -276,7 +276,7 @@ describe('SummaryFormatter', () => {
     describe('with a failed flaky step', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },

@@ -64,7 +64,7 @@ describe('JsonFormatter', () => {
     describe('passed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               actionLocation: { uri: 'steps.js', line: 2 },
@@ -216,7 +216,7 @@ describe('JsonFormatter', () => {
     describe('failed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 6 },
@@ -249,7 +249,7 @@ describe('JsonFormatter', () => {
     describe('with hooks', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               actionLocation: { uri: 'steps.js', line: 10 },
@@ -304,7 +304,7 @@ describe('JsonFormatter', () => {
     describe('with attachments', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...this.testCase,
+          sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 6 },
@@ -373,7 +373,7 @@ describe('JsonFormatter', () => {
         attemptNumber: 1,
       }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...this.testCase,
+        sourceLocation: this.testCase.sourceLocation,
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
@@ -430,7 +430,7 @@ describe('JsonFormatter', () => {
         attemptNumber: 1,
       }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...this.testCase,
+        sourceLocation: this.testCase.sourceLocation,
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },

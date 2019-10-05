@@ -29,7 +29,7 @@ describe('ProgressFormatter', () => {
         sourceLocation: { uri: 'path/to/feature', line: 1 },
       }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...this.testCase,
+        sourceLocation: this.testCase.sourceLocation,
         steps: [{}],
       })
       this.eventBroadcaster.emit('test-case-started', this.testCase)

@@ -66,7 +66,7 @@ describe('UsageJsonFormatter', () => {
         sourceLocation: { uri: 'a.feature', line: 2 },
       }
       eventBroadcaster.emit('test-case-prepared', {
-        ...testCase,
+        sourceLocation: testCase.sourceLocation,
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },

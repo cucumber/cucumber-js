@@ -92,7 +92,7 @@ describe('UsageFormatter', () => {
             sourceLocation: { uri: 'a.feature', line: 2 },
           }
           this.eventBroadcaster.emit('test-case-prepared', {
-            ...this.testCase,
+            sourceLocation: this.testCase.sourceLocation,
             steps: [
               {
                 sourceLocation: { uri: 'a.feature', line: 3 },
@@ -215,7 +215,7 @@ describe('UsageFormatter', () => {
           sourceLocation: { uri: 'a.feature', line: 2 },
         }
         this.eventBroadcaster.emit('test-case-prepared', {
-          ...testCase,
+          sourceLocation: testCase.sourceLocation,
           steps: [
             {
               sourceLocation: { uri: 'a.feature', line: 3 },
