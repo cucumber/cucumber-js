@@ -17,6 +17,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * Add ability to retry flaky tests
   * Use `--retry <NUMBER>` and limit what tests will be retried with `--retryTagFilter <EXPRESSION>`
+  * Event-protocol added an `attemptNumber` to test case started, test case finished, and all test step events and a `retried` boolean to the test case result to signify if the test case was retried 
 * usage-json formatter: add code and patternType
 * Add support for Node.js 12
 
