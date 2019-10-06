@@ -1,6 +1,6 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.0...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.1...master) (In Git)
 
 ### [6.0.1](https://github.com/cucumber/cucumber-js/compare/v6.0.0...v6.0.1) (2019-10-06)
 
