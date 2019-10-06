@@ -8,6 +8,7 @@ import tmp from 'tmp'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
+const projectBabelConfigPath = path.join(projectPath, 'babel.config.js')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
 Before('@debug', function() {
@@ -27,6 +28,9 @@ Before(function({ sourceLocation: { uri, line } }) {
   const profileContent =
     'module.exports = {default: "--require-module @babel/register"}'
   fsExtra.outputFileSync(tmpDirProfilePath, profileContent)
+
+  const tmpDirBabelConfigPath = path.join(this.tmpDir, 'babel.config.js')
+  fsExtra.createSymlinkSync(projectBabelConfigPath, tmpDirBabelConfigPath)
 
   const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
   const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
