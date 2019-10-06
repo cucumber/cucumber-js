@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Status from '../status'
-import Time from '../time'
+import Time, { MILLISECONDS_IN_NANOSECOND } from '../time'
 import UserCodeRunner from '../user_code_runner'
 import Promise from 'bluebird'
 
@@ -47,7 +47,7 @@ async function run({
     }
   }
 
-  const testStepResult = { duration: endTiming() }
+  const testStepResult = { duration: endTiming() * MILLISECONDS_IN_NANOSECOND }
 
   if (result === 'skipped') {
     testStepResult.status = Status.SKIPPED

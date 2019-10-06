@@ -15,6 +15,22 @@ When(/^I run cucumber-js(?: with `(|.+)`)?$/, { timeout: 10000 }, function(
 })
 
 When(
+  /^I run cucumber-js with all formatters(?: and `(|.+)`)?$/,
+  { timeout: 10000 },
+  function(args) {
+    if (!args) {
+      args = ''
+    }
+    // event-protocol is always outputted as part of run
+    const formats = ['json:json.out']
+    args += ' ' + formats.map(f => `--format ${f}`).join(' ')
+    args = Mustache.render(args, this)
+    args = stringArgv(args)
+    return this.run(this.localExecutablePath, args)
+  }
+)
+
+When(
   /^I run cucumber-js \(installed (locally|globally)\)$/,
   { timeout: 10000 },
   function(location) {

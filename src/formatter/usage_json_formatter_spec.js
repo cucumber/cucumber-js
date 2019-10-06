@@ -61,9 +61,12 @@ describe('UsageJsonFormatter', () => {
           })
         }
       })
-      const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+      const testCase = {
+        attemptNumber: 1,
+        sourceLocation: { uri: 'a.feature', line: 2 },
+      }
       eventBroadcaster.emit('test-case-prepared', {
-        ...testCase,
+        sourceLocation: testCase.sourceLocation,
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
@@ -75,6 +78,7 @@ describe('UsageJsonFormatter', () => {
           },
         ],
       })
+      eventBroadcaster.emit('test-case-started', testCase)
       eventBroadcaster.emit('test-step-finished', {
         index: 0,
         testCase,

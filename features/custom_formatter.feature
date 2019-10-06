@@ -10,38 +10,28 @@ Feature: custom formatter
   Scenario: extending Formatter
     Given a file named "simple_formatter.js" with:
       """
-      import {Formatter} from 'cucumber'
+      import {Formatter, formatterHelpers} from 'cucumber'
 
       class SimpleFormatter extends Formatter {
         constructor(options) {
           super(options)
           options.eventBroadcaster
-            .on('test-case-started', ::this.logTestCaseName)
-            .on('test-step-finished', ::this.logTestStep)
-            .on('test-case-finished', ::this.logSeparator)
+            .on('test-case-finished', ::this.logTestCase)
             .on('test-run-finished', ::this.logTestRunResult)
         }
 
-        logTestCaseName({sourceLocation}) {
-          const {gherkinDocument, pickle} = this.eventDataCollector.getTestCaseData(sourceLocation)
-          this.log(gherkinDocument.feature.name + ' / ' + pickle.name + '\n');
-        }
-
-        logTestStep({testCase, index, result}) {
-          const {gherkinKeyword, pickleStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
-          if (pickleStep) {
-            this.log('  ' + gherkinKeyword + pickleStep.text + ' - ' + result.status + '\n');
-          } else {
-            this.log('  Hook - ' + result.status + '\n');
-          }
-        }
-
-        logSeparator() {
-          this.log('\n');
+        logTestCase(testCaseFinishedEvent) {
+          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+          this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
+          const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
+          parsed.testSteps.forEach(testStep => {
+            this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
+          })
+          this.log('\n')
         }
 
         logTestRunResult({result}) {
-          this.log(result.success ? 'SUCCESS' : 'FAILURE');
+          this.log(result.success ? 'SUCCESS' : 'FAILURE')
         }
       }
 
@@ -66,33 +56,23 @@ Feature: custom formatter
       """
     And a file named "simple_formatter.js" with:
       """
-      import {SummaryFormatter} from 'cucumber'
+      import {SummaryFormatter, formatterHelpers} from 'cucumber'
 
       class SimpleFormatter extends SummaryFormatter {
         constructor(options) {
           super(options)
           options.eventBroadcaster
-            .on('test-case-started', ::this.logTestCaseName)
-            .on('test-step-finished', ::this.logTestStep)
-            .on('test-case-finished', ::this.logSeparator)
+            .on('test-case-finished', ::this.logTestCase)
         }
 
-        logTestCaseName({sourceLocation}) {
-          const {gherkinDocument, pickle} = this.eventDataCollector.getTestCaseData(sourceLocation)
-          this.log(gherkinDocument.feature.name + ' / ' + pickle.name + '\n');
-        }
-
-        logTestStep({testCase, index, result}) {
-          const {gherkinKeyword, pickleStep, testStep} = this.eventDataCollector.getTestStepData({testCase, index})
-          if (pickleStep) {
-            this.log('  ' + gherkinKeyword + pickleStep.text + ' - ' + result.status + '\n');
-          } else {
-            this.log('  Hook - ' + result.status + '\n');
-          }
-        }
-
-        logSeparator() {
-          this.log('\n');
+        logTestCase(testCaseFinishedEvent) {
+          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+          this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
+          const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
+          parsed.testSteps.forEach(testStep => {
+            this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
+          })
+          this.log('\n')
         }
       }
 

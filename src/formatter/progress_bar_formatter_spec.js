@@ -38,7 +38,21 @@ describe('ProgressBarFormatter', () => {
         pickle: { locations: [{ line: 7 }], steps: [4, 5] },
         uri: 'path/to/feature',
       })
-      this.eventBroadcaster.emit('test-case-started')
+      const testCase = {
+        attemptNumber: 1,
+        sourceLocation: { line: 2, uri: 'path/to/feature' },
+      }
+      this.eventBroadcaster.emit('test-case-prepared', {
+        sourceLocation: testCase.sourceLocation,
+        steps: [
+          { actionLocation: { line: 2, uri: 'path/to/steps' } },
+          {
+            actionLocation: { line: 2, uri: 'path/to/steps' },
+            sourceLocation: { line: 3, uri: 'path/to/feature' },
+          },
+        ],
+      })
+      this.eventBroadcaster.emit('test-step-started')
     })
 
     it('initializes a progress bar with the total number of steps', function() {
@@ -52,8 +66,12 @@ describe('ProgressBarFormatter', () => {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
       }
-      this.eventBroadcaster.emit('test-case-prepared', {
+      this.testCase = {
+        attemptNumber: 1,
         sourceLocation: { line: 2, uri: 'path/to/feature' },
+      }
+      this.eventBroadcaster.emit('test-case-prepared', {
+        sourceLocation: this.testCase.sourceLocation,
         steps: [
           { actionLocation: { line: 2, uri: 'path/to/steps' } },
           {
@@ -62,15 +80,14 @@ describe('ProgressBarFormatter', () => {
           },
         ],
       })
+      this.eventBroadcaster.emit('test-case-started', this.testCase)
     })
 
     describe('step is a hook', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
-          testCase: {
-            sourceLocation: { line: 2, uri: 'path/to/feature' },
-          },
+          testCase: this.testCase,
           result: { status: Status.PASSED },
         })
       })
@@ -84,9 +101,7 @@ describe('ProgressBarFormatter', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 1,
-          testCase: {
-            sourceLocation: { line: 2, uri: 'path/to/feature' },
-          },
+          testCase: this.testCase,
           result: { status: Status.PASSED },
         })
       })
@@ -117,7 +132,10 @@ describe('ProgressBarFormatter', () => {
           })
         }
       })
-      this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+      this.testCase = {
+        attemptNumber: 1,
+        sourceLocation: { uri: 'a.feature', line: 2 },
+      }
     })
 
     describe('ambiguous', () => {
@@ -130,6 +148,7 @@ describe('ProgressBarFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
@@ -142,7 +161,7 @@ describe('ProgressBarFormatter', () => {
           },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.AMBIGUOUS },
         })
       })
@@ -165,13 +184,14 @@ describe('ProgressBarFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { exception: 'error', status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.FAILED },
         })
       })
@@ -180,6 +200,81 @@ describe('ProgressBarFormatter', () => {
         expect(
           this.progressBarFormatter.progressBar.interrupt
         ).to.have.callCount(1)
+      })
+    })
+
+    describe('retried', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { exception: 'error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...this.testCase,
+          result: { status: Status.FAILED, retried: true },
+        })
+        this.retriedTestCase = { ...this.testCase, attemptNumber: 2 }
+      })
+
+      it('prints a warning for the failed run', function() {
+        expect(
+          this.progressBarFormatter.progressBar.interrupt
+        ).to.have.callCount(1)
+      })
+
+      describe('with passing run', function() {
+        beforeEach(function() {
+          this.progressBarFormatter.progressBar.interrupt.reset()
+          this.eventBroadcaster.emit('test-case-started', this.retriedTestCase)
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.retriedTestCase,
+            result: { status: Status.PASSED },
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            ...this.retriedTestCase,
+            result: { status: Status.PASSED },
+          })
+        })
+
+        it('does not print an additional error', function() {
+          expect(
+            this.progressBarFormatter.progressBar.interrupt
+          ).to.have.callCount(0)
+        })
+      })
+
+      describe('with all failures', function() {
+        beforeEach(function() {
+          this.progressBarFormatter.progressBar.interrupt.reset()
+          this.eventBroadcaster.emit('test-case-started', this.retriedTestCase)
+          this.eventBroadcaster.emit('test-step-finished', {
+            index: 0,
+            testCase: this.retriedTestCase,
+            result: { exception: 'error', status: Status.FAILED },
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            ...this.retriedTestCase,
+            result: { status: Status.FAILED },
+          })
+        })
+
+        it('prints the error for the last run', function() {
+          expect(
+            this.progressBarFormatter.progressBar.interrupt
+          ).to.have.callCount(1)
+        })
       })
     })
 
@@ -194,13 +289,14 @@ describe('ProgressBarFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.PASSED },
         })
       })
@@ -223,13 +319,14 @@ describe('ProgressBarFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { status: Status.PENDING },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.PENDING },
         })
       })
@@ -252,13 +349,14 @@ describe('ProgressBarFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { status: Status.SKIPPED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.SKIPPED },
         })
       })
@@ -280,13 +378,14 @@ describe('ProgressBarFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { status: Status.UNDEFINED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.UNDEFINED },
         })
       })

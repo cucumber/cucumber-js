@@ -47,14 +47,18 @@ describe('Usage Helpers', () => {
               })
             }
           })
-          const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+          const testCase = {
+            attemptNumber: 1,
+            sourceLocation: { uri: 'a.feature', line: 2 },
+          }
           this.eventBroadcaster.emit('test-case-prepared', {
-            ...testCase,
+            sourceLocation: testCase.sourceLocation,
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 3 } },
               { sourceLocation: { uri: 'a.feature', line: 4 } },
             ],
           })
+          this.eventBroadcaster.emit('test-case-started', testCase)
           this.eventBroadcaster.emit('test-step-finished', {
             index: 0,
             testCase,
@@ -63,6 +67,10 @@ describe('Usage Helpers', () => {
           this.eventBroadcaster.emit('test-step-finished', {
             index: 1,
             testCase,
+            result: {},
+          })
+          this.eventBroadcaster.emit('test-case-finished', {
+            ...testCase,
             result: {},
           })
           this.eventBroadcaster.emit('test-run-finished')
@@ -125,14 +133,18 @@ describe('Usage Helpers', () => {
               })
             }
           })
-          const testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+          const testCase = {
+            attemptNumber: 1,
+            sourceLocation: { uri: 'a.feature', line: 2 },
+          }
           this.eventBroadcaster.emit('test-case-prepared', {
-            ...testCase,
+            sourceLocation: testCase.sourceLocation,
             steps: [
               { sourceLocation: { uri: 'a.feature', line: 3 } },
               { sourceLocation: { uri: 'a.feature', line: 4 } },
             ],
           })
+          this.eventBroadcaster.emit('test-case-started', testCase)
           this.eventBroadcaster.emit('test-step-finished', {
             index: 0,
             testCase,

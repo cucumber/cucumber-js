@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Duration from 'duration'
 import Status from '../../status'
+import { MILLISECONDS_IN_NANOSECOND } from '../../time'
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,
@@ -11,16 +12,18 @@ const STATUS_REPORT_ORDER = [
   Status.PASSED,
 ]
 
-export function formatSummary({ colorFns, testCaseMap, testRun }) {
+export function formatSummary({ colorFns, testCaseAttempts, testRun }) {
   const testCaseResults = []
   const testStepResults = []
-  _.each(testCaseMap, ({ result, steps }) => {
-    testCaseResults.push(result)
-    _.each(steps, testStep => {
-      if (testStep.sourceLocation) {
-        testStepResults.push(testStep.result)
-      }
-    })
+  testCaseAttempts.forEach(({ testCase, result, stepResults }) => {
+    if (!result.retried) {
+      testCaseResults.push(result)
+      _.each(stepResults, (stepResult, index) => {
+        if (testCase.steps[index].sourceLocation) {
+          testStepResults.push(stepResult)
+        }
+      })
+    }
   })
   const scenarioSummary = getCountSummary({
     colorFns,
@@ -55,9 +58,9 @@ function getCountSummary({ colorFns, objects, type }) {
   return text
 }
 
-function getDuration(milliseconds) {
+function getDuration(nanoseconds) {
   const start = new Date(0)
-  const end = new Date(milliseconds)
+  const end = new Date(nanoseconds / MILLISECONDS_IN_NANOSECOND)
   const duration = new Duration(start, end)
 
   return (
