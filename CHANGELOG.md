@@ -2,6 +2,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.0...master) (In Git)
 
+### [6.0.1](https://github.com/cucumber/cucumber-js/compare/v6.0.0...v6.0.1) (2019-10-06)
+
+* Release to fix missing lib
+
 ### [6.0.0](https://github.com/cucumber/cucumber-js/compare/v5.1.0...v6.0.0) (2019-10-06)
 
 #### BREAKING CHANGES
