@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "5.1.0",
+  "version": "6.0.0",
   "homepage": "http://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
   "contributors": [
@@ -128,7 +128,14 @@
     "David H. Gutteridge <dhgutteridge@users.noreply.github.com>",
     "lopesc <lopesc@users.noreply.github.com>",
     "Honza Javorek <mail@honzajavorek.cz>",
-    "Josh Chisholm <joshuachisholm@gmail.com>"
+    "Josh Chisholm <joshuachisholm@gmail.com>",
+    "Izhaki <roey@gefri.org>",
+    "Niyaz Akhmetov <axmet180@gmail.com>",
+    "Sérgio Junior <sergioamjr91@gmail.com>",
+    "mgonnet <gonnet.matias@gmail.com>",
+    "Joey Jan <OverFlow636@users.noreply.github.com>",
+    "David Goss <david@davidgoss.co>",
+    "Artur Neumann <artur@jankaritech.com>"
   ],
   "repository": {
     "type": "git",
@@ -143,7 +150,7 @@
   },
   "main": "./lib/index",
   "engines": {
-    "node": ">=0.10"
+    "node": ">=8"
   },
   "dependencies": {
     "assertion-error-formatter": "^3.0.0",

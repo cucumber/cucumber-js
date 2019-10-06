@@ -1,6 +1,8 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.1.0...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.0...master) (In Git)
+
+### [6.0.0](https://github.com/cucumber/cucumber-js/compare/v5.1.0...v6.0.0) (2019-10-06)
 
 #### BREAKING CHANGES
 
@@ -11,29 +13,30 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 #### Bug fixes
 
 * Prevent after hooks from updating skipped scenarios to passed
+* Parallel: beforeAll / afterAll errors fail the suite
 * Fix CLI help link
 
 #### New features
 
 * Add ability to retry flaky tests
   * Use `--retry <NUMBER>` and limit what tests will be retried with `--retryTagFilter <EXPRESSION>`
-  * Event-protocol added an `attemptNumber` to test case started, test case finished, and all test step events and a `retried` boolean to the test case result to signify if the test case was retried 
+  * Event-protocol added an `attemptNumber` to test case started, test case finished, and all test step events and a `retried` boolean to the test case result to signify if the test case was retried
 * usage-json formatter: add code and patternType
 * Add support for Node.js 12
 
-### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...5.1.0) (2018-12-28)
+### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...v5.1.0) (2018-12-28)
 
 #### Internals
 
 * Upgrade to babel 7
 
-### [5.0.3](https://github.com/cucumber/cucumber-js/compare/v5.0.2...5.0.3) (2018-12-03)
+### [5.0.3](https://github.com/cucumber/cucumber-js/compare/v5.0.2...v5.0.3) (2018-12-03)
 
 #### Speed Improvements
 
 * Only create Cucumber Expressions once
 
-### [5.0.2](https://github.com/cucumber/cucumber-js/compare/v5.0.1...5.0.2) (2018-10-06)
+### [5.0.2](https://github.com/cucumber/cucumber-js/compare/v5.0.1...v5.0.2) (2018-10-06)
 
 #### Bug Fixes
 
