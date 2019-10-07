@@ -179,3 +179,9 @@ require('ts-node').register({
 ## World Parameters
 
 You can pass in parameters to pass to the world constructor with `--world-parameters <JSON>`. The JSON string must define an object. The parsed object will be passed as the `parameters` to the the world constructor. This option is repeatable and the objects will be merged with the last instance taking precedence.
+
+Example:
+
+```
+--world-parameters '{"fancySetting":true}'
+```
