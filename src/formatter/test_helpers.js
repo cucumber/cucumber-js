@@ -10,8 +10,9 @@ export function createMock(input) {
   return _.mapValues(input, value => sinon.stub().returns(value))
 }
 
-export function parseGherkinDocument(eventBroadcaster, data, uri, types, lang) {
-  const events = Gherkin.generateEvents(data, uri, types, lang)
+export function parseGherkinDocument(options) {
+  const { eventBroadcaster, data, uri, language } = options
+  const events = Gherkin.generateEvents(data, uri, null, language)
   events.forEach(event => {
     eventBroadcaster.emit(event.type, event)
     if (event.type === 'pickle') {
@@ -25,11 +26,11 @@ export function parseGherkinDocument(eventBroadcaster, data, uri, types, lang) {
 }
 
 /**
- *
+ * Emulates events for test cases.
  * @param {*} eventBroadcaster
  * @param {*} testCases
  */
-export function mockTestCaseResult(eventBroadcaster, testCases) {
+export function emitTestCaseResults(eventBroadcaster, testCases) {
   testCases.forEach(({ steps, status, ...testCase }) => {
     const preparedSteps = []
     const stepEvents = []
@@ -38,11 +39,9 @@ export function mockTestCaseResult(eventBroadcaster, testCases) {
         sourceLocation: step.sourceLocation,
         actionLocation: step.actionLocation,
       })
-      const result = { status: step.status }
+      const result = { status: step.status, duration: 1 }
       if (step.status === Status.FAILED) {
         result.exception = step.exception
-      } else {
-        result.duration = 1
       }
       stepEvents.push({
         index: index,

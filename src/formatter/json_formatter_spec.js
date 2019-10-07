@@ -5,7 +5,7 @@ import Status from '../status'
 import EventEmitter from 'events'
 import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
-import { parseGherkinDocument, mockTestCaseResult } from './test_helpers'
+import { parseGherkinDocument, emitTestCaseResults } from './test_helpers'
 
 describe('JsonFormatter', () => {
   beforeEach(function() {
@@ -374,25 +374,25 @@ describe('JsonFormatter', () => {
     })
   })
 
-  describe('one scenario with one step with localization', () => {
+  describe('one scenario with one step with localization (ru)', () => {
     beforeEach(function() {
-      parseGherkinDocument(
-        this.eventBroadcaster,
-        '@tag1 @tag2\n' +
+      parseGherkinDocument({
+        eventBroadcaster: this.eventBroadcaster,
+        data:
+          '@tag1 @tag2\n' +
           'Функционал: my feature\n' +
           'my feature description\n' +
           'Сценарий: my scenario\n' +
           'my scenario description\n' +
           '  Дано my step',
-        'a.feature',
-        null,
-        'ru'
-      )
+        uri: 'a.feature',
+        language: 'ru',
+      })
     })
 
     describe('passed', () => {
       beforeEach(function() {
-        mockTestCaseResult(this.eventBroadcaster, [
+        emitTestCaseResults(this.eventBroadcaster, [
           {
             sourceLocation: { uri: 'a.feature', line: 4 },
             status: Status.PASSED,
@@ -445,11 +445,12 @@ describe('JsonFormatter', () => {
     })
   })
 
-  describe('scenario outline with localization', () => {
+  describe('scenario outline with localization (ru)', () => {
     beforeEach(function() {
-      parseGherkinDocument(
-        this.eventBroadcaster,
-        '@tag1 @tag2\n' +
+      parseGherkinDocument({
+        eventBroadcaster: this.eventBroadcaster,
+        data:
+          '@tag1 @tag2\n' +
           'Функционал: обед\n' +
           'Описывает процесс обеда\n' +
           'Структура сценария: поедание огурцов\n' +
@@ -461,12 +462,11 @@ describe('JsonFormatter', () => {
           '    | start | eat | left |\n' +
           '    |    12 |   5 |    7 |\n' +
           '    |    20 |   5 |   15 |',
-        'a.feature',
-        null,
-        'ru'
-      )
+        uri: 'a.feature',
+        language: 'ru',
+      })
 
-      mockTestCaseResult(this.eventBroadcaster, [
+      emitTestCaseResults(this.eventBroadcaster, [
         {
           sourceLocation: { uri: 'a.feature', line: 11 },
           status: Status.PASSED,

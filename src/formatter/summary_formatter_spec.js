@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import {
   createMock,
   parseGherkinDocument,
-  mockTestCaseResult,
+  emitTestCaseResults,
 } from './test_helpers'
 import getColorFns from './get_color_fns'
 import Status from '../status'
@@ -256,20 +256,19 @@ describe('SummaryFormatter', () => {
     })
   })
 
-  describe('issues with localization', () => {
+  describe('issues with localization (ru)', () => {
     beforeEach(function() {
-      parseGherkinDocument(
-        this.eventBroadcaster,
-        'Функционал: a\nСценарий: b\nДано a step',
-        'a.feature',
-        null,
-        'ru'
-      )
+      parseGherkinDocument({
+        eventBroadcaster: this.eventBroadcaster,
+        data: 'Функционал: a\nСценарий: b\nДано a step',
+        uri: 'a.feature',
+        language: 'ru',
+      })
     })
 
     describe('with a failing scenario', () => {
       beforeEach(function() {
-        mockTestCaseResult(this.eventBroadcaster, [
+        emitTestCaseResults(this.eventBroadcaster, [
           {
             sourceLocation: { uri: 'a.feature', line: 2 },
             status: Status.FAILED,
@@ -301,11 +300,12 @@ describe('SummaryFormatter', () => {
     })
   })
 
-  describe('scenario outline with issues with localization', () => {
+  describe('scenario outline with issues with localization (ru)', () => {
     beforeEach(function() {
-      parseGherkinDocument(
-        this.eventBroadcaster,
-        '@tag1 @tag2\n' +
+      parseGherkinDocument({
+        eventBroadcaster: this.eventBroadcaster,
+        data:
+          '@tag1 @tag2\n' +
           'Функционал: обед\n' +
           'Описывает процесс обеда\n' +
           'Структура сценария: поедание огурцов\n' +
@@ -317,15 +317,14 @@ describe('SummaryFormatter', () => {
           '    | start | eat | left |\n' +
           '    |    12 |   5 |    7 |\n' +
           '    |    20 |   5 |   14 |',
-        'a.feature',
-        null,
-        'ru'
-      )
+        uri: 'a.feature',
+        language: 'ru',
+      })
     })
 
     describe('with a failing scenario', () => {
       beforeEach(function() {
-        mockTestCaseResult(this.eventBroadcaster, [
+        emitTestCaseResults(this.eventBroadcaster, [
           {
             sourceLocation: { uri: 'a.feature', line: 11 },
             status: Status.PASSED,
