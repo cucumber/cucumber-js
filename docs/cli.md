@@ -165,6 +165,17 @@ And then require it using the `--require` option:
 
 Note that since the first `--require babel.register.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
 
+Similarly, with TypeScript, you might want to provide configuration that prevents the compiled JS being written out to files, and pass some compiler options:
+
+```js
+require('ts-node').register({
+  transpileOnly: true,
+  compilerOptions: {
+    // your compiler options here
+  },
+});
+```
+
 ## World Parameters
 
 You can pass in parameters to pass to the world constructor with `--world-parameters <JSON>`. The JSON string must define an object. The parsed object will be passed as the `parameters` to the the world constructor. This option is repeatable and the objects will be merged with the last instance taking precedence.
