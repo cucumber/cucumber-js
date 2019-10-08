@@ -158,7 +158,7 @@
     "cli-table3": "^0.5.1",
     "colors": "^1.1.2",
     "commander": "^3.0.1",
-    "cucumber-expressions": "^7.0.0",
+    "cucumber-expressions": "^8.0.1",
     "cucumber-tag-expressions": "^2.0.2",
     "duration": "^0.2.1",
     "escape-string-regexp": "^2.0.0",
