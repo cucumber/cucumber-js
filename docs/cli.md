@@ -75,6 +75,12 @@ By default, cucumber exits when the event loop drains. Use the `--exit` flag in 
 * [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
 * Isolating what scenario or scenarios causes the hang
 
+## Strictness
+
+By default, cucumber will treat pending steps as a failure; this is called strict mode. If desired, you can run cucumber in non-strict mode via the `--no-strict` flag, which means the test run will pass even with pending steps.
+
+Note: undefined or ambiguous steps will _always_ be treated as a failure.
+
 ## Undefined Step Snippets
 
 Undefined steps snippets are printed in JavaScript using the callback interface by default.
