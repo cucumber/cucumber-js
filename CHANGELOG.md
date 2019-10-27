@@ -2,6 +2,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.2...master) (In Git)
 
+### [6.0.3](https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3) (2019-10-27)
+
+* Revert JSON formatter changes to be backward compatible
+
 ### [6.0.2](https://github.com/cucumber/cucumber-js/compare/v6.0.1...v6.0.2) (2019-10-07)
 
 * Upgrade to cucumber-expressions 8.0.1 to fix failure on multiple installs
@@ -15,7 +19,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 #### BREAKING CHANGES
 
 * Drop support for Node.js 6
-* JSON formatter has major breaking changes. View some sample outputs [here](/features/fixtures/formatters/). The `*.json.js` files contain the js objects the json parses to.
+* JSON formatter has major breaking changes. View some sample outputs [here](/features/fixtures/formatters/). The `*.json.js` files contain the js objects the json parses to. (UPDATE - reverted in 6.0.3)
 * Duration is now in nanoseconds in event-protocol formatter and in events sent to custom formatters
 * Custom formatters: Formatter helpers and EventDataCollector had breaking changes to support retry
 
