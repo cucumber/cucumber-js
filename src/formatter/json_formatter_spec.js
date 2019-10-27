@@ -26,11 +26,7 @@ describe('JsonFormatter', () => {
     })
 
     it('outputs an empty array', function() {
-      expect(JSON.parse(this.output)).to.eql({
-        gherkinDocuments: [],
-        pickles: [],
-        testCaseAttempts: [],
-      })
+      expect(JSON.parse(this.output)).to.eql([])
     })
   })
 
@@ -67,7 +63,6 @@ describe('JsonFormatter', () => {
           sourceLocation: this.testCase.sourceLocation,
           steps: [
             {
-              actionLocation: { uri: 'steps.js', line: 2 },
               sourceLocation: { uri: 'a.feature', line: 6 },
             },
           ],
@@ -86,129 +81,86 @@ describe('JsonFormatter', () => {
       })
 
       it('outputs the feature', function() {
-        expect(JSON.parse(this.output)).to.eql({
-          gherkinDocuments: [
-            {
-              comments: [],
-              feature: {
-                children: [
-                  {
-                    description: 'my scenario description',
-                    keyword: 'Scenario',
-                    location: {
-                      column: 1,
-                      line: 4,
-                    },
-                    name: 'my scenario',
-                    steps: [
-                      {
-                        keyword: 'Given ',
-                        location: {
-                          column: 1,
-                          line: 6,
-                        },
-                        text: 'my step',
-                        type: 'Step',
-                      },
-                    ],
-                    tags: [],
-                    type: 'Scenario',
-                  },
-                ],
-                description: 'my feature description',
-                keyword: 'Feature',
-                language: 'en',
-                location: {
-                  column: 1,
-                  line: 2,
-                },
-                name: 'my feature',
-                tags: [
-                  {
-                    location: {
-                      column: 1,
-                      line: 1,
-                    },
-                    name: '@tag1',
-                    type: 'Tag',
-                  },
-                  {
-                    location: {
-                      column: 7,
-                      line: 1,
-                    },
-                    name: '@tag2',
-                    type: 'Tag',
-                  },
-                ],
-                type: 'Feature',
-              },
-              type: 'GherkinDocument',
-              uri: 'a.feature',
-            },
-          ],
-          pickles: [
-            {
-              language: 'en',
-              locations: [
-                {
-                  column: 1,
-                  line: 4,
-                },
-              ],
-              name: 'my scenario',
-              steps: [
-                {
-                  arguments: [],
-                  locations: [
-                    {
-                      column: 7,
-                      line: 6,
-                    },
-                  ],
-                  text: 'my step',
-                },
-              ],
-              tags: [
-                {
-                  location: {
-                    column: 1,
-                    line: 1,
-                  },
-                  name: '@tag1',
-                },
-                {
-                  location: {
-                    column: 7,
-                    line: 1,
-                  },
-                  name: '@tag2',
-                },
-              ],
-              uri: 'a.feature',
-            },
-          ],
-          testCaseAttempts: [
-            {
-              testCase: {
-                attemptNumber: 1,
+        expect(JSON.parse(this.output)).to.eql([
+          {
+            description: 'my feature description',
+            elements: [
+              {
+                description: 'my scenario description',
+                id: 'my-feature;my-scenario',
+                keyword: 'Scenario',
+                line: 4,
                 name: 'my scenario',
-                result: { duration: 1, status: 'passed' },
-                sourceLocation: { uri: 'a.feature', line: 4 },
+                type: 'scenario',
+                steps: [
+                  {
+                    arguments: [],
+                    line: 6,
+                    keyword: 'Given ',
+                    name: 'my step',
+                    result: {
+                      status: 'passed',
+                      duration: 1000000,
+                    },
+                  },
+                ],
+                tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
               },
-              testSteps: [
-                {
-                  actionLocation: { uri: 'steps.js', line: 2 },
-                  arguments: [],
-                  attachments: [],
-                  keyword: 'Given ',
-                  result: { duration: 1, status: 'passed' },
-                  sourceLocation: { uri: 'a.feature', line: 6 },
-                  text: 'my step',
-                },
-              ],
+            ],
+            id: 'my-feature',
+            keyword: 'Feature',
+            line: 2,
+            name: 'my feature',
+            tags: [{ name: '@tag1', line: 1 }, { name: '@tag2', line: 1 }],
+            uri: 'a.feature',
+          },
+        ])
+      })
+    })
+
+    describe('retried', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 6 },
             },
           ],
+        })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { duration: 1, exception: 'my error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...this.testCase,
+          result: { duration: 1, status: Status.FAILED, retried: true },
+        })
+        const testCaseAttempt2 = {
+          sourceLocation: this.testCase.sourceLocation,
+          attemptNumber: 2,
+        }
+        this.eventBroadcaster.emit('test-case-started', testCaseAttempt2)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: testCaseAttempt2,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...testCaseAttempt2,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-run-finished')
+      })
+
+      it('does not output retried test cases', function() {
+        const features = JSON.parse(this.output)
+        expect(features[0].elements.length).to.eql(1)
+        expect(features[0].elements[0].steps[0].result).to.eql({
+          status: 'passed',
+          duration: 1000000,
         })
       })
     })
@@ -237,11 +189,43 @@ describe('JsonFormatter', () => {
       })
 
       it('includes the error message', function() {
-        const result = JSON.parse(this.output)
-        expect(result.testCaseAttempts[0].testSteps[0].result).to.eql({
+        const features = JSON.parse(this.output)
+        expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'failed',
-          exception: 'my error',
-          duration: 1,
+          error_message: 'my error',
+          duration: 1000000,
+        })
+      })
+    })
+
+    describe('with a step definition', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              actionLocation: { uri: 'steps.js', line: 10 },
+              sourceLocation: { uri: 'a.feature', line: 6 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...this.testCase,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-run-finished')
+      })
+
+      it('outputs the step with a match attribute', function() {
+        const features = JSON.parse(this.output)
+        expect(features[0].elements[0].steps[0].match).to.eql({
+          location: 'steps.js:10',
         })
       })
     })
@@ -264,40 +248,27 @@ describe('JsonFormatter', () => {
           ],
         })
         this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 1,
-          testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 2,
-          testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED },
-        })
         this.eventBroadcaster.emit('test-case-finished', {
           ...this.testCase,
-          result: { duration: 3, status: Status.PASSED },
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the before hook with proper keyword and action location', function() {
-        const result = JSON.parse(this.output)
-        const beforeHook = result.testCaseAttempts[0].testSteps[0]
-        expect(beforeHook.actionLocation).to.eql({ uri: 'steps.js', line: 10 })
+      it('outputs the before hook with special properties', function() {
+        const features = JSON.parse(this.output)
+        const beforeHook = features[0].elements[0].steps[0]
+        expect(beforeHook).to.not.have.ownProperty('line')
         expect(beforeHook.keyword).to.eql('Before')
+        expect(beforeHook.hidden).to.eql(true)
       })
 
       it('outputs the after hook with special properties', function() {
-        const result = JSON.parse(this.output)
-        const beforeHook = result.testCaseAttempts[0].testSteps[2]
-        expect(beforeHook.actionLocation).to.eql({ uri: 'steps.js', line: 12 })
+        const features = JSON.parse(this.output)
+        const beforeHook = features[0].elements[0].steps[2]
+        expect(beforeHook).to.not.have.ownProperty('line')
         expect(beforeHook.keyword).to.eql('After')
+        expect(beforeHook.hidden).to.eql(true)
       })
     })
 
@@ -337,11 +308,11 @@ describe('JsonFormatter', () => {
         this.eventBroadcaster.emit('test-run-finished')
       })
 
-      it('outputs the step attachments', function() {
-        const result = JSON.parse(this.output)
-        expect(result.testCaseAttempts[0].testSteps[0].attachments).to.eql([
-          { data: 'first data', media: { type: 'first media type' } },
-          { data: 'second data', media: { type: 'second media type' } },
+      it('outputs the step with embeddings', function() {
+        const features = JSON.parse(this.output)
+        expect(features[0].elements[0].steps[0].embeddings).to.eql([
+          { data: 'first data', mime_type: 'first media type' },
+          { data: 'second data', mime_type: 'second media type' },
         ])
       })
     })
@@ -395,9 +366,10 @@ describe('JsonFormatter', () => {
     })
 
     it('outputs the doc string as a step argument', function() {
-      const result = JSON.parse(this.output)
-      expect(result.testCaseAttempts[0].testSteps[0].arguments).to.eql([
+      const features = JSON.parse(this.output)
+      expect(features[0].elements[0].steps[0].arguments).to.eql([
         {
+          line: 4,
           content: 'This is a DocString',
         },
       ])
@@ -452,10 +424,14 @@ describe('JsonFormatter', () => {
     })
 
     it('outputs the data table as a step argument', function() {
-      const result = JSON.parse(this.output)
-      expect(result.testCaseAttempts[0].testSteps[0].arguments).to.eql([
+      const features = JSON.parse(this.output)
+      expect(features[0].elements[0].steps[0].arguments).to.eql([
         {
-          rows: [['aaa', 'b', 'c'], ['d', 'e', 'ff'], ['gg', 'h', 'iii']],
+          rows: [
+            { cells: ['aaa', 'b', 'c'] },
+            { cells: ['d', 'e', 'ff'] },
+            { cells: ['gg', 'h', 'iii'] },
+          ],
         },
       ])
     })
