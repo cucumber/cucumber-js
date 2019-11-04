@@ -1674,10 +1674,10 @@ crypto-browserify@^3.0.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-cucumber-expressions@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-8.0.1.tgz#47eb87dcb626e90a4672986da1130f3c470b9e3d"
-  integrity sha512-g+A+tUEafNofe6ErwvOkqaMvDj9NuOr0GouGotpw4r5yK2d4144o9/6sQpXBr2YXbRy5ItmER/2bzAyDAzhPyQ==
+cucumber-expressions@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/cucumber-expressions/-/cucumber-expressions-8.1.0.tgz#4ae919e094981f071a88d23b54896ff6dc986847"
+  integrity sha512-mOrAa/i/8uc6guMbrEqftt3FiXgpCngwQpqQmoPAYWNLNttSpXz5JwwLNTk99bTlHhJIMdGe3QR2v3tu6kBHLA==
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
     xregexp "^4.2.4"
