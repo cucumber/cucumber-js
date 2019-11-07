@@ -495,3 +495,45 @@ Feature: Retry flaky tests
     And scenario "Also Flaky" step "Given an other flaky step" has status "passed"
     And scenario "Third Flaky" step "Given one more flaky step" has status "failed"
     And it fails
+
+  Scenario: retrying a flaky test will use a fresh World instance
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Flaky
+          Given a flaky step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Before, After, Given, setWorldConstructor} from 'cucumber'
+
+      Before(function() {
+        this.usedCount++
+      })
+
+      After(function() {
+        if (this.usedCount > 1) {
+          throw 'World was used in more than 1 test case run'
+        }
+      })
+
+      let willPass = false
+
+      Given(/^a flaky step$/, function() {
+        if (willPass) {
+          return
+        }
+        willPass = true
+        throw 'fail'
+      })
+
+      class CustomWorld {
+        constructor() {
+          this.usedCount = 0
+        }
+      }
+
+      setWorldConstructor(CustomWorld)
+      """
+    When I run cucumber-js with `--retry 1`
+    Then it passes
