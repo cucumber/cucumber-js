@@ -1,6 +1,10 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.2...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.4...master) (In Git)
+
+### [6.0.4](https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4) (2019-11-10)
+
+* retry: create a new World instance for every attempt
 
 ### [6.0.3](https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3) (2019-10-27)
 
