@@ -27,13 +27,17 @@ describe('TestCaseRunner', () => {
       },
       uri: 'path/to/feature',
     }
+    this.onWorldConstructed = sinon.stub()
+    const owc = this.onWorldConstructed
     this.supportCodeLibrary = {
       afterTestCaseHookDefinitions: [],
       beforeTestCaseHookDefinitions: [],
       defaultTimeout: 5000,
       stepDefinitions: [],
       parameterTypeRegistry: {},
-      World() {},
+      World() {
+        owc()
+      },
     }
     sinon.stub(StepRunner, 'run')
   })
@@ -368,6 +372,10 @@ describe('TestCaseRunner', () => {
           attemptNumber: 2,
           sourceLocation,
         })
+      })
+
+      it('constructs the World twice', function() {
+        expect(this.onWorldConstructed).to.have.callCount(2)
       })
     })
 
