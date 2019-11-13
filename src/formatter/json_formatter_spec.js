@@ -71,11 +71,11 @@ describe('JsonFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1000000, status: Status.PASSED },
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           ...this.testCase,
-          result: { duration: 1000000, status: Status.PASSED },
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -100,7 +100,7 @@ describe('JsonFormatter', () => {
                     name: 'my step',
                     result: {
                       status: 'passed',
-                      duration: 1000000,
+                      duration: 1,
                     },
                   },
                 ],
@@ -146,11 +146,11 @@ describe('JsonFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: testCaseAttempt2,
-          result: { duration: 1000000, status: Status.PASSED },
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           ...testCaseAttempt2,
-          result: { duration: 1000000, status: Status.PASSED },
+          result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -160,7 +160,7 @@ describe('JsonFormatter', () => {
         expect(features[0].elements.length).to.eql(1)
         expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'passed',
-          duration: 1000000,
+          duration: 1,
         })
       })
     })
@@ -180,14 +180,14 @@ describe('JsonFormatter', () => {
           index: 0,
           testCase: this.testCase,
           result: {
-            duration: 1000000,
+            duration: 1,
             exception: 'my error',
             status: Status.FAILED,
           },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           ...this.testCase,
-          result: { duration: 1000000, status: Status.FAILED },
+          result: { duration: 1, status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -197,7 +197,7 @@ describe('JsonFormatter', () => {
         expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'failed',
           error_message: 'my error',
-          duration: 1000000,
+          duration: 1,
         })
       })
     })
