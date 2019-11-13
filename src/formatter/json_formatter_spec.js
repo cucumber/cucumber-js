@@ -71,11 +71,11 @@ describe('JsonFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1, status: Status.PASSED },
+          result: { duration: 1000000, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           ...this.testCase,
-          result: { duration: 1, status: Status.PASSED },
+          result: { duration: 1000000, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -146,11 +146,11 @@ describe('JsonFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: testCaseAttempt2,
-          result: { duration: 1, status: Status.PASSED },
+          result: { duration: 1000000, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           ...testCaseAttempt2,
-          result: { duration: 1, status: Status.PASSED },
+          result: { duration: 1000000, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })
@@ -179,11 +179,15 @@ describe('JsonFormatter', () => {
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1, exception: 'my error', status: Status.FAILED },
+          result: {
+            duration: 1000000,
+            exception: 'my error',
+            status: Status.FAILED,
+          },
         })
         this.eventBroadcaster.emit('test-case-finished', {
           ...this.testCase,
-          result: { duration: 1, status: Status.FAILED },
+          result: { duration: 1000000, status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-run-finished')
       })

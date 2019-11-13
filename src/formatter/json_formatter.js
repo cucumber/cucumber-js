@@ -149,7 +149,7 @@ export default class JsonFormatter extends Formatter {
       const { exception, status } = testStepResult
       data.result = { status }
       if (!_.isUndefined(testStepResult.duration)) {
-        data.result.duration = testStepResult.duration * 1000000
+        data.result.duration = testStepResult.duration
       }
       if (status === Status.FAILED && exception) {
         data.result.error_message = format(exception)
