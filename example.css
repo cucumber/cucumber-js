@@ -1,0 +1,87 @@
+/*
+ * Header
+ */
+
+img.cucumber-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+img.github-logo {
+  height: 50px;
+  position: absolute;
+  top: 25px;
+  right: 15px;
+}
+
+/*
+ * Main
+ */
+
+.main {
+  position: absolute;
+  top: 100px;
+  bottom: 100px;
+  left: 15px;
+  right: 15px;
+}
+
+.tab-content {
+  position: absolute;
+  top: 42px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.tab-pane {
+  height: 100%;
+  width: 100%;
+}
+
+#feature, #step-definitions, #output {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  border: 1px solid #ccc;
+}
+
+#output {
+  overflow: scroll;
+  padding: 5px;
+}
+
+#output .exit-status {
+  margin-top: 20px;
+}
+
+#output .error {
+  color: red;
+}
+
+/*
+ * Footer
+ */
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  height: 100px;
+  left: 15px;
+  right: 15px;
+}
+
+#run-feature {
+  position: absolute;
+  top: 33px;
+  right: 0;
+  background-color: #00A818;
+  color: white;
+}
+
+#run-feature:hover {
+  background-color: #39B54A;
+}

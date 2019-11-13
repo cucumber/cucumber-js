@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Cucumber.js</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="example.css" rel="stylesheet" type="text/css"/>
+
+    <link href="images/favicon.png" rel="icon" type="image/png">
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.1.2/chai.min.js"></script>
+
+    <!-- Hack to get ansi-html to run in the browser -->
+    <script type="text/javascript">
+      var module = {};
+    </script>
+    <script type="text/javascript">
+      var ansiHTML = module.exports;
+      module = null;
+    </script>
+
+    <script type="text/javascript" src="cucumber.js"></script>
+    <script type="text/javascript" src="browser-example.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <a href="https://cucumber.io/">
+        <img class="cucumber-logo" src="images/cucumber.svg">
+      </a>
+      <a href="https://github.com/cucumber/cucumber-js">
+        <img class="github-logo" src="images/github.png">
+      </a>
+    </div>
+
+    <div class="main">
+      <ul class="nav nav-pills" role="tablist">
+        <li class="active"><a href="#feature-tab" data-toggle="tab">Feature</a></li>
+        <li><a href="#step-definitions-tab" data-toggle="tab">Step Definitions</a></li>
+        <li><a href="#output-tab" data-toggle="tab">Output</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="feature-tab">
+          <div id="feature">Feature: Simple maths
+  In order to do maths
+  As a developer
+  I want to increment variables
+
+  Scenario: easy maths
+    Given a variable set to 1
+    When I increment the variable by 1
+    Then the variable should contain 2
+
+  Scenario Outline: much more complex stuff
+    Given a variable set to &lt;var&gt;
+    When I increment the variable by &lt;increment&gt;
+    Then the variable should contain &lt;result&gt;
+
+    Examples:
+      | var | increment | result |
+      | 100 |         5 |    105 |
+      |  99 |      1234 |   1333 |
+      |  12 |         5 |     18 |</div>
+        </div>
+        <div class="tab-pane" id="step-definitions-tab">
+          <div id="step-definitions"> // Cucumber and chai have been loaded in the browser
+var setWorldConstructor = Cucumber.setWorldConstructor;
+var Given = Cucumber.Given;
+var When = Cucumber.When;
+var Then = Cucumber.Then;
+var expect = chai.expect;
+
+///// World /////
+//
+// Call 'setWorldConstructor' with to your custom world (optional)
+//
+
+var CustomWorld = function() {
+  this.variable = 0;
+};
+
+CustomWorld.prototype.setTo = function(number) {
+  this.variable = parseInt(number);
+};
+
+CustomWorld.prototype.incrementBy = function(number) {
+  this.variable += parseInt(number);
+};
+
+setWorldConstructor(CustomWorld);
+
+///// Step definitions /////
+//
+// use 'Given', 'When' and 'Then' to declare step definitions
+//
+
+Given('a variable set to {int}', function(number) {
+  this.setTo(number);
+});
+
+When('I increment the variable by {int}', function(number) {
+  this.incrementBy(number);
+});
+
+Then('the variable should contain {int}', function(number) {
+  expect(this.variable).to.eql(number)
+});
+</div>
+        </div>
+        <div class="tab-pane" id="output-tab">
+          <pre id="output"></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="btn" id="run-feature">Run Feature</button>
+    </div>
+  </body>
+</html>
