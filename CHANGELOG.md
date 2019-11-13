@@ -1,8 +1,16 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.4...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.5...master) (In Git)
+
+### [6.0.5](https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5) (2019-11-13)
+
+#### Bug fixes
+
+* json formatter: fix duration to be nanoseconds (was femtoseconds)
 
 ### [6.0.4](https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4) (2019-11-10)
+
+#### Bug fixes
 
 * retry: create a new World instance for every attempt
 
