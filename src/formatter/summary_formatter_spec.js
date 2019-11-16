@@ -8,6 +8,7 @@ import figures from 'figures'
 import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
+import { MILLISECONDS_IN_NANOSECOND } from '../time'
 
 describe('SummaryFormatter', () => {
   beforeEach(function() {
@@ -32,7 +33,10 @@ describe('SummaryFormatter', () => {
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
       })
-      this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+      this.testCase = {
+        attemptNumber: 1,
+        sourceLocation: { uri: 'a.feature', line: 2 },
+      }
     })
 
     describe('with a failing scenario', () => {
@@ -46,13 +50,14 @@ describe('SummaryFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { exception: 'error', status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-run-finished', {
@@ -85,6 +90,7 @@ describe('SummaryFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
@@ -97,7 +103,7 @@ describe('SummaryFormatter', () => {
           },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.AMBIGUOUS },
         })
         this.eventBroadcaster.emit('test-run-finished', {
@@ -132,13 +138,14 @@ describe('SummaryFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { status: Status.UNDEFINED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.UNDEFINED },
         })
         this.eventBroadcaster.emit('test-run-finished', {
@@ -175,13 +182,14 @@ describe('SummaryFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { status: Status.PENDING },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { status: Status.PENDING },
         })
         this.eventBroadcaster.emit('test-run-finished', {
@@ -204,11 +212,121 @@ describe('SummaryFormatter', () => {
       })
     })
 
+    describe('with a passing flaky step', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { exception: 'error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...this.testCase,
+          result: { status: Status.FAILED, retried: true },
+        })
+        const retriedTestCase = { ...this.testCase, attemptNumber: 2 }
+        this.eventBroadcaster.emit('test-case-started', retriedTestCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: retriedTestCase,
+          result: { status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...retriedTestCase,
+          result: { status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 },
+        })
+      })
+
+      it('logs the issue', function() {
+        expect(this.output).to.eql(
+          'Warnings:\n' +
+            '\n' +
+            '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
+            `   ${figures.cross} Given a step # steps.js:4\n` +
+            '       error\n' +
+            '\n' +
+            '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m00.000s\n'
+        )
+      })
+    })
+
+    describe('with a failed flaky step', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 3 },
+              actionLocation: { uri: 'steps.js', line: 4 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { exception: 'error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...this.testCase,
+          result: { status: Status.FAILED, retried: true },
+        })
+        const retriedTestCase = { ...this.testCase, attemptNumber: 2 }
+        this.eventBroadcaster.emit('test-case-started', retriedTestCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: retriedTestCase,
+          result: { exception: 'error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...retriedTestCase,
+          result: { status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-run-finished', {
+          result: { duration: 0 },
+        })
+      })
+
+      it('logs the issue', function() {
+        expect(this.output).to.eql(
+          'Failures:\n' +
+            '\n' +
+            '1) Scenario: b (attempt 2) # a.feature:2\n' +
+            `   ${figures.cross} Given a step # steps.js:4\n` +
+            '       error\n' +
+            '\n' +
+            'Warnings:\n' +
+            '\n' +
+            '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
+            `   ${figures.cross} Given a step # steps.js:4\n` +
+            '       error\n' +
+            '\n' +
+            '1 scenario (1 failed)\n' +
+            '1 step (1 failed)\n' +
+            '0m00.000s\n'
+        )
+      })
+    })
+
     describe('summary', () => {
       describe('with a duration of 123 milliseconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 },
+            result: { duration: 123 * MILLISECONDS_IN_NANOSECOND },
           })
         })
 
@@ -220,7 +338,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 12.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 100 },
+            result: { duration: 123 * 100 * MILLISECONDS_IN_NANOSECOND },
           })
         })
 
@@ -232,7 +350,7 @@ describe('SummaryFormatter', () => {
       describe('with a duration of 120.3 seconds', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 1000 },
+            result: { duration: 123 * 1000 * MILLISECONDS_IN_NANOSECOND },
           })
         })
 

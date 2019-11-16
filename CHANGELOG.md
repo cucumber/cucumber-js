@@ -1,34 +1,67 @@
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v5.1.0...master) (In Git)
+### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.5...master) (In Git)
+
+### [6.0.5](https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5) (2019-11-13)
+
+#### Bug fixes
+
+* json formatter: fix duration to be nanoseconds (was femtoseconds)
+
+### [6.0.4](https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4) (2019-11-10)
+
+#### Bug fixes
+
+* retry: create a new World instance for every attempt
+
+### [6.0.3](https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3) (2019-10-27)
+
+* Revert JSON formatter changes to be backward compatible
+
+### [6.0.2](https://github.com/cucumber/cucumber-js/compare/v6.0.1...v6.0.2) (2019-10-07)
+
+* Upgrade to cucumber-expressions 8.0.1 to fix failure on multiple installs
+
+### [6.0.1](https://github.com/cucumber/cucumber-js/compare/v6.0.0...v6.0.1) (2019-10-06)
+
+* Release to fix missing lib
+
+### [6.0.0](https://github.com/cucumber/cucumber-js/compare/v5.1.0...v6.0.0) (2019-10-06)
 
 #### BREAKING CHANGES
 
 * Drop support for Node.js 6
+* JSON formatter has major breaking changes. View some sample outputs [here](/features/fixtures/formatters/). The `*.json.js` files contain the js objects the json parses to. (UPDATE - reverted in 6.0.3)
+* Duration is now in nanoseconds in event-protocol formatter and in events sent to custom formatters
+* Custom formatters: Formatter helpers and EventDataCollector had breaking changes to support retry
 
 #### Bug fixes
 
 * Prevent after hooks from updating skipped scenarios to passed
+* Parallel: beforeAll / afterAll errors fail the suite
 * Fix CLI help link
 
 #### New features
 
+* Add ability to retry flaky tests
+  * Use `--retry <NUMBER>` and limit what tests will be retried with `--retryTagFilter <EXPRESSION>`
+  * Event-protocol added an `attemptNumber` to test case started, test case finished, and all test step events and a `retried` boolean to the test case result to signify if the test case was retried
 * usage-json formatter: add code and patternType
 * Add support for Node.js 12
 
-### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...5.1.0) (2018-12-28)
+### [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...v5.1.0) (2018-12-28)
 
 #### Internals
 
 * Upgrade to babel 7
 
-### [5.0.3](https://github.com/cucumber/cucumber-js/compare/v5.0.2...5.0.3) (2018-12-03)
+### [5.0.3](https://github.com/cucumber/cucumber-js/compare/v5.0.2...v5.0.3) (2018-12-03)
 
 #### Speed Improvements
 
 * Only create Cucumber Expressions once
 
-### [5.0.2](https://github.com/cucumber/cucumber-js/compare/v5.0.1...5.0.2) (2018-10-06)
+### [5.0.2](https://github.com/cucumber/cucumber-js/compare/v5.0.1...v5.0.2) (2018-10-06)
 
 #### Bug Fixes
 

@@ -11,15 +11,12 @@ import _ from 'lodash'
 
 class World {
   async run(executablePath, inputArgs) {
+    const eventProtocolOutputFilename = 'event-protocol.out'
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
         '--format',
-        'json:out.json',
-        '--format',
-        'event-protocol:events.ndjson',
-        '--format',
-        'usage:usage.txt',
+        `event-protocol:${eventProtocolOutputFilename}`,
       ])
       .map(arg => {
         if (_.includes(arg, '/')) {
@@ -59,17 +56,8 @@ class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-
-    let jsonOutput = []
-    const jsonOutputPath = path.join(cwd, 'out.json')
-    if (fs.existsSync(jsonOutputPath)) {
-      const fileContent = fs.readFileSync(jsonOutputPath, 'utf8')
-      if (fileContent) {
-        jsonOutput = JSON.parse(fileContent)
-      }
-    }
     let events = []
-    const eventProtocolOutputPath = path.join(cwd, 'events.ndjson')
+    const eventProtocolOutputPath = path.join(cwd, eventProtocolOutputFilename)
     if (fs.existsSync(eventProtocolOutputPath)) {
       const fileContent = fs.readFileSync(eventProtocolOutputPath, 'utf8')
       if (fileContent) {
@@ -83,7 +71,6 @@ class World {
       error: result.error,
       errorOutput: result.stderr,
       events,
-      jsonOutput,
       output: colors.strip(result.stdout),
     }
     this.verifiedLastRunError = false

@@ -43,7 +43,10 @@ describe('JsonFormatter', () => {
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
       })
-      this.testCase = { sourceLocation: { uri: 'a.feature', line: 4 } }
+      this.testCase = {
+        sourceLocation: { uri: 'a.feature', line: 4 },
+        attemptNumber: 1,
+      }
     })
 
     describe('passed', () => {
@@ -56,13 +59,14 @@ describe('JsonFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
@@ -88,7 +92,7 @@ describe('JsonFormatter', () => {
                     name: 'my step',
                     result: {
                       status: 'passed',
-                      duration: 1000000,
+                      duration: 1,
                     },
                   },
                 ],
@@ -106,6 +110,53 @@ describe('JsonFormatter', () => {
       })
     })
 
+    describe('retried', () => {
+      beforeEach(function() {
+        this.eventBroadcaster.emit('test-case-prepared', {
+          sourceLocation: this.testCase.sourceLocation,
+          steps: [
+            {
+              sourceLocation: { uri: 'a.feature', line: 6 },
+            },
+          ],
+        })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: this.testCase,
+          result: { duration: 1, exception: 'my error', status: Status.FAILED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...this.testCase,
+          result: { duration: 1, status: Status.FAILED, retried: true },
+        })
+        const testCaseAttempt2 = {
+          sourceLocation: this.testCase.sourceLocation,
+          attemptNumber: 2,
+        }
+        this.eventBroadcaster.emit('test-case-started', testCaseAttempt2)
+        this.eventBroadcaster.emit('test-step-finished', {
+          index: 0,
+          testCase: testCaseAttempt2,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-case-finished', {
+          ...testCaseAttempt2,
+          result: { duration: 1, status: Status.PASSED },
+        })
+        this.eventBroadcaster.emit('test-run-finished')
+      })
+
+      it('does not output retried test cases', function() {
+        const features = JSON.parse(this.output)
+        expect(features[0].elements.length).to.eql(1)
+        expect(features[0].elements[0].steps[0].result).to.eql({
+          status: 'passed',
+          duration: 1,
+        })
+      })
+    })
+
     describe('failed', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit('test-case-prepared', {
@@ -116,13 +167,18 @@ describe('JsonFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
-          result: { duration: 1, exception: 'my error', status: Status.FAILED },
+          result: {
+            duration: 1,
+            exception: 'my error',
+            status: Status.FAILED,
+          },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { duration: 1, status: Status.FAILED },
         })
         this.eventBroadcaster.emit('test-run-finished')
@@ -133,7 +189,7 @@ describe('JsonFormatter', () => {
         expect(features[0].elements[0].steps[0].result).to.eql({
           status: 'failed',
           error_message: 'my error',
-          duration: 1000000,
+          duration: 1,
         })
       })
     })
@@ -149,13 +205,14 @@ describe('JsonFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-finished', {
           index: 0,
           testCase: this.testCase,
           result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
@@ -186,8 +243,9 @@ describe('JsonFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
@@ -221,24 +279,26 @@ describe('JsonFormatter', () => {
             },
           ],
         })
+        this.eventBroadcaster.emit('test-case-started', this.testCase)
         this.eventBroadcaster.emit('test-step-attachment', {
-          testCase: {
-            sourceLocation: this.testCase.sourceLocation,
-          },
+          testCase: this.testCase,
           index: 0,
           data: 'first data',
           media: { type: 'first media type' },
         })
         this.eventBroadcaster.emit('test-step-attachment', {
-          testCase: {
-            sourceLocation: this.testCase.sourceLocation,
-          },
+          testCase: this.testCase,
           index: 0,
           data: 'second data',
           media: { type: 'second media type' },
         })
+        this.eventBroadcaster.emit('test-step-finished', {
+          testCase: this.testCase,
+          index: 0,
+          result: { duration: 1, status: Status.PASSED },
+        })
         this.eventBroadcaster.emit('test-case-finished', {
-          sourceLocation: this.testCase.sourceLocation,
+          ...this.testCase,
           result: { duration: 1, status: Status.PASSED },
         })
         this.eventBroadcaster.emit('test-run-finished')
@@ -267,9 +327,12 @@ describe('JsonFormatter', () => {
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
       })
-      this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+      this.testCase = {
+        sourceLocation: { uri: 'a.feature', line: 2 },
+        attemptNumber: 1,
+      }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...this.testCase,
+        sourceLocation: this.testCase.sourceLocation,
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
@@ -277,6 +340,7 @@ describe('JsonFormatter', () => {
           },
         ],
       })
+      this.eventBroadcaster.emit('test-case-started', this.testCase)
       this.eventBroadcaster.emit('test-step-finished', {
         index: 0,
         testCase: this.testCase,
@@ -313,9 +377,12 @@ describe('JsonFormatter', () => {
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
       })
-      this.testCase = { sourceLocation: { uri: 'a.feature', line: 2 } }
+      this.testCase = {
+        sourceLocation: { uri: 'a.feature', line: 2 },
+        attemptNumber: 1,
+      }
       this.eventBroadcaster.emit('test-case-prepared', {
-        ...this.testCase,
+        sourceLocation: this.testCase.sourceLocation,
         steps: [
           {
             sourceLocation: { uri: 'a.feature', line: 3 },
@@ -323,6 +390,7 @@ describe('JsonFormatter', () => {
           },
         ],
       })
+      this.eventBroadcaster.emit('test-case-started', this.testCase)
       this.eventBroadcaster.emit('test-step-finished', {
         index: 0,
         testCase: this.testCase,

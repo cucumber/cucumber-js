@@ -8,6 +8,7 @@ import tmp from 'tmp'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
+const projectBabelConfigPath = path.join(projectPath, 'babel.config.js')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
 Before('@debug', function() {
@@ -27,6 +28,9 @@ Before(function({ sourceLocation: { uri, line } }) {
   const profileContent =
     'module.exports = {default: "--require-module @babel/register"}'
   fsExtra.outputFileSync(tmpDirProfilePath, profileContent)
+
+  const tmpDirBabelConfigPath = path.join(this.tmpDir, 'babel.config.js')
+  fsExtra.createSymlinkSync(projectBabelConfigPath, tmpDirBabelConfigPath)
 
   const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
   const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
@@ -74,7 +78,7 @@ Before('@global-install', function() {
 })
 
 After(function() {
-  if (this.lastRun.error && !this.verifiedLastRunError) {
+  if (this.lastRun && this.lastRun.error && !this.verifiedLastRunError) {
     throw new Error(
       `Last run errored unexpectedly. Output:\n\n${this.lastRun.output}\n\n` +
         `Error Output:\n\n${this.lastRun.errorOutput}`

@@ -51,27 +51,25 @@ export default class JsonFormatter extends Formatter {
   }
 
   onTestRunFinished() {
-    const groupedTestCases = {}
-    _.each(this.eventDataCollector.testCaseMap, testCase => {
-      const {
-        sourceLocation: { uri },
-      } = testCase
-      if (!groupedTestCases[uri]) {
-        groupedTestCases[uri] = []
+    const groupedTestCaseAttempts = {}
+    _.each(this.eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
+      if (!testCaseAttempt.result.retried) {
+        const { uri } = testCaseAttempt.testCase.sourceLocation
+        if (!groupedTestCaseAttempts[uri]) {
+          groupedTestCaseAttempts[uri] = []
+        }
+        groupedTestCaseAttempts[uri].push(testCaseAttempt)
       }
-      groupedTestCases[uri].push(testCase)
     })
-    const features = _.map(groupedTestCases, (group, uri) => {
+    const features = _.map(groupedTestCaseAttempts, (group, uri) => {
       const gherkinDocument = this.eventDataCollector.gherkinDocumentMap[uri]
       const featureData = this.getFeatureData(gherkinDocument.feature, uri)
       const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
       const scenarioLineToDescriptionMap = getScenarioLineToDescriptionMap(
         gherkinDocument
       )
-      featureData.elements = group.map(testCase => {
-        const { pickle } = this.eventDataCollector.getTestCaseData(
-          testCase.sourceLocation
-        )
+      featureData.elements = group.map(testCaseAttempt => {
+        const { pickle } = testCaseAttempt
         const scenarioData = this.getScenarioData({
           featureId: featureData.id,
           pickle,
@@ -79,15 +77,19 @@ export default class JsonFormatter extends Formatter {
         })
         const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
         let isBeforeHook = true
-        scenarioData.steps = testCase.steps.map(testStep => {
-          isBeforeHook = isBeforeHook && !testStep.sourceLocation
-          return this.getStepData({
-            isBeforeHook,
-            stepLineToKeywordMap,
-            stepLineToPickledStepMap,
-            testStep,
-          })
-        })
+        scenarioData.steps = testCaseAttempt.testCase.steps.map(
+          (testStep, index) => {
+            isBeforeHook = isBeforeHook && !testStep.sourceLocation
+            return this.getStepData({
+              isBeforeHook,
+              stepLineToKeywordMap,
+              stepLineToPickledStepMap,
+              testStep,
+              testStepAttachments: testCaseAttempt.stepAttachments[index],
+              testStepResult: testCaseAttempt.stepResults[index],
+            })
+          }
+        )
         return scenarioData
       })
       return featureData
@@ -128,6 +130,8 @@ export default class JsonFormatter extends Formatter {
     stepLineToKeywordMap,
     stepLineToPickledStepMap,
     testStep,
+    testStepAttachments,
+    testStepResult,
   }) {
     const data = {}
     if (testStep.sourceLocation) {
@@ -144,20 +148,18 @@ export default class JsonFormatter extends Formatter {
     if (testStep.actionLocation) {
       data.match = { location: formatLocation(testStep.actionLocation) }
     }
-    if (testStep.result) {
-      const {
-        result: { exception, status },
-      } = testStep
+    if (testStepResult) {
+      const { exception, status } = testStepResult
       data.result = { status }
-      if (testStep.result.duration) {
-        data.result.duration = testStep.result.duration * 1000000
+      if (!_.isUndefined(testStepResult.duration)) {
+        data.result.duration = testStepResult.duration
       }
       if (status === Status.FAILED && exception) {
         data.result.error_message = format(exception)
       }
     }
-    if (_.size(testStep.attachments) > 0) {
-      data.embeddings = testStep.attachments.map(attachment => ({
+    if (_.size(testStepAttachments) > 0) {
+      data.embeddings = testStepAttachments.map(attachment => ({
         data: attachment.data,
         mime_type: attachment.media.type,
       }))

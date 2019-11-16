@@ -23,7 +23,7 @@ describe('PickleFilter', () => {
           cwd: this.cwd,
           featurePaths: ['features'],
           names: [],
-          tagExpressions: [],
+          tagExpression: '',
         })
       })
 
@@ -38,7 +38,7 @@ describe('PickleFilter', () => {
           cwd: this.cwd,
           featurePaths: ['features/a.feature', 'features/b.feature:1:2'],
           names: [],
-          tagExpressions: [],
+          tagExpression: '',
         })
       })
 
@@ -86,7 +86,7 @@ describe('PickleFilter', () => {
             cwd: this.cwd,
             featurePaths: ['features'],
             names: ['nameA'],
-            tagExpressions: [],
+            tagExpression: '',
           })
         })
 
@@ -117,7 +117,7 @@ describe('PickleFilter', () => {
             cwd: this.cwd,
             featurePaths: ['features'],
             names: ['nameA', 'nameB'],
-            tagExpressions: [],
+            tagExpression: '',
           })
         })
 
@@ -314,7 +314,7 @@ describe('PickleFilter', () => {
             cwd: this.cwd,
             featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
-            tagExpressions: ['@tagA'],
+            tagExpression: '@tagA',
           })
           this.pickle.locations = [{ line: 1 }]
           this.pickle.name = 'nameA descriptionA'
@@ -332,7 +332,7 @@ describe('PickleFilter', () => {
             cwd: this.cwd,
             featurePaths: ['features/b.feature:1:2'],
             names: ['nameA'],
-            tagExpressions: ['tagA'],
+            tagExpression: 'tagA',
           })
           this.pickle.locations = [{ line: 1 }]
         })

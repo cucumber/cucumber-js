@@ -31,11 +31,27 @@ export default class ArgvParser {
     return memo === '' ? `(${val})` : `${memo} and (${val})`
   }
 
+  static validateCountOption(val, optionName) {
+    val = parseInt(val)
+    if (isNaN(val) || val < 0) {
+      throw new Error(`${optionName} must be a non negative integer`)
+    }
+    return val
+  }
+
   static validateLanguage(val) {
     if (!_.includes(_.keys(gherkinDialects()), val)) {
       throw new Error(`Unsupported ISO 639-1: ${val}`)
     }
     return val
+  }
+
+  static validateRetryOptions(options) {
+    if (options.retryTagFilter && !options.retry) {
+      throw new Error(
+        `a positive --retry count must be specified when setting --retryTagFilter`
+      )
+    }
   }
 
   static parse(argv) {
@@ -96,7 +112,7 @@ export default class ArgvParser {
       .option(
         '--parallel <NUMBER_OF_SLAVES>',
         'run in parallel with the given number of slaves',
-        parseInt,
+        val => ArgvParser.validateCountOption(val, '--parallel'),
         0
       )
       .option(
@@ -110,6 +126,19 @@ export default class ArgvParser {
         'require node modules before requiring files (repeatable)',
         ArgvParser.collect,
         []
+      )
+      .option(
+        '--retry <NUMBER_OF_RETRIES>',
+        'specify the number of times to retry failing test cases (default: 0)',
+        val => ArgvParser.validateCountOption(val, '--retry'),
+        0
+      )
+      .option(
+        '--retryTagFilter <EXPRESSION>',
+        `only retries the features or scenarios with tags matching the expression (repeatable).
+        This option requires '--retry' to be specified.`,
+        ArgvParser.mergeTags,
+        ''
       )
       .option(
         '-t, --tags <EXPRESSION>',
@@ -133,9 +162,11 @@ export default class ArgvParser {
     })
 
     program.parse(argv)
+    const options = program.opts()
+    ArgvParser.validateRetryOptions(options)
 
     return {
-      options: program.opts(),
+      options,
       args: program.args,
     }
   }

@@ -59,6 +59,8 @@ export default class ConfigurationBuilder {
         dryRun: !!this.options.dryRun,
         failFast: !!this.options.failFast,
         filterStacktraces: !this.options.backtrace,
+        retry: this.options.retry,
+        retryTagFilter: this.options.retryTagFilter,
         strict: !!this.options.strict,
         worldParameters: this.options.worldParameters,
       },

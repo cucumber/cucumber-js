@@ -8,7 +8,7 @@ export default class ProgressBarFormatter extends Formatter {
     super(options)
     options.eventBroadcaster
       .on('pickle-accepted', ::this.incrementStepCount)
-      .once('test-case-started', ::this.initializeProgressBar)
+      .once('test-step-started', ::this.initializeProgressBar)
       .on('test-step-finished', ::this.logProgress)
       .on('test-case-finished', ::this.logErrorIfNeeded)
       .on('test-run-finished', ::this.logSummary)
@@ -30,32 +30,33 @@ export default class ProgressBarFormatter extends Formatter {
     })
   }
 
-  logProgress({ index, testCase: { sourceLocation } }) {
-    const { testCase } = this.eventDataCollector.getTestCaseData(sourceLocation)
-    if (testCase.steps[index].sourceLocation) {
+  logProgress({ index, testCase }) {
+    const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCase)
+    if (testCaseAttempt.testCase.steps[index].sourceLocation) {
       this.progressBar.tick()
     }
   }
 
-  logErrorIfNeeded({ sourceLocation, result }) {
-    if (isIssue(result.status)) {
+  logErrorIfNeeded(testCaseFinishedEvent) {
+    if (isIssue(testCaseFinishedEvent.result)) {
       this.issueCount += 1
-      const {
-        gherkinDocument,
-        pickle,
-        testCase,
-      } = this.eventDataCollector.getTestCaseData(sourceLocation)
+      const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
+        testCaseFinishedEvent
+      )
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
-          cwd: this.cwd,
-          gherkinDocument,
           number: this.issueCount,
-          pickle,
           snippetBuilder: this.snippetBuilder,
-          testCase,
+          testCaseAttempt,
         })
       )
+      if (testCaseFinishedEvent.result.retried) {
+        const stepsToRetry = testCaseAttempt.testCase.steps.filter(
+          s => s.sourceLocation
+        ).length
+        this.progressBar.tick(-stepsToRetry)
+      }
     }
   }
 
@@ -63,7 +64,7 @@ export default class ProgressBarFormatter extends Formatter {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
-        testCaseMap: this.eventDataCollector.testCaseMap,
+        testCaseAttempts: this.eventDataCollector.getTestCaseAttempts(),
         testRun,
       })
     )
