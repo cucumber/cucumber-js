@@ -1317,11 +1317,6 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
-c21e@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/c21e/-/c21e-2.0.0.tgz#b6cd367841c22ee899a1258ce85343fbfee24622"
-  integrity sha512-AVnwF3miCn5XZXCIeIEpk5LFgbhnug/IHEnb5KsC9r8Vp/i1Px6lI5LftcxpXOh6jmCEpjD5g4TEGlRcfxoAzA==
-
 cache-base@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cache-base/-/cache-base-1.0.1.tgz#0a7f46416831c8b662ee36fe4e7c59d76f666ab2"
@@ -1750,10 +1745,10 @@ cucumber-expressions@^8.1.0:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
     xregexp "^4.2.4"
 
-cucumber-messages@5.0.1, cucumber-messages@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/cucumber-messages/-/cucumber-messages-5.0.1.tgz#dd867b4d62ce292fe32a07e5fb9a87604bdd7511"
-  integrity sha512-XzgvzWFNUHw96V7Nfot4uirHEiXW3x9N7tnUPL6DXt+cSg+F8oP6zyULqK+LjYjJvopd1Kg6OEupeh6yJWaTDA==
+cucumber-messages@7.0.0, cucumber-messages@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/cucumber-messages/-/cucumber-messages-7.0.0.tgz#fca7ea7e6b27f0d87fe84d76bf7a5f574eb3caa0"
+  integrity sha512-/KT+09K0mkktE5TdYHxjnsNvkY8Sb9LKUieW6ybOMkiyE2cepOlxAcqADtguIjRxsOUzhM51NbZ8nQHi0p3kxQ==
   dependencies:
     protobufjs "^6.8.8"
 
@@ -2694,13 +2689,14 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-gherkin@^7.0.4:
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/gherkin/-/gherkin-7.0.4.tgz#2d2765a6c5b13b44bc13007a12a8088764786ccc"
-  integrity sha512-jwpB3g+KHXYsQMd2GzW8OSk1QdZF9Q1TmjOncFwSPexyujXZFZOGt9dksCH6wOhEp+ymNKpJT6u3Qq9tCp6OTQ==
+gherkin@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/gherkin/-/gherkin-8.2.0.tgz#bbe28f4d12aa792854bf50541332f7701eabfc9b"
+  integrity sha512-d3vel6qltre20QEjB2kQQaUrahvICPiQYKHOYd1mdIxbbb/hCxLcuiKamjfAAAVATtM3j0YKCRK35XfUIHsDEA==
   dependencies:
-    c21e "2.0.0"
-    cucumber-messages "5.0.1"
+    cucumber-messages "7.0.0"
+    source-map-support "^0.5.16"
+    uuid "^3.3.3"
 
 glob-parent@^3.1.0:
   version "3.1.0"
@@ -5057,6 +5053,14 @@ source-map-resolve@^0.5.0:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
+source-map-support@^0.5.16:
+  version "0.5.16"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.16.tgz#0ae069e7fe3ba7538c64c98515e35339eac5a042"
+  integrity sha512-efyLRJDr68D9hBBNIPWFjhpFzURh+KJykQwvMyW5UiZzYwoF6l4YMMDIJJEyFWxWCqfyxLzz6tSfUFR+kXXsVQ==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
 source-map-support@^0.5.9:
   version "0.5.13"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.13.tgz#31b24a9c2e73c2de85066c0feb7d44767ed52932"
@@ -5689,7 +5693,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.3.2:
+uuid@^3.3.2, uuid@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
