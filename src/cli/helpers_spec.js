@@ -1,7 +1,7 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { getTestCasesFromFilesystem } from './helpers'
+import { getPicklesFromFilesystem } from './helpers'
 import { promisify } from 'bluebird'
 import EventEmitter from 'events'
 import fsExtra from 'fs-extra'
@@ -11,7 +11,7 @@ import tmp from 'tmp'
 import { messages } from 'cucumber-messages'
 
 describe('helpers', () => {
-  describe('getTestCasesFromFilesystem', () => {
+  describe('getPicklesFromFilesystem', () => {
     beforeEach(async function() {
       this.onEnvelope = sinon.stub()
       this.eventBroadcaster = new EventEmitter()
@@ -27,7 +27,7 @@ describe('helpers', () => {
           this.relativeFeaturePath
         )
         await fsExtra.outputFile(this.absoluteFeaturePath, '')
-        this.result = await getTestCasesFromFilesystem({
+        this.result = await getPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featureDefaultLanguage: 'en',
@@ -78,7 +78,7 @@ describe('helpers', () => {
           this.absoluteFeaturePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
-        this.result = await getTestCasesFromFilesystem({
+        this.result = await getPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featureDefaultLanguage: 'en',
@@ -153,7 +153,7 @@ describe('helpers', () => {
           this.absoluteFeaturePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
-        this.result = await getTestCasesFromFilesystem({
+        this.result = await getPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featureDefaultLanguage: 'en',

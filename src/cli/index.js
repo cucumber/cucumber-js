@@ -1,5 +1,5 @@
 import { EventDataCollector } from '../formatter/helpers'
-import { getExpandedArgv, getTestCasesFromFilesystem } from './helpers'
+import { getExpandedArgv, getPicklesFromFilesystem } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
 import ConfigurationBuilder from './configuration_builder'
@@ -95,7 +95,7 @@ export default class Cli {
       formats: configuration.formats,
       supportCodeLibrary,
     })
-    const testCases = await getTestCasesFromFilesystem({
+    const pickles = await getPicklesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
@@ -109,9 +109,9 @@ export default class Cli {
         cwd: this.cwd,
         eventBroadcaster,
         options: configuration.runtimeOptions,
+        pickles,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
-        testCases,
       })
       await new Promise(resolve => {
         parallelRuntimeMaster.run(configuration.parallel, s => {
@@ -123,8 +123,8 @@ export default class Cli {
       const runtime = new Runtime({
         eventBroadcaster,
         options: configuration.runtimeOptions,
+        pickles,
         supportCodeLibrary,
-        testCases,
       })
       success = await runtime.start()
     }

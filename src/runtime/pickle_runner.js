@@ -2,15 +2,18 @@ import _ from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import Promise from 'bluebird'
-import Status from '../status'
 import StepRunner from './step_runner'
+import uuidv4 from 'uuid/v4'
+import { messages } from 'cucumber-messages'
 
-export default class TestCaseRunner {
+const { Status } = messages.TestResult
+
+export default class PickleRunner {
   constructor({
     eventBroadcaster,
     retries = 0,
     skip,
-    testCase,
+    pickle,
     supportCodeLibrary,
     worldParameters,
   }) {
@@ -32,12 +35,13 @@ export default class TestCaseRunner {
     })
     this.eventBroadcaster = eventBroadcaster
     this.maxAttempts = 1 + (skip ? 0 : retries)
-    this.skip = skip
     this.pickle = pickle
+    this.skip = skip
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
+    this.testCase = this.buildTestCase()
     this.resetTestProgressData()
   }
 
@@ -53,48 +57,33 @@ export default class TestCaseRunner {
     }
   }
 
-  emit(name, data) {
-    const eventData = { ...data }
-    const testCaseData = {
-      sourceLocation: this.testCaseSourceLocation,
-    }
-    if (this.currentAttemptNumber) {
-      testCaseData.attemptNumber = this.currentAttemptNumber
-    }
-    if (_.startsWith(name, 'test-case')) {
-      _.merge(eventData, testCaseData)
-    } else {
-      eventData.testCase = testCaseData
-    }
-    this.eventBroadcaster.emit(name, eventData)
-  }
-
-  emitPrepared() {
-    const steps = []
-    this.beforeHookDefinitions.forEach(definition => {
-      const actionLocation = { uri: definition.uri, line: definition.line }
-      steps.push({ actionLocation })
+  buildTestCase() {
+    const steps = [];
+    this.beforeHookDefinitions.forEach(hookDefinition => {
+      steps.push({
+        id: uuidv4(),
+        hookId: hookDefinition.id
+      })
     })
-    this.pickle.steps.forEach(step => {
-      const actionLocations = this.getStepDefinitions(step).map(definition => ({
-        uri: definition.uri,
-        line: definition.line,
-      }))
-      const sourceLocation = {
-        uri: this.pickle.uri,
-        line: _.first(step.locations).line,
-      }
-      const data = { sourceLocation }
-      if (actionLocations.length === 1) {
-        data.actionLocation = actionLocations[0]
-      }
-      steps.push(data)
+    this.pickle.steps.forEach(pickleStep => {
+      const stepDefinitionId = this.getStepDefinitions(step).map(definition => definition.id)
+      steps.push({
+        id: uuidv4(),
+        pickleStepId: pickleStep.id,
+        stepDefinitionId
+      })
     })
-    this.afterHookDefinitions.forEach(definition => {
-      const actionLocation = { uri: definition.uri, line: definition.line }
-      steps.push({ actionLocation })
+    this.afterHookDefinitions.forEach(hookDefinition => {
+      steps.push({
+        id: uuidv4(),
+        hookId: hookDefinition.id
+      })
     })
-    this.emit('test-case-prepared', { steps })
+    return { 
+      pickleId: this.pickle.id,
+      id: uuidv4(),
+      steps
+    }
   }
 
   getAfterHookDefinitions() {
@@ -147,8 +136,13 @@ export default class TestCaseRunner {
     }
   }
 
-  async aroundTestStep(runStepFn) {
-    this.emit('test-step-started', { index: this.testStepIndex })
+  async aroundTestStep(testStepId, runStepFn) {
+    this.eventBroadcaster.emit('envelope', new messages.Envelope({
+      testStepStarted: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        testStepId
+      }
+    }))
     const testStepResult = await runStepFn()
     if (testStepResult.duration) {
       this.result.duration += testStepResult.duration
@@ -159,21 +153,33 @@ export default class TestCaseRunner {
     if (testStepResult.exception) {
       this.result.exception = testStepResult.exception
     }
-    this.emit('test-step-finished', {
-      index: this.testStepIndex,
-      result: testStepResult,
-    })
+    this.eventBroadcaster.emit('envelope', new messages.Envelope({
+      testStepFinished: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        testStepId,
+        testResult: testStepResult
+      }
+    }))
     this.testStepIndex += 1
   }
 
   async run() {
-    this.emitPrepared()
+    this.eventBroadcaster.emit('envelope', new messages.Envelope({
+      testCase: this.testCase
+    }))
     for (
-      this.currentAttemptNumber = 1;
-      this.currentAttemptNumber <= this.maxAttempts;
-      this.currentAttemptNumber++
+      let attempt = 0;
+      attempt <= this.maxAttempts;
+      attempt++
     ) {
-      this.emit('test-case-started')
+      this.currentTestCaseStartedId = uuidv4()
+      this.eventBroadcaster.emit('envelope', new messages.Envelope({
+        testCaseStarted: {
+          attempt,
+          testCaseId: this.testCase.id,
+          id: this.currentTestCaseStartedId
+        }
+      }))
       await this.runHooks(
         this.beforeHookDefinitions,
         {
@@ -198,7 +204,12 @@ export default class TestCaseRunner {
         },
         false
       )
-      this.emit('test-case-finished', { result: this.result })
+      this.eventBroadcaster.emit('envelope', new messages.Envelope({
+        testCaseFinished: {
+          testCaseStartedId: this.currentTestCaseStartedId,
+          testResult: this.result
+        }
+      }))
       if (!shouldRetry) {
         break
       }

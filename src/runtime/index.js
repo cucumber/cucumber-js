@@ -2,11 +2,13 @@ import _ from 'lodash'
 import { formatLocation } from '../formatter/helpers'
 import Promise from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
-import Status from '../status'
-import TestCaseRunner from './test_case_runner'
+import TestCaseRunner from './pickle_runner'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 import { retriesForTestCase } from './helpers'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}

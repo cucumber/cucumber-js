@@ -17,7 +17,7 @@ export async function getExpandedArgv({ argv, cwd }) {
   return fullArgv
 }
 
-export function getTestCasesFromFilesystem({
+export function getPicklesFromFilesystem({
   cwd,
   eventBroadcaster,
   featureDefaultLanguage,
@@ -54,7 +54,7 @@ export function getTestCasesFromFilesystem({
       }
     })
     messageStream.on('end', () => {
-      orderTestCases(result, order)
+      orderPickles(result, order)
       resolve(result)
     })
     messageStream.on('error', reject)
@@ -62,7 +62,7 @@ export function getTestCasesFromFilesystem({
 }
 
 // Orders the testCases in place - morphs input
-export function orderTestCases(testCases, order) {
+export function orderPickles(pickles, order) {
   let [type, seed] = order.split(':')
   switch (type) {
     case 'defined':
@@ -72,7 +72,7 @@ export function orderTestCases(testCases, order) {
         seed = Math.floor(Math.random() * 1000 * 1000).toString()
         console.warn(`Random order using seed: ${seed}`)
       }
-      shuffle(testCases, seed)
+      shuffle(pickles, seed)
       break
     default:
       throw new Error(

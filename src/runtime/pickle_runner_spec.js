@@ -2,17 +2,20 @@ import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestCaseRunner from './test_case_runner'
-import Status from '../status'
+import PickleRunner from './pickle_runner'
 import StepRunner from './step_runner'
 import { EventEmitter } from 'events'
+import { messages } from 'cucumber-messages'
 
-describe('TestCaseRunner', () => {
+const { Status }= messages.TestResult
+
+describe('PickleRunner', () => {
   beforeEach(function() {
     this.onEnvelope = sinon.stub()
     this.eventBroadcaster = new EventEmitter()
     this.eventBroadcaster.on('envelope', this.onEnvelope)
     this.pickle = {
+      id: 'pickle-id',
       steps: [],
       locations: [{ line: 1 }],
       uri: 'path/to/feature',
@@ -39,38 +42,41 @@ describe('TestCaseRunner', () => {
   describe('run()', () => {
     describe('with no steps or hooks', () => {
       beforeEach(async function() {
-        const scenarioRunner = new TestCaseRunner({
+        const pickleRunner = new PickleRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.pickle,
+          pickle: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
-        await scenarioRunner.run()
+        await pickleRunner.run()
       })
 
-      it('emits test-case-prepared', function() {
-        expect(this.onTestCasePrepared).to.have.callCount(1)
-        expect(this.onTestCasePrepared).to.have.been.calledWith({
-          steps: [],
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+      it('emits 3 events', function() {
+        expect(this.onEnvelope).to.have.callCount(3)
       })
 
-      it('emits test-case-started', function() {
-        expect(this.onTestCaseStarted).to.have.callCount(1)
-        expect(this.onTestCaseStarted).to.have.been.calledWith({
-          attemptNumber: 1,
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+      it('emits test case', function() {
+        const envelope = this.onEnvelope.getCall(0).args[0]
+        expect(envelope.testCase).to.exist;
+        expect(envelope.testCase.id).to.exist;
+        expect(envelope.testCase.pickleId).to.eql('pickle-id');
+        expect(envelope.testCase.steps).to.eql([]);
       })
 
-      it('emits test-case-finished', function() {
-        expect(this.onTestCaseFinished).to.have.callCount(1)
-        expect(this.onTestCaseFinished).to.have.been.calledWith({
-          result: { duration: 0, status: Status.PASSED },
-          attemptNumber: 1,
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+      it('emits test case started', function() {
+        const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id;
+        const envelope = this.onEnvelope.getCall(1).args[0]
+        expect(envelope.testCaseStarted).to.exist;
+        expect(envelope.testCaseStarted.id).to.exist;
+        expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
+      })
+
+      it('emits test case finished', function() {
+        const testCaseStartedId = this.onEnvelope.getCall(1).args[0].testCaseStarted.id;
+        const envelope = this.onEnvelope.getCall(2).args[0]
+        expect(envelope.testCaseFinished).to.exist;
+        expect(envelope.testCaseFinished.testCaseStartedId).to.eql(testCaseStartedId)
+        expect(envelope.testCaseFinished.testResult).to.eql({ duration: 0, status: Status.PASSED })
       })
     })
 
