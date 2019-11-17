@@ -172,7 +172,7 @@ export default class PickleRunner {
     if (this.shouldUpdateStatus(testStepResult)) {
       this.result.status = testStepResult.status
     }
-    if (this.result.status === Status.FAILED && attempt < this.maxAttempts) {
+    if (this.result.status === Status.FAILED && attempt + 1 < this.maxAttempts) {
       this.result.willBeRetried = true
     }
     if (testStepResult.exception) {
