@@ -5,6 +5,7 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import PickleRunner from './pickle_runner'
 import StepRunner from './step_runner'
 import { EventEmitter } from 'events'
+import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
 
 const { Status }= messages.TestResult
@@ -15,7 +16,7 @@ describe('PickleRunner', () => {
     this.eventBroadcaster = new EventEmitter()
     this.eventBroadcaster.on('envelope', this.onEnvelope)
     this.pickle = {
-      id: 'pickle-id',
+      id: uuidv4(),
       steps: [],
       locations: [{ line: 1 }],
       uri: 'path/to/feature',
@@ -59,7 +60,7 @@ describe('PickleRunner', () => {
         const envelope = this.onEnvelope.getCall(0).args[0]
         expect(envelope.testCase).to.exist;
         expect(envelope.testCase.id).to.exist;
-        expect(envelope.testCase.pickleId).to.eql('pickle-id');
+        expect(envelope.testCase.pickleId).to.eql(this.pickle.id);
         expect(envelope.testCase.steps).to.eql([]);
       })
 
@@ -82,79 +83,81 @@ describe('PickleRunner', () => {
 
     describe('with a passing step', () => {
       beforeEach(async function() {
-        this.step = { uri: 'path/to/feature', locations: [{ line: 2 }] }
+        this.pickleStep = {
+          id: uuidv4(),
+          uri: 'path/to/feature', 
+          locations: [{ line: 2 }] 
+        }
         this.stepResult = {
           duration: 1,
           status: Status.PASSED,
         }
-        const stepDefinition = {
+        this.stepDefinition = {
+          id: uuidv4(),
           uri: 'path/to/steps',
           line: 3,
           matchesStepName: sinon.stub().returns(true),
         }
         StepRunner.run.resolves(this.stepResult)
-        this.supportCodeLibrary.stepDefinitions = [stepDefinition]
-        this.pickle.steps = [this.step]
-        const scenarioRunner = new TestCaseRunner({
+        this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
+        this.pickle.steps = [this.pickleStep]
+        const pickleRunner = new PickleRunner({
           eventBroadcaster: this.eventBroadcaster,
           skip: false,
-          testCase: this.pickle,
+          pickle: this.pickle,
           supportCodeLibrary: this.supportCodeLibrary,
         })
-        await scenarioRunner.run()
+        await pickleRunner.run()
       })
 
-      it('emits test-case-prepared', function() {
-        expect(this.onTestCasePrepared).to.have.callCount(1)
-        expect(this.onTestCasePrepared).to.have.been.calledWith({
-          steps: [
-            {
-              actionLocation: { line: 3, uri: 'path/to/steps' },
-              sourceLocation: { line: 2, uri: 'path/to/feature' },
-            },
-          ],
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+      it('emits 5 events', function() {
+        expect(this.onEnvelope).to.have.callCount(5)
       })
 
-      it('emits test-case-started', function() {
-        expect(this.onTestCaseStarted).to.have.callCount(1)
-        expect(this.onTestCaseStarted).to.have.been.calledWith({
-          attemptNumber: 1,
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+      it('emits test case', function() {
+        const envelope = this.onEnvelope.getCall(0).args[0]
+        expect(envelope.testCase).to.exist;
+        expect(envelope.testCase.id).to.exist;
+        expect(envelope.testCase.pickleId).to.eql(this.pickle.id);
+        expect(envelope.testCase.steps.length).to.eql(1);
+        expect(envelope.testCase.steps[0].id).to.exist;
+        expect(envelope.testCase.steps[0].pickleStepId).to.eql(this.pickleStep.id)
+        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([this.stepDefinition.id])
       })
 
-      it('emits test-step-started', function() {
-        expect(this.onTestStepStarted).to.have.callCount(1)
-        expect(this.onTestStepStarted).to.have.been.calledWith({
-          index: 0,
-          testCase: {
-            attemptNumber: 1,
-            sourceLocation: { line: 1, uri: 'path/to/feature' },
-          },
-        })
+      it('emits test case started', function() {
+        const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id;
+        const envelope = this.onEnvelope.getCall(1).args[0]
+        expect(envelope.testCaseStarted).to.exist;
+        expect(envelope.testCaseStarted.id).to.exist;
+        expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
 
-      it('emits test-step-finished', function() {
-        expect(this.onTestStepFinished).to.have.callCount(1)
-        expect(this.onTestStepFinished).to.have.been.calledWith({
-          index: 0,
-          testCase: {
-            attemptNumber: 1,
-            sourceLocation: { line: 1, uri: 'path/to/feature' },
-          },
-          result: { duration: 1, status: Status.PASSED },
-        })
+      it('emits test step started', function() {
+        const testCaseStartedId = this.onEnvelope.getCall(1).args[0].testCaseStarted.id;
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0].id;
+        const envelope = this.onEnvelope.getCall(2).args[0]
+        expect(envelope.testStepStarted).to.exist;
+        expect(envelope.testStepStarted.testStepId).to.eql(testStepId);
+        expect(envelope.testStepStarted.testCaseStartedId).to.eql(testCaseStartedId)
       })
 
-      it('emits test-case-finished', function() {
-        expect(this.onTestCaseFinished).to.have.callCount(1)
-        expect(this.onTestCaseFinished).to.have.been.calledWith({
-          result: { duration: 1, status: Status.PASSED },
-          attemptNumber: 1,
-          sourceLocation: { line: 1, uri: 'path/to/feature' },
-        })
+      it('emits test step finished', function() {
+        const testCaseStartedId = this.onEnvelope.getCall(1).args[0].testCaseStarted.id;
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0].id;
+        const envelope = this.onEnvelope.getCall(3).args[0]
+        expect(envelope.testStepFinished).to.exist;
+        expect(envelope.testStepFinished.testStepId).to.eql(testStepId);
+        expect(envelope.testStepFinished.testCaseStartedId).to.eql(testCaseStartedId)
+        expect(envelope.testStepFinished.testResult).to.eql({ duration: 1, status: Status.PASSED })
+      })
+
+      it('emits test case finished', function() {
+        const testCaseStartedId = this.onEnvelope.getCall(1).args[0].testCaseStarted.id;
+        const envelope = this.onEnvelope.getCall(4).args[0]
+        expect(envelope.testCaseFinished).to.exist;
+        expect(envelope.testCaseFinished.testCaseStartedId).to.eql(testCaseStartedId)
+        expect(envelope.testCaseFinished.testResult).to.eql({ duration: 1, status: Status.PASSED })
       })
     })
 
