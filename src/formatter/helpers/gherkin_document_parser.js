@@ -1,20 +1,20 @@
 import _ from 'lodash'
 
-export function getStepLineToKeywordMap(gherkinDocument) {
+export function getStepIdToKeywordMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
     .map(child => child.background || child.scenario)
     .map('steps')
     .flatten()
-    .map(step => [step.location.line, step.keyword])
+    .map(step => [step.id, step.keyword])
     .fromPairs()
     .value()
 }
 
-export function getScenarioLineToDescriptionMap(gherkinDocument) {
+export function getScenarioIdToDescriptionMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
     .filter('scenario')
     .map('scenario')
-    .map(scenario => [scenario.location.line, scenario.description])
+    .map(scenario => [scenario.id, scenario.description])
     .fromPairs()
     .value()
 }

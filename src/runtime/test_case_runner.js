@@ -15,34 +15,29 @@ export default class TestCaseRunner {
     worldParameters,
   }) {
     this.attachmentManager = new AttachmentManager(({ data, media }) => {
-      if (this.testStepIndex > this.maxTestStepIndex) {
+      if (!this.isTestStepRunning) {
         throw new Error(
-          'Cannot attach after all steps/hooks have finished running. Ensure your step/hook waits for the attach to finish.'
+          'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
       }
-      this.emit('test-step-attachment', {
-        index: this.testStepIndex,
-        data,
-        media,
+      // TODO custom envelope need to add to cucumber-messages 
+      this.eventBroadcaster('envelope', {
+        testCaseAttachment: {
+          data,
+          media,
+          testCaseStartedId: this.currentTestCaseStartedId,
+          testStepId: this.currentTestStepId,
+        }
       })
     })
     this.eventBroadcaster = eventBroadcaster
     this.maxAttempts = 1 + (skip ? 0 : retries)
     this.skip = skip
-    this.pickle = testCase
+    this.pickle = pickle
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
     this.beforeHookDefinitions = this.getBeforeHookDefinitions()
     this.afterHookDefinitions = this.getAfterHookDefinitions()
-    this.maxTestStepIndex =
-      this.beforeHookDefinitions.length +
-      this.pickle.steps.length +
-      this.afterHookDefinitions.length -
-      1
-    this.testCaseSourceLocation = {
-      uri: this.pickle.uri,
-      line: _.last(this.pickle.locations).line,
-    }
     this.resetTestProgressData()
   }
 

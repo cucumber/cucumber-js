@@ -13,17 +13,9 @@ import { messages } from 'cucumber-messages'
 describe('helpers', () => {
   describe('getTestCasesFromFilesystem', () => {
     beforeEach(async function() {
-      this.onSource = sinon.stub()
-      this.onGherkinDocument = sinon.stub()
-      this.onPickle = sinon.stub()
-      this.onPickleAccepted = sinon.stub()
-      this.onPickleRejected = sinon.stub()
+      this.onEnvelope = sinon.stub()
       this.eventBroadcaster = new EventEmitter()
-      this.eventBroadcaster.on('source', this.onSource)
-      this.eventBroadcaster.on('gherkin-document', this.onGherkinDocument)
-      this.eventBroadcaster.on('pickle', this.onPickle)
-      this.eventBroadcaster.on('pickle-accepted', this.onPickleAccepted)
-      this.eventBroadcaster.on('pickle-rejected', this.onPickleRejected)
+      this.eventBroadcaster.on('envelope', this.onEnvelope)
     })
 
     describe('empty feature', () => {
@@ -49,30 +41,28 @@ describe('helpers', () => {
         expect(this.result).to.eql([])
       })
 
+      it('emits 2 events', function() {
+        expect(this.onEnvelope).to.have.callCount(2)
+      })
+
       it('emits a source event', function() {
-        expect(this.onSource).to.have.callCount(1)
-        expect(this.onSource).to.have.been.calledWith(
-          messages.Source.fromObject({
+        expect(this.onEnvelope).to.have.been.calledWith(new messages.Envelope({
+          source: {
+            data: "",
             media: {
               contentType: 'text/x.cucumber.gherkin+plain',
               encoding: messages.Media.Encoding.UTF8,
             },
             uri: this.absoluteFeaturePath,
-          })
-        )
+          }
+        }))
       })
 
       it('emits a gherkin-document event', function() {
-        expect(this.onGherkinDocument).to.have.callCount(1)
-        const arg = this.onGherkinDocument.firstCall.args[0]
-        expect(arg).to.have.keys(['comments', 'uri'])
-        expect(arg.uri).to.eql(this.absoluteFeaturePath)
-      })
-
-      it('does not emit pickle events', function() {
-        expect(this.onPickle).to.have.callCount(0)
-        expect(this.onPickleAccepted).to.have.callCount(0)
-        expect(this.onPickleRejected).to.have.callCount(0)
+        const envelope = this.onEnvelope.getCall(1).args[0]
+        expect(envelope.gherkinDocument).to.exist
+        expect(envelope.gherkinDocument).to.have.keys(['comments', 'uri'])
+        expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
       })
     })
 
@@ -105,25 +95,49 @@ describe('helpers', () => {
         expect(this.result).to.eql([])
       })
 
+      it('emits 4 events', function() {
+        expect(this.onEnvelope).to.have.callCount(4)
+      })
+
       it('emits a source event', function() {
-        expect(this.onSource).to.have.callCount(1)
-        expect(this.onSource).to.have.been.calledWith(
-          messages.Source.fromObject({
+        expect(this.onEnvelope).to.have.been.calledWith(new messages.Envelope({
+          source: {
             data: 'Feature: a\nScenario: b\nGiven a step',
             media: {
-              encoding: messages.Media.Encoding.UTF8,
               contentType: 'text/x.cucumber.gherkin+plain',
+              encoding: messages.Media.Encoding.UTF8,
             },
             uri: this.absoluteFeaturePath,
-          })
-        )
+          }
+        }))
       })
 
       it('emits a gherkin-document event', function() {
-        expect(this.onGherkinDocument).to.have.callCount(1)
-        const arg = this.onGherkinDocument.firstCall.args[0]
-        expect(arg).to.have.keys(['comments', 'feature', 'uri'])
-        expect(arg.uri).to.eql(this.absoluteFeaturePath)
+        const envelope = this.onEnvelope.getCall(1).args[0]
+        expect(envelope.gherkinDocument).to.exist
+        expect(envelope.gherkinDocument).to.have.keys(['comments', 'feature', 'uri'])
+        expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
+      })
+
+      it('emits a pickle event', function() {
+        const envelope = this.onEnvelope.getCall(2).args[0]
+        expect(envelope.pickle).to.exist
+        expect(envelope.pickle).to.have.keys([
+          'id',
+          'language',
+          'name',
+          'sourceIds',
+          'steps',
+          'tags',
+          'uri',
+        ])
+      })
+      
+      it('emits a pickleRejected event', function() {
+        const thirdEnvelope = this.onEnvelope.getCall(2).args[0]
+        const fourthEnvelope = this.onEnvelope.getCall(3).args[0]
+        expect(fourthEnvelope.pickleRejected).to.exist
+        expect(fourthEnvelope.pickleRejected.pickleId).to.eql(thirdEnvelope.pickle.id)
       })
     })
 
@@ -154,8 +168,8 @@ describe('helpers', () => {
         expect(this.result[0]).to.have.keys([
           'id',
           'language',
-          'locations',
           'name',
+          'sourceIds',
           'steps',
           'tags',
           'uri',
@@ -163,44 +177,49 @@ describe('helpers', () => {
         expect(this.result[0].uri).to.eql(this.absoluteFeaturePath)
       })
 
+      it('emits 4 events', function() {
+        expect(this.onEnvelope).to.have.callCount(4)
+      })
+
       it('emits a source event', function() {
-        expect(this.onSource).to.have.callCount(1)
-        expect(this.onSource).to.have.been.calledWith(
-          messages.Source.fromObject({
+        expect(this.onEnvelope).to.have.been.calledWith(new messages.Envelope({
+          source: {
             data: 'Feature: a\nScenario: b\nGiven a step',
             media: {
-              encoding: messages.Media.Encoding.UTF8,
               contentType: 'text/x.cucumber.gherkin+plain',
+              encoding: messages.Media.Encoding.UTF8,
             },
             uri: this.absoluteFeaturePath,
-          })
-        )
+          }
+        }))
       })
 
       it('emits a gherkin-document event', function() {
-        expect(this.onGherkinDocument).to.have.callCount(1)
-        const arg = this.onGherkinDocument.firstCall.args[0]
-        expect(arg).to.have.keys(['comments', 'feature', 'uri'])
-        expect(arg.uri).to.eql(this.absoluteFeaturePath)
+        const envelope = this.onEnvelope.getCall(1).args[0]
+        expect(envelope.gherkinDocument).to.exist
+        expect(envelope.gherkinDocument).to.have.keys(['comments', 'feature', 'uri'])
+        expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
       })
 
-      it('emits a pickle and pickle-accepted event', function() {
-        expect(this.onPickle).to.have.callCount(1)
-        expect(this.onPickleAccepted).to.have.callCount(1)
-        expect(this.onPickleRejected).to.have.callCount(0)
-        const onPickleArg = this.onPickle.firstCall.args[0]
-        expect(onPickleArg).to.have.keys([
+      it('emits a pickle event', function() {
+        const envelope = this.onEnvelope.getCall(2).args[0]
+        expect(envelope.pickle).to.exist
+        expect(envelope.pickle).to.have.keys([
           'id',
           'language',
-          'locations',
           'name',
+          'sourceIds',
           'steps',
           'tags',
           'uri',
         ])
-        expect(onPickleArg.uri).to.eql(this.absoluteFeaturePath)
-        const onPickleAcceptedArg = this.onPickleAccepted.firstCall.args[0]
-        expect(onPickleAcceptedArg).to.eql(onPickleArg)
+      })
+
+      it('emits a pickleAccepted event', function() {
+        const thirdEnvelope = this.onEnvelope.getCall(2).args[0]
+        const fourthEnvelope = this.onEnvelope.getCall(3).args[0]
+        expect(fourthEnvelope.pickleAccepted).to.exist
+        expect(fourthEnvelope.pickleAccepted.pickleId).to.eql(thirdEnvelope.pickle.id)
       })
     })
   })

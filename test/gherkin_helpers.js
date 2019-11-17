@@ -4,12 +4,14 @@ import { messages } from 'cucumber-messages'
 export function parse({ data, uri }) {
   const sources = [
     {
-      uri,
-      data: data,
-      media: {
-        encoding: messages.Media.Encoding.UTF8,
-        contentType: 'text/x.cucumber.gherkin+plain',
-      },
+      source: {
+        uri,
+        data: data,
+        media: {
+          encoding: messages.Media.Encoding.UTF8,
+          contentType: 'text/x.cucumber.gherkin+plain',
+        },
+      }
     },
   ]
   return new Promise((resolve, reject) => {

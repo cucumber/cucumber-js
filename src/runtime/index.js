@@ -10,12 +10,12 @@ import { retriesForTestCase } from './helpers'
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}
-  constructor({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
+  constructor({ eventBroadcaster, options, supportCodeLibrary, pickles }) {
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
     this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
-    this.testCases = testCases || []
+    this.pickles = pickles || []
     this.result = {
       duration: 0,
       success: true,
@@ -42,7 +42,7 @@ export default class Runtime {
     })
   }
 
-  async runTestCase(testCase) {
+  async runPickle(testCase) {
     const retries = retriesForTestCase(testCase, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
@@ -69,7 +69,7 @@ export default class Runtime {
     }
     this.eventBroadcaster.emit('test-run-started')
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
-    await Promise.each(this.testCases, ::this.runTestCase)
+    await Promise.each(this.pickles, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
     this.eventBroadcaster.emit('test-run-finished', { result: this.result })
     if (this.options.filterStacktraces) {

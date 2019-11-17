@@ -181,6 +181,7 @@
     "string-argv": "^0.3.0",
     "title-case": "^2.1.1",
     "util-arity": "^1.0.2",
+    "uuid": "^3.3.3",
     "verror": "^1.9.0"
   },
   "devDependencies": {

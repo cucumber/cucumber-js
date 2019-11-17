@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Status from '../../status'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
-import { getStepLineToKeywordMap } from './gherkin_document_parser'
+import { getStepIdToKeywordMap } from './gherkin_document_parser'
 import { getStepLineToPickledStepMap, getStepKeyword } from './pickle_parser'
 
 function parseDataTable(arg) {
@@ -77,7 +77,7 @@ export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder }) {
     },
     testSteps: [],
   }
-  const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
+  const stepIdToKeywordMap = getStepIdToKeywordMap(gherkinDocument)
   const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
   let isBeforeHook = true
   let previousKeywordType = KeywordType.PRECONDITION
@@ -87,7 +87,7 @@ export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder }) {
     let keyword, keywordType, pickleStep
     if (testStep.sourceLocation) {
       pickleStep = stepLineToPickledStepMap[testStep.sourceLocation.line]
-      keyword = getStepKeyword({ pickleStep, stepLineToKeywordMap })
+      keyword = getStepKeyword({ pickleStep, stepIdToKeywordMap })
       keywordType = getStepKeywordType({
         keyword,
         language: gherkinDocument.feature.language,

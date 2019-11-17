@@ -172,9 +172,8 @@ describe('IssueHelpers', () => {
             '      |aaa|b|c|\n' +
             '      |d|e|ff|\n' +
             '      |gg|h|iii|\n'
-        )
+        })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
-        const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
         this.testCaseAttempt.pickle = pickle
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },
@@ -215,9 +214,8 @@ describe('IssueHelpers', () => {
             '\n' +
             '       :-)\n' +
             '       """\n'
-        )
+        })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
-        const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
         this.testCaseAttempt.pickle = pickle
         this.testCase.steps[1] = {
           actionLocation: { line: 3, uri: 'steps.js' },

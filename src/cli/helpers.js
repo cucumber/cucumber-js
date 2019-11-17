@@ -5,6 +5,7 @@ import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
+import { messages } from 'cucumber-messages'
 
 export async function getExpandedArgv({ argv, cwd }) {
   const { options } = ArgvParser.parse(argv)
@@ -30,24 +31,18 @@ export function getTestCasesFromFilesystem({
       defaultDialect: featureDefaultLanguage,
     })
     messageStream.on('data', envelope => {
-      if (envelope.source) {
-        eventBroadcaster.emit('source', envelope.source)
-      }
-      if (envelope.gherkinDocument) {
-        eventBroadcaster.emit('gherkin-document', envelope.gherkinDocument)
-      }
+      eventBroadcaster.emit('envelope', envelope)
       if (envelope.pickle) {
-        const pickle = envelope.pickle
-        eventBroadcaster.emit('pickle', pickle)
+        const pickle = envelope.pickle;
+        const pickleId = pickle.id;
         if (pickleFilter.matches(pickle)) {
-          eventBroadcaster.emit('pickle-accepted', pickle)
+          eventBroadcaster.emit('envelope', messages.Envelope.fromObject({pickleAccepted: {pickleId}}))
           result.push(pickle)
         } else {
-          eventBroadcaster.emit('pickle-rejected', pickle)
+          eventBroadcaster.emit('envelope', messages.Envelope.fromObject({pickleRejected: {pickleId}}))
         }
       }
       if (envelope.attachment) {
-        eventBroadcaster.emit('attachment', envelope.attachment)
         reject(
           new Error(
             `Parse error in '${path.relative(

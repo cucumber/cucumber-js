@@ -9,17 +9,9 @@ import { EventEmitter } from 'events'
 
 describe('TestCaseRunner', () => {
   beforeEach(function() {
-    this.onTestCasePrepared = sinon.stub()
-    this.onTestCaseStarted = sinon.stub()
-    this.onTestStepStarted = sinon.stub()
-    this.onTestStepFinished = sinon.stub()
-    this.onTestCaseFinished = sinon.stub()
+    this.onEnvelope = sinon.stub()
     this.eventBroadcaster = new EventEmitter()
-    this.eventBroadcaster.on('test-case-prepared', this.onTestCasePrepared)
-    this.eventBroadcaster.on('test-case-started', this.onTestCaseStarted)
-    this.eventBroadcaster.on('test-step-started', this.onTestStepStarted)
-    this.eventBroadcaster.on('test-step-finished', this.onTestStepFinished)
-    this.eventBroadcaster.on('test-case-finished', this.onTestCaseFinished)
+    this.eventBroadcaster.on('envelope', this.onEnvelope)
     this.pickle = {
       steps: [],
       locations: [{ line: 1 }],

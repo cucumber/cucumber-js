@@ -2,18 +2,18 @@ import _ from 'lodash'
 
 export function getScenarioDescription({
   pickle,
-  scenarioLineToDescriptionMap,
+  scenarioIdToDescriptionMap,
 }) {
-  return _.chain(pickle.locations)
-    .map(({ line }) => scenarioLineToDescriptionMap[line])
+  return _.chain(pickle.sourceIds)
+    .map((id) => scenarioIdToDescriptionMap[id])
     .compact()
     .first()
     .value()
 }
 
-export function getStepKeyword({ pickleStep, stepLineToKeywordMap }) {
-  return _.chain(pickleStep.locations)
-    .map(({ line }) => stepLineToKeywordMap[line])
+export function getStepKeyword({ pickleStep, stepIdToKeywordMap }) {
+  return _.chain(pickleStep.sourceIds)
+    .map((id) => stepIdToKeywordMap[id])
     .compact()
     .first()
     .value()
