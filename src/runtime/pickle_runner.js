@@ -207,7 +207,7 @@ export default class PickleRunner {
         await this.aroundTestStep(testStep.id, attempt, async () => {
           if (testStep.isHook) {
             const hookParameter = {
-              pickle: this.testCase.pickle,
+              pickle: this.pickle,
             }
             if (!testStep.isBeforeHook) {
               hookParameter.result = this.result
@@ -234,7 +234,7 @@ export default class PickleRunner {
 
   async runHook(hookDefinition, hookParameter, isBeforeHook) {
     if (this.shouldSkipHook(isBeforeHook)) {
-      return { status: Status.SKIPPED }
+      return { duration: 0, status: Status.SKIPPED }
     }
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
@@ -242,14 +242,15 @@ export default class PickleRunner {
   async runStep(step) {
     const stepDefinitions = this.getStepDefinitions(step)
     if (stepDefinitions.length === 0) {
-      return { status: Status.UNDEFINED }
+      return { duration: 0, status: Status.UNDEFINED }
     } else if (stepDefinitions.length > 1) {
       return {
+        duration: 0,
         exception: getAmbiguousStepException(stepDefinitions),
         status: Status.AMBIGUOUS,
       }
     } else if (this.isSkippingSteps()) {
-      return { status: Status.SKIPPED }
+      return { duration: 0, status: Status.SKIPPED }
     }
     return this.invokeStep(step, stepDefinitions[0])
   }
