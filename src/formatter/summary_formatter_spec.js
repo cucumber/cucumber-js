@@ -2,13 +2,15 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { createMock } from './test_helpers'
 import getColorFns from './get_color_fns'
-import Status from '../status'
 import SummaryFormatter from './summary_formatter'
 import figures from 'figures'
 import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import { MILLISECONDS_IN_NANOSECOND } from '../time'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 describe('SummaryFormatter', () => {
   beforeEach(function() {

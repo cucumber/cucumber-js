@@ -1,10 +1,12 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import JsonFormatter from './json_formatter'
-import Status from '../status'
 import EventEmitter from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 describe('JsonFormatter', () => {
   beforeEach(function() {

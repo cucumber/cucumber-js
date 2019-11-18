@@ -1,9 +1,11 @@
 import _ from 'lodash'
 import Formatter from './'
-import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { buildStepArgumentIterator } from '../step_arguments'
 import { format } from 'assertion-error-formatter'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 const {
   getStepLineToKeywordMap,

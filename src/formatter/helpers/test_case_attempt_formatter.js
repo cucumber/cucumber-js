@@ -1,10 +1,12 @@
 import indentString from 'indent-string'
-import Status from '../../status'
 import figures from 'figures'
 import { formatError } from './error_helpers'
 import { formatLocation } from './location_helpers'
 import { parseTestCaseAttempt } from './test_case_attempt_parser'
 import { formatStepArguments } from './step_argument_formatter'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,

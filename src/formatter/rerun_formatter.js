@@ -1,7 +1,9 @@
 import _ from 'lodash'
 import Formatter from './'
-import Status from '../status'
 import path from 'path'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 const DEFAULT_SEPARATOR = '\n'
 

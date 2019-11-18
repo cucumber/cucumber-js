@@ -1,9 +1,11 @@
 import _ from 'lodash'
-import Status from '../../status'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
 import { getStepIdToKeywordMap } from './gherkin_document_parser'
 import { getStepLineToPickledStepMap, getStepKeyword } from './pickle_parser'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 function parseDataTable(arg) {
   const rows = arg.rows.map(row =>

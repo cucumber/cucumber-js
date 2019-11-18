@@ -2,8 +2,10 @@ import _ from 'lodash'
 import { fork } from 'child_process'
 import commandTypes from './command_types'
 import path from 'path'
-import Status from '../../status'
-import { retriesForTestCase } from '../helpers'
+import { retriesForPickle } from '../helpers'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 const slaveCommand = path.resolve(
   __dirname,
@@ -22,15 +24,15 @@ export default class Master {
     options,
     supportCodePaths,
     supportCodeRequiredModules,
-    testCases,
+    pickles,
   }) {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.options = options || {}
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
-    this.testCases = testCases || []
-    this.nextTestCaseIndex = 0
+    this.pickles = pickles || []
+    this.nextPickleIndex = 0
     this.result = {
       duration: 0,
       success: true,
@@ -111,16 +113,16 @@ export default class Master {
   }
 
   giveSlaveWork(slave) {
-    if (this.nextTestCaseIndex === this.testCases.length) {
+    if (this.nextPickleIndex === this.pickles.length) {
       slave.process.send({ command: commandTypes.FINALIZE })
       return
     }
-    const testCase = this.testCases[this.nextTestCaseIndex]
-    this.nextTestCaseIndex += 1
-    const retries = retriesForTestCase(testCase, this.options)
+    const pickle = this.pickles[this.nextPickleIndex]
+    this.nextPickleIndex += 1
+    const retries = retriesForPickle(testCase, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    slave.process.send({ command: commandTypes.RUN, retries, skip, testCase })
+    slave.process.send({ command: commandTypes.RUN, retries, skip, pickle })
   }
 
   shouldCauseFailure(status) {

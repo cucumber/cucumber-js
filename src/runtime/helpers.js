@@ -40,7 +40,7 @@ export function getAmbiguousStepException(stepDefinitions) {
   )}`
 }
 
-export function retriesForTestCase(testCase, options) {
+export function retriesForPickle(pickle, options) {
   const retries = options.retry
   if (!retries) {
     return 0
@@ -52,7 +52,7 @@ export function retriesForTestCase(testCase, options) {
   const pickleFilter = new PickleFilter({
     tagExpression: retryTagFilter,
   })
-  if (pickleFilter.matches(testCase)) {
+  if (pickleFilter.matches(pickle)) {
     return retries
   }
   return 0

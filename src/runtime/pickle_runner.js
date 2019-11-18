@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
-import Promise from 'bluebird'
 import StepRunner from './step_runner'
 import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
@@ -23,7 +22,7 @@ export default class PickleRunner {
           'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
       }
-      // TODO custom envelope need to add to cucumber-messages 
+      // TODO custom envelope need to update cucumber-messages
       this.eventBroadcaster('envelope', {
         testCaseAttachment: {
           data,

@@ -3,8 +3,10 @@ import { expect } from 'chai'
 import _ from 'lodash'
 import path from 'path'
 import RerunFormatter from './rerun_formatter'
-import Status from '../status'
 import { EventEmitter } from 'events'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 function prepareFormatter(options = {}) {
   this.output = ''

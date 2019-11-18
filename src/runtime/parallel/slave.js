@@ -6,7 +6,7 @@ import Promise from 'bluebird'
 import serializeError from 'serialize-error'
 import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import TestCaseRunner from '../test_case_runner'
+import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
 
@@ -83,16 +83,16 @@ export default class Slave {
     }
   }
 
-  async runTestCase({ testCase, retries, skip }) {
-    const testCaseRunner = new TestCaseRunner({
+  async runTestCase({ pickle, retries, skip }) {
+    const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
-      testCase,
+      pickle,
       worldParameters: this.worldParameters,
     })
-    await testCaseRunner.run()
+    await pickleRunner.run()
     this.sendMessage({ command: commandTypes.READY })
   }
 

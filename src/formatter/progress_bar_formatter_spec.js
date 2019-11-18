@@ -4,10 +4,12 @@ import { createMock } from './test_helpers'
 import sinon from 'sinon'
 import getColorFns from './get_color_fns'
 import ProgressBarFormatter from './progress_bar_formatter'
-import Status from '../status'
 import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 describe('ProgressBarFormatter', () => {
   beforeEach(function() {

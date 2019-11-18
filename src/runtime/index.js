@@ -5,7 +5,7 @@ import StackTraceFilter from '../stack_trace_filter'
 import TestCaseRunner from './pickle_runner'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
-import { retriesForTestCase } from './helpers'
+import { retriesForPickle } from './helpers'
 import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
@@ -45,7 +45,7 @@ export default class Runtime {
   }
 
   async runPickle(testCase) {
-    const retries = retriesForTestCase(testCase, this.options)
+    const retries = retriesForPickle(testCase, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     const testCaseRunner = new TestCaseRunner({
@@ -69,11 +69,12 @@ export default class Runtime {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    this.eventBroadcaster.emit('test-run-started')
+    this.eventBroadcaster.emit(new messages.Envelope({testRunStarted: {}}))
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
     await Promise.each(this.pickles, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
-    this.eventBroadcaster.emit('test-run-finished', { result: this.result })
+    // TODO custom envelope need to update cucumber-messages
+    this.eventBroadcaster.emit({testRunFinished: this.result})
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }

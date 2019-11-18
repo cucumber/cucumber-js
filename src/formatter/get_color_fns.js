@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import colors from 'colors/safe'
-import Status from '../status'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 colors.enabled = true
 
