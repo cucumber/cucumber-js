@@ -1,6 +1,6 @@
 import Table from 'cli-table3'
 
-function formatDataTable(arg) {
+function formatDataTable(dataTable) {
   const table = new Table({
     chars: {
       bottom: '',
@@ -25,18 +25,23 @@ function formatDataTable(arg) {
       'padding-right': 1,
     },
   })
-  table.push(...arg.rows)
+  const rows = dataTable.rows.map(row =>
+    row.cells.map(cell =>
+      cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
+    )
+  )
+  table.push(...rows)
   return table.toString()
 }
 
-function formatDocString(arg) {
-  return `"""\n${arg.content}\n"""`
+function formatDocString(docString) {
+  return `"""\n${docString.content}\n"""`
 }
 
 export function formatStepArgument(arg) {
-  if (arg.rows) {
-    return formatDataTable(arg)
+  if (arg.dataTable) {
+    return formatDataTable(arg.dataTable)
   } else {
-    return formatDocString(arg)
+    return formatDocString(arg.docString)
   }
 }

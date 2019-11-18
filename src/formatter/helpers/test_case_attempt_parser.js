@@ -7,18 +7,6 @@ import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
 
-function parseDataTable(dataTable) {
-  const rows = dataTable.rows.map(row =>
-    row.cells.map(cell =>
-      cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
-    )
-  )
-  return { rows }
-}
-
-function parseDocString(docString) {
-  return { content: docString.content }
-}
 
 function parseStep({
   isBeforeHook,
@@ -67,11 +55,7 @@ function parseStep({
     out.keyword = isBeforeHook ? 'Before' : 'After'
   }
   if (pickleStep.argument) {
-    if (pickleStep.argument.dataTable) {
-      out.argument = parseDataTable(pickleStep.argument.dataTable)
-    } else {
-      out.argument = parseDocString(pickleStep.argument.docString)
-    }
+    out.argument = pickleStep.argument
   }
   if (testStepResult.status === Status.UNDEFINED) {
     out.snippet = snippetBuilder.build({ keywordType, pickleStep })
