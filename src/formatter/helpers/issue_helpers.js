@@ -28,12 +28,14 @@ export function formatIssue({
   number,
   snippetBuilder,
   testCaseAttempt,
+  supportCodeLibrary
 }) {
   const prefix = `${number}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
     snippetBuilder,
     testCaseAttempt,
+    supportCodeLibrary
   })
   const lines = formattedTestCaseAttempt.split('\n')
   const updatedLines = lines.map((line, index) => {

@@ -6,7 +6,7 @@ import { formatIssue } from './issue_helpers'
 import figures from 'figures'
 import { parse } from '../../../test/gherkin_helpers'
 import { messages } from 'cucumber-messages'
-
+import uuidv4 from 'uuid/v4'
 const { Status } = messages.TestResult
 
 describe('IssueHelpers', () => {
@@ -20,6 +20,13 @@ describe('IssueHelpers', () => {
         '    Then step3\n',
       uri: 'a.feature',
     })
+    this.supportCodeLibrary = {
+      stepDefinitions: [
+        {id: uuidv4(), line: 2, uri: 'steps.js'},
+        {id: uuidv4(), line: 3, uri: 'steps.js'},
+        {id: uuidv4(), line: 4, uri: 'steps.js'}
+      ]
+    }
     this.testCase = {
       sourceLocation: {
         uri: 'a.feature',
@@ -27,29 +34,32 @@ describe('IssueHelpers', () => {
       },
       steps: [
         {
-          actionLocation: { line: 2, uri: 'steps.js' },
-          sourceLocation: { line: 3, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: pickle.steps[0].id,
+          stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[0].id],
         },
         {},
         {
-          actionLocation: { line: 4, uri: 'steps.js' },
-          sourceLocation: { line: 5, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: pickle.steps[2].id,
+          stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[2].id],
         },
       ],
     }
     this.testCaseAttempt = {
-      attemptNumber: 1,
+      attempt: 0,
       gherkinDocument,
       pickle,
       result: {},
-      stepAttachments: [[], [], []],
-      stepResults: [null, null, null],
+      stepAttachments: {},
+      stepResults: {},
       testCase: this.testCase,
     }
     this.options = {
       colorFns: getColorFns(false),
       number: 1,
       snippetBuilder: createMock({ build: 'snippet' }),
+      supportCodeLibrary: this.supportCodeLibrary,
       testCaseAttempt: this.testCaseAttempt,
     }
     this.passedStepResult = { duration: 0, status: Status.PASSED }
@@ -60,15 +70,16 @@ describe('IssueHelpers', () => {
     describe('returns the formatted scenario', () => {
       beforeEach(function() {
         this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
+          stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
         }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = {
+        this.testCaseAttempt.stepResults[this.testCase.steps[0].id] = this.passedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
           exception: 'error',
           status: Status.FAILED,
         }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[2].id] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
 
@@ -86,18 +97,19 @@ describe('IssueHelpers', () => {
     describe('with an ambiguous step', () => {
       beforeEach(function() {
         this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
+          stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
         }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = {
+        this.testCaseAttempt.stepResults[this.testCase.steps[0].id] = this.passedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
           exception:
             'Multiple step definitions match:\n' +
             '  pattern1        - steps.js:5\n' +
             '  longer pattern2 - steps.js:6',
           status: Status.FAILED,
         }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[2].id] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
 
@@ -117,11 +129,13 @@ describe('IssueHelpers', () => {
     describe('with an undefined step', () => {
       beforeEach(function() {
         this.testCase.steps[1] = {
-          sourceLocation: { line: 4, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
+          stepDefinitionId: []
         }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.UNDEFINED }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[0].id] = this.passedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = { status: Status.UNDEFINED }
+        this.testCaseAttempt.stepResults[this.testCase.steps[2].id] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
 
@@ -142,12 +156,13 @@ describe('IssueHelpers', () => {
     describe('with a pending step', () => {
       beforeEach(function() {
         this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
+          stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
         }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.PENDING }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[0].id] = this.passedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = { status: Status.PENDING }
+        this.testCaseAttempt.stepResults[this.testCase.steps[2].id] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
 
@@ -175,15 +190,19 @@ describe('IssueHelpers', () => {
             '      |d|e|ff|\n' +
             '      |gg|h|iii|\n'
         })
+        console.log(pickle)
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle
+        this.testCase.steps[0].pickleStepId = pickle.steps[0].id
         this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
+          id: uuidv4(),
+          pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
+          stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
         }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.PENDING }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
+        this.testCase.steps[2].pickleStepId = pickle.steps[2].id
+        this.testCaseAttempt.stepResults[this.testCase.steps[0].id] = this.passedStepResult
+        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = { status: Status.PENDING }
+        this.testCaseAttempt.stepResults[this.testCase.steps[2].id] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
 

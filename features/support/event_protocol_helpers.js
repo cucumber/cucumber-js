@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { getStepLineToKeywordMap } from '../../src/formatter/helpers/gherkin_document_parser'
 import {
-  getPickleStepLine,
   getStepKeyword,
   getStepLineToPickledStepMap,
 } from '../../src/formatter/helpers/pickle_parser'
@@ -77,6 +76,7 @@ export function getTestStepAttachmentEvents(events, pickleName, stepText) {
     gherkinDocumentEvent,
     stepText
   )
+  // TODO fix
   const pickleStepLine = getPickleStepLine(pickleStep)
   const testCasePreparedEvent = getTestCasePreparedEvent(events, pickleEvent)
   const testStepIndex = _.findIndex(

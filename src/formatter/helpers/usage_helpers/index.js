@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { formatLocation } from '../location_helpers'
-import { getStepLineToPickledStepMap } from '../pickle_parser'
+import { getStepIdToPickledStepMap } from '../pickle_parser'
 import path from 'path'
 
 function getCodeAsString(stepDefinition) {
@@ -29,7 +29,7 @@ function buildEmptyMapping(stepDefinitions) {
 function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
-    const stepLineToPickledStepMap = getStepLineToPickledStepMap(
+    const stepLineToPickledStepMap = getStepIdToPickledStepMap(
       testCaseAttempt.pickle
     )
     testCaseAttempt.stepResults.forEach((testStepResult, index) => {

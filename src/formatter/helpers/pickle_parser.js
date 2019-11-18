@@ -11,21 +11,17 @@ export function getScenarioDescription({
     .value()
 }
 
-export function getStepKeyword({ pickleStep, stepIdToKeywordMap }) {
+export function getStepKeyword({ pickleStep, gherkinStepMap }) {
   return _.chain(pickleStep.sourceIds)
-    .map((id) => stepIdToKeywordMap[id])
+    .map((id) => gherkinStepMap[id].keyword)
     .compact()
     .first()
     .value()
 }
 
-export function getStepLineToPickledStepMap(pickle) {
+export function getStepIdToPickledStepMap(pickle) {
   return _.chain(pickle.steps)
-    .map(step => [getPickleStepLine(step), step])
+    .map(pickleStep => [pickleStep.id, pickleStep])
     .fromPairs()
     .value()
-}
-
-export function getPickleStepLine(pickleStep) {
-  return _.first(pickleStep.locations).line
 }

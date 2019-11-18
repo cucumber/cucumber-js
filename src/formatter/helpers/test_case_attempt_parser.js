@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
-import { getStepIdToKeywordMap } from './gherkin_document_parser'
-import { getStepLineToPickledStepMap, getStepKeyword } from './pickle_parser'
+import { getGherkinStepMap } from './gherkin_document_parser'
+import { getStepIdToPickledStepMap, getStepKeyword } from './pickle_parser'
 import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
 
-function parseDataTable(arg) {
-  const rows = arg.rows.map(row =>
+function parseDataTable(dataTable) {
+  const rows = dataTable.rows.map(row =>
     row.cells.map(cell =>
       cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
     )
@@ -16,16 +16,19 @@ function parseDataTable(arg) {
   return { rows }
 }
 
-function parseDocString(arg) {
-  return { content: arg.content }
+function parseDocString(docString) {
+  return { content: docString.content }
 }
 
 function parseStep({
   isBeforeHook,
+  gherkinStepMap,
   keyword,
   keywordType,
   pickleStep,
+  pickleUri,
   snippetBuilder,
+  supportCodeLibrary,
   testStep,
   testStepResult,
   testStepAttachments,
@@ -34,22 +37,41 @@ function parseStep({
     attachments: testStepAttachments,
     result: testStepResult,
   }
-  if (testStep.actionLocation) {
-    out.actionLocation = testStep.actionLocation
+  if (testStep.hookId) {
+    let hookDefinition;
+    if (isBeforeHook) {
+      hookDefinition = supportCodeLibrary.beforeHookDefinitions.find(x => x.id == testStep.hookId)
+    } else {
+      hookDefinition = supportCodeLibrary.afterHookDefinitions.find(x => x.id == testStep.hookId)
+    }
+    out.actionLocation = {
+      uri: hookDefinition.uri,
+      line: hookDefinition.line
+    }
   }
-  if (testStep.sourceLocation) {
+  if (testStep.stepDefinitionId.length == 1) {
+    const stepDefinition = supportCodeLibrary.stepDefinitions.find(x => x.id == testStep.stepDefinitionId[0])
+    out.actionLocation = {
+      uri: stepDefinition.uri,
+      line: stepDefinition.line
+    }
+  }
+  if (testStep.pickleStepId) {
     out.keyword = keyword
-    out.sourceLocation = testStep.sourceLocation
+    out.sourceLocation = {
+      uri: pickleUri,
+      line: gherkinStepMap[pickleStep.sourceIds[0]].location.line
+    }
     out.text = pickleStep.text
   } else {
     out.keyword = isBeforeHook ? 'Before' : 'After'
   }
-  if (pickleStep) {
-    const iterator = buildStepArgumentIterator({
-      dataTable: arg => parseDataTable(arg),
-      docString: arg => parseDocString(arg),
-    })
-    out.arguments = pickleStep.arguments.map(iterator)
+  if (pickleStep.argument) {
+    if (pickleStep.argument.dataTable) {
+      out.argument = parseDataTable(pickleStep.argument.dataTable)
+    } else {
+      out.argument = parseDocString(pickleStep.argument.docString)
+    }
   }
   if (testStepResult.status === Status.UNDEFINED) {
     out.snippet = snippetBuilder.build({ keywordType, pickleStep })
@@ -62,13 +84,13 @@ function parseStep({
 //
 // Returns the following
 // {
-//   testCase: {sourceLocation, name, attemptNumber, result: { status, retried, duration}},
+//   testCase: {location, name, attemptNumber, result: { status, retried, duration}, uri},
 //   testSteps: [
-//     {attachments, keyword, text?, result: {status, duration}, arguments?, snippet?, sourceLocation?, actionLocation?}
+//     {attachments, keyword, text?, result: {status, duration}, argument?, snippet?, sourceLocation?, actionLocation?}
 //     ...
 //   ]
 // }
-export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder }) {
+export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder, supportCodeLibrary }) {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const out = {
     testCase: {
@@ -79,17 +101,17 @@ export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder }) {
     },
     testSteps: [],
   }
-  const stepIdToKeywordMap = getStepIdToKeywordMap(gherkinDocument)
-  const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
+  const gherkinStepMap = getGherkinStepMap(gherkinDocument)
+  const pickleStepIdToPickleStepMap = getStepIdToPickledStepMap(pickle)
   let isBeforeHook = true
   let previousKeywordType = KeywordType.PRECONDITION
-  _.each(testCaseAttempt.stepResults, (testStepResult, index) => {
-    const testStep = testCase.steps[index]
-    isBeforeHook = isBeforeHook && !testStep.sourceLocation
+  _.each(testCaseAttempt.testCase.steps, (testStep) => {
+    const testStepResult = testCaseAttempt.stepResults[testStep.id]
+    isBeforeHook = isBeforeHook && testStep.hookId
     let keyword, keywordType, pickleStep
-    if (testStep.sourceLocation) {
-      pickleStep = stepLineToPickledStepMap[testStep.sourceLocation.line]
-      keyword = getStepKeyword({ pickleStep, stepIdToKeywordMap })
+    if (testStep.pickleStepId) {
+      pickleStep = pickleStepIdToPickleStepMap[testStep.pickleStepId]
+      keyword = getStepKeyword({ pickleStep, gherkinStepMap })
       keywordType = getStepKeywordType({
         keyword,
         language: gherkinDocument.feature.language,
@@ -98,13 +120,16 @@ export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder }) {
     }
     const parsedStep = parseStep({
       isBeforeHook,
+      gherkinStepMap,
       keyword,
       keywordType,
       pickleStep,
+      pickleUri: pickle.uri,
       snippetBuilder,
+      supportCodeLibrary,
       testStep,
       testStepResult,
-      testStepAttachments: testCaseAttempt.stepAttachments[index],
+      testStepAttachments: testCaseAttempt.stepAttachments[testStep.id] || [],
     })
     out.testSteps.push(parsedStep)
     previousKeywordType = keywordType

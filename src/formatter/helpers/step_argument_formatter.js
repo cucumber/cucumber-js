@@ -1,5 +1,4 @@
 import Table from 'cli-table3'
-import { buildStepArgumentIterator } from '../../step_arguments'
 
 function formatDataTable(arg) {
   const table = new Table({
@@ -34,10 +33,10 @@ function formatDocString(arg) {
   return `"""\n${arg.content}\n"""`
 }
 
-export function formatStepArguments(args) {
-  const iterator = buildStepArgumentIterator({
-    dataTable: arg => formatDataTable(arg),
-    docString: arg => formatDocString(arg),
-  })
-  return args.map(iterator).join('\n')
+export function formatStepArgument(arg) {
+  if (arg.rows) {
+    return formatDataTable(arg)
+  } else {
+    return formatDocString(arg)
+  }
 }

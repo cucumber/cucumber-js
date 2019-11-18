@@ -23,6 +23,7 @@ export default class EventDataCollector {
       gherkinDocument: this.gherkinDocumentMap[pickle.uri],
       pickle,
       testCase,
+      attempt: testCaseAttempt.attempt,
       result: testCaseAttempt.result,
       stepAttachments: testCaseAttempt.stepAttachments,
       stepResults: testCaseAttempt.stepResults
@@ -49,7 +50,7 @@ export default class EventDataCollector {
 
   initTestCaseAttempt(testCaseStarted) {
     this.testCaseAttemptMap[testCaseStarted.testCaseStartedId] = {
-      attemptNumber: testCaseStarted.attemptNumber,
+      attempt: testCaseStarted.attempt,
       testCaseId: testCaseStarted.testCaseId,
       result: {},
       stepAttachments: {},

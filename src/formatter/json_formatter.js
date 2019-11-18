@@ -14,7 +14,7 @@ const {
 
 const {
   getScenarioDescription,
-  getStepLineToPickledStepMap,
+  getStepIdToPickledStepMap: getStepLineToPickledStepMap,
   getStepKeyword,
 } = PickleParser
 

@@ -1,11 +1,11 @@
 import _ from 'lodash'
 
-export function getStepIdToKeywordMap(gherkinDocument) {
+export function getGherkinStepMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
     .map(child => child.background || child.scenario)
     .map('steps')
     .flatten()
-    .map(step => [step.id, step.keyword])
+    .map(step => [step.id, step])
     .fromPairs()
     .value()
 }
