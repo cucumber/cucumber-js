@@ -10,11 +10,11 @@ export function getGherkinStepMap(gherkinDocument) {
     .value()
 }
 
-export function getScenarioIdToDescriptionMap(gherkinDocument) {
+export function getGherkinScenarioMap(gherkinDocument) {
   return _.chain(gherkinDocument.feature.children)
     .filter('scenario')
     .map('scenario')
-    .map(scenario => [scenario.id, scenario.description])
+    .map(scenario => [scenario.id, scenario])
     .fromPairs()
     .value()
 }

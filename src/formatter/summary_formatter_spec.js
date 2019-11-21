@@ -9,6 +9,7 @@ import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import { MILLISECONDS_IN_NANOSECOND } from '../time'
 import { messages } from 'cucumber-messages'
+import uuidv4 from 'uuid/v4'
 
 const { Status } = messages.TestResult
 
@@ -19,52 +20,74 @@ describe('SummaryFormatter', () => {
       this.output += data
     }
     this.eventBroadcaster = new EventEmitter()
+    this.supportCodeLibrary = {
+      stepDefinitions: [
+        {id: uuidv4(), line: 3, uri: 'steps.js'},
+        {id: uuidv4(), line: 4, uri: 'steps.js'}
+      ]
+    }
     this.summaryFormatter = new SummaryFormatter({
       colorFns: getColorFns(false),
       eventBroadcaster: this.eventBroadcaster,
       eventDataCollector: new EventDataCollector(this.eventBroadcaster),
       log: logFn,
       snippetBuilder: createMock({ build: 'snippet' }),
+      supportCodeLibrary: this.supportCodeLibrary
     })
   })
 
   describe('issues', () => {
     beforeEach(async function() {
-      await generateEvents({
+      const { pickle } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven a step',
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
       })
-      this.testCase = {
-        attemptNumber: 1,
-        sourceLocation: { uri: 'a.feature', line: 2 },
-      }
+      this.pickle = pickle;
     })
 
     describe('with a failing scenario', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
+        const testCaseId = uuidv4()
+        const testStepId = uuidv4()
+        const testCaseStartedId = uuidv4()
+        const testResult = { exception: 'error', status: Status.FAILED }
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: this.pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId, 
+              pickleStepId: this.pickle.steps[0].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId,
+            testResult,
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          }
+        }))
       })
 
       it('logs the issue', function() {
@@ -84,33 +107,52 @@ describe('SummaryFormatter', () => {
 
     describe('with an ambiguous step', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: {
-            exception:
-              'Multiple step definitions match:\n' +
-              '  pattern1        - steps.js:3\n' +
-              '  longer pattern2 - steps.js:4',
-            status: Status.AMBIGUOUS,
-          },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.AMBIGUOUS },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
+        const testCaseId = uuidv4()
+        const testStepId = uuidv4()
+        const testCaseStartedId = uuidv4()
+        const testResult = { 
+          exception:
+            'Multiple step definitions match:\n' +
+            '  pattern1        - steps.js:3\n' +
+            '  longer pattern2 - steps.js:4',
+          status: Status.AMBIGUOUS 
+        }
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: this.pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId, 
+              pickleStepId: this.pickle.steps[0].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[0].id, this.supportCodeLibrary.stepDefinitions[1].id]
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          }
+        }))
       })
 
       it('logs the issue', function() {
@@ -132,32 +174,51 @@ describe('SummaryFormatter', () => {
 
     describe('with an undefined step', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
+        const testCaseId = uuidv4()
+        const testStepId = uuidv4()
+        const testCaseStartedId = uuidv4()
+        const testResult = { status: Status.UNDEFINED }
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: this.pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId, 
+              pickleStepId: this.pickle.steps[0].id, 
+              stepDefinitionId: []
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          }
+        }))
       })
 
       it('logs the issue', function() {
         expect(this.output).to.eql(
-          'Warnings:\n' +
+          'Failures:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
             '   ? Given a step\n' +
@@ -175,28 +236,46 @@ describe('SummaryFormatter', () => {
 
     describe('with a pending step', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PENDING },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.PENDING },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
+        const testCaseId = uuidv4()
+        const testStepId = uuidv4()
+        const testCaseStartedId = uuidv4()
+        const testResult = { status: Status.PENDING }
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: this.pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId, 
+              pickleStepId: this.pickle.steps[0].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId,
+            testResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          }
+        }))
       })
 
       it('logs the issue', function() {
@@ -216,39 +295,68 @@ describe('SummaryFormatter', () => {
 
     describe('with a passing flaky step', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED, retried: true },
-        })
-        const retriedTestCase = { ...this.testCase, attemptNumber: 2 }
-        this.eventBroadcaster.emit('test-case-started', retriedTestCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: retriedTestCase,
-          result: { status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...retriedTestCase,
-          result: { status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
+        const testCaseId = uuidv4()
+        const testStepId = uuidv4()
+        const testCaseStartedId1 = uuidv4()
+        const testCaseStartedId2 = uuidv4()
+        const failingTestResult = { exception: 'error', status: Status.FAILED }
+        const passingTestResult = { status: Status.PASSED }
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: this.pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId, 
+              pickleStepId: this.pickle.steps[0].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId1
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId: testCaseStartedId1,
+            testStepId,
+            testResult: failingTestResult,
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId: testCaseStartedId1,
+            testResult: { ...failingTestResult, willBeRetried: true }
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 1,
+            id: testCaseStartedId2
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId: testCaseStartedId2,
+            testStepId,
+            testResult: passingTestResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId: testCaseStartedId2,
+            testResult: passingTestResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          }
+        }))
       })
 
       it('logs the issue', function() {
@@ -268,39 +376,67 @@ describe('SummaryFormatter', () => {
 
     describe('with a failed flaky step', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED, retried: true },
-        })
-        const retriedTestCase = { ...this.testCase, attemptNumber: 2 }
-        this.eventBroadcaster.emit('test-case-started', retriedTestCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: retriedTestCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...retriedTestCase,
-          result: { status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
+        const testCaseId = uuidv4()
+        const testStepId = uuidv4()
+        const testCaseStartedId1 = uuidv4()
+        const testCaseStartedId2 = uuidv4()
+        const failingTestResult = { exception: 'error', status: Status.FAILED }
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: this.pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId, 
+              pickleStepId: this.pickle.steps[0].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId1
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId: testCaseStartedId1,
+            testStepId,
+            testResult: failingTestResult,
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId: testCaseStartedId1,
+            testResult: { ...failingTestResult, willBeRetried: true }
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 1,
+            id: testCaseStartedId2
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId: testCaseStartedId2,
+            testStepId,
+            testResult: failingTestResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId: testCaseStartedId2,
+            testResult: failingTestResult
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          }
+        }))
       })
 
       it('logs the issue', function() {
@@ -327,9 +463,11 @@ describe('SummaryFormatter', () => {
     describe('summary', () => {
       describe('with a duration of 123 milliseconds', () => {
         beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * MILLISECONDS_IN_NANOSECOND },
-          })
+          this.eventBroadcaster.emit('envelope', new messages.Envelope({
+            testRunFinished: {
+              duration: 123 * MILLISECONDS_IN_NANOSECOND,
+            }
+          }))
         })
 
         it('outputs scenario totals, step totals, and duration', function() {
@@ -339,9 +477,11 @@ describe('SummaryFormatter', () => {
 
       describe('with a duration of 12.3 seconds', () => {
         beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 100 * MILLISECONDS_IN_NANOSECOND },
-          })
+          this.eventBroadcaster.emit('envelope', new messages.Envelope({
+            testRunFinished: {
+              duration: 123 * 100 * MILLISECONDS_IN_NANOSECOND ,
+            }
+          }))
         })
 
         it('outputs scenario totals, step totals, and duration', function() {
@@ -351,9 +491,11 @@ describe('SummaryFormatter', () => {
 
       describe('with a duration of 120.3 seconds', () => {
         beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 1000 * MILLISECONDS_IN_NANOSECOND },
-          })
+          this.eventBroadcaster.emit('envelope', new messages.Envelope({
+            testRunFinished: {
+              duration: 123 * 1000 * MILLISECONDS_IN_NANOSECOND ,
+            }
+          }))
         })
 
         it('outputs scenario totals, step totals, and duration', function() {

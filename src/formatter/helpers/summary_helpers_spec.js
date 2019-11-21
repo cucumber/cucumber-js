@@ -4,6 +4,7 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import { MILLISECONDS_IN_NANOSECOND } from '../../time'
 import { messages } from 'cucumber-messages'
+import uuidv4 from 'uuid/v4'
 
 const { Status } = messages.TestResult
 
@@ -11,7 +12,7 @@ describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
     beforeEach(function() {
       this.testCaseAttempts = []
-      this.testRun = { result: { duration: 0 } }
+      this.testRun = { duration: 0 }
       this.options = {
         colorFns: getColorFns(false),
         testCaseAttempts: this.testCaseAttempts,
@@ -33,11 +34,14 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one passing step', () => {
       beforeEach(function() {
+        const testStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
+          stepResults: { 
+            [testStepId]: { status: Status.PASSED } 
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+            steps: [{ id: testStepId, pickleStepId: uuidv4() }],
           },
         })
         this.result = formatSummary(this.options)
@@ -52,11 +56,19 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with one step and hook', () => {
       beforeEach(function() {
+        const hookTestStepId = uuidv4()
+        const pickleTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          stepResults: { 
+            [hookTestStepId]: { status: Status.PASSED },
+            [pickleTestStepId]: { status: Status.PASSED } 
+          },
           testCase: {
-            steps: [{}, { sourceLocation: { uri: 'a.feature', line: 2 } }],
+            steps: [
+              { id: hookTestStepId},
+              { id: pickleTestStepId, pickleStepId: uuidv4() }
+            ],
           },
         })
         this.result = formatSummary(this.options)
@@ -71,18 +83,23 @@ describe('SummaryHelpers', () => {
 
     describe('with one scenario that failed and was retried then passed', () => {
       beforeEach(function() {
+        const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.FAILED, retried: true },
-          stepResults: [{ status: Status.FAILED }],
+          result: { status: Status.FAILED, willBeRetried: true },
+          stepResults: { 
+            [testStepId]: { status: Status.FAILED },
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+            steps: [{ id: testStepId, pickleStepId: uuidv4() }],
           },
         })
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
+          stepResults: { 
+            [testStepId]: { status: Status.PASSED },
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+            steps: [{ id: testStepId, pickleStepId: uuidv4() }],
           },
         })
         this.result = formatSummary(this.options)
@@ -97,13 +114,18 @@ describe('SummaryHelpers', () => {
 
     describe('with one passing scenario with multiple passing steps', () => {
       beforeEach(function() {
+        const testStepId1 = uuidv4()
+        const testStepId2 = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
+          stepResults: { 
+            [testStepId1]: { status: Status.PASSED },
+            [testStepId2]: { status: Status.PASSED },
+          },
           testCase: {
             steps: [
-              { sourceLocation: { uri: 'a.feature', line: 2 } },
-              { sourceLocation: { uri: 'a.feature', line: 3 } },
+              { id: testStepId1, pickleStepId: uuidv4() },
+              { id: testStepId2, pickleStepId: uuidv4() }
             ],
           },
         })
@@ -119,46 +141,64 @@ describe('SummaryHelpers', () => {
 
     describe('with one of every kind of scenario', () => {
       beforeEach(function() {
+        const ambiguousTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.AMBIGUOUS },
-          stepResults: [{ status: Status.AMBIGUOUS }],
+          stepResults: { 
+            [ambiguousTestStepId]: { status: Status.AMBIGUOUS } 
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
+            steps: [{ id: ambiguousTestStepId, pickleStepId: uuidv4() }],
           },
         })
+        const failedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.FAILED },
-          stepResults: [{ status: Status.FAILED }],
+          stepResults: { 
+            [failedTestStepId]: { status: Status.FAILED },
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 4 } }],
+            steps: [{ id: failedTestStepId, pickleStepId: uuidv4() }],
           },
         })
+        const pendingTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PENDING },
-          stepResults: [{ status: Status.PENDING }],
+          stepResults: { 
+            [pendingTestStepId]: { status: Status.PENDING } 
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 6 } }],
+            steps: [{ id: pendingTestStepId, pickleStepId: uuidv4() }],
           },
         })
+        const passedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
+          stepResults: { 
+            [passedTestStepId]: { status: Status.PASSED } 
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 8 } }],
+            steps: [{ id: passedTestStepId, pickleStepId: uuidv4() }],
           },
         })
+        const skippedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.SKIPPED },
-          stepResults: [{ status: Status.SKIPPED }],
+          stepResults: { 
+            [skippedTestStepId]: { status: Status.SKIPPED } 
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 10 } }],
+            steps: [{ id: skippedTestStepId, pickleStepId: uuidv4() }],
           },
         })
+        const undefinedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.UNDEFINED },
-          stepResults: [{ status: Status.UNDEFINED }],
+          stepResults: { 
+            [undefinedTestStepId]: { status: Status.UNDEFINED } 
+          },
           testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 12 } }],
+            steps: [{ id: undefinedTestStepId, pickleStepId: uuidv4() }],
           },
         })
         this.result = formatSummary(this.options)
@@ -175,7 +215,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 123 milliseconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * MILLISECONDS_IN_NANOSECOND
+        this.testRun.duration = 123 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 
@@ -188,7 +228,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 12.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * 100 * MILLISECONDS_IN_NANOSECOND
+        this.testRun.duration = 123 * 100 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 
@@ -201,7 +241,7 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 120.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.result.duration = 123 * 1000 * MILLISECONDS_IN_NANOSECOND
+        this.testRun.duration = 123 * 1000 * MILLISECONDS_IN_NANOSECOND
         this.result = formatSummary(this.options)
       })
 

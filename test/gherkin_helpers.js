@@ -18,8 +18,10 @@ export function parse({ data, uri }) {
     let source
     let gherkinDocument
     let pickle
+    const envelopes = []
     const messageStream = gherkinFromSources(sources)
     messageStream.on('data', envelope => {
+      envelopes.push(envelope)
       if (envelope.source) {
         source = envelope.source
       }
@@ -28,10 +30,22 @@ export function parse({ data, uri }) {
       }
       if (envelope.pickle) {
         pickle = envelope.pickle
+        envelopes.push(messages.Envelope.fromObject({pickleAccepted: {pickleId: pickle.id}}))
+      }
+      if (envelope.attachment) {
+        reject(
+          new Error(
+            `Parse error in '${path.relative(
+              cwd,
+              envelope.attachment.source.uri
+            )}': ${envelope.attachment.data}`
+          )
+        )
       }
     })
     messageStream.on('end', () => {
       resolve({
+        envelopes,
         source,
         gherkinDocument,
         pickle,
@@ -42,9 +56,7 @@ export function parse({ data, uri }) {
 }
 
 export async function generateEvents({ data, eventBroadcaster, uri }) {
-  const { source, gherkinDocument, pickle } = await parse({ data, uri })
-  eventBroadcaster.emit('source', source)
-  eventBroadcaster.emit('gherkin-document', gherkinDocument)
-  eventBroadcaster.emit('pickle', pickle)
-  eventBroadcaster.emit('pickle-accepted', pickle)
+  const { envelopes, source, gherkinDocument, pickle } = await parse({ data, uri })
+  envelopes.forEach((envelope) => eventBroadcaster.emit('envelope', envelope))
+  return { source, gherkinDocument, pickle }
 }

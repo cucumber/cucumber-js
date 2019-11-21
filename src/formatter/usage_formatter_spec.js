@@ -10,6 +10,8 @@ import {
   RegularExpression,
 } from 'cucumber-expressions'
 import { MILLISECONDS_IN_NANOSECOND } from '../time'
+import {messages} from 'cucumber-messages'
+import uuidv4 from 'uuid/v4'
 
 describe('UsageFormatter', () => {
   describe('handleFeaturesResult', () => {
@@ -34,7 +36,9 @@ describe('UsageFormatter', () => {
 
     describe('no step definitions', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-run-finished')
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {}
+        }))
       })
 
       it('outputs "No step definitions"', function() {
@@ -45,6 +49,7 @@ describe('UsageFormatter', () => {
     describe('with one step definition', () => {
       beforeEach(function() {
         this.stepDefinition = {
+          id: uuidv4(),
           code: function() {},
           line: 1,
           expression: new RegularExpression(
@@ -58,7 +63,9 @@ describe('UsageFormatter', () => {
 
       describe('unused', () => {
         beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished')
+          this.eventBroadcaster.emit('envelope', new messages.Envelope({
+            testRunFinished: {}
+          }))
         })
 
         it('outputs the step definition as unused', function() {
@@ -74,44 +81,56 @@ describe('UsageFormatter', () => {
 
       describe('used', () => {
         beforeEach(async function() {
-          await generateEvents({
+          const {pickle} = await generateEvents({
             data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
             eventBroadcaster: this.eventBroadcaster,
             uri: 'a.feature',
           })
           this.testCase = {
-            attemptNumber: 1,
-            sourceLocation: { uri: 'a.feature', line: 2 },
+            pickleId: pickle.id,
+            id: uuidv4(),
+            steps: [{ 
+              id: uuidv4(), 
+              pickleStepId: pickle.steps[0].id, 
+              stepDefinitionId: [this.stepDefinition.id]
+            }, { 
+              id: uuidv4(),  
+              pickleStepId: pickle.steps[1].id, 
+              stepDefinitionId: [this.stepDefinition.id]
+            }]
           }
-          this.eventBroadcaster.emit('test-case-prepared', {
-            sourceLocation: this.testCase.sourceLocation,
-            steps: [
-              {
-                sourceLocation: { uri: 'a.feature', line: 3 },
-                actionLocation: { uri: 'steps.js', line: 1 },
-              },
-              {
-                sourceLocation: { uri: 'a.feature', line: 4 },
-                actionLocation: { uri: 'steps.js', line: 1 },
-              },
-            ],
-          })
-          this.eventBroadcaster.emit('test-case-started', this.testCase)
+          this.eventBroadcaster.emit('envelope', new messages.Envelope({
+            testCase: this.testCase
+          }))
+          this.testCaseStartedId = uuidv4()
+          this.eventBroadcaster.emit('envelope', new messages.Envelope({
+            testCaseStarted: {
+              testCaseId: this.testCase.id,
+              attempt: 0,
+              id: this.testCaseStartedId
+            }
+          }))
         })
 
         describe('in dry run', () => {
           beforeEach(function() {
-            this.eventBroadcaster.emit('test-step-finished', {
-              index: 0,
-              testCase: this.testCase,
-              result: {},
-            })
-            this.eventBroadcaster.emit('test-step-finished', {
-              index: 1,
-              testCase: this.testCase,
-              result: {},
-            })
-            this.eventBroadcaster.emit('test-run-finished')
+            this.eventBroadcaster.emit('envelope', new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId: this.testCaseStartedId,
+                testStepId: this.testCase.steps[0].id,
+                testResult: {},
+              }
+            }))
+            this.eventBroadcaster.emit('envelope', new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId: this.testCaseStartedId,
+                testStepId: this.testCase.steps[1].id,
+                testResult: {},
+              }
+            }))
+            this.eventBroadcaster.emit('envelope', new messages.Envelope({
+              testRunFinished: {}
+            }))
           })
 
           it('outputs the step definition without durations', function() {
@@ -129,17 +148,23 @@ describe('UsageFormatter', () => {
 
         describe('not in dry run', () => {
           beforeEach(function() {
-            this.eventBroadcaster.emit('test-step-finished', {
-              index: 0,
-              testCase: this.testCase,
-              result: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
-            })
-            this.eventBroadcaster.emit('test-step-finished', {
-              index: 1,
-              testCase: this.testCase,
-              result: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
-            })
-            this.eventBroadcaster.emit('test-run-finished')
+            this.eventBroadcaster.emit('envelope', new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId: this.testCaseStartedId,
+                testStepId: this.testCase.steps[0].id,
+                testResult: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
+              }
+            }))
+            this.eventBroadcaster.emit('envelope', new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId: this.testCaseStartedId,
+                testStepId: this.testCase.steps[1].id,
+                testResult: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
+              }
+            }))
+            this.eventBroadcaster.emit('envelope', new messages.Envelope({
+              testRunFinished: {}
+            }))
           })
 
           it('outputs the step definition with durations in desending order', function() {
@@ -161,6 +186,7 @@ describe('UsageFormatter', () => {
       beforeEach(async function() {
         this.supportCodeLibrary.stepDefinitions = [
           {
+            id: uuidv4(),
             code: function(a) {},
             line: 1,
             expression: new RegularExpression(
@@ -170,6 +196,7 @@ describe('UsageFormatter', () => {
             uri: 'steps.js',
           },
           {
+            id: uuidv4(),
             code: function(b) {},
             line: 2,
             expression: new CucumberExpression(
@@ -179,6 +206,7 @@ describe('UsageFormatter', () => {
             uri: 'steps.js',
           },
           {
+            id: uuidv4(),
             code: function(c) {},
             line: 3,
             expression: new CucumberExpression(
@@ -188,40 +216,60 @@ describe('UsageFormatter', () => {
             uri: 'steps.js',
           },
         ]
-        await generateEvents({
+        const {pickle} = await generateEvents({
           data: 'Feature: a\nScenario: b\nGiven abc\nWhen def',
           eventBroadcaster: this.eventBroadcaster,
           uri: 'a.feature',
         })
-        const testCase = {
-          attemptNumber: 1,
-          sourceLocation: { uri: 'a.feature', line: 2 },
-        }
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 1 },
-            },
-            {
-              sourceLocation: { uri: 'a.feature', line: 4 },
-              actionLocation: { uri: 'steps.js', line: 2 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase,
-          result: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
-        })
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 1,
-          testCase,
-          result: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
-        })
-        this.eventBroadcaster.emit('test-run-finished')
+        const testCaseId = uuidv4()
+        const testStepId1 = uuidv4()
+        const testStepId2 = uuidv4()
+        const testCaseStartedId = uuidv4()
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCase: {
+            pickleId: pickle.id,
+            id: testCaseId,
+            steps: [{ 
+              id: testStepId1, 
+              pickleStepId: pickle.steps[0].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[0].id]
+            }, { 
+              id: testStepId2, 
+              pickleStepId: pickle.steps[1].id, 
+              stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id]
+            }]
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId: testStepId1,
+            testResult: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId: testStepId2,
+            testResult: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId,
+            testResult: {}
+          }
+        }))
+        this.eventBroadcaster.emit('envelope', new messages.Envelope({
+          testRunFinished: {}
+        }))
       })
 
       it('outputs the step definitions ordered by mean duration descending with unused steps at the end', function() {

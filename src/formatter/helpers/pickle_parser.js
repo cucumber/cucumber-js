@@ -19,7 +19,7 @@ export function getStepKeyword({ pickleStep, gherkinStepMap }) {
     .value()
 }
 
-export function getStepIdToPickledStepMap(pickle) {
+export function getPickleStepMap(pickle) {
   return _.chain(pickle.steps)
     .map(pickleStep => [pickleStep.id, pickleStep])
     .fromPairs()

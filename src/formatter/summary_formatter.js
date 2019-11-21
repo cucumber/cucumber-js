@@ -5,7 +5,11 @@ import Formatter from './'
 export default class SummaryFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
+    options.eventBroadcaster.on('envelope', envelope => {
+      if (envelope.testRunFinished) {
+        this.logSummary(envelope.testRunFinished)
+      } 
+    })
   }
 
   logSummary(testRun) {
@@ -42,6 +46,7 @@ export default class SummaryFormatter extends Formatter {
           colorFns: this.colorFns,
           number: index + 1,
           snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
           testCaseAttempt,
         })
       )

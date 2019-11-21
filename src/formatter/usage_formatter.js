@@ -7,7 +7,11 @@ import { MILLISECONDS_IN_NANOSECOND } from '../time'
 export default class UsageFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('test-run-finished', ::this.logUsage)
+    options.eventBroadcaster.on('envelope', envelope => {
+      if (envelope.testRunFinished) {
+        this.logUsage()
+      } 
+    })
   }
 
   logUsage() {

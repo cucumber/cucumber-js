@@ -8,14 +8,15 @@ const { Status } = messages.TestResult
 export function isFailure(result) {
   return (
     result.status === Status.AMBIGUOUS ||
-    (result.status === Status.FAILED && !result.retried)
+    result.status === Status.UNDEFINED ||
+    (result.status === Status.FAILED && !result.willBeRetried)
   )
 }
 
 export function isWarning(result) {
   return (
-    _.includes([Status.PENDING, Status.UNDEFINED], result.status) ||
-    (result.status === Status.FAILED && result.retried)
+    result.status === Status.PENDING  ||
+    (result.status === Status.FAILED && result.willBeRetried)
   )
 }
 

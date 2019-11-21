@@ -188,7 +188,8 @@ describe('IssueHelpers', () => {
             '    Then step3\n' +
             '      |aaa|b|c|\n' +
             '      |d|e|ff|\n' +
-            '      |gg|h|iii|\n'
+            '      |gg|h|iii|\n',
+          uri: 'a.feature'
         })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle
@@ -233,7 +234,8 @@ describe('IssueHelpers', () => {
             '       doc string\n' +
             '\n' +
             '       :-)\n' +
-            '       """\n'
+            '       """\n',
+          uri: 'a.feature'
         })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle

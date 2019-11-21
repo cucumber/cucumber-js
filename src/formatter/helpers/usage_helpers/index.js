@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import { formatLocation } from '../location_helpers'
-import { getStepIdToPickledStepMap } from '../pickle_parser'
+import { getPickleStepMap } from '../pickle_parser'
 import path from 'path'
+import { getGherkinStepMap } from '../gherkin_document_parser'
 
 function getCodeAsString(stepDefinition) {
   if (typeof stepDefinition.unwrappedCode === 'function') {
@@ -13,8 +13,7 @@ function getCodeAsString(stepDefinition) {
 function buildEmptyMapping(stepDefinitions) {
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
-    const location = formatLocation(stepDefinition)
-    mapping[location] = {
+    mapping[stepDefinition.id] = {
       code: getCodeAsString(stepDefinition),
       line: stepDefinition.line,
       pattern: stepDefinition.expression.source,
@@ -29,26 +28,24 @@ function buildEmptyMapping(stepDefinitions) {
 function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
-    const stepLineToPickledStepMap = getStepIdToPickledStepMap(
-      testCaseAttempt.pickle
-    )
-    testCaseAttempt.stepResults.forEach((testStepResult, index) => {
-      const { actionLocation, sourceLocation } = testCaseAttempt.testCase.steps[
-        index
-      ]
-      const { duration } = testStepResult
-      if (actionLocation && sourceLocation) {
-        const location = formatLocation(actionLocation)
+    const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
+    const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
+    testCaseAttempt.testCase.steps.forEach((testStep) => {
+      if (testStep.pickleStepId && testStep.stepDefinitionId.length == 1) {
+        const stepDefinitionId = testStep.stepDefinitionId[0]
+        const pickleStep = pickleStepMap[testStep.pickleStepId]
+        const gherkinStep = gherkinStepMap[pickleStep.sourceIds[0]]
         const match = {
-          line: sourceLocation.line,
-          text: stepLineToPickledStepMap[sourceLocation.line].text,
-          uri: path.relative(cwd, sourceLocation.uri),
+          line: gherkinStep.location.line,
+          text: pickleStep.text,
+          uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
+        const { duration } = testCaseAttempt.stepResults[testStep.id]
         if (isFinite(duration)) {
           match.duration = duration
         }
-        if (mapping[location]) {
-          mapping[location].matches.push(match)
+        if (mapping[stepDefinitionId]) {
+          mapping[stepDefinitionId].matches.push(match)
         }
       }
     })

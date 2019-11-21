@@ -11,7 +11,7 @@ export default class EventDataCollector {
 
   getTestCaseAttempts() {
     return _.keys(this.testCaseAttemptMap).map(testCaseStartedId => {
-      return getTestCaseAttempt(testCaseStartedId)
+      return this.getTestCaseAttempt(testCaseStartedId)
     })
   }
 
@@ -49,7 +49,7 @@ export default class EventDataCollector {
   }
 
   initTestCaseAttempt(testCaseStarted) {
-    this.testCaseAttemptMap[testCaseStarted.testCaseStartedId] = {
+    this.testCaseAttemptMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       testCaseId: testCaseStarted.testCaseId,
       result: {},

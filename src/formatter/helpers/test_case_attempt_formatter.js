@@ -73,8 +73,8 @@ export function formatTestCaseAttempt({
   const parsed = parseTestCaseAttempt({ snippetBuilder, testCaseAttempt, supportCodeLibrary })
   let text = `Scenario: ${parsed.testCase.name}`
   text += getAttemptText(
-    parsed.testCase.attemptNumber,
-    parsed.testCase.result.retried
+    parsed.testCase.attempt,
+    parsed.testCase.result.willBeRetried
   )
   text += ` # ${colorFns.location(
     formatLocation(parsed.testCase.sourceLocation)
@@ -85,12 +85,12 @@ export function formatTestCaseAttempt({
   return `${text}\n`
 }
 
-function getAttemptText(attemptNumber, retried) {
-  if (retried) {
-    return ` (attempt ${attemptNumber}, retried)`
+function getAttemptText(attempt, willBeRetried) {
+  if (willBeRetried) {
+    return ` (attempt ${attempt + 1}, retried)`
   }
-  if (attemptNumber > 1) {
-    return ` (attempt ${attemptNumber})`
+  if (attempt > 0) {
+    return ` (attempt ${attempt + 1})`
   }
   return ''
 }

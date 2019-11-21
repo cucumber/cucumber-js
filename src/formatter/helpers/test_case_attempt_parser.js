@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import { buildStepArgumentIterator } from '../../step_arguments'
-import { getGherkinStepMap } from './gherkin_document_parser'
-import { getStepIdToPickledStepMap, getStepKeyword } from './pickle_parser'
+import { getGherkinStepMap, getGherkinScenarioMap } from './gherkin_document_parser'
+import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
@@ -68,7 +68,7 @@ function parseStep({
 //
 // Returns the following
 // {
-//   testCase: {location, name, attemptNumber, result: { status, retried, duration}, uri},
+//   testCase: {location, name, attempt, result: { status, retried, duration}, uri},
 //   testSteps: [
 //     {attachments, keyword, text?, result: {status, duration}, argument?, snippet?, sourceLocation?, actionLocation?}
 //     ...
@@ -76,25 +76,29 @@ function parseStep({
 // }
 export function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder, supportCodeLibrary }) {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
+  const gherkinStepMap = getGherkinStepMap(gherkinDocument)
+  const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
+  const pickleStepMap = getPickleStepMap(pickle)
   const out = {
     testCase: {
-      attemptNumber: testCaseAttempt.attemptNumber,
+      attempt: testCaseAttempt.attempt,
       name: pickle.name,
       result: testCaseAttempt.result,
-      sourceLocation: testCase.sourceLocation,
+      sourceLocation: {
+        uri: pickle.uri,
+        line: gherkinScenarioMap[pickle.sourceIds[0]].location.line
+      },
     },
     testSteps: [],
   }
-  const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-  const pickleStepIdToPickleStepMap = getStepIdToPickledStepMap(pickle)
   let isBeforeHook = true
   let previousKeywordType = KeywordType.PRECONDITION
-  _.each(testCaseAttempt.testCase.steps, (testStep) => {
+  _.each(testCase.steps, (testStep) => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
     isBeforeHook = isBeforeHook && testStep.hookId
     let keyword, keywordType, pickleStep
     if (testStep.pickleStepId) {
-      pickleStep = pickleStepIdToPickleStepMap[testStep.pickleStepId]
+      pickleStep = pickleStepMap[testStep.pickleStepId]
       keyword = getStepKeyword({ pickleStep, gherkinStepMap })
       keywordType = getStepKeywordType({
         keyword,
