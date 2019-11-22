@@ -29,7 +29,7 @@ export default class PickleRunner {
           media,
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId: this.currentTestStepId,
-        }
+        },
       })
     })
     this.eventBroadcaster = eventBroadcaster
@@ -56,13 +56,13 @@ export default class PickleRunner {
   }
 
   buildTestSteps() {
-    const steps = [];
+    const steps = []
     this.getBeforeHookDefinitions().forEach(hookDefinition => {
       steps.push({
         id: uuidv4(),
         hookDefinition,
         isHook: true,
-        isBeforeHook: true
+        isBeforeHook: true,
       })
     })
     this.pickle.steps.forEach(pickleStep => {
@@ -71,7 +71,7 @@ export default class PickleRunner {
         id: uuidv4(),
         pickleStep,
         stepDefinitions,
-        isHook: false
+        isHook: false,
       })
     })
     this.getAfterHookDefinitions().forEach(hookDefinition => {
@@ -79,7 +79,7 @@ export default class PickleRunner {
         id: uuidv4(),
         hookDefinition,
         isHook: true,
-        isAfterHook: false
+        isAfterHook: false,
       })
     })
     return steps
@@ -91,20 +91,20 @@ export default class PickleRunner {
       id: this.testCaseId,
       steps: this.testSteps.map(testStep => {
         if (testStep.isHook) {
-          return { 
-            id: testStep.id, 
-            hookId: testStep.hookDefinition.id 
+          return {
+            id: testStep.id,
+            hookId: testStep.hookDefinition.id,
           }
         } else {
-          return { 
-            id: testStep.id, 
+          return {
+            id: testStep.id,
             pickleStepId: testStep.pickleStep.id,
-            stepDefinitionId: testStep.stepDefinitions.map(x => x.id)
+            stepDefinitionId: testStep.stepDefinitions.map(x => x.id),
           }
         }
-      })
+      }),
     }
-    this.eventBroadcaster.emit('envelope', new messages.Envelope({testCase}))
+    this.eventBroadcaster.emit('envelope', new messages.Envelope({ testCase }))
   }
 
   getAfterHookDefinitions() {
@@ -158,12 +158,15 @@ export default class PickleRunner {
   }
 
   async aroundTestStep(testStepId, attempt, runStepFn) {
-    this.eventBroadcaster.emit('envelope', new messages.Envelope({
-      testStepStarted: {
-        testCaseStartedId: this.currentTestCaseStartedId,
-        testStepId
-      }
-    }))
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({
+        testStepStarted: {
+          testCaseStartedId: this.currentTestCaseStartedId,
+          testStepId,
+        },
+      })
+    )
     const testStepResult = await runStepFn()
     if (testStepResult.duration) {
       this.result.duration += testStepResult.duration
@@ -171,37 +174,42 @@ export default class PickleRunner {
     if (this.shouldUpdateStatus(testStepResult)) {
       this.result.status = testStepResult.status
     }
-    if (this.result.status === Status.FAILED && attempt + 1 < this.maxAttempts) {
+    if (
+      this.result.status === Status.FAILED &&
+      attempt + 1 < this.maxAttempts
+    ) {
       this.result.willBeRetried = true
     }
     if (testStepResult.exception) {
       this.result.exception = testStepResult.exception
     }
-    this.eventBroadcaster.emit('envelope', new messages.Envelope({
-      testStepFinished: {
-        testCaseStartedId: this.currentTestCaseStartedId,
-        testStepId,
-        testResult: testStepResult
-      }
-    }))
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({
+        testStepFinished: {
+          testCaseStartedId: this.currentTestCaseStartedId,
+          testStepId,
+          testResult: testStepResult,
+        },
+      })
+    )
     this.testStepIndex += 1
   }
 
   async run() {
     this.emitTestCase()
-    for (
-      let attempt = 0;
-      attempt < this.maxAttempts;
-      attempt++
-    ) {
+    for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = uuidv4()
-      this.eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCaseStarted: {
-          attempt,
-          testCaseId: this.testCaseId,
-          id: this.currentTestCaseStartedId
-        }
-      }))
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseStarted: {
+            attempt,
+            testCaseId: this.testCaseId,
+            id: this.currentTestCaseStartedId,
+          },
+        })
+      )
       for (const testStep of this.testSteps) {
         await this.aroundTestStep(testStep.id, attempt, async () => {
           if (testStep.isHook) {
@@ -211,18 +219,25 @@ export default class PickleRunner {
             if (!testStep.isBeforeHook) {
               hookParameter.result = this.result
             }
-            return this.runHook(testStep.hookDefinition, hookParameter, testStep.isBeforeHook)
+            return this.runHook(
+              testStep.hookDefinition,
+              hookParameter,
+              testStep.isBeforeHook
+            )
           } else {
             return this.runStep(testStep)
           }
         })
       }
-      this.eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCaseFinished: {
-          testCaseStartedId: this.currentTestCaseStartedId,
-          testResult: this.result
-        }
-      }))
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId: this.currentTestCaseStartedId,
+            testResult: this.result,
+          },
+        })
+      )
       if (!this.result.willBeRetried) {
         break
       }

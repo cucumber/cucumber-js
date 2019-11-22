@@ -31,7 +31,7 @@ describe('Helpers', () => {
       }
       expect(retriesForPickle(pickle, {})).to.eql(0)
     })
-    
+
     it('returns options.retry if set and no options.retryTagFilter is specified', () => {
       const pickle = {
         tags: [],

@@ -8,7 +8,7 @@ export default class SummaryFormatter extends Formatter {
     options.eventBroadcaster.on('envelope', envelope => {
       if (envelope.testRunFinished) {
         this.logSummary(envelope.testRunFinished)
-      } 
+      }
     })
   }
 

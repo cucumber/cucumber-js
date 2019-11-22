@@ -15,7 +15,7 @@ export function isFailure(result) {
 
 export function isWarning(result) {
   return (
-    result.status === Status.PENDING  ||
+    result.status === Status.PENDING ||
     (result.status === Status.FAILED && result.willBeRetried)
   )
 }
@@ -29,14 +29,14 @@ export function formatIssue({
   number,
   snippetBuilder,
   testCaseAttempt,
-  supportCodeLibrary
+  supportCodeLibrary,
 }) {
   const prefix = `${number}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
     snippetBuilder,
     testCaseAttempt,
-    supportCodeLibrary
+    supportCodeLibrary,
   })
   const lines = formattedTestCaseAttempt.split('\n')
   const updatedLines = lines.map((line, index) => {

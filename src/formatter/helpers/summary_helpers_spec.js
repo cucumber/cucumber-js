@@ -37,8 +37,8 @@ describe('SummaryHelpers', () => {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: { 
-            [testStepId]: { status: Status.PASSED } 
+          stepResults: {
+            [testStepId]: { status: Status.PASSED },
           },
           testCase: {
             steps: [{ id: testStepId, pickleStepId: uuidv4() }],
@@ -60,14 +60,14 @@ describe('SummaryHelpers', () => {
         const pickleTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: { 
+          stepResults: {
             [hookTestStepId]: { status: Status.PASSED },
-            [pickleTestStepId]: { status: Status.PASSED } 
+            [pickleTestStepId]: { status: Status.PASSED },
           },
           testCase: {
             steps: [
-              { id: hookTestStepId},
-              { id: pickleTestStepId, pickleStepId: uuidv4() }
+              { id: hookTestStepId },
+              { id: pickleTestStepId, pickleStepId: uuidv4() },
             ],
           },
         })
@@ -86,7 +86,7 @@ describe('SummaryHelpers', () => {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.FAILED, willBeRetried: true },
-          stepResults: { 
+          stepResults: {
             [testStepId]: { status: Status.FAILED },
           },
           testCase: {
@@ -95,7 +95,7 @@ describe('SummaryHelpers', () => {
         })
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: { 
+          stepResults: {
             [testStepId]: { status: Status.PASSED },
           },
           testCase: {
@@ -118,14 +118,14 @@ describe('SummaryHelpers', () => {
         const testStepId2 = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: { 
+          stepResults: {
             [testStepId1]: { status: Status.PASSED },
             [testStepId2]: { status: Status.PASSED },
           },
           testCase: {
             steps: [
               { id: testStepId1, pickleStepId: uuidv4() },
-              { id: testStepId2, pickleStepId: uuidv4() }
+              { id: testStepId2, pickleStepId: uuidv4() },
             ],
           },
         })
@@ -144,8 +144,8 @@ describe('SummaryHelpers', () => {
         const ambiguousTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.AMBIGUOUS },
-          stepResults: { 
-            [ambiguousTestStepId]: { status: Status.AMBIGUOUS } 
+          stepResults: {
+            [ambiguousTestStepId]: { status: Status.AMBIGUOUS },
           },
           testCase: {
             steps: [{ id: ambiguousTestStepId, pickleStepId: uuidv4() }],
@@ -154,7 +154,7 @@ describe('SummaryHelpers', () => {
         const failedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.FAILED },
-          stepResults: { 
+          stepResults: {
             [failedTestStepId]: { status: Status.FAILED },
           },
           testCase: {
@@ -164,8 +164,8 @@ describe('SummaryHelpers', () => {
         const pendingTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PENDING },
-          stepResults: { 
-            [pendingTestStepId]: { status: Status.PENDING } 
+          stepResults: {
+            [pendingTestStepId]: { status: Status.PENDING },
           },
           testCase: {
             steps: [{ id: pendingTestStepId, pickleStepId: uuidv4() }],
@@ -174,8 +174,8 @@ describe('SummaryHelpers', () => {
         const passedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.PASSED },
-          stepResults: { 
-            [passedTestStepId]: { status: Status.PASSED } 
+          stepResults: {
+            [passedTestStepId]: { status: Status.PASSED },
           },
           testCase: {
             steps: [{ id: passedTestStepId, pickleStepId: uuidv4() }],
@@ -184,8 +184,8 @@ describe('SummaryHelpers', () => {
         const skippedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.SKIPPED },
-          stepResults: { 
-            [skippedTestStepId]: { status: Status.SKIPPED } 
+          stepResults: {
+            [skippedTestStepId]: { status: Status.SKIPPED },
           },
           testCase: {
             steps: [{ id: skippedTestStepId, pickleStepId: uuidv4() }],
@@ -194,8 +194,8 @@ describe('SummaryHelpers', () => {
         const undefinedTestStepId = uuidv4()
         this.testCaseAttempts.push({
           result: { status: Status.UNDEFINED },
-          stepResults: { 
-            [undefinedTestStepId]: { status: Status.UNDEFINED } 
+          stepResults: {
+            [undefinedTestStepId]: { status: Status.UNDEFINED },
           },
           testCase: {
             steps: [{ id: undefinedTestStepId, pickleStepId: uuidv4() }],

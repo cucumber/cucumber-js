@@ -10,7 +10,7 @@ export default class UsageFormatter extends Formatter {
     options.eventBroadcaster.on('envelope', envelope => {
       if (envelope.testRunFinished) {
         this.logUsage()
-      } 
+      }
     })
   }
 

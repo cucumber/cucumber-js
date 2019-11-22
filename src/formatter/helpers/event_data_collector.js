@@ -26,13 +26,14 @@ export default class EventDataCollector {
       attempt: testCaseAttempt.attempt,
       result: testCaseAttempt.result,
       stepAttachments: testCaseAttempt.stepAttachments,
-      stepResults: testCaseAttempt.stepResults
+      stepResults: testCaseAttempt.stepResults,
     }
   }
 
   parseEnvelope(envelope) {
     if (envelope.gherkinDocument) {
-      this.gherkinDocumentMap[envelope.gherkinDocument.uri] = envelope.gherkinDocument
+      this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
+        envelope.gherkinDocument
     } else if (envelope.pickle) {
       this.pickleMap[envelope.pickle.id] = envelope.pickle
     } else if (envelope.testCase) {
@@ -54,12 +55,12 @@ export default class EventDataCollector {
       testCaseId: testCaseStarted.testCaseId,
       result: {},
       stepAttachments: {},
-      stepResults: {}
+      stepResults: {},
     }
   }
 
   storeTestStepAttachment({ testCaseStartedId, testStepId, data, media }) {
-    const {stepAttachments} = this.testCaseAttemptMap[testCaseStartedId];
+    const { stepAttachments } = this.testCaseAttemptMap[testCaseStartedId]
     if (!stepAttachments[testStepId]) {
       stepAttachments[testStepId] = []
     }
@@ -67,7 +68,9 @@ export default class EventDataCollector {
   }
 
   storeTestStepResult({ testCaseStartedId, testStepId, testResult }) {
-    this.testCaseAttemptMap[testCaseStartedId].stepResults[testStepId] = testResult
+    this.testCaseAttemptMap[testCaseStartedId].stepResults[
+      testStepId
+    ] = testResult
   }
 
   storeTestCaseResult({ testCaseStartedId, testResult }) {

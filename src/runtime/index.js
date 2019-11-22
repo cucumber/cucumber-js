@@ -69,12 +69,12 @@ export default class Runtime {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    this.eventBroadcaster.emit(new messages.Envelope({testRunStarted: {}}))
+    this.eventBroadcaster.emit(new messages.Envelope({ testRunStarted: {} }))
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
     await Promise.each(this.pickles, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
     // TODO custom envelope need to update cucumber-messages
-    this.eventBroadcaster.emit({testRunFinished: this.result})
+    this.eventBroadcaster.emit({ testRunFinished: this.result })
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }

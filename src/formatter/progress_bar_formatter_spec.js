@@ -8,6 +8,7 @@ import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import { messages } from 'cucumber-messages'
+import uuidv4 from 'uuid/v4'
 
 const { Status } = messages.TestResult
 
@@ -30,33 +31,41 @@ describe('ProgressBarFormatter', () => {
     })
   })
 
-  describe('pickle-accepted, test-case-started', () => {
+  describe('testCase / testStepStarted', () => {
     beforeEach(function() {
-      this.eventBroadcaster.emit('pickle-accepted', {
-        locations: [{ line: 2 }],
-        steps: [1, 2, 3],
-        uri: 'path/to/feature',
-      })
-      this.eventBroadcaster.emit('pickle-accepted', {
-        locations: [{ line: 7 }],
-        steps: [4, 5],
-        uri: 'path/to/feature',
-      })
-      const testCase = {
-        attemptNumber: 1,
-        sourceLocation: { line: 2, uri: 'path/to/feature' },
-      }
-      this.eventBroadcaster.emit('test-case-prepared', {
-        sourceLocation: testCase.sourceLocation,
-        steps: [
-          { actionLocation: { line: 2, uri: 'path/to/steps' } },
-          {
-            actionLocation: { line: 2, uri: 'path/to/steps' },
-            sourceLocation: { line: 3, uri: 'path/to/feature' },
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCase: {
+            id: uuidv4(),
+            steps: [
+              {},
+              { pickleStepId: uuidv4() },
+              { pickleStepId: uuidv4() },
+              {},
+            ],
           },
-        ],
-      })
-      this.eventBroadcaster.emit('test-step-started')
+        })
+      )
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCase: {
+            id: uuidv4(),
+            steps: [
+              { pickleStepId: uuidv4() },
+              { pickleStepId: uuidv4() },
+              { pickleStepId: uuidv4() },
+            ],
+          },
+        })
+      )
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testStepStarted: {},
+        })
+      )
     })
 
     it('initializes a progress bar with the total number of steps', function() {
@@ -65,35 +74,59 @@ describe('ProgressBarFormatter', () => {
   })
 
   describe('test-step-finished', () => {
-    beforeEach(function() {
+    beforeEach(async function() {
       this.progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
       }
-      this.testCase = {
-        attemptNumber: 1,
-        sourceLocation: { line: 2, uri: 'path/to/feature' },
-      }
-      this.eventBroadcaster.emit('test-case-prepared', {
-        sourceLocation: this.testCase.sourceLocation,
-        steps: [
-          { actionLocation: { line: 2, uri: 'path/to/steps' } },
-          {
-            actionLocation: { line: 2, uri: 'path/to/steps' },
-            sourceLocation: { line: 3, uri: 'path/to/feature' },
-          },
-        ],
+
+      const { pickle } = await generateEvents({
+        data: 'Feature: a\nScenario: b\nGiven a step',
+        eventBroadcaster: this.eventBroadcaster,
+        uri: 'a.feature',
       })
-      this.eventBroadcaster.emit('test-case-started', this.testCase)
+      this.pickle = pickle
+      const testCaseId = uuidv4()
+      this.testCaseStartedId = uuidv4()
+      this.testStepId1 = uuidv4()
+      this.testStepId2 = uuidv4()
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCase: {
+            id: testCaseId,
+            pickleId: this.pickle.id,
+            steps: [
+              { id: this.testStepId1 },
+              { id: this.testStepId2, pickleStepId: this.pickle.steps[0].id },
+            ],
+          },
+        })
+      )
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: this.testCaseStartedId,
+          },
+        })
+      )
     })
 
     describe('step is a hook', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PASSED },
-        })
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId1,
+              testResult: { status: Status.PASSED },
+            },
+          })
+        )
       })
 
       it('does not increase the progress bar percentage', function() {
@@ -101,13 +134,18 @@ describe('ProgressBarFormatter', () => {
       })
     })
 
-    describe('step is a normal step', () => {
+    describe('step is from a pickle', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 1,
-          testCase: this.testCase,
-          result: { status: Status.PASSED },
-        })
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId2,
+              testResult: { status: Status.PASSED },
+            },
+          })
+        )
       })
 
       it('increases the progress bar percentage', function() {
@@ -122,43 +160,72 @@ describe('ProgressBarFormatter', () => {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
       }
-      await generateEvents({
+
+      const { pickle } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven a step',
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
       })
-      this.testCase = {
-        attemptNumber: 1,
-        sourceLocation: { uri: 'a.feature', line: 2 },
-      }
+      this.pickle = pickle
+      this.testCaseId = uuidv4()
+      this.testCaseStartedId = uuidv4()
+      this.testStepId = uuidv4()
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCase: {
+            id: this.testCaseId,
+            pickleId: this.pickle.id,
+            steps: [
+              {
+                id: this.testStepId,
+                pickleStepId: this.pickle.steps[0].id,
+                stepDefinitionId: [],
+              },
+            ],
+          },
+        })
+      )
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseStarted: {
+            testCaseId: this.testCaseId,
+            attempt: 0,
+            id: this.testCaseStartedId,
+          },
+        })
+      )
     })
 
     describe('ambiguous', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
+        const testResult = {
+          exception:
+            'Multiple step definitions match:\n' +
+            '  pattern1        - steps.js:3\n' +
+            '  longer pattern2 - steps.js:4',
+          status: Status.AMBIGUOUS,
+        }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: {
-            exception:
-              'Multiple step definitions match:\n' +
-              '  pattern1        - steps.js:3\n' +
-              '  longer pattern2 - steps.js:4',
-            status: Status.AMBIGUOUS,
-          },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.AMBIGUOUS },
-        })
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult,
+            },
+          })
+        )
       })
 
       it('prints the error', function() {
@@ -170,25 +237,26 @@ describe('ProgressBarFormatter', () => {
 
     describe('failed', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
+        const testResult = { exception: 'error', status: Status.FAILED }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED },
-        })
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult,
+            },
+          })
+        )
       })
 
       it('prints the error', function() {
@@ -200,26 +268,26 @@ describe('ProgressBarFormatter', () => {
 
     describe('retried', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
+        const testResult = { exception: 'error', status: Status.FAILED }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED, retried: true },
-        })
-        this.retriedTestCase = { ...this.testCase, attemptNumber: 2 }
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult: { ...testResult, willBeRetried: true },
+            },
+          })
+        )
       })
 
       it('prints a warning for the failed run', function() {
@@ -231,16 +299,37 @@ describe('ProgressBarFormatter', () => {
       describe('with passing run', function() {
         beforeEach(function() {
           this.progressBarFormatter.progressBar.interrupt.reset()
-          this.eventBroadcaster.emit('test-case-started', this.retriedTestCase)
-          this.eventBroadcaster.emit('test-step-finished', {
-            index: 0,
-            testCase: this.retriedTestCase,
-            result: { status: Status.PASSED },
-          })
-          this.eventBroadcaster.emit('test-case-finished', {
-            ...this.retriedTestCase,
-            result: { status: Status.PASSED },
-          })
+          const retriedTestCaseStartedId = uuidv4()
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseStarted: {
+                testCaseId: this.testCaseId,
+                attempt: 1,
+                id: retriedTestCaseStartedId,
+              },
+            })
+          )
+          const testResult = { status: Status.PASSED }
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId: retriedTestCaseStartedId,
+                testStepId: this.testStepId,
+                testResult,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseFinished: {
+                testCaseStartedId: retriedTestCaseStartedId,
+                testResult: testResult,
+              },
+            })
+          )
         })
 
         it('does not print an additional error', function() {
@@ -253,16 +342,37 @@ describe('ProgressBarFormatter', () => {
       describe('with all failures', function() {
         beforeEach(function() {
           this.progressBarFormatter.progressBar.interrupt.reset()
-          this.eventBroadcaster.emit('test-case-started', this.retriedTestCase)
-          this.eventBroadcaster.emit('test-step-finished', {
-            index: 0,
-            testCase: this.retriedTestCase,
-            result: { exception: 'error', status: Status.FAILED },
-          })
-          this.eventBroadcaster.emit('test-case-finished', {
-            ...this.retriedTestCase,
-            result: { status: Status.FAILED },
-          })
+          const retriedTestCaseStartedId = uuidv4()
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseStarted: {
+                testCaseId: this.testCaseId,
+                attempt: 1,
+                id: retriedTestCaseStartedId,
+              },
+            })
+          )
+          const testResult = { exception: 'error', status: Status.FAILED }
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId: retriedTestCaseStartedId,
+                testStepId: this.testStepId,
+                testResult,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseFinished: {
+                testCaseStartedId: retriedTestCaseStartedId,
+                testResult: testResult,
+              },
+            })
+          )
         })
 
         it('prints the error for the last run', function() {
@@ -275,25 +385,26 @@ describe('ProgressBarFormatter', () => {
 
     describe('passed', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
+        const testResult = { status: Status.PASSED }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.PASSED },
-        })
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult: testResult,
+            },
+          })
+        )
       })
 
       it('does not print anything', function() {
@@ -305,25 +416,26 @@ describe('ProgressBarFormatter', () => {
 
     describe('pending', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
+        const testResult = { status: Status.PENDING }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PENDING },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.PENDING },
-        })
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult: testResult,
+            },
+          })
+        )
       })
 
       it('prints the warning', function() {
@@ -335,25 +447,26 @@ describe('ProgressBarFormatter', () => {
 
     describe('skipped', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
+        const testResult = { status: Status.SKIPPED }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.SKIPPED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.SKIPPED },
-        })
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult: testResult,
+            },
+          })
+        )
       })
 
       it('does not print anything', function() {
@@ -365,24 +478,26 @@ describe('ProgressBarFormatter', () => {
 
     describe('undefined', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
+        const testResult = { status: Status.UNDEFINED }
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult,
             },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
+          })
+        )
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testCaseFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testResult: testResult,
+            },
+          })
+        )
       })
 
       it('prints the warning', function() {
@@ -395,9 +510,14 @@ describe('ProgressBarFormatter', () => {
 
   describe('test-run-finished', () => {
     beforeEach(function() {
-      this.eventBroadcaster.emit('test-run-finished', {
-        result: { duration: 0 },
-      })
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          },
+        })
+      )
     })
 
     it('outputs step totals, scenario totals, and duration', function() {

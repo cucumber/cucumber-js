@@ -70,7 +70,11 @@ export function formatTestCaseAttempt({
   supportCodeLibrary,
   testCaseAttempt,
 }) {
-  const parsed = parseTestCaseAttempt({ snippetBuilder, testCaseAttempt, supportCodeLibrary })
+  const parsed = parseTestCaseAttempt({
+    snippetBuilder,
+    testCaseAttempt,
+    supportCodeLibrary,
+  })
   let text = `Scenario: ${parsed.testCase.name}`
   text += getAttemptText(
     parsed.testCase.attempt,

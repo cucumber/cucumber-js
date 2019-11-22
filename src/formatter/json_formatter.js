@@ -7,21 +7,22 @@ import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
 
-const {
-  getStepLineToKeywordMap,
-  getScenarioLineToDescriptionMap,
-} = GherkinDocumentParser
+const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
 const {
   getScenarioDescription,
-  getStepIdToPickledStepMap: getStepLineToPickledStepMap,
+  getPickleStepMap,
   getStepKeyword,
 } = PickleParser
 
 export default class JsonFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('test-run-finished', ::this.onTestRunFinished)
+    options.eventBroadcaster.on('envelope', envelope => {
+      if (envelope.testRunFinished) {
+        this.onTestRunFinished()
+      }
+    })
   }
 
   convertNameToId(obj) {
@@ -34,29 +35,30 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  formatDocString(docString) {
+  formatDocString(docString, gherkinStep) {
     return {
       content: docString.content,
-      line: docString.location.line,
+      line: gherkinStep.docString.location.line,
     }
   }
 
-  formatStepArgument(stepArgument) {
+  formatStepArgument(stepArgument, gherkinStep) {
     if (!stepArgument) {
       return []
     }
-    const iterator = buildStepArgumentIterator({
-      dataTable: this.formatDataTable.bind(this),
-      docString: this.formatDocString.bind(this),
-    })
-    return [iterator(stepArgument)]
+    if (stepArgument.docString) {
+      return [this.formatDocString(stepArgument.docString, gherkinStep)]
+    } else if (stepArgument.dataTable) {
+      return [this.formatDataTable(stepArgument.dataTable)]
+    }
+    throw new Error(`Unknown argument type:${util.inspect(stepArgument)}`)
   }
 
   onTestRunFinished() {
     const groupedTestCaseAttempts = {}
     _.each(this.eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
-      if (!testCaseAttempt.result.retried) {
-        const { uri } = testCaseAttempt.testCase.sourceLocation
+      if (!testCaseAttempt.result.willBeRetried) {
+        const { uri } = testCaseAttempt.pickle
         if (!groupedTestCaseAttempts[uri]) {
           groupedTestCaseAttempts[uri] = []
         }
@@ -64,34 +66,30 @@ export default class JsonFormatter extends Formatter {
       }
     })
     const features = _.map(groupedTestCaseAttempts, (group, uri) => {
-      const gherkinDocument = this.eventDataCollector.gherkinDocumentMap[uri]
+      const { gherkinDocument } = group[0]
       const featureData = this.getFeatureData(gherkinDocument.feature, uri)
-      const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocument)
-      const scenarioLineToDescriptionMap = getScenarioLineToDescriptionMap(
-        gherkinDocument
-      )
+      const gherkinStepMap = getGherkinStepMap(gherkinDocument)
+      const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
       featureData.elements = group.map(testCaseAttempt => {
         const { pickle } = testCaseAttempt
         const scenarioData = this.getScenarioData({
-          featureId: featureData.id,
+          feature: gherkinDocument.feature,
           pickle,
-          scenarioLineToDescriptionMap,
+          gherkinScenarioMap,
         })
-        const stepLineToPickledStepMap = getStepLineToPickledStepMap(pickle)
+        const pickleStepMap = getPickleStepMap(pickle)
         let isBeforeHook = true
-        scenarioData.steps = testCaseAttempt.testCase.steps.map(
-          (testStep, index) => {
-            isBeforeHook = isBeforeHook && !testStep.sourceLocation
-            return this.getStepData({
-              isBeforeHook,
-              stepLineToKeywordMap,
-              stepLineToPickledStepMap,
-              testStep,
-              testStepAttachments: testCaseAttempt.stepAttachments[index],
-              testStepResult: testCaseAttempt.stepResults[index],
-            })
-          }
-        )
+        scenarioData.steps = testCaseAttempt.testCase.steps.map(testStep => {
+          isBeforeHook = isBeforeHook && !testStep.pickleStepId
+          return this.getStepData({
+            isBeforeHook,
+            gherkinStepMap,
+            pickleStepMap,
+            testStep,
+            testStepAttachments: testCaseAttempt.stepAttachments[testStep.id],
+            testStepResult: testCaseAttempt.stepResults[testStep.id],
+          })
+        })
         return scenarioData
       })
       return featureData
@@ -106,53 +104,58 @@ export default class JsonFormatter extends Formatter {
       name: feature.name,
       line: feature.location.line,
       id: this.convertNameToId(feature),
-      tags: this.getTags(feature),
+      tags: this.getFeatureTags(feature),
       uri,
     }
   }
 
-  getScenarioData({ featureId, pickle, scenarioLineToDescriptionMap }) {
+  getScenarioData({ feature, pickle, gherkinScenarioMap }) {
     const description = getScenarioDescription({
       pickle,
-      scenarioLineToDescriptionMap,
+      gherkinScenarioMap,
     })
     return {
       description,
-      id: `${featureId};${this.convertNameToId(pickle)}`,
+      id: `${this.convertNameToId(feature)};${this.convertNameToId(pickle)}`,
       keyword: 'Scenario',
-      line: pickle.locations[0].line,
+      line: gherkinScenarioMap[pickle.sourceIds[0]].location.line,
       name: pickle.name,
-      tags: this.getTags(pickle),
+      tags: this.getScenarioTags({ feature, pickle, gherkinScenarioMap }),
       type: 'scenario',
     }
   }
 
   getStepData({
     isBeforeHook,
-    stepLineToKeywordMap,
-    stepLineToPickledStepMap,
+    gherkinStepMap,
+    pickleStepMap,
     testStep,
     testStepAttachments,
     testStepResult,
   }) {
     const data = {}
-    if (testStep.sourceLocation) {
-      const { line } = testStep.sourceLocation
-      const pickleStep = stepLineToPickledStepMap[line]
-      data.arguments = this.formatStepArgument(pickleStep.argument)
-      data.keyword = getStepKeyword({ pickleStep, stepLineToKeywordMap })
-      data.line = line
+    if (testStep.pickleStepId) {
+      const pickleStep = pickleStepMap[testStep.pickleStepId]
+      data.arguments = this.formatStepArgument(
+        pickleStep.argument,
+        gherkinStepMap[pickleStep.sourceIds[0]]
+      )
+      data.keyword = getStepKeyword({ pickleStep, gherkinStepMap })
+      data.line = gherkinStepMap[pickleStep.sourceIds[0]].location.line
       data.name = pickleStep.text
     } else {
       data.keyword = isBeforeHook ? 'Before' : 'After'
       data.hidden = true
     }
-    if (testStep.actionLocation) {
-      data.match = { location: formatLocation(testStep.actionLocation) }
+    if (testStep.stepDefinitionId.length === 1) {
+      const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
+        s => s.id == testStep.stepDefinitionId[0]
+      )
+      data.match = { location: formatLocation(stepDefinition) }
     }
     if (testStepResult) {
       const { exception, status } = testStepResult
-      data.result = { status }
+      data.result = { status: Status[status].toLowerCase() }
       if (!_.isUndefined(testStepResult.duration)) {
         data.result.duration = testStepResult.duration
       }
@@ -169,10 +172,23 @@ export default class JsonFormatter extends Formatter {
     return data
   }
 
-  getTags(obj) {
-    return _.map(obj.tags, tagData => ({
+  getFeatureTags(feature) {
+    return _.map(feature.tags, tagData => ({
       name: tagData.name,
       line: tagData.location.line,
     }))
+  }
+
+  getScenarioTags({ feature, pickle, gherkinScenarioMap }) {
+    return _.map(pickle.tags, tagData => {
+      const featureSource = feature.tags.find(t => t.id == tagData.sourceId)
+      const scenarioSource = gherkinScenarioMap[pickle.sourceIds[0]].tags.find(
+        t => t.id == tagData.sourceId
+      )
+      return {
+        name: tagData.name,
+        line: (featureSource || scenarioSource).location.line,
+      }
+    })
   }
 }

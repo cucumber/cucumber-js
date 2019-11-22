@@ -5,7 +5,7 @@ import EventEmitter from 'events'
 import { generateEvents } from '../../../../test/gherkin_helpers'
 import EventDataCollector from '../event_data_collector'
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions'
-import {messages} from 'cucumber-messages'
+import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
 
 const { Status } = messages.TestResult
@@ -27,11 +27,14 @@ describe('Usage Helpers', () => {
     describe('no step definitions', () => {
       describe('without steps', () => {
         beforeEach(function() {
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            }
-          }))
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testRunFinished: {
+                duration: 0,
+              },
+            })
+          )
         })
 
         it('returns an empty array', function() {
@@ -41,51 +44,68 @@ describe('Usage Helpers', () => {
 
       describe('with some steps', () => {
         beforeEach(async function() {
-          const {pickle} = await generateEvents({
+          const { pickle } = await generateEvents({
             data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
             eventBroadcaster: this.eventBroadcaster,
-            uri: 'a.feature'
+            uri: 'a.feature',
           })
           const testCaseId = uuidv4()
           const testStepId = uuidv4()
           const testCaseStartedId = uuidv4()
           const testResult = { status: Status.UNDEFINED }
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testCase: {
-              pickleId: pickle.id,
-              id: testCaseId,
-              steps: [{ 
-                id: testStepId, 
-                pickleStepId: pickle.steps[0].id, 
-                stepDefinitionId: []
-              }]
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testCaseStarted: {
-              testCaseId,
-              attempt: 0,
-              id: testCaseStartedId
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId,
-              testStepId,
-              testResult,
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testCaseFinished: {
-              testCaseStartedId,
-              testResult
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            }
-          }))
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCase: {
+                pickleId: pickle.id,
+                id: testCaseId,
+                steps: [
+                  {
+                    id: testStepId,
+                    pickleStepId: pickle.steps[0].id,
+                    stepDefinitionId: [],
+                  },
+                ],
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseStarted: {
+                testCaseId,
+                attempt: 0,
+                id: testCaseStartedId,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId,
+                testStepId,
+                testResult,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseFinished: {
+                testCaseStartedId,
+                testResult,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testRunFinished: {
+                duration: 0,
+              },
+            })
+          )
         })
 
         it('returns an empty array', function() {
@@ -123,11 +143,14 @@ describe('Usage Helpers', () => {
 
       describe('without steps run', () => {
         beforeEach(function() {
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            }
-          }))
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testRunFinished: {
+                duration: 0,
+              },
+            })
+          )
         })
 
         it('returns an array with the step definitions, including correct stringified code', function() {
@@ -143,48 +166,65 @@ describe('Usage Helpers', () => {
           const { pickle } = await generateEvents({
             data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
             eventBroadcaster: this.eventBroadcaster,
-            uri: 'a.feature'
+            uri: 'a.feature',
           })
           const testCaseId = uuidv4()
           const testStepId = uuidv4()
           const testCaseStartedId = uuidv4()
           const testResult = { status: Status.UNDEFINED }
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testCase: {
-              pickleId: pickle.id,
-              id: testCaseId,
-              steps: [{ 
-                id: testStepId, 
-                pickleStepId: pickle.steps[0].id, 
-                stepDefinitionId: []
-              }]
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testCaseStarted: {
-              testCaseId,
-              attempt: 0,
-              id: testCaseStartedId
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId,
-              testStepId,
-              testResult,
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testCaseFinished: {
-              testCaseStartedId,
-              testResult
-            }
-          }))
-          this.eventBroadcaster.emit('envelope', new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            }
-          }))
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCase: {
+                pickleId: pickle.id,
+                id: testCaseId,
+                steps: [
+                  {
+                    id: testStepId,
+                    pickleStepId: pickle.steps[0].id,
+                    stepDefinitionId: [],
+                  },
+                ],
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseStarted: {
+                testCaseId,
+                attempt: 0,
+                id: testCaseStartedId,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testStepFinished: {
+                testCaseStartedId,
+                testStepId,
+                testResult,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testCaseFinished: {
+                testCaseStartedId,
+                testResult,
+              },
+            })
+          )
+          this.eventBroadcaster.emit(
+            'envelope',
+            new messages.Envelope({
+              testRunFinished: {
+                duration: 0,
+              },
+            })
+          )
         })
 
         it('returns an array with the step definitions, including correct stringified code', function() {

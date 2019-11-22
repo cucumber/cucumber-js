@@ -6,21 +6,19 @@ import ProgressBar from 'progress'
 export default class ProgressBarFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster
-      .on('pickle-accepted', ::this.incrementStepCount)
-      .once('test-step-started', ::this.initializeProgressBar)
-      .on('test-step-finished', ::this.logProgress)
-      .on('test-case-finished', ::this.logErrorIfNeeded)
-      .on('test-run-finished', ::this.logSummary)
+    options.eventBroadcaster.on('envelope', ::this.parseEnvelope)
     this.numberOfSteps = 0
     this.issueCount = 0
   }
 
-  incrementStepCount(pickle) {
-    this.numberOfSteps += pickle.steps.length
+  incrementStepCount(testCase) {
+    this.numberOfSteps += testCase.steps.filter(s => s.pickleStepId).length
   }
 
   initializeProgressBar() {
+    if (this.progressBar) {
+      return
+    }
     this.progressBar = new ProgressBar(':current/:total steps [:bar] ', {
       clear: true,
       incomplete: ' ',
@@ -30,30 +28,34 @@ export default class ProgressBarFormatter extends Formatter {
     })
   }
 
-  logProgress({ index, testCase }) {
-    const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCase)
-    if (testCaseAttempt.testCase.steps[index].sourceLocation) {
+  logProgress({ testStepId, testCaseStartedId }) {
+    const { testCase } = this.eventDataCollector.getTestCaseAttempt(
+      testCaseStartedId
+    )
+    const testStep = testCase.steps.find(s => s.id === testStepId)
+    if (testStep.pickleStepId) {
       this.progressBar.tick()
     }
   }
 
-  logErrorIfNeeded(testCaseFinishedEvent) {
-    if (isIssue(testCaseFinishedEvent.result)) {
+  logErrorIfNeeded(testCaseFinished) {
+    if (isIssue(testCaseFinished.testResult)) {
       this.issueCount += 1
       const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
-        testCaseFinishedEvent
+        testCaseFinished.testCaseStartedId
       )
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
           number: this.issueCount,
           snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
           testCaseAttempt,
         })
       )
-      if (testCaseFinishedEvent.result.retried) {
+      if (testCaseFinished.testResult.willBeRetried) {
         const stepsToRetry = testCaseAttempt.testCase.steps.filter(
-          s => s.sourceLocation
+          s => s.pickleStepId
         ).length
         this.progressBar.tick(-stepsToRetry)
       }
@@ -68,5 +70,19 @@ export default class ProgressBarFormatter extends Formatter {
         testRun,
       })
     )
+  }
+
+  parseEnvelope(envelope) {
+    if (envelope.testCase) {
+      this.incrementStepCount(envelope.testCase)
+    } else if (envelope.testStepStarted) {
+      this.initializeProgressBar()
+    } else if (envelope.testStepFinished) {
+      this.logProgress(envelope.testStepFinished)
+    } else if (envelope.testCaseFinished) {
+      this.logErrorIfNeeded(envelope.testCaseFinished)
+    } else if (envelope.testRunFinished) {
+      this.logSummary(envelope.testRunFinished)
+    }
   }
 }

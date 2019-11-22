@@ -11,7 +11,7 @@ export function parse({ data, uri }) {
           encoding: messages.Media.Encoding.UTF8,
           contentType: 'text/x.cucumber.gherkin+plain',
         },
-      }
+      },
     },
   ]
   return new Promise((resolve, reject) => {
@@ -30,7 +30,11 @@ export function parse({ data, uri }) {
       }
       if (envelope.pickle) {
         pickle = envelope.pickle
-        envelopes.push(messages.Envelope.fromObject({pickleAccepted: {pickleId: pickle.id}}))
+        envelopes.push(
+          messages.Envelope.fromObject({
+            pickleAccepted: { pickleId: pickle.id },
+          })
+        )
       }
       if (envelope.attachment) {
         reject(
@@ -56,7 +60,10 @@ export function parse({ data, uri }) {
 }
 
 export async function generateEvents({ data, eventBroadcaster, uri }) {
-  const { envelopes, source, gherkinDocument, pickle } = await parse({ data, uri })
-  envelopes.forEach((envelope) => eventBroadcaster.emit('envelope', envelope))
+  const { envelopes, source, gherkinDocument, pickle } = await parse({
+    data,
+    uri,
+  })
+  envelopes.forEach(envelope => eventBroadcaster.emit('envelope', envelope))
   return { source, gherkinDocument, pickle }
 }

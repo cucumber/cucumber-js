@@ -33,13 +33,19 @@ export function getPicklesFromFilesystem({
     messageStream.on('data', envelope => {
       eventBroadcaster.emit('envelope', envelope)
       if (envelope.pickle) {
-        const pickle = envelope.pickle;
-        const pickleId = pickle.id;
+        const pickle = envelope.pickle
+        const pickleId = pickle.id
         if (pickleFilter.matches(pickle)) {
-          eventBroadcaster.emit('envelope', messages.Envelope.fromObject({pickleAccepted: {pickleId}}))
+          eventBroadcaster.emit(
+            'envelope',
+            messages.Envelope.fromObject({ pickleAccepted: { pickleId } })
+          )
           result.push(pickle)
         } else {
-          eventBroadcaster.emit('envelope', messages.Envelope.fromObject({pickleRejected: {pickleId}}))
+          eventBroadcaster.emit(
+            'envelope',
+            messages.Envelope.fromObject({ pickleRejected: { pickleId } })
+          )
         }
       }
       if (envelope.attachment) {

@@ -30,32 +30,43 @@ describe('ProgressFormatter', () => {
       const testCaseId = uuidv4()
       this.testStepId = uuidv4()
       this.testCaseStartedId = uuidv4()
-      this.eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCase: {
-          id: testCaseId,
-          steps: [{ 
-            id: this.testStepId, 
-          }]
-        }
-      }))
-      this.eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCaseStarted: {
-          testCaseId,
-          attempt: 0,
-          id: this.testCaseStartedId
-        }
-      }))
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCase: {
+            id: testCaseId,
+            steps: [
+              {
+                id: this.testStepId,
+              },
+            ],
+          },
+        })
+      )
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: this.testCaseStartedId,
+          },
+        })
+      )
     })
 
     describe('ambiguous', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('envelope', new messages.Envelope({
-          testStepFinished: {
-            testCaseStartedId: this.testCaseStartedId,
-            testStepId: this.testStepId,
-            testResult: { status: Status.AMBIGUOUS },
-          }
-        }))
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult: { status: Status.AMBIGUOUS },
+            },
+          })
+        )
       })
 
       it('outputs A', function() {
@@ -65,13 +76,16 @@ describe('ProgressFormatter', () => {
 
     describe('failed', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('envelope', new messages.Envelope({
-          testStepFinished: {
-            testCaseStartedId: this.testCaseStartedId,
-            testStepId: this.testStepId,
-            testResult: { status: Status.FAILED },
-          }
-        }))
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult: { status: Status.FAILED },
+            },
+          })
+        )
       })
 
       it('outputs F', function() {
@@ -81,13 +95,16 @@ describe('ProgressFormatter', () => {
 
     describe('passed', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('envelope', new messages.Envelope({
-          testStepFinished: {
-            testCaseStartedId: this.testCaseStartedId,
-            testStepId: this.testStepId,
-            testResult: { status: Status.PASSED },
-          }
-        }))
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult: { status: Status.PASSED },
+            },
+          })
+        )
       })
 
       it('outputs .', function() {
@@ -97,13 +114,16 @@ describe('ProgressFormatter', () => {
 
     describe('pending', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('envelope', new messages.Envelope({
-          testStepFinished: {
-            testCaseStartedId: this.testCaseStartedId,
-            testStepId: this.testStepId,
-            testResult: { status: Status.PENDING },
-          }
-        }))
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult: { status: Status.PENDING },
+            },
+          })
+        )
       })
 
       it('outputs P', function() {
@@ -113,13 +133,16 @@ describe('ProgressFormatter', () => {
 
     describe('skipped', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('envelope', new messages.Envelope({
-          testStepFinished: {
-            testCaseStartedId: this.testCaseStartedId,
-            testStepId: this.testStepId,
-            testResult: { status: Status.SKIPPED },
-          }
-        }))
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult: { status: Status.SKIPPED },
+            },
+          })
+        )
       })
 
       it('outputs -', function() {
@@ -129,13 +152,16 @@ describe('ProgressFormatter', () => {
 
     describe('undefined', () => {
       beforeEach(function() {
-        this.eventBroadcaster.emit('envelope', new messages.Envelope({
-          testStepFinished: {
-            testCaseStartedId: this.testCaseStartedId,
-            testStepId: this.testStepId,
-            testResult: { status: Status.UNDEFINED },
-          }
-        }))
+        this.eventBroadcaster.emit(
+          'envelope',
+          new messages.Envelope({
+            testStepFinished: {
+              testCaseStartedId: this.testCaseStartedId,
+              testStepId: this.testStepId,
+              testResult: { status: Status.UNDEFINED },
+            },
+          })
+        )
       })
 
       it('outputs U', function() {
@@ -146,11 +172,14 @@ describe('ProgressFormatter', () => {
 
   describe('test run finished', () => {
     beforeEach(function() {
-      this.eventBroadcaster.emit('envelope', new messages.Envelope({
-        testRunFinished: {
-          duration: 0
-        }
-      }))
+      this.eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testRunFinished: {
+            duration: 0,
+          },
+        })
+      )
     })
 
     it('outputs two newlines before the summary', function() {

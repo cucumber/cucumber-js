@@ -34,9 +34,9 @@ export default class TestCaseHookDefinition extends Definition {
         id: this.id,
         location: {
           uri: this.uri,
-          location: { line: this.line }
-        }
-      }
+          location: { line: this.line },
+        },
+      },
     })
   }
 }

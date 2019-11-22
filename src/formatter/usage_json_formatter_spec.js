@@ -9,7 +9,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from 'cucumber-expressions'
-import {messages} from 'cucumber-messages'
+import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
 
 describe('UsageJsonFormatter', () => {
@@ -53,7 +53,7 @@ describe('UsageJsonFormatter', () => {
         log: logFn,
         supportCodeLibrary,
       })
-      const {pickle} = await generateEvents({
+      const { pickle } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven abc\nWhen def',
         eventBroadcaster,
         uri: 'a.feature',
@@ -62,51 +62,72 @@ describe('UsageJsonFormatter', () => {
       const testStepId1 = uuidv4()
       const testStepId2 = uuidv4()
       const testCaseStartedId = uuidv4()
-      eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCase: {
-          pickleId: pickle.id,
-          id: testCaseId,
-          steps: [{ 
-            id: testStepId1, 
-            pickleStepId: pickle.steps[0].id, 
-            stepDefinitionId: [supportCodeLibrary.stepDefinitions[0].id]
-          }, { 
-            id: testStepId2, 
-            pickleStepId: pickle.steps[1].id, 
-            stepDefinitionId: [supportCodeLibrary.stepDefinitions[1].id]
-          }]
-        }
-      }))
-      eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCaseStarted: {
-          testCaseId,
-          attempt: 0,
-          id: testCaseStartedId
-        }
-      }))
-      eventBroadcaster.emit('envelope', new messages.Envelope({
-        testStepFinished: {
-          testCaseStartedId,
-          testStepId: testStepId1,
-          testResult: { duration: 1 },
-        }
-      }))
-      eventBroadcaster.emit('envelope', new messages.Envelope({
-        testStepFinished: {
-          testCaseStartedId,
-          testStepId: testStepId2,
-          testResult: { duration: 2 },
-        }
-      }))
-      eventBroadcaster.emit('envelope', new messages.Envelope({
-        testCaseFinished: {
-          testCaseStartedId,
-          testResult: {}
-        }
-      }))
-      eventBroadcaster.emit('envelope', new messages.Envelope({
-        testRunFinished: {}
-      }))
+      eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCase: {
+            pickleId: pickle.id,
+            id: testCaseId,
+            steps: [
+              {
+                id: testStepId1,
+                pickleStepId: pickle.steps[0].id,
+                stepDefinitionId: [supportCodeLibrary.stepDefinitions[0].id],
+              },
+              {
+                id: testStepId2,
+                pickleStepId: pickle.steps[1].id,
+                stepDefinitionId: [supportCodeLibrary.stepDefinitions[1].id],
+              },
+            ],
+          },
+        })
+      )
+      eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseStarted: {
+            testCaseId,
+            attempt: 0,
+            id: testCaseStartedId,
+          },
+        })
+      )
+      eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId: testStepId1,
+            testResult: { duration: 1 },
+          },
+        })
+      )
+      eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testStepFinished: {
+            testCaseStartedId,
+            testStepId: testStepId2,
+            testResult: { duration: 2 },
+          },
+        })
+      )
+      eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testCaseFinished: {
+            testCaseStartedId,
+            testResult: {},
+          },
+        })
+      )
+      eventBroadcaster.emit(
+        'envelope',
+        new messages.Envelope({
+          testRunFinished: {},
+        })
+      )
     })
 
     it('outputs the usage in json format', function() {
