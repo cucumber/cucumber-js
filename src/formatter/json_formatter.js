@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import Formatter from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import { buildStepArgumentIterator } from '../step_arguments'
 import { format } from 'assertion-error-formatter'
 import { messages } from 'cucumber-messages'
+import util from 'util'
 
 const { Status } = messages.TestResult
 
@@ -149,7 +149,7 @@ export default class JsonFormatter extends Formatter {
     }
     if (testStep.stepDefinitionId.length === 1) {
       const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
-        s => s.id == testStep.stepDefinitionId[0]
+        s => s.id === testStep.stepDefinitionId[0]
       )
       data.match = { location: formatLocation(stepDefinition) }
     }
@@ -181,9 +181,9 @@ export default class JsonFormatter extends Formatter {
 
   getScenarioTags({ feature, pickle, gherkinScenarioMap }) {
     return _.map(pickle.tags, tagData => {
-      const featureSource = feature.tags.find(t => t.id == tagData.sourceId)
+      const featureSource = feature.tags.find(t => t.id === tagData.sourceId)
       const scenarioSource = gherkinScenarioMap[pickle.sourceIds[0]].tags.find(
-        t => t.id == tagData.sourceId
+        t => t.id === tagData.sourceId
       )
       return {
         name: tagData.name,

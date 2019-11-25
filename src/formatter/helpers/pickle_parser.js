@@ -2,18 +2,18 @@ import _ from 'lodash'
 
 export function getScenarioDescription({ pickle, gherkinScenarioMap }) {
   return _.chain(pickle.sourceIds)
-    .map(id => gherkinScenarioMap[id].description)
+    .map(id => gherkinScenarioMap[id])
     .compact()
     .first()
-    .value()
+    .value().description
 }
 
 export function getStepKeyword({ pickleStep, gherkinStepMap }) {
   return _.chain(pickleStep.sourceIds)
-    .map(id => gherkinStepMap[id].keyword)
+    .map(id => gherkinStepMap[id])
     .compact()
     .first()
-    .value()
+    .value().keyword
 }
 
 export function getPickleStepMap(pickle) {

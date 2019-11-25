@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import indentString from 'indent-string'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 import { messages } from 'cucumber-messages'

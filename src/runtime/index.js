@@ -2,11 +2,11 @@ import _ from 'lodash'
 import { formatLocation } from '../formatter/helpers'
 import Promise from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
-import TestCaseRunner from './pickle_runner'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 import { retriesForPickle } from './helpers'
 import { messages } from 'cucumber-messages'
+import PickleRunner from './pickle_runner'
 
 const { Status } = messages.TestResult
 
@@ -44,23 +44,23 @@ export default class Runtime {
     })
   }
 
-  async runPickle(testCase) {
-    const retries = retriesForPickle(testCase, this.options)
+  async runPickle(pickle) {
+    const retries = retriesForPickle(pickle, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    const testCaseRunner = new TestCaseRunner({
+    const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      pickle,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
-      testCase,
       worldParameters: this.options.worldParameters,
     })
-    const testCaseResult = await testCaseRunner.run()
-    if (testCaseResult.duration) {
-      this.result.duration += testCaseResult.duration
+    const testResult = await pickleRunner.run()
+    if (testResult.duration) {
+      this.result.duration += testResult.duration
     }
-    if (this.shouldCauseFailure(testCaseResult.status)) {
+    if (this.shouldCauseFailure(testResult.status)) {
       this.result.success = false
     }
   }
@@ -74,7 +74,7 @@ export default class Runtime {
     await Promise.each(this.pickles, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
     // TODO custom envelope need to update cucumber-messages
-    this.eventBroadcaster.emit({ testRunFinished: this.result })
+    this.eventBroadcaster.emit('envelope', { testRunFinished: this.result })
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }

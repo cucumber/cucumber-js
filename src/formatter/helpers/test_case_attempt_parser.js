@@ -1,13 +1,11 @@
 import _ from 'lodash'
 import KeywordType, { getStepKeywordType } from './keyword_type'
-import { buildStepArgumentIterator } from '../../step_arguments'
 import {
   getGherkinStepMap,
   getGherkinScenarioMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 import { messages } from 'cucumber-messages'
-import { test } from 'mocha'
 
 const { Status } = messages.TestResult
 
@@ -31,12 +29,12 @@ function parseStep({
   if (testStep.hookId) {
     let hookDefinition
     if (isBeforeHook) {
-      hookDefinition = supportCodeLibrary.beforeHookDefinitions.find(
-        x => x.id == testStep.hookId
+      hookDefinition = supportCodeLibrary.beforeTestCaseHookDefinitions.find(
+        x => x.id === testStep.hookId
       )
     } else {
-      hookDefinition = supportCodeLibrary.afterHookDefinitions.find(
-        x => x.id == testStep.hookId
+      hookDefinition = supportCodeLibrary.afterTestCaseHookDefinitions.find(
+        x => x.id === testStep.hookId
       )
     }
     out.actionLocation = {
@@ -44,9 +42,9 @@ function parseStep({
       line: hookDefinition.line,
     }
   }
-  if (testStep.stepDefinitionId.length == 1) {
+  if (testStep.stepDefinitionId && testStep.stepDefinitionId.length === 1) {
     const stepDefinition = supportCodeLibrary.stepDefinitions.find(
-      x => x.id == testStep.stepDefinitionId[0]
+      x => x.id === testStep.stepDefinitionId[0]
     )
     out.actionLocation = {
       uri: stepDefinition.uri,

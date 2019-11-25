@@ -19,8 +19,12 @@ Before('@spawn', function() {
   this.spawn = true
 })
 
-Before(function({ sourceLocation: { uri, line } }) {
-  this.tmpDir = path.join(projectPath, 'tmp', `${path.basename(uri)}_${line}`)
+Before(function({ pickle }) {
+  this.tmpDir = path.join(
+    projectPath,
+    'tmp',
+    `${path.basename(pickle.uri)}_${pickle.id}`
+  )
 
   fsExtra.removeSync(this.tmpDir)
 

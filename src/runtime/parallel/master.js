@@ -119,7 +119,7 @@ export default class Master {
     }
     const pickle = this.pickles[this.nextPickleIndex]
     this.nextPickleIndex += 1
-    const retries = retriesForPickle(testCase, this.options)
+    const retries = retriesForPickle(pickle, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
     slave.process.send({ command: commandTypes.RUN, retries, skip, pickle })

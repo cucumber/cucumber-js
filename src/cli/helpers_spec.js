@@ -62,7 +62,7 @@ describe('helpers', () => {
 
       it('emits a gherkin-document event', function() {
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.gherkinDocument).to.exist
+        expect(envelope.gherkinDocument).to.exist()
         expect(envelope.gherkinDocument).to.have.keys(['comments', 'uri'])
         expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
       })
@@ -118,7 +118,7 @@ describe('helpers', () => {
 
       it('emits a gherkin-document event', function() {
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.gherkinDocument).to.exist
+        expect(envelope.gherkinDocument).to.exist()
         expect(envelope.gherkinDocument).to.have.keys([
           'comments',
           'feature',
@@ -129,7 +129,7 @@ describe('helpers', () => {
 
       it('emits a pickle event', function() {
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.pickle).to.exist
+        expect(envelope.pickle).to.exist()
         expect(envelope.pickle).to.have.keys([
           'id',
           'language',
@@ -144,7 +144,7 @@ describe('helpers', () => {
       it('emits a pickleRejected event', function() {
         const thirdEnvelope = this.onEnvelope.getCall(2).args[0]
         const fourthEnvelope = this.onEnvelope.getCall(3).args[0]
-        expect(fourthEnvelope.pickleRejected).to.exist
+        expect(fourthEnvelope.pickleRejected).to.exist()
         expect(fourthEnvelope.pickleRejected.pickleId).to.eql(
           thirdEnvelope.pickle.id
         )
@@ -208,7 +208,7 @@ describe('helpers', () => {
 
       it('emits a gherkin-document event', function() {
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.gherkinDocument).to.exist
+        expect(envelope.gherkinDocument).to.exist()
         expect(envelope.gherkinDocument).to.have.keys([
           'comments',
           'feature',
@@ -219,7 +219,7 @@ describe('helpers', () => {
 
       it('emits a pickle event', function() {
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.pickle).to.exist
+        expect(envelope.pickle).to.exist()
         expect(envelope.pickle).to.have.keys([
           'id',
           'language',
@@ -234,7 +234,7 @@ describe('helpers', () => {
       it('emits a pickleAccepted event', function() {
         const thirdEnvelope = this.onEnvelope.getCall(2).args[0]
         const fourthEnvelope = this.onEnvelope.getCall(3).args[0]
-        expect(fourthEnvelope.pickleAccepted).to.exist
+        expect(fourthEnvelope.pickleAccepted).to.exist()
         expect(fourthEnvelope.pickleAccepted.pickleId).to.eql(
           thirdEnvelope.pickle.id
         )

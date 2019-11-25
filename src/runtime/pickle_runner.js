@@ -10,9 +10,9 @@ const { Status } = messages.TestResult
 export default class PickleRunner {
   constructor({
     eventBroadcaster,
+    pickle,
     retries = 0,
     skip,
-    pickle,
     supportCodeLibrary,
     worldParameters,
   }) {
@@ -253,19 +253,18 @@ export default class PickleRunner {
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
-  async runStep(step) {
-    const stepDefinitions = this.getStepDefinitions(step)
-    if (stepDefinitions.length === 0) {
+  async runStep(testStep) {
+    if (testStep.stepDefinitions.length === 0) {
       return { duration: 0, status: Status.UNDEFINED }
-    } else if (stepDefinitions.length > 1) {
+    } else if (testStep.stepDefinitions.length > 1) {
       return {
         duration: 0,
-        exception: getAmbiguousStepException(stepDefinitions),
+        exception: getAmbiguousStepException(testStep.stepDefinitions),
         status: Status.AMBIGUOUS,
       }
     } else if (this.isSkippingSteps()) {
       return { duration: 0, status: Status.SKIPPED }
     }
-    return this.invokeStep(step, stepDefinitions[0])
+    return this.invokeStep(testStep, testStep.stepDefinitions[0])
   }
 }

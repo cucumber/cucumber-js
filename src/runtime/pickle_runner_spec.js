@@ -56,8 +56,8 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps).to.eql([])
       })
@@ -65,8 +65,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
 
@@ -74,7 +74,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -123,11 +123,11 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -139,8 +139,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -151,7 +151,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -164,7 +164,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -179,7 +179,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -230,11 +230,11 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -246,8 +246,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -258,7 +258,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -271,7 +271,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -287,7 +287,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -344,11 +344,11 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -360,8 +360,8 @@ describe('PickleRunner', () => {
       it('emits test case started (attempt 0)', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -372,7 +372,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -385,7 +385,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -401,7 +401,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -416,8 +416,8 @@ describe('PickleRunner', () => {
       it('emits test case started (attempt 1)', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(5).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(1)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -428,7 +428,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(6).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -441,7 +441,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(7).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -456,7 +456,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(5).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(8).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -517,11 +517,11 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -534,8 +534,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -546,7 +546,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -559,7 +559,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -578,7 +578,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -625,11 +625,11 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -639,8 +639,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -651,7 +651,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -664,7 +664,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -679,7 +679,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -721,11 +721,11 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -737,8 +737,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -749,7 +749,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -762,7 +762,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -777,7 +777,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -830,15 +830,15 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(2)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].hookId).to.eql(
           this.testCaseHookDefinition.id
         )
-        expect(envelope.testCase.steps[1].id).to.exist
+        expect(envelope.testCase.steps[1].id).to.exist()
         expect(envelope.testCase.steps[1].pickleStepId).to.eql(
           this.pickleStep.id
         )
@@ -850,8 +850,8 @@ describe('PickleRunner', () => {
       it('emits test case started', function() {
         const testCaseId = this.onEnvelope.getCall(0).args[0].testCase.id
         const envelope = this.onEnvelope.getCall(1).args[0]
-        expect(envelope.testCaseStarted).to.exist
-        expect(envelope.testCaseStarted.id).to.exist
+        expect(envelope.testCaseStarted).to.exist()
+        expect(envelope.testCaseStarted.id).to.exist()
         expect(envelope.testCaseStarted.attempt).to.eql(0)
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
@@ -862,7 +862,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -875,7 +875,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -892,7 +892,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
           .id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -905,7 +905,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
           .id
         const envelope = this.onEnvelope.getCall(5).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -920,7 +920,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(6).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
@@ -974,18 +974,18 @@ describe('PickleRunner', () => {
 
       it('emits test case', function() {
         const envelope = this.onEnvelope.getCall(0).args[0]
-        expect(envelope.testCase).to.exist
-        expect(envelope.testCase.id).to.exist
+        expect(envelope.testCase).to.exist()
+        expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
         expect(envelope.testCase.steps.length).to.eql(2)
-        expect(envelope.testCase.steps[0].id).to.exist
+        expect(envelope.testCase.steps[0].id).to.exist()
         expect(envelope.testCase.steps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
         expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
           this.stepDefinition.id,
         ])
-        expect(envelope.testCase.steps[1].id).to.exist
+        expect(envelope.testCase.steps[1].id).to.exist()
         expect(envelope.testCase.steps[1].hookId).to.eql(
           this.testCaseHookDefinition.id
         )
@@ -997,7 +997,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -1010,7 +1010,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -1027,7 +1027,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
           .id
         const envelope = this.onEnvelope.getCall(4).args[0]
-        expect(envelope.testStepStarted).to.exist
+        expect(envelope.testStepStarted).to.exist()
         expect(envelope.testStepStarted.testStepId).to.eql(testStepId)
         expect(envelope.testStepStarted.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -1040,7 +1040,7 @@ describe('PickleRunner', () => {
         const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
           .id
         const envelope = this.onEnvelope.getCall(5).args[0]
-        expect(envelope.testStepFinished).to.exist
+        expect(envelope.testStepFinished).to.exist()
         expect(envelope.testStepFinished.testStepId).to.eql(testStepId)
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
@@ -1055,7 +1055,7 @@ describe('PickleRunner', () => {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
         const envelope = this.onEnvelope.getCall(6).args[0]
-        expect(envelope.testCaseFinished).to.exist
+        expect(envelope.testCaseFinished).to.exist()
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )

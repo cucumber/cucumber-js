@@ -1,8 +1,11 @@
 import _ from 'lodash'
-import { getStepLineToKeywordMap } from '../../src/formatter/helpers/gherkin_document_parser'
+import {
+  getStepLineToKeywordMap,
+  getGherkinStepMap,
+} from '../../src/formatter/helpers/gherkin_document_parser'
 import {
   getStepKeyword,
-  getStepLineToPickledStepMap,
+  getPickleStepMap,
 } from '../../src/formatter/helpers/pickle_parser'
 
 export function getPickleNamesInOrderOfExecution(events) {
@@ -51,8 +54,8 @@ export function getTestStepResults(events, pickleName) {
     .map(e => [e.index, e.result])
     .fromPairs()
     .value()
-  const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocumentEvent)
-  const stepLineToPickleStepMap = getStepLineToPickledStepMap(pickleEvent)
+  const stepLineToKeywordMap = getGherkinStepMap(gherkinDocumentEvent)
+  const stepLineToPickleStepMap = getPickleStepMap(pickleEvent)
   let isBeforeHook = true
   return testCasePreparedEvent.steps.map((s, index) => {
     let text = ''
@@ -76,12 +79,10 @@ export function getTestStepAttachmentEvents(events, pickleName, stepText) {
     gherkinDocumentEvent,
     stepText
   )
-  // TODO fix
-  const pickleStepLine = getPickleStepLine(pickleStep)
   const testCasePreparedEvent = getTestCasePreparedEvent(events, pickleEvent)
   const testStepIndex = _.findIndex(
     testCasePreparedEvent.steps,
-    s => s.sourceLocation.line === pickleStepLine
+    s => s.pickleStepId === pickleStep.id
   )
   return getTestStepAttachmentEventsForIndex(
     events,

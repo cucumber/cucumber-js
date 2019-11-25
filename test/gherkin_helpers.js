@@ -38,12 +38,7 @@ export function parse({ data, uri }) {
       }
       if (envelope.attachment) {
         reject(
-          new Error(
-            `Parse error in '${path.relative(
-              cwd,
-              envelope.attachment.source.uri
-            )}': ${envelope.attachment.data}`
-          )
+          new Error(`Parse error in '${uri}': ${envelope.attachment.data}`)
         )
       }
     })
