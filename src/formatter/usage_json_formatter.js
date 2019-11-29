@@ -1,5 +1,6 @@
 import { getUsage } from './helpers'
 import Formatter from './'
+import { messages } from 'cucumber-messages'
 
 export default class UsageJsonFormatter extends Formatter {
   constructor(options) {
@@ -17,6 +18,13 @@ export default class UsageJsonFormatter extends Formatter {
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       eventDataCollector: this.eventDataCollector,
     })
-    this.log(JSON.stringify(usage, null, 2))
+    this.log(JSON.stringify(usage, this.replacer, 2))
+  }
+
+  replacer(key, value) {
+    if (key == 'seconds') {
+      return parseInt(value)
+    }
+    return value
   }
 }

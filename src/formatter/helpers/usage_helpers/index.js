@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
 import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
+import { durationToMilliseconds, millisecondsToDuration } from '../../../time'
 
 function getCodeAsString(stepDefinition) {
   if (typeof stepDefinition.unwrappedCode === 'function') {
@@ -30,7 +31,7 @@ function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
   _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
-    testCaseAttempt.testCase.steps.forEach(testStep => {
+    testCaseAttempt.testCase.testSteps.forEach(testStep => {
       if (testStep.pickleStepId && testStep.stepDefinitionId.length === 1) {
         const stepDefinitionId = testStep.stepDefinitionId[0]
         const pickleStep = pickleStepMap[testStep.pickleStepId]
@@ -41,7 +42,7 @@ function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
           uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
         const { duration } = testCaseAttempt.stepResults[testStep.id]
-        if (isFinite(duration)) {
+        if (duration) {
           match.duration = duration
         }
         if (mapping[stepDefinitionId]) {
@@ -56,8 +57,8 @@ function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
 function invertNumber(key) {
   return obj => {
     const value = obj[key]
-    if (isFinite(value)) {
-      return -1 * value
+    if (value) {
+      return -1 * durationToMilliseconds(value)
     }
     return 1
   }
@@ -71,9 +72,9 @@ function buildResult(mapping) {
         'text',
       ])
       const result = { matches: sortedMatches, ...rest }
-      const meanDuration = _.meanBy(matches, 'duration')
-      if (isFinite(meanDuration)) {
-        result.meanDuration = meanDuration
+      const durations = _.chain(matches).map(m => m.duration).compact().value()
+      if (durations.length > 0) {
+        result.meanDuration = millisecondsToDuration(_.meanBy(durations, (d) => durationToMilliseconds(d)))
       }
       return result
     })

@@ -1,7 +1,7 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { getPicklesFromFilesystem } from './helpers'
+import { loadPicklesFromFilesystem } from './helpers'
 import { promisify } from 'bluebird'
 import EventEmitter from 'events'
 import fsExtra from 'fs-extra'
@@ -11,7 +11,7 @@ import tmp from 'tmp'
 import { messages } from 'cucumber-messages'
 
 describe('helpers', () => {
-  describe('getPicklesFromFilesystem', () => {
+  describe('loadPicklesFromFilesystem', () => {
     beforeEach(async function() {
       this.onEnvelope = sinon.stub()
       this.eventBroadcaster = new EventEmitter()
@@ -27,7 +27,7 @@ describe('helpers', () => {
           this.relativeFeaturePath
         )
         await fsExtra.outputFile(this.absoluteFeaturePath, '')
-        this.result = await getPicklesFromFilesystem({
+        this.result = await loadPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featureDefaultLanguage: 'en',
@@ -80,7 +80,7 @@ describe('helpers', () => {
           this.absoluteFeaturePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
-        this.result = await getPicklesFromFilesystem({
+        this.result = await loadPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featureDefaultLanguage: 'en',
@@ -163,7 +163,7 @@ describe('helpers', () => {
           this.absoluteFeaturePath,
           'Feature: a\nScenario: b\nGiven a step'
         )
-        this.result = await getPicklesFromFilesystem({
+        this.result = await loadPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           featureDefaultLanguage: 'en',
@@ -174,17 +174,9 @@ describe('helpers', () => {
       })
 
       it('returns the test case', function() {
+        const thirdEnvelope = this.onEnvelope.getCall(2).args[0]
         expect(this.result).to.have.lengthOf(1)
-        expect(this.result[0]).to.have.keys([
-          'id',
-          'language',
-          'name',
-          'sourceIds',
-          'steps',
-          'tags',
-          'uri',
-        ])
-        expect(this.result[0].uri).to.eql(this.absoluteFeaturePath)
+        expect(this.result[0]).equal(thirdEnvelope.pickle.id)
       })
 
       it('emits 4 events', function() {

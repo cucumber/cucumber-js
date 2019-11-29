@@ -5,6 +5,7 @@ import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
+import { getGherkinScenarioMap } from '../../src/formatter/helpers/gherkin_document_parser'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
@@ -19,11 +20,13 @@ Before('@spawn', function() {
   this.spawn = true
 })
 
-Before(function({ pickle }) {
+Before(function({ gherkinDocument, pickle }) {
+  const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
+  const line = gherkinScenarioMap[pickle.sourceIds[0]].location.line
   this.tmpDir = path.join(
     projectPath,
     'tmp',
-    `${path.basename(pickle.uri)}_${pickle.id}`
+    `${path.basename(pickle.uri)}_${line}`
   )
 
   fsExtra.removeSync(this.tmpDir)

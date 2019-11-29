@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Duration from 'duration'
-import { MILLISECONDS_IN_NANOSECOND } from '../../time'
+import { addDurations, durationToMilliseconds, getZeroDuration } from '../../time'
 import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
@@ -14,13 +14,15 @@ const STATUS_REPORT_ORDER = [
   Status.PASSED,
 ]
 
-export function formatSummary({ colorFns, testCaseAttempts, testRun }) {
+export function formatSummary({ colorFns, testCaseAttempts }) {
   const testCaseResults = []
   const testStepResults = []
+  let totalDuration = getZeroDuration()
   testCaseAttempts.forEach(({ testCase, result, stepResults }) => {
+    totalDuration = addDurations(totalDuration, result.duration)
     if (!result.willBeRetried) {
       testCaseResults.push(result)
-      _.each(testCase.steps, testStep => {
+      _.each(testCase.testSteps, testStep => {
         if (testStep.pickleStepId) {
           testStepResults.push(stepResults[testStep.id])
         }
@@ -37,7 +39,7 @@ export function formatSummary({ colorFns, testCaseAttempts, testRun }) {
     objects: testStepResults,
     type: 'step',
   })
-  const durationSummary = getDuration(testRun.duration)
+  const durationSummary = getDurationSummary(totalDuration)
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
@@ -62,9 +64,9 @@ function getCountSummary({ colorFns, objects, type }) {
   return text
 }
 
-function getDuration(nanoseconds) {
+function getDurationSummary(durationMsg) {
   const start = new Date(0)
-  const end = new Date(nanoseconds / MILLISECONDS_IN_NANOSECOND)
+  const end = new Date(durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
 
   return (

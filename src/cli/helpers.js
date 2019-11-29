@@ -17,7 +17,8 @@ export async function getExpandedArgv({ argv, cwd }) {
   return fullArgv
 }
 
-export function getPicklesFromFilesystem({
+// Returs ordered list of pickleIds to run
+export function loadPicklesFromFilesystem({
   cwd,
   eventBroadcaster,
   featureDefaultLanguage,
@@ -40,7 +41,7 @@ export function getPicklesFromFilesystem({
             'envelope',
             messages.Envelope.fromObject({ pickleAccepted: { pickleId } })
           )
-          result.push(pickle)
+          result.push(pickleId)
         } else {
           eventBroadcaster.emit(
             'envelope',
@@ -60,15 +61,15 @@ export function getPicklesFromFilesystem({
       }
     })
     messageStream.on('end', () => {
-      orderPickles(result, order)
+      orderPickleIds(result, order)
       resolve(result)
     })
     messageStream.on('error', reject)
   })
 }
 
-// Orders the testCases in place - morphs input
-export function orderPickles(pickles, order) {
+// Orders the pickleIds in place - morphs input
+export function orderPickleIds(pickleIds, order) {
   let [type, seed] = order.split(':')
   switch (type) {
     case 'defined':
@@ -78,7 +79,7 @@ export function orderPickles(pickles, order) {
         seed = Math.floor(Math.random() * 1000 * 1000).toString()
         console.warn(`Random order using seed: ${seed}`)
       }
-      shuffle(pickles, seed)
+      shuffle(pickleIds, seed)
       break
     default:
       throw new Error(

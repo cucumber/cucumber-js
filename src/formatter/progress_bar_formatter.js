@@ -12,7 +12,7 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   incrementStepCount(testCase) {
-    this.numberOfSteps += testCase.steps.filter(s => s.pickleStepId).length
+    this.numberOfSteps += testCase.testSteps.filter(s => s.pickleStepId).length
   }
 
   initializeProgressBar() {
@@ -32,7 +32,7 @@ export default class ProgressBarFormatter extends Formatter {
     const { testCase } = this.eventDataCollector.getTestCaseAttempt(
       testCaseStartedId
     )
-    const testStep = testCase.steps.find(s => s.id === testStepId)
+    const testStep = testCase.testSteps.find(s => s.id === testStepId)
     if (testStep.pickleStepId) {
       this.progressBar.tick()
     }
@@ -54,7 +54,7 @@ export default class ProgressBarFormatter extends Formatter {
         })
       )
       if (testCaseFinished.testResult.willBeRetried) {
-        const stepsToRetry = testCaseAttempt.testCase.steps.filter(
+        const stepsToRetry = testCaseAttempt.testCase.testSteps.filter(
           s => s.pickleStepId
         ).length
         this.progressBar.tick(-stepsToRetry)

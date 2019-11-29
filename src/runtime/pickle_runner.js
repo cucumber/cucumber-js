@@ -4,12 +4,14 @@ import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
+import { addDurations, getZeroDuration } from '../time'
 
 const { Status } = messages.TestResult
 
 export default class PickleRunner {
   constructor({
     eventBroadcaster,
+    gherkinDocument,
     pickle,
     retries = 0,
     skip,
@@ -24,7 +26,7 @@ export default class PickleRunner {
       }
       // TODO custom envelope need to update cucumber-messages
       this.eventBroadcaster('envelope', {
-        testCaseAttachment: {
+        testStepAttachment: {
           data,
           media,
           testCaseStartedId: this.currentTestCaseStartedId,
@@ -33,6 +35,7 @@ export default class PickleRunner {
       })
     })
     this.eventBroadcaster = eventBroadcaster
+    this.gherkinDocument = gherkinDocument
     this.maxAttempts = 1 + (skip ? 0 : retries)
     this.pickle = pickle
     this.skip = skip
@@ -49,10 +52,10 @@ export default class PickleRunner {
       parameters: this.worldParameters,
     })
     this.testStepIndex = 0
-    this.result = {
-      duration: 0,
+    this.result = messages.TestResult.fromObject({
+      duration: getZeroDuration(),
       status: this.skip ? Status.SKIPPED : Status.PASSED,
-    }
+    })
   }
 
   buildTestSteps() {
@@ -89,7 +92,7 @@ export default class PickleRunner {
     const testCase = {
       pickleId: this.pickle.id,
       id: this.testCaseId,
-      steps: this.testSteps.map(testStep => {
+      testSteps: this.testSteps.map(testStep => {
         if (testStep.isHook) {
           return {
             id: testStep.id,
@@ -104,7 +107,7 @@ export default class PickleRunner {
         }
       }),
     }
-    this.eventBroadcaster.emit('envelope', new messages.Envelope({ testCase }))
+    this.eventBroadcaster.emit('envelope', messages.Envelope.fromObject({ testCase }))
   }
 
   getAfterHookDefinitions() {
@@ -160,7 +163,7 @@ export default class PickleRunner {
   async aroundTestStep(testStepId, attempt, runStepFn) {
     this.eventBroadcaster.emit(
       'envelope',
-      new messages.Envelope({
+      messages.Envelope.fromObject({
         testStepStarted: {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
@@ -168,9 +171,7 @@ export default class PickleRunner {
       })
     )
     const testStepResult = await runStepFn()
-    if (testStepResult.duration) {
-      this.result.duration += testStepResult.duration
-    }
+    this.result.duration = addDurations(this.result.duration, testStepResult.duration)
     if (this.shouldUpdateStatus(testStepResult)) {
       this.result.status = testStepResult.status
     }
@@ -180,12 +181,12 @@ export default class PickleRunner {
     ) {
       this.result.willBeRetried = true
     }
-    if (testStepResult.exception) {
-      this.result.exception = testStepResult.exception
+    if (testStepResult.message) {
+      this.result.message = testStepResult.message
     }
     this.eventBroadcaster.emit(
       'envelope',
-      new messages.Envelope({
+      messages.Envelope.fromObject({
         testStepFinished: {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
@@ -202,7 +203,7 @@ export default class PickleRunner {
       this.currentTestCaseStartedId = uuidv4()
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseStarted: {
             attempt,
             testCaseId: this.testCaseId,
@@ -214,6 +215,7 @@ export default class PickleRunner {
         await this.aroundTestStep(testStep.id, attempt, async () => {
           if (testStep.isHook) {
             const hookParameter = {
+              gherkinDocument: this.gherkinDocument,
               pickle: this.pickle,
             }
             if (!testStep.isBeforeHook) {
@@ -231,7 +233,7 @@ export default class PickleRunner {
       }
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseFinished: {
             testCaseStartedId: this.currentTestCaseStartedId,
             testResult: this.result,
@@ -248,23 +250,22 @@ export default class PickleRunner {
 
   async runHook(hookDefinition, hookParameter, isBeforeHook) {
     if (this.shouldSkipHook(isBeforeHook)) {
-      return { duration: 0, status: Status.SKIPPED }
+      return messages.TestResult.fromObject({ status: Status.SKIPPED })
     }
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
   async runStep(testStep) {
     if (testStep.stepDefinitions.length === 0) {
-      return { duration: 0, status: Status.UNDEFINED }
+      return messages.TestResult.fromObject({ status: Status.UNDEFINED })
     } else if (testStep.stepDefinitions.length > 1) {
-      return {
-        duration: 0,
-        exception: getAmbiguousStepException(testStep.stepDefinitions),
+      return messages.TestResult.fromObject({
+        message: getAmbiguousStepException(testStep.stepDefinitions),
         status: Status.AMBIGUOUS,
-      }
+      })
     } else if (this.isSkippingSteps()) {
-      return { duration: 0, status: Status.SKIPPED }
+      return messages.TestResult.fromObject({ status: Status.SKIPPED })
     }
-    return this.invokeStep(testStep, testStep.stepDefinitions[0])
+    return this.invokeStep(testStep.pickleStep, testStep.stepDefinitions[0])
   }
 }

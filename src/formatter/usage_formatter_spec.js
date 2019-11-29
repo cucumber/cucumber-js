@@ -9,7 +9,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from 'cucumber-expressions'
-import { MILLISECONDS_IN_NANOSECOND } from '../time'
+import { NANOSECONDS_IN_MILLISECOND, getZeroDuration, millisecondsToDuration } from '../time'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
 
@@ -38,7 +38,7 @@ describe('UsageFormatter', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {},
           })
         )
@@ -68,7 +68,7 @@ describe('UsageFormatter', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testRunFinished: {},
             })
           )
@@ -95,7 +95,7 @@ describe('UsageFormatter', () => {
           this.testCase = {
             pickleId: pickle.id,
             id: uuidv4(),
-            steps: [
+            testSteps: [
               {
                 id: uuidv4(),
                 pickleStepId: pickle.steps[0].id,
@@ -110,14 +110,14 @@ describe('UsageFormatter', () => {
           }
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCase: this.testCase,
             })
           )
           this.testCaseStartedId = uuidv4()
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseStarted: {
                 testCaseId: this.testCase.id,
                 attempt: 0,
@@ -131,27 +131,27 @@ describe('UsageFormatter', () => {
           beforeEach(function() {
             this.eventBroadcaster.emit(
               'envelope',
-              new messages.Envelope({
+              messages.Envelope.fromObject({
                 testStepFinished: {
                   testCaseStartedId: this.testCaseStartedId,
-                  testStepId: this.testCase.steps[0].id,
-                  testResult: {},
+                  testStepId: this.testCase.testSteps[0].id,
+                  testResult: { },
                 },
               })
             )
             this.eventBroadcaster.emit(
               'envelope',
-              new messages.Envelope({
+              messages.Envelope.fromObject({
                 testStepFinished: {
                   testCaseStartedId: this.testCaseStartedId,
-                  testStepId: this.testCase.steps[1].id,
-                  testResult: {},
+                  testStepId: this.testCase.testSteps[1].id,
+                  testResult: { },
                 },
               })
             )
             this.eventBroadcaster.emit(
               'envelope',
-              new messages.Envelope({
+              messages.Envelope.fromObject({
                 testRunFinished: {},
               })
             )
@@ -174,27 +174,27 @@ describe('UsageFormatter', () => {
           beforeEach(function() {
             this.eventBroadcaster.emit(
               'envelope',
-              new messages.Envelope({
+              messages.Envelope.fromObject({
                 testStepFinished: {
                   testCaseStartedId: this.testCaseStartedId,
-                  testStepId: this.testCase.steps[0].id,
-                  testResult: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
+                  testStepId: this.testCase.testSteps[0].id,
+                  testResult: { duration: millisecondsToDuration(2) },
                 },
               })
             )
             this.eventBroadcaster.emit(
               'envelope',
-              new messages.Envelope({
+              messages.Envelope.fromObject({
                 testStepFinished: {
                   testCaseStartedId: this.testCaseStartedId,
-                  testStepId: this.testCase.steps[1].id,
-                  testResult: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
+                  testStepId: this.testCase.testSteps[1].id,
+                  testResult: { duration: millisecondsToDuration(1) },
                 },
               })
             )
             this.eventBroadcaster.emit(
               'envelope',
-              new messages.Envelope({
+              messages.Envelope.fromObject({
                 testRunFinished: {},
               })
             )
@@ -260,11 +260,11 @@ describe('UsageFormatter', () => {
         const testCaseStartedId = uuidv4()
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId1,
                   pickleStepId: pickle.steps[0].id,
@@ -285,7 +285,7 @@ describe('UsageFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -295,27 +295,27 @@ describe('UsageFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId: testStepId1,
-              testResult: { duration: 1 * MILLISECONDS_IN_NANOSECOND },
+              testResult: { duration: millisecondsToDuration(1) },
             },
           })
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId: testStepId2,
-              testResult: { duration: 2 * MILLISECONDS_IN_NANOSECOND },
+              testResult: { duration: millisecondsToDuration(2) },
             },
           })
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult: {},
@@ -324,7 +324,7 @@ describe('UsageFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {},
           })
         )

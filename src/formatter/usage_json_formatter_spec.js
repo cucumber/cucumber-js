@@ -11,6 +11,7 @@ import {
 } from 'cucumber-expressions'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
+import { millisecondsToDuration } from '../time'
 
 describe('UsageJsonFormatter', () => {
   describe('handleFeaturesResult', () => {
@@ -64,11 +65,11 @@ describe('UsageJsonFormatter', () => {
       const testCaseStartedId = uuidv4()
       eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             pickleId: pickle.id,
             id: testCaseId,
-            steps: [
+            testSteps: [
               {
                 id: testStepId1,
                 pickleStepId: pickle.steps[0].id,
@@ -95,27 +96,27 @@ describe('UsageJsonFormatter', () => {
       )
       eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testStepFinished: {
             testCaseStartedId,
             testStepId: testStepId1,
-            testResult: { duration: 1 },
+            testResult: { duration: millisecondsToDuration(1) }
           },
         })
       )
       eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testStepFinished: {
             testCaseStartedId,
             testStepId: testStepId2,
-            testResult: { duration: 2 },
+            testResult: { duration: millisecondsToDuration(2) },
           },
         })
       )
       eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseFinished: {
             testCaseStartedId,
             testResult: {},
@@ -124,7 +125,7 @@ describe('UsageJsonFormatter', () => {
       )
       eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testRunFinished: {},
         })
       )
@@ -138,13 +139,19 @@ describe('UsageJsonFormatter', () => {
           line: 2,
           matches: [
             {
-              duration: 2,
+              duration: {
+                seconds: 0,
+                nanos: 2000000,
+              },
               line: 4,
               text: 'def',
               uri: 'a.feature',
             },
           ],
-          meanDuration: 2,
+          meanDuration: {
+            seconds: 0,
+            nanos: 2000000,
+          },
           pattern: 'def',
           patternType: 'RegularExpression',
           uri: 'steps.js',
@@ -154,13 +161,19 @@ describe('UsageJsonFormatter', () => {
           line: 1,
           matches: [
             {
-              duration: 1,
+              duration: {
+                seconds: 0,
+                nanos: 1000000,
+              },
               line: 3,
               text: 'abc',
               uri: 'a.feature',
             },
           ],
-          meanDuration: 1,
+          meanDuration: {
+            seconds: 0,
+            nanos: 1000000,
+          },
           pattern: 'abc',
           patternType: 'CucumberExpression',
           uri: 'steps.js',

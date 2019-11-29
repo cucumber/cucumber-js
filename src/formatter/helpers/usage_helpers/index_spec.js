@@ -7,6 +7,7 @@ import EventDataCollector from '../event_data_collector'
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
+import { getZeroDuration } from '../../../time'
 
 const { Status } = messages.TestResult
 
@@ -29,10 +30,8 @@ describe('Usage Helpers', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 0,
-              },
+            messages.Envelope.fromObject({
+              testRunFinished: {},
             })
           )
         })
@@ -52,14 +51,14 @@ describe('Usage Helpers', () => {
           const testCaseId = uuidv4()
           const testStepId = uuidv4()
           const testCaseStartedId = uuidv4()
-          const testResult = { status: Status.UNDEFINED }
+          const testResult = messages.TestResult.fromObject({ duration: getZeroDuration(), status: Status.UNDEFINED })
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCase: {
                 pickleId: pickle.id,
                 id: testCaseId,
-                steps: [
+                testSteps: [
                   {
                     id: testStepId,
                     pickleStepId: pickle.steps[0].id,
@@ -71,7 +70,7 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseStarted: {
                 testCaseId,
                 attempt: 0,
@@ -81,7 +80,7 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testStepFinished: {
                 testCaseStartedId,
                 testStepId,
@@ -91,7 +90,7 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseFinished: {
                 testCaseStartedId,
                 testResult,
@@ -100,10 +99,8 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 0,
-              },
+            messages.Envelope.fromObject({
+              testRunFinished: {},
             })
           )
         })
@@ -145,10 +142,8 @@ describe('Usage Helpers', () => {
         beforeEach(function() {
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 0,
-              },
+            messages.Envelope.fromObject({
+              testRunFinished: {},
             })
           )
         })
@@ -171,10 +166,10 @@ describe('Usage Helpers', () => {
           const testCaseId = uuidv4()
           const testStepId = uuidv4()
           const testCaseStartedId = uuidv4()
-          const testResult = { status: Status.UNDEFINED }
+          const testResult = messages.TestResult.fromObject({ duration: getZeroDuration(), status: Status.UNDEFINED })
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCase: {
                 pickleId: pickle.id,
                 id: testCaseId,
@@ -190,7 +185,7 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseStarted: {
                 testCaseId,
                 attempt: 0,
@@ -200,7 +195,7 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testStepFinished: {
                 testCaseStartedId,
                 testStepId,
@@ -210,7 +205,7 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseFinished: {
                 testCaseStartedId,
                 testResult,
@@ -219,10 +214,8 @@ describe('Usage Helpers', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 0,
-              },
+            messages.Envelope.fromObject({
+              testRunFinished: {},
             })
           )
         })

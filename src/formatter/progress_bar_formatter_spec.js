@@ -35,10 +35,10 @@ describe('ProgressBarFormatter', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             id: uuidv4(),
-            steps: [
+            testSteps: [
               {},
               { pickleStepId: uuidv4() },
               { pickleStepId: uuidv4() },
@@ -49,10 +49,10 @@ describe('ProgressBarFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             id: uuidv4(),
-            steps: [
+            testSteps: [
               { pickleStepId: uuidv4() },
               { pickleStepId: uuidv4() },
               { pickleStepId: uuidv4() },
@@ -62,7 +62,7 @@ describe('ProgressBarFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testStepStarted: {},
         })
       )
@@ -92,11 +92,11 @@ describe('ProgressBarFormatter', () => {
       this.testStepId2 = uuidv4()
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             id: testCaseId,
             pickleId: this.pickle.id,
-            steps: [
+            testSteps: [
               { id: this.testStepId1 },
               { id: this.testStepId2, pickleStepId: this.pickle.steps[0].id },
             ],
@@ -105,7 +105,7 @@ describe('ProgressBarFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseStarted: {
             testCaseId,
             attempt: 0,
@@ -119,7 +119,7 @@ describe('ProgressBarFormatter', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId1,
@@ -138,7 +138,7 @@ describe('ProgressBarFormatter', () => {
       beforeEach(function() {
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId2,
@@ -172,11 +172,11 @@ describe('ProgressBarFormatter', () => {
       this.testStepId = uuidv4()
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             id: this.testCaseId,
             pickleId: this.pickle.id,
-            steps: [
+            testSteps: [
               {
                 id: this.testStepId,
                 pickleStepId: this.pickle.steps[0].id,
@@ -188,7 +188,7 @@ describe('ProgressBarFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseStarted: {
             testCaseId: this.testCaseId,
             attempt: 0,
@@ -209,7 +209,7 @@ describe('ProgressBarFormatter', () => {
         }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -219,7 +219,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult,
@@ -240,7 +240,7 @@ describe('ProgressBarFormatter', () => {
         const testResult = { exception: 'error', status: Status.FAILED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -250,7 +250,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult,
@@ -271,7 +271,7 @@ describe('ProgressBarFormatter', () => {
         const testResult = { exception: 'error', status: Status.FAILED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -281,7 +281,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult: { ...testResult, willBeRetried: true },
@@ -302,7 +302,7 @@ describe('ProgressBarFormatter', () => {
           const retriedTestCaseStartedId = uuidv4()
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseStarted: {
                 testCaseId: this.testCaseId,
                 attempt: 1,
@@ -313,7 +313,7 @@ describe('ProgressBarFormatter', () => {
           const testResult = { status: Status.PASSED }
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testStepFinished: {
                 testCaseStartedId: retriedTestCaseStartedId,
                 testStepId: this.testStepId,
@@ -323,7 +323,7 @@ describe('ProgressBarFormatter', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseFinished: {
                 testCaseStartedId: retriedTestCaseStartedId,
                 testResult: testResult,
@@ -345,7 +345,7 @@ describe('ProgressBarFormatter', () => {
           const retriedTestCaseStartedId = uuidv4()
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseStarted: {
                 testCaseId: this.testCaseId,
                 attempt: 1,
@@ -356,7 +356,7 @@ describe('ProgressBarFormatter', () => {
           const testResult = { exception: 'error', status: Status.FAILED }
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testStepFinished: {
                 testCaseStartedId: retriedTestCaseStartedId,
                 testStepId: this.testStepId,
@@ -366,7 +366,7 @@ describe('ProgressBarFormatter', () => {
           )
           this.eventBroadcaster.emit(
             'envelope',
-            new messages.Envelope({
+            messages.Envelope.fromObject({
               testCaseFinished: {
                 testCaseStartedId: retriedTestCaseStartedId,
                 testResult: testResult,
@@ -388,7 +388,7 @@ describe('ProgressBarFormatter', () => {
         const testResult = { status: Status.PASSED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -398,7 +398,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult: testResult,
@@ -419,7 +419,7 @@ describe('ProgressBarFormatter', () => {
         const testResult = { status: Status.PENDING }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -429,7 +429,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult: testResult,
@@ -450,7 +450,7 @@ describe('ProgressBarFormatter', () => {
         const testResult = { status: Status.SKIPPED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -460,7 +460,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult: testResult,
@@ -481,7 +481,7 @@ describe('ProgressBarFormatter', () => {
         const testResult = { status: Status.UNDEFINED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testStepId: this.testStepId,
@@ -491,7 +491,7 @@ describe('ProgressBarFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: this.testCaseStartedId,
               testResult: testResult,
@@ -512,7 +512,7 @@ describe('ProgressBarFormatter', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testRunFinished: {
             duration: 0,
           },

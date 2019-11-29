@@ -12,16 +12,14 @@ const { Status } = messages.TestResult
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}
-  constructor({ eventBroadcaster, options, supportCodeLibrary, pickles }) {
+  constructor({ eventBroadcaster, eventDataCollector, options, pickleIds, supportCodeLibrary }) {
     this.eventBroadcaster = eventBroadcaster
+    this.eventDataCollector = eventDataCollector
     this.options = options || {}
+    this.pickleIds = pickleIds || []
     this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
-    this.pickles = pickles || []
-    this.result = {
-      duration: 0,
-      success: true,
-    }
+    this.success = true
   }
 
   async runTestRunHooks(key, name) {
@@ -44,12 +42,14 @@ export default class Runtime {
     })
   }
 
-  async runPickle(pickle) {
+  async runPickle(pickleId) {
+    const pickle = this.eventDataCollector.pickleMap[pickleId]
     const retries = retriesForPickle(pickle, this.options)
     const skip =
-      this.options.dryRun || (this.options.failFast && !this.result.success)
+      this.options.dryRun || (this.options.failFast && !this.success)
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      gherkinDocument: this.eventDataCollector.gherkinDocumentMap[pickle.uri],
       pickle,
       retries,
       skip,
@@ -57,11 +57,8 @@ export default class Runtime {
       worldParameters: this.options.worldParameters,
     })
     const testResult = await pickleRunner.run()
-    if (testResult.duration) {
-      this.result.duration += testResult.duration
-    }
     if (this.shouldCauseFailure(testResult.status)) {
-      this.result.success = false
+      this.success = false
     }
   }
 
@@ -71,10 +68,11 @@ export default class Runtime {
     }
     this.eventBroadcaster.emit(new messages.Envelope({ testRunStarted: {} }))
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
-    await Promise.each(this.pickles, ::this.runPickle)
+    await Promise.each(this.pickleIds, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
-    // TODO custom envelope need to update cucumber-messages
-    this.eventBroadcaster.emit('envelope', { testRunFinished: this.result })
+    this.eventBroadcaster.emit('envelope', new messages.Envelope({
+      testRunFinished: { success: this.success }
+    }))
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }

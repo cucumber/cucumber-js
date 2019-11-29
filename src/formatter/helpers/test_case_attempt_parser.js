@@ -104,7 +104,7 @@ export function parseTestCaseAttempt({
   }
   let isBeforeHook = true
   let previousKeywordType = KeywordType.PRECONDITION
-  _.each(testCase.steps, testStep => {
+  _.each(testCase.testSteps, testStep => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
     isBeforeHook = isBeforeHook && testStep.hookId
     let keyword, keywordType, pickleStep

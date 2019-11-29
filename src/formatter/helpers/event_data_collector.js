@@ -30,6 +30,12 @@ export default class EventDataCollector {
     }
   }
 
+  getTestRunDuration() {
+    return _.chain(this.testCaseAttemptMap)
+      .map(testCaseAttempt => testCaseAttempt.result.duration)
+      .sum()
+  }
+
   parseEnvelope(envelope) {
     if (envelope.gherkinDocument) {
       this.gherkinDocumentMap[envelope.gherkinDocument.uri] =

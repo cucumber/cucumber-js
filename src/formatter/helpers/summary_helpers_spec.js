@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
-import { MILLISECONDS_IN_NANOSECOND } from '../../time'
+import { NANOSECONDS_IN_MILLISECOND } from '../../time'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
 
@@ -12,11 +12,9 @@ describe('SummaryHelpers', () => {
   describe('formatSummary', () => {
     beforeEach(function() {
       this.testCaseAttempts = []
-      this.testRun = { duration: 0 }
       this.options = {
         colorFns: getColorFns(false),
         testCaseAttempts: this.testCaseAttempts,
-        testRun: this.testRun,
       }
     })
 
@@ -36,12 +34,12 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
+          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [testStepId]: { status: Status.PASSED },
           },
           testCase: {
-            steps: [{ id: testStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
           },
         })
         this.result = formatSummary(this.options)
@@ -59,13 +57,13 @@ describe('SummaryHelpers', () => {
         const hookTestStepId = uuidv4()
         const pickleTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
+          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [hookTestStepId]: { status: Status.PASSED },
             [pickleTestStepId]: { status: Status.PASSED },
           },
           testCase: {
-            steps: [
+            testSteps: [
               { id: hookTestStepId },
               { id: pickleTestStepId, pickleStepId: uuidv4() },
             ],
@@ -85,21 +83,21 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.FAILED, willBeRetried: true },
+          result: { status: Status.FAILED, willBeRetried: true, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [testStepId]: { status: Status.FAILED },
           },
           testCase: {
-            steps: [{ id: testStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
           },
         })
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
+          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
-            [testStepId]: { status: Status.PASSED },
+            [testStepId]: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           },
           testCase: {
-            steps: [{ id: testStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
           },
         })
         this.result = formatSummary(this.options)
@@ -117,13 +115,13 @@ describe('SummaryHelpers', () => {
         const testStepId1 = uuidv4()
         const testStepId2 = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
+          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [testStepId1]: { status: Status.PASSED },
             [testStepId2]: { status: Status.PASSED },
           },
           testCase: {
-            steps: [
+            testSteps: [
               { id: testStepId1, pickleStepId: uuidv4() },
               { id: testStepId2, pickleStepId: uuidv4() },
             ],
@@ -143,62 +141,62 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const ambiguousTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.AMBIGUOUS },
+          result: { status: Status.AMBIGUOUS, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [ambiguousTestStepId]: { status: Status.AMBIGUOUS },
           },
           testCase: {
-            steps: [{ id: ambiguousTestStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: ambiguousTestStepId, pickleStepId: uuidv4() }],
           },
         })
         const failedTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.FAILED },
+          result: { status: Status.FAILED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [failedTestStepId]: { status: Status.FAILED },
           },
           testCase: {
-            steps: [{ id: failedTestStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: failedTestStepId, pickleStepId: uuidv4() }],
           },
         })
         const pendingTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PENDING },
+          result: { status: Status.PENDING, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [pendingTestStepId]: { status: Status.PENDING },
           },
           testCase: {
-            steps: [{ id: pendingTestStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: pendingTestStepId, pickleStepId: uuidv4() }],
           },
         })
         const passedTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
+          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [passedTestStepId]: { status: Status.PASSED },
           },
           testCase: {
-            steps: [{ id: passedTestStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: passedTestStepId, pickleStepId: uuidv4() }],
           },
         })
         const skippedTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.SKIPPED },
+          result: { status: Status.SKIPPED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [skippedTestStepId]: { status: Status.SKIPPED },
           },
           testCase: {
-            steps: [{ id: skippedTestStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: skippedTestStepId, pickleStepId: uuidv4() }],
           },
         })
         const undefinedTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.UNDEFINED },
+          result: { status: Status.UNDEFINED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
             [undefinedTestStepId]: { status: Status.UNDEFINED },
           },
           testCase: {
-            steps: [{ id: undefinedTestStepId, pickleStepId: uuidv4() }],
+            testSteps: [{ id: undefinedTestStepId, pickleStepId: uuidv4() }],
           },
         })
         this.result = formatSummary(this.options)
@@ -215,39 +213,66 @@ describe('SummaryHelpers', () => {
 
     describe('with a duration of 123 milliseconds', () => {
       beforeEach(function() {
-        this.testRun.duration = 123 * MILLISECONDS_IN_NANOSECOND
+        const testStepId = uuidv4()
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 123 * NANOSECONDS_IN_MILLISECOND } },
+          stepResults: {
+            [testStepId]: { status: Status.PASSED },
+          },
+          testCase: {
+            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
       it('outputs the duration as 0m00.123s', function() {
         expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m00.123s\n'
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.123s\n'
         )
       })
     })
 
     describe('with a duration of 12.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.duration = 123 * 100 * MILLISECONDS_IN_NANOSECOND
+        const testStepId = uuidv4()
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED, duration: { seconds: 12, nanos: 300 * NANOSECONDS_IN_MILLISECOND } },
+          stepResults: {
+            [testStepId]: { status: Status.PASSED },
+          },
+          testCase: {
+            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
       it('outputs the duration as 0m12.300s', function() {
         expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m12.300s\n'
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m12.300s\n'
         )
       })
     })
 
     describe('with a duration of 120.3 seconds', () => {
       beforeEach(function() {
-        this.testRun.duration = 123 * 1000 * MILLISECONDS_IN_NANOSECOND
+        const testStepId = uuidv4()
+        this.testCaseAttempts.push({
+          result: { status: Status.PASSED, duration: { seconds: 123, nanos: 0 } },
+          stepResults: {
+            [testStepId]: { status: Status.PASSED },
+          },
+          testCase: {
+            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
+          },
+        })
         this.result = formatSummary(this.options)
       })
 
       it('outputs the duration as 2m03.000s', function() {
         expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '2m03.000s\n'
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '2m03.000s\n'
         )
       })
     })

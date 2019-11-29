@@ -1,5 +1,5 @@
 import { EventDataCollector } from '../formatter/helpers'
-import { getExpandedArgv, getPicklesFromFilesystem } from './helpers'
+import { getExpandedArgv, loadPicklesFromFilesystem } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
 import ConfigurationBuilder from './configuration_builder'
@@ -27,12 +27,12 @@ export default class Cli {
 
   async initializeFormatters({
     eventBroadcaster,
+    eventDataCollector,
     formatOptions,
     formats,
     supportCodeLibrary,
   }) {
     const streamsToClose = []
-    const eventDataCollector = new EventDataCollector(eventBroadcaster)
     await Promise.map(formats, async ({ type, outputTo }) => {
       let stream = this.stdout
       if (outputTo) {
@@ -89,13 +89,15 @@ export default class Cli {
     }
     const supportCodeLibrary = this.getSupportCodeLibrary(configuration)
     const eventBroadcaster = new EventEmitter()
+    const eventDataCollector = new EventDataCollector(eventBroadcaster)
     const cleanup = await this.initializeFormatters({
       eventBroadcaster,
+      eventDataCollector,
       formatOptions: configuration.formatOptions,
       formats: configuration.formats,
       supportCodeLibrary,
     })
-    const pickles = await getPicklesFromFilesystem({
+    const pickleIds = await loadPicklesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
@@ -108,8 +110,9 @@ export default class Cli {
       const parallelRuntimeMaster = new ParallelRuntimeMaster({
         cwd: this.cwd,
         eventBroadcaster,
+        eventDataCollector,
         options: configuration.runtimeOptions,
-        pickles,
+        pickleIds,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
@@ -122,8 +125,9 @@ export default class Cli {
     } else {
       const runtime = new Runtime({
         eventBroadcaster,
+        eventDataCollector,
         options: configuration.runtimeOptions,
-        pickles,
+        pickleIds,
         supportCodeLibrary,
       })
       success = await runtime.start()

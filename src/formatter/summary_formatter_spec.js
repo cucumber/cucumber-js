@@ -7,7 +7,6 @@ import figures from 'figures'
 import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
-import { MILLISECONDS_IN_NANOSECOND } from '../time'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
 
@@ -51,14 +50,14 @@ describe('SummaryFormatter', () => {
         const testCaseId = uuidv4()
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
-        const testResult = { exception: 'error', status: Status.FAILED }
+        const testResult = { message: 'error', status: Status.FAILED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -72,7 +71,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -82,7 +81,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -92,7 +91,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -101,10 +100,8 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            },
+          messages.Envelope.fromObject({
+            testRunFinished: {},
           })
         )
       })
@@ -130,7 +127,7 @@ describe('SummaryFormatter', () => {
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
         const testResult = {
-          exception:
+          message:
             'Multiple step definitions match:\n' +
             '  pattern1        - steps.js:3\n' +
             '  longer pattern2 - steps.js:4',
@@ -138,11 +135,11 @@ describe('SummaryFormatter', () => {
         }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -157,7 +154,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -167,7 +164,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -177,7 +174,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -186,10 +183,8 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            },
+          messages.Envelope.fromObject({
+            testRunFinished: {},
           })
         )
       })
@@ -219,11 +214,11 @@ describe('SummaryFormatter', () => {
         const testResult = { status: Status.UNDEFINED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -235,7 +230,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -245,7 +240,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -255,7 +250,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -264,10 +259,8 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            },
+          messages.Envelope.fromObject({
+            testRunFinished: {},
           })
         )
       })
@@ -298,11 +291,11 @@ describe('SummaryFormatter', () => {
         const testResult = { status: Status.PENDING }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -316,7 +309,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -326,7 +319,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -336,7 +329,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -345,10 +338,8 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            },
+          messages.Envelope.fromObject({
+            testRunFinished: {},
           })
         )
       })
@@ -374,15 +365,15 @@ describe('SummaryFormatter', () => {
         const testStepId = uuidv4()
         const testCaseStartedId1 = uuidv4()
         const testCaseStartedId2 = uuidv4()
-        const failingTestResult = { exception: 'error', status: Status.FAILED }
+        const failingTestResult = { message: 'error', status: Status.FAILED }
         const passingTestResult = { status: Status.PASSED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -396,7 +387,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -406,7 +397,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: testCaseStartedId1,
               testStepId,
@@ -416,7 +407,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: testCaseStartedId1,
               testResult: { ...failingTestResult, willBeRetried: true },
@@ -425,7 +416,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 1,
@@ -435,7 +426,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: testCaseStartedId2,
               testStepId,
@@ -445,7 +436,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: testCaseStartedId2,
               testResult: passingTestResult,
@@ -454,10 +445,8 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            },
+          messages.Envelope.fromObject({
+            testRunFinished: {},
           })
         )
       })
@@ -483,14 +472,14 @@ describe('SummaryFormatter', () => {
         const testStepId = uuidv4()
         const testCaseStartedId1 = uuidv4()
         const testCaseStartedId2 = uuidv4()
-        const failingTestResult = { exception: 'error', status: Status.FAILED }
+        const failingTestResult = { message: 'error', status: Status.FAILED }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -504,7 +493,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -514,7 +503,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: testCaseStartedId1,
               testStepId,
@@ -524,7 +513,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: testCaseStartedId1,
               testResult: { ...failingTestResult, willBeRetried: true },
@@ -533,7 +522,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 1,
@@ -543,7 +532,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: testCaseStartedId2,
               testStepId,
@@ -553,7 +542,7 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: testCaseStartedId2,
               testResult: failingTestResult,
@@ -562,10 +551,8 @@ describe('SummaryFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
-            testRunFinished: {
-              duration: 0,
-            },
+          messages.Envelope.fromObject({
+            testRunFinished: {},
           })
         )
       })
@@ -588,59 +575,6 @@ describe('SummaryFormatter', () => {
             '1 step (1 failed)\n' +
             '0m00.000s\n'
         )
-      })
-    })
-
-    describe('summary', () => {
-      describe('with a duration of 123 milliseconds', () => {
-        beforeEach(function() {
-          this.eventBroadcaster.emit(
-            'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 123 * MILLISECONDS_IN_NANOSECOND,
-              },
-            })
-          )
-        })
-
-        it('outputs scenario totals, step totals, and duration', function() {
-          expect(this.output).to.contain('0 scenarios\n0 steps\n0m00.123s\n')
-        })
-      })
-
-      describe('with a duration of 12.3 seconds', () => {
-        beforeEach(function() {
-          this.eventBroadcaster.emit(
-            'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 123 * 100 * MILLISECONDS_IN_NANOSECOND,
-              },
-            })
-          )
-        })
-
-        it('outputs scenario totals, step totals, and duration', function() {
-          expect(this.output).to.contain('0 scenarios\n0 steps\n0m12.300s\n')
-        })
-      })
-
-      describe('with a duration of 120.3 seconds', () => {
-        beforeEach(function() {
-          this.eventBroadcaster.emit(
-            'envelope',
-            new messages.Envelope({
-              testRunFinished: {
-                duration: 123 * 1000 * MILLISECONDS_IN_NANOSECOND,
-              },
-            })
-          )
-        })
-
-        it('outputs scenario totals, step totals, and duration', function() {
-          expect(this.output).to.contain('0 scenarios\n0 steps\n2m03.000s\n')
-        })
       })
     })
   })

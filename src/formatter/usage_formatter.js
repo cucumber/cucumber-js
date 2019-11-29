@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { formatLocation, getUsage } from './helpers'
 import Formatter from './'
 import Table from 'cli-table3'
-import { MILLISECONDS_IN_NANOSECOND } from '../time'
+import { MILLISECONDS_IN_NANOSECOND, durationToMilliseconds } from '../time'
 
 export default class UsageFormatter extends Formatter {
   constructor(options) {
@@ -40,9 +40,9 @@ export default class UsageFormatter extends Formatter {
         const col1 = [formattedPattern]
         const col2 = []
         if (matches.length > 0) {
-          if (isFinite(meanDuration)) {
+          if (meanDuration) {
             col2.push(
-              `${(meanDuration / MILLISECONDS_IN_NANOSECOND).toFixed(2)}ms`
+              `${(durationToMilliseconds(meanDuration)).toFixed(2)}ms`
             )
           } else {
             col2.push('-')
@@ -53,8 +53,8 @@ export default class UsageFormatter extends Formatter {
         const col3 = [formatLocation({ line, uri })]
         _.take(matches, 5).forEach(match => {
           col1.push(`  ${match.text}`)
-          if (isFinite(match.duration)) {
-            col2.push(`${match.duration / MILLISECONDS_IN_NANOSECOND}ms`)
+          if (match.duration) {
+            col2.push(`${durationToMilliseconds(match.duration)}ms`)
           } else {
             col2.push('-')
           }

@@ -32,7 +32,7 @@ describe('IssueHelpers', () => {
         uri: 'a.feature',
         line: 2,
       },
-      steps: [
+      testSteps: [
         {
           id: uuidv4(),
           pickleStepId: pickle.steps[0].id,
@@ -69,20 +69,20 @@ describe('IssueHelpers', () => {
   describe('formatIssue', () => {
     describe('returns the formatted scenario', () => {
       beforeEach(function() {
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id],
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
-          exception: 'error',
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
+          message: 'error',
           status: Status.FAILED,
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
@@ -100,23 +100,23 @@ describe('IssueHelpers', () => {
 
     describe('with an ambiguous step', () => {
       beforeEach(function() {
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id],
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
-          exception:
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
+          message:
             'Multiple step definitions match:\n' +
             '  pattern1        - steps.js:5\n' +
             '  longer pattern2 - steps.js:6',
           status: Status.FAILED,
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
@@ -136,19 +136,19 @@ describe('IssueHelpers', () => {
 
     describe('with an undefined step', () => {
       beforeEach(function() {
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [],
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
           status: Status.UNDEFINED,
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
@@ -169,19 +169,19 @@ describe('IssueHelpers', () => {
 
     describe('with a pending step', () => {
       beforeEach(function() {
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id],
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
           status: Status.PENDING,
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
@@ -213,21 +213,21 @@ describe('IssueHelpers', () => {
         })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle
-        this.testCase.steps[0].pickleStepId = pickle.steps[0].id
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[0].pickleStepId = pickle.steps[0].id
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id],
         }
-        this.testCase.steps[2].pickleStepId = pickle.steps[2].id
+        this.testCase.testSteps[2].pickleStepId = pickle.steps[2].id
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
           status: Status.PENDING,
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
@@ -265,21 +265,21 @@ describe('IssueHelpers', () => {
         })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle
-        this.testCase.steps[0].pickleStepId = pickle.steps[0].id
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[0].pickleStepId = pickle.steps[0].id
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id],
         }
-        this.testCase.steps[2].pickleStepId = pickle.steps[2].id
+        this.testCase.testSteps[2].pickleStepId = pickle.steps[2].id
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
           status: Status.PENDING,
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })
@@ -303,15 +303,15 @@ describe('IssueHelpers', () => {
 
     describe('step with attachment text', () => {
       beforeEach(function() {
-        this.testCase.steps[1] = {
+        this.testCase.testSteps[1] = {
           id: uuidv4(),
           pickleStepId: this.testCaseAttempt.pickle.steps[1].id,
           stepDefinitionId: [this.supportCodeLibrary.stepDefinitions[1].id],
         }
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[0].id
+          this.testCase.testSteps[0].id
         ] = this.passedStepResult
-        this.testCaseAttempt.stepAttachments[this.testCase.steps[0].id] = [
+        this.testCaseAttempt.stepAttachments[this.testCase.testSteps[0].id] = [
           {
             data: 'Some info.',
             media: {
@@ -331,11 +331,11 @@ describe('IssueHelpers', () => {
             },
           },
         ]
-        this.testCaseAttempt.stepResults[this.testCase.steps[1].id] = {
-          exception: 'error',
+        this.testCaseAttempt.stepResults[this.testCase.testSteps[1].id] = {
+          message: 'error',
           status: Status.FAILED,
         }
-        this.testCaseAttempt.stepAttachments[this.testCase.steps[1].id] = [
+        this.testCaseAttempt.stepAttachments[this.testCase.testSteps[1].id] = [
           {
             data: 'Other info.',
             media: {
@@ -344,7 +344,7 @@ describe('IssueHelpers', () => {
           },
         ]
         this.testCaseAttempt.stepResults[
-          this.testCase.steps[2].id
+          this.testCase.testSteps[2].id
         ] = this.skippedStepResult
         this.formattedIssue = formatIssue(this.options)
       })

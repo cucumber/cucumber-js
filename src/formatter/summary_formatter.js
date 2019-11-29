@@ -7,12 +7,12 @@ export default class SummaryFormatter extends Formatter {
     super(options)
     options.eventBroadcaster.on('envelope', envelope => {
       if (envelope.testRunFinished) {
-        this.logSummary(envelope.testRunFinished)
+        this.logSummary()
       }
     })
   }
 
-  logSummary(testRun) {
+  logSummary() {
     const failures = []
     const warnings = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
@@ -33,7 +33,6 @@ export default class SummaryFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts,
-        testRun,
       })
     )
   }

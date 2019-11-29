@@ -59,7 +59,7 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps).to.eql([])
+        expect(envelope.testCase.testSteps).to.eql([])
       })
 
       it('emits test case started', function() {
@@ -78,17 +78,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 0, nanos: 0 }),
           status: Status.PASSED,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 0,
-          status: Status.PASSED,
-        })
+        const envelope = this.onEnvelope.getCall(2).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -97,10 +95,10 @@ describe('PickleRunner', () => {
         this.pickleStep = {
           id: uuidv4(),
         }
-        this.stepResult = {
-          duration: 1,
+        this.stepResult = messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.PASSED,
-        }
+        })
         this.stepDefinition = {
           id: uuidv4(),
           matchesStepName: sinon.stub().returns(true),
@@ -126,12 +124,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(1)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([
           this.stepDefinition.id,
         ])
       })
@@ -148,7 +146,7 @@ describe('PickleRunner', () => {
       it('emits test step started', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -161,7 +159,7 @@ describe('PickleRunner', () => {
       it('emits test step finished', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -169,10 +167,10 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.PASSED,
-        })
+        }))
       })
 
       it('emits test case finished', function() {
@@ -183,17 +181,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.PASSED,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 1,
-          status: Status.PASSED,
-        })
+        const envelope = this.onEnvelope.getCall(4).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -203,11 +199,11 @@ describe('PickleRunner', () => {
           id: uuidv4(),
         }
         this.error = new Error('a')
-        this.stepResult = {
-          duration: 1,
+        this.stepResult = messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.FAILED,
-          exception: this.error,
-        }
+          message: this.error,
+        })
         this.stepDefinition = {
           id: uuidv4(),
           matchesStepName: sinon.stub().returns(true),
@@ -233,12 +229,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(1)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([
           this.stepDefinition.id,
         ])
       })
@@ -255,7 +251,7 @@ describe('PickleRunner', () => {
       it('emits test step started', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -268,7 +264,7 @@ describe('PickleRunner', () => {
       it('emits test step finished', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -276,11 +272,11 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.FAILED,
-          exception: this.error,
-        })
+          message: this.error,
+        }))
       })
 
       it('emits test case finished', function() {
@@ -291,19 +287,16 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.FAILED,
-          exception: this.error,
-        })
+          message: this.error,
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 1,
-          status: Status.FAILED,
-          exception: this.error,
-        })
+        const envelope = this.onEnvelope.getCall(4).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -317,15 +310,15 @@ describe('PickleRunner', () => {
           id: uuidv4(),
           matchesStepName: sinon.stub().returns(true),
         }
-        StepRunner.run.onFirstCall().resolves({
-          duration: 1,
+        StepRunner.run.onFirstCall().resolves(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.FAILED,
-          exception: this.error,
-        })
-        StepRunner.run.onSecondCall().resolves({
-          duration: 1,
+          message: this.error,
+        }))
+        StepRunner.run.onSecondCall().resolves(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.PASSED,
-        })
+        }))
         this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
         this.pickle.steps = [this.pickleStep]
         const pickleRunner = new PickleRunner({
@@ -347,12 +340,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(1)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([
           this.stepDefinition.id,
         ])
       })
@@ -369,7 +362,7 @@ describe('PickleRunner', () => {
       it('emits test step started (attempt 0)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -382,7 +375,7 @@ describe('PickleRunner', () => {
       it('emits test step finished (attempt 0)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -390,11 +383,11 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.FAILED,
-          exception: this.error,
-        })
+          message: this.error,
+        }))
       })
 
       it('emits test case finished (attempt 0)', function() {
@@ -405,12 +398,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.FAILED,
-          exception: this.error,
+          message: this.error,
           willBeRetried: true,
-        })
+        }))
       })
 
       it('emits test case started (attempt 1)', function() {
@@ -425,7 +418,7 @@ describe('PickleRunner', () => {
       it('emits test step started (attempt 1)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(5).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(6).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -438,7 +431,7 @@ describe('PickleRunner', () => {
       it('emits test step finished (attempt 1)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(5).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(7).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -446,10 +439,10 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.PASSED,
-        })
+        }))
       })
 
       it('emits test case finished (attempt 1)', function() {
@@ -460,17 +453,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 1,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 1, nanos: 0 }),
           status: Status.PASSED,
-        })
+        }))
       })
 
       it('returns the second test case attempt result', function() {
-        expect(this.result).to.eql({
-          duration: 1,
-          status: Status.PASSED,
-        })
+        const envelope = this.onEnvelope.getCall(8).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
 
       it('constructs the World twice', function() {
@@ -520,12 +511,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(1)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([
           this.stepDefinition1.id,
           this.stepDefinition2.id,
         ])
@@ -543,7 +534,7 @@ describe('PickleRunner', () => {
       it('emits test step started', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -556,7 +547,7 @@ describe('PickleRunner', () => {
       it('emits test step finished', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -564,14 +555,13 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
-          exception:
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
+          message:
             'Multiple step definitions match:\n' +
             '  pattern1 - path/to/steps:3\n' +
             '  pattern2 - path/to/steps:4',
           status: Status.AMBIGUOUS,
-        })
+        }))
       })
 
       it('emits test case finished', function() {
@@ -582,25 +572,19 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 0,
-          exception:
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 0, nanos: 0 }),
+          message:
             'Multiple step definitions match:\n' +
             '  pattern1 - path/to/steps:3\n' +
             '  pattern2 - path/to/steps:4',
           status: Status.AMBIGUOUS,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 0,
-          exception:
-            'Multiple step definitions match:\n' +
-            '  pattern1 - path/to/steps:3\n' +
-            '  pattern2 - path/to/steps:4',
-          status: Status.AMBIGUOUS,
-        })
+        const envelope = this.onEnvelope.getCall(4).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -628,12 +612,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(1)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([])
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([])
       })
 
       it('emits test case started', function() {
@@ -648,7 +632,7 @@ describe('PickleRunner', () => {
       it('emits test step started', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -661,7 +645,7 @@ describe('PickleRunner', () => {
       it('emits test step finished', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -669,10 +653,9 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
           status: Status.UNDEFINED,
-        })
+        }))
       })
 
       it('emits test case finished', function() {
@@ -683,17 +666,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 0, nanos: 0 }),
           status: Status.UNDEFINED,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 0,
-          status: Status.UNDEFINED,
-        })
+        const envelope = this.onEnvelope.getCall(4).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -724,12 +705,12 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(1)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(1)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([
           this.stepDefinition.id,
         ])
       })
@@ -746,7 +727,7 @@ describe('PickleRunner', () => {
       it('emits test step started', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -759,7 +740,7 @@ describe('PickleRunner', () => {
       it('emits test step finished', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -767,10 +748,9 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
           status: Status.SKIPPED,
-        })
+        }))
       })
 
       it('emits test case finished', function() {
@@ -781,17 +761,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 0, nanos: 0 }),
           status: Status.SKIPPED,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 0,
-          status: Status.SKIPPED,
-        })
+        const envelope = this.onEnvelope.getCall(4).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -833,16 +811,16 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(2)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].hookId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(2)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].hookId).to.eql(
           this.testCaseHookDefinition.id
         )
-        expect(envelope.testCase.steps[1].id).to.exist()
-        expect(envelope.testCase.steps[1].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps[1].id).to.exist()
+        expect(envelope.testCase.testSteps[1].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[1].stepDefinitionId).to.eql([
+        expect(envelope.testCase.testSteps[1].stepDefinitionId).to.eql([
           this.stepDefinition.id,
         ])
       })
@@ -856,10 +834,10 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseStarted.testCaseId).to.eql(testCaseId)
       })
 
-      it('emits test step started', function() {
+      it('emits test step started (before hook)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -869,10 +847,10 @@ describe('PickleRunner', () => {
         )
       })
 
-      it('emits test step finished', function() {
+      it('emits test step finished (before hook)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -880,16 +858,15 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
           status: Status.SKIPPED,
-        })
+        }))
       })
 
-      it('emits test step started', function() {
+      it('emits test step started (step)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[1]
           .id
         const envelope = this.onEnvelope.getCall(4).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -899,10 +876,10 @@ describe('PickleRunner', () => {
         )
       })
 
-      it('emits test step finished', function() {
+      it('emits test step finished (step)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[1]
           .id
         const envelope = this.onEnvelope.getCall(5).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -910,10 +887,9 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
           status: Status.SKIPPED,
-        })
+        }))
       })
 
       it('emits test case finished', function() {
@@ -924,17 +900,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 0, nanos: 0 }),
           status: Status.SKIPPED,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 0,
-          status: Status.SKIPPED,
-        })
+        const envelope = this.onEnvelope.getCall(6).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
 
@@ -953,8 +927,7 @@ describe('PickleRunner', () => {
         ]
         this.pickleStep = { id: uuidv4() }
         this.stepDefinition = {
-          uri: 'path/to/steps',
-          line: 3,
+          id: uuidv4(),
           matchesStepName: sinon.stub().returns(true),
         }
         this.supportCodeLibrary.stepDefinitions = [this.stepDefinition]
@@ -977,24 +950,24 @@ describe('PickleRunner', () => {
         expect(envelope.testCase).to.exist()
         expect(envelope.testCase.id).to.exist()
         expect(envelope.testCase.pickleId).to.eql(this.pickle.id)
-        expect(envelope.testCase.steps.length).to.eql(2)
-        expect(envelope.testCase.steps[0].id).to.exist()
-        expect(envelope.testCase.steps[0].pickleStepId).to.eql(
+        expect(envelope.testCase.testSteps.length).to.eql(2)
+        expect(envelope.testCase.testSteps[0].id).to.exist()
+        expect(envelope.testCase.testSteps[0].pickleStepId).to.eql(
           this.pickleStep.id
         )
-        expect(envelope.testCase.steps[0].stepDefinitionId).to.eql([
-          this.stepDefinition.id,
+        expect(envelope.testCase.testSteps[0].stepDefinitionId).to.eql([
+          this.stepDefinition.id
         ])
-        expect(envelope.testCase.steps[1].id).to.exist()
-        expect(envelope.testCase.steps[1].hookId).to.eql(
+        expect(envelope.testCase.testSteps[1].id).to.exist()
+        expect(envelope.testCase.testSteps[1].hookId).to.eql(
           this.testCaseHookDefinition.id
         )
       })
 
-      it('emits test step started', function() {
+      it('emits test step started (step)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -1004,10 +977,10 @@ describe('PickleRunner', () => {
         )
       })
 
-      it('emits test step finished', function() {
+      it('emits test step finished (step)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[0]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[0]
           .id
         const envelope = this.onEnvelope.getCall(3).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -1015,16 +988,15 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
           status: Status.SKIPPED,
-        })
+        }))
       })
 
-      it('emits test step started', function() {
+      it('emits test step started (after hook)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[1]
           .id
         const envelope = this.onEnvelope.getCall(4).args[0]
         expect(envelope.testStepStarted).to.exist()
@@ -1034,10 +1006,10 @@ describe('PickleRunner', () => {
         )
       })
 
-      it('emits test step finished', function() {
+      it('emits test step finished (after hook)', function() {
         const testCaseStartedId = this.onEnvelope.getCall(1).args[0]
           .testCaseStarted.id
-        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.steps[1]
+        const testStepId = this.onEnvelope.getCall(0).args[0].testCase.testSteps[1]
           .id
         const envelope = this.onEnvelope.getCall(5).args[0]
         expect(envelope.testStepFinished).to.exist()
@@ -1045,10 +1017,9 @@ describe('PickleRunner', () => {
         expect(envelope.testStepFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testStepFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testStepFinished.testResult).to.eql(messages.TestResult.fromObject({
           status: Status.SKIPPED,
-        })
+        }))
       })
 
       it('emits test case finished', function() {
@@ -1059,17 +1030,15 @@ describe('PickleRunner', () => {
         expect(envelope.testCaseFinished.testCaseStartedId).to.eql(
           testCaseStartedId
         )
-        expect(envelope.testCaseFinished.testResult).to.eql({
-          duration: 0,
+        expect(envelope.testCaseFinished.testResult).to.eql(messages.TestResult.fromObject({
+          duration: new messages.Duration({ seconds: 0, nanos: 0 }),
           status: Status.SKIPPED,
-        })
+        }))
       })
 
       it('returns the test case result', function() {
-        expect(this.result).to.eql({
-          duration: 0,
-          status: Status.SKIPPED,
-        })
+        const envelope = this.onEnvelope.getCall(6).args[0]
+        expect(this.result).to.eql(envelope.testCaseFinished.testResult)
       })
     })
   })
