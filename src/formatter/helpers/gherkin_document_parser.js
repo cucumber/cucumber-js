@@ -18,3 +18,20 @@ export function getGherkinScenarioMap(gherkinDocument) {
     .fromPairs()
     .value()
 }
+
+export function getGherkinScenarioLocationMap(gherkinDocument) {
+  const map = {}
+  for (const child of gherkinDocument.feature.children) {
+    if (child.scenario) {
+      map[child.scenario.id] = child.scenario.location
+      if (child.scenario.examples) {
+        for (const examples of child.scenario.examples) {
+          for (const tableRow of examples.tableBody) {
+            map[tableRow.id] = tableRow.location
+          }
+        }
+      }
+    }
+  }
+  return map
+}

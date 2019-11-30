@@ -25,6 +25,7 @@ export function isIssue(result) {
 
 export function formatIssue({
   colorFns,
+  cwd,
   number,
   snippetBuilder,
   testCaseAttempt,
@@ -33,6 +34,7 @@ export function formatIssue({
   const prefix = `${number}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
+    cwd,
     snippetBuilder,
     testCaseAttempt,
     supportCodeLibrary,

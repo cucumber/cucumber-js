@@ -2,10 +2,11 @@ import _ from 'lodash'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import {
   getGherkinStepMap,
-  getGherkinScenarioMap,
+  getGherkinScenarioLocationMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 import { messages } from 'cucumber-messages'
+import path from 'path'
 
 const { Status } = messages.TestResult
 
@@ -82,22 +83,26 @@ function parseStep({
 //   ]
 // }
 export function parseTestCaseAttempt({
+  cwd,
   testCaseAttempt,
   snippetBuilder,
   supportCodeLibrary,
 }) {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-  const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
+  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
+    gherkinDocument
+  )
   const pickleStepMap = getPickleStepMap(pickle)
+  const relativePickleUri = path.relative(cwd, pickle.uri)
   const out = {
     testCase: {
       attempt: testCaseAttempt.attempt,
       name: pickle.name,
       result: testCaseAttempt.result,
       sourceLocation: {
-        uri: pickle.uri,
-        line: gherkinScenarioMap[pickle.sourceIds[0]].location.line,
+        uri: relativePickleUri,
+        line: gherkinScenarioLocationMap[_.last(pickle.sourceIds)].line,
       },
     },
     testSteps: [],
@@ -123,7 +128,7 @@ export function parseTestCaseAttempt({
       keyword,
       keywordType,
       pickleStep,
-      pickleUri: pickle.uri,
+      pickleUri: relativePickleUri,
       snippetBuilder,
       supportCodeLibrary,
       testStep,

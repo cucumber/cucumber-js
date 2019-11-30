@@ -83,7 +83,11 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.FAILED, willBeRetried: true, duration: { seconds: 0, nanos: 0 } },
+          result: {
+            status: Status.FAILED,
+            willBeRetried: true,
+            duration: { seconds: 0, nanos: 0 },
+          },
           stepResults: {
             [testStepId]: { status: Status.FAILED },
           },
@@ -94,7 +98,10 @@ describe('SummaryHelpers', () => {
         this.testCaseAttempts.push({
           result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
           stepResults: {
-            [testStepId]: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
+            [testStepId]: {
+              status: Status.PASSED,
+              duration: { seconds: 0, nanos: 0 },
+            },
           },
           testCase: {
             testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
@@ -141,7 +148,10 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const ambiguousTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.AMBIGUOUS, duration: { seconds: 0, nanos: 0 } },
+          result: {
+            status: Status.AMBIGUOUS,
+            duration: { seconds: 0, nanos: 0 },
+          },
           stepResults: {
             [ambiguousTestStepId]: { status: Status.AMBIGUOUS },
           },
@@ -161,7 +171,10 @@ describe('SummaryHelpers', () => {
         })
         const pendingTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PENDING, duration: { seconds: 0, nanos: 0 } },
+          result: {
+            status: Status.PENDING,
+            duration: { seconds: 0, nanos: 0 },
+          },
           stepResults: {
             [pendingTestStepId]: { status: Status.PENDING },
           },
@@ -181,7 +194,10 @@ describe('SummaryHelpers', () => {
         })
         const skippedTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.SKIPPED, duration: { seconds: 0, nanos: 0 } },
+          result: {
+            status: Status.SKIPPED,
+            duration: { seconds: 0, nanos: 0 },
+          },
           stepResults: {
             [skippedTestStepId]: { status: Status.SKIPPED },
           },
@@ -191,7 +207,10 @@ describe('SummaryHelpers', () => {
         })
         const undefinedTestStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.UNDEFINED, duration: { seconds: 0, nanos: 0 } },
+          result: {
+            status: Status.UNDEFINED,
+            duration: { seconds: 0, nanos: 0 },
+          },
           stepResults: {
             [undefinedTestStepId]: { status: Status.UNDEFINED },
           },
@@ -215,7 +234,10 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 123 * NANOSECONDS_IN_MILLISECOND } },
+          result: {
+            status: Status.PASSED,
+            duration: { seconds: 0, nanos: 123 * NANOSECONDS_IN_MILLISECOND },
+          },
           stepResults: {
             [testStepId]: { status: Status.PASSED },
           },
@@ -237,7 +259,10 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 12, nanos: 300 * NANOSECONDS_IN_MILLISECOND } },
+          result: {
+            status: Status.PASSED,
+            duration: { seconds: 12, nanos: 300 * NANOSECONDS_IN_MILLISECOND },
+          },
           stepResults: {
             [testStepId]: { status: Status.PASSED },
           },
@@ -259,7 +284,10 @@ describe('SummaryHelpers', () => {
       beforeEach(function() {
         const testStepId = uuidv4()
         this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 123, nanos: 0 } },
+          result: {
+            status: Status.PASSED,
+            duration: { seconds: 123, nanos: 0 },
+          },
           stepResults: {
             [testStepId]: { status: Status.PASSED },
           },

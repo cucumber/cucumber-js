@@ -9,7 +9,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from 'cucumber-expressions'
-import { NANOSECONDS_IN_MILLISECOND, getZeroDuration, millisecondsToDuration } from '../time'
+import { millisecondsToDuration } from '../time'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
 
@@ -87,7 +87,9 @@ describe('UsageFormatter', () => {
 
       describe('used', () => {
         beforeEach(async function() {
-          const { pickle } = await generateEvents({
+          const {
+            pickles: [pickle],
+          } = await generateEvents({
             data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
             eventBroadcaster: this.eventBroadcaster,
             uri: 'a.feature',
@@ -135,7 +137,7 @@ describe('UsageFormatter', () => {
                 testStepFinished: {
                   testCaseStartedId: this.testCaseStartedId,
                   testStepId: this.testCase.testSteps[0].id,
-                  testResult: { },
+                  testResult: {},
                 },
               })
             )
@@ -145,7 +147,7 @@ describe('UsageFormatter', () => {
                 testStepFinished: {
                   testCaseStartedId: this.testCaseStartedId,
                   testStepId: this.testCase.testSteps[1].id,
-                  testResult: { },
+                  testResult: {},
                 },
               })
             )
@@ -249,7 +251,9 @@ describe('UsageFormatter', () => {
             uri: 'steps.js',
           },
         ]
-        const { pickle } = await generateEvents({
+        const {
+          pickles: [pickle],
+        } = await generateEvents({
           data: 'Feature: a\nScenario: b\nGiven abc\nWhen def',
           eventBroadcaster: this.eventBroadcaster,
           uri: 'a.feature',

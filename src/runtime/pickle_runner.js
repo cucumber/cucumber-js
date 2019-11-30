@@ -19,13 +19,13 @@ export default class PickleRunner {
     worldParameters,
   }) {
     this.attachmentManager = new AttachmentManager(({ data, media }) => {
-      if (!this.isTestStepRunning) {
+      if (!this.currentTestStepId) {
         throw new Error(
           'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
       }
       // TODO custom envelope need to update cucumber-messages
-      this.eventBroadcaster('envelope', {
+      this.eventBroadcaster.emit('envelope', {
         testStepAttachment: {
           data,
           media,
@@ -107,7 +107,10 @@ export default class PickleRunner {
         }
       }),
     }
-    this.eventBroadcaster.emit('envelope', messages.Envelope.fromObject({ testCase }))
+    this.eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({ testCase })
+    )
   }
 
   getAfterHookDefinitions() {
@@ -170,8 +173,13 @@ export default class PickleRunner {
         },
       })
     )
+    this.currentTestStepId = testStepId
     const testStepResult = await runStepFn()
-    this.result.duration = addDurations(this.result.duration, testStepResult.duration)
+    this.currentTestStepId = null
+    this.result.duration = addDurations(
+      this.result.duration,
+      testStepResult.duration
+    )
     if (this.shouldUpdateStatus(testStepResult)) {
       this.result.status = testStepResult.status
     }

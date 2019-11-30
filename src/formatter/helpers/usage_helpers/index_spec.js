@@ -43,7 +43,9 @@ describe('Usage Helpers', () => {
 
       describe('with some steps', () => {
         beforeEach(async function() {
-          const { pickle } = await generateEvents({
+          const {
+            pickles: [pickle],
+          } = await generateEvents({
             data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
             eventBroadcaster: this.eventBroadcaster,
             uri: 'a.feature',
@@ -51,7 +53,10 @@ describe('Usage Helpers', () => {
           const testCaseId = uuidv4()
           const testStepId = uuidv4()
           const testCaseStartedId = uuidv4()
-          const testResult = messages.TestResult.fromObject({ duration: getZeroDuration(), status: Status.UNDEFINED })
+          const testResult = messages.TestResult.fromObject({
+            duration: getZeroDuration(),
+            status: Status.UNDEFINED,
+          })
           this.eventBroadcaster.emit(
             'envelope',
             messages.Envelope.fromObject({
@@ -158,7 +163,9 @@ describe('Usage Helpers', () => {
 
       describe('with some steps', () => {
         beforeEach(async function() {
-          const { pickle } = await generateEvents({
+          const {
+            pickles: [pickle],
+          } = await generateEvents({
             data: 'Feature: a\nScenario: b\nWhen abc\nThen ab',
             eventBroadcaster: this.eventBroadcaster,
             uri: 'a.feature',
@@ -166,7 +173,10 @@ describe('Usage Helpers', () => {
           const testCaseId = uuidv4()
           const testStepId = uuidv4()
           const testCaseStartedId = uuidv4()
-          const testResult = messages.TestResult.fromObject({ duration: getZeroDuration(), status: Status.UNDEFINED })
+          const testResult = messages.TestResult.fromObject({
+            duration: getZeroDuration(),
+            status: Status.UNDEFINED,
+          })
           this.eventBroadcaster.emit(
             'envelope',
             messages.Envelope.fromObject({

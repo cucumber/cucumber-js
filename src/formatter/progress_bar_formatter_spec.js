@@ -80,7 +80,9 @@ describe('ProgressBarFormatter', () => {
         tick: sinon.stub(),
       }
 
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven a step',
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',
@@ -161,7 +163,9 @@ describe('ProgressBarFormatter', () => {
         tick: sinon.stub(),
       }
 
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven a step',
         eventBroadcaster: this.eventBroadcaster,
         uri: 'a.feature',

@@ -17,7 +17,7 @@ export function parse({ data, uri }) {
   return new Promise((resolve, reject) => {
     let source
     let gherkinDocument
-    let pickle
+    const pickles = []
     const envelopes = []
     const messageStream = gherkinFromSources(sources)
     messageStream.on('data', envelope => {
@@ -29,10 +29,10 @@ export function parse({ data, uri }) {
         gherkinDocument = envelope.gherkinDocument
       }
       if (envelope.pickle) {
-        pickle = envelope.pickle
+        pickles.push(envelope.pickle)
         envelopes.push(
           messages.Envelope.fromObject({
-            pickleAccepted: { pickleId: pickle.id },
+            pickleAccepted: { pickleId: envelope.pickle.id },
           })
         )
       }
@@ -47,7 +47,7 @@ export function parse({ data, uri }) {
         envelopes,
         source,
         gherkinDocument,
-        pickle,
+        pickles,
       })
     })
     messageStream.on('error', reject)
@@ -55,10 +55,10 @@ export function parse({ data, uri }) {
 }
 
 export async function generateEvents({ data, eventBroadcaster, uri }) {
-  const { envelopes, source, gherkinDocument, pickle } = await parse({
+  const { envelopes, source, gherkinDocument, pickles } = await parse({
     data,
     uri,
   })
   envelopes.forEach(envelope => eventBroadcaster.emit('envelope', envelope))
-  return { source, gherkinDocument, pickle }
+  return { source, gherkinDocument, pickles }
 }

@@ -54,7 +54,9 @@ describe('UsageJsonFormatter', () => {
         log: logFn,
         supportCodeLibrary,
       })
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven abc\nWhen def',
         eventBroadcaster,
         uri: 'a.feature',
@@ -100,7 +102,7 @@ describe('UsageJsonFormatter', () => {
           testStepFinished: {
             testCaseStartedId,
             testStepId: testStepId1,
-            testResult: { duration: millisecondsToDuration(1) }
+            testResult: { duration: millisecondsToDuration(1) },
           },
         })
       )

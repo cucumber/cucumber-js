@@ -1,6 +1,10 @@
 import _ from 'lodash'
 import Duration from 'duration'
-import { addDurations, durationToMilliseconds, getZeroDuration } from '../../time'
+import {
+  addDurations,
+  durationToMilliseconds,
+  getZeroDuration,
+} from '../../time'
 import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult

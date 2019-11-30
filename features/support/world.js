@@ -8,15 +8,17 @@ import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
+import protobuf from 'protobufjs'
+import { messages } from 'cucumber-messages'
 
 class World {
   async run(executablePath, inputArgs) {
-    const eventProtocolOutputFilename = 'event-protocol.out'
+    const protobufFilename = 'protobuf.out'
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
         '--format',
-        `event-protocol:${eventProtocolOutputFilename}`,
+        `protobuf:${protobufFilename}`,
       ])
       .map(arg => {
         if (_.includes(arg, '/')) {
@@ -56,13 +58,18 @@ class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    let events = []
-    const eventProtocolOutputPath = path.join(cwd, eventProtocolOutputFilename)
-    if (fs.existsSync(eventProtocolOutputPath)) {
-      const fileContent = fs.readFileSync(eventProtocolOutputPath, 'utf8')
-      if (fileContent) {
-        events = _.compact(fileContent.split('\n')).map(x => JSON.parse(x))
+    const envelopes = []
+    const protobufOutputPath = path.join(cwd, protobufFilename)
+    if (fs.existsSync(protobufOutputPath)) {
+      const data = fs.readFileSync(protobufOutputPath)
+      const reader = protobuf.Reader.create(data)
+      while (reader.pos < reader.len) {
+        envelopes.push(messages.Envelope.decodeDelimited(reader))
       }
+      fs.writeFileSync(
+        path.join(cwd, 'protobuf.out.json'),
+        JSON.stringify(envelopes, null, 2)
+      )
     }
     if (this.debug) {
       console.log(result.stdout + result.stderr) // eslint-disable-line no-console
@@ -70,9 +77,10 @@ class World {
     this.lastRun = {
       error: result.error,
       errorOutput: result.stderr,
-      events,
+      envelopes,
       output: colors.strip(result.stdout),
     }
+    // console.log(util.inspect(envelopes, {depth: 10}))
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')
   }

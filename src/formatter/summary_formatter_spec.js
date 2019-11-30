@@ -26,6 +26,7 @@ describe('SummaryFormatter', () => {
       ],
     }
     this.summaryFormatter = new SummaryFormatter({
+      cwd: '/project',
       colorFns: getColorFns(false),
       eventBroadcaster: this.eventBroadcaster,
       eventDataCollector: new EventDataCollector(this.eventBroadcaster),
@@ -37,10 +38,12 @@ describe('SummaryFormatter', () => {
 
   describe('issues', () => {
     beforeEach(async function() {
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data: 'Feature: a\nScenario: b\nGiven a step',
         eventBroadcaster: this.eventBroadcaster,
-        uri: 'a.feature',
+        uri: '/project/a.feature',
       })
       this.pickle = pickle
     })

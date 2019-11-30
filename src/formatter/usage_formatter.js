@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { formatLocation, getUsage } from './helpers'
 import Formatter from './'
 import Table from 'cli-table3'
-import { MILLISECONDS_IN_NANOSECOND, durationToMilliseconds } from '../time'
+import { durationToMilliseconds } from '../time'
 
 export default class UsageFormatter extends Formatter {
   constructor(options) {
@@ -41,9 +41,7 @@ export default class UsageFormatter extends Formatter {
         const col2 = []
         if (matches.length > 0) {
           if (meanDuration) {
-            col2.push(
-              `${(durationToMilliseconds(meanDuration)).toFixed(2)}ms`
-            )
+            col2.push(`${durationToMilliseconds(meanDuration).toFixed(2)}ms`)
           } else {
             col2.push('-')
           }

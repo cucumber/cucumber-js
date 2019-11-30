@@ -1,7 +1,7 @@
 /* eslint-disable babel/new-cap */
 
 import _ from 'lodash'
-import { Then } from '../../'
+import { Then } from '../../lib'
 import { expect } from 'chai'
 import DataTable from '../../src/models/data_table'
 import {
@@ -11,39 +11,42 @@ import {
   getTestStepAttachmentEvents,
   getTestStepAttachmentEventsForHook,
   getTestStepResults,
-} from '../support/event_protocol_helpers'
+} from '../support/protobuf_helpers'
+import { messages } from 'cucumber-messages'
+
+const { Status } = messages.TestResult
 
 Then('it runs {int} scenarios', function(expectedCount) {
-  const testCaseStartedEvents = _.filter(this.lastRun.events, [
-    'type',
-    'test-case-started',
-  ])
+  const testCaseStartedEvents = _.filter(
+    this.lastRun.envelopes,
+    e => e.testCaseStarted
+  )
   expect(testCaseStartedEvents).to.have.lengthOf(expectedCount)
 })
 
 Then('it runs the scenario {string}', function(name) {
-  const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.events)
+  const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name])
 })
 
 Then('it runs the scenarios {string} and {string}', function(name1, name2) {
-  const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.events)
+  const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name1, name2])
 })
 
 Then('it runs the scenarios:', function(table) {
   const expectedNames = table.rows().map(row => row[0])
-  const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.events)
+  const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(expectedNames).to.eql(actualNames)
 })
 
 Then('scenario {string} has status {string}', function(name, status) {
-  const result = getTestCaseResult(this.lastRun.events, name)
-  expect(result.status).to.eql(status)
+  const result = getTestCaseResult(this.lastRun.envelopes, name)
+  expect(result.status).to.eql(Status[status.toUpperCase()])
 })
 
 Then('the scenario {string} has the steps:', function(name, table) {
-  const actualTexts = getTestStepResults(this.lastRun.events, name).map(
+  const actualTexts = getTestStepResults(this.lastRun.envelopes, name).map(
     s => s.text
   )
   const expectedTexts = table.rows().map(row => row[0])
@@ -55,9 +58,9 @@ Then('scenario {string} step {string} has status {string}', function(
   stepText,
   status
 ) {
-  const testStepResults = getTestStepResults(this.lastRun.events, pickleName)
+  const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', stepText])
-  expect(testStepResult.result.status).to.eql(status)
+  expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
 })
 
 Then('scenario {string} {string} hook has status {string}', function(
@@ -65,9 +68,9 @@ Then('scenario {string} {string} hook has status {string}', function(
   hookKeyword,
   status
 ) {
-  const testStepResults = getTestStepResults(this.lastRun.events, pickleName)
+  const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', hookKeyword])
-  expect(testStepResult.result.status).to.eql(status)
+  expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
 })
 
 Then('scenario {string} step {string} failed with:', function(
@@ -75,10 +78,10 @@ Then('scenario {string} step {string} failed with:', function(
   stepText,
   errorMessage
 ) {
-  const testStepResults = getTestStepResults(this.lastRun.events, pickleName)
+  const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', stepText])
-  expect(testStepResult.result.status).to.eql('failed')
-  expect(testStepResult.result.exception).to.include(errorMessage)
+  expect(testStepResult.result.status).to.eql(Status.FAILED)
+  expect(testStepResult.result.message).to.include(errorMessage)
 })
 
 Then('scenario {string} step {string} has the doc string:', function(

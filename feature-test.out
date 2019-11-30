@@ -1,0 +1,1404 @@
+yarn run v1.19.1
+$ yarn run build-local
+$ babel src -d lib --ignore '**/*_spec.js'
+Successfully compiled 88 files with Babel.
+$ node ./bin/cucumber-js
+............F......F......F......F......F......F.......F.............................................................................................................................................................................................................................................................................F.......F.................................................................................................................................................................................................................................................................................................................................................................................................................................................................FF.......F-.....................................................................................................................................................................................................................................................................................F-..........................F-........F.....................................................F-.....F---.......F-.......F-.........F--F............F-............F--F....F---F...................F-......F-..............................................................F................................................................................................................................................................................................F-....F-....F-....F-..........................................................................................................
+
+Failures:
+
+1) Scenario: Attach a buffer # features/attachments.feature:17
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Before} from 'cucumber'
+
+       Before(function() {
+         this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then scenario "some scenario" "Before" hook has the attachments: # features/step_definitions/protobuf_steps.js:121
+       | DATA     | MEDIA TYPE |
+       | iVBORw== | image/png  |
+       ReferenceError: getPickleAcceptedEvent is not defined
+           at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:104:23)
+           at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:129:32)
+   ✔ After # features/support/hooks.js:90
+
+2) Scenario: Attach a stream (callback) # features/attachments.feature:31
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Before} from 'cucumber'
+       import stream from 'stream'
+
+       Before(function(testCase, callback) {
+         var passThroughStream = new stream.PassThrough()
+         this.attach(passThroughStream, 'image/png', callback)
+         passThroughStream.write(Buffer.from([137, 80]))
+         passThroughStream.write(Buffer.from([78, 71]))
+         passThroughStream.end()
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then scenario "some scenario" "Before" hook has the attachments: # features/step_definitions/protobuf_steps.js:121
+       | DATA     | MEDIA TYPE |
+       | iVBORw== | image/png  |
+       ReferenceError: getPickleAcceptedEvent is not defined
+           at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:104:23)
+           at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:129:32)
+   ✔ After # features/support/hooks.js:90
+
+3) Scenario: Attach a stream (promise) # features/attachments.feature:50
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Before} from 'cucumber'
+       import stream from 'stream'
+
+       Before(function() {
+         var passThroughStream = new stream.PassThrough()
+         var promise = this.attach(passThroughStream, 'image/png')
+         passThroughStream.write(Buffer.from([137, 80]))
+         passThroughStream.write(Buffer.from([78, 71]))
+         passThroughStream.end()
+         return promise
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then scenario "some scenario" "Before" hook has the attachments: # features/step_definitions/protobuf_steps.js:121
+       | DATA     | MEDIA TYPE |
+       | iVBORw== | image/png  |
+       ReferenceError: getPickleAcceptedEvent is not defined
+           at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:104:23)
+           at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:129:32)
+   ✔ After # features/support/hooks.js:90
+
+4) Scenario: Attach from a before hook # features/attachments.feature:70
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Before} from 'cucumber'
+
+       Before(function() {
+         this.attach("text")
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then scenario "some scenario" "Before" hook has the attachments: # features/step_definitions/protobuf_steps.js:121
+       | DATA | MEDIA TYPE |
+       | text | text/plain |
+       ReferenceError: getPickleAcceptedEvent is not defined
+           at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:104:23)
+           at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:129:32)
+   ✔ After # features/support/hooks.js:90
+
+5) Scenario: Attach from an after hook # features/attachments.feature:84
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {After} from 'cucumber'
+
+       After(function() {
+         this.attach("text")
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then scenario "some scenario" "After" hook has the attachments: # features/step_definitions/protobuf_steps.js:121
+       | DATA | MEDIA TYPE |
+       | text | text/plain |
+       ReferenceError: getPickleAcceptedEvent is not defined
+           at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:104:23)
+           at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:129:32)
+   ✔ After # features/support/hooks.js:90
+
+6) Scenario: Attach from a step definition # features/attachments.feature:98
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {
+         this.attach("text")
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then scenario "some scenario" step "Given a step" has the attachments: # features/step_definitions/protobuf_steps.js:102
+       | DATA | MEDIA TYPE |
+       | text | text/plain |
+       ReferenceError: getPickleAcceptedEvent is not defined
+           at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:80:23)
+           at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:110:32)
+   ✔ After # features/support/hooks.js:90
+
+7) Scenario: Attaching after hook/step finishes # features/attachments.feature:113
+   ✔ Before # features/support/hooks.js:20
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: some feature
+         Scenario: some scenario
+           Given a step
+       """
+   ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Given} from 'cucumber'
+
+       Given(/^a step$/, function() {})
+       """
+   ✔ Given a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {After} from 'cucumber'
+       import Promise from 'bluebird'
+
+       After(function() {
+         // Do not return the promise so that the attach happens after the hook completes
+         Promise.delay(100).then(() => {
+           this.attach("text")
+         })
+       })
+       """
+   ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+   ✖ Then the error output contains the text: # features/step_definitions/cli_steps.js:78
+       """
+       Cannot attach after all steps/hooks have finished running. Ensure your step/hook waits for the attach to finish.
+       """
+       AssertionError: expected 'Unhandled rejection Error: Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.\nat AttachmentManager.PickleRunner.attachmentManager._attachment_manager.default [as onAttachment] (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/pickle_runner.js:43:15)\nat AttachmentManager.createStringAttachment (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/attachment_manager/index.js:73:10)\nat AttachmentManager.create (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/attachment_manager/index.js:37:12)\nat attach (/Users/charlesrudolph/projects/cucumber-js/tmp/attachments.feature_113/features/support/hooks.js:7:10)\nat tryCatcher (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/util.js:16:23)\nat Promise._settlePromiseFromHandler (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/promise.js:517:31)\nat Promise._settlePromise (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/promise.js:574:18)\nat Promise._settlePromise0 (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/promise.js:619:10)\nat Promise._settlePromises (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/promise.js:699:18)\nat Promise._fulfill (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/promise.js:643:18)\nat Timeout._onTimeout (/Users/charlesrudolph/projects/cucumber-js/node_modules/bluebird/js/release/timers.js:26:46)\nat ontimeout (timers.js:498:11)\nat tryOnTimeout (timers.js:323:5)\nat Timer.listOnTimeout (timers.js:290:5)' to include 'Cannot attach after all steps/hooks have finished running. Ensure your step/hook waits for the attach to finish.'
+           at World.include (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:81:27)
+   ✔ After # features/support/hooks.js:90
+
+8) Scenario: extending Formatter # features/custom_formatter.feature:10
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: a feature
+         Scenario: a scenario
+           Given an undefined step
+       """
+   ✔ Given a file named "simple_formatter.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {Formatter, formatterHelpers} from 'cucumber'
+
+       class SimpleFormatter extends Formatter {
+         constructor(options) {
+           super(options)
+           options.eventBroadcaster
+             .on('test-case-finished', ::this.logTestCase)
+             .on('test-run-finished', ::this.logTestRunResult)
+         }
+
+         logTestCase(testCaseFinishedEvent) {
+           const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+           this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
+           const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
+           parsed.testSteps.forEach(testStep => {
+             this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
+           })
+           this.log('\n')
+         }
+
+         logTestRunResult({result}) {
+           this.log(result.success ? 'SUCCESS' : 'FAILURE')
+         }
+       }
+
+       module.exports = SimpleFormatter
+       """
+   ✔ When I run cucumber-js with `--format ./simple_formatter.js` # features/step_definitions/cli_steps.js:9
+   ✔ Then it fails # features/step_definitions/cli_steps.js:46
+   ✖ And it outputs the text: # features/step_definitions/cli_steps.js:52
+       """
+       a feature / a scenario
+         Given an undefined step - undefined
+
+       FAILURE
+       """
+       AssertionError
+           + expected - actual
+
+           +a feature / a scenario
+           +Given an undefined step - undefined
+           +
+           +FAILURE
+
+           at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:55:27)
+   ✔ After # features/support/hooks.js:90
+
+9) Scenario: extending SummaryFormatter # features/custom_formatter.feature:50
+   ✔ Before # features/support/hooks.js:24
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: a feature
+         Scenario: a scenario
+           Given an undefined step
+       """
+   ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+       """
+       Feature: a feature
+         Scenario: a scenario
+           Given an undefined step
+       """
+   ✔ And a file named "simple_formatter.js" with: # features/step_definitions/file_steps.js:11
+       """
+       import {SummaryFormatter, formatterHelpers} from 'cucumber'
+
+       class SimpleFormatter extends SummaryFormatter {
+         constructor(options) {
+           super(options)
+           options.eventBroadcaster
+             .on('test-case-finished', ::this.logTestCase)
+         }
+
+         logTestCase(testCaseFinishedEvent) {
+           const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+           this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
+           const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
+           parsed.testSteps.forEach(testStep => {
+             this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
+           })
+           this.log('\n')
+         }
+       }
+
+       module.exports = SimpleFormatter
+       """
+   ✔ When I run cucumber-js with `--format ./simple_formatter.js` # features/step_definitions/cli_steps.js:9
+   ✔ Then it fails # features/step_definitions/cli_steps.js:46
+   ✖ And it outputs the text: # features/step_definitions/cli_steps.js:52
+       """
+       a feature / a scenario
+         Given an undefined step - undefined
+
+       Warnings:
+
+       1) Scenario: a scenario # features/a.feature:2
+          ? Given an undefined step
+              Undefined. Implement with the following snippet:
+
+                Given('an undefined step', function () {
+                  // Write code here that turns the phrase above into concrete actions
+                  return 'pending';
+                });
+
+
+       1 scenario (1 undefined)
+       1 step (1 undefined)
+       <duration-stat>
+       """
+       AssertionError
+           + expected - actual
+
+           -Failures:
+           +a feature / a scenario
+           +Given an undefined step - undefined
+     
+           +Warnings:
+           +
+            1) Scenario: a scenario # features/a.feature:2
+            ? Given an undefined step
+            Undefined. Implement with the following snippet:
+     
+
+           at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:55:27)
+   ✔ After # features/support/hooks.js:90
+
+10) Scenario: before hook parameter # features/hook_parameter.feature:4
+    ✔ Before # features/support/hooks.js:20
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/my_feature.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: a feature
+          Scenario: a scenario
+            Given a step
+        """
+    ✔ And a file named "features/step_definitions/my_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {When} from 'cucumber'
+
+        When(/^a step$/, function() {})
+        """
+    ✔ And a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Before} from 'cucumber'
+
+        Before(function(testCase) {
+          console.log(testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line)
+          console.log('tags: ', testCase.pickle.tags);
+          console.log('name: ', testCase.pickle.name);
+        })
+        """
+    ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+    ✖ Then the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        features/my_feature.feature:2
+        tags: []
+        name: a scenario
+        """
+        AssertionError: expected 'F-\n\nFailures:\n\n1) Scenario: a scenario # features/my_feature.feature:2\n✖ Before # features/support/hooks.js:3\nTypeError: Cannot read property \'uri\' of undefined\nat World.uri (/Users/charlesrudolph/projects/cucumber-js/tmp/hook_parameter.feature_4/features/support/hooks.js:4:39)\nat Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:37:21)\nat Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)\nat <anonymous>\n- Given a step # features/step_definitions/my_steps.js:3\n\n1 scenario (1 failed)\n1 step (1 skipped)\n<duration-stat>' to include 'features/my_feature.feature:2\ntags: []\nname: a scenario'
+            at World.include (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:61:27)
+    ✖ After # features/support/hooks.js:90
+        Error: Last run errored unexpectedly. Output:
+
+        F-
+
+        Failures:
+
+        1) Scenario: a scenario # features/my_feature.feature:2
+           ✖ Before # features/support/hooks.js:3
+               TypeError: Cannot read property 'uri' of undefined
+                   at World.uri (/Users/charlesrudolph/projects/cucumber-js/tmp/hook_parameter.feature_4/features/support/hooks.js:4:39)
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:37:21)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+           - Given a step # features/step_definitions/my_steps.js:3
+
+        1 scenario (1 failed)
+        1 step (1 skipped)
+        0m00.001s
+
+
+        Error Output:
+
+
+            at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/support/hooks.js:92:11)
+
+11) Scenario: after hook parameter # features/hook_parameter.feature:36
+    ✔ Before # features/support/hooks.js:20
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/my_feature.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: a feature
+          Scenario: a scenario
+            Given a passing step
+
+          Scenario: another scenario
+            Given a failing step
+        """
+    ✔ And a file named "features/step_definitions/my_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {When} from 'cucumber'
+
+        When(/^a passing step$/, function() {})
+        When(/^a failing step$/, function() { throw new Error("my error") })
+        """
+    ✔ And a file named "features/support/hooks.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {After, Status} from 'cucumber'
+
+        After(function(testCase) {
+          let message = testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line + " "
+          if (testCase.result.status === Status.FAILED) {
+            message += "failed"
+          } else {
+            message += "did not fail"
+          }
+          console.log(message)
+          console.log('tags: ', testCase.pickle.tags);
+          console.log('name: ', testCase.pickle.name);
+        })
+        """
+    ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+    ✔ Then it fails # features/step_definitions/cli_steps.js:46
+    ✖ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        features/my_feature.feature:2 did not fail
+        tags: []
+        name: a scenario
+        """
+        AssertionError: expected '.FFF\n\nFailures:\n\n1) Scenario: a scenario # features/my_feature.feature:2\n✔ Given a passing step # features/step_definitions/my_steps.js:3\n✖ After # features/support/hooks.js:3\nTypeError: Cannot read property \'uri\' of undefined\nat World.uri (/Users/charlesrudolph/projects/cucumber-js/tmp/hook_parameter.feature_36/features/support/hooks.js:4:41)\nat Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:37:21)\nat Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)\nat <anonymous>\n\n2) Scenario: another scenario # features/my_feature.feature:5\n✖ Given a failing step # features/step_definitions/my_steps.js:4\nError: my error\nat World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/tmp/hook_parameter.feature_36/features/step_definitions/my_steps.js:4:45)\nat Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:37:21)\nat Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)\nat <anonymous>\n✖ After # features/support/hooks.js:3\nTypeError: Cannot read property \'uri\' of undefined\nat World.uri (/Users/charlesrudolph/projects/cucumber-js/tmp/hook_parameter.feature_36/features/support/hooks.js:4:41)\nat Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:37:21)\nat Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)\nat <anonymous>\n\n2 scenarios (2 failed)\n2 steps (1 failed, 1 passed)\n<duration-stat>' to include 'features/my_feature.feature:2 did not fail\ntags: []\nname: a scenario'
+            at World.include (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:61:27)
+    - And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        features/my_feature.feature:5 failed
+        tags: []
+        name: another scenario
+        """
+    ✔ After # features/support/hooks.js:90
+
+12) Scenario: saving @rerun.txt in subfolder # features/rerun_formatter_subfolder.feature:7
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: A
+          Scenario: 1
+            Given a passing step
+
+          Scenario: 2
+            Given a failing step
+        """
+    ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        Given(/^a passing step$/, function() {})
+        Given(/^a failing step$/, function() { throw 'fail' })
+        """
+    ✔ And a directory named "test_results" # features/step_definitions/file_steps.js:24
+    ✔ When I run cucumber-js with `--format rerun:test_results/@rerun.txt` # features/step_definitions/cli_steps.js:9
+    ✔ Then it fails # features/step_definitions/cli_steps.js:46
+    ✔ And the file "test_results/@rerun.txt" has the text: # features/step_definitions/file_steps.js:34
+        """
+        features/a.feature:5
+        """
+    ✔ When I run cucumber-js with `test_results/@rerun.txt` # features/step_definitions/cli_steps.js:9
+    ✖ Then it fails # features/step_definitions/cli_steps.js:46
+        AssertionError
+            + expected - actual
+
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:48:29)
+    - And it runs the scenario "2" # features/step_definitions/protobuf_steps.js:24
+    ✔ After # features/support/hooks.js:90
+
+13) Scenario: rerunning failed scenarios # features/rerun_formatter.feature:73
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: A
+          Scenario: A - passing
+            Given a passing step
+
+          Scenario: A - failing
+            Given a failing step
+
+          Scenario: A - ambiguous
+            Given an ambiguous step
+        """
+    ✔ And a file named "features/b.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: B
+          Scenario: B - passing
+            Given a passing step
+
+          Scenario: B - pending
+            Given a pending step
+        """
+    ✔ And a file named "features/c.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: C
+          Scenario: C - passing
+            Given a passing step
+
+          Scenario: C - undefined
+            Given an undefined step
+        """
+    ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        Given(/^a passing step$/, function() {})
+        Given(/^a failing step$/, function() { throw 'fail' })
+        Given(/^an ambiguous step$/, function() {})
+        Given(/^an? ambiguous step$/, function() {})
+        Given(/^a pending step$/, function() { return 'pending' })
+        """
+    ✔ Given a file named "@rerun.txt" with: # features/step_definitions/file_steps.js:11
+        """
+        features/a.feature:5:8
+        features/b.feature:5
+        features/c.feature:5
+        """
+    ✔ When I run cucumber-js with `@rerun.txt` # features/step_definitions/cli_steps.js:9
+    ✖ Then it fails # features/step_definitions/cli_steps.js:46
+        AssertionError
+            + expected - actual
+
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:48:29)
+    - And it runs the scenarios: # features/step_definitions/protobuf_steps.js:34
+        | NAME          |
+        | A - failing   |
+        | A - ambiguous |
+        | B - pending   |
+        | C - undefined |
+    ✔ After # features/support/hooks.js:90
+
+14) Scenario: rerun file with trailing new line # features/rerun_formatter.feature:89
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: A
+          Scenario: A - passing
+            Given a passing step
+
+          Scenario: A - failing
+            Given a failing step
+
+          Scenario: A - ambiguous
+            Given an ambiguous step
+        """
+    ✔ And a file named "features/b.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: B
+          Scenario: B - passing
+            Given a passing step
+
+          Scenario: B - pending
+            Given a pending step
+        """
+    ✔ And a file named "features/c.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: C
+          Scenario: C - passing
+            Given a passing step
+
+          Scenario: C - undefined
+            Given an undefined step
+        """
+    ✔ And a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        Given(/^a passing step$/, function() {})
+        Given(/^a failing step$/, function() { throw 'fail' })
+        Given(/^an ambiguous step$/, function() {})
+        Given(/^an? ambiguous step$/, function() {})
+        Given(/^a pending step$/, function() { return 'pending' })
+        """
+    ✔ Given a file named "@rerun.txt" with: # features/step_definitions/file_steps.js:11
+        """
+        features/c.feature:2
+
+        """
+    ✔ When I run cucumber-js with `@rerun.txt` # features/step_definitions/cli_steps.js:9
+    ✖ Then it runs the scenario "C - passing" # features/step_definitions/protobuf_steps.js:24
+        AssertionError
+            + expected - actual
+
+            -[]
+            +[
+            +  "C - passing"
+            +]
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:26:26)
+    ✔ After # features/support/hooks.js:90
+
+15) Scenario: retrying a flaky test will eventually make it pass # features/retry.feature:83
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          Scenario: Flaky
+            Given a flaky step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1` # features/step_definitions/cli_steps.js:9
+    ✔ Then the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        F.
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+        ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+        """
+    ✔ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        1 scenario (1 passed)
+        1 step (1 passed)
+        """
+    ✖ And scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And it passes # features/step_definitions/cli_steps.js:44
+    ✔ After # features/support/hooks.js:90
+
+16) Scenario: retrying a flaky test will eventually make it pass (parallel) # features/retry.feature:122
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          Scenario: Flaky
+            Given a flaky step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1 --parallel 2` # features/step_definitions/cli_steps.js:9
+    ✖ Then the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        F.
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+        ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+        """
+        AssertionError: expected '' to include 'F.\n\nWarnings:\n\n1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2\n✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5'
+            at World.include (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:61:27)
+    - And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        1 scenario (1 passed)
+        1 step (1 passed)
+        """
+    - And scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+    - And it passes # features/step_definitions/cli_steps.js:44
+    ✔ After # features/support/hooks.js:90
+
+17) Scenario: Out of two tests one is a flaky test (containing only one flaky step), retrying will eventually make it pass # features/retry.feature:161
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          Scenario: Flaky
+            Given a flaky step
+          Scenario: Good
+            Given a good step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+
+        Given(/^a good step$/, function() {
+            return
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1` # features/step_definitions/cli_steps.js:9
+    ✔ Then the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        F..
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+        ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+        """
+    ✔ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        2 scenarios (2 passed)
+        2 steps (2 passed)
+        <duration-stat>
+        """
+    ✖ And scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And it passes # features/step_definitions/cli_steps.js:44
+    ✔ After # features/support/hooks.js:90
+
+18) Scenario: Out of two tests one test has one flaky step, retrying will eventually make it pass # features/retry.feature:207
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          Scenario: Flaky
+            Given a flaky step
+            And a good step
+          Scenario: Good
+            Given a good step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+
+        Given(/^a good step$/, function() {
+            return
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1` # features/step_definitions/cli_steps.js:9
+    ✔ Then the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        F-...
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+        ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+            Error: fail
+        """
+    ✔ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        2 scenarios (2 passed)
+        3 steps (3 passed)
+        <duration-stat>
+        """
+    ✖ And scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And it passes # features/step_definitions/cli_steps.js:44
+    ✔ After # features/support/hooks.js:90
+
+19) Scenario: Out of three tests one passes, one is flaky and one fails, retrying the flaky test will eventually make it pass # features/retry.feature:255
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          Scenario: Flaky
+            Given a flaky step
+          Scenario: Good
+            Given a good step
+          Scenario: Bad
+            Given a bad step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+
+        Given(/^a good step$/, function() {
+            return
+        })
+
+        Given(/^a bad step$/, function() {
+            throw 'fail'
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1` # features/step_definitions/cli_steps.js:9
+    ✔ Then the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        F..FF
+
+        Failures:
+
+        1) Scenario: Bad (attempt 2) # features/a.feature:6
+          ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
+            Error: fail
+        """
+    ✔ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+            ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+                Error: fail
+        """
+    ✔ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        2) Scenario: Bad (attempt 1, retried) # features/a.feature:6
+            ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
+                Error: fail
+        """
+    ✔ And the output contains the text: # features/step_definitions/cli_steps.js:58
+        """
+        3 scenarios (1 failed, 2 passed)
+        3 steps (1 failed, 2 passed)
+        <duration-stat>
+        """
+    ✖ And scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And scenario "Bad" step "Given a bad step" has status "failed" # features/step_definitions/protobuf_steps.js:53
+    - And it fails # features/step_definitions/cli_steps.js:46
+    ✖ After # features/support/hooks.js:90
+        Error: Last run errored unexpectedly. Output:
+
+        F..FF
+
+        Failures:
+
+        1) Scenario: Bad (attempt 2) # features/a.feature:6
+           ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
+           ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        2) Scenario: Bad (attempt 1, retried) # features/a.feature:6
+           ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        3 scenarios (1 failed, 2 passed)
+        3 steps (1 failed, 2 passed)
+        0m00.001s
+
+
+        Error Output:
+
+
+            at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/support/hooks.js:92:11)
+
+20) Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass # features/retry.feature:353
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          @flaky
+          Scenario: Flaky
+            Given a flaky step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1 --retryTagFilter '@flaky'` # features/step_definitions/cli_steps.js:9
+    ✖ Then scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And it passes # features/step_definitions/cli_steps.js:44
+    ✔ After # features/support/hooks.js:90
+
+21) Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass but not-matching will not be retried (AND operator between tags) # features/retry.feature:405
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          @flaky @anOtherTag @oneMoreTag
+          Scenario: Flaky
+            Given a flaky step
+          @flaky @oneMoreTag
+          Scenario: Also Flaky
+            Given an other flaky step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+
+        let willPass2 = false
+
+        Given(/^an other flaky step$/, function() {
+          if (willPass2) {
+            return
+          }
+          willPass2 = true
+          throw 'fail'
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1 --retryTagFilter '@flaky and @anOtherTag'` # features/step_definitions/cli_steps.js:9
+    ✖ Then scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And scenario "Also Flaky" step "Given an other flaky step" has status "failed" # features/step_definitions/protobuf_steps.js:53
+    - And it fails # features/step_definitions/cli_steps.js:46
+    ✖ After # features/support/hooks.js:90
+        Error: Last run errored unexpectedly. Output:
+
+        F.F
+
+        Failures:
+
+        1) Scenario: Also Flaky # features/a.feature:6
+           ✖ Given an other flaky step # features/step_definitions/cucumber_steps.js:15
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:3
+           ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        2 scenarios (1 failed, 1 passed)
+        2 steps (1 failed, 1 passed)
+        0m00.000s
+
+
+        Error Output:
+
+
+            at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/support/hooks.js:92:11)
+
+22) Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass but not-matching will not be retried (OR operator between tags) # features/retry.feature:445
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature:
+          @flaky @anOtherTag @oneMoreTag
+          Scenario: Flaky
+            Given a flaky step
+          @flaky @oneMoreTag
+          Scenario: Also Flaky
+            Given an other flaky step
+          @flaky
+          Scenario: Third Flaky
+            Given one more flaky step
+        """
+    ✔ Given a file named "features/step_definitions/cucumber_steps.js" with: # features/step_definitions/file_steps.js:11
+        """
+        import {Given} from 'cucumber'
+
+        let willPass = false
+
+        Given(/^a flaky step$/, function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw 'fail'
+        })
+
+        let willPass2 = false
+
+        Given(/^an other flaky step$/, function() {
+          if (willPass2) {
+            return
+          }
+          willPass2 = true
+          throw 'fail'
+        })
+
+        let willPass3 = false
+
+        Given(/^one more flaky step$/, function() {
+          if (willPass3) {
+            return
+          }
+          willPass3 = true
+          throw 'fail'
+        })
+        """
+    ✔ When I run cucumber-js with `--retry 1 --retryTagFilter '@anOtherTag or @oneMoreTag'` # features/step_definitions/cli_steps.js:9
+    ✖ Then scenario "Flaky" step "Given a flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+        AssertionError
+            + expected - actual
+
+            -6
+            +1
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:60:43)
+    - And scenario "Also Flaky" step "Given an other flaky step" has status "passed" # features/step_definitions/protobuf_steps.js:53
+    - And scenario "Third Flaky" step "Given one more flaky step" has status "failed" # features/step_definitions/protobuf_steps.js:53
+    - And it fails # features/step_definitions/cli_steps.js:46
+    ✖ After # features/support/hooks.js:90
+        Error: Last run errored unexpectedly. Output:
+
+        F.F.F
+
+        Failures:
+
+        1) Scenario: Third Flaky # features/a.feature:9
+           ✖ Given one more flaky step # features/step_definitions/cucumber_steps.js:25
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        Warnings:
+
+        1) Scenario: Flaky (attempt 1, retried) # features/a.feature:3
+           ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        2) Scenario: Also Flaky (attempt 1, retried) # features/a.feature:6
+           ✖ Given an other flaky step # features/step_definitions/cucumber_steps.js:15
+               Error: fail
+                   at Function.run (/Users/charlesrudolph/projects/cucumber-js/lib/user_code_runner.js:39:46)
+                   at Object.run (/Users/charlesrudolph/projects/cucumber-js/lib/runtime/step_runner.js:57:52)
+                   at <anonymous>
+
+        3 scenarios (1 failed, 2 passed)
+        3 steps (1 failed, 2 passed)
+        0m00.000s
+
+
+        Error Output:
+
+
+            at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/support/hooks.js:92:11)
+
+23) Scenario: placeholder in docstring # features/scenario_outlines.feature:25
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/scenario_outline.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: a feature
+          Scenario Outline: a <type> scenario
+            Given a doc string step
+              """
+              a <type> doc string
+              """
+
+          Examples:
+            | type    |
+            | passing |
+            | failing |
+        """
+    ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+    ✔ Then it fails # features/step_definitions/cli_steps.js:46
+    ✔ And it runs 2 scenarios # features/step_definitions/protobuf_steps.js:19
+    ✖ And scenario "a passing scenario" step "Given a doc string step" has the doc string: # features/step_definitions/protobuf_steps.js:84
+        """
+        a passing doc string
+        """
+        ReferenceError: getPickleAcceptedEvent is not defined
+            at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:30:23)
+            at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:89:22)
+    - And scenario "a failing scenario" step "Given a doc string step" has the doc string: # features/step_definitions/protobuf_steps.js:84
+        """
+        a failing doc string
+        """
+    ✔ After # features/support/hooks.js:90
+
+24) Scenario: placeholder in table # features/scenario_outlines.feature:52
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/scenario_outline.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: a feature
+          Scenario Outline: a <type> scenario
+            Given a table step
+              | <type> |
+
+          Examples:
+            | type    |
+            | passing |
+            | failing |
+        """
+    ✔ When I run cucumber-js # features/step_definitions/cli_steps.js:9
+    ✔ Then it fails # features/step_definitions/cli_steps.js:46
+    ✔ And it runs 2 scenarios # features/step_definitions/protobuf_steps.js:19
+    ✖ And scenario "a passing scenario" step "Given a table step" has the data table: # features/step_definitions/protobuf_steps.js:93
+        | passing |
+        ReferenceError: getPickleAcceptedEvent is not defined
+            at getPickleAcceptedEvent (/Users/charlesrudolph/projects/cucumber-js/features/support/protobuf_helpers.js:30:23)
+            at World.<anonymous> (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/protobuf_steps.js:98:22)
+    - And scenario "a failing scenario" step "Given a table step" has the data table: # features/step_definitions/protobuf_steps.js:93
+        | failing |
+    ✔ After # features/support/hooks.js:90
+
+25) Scenario:  # features/snippets_formatter.feature:8
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/undefined.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: a feature
+          Scenario: a scenario
+            Given undefined step A
+            When undefined step B
+            Then undefined step C
+        """
+    ✔ When I run cucumber-js with `--format snippets` # features/step_definitions/cli_steps.js:9
+    ✔ Then it fails # features/step_definitions/cli_steps.js:46
+    ✖ And it outputs the text: # features/step_definitions/cli_steps.js:52
+        """
+        Given('undefined step A', function () {
+          // Write code here that turns the phrase above into concrete actions
+          return 'pending';
+        });
+
+        When('undefined step B', function () {
+          // Write code here that turns the phrase above into concrete actions
+          return 'pending';
+        });
+
+        Then('undefined step C', function () {
+          // Write code here that turns the phrase above into concrete actions
+          return 'pending';
+        });
+        """
+        AssertionError
+            + expected - actual
+
+            +Given('undefined step A', function () {
+            +// Write code here that turns the phrase above into concrete actions
+            +return 'pending';
+            +});
+            +
+            +When('undefined step B', function () {
+            +// Write code here that turns the phrase above into concrete actions
+            +return 'pending';
+            +});
+            +
+            +Then('undefined step C', function () {
+            +// Write code here that turns the phrase above into concrete actions
+            +return 'pending';
+            +});
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:55:27)
+    ✔ After # features/support/hooks.js:90
+
+26) Scenario: run a single scenario # features/target_specific_scenarios_by_line.feature:22
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: some feature
+          Scenario: first scenario
+            Given a step
+
+          Scenario Outline: second scenario - <ID>
+            Given a step
+
+            Examples:
+              | ID |
+              | X  |
+              | Y  |
+        """
+    ✔ When I run cucumber-js with `features/a.feature:2` # features/step_definitions/cli_steps.js:9
+    ✖ Then it fails # features/step_definitions/cli_steps.js:46
+        AssertionError
+            + expected - actual
+
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:48:29)
+    - And it runs the scenario "first scenario" # features/step_definitions/protobuf_steps.js:24
+    ✔ After # features/support/hooks.js:90
+
+27) Scenario: run a single scenario outline # features/target_specific_scenarios_by_line.feature:27
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: some feature
+          Scenario: first scenario
+            Given a step
+
+          Scenario Outline: second scenario - <ID>
+            Given a step
+
+            Examples:
+              | ID |
+              | X  |
+              | Y  |
+        """
+    ✔ When I run cucumber-js with `features/a.feature:5` # features/step_definitions/cli_steps.js:9
+    ✖ Then it fails # features/step_definitions/cli_steps.js:46
+        AssertionError
+            + expected - actual
+
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:48:29)
+    - And it runs the scenarios: # features/step_definitions/protobuf_steps.js:34
+        | NAME                |
+        | second scenario - X |
+        | second scenario - Y |
+    ✔ After # features/support/hooks.js:90
+
+28) Scenario: run a single scenario outline example # features/target_specific_scenarios_by_line.feature:35
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: some feature
+          Scenario: first scenario
+            Given a step
+
+          Scenario Outline: second scenario - <ID>
+            Given a step
+
+            Examples:
+              | ID |
+              | X  |
+              | Y  |
+        """
+    ✔ When I run cucumber-js with `features/a.feature:10` # features/step_definitions/cli_steps.js:9
+    ✖ Then it fails # features/step_definitions/cli_steps.js:46
+        AssertionError
+            + expected - actual
+
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:48:29)
+    - And it runs the scenario "second scenario - X" # features/step_definitions/protobuf_steps.js:24
+    ✔ After # features/support/hooks.js:90
+
+29) Scenario: run multiple scenarios # features/target_specific_scenarios_by_line.feature:40
+    ✔ Before # features/support/hooks.js:24
+    ✔ Given a file named "features/a.feature" with: # features/step_definitions/file_steps.js:11
+        """
+        Feature: some feature
+          Scenario: first scenario
+            Given a step
+
+          Scenario Outline: second scenario - <ID>
+            Given a step
+
+            Examples:
+              | ID |
+              | X  |
+              | Y  |
+        """
+    ✔ When I run cucumber-js with `features/a.feature:2:10` # features/step_definitions/cli_steps.js:9
+    ✖ Then it fails # features/step_definitions/cli_steps.js:46
+        AssertionError
+            + expected - actual
+
+
+            at World.eql (/Users/charlesrudolph/projects/cucumber-js/features/step_definitions/cli_steps.js:48:29)
+    - And it runs the scenarios: # features/step_definitions/protobuf_steps.js:34
+        | NAME                |
+        | first scenario      |
+        | second scenario - X |
+    ✔ After # features/support/hooks.js:90
+
+232 scenarios (29 failed, 203 passed)
+1162 steps (29 failed, 23 skipped, 1110 passed)
+0m42.014s
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

@@ -72,9 +72,14 @@ function buildResult(mapping) {
         'text',
       ])
       const result = { matches: sortedMatches, ...rest }
-      const durations = _.chain(matches).map(m => m.duration).compact().value()
+      const durations = _.chain(matches)
+        .map(m => m.duration)
+        .compact()
+        .value()
       if (durations.length > 0) {
-        result.meanDuration = millisecondsToDuration(_.meanBy(durations, (d) => durationToMilliseconds(d)))
+        result.meanDuration = millisecondsToDuration(
+          _.meanBy(durations, d => durationToMilliseconds(d))
+        )
       }
       return result
     })

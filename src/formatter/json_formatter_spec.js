@@ -28,6 +28,7 @@ describe('JsonFormatter', () => {
       ],
     }
     this.jsonFormatter = new JsonFormatter({
+      cwd: '/project',
       eventBroadcaster: this.eventBroadcaster,
       eventDataCollector: new EventDataCollector(this.eventBroadcaster),
       supportCodeLibrary: this.supportCodeLibrary,
@@ -39,7 +40,7 @@ describe('JsonFormatter', () => {
     beforeEach(function() {
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testRunFinished: {},
         })
       )
@@ -52,7 +53,9 @@ describe('JsonFormatter', () => {
 
   describe('one scenario with one step', () => {
     beforeEach(async function() {
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data:
           '@tag1 @tag2\n' +
           'Feature: my feature\n' +
@@ -61,7 +64,7 @@ describe('JsonFormatter', () => {
           'my scenario description\n' +
           'Given my step',
         eventBroadcaster: this.eventBroadcaster,
-        uri: 'a.feature',
+        uri: '/project/a.feature',
       })
       this.pickle = pickle
     })
@@ -71,14 +74,17 @@ describe('JsonFormatter', () => {
         const testCaseId = uuidv4()
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
-        const testResult = { duration: 1, status: Status.PASSED }
+        const testResult = {
+          duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+          status: Status.PASSED,
+        }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -90,7 +96,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -100,7 +106,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -110,7 +116,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -119,7 +125,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {
               duration: 0,
             },
@@ -172,18 +178,21 @@ describe('JsonFormatter', () => {
         const testCaseStartedId1 = uuidv4()
         const testCaseStartedId2 = uuidv4()
         const failingTestResult = {
-          duration: 2,
+          duration: new messages.Duration({ seconds: 0, nanos: 2 }),
           exception: 'error',
           status: Status.FAILED,
         }
-        const passingTestResult = { duration: 1, status: Status.PASSED }
+        const passingTestResult = {
+          duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+          status: Status.PASSED,
+        }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -195,7 +204,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -205,7 +214,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: testCaseStartedId1,
               testStepId,
@@ -215,7 +224,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: testCaseStartedId1,
               testResult: { ...failingTestResult, willBeRetried: true },
@@ -224,7 +233,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 1,
@@ -234,7 +243,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: testCaseStartedId2,
               testStepId,
@@ -244,7 +253,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: testCaseStartedId2,
               testResult: passingTestResult,
@@ -253,7 +262,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {
               duration: 0,
             },
@@ -277,17 +286,17 @@ describe('JsonFormatter', () => {
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
         const testResult = {
-          duration: 1,
-          exception: 'my error',
+          duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+          message: 'my error',
           status: Status.FAILED,
         }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -299,7 +308,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -309,7 +318,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -319,7 +328,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -328,7 +337,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {
               duration: 0,
             },
@@ -352,17 +361,17 @@ describe('JsonFormatter', () => {
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
         const testResult = {
-          duration: 1,
-          exception: 'my error',
+          duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+          message: 'my error',
           status: Status.FAILED,
         }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -376,7 +385,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -386,7 +395,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -396,7 +405,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -405,7 +414,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {
               duration: 0,
             },
@@ -427,17 +436,17 @@ describe('JsonFormatter', () => {
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
         const testResult = {
-          duration: 1,
-          exception: 'my error',
+          duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+          message: 'my error',
           status: Status.FAILED,
         }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: uuidv4(),
                   stepDefinitionId: [],
@@ -461,7 +470,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -471,7 +480,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -480,7 +489,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {
               duration: 0,
             },
@@ -510,14 +519,17 @@ describe('JsonFormatter', () => {
         const testCaseId = uuidv4()
         const testStepId = uuidv4()
         const testCaseStartedId = uuidv4()
-        const testResult = { duration: 1, status: Status.PASSED }
+        const testResult = {
+          duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+          status: Status.PASSED,
+        }
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCase: {
               pickleId: this.pickle.id,
               id: testCaseId,
-              steps: [
+              testSteps: [
                 {
                   id: testStepId,
                   pickleStepId: this.pickle.steps[0].id,
@@ -529,7 +541,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseStarted: {
               testCaseId,
               attempt: 0,
@@ -555,7 +567,7 @@ describe('JsonFormatter', () => {
         })
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -565,7 +577,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId,
               testStepId,
@@ -575,7 +587,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId,
               testResult,
@@ -584,7 +596,7 @@ describe('JsonFormatter', () => {
         )
         this.eventBroadcaster.emit(
           'envelope',
-          new messages.Envelope({
+          messages.Envelope.fromObject({
             testRunFinished: {
               duration: 0,
             },
@@ -604,7 +616,9 @@ describe('JsonFormatter', () => {
 
   describe('one scenario with one step with a doc string', () => {
     beforeEach(async function() {
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data:
           'Feature: my feature\n' +
           '  Scenario: my scenario\n' +
@@ -618,14 +632,17 @@ describe('JsonFormatter', () => {
       const testCaseId = uuidv4()
       const testStepId = uuidv4()
       const testCaseStartedId = uuidv4()
-      const testResult = { duration: 1, status: Status.PASSED }
+      const testResult = {
+        duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+        status: Status.PASSED,
+      }
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             pickleId: pickle.id,
             id: testCaseId,
-            steps: [
+            testSteps: [
               {
                 id: testStepId,
                 pickleStepId: pickle.steps[0].id,
@@ -637,7 +654,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseStarted: {
             testCaseId,
             attempt: 0,
@@ -647,7 +664,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testStepFinished: {
             testCaseStartedId,
             testStepId,
@@ -657,7 +674,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseFinished: {
             testCaseStartedId,
             testResult,
@@ -666,7 +683,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testRunFinished: {
             duration: 0,
           },
@@ -687,7 +704,9 @@ describe('JsonFormatter', () => {
 
   describe('one scenario with one step with a data table string', () => {
     beforeEach(async function() {
-      const { pickle } = await generateEvents({
+      const {
+        pickles: [pickle],
+      } = await generateEvents({
         data:
           'Feature: my feature\n' +
           '  Scenario: my scenario\n' +
@@ -701,14 +720,17 @@ describe('JsonFormatter', () => {
       const testCaseId = uuidv4()
       const testStepId = uuidv4()
       const testCaseStartedId = uuidv4()
-      const testResult = { duration: 1, status: Status.PASSED }
+      const testResult = {
+        duration: new messages.Duration({ seconds: 0, nanos: 1 }),
+        status: Status.PASSED,
+      }
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCase: {
             pickleId: pickle.id,
             id: testCaseId,
-            steps: [
+            testSteps: [
               {
                 id: testStepId,
                 pickleStepId: pickle.steps[0].id,
@@ -720,7 +742,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseStarted: {
             testCaseId,
             attempt: 0,
@@ -730,7 +752,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testStepFinished: {
             testCaseStartedId,
             testStepId,
@@ -740,7 +762,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testCaseFinished: {
             testCaseStartedId,
             testResult,
@@ -749,7 +771,7 @@ describe('JsonFormatter', () => {
       )
       this.eventBroadcaster.emit(
         'envelope',
-        new messages.Envelope({
+        messages.Envelope.fromObject({
           testRunFinished: {
             duration: 0,
           },

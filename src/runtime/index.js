@@ -12,7 +12,13 @@ const { Status } = messages.TestResult
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}
-  constructor({ eventBroadcaster, eventDataCollector, options, pickleIds, supportCodeLibrary }) {
+  constructor({
+    eventBroadcaster,
+    eventDataCollector,
+    options,
+    pickleIds,
+    supportCodeLibrary,
+  }) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
     this.options = options || {}
@@ -45,8 +51,7 @@ export default class Runtime {
   async runPickle(pickleId) {
     const pickle = this.eventDataCollector.pickleMap[pickleId]
     const retries = retriesForPickle(pickle, this.options)
-    const skip =
-      this.options.dryRun || (this.options.failFast && !this.success)
+    const skip = this.options.dryRun || (this.options.failFast && !this.success)
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       gherkinDocument: this.eventDataCollector.gherkinDocumentMap[pickle.uri],
@@ -70,13 +75,16 @@ export default class Runtime {
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
     await Promise.each(this.pickleIds, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
-    this.eventBroadcaster.emit('envelope', new messages.Envelope({
-      testRunFinished: { success: this.success }
-    }))
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({
+        testRunFinished: { success: this.success },
+      })
+    )
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
-    return this.result.success
+    return this.success
   }
 
   shouldCauseFailure(status) {

@@ -47,6 +47,7 @@ export default class ProgressBarFormatter extends Formatter {
       this.progressBar.interrupt(
         formatIssue({
           colorFns: this.colorFns,
+          cwd: this.cwd,
           number: this.issueCount,
           snippetBuilder: this.snippetBuilder,
           supportCodeLibrary: this.supportCodeLibrary,

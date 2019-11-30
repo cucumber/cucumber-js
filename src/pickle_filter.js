@@ -48,6 +48,7 @@ export default class PickleFilter {
   }
 
   matchesAnyLine(pickle) {
+    // TODO need the gherkin document to lookup the line
     const lines = this.featureUriToLinesMapping[pickle.uri]
     if (lines) {
       return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0

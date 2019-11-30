@@ -66,11 +66,13 @@ function formatStep({ colorFns, testStep }) {
 
 export function formatTestCaseAttempt({
   colorFns,
+  cwd,
   snippetBuilder,
   supportCodeLibrary,
   testCaseAttempt,
 }) {
   const parsed = parseTestCaseAttempt({
+    cwd,
     snippetBuilder,
     testCaseAttempt,
     supportCodeLibrary,

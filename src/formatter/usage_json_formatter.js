@@ -1,7 +1,5 @@
 import { getUsage } from './helpers'
 import Formatter from './'
-import { messages } from 'cucumber-messages'
-
 export default class UsageJsonFormatter extends Formatter {
   constructor(options) {
     super(options)
@@ -22,7 +20,7 @@ export default class UsageJsonFormatter extends Formatter {
   }
 
   replacer(key, value) {
-    if (key == 'seconds') {
+    if (key === 'seconds') {
       return parseInt(value)
     }
     return value

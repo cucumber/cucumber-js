@@ -11,14 +11,17 @@ const { Status } = messages.TestResult
 
 describe('IssueHelpers', () => {
   beforeEach(async function() {
-    const { gherkinDocument, pickle } = await parse({
+    const {
+      gherkinDocument,
+      pickles: [pickle],
+    } = await parse({
       data:
         'Feature: my feature\n' +
         '  Scenario: my scenario\n' +
         '    Given step1\n' +
         '    When step2\n' +
         '    Then step3\n',
-      uri: 'a.feature',
+      uri: '/project/a.feature',
     })
     this.supportCodeLibrary = {
       stepDefinitions: [
@@ -28,10 +31,6 @@ describe('IssueHelpers', () => {
       ],
     }
     this.testCase = {
-      sourceLocation: {
-        uri: 'a.feature',
-        line: 2,
-      },
       testSteps: [
         {
           id: uuidv4(),
@@ -56,6 +55,7 @@ describe('IssueHelpers', () => {
       testCase: this.testCase,
     }
     this.options = {
+      cwd: '/project',
       colorFns: getColorFns(false),
       number: 1,
       snippetBuilder: createMock({ build: 'snippet' }),
@@ -199,7 +199,10 @@ describe('IssueHelpers', () => {
 
     describe('step with data table', () => {
       beforeEach(async function() {
-        const { gherkinDocument, pickle } = await parse({
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
           data:
             'Feature: my feature\n' +
             '  Scenario: my scenario\n' +
@@ -209,7 +212,7 @@ describe('IssueHelpers', () => {
             '      |aaa|b|c|\n' +
             '      |d|e|ff|\n' +
             '      |gg|h|iii|\n',
-          uri: 'a.feature',
+          uri: '/project/a.feature',
         })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle
@@ -248,7 +251,10 @@ describe('IssueHelpers', () => {
 
     describe('step with doc string', () => {
       beforeEach(async function() {
-        const { gherkinDocument, pickle } = await parse({
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
           data:
             'Feature: my feature\n' +
             '  Scenario: my scenario\n' +
@@ -261,7 +267,7 @@ describe('IssueHelpers', () => {
             '\n' +
             '       :-)\n' +
             '       """\n',
-          uri: 'a.feature',
+          uri: '/project/a.feature',
         })
         this.testCaseAttempt.gherkinDocument = gherkinDocument
         this.testCaseAttempt.pickle = pickle

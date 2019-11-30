@@ -1,11 +1,12 @@
 /* eslint-disable babel/new-cap */
 
+import _ from 'lodash'
 import { After, Before } from '../../'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
-import { getGherkinScenarioMap } from '../../src/formatter/helpers/gherkin_document_parser'
+import { getGherkinScenarioLocationMap } from '../../src/formatter/helpers/gherkin_document_parser'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
@@ -21,8 +22,10 @@ Before('@spawn', function() {
 })
 
 Before(function({ gherkinDocument, pickle }) {
-  const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
-  const line = gherkinScenarioMap[pickle.sourceIds[0]].location.line
+  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
+    gherkinDocument
+  )
+  const line = gherkinScenarioLocationMap[_.last(pickle.sourceIds)].line
   this.tmpDir = path.join(
     projectPath,
     'tmp',

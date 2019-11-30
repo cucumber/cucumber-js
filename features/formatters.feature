@@ -6,11 +6,9 @@ Feature: Formatters
       Feature: a feature
         Scenario: a scenario
           Given a step
-          Examples:
-            | a | b |
+          Parse Error
       """
     When I run cucumber-js with all formatters
-    Then the "event-protocol" formatter output matches the fixture "formatters/gherkin-error.event-protocol"
     Then the "json" formatter output matches the fixture "formatters/gherkin-error.json"
     And it fails
 
@@ -22,7 +20,6 @@ Feature: Formatters
           Given a step
       """
     When I run cucumber-js with all formatters and `--tags @a`
-    Then the "event-protocol" formatter output matches the fixture "formatters/rejected-pickle.event-protocol"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
   Scenario: passed
@@ -39,7 +36,6 @@ Feature: Formatters
       Given(/^a step$/, function() {})
       """
     When I run cucumber-js with all formatters
-    Then the "event-protocol" formatter output matches the fixture "formatters/passed.event-protocol"
     Then the "json" formatter output matches the fixture "formatters/passed.json"
 
   Scenario: failed
@@ -56,7 +52,6 @@ Feature: Formatters
       Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
     When I run cucumber-js with all formatters
-    Then the "event-protocol" formatter output matches the fixture "formatters/failed.event-protocol"
     Then the "json" formatter output matches the fixture "formatters/failed.json"
     And it fails
 
@@ -83,5 +78,4 @@ Feature: Formatters
       })
       """
     When I run cucumber-js with all formatters and `--retry 1`
-    Then the "event-protocol" formatter output matches the fixture "formatters/retried.event-protocol"
     Then the "json" formatter output matches the fixture "formatters/retried.json"

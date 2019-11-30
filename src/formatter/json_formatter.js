@@ -1,9 +1,10 @@
 import _ from 'lodash'
 import Formatter from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import { format } from 'assertion-error-formatter'
 import { messages } from 'cucumber-messages'
 import util from 'util'
+import { durationToNanoseconds } from '../time'
+import path from 'path'
 
 const { Status } = messages.TestResult
 
@@ -58,7 +59,7 @@ export default class JsonFormatter extends Formatter {
     const groupedTestCaseAttempts = {}
     _.each(this.eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
       if (!testCaseAttempt.result.willBeRetried) {
-        const { uri } = testCaseAttempt.pickle
+        const uri = path.relative(this.cwd, testCaseAttempt.pickle.uri)
         if (!groupedTestCaseAttempts[uri]) {
           groupedTestCaseAttempts[uri] = []
         }
@@ -79,17 +80,19 @@ export default class JsonFormatter extends Formatter {
         })
         const pickleStepMap = getPickleStepMap(pickle)
         let isBeforeHook = true
-        scenarioData.steps = testCaseAttempt.testCase.steps.map(testStep => {
-          isBeforeHook = isBeforeHook && !testStep.pickleStepId
-          return this.getStepData({
-            isBeforeHook,
-            gherkinStepMap,
-            pickleStepMap,
-            testStep,
-            testStepAttachments: testCaseAttempt.stepAttachments[testStep.id],
-            testStepResult: testCaseAttempt.stepResults[testStep.id],
-          })
-        })
+        scenarioData.steps = testCaseAttempt.testCase.testSteps.map(
+          testStep => {
+            isBeforeHook = isBeforeHook && !testStep.pickleStepId
+            return this.getStepData({
+              isBeforeHook,
+              gherkinStepMap,
+              pickleStepMap,
+              testStep,
+              testStepAttachments: testCaseAttempt.stepAttachments[testStep.id],
+              testStepResult: testCaseAttempt.stepResults[testStep.id],
+            })
+          }
+        )
         return scenarioData
       })
       return featureData
@@ -154,13 +157,13 @@ export default class JsonFormatter extends Formatter {
       data.match = { location: formatLocation(stepDefinition) }
     }
     if (testStepResult) {
-      const { exception, status } = testStepResult
+      const { message, status } = testStepResult
       data.result = { status: Status[status].toLowerCase() }
       if (!_.isUndefined(testStepResult.duration)) {
-        data.result.duration = testStepResult.duration
+        data.result.duration = durationToNanoseconds(testStepResult.duration)
       }
-      if (status === Status.FAILED && exception) {
-        data.result.error_message = format(exception)
+      if (status === Status.FAILED && message) {
+        data.result.error_message = message
       }
     }
     if (_.size(testStepAttachments) > 0) {
