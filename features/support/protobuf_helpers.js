@@ -1,8 +1,5 @@
 import _ from 'lodash'
-import {
-  getStepLineToKeywordMap,
-  getGherkinStepMap,
-} from '../../src/formatter/helpers/gherkin_document_parser'
+import { getGherkinStepMap } from '../../src/formatter/helpers/gherkin_document_parser'
 import {
   getStepKeyword,
   getPickleStepMap,
@@ -26,10 +23,10 @@ export function getPickleNamesInOrderOfExecution(envelopes) {
     .value()
 }
 
-export function getPickleStep(events, pickleName, stepText) {
-  const pickleEvent = getPickleAcceptedEvent(events, pickleName)
-  const gherkinDocumentEvent = getGherkinDocumentEvent(events, pickleEvent)
-  return getPickleStepByStepText(pickleEvent, gherkinDocumentEvent, stepText)
+export function getPickleStep(envelopes, pickleName, stepText) {
+  const pickle = getAcceptedPickle(envelopes, pickleName)
+  const gherkinDocument = getGherkinDocument(envelopes, pickle.uri)
+  return getPickleStepByStepText(pickle, gherkinDocument, stepText)
 }
 
 export function getTestCaseResult(envelopes, pickleName) {
@@ -45,16 +42,16 @@ export function getTestCaseResult(envelopes, pickleName) {
   return testCaseFinishedEnvelope.testCaseFinished.testResult
 }
 
-export function getTestStepResults(envelopes, pickleName) {
+export function getTestStepResults(envelopes, pickleName, attempt = 0) {
   const pickle = getAcceptedPickle(envelopes, pickleName)
   const gherkinDocument = getGherkinDocument(envelopes, pickle.uri)
   const testCase = getTestCase(envelopes, pickle.id)
-  const testCaseStartedId = getTestCaseStarted(envelopes, testCase.id).id
+  const testCaseStarted = getTestCaseStarted(envelopes, testCase.id, attempt)
   const testStepIdToResultMap = _.chain(envelopes)
     .filter(
       e =>
         e.testStepFinished &&
-        e.testStepFinished.testCaseStartedId == testCaseStartedId
+        e.testStepFinished.testCaseStartedId === testCaseStarted.id
     )
     .map(e => [e.testStepFinished.testStepId, e.testStepFinished.testResult])
     .fromPairs()
@@ -76,41 +73,30 @@ export function getTestStepResults(envelopes, pickleName) {
   })
 }
 
-export function getTestStepAttachmentEvents(events, pickleName, stepText) {
-  const pickleEvent = getPickleAcceptedEvent(events, pickleName)
-  const gherkinDocumentEvent = getGherkinDocumentEvent(events, pickleEvent)
-  const pickleStep = getPickleStepByStepText(
-    pickleEvent,
-    gherkinDocumentEvent,
-    stepText
-  )
-  const testCasePreparedEvent = getTestCasePreparedEvent(events, pickleEvent)
-  const testStepIndex = _.findIndex(
-    testCasePreparedEvent.steps,
+export function getTestStepAttachmentsForStep(envelopes, pickleName, stepText) {
+  const pickle = getAcceptedPickle(envelopes, pickleName)
+  const gherkinDocument = getGherkinDocument(envelopes, pickle.uri)
+  const testCase = getTestCase(envelopes, pickle.id)
+  const pickleStep = getPickleStepByStepText(pickle, gherkinDocument, stepText)
+  const testStep = _.find(
+    testCase.testSteps,
     s => s.pickleStepId === pickleStep.id
   )
-  return getTestStepAttachmentEventsForIndex(
-    events,
-    testCasePreparedEvent,
-    testStepIndex
-  )
+  const testCaseStarted = getTestCaseStarted(envelopes, testCase.id)
+  return getTestStepAttachments(envelopes, testCaseStarted.id, testStep.id)
 }
 
-export function getTestStepAttachmentEventsForHook(
-  events,
+export function getTestStepAttachmentsForHook(
+  envelopes,
   pickleName,
   isBeforeHook
 ) {
-  const pickleEvent = getPickleAcceptedEvent(events, pickleName)
-  const testCasePreparedEvent = getTestCasePreparedEvent(events, pickleEvent)
-  const testStepIndex = isBeforeHook
-    ? 0
-    : testCasePreparedEvent.steps.length - 1
-  return getTestStepAttachmentEventsForIndex(
-    events,
-    testCasePreparedEvent,
-    testStepIndex
-  )
+  const pickle = getAcceptedPickle(envelopes, pickleName)
+  const testCase = getTestCase(envelopes, pickle.id)
+  const testStepIndex = isBeforeHook ? 0 : testCase.testSteps.length - 1
+  const testStep = testCase.testSteps[testStepIndex]
+  const testCaseStarted = getTestCaseStarted(envelopes, testCase.id)
+  return getTestStepAttachments(envelopes, testCaseStarted.id, testStep.id)
 }
 
 function getAcceptedPickle(envelopes, pickleName) {
@@ -128,7 +114,7 @@ function getAcceptedPickle(envelopes, pickleName) {
   const acceptedPickleEnvelope = _.find(
     envelopes,
     e =>
-      e.pickleAccepted && e.pickleAccepted.pickleId == pickleEnvelope.pickle.id
+      e.pickleAccepted && e.pickleAccepted.pickleId === pickleEnvelope.pickle.id
   )
   if (!acceptedPickleEnvelope) {
     throw new Error(
@@ -170,10 +156,13 @@ function getTestCase(envelopes, pickleId) {
   return testCaseEnvelope.testCase
 }
 
-function getTestCaseStarted(envelopes, testCaseId) {
+function getTestCaseStarted(envelopes, testCaseId, attempt = 0) {
   const testCaseStartedEnvelope = _.find(
     envelopes,
-    e => e.testCaseStarted && e.testCaseStarted.testCaseId === testCaseId
+    e =>
+      e.testCaseStarted &&
+      e.testCaseStarted.testCaseId === testCaseId &&
+      e.testCaseStarted.attempt === attempt
   )
   if (!testCaseStartedEnvelope) {
     throw new Error(
@@ -185,37 +174,22 @@ function getTestCaseStarted(envelopes, testCaseId) {
   return testCaseStartedEnvelope.testCaseStarted
 }
 
-function getTestCaseEvent(events, eventName, pickleEvent) {
-  return _.find(
-    events,
-    e =>
-      e.type === eventName &&
-      e.sourceLocation.uri === pickleEvent.uri &&
-      _.some(pickleEvent.locations, l => l.line === e.sourceLocation.line)
-  )
-}
-
-function getPickleStepByStepText(pickleEvent, gherkinDocumentEvent, stepText) {
-  const stepLineToKeywordMap = getStepLineToKeywordMap(gherkinDocumentEvent)
-  return _.find(pickleEvent.steps, s => {
-    const keyword = getStepKeyword({ pickleStep: s, stepLineToKeywordMap })
+function getPickleStepByStepText(pickle, gherkinDocument, stepText) {
+  const gherkinStepMap = getGherkinStepMap(gherkinDocument)
+  return _.find(pickle.steps, s => {
+    const keyword = getStepKeyword({ pickleStep: s, gherkinStepMap })
     return `${keyword}${s.text}` === stepText
   })
 }
 
-function getTestStepAttachmentEventsForIndex(
-  events,
-  testCasePreparedEvent,
-  testStepIndex
-) {
-  return _.filter(
-    events,
-    e =>
-      e.type === 'test-step-attachment' &&
-      _.isEqual(
-        e.testCase.sourceLocation,
-        testCasePreparedEvent.sourceLocation
-      ) &&
-      e.index === testStepIndex
-  )
+function getTestStepAttachments(envelopes, testCaseStartedId, testStepId) {
+  return _.chain(envelopes)
+    .filter(
+      e =>
+        e.attachment &&
+        e.attachment.testCaseStartedId === testCaseStartedId &&
+        e.attachment.testStepId === testStepId
+    )
+    .map(e => e.attachment)
+    .value()
 }

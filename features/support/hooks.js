@@ -1,12 +1,10 @@
 /* eslint-disable babel/new-cap */
 
-import _ from 'lodash'
-import { After, Before } from '../../'
+import { After, Before, formatterHelpers } from '../../'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
-import { getGherkinScenarioLocationMap } from '../../src/formatter/helpers/gherkin_document_parser'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
@@ -22,10 +20,10 @@ Before('@spawn', function() {
 })
 
 Before(function({ gherkinDocument, pickle }) {
-  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-    gherkinDocument
-  )
-  const line = gherkinScenarioLocationMap[_.last(pickle.sourceIds)].line
+  const { line } = formatterHelpers.PickleParser.getPickleLocation({
+    gherkinDocument,
+    pickle,
+  })
   this.tmpDir = path.join(
     projectPath,
     'tmp',

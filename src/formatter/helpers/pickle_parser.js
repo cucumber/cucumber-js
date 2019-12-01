@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 
 export function getScenarioDescription({ pickle, gherkinScenarioMap }) {
   return _.chain(pickle.sourceIds)
@@ -21,4 +22,11 @@ export function getPickleStepMap(pickle) {
     .map(pickleStep => [pickleStep.id, pickleStep])
     .fromPairs()
     .value()
+}
+
+export function getPickleLocation({ gherkinDocument, pickle }) {
+  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
+    gherkinDocument
+  )
+  return gherkinScenarioLocationMap[_.last(pickle.sourceIds)]
 }

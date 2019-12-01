@@ -1,7 +1,7 @@
 import { formatLocation } from '../formatter/helpers/location_helpers'
 import Table from 'cli-table3'
 import indentString from 'indent-string'
-import PickleFilter from '../pickle_filter'
+import { PickleTagFilter } from '../pickle_filter'
 
 export function getAmbiguousStepException(stepDefinitions) {
   const table = new Table({
@@ -49,10 +49,8 @@ export function retriesForPickle(pickle, options) {
   if (!retryTagFilter) {
     return retries
   }
-  const pickleFilter = new PickleFilter({
-    tagExpression: retryTagFilter,
-  })
-  if (pickleFilter.matches(pickle)) {
+  const pickleTagFilter = new PickleTagFilter(retryTagFilter)
+  if (pickleTagFilter.matchesAllTagExpressions(pickle)) {
     return retries
   }
   return 0

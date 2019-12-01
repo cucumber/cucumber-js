@@ -1,19 +1,32 @@
 import _ from 'lodash'
 import path from 'path'
 import parse from 'cucumber-tag-expressions'
+import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
 export default class PickleFilter {
   constructor({ cwd, featurePaths, names, tagExpression }) {
+    this.lineFilter = new PickleLineFilter(cwd, featurePaths)
+    this.nameFilter = new PickleNameFilter(names)
+    this.tagFilter = new PickleTagFilter(tagExpression)
+  }
+
+  matches({ gherkinDocument, pickle }) {
+    return (
+      this.lineFilter.matchesAnyLine({ gherkinDocument, pickle }) &&
+      this.nameFilter.matchesAnyName(pickle) &&
+      this.tagFilter.matchesAllTagExpressions(pickle)
+    )
+  }
+}
+
+export class PickleLineFilter {
+  constructor(cwd, featurePaths) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
       cwd,
       featurePaths: featurePaths || [],
     })
-    this.names = names || []
-    if (tagExpression) {
-      this.tagExpressionNode = parse(tagExpression || '')
-    }
   }
 
   getFeatureUriToLinesMapping({ cwd, featurePaths }) {
@@ -39,21 +52,24 @@ export default class PickleFilter {
     return mapping
   }
 
-  matches(pickle, cwd) {
-    return (
-      this.matchesAnyLine(pickle, cwd) &&
-      this.matchesAnyName(pickle) &&
-      this.matchesAllTagExpressions(pickle)
-    )
-  }
-
-  matchesAnyLine(pickle) {
-    // TODO need the gherkin document to lookup the line
-    const lines = this.featureUriToLinesMapping[pickle.uri]
-    if (lines) {
-      return _.size(_.intersection(lines, _.map(pickle.locations, 'line'))) > 0
+  matchesAnyLine({ gherkinDocument, pickle }) {
+    const linesToMatch = this.featureUriToLinesMapping[pickle.uri]
+    if (linesToMatch) {
+      const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
+        gherkinDocument
+      )
+      const pickleLines = pickle.sourceIds.map(
+        sourceId => gherkinScenarioLocationMap[sourceId].line
+      )
+      return _.size(_.intersection(linesToMatch, pickleLines)) > 0
     }
     return true
+  }
+}
+
+export class PickleNameFilter {
+  constructor(names) {
+    this.names = names || []
   }
 
   matchesAnyName(pickle) {
@@ -61,6 +77,14 @@ export default class PickleFilter {
       return true
     }
     return _.some(this.names, name => pickle.name.match(name))
+  }
+}
+
+export class PickleTagFilter {
+  constructor(tagExpression) {
+    if (tagExpression) {
+      this.tagExpressionNode = parse(tagExpression || '')
+    }
   }
 
   matchesAllTagExpressions(pickle) {

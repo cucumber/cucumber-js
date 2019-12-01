@@ -9,12 +9,14 @@ import path from 'path'
 import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
 import { messages } from 'cucumber-messages'
+import { EventDataCollector } from '../formatter/helpers'
 
 describe('helpers', () => {
   describe('loadPicklesFromFilesystem', () => {
     beforeEach(async function() {
       this.onEnvelope = sinon.stub()
       this.eventBroadcaster = new EventEmitter()
+      this.eventDataCollector = new EventDataCollector(this.eventBroadcaster)
       this.eventBroadcaster.on('envelope', this.onEnvelope)
     })
 
@@ -30,6 +32,7 @@ describe('helpers', () => {
         this.result = await loadPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
+          eventDataCollector: this.eventDataCollector,
           featureDefaultLanguage: 'en',
           featurePaths: [this.absoluteFeaturePath],
           order: 'defined',
@@ -83,6 +86,7 @@ describe('helpers', () => {
         this.result = await loadPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
+          eventDataCollector: this.eventDataCollector,
           featureDefaultLanguage: 'en',
           featurePaths: [this.absoluteFeaturePath],
           order: 'defined',
@@ -166,6 +170,7 @@ describe('helpers', () => {
         this.result = await loadPicklesFromFilesystem({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
+          eventDataCollector: this.eventDataCollector,
           featureDefaultLanguage: 'en',
           featurePaths: [this.absoluteFeaturePath],
           order: 'defined',

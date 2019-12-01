@@ -77,7 +77,7 @@ export default class Runtime {
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
     this.eventBroadcaster.emit(
       'envelope',
-      new messages.Envelope({
+      messages.Envelope.fromObject({
         testRunFinished: { success: this.success },
       })
     )

@@ -7,13 +7,18 @@ const { Status } = messages.TestResult
 export default class SnippetsFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('test-run-finished', ::this.logSnippets)
+    options.eventBroadcaster.on('envelope', envelope => {
+      if (envelope.testRunFinished) {
+        this.logSnippets()
+      }
+    })
   }
 
   logSnippets() {
     const snippets = []
     this.eventDataCollector.getTestCaseAttempts().map(testCaseAttempt => {
       const parsed = parseTestCaseAttempt({
+        cwd: this.cwd,
         snippetBuilder: this.snippetBuilder,
         testCaseAttempt,
       })

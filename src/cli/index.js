@@ -100,6 +100,7 @@ export default class Cli {
     const pickleIds = await loadPicklesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
+      eventDataCollector,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
       order: configuration.order,
@@ -113,6 +114,7 @@ export default class Cli {
         eventDataCollector,
         options: configuration.runtimeOptions,
         pickleIds,
+        supportCodeLibrary,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })

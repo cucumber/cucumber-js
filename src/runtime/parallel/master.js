@@ -21,38 +21,79 @@ export default class Master {
   constructor({
     cwd,
     eventBroadcaster,
+    eventDataCollector,
+    pickleIds,
     options,
+    supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules,
-    pickles,
   }) {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
+    this.eventDataCollector = eventDataCollector
     this.options = options || {}
+    this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
-    this.pickles = pickles || []
-    this.nextPickleIndex = 0
-    this.result = {
-      duration: 0,
-      success: true,
-    }
+    this.pickleIds = pickleIds || []
+    this.nextPickleIdIndex = 0
+    this.success = true
     this.slaves = {}
+    this.supportCodeIdMap = {}
   }
 
   parseSlaveMessage(slave, message) {
+    let envelope
     switch (message.command) {
+      case commandTypes.SUPPORT_CODE_IDS:
+        this.saveDefinitionIdMapping(message)
+        break
       case commandTypes.READY:
         this.giveSlaveWork(slave)
         break
-      case commandTypes.EVENT:
-        this.eventBroadcaster.emit(message.name, message.data)
-        if (message.name === 'test-case-finished') {
-          this.parseTestCaseResult(message.data.result)
+      case commandTypes.ENVELOPE:
+        envelope = messages.Envelope.decode(message.encodedEnvelope.data)
+        this.eventBroadcaster.emit('envelope', envelope)
+        if (envelope.testCase) {
+          this.remapDefinitionIds(envelope.testCase)
+        }
+        if (envelope.testCaseFinished) {
+          this.parseTestCaseResult(envelope.testCaseFinished.testResult)
         }
         break
       default:
         throw new Error(`Unexpected message from slave: ${message}`)
+    }
+  }
+
+  saveDefinitionIdMapping(message) {
+    _.each(message.stepDefinitionIds, (id, index) => {
+      this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
+        index
+      ].id
+    })
+    _.each(message.beforeTestCaseHookDefinitionIds, (id, index) => {
+      this.supportCodeIdMap[
+        id
+      ] = this.supportCodeLibrary.beforeTestCaseHookDefinitions[index].id
+    })
+    _.each(message.afterTestCaseHookDefinitionIds, (id, index) => {
+      this.supportCodeIdMap[
+        id
+      ] = this.supportCodeLibrary.afterTestCaseHookDefinitions[index].id
+    })
+  }
+
+  remapDefinitionIds(testCase) {
+    for (const testStep of testCase.testSteps) {
+      if (testStep.hookId) {
+        testStep.hookId = this.supportCodeIdMap[testStep.hookId]
+      }
+      if (testStep.stepDefinitionId) {
+        testStep.stepDefinitionId = testStep.stepDefinitionId.map(
+          id => this.supportCodeIdMap[id]
+        )
+      }
     }
   }
 
@@ -89,20 +130,22 @@ export default class Master {
       this.result.success = false
     }
     if (_.every(this.slaves, 'closed')) {
-      this.eventBroadcaster.emit('test-run-finished', { result: this.result })
-      this.onFinish(this.result.success)
+      this.eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          testRunFinished: { success: this.success },
+        })
+      )
+      this.onFinish(this.success)
     }
   }
 
   parseTestCaseResult(testCaseResult) {
-    if (testCaseResult.duration) {
-      this.result.duration += testCaseResult.duration
-    }
     if (
-      !testCaseResult.retried &&
+      !testCaseResult.willBeRetried &&
       this.shouldCauseFailure(testCaseResult.status)
     ) {
-      this.result.success = false
+      this.success = false
     }
   }
 
@@ -113,16 +156,26 @@ export default class Master {
   }
 
   giveSlaveWork(slave) {
-    if (this.nextPickleIndex === this.pickles.length) {
+    if (this.nextPickleIdIndex === this.pickleIds.length) {
       slave.process.send({ command: commandTypes.FINALIZE })
       return
     }
-    const pickle = this.pickles[this.nextPickleIndex]
-    this.nextPickleIndex += 1
+    const pickleId = this.pickleIds[this.nextPickleIdIndex]
+    this.nextPickleIdIndex += 1
+    const pickle = this.eventDataCollector.pickleMap[pickleId]
+    const gherkinDocument = this.eventDataCollector.gherkinDocumentMap[
+      pickle.uri
+    ]
     const retries = retriesForPickle(pickle, this.options)
     const skip =
       this.options.dryRun || (this.options.failFast && !this.result.success)
-    slave.process.send({ command: commandTypes.RUN, retries, skip, pickle })
+    slave.process.send({
+      command: commandTypes.RUN,
+      retries,
+      skip,
+      pickle,
+      gherkinDocument,
+    })
   }
 
   shouldCauseFailure(status) {

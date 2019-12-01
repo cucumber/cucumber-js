@@ -8,8 +8,8 @@ import {
   getPickleStep,
   getPickleNamesInOrderOfExecution,
   getTestCaseResult,
-  getTestStepAttachmentEvents,
-  getTestStepAttachmentEventsForHook,
+  getTestStepAttachmentsForStep,
+  getTestStepAttachmentsForHook,
   getTestStepResults,
 } from '../support/protobuf_helpers'
 import { messages } from 'cucumber-messages'
@@ -63,6 +63,19 @@ Then('scenario {string} step {string} has status {string}', function(
   expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
 })
 
+Then(
+  'scenario {string} attempt {int} step {string} has status {string}',
+  function(pickleName, attempt, stepText, status) {
+    const testStepResults = getTestStepResults(
+      this.lastRun.envelopes,
+      pickleName,
+      attempt
+    )
+    const testStepResult = _.find(testStepResults, ['text', stepText])
+    expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
+  }
+)
+
 Then('scenario {string} {string} hook has status {string}', function(
   pickleName,
   hookKeyword,
@@ -84,12 +97,28 @@ Then('scenario {string} step {string} failed with:', function(
   expect(testStepResult.result.message).to.include(errorMessage)
 })
 
+Then('scenario {string} attempt {int} step {string} failed with:', function(
+  pickleName,
+  attempt,
+  stepText,
+  errorMessage
+) {
+  const testStepResults = getTestStepResults(
+    this.lastRun.envelopes,
+    pickleName,
+    attempt
+  )
+  const testStepResult = _.find(testStepResults, ['text', stepText])
+  expect(testStepResult.result.status).to.eql(Status.FAILED)
+  expect(testStepResult.result.message).to.include(errorMessage)
+})
+
 Then('scenario {string} step {string} has the doc string:', function(
   pickleName,
   stepText,
   docString
 ) {
-  const pickleStep = getPickleStep(this.lastRun.events, pickleName, stepText)
+  const pickleStep = getPickleStep(this.lastRun.envelopes, pickleName, stepText)
   expect(pickleStep.argument.docString.content).to.eql(docString)
 })
 
@@ -98,7 +127,7 @@ Then('scenario {string} step {string} has the data table:', function(
   stepText,
   dataTable
 ) {
-  const pickleStep = getPickleStep(this.lastRun.events, pickleName, stepText)
+  const pickleStep = getPickleStep(this.lastRun.envelopes, pickleName, stepText)
   expect(new DataTable(pickleStep.argument.dataTable)).to.eql(dataTable)
 })
 
@@ -110,12 +139,12 @@ Then('scenario {string} step {string} has the attachments:', function(
   const expectedAttachments = table.hashes().map(x => {
     return { data: x.DATA, mediaType: x['MEDIA TYPE'] }
   })
-  const stepAttachmentEvents = getTestStepAttachmentEvents(
-    this.lastRun.events,
+  const stepAttachments = getTestStepAttachmentsForStep(
+    this.lastRun.envelopes,
     pickleName,
     stepText
   )
-  const actualAttachments = stepAttachmentEvents.map(e => {
+  const actualAttachments = stepAttachments.map(e => {
     return { data: e.data, mediaType: e.media.type }
   })
   expect(actualAttachments).to.eql(expectedAttachments)
@@ -129,12 +158,12 @@ Then('scenario {string} {string} hook has the attachments:', function(
   const expectedAttachments = table.hashes().map(x => {
     return { data: x.DATA, mediaType: x['MEDIA TYPE'] }
   })
-  const stepAttachmentEvents = getTestStepAttachmentEventsForHook(
-    this.lastRun.events,
+  const hookAttachments = getTestStepAttachmentsForHook(
+    this.lastRun.envelopes,
     pickleName,
     hookKeyword === 'Before'
   )
-  const actualAttachments = stepAttachmentEvents.map(e => {
+  const actualAttachments = hookAttachments.map(e => {
     return { data: e.data, mediaType: e.media.type }
   })
   expect(actualAttachments).to.eql(expectedAttachments)

@@ -21,6 +21,7 @@ export async function getExpandedArgv({ argv, cwd }) {
 export function loadPicklesFromFilesystem({
   cwd,
   eventBroadcaster,
+  eventDataCollector,
   featureDefaultLanguage,
   featurePaths,
   order,
@@ -36,7 +37,9 @@ export function loadPicklesFromFilesystem({
       if (envelope.pickle) {
         const pickle = envelope.pickle
         const pickleId = pickle.id
-        if (pickleFilter.matches(pickle)) {
+        const gherkinDocument =
+          eventDataCollector.gherkinDocumentMap[pickle.uri]
+        if (pickleFilter.matches({ gherkinDocument, pickle })) {
           eventBroadcaster.emit(
             'envelope',
             messages.Envelope.fromObject({ pickleAccepted: { pickleId } })
