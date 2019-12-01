@@ -1,10 +1,8 @@
 import _ from 'lodash'
 import Formatter from './'
+import Status from '../status'
 import path from 'path'
-import { messages } from 'cucumber-messages'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
-
-const { Status } = messages.TestResult
 
 const DEFAULT_SEPARATOR = '\n'
 

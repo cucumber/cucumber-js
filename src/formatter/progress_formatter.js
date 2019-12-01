@@ -1,7 +1,5 @@
 import SummaryFormatter from './summary_formatter'
-import { messages } from 'cucumber-messages'
-
-const { Status } = messages.TestResult
+import Status from '../status'
 
 const STATUS_CHARACTER_MAPPING = {
   [Status.AMBIGUOUS]: 'A',

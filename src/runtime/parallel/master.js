@@ -2,10 +2,9 @@ import _ from 'lodash'
 import { fork } from 'child_process'
 import commandTypes from './command_types'
 import path from 'path'
+import Status from '../../status'
 import { retriesForPickle } from '../helpers'
 import { messages } from 'cucumber-messages'
-
-const { Status } = messages.TestResult
 
 const slaveCommand = path.resolve(
   __dirname,

@@ -1,6 +1,5 @@
 import * as formatterHelpers from './formatter/helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
-import { messages } from 'cucumber-messages'
 
 // Top level
 export { default as Cli } from './cli'
@@ -10,7 +9,7 @@ export { default as Runtime } from './runtime'
 export {
   default as supportCodeLibraryBuilder,
 } from './support_code_library_builder'
-export const Status = messages.TestResult.Status
+export { default as Status } from './status'
 
 // Formatters
 export { default as Formatter } from './formatter'

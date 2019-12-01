@@ -1,14 +1,12 @@
 import _ from 'lodash'
+import Status from '../../status'
 import KeywordType, { getStepKeywordType } from './keyword_type'
 import {
   getGherkinStepMap,
   getGherkinScenarioLocationMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
-import { messages } from 'cucumber-messages'
 import path from 'path'
-
-const { Status } = messages.TestResult
 
 function parseStep({
   isBeforeHook,

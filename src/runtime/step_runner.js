@@ -1,11 +1,11 @@
 import _ from 'lodash'
+import Status from '../status'
 import Time, { millisecondsToDuration } from '../time'
 import UserCodeRunner from '../user_code_runner'
 import Promise from 'bluebird'
 import { messages } from 'cucumber-messages'
 import { format } from 'assertion-error-formatter'
 
-const { Status } = messages.TestResult
 const { beginTiming, endTiming } = Time
 
 async function run({

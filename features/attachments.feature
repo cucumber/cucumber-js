@@ -126,5 +126,5 @@ Feature: Attachments
     When I run cucumber-js
     Then the error output contains the text:
       """
-      Cannot attach after all steps/hooks have finished running. Ensure your step/hook waits for the attach to finish.
+      Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.
       """

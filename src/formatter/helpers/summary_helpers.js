@@ -1,13 +1,11 @@
 import _ from 'lodash'
 import Duration from 'duration'
+import Status from '../../status'
 import {
   addDurations,
   durationToMilliseconds,
   getZeroDuration,
 } from '../../time'
-import { messages } from 'cucumber-messages'
-
-const { Status } = messages.TestResult
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,

@@ -11,8 +11,9 @@ export default class ProgressBarFormatter extends Formatter {
     this.issueCount = 0
   }
 
-  incrementStepCount(testCase) {
-    this.numberOfSteps += testCase.testSteps.filter(s => s.pickleStepId).length
+  incrementStepCount(pickleId) {
+    const pickle = this.eventDataCollector.pickleMap[pickleId]
+    this.numberOfSteps += pickle.steps.length
   }
 
   initializeProgressBar() {
@@ -55,9 +56,7 @@ export default class ProgressBarFormatter extends Formatter {
         })
       )
       if (testCaseFinished.testResult.willBeRetried) {
-        const stepsToRetry = testCaseAttempt.testCase.testSteps.filter(
-          s => s.pickleStepId
-        ).length
+        const stepsToRetry = testCaseAttempt.pickle.steps.length
         this.progressBar.tick(-stepsToRetry)
       }
     }
@@ -74,8 +73,8 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   parseEnvelope(envelope) {
-    if (envelope.testCase) {
-      this.incrementStepCount(envelope.testCase)
+    if (envelope.pickleAccepted) {
+      this.incrementStepCount(envelope.pickleAccepted.pickleId)
     } else if (envelope.testStepStarted) {
       this.initializeProgressBar()
     } else if (envelope.testStepFinished) {

@@ -2,11 +2,9 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
+import Status from '../../status'
 import { NANOSECONDS_IN_MILLISECOND } from '../../time'
-import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
-
-const { Status } = messages.TestResult
 
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {

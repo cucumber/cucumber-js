@@ -4,13 +4,12 @@ import { createMock } from './test_helpers'
 import sinon from 'sinon'
 import getColorFns from './get_color_fns'
 import ProgressBarFormatter from './progress_bar_formatter'
+import Status from '../status'
 import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
-
-const { Status } = messages.TestResult
 
 describe('ProgressBarFormatter', () => {
   beforeEach(function() {
@@ -31,35 +30,18 @@ describe('ProgressBarFormatter', () => {
     })
   })
 
-  describe('testCase / testStepStarted', () => {
-    beforeEach(function() {
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCase: {
-            id: uuidv4(),
-            testSteps: [
-              {},
-              { pickleStepId: uuidv4() },
-              { pickleStepId: uuidv4() },
-              {},
-            ],
-          },
-        })
-      )
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCase: {
-            id: uuidv4(),
-            testSteps: [
-              { pickleStepId: uuidv4() },
-              { pickleStepId: uuidv4() },
-              { pickleStepId: uuidv4() },
-            ],
-          },
-        })
-      )
+  describe('pickleAccepted / testStepStarted', () => {
+    beforeEach(async function() {
+      await generateEvents({
+        data: 'Feature: a\nScenario: b\nGiven a step\nThen a step',
+        eventBroadcaster: this.eventBroadcaster,
+        uri: '/project/a.feature',
+      })
+      await generateEvents({
+        data: 'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+        eventBroadcaster: this.eventBroadcaster,
+        uri: '/project/b.feature',
+      })
       this.eventBroadcaster.emit(
         'envelope',
         messages.Envelope.fromObject({

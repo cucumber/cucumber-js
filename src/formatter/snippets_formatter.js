@@ -1,8 +1,6 @@
 import Formatter from './'
+import Status from '../status'
 import { parseTestCaseAttempt } from './helpers'
-import { messages } from 'cucumber-messages'
-
-const { Status } = messages.TestResult
 
 export default class SnippetsFormatter extends Formatter {
   constructor(options) {

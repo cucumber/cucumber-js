@@ -1,8 +1,6 @@
 import indentString from 'indent-string'
+import Status from '../../status'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
-import { messages } from 'cucumber-messages'
-
-const { Status } = messages.TestResult
 
 export function isFailure(result) {
   return (

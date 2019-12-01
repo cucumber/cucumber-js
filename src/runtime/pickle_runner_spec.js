@@ -3,12 +3,11 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import PickleRunner from './pickle_runner'
+import Status from '../status'
 import StepRunner from './step_runner'
 import { EventEmitter } from 'events'
 import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
-
-const { Status } = messages.TestResult
 
 describe('PickleRunner', () => {
   beforeEach(function() {

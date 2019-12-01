@@ -1,12 +1,10 @@
 import _ from 'lodash'
 import Formatter from './'
+import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import { messages } from 'cucumber-messages'
 import util from 'util'
 import { durationToNanoseconds } from '../time'
 import path from 'path'
-
-const { Status } = messages.TestResult
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 

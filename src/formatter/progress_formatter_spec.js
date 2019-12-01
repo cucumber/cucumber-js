@@ -2,12 +2,11 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import getColorFns from './get_color_fns'
 import ProgressFormatter from './progress_formatter'
+import Status from '../status'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from './helpers'
 import { messages } from 'cucumber-messages'
 import uuidv4 from 'uuid/v4'
-
-const { Status } = messages.TestResult
 
 describe('ProgressFormatter', () => {
   beforeEach(function() {
