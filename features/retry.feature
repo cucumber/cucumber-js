@@ -34,19 +34,9 @@ Feature: Retry flaky tests
       Given(/^a failing step$/, function() { throw 'fail' })
       """
     When I run cucumber-js with `--retry 0`
-    Then the output contains the text:
+    Then scenario "Failing" step "Given a failing step" failed with:
       """
-      F
-
-      Failures:
-
-      1) Scenario: Failing # features/a.feature:2
-      ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
-      Error: fail
-      """
-    And scenario "Failing" step "Given a failing step" failed with:
-      """
-      Error: fail
+      fail
       """
     And it fails
 
@@ -64,19 +54,9 @@ Feature: Retry flaky tests
       Given(/^a failing step$/, function() { throw 'fail' })
       """
     When I run cucumber-js
-    Then the output contains the text:
+    Then scenario "Failing" step "Given a failing step" failed with:
       """
-      F
-
-      Failures:
-
-      1) Scenario: Failing # features/a.feature:2
-      ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
-      Error: fail
-      """
-    And scenario "Failing" step "Given a failing step" failed with:
-      """
-      Error: fail
+      fail
       """
     And it fails
 
@@ -102,19 +82,19 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1`
-    Then the output contains the text:
+    Then it outputs the text:
       """
       F.
 
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-      ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-      """
-    And the output contains the text:
-      """
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+             fail
+
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
     And scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
@@ -142,19 +122,19 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1 --parallel 2`
-    Then the output contains the text:
+    Then it outputs the text:
       """
       F.
 
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-      ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-      """
-    And the output contains the text:
-      """
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+             fail
+
       1 scenario (1 passed)
       1 step (1 passed)
+      <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
     And scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
@@ -195,10 +175,9 @@ Feature: Retry flaky tests
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-      ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-      """
-    And the output contains the text:
-      """
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+            fail
+
       2 scenarios (2 passed)
       2 steps (2 passed)
       <duration-stat>
@@ -237,18 +216,17 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1`
-    Then the output contains the text:
+    Then it outputs the text:
       """
       F-...
 
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-      ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-          Error: fail
-      """
-    And the output contains the text:
-      """
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+             fail
+         - And a good step # features/step_definitions/cucumber_steps.js:13
+
       2 scenarios (2 passed)
       3 steps (3 passed)
       <duration-stat>
@@ -291,32 +269,26 @@ Feature: Retry flaky tests
       })
       """
     When I run cucumber-js with `--retry 1`
-    Then the output contains the text:
+    Then it outputs the text:
       """
       F..FF
 
       Failures:
 
       1) Scenario: Bad (attempt 2) # features/a.feature:6
-        ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
-          Error: fail
-      """
-    And the output contains the text:
-      """
+         ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
+             fail
+
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-              Error: fail
-      """
-    And the output contains the text:
-      """
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
+             fail
+
       2) Scenario: Bad (attempt 1, retried) # features/a.feature:6
-          ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
-              Error: fail
-      """
-    And the output contains the text:
-      """
+         ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
+             fail
+
       3 scenarios (1 failed, 2 passed)
       3 steps (1 failed, 2 passed)
       <duration-stat>
@@ -340,23 +312,13 @@ Feature: Retry flaky tests
       Given(/^a failing step$/, function() { throw 'fail' })
       """
     When I run cucumber-js with `--retry 1`
-    Then the output contains the text:
+    Then scenario "Failing" attempt 0 step "Given a failing step" failed with:
       """
-      FF
-
-      Failures:
-
-      1) Scenario: Failing (attempt 2) # features/a.feature:2
-      ✖ Given a failing step # features/step_definitions/cucumber_steps.js:3
-      Error: fail
-      """
-    And scenario "Failing" attempt 0 step "Given a failing step" failed with:
-      """
-      Error: fail
+      fail
       """
     And scenario "Failing" attempt 1 step "Given a failing step" failed with:
       """
-      Error: fail
+      fail
       """
     And it fails
 
