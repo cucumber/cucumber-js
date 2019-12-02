@@ -13,9 +13,9 @@ export function buildOptions(overrides) {
   }
 }
 
-export function buildSupportCodeLibrary(cwd = '/', fn = () => {}) {
+export function buildSupportCodeLibrary(fn = () => {}) {
   const supportCodeLibraryBuilder = new SupportCodeLibraryBuilder()
-  supportCodeLibraryBuilder.reset(cwd || '/')
+  supportCodeLibraryBuilder.reset(__dirname)
   fn(supportCodeLibraryBuilder.methods)
   return supportCodeLibraryBuilder.finalize()
 }
