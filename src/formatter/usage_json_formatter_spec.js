@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import lolex from 'lolex'
 import timeMethods from '../time'
-import { getUsageJsonSupportCodeLibrary } from '../../test/fixtures/usage_json_formatter_steps'
+import { getUsageJsonFormatterSupportCodeLibrary } from '../../test/fixtures/usage_json_formatter_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageJsonFormatter', () => {
@@ -24,7 +24,7 @@ describe('UsageJsonFormatter', () => {
         uri: 'a.feature',
       },
     ]
-    const supportCodeLibrary = getUsageJsonSupportCodeLibrary(clock)
+    const supportCodeLibrary = getUsageJsonFormatterSupportCodeLibrary(clock)
 
     // Act
     const output = await testFormatter({

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import lolex from 'lolex'
 import timeMethods from '../time'
-import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_formatter_steps'
+import { getUsageFormatterSupportCodeLibrary } from '../../test/fixtures/usage_formatter_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageFormatter', () => {
@@ -32,7 +32,7 @@ describe('UsageFormatter', () => {
     describe('unused', () => {
       it('outputs the step definitions as unused', async () => {
         // Arrange
-        const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
+        const supportCodeLibrary = getUsageFormatterSupportCodeLibrary(clock)
 
         // Act
         const output = await testFormatter({
@@ -66,7 +66,7 @@ describe('UsageFormatter', () => {
               uri: 'a.feature',
             },
           ]
-          const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
+          const supportCodeLibrary = getUsageFormatterSupportCodeLibrary(clock)
 
           // Act
           const output = await testFormatter({
@@ -102,7 +102,7 @@ describe('UsageFormatter', () => {
               uri: 'a.feature',
             },
           ]
-          const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
+          const supportCodeLibrary = getUsageFormatterSupportCodeLibrary(clock)
 
           // Act
           const output = await testFormatter({

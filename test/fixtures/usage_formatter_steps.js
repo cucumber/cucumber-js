@@ -2,7 +2,7 @@
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 
-export function getUsageSupportCodeLibrary(clock) {
+export function getUsageFormatterSupportCodeLibrary(clock) {
   return buildSupportCodeLibrary(({ Given }) => {
     Given('abc', function() {
       clock.tick(1)
