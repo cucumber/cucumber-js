@@ -1,4 +1,4 @@
-// Tests depend on the lines the steps are defined
+// Tests depend on the lines the steps are defined on
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 
