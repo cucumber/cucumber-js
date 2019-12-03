@@ -82,7 +82,9 @@ describe('DataTable', () => {
 
     describe('rowsHash', () => {
       it('throws an error an object where the keys are the first column', function() {
-        expect(() => new DataTable(data).rowsHash()).to.throw('rowsHash can only be called on a data table where all rows have exactly two columns')
+        expect(() => new DataTable(data).rowsHash()).to.throw(
+          'rowsHash can only be called on a data table where all rows have exactly two columns'
+        )
       })
     })
   })
