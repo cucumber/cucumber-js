@@ -9,7 +9,7 @@ module.exports = {
   env: {
     test_coverage: {
       plugins: [
-        ["istanbul", {exclude: ["test/*.js", "**/*_spec.js"]}]
+        ["istanbul", {exclude: ["test/**/*.js", "**/*_spec.js"]}]
       ]
     },
     browser: {
