@@ -1,188 +1,91 @@
-import { beforeEach, describe, it } from 'mocha'
+import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import getColorFns from './get_color_fns'
-import ProgressFormatter from './progress_formatter'
-import Status from '../status'
-import { EventEmitter } from 'events'
-import { EventDataCollector } from './helpers'
-import { messages } from 'cucumber-messages'
-import uuidv4 from 'uuid/v4'
+import { getSummaryFormatterSupportCodeLibrary } from '../../test/fixtures/summary_formatter_steps'
+import { testFormatter } from '../../test/formatter_helpers'
+import figures from 'figures'
+import lolex from 'lolex'
+import timeMethods from '../time'
 
 describe('ProgressFormatter', () => {
-  beforeEach(function() {
-    this.eventBroadcaster = new EventEmitter()
-    this.output = ''
-    const colorFns = getColorFns(false)
-    const logFn = data => {
-      this.output += data
-    }
-    this.progressFormatter = new ProgressFormatter({
-      colorFns,
-      eventBroadcaster: this.eventBroadcaster,
-      eventDataCollector: new EventDataCollector(this.eventBroadcaster),
-      log: logFn,
-    })
+  let clock
+
+  beforeEach(() => {
+    clock = lolex.install({ target: timeMethods })
   })
 
-  describe('test step finished', () => {
-    beforeEach(function() {
-      const testCaseId = uuidv4()
-      this.testStepId = uuidv4()
-      this.testCaseStartedId = uuidv4()
-      this.eventBroadcaster.emit(
-        'envelope',
-        new messages.Envelope({
-          testCase: {
-            id: testCaseId,
-            steps: [
-              {
-                id: this.testStepId,
-              },
-            ],
-          },
-        })
-      )
-      this.eventBroadcaster.emit(
-        'envelope',
-        new messages.Envelope({
-          testCaseStarted: {
-            testCaseId,
-            attempt: 0,
-            id: this.testCaseStartedId,
-          },
-        })
-      )
-    })
-
-    describe('ambiguous', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult: { status: Status.AMBIGUOUS },
-            },
-          })
-        )
-      })
-
-      it('outputs A', function() {
-        expect(this.output).to.eql('A')
-      })
-    })
-
-    describe('failed', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult: { status: Status.FAILED },
-            },
-          })
-        )
-      })
-
-      it('outputs F', function() {
-        expect(this.output).to.eql('F')
-      })
-    })
-
-    describe('passed', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult: { status: Status.PASSED },
-            },
-          })
-        )
-      })
-
-      it('outputs .', function() {
-        expect(this.output).to.eql('.')
-      })
-    })
-
-    describe('pending', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult: { status: Status.PENDING },
-            },
-          })
-        )
-      })
-
-      it('outputs P', function() {
-        expect(this.output).to.eql('P')
-      })
-    })
-
-    describe('skipped', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult: { status: Status.SKIPPED },
-            },
-          })
-        )
-      })
-
-      it('outputs -', function() {
-        expect(this.output).to.eql('-')
-      })
-    })
-
-    describe('undefined', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          new messages.Envelope({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult: { status: Status.UNDEFINED },
-            },
-          })
-        )
-      })
-
-      it('outputs U', function() {
-        expect(this.output).to.eql('U')
-      })
-    })
+  afterEach(() => {
+    clock.uninstall()
   })
 
-  describe('test run finished', () => {
-    beforeEach(function() {
-      this.eventBroadcaster.emit(
-        'envelope',
-        new messages.Envelope({
-          testRunFinished: {
-            duration: 0,
-          },
-        })
-      )
+  it('outputs a character for each step representing the status and then prints the summary format', async () => {
+    // Arrange
+    const sources = [
+      {
+        data: [
+          'Feature: a',
+          '  Scenario: a1',
+          '    Given an ambiguous step',
+          '  Scenario: a2',
+          '    Given a failing step',
+          '  Scenario: a3',
+          '    Given a pending step',
+          '  Scenario: a4',
+          '    Given a passing step',
+          '  Scenario: a5',
+          '    Given a skipped step',
+          '  Scenario: a6',
+          '    Given an undefined step',
+        ].join('\n'),
+        uri: 'a.feature',
+      },
+    ]
+    const supportCodeLibrary = getSummaryFormatterSupportCodeLibrary()
+
+    // Act
+    const output = await testFormatter({
+      sources,
+      supportCodeLibrary,
+      type: 'progress',
     })
 
-    it('outputs two newlines before the summary', function() {
-      expect(this.output).to.eql('\n\n0 scenarios\n0 steps\n0m00.000s\n')
-    })
+    // Assert
+    expect(output).to.eql(
+      [
+        'AFP.-U',
+        '',
+        'Failures:',
+        '',
+        '1) Scenario: a1 # a.feature:2',
+        `   ${figures.cross} Given an ambiguous step`,
+        '       Multiple step definitions match:',
+        '         an ambiguous step    - fixtures/summary_formatter_steps.js:11',
+        '         /an? ambiguous step/ - fixtures/summary_formatter_steps.js:12',
+        '',
+        '2) Scenario: a2 # a.feature:4',
+        `   ${figures.cross} Given a failing step # fixtures/summary_formatter_steps.js:7`,
+        '       error',
+        '',
+        '3) Scenario: a6 # a.feature:12',
+        '   ? Given an undefined step',
+        '       Undefined. Implement with the following snippet:',
+        '',
+        "         Given('an undefined step', function () {",
+        '           // Write code here that turns the phrase above into concrete actions',
+        "           return 'pending';",
+        '         });',
+        '',
+        '',
+        'Warnings:',
+        '',
+        '1) Scenario: a3 # a.feature:6',
+        '   ? Given a pending step # fixtures/summary_formatter_steps.js:14',
+        '       Pending',
+        '',
+        '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)',
+        '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)',
+        '0m00.000s',
+        '',
+      ].join('\n')
+    )
   })
 })

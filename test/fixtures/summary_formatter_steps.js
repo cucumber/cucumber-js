@@ -23,5 +23,11 @@ export function getSummaryFormatterSupportCodeLibrary() {
       willPass = true
       throw 'error' // eslint-disable-line no-throw-literal
     })
+
+    Given('a passing step', function() {})
+
+    Given('a skipped step', function() {
+      return 'skipped'
+    })
   })
 }

@@ -157,7 +157,7 @@ export default class JsonFormatter extends Formatter {
     if (testStepResult) {
       const { message, status } = testStepResult
       data.result = { status: Status[status].toLowerCase() }
-      if (!_.isUndefined(testStepResult.duration)) {
+      if (testStepResult.duration) {
         data.result.duration = durationToNanoseconds(testStepResult.duration)
       }
       if (status === Status.FAILED && message) {
