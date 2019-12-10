@@ -17,6 +17,8 @@ class World {
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
+        '--id-generator',
+        'incrementing',
         '--format',
         `protobuf:${protobufFilename}`,
       ])
@@ -68,7 +70,7 @@ class World {
       }
       fs.writeFileSync(
         path.join(cwd, 'protobuf.out.json'),
-        JSON.stringify(envelopes, null, 2)
+        JSON.stringify(envelopes.map(e => e.toJSON()), null, 2)
       )
     }
     if (this.debug) {

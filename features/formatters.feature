@@ -9,6 +9,7 @@ Feature: Formatters
           Parse Error
       """
     When I run cucumber-js with all formatters
+    Then the "protobuf" formatter output matches the fixture "formatters/gherkin-error.protobuf.json"
     Then the "json" formatter output matches the fixture "formatters/gherkin-error.json"
     And it fails
 
@@ -20,6 +21,7 @@ Feature: Formatters
           Given a step
       """
     When I run cucumber-js with all formatters and `--tags @a`
+    Then the "protobuf" formatter output matches the fixture "formatters/rejected-pickle.protobuf.json"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
   Scenario: passed
@@ -36,6 +38,7 @@ Feature: Formatters
       Given(/^a step$/, function() {})
       """
     When I run cucumber-js with all formatters
+    Then the "protobuf" formatter output matches the fixture "formatters/passed.protobuf.json"
     Then the "json" formatter output matches the fixture "formatters/passed.json"
 
   Scenario: failed
@@ -52,6 +55,7 @@ Feature: Formatters
       Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
     When I run cucumber-js with all formatters
+    Then the "protobuf" formatter output matches the fixture "formatters/failed.protobuf.json"
     Then the "json" formatter output matches the fixture "formatters/failed.json"
     And it fails
 
@@ -78,4 +82,5 @@ Feature: Formatters
       })
       """
     When I run cucumber-js with all formatters and `--retry 1`
+    Then the "protobuf" formatter output matches the fixture "formatters/retried.protobuf.json"
     Then the "json" formatter output matches the fixture "formatters/retried.json"

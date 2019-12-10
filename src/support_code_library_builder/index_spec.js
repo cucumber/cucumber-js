@@ -3,12 +3,13 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 import supportCodeLibraryBuilder from './'
+import { uuid } from 'gherkin/dist/src/IdGenerator'
 
 describe('supportCodeLibraryBuilder', () => {
   describe('no support code fns', () => {
     beforeEach(function() {
       this.attachFn = sinon.stub()
-      supportCodeLibraryBuilder.reset('path/to/project')
+      supportCodeLibraryBuilder.reset('path/to/project', uuid())
       this.options = supportCodeLibraryBuilder.finalize()
     })
 
@@ -35,7 +36,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('without definition function wrapper', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -50,7 +51,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('with definition function wrapper', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
         supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(function(
           fn
@@ -72,7 +73,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('function only', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -88,7 +89,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('tag and function', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After('@tagA', this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -107,7 +108,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('options and function', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -127,7 +128,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook1 = function hook1() {}
         this.hook2 = function hook2() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(this.hook1) // eslint-disable-line babel/new-cap
         supportCodeLibraryBuilder.methods.After(this.hook2) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
@@ -149,7 +150,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('function only', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -165,7 +166,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('tag and function', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before('@tagA', this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -184,7 +185,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('options and function', () => {
       beforeEach(function() {
         this.hook = function() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, this.hook) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()
       })
@@ -204,7 +205,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook1 = function hook1() {}
         this.hook2 = function hook2() {}
-        supportCodeLibraryBuilder.reset('path/to/project')
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(this.hook1) // eslint-disable-line babel/new-cap
         supportCodeLibraryBuilder.methods.Before(this.hook2) // eslint-disable-line babel/new-cap
         this.options = supportCodeLibraryBuilder.finalize()

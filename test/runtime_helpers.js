@@ -1,4 +1,5 @@
 import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
+import { incrementing } from 'gherkin/dist/src/IdGenerator'
 
 export function buildOptions(overrides) {
   return {
@@ -15,7 +16,7 @@ export function buildOptions(overrides) {
 
 export function buildSupportCodeLibrary(fn = () => {}) {
   const supportCodeLibraryBuilder = new SupportCodeLibraryBuilder()
-  supportCodeLibraryBuilder.reset(__dirname)
+  supportCodeLibraryBuilder.reset(__dirname, incrementing())
   fn(supportCodeLibraryBuilder.methods)
   return supportCodeLibraryBuilder.finalize()
 }

@@ -17,13 +17,14 @@ export async function getExpandedArgv({ argv, cwd }) {
   return fullArgv
 }
 
-// Returs ordered list of pickleIds to run
+// Returns ordered list of pickleIds to run
 export function loadPicklesFromFilesystem({
   cwd,
   eventBroadcaster,
   eventDataCollector,
   featureDefaultLanguage,
   featurePaths,
+  newId,
   order,
   pickleFilter,
 }) {
@@ -31,6 +32,7 @@ export function loadPicklesFromFilesystem({
     const result = []
     const messageStream = gherkinFromPaths(featurePaths, {
       defaultDialect: featureDefaultLanguage,
+      newId,
     })
     messageStream.on('data', envelope => {
       eventBroadcaster.emit('envelope', envelope)

@@ -12,6 +12,7 @@ import Promise from 'bluebird'
 import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
+import { uuid, incrementing } from 'gherkin/dist/src/IdGenerator'
 
 export default class Cli {
   constructor({ argv, cwd, stdout }) {
@@ -69,9 +70,13 @@ export default class Cli {
     }
   }
 
-  getSupportCodeLibrary({ supportCodeRequiredModules, supportCodePaths }) {
+  getSupportCodeLibrary({
+    newId,
+    supportCodeRequiredModules,
+    supportCodePaths,
+  }) {
     supportCodeRequiredModules.map(module => require(module))
-    supportCodeLibraryBuilder.reset(this.cwd)
+    supportCodeLibraryBuilder.reset(this.cwd, newId)
     supportCodePaths.forEach(codePath => require(codePath))
     return supportCodeLibraryBuilder.finalize()
   }
@@ -87,7 +92,12 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { success: true }
     }
-    const supportCodeLibrary = this.getSupportCodeLibrary(configuration)
+    const newId = configuration.idGenerator === 'uuid' ? uuid() : incrementing()
+    const supportCodeLibrary = this.getSupportCodeLibrary({
+      newId,
+      supportCodePaths: configuration.supportCodePaths,
+      supportCodeRequiredModules: configuration.supportCodeRequiredModules,
+    })
     const eventBroadcaster = new EventEmitter()
     const eventDataCollector = new EventDataCollector(eventBroadcaster)
     const cleanup = await this.initializeFormatters({
@@ -103,6 +113,7 @@ export default class Cli {
       eventDataCollector,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
+      newId,
       order: configuration.order,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
     })
@@ -129,6 +140,7 @@ export default class Cli {
         eventBroadcaster,
         eventDataCollector,
         options: configuration.runtimeOptions,
+        newId,
         pickleIds,
         supportCodeLibrary,
       })

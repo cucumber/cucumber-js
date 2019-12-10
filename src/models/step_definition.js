@@ -1,15 +1,13 @@
 import DataTable from './data_table'
 import { buildStepArgumentIterator } from '../step_arguments'
 import Definition from './definition'
-import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
 
 export default class StepDefinition extends Definition {
-  constructor({ code, line, options, uri, pattern, expression }) {
-    super({ code, line, options, uri })
-    this.id = uuidv4()
-    this.pattern = pattern
-    this.expression = expression
+  constructor(data) {
+    super(data)
+    this.pattern = data.pattern
+    this.expression = data.expression
   }
 
   getInvocationParameters({ step, world }) {

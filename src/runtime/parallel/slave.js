@@ -8,6 +8,7 @@ import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
 import { messages } from 'cucumber-messages'
+import { uuid } from 'gherkin/dist/src/IdGenerator'
 
 export default class Slave {
   constructor({ cwd, exit, id, sendMessage }) {
@@ -33,7 +34,7 @@ export default class Slave {
     worldParameters,
   }) {
     supportCodeRequiredModules.map(module => require(module))
-    supportCodeLibraryBuilder.reset(this.cwd)
+    supportCodeLibraryBuilder.reset(this.cwd, uuid())
     supportCodePaths.forEach(codePath => require(codePath))
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
     this.sendMessage({
@@ -77,6 +78,7 @@ export default class Slave {
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       gherkinDocument,
+      newId: uuid(),
       pickle,
       retries,
       skip,

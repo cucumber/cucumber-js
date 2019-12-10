@@ -80,6 +80,11 @@ export default class ArgvParser {
         {}
       )
       .option(
+        '--id-generator <OPTION>',
+        'how to generate ids used in envelopes (options: "uuid", "incrementing". default: "uuid")',
+        'uuid'
+      )
+      .option(
         '--i18n-keywords <ISO 639-1>',
         'list language keywords',
         ArgvParser.validateLanguage,

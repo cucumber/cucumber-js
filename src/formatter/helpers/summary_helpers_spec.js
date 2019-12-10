@@ -4,7 +4,9 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import Status from '../../status'
 import { NANOSECONDS_IN_MILLISECOND } from '../../time'
-import uuidv4 from 'uuid/v4'
+import { uuid } from 'gherkin/dist/src/IdGenerator'
+
+const uuidv4 = uuid()
 
 describe('SummaryHelpers', () => {
   describe('formatSummary', () => {

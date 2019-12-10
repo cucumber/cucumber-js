@@ -1,12 +1,10 @@
 import { PickleTagFilter } from '../pickle_filter'
 import Definition from './definition'
-import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
 
 export default class TestCaseHookDefinition extends Definition {
-  constructor(...data) {
-    super(...data)
-    this.id = uuidv4()
+  constructor(data) {
+    super(data)
     this.pickleTagFilter = new PickleTagFilter(this.options.tags)
   }
 

@@ -6,10 +6,11 @@ import { generateEvents } from '../../../../test/gherkin_helpers'
 import EventDataCollector from '../event_data_collector'
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions'
 import { messages } from 'cucumber-messages'
-import uuidv4 from 'uuid/v4'
 import { getZeroDuration } from '../../../time'
+import { uuid } from 'gherkin/dist/src/IdGenerator'
 
 const { Status } = messages.TestResult
+const uuidv4 = uuid()
 
 describe('Usage Helpers', () => {
   describe('getUsage', () => {

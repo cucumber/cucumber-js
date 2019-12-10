@@ -28,6 +28,7 @@ describe('Configuration', () => {
         featurePaths: [],
         formatOptions: { cwd: this.tmpDir },
         formats: [{ outputTo: '', type: 'progress' }],
+        idGenerator: 'uuid',
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         order: 'defined',

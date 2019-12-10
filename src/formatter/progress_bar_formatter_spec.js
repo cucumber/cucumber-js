@@ -9,7 +9,9 @@ import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import { messages } from 'cucumber-messages'
-import uuidv4 from 'uuid/v4'
+import { uuid } from 'gherkin/dist/src/IdGenerator'
+
+const uuidv4 = uuid()
 
 describe('ProgressBarFormatter', () => {
   beforeEach(function() {

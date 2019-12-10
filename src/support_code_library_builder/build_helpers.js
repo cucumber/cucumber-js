@@ -14,7 +14,7 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import validateArguments from './validate_arguments'
 
-export function buildTestCaseHookDefinition({ options, code, cwd }) {
+export function buildTestCaseHookDefinition({ options, code, cwd, id }) {
   if (typeof options === 'string') {
     options = { tags: options }
   } else if (typeof options === 'function') {
@@ -29,13 +29,14 @@ export function buildTestCaseHookDefinition({ options, code, cwd }) {
   })
   return new TestCaseHookDefinition({
     code,
+    id,
     line,
     options,
     uri,
   })
 }
 
-export function buildTestRunHookDefinition({ options, code, cwd }) {
+export function buildTestRunHookDefinition({ options, code, cwd, id }) {
   if (typeof options === 'string') {
     options = { tags: options }
   } else if (typeof options === 'function') {
@@ -50,6 +51,7 @@ export function buildTestRunHookDefinition({ options, code, cwd }) {
   })
   return new TestRunHookDefinition({
     code,
+    id,
     line,
     options,
     uri,
@@ -78,6 +80,7 @@ export function buildStepDefinitionConfig({ pattern, options, code, cwd }) {
 
 export function buildStepDefinitionFromConfig({
   config,
+  id,
   parameterTypeRegistry,
 }) {
   const { code, line, options, uri, pattern } = config
@@ -85,7 +88,15 @@ export function buildStepDefinitionFromConfig({
     typeof pattern === 'string' ? CucumberExpression : RegularExpression
 
   const expression = new Expression(pattern, parameterTypeRegistry)
-  return new StepDefinition({ code, line, options, uri, pattern, expression })
+  return new StepDefinition({
+    code,
+    id,
+    line,
+    options,
+    uri,
+    pattern,
+    expression,
+  })
 }
 
 function getDefinitionLineAndUri(cwd) {

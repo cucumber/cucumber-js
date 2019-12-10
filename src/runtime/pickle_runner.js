@@ -2,7 +2,6 @@ import _ from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import uuidv4 from 'uuid/v4'
 import { messages } from 'cucumber-messages'
 import { addDurations, getZeroDuration } from '../time'
 
@@ -12,6 +11,7 @@ export default class PickleRunner {
   constructor({
     eventBroadcaster,
     gherkinDocument,
+    newId,
     pickle,
     retries = 0,
     skip,
@@ -37,11 +37,12 @@ export default class PickleRunner {
     this.eventBroadcaster = eventBroadcaster
     this.gherkinDocument = gherkinDocument
     this.maxAttempts = 1 + (skip ? 0 : retries)
+    this.newId = newId
     this.pickle = pickle
     this.skip = skip
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
-    this.testCaseId = uuidv4()
+    this.testCaseId = this.newId()
     this.testSteps = this.buildTestSteps()
     this.resetTestProgressData()
   }
@@ -62,7 +63,7 @@ export default class PickleRunner {
     const steps = []
     this.getBeforeHookDefinitions().forEach(hookDefinition => {
       steps.push({
-        id: uuidv4(),
+        id: this.newId(),
         hookDefinition,
         isHook: true,
         isBeforeHook: true,
@@ -71,7 +72,7 @@ export default class PickleRunner {
     this.pickle.steps.forEach(pickleStep => {
       const stepDefinitions = this.getStepDefinitions(pickleStep)
       steps.push({
-        id: uuidv4(),
+        id: this.newId(),
         pickleStep,
         stepDefinitions,
         isHook: false,
@@ -79,7 +80,7 @@ export default class PickleRunner {
     })
     this.getAfterHookDefinitions().forEach(hookDefinition => {
       steps.push({
-        id: uuidv4(),
+        id: this.newId(),
         hookDefinition,
         isHook: true,
         isAfterHook: false,
@@ -208,7 +209,7 @@ export default class PickleRunner {
   async run() {
     this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
-      this.currentTestCaseStartedId = uuidv4()
+      this.currentTestCaseStartedId = this.newId()
       this.eventBroadcaster.emit(
         'envelope',
         messages.Envelope.fromObject({

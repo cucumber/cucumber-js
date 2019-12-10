@@ -14,12 +14,14 @@ export default class Runtime {
   constructor({
     eventBroadcaster,
     eventDataCollector,
+    newId,
     options,
     pickleIds,
     supportCodeLibrary,
   }) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
+    this.newId = newId
     this.options = options || {}
     this.pickleIds = pickleIds || []
     this.stackTraceFilter = new StackTraceFilter()
@@ -54,6 +56,7 @@ export default class Runtime {
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       gherkinDocument: this.eventDataCollector.gherkinDocumentMap[pickle.uri],
+      newId: this.newId,
       pickle,
       retries,
       skip,

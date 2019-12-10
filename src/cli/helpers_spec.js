@@ -10,6 +10,7 @@ import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
 import { messages } from 'cucumber-messages'
 import { EventDataCollector } from '../formatter/helpers'
+import { uuid } from 'gherkin/dist/src/IdGenerator'
 
 describe('helpers', () => {
   describe('loadPicklesFromFilesystem', () => {
@@ -35,6 +36,7 @@ describe('helpers', () => {
           eventDataCollector: this.eventDataCollector,
           featureDefaultLanguage: 'en',
           featurePaths: [this.absoluteFeaturePath],
+          newId: uuid(),
           order: 'defined',
           pickleFilter: new PickleFilter({ cwd: this.tmpDir }),
         })
@@ -89,6 +91,7 @@ describe('helpers', () => {
           eventDataCollector: this.eventDataCollector,
           featureDefaultLanguage: 'en',
           featurePaths: [this.absoluteFeaturePath],
+          newId: uuid(),
           order: 'defined',
           pickleFilter: new PickleFilter({
             cwd: this.tmpDir,
@@ -173,6 +176,7 @@ describe('helpers', () => {
           eventDataCollector: this.eventDataCollector,
           featureDefaultLanguage: 'en',
           featurePaths: [this.absoluteFeaturePath],
+          newId: uuid(),
           order: 'defined',
           pickleFilter: new PickleFilter({}),
         })
