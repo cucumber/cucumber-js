@@ -5,8 +5,8 @@ The default world constructor is:
 
 ```javascript
 function World({ attach, parameters }) {
-  this.attach = attach;
-  this.parameters = parameters;
+  this.attach = attach
+  this.parameters = parameters
 }
 ```
 
@@ -16,22 +16,22 @@ function World({ attach, parameters }) {
 The default can be overridden with `setWorldConstructor`:
 
 ```javascript
-const { setWorldConstructor } = require('cucumber');
-const seleniumWebdriver = require('selenium-webdriver');
+const { setWorldConstructor } = require('cucumber')
+const seleniumWebdriver = require('selenium-webdriver')
 
 function CustomWorld() {
   this.driver = new seleniumWebdriver.Builder()
     .forBrowser('firefox')
-    .build();
+    .build()
 
   // Returns a promise that resolves to the element
   this.waitForElement = function(locator) {
-    const condition = seleniumWebdriver.until.elementLocated(locator);
-    return this.driver.wait(condition);
+    const condition = seleniumWebdriver.until.elementLocated(locator)
+    return this.driver.wait(condition)
   }
 }
 
-setWorldConstructor(CustomWorld);
+setWorldConstructor(CustomWorld)
 ```
 
 **Note:** The World constructor was made strictly synchronous in *[v0.8.0](https://github.com/cucumber/cucumber-js/releases/tag/v0.8.0)*.
