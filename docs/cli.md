@@ -154,24 +154,7 @@ or [CoffeeScript](https://www.npmjs.com/package/coffeescript):
 
 ### Extra configuration
 
-Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `tests.setup.js`):
-
-```js
-require('@babel/register')({
-  rootMode: 'upward',
-  ignore: ['node_modules'],
-});
-```
-
-And then require it using the `--require` option:
-
-```
---require tests.setup.js --require 'features/**/*.js'
-```
-
-Note that since the first `--require babel.register.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
-
-Similarly, with TypeScript, you might want to provide configuration that prevents the compiled JS being written out to files, and pass some compiler options:
+Sometimes the required module (say `@ts-node/register`) needs extra configuration (e.g. you might want to configure it such that it prevents the compiled JS being written out to files, and pass some compiler options). In such cases, create a script (say, `tests.setup.js`):
 
 ```js
 require('ts-node').register({
@@ -181,6 +164,14 @@ require('ts-node').register({
   },
 });
 ```
+
+And then require it using the `--require` option:
+
+```
+--require tests.setup.js --require 'features/**/*.ts'
+```
+
+Note that the first `--require tests.setup.js` overrides the default require glob, so we'll need to `--require` our support code explicitly too.
 
 ## World Parameters
 
