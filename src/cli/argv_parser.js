@@ -117,7 +117,7 @@ export default class ArgvParser {
       )
       .option(
         '--predictable-ids',
-        'Use predictable ids (option ignored if using parallel)',
+        'Use predictable ids in protobuf messages (option ignored if using parallel)',
       )
       .option(
         '-r, --require <GLOB|DIR|FILE>',
