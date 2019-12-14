@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
-import { getSummaryFormatterSupportCodeLibrary } from '../../../test/fixtures/summary_formatter_steps'
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import lolex from 'lolex'
 import timeMethods from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
@@ -20,7 +20,7 @@ async function testFormatSummary({
     },
   ]
   if (!supportCodeLibrary) {
-    supportCodeLibrary = getSummaryFormatterSupportCodeLibrary()
+    supportCodeLibrary = getBaseSupportCodeLibrary()
   }
   const testCaseAttempts = await getTestCaseAttempts({
     runtimeOptions,

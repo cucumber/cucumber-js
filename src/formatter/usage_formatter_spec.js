@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import lolex from 'lolex'
 import timeMethods from '../time'
-import { getUsageFormatterSupportCodeLibrary } from '../../test/fixtures/usage_formatter_steps'
+import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageFormatter', () => {
@@ -32,7 +32,7 @@ describe('UsageFormatter', () => {
     describe('unused', () => {
       it('outputs the step definitions as unused', async () => {
         // Arrange
-        const supportCodeLibrary = getUsageFormatterSupportCodeLibrary(clock)
+        const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
 
         // Act
         const output = await testFormatter({
@@ -41,17 +41,17 @@ describe('UsageFormatter', () => {
         })
 
         // Assert
-        expect(output).to.eql(
-          '┌────────────────┬──────────┬──────────────────────────────────────┐\n' +
-            '│ Pattern / Text │ Duration │ Location                             │\n' +
-            '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-            '│ abc            │ UNUSED   │ fixtures/usage_formatter_steps.js:7  │\n' +
-            '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-            '│ /def?/         │ UNUSED   │ fixtures/usage_formatter_steps.js:12 │\n' +
-            '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-            '│ ghi            │ UNUSED   │ fixtures/usage_formatter_steps.js:21 │\n' +
-            '└────────────────┴──────────┴──────────────────────────────────────┘\n'
-        )
+        expect(output).to.eql(`\
+┌────────────────┬──────────┬───────────────────┐
+│ Pattern / Text │ Duration │ Location          │
+├────────────────┼──────────┼───────────────────┤
+│ abc            │ UNUSED   │ usage_steps.js:7  │
+├────────────────┼──────────┼───────────────────┤
+│ /def?/         │ UNUSED   │ usage_steps.js:12 │
+├────────────────┼──────────┼───────────────────┤
+│ ghi            │ UNUSED   │ usage_steps.js:21 │
+└────────────────┴──────────┴───────────────────┘
+`)
       })
     })
 
@@ -66,7 +66,7 @@ describe('UsageFormatter', () => {
               uri: 'a.feature',
             },
           ]
-          const supportCodeLibrary = getUsageFormatterSupportCodeLibrary(clock)
+          const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
 
           // Act
           const output = await testFormatter({
@@ -77,19 +77,19 @@ describe('UsageFormatter', () => {
           })
 
           // Assert
-          expect(output).to.eql(
-            '┌────────────────┬──────────┬──────────────────────────────────────┐\n' +
-              '│ Pattern / Text │ Duration │ Location                             │\n' +
-              '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-              '│ abc            │ UNUSED   │ fixtures/usage_formatter_steps.js:7  │\n' +
-              '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-              '│ /def?/         │ -        │ fixtures/usage_formatter_steps.js:12 │\n' +
-              '│   de           │ -        │ a.feature:4                          │\n' +
-              '│   def          │ -        │ a.feature:3                          │\n' +
-              '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-              '│ ghi            │ UNUSED   │ fixtures/usage_formatter_steps.js:21 │\n' +
-              '└────────────────┴──────────┴──────────────────────────────────────┘\n'
-          )
+          expect(output).to.eql(`\
+┌────────────────┬──────────┬───────────────────┐
+│ Pattern / Text │ Duration │ Location          │
+├────────────────┼──────────┼───────────────────┤
+│ abc            │ UNUSED   │ usage_steps.js:7  │
+├────────────────┼──────────┼───────────────────┤
+│ /def?/         │ -        │ usage_steps.js:12 │
+│   de           │ -        │ a.feature:4       │
+│   def          │ -        │ a.feature:3       │
+├────────────────┼──────────┼───────────────────┤
+│ ghi            │ UNUSED   │ usage_steps.js:21 │
+└────────────────┴──────────┴───────────────────┘
+`)
         })
       })
 
@@ -102,7 +102,7 @@ describe('UsageFormatter', () => {
               uri: 'a.feature',
             },
           ]
-          const supportCodeLibrary = getUsageFormatterSupportCodeLibrary(clock)
+          const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
 
           // Act
           const output = await testFormatter({
@@ -112,19 +112,19 @@ describe('UsageFormatter', () => {
           })
 
           // Assert
-          expect(output).to.eql(
-            '┌────────────────┬──────────┬──────────────────────────────────────┐\n' +
-              '│ Pattern / Text │ Duration │ Location                             │\n' +
-              '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-              '│ /def?/         │ 1.50ms   │ fixtures/usage_formatter_steps.js:12 │\n' +
-              '│   def          │ 2ms      │ a.feature:3                          │\n' +
-              '│   de           │ 1ms      │ a.feature:4                          │\n' +
-              '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-              '│ abc            │ UNUSED   │ fixtures/usage_formatter_steps.js:7  │\n' +
-              '├────────────────┼──────────┼──────────────────────────────────────┤\n' +
-              '│ ghi            │ UNUSED   │ fixtures/usage_formatter_steps.js:21 │\n' +
-              '└────────────────┴──────────┴──────────────────────────────────────┘\n'
-          )
+          expect(output).to.eql(`\
+┌────────────────┬──────────┬───────────────────┐
+│ Pattern / Text │ Duration │ Location          │
+├────────────────┼──────────┼───────────────────┤
+│ /def?/         │ 1.50ms   │ usage_steps.js:12 │
+│   def          │ 2ms      │ a.feature:3       │
+│   de           │ 1ms      │ a.feature:4       │
+├────────────────┼──────────┼───────────────────┤
+│ abc            │ UNUSED   │ usage_steps.js:7  │
+├────────────────┼──────────┼───────────────────┤
+│ ghi            │ UNUSED   │ usage_steps.js:21 │
+└────────────────┴──────────┴───────────────────┘
+`)
         })
       })
     })

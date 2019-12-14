@@ -77,7 +77,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 8,
                     match: {
-                      location: 'fixtures/json_formatter_steps.js:7',
+                      location: 'json_formatter_steps.js:7',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',

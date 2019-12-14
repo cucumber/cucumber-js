@@ -3,7 +3,7 @@
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 
 export function getJsonFormatterSupportCodeLibrary(clock) {
-  return buildSupportCodeLibrary(({ Given }) => {
+  return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a passing step', function() {
       clock.tick(1)
     })
@@ -24,7 +24,7 @@ export function getJsonFormatterSupportCodeLibrary(clock) {
 }
 
 export function getJsonFormatterSupportCodeLibraryWithHooks() {
-  return buildSupportCodeLibrary(({ After, Before, Given }) => {
+  return buildSupportCodeLibrary(__dirname, ({ After, Before, Given }) => {
     Given('a passing step', function() {})
     Before(function() {})
     After(function() {})

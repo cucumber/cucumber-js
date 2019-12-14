@@ -9,7 +9,7 @@ import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import lolex from 'lolex'
 import timeMethods, { millisecondsToDuration, getZeroDuration } from '../time'
-import { getSummaryFormatterSupportCodeLibrary } from '../../test/fixtures/summary_formatter_steps'
+import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 
 async function testPickleRunner(options) {
   const envelopes = []
@@ -148,7 +148,7 @@ describe('PickleRunner', () => {
     describe('with an ambiguous step', () => {
       it('emits the expected envelopes and returns an ambiguous result', async () => {
         // Arrange
-        const supportCodeLibrary = getSummaryFormatterSupportCodeLibrary()
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
         const {
           pickles: [pickle],
         } = await parse({
@@ -159,8 +159,8 @@ describe('PickleRunner', () => {
         })
         const message = [
           'Multiple step definitions match:',
-          '  an ambiguous step    - fixtures/summary_formatter_steps.js:11',
-          '  /an? ambiguous step/ - fixtures/summary_formatter_steps.js:12',
+          '  an ambiguous step    - steps.js:11',
+          '  /an? ambiguous step/ - steps.js:12',
         ].join('\n')
 
         // Act

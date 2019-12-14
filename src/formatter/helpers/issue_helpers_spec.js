@@ -4,7 +4,7 @@ import getColorFns from '../get_color_fns'
 import { formatIssue } from './issue_helpers'
 import figures from 'figures'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
-import { getSummaryFormatterSupportCodeLibrary } from '../../../test/fixtures/summary_formatter_steps'
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
 
 async function testFormatIssue(sourceData) {
@@ -14,7 +14,7 @@ async function testFormatIssue(sourceData) {
       uri: 'project/a.feature',
     },
   ]
-  const supportCodeLibrary = getSummaryFormatterSupportCodeLibrary()
+  const supportCodeLibrary = getBaseSupportCodeLibrary()
   const [testCaseAttempt] = await getTestCaseAttempts({
     sources,
     supportCodeLibrary,
@@ -51,10 +51,10 @@ describe('IssueHelpers', () => {
         expect(output).to.eql(
           [
             '1) Scenario: my scenario # a.feature:2',
-            `   ${figures.tick} Given a passing step # fixtures/summary_formatter_steps.js:27`,
-            `   ${figures.cross} When a failing step # fixtures/summary_formatter_steps.js:7`,
+            `   ${figures.tick} Given a passing step # steps.js:27`,
+            `   ${figures.cross} When a failing step # steps.js:7`,
             '       error',
-            '   - Then a passing step # fixtures/summary_formatter_steps.js:27',
+            '   - Then a passing step # steps.js:27',
             '',
             '',
           ].join('\n')
@@ -80,12 +80,12 @@ describe('IssueHelpers', () => {
         expect(output).to.eql(
           [
             '1) Scenario: my scenario # a.feature:2',
-            `   ${figures.tick} Given a passing step # fixtures/summary_formatter_steps.js:27`,
+            `   ${figures.tick} Given a passing step # steps.js:27`,
             `   ${figures.cross} When an ambiguous step`,
             '       Multiple step definitions match:',
-            '         an ambiguous step    - fixtures/summary_formatter_steps.js:11',
-            '         /an? ambiguous step/ - fixtures/summary_formatter_steps.js:12',
-            '   - Then a passing step # fixtures/summary_formatter_steps.js:27',
+            '         an ambiguous step    - steps.js:11',
+            '         /an? ambiguous step/ - steps.js:12',
+            '   - Then a passing step # steps.js:27',
             '',
             '',
           ].join('\n')
@@ -111,7 +111,7 @@ describe('IssueHelpers', () => {
         expect(output).to.eql(
           [
             '1) Scenario: my scenario # a.feature:2',
-            `   ${figures.tick} Given a passing step # fixtures/summary_formatter_steps.js:27`,
+            `   ${figures.tick} Given a passing step # steps.js:27`,
             `   ? When an undefined step`,
             '       Undefined. Implement with the following snippet:',
             '',
@@ -120,7 +120,7 @@ describe('IssueHelpers', () => {
             "           return 'pending';",
             '         });',
             '',
-            '   - Then a passing step # fixtures/summary_formatter_steps.js:27',
+            '   - Then a passing step # steps.js:27',
             '',
             '',
           ].join('\n')
@@ -146,10 +146,10 @@ describe('IssueHelpers', () => {
         expect(output).to.eql(
           [
             '1) Scenario: my scenario # a.feature:2',
-            `   ${figures.tick} Given a passing step # fixtures/summary_formatter_steps.js:27`,
-            `   ? When a pending step # fixtures/summary_formatter_steps.js:14`,
+            `   ${figures.tick} Given a passing step # steps.js:27`,
+            `   ? When a pending step # steps.js:14`,
             '       Pending',
-            '   - Then a passing step # fixtures/summary_formatter_steps.js:27',
+            '   - Then a passing step # steps.js:27',
             '',
             '',
           ].join('\n')
@@ -178,10 +178,10 @@ describe('IssueHelpers', () => {
         expect(output).to.eql(
           [
             '1) Scenario: my scenario # a.feature:2',
-            `   ${figures.tick} Given a passing step # fixtures/summary_formatter_steps.js:27`,
-            `   ? When a pending step # fixtures/summary_formatter_steps.js:14`,
+            `   ${figures.tick} Given a passing step # steps.js:27`,
+            `   ? When a pending step # steps.js:14`,
             '       Pending',
-            '   - Then a passing step # fixtures/summary_formatter_steps.js:27',
+            '   - Then a passing step # steps.js:27',
             '       | aaa | b | c   |',
             '       | d   | e | ff  |',
             '       | gg  | h | iii |',
@@ -216,10 +216,10 @@ describe('IssueHelpers', () => {
         expect(output).to.eql(
           [
             '1) Scenario: my scenario # a.feature:2',
-            `   ${figures.tick} Given a passing step # fixtures/summary_formatter_steps.js:27`,
-            `   ? When a pending step # fixtures/summary_formatter_steps.js:14`,
+            `   ${figures.tick} Given a passing step # steps.js:27`,
+            `   ? When a pending step # steps.js:14`,
             '       Pending',
-            '   - Then a passing step # fixtures/summary_formatter_steps.js:27',
+            '   - Then a passing step # steps.js:27',
             '       """',
             '       this is a multiline',
             '       doc string',

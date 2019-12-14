@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import lolex from 'lolex'
 import timeMethods from '../time'
-import { getUsageJsonFormatterSupportCodeLibrary } from '../../test/fixtures/usage_json_formatter_steps'
+import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageJsonFormatter', () => {
@@ -24,7 +24,7 @@ describe('UsageJsonFormatter', () => {
         uri: 'a.feature',
       },
     ]
-    const supportCodeLibrary = getUsageJsonFormatterSupportCodeLibrary(clock)
+    const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
 
     // Act
     const output = await testFormatter({
@@ -37,8 +37,9 @@ describe('UsageJsonFormatter', () => {
     // Assert
     expect(parsedOutput).to.eql([
       {
-        code: 'function () {\n      clock.tick(2);\n    }',
-        line: 11,
+        code:
+          'function () {\n      if (count === 0) {\n        clock.tick(2);\n        count += 1;\n      } else {\n        clock.tick(1);\n      }\n    }',
+        line: 12,
         matches: [
           {
             duration: {
@@ -54,9 +55,9 @@ describe('UsageJsonFormatter', () => {
           seconds: 0,
           nanos: 2000000,
         },
-        pattern: 'def',
+        pattern: 'def?',
         patternType: 'RegularExpression',
-        uri: 'fixtures/usage_json_formatter_steps.js',
+        uri: 'usage_steps.js',
       },
       {
         code: 'function () {\n      clock.tick(1);\n    }',
@@ -78,15 +79,15 @@ describe('UsageJsonFormatter', () => {
         },
         pattern: 'abc',
         patternType: 'CucumberExpression',
-        uri: 'fixtures/usage_json_formatter_steps.js',
+        uri: 'usage_steps.js',
       },
       {
         code: 'function () {}',
-        line: 15,
+        line: 21,
         matches: [],
         pattern: 'ghi',
         patternType: 'CucumberExpression',
-        uri: 'fixtures/usage_json_formatter_steps.js',
+        uri: 'usage_steps.js',
       },
     ])
   })

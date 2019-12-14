@@ -2,8 +2,8 @@
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 
-export function getSummaryFormatterSupportCodeLibrary() {
-  return buildSupportCodeLibrary(({ Given }) => {
+export function getBaseSupportCodeLibrary() {
+  return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a failing step', function() {
       throw 'error' // eslint-disable-line no-throw-literal
     })
