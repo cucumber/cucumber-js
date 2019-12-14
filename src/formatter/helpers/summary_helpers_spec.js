@@ -1,228 +1,187 @@
-import { beforeEach, describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
-import Status from '../../status'
-import { NANOSECONDS_IN_MILLISECOND } from '../../time'
-import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import { getSummaryFormatterSupportCodeLibrary } from '../../../test/fixtures/summary_formatter_steps'
+import lolex from 'lolex'
+import timeMethods from '../../time'
+import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 
-const uuidv4 = uuid()
+async function testFormatSummary({
+  runtimeOptions,
+  sourceData,
+  supportCodeLibrary,
+}) {
+  const sources = [
+    {
+      data: sourceData,
+      uri: 'project/a.feature',
+    },
+  ]
+  if (!supportCodeLibrary) {
+    supportCodeLibrary = getSummaryFormatterSupportCodeLibrary()
+  }
+  const testCaseAttempts = await getTestCaseAttempts({
+    runtimeOptions,
+    sources,
+    supportCodeLibrary,
+  })
+  return formatSummary({
+    colorFns: getColorFns(false),
+    testCaseAttempts,
+  })
+}
 
 describe('SummaryHelpers', () => {
+  let clock
+
+  beforeEach(() => {
+    clock = lolex.install({ target: timeMethods })
+  })
+
+  afterEach(() => {
+    clock.uninstall()
+  })
+
   describe('formatSummary', () => {
-    beforeEach(function() {
-      this.testCaseAttempts = []
-      this.options = {
-        colorFns: getColorFns(false),
-        testCaseAttempts: this.testCaseAttempts,
-      }
-    })
-
     describe('with no test cases', () => {
-      beforeEach(function() {
-        this.result = formatSummary(this.options)
-      })
+      it('outputs step totals, scenario totals, and duration', async () => {
+        // Arrange
+        const sourceData = ''
 
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
-        )
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain('0 scenarios\n' + '0 steps\n' + '0m00.000s\n')
       })
     })
 
     describe('with one passing scenario with one passing step', () => {
-      beforeEach(function() {
-        const testStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
-          stepResults: {
-            [testStepId]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the totals and number of each status', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
 
-      it('outputs the totals and number of each status', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one passing scenario with one step and hook', () => {
-      beforeEach(function() {
-        const hookTestStepId = uuidv4()
-        const pickleTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
-          stepResults: {
-            [hookTestStepId]: { status: Status.PASSED },
-            [pickleTestStepId]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [
-              { id: hookTestStepId },
-              { id: pickleTestStepId, pickleStepId: uuidv4() },
-            ],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('filter out the hooks', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {})
+            Before(() => {})
+          }
+        )
 
-      it('filter out the hooks', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one scenario that failed and was retried then passed', () => {
-      beforeEach(function() {
-        const testStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.FAILED,
-            willBeRetried: true,
-            duration: { seconds: 0, nanos: 0 },
-          },
-          stepResults: {
-            [testStepId]: { status: Status.FAILED },
-          },
-          testCase: {
-            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
-          },
+      it('filters out the retried attempts', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a flaky step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          let willPass = false
+          Given('a flaky step', function() {
+            if (willPass) {
+              return
+            }
+            willPass = true
+            throw 'error' // eslint-disable-line no-throw-literal
+          })
         })
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
-          stepResults: {
-            [testStepId]: {
-              status: Status.PASSED,
-              duration: { seconds: 0, nanos: 0 },
-            },
-          },
-          testCase: {
-            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
 
-      it('filters out the retried attempts', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          runtimeOptions: { retry: 1 },
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one passing scenario with multiple passing steps', () => {
-      beforeEach(function() {
-        const testStepId1 = uuidv4()
-        const testStepId2 = uuidv4()
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
-          stepResults: {
-            [testStepId1]: { status: Status.PASSED },
-            [testStepId2]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [
-              { id: testStepId1, pickleStepId: uuidv4() },
-              { id: testStepId2, pickleStepId: uuidv4() },
-            ],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the totals and number of each status', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+          'Then a passing step',
+        ].join('\n')
 
-      it('outputs the totals and number of each status', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one of every kind of scenario', () => {
-      beforeEach(function() {
-        const ambiguousTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.AMBIGUOUS,
-            duration: { seconds: 0, nanos: 0 },
-          },
-          stepResults: {
-            [ambiguousTestStepId]: { status: Status.AMBIGUOUS },
-          },
-          testCase: {
-            testSteps: [{ id: ambiguousTestStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        const failedTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: { status: Status.FAILED, duration: { seconds: 0, nanos: 0 } },
-          stepResults: {
-            [failedTestStepId]: { status: Status.FAILED },
-          },
-          testCase: {
-            testSteps: [{ id: failedTestStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        const pendingTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.PENDING,
-            duration: { seconds: 0, nanos: 0 },
-          },
-          stepResults: {
-            [pendingTestStepId]: { status: Status.PENDING },
-          },
-          testCase: {
-            testSteps: [{ id: pendingTestStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        const passedTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED, duration: { seconds: 0, nanos: 0 } },
-          stepResults: {
-            [passedTestStepId]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [{ id: passedTestStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        const skippedTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.SKIPPED,
-            duration: { seconds: 0, nanos: 0 },
-          },
-          stepResults: {
-            [skippedTestStepId]: { status: Status.SKIPPED },
-          },
-          testCase: {
-            testSteps: [{ id: skippedTestStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        const undefinedTestStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.UNDEFINED,
-            duration: { seconds: 0, nanos: 0 },
-          },
-          stepResults: {
-            [undefinedTestStepId]: { status: Status.UNDEFINED },
-          },
-          testCase: {
-            testSteps: [{ id: undefinedTestStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the totals and number of each status', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          '  Scenario: a1',
+          '    Given an ambiguous step',
+          '  Scenario: a2',
+          '    Given a failing step',
+          '  Scenario: a3',
+          '    Given a pending step',
+          '  Scenario: a4',
+          '    Given a passing step',
+          '  Scenario: a5',
+          '    Given a skipped step',
+          '  Scenario: a6',
+          '    Given an undefined step',
+        ].join('\n')
 
-      it('outputs the totals and number of each status', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain(
           '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '0m00.000s\n'
@@ -231,75 +190,87 @@ describe('SummaryHelpers', () => {
     })
 
     describe('with a duration of 123 milliseconds', () => {
-      beforeEach(function() {
-        const testStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.PASSED,
-            duration: { seconds: 0, nanos: 123 * NANOSECONDS_IN_MILLISECOND },
-          },
-          stepResults: {
-            [testStepId]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the duration as 0m00.123s', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {
+              clock.tick(123)
+            })
+          }
+        )
 
-      it('outputs the duration as 0m00.123s', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.123s\n'
         )
       })
     })
 
     describe('with a duration of 12.3 seconds', () => {
-      beforeEach(function() {
-        const testStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.PASSED,
-            duration: { seconds: 12, nanos: 300 * NANOSECONDS_IN_MILLISECOND },
-          },
-          stepResults: {
-            [testStepId]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the duration as 0m12.300s', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {
+              clock.tick(12.3 * 1000)
+            })
+          }
+        )
 
-      it('outputs the duration as 0m12.300s', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m12.300s\n'
         )
       })
     })
 
-    describe('with a duration of 120.3 seconds', () => {
-      beforeEach(function() {
-        const testStepId = uuidv4()
-        this.testCaseAttempts.push({
-          result: {
-            status: Status.PASSED,
-            duration: { seconds: 123, nanos: 0 },
-          },
-          stepResults: {
-            [testStepId]: { status: Status.PASSED },
-          },
-          testCase: {
-            testSteps: [{ id: testStepId, pickleStepId: uuidv4() }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+    describe('with a duration of 123 seconds', () => {
+      it('outputs the duration as 2m03.000s', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {
+              clock.tick(123 * 1000)
+            })
+          }
+        )
 
-      it('outputs the duration as 2m03.000s', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '2m03.000s\n'
         )
       })
