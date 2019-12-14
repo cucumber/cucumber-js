@@ -166,8 +166,7 @@ export default class Master {
       pickle.uri
     ]
     const retries = retriesForPickle(pickle, this.options)
-    const skip =
-      this.options.dryRun || (this.options.failFast && !this.success)
+    const skip = this.options.dryRun || (this.options.failFast && !this.success)
     slave.process.send({
       command: commandTypes.RUN,
       retries,
