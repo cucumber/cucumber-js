@@ -41,9 +41,9 @@ function parseStep({
       line: hookDefinition.line,
     }
   }
-  if (testStep.stepDefinitionId && testStep.stepDefinitionId.length === 1) {
+  if (testStep.stepDefinitionIds && testStep.stepDefinitionIds.length === 1) {
     const stepDefinition = supportCodeLibrary.stepDefinitions.find(
-      x => x.id === testStep.stepDefinitionId[0]
+      x => x.id === testStep.stepDefinitionIds[0]
     )
     out.actionLocation = {
       uri: stepDefinition.uri,
@@ -54,7 +54,7 @@ function parseStep({
     out.keyword = keyword
     out.sourceLocation = {
       uri: pickleUri,
-      line: gherkinStepMap[pickleStep.sourceIds[0]].location.line,
+      line: gherkinStepMap[pickleStep.astNodeIds[0]].location.line,
     }
     out.text = pickleStep.text
     if (pickleStep.argument) {
@@ -74,7 +74,7 @@ function parseStep({
 //
 // Returns the following
 // {
-//   testCase: {location, name, attempt, result: { status, retried, duration}, uri},
+//   testCase: {location, name, attempt, result: { status, willBeRetried, duration}, uri},
 //   testSteps: [
 //     {attachments, keyword, text?, result: {status, duration}, argument?, snippet?, sourceLocation?, actionLocation?}
 //     ...
@@ -100,7 +100,7 @@ export function parseTestCaseAttempt({
       result: testCaseAttempt.result,
       sourceLocation: {
         uri: relativePickleUri,
-        line: gherkinScenarioLocationMap[_.last(pickle.sourceIds)].line,
+        line: gherkinScenarioLocationMap[_.last(pickle.astNodeIds)].line,
       },
     },
     testSteps: [],

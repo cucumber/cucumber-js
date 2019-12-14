@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 
 export function getScenarioDescription({ pickle, gherkinScenarioMap }) {
-  return _.chain(pickle.sourceIds)
+  return _.chain(pickle.astNodeIds)
     .map(id => gherkinScenarioMap[id])
     .compact()
     .first()
@@ -10,7 +10,7 @@ export function getScenarioDescription({ pickle, gherkinScenarioMap }) {
 }
 
 export function getStepKeyword({ pickleStep, gherkinStepMap }) {
-  return _.chain(pickleStep.sourceIds)
+  return _.chain(pickleStep.astNodeIds)
     .map(id => gherkinStepMap[id])
     .compact()
     .first()
@@ -28,5 +28,5 @@ export function getPickleLocation({ gherkinDocument, pickle }) {
   const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
     gherkinDocument
   )
-  return gherkinScenarioLocationMap[_.last(pickle.sourceIds)]
+  return gherkinScenarioLocationMap[_.last(pickle.astNodeIds)]
 }

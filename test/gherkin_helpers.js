@@ -1,4 +1,4 @@
-import { fromSources as gherkinFromSources } from 'gherkin'
+import Gherkin from 'gherkin'
 import { messages } from 'cucumber-messages'
 
 export function parse({ data, uri }) {
@@ -19,7 +19,7 @@ export function parse({ data, uri }) {
     let gherkinDocument
     const pickles = []
     const envelopes = []
-    const messageStream = gherkinFromSources(sources)
+    const messageStream = Gherkin.fromSources(sources)
     messageStream.on('data', envelope => {
       envelopes.push(envelope)
       if (envelope.source) {

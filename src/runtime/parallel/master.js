@@ -88,8 +88,8 @@ export default class Master {
       if (testStep.hookId) {
         testStep.hookId = this.supportCodeIdMap[testStep.hookId]
       }
-      if (testStep.stepDefinitionId) {
-        testStep.stepDefinitionId = testStep.stepDefinitionId.map(
+      if (testStep.stepDefinitionIds) {
+        testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
           id => this.supportCodeIdMap[id]
         )
       }

@@ -4,7 +4,7 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import Status from '../../status'
 import { NANOSECONDS_IN_MILLISECOND } from '../../time'
-import { uuid } from 'gherkin/dist/src/IdGenerator'
+import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 
 const uuidv4 = uuid()
 

@@ -119,7 +119,7 @@ export default class JsonFormatter extends Formatter {
       description,
       id: `${this.convertNameToId(feature)};${this.convertNameToId(pickle)}`,
       keyword: 'Scenario',
-      line: gherkinScenarioMap[pickle.sourceIds[0]].location.line,
+      line: gherkinScenarioMap[pickle.astNodeIds[0]].location.line,
       name: pickle.name,
       tags: this.getScenarioTags({ feature, pickle, gherkinScenarioMap }),
       type: 'scenario',
@@ -139,18 +139,18 @@ export default class JsonFormatter extends Formatter {
       const pickleStep = pickleStepMap[testStep.pickleStepId]
       data.arguments = this.formatStepArgument(
         pickleStep.argument,
-        gherkinStepMap[pickleStep.sourceIds[0]]
+        gherkinStepMap[pickleStep.astNodeIds[0]]
       )
       data.keyword = getStepKeyword({ pickleStep, gherkinStepMap })
-      data.line = gherkinStepMap[pickleStep.sourceIds[0]].location.line
+      data.line = gherkinStepMap[pickleStep.astNodeIds[0]].location.line
       data.name = pickleStep.text
     } else {
       data.keyword = isBeforeHook ? 'Before' : 'After'
       data.hidden = true
     }
-    if (testStep.stepDefinitionId.length === 1) {
+    if (testStep.stepDefinitionIds.length === 1) {
       const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
-        s => s.id === testStep.stepDefinitionId[0]
+        s => s.id === testStep.stepDefinitionIds[0]
       )
       data.match = { location: formatLocation(stepDefinition) }
     }
@@ -182,9 +182,9 @@ export default class JsonFormatter extends Formatter {
 
   getScenarioTags({ feature, pickle, gherkinScenarioMap }) {
     return _.map(pickle.tags, tagData => {
-      const featureSource = feature.tags.find(t => t.id === tagData.sourceId)
-      const scenarioSource = gherkinScenarioMap[pickle.sourceIds[0]].tags.find(
-        t => t.id === tagData.sourceId
+      const featureSource = feature.tags.find(t => t.id === tagData.astNodeId)
+      const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
+        t => t.id === tagData.astNodeId
       )
       return {
         name: tagData.name,

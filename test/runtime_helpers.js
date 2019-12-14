@@ -1,5 +1,5 @@
 import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
-import { incrementing } from 'gherkin/dist/src/IdGenerator'
+import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
 
 export function buildOptions(overrides) {
   return {

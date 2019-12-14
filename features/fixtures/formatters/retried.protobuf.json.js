@@ -57,10 +57,10 @@ module.exports = [
         {
           text: 'a step',
           id: '3',
-          sourceIds: ['1'],
+          astNodeIds: ['1'],
         },
       ],
-      sourceIds: ['2'],
+      astNodeIds: ['2'],
     },
   },
   {
@@ -76,7 +76,7 @@ module.exports = [
         {
           id: '6',
           pickleStepId: '3',
-          stepDefinitionId: ['0'],
+          stepDefinitionIds: ['0'],
         },
       ],
     },

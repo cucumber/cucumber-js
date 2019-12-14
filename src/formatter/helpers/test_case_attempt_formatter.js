@@ -51,8 +51,8 @@ function formatStep({ colorFns, testStep }) {
   }
   if (attachments) {
     attachments.forEach(({ media, data }) => {
-      const message = media.type === 'text/plain' ? `: ${data}` : ''
-      text += indentString(`Attachment (${media.type})${message}\n`, 4)
+      const message = media.contentType === 'text/plain' ? `: ${data}` : ''
+      text += indentString(`Attachment (${media.contentType})${message}\n`, 4)
     })
   }
   const message = getStepMessage({ colorFns, testStep })

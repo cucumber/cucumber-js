@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import AttachmentManager from './'
 import stream from 'stream'
+import { messages } from 'cucumber-messages'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {
@@ -27,10 +28,10 @@ describe('AttachmentManager', () => {
           expect(encodedData).to.eql('bXkgc3RyaW5n')
           const decodedData = Buffer.from(encodedData, 'base64').toString()
           expect(decodedData).to.eql('my string')
-          expect(attachment.media).to.eql({
-            encoding: 'base64',
-            type: 'text/special',
-          })
+          expect(attachment.media.contentType).to.eql('text/special')
+          expect(attachment.media.encoding).to.eql(
+            messages.Media.Encoding.BASE64
+          )
         })
       })
 
@@ -70,10 +71,10 @@ describe('AttachmentManager', () => {
             expect(encodedData).to.eql('bXkgc3RyaW5n')
             const decodedData = Buffer.from(encodedData, 'base64').toString()
             expect(decodedData).to.eql('my string')
-            expect(attachment.media).to.eql({
-              encoding: 'base64',
-              type: 'text/special',
-            })
+            expect(attachment.media.contentType).to.eql('text/special')
+            expect(attachment.media.encoding).to.eql(
+              messages.Media.Encoding.BASE64
+            )
           })
         })
 
@@ -102,10 +103,10 @@ describe('AttachmentManager', () => {
             expect(encodedData).to.eql('bXkgc3RyaW5n')
             const decodedData = Buffer.from(encodedData, 'base64').toString()
             expect(decodedData).to.eql('my string')
-            expect(attachment.media).to.eql({
-              encoding: 'base64',
-              type: 'text/special',
-            })
+            expect(attachment.media.contentType).to.eql('text/special')
+            expect(attachment.media.encoding).to.eql(
+              messages.Media.Encoding.BASE64
+            )
           })
         })
       })
@@ -130,7 +131,8 @@ describe('AttachmentManager', () => {
           expect(this.onAttachment).to.have.callCount(1)
           const attachment = this.onAttachment.firstCall.args[0]
           expect(attachment.data).to.eql('my string')
-          expect(attachment.media).to.eql({ type: 'text/special' })
+          expect(attachment.media.contentType).to.eql('text/special')
+          expect(attachment.media.encoding).to.eql(messages.Media.Encoding.UTF8)
         })
       })
 
@@ -143,7 +145,8 @@ describe('AttachmentManager', () => {
           expect(this.onAttachment).to.have.callCount(1)
           const attachment = this.onAttachment.firstCall.args[0]
           expect(attachment.data).to.eql('my string')
-          expect(attachment.media).to.eql({ type: 'text/plain' })
+          expect(attachment.media.contentType).to.eql('text/plain')
+          expect(attachment.media.encoding).to.eql(messages.Media.Encoding.UTF8)
         })
       })
     })

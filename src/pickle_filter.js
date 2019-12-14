@@ -58,7 +58,7 @@ export class PickleLineFilter {
       const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
         gherkinDocument
       )
-      const pickleLines = pickle.sourceIds.map(
+      const pickleLines = pickle.astNodeIds.map(
         sourceId => gherkinScenarioLocationMap[sourceId].line
       )
       return _.size(_.intersection(linesToMatch, pickleLines)) > 0

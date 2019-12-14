@@ -10,7 +10,7 @@ import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
 import { messages } from 'cucumber-messages'
 import { EventDataCollector } from '../formatter/helpers'
-import { uuid } from 'gherkin/dist/src/IdGenerator'
+import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 
 describe('helpers', () => {
   describe('loadPicklesFromFilesystem', () => {
@@ -138,10 +138,10 @@ describe('helpers', () => {
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.pickle).to.exist()
         expect(envelope.pickle).to.have.keys([
+          'astNodeIds',
           'id',
           'language',
           'name',
-          'sourceIds',
           'steps',
           'tags',
           'uri',
@@ -222,10 +222,10 @@ describe('helpers', () => {
         const envelope = this.onEnvelope.getCall(2).args[0]
         expect(envelope.pickle).to.exist()
         expect(envelope.pickle).to.have.keys([
+          'astNodeIds',
           'id',
           'language',
           'name',
-          'sourceIds',
           'steps',
           'tags',
           'uri',

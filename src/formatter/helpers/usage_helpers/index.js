@@ -32,10 +32,10 @@ function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
     testCaseAttempt.testCase.testSteps.forEach(testStep => {
-      if (testStep.pickleStepId && testStep.stepDefinitionId.length === 1) {
-        const stepDefinitionId = testStep.stepDefinitionId[0]
+      if (testStep.pickleStepId && testStep.stepDefinitionIds.length === 1) {
+        const stepDefinitionId = testStep.stepDefinitionIds[0]
         const pickleStep = pickleStepMap[testStep.pickleStepId]
-        const gherkinStep = gherkinStepMap[pickleStep.sourceIds[0]]
+        const gherkinStep = gherkinStepMap[pickleStep.astNodeIds[0]]
         const match = {
           line: gherkinStep.location.line,
           text: pickleStep.text,

@@ -57,10 +57,10 @@ module.exports = [
         {
           text: 'a step',
           id: '2',
-          sourceIds: ['0'],
+          astNodeIds: ['0'],
         },
       ],
-      sourceIds: ['1'],
+      astNodeIds: ['1'],
     },
   },
   {

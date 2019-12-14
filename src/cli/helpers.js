@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import ArgvParser from './argv_parser'
-import { fromPaths as gherkinFromPaths } from 'gherkin'
+import Gherkin from 'gherkin'
 import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
 import shuffle from 'knuth-shuffle-seeded'
@@ -30,7 +30,7 @@ export function loadPicklesFromFilesystem({
 }) {
   return new Promise((resolve, reject) => {
     const result = []
-    const messageStream = gherkinFromPaths(featurePaths, {
+    const messageStream = Gherkin.fromPaths(featurePaths, {
       defaultDialect: featureDefaultLanguage,
       newId,
     })

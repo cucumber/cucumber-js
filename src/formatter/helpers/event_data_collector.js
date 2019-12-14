@@ -46,8 +46,8 @@ export default class EventDataCollector {
       this.testCaseMap[envelope.testCase.id] = envelope.testCase
     } else if (envelope.testCaseStarted) {
       this.initTestCaseAttempt(envelope.testCaseStarted)
-    } else if (envelope.testStepAttachment) {
-      this.storeTestStepAttachment(envelope.testStepAttachment)
+    } else if (envelope.attachment) {
+      this.storeAttachment(envelope.attachment)
     } else if (envelope.testStepFinished) {
       this.storeTestStepResult(envelope.testStepFinished)
     } else if (envelope.testCaseFinished) {
@@ -65,12 +65,14 @@ export default class EventDataCollector {
     }
   }
 
-  storeTestStepAttachment({ testCaseStartedId, testStepId, data, media }) {
-    const { stepAttachments } = this.testCaseAttemptMap[testCaseStartedId]
-    if (!stepAttachments[testStepId]) {
-      stepAttachments[testStepId] = []
+  storeAttachment({ testCaseStartedId, testStepId, data, media }) {
+    if (testCaseStartedId && testStepId) {
+      const { stepAttachments } = this.testCaseAttemptMap[testCaseStartedId]
+      if (!stepAttachments[testStepId]) {
+        stepAttachments[testStepId] = []
+      }
+      stepAttachments[testStepId].push({ data, media })
     }
-    stepAttachments[testStepId].push({ data, media })
   }
 
   storeTestStepResult({ testCaseStartedId, testStepId, testResult }) {

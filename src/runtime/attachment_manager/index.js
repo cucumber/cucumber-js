@@ -1,5 +1,6 @@
 import isStream from 'is-stream'
 import Promise from 'bluebird'
+import { messages } from 'cucumber-messages'
 
 export default class AttachmentManager {
   constructor(onAttachment) {
@@ -21,7 +22,13 @@ export default class AttachmentManager {
       if (!mediaType) {
         mediaType = 'text/plain'
       }
-      this.createStringAttachment(data, { type: mediaType })
+      this.createStringAttachment(
+        data,
+        messages.Media.fromObject({
+          encoding: messages.Media.Encoding.UTF8,
+          contentType: mediaType,
+        })
+      )
     } else {
       throw Error(
         'Invalid attachment data: must be a buffer, readable stream, or string'
@@ -30,10 +37,13 @@ export default class AttachmentManager {
   }
 
   createBufferAttachment(data, mediaType) {
-    this.createStringAttachment(data.toString('base64'), {
-      encoding: 'base64',
-      type: mediaType,
-    })
+    this.createStringAttachment(
+      data.toString('base64'),
+      messages.Media.fromObject({
+        encoding: messages.Media.Encoding.BASE64,
+        contentType: mediaType,
+      })
+    )
   }
 
   createStreamAttachment(data, mediaType, callback) {

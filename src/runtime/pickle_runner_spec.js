@@ -4,7 +4,7 @@ import PickleRunner from './pickle_runner'
 import Status from '../status'
 import { EventEmitter } from 'events'
 import { messages } from 'cucumber-messages'
-import { incrementing } from 'gherkin/dist/src/IdGenerator'
+import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import lolex from 'lolex'
@@ -71,7 +71,7 @@ describe('PickleRunner', () => {
                 {
                   id: '1',
                   pickleStepId: pickle.steps[0].id,
-                  stepDefinitionId: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
                 },
               ],
             },
@@ -259,7 +259,7 @@ describe('PickleRunner', () => {
                 {
                   id: '1',
                   pickleStepId: pickle.steps[0].id,
-                  stepDefinitionId: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
                 },
               ],
             },
@@ -417,7 +417,7 @@ describe('PickleRunner', () => {
                 {
                   id: '2',
                   pickleStepId: pickle.steps[0].id,
-                  stepDefinitionId: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
                 },
                 {
                   id: '3',

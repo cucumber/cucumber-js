@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 import supportCodeLibraryBuilder from './'
-import { uuid } from 'gherkin/dist/src/IdGenerator'
+import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 
 describe('supportCodeLibraryBuilder', () => {
   describe('no support code fns', () => {

@@ -8,7 +8,7 @@ import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
 import { messages } from 'cucumber-messages'
-import { uuid } from 'gherkin/dist/src/IdGenerator'
+import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 
 export default class Slave {
   constructor({ cwd, exit, id, sendMessage }) {

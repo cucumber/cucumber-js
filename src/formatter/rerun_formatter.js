@@ -25,7 +25,7 @@ export default class RerunFormatter extends Formatter {
         if (result.status !== Status.PASSED) {
           const relativeUri = path.relative(this.cwd, pickle.uri)
           const line = getGherkinScenarioLocationMap(gherkinDocument)[
-            _.last(pickle.sourceIds)
+            _.last(pickle.astNodeIds)
           ].line
           if (!mapping[relativeUri]) {
             mapping[relativeUri] = []

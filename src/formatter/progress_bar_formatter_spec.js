@@ -9,7 +9,7 @@ import { EventEmitter } from 'events'
 import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
 import { messages } from 'cucumber-messages'
-import { uuid } from 'gherkin/dist/src/IdGenerator'
+import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 
 const uuidv4 = uuid()
 

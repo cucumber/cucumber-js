@@ -7,7 +7,7 @@ import EventDataCollector from '../event_data_collector'
 import { CucumberExpression, ParameterTypeRegistry } from 'cucumber-expressions'
 import { messages } from 'cucumber-messages'
 import { getZeroDuration } from '../../../time'
-import { uuid } from 'gherkin/dist/src/IdGenerator'
+import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 
 const { Status } = messages.TestResult
 const uuidv4 = uuid()

@@ -24,15 +24,17 @@ export default class PickleRunner {
           'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
       }
-      // TODO custom envelope need to update cucumber-messages
-      this.eventBroadcaster.emit('envelope', {
-        testStepAttachment: {
-          data,
-          media,
-          testCaseStartedId: this.currentTestCaseStartedId,
-          testStepId: this.currentTestStepId,
-        },
-      })
+      this.eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          attachment: {
+            data,
+            media,
+            testCaseStartedId: this.currentTestCaseStartedId,
+            testStepId: this.currentTestStepId,
+          },
+        })
+      )
     })
     this.eventBroadcaster = eventBroadcaster
     this.gherkinDocument = gherkinDocument
@@ -103,7 +105,7 @@ export default class PickleRunner {
           return {
             id: testStep.id,
             pickleStepId: testStep.pickleStep.id,
-            stepDefinitionId: testStep.stepDefinitions.map(x => x.id),
+            stepDefinitionIds: testStep.stepDefinitions.map(x => x.id),
           }
         }
       }),
