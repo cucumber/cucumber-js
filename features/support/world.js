@@ -81,7 +81,6 @@ class World {
       envelopes,
       output: colors.strip(result.stdout),
     }
-    // console.log(util.inspect(envelopes, {depth: 10}))
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')
   }
