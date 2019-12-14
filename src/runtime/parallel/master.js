@@ -126,7 +126,7 @@ export default class Master {
 
   onSlaveClose(error) {
     if (error) {
-      this.result.success = false
+      this.success = false
     }
     if (_.every(this.slaves, 'closed')) {
       this.eventBroadcaster.emit(
@@ -167,7 +167,7 @@ export default class Master {
     ]
     const retries = retriesForPickle(pickle, this.options)
     const skip =
-      this.options.dryRun || (this.options.failFast && !this.result.success)
+      this.options.dryRun || (this.options.failFast && !this.success)
     slave.process.send({
       command: commandTypes.RUN,
       retries,

@@ -1,18 +1,5 @@
 Feature: Formatters
 
-  Scenario: gherkin error
-    Given a file named "features/a.feature" with:
-      """
-      Feature: a feature
-        Scenario: a scenario
-          Given a step
-          Parse Error
-      """
-    When I run cucumber-js with all formatters
-    Then the "protobuf" formatter output matches the fixture "formatters/gherkin-error.protobuf.json"
-    Then the "json" formatter output matches the fixture "formatters/gherkin-error.json"
-    And it fails
-
   Scenario: rejected pickle
     Given a file named "features/a.feature" with:
       """
