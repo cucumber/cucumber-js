@@ -118,7 +118,6 @@ export default class Master {
     slave.process.send({
       command: commandTypes.INITIALIZE,
       filterStacktraces: this.options.filterStacktraces,
-      // TODO send slave newId to start from and use modulus to ensure id is working fine
       supportCodePaths: this.supportCodePaths,
       supportCodeRequiredModules: this.supportCodeRequiredModules,
       worldParameters: this.options.worldParameters,

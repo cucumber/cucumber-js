@@ -92,7 +92,10 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { success: true }
     }
-    const newId = configuration.idGenerator === 'uuid' ? uuid() : incrementing()
+    const newId =
+      configuration.predictableIds && !configuration.parallel
+        ? incrementing()
+        : uuid()
     const supportCodeLibrary = this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,

@@ -17,8 +17,7 @@ class World {
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
-        '--id-generator',
-        'incrementing',
+        '--predictable-ids',
         '--format',
         `protobuf:${protobufFilename}`,
       ])

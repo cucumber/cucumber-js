@@ -46,16 +46,16 @@ export default class ConfigurationBuilder {
       formatOptions: this.getFormatOptions(),
       listI18nKeywordsFor,
       listI18nLanguages,
-      idGenerator: this.options.idGenerator,
       order: this.options.order,
       parallel: this.options.parallel,
-      profiles: this.options.profile,
       pickleFilterOptions: {
         cwd: this.cwd,
         featurePaths: unexpandedFeaturePaths,
         names: this.options.name,
         tagExpression: this.options.tags,
       },
+      predictableIds: !!this.options.predictableIds,
+      profiles: this.options.profile,
       runtimeOptions: {
         dryRun: !!this.options.dryRun,
         failFast: !!this.options.failFast,

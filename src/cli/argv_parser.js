@@ -80,11 +80,6 @@ export default class ArgvParser {
         {}
       )
       .option(
-        '--id-generator <OPTION>',
-        'how to generate ids used in envelopes (options: "uuid", "incrementing". default: "uuid")',
-        'uuid'
-      )
-      .option(
         '--i18n-keywords <ISO 639-1>',
         'list language keywords',
         ArgvParser.validateLanguage,
@@ -119,6 +114,10 @@ export default class ArgvParser {
         'run in parallel with the given number of slaves',
         val => ArgvParser.validateCountOption(val, '--parallel'),
         0
+      )
+      .option(
+        '--predictable-ids',
+        'Use predictable ids (option ignored if using parallel)',
       )
       .option(
         '-r, --require <GLOB|DIR|FILE>',
