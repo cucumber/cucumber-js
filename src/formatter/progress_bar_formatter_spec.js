@@ -1,516 +1,350 @@
-import { beforeEach, describe, it } from 'mocha'
+import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { createMock } from './test_helpers'
 import sinon from 'sinon'
-import getColorFns from './get_color_fns'
-import ProgressBarFormatter from './progress_bar_formatter'
-import Status from '../status'
 import { EventEmitter } from 'events'
-import { generateEvents } from '../../test/gherkin_helpers'
 import { EventDataCollector } from './helpers'
-import { messages } from 'cucumber-messages'
-import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
+import { getEnvelopesAndEventDataCollector } from '../../test/formatter_helpers'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import FormatterBuilder from './builder'
+import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
+import lolex from 'lolex'
+import timeMethods from '../time'
 
-const uuidv4 = uuid()
-
-describe('ProgressBarFormatter', () => {
-  beforeEach(function() {
-    this.eventBroadcaster = new EventEmitter()
-    this.output = ''
-    const logFn = data => {
-      this.output += data
+async function testProgressBarFormatter({
+  runtimeOptions,
+  shouldStopFn,
+  sources,
+  supportCodeLibrary,
+}) {
+  if (!supportCodeLibrary) {
+    supportCodeLibrary = buildSupportCodeLibrary()
+  }
+  const { envelopes } = await getEnvelopesAndEventDataCollector({
+    runtimeOptions,
+    sources,
+    supportCodeLibrary,
+  })
+  const eventBroadcaster = new EventEmitter()
+  let output = ''
+  const logFn = data => {
+    output += data
+  }
+  const progressBarFormatter = FormatterBuilder.build('progress-bar', {
+    cwd: '',
+    eventBroadcaster,
+    eventDataCollector: new EventDataCollector(eventBroadcaster),
+    log: logFn,
+    stream: {},
+    supportCodeLibrary,
+  })
+  let mocked = false
+  for (const envelope of envelopes) {
+    eventBroadcaster.emit('envelope', envelope)
+    if (shouldStopFn(envelope)) {
+      break
     }
-    const colorFns = getColorFns(false)
-    this.progressBarFormatter = new ProgressBarFormatter({
-      colorFns,
-      cwd: 'path/to/project',
-      eventBroadcaster: this.eventBroadcaster,
-      eventDataCollector: new EventDataCollector(this.eventBroadcaster),
-      log: logFn,
-      snippetBuilder: createMock({ build: 'snippet' }),
-      stream: {},
-    })
-  })
-
-  describe('pickleAccepted / testStepStarted', () => {
-    beforeEach(async function() {
-      await generateEvents({
-        data: 'Feature: a\nScenario: b\nGiven a step\nThen a step',
-        eventBroadcaster: this.eventBroadcaster,
-        uri: '/project/a.feature',
-      })
-      await generateEvents({
-        data: 'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
-        eventBroadcaster: this.eventBroadcaster,
-        uri: '/project/b.feature',
-      })
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testStepStarted: {},
-        })
-      )
-    })
-
-    it('initializes a progress bar with the total number of steps', function() {
-      expect(this.progressBarFormatter.progressBar.total).to.eql(5)
-    })
-  })
-
-  describe('test-step-finished', () => {
-    beforeEach(async function() {
-      this.progressBarFormatter.progressBar = {
+    if (!mocked && envelope.testStepStarted) {
+      progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
       }
+      mocked = true
+    }
+  }
+  return { progressBarFormatter, output }
+}
 
-      const {
-        pickles: [pickle],
-      } = await generateEvents({
-        data: 'Feature: a\nScenario: b\nGiven a step',
-        eventBroadcaster: this.eventBroadcaster,
-        uri: 'a.feature',
+describe('ProgressBarFormatter', () => {
+  describe('pickleAccepted / testStepStarted', () => {
+    it('initializes a progress bar with the total number of steps', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a step\nThen a step',
+          uri: 'a.feature',
+        },
+        {
+          data:
+            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          uri: 'b.feature',
+        },
+      ]
+
+      // Act
+      const { progressBarFormatter } = await testProgressBarFormatter({
+        shouldStopFn: envelope => envelope.testStepStarted,
+        sources,
       })
-      this.pickle = pickle
-      const testCaseId = uuidv4()
-      this.testCaseStartedId = uuidv4()
-      this.testStepId1 = uuidv4()
-      this.testStepId2 = uuidv4()
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCase: {
-            id: testCaseId,
-            pickleId: this.pickle.id,
-            testSteps: [
-              { id: this.testStepId1 },
-              { id: this.testStepId2, pickleStepId: this.pickle.steps[0].id },
-            ],
-          },
-        })
-      )
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCaseStarted: {
-            testCaseId,
-            attempt: 0,
-            id: this.testCaseStartedId,
-          },
-        })
-      )
+
+      // Assert
+      expect(progressBarFormatter.progressBar.total).to.eql(5)
     })
+  })
 
+  describe('testStepFinished', () => {
     describe('step is a hook', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId1,
-              testResult: { status: Status.PASSED },
-            },
-          })
+      it('does not increase the progress bar percentage', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Before, Given }) => {
+            Given('a step', function() {})
+            Before(function() {})
+          }
         )
-      })
 
-      it('does not increase the progress bar percentage', function() {
-        expect(this.progressBarFormatter.progressBar.tick).to.have.callCount(0)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testStepFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.tick).to.have.callCount(0)
       })
     })
 
     describe('step is from a pickle', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId2,
-              testResult: { status: Status.PASSED },
-            },
-          })
+      it('increases the progress bar percentage', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Before, Given }) => {
+            Given('a step', function() {})
+            Before(function() {})
+          }
         )
-      })
 
-      it('increases the progress bar percentage', function() {
-        expect(this.progressBarFormatter.progressBar.tick).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => false,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.tick).to.have.callCount(1)
       })
     })
   })
 
-  describe('test-case-finished', () => {
-    beforeEach(async function() {
-      this.progressBarFormatter.progressBar = {
-        interrupt: sinon.stub(),
-        tick: sinon.stub(),
-      }
-
-      const {
-        pickles: [pickle],
-      } = await generateEvents({
-        data: 'Feature: a\nScenario: b\nGiven a step',
-        eventBroadcaster: this.eventBroadcaster,
-        uri: 'a.feature',
-      })
-      this.pickle = pickle
-      this.testCaseId = uuidv4()
-      this.testCaseStartedId = uuidv4()
-      this.testStepId = uuidv4()
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCase: {
-            id: this.testCaseId,
-            pickleId: this.pickle.id,
-            testSteps: [
-              {
-                id: this.testStepId,
-                pickleStepId: this.pickle.steps[0].id,
-                stepDefinitionId: [],
-              },
-            ],
-          },
-        })
-      )
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCaseStarted: {
-            testCaseId: this.testCaseId,
-            attempt: 0,
-            id: this.testCaseStartedId,
-          },
-        })
-      )
-    })
-
+  describe('testCaseFinished', () => {
     describe('ambiguous', () => {
-      beforeEach(function() {
-        const testResult = {
-          exception:
-            'Multiple step definitions match:\n' +
-            '  pattern1        - steps.js:3\n' +
-            '  longer pattern2 - steps.js:4',
-          status: Status.AMBIGUOUS,
-        }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult,
-            },
-          })
-        )
-      })
+      it('prints the error', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven an ambiguous step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the error', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
       })
     })
 
     describe('failed', () => {
-      beforeEach(function() {
-        const testResult = { exception: 'error', status: Status.FAILED }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult,
-            },
-          })
-        )
-      })
+      it('prints the error', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a failed step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the error', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
-      })
-    })
-
-    describe('retried', () => {
-      beforeEach(function() {
-        const testResult = { exception: 'error', status: Status.FAILED }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult: { ...testResult, willBeRetried: true },
-            },
-          })
-        )
-      })
-
-      it('prints a warning for the failed run', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
-      })
-
-      describe('with passing run', function() {
-        beforeEach(function() {
-          this.progressBarFormatter.progressBar.interrupt.reset()
-          const retriedTestCaseStartedId = uuidv4()
-          this.eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({
-              testCaseStarted: {
-                testCaseId: this.testCaseId,
-                attempt: 1,
-                id: retriedTestCaseStartedId,
-              },
-            })
-          )
-          const testResult = { status: Status.PASSED }
-          this.eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({
-              testStepFinished: {
-                testCaseStartedId: retriedTestCaseStartedId,
-                testStepId: this.testStepId,
-                testResult,
-              },
-            })
-          )
-          this.eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({
-              testCaseFinished: {
-                testCaseStartedId: retriedTestCaseStartedId,
-                testResult: testResult,
-              },
-            })
-          )
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
         })
 
-        it('does not print an additional error', function() {
-          expect(
-            this.progressBarFormatter.progressBar.interrupt
-          ).to.have.callCount(0)
-        })
-      })
-
-      describe('with all failures', function() {
-        beforeEach(function() {
-          this.progressBarFormatter.progressBar.interrupt.reset()
-          const retriedTestCaseStartedId = uuidv4()
-          this.eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({
-              testCaseStarted: {
-                testCaseId: this.testCaseId,
-                attempt: 1,
-                id: retriedTestCaseStartedId,
-              },
-            })
-          )
-          const testResult = { exception: 'error', status: Status.FAILED }
-          this.eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({
-              testStepFinished: {
-                testCaseStartedId: retriedTestCaseStartedId,
-                testStepId: this.testStepId,
-                testResult,
-              },
-            })
-          )
-          this.eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({
-              testCaseFinished: {
-                testCaseStartedId: retriedTestCaseStartedId,
-                testResult: testResult,
-              },
-            })
-          )
-        })
-
-        it('prints the error for the last run', function() {
-          expect(
-            this.progressBarFormatter.progressBar.interrupt
-          ).to.have.callCount(1)
-        })
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
       })
     })
 
     describe('passed', () => {
-      beforeEach(function() {
-        const testResult = { status: Status.PASSED }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult: testResult,
-            },
-          })
-        )
-      })
+      it('does not print anything', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a passing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('does not print anything', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(0)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
       })
     })
 
     describe('pending', () => {
-      beforeEach(function() {
-        const testResult = { status: Status.PENDING }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult: testResult,
-            },
-          })
-        )
-      })
+      it('prints the warning', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a pending step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the warning', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
       })
     })
 
     describe('skipped', () => {
-      beforeEach(function() {
-        const testResult = { status: Status.SKIPPED }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult: testResult,
-            },
-          })
-        )
-      })
+      it('does not print anything', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a skipped step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('does not print anything', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(0)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
       })
     })
 
     describe('undefined', () => {
-      beforeEach(function() {
-        const testResult = { status: Status.UNDEFINED }
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testStepFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testStepId: this.testStepId,
-              testResult,
-            },
-          })
-        )
-        this.eventBroadcaster.emit(
-          'envelope',
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: this.testCaseStartedId,
-              testResult: testResult,
-            },
-          })
-        )
-      })
+      it('prints the warning', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven an undefined step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the warning', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+      })
+    })
+
+    describe('retried', () => {
+      it('prints the warning and ticks a negative amount as the testCase will be retried', async () => {
+        // Arrange
+        const sources = [
+          {
+            data:
+              'Feature: a\nScenario: b\nGiven a passing step\n When a flaky step\nThen a passing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          runtimeOptions: { retry: 1 },
+          shouldStopFn: envelope => false,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+        expect(progressBarFormatter.progressBar.tick).to.have.callCount(7)
+        expect(progressBarFormatter.progressBar.tick.args).to.eql([
+          [],
+          [],
+          [],
+          [-3],
+          [],
+          [],
+          [],
+        ])
       })
     })
   })
 
-  describe('test-run-finished', () => {
-    beforeEach(function() {
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testRunFinished: {
-            duration: 0,
-          },
-        })
-      )
+  describe('testRunFinished', () => {
+    let clock
+
+    beforeEach(() => {
+      clock = lolex.install({ target: timeMethods })
     })
 
-    it('outputs step totals, scenario totals, and duration', function() {
-      expect(this.output).to.contain(
-        '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
+    afterEach(() => {
+      clock.uninstall()
+    })
+
+    it('outputs step totals, scenario totals, and duration', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a passing step',
+          uri: 'a.feature',
+        },
+      ]
+      const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+      // Act
+      const { output } = await testProgressBarFormatter({
+        shouldStopFn: envelope => false,
+        sources,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      expect(output).to.contain(
+        '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
       )
     })
   })
