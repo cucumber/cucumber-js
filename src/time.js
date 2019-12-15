@@ -42,6 +42,8 @@ export function addDurations(a, b) {
   return new messages.Duration({ seconds, nanos })
 }
 
+// TODO use TimeConversion methods in cucumber-messages
+//   dependent on https://github.com/cucumber/cucumber/pull/832
 export function millisecondsToDuration(milliseconds) {
   const seconds = Math.floor(milliseconds / MILLISECONDS_IN_SECOND)
   const nanos =
