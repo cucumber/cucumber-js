@@ -13,6 +13,7 @@ import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
 export default class Slave {
   constructor({ cwd, exit, id, sendMessage }) {
     this.id = id
+    this.newId = uuid()
     this.initialized = false
     this.cwd = cwd
     this.exit = exit
@@ -34,7 +35,7 @@ export default class Slave {
     worldParameters,
   }) {
     supportCodeRequiredModules.map(module => require(module))
-    supportCodeLibraryBuilder.reset(this.cwd, uuid())
+    supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     supportCodePaths.forEach(codePath => require(codePath))
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
     this.sendMessage({
@@ -78,7 +79,7 @@ export default class Slave {
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       gherkinDocument,
-      newId: uuid(),
+      newId: this.newId,
       pickle,
       retries,
       skip,
