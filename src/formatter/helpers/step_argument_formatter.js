@@ -1,4 +1,5 @@
 import Table from 'cli-table3'
+import { parseStepArgument } from '../../step_arguments'
 
 function formatDataTable(dataTable) {
   const table = new Table({
@@ -39,9 +40,8 @@ function formatDocString(docString) {
 }
 
 export function formatStepArgument(arg) {
-  if (arg.dataTable) {
-    return formatDataTable(arg.dataTable)
-  } else {
-    return formatDocString(arg.docString)
-  }
+  return parseStepArgument(arg, {
+    dataTable: formatDataTable,
+    docString: formatDocString,
+  })
 }

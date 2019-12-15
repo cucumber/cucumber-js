@@ -1,6 +1,6 @@
 import { CucumberExpressionGenerator } from 'cucumber-expressions'
 import { KeywordType } from '../helpers'
-import { buildStepArgumentIterator } from '../../step_arguments'
+import { parseStepArgument } from '../../step_arguments'
 
 export default class StepDefinitionSnippetBuilder {
   constructor({ snippetSyntax, parameterTypeRegistry }) {
@@ -39,12 +39,12 @@ export default class StepDefinitionSnippetBuilder {
   }
 
   getStepParameterNames(step) {
-    const iterator = buildStepArgumentIterator({
-      dataTable: () => 'dataTable',
-      docString: () => 'docString',
-    })
     if (step.argument) {
-      return [iterator(step.argument)]
+      const argumentName = parseStepArgument(step.argument, {
+        dataTable: () => 'dataTable',
+        docString: () => 'docString',
+      })
+      return [argumentName]
     }
     return []
   }

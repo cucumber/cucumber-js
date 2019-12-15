@@ -1,7 +1,7 @@
 import DataTable from './data_table'
-import { buildStepArgumentIterator } from '../step_arguments'
 import Definition from './definition'
 import { messages } from 'cucumber-messages'
+import { parseStepArgument } from '../step_arguments'
 
 export default class StepDefinition extends Definition {
   constructor(data) {
@@ -11,18 +11,17 @@ export default class StepDefinition extends Definition {
   }
 
   getInvocationParameters({ step, world }) {
-    const stepNameParameters = this.expression
+    const parameters = this.expression
       .match(step.text)
       .map(arg => arg.getValue(world))
-    const stepArgumentParameters = []
-    const iterator = buildStepArgumentIterator({
-      dataTable: arg => new DataTable(arg),
-      docString: arg => arg.content,
-    })
     if (step.argument) {
-      stepArgumentParameters.push(iterator(step.argument))
+      const argumentParamater = parseStepArgument(step.argument, {
+        dataTable: arg => new DataTable(arg),
+        docString: arg => arg.content,
+      })
+      parameters.push(argumentParamater)
     }
-    return stepNameParameters.concat(stepArgumentParameters)
+    return parameters
   }
 
   getValidCodeLengths(parameters) {
