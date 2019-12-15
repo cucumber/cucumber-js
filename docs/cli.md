@@ -105,7 +105,7 @@ You can run your scenarios in parallel with `--parallel <NUMBER_OF_SLAVES>`. Eac
 
 **Notes**
 * The reported runtime from the summary formatter is the total time from running the steps and thus be higher than the runtime for the command. The command runtime can be measured with other tools (time / Measure-Command)
-* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the slave processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer as issue.
+* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the slave processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
 
 ## Profiles
 
@@ -153,23 +153,31 @@ or [CoffeeScript](https://www.npmjs.com/package/coffeescript):
 
 ### Extra configuration
 
-Sometimes the required module (say `@babel/register`) needs extra configuration. In such cases create a script (say, `tests.setup.js`):
+Sometimes the required module (say `@ts-node/register`) needs extra configuration (e.g. you might want to configure it such that it prevents the compiled JS being written out to files, and pass some compiler options). In such cases, create a script (say, `tests.setup.js`):
 
 ```js
-require('@babel/register')({
-  rootMode: 'upward',
-  ignore: ['node_modules'],
+require('ts-node').register({
+  transpileOnly: true,
+  compilerOptions: {
+    // your compiler options here
+  },
 });
 ```
 
 And then require it using the `--require` option:
 
 ```
---require tests.setup.js --require 'features/**/*.js'
+--require tests.setup.js --require 'features/**/*.ts'
 ```
 
-Note that since the first `--require babel.register.js` overrides the default require glob, we redeclare it with `--require 'features/**/*.js'`.
+Note that the first `--require tests.setup.js` overrides the default require glob, so we'll need to `--require` our support code explicitly too.
 
 ## World Parameters
 
 You can pass in parameters to pass to the world constructor with `--world-parameters <JSON>`. The JSON string must define an object. The parsed object will be passed as the `parameters` to the the world constructor. This option is repeatable and the objects will be merged with the last instance taking precedence.
+
+Example:
+
+```
+--world-parameters '{"fancySetting":true}'
+```
