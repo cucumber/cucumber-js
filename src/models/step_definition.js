@@ -1,6 +1,5 @@
 import DataTable from './data_table'
 import Definition from './definition'
-import { messages } from 'cucumber-messages'
 import { parseStepArgument } from '../step_arguments'
 
 export default class StepDefinition extends Definition {
@@ -30,17 +29,5 @@ export default class StepDefinition extends Definition {
 
   matchesStepName(stepName) {
     return Boolean(this.expression.match(stepName))
-  }
-
-  toEnvelope() {
-    return new messages.Envelope({
-      stepDefinitionConfig: {
-        id: this.id,
-        location: {
-          uri: this.uri,
-          location: { line: this.line },
-        },
-      },
-    })
   }
 }

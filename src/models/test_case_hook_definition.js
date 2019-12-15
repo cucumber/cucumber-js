@@ -1,6 +1,5 @@
 import { PickleTagFilter } from '../pickle_filter'
 import Definition from './definition'
-import { messages } from 'cucumber-messages'
 
 export default class TestCaseHookDefinition extends Definition {
   constructor(data) {
@@ -22,17 +21,5 @@ export default class TestCaseHookDefinition extends Definition {
 
   getValidCodeLengths() {
     return [0, 1, 2]
-  }
-
-  toEnvelope() {
-    return new messages.Envelope({
-      testCaseHookDefinitionConfig: {
-        id: this.id,
-        location: {
-          uri: this.uri,
-          location: { line: this.line },
-        },
-      },
-    })
   }
 }
