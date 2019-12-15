@@ -62,3 +62,18 @@ export async function generateEvents({ data, eventBroadcaster, uri }) {
   envelopes.forEach(envelope => eventBroadcaster.emit('envelope', envelope))
   return { source, gherkinDocument, pickles }
 }
+
+export async function getPickleWithTags(tags) {
+  const {
+    pickles: [pickle],
+  } = await parse({
+    data: `\
+Feature: a
+  ${tags.join(' ')} 
+  Scenario: b
+    Given a step
+`,
+    uri: 'a.feature',
+  })
+  return pickle
+}

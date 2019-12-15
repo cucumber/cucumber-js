@@ -1,22 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import TestCaseHookDefinition from './test_case_hook_definition'
-import { parse } from '../../test/gherkin_helpers'
-
-async function getPickleWithTags(tags) {
-  const {
-    pickles: [pickle],
-  } = await parse({
-    data: `\
-Feature: a
-  ${tags.join(' ')} 
-  Scenario: b
-    Given a step
-`,
-    uri: 'a.feature',
-  })
-  return pickle
-}
+import { getPickleWithTags } from '../../test/gherkin_helpers'
 
 describe('TestCaseHookDefinition', () => {
   describe('appliesToTestCase', () => {
