@@ -1,56 +1,70 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import TestCaseHookDefinition from './test_case_hook_definition'
+import { parse } from '../../test/gherkin_helpers'
+
+async function getPickleWithTags(tags) {
+  const {
+    pickles: [pickle],
+  } = await parse({
+    data: `\
+Feature: a
+  ${tags.join(' ')} 
+  Scenario: b
+    Given a step
+`,
+    uri: 'a.feature',
+  })
+  return pickle
+}
 
 describe('TestCaseHookDefinition', () => {
   describe('appliesToTestCase', () => {
-    beforeEach(function() {
-      this.pickle = {
-        tags: [],
-        uri: '',
-      }
-    })
-
     describe('no tags', () => {
-      beforeEach(function() {
-        this.testCaseHookDefinition = new TestCaseHookDefinition({
+      it('returns true', async () => {
+        // Arrange
+        const pickle = await getPickleWithTags([])
+        const testCaseHookDefinition = new TestCaseHookDefinition({
           options: {},
         })
-      })
 
-      it('returns true', function() {
-        expect(
-          this.testCaseHookDefinition.appliesToTestCase(this.pickle)
-        ).to.eql(true)
+        // Act
+        const result = testCaseHookDefinition.appliesToTestCase(pickle)
+
+        // Assert
+        expect(result).to.eql(true)
       })
     })
 
     describe('tags match', () => {
-      beforeEach(function() {
-        this.pickle.tags = [{ name: '@tagA' }]
-        this.testCaseHookDefinition = new TestCaseHookDefinition({
+      it('returns true', async () => {
+        // Arrange
+        const pickle = await getPickleWithTags(['@tagA'])
+        const testCaseHookDefinition = new TestCaseHookDefinition({
           options: { tags: '@tagA' },
         })
-      })
 
-      it('returns true', function() {
-        expect(
-          this.testCaseHookDefinition.appliesToTestCase(this.pickle)
-        ).to.eql(true)
+        // Act
+        const result = testCaseHookDefinition.appliesToTestCase(pickle)
+
+        // Assert
+        expect(result).to.eql(true)
       })
     })
 
     describe('tags do not match', () => {
-      beforeEach(function() {
-        this.testCaseHookDefinition = new TestCaseHookDefinition({
+      it('returns false', async () => {
+        // Arrange
+        const pickle = await getPickleWithTags([])
+        const testCaseHookDefinition = new TestCaseHookDefinition({
           options: { tags: '@tagA' },
         })
-      })
 
-      it('returns false', function() {
-        expect(
-          this.testCaseHookDefinition.appliesToTestCase(this.pickle)
-        ).to.eql(false)
+        // Act
+        const result = testCaseHookDefinition.appliesToTestCase(pickle)
+
+        // Assert
+        expect(result).to.eql(false)
       })
     })
   })
