@@ -28,7 +28,7 @@ function normalizeProtobufObject(obj, cwd) {
   }
 }
 
-export function normalizeProtobufOutput(envelopeObjects, cwd) {
+export function normalizeMessageOutput(envelopeObjects, cwd) {
   envelopeObjects.forEach(e => {
     for (const key in e) {
       normalizeProtobufObject(e[key], cwd)

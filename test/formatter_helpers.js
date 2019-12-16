@@ -4,7 +4,9 @@ import Runtime from '../src/runtime'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
-import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
+import { IdGenerator } from 'cucumber-messages'
+
+const { uuid } = IdGenerator
 
 export async function testFormatter({
   formatterOptions = {},

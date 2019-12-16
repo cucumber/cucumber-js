@@ -3,7 +3,9 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import { ParameterTypeRegistry } from 'cucumber-expressions'
 import supportCodeLibraryBuilder from './'
-import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
+import { IdGenerator } from 'cucumber-messages'
+
+const { uuid } = IdGenerator
 
 describe('supportCodeLibraryBuilder', () => {
   describe('no support code fns', () => {

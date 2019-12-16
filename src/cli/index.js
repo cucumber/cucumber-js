@@ -12,7 +12,9 @@ import Promise from 'bluebird'
 import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
-import { uuid, incrementing } from 'cucumber-messages/dist/src/IdGenerator'
+import { IdGenerator } from 'cucumber-messages'
+
+const { incrementing, uuid } = IdGenerator
 
 export default class Cli {
   constructor({ argv, cwd, stdout }) {

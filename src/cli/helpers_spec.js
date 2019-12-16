@@ -8,9 +8,10 @@ import fsExtra from 'fs-extra'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
-import { messages } from 'cucumber-messages'
+import { messages, IdGenerator } from 'cucumber-messages'
 import { EventDataCollector } from '../formatter/helpers'
-import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
+
+const { uuid } = IdGenerator
 
 describe('helpers', () => {
   describe('loadPicklesFromFilesystem', () => {

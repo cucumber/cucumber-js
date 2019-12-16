@@ -3,7 +3,7 @@
 import { Then } from '../../'
 import { expect } from 'chai'
 import {
-  normalizeProtobufOutput,
+  normalizeMessageOutput,
   normalizeJsonOutput,
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
@@ -13,9 +13,9 @@ Then(
   'the {string} formatter output matches the fixture {string}',
   async function(formatter, filePath) {
     let actual
-    if (formatter === 'protobuf') {
+    if (formatter === 'message') {
       actual = this.lastRun.envelopes.map(e => e.toJSON())
-      actual = normalizeProtobufOutput(actual, this.tmpDir)
+      actual = normalizeMessageOutput(actual, this.tmpDir)
     } else {
       const actualPath = path.join(this.tmpDir, `${formatter}.out`)
       actual = await fs.readFile(actualPath, 'utf8')

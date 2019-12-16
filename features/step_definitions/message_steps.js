@@ -11,7 +11,7 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepAttachmentsForHook,
   getTestStepResults,
-} from '../support/protobuf_helpers'
+} from '../support/message_helpers'
 import { messages } from 'cucumber-messages'
 
 const { Status } = messages.TestResult
@@ -140,7 +140,7 @@ Then('scenario {string} step {string} has the attachments:', function(
     return {
       data: x.DATA,
       media: messages.Media.fromObject({
-        contentType: x['MEDIA CONTENT TYPE'],
+        contentType: x['MEDIA TYPE'],
         encoding: messages.Media.Encoding[x['MEDIA ENCODING']],
       }),
     }
@@ -165,7 +165,7 @@ Then('scenario {string} {string} hook has the attachments:', function(
     return {
       data: x.DATA,
       media: messages.Media.fromObject({
-        contentType: x['MEDIA CONTENT TYPE'],
+        contentType: x['MEDIA TYPE'],
         encoding: messages.Media.Encoding[x['MEDIA ENCODING']],
       }),
     }

@@ -13,13 +13,13 @@ import { messages } from 'cucumber-messages'
 
 class World {
   async run(executablePath, inputArgs) {
-    const protobufFilename = 'protobuf.out'
+    const messageFilename = 'message.out'
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
         '--predictable-ids',
         '--format',
-        `protobuf:${protobufFilename}`,
+        `message:${messageFilename}`,
       ])
       .map(arg => {
         if (_.includes(arg, '/')) {
@@ -60,15 +60,15 @@ class World {
       result = { error, stdout: await toString(stdout), stderr }
     }
     const envelopes = []
-    const protobufOutputPath = path.join(cwd, protobufFilename)
-    if (fs.existsSync(protobufOutputPath)) {
-      const data = fs.readFileSync(protobufOutputPath)
+    const messageOutputPath = path.join(cwd, messageFilename)
+    if (fs.existsSync(messageOutputPath)) {
+      const data = fs.readFileSync(messageOutputPath)
       const reader = protobuf.Reader.create(data)
       while (reader.pos < reader.len) {
         envelopes.push(messages.Envelope.decodeDelimited(reader))
       }
       fs.writeFileSync(
-        path.join(cwd, 'protobuf.out.json'),
+        path.join(cwd, 'message.out.json'),
         JSON.stringify(envelopes.map(e => e.toJSON()), null, 2)
       )
     }

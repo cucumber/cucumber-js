@@ -7,8 +7,9 @@ import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
-import { messages } from 'cucumber-messages'
-import { uuid } from 'cucumber-messages/dist/src/IdGenerator'
+import { messages, IdGenerator } from 'cucumber-messages'
+
+const { uuid } = IdGenerator
 
 export default class Slave {
   constructor({ cwd, exit, id, sendMessage }) {
