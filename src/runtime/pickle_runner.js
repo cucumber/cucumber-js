@@ -54,7 +54,6 @@ export default class PickleRunner {
       attach: ::this.attachmentManager.create,
       parameters: this.worldParameters,
     })
-    this.testStepIndex = 0
     this.result = messages.TestResult.fromObject({
       duration: getZeroDuration(),
       status: this.skip ? Status.SKIPPED : Status.PASSED,
@@ -205,7 +204,6 @@ export default class PickleRunner {
         },
       })
     )
-    this.testStepIndex += 1
   }
 
   async run() {
