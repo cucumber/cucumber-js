@@ -69,6 +69,9 @@ module.exports = [
     },
   },
   {
+    testRunStarted: {},
+  },
+  {
     testRunFinished: {
       success: true,
     },

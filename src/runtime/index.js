@@ -73,7 +73,10 @@ export default class Runtime {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    this.eventBroadcaster.emit(new messages.Envelope({ testRunStarted: {} }))
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({ testRunStarted: {} })
+    )
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
     await Promise.each(this.pickleIds, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
