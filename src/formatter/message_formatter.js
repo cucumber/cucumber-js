@@ -1,4 +1,4 @@
-import Formatter from './'
+import Formatter from '.'
 import { messages } from 'cucumber-messages'
 
 export default class MessageFormatter extends Formatter {

@@ -1,6 +1,7 @@
 import getColorFns from './get_color_fns'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
 import JsonFormatter from './json_formatter'
+import MessageFormatter from './message_formatter'
 import path from 'path'
 import ProgressBarFormatter from './progress_bar_formatter'
 import ProgressFormatter from './progress_formatter'
@@ -10,7 +11,6 @@ import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import SummaryFormatter from './summary_formatter'
 import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
-import MessageFormatter from './protobuf_formatter'
 
 export default class FormatterBuilder {
   static build(type, options) {
