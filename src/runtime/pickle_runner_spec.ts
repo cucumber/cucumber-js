@@ -159,8 +159,8 @@ describe('PickleRunner', () => {
         })
         const message = [
           'Multiple step definitions match:',
-          '  an ambiguous step    - steps.js:11',
-          '  /an? ambiguous step/ - steps.js:12',
+          '  an ambiguous step    - steps.ts:11',
+          '  /an? ambiguous step/ - steps.ts:12',
         ].join('\n')
 
         // Act

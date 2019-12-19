@@ -3,8 +3,9 @@ import Status from '../../status'
 import figures from 'figures'
 import { formatError } from './error_helpers'
 import { formatLocation } from './location_helpers'
-import { parseTestCaseAttempt } from './test_case_attempt_parser'
+import { parseTestCaseAttempt, IParsedTestStep } from './test_case_attempt_parser'
 import { formatStepArgument } from './step_argument_formatter'
+import { IColorFns } from '../get_color_fns'
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,
@@ -15,28 +16,38 @@ const CHARACTERS = {
   [Status.UNDEFINED]: '?',
 }
 
-function getStepMessage({ colorFns, testStep }) {
+interface IGetStepMessageRequest {
+  colorFns: IColorFns
+  testStep: IParsedTestStep
+}
+
+function getStepMessage({ colorFns, testStep }: IGetStepMessageRequest): string {
   switch (testStep.result.status) {
     case Status.AMBIGUOUS:
-      return colorFns[Status.AMBIGUOUS](testStep.result.message)
+      return colorFns.forStatus(Status.AMBIGUOUS)(testStep.result.message)
     case Status.FAILED:
       return formatError(testStep.result.message, colorFns)
     case Status.UNDEFINED:
       return `${'Undefined. Implement with the following snippet:' +
         '\n\n'}${indentString(testStep.snippet, 2)}\n`
     case Status.PENDING:
-      return colorFns[Status.PENDING]('Pending')
+      return colorFns.forStatus(Status.PENDING)('Pending')
   }
   return ''
 }
 
-function formatStep({ colorFns, testStep }) {
+interface IFormatStepRequest {
+  colorFns: IColorFns
+  testStep: IParsedTestStep
+}
+
+function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
   const {
     result: { status },
     actionLocation,
     attachments,
   } = testStep
-  const colorFn = colorFns[status]
+  const colorFn = colorFns.forStatus(status)
   const identifier = testStep.keyword + (testStep.text || '')
   let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
   if (actionLocation) {

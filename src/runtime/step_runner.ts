@@ -2,42 +2,48 @@ import _ from 'lodash'
 import Status from '../status'
 import Time, { millisecondsToDuration } from '../time'
 import UserCodeRunner from '../user_code_runner'
-import Promise from 'bluebird'
 import { messages } from 'cucumber-messages'
 import { format } from 'assertion-error-formatter'
+import { ITestCaseHookParameter } from '../support_code_library_builder'
+import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
+import { valueOrDefault } from '../value_checker'
 
 const { beginTiming, endTiming } = Time
 
-async function run({
+export interface IRunOptions {
+  defaultTimeout: number
+  hookParameter: ITestCaseHookParameter
+  step: messages.Pickle.IPickleStep
+  stepDefinition: IDefinition
+  world: any
+} 
+
+export async function run({
   defaultTimeout,
   hookParameter,
   step,
   stepDefinition,
   world,
-}) {
+}: IRunOptions) {
   beginTiming()
-  let error, result, parameters
+  let error: any, result: messages.ITestResult, invocationData: IGetInvocationDataResponse
 
   try {
-    parameters = await Promise.all(
-      stepDefinition.getInvocationParameters({
-        hookParameter,
-        step,
-        world,
-      })
-    )
+    invocationData = await stepDefinition.getInvocationParameters({
+      hookParameter,
+      step,
+      world,
+    })
   } catch (err) {
     error = err
   }
 
   if (!error) {
-    const timeoutInMilliseconds =
-      stepDefinition.options.timeout || defaultTimeout
+    const timeoutInMilliseconds = valueOrDefault(stepDefinition.options.timeout, defaultTimeout)
 
-    const validCodeLengths = stepDefinition.getValidCodeLengths(parameters)
-    if (_.includes(validCodeLengths, stepDefinition.code.length)) {
+    if (_.includes(invocationData.validCodeLengths, stepDefinition.code.length)) {
       const data = await UserCodeRunner.run({
-        argsArray: parameters,
+        argsArray: invocationData.parameters,
         fn: stepDefinition.code,
         thisArg: world,
         timeoutInMilliseconds,
@@ -45,7 +51,7 @@ async function run({
       error = data.error
       result = data.result
     } else {
-      error = stepDefinition.getInvalidCodeLengthMessage(parameters)
+      error = invocationData.getInvalidCodeLengthMessage()
     }
   }
 

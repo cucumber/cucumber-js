@@ -14,15 +14,11 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import ParameterTypeRegistry from 'cucumber-expressions/dist/src/ParameterTypeRegistry'
-import {
-  ClassLikeDeclaration,
-  ClassDeclaration,
-  ClassElement,
-} from 'typescript'
+import { IAttachment } from '../runtime/attachment_manager'
 
 export type DefineStepPattern = string | RegExp
 
-export interface TestCaseHookParameter {
+export interface ITestCaseHookParameter {
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
   result?: messages.ITestResult
@@ -31,7 +27,7 @@ export interface TestCaseHookParameter {
 
 export type TestCaseHookFunctionWithoutParameter = () => void
 export type TestCaseHookFunctionWithParameter = (
-  arg: TestCaseHookParameter
+  arg: ITestCaseHookParameter
 ) => void
 export type TestCaseHookFunction =
   | TestCaseHookFunctionWithoutParameter
@@ -101,6 +97,16 @@ export interface ISupportCodeLibrary {
   stepDefinitions: StepDefinition[]
   parameterTypeRegistry: ParameterTypeRegistry
   World: any
+}
+
+export class BaseWorld {
+  private attach: (attachment: IAttachment) => void
+  private parameters: any
+
+  constructor({ attach, parameters }) {
+    this.attach = attach
+    this.parameters = parameters
+  }
 }
 
 export class SupportCodeLibraryBuilder {
@@ -219,13 +225,9 @@ export class SupportCodeLibraryBuilder {
       beforeTestCaseHookDefinitions: [],
       beforeTestRunHookDefinitions: [],
       defaultTimeout: 5000,
-      definitionFunctionWrapper: null,
-      stepDefinitionConfigs: [],
       parameterTypeRegistry: TransformLookupBuilder.build(),
-      World({ attach, parameters }) {
-        this.attach = attach
-        this.parameters = parameters
-      },
+      stepDefinitions: [],
+      World: BaseWorld
     })
   }
 }

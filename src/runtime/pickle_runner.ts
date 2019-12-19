@@ -7,17 +7,11 @@ import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
-  TestCaseHookParameter,
+  ITestCaseHookParameter,
 } from '../support_code_library_builder'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import StepDefinition from '../models/step_definition'
-import Definition from '../models/definition'
-import {
-  ConstructorDeclaration,
-  SignatureKind,
-  SignatureDeclaration,
-} from 'typescript'
-import { Constructor } from 'protobufjs'
+import { IDefinition } from '../models/definition'
 
 const { Status } = messages.TestResult
 
@@ -173,7 +167,7 @@ export default class PickleRunner {
 
   invokeStep(
     step: messages.Pickle.IPickleStep,
-    stepDefinition: Definition,
+    stepDefinition: IDefinition,
     hookParameter?: any
   ) {
     return StepRunner.run({
@@ -265,7 +259,7 @@ export default class PickleRunner {
       for (const testStep of this.testSteps) {
         await this.aroundTestStep(testStep.id, attempt, async () => {
           if (testStep.isHook) {
-            const hookParameter: TestCaseHookParameter = {
+            const hookParameter: ITestCaseHookParameter = {
               gherkinDocument: this.gherkinDocument,
               pickle: this.pickle,
               testCaseStartedId: this.currentTestCaseStartedId,

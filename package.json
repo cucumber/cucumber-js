@@ -232,7 +232,7 @@
   "scripts": {
     "build-browser-example": "BABEL_ENV=browser browserify example/index.js -o dist/browser-example.js -t babelify",
     "build-local-continuous": "babel src --watch -d lib --ignore '**/*_spec.js'",
-    "build-local": "babel src -d lib --ignore '**/*_spec.js'",
+    "build-local": "rm -r lib && tsc -p tsconfig.node.json && mv lib/src/* lib/ && rm -r lib/src lib/package.json",
     "build-release": "BABEL_ENV=browser browserify scripts/cucumber.js -o dist/cucumber.js -t babelify --standalone Cucumber --debug",
     "feature-test": "node ./bin/cucumber-js",
     "lint-autofix": "eslint --fix \"{example,features,scripts,src,test}/**/*.ts\"",
@@ -243,7 +243,7 @@
     "prepublishOnly": "rm -r lib && yarn run build-local",
     "test-coverage": "yarn run lint && ./scripts/test-coverage.sh",
     "test": "yarn run lint && yarn run unit-test && yarn run feature-test",
-    "unit-test": "mocha src"
+    "unit-test": "mocha 'src/**/*_spec.ts'"
   },
   "bin": {
     "cucumber-js": "./bin/cucumber-js"

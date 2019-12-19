@@ -8,13 +8,17 @@ import {
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 import path from 'path'
 import { messages } from 'cucumber-messages'
+import { ITestCaseAttempt } from './event_data_collector'
+import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder'
+import { doesHaveValue } from '../../value_checker'
 
 export interface IParsedLocation {
   uri: string
-  line: string
+  line: number | string
 }
 
-export interface IParsedStep {
+export interface IParsedTestStep {
   actionLocation?: IParsedLocation
   argument?: messages.IPickleStepArgument
   attachments: messages.IAttachment[]
@@ -26,25 +30,15 @@ export interface IParsedStep {
 }
 
 export interface IParsedTestCase {
-  actionLocation?: IParsedLocation
-  argument?: messages.IPickleStepArgument
-  attachments: messages.IAttachment[]
-  keyword: string
+  attempt: number
+  name: string
   result: messages.ITestResult
-  snippet?: string
   sourceLocation?: IParsedLocation
-  text?: string
 }
 
 export interface IParsedTestCaseAttempt {
-  actionLocation?: IParsedLocation
-  argument?: messages.IPickleStepArgument
-  attachments: messages.IAttachment[]
-  keyword: string
-  result: messages.ITestResult
-  snippet?: string
-  sourceLocation?: IParsedLocation
-  text?: string
+  testCase: IParsedTestCase
+  testSteps: IParsedTestStep[]
 }
 
 function parseStep({
@@ -59,8 +53,8 @@ function parseStep({
   testStep,
   testStepResult,
   testStepAttachments,
-}): IParsedStep {
-  const out: IParsedStep = {
+}): IParsedTestStep {
+  const out: IParsedTestStep = {
     attachments: testStepAttachments,
     keyword: testStep.pickleStepId
       ? keyword
@@ -110,6 +104,13 @@ function parseStep({
   return out
 }
 
+export interface IParseTestCaseAttemptRequest {
+  cwd: string
+  testCaseAttempt: ITestCaseAttempt
+  snippetBuilder: StepDefinitionSnippetBuilder
+  supportCodeLibrary: ISupportCodeLibrary
+}
+
 // Converts a testCaseAttempt into a json object with all data needed for
 // displaying it in a pretty format
 //
@@ -126,7 +127,7 @@ export function parseTestCaseAttempt({
   testCaseAttempt,
   snippetBuilder,
   supportCodeLibrary,
-}) {
+}: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
   const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
@@ -134,23 +135,21 @@ export function parseTestCaseAttempt({
   )
   const pickleStepMap = getPickleStepMap(pickle)
   const relativePickleUri = path.relative(cwd, pickle.uri)
-  const out = {
-    testCase: {
-      attempt: testCaseAttempt.attempt,
-      name: pickle.name,
-      result: testCaseAttempt.result,
-      sourceLocation: {
-        uri: relativePickleUri,
-        line: gherkinScenarioLocationMap[_.last(pickle.astNodeIds)].line,
-      },
+  const parsedTestCase: IParsedTestCase = {
+    attempt: testCaseAttempt.attempt,
+    name: pickle.name,
+    result: testCaseAttempt.result,
+    sourceLocation: {
+      uri: relativePickleUri,
+      line: gherkinScenarioLocationMap[_.last(pickle.astNodeIds)].line,
     },
-    testSteps: [],
   }
+  const parsedTestSteps: IParsedTestStep[] = []
   let isBeforeHook = true
   let previousKeywordType = KeywordType.Precondition
   _.each(testCase.testSteps, testStep => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
-    isBeforeHook = isBeforeHook && testStep.hookId
+    isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
     let keyword, keywordType, pickleStep
     if (testStep.pickleStepId) {
       pickleStep = pickleStepMap[testStep.pickleStepId]
@@ -174,8 +173,11 @@ export function parseTestCaseAttempt({
       testStepResult,
       testStepAttachments: testCaseAttempt.stepAttachments[testStep.id] || [],
     })
-    out.testSteps.push(parsedStep)
+    parsedTestSteps.push(parsedStep)
     previousKeywordType = keywordType
   })
-  return out
+  return {
+    testCase: parsedTestCase,
+    testSteps: parsedTestSteps
+  }
 }

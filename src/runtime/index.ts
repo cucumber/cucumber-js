@@ -10,6 +10,7 @@ import { messages, IdGenerator } from 'cucumber-messages'
 import PickleRunner from './pickle_runner'
 import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -58,8 +59,8 @@ export default class Runtime {
     this.success = true
   }
 
-  async runTestRunHooks(key, name) {
-    await bluebird.each(this.supportCodeLibrary[key], async hookDefinition => {
+  async runTestRunHooks(key: string, name: string) {
+    await bluebird.each(this.supportCodeLibrary[key], async (hookDefinition: TestRunHookDefinition) => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,

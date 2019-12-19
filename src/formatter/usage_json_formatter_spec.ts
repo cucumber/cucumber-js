@@ -37,8 +37,16 @@ describe('UsageJsonFormatter', () => {
     // Assert
     expect(parsedOutput).to.eql([
       {
-        code:
-          'function () {\n      if (count === 0) {\n        clock.tick(2);\n        count += 1;\n      } else {\n        clock.tick(1);\n      }\n    }',
+        code:`\
+function () {
+            if (count === 0) {
+                clock.tick(2);
+                count += 1;
+            }
+            else {
+                clock.tick(1);
+            }
+        }`,
         line: 12,
         matches: [
           {
@@ -57,10 +65,10 @@ describe('UsageJsonFormatter', () => {
         },
         pattern: 'def?',
         patternType: 'RegularExpression',
-        uri: 'usage_steps.js',
+        uri: 'usage_steps.ts',
       },
       {
-        code: 'function () {\n      clock.tick(1);\n    }',
+        code: 'function () {\n            clock.tick(1);\n        }',
         line: 7,
         matches: [
           {
@@ -79,15 +87,15 @@ describe('UsageJsonFormatter', () => {
         },
         pattern: 'abc',
         patternType: 'CucumberExpression',
-        uri: 'usage_steps.js',
+        uri: 'usage_steps.ts',
       },
       {
-        code: 'function () {}',
+        code: 'function () { }',
         line: 21,
         matches: [],
         pattern: 'ghi',
         patternType: 'CucumberExpression',
-        uri: 'usage_steps.js',
+        uri: 'usage_steps.ts',
       },
     ])
   })

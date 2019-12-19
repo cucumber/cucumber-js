@@ -1,7 +1,7 @@
 colors: true
 file:
-  - test/test_helper.js
+  - test/test_helper.ts
 full-trace: true
 recursive: true
 reporter: dot
-require: '@babel/register'
+require: 'ts-node/register'

@@ -23,7 +23,7 @@ export default class ProgressFormatter extends SummaryFormatter {
   }
 
   logProgress({ testResult: { status } }) {
-    const character = this.colorFns[status](STATUS_CHARACTER_MAPPING[status])
+    const character = this.colorFns.forStatus(status)(STATUS_CHARACTER_MAPPING[status])
     this.log(character)
   }
 }

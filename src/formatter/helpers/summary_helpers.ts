@@ -57,7 +57,7 @@ function getCountSummary({ colorFns, objects, type }) {
     STATUS_REPORT_ORDER.forEach(status => {
       if (counts[status] > 0) {
         details.push(
-          colorFns[status](`${counts[status]} ${Status[status].toLowerCase()}`)
+          colorFns.forStatus(status)(`${counts[status]} ${Status[status].toLowerCase()}`)
         )
       }
     })

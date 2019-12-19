@@ -30,8 +30,8 @@ describe('Usage Helpers', () => {
           expect(output).to.have.lengthOf(1)
           expect(output[0].code).to.eql(`\
 function () {
-              return 'original code';
-            }`)
+                            return 'original code';
+                        }`)
         })
       })
 
@@ -69,8 +69,8 @@ function () {
           expect(output).to.have.lengthOf(1)
           expect(output[0].code).to.eql(`\
 function () {
-              return 'original code';
-            }`)
+                            return 'original code';
+                        }`)
         })
       })
     })
