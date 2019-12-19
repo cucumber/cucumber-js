@@ -2,99 +2,86 @@ import _ from 'lodash'
 
 export default class EventDataCollector {
   constructor(eventBroadcaster) {
-    eventBroadcaster
-      .on('gherkin-document', ::this.storeGherkinDocument)
-      .on('pickle', ::this.storePickle)
-      .on('test-case-prepared', ::this.storeTestCase)
-      .on('test-step-attachment', ::this.storeTestStepAttachment)
-      .on('test-case-started', ::this.initTestCaseResult)
-      .on('test-step-finished', ::this.storeTestStepResult)
-      .on('test-case-finished', ::this.storeTestCaseResult)
+    eventBroadcaster.on('envelope', ::this.parseEnvelope)
     this.gherkinDocumentMap = {} // uri to gherkinDocument
-    this.pickleMap = {} // uri:line to pickle
-    this.testCaseMap = {} // uri:line to {sourceLocation, steps}
-    this.testCaseAttemptMap = {} // uri:line:attemptNumber to {result, stepAttachments, stepResults}
+    this.pickleMap = {} // pickleId to pickle
+    this.testCaseMap = {} // testCaseId to {pickleId, testSteps}
+    this.testCaseAttemptMap = {} // testCaseStartedId to {attemptNumber, testCaseId, result, stepAttachments, stepResults}
   }
 
   getTestCaseAttempts() {
-    return _.keys(this.testCaseAttemptMap).map(testCaseAttemptKey => {
-      const [uri, line] = testCaseAttemptKey.split(':')
-      const testCaseKey = this.getTestCaseKey({ uri, line })
-      return this.internalGetTestCaseAttempt({
-        uri,
-        testCaseKey,
-        testCaseAttemptKey,
-      })
+    return _.keys(this.testCaseAttemptMap).map(testCaseStartedId => {
+      return this.getTestCaseAttempt(testCaseStartedId)
     })
   }
 
-  getTestCaseAttempt({ attemptNumber, sourceLocation }) {
-    const testCaseKey = this.getTestCaseKey(sourceLocation)
-    const testCaseAttemptKey = this.getTestCaseAttemptKey({
-      attemptNumber,
-      sourceLocation,
-    })
-    return this.internalGetTestCaseAttempt({
-      uri: sourceLocation.uri,
-      testCaseKey,
-      testCaseAttemptKey,
-    })
-  }
-
-  internalGetTestCaseAttempt({ uri, testCaseKey, testCaseAttemptKey }) {
+  getTestCaseAttempt(testCaseStartedId) {
+    const testCaseAttempt = this.testCaseAttemptMap[testCaseStartedId]
+    const testCase = this.testCaseMap[testCaseAttempt.testCaseId]
+    const pickle = this.pickleMap[testCase.pickleId]
     return {
-      gherkinDocument: this.gherkinDocumentMap[uri],
-      pickle: this.pickleMap[testCaseKey],
-      testCase: this.testCaseMap[testCaseKey],
-      ...this.testCaseAttemptMap[testCaseAttemptKey],
+      gherkinDocument: this.gherkinDocumentMap[pickle.uri],
+      pickle,
+      testCase,
+      attempt: testCaseAttempt.attempt,
+      result: testCaseAttempt.result,
+      stepAttachments: testCaseAttempt.stepAttachments,
+      stepResults: testCaseAttempt.stepResults,
     }
   }
 
-  getTestCaseKey({ uri, line }) {
-    return `${uri}:${line}`
+  getTestRunDuration() {
+    return _.chain(this.testCaseAttemptMap)
+      .map(testCaseAttempt => testCaseAttempt.result.duration)
+      .sum()
   }
 
-  getTestCaseAttemptKey({ attemptNumber, sourceLocation: { uri, line } }) {
-    return `${uri}:${line}:${attemptNumber}`
+  parseEnvelope(envelope) {
+    if (envelope.gherkinDocument) {
+      this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
+        envelope.gherkinDocument
+    } else if (envelope.pickle) {
+      this.pickleMap[envelope.pickle.id] = envelope.pickle
+    } else if (envelope.testCase) {
+      this.testCaseMap[envelope.testCase.id] = envelope.testCase
+    } else if (envelope.testCaseStarted) {
+      this.initTestCaseAttempt(envelope.testCaseStarted)
+    } else if (envelope.attachment) {
+      this.storeAttachment(envelope.attachment)
+    } else if (envelope.testStepFinished) {
+      this.storeTestStepResult(envelope.testStepFinished)
+    } else if (envelope.testCaseFinished) {
+      this.storeTestCaseResult(envelope.testCaseFinished)
+    }
   }
 
-  storeGherkinDocument({ document, uri }) {
-    this.gherkinDocumentMap[uri] = { ...document, uri }
-  }
-
-  storePickle({ pickle, uri }) {
-    this.pickleMap[`${uri}:${pickle.locations[0].line}`] = { ...pickle, uri }
-  }
-
-  storeTestCase({ sourceLocation, steps }) {
-    const key = this.getTestCaseKey(sourceLocation)
-    this.testCaseMap[key] = { sourceLocation, steps }
-  }
-
-  initTestCaseResult(testCaseStartedEvent) {
-    const testCaseKey = this.getTestCaseKey(testCaseStartedEvent.sourceLocation)
-    const testCase = this.testCaseMap[testCaseKey]
-    const testCaseAttemptKey = this.getTestCaseAttemptKey(testCaseStartedEvent)
-    this.testCaseAttemptMap[testCaseAttemptKey] = {
-      attemptNumber: testCaseStartedEvent.attemptNumber,
+  initTestCaseAttempt(testCaseStarted) {
+    this.testCaseAttemptMap[testCaseStarted.id] = {
+      attempt: testCaseStarted.attempt,
+      testCaseId: testCaseStarted.testCaseId,
       result: {},
-      stepAttachments: testCase.steps.map(_ => []),
-      stepResults: testCase.steps.map(_ => null),
+      stepAttachments: {},
+      stepResults: {},
     }
   }
 
-  storeTestStepAttachment({ index, testCase, data, media }) {
-    const key = this.getTestCaseAttemptKey(testCase)
-    this.testCaseAttemptMap[key].stepAttachments[index].push({ data, media })
+  storeAttachment({ testCaseStartedId, testStepId, data, media }) {
+    if (testCaseStartedId && testStepId) {
+      const { stepAttachments } = this.testCaseAttemptMap[testCaseStartedId]
+      if (!stepAttachments[testStepId]) {
+        stepAttachments[testStepId] = []
+      }
+      stepAttachments[testStepId].push({ data, media })
+    }
   }
 
-  storeTestStepResult({ index, testCase, result }) {
-    const key = this.getTestCaseAttemptKey(testCase)
-    this.testCaseAttemptMap[key].stepResults[index] = result
+  storeTestStepResult({ testCaseStartedId, testStepId, testResult }) {
+    this.testCaseAttemptMap[testCaseStartedId].stepResults[
+      testStepId
+    ] = testResult
   }
 
-  storeTestCaseResult(testCaseFinishedEvent) {
-    const key = this.getTestCaseAttemptKey(testCaseFinishedEvent)
-    this.testCaseAttemptMap[key].result = testCaseFinishedEvent.result
+  storeTestCaseResult({ testCaseStartedId, testResult }) {
+    this.testCaseAttemptMap[testCaseStartedId].result = testResult
   }
 }

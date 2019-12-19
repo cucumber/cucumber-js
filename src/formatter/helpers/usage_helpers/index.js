@@ -1,6 +1,8 @@
 import _ from 'lodash'
-import { formatLocation } from '../location_helpers'
-import { getStepLineToPickledStepMap } from '../pickle_parser'
+import { getPickleStepMap } from '../pickle_parser'
+import path from 'path'
+import { getGherkinStepMap } from '../gherkin_document_parser'
+import { durationToMilliseconds, millisecondsToDuration } from '../../../time'
 
 function getCodeAsString(stepDefinition) {
   if (typeof stepDefinition.unwrappedCode === 'function') {
@@ -12,8 +14,7 @@ function getCodeAsString(stepDefinition) {
 function buildEmptyMapping(stepDefinitions) {
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
-    const location = formatLocation(stepDefinition)
-    mapping[location] = {
+    mapping[stepDefinition.id] = {
       code: getCodeAsString(stepDefinition),
       line: stepDefinition.line,
       pattern: stepDefinition.expression.source,
@@ -25,29 +26,27 @@ function buildEmptyMapping(stepDefinitions) {
   return mapping
 }
 
-function buildMapping({ stepDefinitions, eventDataCollector }) {
+function buildMapping({ cwd, stepDefinitions, eventDataCollector }) {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
-    const stepLineToPickledStepMap = getStepLineToPickledStepMap(
-      testCaseAttempt.pickle
-    )
-    testCaseAttempt.stepResults.forEach((testStepResult, index) => {
-      const { actionLocation, sourceLocation } = testCaseAttempt.testCase.steps[
-        index
-      ]
-      const { duration } = testStepResult
-      if (actionLocation && sourceLocation) {
-        const location = formatLocation(actionLocation)
+    const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
+    const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
+    testCaseAttempt.testCase.testSteps.forEach(testStep => {
+      if (testStep.pickleStepId && testStep.stepDefinitionIds.length === 1) {
+        const stepDefinitionId = testStep.stepDefinitionIds[0]
+        const pickleStep = pickleStepMap[testStep.pickleStepId]
+        const gherkinStep = gherkinStepMap[pickleStep.astNodeIds[0]]
         const match = {
-          line: sourceLocation.line,
-          text: stepLineToPickledStepMap[sourceLocation.line].text,
-          uri: sourceLocation.uri,
+          line: gherkinStep.location.line,
+          text: pickleStep.text,
+          uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
-        if (isFinite(duration)) {
+        const { duration } = testCaseAttempt.stepResults[testStep.id]
+        if (duration) {
           match.duration = duration
         }
-        if (mapping[location]) {
-          mapping[location].matches.push(match)
+        if (mapping[stepDefinitionId]) {
+          mapping[stepDefinitionId].matches.push(match)
         }
       }
     })
@@ -58,8 +57,8 @@ function buildMapping({ stepDefinitions, eventDataCollector }) {
 function invertNumber(key) {
   return obj => {
     const value = obj[key]
-    if (isFinite(value)) {
-      return -1 * value
+    if (value) {
+      return -1 * durationToMilliseconds(value)
     }
     return 1
   }
@@ -73,9 +72,14 @@ function buildResult(mapping) {
         'text',
       ])
       const result = { matches: sortedMatches, ...rest }
-      const meanDuration = _.meanBy(matches, 'duration')
-      if (isFinite(meanDuration)) {
-        result.meanDuration = meanDuration
+      const durations = _.chain(matches)
+        .map(m => m.duration)
+        .compact()
+        .value()
+      if (durations.length > 0) {
+        result.meanDuration = millisecondsToDuration(
+          _.meanBy(durations, d => durationToMilliseconds(d))
+        )
       }
       return result
     })
@@ -83,7 +87,7 @@ function buildResult(mapping) {
     .value()
 }
 
-export function getUsage({ stepDefinitions, eventDataCollector }) {
-  const mapping = buildMapping({ stepDefinitions, eventDataCollector })
+export function getUsage({ cwd, stepDefinitions, eventDataCollector }) {
+  const mapping = buildMapping({ cwd, stepDefinitions, eventDataCollector })
   return buildResult(mapping)
 }

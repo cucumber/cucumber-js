@@ -10,7 +10,7 @@ const types = {
 export default types
 
 export function getStepKeywordType({ keyword, language, previousKeywordType }) {
-  const dialect = Gherkin.DIALECTS[language]
+  const dialect = Gherkin.dialects()[language]
   const type = _.find(['given', 'when', 'then', 'and', 'but'], key =>
     _.includes(dialect[key], keyword)
   )

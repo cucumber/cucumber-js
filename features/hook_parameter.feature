@@ -16,12 +16,13 @@ Feature: Hook Parameters
       """
     And a file named "features/support/hooks.js" with:
       """
-      import {Before} from 'cucumber'
+      import {Before, formatterHelpers} from 'cucumber'
 
-      Before(function(testCase) {
-        console.log(testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line)
-        console.log('tags: ', testCase.pickle.tags);
-        console.log('name: ', testCase.pickle.name);
+      Before(function({pickle, gherkinDocument}) {
+        const { line } = formatterHelpers.PickleParser.getPickleLocation({ gherkinDocument, pickle })
+        console.log(pickle.uri + ":" + line)
+        console.log('tags: ', pickle.tags.map(t => t.name));
+        console.log('name: ', pickle.name);
       })
       """
     When I run cucumber-js
@@ -52,18 +53,19 @@ Feature: Hook Parameters
       """
     And a file named "features/support/hooks.js" with:
       """
-      import {After, Status} from 'cucumber'
+      import { After, formatterHelpers, Status } from 'cucumber'
 
-      After(function(testCase) {
-        let message = testCase.sourceLocation.uri + ":" + testCase.sourceLocation.line + " "
-        if (testCase.result.status === Status.FAILED) {
+      After(function({pickle, gherkinDocument, result}) {
+        const { line } = formatterHelpers.PickleParser.getPickleLocation({ gherkinDocument, pickle })
+        let message = pickle.uri + ":" + line + " "
+        if (result.status === Status.FAILED) {
           message += "failed"
         } else {
           message += "did not fail"
         }
         console.log(message)
-        console.log('tags: ', testCase.pickle.tags);
-        console.log('name: ', testCase.pickle.name);
+        console.log('tags: ', pickle.tags.map(t => t.name));
+        console.log('name: ', pickle.name);
       })
       """
     When I run cucumber-js

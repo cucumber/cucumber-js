@@ -1,19 +1,5 @@
-import _ from 'lodash'
+import { messages } from 'cucumber-messages'
 
-const statuses = {
-  AMBIGUOUS: 'ambiguous',
-  FAILED: 'failed',
-  PASSED: 'passed',
-  PENDING: 'pending',
-  SKIPPED: 'skipped',
-  UNDEFINED: 'undefined',
-}
+const Status = messages.TestResult.Status
 
-export default statuses
-
-export function getStatusMapping(initialValue) {
-  return _.chain(statuses)
-    .map(status => [status, initialValue])
-    .fromPairs()
-    .value()
-}
+export default Status

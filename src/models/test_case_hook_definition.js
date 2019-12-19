@@ -1,16 +1,14 @@
-import PickleFilter from '../pickle_filter'
+import { PickleTagFilter } from '../pickle_filter'
 import Definition from './definition'
 
 export default class TestCaseHookDefinition extends Definition {
-  constructor(...data) {
-    super(...data)
-    this.pickleFilter = new PickleFilter({
-      tagExpression: this.options.tags,
-    })
+  constructor(data) {
+    super(data)
+    this.pickleTagFilter = new PickleTagFilter(this.options.tags)
   }
 
-  appliesToTestCase({ pickle, uri }) {
-    return this.pickleFilter.matches({ pickle, uri })
+  appliesToTestCase(pickle) {
+    return this.pickleTagFilter.matchesAllTagExpressions(pickle)
   }
 
   getInvalidCodeLengthMessage() {

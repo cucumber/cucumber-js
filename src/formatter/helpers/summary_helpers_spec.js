@@ -1,169 +1,187 @@
-import { beforeEach, describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
-import Status from '../../status'
-import { MILLISECONDS_IN_NANOSECOND } from '../../time'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
+import lolex from 'lolex'
+import timeMethods from '../../time'
+import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
+
+async function testFormatSummary({
+  runtimeOptions,
+  sourceData,
+  supportCodeLibrary,
+}) {
+  const sources = [
+    {
+      data: sourceData,
+      uri: 'project/a.feature',
+    },
+  ]
+  if (!supportCodeLibrary) {
+    supportCodeLibrary = getBaseSupportCodeLibrary()
+  }
+  const testCaseAttempts = await getTestCaseAttempts({
+    runtimeOptions,
+    sources,
+    supportCodeLibrary,
+  })
+  return formatSummary({
+    colorFns: getColorFns(false),
+    testCaseAttempts,
+  })
+}
 
 describe('SummaryHelpers', () => {
+  let clock
+
+  beforeEach(() => {
+    clock = lolex.install({ target: timeMethods })
+  })
+
+  afterEach(() => {
+    clock.uninstall()
+  })
+
   describe('formatSummary', () => {
-    beforeEach(function() {
-      this.testCaseAttempts = []
-      this.testRun = { result: { duration: 0 } }
-      this.options = {
-        colorFns: getColorFns(false),
-        testCaseAttempts: this.testCaseAttempts,
-        testRun: this.testRun,
-      }
-    })
-
     describe('with no test cases', () => {
-      beforeEach(function() {
-        this.result = formatSummary(this.options)
-      })
+      it('outputs step totals, scenario totals, and duration', async () => {
+        // Arrange
+        const sourceData = ''
 
-      it('outputs step totals, scenario totals, and duration', function() {
-        expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
-        )
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain('0 scenarios\n' + '0 steps\n' + '0m00.000s\n')
       })
     })
 
     describe('with one passing scenario with one passing step', () => {
-      beforeEach(function() {
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the totals and number of each status', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
 
-      it('outputs the totals and number of each status', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one passing scenario with one step and hook', () => {
-      beforeEach(function() {
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
-          testCase: {
-            steps: [{}, { sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('filter out the hooks', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {})
+            Before(() => {})
+          }
+        )
 
-      it('filter out the hooks', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one scenario that failed and was retried then passed', () => {
-      beforeEach(function() {
-        this.testCaseAttempts.push({
-          result: { status: Status.FAILED, retried: true },
-          stepResults: [{ status: Status.FAILED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
+      it('filters out the retried attempts', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a flaky step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          let willPass = false
+          Given('a flaky step', function() {
+            if (willPass) {
+              return
+            }
+            willPass = true
+            throw 'error' // eslint-disable-line no-throw-literal
+          })
         })
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
 
-      it('filters out the retried attempts', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({
+          runtimeOptions: { retry: 1 },
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one passing scenario with multiple passing steps', () => {
-      beforeEach(function() {
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }, { status: Status.PASSED }],
-          testCase: {
-            steps: [
-              { sourceLocation: { uri: 'a.feature', line: 2 } },
-              { sourceLocation: { uri: 'a.feature', line: 3 } },
-            ],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the totals and number of each status', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+          'Then a passing step',
+        ].join('\n')
 
-      it('outputs the totals and number of each status', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain(
           '1 scenario (1 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
         )
       })
     })
 
     describe('with one of every kind of scenario', () => {
-      beforeEach(function() {
-        this.testCaseAttempts.push({
-          result: { status: Status.AMBIGUOUS },
-          stepResults: [{ status: Status.AMBIGUOUS }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 2 } }],
-          },
-        })
-        this.testCaseAttempts.push({
-          result: { status: Status.FAILED },
-          stepResults: [{ status: Status.FAILED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 4 } }],
-          },
-        })
-        this.testCaseAttempts.push({
-          result: { status: Status.PENDING },
-          stepResults: [{ status: Status.PENDING }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 6 } }],
-          },
-        })
-        this.testCaseAttempts.push({
-          result: { status: Status.PASSED },
-          stepResults: [{ status: Status.PASSED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 8 } }],
-          },
-        })
-        this.testCaseAttempts.push({
-          result: { status: Status.SKIPPED },
-          stepResults: [{ status: Status.SKIPPED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 10 } }],
-          },
-        })
-        this.testCaseAttempts.push({
-          result: { status: Status.UNDEFINED },
-          stepResults: [{ status: Status.UNDEFINED }],
-          testCase: {
-            steps: [{ sourceLocation: { uri: 'a.feature', line: 12 } }],
-          },
-        })
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the totals and number of each status', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          '  Scenario: a1',
+          '    Given an ambiguous step',
+          '  Scenario: a2',
+          '    Given a failing step',
+          '  Scenario: a3',
+          '    Given a pending step',
+          '  Scenario: a4',
+          '    Given a passing step',
+          '  Scenario: a5',
+          '    Given a skipped step',
+          '  Scenario: a6',
+          '    Given an undefined step',
+        ].join('\n')
 
-      it('outputs the totals and number of each status', function() {
-        expect(this.result).to.contain(
+        // Act
+        const output = await testFormatSummary({ sourceData })
+
+        // Assert
+        expect(output).to.contain(
           '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '0m00.000s\n'
@@ -172,40 +190,88 @@ describe('SummaryHelpers', () => {
     })
 
     describe('with a duration of 123 milliseconds', () => {
-      beforeEach(function() {
-        this.testRun.result.duration = 123 * MILLISECONDS_IN_NANOSECOND
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the duration as 0m00.123s', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {
+              clock.tick(123)
+            })
+          }
+        )
 
-      it('outputs the duration as 0m00.123s', function() {
-        expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m00.123s\n'
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.123s\n'
         )
       })
     })
 
     describe('with a duration of 12.3 seconds', () => {
-      beforeEach(function() {
-        this.testRun.result.duration = 123 * 100 * MILLISECONDS_IN_NANOSECOND
-        this.result = formatSummary(this.options)
-      })
+      it('outputs the duration as 0m12.300s', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {
+              clock.tick(12.3 * 1000)
+            })
+          }
+        )
 
-      it('outputs the duration as 0m12.300s', function() {
-        expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '0m12.300s\n'
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m12.300s\n'
         )
       })
     })
 
-    describe('with a duration of 120.3 seconds', () => {
-      beforeEach(function() {
-        this.testRun.result.duration = 123 * 1000 * MILLISECONDS_IN_NANOSECOND
-        this.result = formatSummary(this.options)
-      })
+    describe('with a duration of 123 seconds', () => {
+      it('outputs the duration as 2m03.000s', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before }) => {
+            Given('a passing step', () => {
+              clock.tick(123 * 1000)
+            })
+          }
+        )
 
-      it('outputs the duration as 2m03.000s', function() {
-        expect(this.result).to.contain(
-          '0 scenarios\n' + '0 steps\n' + '2m03.000s\n'
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(output).to.contain(
+          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '2m03.000s\n'
         )
       })
     })

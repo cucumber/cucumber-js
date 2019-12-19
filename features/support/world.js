@@ -8,15 +8,18 @@ import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
+import protobuf from 'protobufjs'
+import { messages } from 'cucumber-messages'
 
 class World {
   async run(executablePath, inputArgs) {
-    const eventProtocolOutputFilename = 'event-protocol.out'
+    const messageFilename = 'message.out'
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
+        '--predictable-ids',
         '--format',
-        `event-protocol:${eventProtocolOutputFilename}`,
+        `message:${messageFilename}`,
       ])
       .map(arg => {
         if (_.includes(arg, '/')) {
@@ -56,13 +59,18 @@ class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    let events = []
-    const eventProtocolOutputPath = path.join(cwd, eventProtocolOutputFilename)
-    if (fs.existsSync(eventProtocolOutputPath)) {
-      const fileContent = fs.readFileSync(eventProtocolOutputPath, 'utf8')
-      if (fileContent) {
-        events = _.compact(fileContent.split('\n')).map(x => JSON.parse(x))
+    const envelopes = []
+    const messageOutputPath = path.join(cwd, messageFilename)
+    if (fs.existsSync(messageOutputPath)) {
+      const data = fs.readFileSync(messageOutputPath)
+      const reader = protobuf.Reader.create(data)
+      while (reader.pos < reader.len) {
+        envelopes.push(messages.Envelope.decodeDelimited(reader))
       }
+      fs.writeFileSync(
+        path.join(cwd, 'message.out.json'),
+        JSON.stringify(envelopes.map(e => e.toJSON()), null, 2)
+      )
     }
     if (this.debug) {
       console.log(result.stdout + result.stderr) // eslint-disable-line no-console
@@ -70,7 +78,7 @@ class World {
     this.lastRun = {
       error: result.error,
       errorOutput: result.stderr,
-      events,
+      envelopes,
       output: colors.strip(result.stdout),
     }
     this.verifiedLastRunError = false

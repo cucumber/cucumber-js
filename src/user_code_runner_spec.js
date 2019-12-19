@@ -23,8 +23,7 @@ describe('UserCodeRunner', () => {
 
         it('returns the error', async function() {
           const { error, result } = await UserCodeRunner.run(this.options)
-          expect(error).to.be.instanceOf(Error)
-          expect(error.message).to.eql('error')
+          expect(error).to.eql('error')
           expect(result).to.eql(undefined)
         })
       })
@@ -40,8 +39,7 @@ describe('UserCodeRunner', () => {
 
         it('returns the error', async function() {
           const { error, result } = await UserCodeRunner.run(this.options)
-          expect(error).to.be.instanceOf(Error)
-          expect(error.message).to.eql('{ error: [Circular] }')
+          expect(error).to.eql('{ error: [Circular] }')
           expect(result).to.eql(undefined)
         })
       })
@@ -77,8 +75,7 @@ describe('UserCodeRunner', () => {
 
         it('returns the error', async function() {
           const { error, result } = await UserCodeRunner.run(this.options)
-          expect(error).to.be.instanceOf(Error)
-          expect(error.message).to.eql('error')
+          expect(error).to.eql('error')
           expect(result).to.eql(undefined)
         })
       })
@@ -96,8 +93,7 @@ describe('UserCodeRunner', () => {
 
         it('returns the error', async function() {
           const { error, result } = await UserCodeRunner.run(this.options)
-          expect(error).to.be.instanceOf(Error)
-          expect(error.message).to.eql('{ error: [Circular] }')
+          expect(error).to.eql('{ error: [Circular] }')
           expect(result).to.eql(undefined)
         })
       })
@@ -183,8 +179,7 @@ describe('UserCodeRunner', () => {
 
         it('returns what the promise rejects as an error', async function() {
           const { error, result } = await UserCodeRunner.run(this.options)
-          expect(error).to.be.instanceOf(Error)
-          expect(error.message).to.eql('error')
+          expect(error).to.eql('error')
           expect(result).to.eql(undefined)
         })
       })

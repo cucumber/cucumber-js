@@ -21,7 +21,7 @@ When(
     if (!args) {
       args = ''
     }
-    // event-protocol is always outputted as part of run
+    // message is always outputted as part of run
     const formats = ['json:json.out']
     args += ' ' + formats.map(f => `--format ${f}`).join(' ')
     args = Mustache.render(args, this)

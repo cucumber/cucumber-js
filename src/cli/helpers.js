@@ -1,11 +1,11 @@
 import _ from 'lodash'
 import ArgvParser from './argv_parser'
-import fs from 'mz/fs'
 import Gherkin from 'gherkin'
-import path from 'path'
 import ProfileLoader from './profile_loader'
 import Promise from 'bluebird'
 import shuffle from 'knuth-shuffle-seeded'
+import path from 'path'
+import { messages } from 'cucumber-messages'
 
 export async function getExpandedArgv({ argv, cwd }) {
   const { options } = ArgvParser.parse(argv)
@@ -17,60 +17,64 @@ export async function getExpandedArgv({ argv, cwd }) {
   return fullArgv
 }
 
-export async function getTestCasesFromFilesystem({
+// Returns ordered list of pickleIds to run
+export function loadPicklesFromFilesystem({
   cwd,
   eventBroadcaster,
+  eventDataCollector,
   featureDefaultLanguage,
   featurePaths,
+  newId,
   order,
   pickleFilter,
 }) {
-  let result = []
-  await Promise.each(featurePaths, async featurePath => {
-    const source = await fs.readFile(featurePath, 'utf8')
-    result = result.concat(
-      await getTestCases({
-        eventBroadcaster,
-        language: featureDefaultLanguage,
-        source,
-        pickleFilter,
-        uri: path.relative(cwd, featurePath),
-      })
-    )
-  })
-  orderTestCases(result, order)
-  return result
-}
-
-export async function getTestCases({
-  eventBroadcaster,
-  language,
-  pickleFilter,
-  source,
-  uri,
-}) {
-  const result = []
-  const events = Gherkin.generateEvents(source, uri, {}, language)
-  events.forEach(event => {
-    eventBroadcaster.emit(event.type, _.omit(event, 'type'))
-    if (event.type === 'pickle') {
-      const { pickle } = event
-      if (pickleFilter.matches({ pickle, uri })) {
-        eventBroadcaster.emit('pickle-accepted', { pickle, uri })
-        result.push({ pickle, uri })
-      } else {
-        eventBroadcaster.emit('pickle-rejected', { pickle, uri })
+  return new Promise((resolve, reject) => {
+    const result = []
+    const messageStream = Gherkin.fromPaths(featurePaths, {
+      defaultDialect: featureDefaultLanguage,
+      newId,
+    })
+    messageStream.on('data', envelope => {
+      eventBroadcaster.emit('envelope', envelope)
+      if (envelope.pickle) {
+        const pickle = envelope.pickle
+        const pickleId = pickle.id
+        const gherkinDocument =
+          eventDataCollector.gherkinDocumentMap[pickle.uri]
+        if (pickleFilter.matches({ gherkinDocument, pickle })) {
+          eventBroadcaster.emit(
+            'envelope',
+            messages.Envelope.fromObject({ pickleAccepted: { pickleId } })
+          )
+          result.push(pickleId)
+        } else {
+          eventBroadcaster.emit(
+            'envelope',
+            messages.Envelope.fromObject({ pickleRejected: { pickleId } })
+          )
+        }
       }
-    }
-    if (event.type === 'attachment') {
-      throw new Error(`Parse error in '${uri}': ${event.data}`)
-    }
+      if (envelope.attachment) {
+        reject(
+          new Error(
+            `Parse error in '${path.relative(
+              cwd,
+              envelope.attachment.source.uri
+            )}': ${envelope.attachment.data}`
+          )
+        )
+      }
+    })
+    messageStream.on('end', () => {
+      orderPickleIds(result, order)
+      resolve(result)
+    })
+    messageStream.on('error', reject)
   })
-  return result
 }
 
-// Orders the testCases in place - morphs input
-export function orderTestCases(testCases, order) {
+// Orders the pickleIds in place - morphs input
+export function orderPickleIds(pickleIds, order) {
   let [type, seed] = order.split(':')
   switch (type) {
     case 'defined':
@@ -80,7 +84,7 @@ export function orderTestCases(testCases, order) {
         seed = Math.floor(Math.random() * 1000 * 1000).toString()
         console.warn(`Random order using seed: ${seed}`)
       }
-      shuffle(testCases, seed)
+      shuffle(pickleIds, seed)
       break
     default:
       throw new Error(

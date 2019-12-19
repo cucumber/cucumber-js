@@ -1,5 +1,5 @@
-import Status from '../status'
 import SummaryFormatter from './summary_formatter'
+import Status from '../status'
 
 const STATUS_CHARACTER_MAPPING = {
   [Status.AMBIGUOUS]: 'A',
@@ -12,15 +12,17 @@ const STATUS_CHARACTER_MAPPING = {
 
 export default class ProgressFormatter extends SummaryFormatter {
   constructor(options) {
-    options.eventBroadcaster.on('test-run-finished', () => {
-      this.log('\n\n')
+    options.eventBroadcaster.on('envelope', envelope => {
+      if (envelope.testRunFinished) {
+        this.log('\n\n')
+      } else if (envelope.testStepFinished) {
+        this.logProgress(envelope.testStepFinished)
+      }
     })
     super(options)
-    options.eventBroadcaster.on('test-step-finished', ::this.logProgress)
   }
 
-  logProgress({ result }) {
-    const { status } = result
+  logProgress({ testResult: { status } }) {
     const character = this.colorFns[status](STATUS_CHARACTER_MAPPING[status])
     this.log(character)
   }

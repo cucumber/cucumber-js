@@ -4,6 +4,7 @@ import { createMock } from '../test_helpers'
 import { KeywordType } from '../helpers'
 import StepDefinitionSnippetBuilder from './'
 import TransformLookupBuilder from '../../support_code_library_builder/parameter_type_registry_builder'
+import { messages } from 'cucumber-messages'
 
 describe('StepDefinitionSnippetBuilder', () => {
   beforeEach(function() {
@@ -20,7 +21,6 @@ describe('StepDefinitionSnippetBuilder', () => {
       this.input = {
         keywordType: KeywordType.PRECONDITION,
         pickleStep: {
-          arguments: [],
           text: '',
         },
       }
@@ -120,7 +120,7 @@ describe('StepDefinitionSnippetBuilder', () => {
       })
     })
 
-    describe('step has no arguments', () => {
+    describe('step has no argument', () => {
       beforeEach(function() {
         this.result = this.snippetBuilder.build(this.input)
         this.arg = this.snippetSyntax.build.firstCall.args[0]
@@ -133,7 +133,9 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step has a data table argument', () => {
       beforeEach(function() {
-        this.input.pickleStep.arguments = [{ rows: [] }]
+        this.input.pickleStep.argument = messages.PickleStepArgument.fromObject(
+          { dataTable: { rows: [{ cells: [{ value: 'abc' }] }] } }
+        )
         this.result = this.snippetBuilder.build(this.input)
         this.arg = this.snippetSyntax.build.firstCall.args[0]
       })
@@ -145,7 +147,9 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step has a doc string argument', () => {
       beforeEach(function() {
-        this.input.pickleStep.arguments = [{ content: '' }]
+        this.input.pickleStep.argument = messages.PickleStepArgument.fromObject(
+          { docString: { content: 'abc' } }
+        )
         this.result = this.snippetBuilder.build(this.input)
         this.arg = this.snippetSyntax.build.firstCall.args[0]
       })

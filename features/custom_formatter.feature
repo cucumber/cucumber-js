@@ -10,28 +10,37 @@ Feature: custom formatter
   Scenario: extending Formatter
     Given a file named "simple_formatter.js" with:
       """
-      import {Formatter, formatterHelpers} from 'cucumber'
+      import { Formatter, formatterHelpers, Status } from 'cucumber'
 
       class SimpleFormatter extends Formatter {
         constructor(options) {
           super(options)
-          options.eventBroadcaster
-            .on('test-case-finished', ::this.logTestCase)
-            .on('test-run-finished', ::this.logTestRunResult)
+          options.eventBroadcaster.on('envelope', (envelope) => {
+            if (envelope.testCaseFinished) {
+              this.logTestCaseFinished(envelope.testCaseFinished)
+            } else if (envelope.testRunFinished) {
+              this.logTestRunFinished(envelope.testRunFinished)
+            }
+          })
         }
 
-        logTestCase(testCaseFinishedEvent) {
-          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+        logTestCaseFinished(testCaseFinished) {
+          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinished.testCaseStartedId)
           this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
-          const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
+          const parsed = formatterHelpers.parseTestCaseAttempt({
+            cwd: this.cwd,
+            snippetBuilder: this.snippetBuilder, 
+            supportCodeLibrary: this.supportCodeLibrary,
+            testCaseAttempt 
+          })
           parsed.testSteps.forEach(testStep => {
-            this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
+            this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + Status[testStep.result.status] + '\n')
           })
           this.log('\n')
         }
 
-        logTestRunResult({result}) {
-          this.log(result.success ? 'SUCCESS' : 'FAILURE')
+        logTestRunFinished(testRunFinished) {
+          this.log(testRunFinished.success ? 'SUCCESS' : 'FAILURE')
         }
       }
 
@@ -42,7 +51,7 @@ Feature: custom formatter
     And it outputs the text:
       """
       a feature / a scenario
-        Given an undefined step - undefined
+        Given an undefined step - UNDEFINED
 
       FAILURE
       """
@@ -56,21 +65,29 @@ Feature: custom formatter
       """
     And a file named "simple_formatter.js" with:
       """
-      import {SummaryFormatter, formatterHelpers} from 'cucumber'
+      import { SummaryFormatter, formatterHelpers, Status } from 'cucumber'
 
       class SimpleFormatter extends SummaryFormatter {
         constructor(options) {
           super(options)
-          options.eventBroadcaster
-            .on('test-case-finished', ::this.logTestCase)
+          options.eventBroadcaster.on('envelope', (envelope) => {
+            if (envelope.testCaseFinished) {
+              this.logTestCaseFinished(envelope.testCaseFinished)
+            }
+          })
         }
 
-        logTestCase(testCaseFinishedEvent) {
-          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinishedEvent)
+        logTestCaseFinished(testCaseFinished) {
+          const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(testCaseFinished.testCaseStartedId)
           this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
-          const parsed = formatterHelpers.parseTestCaseAttempt({ snippetBuilder: this.snippetBuilder, testCaseAttempt })
+          const parsed = formatterHelpers.parseTestCaseAttempt({
+            cwd: this.cwd,
+            snippetBuilder: this.snippetBuilder, 
+            supportCodeLibrary: this.supportCodeLibrary,
+            testCaseAttempt 
+          })
           parsed.testSteps.forEach(testStep => {
-            this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + testStep.result.status + '\n')
+            this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + Status[testStep.result.status] + '\n')
           })
           this.log('\n')
         }
@@ -83,9 +100,9 @@ Feature: custom formatter
     And it outputs the text:
       """
       a feature / a scenario
-        Given an undefined step - undefined
+        Given an undefined step - UNDEFINED
 
-      Warnings:
+      Failures:
 
       1) Scenario: a scenario # features/a.feature:2
          ? Given an undefined step

@@ -1,31 +1,32 @@
 import _ from 'lodash'
+import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 
-export function getScenarioDescription({
-  pickle,
-  scenarioLineToDescriptionMap,
-}) {
-  return _.chain(pickle.locations)
-    .map(({ line }) => scenarioLineToDescriptionMap[line])
+export function getScenarioDescription({ pickle, gherkinScenarioMap }) {
+  return _.chain(pickle.astNodeIds)
+    .map(id => gherkinScenarioMap[id])
     .compact()
     .first()
-    .value()
+    .value().description
 }
 
-export function getStepKeyword({ pickleStep, stepLineToKeywordMap }) {
-  return _.chain(pickleStep.locations)
-    .map(({ line }) => stepLineToKeywordMap[line])
+export function getStepKeyword({ pickleStep, gherkinStepMap }) {
+  return _.chain(pickleStep.astNodeIds)
+    .map(id => gherkinStepMap[id])
     .compact()
     .first()
-    .value()
+    .value().keyword
 }
 
-export function getStepLineToPickledStepMap(pickle) {
+export function getPickleStepMap(pickle) {
   return _.chain(pickle.steps)
-    .map(step => [getPickleStepLine(step), step])
+    .map(pickleStep => [pickleStep.id, pickleStep])
     .fromPairs()
     .value()
 }
 
-export function getPickleStepLine(pickleStep) {
-  return _.last(pickleStep.locations).line
+export function getPickleLocation({ gherkinDocument, pickle }) {
+  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
+    gherkinDocument
+  )
+  return gherkinScenarioLocationMap[_.last(pickle.astNodeIds)]
 }

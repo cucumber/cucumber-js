@@ -5,10 +5,14 @@ import Formatter from './'
 export default class SummaryFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('test-run-finished', ::this.logSummary)
+    options.eventBroadcaster.on('envelope', envelope => {
+      if (envelope.testRunFinished) {
+        this.logSummary()
+      }
+    })
   }
 
-  logSummary(testRun) {
+  logSummary() {
     const failures = []
     const warnings = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
@@ -29,7 +33,6 @@ export default class SummaryFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts,
-        testRun,
       })
     )
   }
@@ -40,8 +43,10 @@ export default class SummaryFormatter extends Formatter {
       this.log(
         formatIssue({
           colorFns: this.colorFns,
+          cwd: this.cwd,
           number: index + 1,
           snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
           testCaseAttempt,
         })
       )

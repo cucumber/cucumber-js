@@ -1,85 +1,47 @@
-import { beforeEach, describe, it } from 'mocha'
+import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { createMock } from './test_helpers'
-import getColorFns from './get_color_fns'
-import Status from '../status'
-import SummaryFormatter from './summary_formatter'
 import figures from 'figures'
-import { EventEmitter } from 'events'
-import Gherkin from 'gherkin'
-import { EventDataCollector } from './helpers'
-import { MILLISECONDS_IN_NANOSECOND } from '../time'
+import lolex from 'lolex'
+import timeMethods from '../time'
+import { testFormatter } from '../../test/formatter_helpers'
+import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 
 describe('SummaryFormatter', () => {
-  beforeEach(function() {
-    this.output = ''
-    const logFn = data => {
-      this.output += data
-    }
-    this.eventBroadcaster = new EventEmitter()
-    this.summaryFormatter = new SummaryFormatter({
-      colorFns: getColorFns(false),
-      eventBroadcaster: this.eventBroadcaster,
-      eventDataCollector: new EventDataCollector(this.eventBroadcaster),
-      log: logFn,
-      snippetBuilder: createMock({ build: 'snippet' }),
-    })
+  let clock
+
+  beforeEach(() => {
+    clock = lolex.install({ target: timeMethods })
+  })
+
+  afterEach(() => {
+    clock.uninstall()
   })
 
   describe('issues', () => {
-    beforeEach(function() {
-      const events = Gherkin.generateEvents(
-        'Feature: a\nScenario: b\nGiven a step',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
-      })
-      this.testCase = {
-        attemptNumber: 1,
-        sourceLocation: { uri: 'a.feature', line: 2 },
-      }
-    })
-
     describe('with a failing scenario', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
-      })
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a failing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('logs the issue', function() {
-        expect(this.output).to.eql(
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
           'Failures:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
-            `   ${figures.cross} Given a step # steps.js:4\n` +
+            `   ${figures.cross} Given a failing step # steps.js:7\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +
@@ -90,45 +52,32 @@ describe('SummaryFormatter', () => {
     })
 
     describe('with an ambiguous step', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: {
-            exception:
-              'Multiple step definitions match:\n' +
-              '  pattern1        - steps.js:3\n' +
-              '  longer pattern2 - steps.js:4',
-            status: Status.AMBIGUOUS,
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven an ambiguous step',
+            uri: 'a.feature',
           },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.AMBIGUOUS },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
-      })
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('logs the issue', function() {
-        expect(this.output).to.eql(
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
           'Failures:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
-            `   ${figures.cross} Given a step\n` +
+            `   ${figures.cross} Given an ambiguous step\n` +
             '       Multiple step definitions match:\n' +
-            '         pattern1        - steps.js:3\n' +
-            '         longer pattern2 - steps.js:4\n' +
+            '         an ambiguous step    - steps.js:11\n' +
+            '         /an? ambiguous step/ - steps.js:12\n' +
             '\n' +
             '1 scenario (1 ambiguous)\n' +
             '1 step (1 ambiguous)\n' +
@@ -138,39 +87,33 @@ describe('SummaryFormatter', () => {
     })
 
     describe('with an undefined step', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
-      })
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven an undefined step',
+            uri: 'a.feature',
+          },
+        ]
 
-      it('logs the issue', function() {
-        expect(this.output).to.eql(
-          'Warnings:\n' +
+        // Act
+        const output = await testFormatter({
+          sources,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
+          'Failures:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
-            '   ? Given a step\n' +
+            '   ? Given an undefined step\n' +
             '       Undefined. Implement with the following snippet:\n' +
             '\n' +
-            '         snippet\n' +
+            "         Given('an undefined step', function () {\n" +
+            '           // Write code here that turns the phrase above into concrete actions\n' +
+            "           return 'pending';\n" +
+            '         });\n' +
             '\n' +
             '\n' +
             '1 scenario (1 undefined)\n' +
@@ -181,37 +124,29 @@ describe('SummaryFormatter', () => {
     })
 
     describe('with a pending step', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PENDING },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.PENDING },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
-      })
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a pending step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('logs the issue', function() {
-        expect(this.output).to.eql(
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
           'Warnings:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
-            '   ? Given a step # steps.js:4\n' +
+            '   ? Given a pending step # steps.js:14\n' +
             '       Pending\n' +
             '\n' +
             '1 scenario (1 pending)\n' +
@@ -221,49 +156,31 @@ describe('SummaryFormatter', () => {
       })
     })
 
-    describe('with a passing flaky step', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED, retried: true },
-        })
-        const retriedTestCase = { ...this.testCase, attemptNumber: 2 }
-        this.eventBroadcaster.emit('test-case-started', retriedTestCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: retriedTestCase,
-          result: { status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...retriedTestCase,
-          result: { status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
-      })
+    describe('retrying a flaky step', () => {
+      it('logs the issue', async () => {
+        const runtimeOptions = { retry: 1 }
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a flaky step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('logs the issue', function() {
-        expect(this.output).to.eql(
+        // Act
+        const output = await testFormatter({
+          runtimeOptions,
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
           'Warnings:\n' +
             '\n' +
             '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
-            `   ${figures.cross} Given a step # steps.js:4\n` +
+            `   ${figures.cross} Given a flaky step # steps.js:19\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 passed)\n' +
@@ -273,99 +190,43 @@ describe('SummaryFormatter', () => {
       })
     })
 
-    describe('with a failed flaky step', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED, retried: true },
-        })
-        const retriedTestCase = { ...this.testCase, attemptNumber: 2 }
-        this.eventBroadcaster.emit('test-case-started', retriedTestCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: retriedTestCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...retriedTestCase,
-          result: { status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-run-finished', {
-          result: { duration: 0 },
-        })
-      })
+    describe('retrying with a failing step', () => {
+      it('logs the issue', async () => {
+        const runtimeOptions = { retry: 1 }
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a failing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('logs the issue', function() {
-        expect(this.output).to.eql(
+        // Act
+        const output = await testFormatter({
+          runtimeOptions,
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
           'Failures:\n' +
             '\n' +
             '1) Scenario: b (attempt 2) # a.feature:2\n' +
-            `   ${figures.cross} Given a step # steps.js:4\n` +
+            `   ${figures.cross} Given a failing step # steps.js:7\n` +
             '       error\n' +
             '\n' +
             'Warnings:\n' +
             '\n' +
             '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
-            `   ${figures.cross} Given a step # steps.js:4\n` +
+            `   ${figures.cross} Given a failing step # steps.js:7\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
             '0m00.000s\n'
         )
-      })
-    })
-
-    describe('summary', () => {
-      describe('with a duration of 123 milliseconds', () => {
-        beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * MILLISECONDS_IN_NANOSECOND },
-          })
-        })
-
-        it('outputs scenario totals, step totals, and duration', function() {
-          expect(this.output).to.contain('0 scenarios\n0 steps\n0m00.123s\n')
-        })
-      })
-
-      describe('with a duration of 12.3 seconds', () => {
-        beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 100 * MILLISECONDS_IN_NANOSECOND },
-          })
-        })
-
-        it('outputs scenario totals, step totals, and duration', function() {
-          expect(this.output).to.contain('0 scenarios\n0 steps\n0m12.300s\n')
-        })
-      })
-
-      describe('with a duration of 120.3 seconds', () => {
-        beforeEach(function() {
-          this.eventBroadcaster.emit('test-run-finished', {
-            result: { duration: 123 * 1000 * MILLISECONDS_IN_NANOSECOND },
-          })
-        })
-
-        it('outputs scenario totals, step totals, and duration', function() {
-          expect(this.output).to.contain('0 scenarios\n0 steps\n2m03.000s\n')
-        })
       })
     })
   })

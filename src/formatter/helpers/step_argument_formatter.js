@@ -1,7 +1,7 @@
 import Table from 'cli-table3'
-import { buildStepArgumentIterator } from '../../step_arguments'
+import { parseStepArgument } from '../../step_arguments'
 
-function formatDataTable(arg) {
+function formatDataTable(dataTable) {
   const table = new Table({
     chars: {
       bottom: '',
@@ -26,18 +26,22 @@ function formatDataTable(arg) {
       'padding-right': 1,
     },
   })
-  table.push(...arg.rows)
+  const rows = dataTable.rows.map(row =>
+    row.cells.map(cell =>
+      cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
+    )
+  )
+  table.push(...rows)
   return table.toString()
 }
 
-function formatDocString(arg) {
-  return `"""\n${arg.content}\n"""`
+function formatDocString(docString) {
+  return `"""\n${docString.content}\n"""`
 }
 
-export function formatStepArguments(args) {
-  const iterator = buildStepArgumentIterator({
-    dataTable: arg => formatDataTable(arg),
-    docString: arg => formatDocString(arg),
+export function formatStepArgument(arg) {
+  return parseStepArgument(arg, {
+    dataTable: formatDataTable,
+    docString: formatDocString,
   })
-  return args.map(iterator).join('\n')
 }

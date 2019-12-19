@@ -40,7 +40,7 @@ export default class ArgvParser {
   }
 
   static validateLanguage(val) {
-    if (!_.includes(_.keys(Gherkin.DIALECTS), val)) {
+    if (!_.includes(_.keys(Gherkin.dialects()), val)) {
       throw new Error(`Unsupported ISO 639-1: ${val}`)
     }
     return val
@@ -89,7 +89,7 @@ export default class ArgvParser {
       .option(
         '--language <ISO 639-1>',
         'provide the default language for feature files',
-        ''
+        'en'
       )
       .option(
         '--name <REGEXP>',
@@ -114,6 +114,10 @@ export default class ArgvParser {
         'run in parallel with the given number of slaves',
         val => ArgvParser.validateCountOption(val, '--parallel'),
         0
+      )
+      .option(
+        '--predictable-ids',
+        'Use predictable ids in messages (option ignored if using parallel)'
       )
       .option(
         '-r, --require <GLOB|DIR|FILE>',

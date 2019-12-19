@@ -1,5 +1,5 @@
 import { EventDataCollector } from '../formatter/helpers'
-import { getExpandedArgv, getTestCasesFromFilesystem } from './helpers'
+import { getExpandedArgv, loadPicklesFromFilesystem } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
 import ConfigurationBuilder from './configuration_builder'
@@ -12,6 +12,9 @@ import Promise from 'bluebird'
 import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
+import { IdGenerator } from 'cucumber-messages'
+
+const { incrementing, uuid } = IdGenerator
 
 export default class Cli {
   constructor({ argv, cwd, stdout }) {
@@ -27,12 +30,12 @@ export default class Cli {
 
   async initializeFormatters({
     eventBroadcaster,
+    eventDataCollector,
     formatOptions,
     formats,
     supportCodeLibrary,
   }) {
     const streamsToClose = []
-    const eventDataCollector = new EventDataCollector(eventBroadcaster)
     await Promise.map(formats, async ({ type, outputTo }) => {
       let stream = this.stdout
       if (outputTo) {
@@ -69,9 +72,13 @@ export default class Cli {
     }
   }
 
-  getSupportCodeLibrary({ supportCodeRequiredModules, supportCodePaths }) {
+  getSupportCodeLibrary({
+    newId,
+    supportCodeRequiredModules,
+    supportCodePaths,
+  }) {
     supportCodeRequiredModules.map(module => require(module))
-    supportCodeLibraryBuilder.reset(this.cwd)
+    supportCodeLibraryBuilder.reset(this.cwd, newId)
     supportCodePaths.forEach(codePath => require(codePath))
     return supportCodeLibraryBuilder.finalize()
   }
@@ -87,19 +94,31 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { success: true }
     }
-    const supportCodeLibrary = this.getSupportCodeLibrary(configuration)
+    const newId =
+      configuration.predictableIds && !configuration.parallel
+        ? incrementing()
+        : uuid()
+    const supportCodeLibrary = this.getSupportCodeLibrary({
+      newId,
+      supportCodePaths: configuration.supportCodePaths,
+      supportCodeRequiredModules: configuration.supportCodeRequiredModules,
+    })
     const eventBroadcaster = new EventEmitter()
+    const eventDataCollector = new EventDataCollector(eventBroadcaster)
     const cleanup = await this.initializeFormatters({
       eventBroadcaster,
+      eventDataCollector,
       formatOptions: configuration.formatOptions,
       formats: configuration.formats,
       supportCodeLibrary,
     })
-    const testCases = await getTestCasesFromFilesystem({
+    const pickleIds = await loadPicklesFromFilesystem({
       cwd: this.cwd,
       eventBroadcaster,
+      eventDataCollector,
       featureDefaultLanguage: configuration.featureDefaultLanguage,
       featurePaths: configuration.featurePaths,
+      newId,
       order: configuration.order,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
     })
@@ -108,10 +127,12 @@ export default class Cli {
       const parallelRuntimeMaster = new ParallelRuntimeMaster({
         cwd: this.cwd,
         eventBroadcaster,
+        eventDataCollector,
         options: configuration.runtimeOptions,
+        pickleIds,
+        supportCodeLibrary,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
-        testCases,
       })
       await new Promise(resolve => {
         parallelRuntimeMaster.run(configuration.parallel, s => {
@@ -122,9 +143,11 @@ export default class Cli {
     } else {
       const runtime = new Runtime({
         eventBroadcaster,
+        eventDataCollector,
         options: configuration.runtimeOptions,
+        newId,
+        pickleIds,
         supportCodeLibrary,
-        testCases,
       })
       success = await runtime.start()
     }

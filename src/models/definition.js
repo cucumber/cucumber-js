@@ -1,6 +1,7 @@
 export default class Definition {
-  constructor({ code, line, options, uri }) {
+  constructor({ code, id, line, options, uri }) {
     this.code = code
+    this.id = id
     this.line = line
     this.options = options
     this.uri = uri

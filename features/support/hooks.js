@@ -1,6 +1,6 @@
 /* eslint-disable babel/new-cap */
 
-import { After, Before } from '../../'
+import { After, Before, formatterHelpers } from '../../'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
@@ -19,8 +19,16 @@ Before('@spawn', function() {
   this.spawn = true
 })
 
-Before(function({ sourceLocation: { uri, line } }) {
-  this.tmpDir = path.join(projectPath, 'tmp', `${path.basename(uri)}_${line}`)
+Before(function({ gherkinDocument, pickle }) {
+  const { line } = formatterHelpers.PickleParser.getPickleLocation({
+    gherkinDocument,
+    pickle,
+  })
+  this.tmpDir = path.join(
+    projectPath,
+    'tmp',
+    `${path.basename(pickle.uri)}_${line}`
+  )
 
   fsExtra.removeSync(this.tmpDir)
 

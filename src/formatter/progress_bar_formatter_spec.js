@@ -1,413 +1,350 @@
-import { beforeEach, describe, it } from 'mocha'
+import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { createMock } from './test_helpers'
 import sinon from 'sinon'
-import getColorFns from './get_color_fns'
-import ProgressBarFormatter from './progress_bar_formatter'
-import Status from '../status'
 import { EventEmitter } from 'events'
-import Gherkin from 'gherkin'
 import { EventDataCollector } from './helpers'
+import { getEnvelopesAndEventDataCollector } from '../../test/formatter_helpers'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import FormatterBuilder from './builder'
+import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
+import lolex from 'lolex'
+import timeMethods from '../time'
+
+async function testProgressBarFormatter({
+  runtimeOptions,
+  shouldStopFn,
+  sources,
+  supportCodeLibrary,
+}) {
+  if (!supportCodeLibrary) {
+    supportCodeLibrary = buildSupportCodeLibrary()
+  }
+  const { envelopes } = await getEnvelopesAndEventDataCollector({
+    runtimeOptions,
+    sources,
+    supportCodeLibrary,
+  })
+  const eventBroadcaster = new EventEmitter()
+  let output = ''
+  const logFn = data => {
+    output += data
+  }
+  const progressBarFormatter = FormatterBuilder.build('progress-bar', {
+    cwd: '',
+    eventBroadcaster,
+    eventDataCollector: new EventDataCollector(eventBroadcaster),
+    log: logFn,
+    stream: {},
+    supportCodeLibrary,
+  })
+  let mocked = false
+  for (const envelope of envelopes) {
+    eventBroadcaster.emit('envelope', envelope)
+    if (shouldStopFn(envelope)) {
+      break
+    }
+    if (!mocked && envelope.testStepStarted) {
+      progressBarFormatter.progressBar = {
+        interrupt: sinon.stub(),
+        tick: sinon.stub(),
+      }
+      mocked = true
+    }
+  }
+  return { progressBarFormatter, output }
+}
 
 describe('ProgressBarFormatter', () => {
-  beforeEach(function() {
-    this.eventBroadcaster = new EventEmitter()
-    this.output = ''
-    const logFn = data => {
-      this.output += data
-    }
-    const colorFns = getColorFns(false)
-    this.progressBarFormatter = new ProgressBarFormatter({
-      colorFns,
-      cwd: 'path/to/project',
-      eventBroadcaster: this.eventBroadcaster,
-      eventDataCollector: new EventDataCollector(this.eventBroadcaster),
-      log: logFn,
-      snippetBuilder: createMock({ build: 'snippet' }),
-      stream: {},
+  describe('pickleAccepted / testStepStarted', () => {
+    it('initializes a progress bar with the total number of steps', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a step\nThen a step',
+          uri: 'a.feature',
+        },
+        {
+          data:
+            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          uri: 'b.feature',
+        },
+      ]
+
+      // Act
+      const { progressBarFormatter } = await testProgressBarFormatter({
+        shouldStopFn: envelope => envelope.testStepStarted,
+        sources,
+      })
+
+      // Assert
+      expect(progressBarFormatter.progressBar.total).to.eql(5)
     })
   })
 
-  describe('pickle-accepted, test-case-started', () => {
-    beforeEach(function() {
-      this.eventBroadcaster.emit('pickle-accepted', {
-        pickle: { locations: [{ line: 2 }], steps: [1, 2, 3] },
-        uri: 'path/to/feature',
-      })
-      this.eventBroadcaster.emit('pickle-accepted', {
-        pickle: { locations: [{ line: 7 }], steps: [4, 5] },
-        uri: 'path/to/feature',
-      })
-      const testCase = {
-        attemptNumber: 1,
-        sourceLocation: { line: 2, uri: 'path/to/feature' },
-      }
-      this.eventBroadcaster.emit('test-case-prepared', {
-        sourceLocation: testCase.sourceLocation,
-        steps: [
-          { actionLocation: { line: 2, uri: 'path/to/steps' } },
-          {
-            actionLocation: { line: 2, uri: 'path/to/steps' },
-            sourceLocation: { line: 3, uri: 'path/to/feature' },
-          },
-        ],
-      })
-      this.eventBroadcaster.emit('test-step-started')
-    })
-
-    it('initializes a progress bar with the total number of steps', function() {
-      expect(this.progressBarFormatter.progressBar.total).to.eql(5)
-    })
-  })
-
-  describe('test-step-finished', () => {
-    beforeEach(function() {
-      this.progressBarFormatter.progressBar = {
-        interrupt: sinon.stub(),
-        tick: sinon.stub(),
-      }
-      this.testCase = {
-        attemptNumber: 1,
-        sourceLocation: { line: 2, uri: 'path/to/feature' },
-      }
-      this.eventBroadcaster.emit('test-case-prepared', {
-        sourceLocation: this.testCase.sourceLocation,
-        steps: [
-          { actionLocation: { line: 2, uri: 'path/to/steps' } },
-          {
-            actionLocation: { line: 2, uri: 'path/to/steps' },
-            sourceLocation: { line: 3, uri: 'path/to/feature' },
-          },
-        ],
-      })
-      this.eventBroadcaster.emit('test-case-started', this.testCase)
-    })
-
+  describe('testStepFinished', () => {
     describe('step is a hook', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PASSED },
-        })
-      })
+      it('does not increase the progress bar percentage', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Before, Given }) => {
+            Given('a step', function() {})
+            Before(function() {})
+          }
+        )
 
-      it('does not increase the progress bar percentage', function() {
-        expect(this.progressBarFormatter.progressBar.tick).to.have.callCount(0)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testStepFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.tick).to.have.callCount(0)
       })
     })
 
-    describe('step is a normal step', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 1,
-          testCase: this.testCase,
-          result: { status: Status.PASSED },
-        })
-      })
+    describe('step is from a pickle', () => {
+      it('increases the progress bar percentage', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Before, Given }) => {
+            Given('a step', function() {})
+            Before(function() {})
+          }
+        )
 
-      it('increases the progress bar percentage', function() {
-        expect(this.progressBarFormatter.progressBar.tick).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => false,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.tick).to.have.callCount(1)
       })
     })
   })
 
-  describe('test-case-finished', () => {
-    beforeEach(function() {
-      this.progressBarFormatter.progressBar = {
-        interrupt: sinon.stub(),
-        tick: sinon.stub(),
-      }
-      const events = Gherkin.generateEvents(
-        'Feature: a\nScenario: b\nGiven a step',
-        'a.feature'
-      )
-      events.forEach(event => {
-        this.eventBroadcaster.emit(event.type, event)
-        if (event.type === 'pickle') {
-          this.eventBroadcaster.emit('pickle-accepted', {
-            type: 'pickle-accepted',
-            pickle: event.pickle,
-            uri: event.uri,
-          })
-        }
-      })
-      this.testCase = {
-        attemptNumber: 1,
-        sourceLocation: { uri: 'a.feature', line: 2 },
-      }
-    })
-
+  describe('testCaseFinished', () => {
     describe('ambiguous', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: {
-            exception:
-              'Multiple step definitions match:\n' +
-              '  pattern1        - steps.js:3\n' +
-              '  longer pattern2 - steps.js:4',
-            status: Status.AMBIGUOUS,
+      it('prints the error', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven an ambiguous step',
+            uri: 'a.feature',
           },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.AMBIGUOUS },
-        })
-      })
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the error', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
       })
     })
 
     describe('failed', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED },
-        })
-      })
+      it('prints the error', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a failed step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the error', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
-      })
-    })
-
-    describe('retried', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { exception: 'error', status: Status.FAILED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.FAILED, retried: true },
-        })
-        this.retriedTestCase = { ...this.testCase, attemptNumber: 2 }
-      })
-
-      it('prints a warning for the failed run', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
-      })
-
-      describe('with passing run', function() {
-        beforeEach(function() {
-          this.progressBarFormatter.progressBar.interrupt.reset()
-          this.eventBroadcaster.emit('test-case-started', this.retriedTestCase)
-          this.eventBroadcaster.emit('test-step-finished', {
-            index: 0,
-            testCase: this.retriedTestCase,
-            result: { status: Status.PASSED },
-          })
-          this.eventBroadcaster.emit('test-case-finished', {
-            ...this.retriedTestCase,
-            result: { status: Status.PASSED },
-          })
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
         })
 
-        it('does not print an additional error', function() {
-          expect(
-            this.progressBarFormatter.progressBar.interrupt
-          ).to.have.callCount(0)
-        })
-      })
-
-      describe('with all failures', function() {
-        beforeEach(function() {
-          this.progressBarFormatter.progressBar.interrupt.reset()
-          this.eventBroadcaster.emit('test-case-started', this.retriedTestCase)
-          this.eventBroadcaster.emit('test-step-finished', {
-            index: 0,
-            testCase: this.retriedTestCase,
-            result: { exception: 'error', status: Status.FAILED },
-          })
-          this.eventBroadcaster.emit('test-case-finished', {
-            ...this.retriedTestCase,
-            result: { status: Status.FAILED },
-          })
-        })
-
-        it('prints the error for the last run', function() {
-          expect(
-            this.progressBarFormatter.progressBar.interrupt
-          ).to.have.callCount(1)
-        })
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
       })
     })
 
     describe('passed', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PASSED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.PASSED },
-        })
-      })
+      it('does not print anything', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a passing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('does not print anything', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(0)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
       })
     })
 
     describe('pending', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.PENDING },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.PENDING },
-        })
-      })
+      it('prints the warning', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a pending step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the warning', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
       })
     })
 
     describe('skipped', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-              actionLocation: { uri: 'steps.js', line: 4 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.SKIPPED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.SKIPPED },
-        })
-      })
+      it('does not print anything', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a skipped step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('does not print anything', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(0)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(0)
       })
     })
 
     describe('undefined', () => {
-      beforeEach(function() {
-        this.eventBroadcaster.emit('test-case-prepared', {
-          sourceLocation: this.testCase.sourceLocation,
-          steps: [
-            {
-              sourceLocation: { uri: 'a.feature', line: 3 },
-            },
-          ],
-        })
-        this.eventBroadcaster.emit('test-case-started', this.testCase)
-        this.eventBroadcaster.emit('test-step-finished', {
-          index: 0,
-          testCase: this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-        this.eventBroadcaster.emit('test-case-finished', {
-          ...this.testCase,
-          result: { status: Status.UNDEFINED },
-        })
-      })
+      it('prints the warning', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven an undefined step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
 
-      it('prints the warning', function() {
-        expect(
-          this.progressBarFormatter.progressBar.interrupt
-        ).to.have.callCount(1)
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          shouldStopFn: envelope => envelope.testCaseFinished,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+      })
+    })
+
+    describe('retried', () => {
+      it('prints the warning and ticks a negative amount as the testCase will be retried', async () => {
+        // Arrange
+        const sources = [
+          {
+            data:
+              'Feature: a\nScenario: b\nGiven a passing step\n When a flaky step\nThen a passing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+        // Act
+        const { progressBarFormatter } = await testProgressBarFormatter({
+          runtimeOptions: { retry: 1 },
+          shouldStopFn: envelope => false,
+          sources,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
+        expect(progressBarFormatter.progressBar.tick).to.have.callCount(7)
+        expect(progressBarFormatter.progressBar.tick.args).to.eql([
+          [],
+          [],
+          [],
+          [-3],
+          [],
+          [],
+          [],
+        ])
       })
     })
   })
 
-  describe('test-run-finished', () => {
-    beforeEach(function() {
-      this.eventBroadcaster.emit('test-run-finished', {
-        result: { duration: 0 },
-      })
+  describe('testRunFinished', () => {
+    let clock
+
+    beforeEach(() => {
+      clock = lolex.install({ target: timeMethods })
     })
 
-    it('outputs step totals, scenario totals, and duration', function() {
-      expect(this.output).to.contain(
-        '0 scenarios\n' + '0 steps\n' + '0m00.000s\n'
+    afterEach(() => {
+      clock.uninstall()
+    })
+
+    it('outputs step totals, scenario totals, and duration', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a passing step',
+          uri: 'a.feature',
+        },
+      ]
+      const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+      // Act
+      const { output } = await testProgressBarFormatter({
+        shouldStopFn: envelope => false,
+        sources,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      expect(output).to.contain(
+        '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
       )
     })
   })

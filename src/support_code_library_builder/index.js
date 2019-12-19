@@ -56,6 +56,7 @@ export class SupportCodeLibraryBuilder {
         options,
         code,
         cwd: this.cwd,
+        id: this.newId(),
       })
       this.options[collectionName].push(hookDefinition)
     }
@@ -67,6 +68,7 @@ export class SupportCodeLibraryBuilder {
         options,
         code,
         cwd: this.cwd,
+        id: this.newId(),
       })
       this.options[collectionName].push(hookDefinition)
     }
@@ -76,6 +78,7 @@ export class SupportCodeLibraryBuilder {
     this.options.stepDefinitions = this.options.stepDefinitionConfigs.map(
       config =>
         buildStepDefinitionFromConfig({
+          id: this.newId(),
           config,
           parameterTypeRegistry: this.options.parameterTypeRegistry,
         })
@@ -100,8 +103,9 @@ export class SupportCodeLibraryBuilder {
     return this.options
   }
 
-  reset(cwd) {
+  reset(cwd, newId) {
     this.cwd = cwd
+    this.newId = newId
     this.options = _.cloneDeep({
       afterTestCaseHookDefinitions: [],
       afterTestRunHookDefinitions: [],

@@ -20,16 +20,15 @@ Feature: Error formatting
       """
     When I run cucumber-js
     Then it fails
-    And the output contains the text:
+    And it outputs the text:
       """
+      F-
+
       Failures:
 
       1) Scenario: some scenario # features/a.feature:2
          ✖ Before # features/support/hooks.js:3
-             Error: Fail
-      """
-    And the output contains the text:
-      """
+            Fail
          - Given a passing step # features/step_definitions/cucumber_steps.js:3
 
       1 scenario (1 failed)

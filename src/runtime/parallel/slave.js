@@ -1,47 +1,30 @@
-import _ from 'lodash'
 import { formatLocation } from '../../formatter/helpers'
 import commandTypes from './command_types'
 import EventEmitter from 'events'
 import Promise from 'bluebird'
-import serializeError from 'serialize-error'
 import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import TestCaseRunner from '../test_case_runner'
+import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
+import { messages, IdGenerator } from 'cucumber-messages'
 
-const EVENTS = [
-  'test-case-prepared',
-  'test-case-started',
-  'test-step-started',
-  'test-step-attachment',
-  'test-step-finished',
-  'test-case-finished',
-]
-
-function serializeResultExceptionIfNecessary(data) {
-  if (
-    data.result &&
-    data.result.exception &&
-    _.isError(data.result.exception)
-  ) {
-    data.result.exception = serializeError(data.result.exception)
-  }
-}
+const { uuid } = IdGenerator
 
 export default class Slave {
   constructor({ cwd, exit, id, sendMessage }) {
     this.id = id
+    this.newId = uuid()
     this.initialized = false
     this.cwd = cwd
     this.exit = exit
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
     this.stackTraceFilter = new StackTraceFilter()
-    EVENTS.forEach(name => {
-      this.eventBroadcaster.on(name, data => {
-        serializeResultExceptionIfNecessary(data)
-        this.sendMessage({ command: commandTypes.EVENT, name, data })
+    this.eventBroadcaster.on('envelope', envelope => {
+      this.sendMessage({
+        command: commandTypes.ENVELOPE,
+        encodedEnvelope: messages.Envelope.encode(envelope).finish(),
       })
     })
   }
@@ -53,9 +36,19 @@ export default class Slave {
     worldParameters,
   }) {
     supportCodeRequiredModules.map(module => require(module))
-    supportCodeLibraryBuilder.reset(this.cwd)
+    supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     supportCodePaths.forEach(codePath => require(codePath))
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
+    this.sendMessage({
+      command: commandTypes.SUPPORT_CODE_IDS,
+      stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(s => s.id),
+      beforeTestCaseHookDefinitionIds: this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
+        h => h.id
+      ),
+      afterTestCaseHookDefinitionIds: this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
+        h => h.id
+      ),
+    })
     this.worldParameters = worldParameters
     this.filterStacktraces = filterStacktraces
     if (this.filterStacktraces) {
@@ -83,16 +76,18 @@ export default class Slave {
     }
   }
 
-  async runTestCase({ testCase, retries, skip }) {
-    const testCaseRunner = new TestCaseRunner({
+  async runTestCase({ gherkinDocument, pickle, retries, skip }) {
+    const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      gherkinDocument,
+      newId: this.newId,
+      pickle,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
-      testCase,
       worldParameters: this.worldParameters,
     })
-    await testCaseRunner.run()
+    await pickleRunner.run()
     this.sendMessage({ command: commandTypes.READY })
   }
 

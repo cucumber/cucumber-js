@@ -1,24 +1,26 @@
 import DataTable from './data_table'
-import { buildStepArgumentIterator } from '../step_arguments'
 import Definition from './definition'
+import { parseStepArgument } from '../step_arguments'
 
 export default class StepDefinition extends Definition {
-  constructor({ code, line, options, uri, pattern, expression }) {
-    super({ code, line, options, uri })
-    this.pattern = pattern
-    this.expression = expression
+  constructor(data) {
+    super(data)
+    this.pattern = data.pattern
+    this.expression = data.expression
   }
 
   getInvocationParameters({ step, world }) {
-    const stepNameParameters = this.expression
+    const parameters = this.expression
       .match(step.text)
       .map(arg => arg.getValue(world))
-    const iterator = buildStepArgumentIterator({
-      dataTable: arg => new DataTable(arg),
-      docString: arg => arg.content,
-    })
-    const stepArgumentParameters = step.arguments.map(iterator)
-    return stepNameParameters.concat(stepArgumentParameters)
+    if (step.argument) {
+      const argumentParamater = parseStepArgument(step.argument, {
+        dataTable: arg => new DataTable(arg),
+        docString: arg => arg.content,
+      })
+      parameters.push(argumentParamater)
+    }
+    return parameters
   }
 
   getValidCodeLengths(parameters) {

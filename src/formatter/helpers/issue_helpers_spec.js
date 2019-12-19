@@ -1,303 +1,246 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { createMock } from '../test_helpers'
 import getColorFns from '../get_color_fns'
-import Status from '../../status'
 import { formatIssue } from './issue_helpers'
 import figures from 'figures'
-import Gherkin from 'gherkin'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
+import FormatterBuilder from '../builder'
+
+async function testFormatIssue(sourceData) {
+  const sources = [
+    {
+      data: sourceData,
+      uri: 'project/a.feature',
+    },
+  ]
+  const supportCodeLibrary = getBaseSupportCodeLibrary()
+  const [testCaseAttempt] = await getTestCaseAttempts({
+    sources,
+    supportCodeLibrary,
+  })
+  return formatIssue({
+    cwd: 'project/',
+    colorFns: getColorFns(false),
+    number: 1,
+    snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder({
+      supportCodeLibrary,
+    }),
+    supportCodeLibrary,
+    testCaseAttempt,
+  })
+}
 
 describe('IssueHelpers', () => {
-  beforeEach(function() {
-    const gherkinDocument = new Gherkin.Parser().parse(
-      'Feature: my feature\n' +
-        '  Scenario: my scenario\n' +
-        '    Given step1\n' +
-        '    When step2\n' +
-        '    Then step3\n'
-    )
-    const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-    this.testCase = {
-      sourceLocation: {
-        uri: 'a.feature',
-        line: 2,
-      },
-      steps: [
-        {
-          actionLocation: { line: 2, uri: 'steps.js' },
-          sourceLocation: { line: 3, uri: 'a.feature' },
-        },
-        {},
-        {
-          actionLocation: { line: 4, uri: 'steps.js' },
-          sourceLocation: { line: 5, uri: 'a.feature' },
-        },
-      ],
-    }
-    this.testCaseAttempt = {
-      attemptNumber: 1,
-      gherkinDocument,
-      pickle,
-      result: {},
-      stepAttachments: [[], [], []],
-      stepResults: [null, null, null],
-      testCase: this.testCase,
-    }
-    this.options = {
-      colorFns: getColorFns(false),
-      number: 1,
-      snippetBuilder: createMock({ build: 'snippet' }),
-      testCaseAttempt: this.testCaseAttempt,
-    }
-    this.passedStepResult = { duration: 0, status: Status.PASSED }
-    this.skippedStepResult = { status: Status.SKIPPED }
-  })
-
   describe('formatIssue', () => {
-    describe('returns the formatted scenario', () => {
-      beforeEach(function() {
-        this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = {
-          exception: 'error',
-          status: Status.FAILED,
-        }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+    describe('with a failed step', () => {
+      it('prints the scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given a passing step
+    When a failing step
+    Then a passing step
+`
 
-      it('prints the scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `   ${figures.cross} When step2 # steps.js:3\n` +
-            '       error\n' +
-            '   - Then step3 # steps.js:4\n\n'
-        )
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given a passing step # steps.js:27
+   ${figures.cross} When a failing step # steps.js:7
+       error
+   - Then a passing step # steps.js:27
+
+`)
       })
     })
 
     describe('with an ambiguous step', () => {
-      beforeEach(function() {
-        this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = {
-          exception:
-            'Multiple step definitions match:\n' +
-            '  pattern1        - steps.js:5\n' +
-            '  longer pattern2 - steps.js:6',
-          status: Status.FAILED,
-        }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+      it('returns the formatted scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given a passing step
+    When an ambiguous step
+    Then a passing step
+`
 
-      it('returns the formatted scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `   ${figures.cross} When step2 # steps.js:3\n` +
-            '       Multiple step definitions match:\n' +
-            '         pattern1        - steps.js:5\n' +
-            '         longer pattern2 - steps.js:6\n' +
-            '   - Then step3 # steps.js:4\n\n'
-        )
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given a passing step # steps.js:27
+   ${figures.cross} When an ambiguous step
+       Multiple step definitions match:
+         an ambiguous step    - steps.js:11
+         /an? ambiguous step/ - steps.js:12
+   - Then a passing step # steps.js:27
+
+`)
       })
     })
 
     describe('with an undefined step', () => {
-      beforeEach(function() {
-        this.testCase.steps[1] = {
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.UNDEFINED }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+      it('returns the formatted scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given a passing step
+    When an undefined step
+    Then a passing step
+`
 
-      it('returns the formatted scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `   ? When step2\n` +
-            '       Undefined. Implement with the following snippet:\n' +
-            '\n' +
-            '         snippet\n' +
-            '\n' +
-            '   - Then step3 # steps.js:4\n\n'
-        )
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given a passing step # steps.js:27
+   ? When an undefined step
+       Undefined. Implement with the following snippet:
+
+         When('an undefined step', function () {
+           // Write code here that turns the phrase above into concrete actions
+           return 'pending';
+         });
+
+   - Then a passing step # steps.js:27
+
+`)
       })
     })
 
     describe('with a pending step', () => {
-      beforeEach(function() {
-        this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.PENDING }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+      it('returns the formatted scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given a passing step
+    When a pending step
+    Then a passing step
+`
 
-      it('returns the formatted scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `   ? When step2 # steps.js:3\n` +
-            '       Pending\n' +
-            '   - Then step3 # steps.js:4\n\n'
-        )
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given a passing step # steps.js:27
+   ? When a pending step # steps.js:14
+       Pending
+   - Then a passing step # steps.js:27
+
+`)
       })
     })
 
     describe('step with data table', () => {
-      beforeEach(function() {
-        const gherkinDocument = new Gherkin.Parser().parse(
-          'Feature: my feature\n' +
-            '  Scenario: my scenario\n' +
-            '    Given step1\n' +
-            '    When step2\n' +
-            '    Then step3\n' +
-            '      |aaa|b|c|\n' +
-            '      |d|e|ff|\n' +
-            '      |gg|h|iii|\n'
-        )
-        this.testCaseAttempt.gherkinDocument = gherkinDocument
-        const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-        this.testCaseAttempt.pickle = pickle
-        this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.PENDING }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+      it('returns the formatted scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given a passing step
+    When a pending step
+    Then a passing step
+      |aaa|b|c|
+      |d|e|ff|
+      |gg|h|iii|
+`
 
-      it('returns the formatted scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `   ? When step2 # steps.js:3\n` +
-            '       Pending\n' +
-            '   - Then step3 # steps.js:4\n' +
-            '       | aaa | b | c   |\n' +
-            '       | d   | e | ff  |\n' +
-            '       | gg  | h | iii |\n\n'
-        )
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given a passing step # steps.js:27
+   ? When a pending step # steps.js:14
+       Pending
+   - Then a passing step # steps.js:27
+       | aaa | b | c   |
+       | d   | e | ff  |
+       | gg  | h | iii |
+
+`)
       })
     })
 
     describe('step with doc string', () => {
-      beforeEach(function() {
-        const gherkinDocument = new Gherkin.Parser().parse(
-          'Feature: my feature\n' +
-            '  Scenario: my scenario\n' +
-            '    Given step1\n' +
-            '    When step2\n' +
-            '    Then step3\n' +
-            '       """\n' +
-            '       this is a multiline\n' +
-            '       doc string\n' +
-            '\n' +
-            '       :-)\n' +
-            '       """\n'
-        )
-        this.testCaseAttempt.gherkinDocument = gherkinDocument
-        const pickle = new Gherkin.Compiler().compile(gherkinDocument)[0]
-        this.testCaseAttempt.pickle = pickle
-        this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepResults[1] = { status: Status.PENDING }
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+      it('returns the formatted scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given a passing step
+    When a pending step
+    Then a passing step
+       """
+       this is a multiline
+       doc string
 
-      it('returns the formatted scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `   ? When step2 # steps.js:3\n` +
-            '       Pending\n' +
-            '   - Then step3 # steps.js:4\n' +
-            '       """\n' +
-            '       this is a multiline\n' +
-            '       doc string\n' +
-            '\n' +
-            '       :-)\n' +
-            '       """\n\n'
-        )
+       :-)
+       """
+`
+
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given a passing step # steps.js:27
+   ? When a pending step # steps.js:14
+       Pending
+   - Then a passing step # steps.js:27
+       """
+       this is a multiline
+       doc string
+
+       :-)
+       """
+
+`)
       })
     })
 
     describe('step with attachment text', () => {
-      beforeEach(function() {
-        this.testCase.steps[1] = {
-          actionLocation: { line: 3, uri: 'steps.js' },
-          sourceLocation: { line: 4, uri: 'a.feature' },
-        }
-        this.testCaseAttempt.stepResults[0] = this.passedStepResult
-        this.testCaseAttempt.stepAttachments[0] = [
-          {
-            data: 'Some info.',
-            media: {
-              type: 'text/plain',
-            },
-          },
-          {
-            data: '{"name": "some JSON"}',
-            media: {
-              type: 'application/json',
-            },
-          },
-          {
-            data: Buffer.from([]),
-            media: {
-              type: 'image/png',
-            },
-          },
-        ]
-        this.testCaseAttempt.stepResults[1] = {
-          exception: 'error',
-          status: Status.FAILED,
-        }
-        this.testCaseAttempt.stepAttachments[1] = [
-          {
-            data: 'Other info.',
-            media: {
-              type: 'text/plain',
-            },
-          },
-        ]
-        this.testCaseAttempt.stepResults[2] = this.skippedStepResult
-        this.formattedIssue = formatIssue(this.options)
-      })
+      it('prints the scenario', async () => {
+        // Arrange
+        const sourceData = `\
+Feature: my feature
+  Scenario: my scenario
+    Given attachment step1
+    When attachment step2
+    Then a passing step
+`
+        // Act
+        const output = await testFormatIssue(sourceData)
 
-      it('prints the scenario', function() {
-        expect(this.formattedIssue).to.eql(
-          '1) Scenario: my scenario # a.feature:2\n' +
-            `   ${figures.tick} Given step1 # steps.js:2\n` +
-            `       Attachment (text/plain): Some info.\n` +
-            `       Attachment (application/json)\n` +
-            `       Attachment (image/png)\n` +
-            `   ${figures.cross} When step2 # steps.js:3\n` +
-            `       Attachment (text/plain): Other info.\n` +
-            '       error\n' +
-            '   - Then step3 # steps.js:4\n\n'
-        )
+        // Assert
+        expect(output).to.eql(`\
+1) Scenario: my scenario # a.feature:2
+   ${figures.tick} Given attachment step1 # steps.js:33
+       Attachment (text/plain): Some info
+       Attachment (application/json)
+       Attachment (image/png)
+   ${figures.cross} When attachment step2 # steps.js:39
+       Attachment (text/plain): Other info
+       error
+   - Then a passing step # steps.js:27
+
+`)
       })
     })
   })

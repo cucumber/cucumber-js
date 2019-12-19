@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import indentString from 'indent-string'
 import Status from '../../status'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
@@ -6,14 +5,15 @@ import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 export function isFailure(result) {
   return (
     result.status === Status.AMBIGUOUS ||
-    (result.status === Status.FAILED && !result.retried)
+    result.status === Status.UNDEFINED ||
+    (result.status === Status.FAILED && !result.willBeRetried)
   )
 }
 
 export function isWarning(result) {
   return (
-    _.includes([Status.PENDING, Status.UNDEFINED], result.status) ||
-    (result.status === Status.FAILED && result.retried)
+    result.status === Status.PENDING ||
+    (result.status === Status.FAILED && result.willBeRetried)
   )
 }
 
@@ -23,15 +23,19 @@ export function isIssue(result) {
 
 export function formatIssue({
   colorFns,
+  cwd,
   number,
   snippetBuilder,
   testCaseAttempt,
+  supportCodeLibrary,
 }) {
   const prefix = `${number}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
+    cwd,
     snippetBuilder,
     testCaseAttempt,
+    supportCodeLibrary,
   })
   const lines = formattedTestCaseAttempt.split('\n')
   const updatedLines = lines.map((line, index) => {

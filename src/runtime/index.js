@@ -3,23 +3,30 @@ import { formatLocation } from '../formatter/helpers'
 import Promise from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
 import Status from '../status'
-import TestCaseRunner from './test_case_runner'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
-import { retriesForTestCase } from './helpers'
+import { retriesForPickle } from './helpers'
+import { messages } from 'cucumber-messages'
+import PickleRunner from './pickle_runner'
 
 export default class Runtime {
   // options - {dryRun, failFast, filterStacktraces, retry, retryTagFilter, strict}
-  constructor({ eventBroadcaster, options, supportCodeLibrary, testCases }) {
+  constructor({
+    eventBroadcaster,
+    eventDataCollector,
+    newId,
+    options,
+    pickleIds,
+    supportCodeLibrary,
+  }) {
     this.eventBroadcaster = eventBroadcaster
+    this.eventDataCollector = eventDataCollector
+    this.newId = newId
     this.options = options || {}
+    this.pickleIds = pickleIds || []
     this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
-    this.testCases = testCases || []
-    this.result = {
-      duration: 0,
-      success: true,
-    }
+    this.success = true
   }
 
   async runTestRunHooks(key, name) {
@@ -42,24 +49,23 @@ export default class Runtime {
     })
   }
 
-  async runTestCase(testCase) {
-    const retries = retriesForTestCase(testCase, this.options)
-    const skip =
-      this.options.dryRun || (this.options.failFast && !this.result.success)
-    const testCaseRunner = new TestCaseRunner({
+  async runPickle(pickleId) {
+    const pickle = this.eventDataCollector.pickleMap[pickleId]
+    const retries = retriesForPickle(pickle, this.options)
+    const skip = this.options.dryRun || (this.options.failFast && !this.success)
+    const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      gherkinDocument: this.eventDataCollector.gherkinDocumentMap[pickle.uri],
+      newId: this.newId,
+      pickle,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
-      testCase,
       worldParameters: this.options.worldParameters,
     })
-    const testCaseResult = await testCaseRunner.run()
-    if (testCaseResult.duration) {
-      this.result.duration += testCaseResult.duration
-    }
-    if (this.shouldCauseFailure(testCaseResult.status)) {
-      this.result.success = false
+    const testResult = await pickleRunner.run()
+    if (this.shouldCauseFailure(testResult.status)) {
+      this.success = false
     }
   }
 
@@ -67,15 +73,23 @@ export default class Runtime {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    this.eventBroadcaster.emit('test-run-started')
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({ testRunStarted: {} })
+    )
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
-    await Promise.each(this.testCases, ::this.runTestCase)
+    await Promise.each(this.pickleIds, ::this.runPickle)
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
-    this.eventBroadcaster.emit('test-run-finished', { result: this.result })
+    this.eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        testRunFinished: { success: this.success },
+      })
+    )
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
-    return this.result.success
+    return this.success
   }
 
   shouldCauseFailure(status) {

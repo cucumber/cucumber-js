@@ -1,7 +1,9 @@
 module.exports = [
   {
+    description: '',
     elements: [
       {
+        description: '',
         id: 'a-feature;a-scenario',
         keyword: 'Scenario',
         line: 2,
