@@ -1,0 +1,236 @@
+import _ from 'lodash'
+import { fork, ChildProcess } from 'child_process'
+import path from 'path'
+import Status from '../../status'
+import { retriesForPickle } from '../helpers'
+import { messages } from 'cucumber-messages'
+import { EventEmitter } from 'events'
+import { EventDataCollector } from '../../formatter/helpers'
+import { IRuntimeOptions } from '..'
+import { ISupportCodeLibrary } from '../../support_code_library_builder'
+import {
+  IMasterReport,
+  IMasterReportSupportCodeIds,
+  ISlaveCommand,
+} from './command_types'
+
+const slaveCommand = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'bin',
+  'run_slave'
+)
+
+export interface INewMasterOptions {
+  cwd: string
+  eventBroadcaster: EventEmitter
+  eventDataCollector: EventDataCollector
+  options: IRuntimeOptions
+  pickleIds: string[]
+  supportCodeLibrary: ISupportCodeLibrary
+  supportCodePaths: string[]
+  supportCodeRequiredModules: string[]
+}
+
+interface ISlave {
+  closed: boolean
+  process: ChildProcess
+}
+
+interface ISlaveMap {
+  [slaveId: string]: ISlave
+}
+
+interface ISupportCodeIdMap {
+  [id: string]: string
+}
+
+export default class Master {
+  private readonly cwd: string
+  private readonly eventBroadcaster: EventEmitter
+  private readonly eventDataCollector: EventDataCollector
+  private onFinish: (success: boolean) => void
+  private nextPickleIdIndex: number
+  private readonly options: IRuntimeOptions
+  private readonly pickleIds: string[]
+  private slaves: ISlaveMap
+  private supportCodeIdMap: ISupportCodeIdMap
+  private readonly supportCodeLibrary: ISupportCodeLibrary
+  private readonly supportCodePaths: string[]
+  private readonly supportCodeRequiredModules: string[]
+  private success: boolean
+
+  constructor({
+    cwd,
+    eventBroadcaster,
+    eventDataCollector,
+    pickleIds,
+    options,
+    supportCodeLibrary,
+    supportCodePaths,
+    supportCodeRequiredModules,
+  }: INewMasterOptions) {
+    this.cwd = cwd
+    this.eventBroadcaster = eventBroadcaster
+    this.eventDataCollector = eventDataCollector
+    this.options = options
+    this.supportCodeLibrary = supportCodeLibrary
+    this.supportCodePaths = supportCodePaths
+    this.supportCodeRequiredModules = supportCodeRequiredModules
+    this.pickleIds = pickleIds
+    this.nextPickleIdIndex = 0
+    this.success = true
+    this.slaves = {}
+    this.supportCodeIdMap = {}
+  }
+
+  parseSlaveMessage(slave: ISlave, message: IMasterReport) {
+    if (message.supportCodeIds) {
+      this.saveDefinitionIdMapping(message.supportCodeIds)
+    } else if (message.ready) {
+      this.giveSlaveWork(slave)
+    } else if (message.encodedEnvelope) {
+      const envelope = messages.Envelope.decode(message.encodedEnvelope)
+      this.eventBroadcaster.emit('envelope', envelope)
+      if (envelope.testCase) {
+        this.remapDefinitionIds(envelope.testCase)
+      }
+      if (envelope.testCaseFinished) {
+        this.parseTestCaseResult(envelope.testCaseFinished.testResult)
+      }
+    } else {
+      throw new Error(`Unexpected message from slave: ${message}`)
+    }
+  }
+
+  saveDefinitionIdMapping(message: IMasterReportSupportCodeIds) {
+    _.each(message.stepDefinitionIds, (id: string, index: number) => {
+      this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
+        index
+      ].id
+    })
+    _.each(
+      message.beforeTestCaseHookDefinitionIds,
+      (id: string, index: number) => {
+        this.supportCodeIdMap[
+          id
+        ] = this.supportCodeLibrary.beforeTestCaseHookDefinitions[index].id
+      }
+    )
+    _.each(
+      message.afterTestCaseHookDefinitionIds,
+      (id: string, index: number) => {
+        this.supportCodeIdMap[
+          id
+        ] = this.supportCodeLibrary.afterTestCaseHookDefinitions[index].id
+      }
+    )
+  }
+
+  remapDefinitionIds(testCase: messages.ITestCase) {
+    for (const testStep of testCase.testSteps) {
+      if (testStep.hookId) {
+        testStep.hookId = this.supportCodeIdMap[testStep.hookId]
+      }
+      if (testStep.stepDefinitionIds) {
+        testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
+          id => this.supportCodeIdMap[id]
+        )
+      }
+    }
+  }
+
+  startSlave(id: string, total: number) {
+    const slaveProcess = fork(slaveCommand, [], {
+      cwd: this.cwd,
+      env: _.assign({}, process.env, {
+        CUCUMBER_PARALLEL: 'true',
+        CUCUMBER_TOTAL_SLAVES: total,
+        CUCUMBER_SLAVE_ID: id,
+      }),
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+    })
+    const slave = { closed: false, process: slaveProcess }
+    this.slaves[id] = slave
+    slave.process.on('message', message => {
+      this.parseSlaveMessage(slave, message)
+    })
+    slave.process.on('close', error => {
+      slave.closed = true
+      this.onSlaveClose(error)
+    })
+    const initializeCommand: ISlaveCommand = {
+      initialize: {
+        filterStacktraces: this.options.filterStacktraces,
+        supportCodePaths: this.supportCodePaths,
+        supportCodeRequiredModules: this.supportCodeRequiredModules,
+        worldParameters: this.options.worldParameters,
+      },
+    }
+    slave.process.send(initializeCommand)
+  }
+
+  onSlaveClose(error) {
+    if (error) {
+      this.success = false
+    }
+    if (_.every(this.slaves, 'closed')) {
+      this.eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          testRunFinished: { success: this.success },
+        })
+      )
+      this.onFinish(this.success)
+    }
+  }
+
+  parseTestCaseResult(testCaseResult) {
+    if (
+      !testCaseResult.willBeRetried &&
+      this.shouldCauseFailure(testCaseResult.status)
+    ) {
+      this.success = false
+    }
+  }
+
+  run(numberOfSlaves, done) {
+    this.eventBroadcaster.emit('test-run-started')
+    _.times(numberOfSlaves, id => this.startSlave(id, numberOfSlaves))
+    this.onFinish = done
+  }
+
+  giveSlaveWork(slave) {
+    if (this.nextPickleIdIndex === this.pickleIds.length) {
+      const finalizeCommand: ISlaveCommand = { finalize: true }
+      slave.process.send(finalizeCommand)
+      return
+    }
+    const pickleId = this.pickleIds[this.nextPickleIdIndex]
+    this.nextPickleIdIndex += 1
+    const pickle = this.eventDataCollector.getPickle(pickleId)
+    const gherkinDocument = this.eventDataCollector.getGherkinDocument(
+      pickle.uri
+    )
+    const retries = retriesForPickle(pickle, this.options)
+    const skip = this.options.dryRun || (this.options.failFast && !this.success)
+    const runCommand: ISlaveCommand = {
+      run: {
+        retries,
+        skip,
+        pickle,
+        gherkinDocument,
+      },
+    }
+    slave.process.send(runCommand)
+  }
+
+  shouldCauseFailure(status) {
+    return (
+      _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
+      (status === Status.PENDING && this.options.strict)
+    )
+  }
+}

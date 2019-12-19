@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": ["es2017"],
+    "module": "commonjs",
+    "outDir": "lib",
+    "resolveJsonModule": true,
+    "target": "es2017"
+  },
+  "include": [
+    "example/**/*.ts",
+    "features/**/*.ts",
+    "scripts/**/*.ts",
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+}

@@ -1,0 +1,78 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+import { getUsage } from './'
+import { getEnvelopesAndEventDataCollector } from '../../../../test/formatter_helpers'
+import { buildSupportCodeLibrary } from '../../../../test/runtime_helpers'
+
+describe('Usage Helpers', () => {
+  describe('getUsage', () => {
+    describe('with step definitions', () => {
+      describe('without function definition wrapper', () => {
+        it('includes stringified code', async () => {
+          // Arrange
+          const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+            Given('a step', function() {
+              return 'original code'
+            })
+          })
+          const {
+            eventDataCollector,
+          } = await getEnvelopesAndEventDataCollector({ supportCodeLibrary })
+
+          // Act
+          const output = getUsage({
+            cwd: '/project',
+            eventDataCollector,
+            stepDefinitions: supportCodeLibrary.stepDefinitions,
+          })
+
+          // Assert
+          expect(output).to.have.lengthOf(1)
+          expect(output[0].code).to.eql(`\
+function () {
+              return 'original code';
+            }`)
+        })
+      })
+
+      describe('with function definition wrapper', () => {
+        it('includes unwrapped version of stringified code', async () => {
+          // Arrange
+          const supportCodeLibrary = buildSupportCodeLibrary(
+            ({ Given, setDefinitionFunctionWrapper }) => {
+              Given('a step', function() {
+                return 'original code'
+              })
+              setDefinitionFunctionWrapper(
+                fn =>
+                  function(fn) {
+                    if (fn.length === 1) {
+                      return fn
+                    }
+                    return fn
+                  }
+              )
+            }
+          )
+          const {
+            eventDataCollector,
+          } = await getEnvelopesAndEventDataCollector({ supportCodeLibrary })
+
+          // Act
+          const output = getUsage({
+            cwd: '/project',
+            eventDataCollector,
+            stepDefinitions: supportCodeLibrary.stepDefinitions,
+          })
+
+          // Assert
+          expect(output).to.have.lengthOf(1)
+          expect(output[0].code).to.eql(`\
+function () {
+              return 'original code';
+            }`)
+        })
+      })
+    })
+  })
+})
