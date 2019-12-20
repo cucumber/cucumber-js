@@ -37,7 +37,7 @@ describe('UsageJsonFormatter', () => {
     // Assert
     expect(parsedOutput).to.eql([
       {
-        code:`\
+        code: `\
 function () {
             if (count === 0) {
                 clock.tick(2);

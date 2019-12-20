@@ -40,7 +40,7 @@ export default class Slave {
     this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       this.sendMessage({
-        jsonEnvelope: JSON.stringify(envelope.toJSON())
+        jsonEnvelope: JSON.stringify(envelope.toJSON()),
       })
     })
   }

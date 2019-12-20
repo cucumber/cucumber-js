@@ -1,7 +1,12 @@
 import { PickleTagFilter } from '../pickle_filter'
-import Definition, { IDefinition, IGetInvocationDataResponse, IGetInvocationDataRequest } from './definition'
+import Definition, {
+  IDefinition,
+  IGetInvocationDataResponse,
+  IGetInvocationDataRequest,
+} from './definition'
 
-export default class TestCaseHookDefinition extends Definition implements IDefinition {
+export default class TestCaseHookDefinition extends Definition
+  implements IDefinition {
   private readonly pickleTagFilter: PickleTagFilter
 
   constructor(data) {
@@ -13,11 +18,14 @@ export default class TestCaseHookDefinition extends Definition implements IDefin
     return this.pickleTagFilter.matchesAllTagExpressions(pickle)
   }
 
-  getInvocationParameters({ hookParameter }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
+  getInvocationParameters({
+    hookParameter,
+  }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
     return Promise.resolve({
-      getInvalidCodeLengthMessage: () => this.buildInvalidCodeLengthMessage('0 or 1', '2'),
+      getInvalidCodeLengthMessage: () =>
+        this.buildInvalidCodeLengthMessage('0 or 1', '2'),
       parameters: [hookParameter],
-      validCodeLengths: [0, 1, 2]
+      validCodeLengths: [0, 1, 2],
     })
   }
 }

@@ -3,7 +3,10 @@ import Status from '../../status'
 import figures from 'figures'
 import { formatError } from './error_helpers'
 import { formatLocation } from './location_helpers'
-import { parseTestCaseAttempt, IParsedTestStep } from './test_case_attempt_parser'
+import {
+  parseTestCaseAttempt,
+  IParsedTestStep,
+} from './test_case_attempt_parser'
 import { formatStepArgument } from './step_argument_formatter'
 import { IColorFns } from '../get_color_fns'
 
@@ -21,7 +24,10 @@ interface IGetStepMessageRequest {
   testStep: IParsedTestStep
 }
 
-function getStepMessage({ colorFns, testStep }: IGetStepMessageRequest): string {
+function getStepMessage({
+  colorFns,
+  testStep,
+}: IGetStepMessageRequest): string {
   switch (testStep.result.status) {
     case Status.AMBIGUOUS:
       return colorFns.forStatus(Status.AMBIGUOUS)(testStep.result.message)

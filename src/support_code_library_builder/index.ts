@@ -100,8 +100,8 @@ export interface ISupportCodeLibrary {
 }
 
 export class World {
-  private attach: (attachment: IAttachment) => void
-  private parameters: any
+  private readonly attach: (attachment: IAttachment) => void
+  private readonly parameters: any
 
   constructor({ attach, parameters }) {
     this.attach = attach
@@ -227,7 +227,7 @@ export class SupportCodeLibraryBuilder {
       defaultTimeout: 5000,
       parameterTypeRegistry: TransformLookupBuilder.build(),
       stepDefinitions: [],
-      World
+      World,
     })
   }
 }

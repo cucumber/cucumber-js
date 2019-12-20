@@ -60,23 +60,26 @@ export default class Runtime {
   }
 
   async runTestRunHooks(key: string, name: string) {
-    await bluebird.each(this.supportCodeLibrary[key], async (hookDefinition: TestRunHookDefinition) => {
-      const { error } = await UserCodeRunner.run({
-        argsArray: [],
-        fn: hookDefinition.code,
-        thisArg: null,
-        timeoutInMilliseconds:
-          hookDefinition.options.timeout ||
-          this.supportCodeLibrary.defaultTimeout,
-      })
-      if (error) {
-        const location = formatLocation(hookDefinition)
-        throw new VError(
-          error,
-          `${name} hook errored, process exiting: ${location}`
-        )
+    await bluebird.each(
+      this.supportCodeLibrary[key],
+      async (hookDefinition: TestRunHookDefinition) => {
+        const { error } = await UserCodeRunner.run({
+          argsArray: [],
+          fn: hookDefinition.code,
+          thisArg: null,
+          timeoutInMilliseconds:
+            hookDefinition.options.timeout ||
+            this.supportCodeLibrary.defaultTimeout,
+        })
+        if (error) {
+          const location = formatLocation(hookDefinition)
+          throw new VError(
+            error,
+            `${name} hook errored, process exiting: ${location}`
+          )
+        }
       }
-    })
+    )
   }
 
   async runPickle(pickleId) {

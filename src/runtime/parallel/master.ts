@@ -93,7 +93,9 @@ export default class Master {
     } else if (message.ready) {
       this.giveSlaveWork(slave)
     } else if (message.jsonEnvelope) {
-      const envelope = messages.Envelope.fromObject(JSON.parse(message.jsonEnvelope))
+      const envelope = messages.Envelope.fromObject(
+        JSON.parse(message.jsonEnvelope)
+      )
       this.eventBroadcaster.emit('envelope', envelope)
       if (envelope.testCase) {
         this.remapDefinitionIds(envelope.testCase)

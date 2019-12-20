@@ -3,7 +3,7 @@ extends:
   - "plugin:prettier/recommended"
   - "prettier/@typescript-eslint"
 parserOptions:
-  project: './tsconfig.node.json'
+  project: './tsconfig.json'
 rules:
   prettier/prettier:
     - error

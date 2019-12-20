@@ -1,5 +1,5 @@
-import { messages } from "cucumber-messages"
-import { ITestCaseHookParameter } from "../support_code_library_builder"
+import { messages } from 'cucumber-messages'
+import { ITestCaseHookParameter } from '../support_code_library_builder'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
@@ -18,14 +18,15 @@ export interface IDefinitionOptions {
   wrapperOptions: any
 }
 
-
 export interface IDefinition {
   readonly code: Function
   readonly id: string
   readonly line: string
   readonly uri: string
   readonly options: IDefinitionOptions
-  getInvocationParameters: (options: IGetInvocationDataRequest) => Promise<IGetInvocationDataResponse>
+  getInvocationParameters: (
+    options: IGetInvocationDataRequest
+  ) => Promise<IGetInvocationDataResponse>
 }
 
 export default abstract class Definition {
@@ -43,7 +44,10 @@ export default abstract class Definition {
     this.options = options
   }
 
-  buildInvalidCodeLengthMessage(syncOrPromiseLength: number | string, callbackLength: number | string) {
+  buildInvalidCodeLengthMessage(
+    syncOrPromiseLength: number | string,
+    callbackLength: number | string
+  ) {
     return (
       `function has ${this.code.length} arguments` +
       `, should have ${syncOrPromiseLength} (if synchronous or returning a promise)` +

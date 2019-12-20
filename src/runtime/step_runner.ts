@@ -16,7 +16,7 @@ export interface IRunOptions {
   step: messages.Pickle.IPickleStep
   stepDefinition: IDefinition
   world: any
-} 
+}
 
 export async function run({
   defaultTimeout,
@@ -26,7 +26,9 @@ export async function run({
   world,
 }: IRunOptions) {
   beginTiming()
-  let error: any, result: messages.ITestResult, invocationData: IGetInvocationDataResponse
+  let error: any,
+    result: messages.ITestResult,
+    invocationData: IGetInvocationDataResponse
 
   try {
     invocationData = await stepDefinition.getInvocationParameters({
@@ -39,9 +41,14 @@ export async function run({
   }
 
   if (!error) {
-    const timeoutInMilliseconds = valueOrDefault(stepDefinition.options.timeout, defaultTimeout)
+    const timeoutInMilliseconds = valueOrDefault(
+      stepDefinition.options.timeout,
+      defaultTimeout
+    )
 
-    if (_.includes(invocationData.validCodeLengths, stepDefinition.code.length)) {
+    if (
+      _.includes(invocationData.validCodeLengths, stepDefinition.code.length)
+    ) {
       const data = await UserCodeRunner.run({
         argsArray: invocationData.parameters,
         fn: stepDefinition.code,

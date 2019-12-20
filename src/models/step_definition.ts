@@ -1,5 +1,9 @@
 import DataTable from './data_table'
-import Definition, { IDefinition, IGetInvocationDataRequest, IGetInvocationDataResponse } from './definition'
+import Definition, {
+  IDefinition,
+  IGetInvocationDataRequest,
+  IGetInvocationDataResponse,
+} from './definition'
 import { parseStepArgument } from '../step_arguments'
 import { Expression } from 'cucumber-expressions'
 import bluebird from 'bluebird'
@@ -14,10 +18,13 @@ export default class StepDefinition extends Definition implements IDefinition {
     this.expression = data.expression
   }
 
-  async getInvocationParameters({ step, world }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
-    const parameters = await bluebird.all(this.expression
-      .match(step.text)
-      .map(arg => arg.getValue(world)))
+  async getInvocationParameters({
+    step,
+    world,
+  }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
+    const parameters = await bluebird.all(
+      this.expression.match(step.text).map(arg => arg.getValue(world))
+    )
     if (step.argument) {
       const argumentParamater = parseStepArgument(step.argument, {
         dataTable: arg => new DataTable(arg),
@@ -26,9 +33,10 @@ export default class StepDefinition extends Definition implements IDefinition {
       parameters.push(argumentParamater)
     }
     return {
-      getInvalidCodeLengthMessage: () => this.baseGetInvalidCodeLengthMessage(parameters),
+      getInvalidCodeLengthMessage: () =>
+        this.baseGetInvalidCodeLengthMessage(parameters),
       parameters,
-      validCodeLengths: [parameters.length, parameters.length + 1]
+      validCodeLengths: [parameters.length, parameters.length + 1],
     }
   }
 

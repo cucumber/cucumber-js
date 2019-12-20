@@ -178,6 +178,6 @@ export function parseTestCaseAttempt({
   })
   return {
     testCase: parsedTestCase,
-    testSteps: parsedTestSteps
+    testSteps: parsedTestSteps,
   }
 }
