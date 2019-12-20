@@ -15,9 +15,9 @@ Feature: usage formatter
           And slow step B
           Then step C
       """
-    And a file named "features/step_definitions/steps.ts" with:
+    And a file named "features/step_definitions/steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When('step A', function(callback) { setTimeout(callback, 100) });
       When(/^(slow )?step B$/, function(slow, callback) {
@@ -36,17 +36,17 @@ Feature: usage formatter
       ┌────────────────────┬──────────┬───────────────────────────────────────┐
       │ Pattern / Text     │ Duration │ Location                              │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step A             │ <d>ms    │ features/step_definitions/steps.ts:3  │
+      │ step A             │ <d>ms    │ features/step_definitions/steps.js:3  │
       │   step A           │ <d>ms    │ features/a.feature:3                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ /^(slow )?step B$/ │ <d>ms    │ features/step_definitions/steps.ts:4  │
+      │ /^(slow )?step B$/ │ <d>ms    │ features/step_definitions/steps.js:4  │
       │   slow step B      │ <d>ms    │ features/a.feature:5                  │
       │   step B           │ <d>ms    │ features/a.feature:4                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step C             │ <d>ms    │ features/step_definitions/steps.ts:11 │
+      │ step C             │ <d>ms    │ features/step_definitions/steps.js:11 │
       │   step C           │ <d>ms    │ features/a.feature:6                  │
       ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step D             │ UNUSED   │ features/step_definitions/steps.ts:12 │
+      │ step D             │ UNUSED   │ features/step_definitions/steps.js:12 │
       └────────────────────┴──────────┴───────────────────────────────────────┘
       """
 
@@ -66,9 +66,9 @@ Feature: usage formatter
           | 4    |
           | 5    |
       """
-    And a file named "features/step_definitions/steps.ts" with:
+    And a file named "features/step_definitions/steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^(slow )?step$/, function(slow, callback) {
         if (slow) {
@@ -84,7 +84,7 @@ Feature: usage formatter
       ┌──────────────────┬──────────┬──────────────────────────────────────┐
       │ Pattern / Text   │ Duration │ Location                             │
       ├──────────────────┼──────────┼──────────────────────────────────────┤
-      │ /^(slow )?step$/ │ <d>ms    │ features/step_definitions/steps.ts:3 │
+      │ /^(slow )?step$/ │ <d>ms    │ features/step_definitions/steps.js:3 │
       │   slow step      │ <d>ms    │ features/a.feature:3                 │
       │   slow step      │ <d>ms    │ features/a.feature:3                 │
       │   slow step      │ <d>ms    │ features/a.feature:3                 │

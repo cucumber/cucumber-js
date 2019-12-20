@@ -9,10 +9,10 @@ Feature: Data Tables
             | Cucumber     | Cucumis sativus |
             | Burr Gherkin | Cucumis anguria |
       """
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import assert from 'assert'
+      const {Given} = require('cucumber')
+      const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
         const expected = [
@@ -36,10 +36,10 @@ Feature: Data Tables
             | Brocolli  | 2      |
             | Cucumber  | 10     |
       """
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import assert from 'assert'
+      const {Given} = require('cucumber')
+      const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
         const expected = [
@@ -62,10 +62,10 @@ Feature: Data Tables
             | Cucumber     | Cucumis sativus |
             | Burr Gherkin | Cucumis anguria |
       """
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import assert from 'assert'
+      const {Given} = require('cucumber')
+      const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
         const expected = {
@@ -89,10 +89,10 @@ Feature: Data Tables
             | Brocolli  | 2      |
             | Cucumber  | 10     |
       """
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import assert from 'assert'
+      const {Given} = require('cucumber')
+      const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
         const expected = [

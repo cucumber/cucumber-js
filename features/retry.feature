@@ -27,9 +27,9 @@ Feature: Retry flaky tests
         Scenario: Failing
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -47,9 +47,9 @@ Feature: Retry flaky tests
         Scenario: Failing
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -67,9 +67,9 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -89,7 +89,7 @@ Feature: Retry flaky tests
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.ts:5
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
              fail
 
       1 scenario (1 passed)
@@ -107,9 +107,9 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -129,7 +129,7 @@ Feature: Retry flaky tests
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.ts:5
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
              fail
 
       1 scenario (1 passed)
@@ -149,9 +149,9 @@ Feature: Retry flaky tests
         Scenario: Good
           Given a good step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -175,7 +175,7 @@ Feature: Retry flaky tests
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.ts:5
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
             fail
 
       2 scenarios (2 passed)
@@ -197,9 +197,9 @@ Feature: Retry flaky tests
         Scenario: Good
           Given a good step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -223,9 +223,9 @@ Feature: Retry flaky tests
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.ts:5
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
              fail
-         - And a good step # features/step_definitions/cucumber_steps.ts:13
+         - And a good step # features/step_definitions/cucumber_steps.js:13
 
       2 scenarios (2 passed)
       3 steps (3 passed)
@@ -246,9 +246,9 @@ Feature: Retry flaky tests
         Scenario: Bad
           Given a bad step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -276,17 +276,17 @@ Feature: Retry flaky tests
       Failures:
 
       1) Scenario: Bad (attempt 2) # features/a.feature:6
-         ✖ Given a bad step # features/step_definitions/cucumber_steps.ts:17
+         ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
              fail
 
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.ts:5
+         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
              fail
 
       2) Scenario: Bad (attempt 1, retried) # features/a.feature:6
-         ✖ Given a bad step # features/step_definitions/cucumber_steps.ts:17
+         ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
              fail
 
       3 scenarios (1 failed, 2 passed)
@@ -305,9 +305,9 @@ Feature: Retry flaky tests
         Scenario: Failing
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -330,9 +330,9 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -357,9 +357,9 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -386,9 +386,9 @@ Feature: Retry flaky tests
         Scenario: Also Flaky
           Given an other flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -430,9 +430,9 @@ Feature: Retry flaky tests
         Scenario: Third Flaky
           Given one more flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -479,9 +479,9 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Before, After, Given, setWorldConstructor} from 'cucumber'
+      const {Before, After, Given, setWorldConstructor} = require('cucumber')
 
       Before(function() {
         this.usedCount++

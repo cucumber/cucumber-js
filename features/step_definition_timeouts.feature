@@ -1,10 +1,10 @@
 Feature: Step definition timeouts
 
   Background:
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given, setDefaultTimeout} from 'cucumber'
-      import Promise from 'bluebird'
+      const {Given, setDefaultTimeout} = require('cucumber')
+      const Promise = require('bluebird')
 
       setDefaultTimeout(500)
 

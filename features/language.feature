@@ -7,9 +7,9 @@ Feature: Multiple Formatters
         Scénario: Monde
           Soit une étape
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^une étape$/, function() {})
       """

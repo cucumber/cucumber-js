@@ -13,23 +13,23 @@ Feature: Multiple Hooks
       """
     And a file named "features/step_definitions/world.js" with:
       """
-      import {setWorldConstructor} from 'cucumber'
+      const {setWorldConstructor} = require('cucumber')
 
       setWorldConstructor(function() {
         this.value = 0
       })
       """
-    And a file named "features/step_definitions/my_steps.ts" with:
+    And a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Given} from 'cucumber'
+      const assert = require('assert')
+      const {Given} = require('cucumber')
 
       Given('a step', function() {})
       """
     And a file named "features/step_definitions/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
-      import assert from 'assert'
+      const {After, Before} = require('cucumber')
+      const assert = require('assert')
 
       Before(function() {
         assert.equal(this.value, 0)

@@ -34,9 +34,9 @@ Feature: Rerun Formatter
         Scenario: C - undefined
           Given an undefined step
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function() {})
       Given(/^a failing step$/, function() { throw 'fail' })

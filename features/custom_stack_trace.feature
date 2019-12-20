@@ -7,9 +7,9 @@ Feature: Custom stack trace
         Scenario: Some scenario
           Given Error.prepareStackTrace has been overriden
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       const _prepareStackTrace = Error.prepareStackTrace;
       Error.prepareStackTrace = () => { return 'Custom message' }

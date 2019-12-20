@@ -12,9 +12,9 @@ Feature: Core feature elements execution
           When a step passes
           Then a step passes
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step passes$/, function() {});
       """
@@ -41,9 +41,9 @@ Feature: Core feature elements execution
           And a "Then" step passes
           But a "Then" step passes
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given, Then, When} from 'cucumber'
+      const {Given, Then, When} = require('cucumber')
 
       Given(/^a "Given" step passes$/, function() {})
       When(/^a "When" step passes$/, function() {})
@@ -66,10 +66,10 @@ Feature: Core feature elements execution
           And I call a watched step
           Then the watched step should have been called 3 times
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {setWorldConstructor, Then, When} from 'cucumber'
-      import assert from 'assert'
+      const {setWorldConstructor, Then, When} = require('cucumber')
+      const assert = require('assert')
 
       setWorldConstructor(function () {
         this.count = 0
@@ -100,10 +100,10 @@ Feature: Core feature elements execution
           And the 2nd received parameter should be "two"
           And the 3rd received parameter should be "three"
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {setWorldConstructor, Then, When} from 'cucumber'
-      import assert from 'assert'
+      const {setWorldConstructor, Then, When} = require('cucumber')
+      const assert = require('assert')
 
       setWorldConstructor(function () {
         this.parameters = {}

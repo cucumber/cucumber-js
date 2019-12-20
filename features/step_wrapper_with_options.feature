@@ -11,15 +11,15 @@ Feature: Step Wrapper with Options
         Scenario: Steps
           When I run a step with options
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {})
       """
     And a file named "features/support/setup.js" with:
       """
-      import {setDefinitionFunctionWrapper} from 'cucumber'
+      const {setDefinitionFunctionWrapper} = require('cucumber')
 
       setDefinitionFunctionWrapper(function (fn, options = {}) {
         if (options.retry) {

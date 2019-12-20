@@ -34,10 +34,10 @@ Feature: World Parameters
       """
 
   Scenario: default world constructor has an empty parameters object by default
-    Given a file named "features/step_definitions/my_steps.ts" with:
+    Given a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Given} from 'cucumber'
+      const assert = require('assert')
+      const {Given} = require('cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.deepEqual(this.parameters, {})
@@ -47,10 +47,10 @@ Feature: World Parameters
     Then scenario "a scenario" step "Given the world parameters are correct" has status "passed"
 
   Scenario: default world constructor saves the parameters
-    Given a file named "features/step_definitions/my_steps.ts" with:
+    Given a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Given} from 'cucumber'
+      const assert = require('assert')
+      const {Given} = require('cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.equal(this.parameters.a, 1)
@@ -60,10 +60,10 @@ Feature: World Parameters
     Then scenario "a scenario" step "Given the world parameters are correct" has status "passed"
 
   Scenario: multiple world parameters are merged with the last taking precedence
-    Given a file named "features/step_definitions/my_steps.ts" with:
+    Given a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Given} from 'cucumber'
+      const assert = require('assert')
+      const {Given} = require('cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.equal(this.parameters.a, 3)
@@ -76,7 +76,7 @@ Feature: World Parameters
   Scenario: custom world constructor is passed the parameters
     Given a file named "features/support/world.js" with:
       """
-      import {setWorldConstructor} from 'cucumber'
+      const {setWorldConstructor} = require('cucumber')
 
       function CustomWorld(options) {
         for(const key in options.parameters) {
@@ -86,10 +86,10 @@ Feature: World Parameters
 
       setWorldConstructor(CustomWorld)
       """
-    Given a file named "features/step_definitions/my_steps.ts" with:
+    Given a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Given} from 'cucumber'
+      const assert = require('assert')
+      const {Given} = require('cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.equal(this.a, 1)

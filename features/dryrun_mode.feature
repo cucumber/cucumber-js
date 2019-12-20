@@ -11,9 +11,9 @@ Feature: Dryrun mode
       """
 
   Scenario: default behavior
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given('a step', function() {})
       """
@@ -22,9 +22,9 @@ Feature: Dryrun mode
     And scenario "some scenario" has status "skipped"
 
   Scenario: ambiguous step
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given('a step', function() {});
       Given('a(n) step', function() {});

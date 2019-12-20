@@ -12,9 +12,9 @@ Feature: Fail fast
         Scenario: Passing
           Given a passing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       Given(/^a passing step$/, function() {})

@@ -12,9 +12,9 @@ Feature: Strict mode
       """
 
   Scenario: Fail with pending step by default
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() { return 'pending' })
       """
@@ -22,9 +22,9 @@ Feature: Strict mode
     Then it fails
 
   Scenario: Succeed with pending step with --no-strict
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() { return 'pending' })
       """

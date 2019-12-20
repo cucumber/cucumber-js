@@ -11,9 +11,9 @@ Feature: Automatically required support files for nested features
         Scenario: some scenario
           Given a step
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() {})
       """

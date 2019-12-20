@@ -25,7 +25,7 @@ export interface ISlaveCommandRun {
 // Messages from Slave to Master
 
 export interface IMasterReport {
-  encodedEnvelope?: Uint8Array
+  jsonEnvelope?: string
   ready?: boolean
   supportCodeIds?: IMasterReportSupportCodeIds
 }

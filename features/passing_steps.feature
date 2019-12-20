@@ -9,9 +9,9 @@ Feature: Passing steps
       """
 
   Scenario: synchronous
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function() {})
       """
@@ -19,22 +19,22 @@ Feature: Passing steps
     Then scenario "a scenario" step "Given a passing step" has status "passed"
 
   Scenario: asynchronous
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function(callback) {
-        setTimeout(callback)
+        setTimeout(callback, 0)
       })
       """
     When I run cucumber-js
     Then scenario "a scenario" step "Given a passing step" has status "passed"
 
   Scenario: promise
-    Given a file named "features/step_definitions/passing_steps.ts" with:
+    Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import Promise from 'bluebird'
+      const {Given} = require('cucumber')
+      const Promise = require('bluebird')
 
       Given(/^a passing step$/, function() {
         return Promise.resolve()

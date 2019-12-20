@@ -26,9 +26,9 @@ Feature: Target specific scenarios
             | ID |
             | Z  |
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step is (.*)$/, function() {})
       """

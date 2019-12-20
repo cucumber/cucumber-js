@@ -16,16 +16,16 @@ Feature: Tagged Hooks
       """
     And a file named "features/step_definitions/world.js" with:
       """
-      import {setWorldConstructor} from 'cucumber'
+      const {setWorldConstructor} = require('cucumber')
 
       setWorldConstructor(function() {
         this.value = 0
       })
       """
-    And a file named "features/step_definitions/my_steps.ts" with:
+    And a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Then} from 'cucumber'
+      const assert = require('assert')
+      const {Then} = require('cucumber')
 
       Then(/^the value is (\d*)$/, function(number) {
         assert.equal(number, this.value)
@@ -33,7 +33,7 @@ Feature: Tagged Hooks
       """
     And a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
-      import {Before} from 'cucumber'
+      const {Before} = require('cucumber')
 
       Before({tags: '@foo'}, function() {
         this.value += 1

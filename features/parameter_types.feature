@@ -11,10 +11,10 @@ Feature: Parameter types
         Scenario: a scenario
           Given a particular step
       """
-    Given a file named "features/step_definitions/my_steps.ts" with:
+    Given a file named "features/step_definitions/my_steps.js" with:
       """
-      import assert from 'assert'
-      import {Given} from 'cucumber'
+      const assert = require('assert')
+      const {Given} = require('cucumber')
 
       Given('a {param} step', function(param) {
         assert.equal(param, 'PARTICULAR')
@@ -24,7 +24,7 @@ Feature: Parameter types
   Scenario: delegate transform to world
     Given a file named "features/support/transforms.js" with:
       """
-      import {setWorldConstructor, defineParameterType} from 'cucumber'
+      const {setWorldConstructor, defineParameterType} = require('cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -47,7 +47,7 @@ Feature: Parameter types
   Scenario: sync transform (success)
     Given a file named "features/support/transforms.js" with:
       """
-      import {defineParameterType} from 'cucumber'
+      const {defineParameterType} = require('cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -61,7 +61,7 @@ Feature: Parameter types
   Scenario: sync transform (error)
     Given a file named "features/support/transforms.js" with:
       """
-      import {defineParameterType} from 'cucumber'
+      const {defineParameterType} = require('cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -81,7 +81,7 @@ Feature: Parameter types
   Scenario: no transform
     Given a file named "features/support/transforms.js" with:
       """
-      import {defineParameterType} from 'cucumber'
+      const {defineParameterType} = require('cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -96,9 +96,9 @@ Feature: Parameter types
       """
 
   Scenario: async transform (success)
-    Given a file named "features/step_definitions/particular_steps.ts" with:
+    Given a file named "features/step_definitions/particular_steps.js" with:
       """
-      import {defineParameterType} from 'cucumber'
+      const {defineParameterType} = require('cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -110,10 +110,10 @@ Feature: Parameter types
     Then scenario "a scenario" step "Given a particular step" has status "passed"
 
   Scenario: async transform (error)
-    Given a file named "features/step_definitions/particular_steps.ts" with:
+    Given a file named "features/step_definitions/particular_steps.js" with:
       """
-      import {defineParameterType} from 'cucumber'
-      import Promise from 'bluebird'
+      const {defineParameterType} = require('cucumber')
+      const Promise = require('bluebird')
 
       defineParameterType({
         regexp: /particular/,

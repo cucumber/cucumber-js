@@ -7,9 +7,9 @@ Feature: before / after all hook timeouts
         Scenario:
           Given a passing step
       """
-    And a file named "features/step_definitions/steps.ts" with:
+    And a file named "features/step_definitions/steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function() {});
       """
@@ -17,7 +17,7 @@ Feature: before / after all hook timeouts
   Scenario Outline: slow handler timeout
     Given a file named "features/support/handlers.js" with:
       """
-      import {<TYPE>, setDefaultTimeout} from 'cucumber'
+      const {<TYPE>, setDefaultTimeout} = require('cucumber')
 
       setDefaultTimeout(500)
 
@@ -40,7 +40,7 @@ Feature: before / after all hook timeouts
   Scenario Outline: slow handlers can increase their timeout
     Given a file named "features/supports/handlers.js" with:
       """
-      import {<TYPE>, setDefaultTimeout} from 'cucumber'
+      const {<TYPE>, setDefaultTimeout} = require('cucumber')
 
       setDefaultTimeout(500)
 

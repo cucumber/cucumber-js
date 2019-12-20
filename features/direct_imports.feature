@@ -10,9 +10,9 @@ Feature: Core feature elements execution using direct imports
         Scenario: some scenario
           Given a step passes
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step passes$/, function() {});
       """
@@ -26,9 +26,9 @@ Feature: Core feature elements execution using direct imports
         Scenario: some scenario
           Given a step fails
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step fails$/, function(callback) {
         callback(new Error('my error'))
@@ -42,5 +42,5 @@ Feature: Core feature elements execution using direct imports
       """
     And the output contains the text:
       """
-      features/step_definitions/cucumber_steps.ts:3
+      features/step_definitions/cucumber_steps.js:3
       """

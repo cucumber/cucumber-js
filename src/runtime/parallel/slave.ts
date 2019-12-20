@@ -38,9 +38,9 @@ export default class Slave {
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
     this.stackTraceFilter = new StackTraceFilter()
-    this.eventBroadcaster.on('envelope', envelope => {
+    this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       this.sendMessage({
-        encodedEnvelope: messages.Envelope.encode(envelope).finish(),
+        jsonEnvelope: JSON.stringify(envelope.toJSON())
       })
     })
   }

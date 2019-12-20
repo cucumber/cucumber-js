@@ -13,6 +13,7 @@ import {
   IMasterReportSupportCodeIds,
   ISlaveCommand,
 } from './command_types'
+import protobuf from 'protobufjs'
 
 const slaveCommand = path.resolve(
   __dirname,
@@ -91,8 +92,8 @@ export default class Master {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
       this.giveSlaveWork(slave)
-    } else if (message.encodedEnvelope) {
-      const envelope = messages.Envelope.decode(message.encodedEnvelope)
+    } else if (message.jsonEnvelope) {
+      const envelope = messages.Envelope.fromObject(JSON.parse(message.jsonEnvelope))
       this.eventBroadcaster.emit('envelope', envelope)
       if (envelope.testCase) {
         this.remapDefinitionIds(envelope.testCase)

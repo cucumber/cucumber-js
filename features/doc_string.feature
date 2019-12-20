@@ -10,10 +10,10 @@ Feature: doc string
             The cucumber (Cucumis sativus) is a widely cultivated plant in the gourd family Cucurbitaceae.
             \"\"\"
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import assert from 'assert'
+      const {Given} = require('cucumber')
+      const assert = require('assert')
 
       Given(/^a doc string step$/, function(docString) {
         assert.equal(docString, "The cucumber (Cucumis sativus) is a widely " +
@@ -33,10 +33,10 @@ Feature: doc string
             The cucumber (Cucumis sativus) is a widely cultivated plant in the gourd family Cucurbitaceae.
             \"\"\"
       """
-    And a file named "features/step_definitions/cucumber_steps.ts" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import assert from 'assert'
+      const {Given} = require('cucumber')
+      const assert = require('assert')
 
       Given(/^a "([^"]*)" step$/, function(type, docString) {
         assert.equal(type, "doc string")

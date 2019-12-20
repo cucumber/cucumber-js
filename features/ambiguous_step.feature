@@ -7,9 +7,9 @@ Feature: Ambiguous Steps
         Scenario: a scenario name
           Given a ambiguous step
       """
-    Given a file named "features/step_definitions/cucumber_steps.ts" with:
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a ambiguous step$/, function() {});
       When(/^a (.*) step$/, function(status) {});
@@ -24,8 +24,8 @@ Feature: Ambiguous Steps
       1) Scenario: a scenario name # features/a.feature:2
          ✖ Given a ambiguous step
              Multiple step definitions match:
-               /^a ambiguous step$/ - features/step_definitions/cucumber_steps.ts:3
-               /^a (.*) step$/      - features/step_definitions/cucumber_steps.ts:4
+               /^a ambiguous step$/ - features/step_definitions/cucumber_steps.js:3
+               /^a (.*) step$/      - features/step_definitions/cucumber_steps.js:4
 
       1 scenario (1 ambiguous)
       1 step (1 ambiguous)

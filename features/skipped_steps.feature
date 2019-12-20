@@ -15,9 +15,9 @@ Feature: Skipped steps
       """
 
   Scenario: Synchronous skipped step
-    Given a file named "features/step_definitions/skipped_steps.ts" with:
+    Given a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a skipped step$/, function() {
         return 'skipped'
@@ -30,9 +30,9 @@ Feature: Skipped steps
 
 
   Scenario: Callback skipped step
-    Given a file named "features/step_definitions/skipped_steps.ts" with:
+    Given a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a skipped step$/, function(callback) {
         callback(null, 'skipped')
@@ -44,9 +44,9 @@ Feature: Skipped steps
     And scenario "a scenario" has status "skipped"
 
   Scenario: Promise skipped step
-    Given a file named "features/step_definitions/skipped_steps.ts" with:
+    Given a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a skipped step$/, function(){
         return {
@@ -66,13 +66,13 @@ Feature: Skipped steps
   Scenario: Hook skipped scenario steps
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
+      const {After, Before} = require('cucumber')
 
       Before(function() {return 'skipped'})
       """
-    And a file named "features/step_definitions/skipped_steps.ts" with:
+    And a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a skipped step$/, function() {
         var a = 1;
@@ -86,15 +86,15 @@ Feature: Skipped steps
   Scenario: Skipped before hook should skip all before hooks
     Given a file named "features/step_definitions/world.js" with:
       """
-      import {setWorldConstructor} from 'cucumber'
+      const {setWorldConstructor} = require('cucumber')
       setWorldConstructor(function() {
         this.ran = false
       })
       """
     And a file named "features/support/hooks.js" with:
       """
-      import assert from 'assert'
-      import {After, Before} from 'cucumber'
+      const assert = require('assert')
+      const {After, Before} = require('cucumber')
 
       Before(function() {return 'skipped'})
 
@@ -102,9 +102,9 @@ Feature: Skipped steps
 
       After(function() { assert.equal(this.ran, false) })
       """
-    And a file named "features/step_definitions/skipped_steps.ts" with:
+    And a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a skipped step$/, function() {
         var a = 1;
@@ -117,7 +117,7 @@ Feature: Skipped steps
   Scenario: Skipped before hook should run after hook
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
+      const {After, Before} = require('cucumber')
 
       Before(function() {return 'skipped'})
 
@@ -125,9 +125,9 @@ Feature: Skipped steps
 
       After(function() {})
       """
-    And a file named "features/step_definitions/skipped_steps.ts" with:
+    And a file named "features/step_definitions/skipped_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a skipped step$/, function() {
         var a = 1;

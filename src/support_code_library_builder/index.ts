@@ -99,7 +99,7 @@ export interface ISupportCodeLibrary {
   World: any
 }
 
-export class BaseWorld {
+export class World {
   private attach: (attachment: IAttachment) => void
   private parameters: any
 
@@ -227,7 +227,7 @@ export class SupportCodeLibraryBuilder {
       defaultTimeout: 5000,
       parameterTypeRegistry: TransformLookupBuilder.build(),
       stepDefinitions: [],
-      World: BaseWorld
+      World
     })
   }
 }
