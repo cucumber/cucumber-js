@@ -201,7 +201,7 @@ export default class Master {
 
   run(numberOfSlaves, done) {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(numberOfSlaves, id => this.startSlave(id, numberOfSlaves))
+    _.times(numberOfSlaves, id => this.startSlave(id.toString(), numberOfSlaves))
     this.onFinish = done
   }
 

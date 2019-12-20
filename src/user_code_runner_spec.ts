@@ -159,7 +159,7 @@ describe('UserCodeRunner', () => {
       describe('promise resolves', () => {
         beforeEach(function() {
           this.options.fn = function() {
-            return bluebird.resolve('result')
+            return Promise.resolve('result')
           }
         })
 
@@ -173,7 +173,7 @@ describe('UserCodeRunner', () => {
       describe('promise rejects with reason', () => {
         beforeEach(function() {
           this.options.fn = function() {
-            return bluebird.reject('error') // eslint-disable-line prefer-promise-reject-errors
+            return Promise.reject('error') // eslint-disable-line prefer-promise-reject-errors
           }
         })
 
@@ -187,7 +187,7 @@ describe('UserCodeRunner', () => {
       describe('promise rejects without reason', () => {
         beforeEach(function() {
           this.options.fn = function() {
-            return bluebird.reject() // eslint-disable-line prefer-promise-reject-errors
+            return Promise.reject() // eslint-disable-line prefer-promise-reject-errors
           }
         })
 
@@ -236,7 +236,7 @@ describe('UserCodeRunner', () => {
       beforeEach(function() {
         this.options.fn = function(callback) {
           callback()
-          return bluebird.resolve()
+          return Promise.resolve()
         }
       })
 

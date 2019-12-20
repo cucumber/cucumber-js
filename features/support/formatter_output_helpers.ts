@@ -1,25 +1,31 @@
 import _ from 'lodash'
+import { doesHaveValue, valueOrDefault } from '../../src/value_checker'
+import {
+  IJsonFeature,
+  IJsonScenario,
+  IJsonStep,
+} from '../../src/formatter/json_formatter'
 
 // Converting windows stack trace to posix and removing cwd
 //    C:\\project\\path\\features\\support/code.js
 //      becomes
 //    features/support/code.js
-function normalizeExceptionAndUri(exception, cwd) {
+function normalizeExceptionAndUri(exception: string, cwd: string): string {
   return exception
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
 }
 
-function normalizeProtobufObject(obj, cwd) {
-  if (obj.uri) {
+function normalizeProtobufObject(obj: any, cwd: string): void {
+  if (doesHaveValue(obj.uri)) {
     obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
   }
-  if (obj.testResult) {
-    if (obj.testResult.duration) {
+  if (doesHaveValue(obj.testResult)) {
+    if (doesHaveValue(obj.testResult.duration)) {
       obj.testResult.duration.nanos = 0
     }
-    if (obj.testResult.message) {
+    if (doesHaveValue(obj.testResult.message)) {
       obj.testResult.message = normalizeExceptionAndUri(
         obj.testResult.message,
         cwd
@@ -28,8 +34,11 @@ function normalizeProtobufObject(obj, cwd) {
   }
 }
 
-export function normalizeMessageOutput(envelopeObjects, cwd) {
-  envelopeObjects.forEach(e => {
+export function normalizeMessageOutput(
+  envelopeObjects: any[],
+  cwd: string
+): any[] {
+  envelopeObjects.forEach((e: any) => {
     for (const key in e) {
       normalizeProtobufObject(e[key], cwd)
     }
@@ -37,25 +46,25 @@ export function normalizeMessageOutput(envelopeObjects, cwd) {
   return envelopeObjects
 }
 
-export function normalizeJsonOutput(str, cwd) {
-  const json = JSON.parse(str || '[]')
-  _.each(json, feature => {
-    if (feature.uri) {
+export function normalizeJsonOutput(str: string, cwd: string): IJsonFeature[] {
+  const json = JSON.parse(valueOrDefault(str, '[]'))
+  _.each(json, (feature: IJsonFeature) => {
+    if (doesHaveValue(feature.uri)) {
       feature.uri = normalizeExceptionAndUri(feature.uri, cwd)
     }
-    _.each(feature.elements, element => {
-      _.each(element.steps, step => {
-        if (step.match && step.match.location) {
+    _.each(feature.elements, (element: IJsonScenario) => {
+      _.each(element.steps, (step: IJsonStep) => {
+        if (doesHaveValue(step.match) && doesHaveValue(step.match.location)) {
           step.match.location = normalizeExceptionAndUri(
             step.match.location,
             cwd
           )
         }
-        if (step.result) {
-          if (step.result.duration) {
+        if (doesHaveValue(step.result)) {
+          if (doesHaveValue(step.result.duration)) {
             step.result.duration = 0
           }
-          if (step.result.error_message) {
+          if (doesHaveValue(step.result.error_message)) {
             step.result.error_message = normalizeExceptionAndUri(
               step.result.error_message,
               cwd

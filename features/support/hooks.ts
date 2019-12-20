@@ -1,24 +1,28 @@
-/* eslint-disable babel/new-cap */
-
 import { After, Before, formatterHelpers } from '../../'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
+import { doesHaveValue } from '../../src/value_checker'
+import { World } from './world'
+import { ITestCaseHookParameter } from '../../src/support_code_library_builder'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
-Before('@debug', function() {
+Before('@debug', function(this: World) {
   this.debug = true
 })
 
-Before('@spawn', function() {
+Before('@spawn', function(this: World) {
   this.spawn = true
 })
 
-Before(function({ gherkinDocument, pickle }) {
+Before(function(
+  this: World,
+  { gherkinDocument, pickle }: ITestCaseHookParameter
+) {
   const { line } = formatterHelpers.PickleParser.getPickleLocation({
     gherkinDocument,
     pickle,
@@ -37,7 +41,7 @@ Before(function({ gherkinDocument, pickle }) {
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
 })
 
-Before('@global-install', function() {
+Before('@global-install', function(this: World) {
   const tmpObject = tmp.dirSync({ unsafeCleanup: true })
 
   const globalInstallNodeModulesPath = path.join(tmpObject.name, 'node_modules')
@@ -76,8 +80,12 @@ Before('@global-install', function() {
   )
 })
 
-After(function() {
-  if (this.lastRun && this.lastRun.error && !this.verifiedLastRunError) {
+After(function(this: World) {
+  if (
+    doesHaveValue(this.lastRun) &&
+    doesHaveValue(this.lastRun.error) &&
+    !this.verifiedLastRunError
+  ) {
     throw new Error(
       `Last run errored unexpectedly. Output:\n\n${this.lastRun.output}\n\n` +
         `Error Output:\n\n${this.lastRun.errorOutput}`

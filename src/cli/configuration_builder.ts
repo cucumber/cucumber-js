@@ -3,8 +3,9 @@ import ArgvParser, { IParsedArgvOptions } from './argv_parser'
 import fs from 'mz/fs'
 import path from 'path'
 import OptionSplitter from './option_splitter'
-import bluebird, { promisify } from 'bluebird'
+import bluebird from 'bluebird'
 import glob from 'glob'
+import { promisify } from 'util'
 
 const globP = promisify(glob)
 
@@ -75,7 +76,7 @@ export default class ConfigurationBuilder {
     }
   }
 
-  async expandPaths(unexpandedPaths, defaultExtension) {
+  async expandPaths(unexpandedPaths: string[], defaultExtension: string): Promise<string[]> {
     const expandedPaths = await bluebird.map(
       unexpandedPaths,
       async unexpandedPath => {
@@ -83,15 +84,16 @@ export default class ConfigurationBuilder {
           absolute: true,
           cwd: this.cwd,
         })
-        return bluebird.map(matches, async match => {
+        const expanded = await bluebird.map(matches, async match => {
           if (path.extname(match) === '') {
             return globP(`${match}/**/*${defaultExtension}`)
           }
-          return match
+          return [match]
         })
+        return _.flatten(expanded)
       }
     )
-    return _.flattenDepth(expandedPaths, 2).map(x => path.normalize(x))
+    return _.flatten(expandedPaths).map(x => path.normalize(x))
   }
 
   async expandFeaturePaths(featurePaths) {
@@ -99,10 +101,10 @@ export default class ConfigurationBuilder {
     return this.expandPaths(featurePaths, '.feature')
   }
 
-  getFeatureDirectoryPaths(featurePaths) {
+  getFeatureDirectoryPaths(featurePaths: string[]): string[] {
     const featureDirs = featurePaths.map(featurePath => {
       let featureDir = path.dirname(featurePath)
-      let childDir
+      let childDir: string
       let parentDir = featureDir
       while (childDir !== parentDir) {
         childDir = parentDir
@@ -130,7 +132,7 @@ export default class ConfigurationBuilder {
     return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
   }
 
-  async getUnexpandedFeaturePaths() {
+  async getUnexpandedFeaturePaths(): Promise<string[]> {
     if (this.args.length > 0) {
       const nestedFeaturePaths = await bluebird.map(this.args, async arg => {
         const filename = path.basename(arg)
@@ -143,7 +145,7 @@ export default class ConfigurationBuilder {
             .compact()
             .value()
         }
-        return arg
+        return [arg]
       })
       const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {

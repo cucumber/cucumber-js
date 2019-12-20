@@ -21,7 +21,7 @@ const {
   getStepKeyword,
 } = PickleParser
 
-interface IJsonFeature {
+export interface IJsonFeature {
   description: string
   elements: IJsonScenario[]
   id: string
@@ -32,7 +32,7 @@ interface IJsonFeature {
   uri: string
 }
 
-interface IJsonScenario {
+export interface IJsonScenario {
   description: string
   id: string
   keyword: string
@@ -43,7 +43,7 @@ interface IJsonScenario {
   type: string
 }
 
-interface IJsonStep {
+export interface IJsonStep {
   arguments?: any // TODO
   embeddings?: any // TODO
   hidden?: boolean
@@ -54,7 +54,7 @@ interface IJsonStep {
   result?: any // TODO
 }
 
-interface IJsonTag {
+export interface IJsonTag {
   name: string
   line: number
 }
@@ -71,6 +71,10 @@ interface IBuildJsonScenarioOptions {
   gherkinScenarioLocationMap: IGherkinScenarioLocationMap
   pickle: messages.IPickle
   steps: IJsonStep[]
+}
+
+interface UriToTestCaseAttemptsMap {
+  [uri: string]: ITestCaseAttempt[]
 }
 
 export default class JsonFormatter extends Formatter {
@@ -113,7 +117,7 @@ export default class JsonFormatter extends Formatter {
   }
 
   onTestRunFinished() {
-    const groupedTestCaseAttempts = {}
+    const groupedTestCaseAttempts: UriToTestCaseAttemptsMap = {}
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
       (testCaseAttempt: ITestCaseAttempt) => {

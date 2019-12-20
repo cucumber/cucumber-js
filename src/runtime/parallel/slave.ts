@@ -15,6 +15,7 @@ import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
 import { messages, IdGenerator } from 'cucumber-messages'
+import TestRunHookDefinition from '../../models/test_run_hook_definition'
 
 const { uuid } = IdGenerator
 
@@ -73,12 +74,12 @@ export default class Slave {
     if (this.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
+    await this.runTestRunHooks(this.supportCodeLibrary.beforeTestRunHookDefinitions, 'a BeforeAll')
     this.sendMessage({ ready: true })
   }
 
   async finalize() {
-    await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
+    await this.runTestRunHooks(this.supportCodeLibrary.afterTestRunHookDefinitions, 'an AfterAll')
     if (this.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
@@ -115,8 +116,8 @@ export default class Slave {
     this.sendMessage({ ready: true })
   }
 
-  async runTestRunHooks(key, name) {
-    await bluebird.each(this.supportCodeLibrary[key], async hookDefinition => {
+  async runTestRunHooks(testRunHookDefinitions: TestRunHookDefinition[], name) {
+    await bluebird.each(testRunHookDefinitions, async hookDefinition => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,

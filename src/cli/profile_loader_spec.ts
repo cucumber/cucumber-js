@@ -1,10 +1,10 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { promisify } from 'bluebird'
 import fs from 'mz/fs'
 import path from 'path'
 import ProfileLoader from './profile_loader'
 import tmp from 'tmp'
+import { promisify } from 'util'
 
 describe('ProfileLoader', () => {
   describe('getArgv', () => {

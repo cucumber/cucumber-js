@@ -11,14 +11,29 @@ import _ from 'lodash'
 import protobuf from 'protobufjs'
 import { messages } from 'cucumber-messages'
 
-class World {
-  private readonly tmpDir: string
-  private readonly spawn: boolean
-  private readonly debug: boolean
-  private lastRun: any
-  private verifiedLastRunError: boolean
+interface ILastRun {
+  error: any
+  errorOutput: string
+  envelopes: messages.IEnvelope[]
+  output: string
+}
 
-  async run(executablePath, inputArgs) {
+interface IRunResult {
+  error: any
+  stderr: string
+  stdout: string
+}
+
+export class World {
+  public tmpDir: string
+  public spawn: boolean = false
+  public debug: boolean = false
+  public lastRun: ILastRun
+  public verifiedLastRunError: boolean
+  public localExecutablePath: string
+  public globalExecutablePath: string
+
+  async run(executablePath: string, inputArgs: string[]): Promise<void> {
     const messageFilename = 'message.out'
     const args = ['node', executablePath]
       .concat(inputArgs, [
@@ -35,7 +50,7 @@ class World {
       })
     const cwd = this.tmpDir
 
-    let result
+    let result: IRunResult
 
     if (this.spawn) {
       result = await new Promise(resolve => {
@@ -50,7 +65,7 @@ class World {
         cwd,
         stdout,
       })
-      let error, stderr
+      let error: any, stderr: string
       try {
         const { success } = await cli.run()
         if (!success) {
@@ -65,7 +80,7 @@ class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    const envelopes = []
+    const envelopes: messages.Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)
     if (fs.existsSync(messageOutputPath)) {
       const data = fs.readFileSync(messageOutputPath)

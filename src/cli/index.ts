@@ -18,6 +18,11 @@ import { WriteStream as TtyWriteStream } from 'tty'
 
 const { incrementing, uuid } = IdGenerator
 
+export interface ICliRunResult {
+  shouldExitImmediately: boolean
+  success: boolean
+}
+
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
@@ -89,16 +94,16 @@ export default class Cli {
     return supportCodeLibraryBuilder.finalize()
   }
 
-  async run() {
+  async run(): Promise<ICliRunResult> {
     await validateInstall(this.cwd)
     const configuration = await this.getConfiguration()
     if (configuration.listI18nLanguages) {
       this.stdout.write(I18n.getLanguages())
-      return { success: true }
+      return { shouldExitImmediately: true, success: true }
     }
     if (configuration.listI18nKeywordsFor) {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
-      return { success: true }
+      return { shouldExitImmediately: true, success: true }
     }
     const newId =
       configuration.predictableIds && !configuration.parallel

@@ -1,7 +1,7 @@
-import { promisify } from 'bluebird'
 import fs from 'mz/fs'
 import path from 'path'
 import resolve from 'resolve'
+import { promisify } from 'util'
 
 export async function validateInstall(cwd) {
   const projectPath = path.join(__dirname, '..', '..')

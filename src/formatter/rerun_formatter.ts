@@ -6,6 +6,10 @@ import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser
 
 const DEFAULT_SEPARATOR = '\n'
 
+interface UriToLinesMap {
+  [uri: string]: number[]
+}
+
 export default class RerunFormatter extends Formatter {
   private readonly separator: string
 
@@ -20,7 +24,7 @@ export default class RerunFormatter extends Formatter {
   }
 
   logFailedTestCases() {
-    const mapping = {}
+    const mapping: UriToLinesMap = {}
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
       ({ gherkinDocument, pickle, result }) => {

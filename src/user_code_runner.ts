@@ -1,4 +1,4 @@
-import Promise from 'bluebird'
+import bluebird from 'bluebird'
 import Time from './time'
 import UncaughtExceptionManager from './uncaught_exception_manager'
 import util from 'util'
@@ -66,7 +66,7 @@ export default class UserCodeRunner {
 
     let error, result
     try {
-      result = await Promise.race(racingPromises)
+      result = await bluebird.race(racingPromises)
     } catch (e) {
       if (e instanceof Error) {
         error = e

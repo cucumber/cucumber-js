@@ -2,7 +2,6 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import { loadPicklesFromFilesystem } from './helpers'
-import { promisify } from 'bluebird'
 import EventEmitter from 'events'
 import fsExtra from 'fs-extra'
 import path from 'path'
@@ -10,6 +9,7 @@ import PickleFilter from '../pickle_filter'
 import tmp from 'tmp'
 import { messages, IdGenerator } from 'cucumber-messages'
 import { EventDataCollector } from '../formatter/helpers'
+import { promisify } from 'util'
 
 const { uuid } = IdGenerator
 

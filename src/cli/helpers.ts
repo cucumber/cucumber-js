@@ -2,7 +2,6 @@ import _ from 'lodash'
 import ArgvParser from './argv_parser'
 import Gherkin from 'gherkin'
 import ProfileLoader from './profile_loader'
-import Promise from 'bluebird'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
 import { messages, IdGenerator } from 'cucumber-messages'
@@ -41,8 +40,8 @@ export function loadPicklesFromFilesystem({
   newId,
   order,
   pickleFilter,
-}: ILoadPicklesFromFilesystemOptions) {
-  return new Promise((resolve, reject) => {
+}: ILoadPicklesFromFilesystemOptions): Promise<string[]> {
+  return new Promise<string[]>((resolve, reject) => {
     const result = []
     const messageStream = Gherkin.fromPaths(featurePaths, {
       defaultDialect: featureDefaultLanguage,

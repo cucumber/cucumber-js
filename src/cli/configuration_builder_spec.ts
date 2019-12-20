@@ -1,10 +1,10 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import { promisify } from 'bluebird'
 import ConfigurationBuilder from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
+import { promisify } from 'util'
 
 describe('Configuration', () => {
   beforeEach(async function() {

@@ -1,6 +1,5 @@
 import isStream from 'is-stream'
 import stream from 'stream'
-import Promise from 'bluebird'
 import { messages } from 'cucumber-messages'
 
 export interface IAttachment {
@@ -63,7 +62,7 @@ export default class AttachmentManager {
     mediaType: string,
     callback: () => void
   ): void | Promise<void> {
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise<void>((resolve, reject) => {
       const buffers = []
       data.on('data', chunk => {
         buffers.push(chunk)
