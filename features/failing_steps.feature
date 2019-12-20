@@ -61,7 +61,7 @@ Feature: Failing steps
       When(/^a failing step$/, function(callback) {
         setTimeout(function() {
           throw new Error('the expected error in an async step')
-        }, 0)
+        })
       })
       """
     When I run cucumber-js
@@ -79,7 +79,7 @@ Feature: Failing steps
       When(/^a failing step$/, function(callback) {
         setTimeout(function() {
           callback(new Error('my error'))
-        }, 0)
+        })
       })
       """
     When I run cucumber-js
@@ -119,7 +119,7 @@ Feature: Failing steps
         return new Promise(function() {
           setTimeout(function() {
             throw new Error('my error')
-          }, 0)
+          })
         })
       })
       """

@@ -45,7 +45,7 @@ Feature: Pending steps
           then: function(onResolve, onReject) {
             setTimeout(function() {
               onResolve('pending')
-            }, 0)
+            })
           }
         }
       })

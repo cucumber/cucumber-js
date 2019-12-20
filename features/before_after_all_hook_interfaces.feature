@@ -59,7 +59,7 @@ Feature: before / after all hook interfaces
       const {<TYPE>} = require('cucumber')
 
       <TYPE>(function(callback) {
-        setTimeout(callback, 0)
+        setTimeout(callback)
       })
       """
     When I run cucumber-js
@@ -78,7 +78,7 @@ Feature: before / after all hook interfaces
       <TYPE>(function(callback) {
         setTimeout(() => {
           callback(new Error('my error'))
-        }, 0)
+        })
       })
       """
     When I run cucumber-js
@@ -102,7 +102,7 @@ Feature: before / after all hook interfaces
       <TYPE>(function(callback) {
         setTimeout(() => {
           throw new Error('my error')
-        }, 0)
+        })
       })
       """
     When I run cucumber-js
@@ -214,7 +214,7 @@ Feature: before / after all hook interfaces
         return new Promise(function() {
           setTimeout(() => {
             throw new Error('my error')
-          }, 0)
+          })
         })
       })
       """

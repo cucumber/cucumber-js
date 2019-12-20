@@ -31,7 +31,7 @@ Feature: Command line interface
 
       When(/^a step is passing$/, function() {});
       """
-    When I run cucumber-js with `-r step_definitions/**/*.js`
+    When I run cucumber-js with `-r step_definitions`
 
   @spawn
   Scenario: display Cucumber version

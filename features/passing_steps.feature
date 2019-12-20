@@ -24,7 +24,7 @@ Feature: Passing steps
       const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function(callback) {
-        setTimeout(callback, 0)
+        setTimeout(callback)
       })
       """
     When I run cucumber-js
