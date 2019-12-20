@@ -11,7 +11,7 @@ Feature: Failing steps
   Scenario: too few arguments
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a (.*) step$/, function() {})
       """
@@ -25,7 +25,7 @@ Feature: Failing steps
   Scenario: too many arguments
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a failing step$/, function(arg1, arg2) {})
       """
@@ -39,7 +39,7 @@ Feature: Failing steps
   Scenario: synchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a failing step$/, function() {
         throw new Error('my error');
@@ -56,7 +56,7 @@ Feature: Failing steps
   Scenario: asynchronous - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a failing step$/, function(callback) {
         setTimeout(function() {
@@ -74,7 +74,7 @@ Feature: Failing steps
   Scenario: asynchronous - passing error as first argument to the callback
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a failing step$/, function(callback) {
         setTimeout(function() {
@@ -92,8 +92,8 @@ Feature: Failing steps
   Scenario: asynchronous - using a callback and returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
-      import Promise from 'bluebird'
+      const {When} = require('cucumber')
+      const Promise = require('bluebird')
 
       When(/^a failing step$/, function(callback) {
         return Promise.resolve()
@@ -112,8 +112,8 @@ Feature: Failing steps
   Scenario: promise - throws
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
-      import Promise from 'bluebird'
+      const {When} = require('cucumber')
+      const Promise = require('bluebird')
 
       When(/^a failing step$/, function() {
         return new Promise(function() {
@@ -133,8 +133,8 @@ Feature: Failing steps
   Scenario: promise - rejects
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {When} from 'cucumber'
-      import Promise from 'bluebird'
+      const {When} = require('cucumber')
+      const Promise = require('bluebird')
 
       When(/^a failing step$/, function() {
         return Promise.reject(new Error('my error'))

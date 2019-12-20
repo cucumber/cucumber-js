@@ -28,7 +28,7 @@ Feature: Target specific scenarios
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step is (.*)$/, function() {})
       """

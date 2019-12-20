@@ -29,7 +29,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -49,7 +49,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -69,7 +69,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -109,7 +109,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -151,7 +151,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -199,7 +199,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -248,7 +248,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -307,7 +307,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -332,7 +332,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -359,7 +359,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -388,7 +388,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -432,7 +432,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
@@ -481,7 +481,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Before, After, Given, setWorldConstructor} from 'cucumber'
+      const {Before, After, Given, setWorldConstructor} = require('cucumber')
 
       Before(function() {
         this.usedCount++

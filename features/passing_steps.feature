@@ -11,7 +11,7 @@ Feature: Passing steps
   Scenario: synchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function() {})
       """
@@ -21,7 +21,7 @@ Feature: Passing steps
   Scenario: asynchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function(callback) {
         setTimeout(callback)
@@ -33,8 +33,8 @@ Feature: Passing steps
   Scenario: promise
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      import {Given} from 'cucumber'
-      import Promise from 'bluebird'
+      const {Given} = require('cucumber')
+      const Promise = require('bluebird')
 
       Given(/^a passing step$/, function() {
         return Promise.resolve()

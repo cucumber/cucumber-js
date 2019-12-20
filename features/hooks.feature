@@ -9,7 +9,7 @@ Feature: Environment Hooks
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -17,7 +17,7 @@ Feature: Environment Hooks
   Scenario: Hooks are steps
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
+      const {After, Before} = require('cucumber')
 
       Before(function() {})
       After(function() {})
@@ -32,7 +32,7 @@ Feature: Environment Hooks
   Scenario: Failing before fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
-      import {Before} from 'cucumber'
+      const {Before} = require('cucumber')
 
       Before(function() { throw 'Fail' })
       """
@@ -43,7 +43,7 @@ Feature: Environment Hooks
   Scenario: Failing after hook fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
-      import {After} from 'cucumber'
+      const {After} = require('cucumber')
 
       After(function() { throw 'Fail' })
       """
@@ -54,7 +54,7 @@ Feature: Environment Hooks
   Scenario: After hooks still execute after a failure
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
+      const {After, Before} = require('cucumber')
 
       Before(function() { throw 'Fail' })
       After(function() {})
@@ -66,7 +66,7 @@ Feature: Environment Hooks
   Scenario: World is this in hooks
     Given a file named "features/support/world.js" with:
       """
-      import {setWorldConstructor} from 'cucumber'
+      const {setWorldConstructor} = require('cucumber')
 
       function WorldConstructor() {
         return {
@@ -78,7 +78,7 @@ Feature: Environment Hooks
       """
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before} from 'cucumber'
+      const {After, Before} = require('cucumber')
 
       Before(function() {
         if (!this.isWorld()) {

@@ -10,7 +10,7 @@ Feature: Global Installs
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^a step is passing$/, function() {})
       """

@@ -8,13 +8,13 @@ Feature: Error formatting
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a passing step$/, function() {})
       """
     And a file named "features/support/hooks.js" with:
       """
-      import {Before} from 'cucumber'
+      const {Before} = require('cucumber')
 
       Before(function(_, callback) { callback('Fail') })
       """
@@ -51,7 +51,7 @@ Feature: Error formatting
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a basic step$/, function() { this.attach('Some info.') })
       Given(/^a step with a doc string$/, function(str) { this.attach('{"name": "some JSON"}', 'application/json') })
@@ -88,7 +88,7 @@ Feature: Error formatting
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a table:$/, function(table) {})
       Given(/^a pending step$/, function() { return 'pending' })

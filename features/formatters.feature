@@ -20,7 +20,7 @@ Feature: Formatters
       """
     Given a file named "features/step_definitions/steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -37,7 +37,7 @@ Feature: Formatters
       """
     Given a file named "features/step_definitions/steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
@@ -55,7 +55,7 @@ Feature: Formatters
       """
     Given a file named "features/step_definitions/steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       let willPass = false
 
