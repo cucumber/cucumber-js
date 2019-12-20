@@ -9,7 +9,7 @@ Feature: Custom stack trace
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       const _prepareStackTrace = Error.prepareStackTrace;
       Error.prepareStackTrace = () => { return 'Custom message' }

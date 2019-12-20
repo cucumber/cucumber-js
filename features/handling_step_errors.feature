@@ -11,7 +11,7 @@ Feature: Handling step errors
       """
     Given a file named "features/step_definitions/step_definitions.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given('I pass an error to the callback', function (cb) {
         var unusualErrorObject = {}

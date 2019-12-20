@@ -17,7 +17,7 @@ Feature: usage formatter
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When('step A', function(callback) { setTimeout(callback, 100) });
       When(/^(slow )?step B$/, function(slow, callback) {
@@ -68,7 +68,7 @@ Feature: usage formatter
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      import {When} from 'cucumber'
+      const {When} = require('cucumber')
 
       When(/^(slow )?step$/, function(slow, callback) {
         if (slow) {

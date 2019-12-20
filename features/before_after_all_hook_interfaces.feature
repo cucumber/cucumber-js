@@ -15,7 +15,7 @@ Feature: before / after all hook interfaces
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given('first step', function() {})
       Given('second step', function() {})
@@ -24,7 +24,7 @@ Feature: before / after all hook interfaces
   Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      const {<TYPE>} = require('cucumber')
 
       <TYPE>(function() {})
       """
@@ -39,7 +39,7 @@ Feature: before / after all hook interfaces
   Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      const {<TYPE>} = require('cucumber')
 
       <TYPE>(function() {
         throw new Error('my error')
@@ -56,7 +56,7 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      const {<TYPE>} = require('cucumber')
 
       <TYPE>(function(callback) {
         setTimeout(callback)
@@ -73,7 +73,7 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      const {<TYPE>} = require('cucumber')
 
       <TYPE>(function(callback) {
         setTimeout(() => {
@@ -97,7 +97,7 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
+      const {<TYPE>} = require('cucumber')
 
       <TYPE>(function(callback) {
         setTimeout(() => {
@@ -120,8 +120,8 @@ Feature: before / after all hook interfaces
   Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      import {<TYPE>} from 'cucumber'
-      import Promise from 'bluebird'
+      const {<TYPE>} = require('cucumber')
+      const Promise = require('bluebird')
 
       <TYPE>(function(callback) {
         return Promise.resolve()
@@ -144,8 +144,8 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
-      import Promise from 'bluebird'
+      const {<TYPE>} = require('cucumber')
+      const Promise = require('bluebird')
 
       <TYPE>(function() {
         return Promise.resolve()
@@ -162,8 +162,8 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
-      import Promise from 'bluebird'
+      const {<TYPE>} = require('cucumber')
+      const Promise = require('bluebird')
 
       <TYPE>(function() {
         return Promise.reject(new Error('my error'))
@@ -184,8 +184,8 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
-      import Promise from 'bluebird'
+      const {<TYPE>} = require('cucumber')
+      const Promise = require('bluebird')
 
       <TYPE>(function() {
         return Promise.reject()
@@ -207,8 +207,8 @@ Feature: before / after all hook interfaces
   Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      import {<TYPE>} from 'cucumber'
-      import Promise from 'bluebird'
+      const {<TYPE>} = require('cucumber')
+      const Promise = require('bluebird')
 
       <TYPE>(function() {
         return new Promise(function() {

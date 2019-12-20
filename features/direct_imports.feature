@@ -12,7 +12,7 @@ Feature: Core feature elements execution using direct imports
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step passes$/, function() {});
       """
@@ -28,7 +28,7 @@ Feature: Core feature elements execution using direct imports
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step fails$/, function(callback) {
         callback(new Error('my error'))

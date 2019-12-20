@@ -13,8 +13,8 @@ Feature: Generator Step Definitions
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import assert from 'assert'
-      import {setWorldConstructor, Then, When} from 'cucumber'
+      const assert = require('assert')
+      const {setWorldConstructor, Then, When} = require('cucumber')
 
       setWorldConstructor(function () {
         this.context = ""
@@ -45,9 +45,9 @@ Feature: Generator Step Definitions
   Scenario: with generator function wrapper
     Given a file named "features/support/setup.js" with:
       """
-      import isGenerator from 'is-generator'
-      import {coroutine} from 'bluebird'
-      import {setDefinitionFunctionWrapper} from 'cucumber'
+      const isGenerator = require('is-generator')
+      const {coroutine} = require('bluebird')
+      const {setDefinitionFunctionWrapper} = require('cucumber')
 
       setDefinitionFunctionWrapper(function (fn) {
         if (isGenerator.fn(fn)) {

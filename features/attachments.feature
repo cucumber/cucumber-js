@@ -9,7 +9,7 @@ Feature: Attachments
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -17,7 +17,7 @@ Feature: Attachments
   Scenario: Attach a buffer
     Given a file named "features/support/hooks.js" with:
       """
-      import {Before} from 'cucumber'
+      const {Before} = require('cucumber')
 
       Before(function() {
         this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
@@ -31,8 +31,8 @@ Feature: Attachments
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
       """
-      import {Before} from 'cucumber'
-      import stream from 'stream'
+      const {Before} = require('cucumber')
+      const stream = require('stream')
 
       Before(function(testCase, callback) {
         var passThroughStream = new stream.PassThrough()
@@ -50,8 +50,8 @@ Feature: Attachments
     Scenario: Attach a stream (promise)
       Given a file named "features/support/hooks.js" with:
         """
-        import {Before} from 'cucumber'
-        import stream from 'stream'
+        const {Before} = require('cucumber')
+        const stream = require('stream')
 
         Before(function() {
           var passThroughStream = new stream.PassThrough()
@@ -70,7 +70,7 @@ Feature: Attachments
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
       """
-      import {Before} from 'cucumber'
+      const {Before} = require('cucumber')
 
       Before(function() {
         this.attach("text")
@@ -84,7 +84,7 @@ Feature: Attachments
   Scenario: Attach from an after hook
     Given a file named "features/support/hooks.js" with:
       """
-      import {After} from 'cucumber'
+      const {After} = require('cucumber')
 
       After(function() {
         this.attach("text")
@@ -98,7 +98,7 @@ Feature: Attachments
   Scenario: Attach from a step definition
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
 
       Given(/^a step$/, function() {
         this.attach("text")
@@ -113,8 +113,8 @@ Feature: Attachments
   Scenario: Attaching after hook/step finishes
     Given a file named "features/support/hooks.js" with:
       """
-      import {After} from 'cucumber'
-      import Promise from 'bluebird'
+      const {After} = require('cucumber')
+      const Promise = require('bluebird')
 
       After(function() {
         // Do not return the promise so that the attach happens after the hook completes

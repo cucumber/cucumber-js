@@ -17,8 +17,8 @@ Feature: Environment Hooks
   Scenario: before all / after all hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {AfterAll, BeforeAll, Given} from 'cucumber'
-      import {expect} from 'chai'
+      const {AfterAll, BeforeAll, Given} = require('cucumber')
+      const {expect} = require('chai')
 
       let counter = 1
 
@@ -48,7 +48,7 @@ Feature: Environment Hooks
   Scenario: Failing before all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
-      import {BeforeAll} from 'cucumber'
+      const {BeforeAll} = require('cucumber')
 
       BeforeAll(function(callback) {
         callback(new Error('my error'))
@@ -64,7 +64,7 @@ Feature: Environment Hooks
   Scenario: Failing after all hook kills the suite
     Given a file named "features/support/hooks.js" with:
       """
-      import {AfterAll} from 'cucumber'
+      const {AfterAll} = require('cucumber')
 
       AfterAll(function(callback) {
         callback(new Error('my error'))

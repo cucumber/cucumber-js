@@ -10,7 +10,7 @@ Feature: custom formatter
   Scenario: extending Formatter
     Given a file named "simple_formatter.js" with:
       """
-      import { Formatter, formatterHelpers, Status } from 'cucumber'
+      const { Formatter, formatterHelpers, Status } = require('cucumber')
 
       class SimpleFormatter extends Formatter {
         constructor(options) {
@@ -65,7 +65,7 @@ Feature: custom formatter
       """
     And a file named "simple_formatter.js" with:
       """
-      import { SummaryFormatter, formatterHelpers, Status } from 'cucumber'
+      const { SummaryFormatter, formatterHelpers, Status } = require('cucumber')
 
       class SimpleFormatter extends SummaryFormatter {
         constructor(options) {
