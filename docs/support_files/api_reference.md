@@ -125,8 +125,8 @@ setDefinitionFunctionWrapper(function(fn, options) {
         // call a method on world
         this.doScreenshot();
         // rethrow error to avoid swallowing failure
-        throw error
-      })
+        throw error;
+      });
   }
 })
 ```
@@ -141,8 +141,8 @@ Set a custom world constructor, to override the default world constructor:
 
 ```javascript
 function World({attach, parameters}) {
-  this.attach = attach
-  this.parameters = parameters
+  this.attach = attach;
+  this.parameters = parameters;
 }
 ```
 
