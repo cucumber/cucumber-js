@@ -9,7 +9,7 @@ Feature: Pending steps
       """
 
   Scenario: Synchronous pending step
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -23,7 +23,7 @@ Feature: Pending steps
 
 
   Scenario: Callback pending step
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -36,7 +36,7 @@ Feature: Pending steps
     And scenario "a scenario" step "Given a pending step" has status "pending"
 
   Scenario: Promise pending step
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

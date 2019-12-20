@@ -8,7 +8,7 @@ import tmp from 'tmp'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
-const projectBabelConfigPath = path.join(projectPath, 'babel.config.js')
+const projectTypescriptConfigPath = path.join(projectPath, 'tsconfig.json')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
 Before('@debug', function() {
@@ -34,11 +34,11 @@ Before(function({ gherkinDocument, pickle }) {
 
   const tmpDirProfilePath = path.join(this.tmpDir, 'cucumber.js')
   const profileContent =
-    'module.exports = {default: "--require-module @babel/register"}'
+    'module.exports = {default: "--require-module ts-node/register --require features/**/*.ts"}'
   fsExtra.outputFileSync(tmpDirProfilePath, profileContent)
 
-  const tmpDirBabelConfigPath = path.join(this.tmpDir, 'babel.config.js')
-  fsExtra.createSymlinkSync(projectBabelConfigPath, tmpDirBabelConfigPath)
+  const tmpDirTypescriptConfigPath = path.join(this.tmpDir, 'tsconfig.json')
+  fsExtra.createSymlinkSync(projectTypescriptConfigPath, tmpDirTypescriptConfigPath)
 
   const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
   const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')

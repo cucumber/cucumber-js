@@ -8,7 +8,7 @@ Feature: Hook Parameters
         Scenario: a scenario
           Given a step
       """
-    And a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -44,7 +44,7 @@ Feature: Hook Parameters
         Scenario: another scenario
           Given a failing step
       """
-    And a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.ts" with:
       """
       import {When} from 'cucumber'
 

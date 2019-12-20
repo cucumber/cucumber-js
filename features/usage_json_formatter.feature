@@ -15,7 +15,7 @@ Feature: usage json formatter
           When step B
           Then step C
       """
-    And a file named "features/step_definitions/steps.js" with:
+    And a file named "features/step_definitions/steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -27,7 +27,7 @@ Feature: usage json formatter
     When I run cucumber-js with `--format usage-json`
     Then it outputs the usage data:
       | PATTERN | PATTERN_TYPE       | URI                                | LINE | NUMBER OF MATCHES |
-      | step A  | CucumberExpression | features/step_definitions/steps.js | 3    | 2                 |
-      | step B  | CucumberExpression | features/step_definitions/steps.js | 4    | 1                 |
-      | step C  | CucumberExpression | features/step_definitions/steps.js | 5    | 1                 |
-      | step D  | RegularExpression  | features/step_definitions/steps.js | 6    | 0                 |
+      | step A  | CucumberExpression | features/step_definitions/steps.ts | 3    | 2                 |
+      | step B  | CucumberExpression | features/step_definitions/steps.ts | 4    | 1                 |
+      | step C  | CucumberExpression | features/step_definitions/steps.ts | 5    | 1                 |
+      | step D  | RegularExpression  | features/step_definitions/steps.ts | 6    | 0                 |

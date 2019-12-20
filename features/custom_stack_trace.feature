@@ -7,7 +7,7 @@ Feature: Custom stack trace
         Scenario: Some scenario
           Given Error.prepareStackTrace has been overriden
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {When} from 'cucumber'
 

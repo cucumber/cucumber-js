@@ -9,7 +9,7 @@ Feature: Failing steps
       """
 
   Scenario: too few arguments
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -23,7 +23,7 @@ Feature: Failing steps
       """
 
   Scenario: too many arguments
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -37,7 +37,7 @@ Feature: Failing steps
       """
 
   Scenario: synchronous - throws
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -54,7 +54,7 @@ Feature: Failing steps
 
   @spawn
   Scenario: asynchronous - throws
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -72,7 +72,7 @@ Feature: Failing steps
       """
 
   Scenario: asynchronous - passing error as first argument to the callback
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -90,7 +90,7 @@ Feature: Failing steps
       """
 
   Scenario: asynchronous - using a callback and returning a promise
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
       import Promise from 'bluebird'
@@ -110,7 +110,7 @@ Feature: Failing steps
 
   @spawn
   Scenario: promise - throws
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
       import Promise from 'bluebird'
@@ -131,7 +131,7 @@ Feature: Failing steps
       """
 
   Scenario: promise - rejects
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {When} from 'cucumber'
       import Promise from 'bluebird'

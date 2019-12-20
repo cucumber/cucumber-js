@@ -7,7 +7,7 @@ Feature: Attachments
         Scenario: some scenario
           Given a step
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -96,7 +96,7 @@ Feature: Attachments
       | text | text/plain | UTF8           |
 
   Scenario: Attach from a step definition
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

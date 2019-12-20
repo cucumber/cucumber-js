@@ -12,7 +12,7 @@ Feature: Strict mode
       """
 
   Scenario: Fail with pending step by default
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -22,7 +22,7 @@ Feature: Strict mode
     Then it fails
 
   Scenario: Succeed with pending step with --no-strict
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

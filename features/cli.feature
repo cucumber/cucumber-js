@@ -10,13 +10,13 @@ Feature: Command line interface
         Scenario:
           When a step is passing
       """
-    And a file named "step_definitions/cucumber_steps.js" with:
+    And a file named "step_definitions/cucumber_steps.ts" with:
       """
       import {When} from 'cucumber'
 
       When(/^a step is passing$/, function() {})
       """
-    When I run cucumber-js with `-r step_definitions/cucumber_steps.js`
+    When I run cucumber-js with `-r step_definitions/cucumber_steps.ts`
 
   Scenario: run feature with step definitions in required directory (-r option)
     Given a file named "features/a.feature" with:
@@ -25,7 +25,7 @@ Feature: Command line interface
         Scenario:
           When a step is passing
       """
-    And a file named "step_definitions/cucumber_steps.js" with:
+    And a file named "step_definitions/cucumber_steps.ts" with:
       """
       import {When} from 'cucumber'
 

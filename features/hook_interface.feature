@@ -7,7 +7,7 @@ Feature: After hook interface
         Scenario: a scenario
           Given a step
       """
-    And a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.ts" with:
       """
       import {When} from 'cucumber'
 
@@ -126,7 +126,7 @@ Feature: After hook interface
       | After  |
 
   Scenario Outline: callback - returning a promise
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {<TYPE>} from 'cucumber'
       import Promise from 'bluebird'

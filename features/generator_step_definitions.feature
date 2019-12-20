@@ -11,7 +11,7 @@ Feature: Generator Step Definitions
           When I call a step which is a generator with return value "ok"
           Then I can see the yielded "ok" value in the context
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import assert from 'assert'
       import {setWorldConstructor, Then, When} from 'cucumber'
@@ -37,7 +37,7 @@ Feature: Generator Step Definitions
       """
       The following hook/step definitions use generator functions:
 
-        features/step_definitions/cucumber_steps.js:8
+        features/step_definitions/cucumber_steps.ts:8
 
       Use 'this.setDefinitionFunctionWrapper(fn)' to wrap them in a function that returns a promise
       """

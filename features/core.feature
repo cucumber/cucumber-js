@@ -12,7 +12,7 @@ Feature: Core feature elements execution
           When a step passes
           Then a step passes
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -41,7 +41,7 @@ Feature: Core feature elements execution
           And a "Then" step passes
           But a "Then" step passes
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given, Then, When} from 'cucumber'
 
@@ -66,7 +66,7 @@ Feature: Core feature elements execution
           And I call a watched step
           Then the watched step should have been called 3 times
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {setWorldConstructor, Then, When} from 'cucumber'
       import assert from 'assert'
@@ -100,7 +100,7 @@ Feature: Core feature elements execution
           And the 2nd received parameter should be "two"
           And the 3rd received parameter should be "three"
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {setWorldConstructor, Then, When} from 'cucumber'
       import assert from 'assert'

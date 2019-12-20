@@ -15,7 +15,7 @@ Feature: Skipped steps
       """
 
   Scenario: Synchronous skipped step
-    Given a file named "features/step_definitions/skipped_steps.js" with:
+    Given a file named "features/step_definitions/skipped_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -30,7 +30,7 @@ Feature: Skipped steps
 
 
   Scenario: Callback skipped step
-    Given a file named "features/step_definitions/skipped_steps.js" with:
+    Given a file named "features/step_definitions/skipped_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -44,7 +44,7 @@ Feature: Skipped steps
     And scenario "a scenario" has status "skipped"
 
   Scenario: Promise skipped step
-    Given a file named "features/step_definitions/skipped_steps.js" with:
+    Given a file named "features/step_definitions/skipped_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -70,7 +70,7 @@ Feature: Skipped steps
 
       Before(function() {return 'skipped'})
       """
-    And a file named "features/step_definitions/skipped_steps.js" with:
+    And a file named "features/step_definitions/skipped_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -102,7 +102,7 @@ Feature: Skipped steps
 
       After(function() { assert.equal(this.ran, false) })
       """
-    And a file named "features/step_definitions/skipped_steps.js" with:
+    And a file named "features/step_definitions/skipped_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -125,7 +125,7 @@ Feature: Skipped steps
 
       After(function() {})
       """
-    And a file named "features/step_definitions/skipped_steps.js" with:
+    And a file named "features/step_definitions/skipped_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

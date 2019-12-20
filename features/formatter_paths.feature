@@ -7,7 +7,7 @@ Feature: Formatter Paths
         Scenario: some scenario
           Given a passing step
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

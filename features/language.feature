@@ -7,7 +7,7 @@ Feature: Multiple Formatters
         Scénario: Monde
           Soit une étape
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

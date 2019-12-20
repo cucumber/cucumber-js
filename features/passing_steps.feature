@@ -9,7 +9,7 @@ Feature: Passing steps
       """
 
   Scenario: synchronous
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -19,7 +19,7 @@ Feature: Passing steps
     Then scenario "a scenario" step "Given a passing step" has status "passed"
 
   Scenario: asynchronous
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -31,7 +31,7 @@ Feature: Passing steps
     Then scenario "a scenario" step "Given a passing step" has status "passed"
 
   Scenario: promise
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import Promise from 'bluebird'

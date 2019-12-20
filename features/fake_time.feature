@@ -22,7 +22,7 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
           Given a faked time step
       """
 
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'

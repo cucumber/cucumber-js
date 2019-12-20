@@ -34,7 +34,7 @@ Feature: World Parameters
       """
 
   Scenario: default world constructor has an empty parameters object by default
-    Given a file named "features/step_definitions/my_steps.js" with:
+    Given a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'
@@ -47,7 +47,7 @@ Feature: World Parameters
     Then scenario "a scenario" step "Given the world parameters are correct" has status "passed"
 
   Scenario: default world constructor saves the parameters
-    Given a file named "features/step_definitions/my_steps.js" with:
+    Given a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'
@@ -60,7 +60,7 @@ Feature: World Parameters
     Then scenario "a scenario" step "Given the world parameters are correct" has status "passed"
 
   Scenario: multiple world parameters are merged with the last taking precedence
-    Given a file named "features/step_definitions/my_steps.js" with:
+    Given a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'
@@ -86,7 +86,7 @@ Feature: World Parameters
 
       setWorldConstructor(CustomWorld)
       """
-    Given a file named "features/step_definitions/my_steps.js" with:
+    Given a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'

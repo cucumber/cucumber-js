@@ -11,7 +11,7 @@ Feature: Parameter types
         Scenario: a scenario
           Given a particular step
       """
-    Given a file named "features/step_definitions/my_steps.js" with:
+    Given a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'
@@ -96,7 +96,7 @@ Feature: Parameter types
       """
 
   Scenario: async transform (success)
-    Given a file named "features/step_definitions/particular_steps.js" with:
+    Given a file named "features/step_definitions/particular_steps.ts" with:
       """
       import {defineParameterType} from 'cucumber'
 
@@ -110,7 +110,7 @@ Feature: Parameter types
     Then scenario "a scenario" step "Given a particular step" has status "passed"
 
   Scenario: async transform (error)
-    Given a file named "features/step_definitions/particular_steps.js" with:
+    Given a file named "features/step_definitions/particular_steps.ts" with:
       """
       import {defineParameterType} from 'cucumber'
       import Promise from 'bluebird'

@@ -1,7 +1,7 @@
 Feature: Step definition timeouts
 
   Background:
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Before, Given, setDefaultTimeout} from 'cucumber'
 

@@ -14,13 +14,13 @@ module.exports = [
             keyword: 'Given ',
             line: 3,
             match: {
-              location: 'features/step_definitions/steps.js:3',
+              location: 'features/step_definitions/steps.ts:3',
             },
             name: 'a step',
             result: {
               duration: 0,
               error_message:
-                'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:3:49)',
+                'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.ts:3:49)',
               status: 'failed',
             },
           },

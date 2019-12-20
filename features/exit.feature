@@ -11,7 +11,7 @@ Feature: Exit
         Scenario:
           Given a step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given, After} from 'cucumber'
 

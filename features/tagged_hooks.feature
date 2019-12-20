@@ -22,7 +22,7 @@ Feature: Tagged Hooks
         this.value = 0
       })
       """
-    And a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Then} from 'cucumber'

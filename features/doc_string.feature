@@ -10,7 +10,7 @@ Feature: doc string
             The cucumber (Cucumis sativus) is a widely cultivated plant in the gourd family Cucurbitaceae.
             \"\"\"
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import assert from 'assert'
@@ -33,7 +33,7 @@ Feature: doc string
             The cucumber (Cucumis sativus) is a widely cultivated plant in the gourd family Cucurbitaceae.
             \"\"\"
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import assert from 'assert'

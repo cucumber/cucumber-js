@@ -9,7 +9,7 @@ Feature: Data Tables
             | Cucumber     | Cucumis sativus |
             | Burr Gherkin | Cucumis anguria |
       """
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import assert from 'assert'
@@ -36,7 +36,7 @@ Feature: Data Tables
             | Brocolli  | 2      |
             | Cucumber  | 10     |
       """
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import assert from 'assert'
@@ -62,7 +62,7 @@ Feature: Data Tables
             | Cucumber     | Cucumis sativus |
             | Burr Gherkin | Cucumis anguria |
       """
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import assert from 'assert'
@@ -89,7 +89,7 @@ Feature: Data Tables
             | Brocolli  | 2      |
             | Cucumber  | 10     |
       """
-    Given a file named "features/step_definitions/passing_steps.js" with:
+    Given a file named "features/step_definitions/passing_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import assert from 'assert'

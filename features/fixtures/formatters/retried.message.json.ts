@@ -102,7 +102,7 @@ module.exports = [
       testResult: {
         status: 'FAILED',
         message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
+          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.ts:11:12)',
         duration: {
           seconds: '0',
           nanos: 0,
@@ -117,7 +117,7 @@ module.exports = [
       testResult: {
         status: 'FAILED',
         message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
+          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.ts:11:12)',
         duration: {
           seconds: '0',
           nanos: 0,

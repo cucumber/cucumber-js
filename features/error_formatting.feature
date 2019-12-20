@@ -6,7 +6,7 @@ Feature: Error formatting
         Scenario: some scenario
           Given a passing step
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -29,7 +29,7 @@ Feature: Error formatting
       1) Scenario: some scenario # features/a.feature:2
          ✖ Before # features/support/hooks.js:3
             Fail
-         - Given a passing step # features/step_definitions/cucumber_steps.js:3
+         - Given a passing step # features/step_definitions/cucumber_steps.ts:3
 
       1 scenario (1 failed)
       1 step (1 skipped)
@@ -49,7 +49,7 @@ Feature: Error formatting
             \"\"\"
           And a pending step
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -63,14 +63,14 @@ Feature: Error formatting
       Warnings:
 
       1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
+         ✔ Given a basic step # features/step_definitions/cucumber_steps.ts:3
              Attachment (text/plain): Some info.
-         ✔ And a step with a doc string # features/step_definitions/cucumber_steps.js:4
+         ✔ And a step with a doc string # features/step_definitions/cucumber_steps.ts:4
              \"\"\"
              my doc string
              \"\"\"
              Attachment (application/json)
-         ? And a pending step # features/step_definitions/cucumber_steps.js:5
+         ? And a pending step # features/step_definitions/cucumber_steps.ts:5
              Pending
       """
     And it fails
@@ -86,7 +86,7 @@ Feature: Error formatting
             | foo\nbar\n\nbaz\n\\boo       |bar |   baz\nfoo |
           And a pending step
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -99,10 +99,10 @@ Feature: Error formatting
       Warnings:
 
       1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a table: # features/step_definitions/cucumber_steps.js:3
+         ✔ Given a table: # features/step_definitions/cucumber_steps.ts:3
              | foo\nbar               | bar | baz      |
              | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
-         ? And a pending step # features/step_definitions/cucumber_steps.js:4
+         ? And a pending step # features/step_definitions/cucumber_steps.ts:4
              Pending
       """
     And it fails

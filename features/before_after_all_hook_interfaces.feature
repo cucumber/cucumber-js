@@ -13,7 +13,7 @@ Feature: before / after all hook interfaces
         Scenario: second scenario
           Given second step
       """
-    And a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -118,7 +118,7 @@ Feature: before / after all hook interfaces
       | AfterAll  |
 
   Scenario Outline: callback - returning a promise
-    Given a file named "features/step_definitions/failing_steps.js" with:
+    Given a file named "features/step_definitions/failing_steps.ts" with:
       """
       import {<TYPE>} from 'cucumber'
       import Promise from 'bluebird'

@@ -11,7 +11,7 @@ Feature: Dryrun mode
       """
 
   Scenario: default behavior
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -22,7 +22,7 @@ Feature: Dryrun mode
     And scenario "some scenario" has status "skipped"
 
   Scenario: ambiguous step
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
 

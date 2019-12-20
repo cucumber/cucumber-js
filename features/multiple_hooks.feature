@@ -19,7 +19,7 @@ Feature: Multiple Hooks
         this.value = 0
       })
       """
-    And a file named "features/step_definitions/my_steps.js" with:
+    And a file named "features/step_definitions/my_steps.ts" with:
       """
       import assert from 'assert'
       import {Given} from 'cucumber'

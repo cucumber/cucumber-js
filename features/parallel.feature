@@ -1,7 +1,7 @@
 Feature: Running scenarios in parallel
 
   Scenario: running in parallel can improve speed if there are async operations
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {Given} from 'cucumber'
       import Promise from 'bluebird'
@@ -24,7 +24,7 @@ Feature: Running scenarios in parallel
 
   @spawn
   Scenario: an error in BeforeAll fails the test
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    Given a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {BeforeAll, Given} from 'cucumber'
       import Promise from 'bluebird'

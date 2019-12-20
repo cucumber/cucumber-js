@@ -11,7 +11,7 @@ Feature: Step Wrapper with Options
         Scenario: Steps
           When I run a step with options
       """
-    And a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.ts" with:
       """
       import {When} from 'cucumber'
 

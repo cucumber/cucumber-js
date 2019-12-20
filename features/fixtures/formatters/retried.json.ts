@@ -14,7 +14,7 @@ module.exports = [
             keyword: 'Given ',
             line: 3,
             match: {
-              location: 'features/step_definitions/steps.js:5',
+              location: 'features/step_definitions/steps.ts:5',
             },
             name: 'a step',
             result: {

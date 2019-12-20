@@ -18,7 +18,7 @@ Feature: Formatters
         Scenario: a scenario
           Given a step
       """
-    Given a file named "features/step_definitions/steps.js" with:
+    Given a file named "features/step_definitions/steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -35,7 +35,7 @@ Feature: Formatters
         Scenario: a scenario
           Given a step
       """
-    Given a file named "features/step_definitions/steps.js" with:
+    Given a file named "features/step_definitions/steps.ts" with:
       """
       import {Given} from 'cucumber'
 
@@ -53,7 +53,7 @@ Feature: Formatters
         Scenario: a scenario
           Given a step
       """
-    Given a file named "features/step_definitions/steps.js" with:
+    Given a file named "features/step_definitions/steps.ts" with:
       """
       import {Given} from 'cucumber'
 

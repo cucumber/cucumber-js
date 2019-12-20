@@ -7,7 +7,7 @@ Feature: before / after all hook timeouts
         Scenario:
           Given a passing step
       """
-    And a file named "features/step_definitions/steps.js" with:
+    And a file named "features/step_definitions/steps.ts" with:
       """
       import {Given} from 'cucumber'
 
