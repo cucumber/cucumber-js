@@ -1,9 +1,8 @@
 {
-    "compilerOptions": {
-      "esModuleInterop": true,
-      "lib": ["es2017"],
-      "module": "commonjs",
-      "resolveJsonModule": true,
-      "target": "es2017"
-    },
-  }
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": ["es2017"],
+    "module": "commonjs",
+    "target": "es2017"
+  },
+}

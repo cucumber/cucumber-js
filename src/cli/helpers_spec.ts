@@ -1,20 +1,15 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { loadPicklesFromFilesystem } from './helpers'
+import { parseGherkinMessageStream } from './helpers'
 import EventEmitter from 'events'
-import fsExtra from 'fs-extra'
-import path from 'path'
 import PickleFilter from '../pickle_filter'
-import tmp from 'tmp'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { messages } from 'cucumber-messages'
 import { EventDataCollector } from '../formatter/helpers'
-import { promisify } from 'util'
-
-const { uuid } = IdGenerator
+import Gherkin from 'gherkin'
 
 describe('helpers', () => {
-  describe('loadPicklesFromFilesystem', () => {
+  describe('parseGherkinMessageStream', () => {
     beforeEach(function() {
       this.onEnvelope = sinon.stub()
       this.eventBroadcaster = new EventEmitter()
@@ -23,23 +18,26 @@ describe('helpers', () => {
     })
 
     describe('empty feature', () => {
+      const sourceEnvelope = messages.Envelope.create({
+        source: {
+          data: '',
+          media: {
+            contentType: 'text/x.cucumber.gherkin+plain',
+            encoding: messages.Media.Encoding.UTF8,
+          },
+          uri: '/project/features/a.feature',
+        },
+      })
+
       beforeEach(async function() {
-        this.tmpDir = await promisify(tmp.dir)()
-        this.relativeFeaturePath = path.join('features', 'a.feature')
-        this.absoluteFeaturePath = path.join(
-          this.tmpDir,
-          this.relativeFeaturePath
-        )
-        await fsExtra.outputFile(this.absoluteFeaturePath, '')
-        this.result = await loadPicklesFromFilesystem({
-          cwd: this.tmpDir,
+        const gherkinMessageStream = Gherkin.fromSources([sourceEnvelope])
+        this.result = await parseGherkinMessageStream({
+          cwd: '/project',
           eventBroadcaster: this.eventBroadcaster,
           eventDataCollector: this.eventDataCollector,
-          featureDefaultLanguage: 'en',
-          featurePaths: [this.absoluteFeaturePath],
-          newId: uuid(),
+          gherkinMessageStream,
           order: 'defined',
-          pickleFilter: new PickleFilter({ cwd: this.tmpDir }),
+          pickleFilter: new PickleFilter({ cwd: '/project' }),
         })
       })
 
@@ -52,51 +50,39 @@ describe('helpers', () => {
       })
 
       it('emits a source event', function() {
-        expect(this.onEnvelope).to.have.been.calledWith(
-          new messages.Envelope({
-            source: {
-              data: '',
-              media: {
-                contentType: 'text/x.cucumber.gherkin+plain',
-                encoding: messages.Media.Encoding.UTF8,
-              },
-              uri: this.absoluteFeaturePath,
-            },
-          })
-        )
+        expect(this.onEnvelope).to.have.been.calledWith(sourceEnvelope)
       })
 
       it('emits a gherkin-document event', function() {
         const envelope = this.onEnvelope.getCall(1).args[0]
         expect(envelope.gherkinDocument).to.exist()
         expect(envelope.gherkinDocument).to.have.keys(['comments', 'uri'])
-        expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
       })
     })
 
     describe('feature with scenario that does not match the filter', () => {
+      const sourceEnvelope = messages.Envelope.create({
+        source: {
+          data: 'Feature: a\nScenario: b\nGiven a step',
+          media: {
+            contentType: 'text/x.cucumber.gherkin+plain',
+            encoding: messages.Media.Encoding.UTF8,
+          },
+          uri: '/project/features/a.feature',
+        },
+      })
+
       beforeEach(async function() {
-        this.tmpDir = await promisify(tmp.dir)()
-        this.relativeFeaturePath = path.join('features', 'a.feature')
-        this.absoluteFeaturePath = path.join(
-          this.tmpDir,
-          this.relativeFeaturePath
-        )
-        await fsExtra.outputFile(
-          this.absoluteFeaturePath,
-          'Feature: a\nScenario: b\nGiven a step'
-        )
-        this.result = await loadPicklesFromFilesystem({
-          cwd: this.tmpDir,
+        const gherkinMessageStream = Gherkin.fromSources([sourceEnvelope])
+        this.result = await parseGherkinMessageStream({
+          cwd: '/project',
           eventBroadcaster: this.eventBroadcaster,
           eventDataCollector: this.eventDataCollector,
-          featureDefaultLanguage: 'en',
-          featurePaths: [this.absoluteFeaturePath],
-          newId: uuid(),
+          gherkinMessageStream,
           order: 'defined',
           pickleFilter: new PickleFilter({
             cwd: this.tmpDir,
-            featurePaths: [`${this.relativeFeaturePath}:5`],
+            featurePaths: [`/project/features/a.feature:5`],
           }),
         })
       })
@@ -110,18 +96,7 @@ describe('helpers', () => {
       })
 
       it('emits a source event', function() {
-        expect(this.onEnvelope).to.have.been.calledWith(
-          new messages.Envelope({
-            source: {
-              data: 'Feature: a\nScenario: b\nGiven a step',
-              media: {
-                contentType: 'text/x.cucumber.gherkin+plain',
-                encoding: messages.Media.Encoding.UTF8,
-              },
-              uri: this.absoluteFeaturePath,
-            },
-          })
-        )
+        expect(this.onEnvelope).to.have.been.calledWith(sourceEnvelope)
       })
 
       it('emits a gherkin-document event', function() {
@@ -132,7 +107,6 @@ describe('helpers', () => {
           'feature',
           'uri',
         ])
-        expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
       })
 
       it('emits a pickle event', function() {
@@ -160,24 +134,24 @@ describe('helpers', () => {
     })
 
     describe('feature with scenario that matches the filter', () => {
+      const sourceEnvelope = messages.Envelope.create({
+        source: {
+          data: 'Feature: a\nScenario: b\nGiven a step',
+          media: {
+            contentType: 'text/x.cucumber.gherkin+plain',
+            encoding: messages.Media.Encoding.UTF8,
+          },
+          uri: '/project/features/a.feature',
+        },
+      })
+
       beforeEach(async function() {
-        this.tmpDir = await promisify(tmp.dir)()
-        this.relativeFeaturePath = path.join('features', 'a.feature')
-        this.absoluteFeaturePath = path.join(
-          this.tmpDir,
-          this.relativeFeaturePath
-        )
-        await fsExtra.outputFile(
-          this.absoluteFeaturePath,
-          'Feature: a\nScenario: b\nGiven a step'
-        )
-        this.result = await loadPicklesFromFilesystem({
+        const gherkinMessageStream = Gherkin.fromSources([sourceEnvelope])
+        this.result = await parseGherkinMessageStream({
           cwd: this.tmpDir,
           eventBroadcaster: this.eventBroadcaster,
           eventDataCollector: this.eventDataCollector,
-          featureDefaultLanguage: 'en',
-          featurePaths: [this.absoluteFeaturePath],
-          newId: uuid(),
+          gherkinMessageStream,
           order: 'defined',
           pickleFilter: new PickleFilter({ cwd: this.tmpDir }),
         })
@@ -194,18 +168,7 @@ describe('helpers', () => {
       })
 
       it('emits a source event', function() {
-        expect(this.onEnvelope).to.have.been.calledWith(
-          new messages.Envelope({
-            source: {
-              data: 'Feature: a\nScenario: b\nGiven a step',
-              media: {
-                contentType: 'text/x.cucumber.gherkin+plain',
-                encoding: messages.Media.Encoding.UTF8,
-              },
-              uri: this.absoluteFeaturePath,
-            },
-          })
-        )
+        expect(this.onEnvelope).to.have.been.calledWith(sourceEnvelope)
       })
 
       it('emits a gherkin-document event', function() {
@@ -216,7 +179,6 @@ describe('helpers', () => {
           'feature',
           'uri',
         ])
-        expect(envelope.gherkinDocument.uri).to.eql(this.absoluteFeaturePath)
       })
 
       it('emits a pickle event', function() {

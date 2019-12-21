@@ -9,8 +9,6 @@ import { promisify } from 'util'
 import { IPickleFilterOptions } from '../pickle_filter'
 import { IRuntimeOptions } from '../runtime'
 
-const globP = promisify(glob)
-
 export interface IConfigurationFormat {
   outputTo: string
   type: string
@@ -115,13 +113,13 @@ export default class ConfigurationBuilder {
     const expandedPaths = await bluebird.map(
       unexpandedPaths,
       async unexpandedPath => {
-        const matches = await globP(unexpandedPath, {
+        const matches = await promisify(glob)(unexpandedPath, {
           absolute: true,
           cwd: this.cwd,
         })
         const expanded = await bluebird.map(matches, async match => {
           if (path.extname(match) === '') {
-            return globP(`${match}/**/*${defaultExtension}`)
+            return promisify(glob)(`${match}/**/*${defaultExtension}`)
           }
           return [match]
         })

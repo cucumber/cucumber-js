@@ -1,8 +1,9 @@
 import _ from 'lodash'
 import { Command } from 'commander'
-import { version } from '../../package.json'
 import path from 'path'
 import Gherkin from 'gherkin'
+
+const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface IParsedArgvOptions {
   backtrace: boolean

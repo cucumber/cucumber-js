@@ -76,7 +76,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.After(this.hook) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.After(this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -92,7 +92,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.After('@tagA', this.hook) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.After('@tagA', this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -111,7 +111,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, this.hook) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -131,8 +131,8 @@ describe('supportCodeLibraryBuilder', () => {
         this.hook1 = function hook1() {}
         this.hook2 = function hook2() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.After(this.hook1) // eslint-disable-line babel/new-cap
-        supportCodeLibraryBuilder.methods.After(this.hook2) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.After(this.hook1)
+        supportCodeLibraryBuilder.methods.After(this.hook2)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -153,7 +153,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.Before(this.hook) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.Before(this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -169,7 +169,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.Before('@tagA', this.hook) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.Before('@tagA', this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -188,7 +188,7 @@ describe('supportCodeLibraryBuilder', () => {
       beforeEach(function() {
         this.hook = function() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, this.hook) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 
@@ -208,8 +208,8 @@ describe('supportCodeLibraryBuilder', () => {
         this.hook1 = function hook1() {}
         this.hook2 = function hook2() {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.Before(this.hook1) // eslint-disable-line babel/new-cap
-        supportCodeLibraryBuilder.methods.Before(this.hook2) // eslint-disable-line babel/new-cap
+        supportCodeLibraryBuilder.methods.Before(this.hook1)
+        supportCodeLibraryBuilder.methods.Before(this.hook2)
         this.options = supportCodeLibraryBuilder.finalize()
       })
 

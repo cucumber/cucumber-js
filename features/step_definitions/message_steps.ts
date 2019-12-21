@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Then } from '../../lib'
+import { Then } from '../../'
 import { expect } from 'chai'
 import DataTable from '../../src/models/data_table'
 import {

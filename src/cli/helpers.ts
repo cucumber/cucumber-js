@@ -1,15 +1,15 @@
 import _ from 'lodash'
 import ArgvParser from './argv_parser'
-import Gherkin from 'gherkin'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { messages } from 'cucumber-messages'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
+import { Readable } from 'stream'
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -29,35 +29,26 @@ export async function getExpandedArgv({
   return fullArgv
 }
 
-interface ILoadPicklesFromFilesystemOptions {
+interface IParseGherkinMessageStreamOptions {
   cwd: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
-  featureDefaultLanguage: string
-  featurePaths: string[]
-  newId: IdGenerator.NewId
+  gherkinMessageStream: Readable
   order: string
   pickleFilter: PickleFilter
 }
 
-// Returns ordered list of pickleIds to run
-export async function loadPicklesFromFilesystem({
+export async function parseGherkinMessageStream({
   cwd,
   eventBroadcaster,
   eventDataCollector,
-  featureDefaultLanguage,
-  featurePaths,
-  newId,
+  gherkinMessageStream,
   order,
   pickleFilter,
-}: ILoadPicklesFromFilesystemOptions): Promise<string[]> {
+}: IParseGherkinMessageStreamOptions): Promise<string[]> {
   return new Promise<string[]>((resolve, reject) => {
     const result = []
-    const messageStream = Gherkin.fromPaths(featurePaths, {
-      defaultDialect: featureDefaultLanguage,
-      newId,
-    })
-    messageStream.on('data', envelope => {
+    gherkinMessageStream.on('data', envelope => {
       eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.pickle)) {
         const pickle = envelope.pickle
@@ -89,11 +80,11 @@ export async function loadPicklesFromFilesystem({
         )
       }
     })
-    messageStream.on('end', () => {
+    gherkinMessageStream.on('end', () => {
       orderPickleIds(result, order)
       resolve(result)
     })
-    messageStream.on('error', reject)
+    gherkinMessageStream.on('error', reject)
   })
 }
 

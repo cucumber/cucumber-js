@@ -21,41 +21,39 @@ ignoreErrors:
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
-    - '@babel/core'
-    - '@babel/plugin-proposal-function-bind' # .babelrc
-    - '@babel/preset-env' # .babelrc
-    - '@babel/register' # test/mocha.opts
-    - babel-eslint # .eslintrc.yml - plugins
-    - babel-plugin-istanbul # .babelrc
-    - babelify # package.json - scripts - build-browser-example / build-release
+    - '@typescript-eslint/eslint-plugin' # peer dependency of standard-with-typescript
+    - '@typescript-eslint/parser' # peer dependency of @typescript-eslint/eslint-plugin
+    - '@types/*' # type definitions
     - coffeescript # features/compiler.feature
     - coveralls # .travis.yml
-    - eslint-config-prettier # .eslintrc.yml - extends
-    - eslint-config-standard # .eslintrc.yml - extends
-    - eslint-plugin-babel # .eslintrc.yml - parser
-    - eslint-plugin-import # peer dependency of eslint-config-standard
-    - eslint-plugin-node # peer dependency of eslint-config-standard
-    - eslint-plugin-prettier # .eslintrc.yml - plugins
-    - eslint-plugin-promise # peer dependency of eslint-config-standard
-    - eslint-plugin-standard # peer dependency of eslint-config-standard
+    - eslint-config-prettier # .eslintrc.yml - extends - prettier
+    - eslint-config-standard-with-typescript # .eslintrc.yml - extends - standard-with-typescript 
+    - eslint-plugin-import # peer dependency of eslint-config-standard-with-typescript
+    - eslint-plugin-node # peer dependency of eslint-config-standard-with-typescript
+    - eslint-plugin-prettier # .eslintrc.yml - extends - prettier
+    - eslint-plugin-promise # peer dependency of eslint-config-standard-with-typescript
+    - eslint-plugin-standard # peer dependency of eslint-config-standard-with-typescript
     - prettier # peer dependency of eslint-plugin-prettier
+    - ts-node # .mocharc.yml / cucumber.js
+    - tsify # package.json - scripts - build-browser-example, build-release
 
 requiredModules:
   files:
     dev:
       - '{features,scripts,test}/**/*'
-      - '**/*_spec.js'
-      - 'example/index.js'
-      - '**/test_helpers.js'
+      - '**/*_spec.ts'
+      - 'example/index.ts'
+      - '**/test_helpers.ts'
     ignore:
+      - coverage/**/*
       - 'dist/**/*'
       - 'lib/**/*'
       - 'node_modules/**/*'
       - 'tmp/**/*'
-    root: '**/*.js'
+    root: '**/*.{js,ts}'
   stripLoaders: false
   transpilers:
-    - extension: .js
-      fnName: transform
-      module: '@babel/core' # 7.2.3
-      resultKey: code
+    - extension: .ts
+      fnName: transpileModule
+      module: typescript
+      resultKey: outputText

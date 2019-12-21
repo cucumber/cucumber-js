@@ -1,10 +1,14 @@
 import { EventEmitter } from 'events'
 import ansiHTML from 'ansi-html'
+import Gherkin from 'gherkin'
+import { messages, IdGenerator } from 'cucumber-messages'
 
 declare var Cucumber: any
 declare var $: any
 declare var ace: any
 declare var window: any
+
+const { uuid } = IdGenerator
 
 let featureEditor, stepDefinitionsEditor, $output
 
@@ -17,15 +21,28 @@ async function runFeature(): Promise<boolean> {
     eventBroadcaster
   )
 
-  const featureSource = featureEditor.getValue()
-  const testCases = Cucumber.getTestCases({
+  const newId = uuid()
+  const gherkinMessageStream = Gherkin.fromSources(
+    [
+      messages.Envelope.fromObject({
+        source: {
+          data: featureEditor.getValue(),
+          uri: 'example.feature',
+        },
+      }),
+    ],
+    { newId }
+  )
+  const pickleIds = Cucumber.parseGherkinMessageStream({
+    cwd: '',
     eventBroadcaster,
-    pickleFilter: new Cucumber.PickleFilter({}),
-    source: featureSource,
-    uri: '/feature',
+    eventDataCollector,
+    gherkinMessageStream,
+    pickleFilter: new Cucumber.PickleFilter({ cwd: '' }),
+    order: 'defined',
   })
 
-  Cucumber.supportCodeLibraryBuilder.reset('')
+  Cucumber.supportCodeLibraryBuilder.reset('', newId)
   new Function(stepDefinitionsEditor.getValue())() // eslint-disable-line no-new-func
   const supportCodeLibrary = await Cucumber.supportCodeLibraryBuilder.finalize()
 
@@ -43,8 +60,10 @@ async function runFeature(): Promise<boolean> {
 
   const runtime = new Cucumber.Runtime({
     eventBroadcaster,
+    eventDataCollector,
+    newId,
     options: {},
-    testCases,
+    pickleIds,
     supportCodeLibrary,
   })
   return runtime.start()

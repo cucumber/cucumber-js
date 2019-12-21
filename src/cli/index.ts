@@ -1,5 +1,5 @@
 import { EventDataCollector } from '../formatter/helpers'
-import { getExpandedArgv, loadPicklesFromFilesystem } from './helpers'
+import { getExpandedArgv, parseGherkinMessageStream } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
 import ConfigurationBuilder, { IConfiguration } from './configuration_builder'
@@ -18,6 +18,7 @@ import { IdGenerator } from 'cucumber-messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
+import Gherkin from 'gherkin'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -124,13 +125,15 @@ export default class Cli {
       formats: configuration.formats,
       supportCodeLibrary,
     })
-    const pickleIds = await loadPicklesFromFilesystem({
+    const gherkinMessageStream = Gherkin.fromPaths(configuration.featurePaths, {
+      defaultDialect: configuration.featureDefaultLanguage,
+      newId,
+    })
+    const pickleIds = await parseGherkinMessageStream({
       cwd: this.cwd,
       eventBroadcaster,
       eventDataCollector,
-      featureDefaultLanguage: configuration.featureDefaultLanguage,
-      featurePaths: configuration.featurePaths,
-      newId,
+      gherkinMessageStream,
       order: configuration.order,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
     })
