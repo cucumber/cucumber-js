@@ -5,9 +5,9 @@ import OptionSplitter from './option_splitter'
 describe('OptionSplitter', () => {
   const examples = [
     {
-      description: "doesn't split when nothing to split on",
+      description: "doesn't split when nothing to split on, adds empty string",
       input: '../custom/formatter',
-      output: ['../custom/formatter'],
+      output: ['../custom/formatter', ''],
     },
     {
       description: 'splits relative unix paths',
@@ -25,9 +25,10 @@ describe('OptionSplitter', () => {
       output: ['C:\\custom\\formatter', 'C:\\formatter\\output.txt'],
     },
     {
-      description: 'does not split a single absolute windows paths',
+      description:
+        'does not split a single absolute windows paths, adds empty string',
       input: 'C:\\custom\\formatter',
-      output: ['C:\\custom\\formatter'],
+      output: ['C:\\custom\\formatter', ''],
     },
   ]
 

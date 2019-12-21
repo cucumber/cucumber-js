@@ -1,6 +1,9 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import ConfigurationBuilder from './configuration_builder'
+import ConfigurationBuilder, {
+  IConfigurationFormat,
+  INewConfigurationBuilderOptions,
+} from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
@@ -67,7 +70,7 @@ describe('Configuration', () => {
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
 
-    it('returns the appropriate feature and support code paths', async function() {
+    it('returns the appropriate feature and support code paths', function() {
       const {
         featurePaths,
         pickleFilterOptions,
@@ -92,7 +95,7 @@ describe('Configuration', () => {
       this.result = await ConfigurationBuilder.build(this.configurationOptions)
     })
 
-    it('returns the appropriate feature and support code paths', async function() {
+    it('returns the appropriate feature and support code paths', function() {
       const {
         featurePaths,
         pickleFilterOptions,
@@ -152,7 +155,9 @@ describe('Configuration', () => {
       expect(formats).to.eql([{ outputTo: '', type: 'C:\\custom\\formatter' }])
     })
 
-    async function getFormats(options) {
+    async function getFormats(
+      options: INewConfigurationBuilderOptions
+    ): Promise<IConfigurationFormat[]> {
       const result = await ConfigurationBuilder.build(options)
       return result.formats
     }

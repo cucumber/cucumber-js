@@ -155,6 +155,7 @@
     "node": ">=8"
   },
   "dependencies": {
+    "@types/mz": "^2.7.0",
     "assertion-error-formatter": "^3.0.0",
     "bluebird": "^3.4.1",
     "cli-table3": "^0.5.1",

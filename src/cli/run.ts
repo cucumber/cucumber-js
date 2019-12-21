@@ -1,12 +1,12 @@
-import Cli from './'
+import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 
-function exitWithError(error) {
+function exitWithError(error: Error): void {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
   process.exit(1)
 }
 
-export default async function run() {
+export default async function run(): Promise<void> {
   const cwd = process.cwd()
   const cli = new Cli({
     argv: process.argv,
@@ -14,7 +14,7 @@ export default async function run() {
     stdout: process.stdout,
   })
 
-  let result
+  let result: ICliRunResult
   try {
     result = await cli.run()
   } catch (error) {

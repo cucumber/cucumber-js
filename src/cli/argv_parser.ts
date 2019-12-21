@@ -10,7 +10,7 @@ export interface IParsedArgvOptions {
   exit: boolean
   failFast: boolean
   format: string[]
-  formatOptions: any // TODO create object
+  formatOptions: object
   i18nKeywords: string
   i18nLanguages: boolean
   language: string
@@ -25,7 +25,7 @@ export interface IParsedArgvOptions {
   retryTagFilter: string
   strict: boolean
   tags: string
-  worldParameters: any // TODO map of string to any
+  worldParameters: object
 }
 
 export interface IParsedArgv {
@@ -33,15 +33,15 @@ export interface IParsedArgv {
   options: IParsedArgvOptions
 }
 
-export default class ArgvParser {
-  static collect(val, memo) {
+const ArgvParser = {
+  collect<T>(val: T, memo: T[]): T[] {
     memo.push(val)
     return memo
-  }
+  },
 
-  static mergeJson(option) {
-    return function(str, memo) {
-      let val
+  mergeJson(option: string): (str: string, memo: object) => object {
+    return function(str: string, memo: object) {
+      let val: object
       try {
         val = JSON.parse(str)
       } catch (error) {
@@ -54,48 +54,53 @@ export default class ArgvParser {
       }
       return _.merge(memo, val)
     }
-  }
+  },
 
-  static mergeTags(value: string, memo: string) {
+  mergeTags(value: string, memo: string): string {
     return memo === '' ? `(${value})` : `${memo} and (${value})`
-  }
+  },
 
-  static validateCountOption(value: string, optionName: string): number {
+  validateCountOption(value: string, optionName: string): number {
     const numericValue = parseInt(value)
     if (isNaN(numericValue) || numericValue < 0) {
       throw new Error(`${optionName} must be a non negative integer`)
     }
     return numericValue
-  }
+  },
 
-  static validateLanguage(value) {
+  validateLanguage(value: string): string {
     if (!_.includes(_.keys(Gherkin.dialects()), value)) {
       throw new Error(`Unsupported ISO 639-1: ${value}`)
     }
     return value
-  }
+  },
 
-  static validateRetryOptions(options: IParsedArgvOptions) {
-    if (options.retryTagFilter && !options.retry) {
+  validateRetryOptions(options: IParsedArgvOptions): void {
+    if (options.retryTagFilter !== '' && options.retry === 0) {
       throw new Error(
         'a positive --retry count must be specified when setting --retryTagFilter'
       )
     }
-  }
+  },
 
-  static parse(argv: string[]): IParsedArgv {
+  parse(argv: string[]): IParsedArgv {
     const program = new Command(path.basename(argv[1]))
 
     program
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
-      .option('-d, --dry-run', 'invoke formatters without executing steps')
+      .option(
+        '-d, --dry-run',
+        'invoke formatters without executing steps',
+        false
+      )
       .option(
         '--exit',
-        'force shutdown of the event loop when the test run has finished: cucumber will call process.exit'
+        'force shutdown of the event loop when the test run has finished: cucumber will call process.exit',
+        false
       )
-      .option('--fail-fast', 'abort the run on first failure')
+      .option('--fail-fast', 'abort the run on first failure', false)
       .option(
         '-f, --format <TYPE[:PATH]>',
         'specify the output format, optionally supply PATH to redirect formatter output (repeatable)',
@@ -114,7 +119,7 @@ export default class ArgvParser {
         ArgvParser.validateLanguage,
         ''
       )
-      .option('--i18n-languages', 'list languages')
+      .option('--i18n-languages', 'list languages', false)
       .option(
         '--language <ISO 639-1>',
         'provide the default language for feature files',
@@ -146,7 +151,8 @@ export default class ArgvParser {
       )
       .option(
         '--predictable-ids',
-        'Use predictable ids in messages (option ignored if using parallel)'
+        'Use predictable ids in messages (option ignored if using parallel)',
+        false
       )
       .option(
         '-r, --require <GLOB|DIR|FILE>',
@@ -202,5 +208,7 @@ export default class ArgvParser {
       options,
       args: program.args,
     }
-  }
+  },
 }
+
+export default ArgvParser

@@ -8,8 +8,18 @@ import { messages, IdGenerator } from 'cucumber-messages'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
+import { doesHaveValue } from '../value_checker'
+import OptionSplitter from './option_splitter'
 
-export async function getExpandedArgv({ argv, cwd }) {
+export interface IGetExpandedArgvRequest {
+  argv: string[]
+  cwd: string
+}
+
+export async function getExpandedArgv({
+  argv,
+  cwd,
+}: IGetExpandedArgvRequest): Promise<string[]> {
   const { options } = ArgvParser.parse(argv)
   let fullArgv = argv
   const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
@@ -31,7 +41,7 @@ interface ILoadPicklesFromFilesystemOptions {
 }
 
 // Returns ordered list of pickleIds to run
-export function loadPicklesFromFilesystem({
+export async function loadPicklesFromFilesystem({
   cwd,
   eventBroadcaster,
   eventDataCollector,
@@ -49,7 +59,7 @@ export function loadPicklesFromFilesystem({
     })
     messageStream.on('data', envelope => {
       eventBroadcaster.emit('envelope', envelope)
-      if (envelope.pickle) {
+      if (doesHaveValue(envelope.pickle)) {
         const pickle = envelope.pickle
         const pickleId = pickle.id
         const gherkinDocument = eventDataCollector.getGherkinDocument(
@@ -68,7 +78,7 @@ export function loadPicklesFromFilesystem({
           )
         }
       }
-      if (envelope.attachment) {
+      if (doesHaveValue(envelope.attachment)) {
         reject(
           new Error(
             `Parse error in '${path.relative(
@@ -88,13 +98,13 @@ export function loadPicklesFromFilesystem({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(pickleIds, order) {
-  let [type, seed] = order.split(':')
+export function orderPickleIds(pickleIds: string[], order: string): void {
+  let [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
       break
     case 'random':
-      if (!seed) {
+      if (seed === '') {
         seed = Math.floor(Math.random() * 1000 * 1000).toString()
         console.warn(`Random order using seed: ${seed}`)
       }

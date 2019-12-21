@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Gherkin from 'gherkin'
-import Table from 'cli-table3'
+import Table, { HorizontalTable } from 'cli-table3'
 import titleCase from 'title-case'
 
 const keywords = [
@@ -16,7 +16,7 @@ const keywords = [
   'but',
 ]
 
-function getAsTable(header, rows) {
+function getAsTable(header: string[], rows: string[][]): string {
   const table = new Table({
     chars: {
       bottom: '',
@@ -40,13 +40,13 @@ function getAsTable(header, rows) {
       'padding-left': 0,
       'padding-right': 0,
     },
-  })
+  }) as HorizontalTable
   table.push(header)
   table.push(...rows)
   return table.toString()
 }
 
-export function getLanguages() {
+export function getLanguages(): string {
   const rows = _.map(Gherkin.dialects(), (data, isoCode) => [
     isoCode,
     data.name,
@@ -55,7 +55,7 @@ export function getLanguages() {
   return getAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
 }
 
-export function getKeywords(isoCode) {
+export function getKeywords(isoCode: string): string {
   const language = Gherkin.dialects()[isoCode]
   const rows = _.map(keywords, keyword => {
     const words = _.map(language[keyword], s => `"${s}"`).join(', ')

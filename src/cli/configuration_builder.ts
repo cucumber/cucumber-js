@@ -6,11 +6,43 @@ import OptionSplitter from './option_splitter'
 import bluebird from 'bluebird'
 import glob from 'glob'
 import { promisify } from 'util'
+import { IPickleFilterOptions } from '../pickle_filter'
+import { IRuntimeOptions } from '../runtime'
 
 const globP = promisify(glob)
 
+export interface IConfigurationFormat {
+  outputTo: string
+  type: string
+}
+
+export interface IConfiguration {
+  featureDefaultLanguage: string
+  featurePaths: string[]
+  formats: IConfigurationFormat[]
+  formatOptions: object // TODO define structure
+  listI18nKeywordsFor: string
+  listI18nLanguages: boolean
+  order: string
+  parallel: number
+  pickleFilterOptions: IPickleFilterOptions
+  predictableIds: boolean
+  profiles: string[]
+  runtimeOptions: IRuntimeOptions
+  shouldExitImmediately: boolean
+  supportCodePaths: string[]
+  supportCodeRequiredModules: string[]
+}
+
+export interface INewConfigurationBuilderOptions {
+  argv: string[]
+  cwd: string
+}
+
 export default class ConfigurationBuilder {
-  static async build(options) {
+  static async build(
+    options: INewConfigurationBuilderOptions
+  ): Promise<IConfiguration> {
     const builder = new ConfigurationBuilder(options)
     return builder.build()
   }
@@ -19,7 +51,7 @@ export default class ConfigurationBuilder {
   private readonly args: string[]
   private readonly options: IParsedArgvOptions
 
-  constructor({ argv, cwd }) {
+  constructor({ argv, cwd }: INewConfigurationBuilderOptions) {
     this.cwd = cwd
 
     const parsedArgv = ArgvParser.parse(argv)
@@ -27,13 +59,13 @@ export default class ConfigurationBuilder {
     this.options = parsedArgv.options
   }
 
-  async build() {
+  async build(): Promise<IConfiguration> {
     const listI18nKeywordsFor = this.options.i18nKeywords
-    const listI18nLanguages = !!this.options.i18nLanguages
+    const listI18nLanguages = this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
     let featurePaths = []
     let supportCodePaths = []
-    if (!listI18nKeywordsFor && !listI18nLanguages) {
+    if (listI18nKeywordsFor === '' && !listI18nLanguages) {
       featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
       let unexpandedSupportCodePaths = this.options.require
       if (unexpandedSupportCodePaths.length === 0) {
@@ -59,18 +91,18 @@ export default class ConfigurationBuilder {
         names: this.options.name,
         tagExpression: this.options.tags,
       },
-      predictableIds: !!this.options.predictableIds,
+      predictableIds: this.options.predictableIds,
       profiles: this.options.profile,
       runtimeOptions: {
-        dryRun: !!this.options.dryRun,
-        failFast: !!this.options.failFast,
+        dryRun: this.options.dryRun,
+        failFast: this.options.failFast,
         filterStacktraces: !this.options.backtrace,
         retry: this.options.retry,
         retryTagFilter: this.options.retryTagFilter,
-        strict: !!this.options.strict,
+        strict: this.options.strict,
         worldParameters: this.options.worldParameters,
       },
-      shouldExitImmediately: !!this.options.exit,
+      shouldExitImmediately: this.options.exit,
       supportCodePaths,
       supportCodeRequiredModules: this.options.requireModule,
     }
@@ -99,7 +131,7 @@ export default class ConfigurationBuilder {
     return _.flatten(expandedPaths).map(x => path.normalize(x))
   }
 
-  async expandFeaturePaths(featurePaths) {
+  async expandFeaturePaths(featurePaths: string[]): Promise<string[]> {
     featurePaths = featurePaths.map(p => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
     return this.expandPaths(featurePaths, '.feature')
   }
@@ -122,15 +154,15 @@ export default class ConfigurationBuilder {
     return _.uniq(featureDirs)
   }
 
-  getFormatOptions() {
+  getFormatOptions(): object {
     return _.assign({}, this.options.formatOptions, { cwd: this.cwd })
   }
 
-  getFormats() {
+  getFormats(): IConfigurationFormat[] {
     const mapping = { '': 'progress' }
     this.options.format.forEach(format => {
       const [type, outputTo] = OptionSplitter.split(format)
-      mapping[outputTo || ''] = type
+      mapping[outputTo] = type
     })
     return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
   }

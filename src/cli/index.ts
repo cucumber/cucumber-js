@@ -2,7 +2,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { getExpandedArgv, loadPicklesFromFilesystem } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
-import ConfigurationBuilder from './configuration_builder'
+import ConfigurationBuilder, { IConfiguration } from './configuration_builder'
 import EventEmitter from 'events'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
@@ -11,10 +11,13 @@ import PickleFilter from '../pickle_filter'
 import bluebird from 'bluebird'
 import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
-import supportCodeLibraryBuilder from '../support_code_library_builder'
+import supportCodeLibraryBuilder, {
+  ISupportCodeLibrary,
+} from '../support_code_library_builder'
 import { IdGenerator } from 'cucumber-messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
+import { doesNotHaveValue } from '../value_checker'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -34,7 +37,7 @@ export default class Cli {
     this.stdout = stdout
   }
 
-  async getConfiguration() {
+  async getConfiguration(): Promise<IConfiguration> {
     const fullArgv = await getExpandedArgv({ argv: this.argv, cwd: this.cwd })
     return ConfigurationBuilder.build({ argv: fullArgv, cwd: this.cwd })
   }
@@ -45,11 +48,11 @@ export default class Cli {
     formatOptions,
     formats,
     supportCodeLibrary,
-  }) {
+  }): Promise<() => Promise<void>> {
     const streamsToClose = []
     await bluebird.map(formats, async ({ type, outputTo }) => {
       let stream: IFormatterStream = this.stdout
-      if (outputTo) {
+      if (outputTo !== '') {
         const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
         stream = fs.createWriteStream(null, { fd })
         streamsToClose.push(stream)
@@ -62,22 +65,20 @@ export default class Cli {
         supportCodeLibrary,
         ...formatOptions,
       }
-      if (
-        !Object.prototype.hasOwnProperty.call(formatOptions, 'colorsEnabled')
-      ) {
-        typeOptions.colorsEnabled = !!(stream as TtyWriteStream).isTTY
+      if (doesNotHaveValue(formatOptions.colorsEnabled)) {
+        typeOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
       }
       if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
+        const outputToName = outputTo === '' ? 'stdout' : outputTo
         console.warn(
-          `Cannot use 'progress-bar' formatter for output to '${outputTo ||
-            'stdout'}' as not a TTY. Switching to 'progress' formatter.`
+          `Cannot use 'progress-bar' formatter for output to '${outputToName}' as not a TTY. Switching to 'progress' formatter.`
         )
         type = 'progress'
       }
       return FormatterBuilder.build(type, typeOptions)
     })
-    return function() {
-      return bluebird.each(streamsToClose, stream =>
+    return async function() {
+      await bluebird.each(streamsToClose, stream =>
         bluebird.promisify(stream.end.bind(stream))()
       )
     }
@@ -87,7 +88,7 @@ export default class Cli {
     newId,
     supportCodeRequiredModules,
     supportCodePaths,
-  }) {
+  }): ISupportCodeLibrary {
     supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     supportCodePaths.forEach(codePath => require(codePath))
@@ -101,12 +102,12 @@ export default class Cli {
       this.stdout.write(I18n.getLanguages())
       return { shouldExitImmediately: true, success: true }
     }
-    if (configuration.listI18nKeywordsFor) {
+    if (configuration.listI18nKeywordsFor !== '') {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { shouldExitImmediately: true, success: true }
     }
     const newId =
-      configuration.predictableIds && !configuration.parallel
+      configuration.predictableIds && configuration.parallel <= 1
         ? incrementing()
         : uuid()
     const supportCodeLibrary = this.getSupportCodeLibrary({
@@ -134,7 +135,7 @@ export default class Cli {
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
     })
     let success
-    if (configuration.parallel) {
+    if (configuration.parallel > 1) {
       const parallelRuntimeMaster = new ParallelRuntimeMaster({
         cwd: this.cwd,
         eventBroadcaster,

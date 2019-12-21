@@ -3,7 +3,7 @@ import path from 'path'
 import resolve from 'resolve'
 import { promisify } from 'util'
 
-export async function validateInstall(cwd) {
+export async function validateInstall(cwd: string): Promise<void> {
   const projectPath = path.join(__dirname, '..', '..')
   if (projectPath === cwd) {
     return // cucumber testing itself

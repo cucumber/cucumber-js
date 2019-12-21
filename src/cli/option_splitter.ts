@@ -1,17 +1,25 @@
-export default class OptionSplitter {
-  static split(option) {
+const OptionSplitter = {
+  split(option: string): string[] {
     const parts = option.split(/([^A-Z]):(?!\\)/)
 
-    return parts.reduce((memo, part, i) => {
+    const result = parts.reduce((memo: string[], part: string, i: number) => {
       if (partNeedsRecombined(i)) {
         memo.push(parts.slice(i, i + 2).join(''))
       }
 
       return memo
     }, [])
-  }
+
+    if (result.length === 1) {
+      result.push('')
+    }
+
+    return result
+  },
 }
 
-function partNeedsRecombined(i) {
+function partNeedsRecombined(i: number): boolean {
   return i % 2 === 0
 }
+
+export default OptionSplitter

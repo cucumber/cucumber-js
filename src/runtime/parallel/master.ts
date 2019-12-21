@@ -39,6 +39,7 @@ interface ISlave {
   closed: boolean
   process: ChildProcess
 }
+
 export default class Master {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter

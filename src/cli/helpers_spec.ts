@@ -15,7 +15,7 @@ const { uuid } = IdGenerator
 
 describe('helpers', () => {
   describe('loadPicklesFromFilesystem', () => {
-    beforeEach(async function() {
+    beforeEach(function() {
       this.onEnvelope = sinon.stub()
       this.eventBroadcaster = new EventEmitter()
       this.eventDataCollector = new EventDataCollector(this.eventBroadcaster)

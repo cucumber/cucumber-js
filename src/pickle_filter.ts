@@ -2,6 +2,7 @@ import _, { Dictionary } from 'lodash'
 import path from 'path'
 import parse from 'cucumber-tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
+import { messages } from 'cucumber-messages'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -28,7 +29,7 @@ export default class PickleFilter {
     this.tagFilter = new PickleTagFilter(tagExpression)
   }
 
-  matches({ gherkinDocument, pickle }) {
+  matches({ gherkinDocument, pickle }): boolean {
     return (
       this.lineFilter.matchesAnyLine({ gherkinDocument, pickle }) &&
       this.nameFilter.matchesAnyName(pickle) &&
@@ -88,11 +89,11 @@ export class PickleLineFilter {
 export class PickleNameFilter {
   private readonly names: string[]
 
-  constructor(names) {
+  constructor(names: string[]) {
     this.names = names || []
   }
 
-  matchesAnyName(pickle) {
+  matchesAnyName(pickle: messages.IPickle): boolean {
     if (this.names.length === 0) {
       return true
     }
@@ -109,7 +110,7 @@ export class PickleTagFilter {
     }
   }
 
-  matchesAllTagExpressions(pickle) {
+  matchesAllTagExpressions(pickle: messages.IPickle): boolean {
     if (!this.tagExpressionNode) {
       return true
     }
