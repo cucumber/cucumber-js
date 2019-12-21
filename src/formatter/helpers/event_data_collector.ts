@@ -1,36 +1,12 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { messages } from 'cucumber-messages'
-
-interface IGherkinDocumentMap {
-  [uri: string]: messages.IGherkinDocument
-}
-
-interface IPickleMap {
-  [pickleId: string]: messages.IPickle
-}
-
-interface ITestCaseMap {
-  [testCaseId: string]: messages.ITestCase
-}
-
-interface ITestStepAttachmentsMap {
-  [testStepId: string]: messages.IAttachment[]
-}
-
-interface ITestStepResultMap {
-  [testStepId: string]: messages.ITestResult
-}
 
 interface ITestCaseAttemptData {
   attempt: number
   testCaseId: string
   result: messages.ITestResult
-  stepAttachments: ITestStepAttachmentsMap
-  stepResults: ITestStepResultMap
-}
-
-interface ITestCaseAttemptDataMap {
-  [testCaseStartedId: string]: ITestCaseAttemptData
+  stepAttachments: Dictionary<messages.IAttachment[]>
+  stepResults: Dictionary<messages.ITestResult>
 }
 
 export interface ITestCaseAttempt {
@@ -38,23 +14,19 @@ export interface ITestCaseAttempt {
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
   result: messages.ITestResult
-  stepAttachments: ITestStepAttachmentsMap
-  stepResults: ITestStepResultMap
+  stepAttachments: Dictionary<messages.IAttachment[]>
+  stepResults: Dictionary<messages.ITestResult>
   testCase: messages.ITestCase
 }
 
 export default class EventDataCollector {
-  private gherkinDocumentMap: IGherkinDocumentMap
-  private pickleMap: IPickleMap
-  private testCaseMap: ITestCaseMap
-  private testCaseAttemptMap: ITestCaseAttemptDataMap
+  private gherkinDocumentMap: Dictionary<messages.IGherkinDocument> = {}
+  private pickleMap: Dictionary<messages.IPickle> = {}
+  private testCaseMap: Dictionary<messages.ITestCase> = {}
+  private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
 
   constructor(eventBroadcaster) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
-    this.gherkinDocumentMap = {}
-    this.pickleMap = {}
-    this.testCaseMap = {}
-    this.testCaseAttemptMap = {}
   }
 
   getGherkinDocument(uri: string): messages.IGherkinDocument {
@@ -66,29 +38,29 @@ export default class EventDataCollector {
   }
 
   getTestCaseAttempts(): ITestCaseAttempt[] {
-    return _.keys(this.testCaseAttemptMap).map(testCaseStartedId => {
+    return _.keys(this.testCaseAttemptDataMap).map(testCaseStartedId => {
       return this.getTestCaseAttempt(testCaseStartedId)
     })
   }
 
   getTestCaseAttempt(testCaseStartedId: string): ITestCaseAttempt {
-    const testCaseAttempt = this.testCaseAttemptMap[testCaseStartedId]
-    const testCase = this.testCaseMap[testCaseAttempt.testCaseId]
+    const testCaseAttemptData = this.testCaseAttemptDataMap[testCaseStartedId]
+    const testCase = this.testCaseMap[testCaseAttemptData.testCaseId]
     const pickle = this.pickleMap[testCase.pickleId]
     return {
       gherkinDocument: this.gherkinDocumentMap[pickle.uri],
       pickle,
       testCase,
-      attempt: testCaseAttempt.attempt,
-      result: testCaseAttempt.result,
-      stepAttachments: testCaseAttempt.stepAttachments,
-      stepResults: testCaseAttempt.stepResults,
+      attempt: testCaseAttemptData.attempt,
+      result: testCaseAttemptData.result,
+      stepAttachments: testCaseAttemptData.stepAttachments,
+      stepResults: testCaseAttemptData.stepResults,
     }
   }
 
   getTestRunDuration() {
-    return _.chain(this.testCaseAttemptMap)
-      .map(testCaseAttempt => testCaseAttempt.result.duration)
+    return _.chain(this.testCaseAttemptDataMap)
+      .map(testCaseAttemptData => testCaseAttemptData.result.duration)
       .sum()
   }
 
@@ -112,7 +84,7 @@ export default class EventDataCollector {
   }
 
   initTestCaseAttempt(testCaseStarted: messages.ITestCaseStarted) {
-    this.testCaseAttemptMap[testCaseStarted.id] = {
+    this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       testCaseId: testCaseStarted.testCaseId,
       result: {},
@@ -128,7 +100,7 @@ export default class EventDataCollector {
     media,
   }: messages.IAttachment) {
     if (testCaseStartedId && testStepId) {
-      const { stepAttachments } = this.testCaseAttemptMap[testCaseStartedId]
+      const { stepAttachments } = this.testCaseAttemptDataMap[testCaseStartedId]
       if (!stepAttachments[testStepId]) {
         stepAttachments[testStepId] = []
       }
@@ -141,7 +113,7 @@ export default class EventDataCollector {
     testStepId,
     testResult,
   }: messages.ITestStepFinished) {
-    this.testCaseAttemptMap[testCaseStartedId].stepResults[
+    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
       testStepId
     ] = testResult
   }
@@ -150,6 +122,6 @@ export default class EventDataCollector {
     testCaseStartedId,
     testResult,
   }: messages.ITestCaseFinished) {
-    this.testCaseAttemptMap[testCaseStartedId].result = testResult
+    this.testCaseAttemptDataMap[testCaseStartedId].result = testResult
   }
 }

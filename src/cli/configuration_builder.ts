@@ -76,7 +76,10 @@ export default class ConfigurationBuilder {
     }
   }
 
-  async expandPaths(unexpandedPaths: string[], defaultExtension: string): Promise<string[]> {
+  async expandPaths(
+    unexpandedPaths: string[],
+    defaultExtension: string
+  ): Promise<string[]> {
     const expandedPaths = await bluebird.map(
       unexpandedPaths,
       async unexpandedPath => {

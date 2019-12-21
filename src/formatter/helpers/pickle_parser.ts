@@ -1,5 +1,5 @@
-import _ from 'lodash'
-import { getGherkinScenarioLocationMap, IGherkinStepMap, IGherkinScenarioMap } from './gherkin_document_parser'
+import _, { Dictionary } from 'lodash'
+import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 import { messages } from 'cucumber-messages'
 
 export interface IGetPickleLocationRequest {
@@ -9,19 +9,18 @@ export interface IGetPickleLocationRequest {
 
 export interface IGetStepKeywordRequest {
   pickleStep: messages.Pickle.IPickleStep
-  gherkinStepMap: IGherkinStepMap
+  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
 }
 
 export interface IGetScenarioDescriptionRequest {
   pickle: messages.IPickle
-  gherkinScenarioMap: IGherkinScenarioMap
+  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
 }
 
-export interface IPickleStepMap {
-  [pickleStepId: string]: messages.Pickle.IPickleStep
-}
-
-export function getScenarioDescription({ pickle, gherkinScenarioMap }: IGetScenarioDescriptionRequest): string {
+export function getScenarioDescription({
+  pickle,
+  gherkinScenarioMap,
+}: IGetScenarioDescriptionRequest): string {
   return _.chain(pickle.astNodeIds)
     .map(id => gherkinScenarioMap[id])
     .compact()
@@ -29,7 +28,10 @@ export function getScenarioDescription({ pickle, gherkinScenarioMap }: IGetScena
     .value().description
 }
 
-export function getStepKeyword({ pickleStep, gherkinStepMap }: IGetStepKeywordRequest): string {
+export function getStepKeyword({
+  pickleStep,
+  gherkinStepMap,
+}: IGetStepKeywordRequest): string {
   return _.chain(pickleStep.astNodeIds)
     .map(id => gherkinStepMap[id])
     .compact()
@@ -37,14 +39,19 @@ export function getStepKeyword({ pickleStep, gherkinStepMap }: IGetStepKeywordRe
     .value().keyword
 }
 
-export function getPickleStepMap(pickle: messages.IPickle): IPickleStepMap {
+export function getPickleStepMap(
+  pickle: messages.IPickle
+): Dictionary<messages.Pickle.IPickleStep> {
   return _.chain(pickle.steps)
     .map(pickleStep => [pickleStep.id, pickleStep])
     .fromPairs()
     .value()
 }
 
-export function getPickleLocation({ gherkinDocument, pickle }: IGetPickleLocationRequest): messages.ILocation {
+export function getPickleLocation({
+  gherkinDocument,
+  pickle,
+}: IGetPickleLocationRequest): messages.ILocation {
   const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
     gherkinDocument
   )

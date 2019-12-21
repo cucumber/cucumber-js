@@ -74,12 +74,18 @@ export default class Slave {
     if (this.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    await this.runTestRunHooks(this.supportCodeLibrary.beforeTestRunHookDefinitions, 'a BeforeAll')
+    await this.runTestRunHooks(
+      this.supportCodeLibrary.beforeTestRunHookDefinitions,
+      'a BeforeAll'
+    )
     this.sendMessage({ ready: true })
   }
 
   async finalize() {
-    await this.runTestRunHooks(this.supportCodeLibrary.afterTestRunHookDefinitions, 'an AfterAll')
+    await this.runTestRunHooks(
+      this.supportCodeLibrary.afterTestRunHookDefinitions,
+      'an AfterAll'
+    )
     if (this.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }

@@ -4,8 +4,8 @@ import { messages } from 'cucumber-messages'
 export default class DataTable {
   private readonly rawTable: string[][]
 
-  constructor(gherkinData: messages.GherkinDocument.Feature.Step.DataTable) {
-    this.rawTable = gherkinData.rows.map(row =>
+  constructor(pickleTable: messages.PickleStepArgument.IPickleTable) {
+    this.rawTable = pickleTable.rows.map(row =>
       row.cells.map(cell => cell.value)
     )
   }

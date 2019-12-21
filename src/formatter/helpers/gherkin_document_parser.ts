@@ -1,21 +1,9 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { messages } from 'cucumber-messages'
-
-export interface IGherkinStepMap {
-  [stepId: string]: messages.GherkinDocument.Feature.IStep
-}
-
-export interface IGherkinScenarioMap {
-  [scenarioId: string]: messages.GherkinDocument.Feature.IScenario
-}
-
-export interface IGherkinScenarioLocationMap {
-  [astNodeId: string]: messages.ILocation
-}
 
 export function getGherkinStepMap(
   gherkinDocument: messages.IGherkinDocument
-): IGherkinStepMap {
+): Dictionary<messages.GherkinDocument.Feature.IStep> {
   return _.chain(gherkinDocument.feature.children)
     .map(
       (child: messages.GherkinDocument.Feature.IFeatureChild) =>
@@ -30,7 +18,7 @@ export function getGherkinStepMap(
 
 export function getGherkinScenarioMap(
   gherkinDocument: messages.IGherkinDocument
-): IGherkinScenarioMap {
+): Dictionary<messages.GherkinDocument.Feature.IScenario> {
   return _.chain(gherkinDocument.feature.children)
     .filter('scenario')
     .map('scenario')
@@ -44,8 +32,8 @@ export function getGherkinScenarioMap(
 
 export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.IGherkinDocument
-): IGherkinScenarioLocationMap {
-  const map: IGherkinScenarioLocationMap = {}
+): Dictionary<messages.ILocation> {
+  const map: Dictionary<messages.ILocation> = {}
   for (const child of gherkinDocument.feature.children) {
     if (child.scenario) {
       map[child.scenario.id] = child.scenario.location

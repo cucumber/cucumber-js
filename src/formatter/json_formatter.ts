@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import Formatter from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
@@ -6,11 +6,7 @@ import util from 'util'
 import { durationToNanoseconds } from '../time'
 import path from 'path'
 import { messages } from 'cucumber-messages'
-import {
-  IGherkinScenarioMap,
-  IGherkinScenarioLocationMap,
-  getGherkinScenarioLocationMap,
-} from './helpers/gherkin_document_parser'
+import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
@@ -67,8 +63,8 @@ interface IBuildJsonFeatureOptions {
 
 interface IBuildJsonScenarioOptions {
   feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: IGherkinScenarioMap
-  gherkinScenarioLocationMap: IGherkinScenarioLocationMap
+  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
+  gherkinScenarioLocationMap: Dictionary<messages.ILocation>
   pickle: messages.IPickle
   steps: IJsonStep[]
 }

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { fork, ChildProcess } from 'child_process'
 import path from 'path'
 import Status from '../../status'
@@ -39,15 +39,6 @@ interface ISlave {
   closed: boolean
   process: ChildProcess
 }
-
-interface ISlaveMap {
-  [slaveId: string]: ISlave
-}
-
-interface ISupportCodeIdMap {
-  [id: string]: string
-}
-
 export default class Master {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
@@ -56,8 +47,8 @@ export default class Master {
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private slaves: ISlaveMap
-  private supportCodeIdMap: ISupportCodeIdMap
+  private slaves: Dictionary<ISlave>
+  private supportCodeIdMap: Dictionary<string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
@@ -201,7 +192,9 @@ export default class Master {
 
   run(numberOfSlaves, done) {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(numberOfSlaves, id => this.startSlave(id.toString(), numberOfSlaves))
+    _.times(numberOfSlaves, id =>
+      this.startSlave(id.toString(), numberOfSlaves)
+    )
     this.onFinish = done
   }
 

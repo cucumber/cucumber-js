@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
 import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
@@ -23,10 +23,6 @@ export interface IUsage {
   uri: string
 }
 
-interface IUsageMap {
-  [stepDefinitionId: string]: IUsage
-}
-
 function getCodeAsString(stepDefinition) {
   if (typeof stepDefinition.unwrappedCode === 'function') {
     return stepDefinition.unwrappedCode.toString()
@@ -34,7 +30,9 @@ function getCodeAsString(stepDefinition) {
   return stepDefinition.code.toString()
 }
 
-function buildEmptyMapping(stepDefinitions: StepDefinition[]): IUsageMap {
+function buildEmptyMapping(
+  stepDefinitions: StepDefinition[]
+): Dictionary<IUsage> {
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
     mapping[stepDefinition.id] = {
@@ -49,7 +47,11 @@ function buildEmptyMapping(stepDefinitions: StepDefinition[]): IUsageMap {
   return mapping
 }
 
-function buildMapping({ cwd, stepDefinitions, eventDataCollector }): IUsageMap {
+function buildMapping({
+  cwd,
+  stepDefinitions,
+  eventDataCollector,
+}): Dictionary<IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
@@ -87,7 +89,7 @@ function invertNumber(key: string): (obj: any) => number {
   }
 }
 
-function buildResult(mapping: IUsageMap): IUsage[] {
+function buildResult(mapping: Dictionary<IUsage>): IUsage[] {
   return _.chain(mapping)
     .map(({ matches, ...rest }: IUsage) => {
       const sortedMatches = _.sortBy(matches, [
