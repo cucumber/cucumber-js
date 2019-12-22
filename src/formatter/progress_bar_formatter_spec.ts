@@ -56,7 +56,7 @@ async function testProgressBarFormatter({
     log: logFn,
     stream: {},
     supportCodeLibrary,
-  })
+  }) as ProgressBarFormatter
   let mocked = false
   for (const envelope of envelopes) {
     eventBroadcaster.emit('envelope', envelope)

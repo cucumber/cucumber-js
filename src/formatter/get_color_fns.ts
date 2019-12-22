@@ -19,7 +19,7 @@ export interface IColorFns {
   errorStack: IColorFn
 }
 
-export default function getColorFns(enabled) {
+export default function getColorFns(enabled: boolean): IColorFns {
   if (enabled) {
     return {
       forStatus(status: messages.TestResult.Status) {

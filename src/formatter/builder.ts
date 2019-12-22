@@ -12,6 +12,8 @@ import SummaryFormatter from './summary_formatter'
 import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
 import { ISupportCodeLibrary } from '../support_code_library_builder'
+import Formatter from '.'
+import { doesNotHaveValue, doesHaveValue } from '../value_checker'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -20,18 +22,21 @@ interface IGetStepDefinitionSnippetBuilderOptions {
   supportCodeLibrary: ISupportCodeLibrary
 }
 
-export default class FormatterBuilder {
-  static build(type, options) {
-    const Formatter = FormatterBuilder.getConstructorByType(type, options)
+const FormatterBuilder = {
+  build(type, options): Formatter {
+    const FormatterConstructor = FormatterBuilder.getConstructorByType(
+      type,
+      options
+    )
     const extendedOptions = {
       colorFns: getColorFns(options.colorsEnabled),
       snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder(options),
       ...options,
     }
-    return new Formatter(extendedOptions)
-  }
+    return new FormatterConstructor(extendedOptions)
+  },
 
-  static getConstructorByType(type, options) {
+  getConstructorByType(type, options): typeof Formatter {
     switch (type) {
       case 'json':
         return JsonFormatter
@@ -54,35 +59,35 @@ export default class FormatterBuilder {
       default:
         return FormatterBuilder.loadCustomFormatter(type, options)
     }
-  }
+  },
 
-  static getStepDefinitionSnippetBuilder({
+  getStepDefinitionSnippetBuilder({
     cwd,
     snippetInterface,
     snippetSyntax,
     supportCodeLibrary,
   }: IGetStepDefinitionSnippetBuilderOptions) {
-    if (!snippetInterface) {
+    if (doesNotHaveValue(snippetInterface)) {
       snippetInterface = 'synchronous'
     }
     let Syntax = JavascriptSnippetSyntax
-    if (snippetSyntax) {
+    if (doesHaveValue(snippetSyntax)) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = require(fullSyntaxPath)
+      Syntax = require(fullSyntaxPath) // eslint-disable-line @typescript-eslint/no-var-requires
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
       parameterTypeRegistry: supportCodeLibrary.parameterTypeRegistry,
     })
-  }
+  },
 
-  static loadCustomFormatter(customFormatterPath, { cwd }) {
+  loadCustomFormatter(customFormatterPath, { cwd }) {
     const fullCustomFormatterPath = path.resolve(cwd, customFormatterPath)
-    const CustomFormatter = require(fullCustomFormatterPath)
+    const CustomFormatter = require(fullCustomFormatterPath) // eslint-disable-line @typescript-eslint/no-var-requires
     if (typeof CustomFormatter === 'function') {
       return CustomFormatter
     } else if (
-      CustomFormatter &&
+      doesHaveValue(CustomFormatter) &&
       typeof CustomFormatter.default === 'function'
     ) {
       return CustomFormatter.default
@@ -90,5 +95,7 @@ export default class FormatterBuilder {
     throw new Error(
       `Custom formatter (${customFormatterPath}) does not export a function`
     )
-  }
+  },
 }
+
+export default FormatterBuilder

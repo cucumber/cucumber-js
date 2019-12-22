@@ -9,6 +9,7 @@ import timeMethods from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder'
+import { doesNotHaveValue } from '../../value_checker'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -20,14 +21,14 @@ async function testFormatSummary({
   runtimeOptions,
   sourceData,
   supportCodeLibrary,
-}: ITestFormatSummaryOptions) {
+}: ITestFormatSummaryOptions): Promise<string> {
   const sources = [
     {
       data: sourceData,
       uri: 'project/a.feature',
     },
   ]
-  if (!supportCodeLibrary) {
+  if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = getBaseSupportCodeLibrary()
   }
   const testCaseAttempts = await getTestCaseAttempts({
@@ -95,8 +96,8 @@ describe('SummaryHelpers', () => {
         ].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Given, Before }) => {
-            Given('a passing step', () => {})
-            Before(() => {})
+            Given('a passing step', () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(() => {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
 

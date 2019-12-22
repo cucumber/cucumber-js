@@ -1,6 +1,15 @@
 import util from 'util'
+import { messages } from 'cucumber-messages'
 
-export function parseStepArgument(arg, mapping) {
+export interface IPickleStepArgumentFunctionMap<T> {
+  dataTable: (arg: messages.PickleStepArgument.IPickleTable) => T
+  docString: (arg: messages.PickleStepArgument.IPickleDocString) => T
+}
+
+export function parseStepArgument<T>(
+  arg: messages.IPickleStepArgument,
+  mapping: IPickleStepArgumentFunctionMap<T>
+) {
   if (arg.dataTable) {
     return mapping.dataTable(arg.dataTable)
   } else if (arg.docString) {

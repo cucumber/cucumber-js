@@ -1,8 +1,9 @@
 import indentString from 'indent-string'
 import Status from '../../status'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
+import { messages } from 'cucumber-messages'
 
-export function isFailure(result) {
+export function isFailure(result: messages.ITestResult): boolean {
   return (
     result.status === Status.AMBIGUOUS ||
     result.status === Status.UNDEFINED ||
@@ -10,14 +11,14 @@ export function isFailure(result) {
   )
 }
 
-export function isWarning(result) {
+export function isWarning(result: messages.ITestResult): boolean {
   return (
     result.status === Status.PENDING ||
     (result.status === Status.FAILED && result.willBeRetried)
   )
 }
 
-export function isIssue(result) {
+export function isIssue(result: messages.ITestResult): boolean {
   return isFailure(result) || isWarning(result)
 }
 
@@ -28,7 +29,7 @@ export function formatIssue({
   snippetBuilder,
   testCaseAttempt,
   supportCodeLibrary,
-}) {
+}): string {
   const prefix = `${number}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,

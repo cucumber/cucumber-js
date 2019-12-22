@@ -1,5 +1,6 @@
 import _, { Dictionary } from 'lodash'
 import { messages } from 'cucumber-messages'
+import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 interface ITestCaseAttemptData {
   attempt: number
@@ -58,32 +59,26 @@ export default class EventDataCollector {
     }
   }
 
-  getTestRunDuration() {
-    return _.chain(this.testCaseAttemptDataMap)
-      .map(testCaseAttemptData => testCaseAttemptData.result.duration)
-      .sum()
-  }
-
-  parseEnvelope(envelope: messages.Envelope) {
-    if (envelope.gherkinDocument) {
+  parseEnvelope(envelope: messages.Envelope): void {
+    if (doesHaveValue(envelope.gherkinDocument)) {
       this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
         envelope.gherkinDocument
-    } else if (envelope.pickle) {
+    } else if (doesHaveValue(envelope.pickle)) {
       this.pickleMap[envelope.pickle.id] = envelope.pickle
-    } else if (envelope.testCase) {
+    } else if (doesHaveValue(envelope.testCase)) {
       this.testCaseMap[envelope.testCase.id] = envelope.testCase
-    } else if (envelope.testCaseStarted) {
+    } else if (doesHaveValue(envelope.testCaseStarted)) {
       this.initTestCaseAttempt(envelope.testCaseStarted)
-    } else if (envelope.attachment) {
+    } else if (doesHaveValue(envelope.attachment)) {
       this.storeAttachment(envelope.attachment)
-    } else if (envelope.testStepFinished) {
+    } else if (doesHaveValue(envelope.testStepFinished)) {
       this.storeTestStepResult(envelope.testStepFinished)
-    } else if (envelope.testCaseFinished) {
+    } else if (doesHaveValue(envelope.testCaseFinished)) {
       this.storeTestCaseResult(envelope.testCaseFinished)
     }
   }
 
-  initTestCaseAttempt(testCaseStarted: messages.ITestCaseStarted) {
+  initTestCaseAttempt(testCaseStarted: messages.ITestCaseStarted): void {
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       testCaseId: testCaseStarted.testCaseId,
@@ -98,10 +93,10 @@ export default class EventDataCollector {
     testStepId,
     data,
     media,
-  }: messages.IAttachment) {
-    if (testCaseStartedId && testStepId) {
+  }: messages.IAttachment): void {
+    if (doesHaveValue(testCaseStartedId) && doesHaveValue(testStepId)) {
       const { stepAttachments } = this.testCaseAttemptDataMap[testCaseStartedId]
-      if (!stepAttachments[testStepId]) {
+      if (doesNotHaveValue(stepAttachments[testStepId])) {
         stepAttachments[testStepId] = []
       }
       stepAttachments[testStepId].push({ data, media })
@@ -112,7 +107,7 @@ export default class EventDataCollector {
     testCaseStartedId,
     testStepId,
     testResult,
-  }: messages.ITestStepFinished) {
+  }: messages.ITestStepFinished): void {
     this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
       testStepId
     ] = testResult
@@ -121,7 +116,7 @@ export default class EventDataCollector {
   storeTestCaseResult({
     testCaseStartedId,
     testResult,
-  }: messages.ITestCaseFinished) {
+  }: messages.ITestCaseFinished): void {
     this.testCaseAttemptDataMap[testCaseStartedId].result = testResult
   }
 }

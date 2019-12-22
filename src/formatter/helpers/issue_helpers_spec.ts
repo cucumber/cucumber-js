@@ -7,7 +7,7 @@ import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
 
-async function testFormatIssue(sourceData) {
+async function testFormatIssue(sourceData: string): Promise<string> {
   const sources = [
     {
       data: sourceData,

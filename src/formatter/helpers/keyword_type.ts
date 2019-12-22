@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import Gherkin from 'gherkin'
+import { doesHaveValue } from '../../value_checker'
 
 export enum KeywordType {
   Precondition = 'precondition',
@@ -29,7 +30,7 @@ export function getStepKeywordType({
       return KeywordType.Outcome
     case 'and':
     case 'but':
-      if (previousKeywordType) {
+      if (doesHaveValue(previousKeywordType)) {
         return previousKeywordType
       }
     // fallthrough

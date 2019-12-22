@@ -1,7 +1,10 @@
-import Table from 'cli-table3'
+import Table, { HorizontalTable } from 'cli-table3'
 import { parseStepArgument } from '../../step_arguments'
+import { messages } from 'cucumber-messages'
 
-function formatDataTable(dataTable) {
+function formatDataTable(
+  dataTable: messages.PickleStepArgument.IPickleTable
+): string {
   const table = new Table({
     chars: {
       bottom: '',
@@ -25,7 +28,7 @@ function formatDataTable(dataTable) {
       'padding-left': 1,
       'padding-right': 1,
     },
-  })
+  }) as HorizontalTable
   const rows = dataTable.rows.map(row =>
     row.cells.map(cell =>
       cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
@@ -35,11 +38,13 @@ function formatDataTable(dataTable) {
   return table.toString()
 }
 
-function formatDocString(docString) {
+function formatDocString(
+  docString: messages.PickleStepArgument.IPickleDocString
+): string {
   return `"""\n${docString.content}\n"""`
 }
 
-export function formatStepArgument(arg) {
+export function formatStepArgument(arg: messages.IPickleStepArgument): string {
   return parseStepArgument(arg, {
     dataTable: formatDataTable,
     docString: formatDocString,
