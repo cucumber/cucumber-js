@@ -9,6 +9,7 @@ import {
 } from './test_case_attempt_parser'
 import { formatStepArgument } from './step_argument_formatter'
 import { IColorFns } from '../get_color_fns'
+import { valueOrDefault, doesHaveValue } from '../../value_checker'
 
 const CHARACTERS = {
   [Status.AMBIGUOUS]: figures.cross,
@@ -54,26 +55,22 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
     attachments,
   } = testStep
   const colorFn = colorFns.forStatus(status)
-  const identifier = testStep.keyword + (testStep.text || '')
+  const identifier = testStep.keyword + valueOrDefault(testStep.text, '')
   let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
-  if (actionLocation) {
+  if (doesHaveValue(actionLocation)) {
     text += ` # ${colorFns.location(formatLocation(actionLocation))}`
   }
   text += '\n'
-  if (testStep.argument) {
+  if (doesHaveValue(testStep.argument)) {
     const argumentsText = formatStepArgument(testStep.argument)
-    if (argumentsText) {
-      text += indentString(`${colorFn(argumentsText)}\n`, 4)
-    }
+    text += indentString(`${colorFn(argumentsText)}\n`, 4)
   }
-  if (attachments) {
-    attachments.forEach(({ media, data }) => {
-      const message = media.contentType === 'text/plain' ? `: ${data}` : ''
-      text += indentString(`Attachment (${media.contentType})${message}\n`, 4)
-    })
-  }
+  attachments.forEach(({ media, data }) => {
+    const message = media.contentType === 'text/plain' ? `: ${data}` : ''
+    text += indentString(`Attachment (${media.contentType})${message}\n`, 4)
+  })
   const message = getStepMessage({ colorFns, testStep })
-  if (message) {
+  if (message !== '') {
     text += `${indentString(message, 4)}\n`
   }
   return text
@@ -85,7 +82,7 @@ export function formatTestCaseAttempt({
   snippetBuilder,
   supportCodeLibrary,
   testCaseAttempt,
-}) {
+}): string {
   const parsed = parseTestCaseAttempt({
     cwd,
     snippetBuilder,
@@ -106,7 +103,7 @@ export function formatTestCaseAttempt({
   return `${text}\n`
 }
 
-function getAttemptText(attempt, willBeRetried) {
+function getAttemptText(attempt: number, willBeRetried: boolean): string {
   if (willBeRetried) {
     return ` (attempt ${attempt + 1}, retried)`
   }

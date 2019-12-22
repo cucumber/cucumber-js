@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import Status from '../../status'
 import { KeywordType, getStepKeywordType } from './keyword_type'
 import {
@@ -11,7 +11,8 @@ import { messages } from 'cucumber-messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder'
-import { doesHaveValue } from '../../value_checker'
+import { doesHaveValue, valueOrDefault } from '../../value_checker'
+import TestCaseHookDefinition from '../../models/test_case_hook_definition'
 
 export interface IParsedLocation {
   uri: string
@@ -41,6 +42,20 @@ export interface IParsedTestCaseAttempt {
   testSteps: IParsedTestStep[]
 }
 
+interface IParseStepRequest {
+  isBeforeHook: boolean
+  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  keyword: string
+  keywordType: KeywordType
+  pickleStep: messages.Pickle.IPickleStep
+  pickleUri: string
+  snippetBuilder: StepDefinitionSnippetBuilder
+  supportCodeLibrary: ISupportCodeLibrary
+  testStep: messages.TestCase.ITestStep
+  testStepResult: messages.ITestResult
+  testStepAttachments: messages.IAttachment[]
+}
+
 function parseStep({
   isBeforeHook,
   gherkinStepMap,
@@ -53,18 +68,19 @@ function parseStep({
   testStep,
   testStepResult,
   testStepAttachments,
-}): IParsedTestStep {
+}: IParseStepRequest): IParsedTestStep {
   const out: IParsedTestStep = {
     attachments: testStepAttachments,
-    keyword: testStep.pickleStepId
-      ? keyword
-      : isBeforeHook
-      ? 'Before'
-      : 'After',
+    keyword:
+      testStep.pickleStepId !== ''
+        ? keyword
+        : isBeforeHook
+        ? 'Before'
+        : 'After',
     result: testStepResult,
   }
-  if (testStep.hookId) {
-    let hookDefinition
+  if (testStep.hookId !== '') {
+    let hookDefinition: TestCaseHookDefinition
     if (isBeforeHook) {
       hookDefinition = supportCodeLibrary.beforeTestCaseHookDefinitions.find(
         x => x.id === testStep.hookId
@@ -79,7 +95,10 @@ function parseStep({
       line: hookDefinition.line,
     }
   }
-  if (testStep.stepDefinitionIds && testStep.stepDefinitionIds.length === 1) {
+  if (
+    doesHaveValue(testStep.stepDefinitionIds) &&
+    testStep.stepDefinitionIds.length === 1
+  ) {
     const stepDefinition = supportCodeLibrary.stepDefinitions.find(
       x => x.id === testStep.stepDefinitionIds[0]
     )
@@ -88,13 +107,13 @@ function parseStep({
       line: stepDefinition.line,
     }
   }
-  if (testStep.pickleStepId) {
+  if (testStep.pickleStepId !== '') {
     out.sourceLocation = {
       uri: pickleUri,
       line: gherkinStepMap[pickleStep.astNodeIds[0]].location.line,
     }
     out.text = pickleStep.text
-    if (pickleStep.argument) {
+    if (doesHaveValue(pickleStep.argument)) {
       out.argument = pickleStep.argument
     }
   }
@@ -113,15 +132,6 @@ export interface IParseTestCaseAttemptRequest {
 
 // Converts a testCaseAttempt into a json object with all data needed for
 // displaying it in a pretty format
-//
-// Returns the following
-// {
-//   testCase: {location, name, attempt, result: { status, willBeRetried, duration}, uri},
-//   testSteps: [
-//     {attachments, keyword, text?, result: {status, duration}, argument?, snippet?, sourceLocation?, actionLocation?}
-//     ...
-//   ]
-// }
 export function parseTestCaseAttempt({
   cwd,
   testCaseAttempt,
@@ -151,7 +161,7 @@ export function parseTestCaseAttempt({
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
     isBeforeHook = isBeforeHook && testStep.hookId !== ''
     let keyword, keywordType, pickleStep
-    if (testStep.pickleStepId) {
+    if (testStep.pickleStepId !== '') {
       pickleStep = pickleStepMap[testStep.pickleStepId]
       keyword = getStepKeyword({ pickleStep, gherkinStepMap })
       keywordType = getStepKeywordType({
@@ -171,7 +181,7 @@ export function parseTestCaseAttempt({
       supportCodeLibrary,
       testStep,
       testStepResult,
-      testStepAttachments: testCaseAttempt.stepAttachments[testStep.id] || [],
+      testStepAttachments: valueOrDefault(testCaseAttempt.stepAttachments[testStep.id], []),
     })
     parsedTestSteps.push(parsedStep)
     previousKeywordType = keywordType
