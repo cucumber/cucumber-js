@@ -3,6 +3,7 @@ import { Command } from 'commander'
 import path from 'path'
 import Gherkin from 'gherkin'
 
+// Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface IParsedArgvOptions {
