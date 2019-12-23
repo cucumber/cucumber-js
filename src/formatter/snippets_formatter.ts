@@ -1,18 +1,19 @@
 import Formatter from './'
 import Status from '../status'
 import { parseTestCaseAttempt } from './helpers'
+import { doesHaveValue } from '../value_checker'
 
 export default class SnippetsFormatter extends Formatter {
   constructor(options) {
     super(options)
     options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.logSnippets()
       }
     })
   }
 
-  logSnippets() {
+  logSnippets(): void {
     const snippets = []
     this.eventDataCollector.getTestCaseAttempts().map(testCaseAttempt => {
       const parsed = parseTestCaseAttempt({

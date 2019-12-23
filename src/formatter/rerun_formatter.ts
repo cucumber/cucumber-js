@@ -3,6 +3,8 @@ import Formatter from './'
 import Status from '../status'
 import path from 'path'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { messages } from 'cucumber-messages'
 
 const DEFAULT_SEPARATOR = '\n'
 
@@ -15,15 +17,15 @@ export default class RerunFormatter extends Formatter {
 
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+    options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.logFailedTestCases()
       }
     })
     this.separator = _.get(options, 'rerun.separator', DEFAULT_SEPARATOR)
   }
 
-  logFailedTestCases() {
+  logFailedTestCases(): void {
     const mapping: UriToLinesMap = {}
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
@@ -33,7 +35,7 @@ export default class RerunFormatter extends Formatter {
           const line = getGherkinScenarioLocationMap(gherkinDocument)[
             _.last(pickle.astNodeIds)
           ].line
-          if (!mapping[relativeUri]) {
+          if (doesNotHaveValue(mapping[relativeUri])) {
             mapping[relativeUri] = []
           }
           mapping[relativeUri].push(line)

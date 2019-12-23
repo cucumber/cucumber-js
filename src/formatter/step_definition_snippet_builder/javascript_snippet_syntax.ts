@@ -1,4 +1,4 @@
-import { ISnippetSnytax } from './snippet_syntax'
+import { ISnippetSnytax, ISnippetSyntaxBuildOptions } from './snippet_syntax'
 
 const CALLBACK_NAME = 'callback'
 
@@ -9,7 +9,12 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
     this.snippetInterface = snippetInterface
   }
 
-  build({ comment, generatedExpressions, functionName, stepParameterNames }) {
+  build({
+    comment,
+    generatedExpressions,
+    functionName,
+    stepParameterNames,
+  }: ISnippetSyntaxBuildOptions): string {
     let functionKeyword = 'function '
     if (this.snippetInterface === 'async-await') {
       functionKeyword = 'async ' + functionKeyword
@@ -17,7 +22,7 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
       functionKeyword += '*'
     }
 
-    let implementation
+    let implementation: string
     if (this.snippetInterface === 'callback') {
       implementation = `${CALLBACK_NAME}(null, 'pending');`
     } else {

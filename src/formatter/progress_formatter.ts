@@ -1,5 +1,6 @@
 import SummaryFormatter from './summary_formatter'
 import Status from '../status'
+import { doesHaveValue } from '../value_checker'
 
 const STATUS_CHARACTER_MAPPING = {
   [Status.AMBIGUOUS]: 'A',
@@ -13,16 +14,16 @@ const STATUS_CHARACTER_MAPPING = {
 export default class ProgressFormatter extends SummaryFormatter {
   constructor(options) {
     options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.log('\n\n')
-      } else if (envelope.testStepFinished) {
+      } else if (doesHaveValue(envelope.testStepFinished)) {
         this.logProgress(envelope.testStepFinished)
       }
     })
     super(options)
   }
 
-  logProgress({ testResult: { status } }) {
+  logProgress({ testResult: { status } }): void {
     const character = this.colorFns.forStatus(status)(
       STATUS_CHARACTER_MAPPING[status]
     )

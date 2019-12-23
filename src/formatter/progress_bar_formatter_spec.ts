@@ -16,7 +16,7 @@ import { IRuntimeOptions } from '../runtime'
 import { messages } from 'cucumber-messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
-import { doesHaveValue } from '../value_checker'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -36,7 +36,7 @@ async function testProgressBarFormatter({
   sources,
   supportCodeLibrary,
 }: ITestProgressBarFormatterOptions): Promise<ITestProgressBarFormatterOutput> {
-  if (!supportCodeLibrary) {
+  if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
   }
   const { envelopes } = await getEnvelopesAndEventDataCollector({
@@ -46,7 +46,7 @@ async function testProgressBarFormatter({
   })
   const eventBroadcaster = new EventEmitter()
   let output = ''
-  const logFn = data => {
+  const logFn = (data: string): void => {
     output += data
   }
   const progressBarFormatter = FormatterBuilder.build('progress-bar', {
@@ -63,7 +63,7 @@ async function testProgressBarFormatter({
     if (shouldStopFn(envelope)) {
       break
     }
-    if (!mocked && envelope.testStepStarted) {
+    if (!mocked && doesHaveValue(envelope.testStepStarted)) {
       progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
@@ -113,8 +113,8 @@ describe('ProgressBarFormatter', () => {
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Before, Given }) => {
-            Given('a step', function() {})
-            Before(function() {})
+            Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
 
@@ -141,8 +141,8 @@ describe('ProgressBarFormatter', () => {
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Before, Given }) => {
-            Given('a step', function() {})
-            Before(function() {})
+            Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
 

@@ -1,20 +1,28 @@
 import _ from 'lodash'
 import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
 import Formatter from './'
+import { doesHaveValue } from '../value_checker'
+import { messages } from 'cucumber-messages'
+import { ITestCaseAttempt } from './helpers/event_data_collector'
+
+interface ILogIssuesRequest {
+  issues: ITestCaseAttempt[]
+  title: string
+}
 
 export default class SummaryFormatter extends Formatter {
   constructor(options) {
     super(options)
-    options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+    options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.logSummary()
       }
     })
   }
 
-  logSummary() {
-    const failures = []
-    const warnings = []
+  logSummary(): void {
+    const failures: ITestCaseAttempt[] = []
+    const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
     _.each(testCaseAttempts, testCaseAttempt => {
       if (isFailure(testCaseAttempt.result)) {
@@ -37,7 +45,7 @@ export default class SummaryFormatter extends Formatter {
     )
   }
 
-  logIssues({ issues, title }) {
+  logIssues({ issues, title }: ILogIssuesRequest): void {
     this.log(`${title}:\n\n`)
     issues.forEach((testCaseAttempt, index) => {
       this.log(

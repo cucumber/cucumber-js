@@ -5,10 +5,17 @@ import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
 } from 'cucumber-expressions'
+import { messages } from 'cucumber-messages'
+import { doesHaveValue } from '../../value_checker'
 
 export interface INewStepDefinitionSnippetBuilderOptions {
   snippetSyntax: ISnippetSnytax
   parameterTypeRegistry: ParameterTypeRegistry
+}
+
+export interface IBuildRequest {
+  keywordType: KeywordType
+  pickleStep: messages.Pickle.IPickleStep
 }
 
 export default class StepDefinitionSnippetBuilder {
@@ -25,7 +32,7 @@ export default class StepDefinitionSnippetBuilder {
     )
   }
 
-  build({ keywordType, pickleStep }) {
+  build({ keywordType, pickleStep }: IBuildRequest): string {
     const comment =
       'Write code here that turns the phrase above into concrete actions'
     const functionName = this.getFunctionName(keywordType)
@@ -41,7 +48,7 @@ export default class StepDefinitionSnippetBuilder {
     })
   }
 
-  getFunctionName(keywordType) {
+  getFunctionName(keywordType: KeywordType): string {
     switch (keywordType) {
       case KeywordType.Event:
         return 'When'
@@ -52,8 +59,8 @@ export default class StepDefinitionSnippetBuilder {
     }
   }
 
-  getStepParameterNames(step) {
-    if (step.argument) {
+  getStepParameterNames(step: messages.Pickle.IPickleStep): string[] {
+    if (doesHaveValue(step.argument)) {
       const argumentName = parseStepArgument(step.argument, {
         dataTable: () => 'dataTable',
         docString: () => 'docString',

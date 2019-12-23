@@ -3,18 +3,19 @@ import { formatLocation, getUsage } from './helpers'
 import Formatter from './'
 import Table from 'cli-table3'
 import { durationToMilliseconds } from '../time'
+import { doesHaveValue } from '../value_checker'
 
 export default class UsageFormatter extends Formatter {
   constructor(options) {
     super(options)
     options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.logUsage()
       }
     })
   }
 
-  logUsage() {
+  logUsage(): void {
     const usage = getUsage({
       cwd: this.cwd,
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
@@ -40,7 +41,7 @@ export default class UsageFormatter extends Formatter {
         const col1 = [formattedPattern]
         const col2 = []
         if (matches.length > 0) {
-          if (meanDuration) {
+          if (doesHaveValue(meanDuration)) {
             col2.push(`${durationToMilliseconds(meanDuration).toFixed(2)}ms`)
           } else {
             col2.push('-')
@@ -51,7 +52,7 @@ export default class UsageFormatter extends Formatter {
         const col3 = [formatLocation({ line, uri })]
         _.take(matches, 5).forEach(match => {
           col1.push(`  ${match.text}`)
-          if (match.duration) {
+          if (doesHaveValue(match.duration)) {
             col2.push(`${durationToMilliseconds(match.duration)}ms`)
           } else {
             col2.push('-')

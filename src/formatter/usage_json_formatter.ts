@@ -1,16 +1,18 @@
 import { getUsage } from './helpers'
 import Formatter from './'
+import { doesHaveValue } from '../value_checker'
+
 export default class UsageJsonFormatter extends Formatter {
   constructor(options) {
     super(options)
     options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.logUsage()
       }
     })
   }
 
-  logUsage() {
+  logUsage(): void {
     const usage = getUsage({
       cwd: this.cwd,
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
@@ -19,7 +21,7 @@ export default class UsageJsonFormatter extends Formatter {
     this.log(JSON.stringify(usage, this.replacer, 2))
   }
 
-  replacer(key, value) {
+  replacer(key: string, value: any): any {
     if (key === 'seconds') {
       return parseInt(value)
     }
