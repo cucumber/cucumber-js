@@ -51,7 +51,7 @@ export default abstract class Definition {
   buildInvalidCodeLengthMessage(
     syncOrPromiseLength: number | string,
     callbackLength: number | string
-  ) {
+  ): string {
     return (
       `function has ${this.code.length} arguments` +
       `, should have ${syncOrPromiseLength} (if synchronous or returning a promise)` +
@@ -59,7 +59,7 @@ export default abstract class Definition {
     )
   }
 
-  baseGetInvalidCodeLengthMessage(parameters: any[]) {
+  baseGetInvalidCodeLengthMessage(parameters: any[]): string {
     return this.buildInvalidCodeLengthMessage(
       parameters.length,
       parameters.length + 1

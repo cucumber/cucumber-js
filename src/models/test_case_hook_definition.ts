@@ -14,11 +14,11 @@ export default class TestCaseHookDefinition extends Definition
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }
 
-  appliesToTestCase(pickle) {
+  appliesToTestCase(pickle): boolean {
     return this.pickleTagFilter.matchesAllTagExpressions(pickle)
   }
 
-  getInvocationParameters({
+  async getInvocationParameters({
     hookParameter,
   }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
     return Promise.resolve({

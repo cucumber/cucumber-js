@@ -3,6 +3,7 @@ import path from 'path'
 import parse from 'cucumber-tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { messages } from 'cucumber-messages'
+import { doesHaveValue, doesNotHaveValue } from './value_checker'
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -11,6 +12,11 @@ export interface IPickleFilterOptions {
   featurePaths?: string[]
   names?: string[]
   tagExpression?: string
+}
+
+export interface IMatchesAnyLineRequest {
+  gherkinDocument: messages.IGherkinDocument
+  pickle: messages.IPickle
 }
 
 export default class PickleFilter {
@@ -41,22 +47,22 @@ export default class PickleFilter {
 export class PickleLineFilter {
   private readonly featureUriToLinesMapping: Dictionary<number[]>
 
-  constructor(cwd, featurePaths) {
+  constructor(cwd: string, featurePaths: string[] = []) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
       cwd,
-      featurePaths: featurePaths || [],
+      featurePaths,
     })
   }
 
   getFeatureUriToLinesMapping({ cwd, featurePaths }): Dictionary<number[]> {
-    const mapping = {}
+    const mapping: Dictionary<number[]> = {}
     featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
-      if (match) {
+      if (doesHaveValue(match)) {
         const uri = path.resolve(cwd, match[1])
         const linesExpression = match[2]
-        if (linesExpression) {
-          if (!mapping[uri]) {
+        if (doesHaveValue(linesExpression)) {
+          if (doesNotHaveValue(mapping[uri])) {
             mapping[uri] = []
           }
           linesExpression
@@ -71,9 +77,9 @@ export class PickleLineFilter {
     return mapping
   }
 
-  matchesAnyLine({ gherkinDocument, pickle }) {
+  matchesAnyLine({ gherkinDocument, pickle }: IMatchesAnyLineRequest): boolean {
     const linesToMatch = this.featureUriToLinesMapping[pickle.uri]
-    if (linesToMatch) {
+    if (doesHaveValue(linesToMatch)) {
       const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
         gherkinDocument
       )
@@ -89,8 +95,8 @@ export class PickleLineFilter {
 export class PickleNameFilter {
   private readonly names: string[]
 
-  constructor(names: string[]) {
-    this.names = names || []
+  constructor(names: string[] = []) {
+    this.names = names
   }
 
   matchesAnyName(pickle: messages.IPickle): boolean {
@@ -105,13 +111,13 @@ export class PickleTagFilter {
   private readonly tagExpressionNode: any // cucumber-tag-expressions does not export interface
 
   constructor(tagExpression: string) {
-    if (tagExpression) {
+    if (doesHaveValue(tagExpression) && tagExpression !== '') {
       this.tagExpressionNode = parse(tagExpression)
     }
   }
 
   matchesAllTagExpressions(pickle: messages.IPickle): boolean {
-    if (!this.tagExpressionNode) {
+    if (doesNotHaveValue(this.tagExpressionNode)) {
       return true
     }
     return this.tagExpressionNode.evaluate(_.map(pickle.tags, 'name'))

@@ -7,6 +7,7 @@ import Definition, {
 import { parseStepArgument } from '../step_arguments'
 import { Expression } from 'cucumber-expressions'
 import bluebird from 'bluebird'
+import { doesHaveValue } from '../value_checker'
 
 export default class StepDefinition extends Definition implements IDefinition {
   public readonly pattern: string
@@ -25,7 +26,7 @@ export default class StepDefinition extends Definition implements IDefinition {
     const parameters = await bluebird.all(
       this.expression.match(step.text).map(arg => arg.getValue(world))
     )
-    if (step.argument) {
+    if (doesHaveValue(step.argument)) {
       const argumentParamater = parseStepArgument<any>(step.argument, {
         dataTable: arg => new DataTable(arg),
         docString: arg => arg.content,
@@ -40,7 +41,7 @@ export default class StepDefinition extends Definition implements IDefinition {
     }
   }
 
-  matchesStepName(stepName) {
-    return Boolean(this.expression.match(stepName))
+  matchesStepName(stepName): boolean {
+    return doesHaveValue(this.expression.match(stepName))
   }
 }
