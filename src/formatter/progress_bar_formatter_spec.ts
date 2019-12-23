@@ -14,7 +14,7 @@ import lolex from 'lolex'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
 import { messages } from 'cucumber-messages'
-import { ISupportCodeLibrary } from '../support_code_library_builder'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue } from '../value_checker'
 

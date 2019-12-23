@@ -11,7 +11,7 @@ import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import SummaryFormatter from './summary_formatter'
 import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
-import { ISupportCodeLibrary } from '../support_code_library_builder'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Formatter from '.'
 import { doesNotHaveValue, doesHaveValue } from '../value_checker'
 

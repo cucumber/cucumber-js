@@ -5,6 +5,8 @@ import { getGherkinStepMap } from '../gherkin_document_parser'
 import { durationToMilliseconds, millisecondsToDuration } from '../../../time'
 import { messages } from 'cucumber-messages'
 import StepDefinition from '../../../models/step_definition'
+import { doesHaveValue } from '../../../value_checker'
+import EventDataCollector from '../event_data_collector'
 
 export interface IUsageMatch {
   duration?: messages.IDuration
@@ -23,11 +25,10 @@ export interface IUsage {
   uri: string
 }
 
-function getCodeAsString(stepDefinition) {
-  if (typeof stepDefinition.unwrappedCode === 'function') {
-    return stepDefinition.unwrappedCode.toString()
-  }
-  return stepDefinition.code.toString()
+export interface IGetUsageRequest {
+  cwd: string
+  eventDataCollector: EventDataCollector
+  stepDefinitions: StepDefinition[]
 }
 
 function buildEmptyMapping(
@@ -36,7 +37,7 @@ function buildEmptyMapping(
   const mapping = {}
   stepDefinitions.forEach(stepDefinition => {
     mapping[stepDefinition.id] = {
-      code: getCodeAsString(stepDefinition),
+      code: stepDefinition.unwrappedCode.toString(),
       line: stepDefinition.line,
       pattern: stepDefinition.expression.source,
       patternType: stepDefinition.expression.constructor.name,
@@ -51,13 +52,16 @@ function buildMapping({
   cwd,
   stepDefinitions,
   eventDataCollector,
-}): Dictionary<IUsage> {
+}: IGetUsageRequest): Dictionary<IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
     testCaseAttempt.testCase.testSteps.forEach(testStep => {
-      if (testStep.pickleStepId && testStep.stepDefinitionIds.length === 1) {
+      if (
+        testStep.pickleStepId !== '' &&
+        testStep.stepDefinitionIds.length === 1
+      ) {
         const stepDefinitionId = testStep.stepDefinitionIds[0]
         const pickleStep = pickleStepMap[testStep.pickleStepId]
         const gherkinStep = gherkinStepMap[pickleStep.astNodeIds[0]]
@@ -67,10 +71,10 @@ function buildMapping({
           uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
         const { duration } = testCaseAttempt.stepResults[testStep.id]
-        if (duration) {
+        if (doesHaveValue(duration)) {
           match.duration = duration
         }
-        if (mapping[stepDefinitionId]) {
+        if (doesHaveValue(mapping[stepDefinitionId])) {
           mapping[stepDefinitionId].matches.push(match)
         }
       }
@@ -79,21 +83,18 @@ function buildMapping({
   return mapping
 }
 
-function invertNumber(key: string): (obj: any) => number {
-  return obj => {
-    const value = obj[key]
-    if (value) {
-      return -1 * durationToMilliseconds(value)
-    }
-    return 1
+function invertDuration(duration: messages.IDuration): number {
+  if (doesHaveValue(duration)) {
+    return -1 * durationToMilliseconds(duration)
   }
+  return 1
 }
 
 function buildResult(mapping: Dictionary<IUsage>): IUsage[] {
   return _.chain(mapping)
     .map(({ matches, ...rest }: IUsage) => {
       const sortedMatches = _.sortBy(matches, [
-        invertNumber('duration'),
+        (match: IUsageMatch) => invertDuration(match.duration),
         'text',
       ])
       const result = { matches: sortedMatches, ...rest }
@@ -110,11 +111,15 @@ function buildResult(mapping: Dictionary<IUsage>): IUsage[] {
       }
       return result
     })
-    .sortBy(invertNumber('meanDuration'))
+    .sortBy((usage: IUsage) => invertDuration(usage.meanDuration))
     .value()
 }
 
-export function getUsage({ cwd, stepDefinitions, eventDataCollector }) {
+export function getUsage({
+  cwd,
+  stepDefinitions,
+  eventDataCollector,
+}: IGetUsageRequest): IUsage[] {
   const mapping = buildMapping({ cwd, stepDefinitions, eventDataCollector })
   return buildResult(mapping)
 }

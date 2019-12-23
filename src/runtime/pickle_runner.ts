@@ -8,7 +8,7 @@ import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,
-} from '../support_code_library_builder'
+} from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'

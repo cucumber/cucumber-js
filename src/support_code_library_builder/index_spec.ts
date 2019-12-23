@@ -46,7 +46,7 @@ describe('supportCodeLibraryBuilder', () => {
       it('adds a step definition and makes original code available', function() {
         expect(this.options.stepDefinitions).to.have.lengthOf(1)
         expect(this.options.stepDefinitions[0].code).to.eql(this.hook)
-        expect(this.options.stepDefinitions[0].unwrappedCode).to.eql(undefined)
+        expect(this.options.stepDefinitions[0].unwrappedCode).to.eql(this.hook)
       })
     })
 

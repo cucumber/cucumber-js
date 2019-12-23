@@ -8,14 +8,13 @@ import {
 import EventEmitter from 'events'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../../stack_trace_filter'
-import supportCodeLibraryBuilder, {
-  ISupportCodeLibrary,
-} from '../../support_code_library_builder'
+import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
 import VError from 'verror'
 import { messages, IdGenerator } from 'cucumber-messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 
 const { uuid } = IdGenerator
 

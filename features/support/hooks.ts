@@ -5,7 +5,7 @@ import path from 'path'
 import tmp from 'tmp'
 import { doesHaveValue } from '../../src/value_checker'
 import { World } from './world'
-import { ITestCaseHookParameter } from '../../src/support_code_library_builder'
+import { ITestCaseHookParameter } from '../../src/support_code_library_builder/types'
 
 const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')

@@ -8,7 +8,7 @@ import lolex from 'lolex'
 import timeMethods from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
-import { ISupportCodeLibrary } from '../../support_code_library_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
 
 interface ITestFormatSummaryOptions {

@@ -9,7 +9,7 @@ import { retriesForPickle } from './helpers'
 import { messages, IdGenerator } from 'cucumber-messages'
 import PickleRunner from './pickle_runner'
 import { EventEmitter } from 'events'
-import { ISupportCodeLibrary } from '../support_code_library_builder'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 
 export interface INewRuntimeOptions {

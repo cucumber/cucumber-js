@@ -2,6 +2,8 @@ import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
+import { messages } from 'cucumber-messages'
+import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
@@ -16,13 +18,13 @@ export default class ProgressBarFormatter extends Formatter {
     this.issueCount = 0
   }
 
-  incrementStepCount(pickleId) {
+  incrementStepCount(pickleId: string): void {
     const pickle = this.eventDataCollector.getPickle(pickleId)
     this.numberOfSteps += pickle.steps.length
   }
 
-  initializeProgressBar() {
-    if (this.progressBar) {
+  initializeProgressBar(): void {
+    if (doesHaveValue(this.progressBar)) {
       return
     }
     this.progressBar = new ProgressBar(':current/:total steps [:bar] ', {
@@ -30,21 +32,24 @@ export default class ProgressBarFormatter extends Formatter {
       incomplete: ' ',
       stream: this.stream,
       total: this.numberOfSteps,
-      width: (this.stream as TtyWriteStream).columns || 80,
+      width: valueOrDefault((this.stream as TtyWriteStream).columns, 80),
     })
   }
 
-  logProgress({ testStepId, testCaseStartedId }) {
+  logProgress({
+    testStepId,
+    testCaseStartedId,
+  }: messages.ITestStepFinished): void {
     const { testCase } = this.eventDataCollector.getTestCaseAttempt(
       testCaseStartedId
     )
     const testStep = testCase.testSteps.find(s => s.id === testStepId)
-    if (testStep.pickleStepId) {
+    if (testStep.pickleStepId !== '') {
       this.progressBar.tick()
     }
   }
 
-  logErrorIfNeeded(testCaseFinished) {
+  logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
     if (isIssue(testCaseFinished.testResult)) {
       this.issueCount += 1
       const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
@@ -67,7 +72,7 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logSummary() {
+  logSummary(): void {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
@@ -76,16 +81,16 @@ export default class ProgressBarFormatter extends Formatter {
     )
   }
 
-  parseEnvelope(envelope) {
-    if (envelope.pickleAccepted) {
+  parseEnvelope(envelope: messages.IEnvelope): void {
+    if (doesHaveValue(envelope.pickleAccepted)) {
       this.incrementStepCount(envelope.pickleAccepted.pickleId)
-    } else if (envelope.testStepStarted) {
+    } else if (doesHaveValue(envelope.testStepStarted)) {
       this.initializeProgressBar()
-    } else if (envelope.testStepFinished) {
+    } else if (doesHaveValue(envelope.testStepFinished)) {
       this.logProgress(envelope.testStepFinished)
-    } else if (envelope.testCaseFinished) {
+    } else if (doesHaveValue(envelope.testCaseFinished)) {
       this.logErrorIfNeeded(envelope.testCaseFinished)
-    } else if (envelope.testRunFinished) {
+    } else if (doesHaveValue(envelope.testRunFinished)) {
       this.logSummary()
     }
   }

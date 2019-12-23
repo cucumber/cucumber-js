@@ -5,7 +5,7 @@ import { EventEmitter } from 'events'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
 import { IdGenerator, messages } from 'cucumber-messages'
-import { ISupportCodeLibrary } from '../src/support_code_library_builder'
+import { ISupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 
 const { uuid } = IdGenerator

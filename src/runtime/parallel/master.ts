@@ -7,7 +7,7 @@ import { messages } from 'cucumber-messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
-import { ISupportCodeLibrary } from '../../support_code_library_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import {
   IMasterReport,
   IMasterReportSupportCodeIds,

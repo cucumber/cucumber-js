@@ -4,7 +4,7 @@ import Time, { millisecondsToDuration } from '../time'
 import UserCodeRunner from '../user_code_runner'
 import { messages } from 'cucumber-messages'
 import { format } from 'assertion-error-formatter'
-import { ITestCaseHookParameter } from '../support_code_library_builder'
+import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
 import { valueOrDefault } from '../value_checker'
 

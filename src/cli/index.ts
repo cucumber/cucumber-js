@@ -11,14 +11,13 @@ import PickleFilter from '../pickle_filter'
 import bluebird from 'bluebird'
 import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
-import supportCodeLibraryBuilder, {
-  ISupportCodeLibrary,
-} from '../support_code_library_builder'
+import supportCodeLibraryBuilder from '../support_code_library_builder'
 import { IdGenerator } from 'cucumber-messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
 import Gherkin from 'gherkin'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 
 const { incrementing, uuid } = IdGenerator
 

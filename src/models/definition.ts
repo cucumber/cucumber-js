@@ -1,5 +1,5 @@
 import { messages } from 'cucumber-messages'
-import { ITestCaseHookParameter } from '../support_code_library_builder'
+import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
@@ -22,8 +22,10 @@ export interface IDefinition {
   readonly code: Function
   readonly id: string
   readonly line: string
-  readonly uri: string
   readonly options: IDefinitionOptions
+  readonly unwrappedCode: Function
+  readonly uri: string
+
   getInvocationParameters: (
     options: IGetInvocationDataRequest
   ) => Promise<IGetInvocationDataResponse>
@@ -33,15 +35,17 @@ export default abstract class Definition {
   public readonly code: Function
   public readonly id: string
   public readonly line: string
-  public readonly uri: string
   public readonly options: IDefinitionOptions
+  public readonly unwrappedCode: Function
+  public readonly uri: string
 
-  constructor({ code, id, line, options, uri }) {
+  constructor({ code, id, line, options, unwrappedCode, uri }) {
     this.code = code
     this.id = id
     this.line = line
-    this.uri = uri
     this.options = options
+    this.unwrappedCode = unwrappedCode
+    this.uri = uri
   }
 
   buildInvalidCodeLengthMessage(

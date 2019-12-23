@@ -10,7 +10,7 @@ import path from 'path'
 import { messages } from 'cucumber-messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import TestCaseHookDefinition from '../../models/test_case_hook_definition'
 
@@ -181,7 +181,10 @@ export function parseTestCaseAttempt({
       supportCodeLibrary,
       testStep,
       testStepResult,
-      testStepAttachments: valueOrDefault(testCaseAttempt.stepAttachments[testStep.id], []),
+      testStepAttachments: valueOrDefault(
+        testCaseAttempt.stepAttachments[testStep.id],
+        []
+      ),
     })
     parsedTestSteps.push(parsedStep)
     previousKeywordType = keywordType

@@ -1,140 +1,91 @@
 import _ from 'lodash'
 import TransformLookupBuilder from './parameter_type_registry_builder'
-import {
-  buildParameterType,
-  buildStepDefinitionConfig,
-  buildStepDefinitionFromConfig,
-  buildTestCaseHookDefinition,
-  buildTestRunHookDefinition,
-  IStepDefinitionConfig,
-} from './build_helpers'
-import { wrapDefinitions } from './finalize_helpers'
-import { IdGenerator, messages } from 'cucumber-messages'
+import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
+import { IdGenerator } from 'cucumber-messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import ParameterTypeRegistry from 'cucumber-expressions/dist/src/ParameterTypeRegistry'
-import { IAttachment } from '../runtime/attachment_manager'
+import { formatLocation } from '../formatter/helpers'
+import validateArguments from './validate_arguments'
+import arity from 'util-arity'
+import { CucumberExpression, RegularExpression } from 'cucumber-expressions'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { validateNoGeneratorFunctions } from './finalize_helpers'
+import {
+  IDefineSupportCodeMethods,
+  DefineStepPattern,
+  IDefineStepOptions,
+  IDefineTestCaseHookOptions,
+  TestCaseHookFunction,
+  IDefineTestRunHookOptions,
+  ISupportCodeLibrary,
+} from './types'
+import World from './world'
 
-export type DefineStepPattern = string | RegExp
-
-export interface ITestCaseHookParameter {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
-  result?: messages.ITestResult
-  testCaseStartedId: string
+interface IStepDefinitionConfig {
+  code: any
+  line: string
+  options: any
+  pattern: string | RegExp
+  uri: string
 }
 
-export type TestCaseHookFunctionWithoutParameter = () => void
-export type TestCaseHookFunctionWithParameter = (
-  arg: ITestCaseHookParameter
-) => void
-export type TestCaseHookFunction =
-  | TestCaseHookFunctionWithoutParameter
-  | TestCaseHookFunctionWithParameter
-
-export interface IDefineStepOptions {
-  timeout?: number
-  wrapperOptions?: any
+interface ITestCaseHookDefinitionConfig {
+  code: any
+  line: string
+  options: any
+  uri: string
 }
 
-export interface IDefineTestCaseHookOptions {
-  tags?: string
-  timeout?: number
-}
-
-export interface IDefineTestRunHookOptions {
-  timeout?: number
-}
-
-export interface IDefineSupportCodeMethods {
-  defineParameterType(options: any): void
-  defineStep(pattern: DefineStepPattern, code: Function): void
-  defineStep(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-  setDefaultTimeout(milliseconds: number): void
-  setDefinitionFunctionWrapper(fn: Function): void
-  setWorldConstructor(fn: any): void
-  After(code: TestCaseHookFunction): void
-  After(tags: string, code: TestCaseHookFunction): void
-  After(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction): void
-  AfterAll(code: Function): void
-  AfterAll(options: IDefineTestRunHookOptions, code: Function): void
-  Before(code: TestCaseHookFunction): void
-  Before(tags: string, code: TestCaseHookFunction): void
-  Before(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction): void
-  BeforeAll(code: Function): void
-  BeforeAll(options: IDefineTestRunHookOptions, code: Function): void
-  Given(pattern: DefineStepPattern, code: Function): void
-  Given(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-  Then(pattern: DefineStepPattern, code: Function): void
-  Then(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-  When(pattern: DefineStepPattern, code: Function): void
-  When(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-}
-
-export interface ISupportCodeLibrary {
-  afterTestCaseHookDefinitions: TestCaseHookDefinition[]
-  afterTestRunHookDefinitions: TestRunHookDefinition[]
-  beforeTestCaseHookDefinitions: TestCaseHookDefinition[]
-  beforeTestRunHookDefinitions: TestRunHookDefinition[]
-  defaultTimeout: number
-  stepDefinitions: StepDefinition[]
-  parameterTypeRegistry: ParameterTypeRegistry
-  World: any
-}
-
-export class World {
-  private readonly attach: (attachment: IAttachment) => void
-  private readonly parameters: any
-
-  constructor({ attach, parameters }) {
-    this.attach = attach
-    this.parameters = parameters
-  }
+interface ITestRunHookDefinitionConfig {
+  code: any
+  line: string
+  options: any
+  uri: string
 }
 
 export class SupportCodeLibraryBuilder {
-  public methods: IDefineSupportCodeMethods
+  public readonly methods: IDefineSupportCodeMethods
+
+  private afterTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
+  private afterTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
+  private beforeTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
+  private beforeTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
   private cwd: string
-  private newId: IdGenerator.NewId
-  private options: ISupportCodeLibrary
+  private defaultTimeout: number
   private definitionFunctionWrapper: any
+  private newId: IdGenerator.NewId
+  private parameterTypeRegistry: ParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
+  private World: any
 
   constructor() {
     const defineStep = this.defineStep.bind(this)
     this.methods = {
-      After: this.defineTestCaseHook('afterTestCaseHookDefinitions'),
-      AfterAll: this.defineTestRunHook('afterTestRunHookDefinitions'),
-      Before: this.defineTestCaseHook('beforeTestCaseHookDefinitions'),
-      BeforeAll: this.defineTestRunHook('beforeTestRunHookDefinitions'),
+      After: this.defineTestCaseHook(
+        () => this.afterTestCaseHookDefinitionConfigs
+      ),
+      AfterAll: this.defineTestRunHook(
+        () => this.afterTestRunHookDefinitionConfigs
+      ),
+      Before: this.defineTestCaseHook(
+        () => this.beforeTestCaseHookDefinitionConfigs
+      ),
+      BeforeAll: this.defineTestRunHook(
+        () => this.beforeTestRunHookDefinitionConfigs
+      ),
       defineParameterType: this.defineParameterType.bind(this),
       defineStep,
       Given: defineStep,
       setDefaultTimeout: milliseconds => {
-        this.options.defaultTimeout = milliseconds
+        this.defaultTimeout = milliseconds
       },
       setDefinitionFunctionWrapper: fn => {
         this.definitionFunctionWrapper = fn
       },
       setWorldConstructor: fn => {
-        this.options.World = fn
+        this.World = fn
       },
       Then: defineStep,
       When: defineStep,
@@ -143,7 +94,7 @@ export class SupportCodeLibraryBuilder {
 
   defineParameterType(options) {
     const parameterType = buildParameterType(options)
-    this.options.parameterTypeRegistry.defineParameterType(parameterType)
+    this.parameterTypeRegistry.defineParameterType(parameterType)
   }
 
   defineStep(
@@ -151,84 +102,192 @@ export class SupportCodeLibraryBuilder {
     options: IDefineStepOptions | Function,
     code?: Function
   ) {
-    const stepDefinitionConfig = buildStepDefinitionConfig({
-      pattern,
-      options,
-      code,
-      cwd: this.cwd,
+    if (typeof options === 'function') {
+      code = options
+      options = {}
+    }
+    const { line, uri } = getDefinitionLineAndUri(this.cwd)
+    validateArguments({
+      args: { code, pattern, options },
+      fnName: 'defineStep',
+      location: formatLocation({ line, uri }),
     })
-    this.stepDefinitionConfigs.push(stepDefinitionConfig)
+    this.stepDefinitionConfigs.push({
+      code,
+      line,
+      options,
+      pattern,
+      uri,
+    })
   }
 
-  defineTestCaseHook(collectionName: string) {
+  defineTestCaseHook(getCollection: () => ITestCaseHookDefinitionConfig[]) {
     return (
       options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
       code?: TestCaseHookFunction
     ) => {
-      const hookDefinition = buildTestCaseHookDefinition({
-        options,
-        code,
-        cwd: this.cwd,
-        id: this.newId(),
+      if (typeof options === 'string') {
+        options = { tags: options }
+      } else if (typeof options === 'function') {
+        code = options
+        options = {}
+      }
+      const { line, uri } = getDefinitionLineAndUri(this.cwd)
+      validateArguments({
+        args: { code, options },
+        fnName: 'defineTestCaseHook',
+        location: formatLocation({ line, uri }),
       })
-      this.options[collectionName].push(hookDefinition)
+      getCollection().push({
+        code,
+        line,
+        options,
+        uri,
+      })
     }
   }
 
-  defineTestRunHook(collectionName: string) {
+  defineTestRunHook(getCollection: () => ITestRunHookDefinitionConfig[]) {
     return (options: IDefineTestRunHookOptions | Function, code?: Function) => {
-      const hookDefinition = buildTestRunHookDefinition({
-        options,
-        code,
-        cwd: this.cwd,
-        id: this.newId(),
+      if (typeof options === 'function') {
+        code = options
+        options = {}
+      }
+      const { line, uri } = getDefinitionLineAndUri(this.cwd)
+      validateArguments({
+        args: { code, options },
+        fnName: 'defineTestRunHook',
+        location: formatLocation({ line, uri }),
       })
-      this.options[collectionName].push(hookDefinition)
+      getCollection().push({
+        code,
+        line,
+        options,
+        uri,
+      })
     }
   }
 
-  finalize() {
-    this.options.stepDefinitions = this.stepDefinitionConfigs.map(config =>
-      buildStepDefinitionFromConfig({
-        id: this.newId(),
-        config,
-        parameterTypeRegistry: this.options.parameterTypeRegistry,
+  wrapCode({ code, wrapperOptions }): Function {
+    if (doesHaveValue(this.definitionFunctionWrapper)) {
+      const codeLength = code.length
+      const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)
+      if (wrappedCode !== code) {
+        return arity(codeLength, wrappedCode)
+      }
+      return wrappedCode
+    }
+    return code
+  }
+
+  buildTestCaseHookDefinitions(
+    configs: ITestCaseHookDefinitionConfig[]
+  ): TestCaseHookDefinition[] {
+    return configs.map(({ code, line, options, uri }) => {
+      const wrappedCode = this.wrapCode({
+        code,
+        wrapperOptions: options.wrapperOptions,
       })
-    )
-    wrapDefinitions({
-      cwd: this.cwd,
-      definitionFunctionWrapper: this.definitionFunctionWrapper,
-      definitions: _.chain([
-        'afterTestCaseHook',
-        'afterTestRunHook',
-        'beforeTestCaseHook',
-        'beforeTestRunHook',
-        'step',
-      ])
-        .map(key => this.options[`${key}Definitions`])
-        .flatten()
-        .value(),
+      return new TestCaseHookDefinition({
+        code: wrappedCode,
+        id: this.newId(),
+        line,
+        options,
+        unwrappedCode: code,
+        uri,
+      })
     })
-    this.options.afterTestCaseHookDefinitions.reverse()
-    this.options.afterTestRunHookDefinitions.reverse()
-    return this.options
+  }
+
+  buildTestRunHookDefinitions(
+    configs: ITestRunHookDefinitionConfig[]
+  ): TestRunHookDefinition[] {
+    return configs.map(({ code, line, options, uri }) => {
+      const wrappedCode = this.wrapCode({
+        code,
+        wrapperOptions: options.wrapperOptions,
+      })
+      return new TestRunHookDefinition({
+        code: wrappedCode,
+        id: this.newId(),
+        line,
+        options,
+        unwrappedCode: code,
+        uri,
+      })
+    })
+  }
+
+  buildStepDefinitions(): StepDefinition[] {
+    return this.stepDefinitionConfigs.map(
+      ({ code, line, options, pattern, uri }) => {
+        const expression =
+          typeof pattern === 'string'
+            ? new CucumberExpression(pattern, this.parameterTypeRegistry)
+            : new RegularExpression(pattern, this.parameterTypeRegistry)
+        const wrappedCode = this.wrapCode({
+          code,
+          wrapperOptions: options.wrapperOptions,
+        })
+        return new StepDefinition({
+          code: wrappedCode,
+          expression,
+          id: this.newId(),
+          line,
+          options,
+          pattern,
+          unwrappedCode: code,
+          uri,
+        })
+      }
+    )
+  }
+
+  finalize(): ISupportCodeLibrary {
+    if (doesNotHaveValue(this.definitionFunctionWrapper)) {
+      const definitionConfigs = _.chain([
+        this.afterTestCaseHookDefinitionConfigs,
+        this.afterTestRunHookDefinitionConfigs,
+        this.beforeTestCaseHookDefinitionConfigs,
+        this.beforeTestRunHookDefinitionConfigs,
+        this.stepDefinitionConfigs,
+      ])
+        .flatten()
+        .value()
+      validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
+    }
+    return {
+      afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
+        this.afterTestCaseHookDefinitionConfigs
+      ).reverse(),
+      afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
+        this.afterTestRunHookDefinitionConfigs
+      ).reverse(),
+      beforeTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
+        this.beforeTestCaseHookDefinitionConfigs
+      ),
+      beforeTestRunHookDefinitions: this.buildTestRunHookDefinitions(
+        this.beforeTestRunHookDefinitionConfigs
+      ),
+      defaultTimeout: this.defaultTimeout,
+      parameterTypeRegistry: this.parameterTypeRegistry,
+      stepDefinitions: this.buildStepDefinitions(),
+      World: this.World,
+    }
   }
 
   reset(cwd: string, newId: IdGenerator.NewId) {
     this.cwd = cwd
     this.newId = newId
+    this.afterTestCaseHookDefinitionConfigs = []
+    this.afterTestRunHookDefinitionConfigs = []
+    this.beforeTestCaseHookDefinitionConfigs = []
+    this.beforeTestRunHookDefinitionConfigs = []
     this.definitionFunctionWrapper = null
+    this.defaultTimeout = 5000
+    this.parameterTypeRegistry = TransformLookupBuilder.build()
     this.stepDefinitionConfigs = []
-    this.options = _.cloneDeep({
-      afterTestCaseHookDefinitions: [],
-      afterTestRunHookDefinitions: [],
-      beforeTestCaseHookDefinitions: [],
-      beforeTestRunHookDefinitions: [],
-      defaultTimeout: 5000,
-      parameterTypeRegistry: TransformLookupBuilder.build(),
-      stepDefinitions: [],
-      World,
-    })
+    this.World = World
   }
 }
 

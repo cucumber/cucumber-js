@@ -2,12 +2,13 @@ import _, { Dictionary } from 'lodash'
 import Formatter from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import util from 'util'
 import { durationToNanoseconds } from '../time'
 import path from 'path'
 import { messages } from 'cucumber-messages'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { parseStepArgument } from '../step_arguments'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -69,6 +70,15 @@ interface IBuildJsonScenarioOptions {
   steps: IJsonStep[]
 }
 
+interface IBuildJsonStepOptions {
+  isBeforeHook: boolean
+  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  pickleStepMap: Dictionary<messages.Pickle.IPickleStep>
+  testStep: messages.TestCase.ITestStep
+  testStepAttachments: messages.IAttachment[]
+  testStepResult: messages.ITestResult
+}
+
 interface UriToTestCaseAttemptsMap {
   [uri: string]: ITestCaseAttempt[]
 }
@@ -77,49 +87,55 @@ export default class JsonFormatter extends Formatter {
   constructor(options) {
     super(options)
     options.eventBroadcaster.on('envelope', envelope => {
-      if (envelope.testRunFinished) {
+      if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
       }
     })
   }
 
-  convertNameToId(obj) {
+  convertNameToId(obj): string {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable) {
+  formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): any {
     return {
       rows: dataTable.rows.map(row => ({ cells: _.map(row.cells, 'value') })),
     }
   }
 
-  formatDocString(docString, gherkinStep) {
+  formatDocString(
+    docString: messages.PickleStepArgument.IPickleDocString,
+    gherkinStep: messages.GherkinDocument.Feature.IStep
+  ): any {
     return {
       content: docString.content,
       line: gherkinStep.docString.location.line,
     }
   }
 
-  formatStepArgument(stepArgument, gherkinStep) {
-    if (!stepArgument) {
+  formatStepArgument(
+    stepArgument: messages.IPickleStepArgument,
+    gherkinStep: messages.GherkinDocument.Feature.IStep
+  ): any {
+    if (doesNotHaveValue(stepArgument)) {
       return []
     }
-    if (stepArgument.docString) {
-      return [this.formatDocString(stepArgument.docString, gherkinStep)]
-    } else if (stepArgument.dataTable) {
-      return [this.formatDataTable(stepArgument.dataTable)]
-    }
-    throw new Error(`Unknown argument type:${util.inspect(stepArgument)}`)
+    return [
+      parseStepArgument<any>(stepArgument, {
+        dataTable: dataTable => this.formatDataTable(dataTable),
+        docString: docString => this.formatDocString(docString, gherkinStep),
+      }),
+    ]
   }
 
-  onTestRunFinished() {
+  onTestRunFinished(): void {
     const groupedTestCaseAttempts: UriToTestCaseAttemptsMap = {}
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
       (testCaseAttempt: ITestCaseAttempt) => {
         if (!testCaseAttempt.result.willBeRetried) {
           const uri = path.relative(this.cwd, testCaseAttempt.pickle.uri)
-          if (!groupedTestCaseAttempts[uri]) {
+          if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
             groupedTestCaseAttempts[uri] = []
           }
           groupedTestCaseAttempts[uri].push(testCaseAttempt)
@@ -138,7 +154,7 @@ export default class JsonFormatter extends Formatter {
         const pickleStepMap = getPickleStepMap(pickle)
         let isBeforeHook = true
         const steps = testCaseAttempt.testCase.testSteps.map(testStep => {
-          isBeforeHook = isBeforeHook && !testStep.pickleStepId
+          isBeforeHook = isBeforeHook && testStep.pickleStepId === ''
           return this.getStepData({
             isBeforeHook,
             gherkinStepMap,
@@ -212,9 +228,9 @@ export default class JsonFormatter extends Formatter {
     testStep,
     testStepAttachments,
     testStepResult,
-  }): IJsonStep {
+  }: IBuildJsonStepOptions): IJsonStep {
     const data: IJsonStep = {}
-    if (testStep.pickleStepId) {
+    if (testStep.pickleStepId !== '') {
       const pickleStep = pickleStepMap[testStep.pickleStepId]
       data.arguments = this.formatStepArgument(
         pickleStep.argument,
@@ -233,41 +249,42 @@ export default class JsonFormatter extends Formatter {
       )
       data.match = { location: formatLocation(stepDefinition) }
     }
-    if (testStepResult) {
-      const { message, status } = testStepResult
-      data.result = { status: Status[status].toLowerCase() }
-      if (testStepResult.duration) {
-        data.result.duration = durationToNanoseconds(testStepResult.duration)
-      }
-      if (status === Status.FAILED && message) {
-        data.result.error_message = message
-      }
+    const { message, status } = testStepResult
+    data.result = { status: Status[status].toLowerCase() }
+    if (doesHaveValue(testStepResult.duration)) {
+      data.result.duration = durationToNanoseconds(testStepResult.duration)
+    }
+    if (status === Status.FAILED && doesHaveValue(message)) {
+      data.result.error_message = message
     }
     if (_.size(testStepAttachments) > 0) {
       data.embeddings = testStepAttachments.map(attachment => ({
         data: attachment.data,
-        mime_type: attachment.media.type,
+        mime_type: attachment.media.contentType,
       }))
     }
     return data
   }
 
-  getFeatureTags(feature) {
+  getFeatureTags(feature): IJsonTag[] {
     return _.map(feature.tags, tagData => ({
       name: tagData.name,
       line: tagData.location.line,
     }))
   }
 
-  getScenarioTags({ feature, pickle, gherkinScenarioMap }) {
+  getScenarioTags({ feature, pickle, gherkinScenarioMap }): IJsonTag[] {
     return _.map(pickle.tags, tagData => {
       const featureSource = feature.tags.find(t => t.id === tagData.astNodeId)
       const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
         t => t.id === tagData.astNodeId
       )
+      const line = doesHaveValue(featureSource)
+        ? featureSource.location.line
+        : scenarioSource.location.line
       return {
         name: tagData.name,
-        line: (featureSource || scenarioSource).location.line,
+        line,
       }
     })
   }

@@ -1,9 +1,7 @@
-import {
-  SupportCodeLibraryBuilder,
-  IDefineSupportCodeMethods,
-} from '../src/support_code_library_builder'
+import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
 import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
 import { IRuntimeOptions } from '../src/runtime'
+import { IDefineSupportCodeMethods } from '../src/support_code_library_builder/types'
 
 export function buildOptions(
   overrides: Partial<IRuntimeOptions>
