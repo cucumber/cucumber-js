@@ -13,20 +13,16 @@ import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import TestCaseHookDefinition from '../../models/test_case_hook_definition'
-
-export interface IParsedLocation {
-  uri: string
-  line: number | string
-}
+import { ILineAndUri } from '../../types'
 
 export interface IParsedTestStep {
-  actionLocation?: IParsedLocation
+  actionLocation?: ILineAndUri
   argument?: messages.IPickleStepArgument
   attachments: messages.IAttachment[]
   keyword: string
   result: messages.ITestResult
   snippet?: string
-  sourceLocation?: IParsedLocation
+  sourceLocation?: ILineAndUri
   text?: string
 }
 
@@ -34,7 +30,7 @@ export interface IParsedTestCase {
   attempt: number
   name: string
   result: messages.ITestResult
-  sourceLocation?: IParsedLocation
+  sourceLocation?: ILineAndUri
 }
 
 export interface IParsedTestCaseAttempt {

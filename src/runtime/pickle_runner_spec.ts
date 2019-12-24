@@ -10,15 +10,37 @@ import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import lolex from 'lolex'
 import timeMethods, { millisecondsToDuration, getZeroDuration } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { valueOrDefault } from '../value_checker'
 
-async function testPickleRunner(options) {
+interface ITestPickleRunnerRequest {
+  gherkinDocument: messages.IGherkinDocument
+  pickle: messages.IPickle
+  retries?: number
+  skip?: boolean
+  supportCodeLibrary: ISupportCodeLibrary
+}
+
+interface ITestPickleRunnerResponse {
+  envelopes: messages.IEnvelope[]
+  result: messages.ITestResult
+}
+
+async function testPickleRunner(
+  options: ITestPickleRunnerRequest
+): Promise<ITestPickleRunnerResponse> {
   const envelopes = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', e => envelopes.push(e))
   const pickleRunner = new PickleRunner({
     eventBroadcaster,
+    gherkinDocument: options.gherkinDocument,
     newId: incrementing(),
-    ...options,
+    pickle: options.pickle,
+    retries: valueOrDefault(options.retries, 0),
+    skip: valueOrDefault(options.skip, false),
+    supportCodeLibrary: options.supportCodeLibrary,
+    worldParameters: {},
   })
   const result = await pickleRunner.run()
   return { envelopes, result }
@@ -45,6 +67,7 @@ describe('PickleRunner', () => {
           })
         })
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
@@ -57,6 +80,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
@@ -116,6 +140,7 @@ describe('PickleRunner', () => {
           })
         })
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
@@ -129,6 +154,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
@@ -150,6 +176,7 @@ describe('PickleRunner', () => {
         // Arrange
         const supportCodeLibrary = getBaseSupportCodeLibrary()
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given an ambiguous step'].join(
@@ -165,6 +192,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
@@ -193,6 +221,7 @@ describe('PickleRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary()
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
@@ -201,6 +230,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
@@ -236,6 +266,7 @@ describe('PickleRunner', () => {
           })
         })
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
@@ -244,6 +275,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           retries: 1,
           supportCodeLibrary,
@@ -345,6 +377,7 @@ describe('PickleRunner', () => {
           })
         })
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
@@ -353,6 +386,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           skip: true,
           supportCodeLibrary,
@@ -383,11 +417,12 @@ describe('PickleRunner', () => {
             Given('a step', function() {
               clock.tick(1)
             })
-            Before(function() {})
-            After(function() {})
+            Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            After(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
         const {
+          gherkinDocument,
           pickles: [pickle],
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
@@ -396,6 +431,7 @@ describe('PickleRunner', () => {
 
         // Act
         const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
           pickle,
           supportCodeLibrary,
         })

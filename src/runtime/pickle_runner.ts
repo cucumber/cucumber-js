@@ -12,6 +12,7 @@ import {
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
+import { doesNotHaveValue } from '../value_checker'
 
 const { Status } = messages.TestResult
 
@@ -22,6 +23,17 @@ interface ITestStep {
   hookDefinition?: TestCaseHookDefinition
   pickleStep?: messages.Pickle.IPickleStep
   stepDefinitions?: StepDefinition[]
+}
+
+export interface INewPickleRunnerOptions {
+  eventBroadcaster: EventEmitter
+  gherkinDocument: messages.IGherkinDocument
+  newId: IdGenerator.NewId
+  pickle: messages.IPickle
+  retries: number
+  skip: boolean
+  supportCodeLibrary: ISupportCodeLibrary
+  worldParameters: any
 }
 
 export default class PickleRunner {
@@ -50,9 +62,9 @@ export default class PickleRunner {
     skip,
     supportCodeLibrary,
     worldParameters,
-  }) {
+  }: INewPickleRunnerOptions) {
     this.attachmentManager = new AttachmentManager(({ data, media }) => {
-      if (!this.currentTestStepId) {
+      if (doesNotHaveValue(this.currentTestStepId)) {
         throw new Error(
           'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
@@ -82,7 +94,7 @@ export default class PickleRunner {
     this.resetTestProgressData()
   }
 
-  resetTestProgressData() {
+  resetTestProgressData(): void {
     this.world = new this.supportCodeLibrary.World({
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       parameters: this.worldParameters,
@@ -94,9 +106,9 @@ export default class PickleRunner {
   }
 
   buildTestSteps(): ITestStep[] {
-    const steps: ITestStep[] = []
+    const testSteps: ITestStep[] = []
     this.getBeforeHookDefinitions().forEach(hookDefinition => {
-      steps.push({
+      testSteps.push({
         id: this.newId(),
         hookDefinition,
         isHook: true,
@@ -105,7 +117,7 @@ export default class PickleRunner {
     })
     this.pickle.steps.forEach(pickleStep => {
       const stepDefinitions = this.getStepDefinitions(pickleStep)
-      steps.push({
+      testSteps.push({
         id: this.newId(),
         pickleStep,
         stepDefinitions,
@@ -113,16 +125,16 @@ export default class PickleRunner {
       })
     })
     this.getAfterHookDefinitions().forEach(hookDefinition => {
-      steps.push({
+      testSteps.push({
         id: this.newId(),
         hookDefinition,
         isHook: true,
       })
     })
-    return steps
+    return testSteps
   }
 
-  emitTestCase() {
+  emitTestCase(): void {
     const testCase = {
       pickleId: this.pickle.id,
       id: this.testCaseId,
@@ -147,29 +159,31 @@ export default class PickleRunner {
     )
   }
 
-  getAfterHookDefinitions() {
+  getAfterHookDefinitions(): TestCaseHookDefinition[] {
     return this.supportCodeLibrary.afterTestCaseHookDefinitions.filter(
       hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
-  getBeforeHookDefinitions() {
+  getBeforeHookDefinitions(): TestCaseHookDefinition[] {
     return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
       hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
-  getStepDefinitions(step) {
+  getStepDefinitions(
+    pickleStep: messages.Pickle.IPickleStep
+  ): StepDefinition[] {
     return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition =>
-      stepDefinition.matchesStepName(step.text)
+      stepDefinition.matchesStepName(pickleStep.text)
     )
   }
 
-  invokeStep(
+  async invokeStep(
     step: messages.Pickle.IPickleStep,
     stepDefinition: IDefinition,
     hookParameter?: any
-  ) {
+  ): Promise<messages.ITestResult> {
     return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
@@ -179,15 +193,15 @@ export default class PickleRunner {
     })
   }
 
-  isSkippingSteps() {
+  isSkippingSteps(): boolean {
     return this.result.status !== Status.PASSED
   }
 
-  shouldSkipHook(isBeforeHook) {
+  shouldSkipHook(isBeforeHook: boolean): boolean {
     return this.skip || (this.isSkippingSteps() && isBeforeHook)
   }
 
-  shouldUpdateStatus(testStepResult) {
+  shouldUpdateStatus(testStepResult: messages.ITestResult): boolean {
     switch (testStepResult.status) {
       case Status.UNDEFINED:
       case Status.FAILED:
@@ -201,7 +215,11 @@ export default class PickleRunner {
     }
   }
 
-  async aroundTestStep(testStepId, attempt, runStepFn) {
+  async aroundTestStep(
+    testStepId: string,
+    attempt: number,
+    runStepFn: () => Promise<messages.ITestResult>
+  ): Promise<void> {
     this.eventBroadcaster.emit(
       'envelope',
       messages.Envelope.fromObject({
@@ -227,7 +245,7 @@ export default class PickleRunner {
     ) {
       this.result.willBeRetried = true
     }
-    if (testStepResult.message) {
+    if (testStepResult.message !== '') {
       this.result.message = testStepResult.message
     }
     this.eventBroadcaster.emit(
@@ -242,7 +260,7 @@ export default class PickleRunner {
     )
   }
 
-  async run() {
+  async run(): Promise<messages.ITestResult> {
     this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = this.newId()
@@ -294,14 +312,18 @@ export default class PickleRunner {
     return this.result
   }
 
-  async runHook(hookDefinition, hookParameter, isBeforeHook) {
+  async runHook(
+    hookDefinition: TestCaseHookDefinition,
+    hookParameter: ITestCaseHookParameter,
+    isBeforeHook: boolean
+  ): Promise<messages.ITestResult> {
     if (this.shouldSkipHook(isBeforeHook)) {
       return messages.TestResult.fromObject({ status: Status.SKIPPED })
     }
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
-  async runStep(testStep) {
+  async runStep(testStep: ITestStep): Promise<messages.ITestResult> {
     if (testStep.stepDefinitions.length === 0) {
       return messages.TestResult.fromObject({ status: Status.UNDEFINED })
     } else if (testStep.stepDefinitions.length > 1) {

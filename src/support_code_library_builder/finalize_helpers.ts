@@ -1,10 +1,9 @@
-import _ from 'lodash'
 import isGenerator from 'is-generator'
 import path from 'path'
 
 export interface IDefinitionConfig {
   code: any
-  line: string
+  line: number
   uri: string
 }
 

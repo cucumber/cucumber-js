@@ -6,7 +6,11 @@ import { messages } from 'cucumber-messages'
 import { format } from 'assertion-error-formatter'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
-import { valueOrDefault } from '../value_checker'
+import {
+  valueOrDefault,
+  doesNotHaveValue,
+  doesHaveValue,
+} from '../value_checker'
 
 const { beginTiming, endTiming } = Time
 
@@ -24,7 +28,7 @@ export async function run({
   step,
   stepDefinition,
   world,
-}: IRunOptions) {
+}: IRunOptions): Promise<messages.ITestResult> {
   beginTiming()
   let error: any,
     result: messages.ITestResult,
@@ -40,7 +44,7 @@ export async function run({
     error = err
   }
 
-  if (!error) {
+  if (doesNotHaveValue(error)) {
     const timeoutInMilliseconds = valueOrDefault(
       stepDefinition.options.timeout,
       defaultTimeout
@@ -70,7 +74,7 @@ export async function run({
     testStepResult.status = Status.SKIPPED
   } else if (result === 'pending') {
     testStepResult.status = Status.PENDING
-  } else if (error) {
+  } else if (doesHaveValue(error)) {
     testStepResult.message = format(error)
     testStepResult.status = Status.FAILED
   } else {

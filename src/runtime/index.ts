@@ -11,6 +11,7 @@ import PickleRunner from './pickle_runner'
 import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { valueOrDefault, doesHaveValue } from '../value_checker'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -59,7 +60,7 @@ export default class Runtime {
     this.success = true
   }
 
-  async runTestRunHooks(key: string, name: string) {
+  async runTestRunHooks(key: string, name: string): Promise<void> {
     await bluebird.each(
       this.supportCodeLibrary[key],
       async (hookDefinition: TestRunHookDefinition) => {
@@ -67,11 +68,12 @@ export default class Runtime {
           argsArray: [],
           fn: hookDefinition.code,
           thisArg: null,
-          timeoutInMilliseconds:
-            hookDefinition.options.timeout ||
-            this.supportCodeLibrary.defaultTimeout,
+          timeoutInMilliseconds: valueOrDefault(
+            hookDefinition.options.timeout,
+            this.supportCodeLibrary.defaultTimeout
+          ),
         })
-        if (error) {
+        if (doesHaveValue(error)) {
           const location = formatLocation(hookDefinition)
           throw new VError(
             error,
@@ -82,7 +84,7 @@ export default class Runtime {
     )
   }
 
-  async runPickle(pickleId) {
+  async runPickle(pickleId: string): Promise<void> {
     const pickle = this.eventDataCollector.getPickle(pickleId)
     const retries = retriesForPickle(pickle, this.options)
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
@@ -102,7 +104,7 @@ export default class Runtime {
     }
   }
 
-  async start() {
+  async start(): Promise<boolean> {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
@@ -125,7 +127,7 @@ export default class Runtime {
     return this.success
   }
 
-  shouldCauseFailure(status) {
+  shouldCauseFailure(status: Status): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

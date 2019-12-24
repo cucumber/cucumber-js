@@ -1,6 +1,7 @@
 import isStream from 'is-stream'
 import stream from 'stream'
 import { messages } from 'cucumber-messages'
+import { doesNotHaveValue, doesHaveValue } from '../../value_checker'
 
 export interface IAttachment {
   data: string
@@ -16,21 +17,21 @@ export default class AttachmentManager {
 
   create(
     data: Buffer | stream.Readable | string,
-    mediaType: string,
-    callback: () => void
+    mediaType?: string,
+    callback?: () => void
   ): void | Promise<void> {
     if (Buffer.isBuffer(data)) {
-      if (!mediaType) {
+      if (doesNotHaveValue(mediaType)) {
         throw Error('Buffer attachments must specify a media type')
       }
       this.createBufferAttachment(data, mediaType)
     } else if (isStream.readable(data)) {
-      if (!mediaType) {
+      if (doesNotHaveValue(mediaType)) {
         throw Error('Stream attachments must specify a media type')
       }
       return this.createStreamAttachment(data, mediaType, callback)
     } else if (typeof data === 'string') {
-      if (!mediaType) {
+      if (doesNotHaveValue(mediaType)) {
         mediaType = 'text/plain'
       }
       this.createStringAttachment(
@@ -73,14 +74,14 @@ export default class AttachmentManager {
       })
       data.on('error', reject)
     })
-    if (callback) {
+    if (doesHaveValue(callback)) {
       promise.then(callback, callback)
     } else {
       return promise
     }
   }
 
-  createStringAttachment(data: string, media: messages.Media) {
+  createStringAttachment(data: string, media: messages.Media): void {
     this.onAttachment({ data, media })
   }
 }

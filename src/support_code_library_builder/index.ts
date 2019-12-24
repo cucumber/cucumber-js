@@ -25,7 +25,7 @@ import World from './world'
 
 interface IStepDefinitionConfig {
   code: any
-  line: string
+  line: number
   options: any
   pattern: string | RegExp
   uri: string
@@ -33,14 +33,14 @@ interface IStepDefinitionConfig {
 
 interface ITestCaseHookDefinitionConfig {
   code: any
-  line: string
+  line: number
   options: any
   uri: string
 }
 
 interface ITestRunHookDefinitionConfig {
   code: any
-  line: string
+  line: number
   options: any
   uri: string
 }
@@ -92,7 +92,7 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  defineParameterType(options) {
+  defineParameterType(options): void {
     const parameterType = buildParameterType(options)
     this.parameterTypeRegistry.defineParameterType(parameterType)
   }
@@ -101,7 +101,7 @@ export class SupportCodeLibraryBuilder {
     pattern: DefineStepPattern,
     options: IDefineStepOptions | Function,
     code?: Function
-  ) {
+  ): void {
     if (typeof options === 'function') {
       code = options
       options = {}
@@ -121,7 +121,12 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  defineTestCaseHook(getCollection: () => ITestCaseHookDefinitionConfig[]) {
+  defineTestCaseHook(
+    getCollection: () => ITestCaseHookDefinitionConfig[]
+  ): (
+    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
+    code?: TestCaseHookFunction
+  ) => void {
     return (
       options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
       code?: TestCaseHookFunction
@@ -147,7 +152,9 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  defineTestRunHook(getCollection: () => ITestRunHookDefinitionConfig[]) {
+  defineTestRunHook(
+    getCollection: () => ITestRunHookDefinitionConfig[]
+  ): (options: IDefineTestRunHookOptions | Function, code?: Function) => void {
     return (options: IDefineTestRunHookOptions | Function, code?: Function) => {
       if (typeof options === 'function') {
         code = options
@@ -276,7 +283,7 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  reset(cwd: string, newId: IdGenerator.NewId) {
+  reset(cwd: string, newId: IdGenerator.NewId): void {
     this.cwd = cwd
     this.newId = newId
     this.afterTestCaseHookDefinitionConfigs = []

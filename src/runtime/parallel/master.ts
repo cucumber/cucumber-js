@@ -13,7 +13,7 @@ import {
   IMasterReportSupportCodeIds,
   ISlaveCommand,
 } from './command_types'
-import protobuf from 'protobufjs'
+import { doesHaveValue } from '../../value_checker'
 
 const slaveCommand = path.resolve(
   __dirname,
@@ -79,20 +79,20 @@ export default class Master {
     this.supportCodeIdMap = {}
   }
 
-  parseSlaveMessage(slave: ISlave, message: IMasterReport) {
-    if (message.supportCodeIds) {
+  parseSlaveMessage(slave: ISlave, message: IMasterReport): void {
+    if (doesHaveValue(message.supportCodeIds)) {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
       this.giveSlaveWork(slave)
-    } else if (message.jsonEnvelope) {
+    } else if (doesHaveValue(message.jsonEnvelope)) {
       const envelope = messages.Envelope.fromObject(
         JSON.parse(message.jsonEnvelope)
       )
       this.eventBroadcaster.emit('envelope', envelope)
-      if (envelope.testCase) {
+      if (doesHaveValue(envelope.testCase)) {
         this.remapDefinitionIds(envelope.testCase)
       }
-      if (envelope.testCaseFinished) {
+      if (doesHaveValue(envelope.testCaseFinished)) {
         this.parseTestCaseResult(envelope.testCaseFinished.testResult)
       }
     } else {
@@ -100,7 +100,7 @@ export default class Master {
     }
   }
 
-  saveDefinitionIdMapping(message: IMasterReportSupportCodeIds) {
+  saveDefinitionIdMapping(message: IMasterReportSupportCodeIds): void {
     _.each(message.stepDefinitionIds, (id: string, index: number) => {
       this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
         index
@@ -124,12 +124,12 @@ export default class Master {
     )
   }
 
-  remapDefinitionIds(testCase: messages.ITestCase) {
+  remapDefinitionIds(testCase: messages.ITestCase): void {
     for (const testStep of testCase.testSteps) {
-      if (testStep.hookId) {
+      if (testStep.hookId !== '') {
         testStep.hookId = this.supportCodeIdMap[testStep.hookId]
       }
-      if (testStep.stepDefinitionIds) {
+      if (doesHaveValue(testStep.stepDefinitionIds)) {
         testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
           id => this.supportCodeIdMap[id]
         )
@@ -137,7 +137,7 @@ export default class Master {
     }
   }
 
-  startSlave(id: string, total: number) {
+  startSlave(id: string, total: number): void {
     const slaveProcess = fork(slaveCommand, [], {
       cwd: this.cwd,
       env: _.assign({}, process.env, {
@@ -152,9 +152,9 @@ export default class Master {
     slave.process.on('message', message => {
       this.parseSlaveMessage(slave, message)
     })
-    slave.process.on('close', error => {
+    slave.process.on('close', exitCode => {
       slave.closed = true
-      this.onSlaveClose(error)
+      this.onSlaveClose(exitCode)
     })
     const initializeCommand: ISlaveCommand = {
       initialize: {
@@ -167,8 +167,8 @@ export default class Master {
     slave.process.send(initializeCommand)
   }
 
-  onSlaveClose(error) {
-    if (error) {
+  onSlaveClose(exitCode: number): void {
+    if (exitCode !== 0) {
       this.success = false
     }
     if (_.every(this.slaves, 'closed')) {
@@ -182,7 +182,7 @@ export default class Master {
     }
   }
 
-  parseTestCaseResult(testCaseResult) {
+  parseTestCaseResult(testCaseResult: messages.ITestResult): void {
     if (
       !testCaseResult.willBeRetried &&
       this.shouldCauseFailure(testCaseResult.status)
@@ -191,7 +191,7 @@ export default class Master {
     }
   }
 
-  run(numberOfSlaves, done) {
+  run(numberOfSlaves: number, done: (success: boolean) => void): void {
     this.eventBroadcaster.emit('test-run-started')
     _.times(numberOfSlaves, id =>
       this.startSlave(id.toString(), numberOfSlaves)
@@ -199,7 +199,7 @@ export default class Master {
     this.onFinish = done
   }
 
-  giveSlaveWork(slave) {
+  giveSlaveWork(slave: ISlave): void {
     if (this.nextPickleIdIndex === this.pickleIds.length) {
       const finalizeCommand: ISlaveCommand = { finalize: true }
       slave.process.send(finalizeCommand)
@@ -224,7 +224,7 @@ export default class Master {
     slave.process.send(runCommand)
   }
 
-  shouldCauseFailure(status) {
+  shouldCauseFailure(status: Status): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

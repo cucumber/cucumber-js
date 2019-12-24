@@ -11,16 +11,21 @@ import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
-import VError from 'verror'
 import { messages, IdGenerator } from 'cucumber-messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { doesHaveValue, valueOrDefault } from '../../value_checker'
 
 const { uuid } = IdGenerator
 
 export default class Slave {
   private readonly cwd: string
-  private readonly exit: (status?: number) => void
+  private readonly exit: (
+    exitCode: number,
+    error?: Error,
+    message?: string
+  ) => void
+
   private readonly id: string
   private readonly eventBroadcaster: EventEmitter
   private filterStacktraces: boolean
@@ -50,7 +55,7 @@ export default class Slave {
     supportCodeRequiredModules,
     supportCodePaths,
     worldParameters,
-  }: ISlaveCommandInitialize) {
+  }: ISlaveCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     supportCodePaths.forEach(codePath => require(codePath))
@@ -80,7 +85,7 @@ export default class Slave {
     this.sendMessage({ ready: true })
   }
 
-  async finalize() {
+  async finalize(): Promise<void> {
     await this.runTestRunHooks(
       this.supportCodeLibrary.afterTestRunHookDefinitions,
       'an AfterAll'
@@ -88,16 +93,16 @@ export default class Slave {
     if (this.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
-    this.exit()
+    this.exit(0)
   }
 
-  receiveMessage(message: ISlaveCommand) {
-    if (message.initialize) {
-      this.initialize(message.initialize)
+  async receiveMessage(message: ISlaveCommand): Promise<void> {
+    if (doesHaveValue(message.initialize)) {
+      await this.initialize(message.initialize)
     } else if (message.finalize) {
-      this.finalize()
-    } else if (message.run) {
-      this.runTestCase(message.run)
+      await this.finalize()
+    } else if (doesHaveValue(message.run)) {
+      await this.runTestCase(message.run)
     }
   }
 
@@ -106,7 +111,7 @@ export default class Slave {
     pickle,
     retries,
     skip,
-  }: ISlaveCommandRun) {
+  }: ISlaveCommandRun): Promise<void> {
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       gherkinDocument,
@@ -121,27 +126,27 @@ export default class Slave {
     this.sendMessage({ ready: true })
   }
 
-  async runTestRunHooks(testRunHookDefinitions: TestRunHookDefinition[], name) {
+  async runTestRunHooks(
+    testRunHookDefinitions: TestRunHookDefinition[],
+    name: string
+  ): Promise<void> {
     await bluebird.each(testRunHookDefinitions, async hookDefinition => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,
         thisArg: null,
-        timeoutInMilliseconds:
-          hookDefinition.options.timeout ||
-          this.supportCodeLibrary.defaultTimeout,
+        timeoutInMilliseconds: valueOrDefault(
+          hookDefinition.options.timeout,
+          this.supportCodeLibrary.defaultTimeout
+        ),
       })
-      if (error) {
+      if (doesHaveValue(error)) {
         const location = formatLocation(hookDefinition)
-        console.error(
-          VError.fullStack(
-            new VError(
-              error,
-              `${name} hook errored on slave ${this.id}, process exiting: ${location}`
-            )
-          )
-        ) // eslint-disable-line no-console
-        this.exit(1)
+        this.exit(
+          1,
+          error,
+          `${name} hook errored on slave ${this.id}, process exiting: ${location}`
+        )
       }
     })
   }

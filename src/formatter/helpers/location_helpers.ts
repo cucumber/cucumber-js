@@ -1,10 +1,6 @@
 import path from 'path'
 import { doesHaveValue } from '../../value_checker'
-
-export interface ILineAndUri {
-  line: number | string
-  uri: string
-}
+import { ILineAndUri } from '../../types'
 
 export function formatLocation(obj: ILineAndUri, cwd?: string): string {
   let uri = obj.uri

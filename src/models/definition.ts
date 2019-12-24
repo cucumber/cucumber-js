@@ -21,7 +21,7 @@ export interface IDefinitionOptions {
 export interface IDefinition {
   readonly code: Function
   readonly id: string
-  readonly line: string
+  readonly line: number
   readonly options: IDefinitionOptions
   readonly unwrappedCode: Function
   readonly uri: string
@@ -34,7 +34,7 @@ export interface IDefinition {
 export default abstract class Definition {
   public readonly code: Function
   public readonly id: string
-  public readonly line: string
+  public readonly line: number
   public readonly options: IDefinitionOptions
   public readonly unwrappedCode: Function
   public readonly uri: string
