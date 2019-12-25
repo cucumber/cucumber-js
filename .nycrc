@@ -1,4 +1,12 @@
 {
-  "sourceMap": false,
-  "instrument": false
+  "sourceMap": true,
+  "instrument": true,
+  "extension": [".ts"],
+  "exclude": [
+    "**/*_spec.ts",
+    "cucumber.js",
+    "features/**/*.ts",
+    "test/**/*.ts",
+    "tmp/**/*.js"
+  ]
 }

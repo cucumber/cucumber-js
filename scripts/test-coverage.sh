@@ -3,10 +3,10 @@
 set -ex
 
 # Get coverage from unit tests
-BABEL_ENV=test_coverage ./node_modules/.bin/nyc --silent ./node_modules/.bin/mocha src
+./node_modules/.bin/nyc --silent ./node_modules/.bin/mocha 'src/**/*_spec.ts'
 
 # Get coverage from feature tests (join with unit test via --no-clean)
-BABEL_ENV=test_coverage ./node_modules/.bin/babel src -d lib --ignore '**/*_spec.js'
+yarn build-local
 ./node_modules/.bin/nyc --silent --no-clean node ./bin/cucumber-js
 
 # Generate a report
