@@ -2,19 +2,18 @@ import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { KeywordType } from '../helpers'
 import StepDefinitionSnippetBuilder from './'
-import TransformLookupBuilder from '../../support_code_library_builder/parameter_type_registry_builder'
 import { messages } from 'cucumber-messages'
 import sinon from 'sinon'
+import { ParameterTypeRegistry } from 'cucumber-expressions'
 
 describe('StepDefinitionSnippetBuilder', () => {
   beforeEach(function() {
     this.snippetSyntax = {
       build: sinon.stub(),
     }
-    this.transformsLookup = TransformLookupBuilder.build()
     this.snippetBuilder = new StepDefinitionSnippetBuilder({
       snippetSyntax: this.snippetSyntax,
-      parameterTypeRegistry: this.transformsLookup,
+      parameterTypeRegistry: new ParameterTypeRegistry(),
     })
   })
 

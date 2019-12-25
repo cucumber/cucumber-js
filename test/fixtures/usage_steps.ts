@@ -1,8 +1,9 @@
 // Tests depend on the lines the steps are defined on
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
+import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
 
-export function getUsageSupportCodeLibrary(clock) {
+export function getUsageSupportCodeLibrary(clock): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('abc', function() {
       clock.tick(1)
@@ -18,6 +19,6 @@ export function getUsageSupportCodeLibrary(clock) {
       }
     })
 
-    Given('ghi', function() {})
+    Given('ghi', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
   })
 }

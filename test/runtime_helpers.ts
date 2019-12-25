@@ -1,7 +1,11 @@
 import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
 import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
 import { IRuntimeOptions } from '../src/runtime'
-import { IDefineSupportCodeMethods } from '../src/support_code_library_builder/types'
+import {
+  IDefineSupportCodeMethods,
+  ISupportCodeLibrary,
+} from '../src/support_code_library_builder/types'
+import { doesHaveValue } from '../src/value_checker'
 
 export function buildOptions(
   overrides: Partial<IRuntimeOptions>
@@ -22,14 +26,16 @@ type DefineSupportCodeFunction = (methods: IDefineSupportCodeMethods) => void
 
 export function buildSupportCodeLibrary(
   cwd: string | DefineSupportCodeFunction = __dirname,
-  fn: DefineSupportCodeFunction = () => {}
-) {
+  fn: DefineSupportCodeFunction = null
+): ISupportCodeLibrary {
   if (typeof cwd === 'function') {
     fn = cwd
     cwd = __dirname
   }
   const supportCodeLibraryBuilder = new SupportCodeLibraryBuilder()
   supportCodeLibraryBuilder.reset(cwd, incrementing())
-  fn(supportCodeLibraryBuilder.methods)
+  if (doesHaveValue(fn)) {
+    fn(supportCodeLibraryBuilder.methods)
+  }
   return supportCodeLibraryBuilder.finalize()
 }

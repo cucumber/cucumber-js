@@ -1,15 +1,17 @@
 import _ from 'lodash'
-import TransformLookupBuilder from './parameter_type_registry_builder'
 import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
 import { IdGenerator } from 'cucumber-messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
-import ParameterTypeRegistry from 'cucumber-expressions/dist/src/ParameterTypeRegistry'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
 import arity from 'util-arity'
-import { CucumberExpression, RegularExpression } from 'cucumber-expressions'
+import {
+  CucumberExpression,
+  RegularExpression,
+  ParameterTypeRegistry,
+} from 'cucumber-expressions'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { validateNoGeneratorFunctions } from './finalize_helpers'
 import {
@@ -292,7 +294,7 @@ export class SupportCodeLibraryBuilder {
     this.beforeTestRunHookDefinitionConfigs = []
     this.definitionFunctionWrapper = null
     this.defaultTimeout = 5000
-    this.parameterTypeRegistry = TransformLookupBuilder.build()
+    this.parameterTypeRegistry = new ParameterTypeRegistry()
     this.stepDefinitionConfigs = []
     this.World = World
   }

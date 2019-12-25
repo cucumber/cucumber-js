@@ -45,11 +45,11 @@ describe('UsageFormatter', () => {
 ┌────────────────┬──────────┬───────────────────┐
 │ Pattern / Text │ Duration │ Location          │
 ├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:7  │
+│ abc            │ UNUSED   │ usage_steps.ts:8  │
 ├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ UNUSED   │ usage_steps.ts:12 │
+│ /def?/         │ UNUSED   │ usage_steps.ts:13 │
 ├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:21 │
+│ ghi            │ UNUSED   │ usage_steps.ts:22 │
 └────────────────┴──────────┴───────────────────┘
 `)
       })
@@ -81,13 +81,13 @@ describe('UsageFormatter', () => {
 ┌────────────────┬──────────┬───────────────────┐
 │ Pattern / Text │ Duration │ Location          │
 ├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:7  │
+│ abc            │ UNUSED   │ usage_steps.ts:8  │
 ├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ -        │ usage_steps.ts:12 │
+│ /def?/         │ -        │ usage_steps.ts:13 │
 │   de           │ -        │ a.feature:4       │
 │   def          │ -        │ a.feature:3       │
 ├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:21 │
+│ ghi            │ UNUSED   │ usage_steps.ts:22 │
 └────────────────┴──────────┴───────────────────┘
 `)
         })
@@ -116,13 +116,13 @@ describe('UsageFormatter', () => {
 ┌────────────────┬──────────┬───────────────────┐
 │ Pattern / Text │ Duration │ Location          │
 ├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ 1.50ms   │ usage_steps.ts:12 │
+│ /def?/         │ 1.50ms   │ usage_steps.ts:13 │
 │   def          │ 2ms      │ a.feature:3       │
 │   de           │ 1ms      │ a.feature:4       │
 ├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:7  │
+│ abc            │ UNUSED   │ usage_steps.ts:8  │
 ├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:21 │
+│ ghi            │ UNUSED   │ usage_steps.ts:22 │
 └────────────────┴──────────┴───────────────────┘
 `)
         })

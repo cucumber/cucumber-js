@@ -1,8 +1,9 @@
 // Tests depend on the lines the steps are defined on
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
+import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
 
-export function getJsonFormatterSupportCodeLibrary(clock) {
+export function getJsonFormatterSupportCodeLibrary(clock): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a passing step', function() {
       clock.tick(1)
@@ -23,10 +24,10 @@ export function getJsonFormatterSupportCodeLibrary(clock) {
   })
 }
 
-export function getJsonFormatterSupportCodeLibraryWithHooks() {
+export function getJsonFormatterSupportCodeLibraryWithHooks(): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ After, Before, Given }) => {
-    Given('a passing step', function() {})
-    Before(function() {})
-    After(function() {})
+    Given('a passing step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    After(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
   })
 }

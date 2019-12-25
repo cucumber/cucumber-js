@@ -158,7 +158,7 @@ describe('UserCodeRunner', () => {
 
       describe('promise resolves', () => {
         beforeEach(function() {
-          this.options.fn = function() {
+          this.options.fn = async function() {
             return Promise.resolve('result')
           }
         })
@@ -172,7 +172,7 @@ describe('UserCodeRunner', () => {
 
       describe('promise rejects with reason', () => {
         beforeEach(function() {
-          this.options.fn = function() {
+          this.options.fn = async function() {
             return Promise.reject('error') // eslint-disable-line prefer-promise-reject-errors
           }
         })
@@ -186,7 +186,7 @@ describe('UserCodeRunner', () => {
 
       describe('promise rejects without reason', () => {
         beforeEach(function() {
-          this.options.fn = function() {
+          this.options.fn = async function() {
             return Promise.reject() // eslint-disable-line prefer-promise-reject-errors
           }
         })
@@ -201,7 +201,7 @@ describe('UserCodeRunner', () => {
 
       describe('promise times out', function() {
         beforeEach(function() {
-          this.options.fn = function() {
+          this.options.fn = async function() {
             return bluebird.resolve('result').delay(200)
           }
         })
@@ -218,7 +218,7 @@ describe('UserCodeRunner', () => {
 
       describe('timeout of -1', () => {
         beforeEach(function() {
-          this.options.fn = function() {
+          this.options.fn = async function() {
             return bluebird.resolve('result').delay(200)
           }
           this.options.timeoutInMilliseconds = -1
@@ -234,7 +234,7 @@ describe('UserCodeRunner', () => {
 
     describe('function uses multiple asynchronous interfaces: callback and promise', () => {
       beforeEach(function() {
-        this.options.fn = function(callback) {
+        this.options.fn = async function(callback) {
           callback()
           return Promise.resolve()
         }

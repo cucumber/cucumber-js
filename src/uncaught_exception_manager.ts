@@ -1,19 +1,21 @@
 declare var window: any // For browsers
 
-export default class UncaughtExceptionManager {
-  static registerHandler(handler) {
+const UncaughtExceptionManager = {
+  registerHandler(handler): void {
     if (typeof window === 'undefined') {
       process.addListener('uncaughtException', handler)
     } else {
       window.onerror = handler
     }
-  }
+  },
 
-  static unregisterHandler(handler) {
+  unregisterHandler(handler): void {
     if (typeof window === 'undefined') {
       process.removeListener('uncaughtException', handler)
     } else {
       window.onerror = undefined
     }
-  }
+  },
 }
+
+export default UncaughtExceptionManager

@@ -2,12 +2,30 @@ import bluebird from 'bluebird'
 import Time from './time'
 import UncaughtExceptionManager from './uncaught_exception_manager'
 import util from 'util'
+import { doesHaveValue } from './value_checker'
 
-export default class UserCodeRunner {
-  static async run({ argsArray, thisArg, fn, timeoutInMilliseconds }) {
+export interface IRunRequest {
+  argsArray: any[]
+  thisArg: any
+  fn: Function
+  timeoutInMilliseconds: number
+}
+
+export interface IRunResponse {
+  error?: any
+  result?: any
+}
+
+const UserCodeRunner = {
+  async run({
+    argsArray,
+    thisArg,
+    fn,
+    timeoutInMilliseconds,
+  }: IRunRequest): Promise<IRunResponse> {
     const callbackPromise = new Promise((resolve, reject) => {
       argsArray.push((error, result) => {
-        if (error) {
+        if (doesHaveValue(error)) {
           reject(error)
         } else {
           resolve(result)
@@ -25,7 +43,8 @@ export default class UserCodeRunner {
 
     const racingPromises = []
     const callbackInterface = fn.length === argsArray.length
-    const promiseInterface = fnReturn && typeof fnReturn.then === 'function'
+    const promiseInterface =
+      doesHaveValue(fnReturn) && typeof fnReturn.then === 'function'
 
     if (callbackInterface && promiseInterface) {
       return {
@@ -70,7 +89,7 @@ export default class UserCodeRunner {
     } catch (e) {
       if (e instanceof Error) {
         error = e
-      } else if (e) {
+      } else if (doesHaveValue(e)) {
         error = util.format(e)
       } else {
         error = new Error('Promise rejected without a reason')
@@ -81,5 +100,7 @@ export default class UserCodeRunner {
     UncaughtExceptionManager.unregisterHandler(exceptionHandler)
 
     return { error, result }
-  }
+  },
 }
+
+export default UserCodeRunner

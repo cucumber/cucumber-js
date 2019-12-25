@@ -37,7 +37,7 @@ describe('supportCodeLibraryBuilder', () => {
   describe('step', () => {
     describe('without definition function wrapper', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -52,7 +52,7 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('with definition function wrapper', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
         supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(function(
@@ -74,7 +74,7 @@ describe('supportCodeLibraryBuilder', () => {
   describe('After', () => {
     describe('function only', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -90,7 +90,7 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('tag and function', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After('@tagA', this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -109,7 +109,7 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('options and function', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -128,8 +128,8 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('multiple', () => {
       beforeEach(function() {
-        this.hook1 = function hook1() {}
-        this.hook2 = function hook2() {}
+        this.hook1 = function hook1() {} // eslint-disable-line @typescript-eslint/no-empty-function
+        this.hook2 = function hook2() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(this.hook1)
         supportCodeLibraryBuilder.methods.After(this.hook2)
@@ -151,7 +151,7 @@ describe('supportCodeLibraryBuilder', () => {
   describe('this.Before', () => {
     describe('function only', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -167,7 +167,7 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('tag and function', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before('@tagA', this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -186,7 +186,7 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('options and function', () => {
       beforeEach(function() {
-        this.hook = function() {}
+        this.hook = function() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, this.hook)
         this.options = supportCodeLibraryBuilder.finalize()
@@ -205,8 +205,8 @@ describe('supportCodeLibraryBuilder', () => {
 
     describe('multiple', () => {
       beforeEach(function() {
-        this.hook1 = function hook1() {}
-        this.hook2 = function hook2() {}
+        this.hook1 = function hook1() {} // eslint-disable-line @typescript-eslint/no-empty-function
+        this.hook2 = function hook2() {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(this.hook1)
         supportCodeLibraryBuilder.methods.Before(this.hook2)

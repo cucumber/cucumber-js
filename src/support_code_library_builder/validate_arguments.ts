@@ -1,4 +1,11 @@
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
+import { doesNotHaveValue } from '../value_checker'
+
+interface IValidation {
+  identifier: string
+  expectedType: string
+  predicate: (args: any) => boolean
+}
 
 const optionsValidation = {
   expectedType: 'object or function',
@@ -11,7 +18,7 @@ const optionsTimeoutValidation = {
   identifier: '"options.timeout"',
   expectedType: 'integer',
   predicate({ options }) {
-    return !options.timeout || _.isInteger(options.timeout)
+    return doesNotHaveValue(options.timeout) || _.isInteger(options.timeout)
   },
 }
 
@@ -22,7 +29,7 @@ const fnValidation = {
   },
 }
 
-const validations = {
+const validations: Dictionary<IValidation[]> = {
   defineTestRunHook: [
     { identifier: 'first argument', ...optionsValidation },
     optionsTimeoutValidation,
@@ -34,7 +41,7 @@ const validations = {
       identifier: '"options.tags"',
       expectedType: 'string',
       predicate({ options }) {
-        return !options.tags || _.isString(options.tags)
+        return doesNotHaveValue(options.tags) || _.isString(options.tags)
       },
     },
     optionsTimeoutValidation,
@@ -54,7 +61,7 @@ const validations = {
   ],
 }
 
-export default function validateArguments({ args, fnName, location }) {
+export default function validateArguments({ args, fnName, location }): void {
   validations[fnName].forEach(({ identifier, expectedType, predicate }) => {
     if (!predicate(args)) {
       throw new Error(

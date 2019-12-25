@@ -7,6 +7,7 @@ import FormatterBuilder from '../src/formatter/builder'
 import { IdGenerator, messages } from 'cucumber-messages'
 import { ISupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
+import { doesNotHaveValue } from '../src/value_checker'
 
 const { uuid } = IdGenerator
 
@@ -38,13 +39,13 @@ export async function testFormatter({
   sources = [],
   type,
 }: ITestFormatterOptions): Promise<string> {
-  if (!supportCodeLibrary) {
+  if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   let output = ''
-  const logFn = data => {
+  const logFn = (data: string): void => {
     output += data
   }
   FormatterBuilder.build(type, {
@@ -83,7 +84,7 @@ export async function getTestCaseAttempts({
   supportCodeLibrary,
   sources = [],
 }: ITestRunOptions): Promise<ITestCaseAttempt[]> {
-  if (!supportCodeLibrary) {
+  if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
   }
   const eventBroadcaster = new EventEmitter()
@@ -116,7 +117,7 @@ export async function getEnvelopesAndEventDataCollector({
   supportCodeLibrary,
   sources = [],
 }: ITestRunOptions): Promise<IEnvelopesAndEventDataCollector> {
-  if (!supportCodeLibrary) {
+  if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
   }
   const eventBroadcaster = new EventEmitter()

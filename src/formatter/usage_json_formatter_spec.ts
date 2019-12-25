@@ -47,7 +47,7 @@ function () {
                 clock.tick(1);
             }
         }`,
-        line: 12,
+        line: 13,
         matches: [
           {
             duration: {
@@ -69,7 +69,7 @@ function () {
       },
       {
         code: 'function () {\n            clock.tick(1);\n        }',
-        line: 7,
+        line: 8,
         matches: [
           {
             duration: {
@@ -91,7 +91,7 @@ function () {
       },
       {
         code: 'function () { }',
-        line: 21,
+        line: 22,
         matches: [],
         pattern: 'ghi',
         patternType: 'CucumberExpression',

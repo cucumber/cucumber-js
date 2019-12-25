@@ -1,8 +1,8 @@
-export function doesHaveValue(value: any) {
+export function doesHaveValue(value: any): boolean {
   return !doesNotHaveValue(value)
 }
 
-export function doesNotHaveValue(value: any) {
+export function doesNotHaveValue(value: any): boolean {
   return value === null || value === undefined
 }
 
