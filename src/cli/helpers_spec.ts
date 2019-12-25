@@ -81,7 +81,7 @@ describe('helpers', () => {
           gherkinMessageStream,
           order: 'defined',
           pickleFilter: new PickleFilter({
-            cwd: this.tmpDir,
+            cwd: '/project',
             featurePaths: [`/project/features/a.feature:5`],
           }),
         })
