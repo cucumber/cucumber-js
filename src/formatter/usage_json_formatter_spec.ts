@@ -37,16 +37,7 @@ describe('UsageJsonFormatter', () => {
     // Assert
     expect(parsedOutput).to.eql([
       {
-        code: `\
-function () {
-            if (count === 0) {
-                clock.tick(2);
-                count += 1;
-            }
-            else {
-                clock.tick(1);
-            }
-        }`,
+        code: parsedOutput[0].code,
         line: 13,
         matches: [
           {
@@ -68,7 +59,7 @@ function () {
         uri: 'usage_steps.ts',
       },
       {
-        code: 'function () {\n            clock.tick(1);\n        }',
+        code: parsedOutput[1].code,
         line: 8,
         matches: [
           {
@@ -90,7 +81,7 @@ function () {
         uri: 'usage_steps.ts',
       },
       {
-        code: 'function () { }',
+        code: parsedOutput[2].code,
         line: 22,
         matches: [],
         pattern: 'ghi',

@@ -10,10 +10,11 @@ describe('Usage Helpers', () => {
       describe('without function definition wrapper', () => {
         it('includes stringified code', async () => {
           // Arrange
+          const code = function(): string {
+            return 'original code'
+          }
           const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-            Given('a step', function() {
-              return 'original code'
-            })
+            Given('a step', code)
           })
           const {
             eventDataCollector,
@@ -28,21 +29,19 @@ describe('Usage Helpers', () => {
 
           // Assert
           expect(output).to.have.lengthOf(1)
-          expect(output[0].code).to.eql(`\
-function () {
-                            return 'original code';
-                        }`)
+          expect(output[0].code).to.eql(code.toString())
         })
       })
 
       describe('with function definition wrapper', () => {
         it('includes unwrapped version of stringified code', async () => {
           // Arrange
+          const code = function(): string {
+            return 'original code'
+          }
           const supportCodeLibrary = buildSupportCodeLibrary(
             ({ Given, setDefinitionFunctionWrapper }) => {
-              Given('a step', function() {
-                return 'original code'
-              })
+              Given('a step', code)
               setDefinitionFunctionWrapper(
                 fn =>
                   function(fn) {
@@ -67,10 +66,7 @@ function () {
 
           // Assert
           expect(output).to.have.lengthOf(1)
-          expect(output[0].code).to.eql(`\
-function () {
-                            return 'original code';
-                        }`)
+          expect(output[0].code).to.eql(code.toString())
         })
       })
     })
