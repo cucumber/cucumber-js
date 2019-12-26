@@ -5,6 +5,8 @@ import { Writable as WritableStream } from 'stream'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { WriteStream as FsWriteStream } from 'fs'
 import { WriteStream as TtyWriteStream } from 'tty'
+import { EventEmitter } from 'events'
+import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 
 export type IFormatterStream = FsWriteStream | TtyWriteStream
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
@@ -12,8 +14,10 @@ export type IFormatterLogFn = (buffer: string | Uint8Array) => void
 export interface IFormatterOptions {
   colorFns: IColorFns
   cwd: string
+  eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
+  parsedArgvOptions: IParsedArgvFormatOptions
   snippetBuilder: StepDefinitionSnippetBuilder
   stream: WritableStream
   supportCodeLibrary: ISupportCodeLibrary

@@ -173,7 +173,7 @@ describe('RerunFormatter', () => {
         describe(`using ${label} separator`, () => {
           it('outputs the reference needed to run the scenario again', async () => {
             // Arrange
-            const formatterOptions = { rerun: { separator: separator.opt } }
+            const parsedArgvOptions = { rerun: { separator: separator.opt } }
             const sources = [
               {
                 data: 'Feature: a\nScenario: b\nGiven a step',
@@ -187,7 +187,7 @@ describe('RerunFormatter', () => {
 
             // Act
             const output = await testFormatter({
-              formatterOptions,
+              parsedArgvOptions,
               sources,
               type: 'rerun',
             })

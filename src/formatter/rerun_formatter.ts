@@ -1,9 +1,13 @@
 import _ from 'lodash'
-import Formatter from './'
+import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import path from 'path'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import {
+  doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
+} from '../value_checker'
 import { messages } from 'cucumber-messages'
 
 const DEFAULT_SEPARATOR = '\n'
@@ -15,14 +19,15 @@ interface UriToLinesMap {
 export default class RerunFormatter extends Formatter {
   private readonly separator: string
 
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.logFailedTestCases()
       }
     })
-    this.separator = _.get(options, 'rerun.separator', DEFAULT_SEPARATOR)
+    const rerunOptions = valueOrDefault(options.parsedArgvOptions.rerun, {})
+    this.separator = valueOrDefault(rerunOptions.separator, DEFAULT_SEPARATOR)
   }
 
   logFailedTestCases(): void {

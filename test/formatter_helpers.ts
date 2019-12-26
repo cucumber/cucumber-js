@@ -8,6 +8,8 @@ import { IdGenerator, messages } from 'cucumber-messages'
 import { ISupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
+import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
+import { PassThrough } from 'stream'
 
 const { uuid } = IdGenerator
 
@@ -23,7 +25,7 @@ export interface ITestRunOptions {
 }
 
 export interface ITestFormatterOptions extends ITestRunOptions {
-  formatterOptions?: any // TODO
+  parsedArgvOptions?: IParsedArgvFormatOptions
   type: string
 }
 
@@ -33,7 +35,7 @@ export interface IEnvelopesAndEventDataCollector {
 }
 
 export async function testFormatter({
-  formatterOptions = {},
+  parsedArgvOptions = {},
   runtimeOptions = {},
   supportCodeLibrary,
   sources = [],
@@ -53,8 +55,9 @@ export async function testFormatter({
     eventBroadcaster,
     eventDataCollector,
     log: logFn,
+    parsedArgvOptions,
+    stream: new PassThrough(),
     supportCodeLibrary,
-    ...formatterOptions,
   })
   let pickleIds = []
   for (const source of sources) {

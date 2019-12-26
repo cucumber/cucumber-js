@@ -17,6 +17,7 @@ import { messages } from 'cucumber-messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { PassThrough } from 'stream'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -54,7 +55,8 @@ async function testProgressBarFormatter({
     eventBroadcaster,
     eventDataCollector: new EventDataCollector(eventBroadcaster),
     log: logFn,
-    stream: {},
+    parsedArgvOptions: {},
+    stream: new PassThrough(),
     supportCodeLibrary,
   }) as ProgressBarFormatter
   let mocked = false

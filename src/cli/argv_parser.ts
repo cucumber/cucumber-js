@@ -2,9 +2,21 @@ import _ from 'lodash'
 import { Command } from 'commander'
 import path from 'path'
 import Gherkin from 'gherkin'
+import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+
+export interface IParsedArgvFormatRerunOptions {
+  separator?: string
+}
+
+export interface IParsedArgvFormatOptions {
+  colorsEnabled?: boolean
+  rerun?: IParsedArgvFormatRerunOptions
+  snippetInterface?: SnippetInterface
+  snippetSyntax?: string
+}
 
 export interface IParsedArgvOptions {
   backtrace: boolean
@@ -12,7 +24,7 @@ export interface IParsedArgvOptions {
   exit: boolean
   failFast: boolean
   format: string[]
-  formatOptions: object
+  formatOptions: IParsedArgvFormatOptions
   i18nKeywords: string
   i18nLanguages: boolean
   language: string

@@ -1,12 +1,13 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
+import { SnippetInterface } from './snippet_syntax'
 
 describe('JavascriptSnippetSyntax', () => {
   describe('build()', () => {
     describe('callback interface', () => {
       beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax('callback')
+        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Callback)
       })
 
       it('returns the proper snippet', function() {
@@ -32,7 +33,7 @@ describe('JavascriptSnippetSyntax', () => {
 
     describe('generator interface', () => {
       beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax('generator')
+        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Generator)
       })
 
       it('returns the proper snippet', function() {
@@ -58,7 +59,7 @@ describe('JavascriptSnippetSyntax', () => {
 
     describe('promise interface', () => {
       beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax('promise')
+        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Promise)
       })
 
       it('returns the proper snippet', function() {
@@ -84,7 +85,7 @@ describe('JavascriptSnippetSyntax', () => {
 
     describe('synchronous interface', () => {
       beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax('synchronous')
+        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
       })
 
       it('returns the proper snippet', function() {
@@ -110,7 +111,7 @@ describe('JavascriptSnippetSyntax', () => {
 
     describe('pattern contains single quote', () => {
       beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax('synchronous')
+        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
       })
 
       it('returns the proper snippet', function() {
@@ -136,7 +137,7 @@ describe('JavascriptSnippetSyntax', () => {
 
     describe('multiple patterns', () => {
       beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax('synchronous')
+        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
       })
 
       it('returns the snippet with the other choices commented out', function() {

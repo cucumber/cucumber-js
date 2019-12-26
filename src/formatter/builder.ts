@@ -12,31 +12,52 @@ import SummaryFormatter from './summary_formatter'
 import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter from '.'
+import Formatter, { IFormatterLogFn } from '.'
 import { doesNotHaveValue, doesHaveValue } from '../value_checker'
+import { EventEmitter } from 'events'
+import EventDataCollector from './helpers/event_data_collector'
+import { Writable as WritableStream } from 'stream'
+import { IParsedArgvFormatOptions } from '../cli/argv_parser'
+import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
-  snippetInterface?: string
+  snippetInterface?: SnippetInterface
   snippetSyntax?: string
   supportCodeLibrary: ISupportCodeLibrary
 }
 
+export interface IBuildOptions {
+  cwd: string
+  eventBroadcaster: EventEmitter
+  eventDataCollector: EventDataCollector
+  log: IFormatterLogFn
+  parsedArgvOptions: IParsedArgvFormatOptions
+  stream: WritableStream
+  supportCodeLibrary: ISupportCodeLibrary
+}
+
 const FormatterBuilder = {
-  build(type, options): Formatter {
+  build(type: string, options: IBuildOptions): Formatter {
     const FormatterConstructor = FormatterBuilder.getConstructorByType(
       type,
-      options
+      options.cwd
     )
-    const extendedOptions = {
-      colorFns: getColorFns(options.colorsEnabled),
-      snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder(options),
+    const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
+    const snippetBuilder = FormatterBuilder.getStepDefinitionSnippetBuilder({
+      cwd: options.cwd,
+      snippetInterface: options.parsedArgvOptions.snippetInterface,
+      snippetSyntax: options.parsedArgvOptions.snippetSyntax,
+      supportCodeLibrary: options.supportCodeLibrary,
+    })
+    return new FormatterConstructor({
+      colorFns,
+      snippetBuilder,
       ...options,
-    }
-    return new FormatterConstructor(extendedOptions)
+    })
   },
 
-  getConstructorByType(type, options): typeof Formatter {
+  getConstructorByType(type: string, cwd: string): typeof Formatter {
     switch (type) {
       case 'json':
         return JsonFormatter
@@ -57,7 +78,7 @@ const FormatterBuilder = {
       case 'usage-json':
         return UsageJsonFormatter
       default:
-        return FormatterBuilder.loadCustomFormatter(type, options)
+        return FormatterBuilder.loadCustomFormatter(type, cwd)
     }
   },
 
@@ -68,7 +89,7 @@ const FormatterBuilder = {
     supportCodeLibrary,
   }: IGetStepDefinitionSnippetBuilderOptions) {
     if (doesNotHaveValue(snippetInterface)) {
-      snippetInterface = 'synchronous'
+      snippetInterface = SnippetInterface.Synchronous
     }
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
@@ -81,7 +102,7 @@ const FormatterBuilder = {
     })
   },
 
-  loadCustomFormatter(customFormatterPath, { cwd }) {
+  loadCustomFormatter(customFormatterPath: string, cwd: string) {
     const fullCustomFormatterPath = path.resolve(cwd, customFormatterPath)
     const CustomFormatter = require(fullCustomFormatterPath) // eslint-disable-line @typescript-eslint/no-var-requires
     if (typeof CustomFormatter === 'function') {

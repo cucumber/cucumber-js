@@ -51,6 +51,7 @@ async function runFeature(): Promise<boolean> {
     cwd: '/',
     eventBroadcaster,
     eventDataCollector,
+    parsedArgvOptions: {},
     log(data) {
       appendToOutput(ansiHTML(data))
     },

@@ -1,11 +1,15 @@
-import { ISnippetSnytax, ISnippetSyntaxBuildOptions } from './snippet_syntax'
+import {
+  ISnippetSnytax,
+  ISnippetSyntaxBuildOptions,
+  SnippetInterface,
+} from './snippet_syntax'
 
 const CALLBACK_NAME = 'callback'
 
 export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
-  private readonly snippetInterface: string
+  private readonly snippetInterface: SnippetInterface
 
-  constructor(snippetInterface: string) {
+  constructor(snippetInterface: SnippetInterface) {
     this.snippetInterface = snippetInterface
   }
 
@@ -16,14 +20,14 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
     stepParameterNames,
   }: ISnippetSyntaxBuildOptions): string {
     let functionKeyword = 'function '
-    if (this.snippetInterface === 'async-await') {
+    if (this.snippetInterface === SnippetInterface.AsyncAwait) {
       functionKeyword = 'async ' + functionKeyword
-    } else if (this.snippetInterface === 'generator') {
+    } else if (this.snippetInterface === SnippetInterface.Generator) {
       functionKeyword += '*'
     }
 
     let implementation: string
-    if (this.snippetInterface === 'callback') {
+    if (this.snippetInterface === SnippetInterface.Callback) {
       implementation = `${CALLBACK_NAME}(null, 'pending');`
     } else {
       implementation = "return 'pending';"
@@ -35,7 +39,7 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
         const allParameterNames = generatedExpression.parameterNames.concat(
           stepParameterNames
         )
-        if (this.snippetInterface === 'callback') {
+        if (this.snippetInterface === SnippetInterface.Callback) {
           allParameterNames.push(CALLBACK_NAME)
         }
         return `${prefix + functionName}('${generatedExpression.source.replace(
