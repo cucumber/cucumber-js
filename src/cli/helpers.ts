@@ -29,7 +29,7 @@ export async function getExpandedArgv({
   return fullArgv
 }
 
-interface IParseGherkinMessageStreamOptions {
+interface IParseGherkinMessageStreamRequest {
   cwd: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -45,7 +45,7 @@ export async function parseGherkinMessageStream({
   gherkinMessageStream,
   order,
   pickleFilter,
-}: IParseGherkinMessageStreamOptions): Promise<string[]> {
+}: IParseGherkinMessageStreamRequest): Promise<string[]> {
   return new Promise<string[]>((resolve, reject) => {
     const result = []
     gherkinMessageStream.on('data', envelope => {
