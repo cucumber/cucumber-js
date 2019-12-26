@@ -82,7 +82,7 @@ describe('helpers', () => {
           order: 'defined',
           pickleFilter: new PickleFilter({
             cwd: '/project',
-            tagExpression: 'not @tagA'
+            tagExpression: 'not @tagA',
           }),
         })
       })
