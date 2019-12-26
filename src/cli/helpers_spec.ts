@@ -63,7 +63,7 @@ describe('helpers', () => {
     describe('feature with scenario that does not match the filter', () => {
       const sourceEnvelope = messages.Envelope.create({
         source: {
-          data: 'Feature: a\nScenario: b\nGiven a step',
+          data: '@tagA\nFeature: a\nScenario: b\nGiven a step',
           media: {
             contentType: 'text/x.cucumber.gherkin+plain',
             encoding: messages.Media.Encoding.UTF8,
@@ -82,7 +82,7 @@ describe('helpers', () => {
           order: 'defined',
           pickleFilter: new PickleFilter({
             cwd: '/project',
-            featurePaths: [`/project/features/a.feature:5`],
+            tagExpression: 'not @tagA'
           }),
         })
       })
@@ -153,7 +153,7 @@ describe('helpers', () => {
           eventDataCollector: this.eventDataCollector,
           gherkinMessageStream,
           order: 'defined',
-          pickleFilter: new PickleFilter({ cwd: this.tmpDir }),
+          pickleFilter: new PickleFilter({ cwd: '/project' }),
         })
       })
 
