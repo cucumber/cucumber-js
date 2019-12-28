@@ -10,12 +10,6 @@ export interface IColorFns {
   forStatus(status: Status): IColorFn
   location: IColorFn
   tag: IColorFn
-
-  // For assertion-error-formatter
-  diffAdded: IColorFn
-  diffRemoved: IColorFn
-  errorMessage: IColorFn
-  errorStack: IColorFn
 }
 
 export default function getColorFns(enabled: boolean): IColorFns {
@@ -33,10 +27,6 @@ export default function getColorFns(enabled: boolean): IColorFns {
       },
       location: colors.gray.bind(colors),
       tag: colors.cyan.bind(colors),
-      diffAdded: colors.green.bind(colors),
-      diffRemoved: colors.red.bind(colors),
-      errorMessage: colors.red.bind(colors),
-      errorStack: colors.gray.bind(colors),
     }
   } else {
     return {
@@ -45,10 +35,6 @@ export default function getColorFns(enabled: boolean): IColorFns {
       },
       location: _.identity,
       tag: _.identity,
-      diffAdded: _.identity,
-      diffRemoved: _.identity,
-      errorMessage: _.identity,
-      errorStack: _.identity,
     }
   }
 }

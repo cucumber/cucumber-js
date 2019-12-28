@@ -1,7 +1,6 @@
 import indentString from 'indent-string'
 import Status from '../../status'
 import figures from 'figures'
-import { formatError } from './error_helpers'
 import { formatLocation } from './location_helpers'
 import {
   parseTestCaseAttempt,
@@ -20,25 +19,16 @@ const CHARACTERS = {
   [Status.UNDEFINED]: '?',
 }
 
-interface IGetStepMessageRequest {
-  colorFns: IColorFns
-  testStep: IParsedTestStep
-}
-
-function getStepMessage({
-  colorFns,
-  testStep,
-}: IGetStepMessageRequest): string {
+function getStepMessage(testStep: IParsedTestStep): string {
   switch (testStep.result.status) {
     case Status.AMBIGUOUS:
-      return colorFns.forStatus(Status.AMBIGUOUS)(testStep.result.message)
     case Status.FAILED:
-      return formatError(testStep.result.message, colorFns)
+      return testStep.result.message
     case Status.UNDEFINED:
       return `${'Undefined. Implement with the following snippet:' +
         '\n\n'}${indentString(testStep.snippet, 2)}\n`
     case Status.PENDING:
-      return colorFns.forStatus(Status.PENDING)('Pending')
+      return 'Pending'
   }
   return ''
 }
@@ -69,9 +59,9 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
     const message = media.contentType === 'text/plain' ? `: ${data}` : ''
     text += indentString(`Attachment (${media.contentType})${message}\n`, 4)
   })
-  const message = getStepMessage({ colorFns, testStep })
+  const message = getStepMessage(testStep)
   if (message !== '') {
-    text += `${indentString(message, 4)}\n`
+    text += `${indentString(colorFn(message), 4)}\n`
   }
   return text
 }

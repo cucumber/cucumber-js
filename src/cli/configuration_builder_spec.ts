@@ -8,6 +8,7 @@ import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
 import { promisify } from 'util'
+import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
 describe('Configuration', () => {
   beforeEach(async function() {
@@ -29,7 +30,7 @@ describe('Configuration', () => {
       expect(this.result).to.eql({
         featureDefaultLanguage: 'en',
         featurePaths: [],
-        formatOptions: { cwd: this.tmpDir },
+        formatOptions: {},
         formats: [{ outputTo: '', type: 'progress' }],
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
@@ -164,12 +165,17 @@ describe('Configuration', () => {
   })
 
   describe('formatOptions', () => {
-    it('returns the format options passed in with cwd added', async function() {
-      this.argv.push('--format-options', '{"snippetSyntax": "promise"}')
+    it('joins the objects', async function() {
+      this.argv.push(
+        '--format-options',
+        '{"snippetInterface": "promise"}',
+        '--format-options',
+        '{"colorsEnabled": false}'
+      )
       const result = await ConfigurationBuilder.build(this.configurationOptions)
       expect(result.formatOptions).to.eql({
-        snippetSyntax: 'promise',
-        cwd: this.tmpDir,
+        colorsEnabled: false,
+        snippetInterface: SnippetInterface.Promise,
       })
     })
   })

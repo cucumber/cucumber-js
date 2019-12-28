@@ -1,5 +1,8 @@
 import _ from 'lodash'
-import ArgvParser, { IParsedArgvOptions } from './argv_parser'
+import ArgvParser, {
+  IParsedArgvOptions,
+  IParsedArgvFormatOptions,
+} from './argv_parser'
 import fs from 'mz/fs'
 import path from 'path'
 import OptionSplitter from './option_splitter'
@@ -18,7 +21,7 @@ export interface IConfiguration {
   featureDefaultLanguage: string
   featurePaths: string[]
   formats: IConfigurationFormat[]
-  formatOptions: object // TODO define structure
+  formatOptions: IParsedArgvFormatOptions
   listI18nKeywordsFor: string
   listI18nLanguages: boolean
   order: string
@@ -78,7 +81,7 @@ export default class ConfigurationBuilder {
       featureDefaultLanguage: this.options.language,
       featurePaths,
       formats: this.getFormats(),
-      formatOptions: this.getFormatOptions(),
+      formatOptions: this.options.formatOptions,
       listI18nKeywordsFor,
       listI18nLanguages,
       order: this.options.order,
@@ -150,10 +153,6 @@ export default class ConfigurationBuilder {
       return path.relative(this.cwd, featureDir)
     })
     return _.uniq(featureDirs)
-  }
-
-  getFormatOptions(): object {
-    return _.assign({}, this.options.formatOptions, { cwd: this.cwd })
   }
 
   getFormats(): IConfigurationFormat[] {

@@ -2,7 +2,10 @@ import { EventDataCollector } from '../formatter/helpers'
 import { getExpandedArgv, parseGherkinMessageStream } from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
-import ConfigurationBuilder, { IConfiguration } from './configuration_builder'
+import ConfigurationBuilder, {
+  IConfiguration,
+  IConfigurationFormat,
+} from './configuration_builder'
 import EventEmitter from 'events'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
@@ -18,12 +21,21 @@ import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
 import Gherkin from 'gherkin'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { IParsedArgvFormatOptions } from './argv_parser'
 
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
   shouldExitImmediately: boolean
   success: boolean
+}
+
+interface IInitializeFormattersRequest {
+  eventBroadcaster: EventEmitter
+  eventDataCollector: EventDataCollector
+  formatOptions: IParsedArgvFormatOptions
+  formats: IConfigurationFormat[]
+  supportCodeLibrary: ISupportCodeLibrary
 }
 
 export default class Cli {
@@ -48,7 +60,7 @@ export default class Cli {
     formatOptions,
     formats,
     supportCodeLibrary,
-  }): Promise<() => Promise<void>> {
+  }: IInitializeFormattersRequest): Promise<() => Promise<void>> {
     const streamsToClose = []
     await bluebird.map(formats, async ({ type, outputTo }) => {
       let stream: IFormatterStream = this.stdout
@@ -58,15 +70,16 @@ export default class Cli {
         streamsToClose.push(stream)
       }
       const typeOptions = {
+        cwd: this.cwd,
         eventBroadcaster,
         eventDataCollector,
         log: stream.write.bind(stream),
+        parsedArgvOptions: formatOptions,
         stream,
         supportCodeLibrary,
-        ...formatOptions,
       }
       if (doesNotHaveValue(formatOptions.colorsEnabled)) {
-        typeOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
+        typeOptions.parsedArgvOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
       }
       if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
         const outputToName = outputTo === '' ? 'stdout' : outputTo
