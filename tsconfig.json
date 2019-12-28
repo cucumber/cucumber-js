@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": ["es2017"],
+    "module": "commonjs",
+    "sourceMap": true,
+    "target": "es2017"
+  },
+}

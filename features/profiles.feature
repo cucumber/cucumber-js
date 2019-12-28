@@ -18,12 +18,10 @@ Feature: default command line arguments
       """
     And a file named "cucumber.js" with:
       """
-      var common = '--require-module @babel/register ';
-
       module.exports = {
-        'default': common + '--format summary',
-        dry: common + '--dry-run',
-        progress: common + '--format progress'
+        'default': '--format summary',
+        dry: '--dry-run',
+        progress: '--format progress'
       };
       """
 
