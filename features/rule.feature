@@ -20,8 +20,8 @@ Feature: Rule keyword
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given, When, Then} from 'cucumber'
-      import assert from 'assert'
+      const {Given, When, Then} = require('cucumber')
+      const assert = require('assert')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
@@ -75,8 +75,8 @@ Feature: Rule keyword
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given, When, Then} from 'cucumber'
-      import assert from 'assert'
+      const {Given, When, Then} = require('cucumber')
+      const assert = require('assert')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
