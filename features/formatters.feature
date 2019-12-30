@@ -1,6 +1,6 @@
 Feature: Formatters
 
-  Scenario: rejected pickle
+  Scenario: rejected pickle from Scenario
     Given a file named "features/a.feature" with:
       """
       Feature: a feature
@@ -8,7 +8,19 @@ Feature: Formatters
           Given a step
       """
     When I run cucumber-js with all formatters and `--tags @a`
-    Then the "message" formatter output matches the fixture "formatters/rejected-pickle.message.json"
+    Then the "message" formatter output matches the fixture "formatters/rejected-pickle-scenario.message.json"
+    Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
+
+  Scenario: rejected pickle from Rule
+    Given a file named "features/a.feature" with:
+      """
+      Feature: a feature
+        Rule: a rule
+          Example: an example
+            Given a step
+      """
+    When I run cucumber-js with all formatters and `--tags @a`
+    Then the "message" formatter output matches the fixture "formatters/rejected-pickle-rule.message.json"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
   Scenario: passed
