@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import Gherkin from 'gherkin'
 import Table, { HorizontalTable } from 'cli-table3'
-import titleCase from 'title-case'
+import { capitalCase } from 'capital-case'
 
 const keywords = [
   'feature',
@@ -59,7 +59,7 @@ export function getKeywords(isoCode: string): string {
   const language = Gherkin.dialects()[isoCode]
   const rows = _.map(keywords, keyword => {
     const words = _.map(language[keyword], s => `"${s}"`).join(', ')
-    return [titleCase(keyword), words]
+    return [capitalCase(keyword), words]
   })
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)
 }

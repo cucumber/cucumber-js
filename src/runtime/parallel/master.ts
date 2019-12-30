@@ -149,7 +149,7 @@ export default class Master {
     })
     const slave = { closed: false, process: slaveProcess }
     this.slaves[id] = slave
-    slave.process.on('message', message => {
+    slave.process.on('message', (message: IMasterReport) => {
       this.parseSlaveMessage(slave, message)
     })
     slave.process.on('close', exitCode => {
