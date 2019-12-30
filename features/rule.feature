@@ -54,6 +54,14 @@ Feature: Rule keyword
       """
     When I run cucumber-js
     Then it passes
+    And it outputs the text:
+    """
+    .......
+
+    2 scenarios (2 passed)
+    7 steps (7 passed)
+    <duration-stat>
+    """
 
   Scenario: Rule with multiple examples, failing
     Given a file named "features/highlander.feature" with:
