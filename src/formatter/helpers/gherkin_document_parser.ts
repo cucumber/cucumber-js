@@ -6,9 +6,15 @@ export function getGherkinStepMap(
   gherkinDocument: messages.IGherkinDocument
 ): Dictionary<messages.GherkinDocument.Feature.IStep> {
   return _.chain(gherkinDocument.feature.children)
-    .map((child: messages.GherkinDocument.Feature.IFeatureChild) =>
-      doesHaveValue(child.background) ? child.background : child.scenario
-    )
+    .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
+      if (doesHaveValue(child.background)) {
+        return [child.background]
+      } else if (doesHaveValue(child.rule)) {
+        return child.rule.children.map(ruleChild => ruleChild.scenario)
+      }
+      return [child.scenario]
+    })
+    .flatten()
     .map('steps')
     .flatten()
     .map((step: messages.GherkinDocument.Feature.IStep) => [step.id, step])
