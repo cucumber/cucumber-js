@@ -26,6 +26,13 @@ export function getGherkinScenarioMap(
   gherkinDocument: messages.IGherkinDocument
 ): Dictionary<messages.GherkinDocument.Feature.IScenario> {
   return _.chain(gherkinDocument.feature.children)
+    .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
+      if (doesHaveValue(child.rule)) {
+        return child.rule.children
+      }
+      return [child]
+    })
+    .flatten()
     .filter('scenario')
     .map('scenario')
     .map((scenario: messages.GherkinDocument.Feature.IScenario) => [
