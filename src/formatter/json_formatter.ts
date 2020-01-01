@@ -212,7 +212,7 @@ export default class JsonFormatter extends Formatter {
     return {
       description,
       id: `${this.convertNameToId(feature)};${this.convertNameToId(pickle)}`,
-      keyword: 'Scenario',
+      keyword: gherkinScenarioMap[pickle.astNodeIds[0]].keyword,
       line: gherkinScenarioLocationMap[pickle.astNodeIds[0]].line,
       name: pickle.name,
       steps,
