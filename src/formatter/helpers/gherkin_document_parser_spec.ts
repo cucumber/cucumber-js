@@ -1,13 +1,14 @@
-import { describe, it } from 'mocha'
+import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import { getGherkinStepMap } from './gherkin_document_parser'
 
 describe('GherkinDocumentParser', () => {
   describe('getGherkinStepMap', () => {
     describe('with a Background and Scenario', () => {
-      it('creates a map of step id to step', async () => {
+      let sourceData
+      beforeEach(() => {
         // Arrange
-        const sourceData = {
+        sourceData = {
           comments: [],
           feature: {
             location: {
@@ -65,7 +66,8 @@ describe('GherkinDocumentParser', () => {
           },
           uri: 'features/a.feature',
         }
-
+      })
+      it('creates a map of step id to step', async () => {
         // Act
         const output = await getGherkinStepMap(sourceData)
 
@@ -94,9 +96,10 @@ describe('GherkinDocumentParser', () => {
     })
 
     describe('with a Background and Scenario Outline', () => {
-      it('creates a map of step id to step', async () => {
+      let sourceData
+      beforeEach(() => {
         // Arrange
-        const sourceData = {
+        sourceData = {
           comments: [],
           feature: {
             location: {
@@ -214,7 +217,8 @@ describe('GherkinDocumentParser', () => {
           },
           uri: 'features/a.feature',
         }
-
+      })
+      it('creates a map of step id to step', async () => {
         // Act
         const output = await getGherkinStepMap(sourceData)
 
@@ -243,9 +247,10 @@ describe('GherkinDocumentParser', () => {
     })
 
     describe('with a Background and Rule with Examples', () => {
-      it('creates a map of step id to step', async () => {
+      let sourceData
+      beforeEach(() => {
         // Arrange
-        const sourceData = {
+        sourceData = {
           comments: [],
           feature: {
             location: {
@@ -355,7 +360,8 @@ describe('GherkinDocumentParser', () => {
           },
           uri: 'features/a.feature',
         }
-
+      })
+      it('creates a map of step id to step', async () => {
         // Act
         const output = await getGherkinStepMap(sourceData)
 
