@@ -2,7 +2,8 @@ module.exports = [
   {
     source: {
       uri: 'features/a.feature',
-      data: 'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
+      data:
+        'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
       media: {
         encoding: 'UTF8',
         contentType: 'text/x.cucumber.gherkin+plain',
@@ -25,7 +26,7 @@ module.exports = [
             rule: {
               location: {
                 line: 2,
-                column: 3
+                column: 3,
               },
               keyword: 'Rule',
               name: 'a rule',
