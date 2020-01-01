@@ -1,6 +1,7 @@
 import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import {
+  getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
   getGherkinScenarioMap,
   getGherkinStepMap,
@@ -123,6 +124,13 @@ describe('GherkinDocumentParser', () => {
           ],
         },
       })
+    })
+    it('creates a map of scenario id to rule', async () => {
+      // Act
+      const output = await getGherkinExampleRuleMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({})
     })
     it('creates a map of scenario/row id to location', async () => {
       // Act
@@ -374,6 +382,13 @@ describe('GherkinDocumentParser', () => {
           ],
         },
       })
+    })
+    it('creates a map of scenario id to rule', async () => {
+      // Act
+      const output = await getGherkinExampleRuleMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({})
     })
     it('creates a map of scenario/row id to location', async () => {
       // Act
@@ -628,6 +643,158 @@ describe('GherkinDocumentParser', () => {
             },
           ],
           id: '7',
+        },
+      })
+    })
+    it('creates a map of scenario id to rule', async () => {
+      // Act
+      const output = await getGherkinExampleRuleMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '4': {
+          location: {
+            line: 5,
+            column: 3,
+          },
+          keyword: 'Rule',
+          name: 'a rule',
+          children: [
+            {
+              scenario: {
+                location: {
+                  line: 6,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'an example',
+                steps: [
+                  {
+                    location: {
+                      line: 7,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'a regular step',
+                    id: '2',
+                  },
+                  {
+                    location: {
+                      line: 8,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '3',
+                  },
+                ],
+                id: '4',
+              },
+            },
+            {
+              scenario: {
+                location: {
+                  line: 10,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'another example',
+                steps: [
+                  {
+                    location: {
+                      line: 11,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'another step',
+                    id: '5',
+                  },
+                  {
+                    location: {
+                      line: 12,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '6',
+                  },
+                ],
+                id: '7',
+              },
+            },
+          ],
+        },
+        '7': {
+          location: {
+            line: 5,
+            column: 3,
+          },
+          keyword: 'Rule',
+          name: 'a rule',
+          children: [
+            {
+              scenario: {
+                location: {
+                  line: 6,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'an example',
+                steps: [
+                  {
+                    location: {
+                      line: 7,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'a regular step',
+                    id: '2',
+                  },
+                  {
+                    location: {
+                      line: 8,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '3',
+                  },
+                ],
+                id: '4',
+              },
+            },
+            {
+              scenario: {
+                location: {
+                  line: 10,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'another example',
+                steps: [
+                  {
+                    location: {
+                      line: 11,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'another step',
+                    id: '5',
+                  },
+                  {
+                    location: {
+                      line: 12,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '6',
+                  },
+                ],
+                id: '7',
+              },
+            },
+          ],
         },
       })
     })

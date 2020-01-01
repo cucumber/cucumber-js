@@ -43,6 +43,18 @@ export function getGherkinScenarioMap(
     .value()
 }
 
+export function getGherkinExampleRuleMap(
+  gherkinDocument: messages.IGherkinDocument
+): Dictionary<messages.GherkinDocument.Feature.FeatureChild.IRule> {
+  return _.chain(gherkinDocument.feature.children)
+    .filter('rule')
+    .map('rule')
+    .map(rule => rule.children.map(child => [child.scenario.id, rule]))
+    .flatten()
+    .fromPairs()
+    .value()
+}
+
 export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.IGherkinDocument
 ): Dictionary<messages.ILocation> {
