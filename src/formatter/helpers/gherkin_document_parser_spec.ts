@@ -1,6 +1,7 @@
 import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import {
+  getGherkinScenarioLocationMap,
   getGherkinScenarioMap,
   getGherkinStepMap,
 } from './gherkin_document_parser'
@@ -120,6 +121,18 @@ describe('GherkinDocumentParser', () => {
               text: 'a regular step',
             },
           ],
+        },
+      })
+    })
+    it('creates a map of scenario/row id to location', async () => {
+      // Act
+      const output = await getGherkinScenarioLocationMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '3': {
+          column: 3,
+          line: 5,
         },
       })
     })
@@ -362,6 +375,26 @@ describe('GherkinDocumentParser', () => {
         },
       })
     })
+    it('creates a map of scenario/row id to location', async () => {
+      // Act
+      const output = await getGherkinScenarioLocationMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '6': {
+          column: 3,
+          line: 5,
+        },
+        '4': {
+          column: 4,
+          line: 9,
+        },
+        '5': {
+          column: 4,
+          line: 10,
+        },
+      })
+    })
   })
 
   describe('with a Background and Rule with Examples', () => {
@@ -595,6 +628,22 @@ describe('GherkinDocumentParser', () => {
             },
           ],
           id: '7',
+        },
+      })
+    })
+    it('creates a map of scenario/row id to location', async () => {
+      // Act
+      const output = await getGherkinScenarioLocationMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '4': {
+          line: 6,
+          column: 5,
+        },
+        '7': {
+          line: 10,
+          column: 5,
         },
       })
     })

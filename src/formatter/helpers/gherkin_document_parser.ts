@@ -46,18 +46,23 @@ export function getGherkinScenarioMap(
 export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.IGherkinDocument
 ): Dictionary<messages.ILocation> {
-  const map: Dictionary<messages.ILocation> = {}
-  for (const child of gherkinDocument.feature.children) {
-    if (doesHaveValue(child.scenario)) {
-      map[child.scenario.id] = child.scenario.location
-      if (doesHaveValue(child.scenario.examples)) {
-        for (const examples of child.scenario.examples) {
-          for (const tableRow of examples.tableBody) {
-            map[tableRow.id] = tableRow.location
-          }
-        }
+  const locationMap: Dictionary<messages.ILocation> = {}
+  const scenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario> = getGherkinScenarioMap(
+    gherkinDocument
+  )
+  _.entries<messages.GherkinDocument.Feature.IScenario>(scenarioMap).forEach(
+    ([id, scenario]) => {
+      locationMap[id] = scenario.location
+      if (doesHaveValue(scenario.examples)) {
+        _.chain(scenario.examples)
+          .map('tableBody')
+          .flatten()
+          .forEach(tableRow => {
+            locationMap[tableRow.id] = tableRow.location
+          })
+          .value()
       }
     }
-  }
-  return map
+  )
+  return locationMap
 }
