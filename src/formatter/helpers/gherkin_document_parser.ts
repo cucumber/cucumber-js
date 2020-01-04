@@ -6,25 +6,31 @@ export function getGherkinStepMap(
   gherkinDocument: messages.IGherkinDocument
 ): Dictionary<messages.GherkinDocument.Feature.IStep> {
   return _.chain(gherkinDocument.feature.children)
-    .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
-      if (doesHaveValue(child.background)) {
-        return [child.background]
-      } else if (doesHaveValue(child.rule)) {
-        return child.rule.children.map(ruleChild => {
-          if (doesHaveValue(ruleChild.background)) {
-            return ruleChild.background
-          }
-          return ruleChild.scenario
-        })
-      }
-      return [child.scenario]
-    })
+    .map(extractStepContainers)
     .flatten()
     .map('steps')
     .flatten()
     .map((step: messages.GherkinDocument.Feature.IStep) => [step.id, step])
     .fromPairs()
     .value()
+}
+
+function extractStepContainers(
+  child: messages.GherkinDocument.Feature.IFeatureChild
+): Array<
+  | messages.GherkinDocument.Feature.IScenario
+  | messages.GherkinDocument.Feature.IBackground
+> {
+  if (doesHaveValue(child.background)) {
+    return [child.background]
+  } else if (doesHaveValue(child.rule)) {
+    return child.rule.children.map(ruleChild =>
+      doesHaveValue(ruleChild.background)
+        ? ruleChild.background
+        : ruleChild.scenario
+    )
+  }
+  return [child.scenario]
 }
 
 export function getGherkinScenarioMap(
