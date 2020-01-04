@@ -1,15 +1,16 @@
 Feature: Rule keyword
 
-  Scenario: Rule with multiple examples, passing
+  Scenario: Rule with background and multiple examples, passing
     Given a file named "features/highlander.feature" with:
       """
       Feature: Highlander
 
         Rule: There can be only One
+          Background:
+            Given there are 3 ninjas
 
           Example: Only One -- More than one alive
-            Given there are 3 ninjas
-            And there are more than one ninja alive
+            Given there are more than one ninja alive
             When 2 ninjas meet, they will fight
             Then one ninja dies
             And there is one ninja less alive
@@ -21,7 +22,6 @@ Feature: Rule keyword
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given, When, Then} = require('cucumber')
-      const assert = require('assert')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
@@ -41,11 +41,11 @@ Feature: Rule keyword
       })
 
       Then('one ninja dies', function() {
-        assert.equal(1, this.deaths)
+
       })
 
       Then('there is one ninja less alive', function() {
-        assert.equal(1, this.living)
+
       })
 
       Then('they will live forever', function() {
@@ -56,23 +56,24 @@ Feature: Rule keyword
     Then it passes
     And it outputs the text:
     """
-    .......
+    ........
 
     2 scenarios (2 passed)
-    7 steps (7 passed)
+    8 steps (8 passed)
     <duration-stat>
     """
 
-  Scenario: Rule with multiple examples, failing
+  Scenario: Rule with background and multiple examples, failing
     Given a file named "features/highlander.feature" with:
       """
       Feature: Highlander
 
         Rule: There can be only One
+          Background:
+            Given there are 3 ninjas
 
           Example: Only One -- More than one alive
-            Given there are 3 ninjas
-            And there are more than one ninja alive
+            Given there are more than one ninja alive
             When 2 ninjas meet, they will fight
             Then one ninja dies
             And there is one ninja less alive
@@ -84,7 +85,6 @@ Feature: Rule keyword
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given, When, Then} = require('cucumber')
-      const assert = require('assert')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
@@ -99,15 +99,16 @@ Feature: Rule keyword
       })
 
       When('2 ninjas meet, they will fight', function() {
-        // broken implementation...
+        this.deaths = 1
+        this.living = 1
       })
 
       Then('one ninja dies', function() {
-        assert.equal(1, this.deaths)
+        throw 'fail'
       })
 
       Then('there is one ninja less alive', function() {
-        assert.equal(1, this.living)
+
       })
 
       Then('they will live forever', function() {
@@ -116,3 +117,21 @@ Feature: Rule keyword
       """
     When I run cucumber-js
     Then it fails
+    And it outputs the text:
+    """
+    ...F-...
+
+    Failures:
+
+    1) Scenario: Only One -- More than one alive # features/highlander.feature:7
+    ✔ Given there are 3 ninjas # features/step_definitions/cucumber_steps.js:3
+    ✔ Given there are more than one ninja alive # features/step_definitions/cucumber_steps.js:11
+    ✔ When 2 ninjas meet, they will fight # features/step_definitions/cucumber_steps.js:15
+    ✖ Then one ninja dies # features/step_definitions/cucumber_steps.js:20
+        fail
+    - And there is one ninja less alive # features/step_definitions/cucumber_steps.js:24
+
+    2 scenarios (1 failed, 1 passed)
+    8 steps (1 failed, 1 skipped, 6 passed)
+    <duration-stat>
+    """
