@@ -815,4 +815,480 @@ describe('GherkinDocumentParser', () => {
       })
     })
   })
+
+  describe('with a Background and Rule with its own Background, and Examples', () => {
+    let sourceData
+    beforeEach(() => {
+      // Arrange
+      sourceData = {
+        comments: [],
+        feature: {
+          location: {
+            line: 1,
+            column: 1,
+          },
+          language: 'en',
+          keyword: 'Feature',
+          name: 'a feature',
+          children: [
+            {
+              background: {
+                location: {
+                  line: 2,
+                  column: 3,
+                },
+                keyword: 'Background',
+                name: '',
+                steps: [
+                  {
+                    location: {
+                      line: 3,
+                      column: 5,
+                    },
+                    keyword: 'Given ',
+                    text: 'a feature-level setup step',
+                    id: '1',
+                  },
+                ],
+              },
+            },
+            {
+              rule: {
+                location: {
+                  line: 5,
+                  column: 3,
+                },
+                keyword: 'Rule',
+                name: 'a rule',
+                children: [
+                  {
+                    background: {
+                      location: {
+                        line: 6,
+                        column: 5,
+                      },
+                      keyword: 'Background',
+                      name: '',
+                      steps: [
+                        {
+                          location: {
+                            line: 7,
+                            column: 7,
+                          },
+                          keyword: 'Given ',
+                          text: 'a rule-level setup step',
+                          id: '2',
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    scenario: {
+                      location: {
+                        line: 9,
+                        column: 5,
+                      },
+                      keyword: 'Example',
+                      name: 'an example',
+                      steps: [
+                        {
+                          location: {
+                            line: 10,
+                            column: 7,
+                          },
+                          keyword: 'When ',
+                          text: 'a regular step',
+                          id: '3',
+                        },
+                        {
+                          location: {
+                            line: 11,
+                            column: 7,
+                          },
+                          keyword: 'Then ',
+                          text: 'an assertion',
+                          id: '4',
+                        },
+                      ],
+                      id: '5',
+                    },
+                  },
+                  {
+                    scenario: {
+                      location: {
+                        line: 13,
+                        column: 5,
+                      },
+                      keyword: 'Example',
+                      name: 'another example',
+                      steps: [
+                        {
+                          location: {
+                            line: 14,
+                            column: 7,
+                          },
+                          keyword: 'When ',
+                          text: 'another step',
+                          id: '6',
+                        },
+                        {
+                          location: {
+                            line: 15,
+                            column: 7,
+                          },
+                          keyword: 'Then ',
+                          text: 'an assertion',
+                          id: '7',
+                        },
+                      ],
+                      id: '8',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        uri: 'features/a.feature',
+      }
+    })
+    it('creates a map of step id to step', async () => {
+      // Act
+      const output = await getGherkinStepMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '1': {
+          location: {
+            line: 3,
+            column: 5,
+          },
+          keyword: 'Given ',
+          text: 'a feature-level setup step',
+          id: '1',
+        },
+        '2': {
+          location: {
+            line: 7,
+            column: 7,
+          },
+          keyword: 'Given ',
+          text: 'a rule-level setup step',
+          id: '2',
+        },
+        '3': {
+          location: {
+            line: 10,
+            column: 7,
+          },
+          keyword: 'When ',
+          text: 'a regular step',
+          id: '3',
+        },
+        '4': {
+          location: {
+            line: 11,
+            column: 7,
+          },
+          keyword: 'Then ',
+          text: 'an assertion',
+          id: '4',
+        },
+        '6': {
+          location: {
+            line: 14,
+            column: 7,
+          },
+          keyword: 'When ',
+          text: 'another step',
+          id: '6',
+        },
+        '7': {
+          location: {
+            line: 15,
+            column: 7,
+          },
+          keyword: 'Then ',
+          text: 'an assertion',
+          id: '7',
+        },
+      })
+    })
+    it('creates a map of scenario id to scenario', async () => {
+      // Act
+      const output = await getGherkinScenarioMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '5': {
+          location: {
+            line: 9,
+            column: 5,
+          },
+          keyword: 'Example',
+          name: 'an example',
+          steps: [
+            {
+              location: {
+                line: 10,
+                column: 7,
+              },
+              keyword: 'When ',
+              text: 'a regular step',
+              id: '3',
+            },
+            {
+              location: {
+                line: 11,
+                column: 7,
+              },
+              keyword: 'Then ',
+              text: 'an assertion',
+              id: '4',
+            },
+          ],
+          id: '5',
+        },
+        '8': {
+          location: {
+            line: 13,
+            column: 5,
+          },
+          keyword: 'Example',
+          name: 'another example',
+          steps: [
+            {
+              location: {
+                line: 14,
+                column: 7,
+              },
+              keyword: 'When ',
+              text: 'another step',
+              id: '6',
+            },
+            {
+              location: {
+                line: 15,
+                column: 7,
+              },
+              keyword: 'Then ',
+              text: 'an assertion',
+              id: '7',
+            },
+          ],
+          id: '8',
+        },
+      })
+    })
+    it('creates a map of scenario id to rule', async () => {
+      // Act
+      const output = await getGherkinExampleRuleMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '5': {
+          location: {
+            line: 5,
+            column: 3,
+          },
+          keyword: 'Rule',
+          name: 'a rule',
+          children: [
+            {
+              background: {
+                location: {
+                  line: 6,
+                  column: 5,
+                },
+                keyword: 'Background',
+                name: '',
+                steps: [
+                  {
+                    location: {
+                      line: 7,
+                      column: 7,
+                    },
+                    keyword: 'Given ',
+                    text: 'a rule-level setup step',
+                    id: '2',
+                  },
+                ],
+              },
+            },
+            {
+              scenario: {
+                location: {
+                  line: 9,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'an example',
+                steps: [
+                  {
+                    location: {
+                      line: 10,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'a regular step',
+                    id: '3',
+                  },
+                  {
+                    location: {
+                      line: 11,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '4',
+                  },
+                ],
+                id: '5',
+              },
+            },
+            {
+              scenario: {
+                location: {
+                  line: 13,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'another example',
+                steps: [
+                  {
+                    location: {
+                      line: 14,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'another step',
+                    id: '6',
+                  },
+                  {
+                    location: {
+                      line: 15,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '7',
+                  },
+                ],
+                id: '8',
+              },
+            },
+          ],
+        },
+        '8': {
+          location: {
+            line: 5,
+            column: 3,
+          },
+          keyword: 'Rule',
+          name: 'a rule',
+          children: [
+            {
+              background: {
+                location: {
+                  line: 6,
+                  column: 5,
+                },
+                keyword: 'Background',
+                name: '',
+                steps: [
+                  {
+                    location: {
+                      line: 7,
+                      column: 7,
+                    },
+                    keyword: 'Given ',
+                    text: 'a rule-level setup step',
+                    id: '2',
+                  },
+                ],
+              },
+            },
+            {
+              scenario: {
+                location: {
+                  line: 9,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'an example',
+                steps: [
+                  {
+                    location: {
+                      line: 10,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'a regular step',
+                    id: '3',
+                  },
+                  {
+                    location: {
+                      line: 11,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '4',
+                  },
+                ],
+                id: '5',
+              },
+            },
+            {
+              scenario: {
+                location: {
+                  line: 13,
+                  column: 5,
+                },
+                keyword: 'Example',
+                name: 'another example',
+                steps: [
+                  {
+                    location: {
+                      line: 14,
+                      column: 7,
+                    },
+                    keyword: 'When ',
+                    text: 'another step',
+                    id: '6',
+                  },
+                  {
+                    location: {
+                      line: 15,
+                      column: 7,
+                    },
+                    keyword: 'Then ',
+                    text: 'an assertion',
+                    id: '7',
+                  },
+                ],
+                id: '8',
+              },
+            },
+          ],
+        },
+      })
+    })
+    it('creates a map of scenario/row id to location', async () => {
+      // Act
+      const output = await getGherkinScenarioLocationMap(sourceData)
+
+      // Assert
+      expect(output).to.eql({
+        '5': {
+          line: 9,
+          column: 5,
+        },
+        '8': {
+          line: 13,
+          column: 5,
+        },
+      })
+    })
+  })
 })

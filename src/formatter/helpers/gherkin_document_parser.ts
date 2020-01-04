@@ -10,7 +10,12 @@ export function getGherkinStepMap(
       if (doesHaveValue(child.background)) {
         return [child.background]
       } else if (doesHaveValue(child.rule)) {
-        return child.rule.children.map(ruleChild => ruleChild.scenario)
+        return child.rule.children.map(ruleChild => {
+          if (doesHaveValue(ruleChild.background)) {
+            return ruleChild.background
+          }
+          return ruleChild.scenario
+        })
       }
       return [child.scenario]
     })
@@ -49,7 +54,11 @@ export function getGherkinExampleRuleMap(
   return _.chain(gherkinDocument.feature.children)
     .filter('rule')
     .map('rule')
-    .map(rule => rule.children.map(child => [child.scenario.id, rule]))
+    .map(rule => {
+      return rule.children
+        .filter(child => doesHaveValue(child.scenario))
+        .map(child => [child.scenario.id, rule])
+    })
     .flatten()
     .fromPairs()
     .value()
