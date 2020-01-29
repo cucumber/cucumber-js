@@ -1,3 +1,4 @@
+@dryrun
 Feature: Dryrun mode
 
   Using the `--dry-run` or `-d` flag gives you a way to quickly scan your features without actually running them.
@@ -37,3 +38,18 @@ Feature: Dryrun mode
     When I run cucumber-js with `--dry-run`
     Then it fails
     And scenario "some scenario" step "Given a step" has status "undefined"
+
+  Scenario: hooks
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
+
+      BeforeAll(function() {throw 'shouldnt run'})
+      Before(function() {throw 'shouldnt run'})
+      After(function() {throw 'shouldnt run'})
+      AfterAll(function() {throw 'shouldnt run'})
+
+      Given('a step', function() {})
+      """
+    When I run cucumber-js with `--dry-run`
+    Then it passes
