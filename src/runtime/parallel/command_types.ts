@@ -1,4 +1,5 @@
 import { messages } from 'cucumber-messages'
+import { IRuntimeOptions } from '../index'
 
 // Messages from Master to Slave
 
@@ -12,7 +13,7 @@ export interface ISlaveCommandInitialize {
   filterStacktraces: boolean
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
-  worldParameters: any
+  options: IRuntimeOptions
 }
 
 export interface ISlaveCommandRun {

@@ -39,18 +39,35 @@ Feature: Dryrun mode
     Then it fails
     And scenario "some scenario" step "Given a step" has status "undefined"
 
-  Scenario: hooks
+  Scenario: hooks should not execute in dry run, single runtime
     Given a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
+    """
+    const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
 
-      Before(function() {throw 'shouldnt run Before'})
-      After(function() {throw 'shouldnt run After'})
+    Before(function() {throw 'shouldnt run Before'})
+    After(function() {throw 'shouldnt run After'})
 
-      BeforeAll(function() {throw 'shouldnt run BeforeAll'})
-      AfterAll(function() {throw 'shouldnt run AfterAll'})
+    BeforeAll(function() {throw 'shouldnt run BeforeAll'})
+    AfterAll(function() {throw 'shouldnt run AfterAll'})
 
-      Given('a step', function() {})
-      """
+    Given('a step', function() {})
+    """
     When I run cucumber-js with `--dry-run`
+    Then it passes
+
+  @spawn
+  Scenario: hooks should not execute in dry run, parallel runtime
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    """
+    const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
+
+    Before(function() {throw 'shouldnt run Before'})
+    After(function() {throw 'shouldnt run After'})
+
+    BeforeAll(function() {throw 'shouldnt run BeforeAll'})
+    AfterAll(function() {throw 'shouldnt run AfterAll'})
+
+    Given('a step', function() {})
+    """
+    When I run cucumber-js with `--dry-run --parallel 2`
     Then it passes

@@ -161,7 +161,7 @@ export default class Master {
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
         supportCodeRequiredModules: this.supportCodeRequiredModules,
-        worldParameters: this.options.worldParameters,
+        options: this.options,
       },
     }
     slave.process.send(initializeCommand)
