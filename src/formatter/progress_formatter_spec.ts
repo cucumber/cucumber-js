@@ -31,10 +31,11 @@ Feature: a
     Given a pending step
   Scenario: a4
     Given a passing step
-  Scenario: a5
-    Given a skipped step
-  Scenario: a6
-    Given an undefined step
+  Rule: ab
+    Example: a5
+      Given a skipped step
+    Example: a6
+      Given an undefined step
 `,
         uri: 'a.feature',
       },
@@ -64,7 +65,7 @@ Failures:
    ${figures.cross} Given a failing step # steps.ts:8
        error
 
-3) Scenario: a6 # a.feature:12
+3) Scenario: a6 # a.feature:13
    ? Given an undefined step
        Undefined. Implement with the following snippet:
 
