@@ -2,6 +2,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.5...master) (In Git)
 
+* format: add support for gherkin rule/example syntax
+
 ### [6.0.5](https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5) (2019-11-13)
 
 #### Bug fixes
