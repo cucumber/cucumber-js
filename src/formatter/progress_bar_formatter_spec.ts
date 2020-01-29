@@ -87,7 +87,7 @@ describe('ProgressBarFormatter', () => {
         },
         {
           data:
-            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+            'Feature: a\nRule: b\nExample: c\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
