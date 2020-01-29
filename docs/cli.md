@@ -116,6 +116,12 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with an `and` operator.
 `<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions).
 
+## --fail-fast
+
+abort the run on first failure (default: false)
+
+By default, cucumber-js runs the entire suite and reports all the failures. This flag allows a developer workflow where you work on one failure at a time. Combining this feature with rerun files allows you to work through all failures in an efficient manner.
+
 ## Retry failing tests
 
 Use `--retry <int>` to rerun tests that have been failing. This can be very helpful for flaky tests.
