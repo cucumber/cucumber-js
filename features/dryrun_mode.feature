@@ -38,7 +38,7 @@ Feature: Dryrun mode
     Then it fails
     And scenario "some scenario" step "Given a step" has status "undefined"
 
-  Scenario: hooks should not execute in dry run, single runtime
+  Scenario: hooks should not execute in dry run, serial runtime
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
     const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
