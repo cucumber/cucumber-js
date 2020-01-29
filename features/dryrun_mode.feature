@@ -1,4 +1,3 @@
-@dryrun
 Feature: Dryrun mode
 
   Using the `--dry-run` or `-d` flag gives you a way to quickly scan your features without actually running them.
