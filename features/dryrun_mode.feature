@@ -44,10 +44,11 @@ Feature: Dryrun mode
       """
       const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
 
-      BeforeAll(function() {throw 'shouldnt run'})
-      Before(function() {throw 'shouldnt run'})
-      After(function() {throw 'shouldnt run'})
-      AfterAll(function() {throw 'shouldnt run'})
+      Before(function() {throw 'shouldnt run Before'})
+      After(function() {throw 'shouldnt run After'})
+
+      BeforeAll(function() {throw 'shouldnt run BeforeAll'})
+      AfterAll(function() {throw 'shouldnt run AfterAll'})
 
       Given('a step', function() {})
       """
