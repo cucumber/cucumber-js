@@ -347,7 +347,7 @@ describe('ProgressBarFormatter', () => {
       clock.uninstall()
     })
 
-    it('outputs step totals, scenario totals, and duration', async () => {
+    it('outputs step totals, scenario totals, and duration - singular', async () => {
       // Arrange
       const sources = [
         {
@@ -367,6 +367,33 @@ describe('ProgressBarFormatter', () => {
       // Assert
       expect(output).to.contain(
         '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+      )
+    })
+
+    it('outputs step totals, scenario totals, and duration - plural', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a passing step',
+          uri: 'a.feature',
+        },
+        {
+          data: 'Feature: a\nRule: b\nExample: c\nGiven a passing step',
+          uri: 'b.feature',
+        },
+      ]
+      const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+      // Act
+      const { output } = await testProgressBarFormatter({
+        shouldStopFn: envelope => false,
+        sources,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      expect(output).to.contain(
+        '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
       )
     })
   })
