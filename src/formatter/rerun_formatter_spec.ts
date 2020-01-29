@@ -180,7 +180,7 @@ describe('RerunFormatter', () => {
                 uri: 'a.feature',
               },
               {
-                data: 'Feature: a\n\nScenario: b\nGiven a step',
+                data: 'Feature: a\n\nRule: b\nExample: c\nGiven a step',
                 uri: 'b.feature',
               },
             ]
@@ -193,7 +193,7 @@ describe('RerunFormatter', () => {
             })
 
             // Assert
-            expect(output).to.eql(`a.feature:2${separator.expected}b.feature:3`)
+            expect(output).to.eql(`a.feature:2${separator.expected}b.feature:4`)
           })
         })
       }
