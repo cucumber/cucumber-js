@@ -61,6 +61,9 @@ export default class Runtime {
   }
 
   async runTestRunHooks(key: string, name: string): Promise<void> {
+    if (this.options.dryRun) {
+      return
+    }
     await bluebird.each(
       this.supportCodeLibrary[key],
       async (hookDefinition: TestRunHookDefinition) => {

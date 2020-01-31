@@ -15,6 +15,7 @@ import { messages, IdGenerator } from 'cucumber-messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
+import { IRuntimeOptions } from '../index'
 
 const { uuid } = IdGenerator
 
@@ -34,6 +35,7 @@ export default class Slave {
   private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
+  private options: IRuntimeOptions
 
   constructor({ cwd, exit, id, sendMessage }) {
     this.id = id
@@ -54,7 +56,7 @@ export default class Slave {
     filterStacktraces,
     supportCodeRequiredModules,
     supportCodePaths,
-    worldParameters,
+    options,
   }: ISlaveCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
@@ -73,7 +75,8 @@ export default class Slave {
         ),
       },
     })
-    this.worldParameters = worldParameters
+    this.worldParameters = options.worldParameters
+    this.options = options
     this.filterStacktraces = filterStacktraces
     if (this.filterStacktraces) {
       this.stackTraceFilter.filter()
@@ -130,6 +133,9 @@ export default class Slave {
     testRunHookDefinitions: TestRunHookDefinition[],
     name: string
   ): Promise<void> {
+    if (this.options.dryRun) {
+      return
+    }
     await bluebird.each(testRunHookDefinitions, async hookDefinition => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
