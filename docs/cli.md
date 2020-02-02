@@ -83,7 +83,7 @@ Undefined steps snippets are printed in JavaScript using the callback interface 
 
 disable _strict_ mode.
 
-By default, cucumber works in _strict_ mode, meaning it will fail if there are pending or undefined steps.
+By default, cucumber works in _strict_ mode, meaning it will fail if there are pending steps.
 
 ### Interface
 
