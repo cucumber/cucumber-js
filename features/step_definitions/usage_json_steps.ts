@@ -2,8 +2,9 @@ import _ from 'lodash'
 import { Then } from '../../'
 import { expect } from 'chai'
 import path from 'path'
+import { World } from '../support/world'
 
-Then('it outputs the usage data:', function(table) {
+Then('it outputs the usage data:', function(this: World, table) {
   const usageData = JSON.parse(this.lastRun.output)
   table.hashes().forEach(row => {
     const rowUsage = _.find(

@@ -11,10 +11,11 @@ import {
   getTestStepResults,
 } from '../support/message_helpers'
 import { messages } from 'cucumber-messages'
+import { World } from '../support/world'
 
 const { Status } = messages.TestResult
 
-Then('it runs {int} scenarios', function(expectedCount) {
+Then('it runs {int} scenarios', function(this: World, expectedCount) {
   const testCaseStartedEvents = _.filter(
     this.lastRun.envelopes,
     e => e.testCaseStarted
@@ -22,28 +23,40 @@ Then('it runs {int} scenarios', function(expectedCount) {
   expect(testCaseStartedEvents).to.have.lengthOf(expectedCount)
 })
 
-Then('it runs the scenario {string}', function(name) {
+Then('it runs the scenario {string}', function(this: World, name) {
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name])
 })
 
-Then('it runs the scenarios {string} and {string}', function(name1, name2) {
+Then('it runs the scenarios {string} and {string}', function(
+  this: World,
+  name1,
+  name2
+) {
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name1, name2])
 })
 
-Then('it runs the scenarios:', function(table) {
+Then('it runs the scenarios:', function(this: World, table) {
   const expectedNames = table.rows().map(row => row[0])
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(expectedNames).to.eql(actualNames)
 })
 
-Then('scenario {string} has status {string}', function(name, status) {
+Then('scenario {string} has status {string}', function(
+  this: World,
+  name,
+  status
+) {
   const result = getTestCaseResult(this.lastRun.envelopes, name)
   expect(result.status).to.eql(Status[status.toUpperCase()])
 })
 
-Then('the scenario {string} has the steps:', function(name, table) {
+Then('the scenario {string} has the steps:', function(
+  this: World,
+  name,
+  table
+) {
   const actualTexts = getTestStepResults(this.lastRun.envelopes, name).map(
     s => s.text
   )
@@ -52,6 +65,7 @@ Then('the scenario {string} has the steps:', function(name, table) {
 })
 
 Then('scenario {string} step {string} has status {string}', function(
+  this: World,
   pickleName,
   stepText,
   status
@@ -63,7 +77,7 @@ Then('scenario {string} step {string} has status {string}', function(
 
 Then(
   'scenario {string} attempt {int} step {string} has status {string}',
-  function(pickleName, attempt, stepText, status) {
+  function(this: World, pickleName, attempt, stepText, status) {
     const testStepResults = getTestStepResults(
       this.lastRun.envelopes,
       pickleName,
@@ -75,6 +89,7 @@ Then(
 )
 
 Then('scenario {string} {string} hook has status {string}', function(
+  this: World,
   pickleName,
   hookKeyword,
   status
@@ -85,6 +100,7 @@ Then('scenario {string} {string} hook has status {string}', function(
 })
 
 Then('scenario {string} step {string} failed with:', function(
+  this: World,
   pickleName,
   stepText,
   errorMessage
@@ -96,6 +112,7 @@ Then('scenario {string} step {string} failed with:', function(
 })
 
 Then('scenario {string} attempt {int} step {string} failed with:', function(
+  this: World,
   pickleName,
   attempt,
   stepText,
@@ -112,6 +129,7 @@ Then('scenario {string} attempt {int} step {string} failed with:', function(
 })
 
 Then('scenario {string} step {string} has the doc string:', function(
+  this: World,
   pickleName,
   stepText,
   docString
@@ -121,6 +139,7 @@ Then('scenario {string} step {string} has the doc string:', function(
 })
 
 Then('scenario {string} step {string} has the data table:', function(
+  this: World,
   pickleName,
   stepText,
   dataTable
@@ -130,6 +149,7 @@ Then('scenario {string} step {string} has the data table:', function(
 })
 
 Then('scenario {string} step {string} has the attachments:', function(
+  this: World,
   pickleName,
   stepText,
   table
@@ -155,6 +175,7 @@ Then('scenario {string} step {string} has the attachments:', function(
 })
 
 Then('scenario {string} {string} hook has the attachments:', function(
+  this: World,
   pickleName,
   hookKeyword,
   table
