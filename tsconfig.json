@@ -3,6 +3,7 @@
     "esModuleInterop": true,
     "lib": ["es2017"],
     "module": "commonjs",
+    "noImplicitReturns": true,
     "sourceMap": true,
     "target": "es2017"
   },
