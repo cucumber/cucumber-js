@@ -64,8 +64,8 @@ export default class ConfigurationBuilder {
     const listI18nKeywordsFor = this.options.i18nKeywords
     const listI18nLanguages = this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
-    let featurePaths = []
-    let supportCodePaths = []
+    let featurePaths: string[] = []
+    let supportCodePaths: string[] = []
     if (listI18nKeywordsFor === '' && !listI18nLanguages) {
       featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
       let unexpandedSupportCodePaths = this.options.require

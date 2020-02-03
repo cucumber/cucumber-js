@@ -24,7 +24,7 @@ const UserCodeRunner = {
     timeoutInMilliseconds,
   }: IRunRequest): Promise<IRunResponse> {
     const callbackPromise = new Promise((resolve, reject) => {
-      argsArray.push((error, result) => {
+      argsArray.push((error: Error, result: IRunResponse) => {
         if (doesHaveValue(error)) {
           reject(error)
         } else {
