@@ -35,8 +35,17 @@ export interface IDefineTestRunHookOptions {
   timeout?: number
 }
 
+export interface IParameterTypeOptions<T> {
+  name: string
+  typeName: string
+  regexp: RegExp
+  transformer: (...match: string[]) => T
+  useForSnippets: boolean
+  preferForRegexpMatch: boolean
+}
+
 export interface IDefineSupportCodeMethods {
-  defineParameterType(options: any): void
+  defineParameterType(options: IParameterTypeOptions<any>): void
   defineStep(pattern: DefineStepPattern, code: Function): void
   defineStep(
     pattern: DefineStepPattern,

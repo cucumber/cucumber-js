@@ -21,7 +21,7 @@ import {
   IDefineTestCaseHookOptions,
   TestCaseHookFunction,
   IDefineTestRunHookOptions,
-  ISupportCodeLibrary,
+  ISupportCodeLibrary, IParameterTypeOptions,
 } from './types'
 import World from './world'
 
@@ -94,7 +94,7 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  defineParameterType(options): void {
+  defineParameterType(options: IParameterTypeOptions<any>): void {
     const parameterType = buildParameterType(options)
     this.parameterTypeRegistry.defineParameterType(parameterType)
   }
@@ -177,7 +177,7 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  wrapCode({ code, wrapperOptions }): Function {
+  wrapCode({ code, wrapperOptions }: {code: Function, wrapperOptions: any}): Function {
     if (doesHaveValue(this.definitionFunctionWrapper)) {
       const codeLength = code.length
       const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)

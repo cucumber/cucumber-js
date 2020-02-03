@@ -9,9 +9,9 @@ interface IValidation {
 }
 
 interface IDefineStepArguments {
-  pattern: DefineStepPattern
-  options: IDefineStepOptions
-  code: Function
+  pattern?: DefineStepPattern
+  options?: IDefineStepOptions
+  code?: Function
 }
 
 interface IValidateArgumentsOptions {
