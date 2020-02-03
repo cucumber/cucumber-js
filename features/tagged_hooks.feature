@@ -6,21 +6,24 @@ Feature: Tagged Hooks
   Scenario: ability to specify tags for hooks
     Given a file named "features/a.feature" with:
       """
-      @bar
+      @foo
       Feature:
         Scenario:
-          Then the value is 1
+          Then foo is true
+          And bar is false
 
-        @foo
+        @bar
         Scenario:
-          Then the value is 2
+          Then foo is true
+          And bar is true
       """
     And a file named "features/step_definitions/world.js" with:
       """
       const {setWorldConstructor} = require('cucumber')
 
       setWorldConstructor(function() {
-        this.value = 0
+        this.foo = false
+        this.bar = false
       })
       """
     And a file named "features/step_definitions/my_steps.js" with:
@@ -28,8 +31,12 @@ Feature: Tagged Hooks
       const assert = require('assert')
       const {Then} = require('cucumber')
 
-      Then(/^the value is (\d*)$/, function(number) {
-        assert.equal(number, this.value)
+      Then('{word} is true', function(prop) {
+        assert.equal(true, this[prop])
+      })
+
+      Then('{word} is false', function(prop) {
+        assert.equal(false, this[prop])
       })
       """
     And a file named "features/step_definitions/my_tagged_hooks.js" with:
@@ -37,11 +44,11 @@ Feature: Tagged Hooks
       const {Before} = require('cucumber')
 
       Before({tags: '@foo'}, function() {
-        this.value += 1
+        this.foo = true
       })
 
       Before({tags: '@bar'}, function() {
-        this.value += 1
+        this.bar = true
       })
       """
     When I run cucumber-js
