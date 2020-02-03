@@ -19,18 +19,18 @@ import { IRuntimeOptions } from '../index'
 
 const { uuid } = IdGenerator
 
-type ExitFunction = (exitCode: number, error?: Error, message?: string) => void
-type MessageSender = (command: IMasterReport) => void
+type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
+type IMessageSender = (command: IMasterReport) => void
 
 export default class Slave {
   private readonly cwd: string
-  private readonly exit: ExitFunction
+  private readonly exit: IExitFunction
 
   private readonly id: string
   private readonly eventBroadcaster: EventEmitter
   private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
-  private readonly sendMessage: MessageSender
+  private readonly sendMessage: IMessageSender
   private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
@@ -43,9 +43,9 @@ export default class Slave {
     sendMessage,
   }: {
     cwd: string
-    exit: ExitFunction
+    exit: IExitFunction
     id: string
-    sendMessage: MessageSender
+    sendMessage: IMessageSender
   }) {
     this.id = id
     this.newId = uuid()
