@@ -35,7 +35,7 @@ export interface IDefineTestRunHookOptions {
   timeout?: number
 }
 
-export interface IParameterTypeOptions<T> {
+export interface IParameterTypeDefinition<T> {
   name: string
   typeName: string
   regexp: RegExp
@@ -45,7 +45,7 @@ export interface IParameterTypeOptions<T> {
 }
 
 export interface IDefineSupportCodeMethods {
-  defineParameterType(options: IParameterTypeOptions<any>): void
+  defineParameterType(options: IParameterTypeDefinition<any>): void
   defineStep(pattern: DefineStepPattern, code: Function): void
   defineStep(
     pattern: DefineStepPattern,

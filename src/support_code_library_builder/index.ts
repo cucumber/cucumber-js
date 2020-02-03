@@ -22,7 +22,7 @@ import {
   TestCaseHookFunction,
   IDefineTestRunHookOptions,
   ISupportCodeLibrary,
-  IParameterTypeOptions,
+  IParameterTypeDefinition,
 } from './types'
 import World from './world'
 
@@ -95,7 +95,7 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  defineParameterType(options: IParameterTypeOptions<any>): void {
+  defineParameterType(options: IParameterTypeDefinition<any>): void {
     const parameterType = buildParameterType(options)
     this.parameterTypeRegistry.defineParameterType(parameterType)
   }

@@ -3,6 +3,7 @@ import Definition, {
   IDefinition,
   IGetInvocationDataRequest,
   IGetInvocationDataResponse,
+  IStepDefinitionParameters,
 } from './definition'
 import { parseStepArgument } from '../step_arguments'
 import { Expression } from 'cucumber-expressions'
@@ -10,10 +11,10 @@ import bluebird from 'bluebird'
 import { doesHaveValue } from '../value_checker'
 
 export default class StepDefinition extends Definition implements IDefinition {
-  public readonly pattern: string
+  public readonly pattern: string | RegExp
   public readonly expression: Expression
 
-  constructor(data) {
+  constructor(data: IStepDefinitionParameters) {
     super(data)
     this.pattern = data.pattern
     this.expression = data.expression
@@ -41,7 +42,7 @@ export default class StepDefinition extends Definition implements IDefinition {
     }
   }
 
-  matchesStepName(stepName): boolean {
+  matchesStepName(stepName: string): boolean {
     return doesHaveValue(this.expression.match(stepName))
   }
 }

@@ -6,7 +6,7 @@ import StackTrace from 'stacktrace-js'
 import { isFileNameInCucumber } from '../stack_trace_filter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ILineAndUri } from '../types'
-import { IParameterTypeOptions } from './types'
+import { IParameterTypeDefinition } from './types'
 
 export function getDefinitionLineAndUri(cwd: string): ILineAndUri {
   let line: number
@@ -32,7 +32,7 @@ export function buildParameterType({
   transformer,
   useForSnippets,
   preferForRegexpMatch,
-}: IParameterTypeOptions<any>): ParameterType<any> {
+}: IParameterTypeDefinition<any>): ParameterType<any> {
   const getTypeName = deprecate(
     () => typeName,
     'Cucumber defineParameterType: Use name instead of typeName'

@@ -4,6 +4,9 @@ import parse from 'cucumber-tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
+import { io } from 'cucumber-messages/dist/src/cucumber-messages'
+import IGherkinDocument = io.cucumber.messages.IGherkinDocument
+import IPickle = io.cucumber.messages.IPickle
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -35,7 +38,13 @@ export default class PickleFilter {
     this.tagFilter = new PickleTagFilter(tagExpression)
   }
 
-  matches({ gherkinDocument, pickle }): boolean {
+  matches({
+    gherkinDocument,
+    pickle,
+  }: {
+    gherkinDocument: IGherkinDocument
+    pickle: IPickle
+  }): boolean {
     return (
       this.lineFilter.matchesAnyLine({ gherkinDocument, pickle }) &&
       this.nameFilter.matchesAnyName(pickle) &&

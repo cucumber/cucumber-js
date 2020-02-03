@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
-import Formatter from './'
+import Formatter, { IFormatterOptions } from './'
 import { doesHaveValue } from '../value_checker'
 import { messages } from 'cucumber-messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
@@ -11,7 +11,7 @@ interface ILogIssuesRequest {
 }
 
 export default class SummaryFormatter extends Formatter {
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {

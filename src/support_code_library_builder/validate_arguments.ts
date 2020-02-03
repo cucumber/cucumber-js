@@ -1,6 +1,6 @@
-import _, {Dictionary} from 'lodash'
-import {doesNotHaveValue} from '../value_checker'
-import {DefineStepPattern, IDefineStepOptions} from './types'
+import _, { Dictionary } from 'lodash'
+import { doesNotHaveValue } from '../value_checker'
+import { DefineStepPattern, IDefineStepOptions } from './types'
 
 interface IValidation {
   identifier: string
