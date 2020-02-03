@@ -22,7 +22,7 @@ import { doesNotHaveValue } from '../value_checker'
 import Gherkin from 'gherkin'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-
+import { WriteStream } from 'fs'
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
@@ -38,12 +38,26 @@ interface IInitializeFormattersRequest {
   supportCodeLibrary: ISupportCodeLibrary
 }
 
+interface IGetSupportCodeLibraryRequest {
+  newId: IdGenerator.NewId
+  supportCodeRequiredModules: string[]
+  supportCodePaths: string[]
+}
+
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
 
-  constructor({ argv, cwd, stdout }) {
+  constructor({
+    argv,
+    cwd,
+    stdout,
+  }: {
+    argv: string[]
+    cwd: string
+    stdout: IFormatterStream
+  }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
@@ -61,7 +75,7 @@ export default class Cli {
     formats,
     supportCodeLibrary,
   }: IInitializeFormattersRequest): Promise<() => Promise<void>> {
-    const streamsToClose = []
+    const streamsToClose: WriteStream[] = []
     await bluebird.map(formats, async ({ type, outputTo }) => {
       let stream: IFormatterStream = this.stdout
       if (outputTo !== '') {
@@ -101,7 +115,7 @@ export default class Cli {
     newId,
     supportCodeRequiredModules,
     supportCodePaths,
-  }): ISupportCodeLibrary {
+  }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
     supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     supportCodePaths.forEach(codePath => require(codePath))

@@ -156,7 +156,7 @@ export default class ConfigurationBuilder {
   }
 
   getFormats(): IConfigurationFormat[] {
-    const mapping = { '': 'progress' }
+    const mapping: { [key: string]: string } = { '': 'progress' }
     this.options.format.forEach(format => {
       const [type, outputTo] = OptionSplitter.split(format)
       mapping[outputTo] = type

@@ -21,11 +21,8 @@ export function getStepKeywordType({
   previousKeywordType,
 }: IGetStepKeywordTypeOptions): KeywordType {
   const dialect: Dialect = Gherkin.dialects()[language]
-  const type = _.find(
-    ['given', 'when', 'then', 'and', 'but'],
-    (key: 'given' | 'when' | 'then' | 'and' | 'but') =>
-      _.includes(dialect[key], keyword)
-  )
+  const stepKeywords = ['given', 'when', 'then', 'and', 'but'] as const
+  const type = _.find(stepKeywords, key => _.includes(dialect[key], keyword))
   switch (type) {
     case 'when':
       return KeywordType.Event
