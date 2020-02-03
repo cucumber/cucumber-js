@@ -20,13 +20,17 @@ export interface ITestCaseAttempt {
   testCase: messages.ITestCase
 }
 
+export interface IEventBroadcaster {
+  on(name: string, handler: Function): void
+}
+
 export default class EventDataCollector {
   private gherkinDocumentMap: Dictionary<messages.IGherkinDocument> = {}
   private pickleMap: Dictionary<messages.IPickle> = {}
   private testCaseMap: Dictionary<messages.ITestCase> = {}
   private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
 
-  constructor(eventBroadcaster) {
+  constructor(eventBroadcaster: IEventBroadcaster) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
   }
 

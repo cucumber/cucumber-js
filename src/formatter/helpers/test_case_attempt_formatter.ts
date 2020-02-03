@@ -9,6 +9,9 @@ import {
 import { formatStepArgument } from './step_argument_formatter'
 import { IColorFns } from '../get_color_fns'
 import { valueOrDefault, doesHaveValue } from '../../value_checker'
+import { ITestCaseAttempt } from './event_data_collector'
+import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 
 const CHARACTERS: { [status: number]: string } = {
   [Status.AMBIGUOUS]: figures.cross,
@@ -66,13 +69,21 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
   return text
 }
 
+export interface IFormatTestCaseAttemptRequest {
+  colorFns: IColorFns
+  cwd: string
+  testCaseAttempt: ITestCaseAttempt
+  snippetBuilder: StepDefinitionSnippetBuilder
+  supportCodeLibrary: ISupportCodeLibrary
+}
+
 export function formatTestCaseAttempt({
   colorFns,
   cwd,
   snippetBuilder,
   supportCodeLibrary,
   testCaseAttempt,
-}): string {
+}: IFormatTestCaseAttemptRequest): string {
   const parsed = parseTestCaseAttempt({
     cwd,
     snippetBuilder,
