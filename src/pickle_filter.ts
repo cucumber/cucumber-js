@@ -54,7 +54,13 @@ export class PickleLineFilter {
     })
   }
 
-  getFeatureUriToLinesMapping({ cwd, featurePaths }): Dictionary<number[]> {
+  getFeatureUriToLinesMapping({
+    cwd,
+    featurePaths,
+  }: {
+    cwd: string
+    featurePaths: string[]
+  }): Dictionary<number[]> {
     const mapping: Dictionary<number[]> = {}
     featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
