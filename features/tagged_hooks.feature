@@ -6,13 +6,14 @@ Feature: Tagged Hooks
   Scenario: ability to specify tags for hooks
     Given a file named "features/a.feature" with:
       """
+      @bar
       Feature:
         Scenario:
-          Then the value is 0
+          Then the value is 1
 
         @foo
         Scenario:
-          Then the value is 1
+          Then the value is 2
       """
     And a file named "features/step_definitions/world.js" with:
       """
@@ -36,6 +37,10 @@ Feature: Tagged Hooks
       const {Before} = require('cucumber')
 
       Before({tags: '@foo'}, function() {
+        this.value += 1
+      })
+
+      Before({tags: '@bar'}, function() {
         this.value += 1
       })
       """
