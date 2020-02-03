@@ -21,7 +21,8 @@ import {
   IDefineTestCaseHookOptions,
   TestCaseHookFunction,
   IDefineTestRunHookOptions,
-  ISupportCodeLibrary, IParameterTypeOptions,
+  ISupportCodeLibrary,
+  IParameterTypeOptions,
 } from './types'
 import World from './world'
 
@@ -177,7 +178,13 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  wrapCode({ code, wrapperOptions }: {code: Function, wrapperOptions: any}): Function {
+  wrapCode({
+    code,
+    wrapperOptions,
+  }: {
+    code: Function
+    wrapperOptions: any
+  }): Function {
     if (doesHaveValue(this.definitionFunctionWrapper)) {
       const codeLength = code.length
       const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)

@@ -60,7 +60,10 @@ export default class Runtime {
     this.success = true
   }
 
-  async runTestRunHooks(key: string, name: string): Promise<void> {
+  async runTestRunHooks(
+    key: 'beforeTestRunHookDefinitions' | 'beforeTestRunHookDefinitions',
+    name: string
+  ): Promise<void> {
     if (this.options.dryRun) {
       return
     }
