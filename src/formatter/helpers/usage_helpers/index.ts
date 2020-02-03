@@ -34,7 +34,7 @@ export interface IGetUsageRequest {
 function buildEmptyMapping(
   stepDefinitions: StepDefinition[]
 ): Dictionary<IUsage> {
-  const mapping = {}
+  const mapping: Dictionary<IUsage> = {}
   stepDefinitions.forEach(stepDefinition => {
     mapping[stepDefinition.id] = {
       code: stepDefinition.unwrappedCode.toString(),

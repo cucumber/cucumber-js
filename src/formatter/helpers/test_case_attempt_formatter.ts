@@ -10,7 +10,7 @@ import { formatStepArgument } from './step_argument_formatter'
 import { IColorFns } from '../get_color_fns'
 import { valueOrDefault, doesHaveValue } from '../../value_checker'
 
-const CHARACTERS = {
+const CHARACTERS: { [status: number]: string } = {
   [Status.AMBIGUOUS]: figures.cross,
   [Status.FAILED]: figures.cross,
   [Status.PASSED]: figures.tick,

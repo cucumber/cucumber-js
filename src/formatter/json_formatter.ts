@@ -1,5 +1,5 @@
 import _, { Dictionary } from 'lodash'
-import Formatter from './'
+import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { durationToNanoseconds } from '../time'
@@ -9,6 +9,11 @@ import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
+import ITag = messages.GherkinDocument.Feature.ITag
+import IFeature = messages.GherkinDocument.IFeature
+import IPickle = messages.IPickle
+import IScenario = messages.GherkinDocument.Feature.IScenario
+import IEnvelope = messages.IEnvelope
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -84,16 +89,16 @@ interface UriToTestCaseAttemptsMap {
 }
 
 export default class JsonFormatter extends Formatter {
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', envelope => {
+    options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
       }
     })
   }
 
-  convertNameToId(obj): string {
+  convertNameToId(obj: IFeature | IPickle): string {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
@@ -266,18 +271,28 @@ export default class JsonFormatter extends Formatter {
     return data
   }
 
-  getFeatureTags(feature): IJsonTag[] {
+  getFeatureTags(feature: IFeature): IJsonTag[] {
     return _.map(feature.tags, tagData => ({
       name: tagData.name,
       line: tagData.location.line,
     }))
   }
 
-  getScenarioTags({ feature, pickle, gherkinScenarioMap }): IJsonTag[] {
+  getScenarioTags({
+    feature,
+    pickle,
+    gherkinScenarioMap,
+  }: {
+    feature: IFeature
+    pickle: IPickle
+    gherkinScenarioMap: { [id: string]: IScenario }
+  }): IJsonTag[] {
     return _.map(pickle.tags, tagData => {
-      const featureSource = feature.tags.find(t => t.id === tagData.astNodeId)
+      const featureSource = feature.tags.find(
+        (t: ITag) => t.id === tagData.astNodeId
+      )
       const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
-        t => t.id === tagData.astNodeId
+        (t: ITag) => t.id === tagData.astNodeId
       )
       const line = doesHaveValue(featureSource)
         ? featureSource.location.line
