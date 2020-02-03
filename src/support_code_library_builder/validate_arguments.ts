@@ -1,6 +1,6 @@
-import _, { Dictionary } from 'lodash'
-import { doesNotHaveValue } from '../value_checker'
-import { DefineStepPattern, IDefineStepOptions } from './types'
+import _, {Dictionary} from 'lodash'
+import {doesNotHaveValue} from '../value_checker'
+import {DefineStepPattern, IDefineStepOptions} from './types'
 
 interface IValidation {
   identifier: string
@@ -12,12 +12,6 @@ interface IDefineStepArguments {
   pattern?: DefineStepPattern
   options?: IDefineStepOptions
   code?: Function
-}
-
-interface IValidateArgumentsOptions {
-  args?: IDefineStepArguments
-  fnName: string
-  location: string
 }
 
 const optionsValidation = {
@@ -78,7 +72,11 @@ export default function validateArguments({
   args,
   fnName,
   location,
-}: IValidateArgumentsOptions): void {
+}: {
+  args?: IDefineStepArguments
+  fnName: string
+  location: string
+}): void {
   validations[fnName].forEach(({ identifier, expectedType, predicate }) => {
     if (!predicate(args)) {
       throw new Error(
