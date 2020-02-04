@@ -6,14 +6,16 @@ import ConfigurationBuilder, {
 } from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
-import tmp from 'tmp'
+import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
 describe('Configuration', () => {
   beforeEach(async function() {
-    this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
-    await promisify(fsExtra.mkdirp)(path.join(this.tmpDir, 'features'))
+    this.tmpDir = await promisify<DirOptions, string>(tmp.dir)({
+      unsafeCleanup: true,
+    })
+    await fsExtra.mkdirp(path.join(this.tmpDir, 'features'))
     this.argv = ['path/to/node', 'path/to/cucumber.js']
     this.configurationOptions = {
       argv: this.argv,

@@ -1,11 +1,11 @@
 import _ from 'lodash'
-import { Then } from '../../'
+import { Then, DataTable } from '../../'
 import { expect } from 'chai'
 import path from 'path'
 
-Then('it outputs the usage data:', function(table) {
+Then('it outputs the usage data:', function(table: DataTable) {
   const usageData = JSON.parse(this.lastRun.output)
-  table.hashes().forEach(row => {
+  table.hashes().forEach((row: any) => {
     const rowUsage = _.find(
       usageData,
       datum =>

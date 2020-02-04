@@ -191,6 +191,7 @@
     "@types/glob": "^7.1.1",
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^7.0.1",
+    "@types/mustache": "^4.0.0",
     "@types/mz": "^2.7.0",
     "@types/node": "^13.1.1",
     "@types/progress": "^2.0.3",
