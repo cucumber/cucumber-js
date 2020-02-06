@@ -10,7 +10,7 @@ import { World } from '../support/world'
 Given(/^a file named "(.*)" with:$/, async function(
   this: World,
   filePath: string,
-  fileContent: any
+  fileContent: string
 ) {
   const absoluteFilePath = path.join(this.tmpDir, filePath)
   if (filePath === '@rerun.txt') {
