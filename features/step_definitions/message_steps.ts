@@ -3,18 +3,27 @@ import { Then } from '../../'
 import { expect } from 'chai'
 import DataTable from '../../src/models/data_table'
 import {
-  getPickleStep,
   getPickleNamesInOrderOfExecution,
+  getPickleStep,
   getTestCaseResult,
-  getTestStepAttachmentsForStep,
   getTestStepAttachmentsForHook,
+  getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
 import { messages } from 'cucumber-messages'
 
+type StringifiedStatus =
+  | 'UNKNOWN'
+  | 'PASSED'
+  | 'SKIPPED'
+  | 'PENDING'
+  | 'UNDEFINED'
+  | 'AMBIGUOUS'
+  | 'FAILED'
+
 const { Status } = messages.TestResult
 
-Then('it runs {int} scenarios', function(expectedCount) {
+Then('it runs {int} scenarios', function(expectedCount: number) {
   const testCaseStartedEvents = _.filter(
     this.lastRun.envelopes,
     e => e.testCaseStarted
@@ -22,28 +31,39 @@ Then('it runs {int} scenarios', function(expectedCount) {
   expect(testCaseStartedEvents).to.have.lengthOf(expectedCount)
 })
 
-Then('it runs the scenario {string}', function(name) {
+Then('it runs the scenario {string}', function(name: string) {
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name])
 })
 
-Then('it runs the scenarios {string} and {string}', function(name1, name2) {
+Then('it runs the scenarios {string} and {string}', function(
+  name1: string,
+  name2: string
+) {
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name1, name2])
 })
 
-Then('it runs the scenarios:', function(table) {
+Then('it runs the scenarios:', function(table: DataTable) {
   const expectedNames = table.rows().map(row => row[0])
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(expectedNames).to.eql(actualNames)
 })
 
-Then('scenario {string} has status {string}', function(name, status) {
+Then('scenario {string} has status {string}', function(
+  name: string,
+  status: string
+) {
   const result = getTestCaseResult(this.lastRun.envelopes, name)
-  expect(result.status).to.eql(Status[status.toUpperCase()])
+  expect(result.status).to.eql(
+    Status[status.toUpperCase() as StringifiedStatus]
+  )
 })
 
-Then('the scenario {string} has the steps:', function(name, table) {
+Then('the scenario {string} has the steps:', function(
+  name: string,
+  table: DataTable
+) {
   const actualTexts = getTestStepResults(this.lastRun.envelopes, name).map(
     s => s.text
   )
@@ -52,42 +72,53 @@ Then('the scenario {string} has the steps:', function(name, table) {
 })
 
 Then('scenario {string} step {string} has status {string}', function(
-  pickleName,
-  stepText,
-  status
+  pickleName: string,
+  stepText: string,
+  status: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', stepText])
-  expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
+  expect(testStepResult.result.status).to.eql(
+    Status[status.toUpperCase() as StringifiedStatus]
+  )
 })
 
 Then(
   'scenario {string} attempt {int} step {string} has status {string}',
-  function(pickleName, attempt, stepText, status) {
+  function(
+    pickleName: string,
+    attempt: number,
+    stepText: string,
+    status: string
+  ) {
     const testStepResults = getTestStepResults(
       this.lastRun.envelopes,
       pickleName,
       attempt
     )
     const testStepResult = _.find(testStepResults, ['text', stepText])
-    expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
+    expect(testStepResult.result.status).to.eql(
+      Status[status.toUpperCase() as StringifiedStatus]
+    )
   }
 )
 
 Then('scenario {string} {string} hook has status {string}', function(
-  pickleName,
-  hookKeyword,
-  status
+  pickleName: string,
+  hookKeyword: string,
+  status: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', hookKeyword])
-  expect(testStepResult.result.status).to.eql(Status[status.toUpperCase()])
+  expect(testStepResult.result.status).to.eql(
+    Status[status.toUpperCase() as StringifiedStatus]
+  )
 })
 
 Then('scenario {string} step {string} failed with:', function(
-  pickleName,
-  stepText,
-  errorMessage
+  pickleName: string,
+  stepText: string,
+  errorMessage: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', stepText])
@@ -96,10 +127,10 @@ Then('scenario {string} step {string} failed with:', function(
 })
 
 Then('scenario {string} attempt {int} step {string} failed with:', function(
-  pickleName,
-  attempt,
-  stepText,
-  errorMessage
+  pickleName: string,
+  attempt: number,
+  stepText: string,
+  errorMessage: string
 ) {
   const testStepResults = getTestStepResults(
     this.lastRun.envelopes,
@@ -112,27 +143,27 @@ Then('scenario {string} attempt {int} step {string} failed with:', function(
 })
 
 Then('scenario {string} step {string} has the doc string:', function(
-  pickleName,
-  stepText,
-  docString
+  pickleName: string,
+  stepText: string,
+  docString: string
 ) {
   const pickleStep = getPickleStep(this.lastRun.envelopes, pickleName, stepText)
   expect(pickleStep.argument.docString.content).to.eql(docString)
 })
 
 Then('scenario {string} step {string} has the data table:', function(
-  pickleName,
-  stepText,
-  dataTable
+  pickleName: string,
+  stepText: string,
+  dataTable: DataTable
 ) {
   const pickleStep = getPickleStep(this.lastRun.envelopes, pickleName, stepText)
   expect(new DataTable(pickleStep.argument.dataTable)).to.eql(dataTable)
 })
 
 Then('scenario {string} step {string} has the attachments:', function(
-  pickleName,
-  stepText,
-  table
+  pickleName: string,
+  stepText: string,
+  table: DataTable
 ) {
   const expectedAttachments = table.hashes().map(x => {
     return {
@@ -155,9 +186,9 @@ Then('scenario {string} step {string} has the attachments:', function(
 })
 
 Then('scenario {string} {string} hook has the attachments:', function(
-  pickleName,
-  hookKeyword,
-  table
+  pickleName: string,
+  hookKeyword: string,
+  table: DataTable
 ) {
   const expectedAttachments = table.hashes().map(x => {
     return {

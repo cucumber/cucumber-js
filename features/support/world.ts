@@ -59,11 +59,11 @@ export class World {
         })
       })
     } else {
-      const stdout = (new PassThrough() as unknown) as WriteStream
+      const stdout = new PassThrough()
       const cli = new Cli({
         argv: args,
         cwd,
-        stdout,
+        stdout: (stdout as unknown) as WriteStream,
       })
       let error: any, stderr: string
       try {

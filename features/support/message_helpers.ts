@@ -42,7 +42,10 @@ export function getPickleStep(
   return getPickleStepByStepText(pickle, gherkinDocument, stepText)
 }
 
-export function getTestCaseResult(envelopes, pickleName): messages.ITestResult {
+export function getTestCaseResult(
+  envelopes: messages.IEnvelope[],
+  pickleName: string
+): messages.ITestResult {
   const pickle = getAcceptedPickle(envelopes, pickleName)
   const testCase = getTestCase(envelopes, pickle.id)
   const testCaseStartedId = getTestCaseStarted(envelopes, testCase.id).id
