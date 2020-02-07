@@ -79,6 +79,12 @@ By default, cucumber exits when the event loop drains. Use the `--exit` flag in 
 
 Undefined steps snippets are printed in JavaScript using the callback interface by default.
 
+## --no-strict
+
+disable _strict_ mode.
+
+By default, cucumber works in _strict_ mode, meaning it will fail if there are pending steps.
+
 ### Interface
 
 Override the snippet interface with `--format-options '{"snippetInterface": "<interface>"}'`.
