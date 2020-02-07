@@ -1,6 +1,7 @@
 import _, { Dictionary } from 'lodash'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
+import IEnvelope = messages.IEnvelope
 
 interface ITestCaseAttemptData {
   attempt: number
@@ -22,6 +23,7 @@ export interface ITestCaseAttempt {
 
 export interface IEventBroadcaster {
   on(name: string, handler: Function): void
+  emit(name: string, envelope: IEnvelope): void
 }
 
 export default class EventDataCollector {

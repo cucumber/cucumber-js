@@ -10,6 +10,8 @@ import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
+import { io } from 'cucumber-messages/dist/src/cucumber-messages'
+import IEnvelope = io.cucumber.messages.IEnvelope
 
 const { uuid } = IdGenerator
 
@@ -59,7 +61,7 @@ export async function testFormatter({
     stream: new PassThrough(),
     supportCodeLibrary,
   })
-  let pickleIds = []
+  let pickleIds: string[] = []
   for (const source of sources) {
     const { pickles } = await generateEvents({
       data: source.data,
@@ -92,7 +94,7 @@ export async function getTestCaseAttempts({
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
-  let pickleIds = []
+  let pickleIds: string[] = []
   for (const source of sources) {
     const { pickles } = await generateEvents({
       data: source.data,
@@ -125,9 +127,9 @@ export async function getEnvelopesAndEventDataCollector({
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
-  const envelopes = []
+  const envelopes: IEnvelope[] = []
   eventBroadcaster.on('envelope', envelope => envelopes.push(envelope))
-  let pickleIds = []
+  let pickleIds: string[] = []
   for (const source of sources) {
     const { pickles } = await generateEvents({
       data: source.data,

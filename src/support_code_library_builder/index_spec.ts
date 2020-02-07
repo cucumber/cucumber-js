@@ -56,7 +56,7 @@ describe('supportCodeLibraryBuilder', () => {
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', this.hook)
         supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(function(
-          fn
+          fn: Function
         ) {
           return fn.apply(this, arguments)
         })

@@ -66,7 +66,7 @@ describe('UserCodeRunner', () => {
 
       describe('function calls back with serializable error', () => {
         beforeEach(function() {
-          this.options.fn = function(callback) {
+          this.options.fn = function(callback: Function) {
             setTimeout(() => {
               callback('error') // eslint-disable-line standard/no-callback-literal
             }, 25)
@@ -82,7 +82,7 @@ describe('UserCodeRunner', () => {
 
       describe('function calls back with non-serializable rror', () => {
         beforeEach(function() {
-          this.options.fn = function(callback) {
+          this.options.fn = function(callback: Function) {
             const error: any = {}
             error.loop = error
             setTimeout(() => {
@@ -100,7 +100,7 @@ describe('UserCodeRunner', () => {
 
       describe('function calls back with result', () => {
         beforeEach(function() {
-          this.options.fn = function(callback) {
+          this.options.fn = function(callback: Function) {
             setTimeout(() => {
               callback(null, 'result')
             }, 25)
@@ -116,7 +116,7 @@ describe('UserCodeRunner', () => {
 
       describe('function times out', () => {
         beforeEach(function() {
-          this.options.fn = function(callback) {
+          this.options.fn = function(callback: Function) {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
@@ -135,7 +135,7 @@ describe('UserCodeRunner', () => {
 
       describe('timeout of -1', () => {
         beforeEach(function() {
-          this.options.fn = function(callback) {
+          this.options.fn = function(callback: Function) {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
@@ -234,7 +234,7 @@ describe('UserCodeRunner', () => {
 
     describe('function uses multiple asynchronous interfaces: callback and promise', () => {
       beforeEach(function() {
-        this.options.fn = async function(callback) {
+        this.options.fn = async function(callback: Function) {
           callback()
           return Promise.resolve()
         }

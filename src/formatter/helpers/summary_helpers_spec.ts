@@ -4,7 +4,7 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
@@ -43,7 +43,7 @@ async function testFormatSummary({
 }
 
 describe('SummaryHelpers', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })

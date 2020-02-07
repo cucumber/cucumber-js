@@ -15,8 +15,8 @@ export interface IGetInvocationDataResponse {
 }
 
 export interface IDefinitionOptions {
-  timeout: number
-  wrapperOptions: any
+  timeout?: number
+  wrapperOptions?: any
 }
 
 export interface IHookDefinitionOptions extends IDefinitionOptions {
@@ -28,7 +28,7 @@ export interface IDefinitionParameters<T extends IDefinitionOptions> {
   id: string
   line: number
   options: T
-  unwrappedCode: Function
+  unwrappedCode?: Function
   uri: string
 }
 

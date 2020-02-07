@@ -3,13 +3,15 @@ import { expect } from 'chai'
 import fs from 'mz/fs'
 import path from 'path'
 import ProfileLoader from './profile_loader'
-import tmp from 'tmp'
+import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 
 describe('ProfileLoader', () => {
   describe('getArgv', () => {
     beforeEach(async function() {
-      this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
+      this.tmpDir = await promisify<DirOptions, string>(tmp.dir)({
+        unsafeCleanup: true,
+      })
       this.profileLoader = new ProfileLoader(this.tmpDir)
     })
 

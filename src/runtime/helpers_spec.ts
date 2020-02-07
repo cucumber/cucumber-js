@@ -10,12 +10,21 @@ describe('Helpers', () => {
     beforeEach(function() {
       this.result = getAmbiguousStepException([
         new StepDefinition({
-          line: '3',
+          code: undefined,
+          expression: undefined,
+          id: '',
+          options: undefined,
+
+          line: 3,
           pattern: 'pattern1',
           uri: 'steps1.js',
         }),
         new StepDefinition({
-          line: '4',
+          code: undefined,
+          expression: undefined,
+          id: '',
+          options: undefined,
+          line: 4,
           pattern: 'longer pattern2',
           uri: 'steps2.js',
         }),
