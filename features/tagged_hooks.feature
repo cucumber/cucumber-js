@@ -3,21 +3,8 @@ Feature: Tagged Hooks
   I want the ability to control which scenarios my hooks run for
   Because not all my scenarios have the same setup and teardown
 
-  Scenario: ability to specify tags for hooks
-    Given a file named "features/a.feature" with:
-      """
-      @foo
-      Feature:
-        Scenario:
-          Then foo is true
-          And bar is false
-
-        @bar
-        Scenario:
-          Then foo is true
-          And bar is true
-      """
-    And a file named "features/step_definitions/world.js" with:
+  Background:
+    Given a file named "features/step_definitions/world.js" with:
       """
       const {setWorldConstructor} = require('cucumber')
 
@@ -50,6 +37,28 @@ Feature: Tagged Hooks
       Before({tags: '@bar'}, function() {
         this.bar = true
       })
+      """
+
+  Scenario: hooks filtered by tags on scenario
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        @foo
+        Scenario:
+          Then foo is true
+          And bar is false
+      """
+    When I run cucumber-js
+    Then it passes
+
+  Scenario: tags cascade from feature to scenario
+    Given a file named "features/a.feature" with:
+      """
+      @foo
+      Feature:
+        Scenario:
+          Then foo is true
+          And bar is false
       """
     When I run cucumber-js
     Then it passes
