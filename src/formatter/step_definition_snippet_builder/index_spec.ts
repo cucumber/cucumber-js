@@ -1,15 +1,15 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { KeywordType } from '../helpers'
 import StepDefinitionSnippetBuilder, { IBuildRequest } from './'
-import { messages } from 'cucumber-messages'
 import sinon from 'sinon'
 import { ParameterTypeRegistry } from 'cucumber-expressions'
-import { ISnippetSyntaxBuildOptions, ISnippetSnytax } from './snippet_syntax'
+import { ISnippetSyntaxBuildOptions } from './snippet_syntax'
 import { getPickleStepWithText } from '../../../test/gherkin_helpers'
 
-
-function testStepDefinitionBuilder(request: IBuildRequest): ISnippetSyntaxBuildOptions {
+function testStepDefinitionBuilder(
+  request: IBuildRequest
+): ISnippetSyntaxBuildOptions {
   const snippetSyntax = {
     build: sinon.stub().returns('snippet'),
   }
@@ -49,7 +49,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Event,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -65,7 +65,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Outcome,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -81,7 +81,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -100,7 +100,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -113,12 +113,14 @@ describe('StepDefinitionSnippetBuilder', () => {
     describe('step name has multiple quoted strings', () => {
       it('adds the proper generated expression', async function() {
         // Arrrange
-        const pickleStep = await getPickleStepWithText('Given abc "def" ghi "jkl" mno')
+        const pickleStep = await getPickleStepWithText(
+          'Given abc "def" ghi "jkl" mno'
+        )
 
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -138,7 +140,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -156,7 +158,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -174,7 +176,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
@@ -194,7 +196,7 @@ describe('StepDefinitionSnippetBuilder', () => {
         // Act
         const arg = testStepDefinitionBuilder({
           keywordType: KeywordType.Precondition,
-          pickleStep
+          pickleStep,
         })
 
         // Assert
