@@ -97,3 +97,19 @@ Feature: a
   })
   return pickle
 }
+
+export async function getPickleStepWithText(
+  text: string
+): Promise<messages.IPickle> {
+  const {
+    pickles: [pickle],
+  } = await parse({
+    data: `\
+Feature: a
+  Scenario: b
+    ${text}
+`,
+    uri: 'a.feature',
+  })
+  return pickle.steps[0]
+}
