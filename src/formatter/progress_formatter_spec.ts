@@ -31,11 +31,10 @@ Feature: a
     Given a pending step
   Scenario: a4
     Given a passing step
-  Rule: ab
-    Example: a5
-      Given a skipped step
-    Example: a6
-      Given an undefined step
+ Scenario: a5
+    Given a skipped step
+  Scenario: a6
+    Given an undefined step
 `,
         uri: 'a.feature',
       },
@@ -65,7 +64,7 @@ Failures:
    ${figures.cross} Given a failing step # steps.ts:8
        error
 
-3) Scenario: a6 # a.feature:13
+3) Scenario: a6 # a.feature:12
    ? Given an undefined step
        Undefined. Implement with the following snippet:
 
@@ -83,6 +82,45 @@ Warnings:
 
 6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)
 6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)
+0m00.000s
+`)
+  })
+
+  it('handles rule/example results', async () => {
+    // Arrange
+    const sources = [
+      {
+        data: `\
+Feature: feature
+  Rule: rule1
+    Example: example1
+      Given a passing step
+      
+    Example: example2
+      Given a passing step
+      
+  Rule: rule2
+    Example: example1
+      Given a passing step
+`,
+        uri: 'a.feature',
+      },
+    ]
+    const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+    // Act
+    const output = await testFormatter({
+      sources,
+      supportCodeLibrary,
+      type: 'progress',
+    })
+
+    // Assert
+    expect(output).to.eql(`\
+...
+
+3 scenarios (3 passed)
+3 steps (3 passed)
 0m00.000s
 `)
   })
