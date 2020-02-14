@@ -95,7 +95,6 @@ Feature: Formatters
       """
     When I run cucumber-js with all formatters
     Then the "message" formatter output matches the fixture "formatters/failed-rule.message.json"
-    Then the "json" formatter output matches the fixture "formatters/failed-rule.json"
     And it fails
 
   Scenario: retried and passed
