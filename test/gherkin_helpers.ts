@@ -1,6 +1,7 @@
 import Gherkin from 'gherkin'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue } from '../src/value_checker'
+import IGherkinOptions from 'gherkin/src/IGherkinOptions'
 
 export interface IParsedSource {
   pickles: messages.IPickle[]
@@ -15,6 +16,11 @@ export interface IParsedSourceWithEnvelopes extends IParsedSource {
 export async function parse({
   data,
   uri,
+  options,
+}: {
+  data: string
+  uri: string
+  options?: IGherkinOptions
 }): Promise<IParsedSourceWithEnvelopes> {
   const sources = [
     {
@@ -33,7 +39,7 @@ export async function parse({
     let gherkinDocument: messages.IGherkinDocument
     const pickles: messages.IPickle[] = []
     const envelopes: messages.IEnvelope[] = []
-    const messageStream = Gherkin.fromSources(sources)
+    const messageStream = Gherkin.fromSources(sources, options)
     messageStream.on('data', (envelope: messages.IEnvelope) => {
       envelopes.push(envelope)
       if (doesHaveValue(envelope.source)) {
