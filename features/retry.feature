@@ -1,14 +1,14 @@
 Feature: Retry flaky tests
 
   Using the `--retry` flag will retry failing tests for the specified number of times
-  Additionally using the `--retryTagFilter` flag will re-run only tests matching the tag expression
+  Additionally using the `--retry-tag-filter` flag will re-run only tests matching the tag expression
 
   @spawn
-  Scenario: running Cucumber JS with --retryTagFilter but no positive --retry will fail
-    When I run cucumber-js with `--retryTagFilter @flaky`
+  Scenario: running Cucumber JS with --retry-tag-filter but no positive --retry will fail
+    When I run cucumber-js with `--retry-tag-filter @flaky`
     Then the error output contains the text:
       """
-      Error: a positive --retry count must be specified when setting --retryTagFilter
+      Error: a positive --retry count must be specified when setting --retry-tag-filter
       """
     And it fails
 
@@ -322,7 +322,7 @@ Feature: Retry flaky tests
       """
     And it fails
 
-  Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass
+  Scenario: retrying a flaky test matching --retry-tag-filter will eventually make it pass
     Given a file named "features/a.feature" with:
       """
       Feature:
@@ -344,12 +344,12 @@ Feature: Retry flaky tests
         throw 'fail'
       })
       """
-    When I run cucumber-js with `--retry 1 --retryTagFilter '@flaky'`
+    When I run cucumber-js with `--retry 1 --retry-tag-filter '@flaky'`
     Then scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
     Then scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
     And it passes
 
-  Scenario: a flaky test not matching --retryTagFilter won't re-run and just fail
+  Scenario: a flaky test not matching --retry-tag-filter won't re-run and just fail
     Given a file named "features/a.feature" with:
       """
       Feature:
@@ -371,11 +371,11 @@ Feature: Retry flaky tests
         throw 'fail'
       })
       """
-    When I run cucumber-js with `--retry 1 --retryTagFilter '@not_flaky'`
+    When I run cucumber-js with `--retry 1 --retry-tag-filter '@not_flaky'`
     Then scenario "Flaky" step "Given a flaky step" has status "failed"
     And it fails
 
-  Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass but not-matching will not be retried (AND operator between tags)
+  Scenario: retrying a flaky test matching --retry-tag-filter will eventually make it pass but not-matching will not be retried (AND operator between tags)
     Given a file named "features/a.feature" with:
       """
       Feature:
@@ -410,13 +410,13 @@ Feature: Retry flaky tests
         throw 'fail'
       })
       """
-    When I run cucumber-js with `--retry 1 --retryTagFilter '@flaky and @anOtherTag'`
+    When I run cucumber-js with `--retry 1 --retry-tag-filter '@flaky and @anOtherTag'`
     Then scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
     Then scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
     And scenario "Also Flaky" step "Given an other flaky step" has status "failed"
     And it fails
 
-  Scenario: retrying a flaky test matching --retryTagFilter will eventually make it pass but not-matching will not be retried (OR operator between tags)
+  Scenario: retrying a flaky test matching --retry-tag-filter will eventually make it pass but not-matching will not be retried (OR operator between tags)
     Given a file named "features/a.feature" with:
       """
       Feature:
@@ -464,7 +464,7 @@ Feature: Retry flaky tests
         throw 'fail'
       })
       """
-    When I run cucumber-js with `--retry 1 --retryTagFilter '@anOtherTag or @oneMoreTag'`
+    When I run cucumber-js with `--retry 1 --retry-tag-filter '@anOtherTag or @oneMoreTag'`
     Then scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
     And scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
     And scenario "Also Flaky" attempt 0 step "Given an other flaky step" has status "failed"

@@ -90,7 +90,7 @@ const ArgvParser = {
     return value
   },
 
-  validateRetryOptions(options: IParsedArgvOptions): void {
+  validateRetryOptions(argv: string[], options: IParsedArgvOptions): void {
     if (options.retryTagFilter !== '' && options.retry === 0) {
       throw new Error(
         'a positive --retry count must be specified when setting --retry-tag-filter'
@@ -188,7 +188,7 @@ const ArgvParser = {
         0
       )
       .option(
-        '--retryTagFilter <EXPRESSION>',
+        '--retry-tag-filter <EXPRESSION>',
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags,
@@ -217,7 +217,7 @@ const ArgvParser = {
 
     program.parse(argv)
     const options = program.opts() as IParsedArgvOptions
-    ArgvParser.validateRetryOptions(options)
+    ArgvParser.validateRetryOptions(argv, options)
 
     return {
       options,
