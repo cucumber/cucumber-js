@@ -93,7 +93,7 @@ const ArgvParser = {
   validateRetryOptions(options: IParsedArgvOptions): void {
     if (options.retryTagFilter !== '' && options.retry === 0) {
       throw new Error(
-        'a positive --retry count must be specified when setting --retryTagFilter'
+        'a positive --retry count must be specified when setting --retry-tag-filter'
       )
     }
   },
