@@ -90,7 +90,7 @@ const ArgvParser = {
     return value
   },
 
-  validateRetryOptions(argv: string[], options: IParsedArgvOptions): void {
+  validateRetryOptions(options: IParsedArgvOptions): void {
     if (options.retryTagFilter !== '' && options.retry === 0) {
       throw new Error(
         'a positive --retry count must be specified when setting --retry-tag-filter'
@@ -217,7 +217,7 @@ const ArgvParser = {
 
     program.parse(argv)
     const options = program.opts() as IParsedArgvOptions
-    ArgvParser.validateRetryOptions(argv, options)
+    ArgvParser.validateRetryOptions(options)
 
     return {
       options,
