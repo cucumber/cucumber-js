@@ -12,6 +12,26 @@ Feature: Retry flaky tests
       """
     And it fails
 
+  Scenario: running Cucumber JS with --retryTagFilter in camel case will result in a warning
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario:
+          Given a step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('cucumber')
+
+      Given(/^a step$/, function() {})
+      """
+    When I run cucumber-js with `--retry 1 --retryTagFilter @flaky`
+    Then it issues the warning:
+      """
+      the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter
+      """
+    But it passes
+
   Scenario: running Cucumber JS with negative --retry will fail
     When I run cucumber-js with `--retry -1`
     Then the error output contains the text:

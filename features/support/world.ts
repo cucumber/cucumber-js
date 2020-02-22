@@ -16,6 +16,7 @@ interface ILastRun {
   errorOutput: string
   envelopes: messages.IEnvelope[]
   output: string
+  warnings: string[]
 }
 
 interface IRunResult {
@@ -49,6 +50,10 @@ export class World {
         return arg
       })
     const cwd = this.tmpDir
+    const warnings: string[] = []
+    const warn = (message: string): void => {
+      warnings.push(message)
+    }
 
     let result: IRunResult
 
@@ -64,6 +69,7 @@ export class World {
         argv: args,
         cwd,
         stdout,
+        warn,
       })
       let error: any, stderr: string
       try {
@@ -105,6 +111,7 @@ export class World {
       errorOutput: result.stderr,
       envelopes,
       output: colors.strip(result.stdout),
+      warnings,
     }
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')

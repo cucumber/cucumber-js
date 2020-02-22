@@ -188,7 +188,7 @@ const ArgvParser = {
         0
       )
       .option(
-        '--retry-tag-filter <EXPRESSION>',
+        '--retryTagFilter, --retry-tag-filter <EXPRESSION>',
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags,

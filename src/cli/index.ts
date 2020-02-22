@@ -42,16 +42,33 @@ export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
+  private readonly warn: (message: string) => void
 
-  constructor({ argv, cwd, stdout }) {
+  constructor({ argv, cwd, stdout, warn = console.warn }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
+    this.warn = warn
   }
 
   async getConfiguration(): Promise<IConfiguration> {
-    const fullArgv = await getExpandedArgv({ argv: this.argv, cwd: this.cwd })
-    return ConfigurationBuilder.build({ argv: fullArgv, cwd: this.cwd })
+    const fullArgv = await getExpandedArgv({
+      argv: this.argv,
+      cwd: this.cwd,
+    })
+    this.lintArgv(fullArgv)
+    return ConfigurationBuilder.build({
+      argv: fullArgv,
+      cwd: this.cwd,
+    })
+  }
+
+  private lintArgv(fullArgv: string[]): void {
+    if (fullArgv.includes('--retryTagFilter')) {
+      this.warn(
+        'the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter'
+      )
+    }
   }
 
   async initializeFormatters({
@@ -83,7 +100,7 @@ export default class Cli {
       }
       if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
         const outputToName = outputTo === '' ? 'stdout' : outputTo
-        console.warn(
+        this.warn(
           `Cannot use 'progress-bar' formatter for output to '${outputToName}' as not a TTY. Switching to 'progress' formatter.`
         )
         type = 'progress'
