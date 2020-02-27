@@ -57,11 +57,6 @@ Then(/^it fails$/, function(this: World) {
   this.verifiedLastRunError = true
 })
 
-Then(/^it issues the warning:$/, function(this: World, text: string) {
-  const warnings: string[] = this.lastRun.warnings
-  expect(warnings).to.include(text)
-})
-
 Then(/^it outputs the text:$/, function(this: World, text) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)

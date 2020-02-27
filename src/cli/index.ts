@@ -22,6 +22,7 @@ import { doesNotHaveValue } from '../value_checker'
 import Gherkin from 'gherkin'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
+import { Console } from 'console'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -42,13 +43,13 @@ export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
-  private readonly warn: (message: string) => void
+  private readonly console: Console
 
-  constructor({ argv, cwd, stdout, warn = console.warn }) {
+  constructor({ argv, cwd, stdout }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
-    this.warn = warn
+    this.console = new Console(stdout)
   }
 
   async getConfiguration(): Promise<IConfiguration> {
@@ -65,7 +66,7 @@ export default class Cli {
 
   private lintArgv(fullArgv: string[]): void {
     if (fullArgv.includes('--retryTagFilter')) {
-      this.warn(
+      this.console.warn(
         'the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter'
       )
     }
@@ -100,7 +101,7 @@ export default class Cli {
       }
       if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
         const outputToName = outputTo === '' ? 'stdout' : outputTo
-        this.warn(
+        this.console.warn(
           `Cannot use 'progress-bar' formatter for output to '${outputToName}' as not a TTY. Switching to 'progress' formatter.`
         )
         type = 'progress'
