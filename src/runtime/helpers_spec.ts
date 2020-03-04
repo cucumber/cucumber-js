@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getAmbiguousStepException, retriesForPickle } from './helpers'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
