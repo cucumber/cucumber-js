@@ -1,7 +1,7 @@
 import _, { Dictionary } from 'lodash'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
-import IEnvelope = messages.IEnvelope
+import { EventEmitter } from 'events'
 
 interface ITestCaseAttemptData {
   attempt: number
@@ -21,18 +21,13 @@ export interface ITestCaseAttempt {
   testCase: messages.ITestCase
 }
 
-export interface IEventBroadcaster {
-  on(name: string, handler: Function): void
-  emit(name: string, envelope: IEnvelope): void
-}
-
 export default class EventDataCollector {
   private gherkinDocumentMap: Dictionary<messages.IGherkinDocument> = {}
   private pickleMap: Dictionary<messages.IPickle> = {}
   private testCaseMap: Dictionary<messages.ITestCase> = {}
   private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
 
-  constructor(eventBroadcaster: IEventBroadcaster) {
+  constructor(eventBroadcaster: EventEmitter) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
   }
 
