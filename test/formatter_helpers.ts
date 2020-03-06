@@ -10,8 +10,7 @@ import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
-import { io } from 'cucumber-messages/dist/src/cucumber-messages'
-import IEnvelope = io.cucumber.messages.IEnvelope
+import IEnvelope = messages.IEnvelope
 
 const { uuid } = IdGenerator
 

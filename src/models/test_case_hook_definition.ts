@@ -6,8 +6,8 @@ import Definition, {
   IDefinitionParameters,
   IHookDefinitionOptions,
 } from './definition'
-import { io } from 'cucumber-messages/dist/src/cucumber-messages'
-import IPickle = io.cucumber.messages.IPickle
+import { messages } from 'cucumber-messages'
+import IPickle = messages.IPickle
 
 export default class TestCaseHookDefinition extends Definition
   implements IDefinition {

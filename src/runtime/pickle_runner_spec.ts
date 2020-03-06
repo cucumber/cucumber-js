@@ -12,8 +12,7 @@ import timeMethods, { millisecondsToDuration, getZeroDuration } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { io } from 'cucumber-messages/dist/src/cucumber-messages'
-import IEnvelope = io.cucumber.messages.IEnvelope
+import IEnvelope = messages.IEnvelope
 
 interface ITestPickleRunnerRequest {
   gherkinDocument: messages.IGherkinDocument

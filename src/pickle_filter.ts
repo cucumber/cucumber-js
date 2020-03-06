@@ -2,11 +2,10 @@ import _, { Dictionary } from 'lodash'
 import path from 'path'
 import parse from 'cucumber-tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
-import { messages } from 'cucumber-messages'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
-import { io } from 'cucumber-messages/dist/src/cucumber-messages'
-import IGherkinDocument = io.cucumber.messages.IGherkinDocument
-import IPickle = io.cucumber.messages.IPickle
+import { messages } from 'cucumber-messages'
+import IGherkinDocument = messages.IGherkinDocument
+import IPickle = messages.IPickle
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
