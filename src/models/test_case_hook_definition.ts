@@ -3,6 +3,8 @@ import Definition, {
   IDefinition,
   IGetInvocationDataResponse,
   IGetInvocationDataRequest,
+  IDefinitionParameters,
+  IHookDefinitionOptions,
 } from './definition'
 import { messages } from 'cucumber-messages'
 
@@ -10,7 +12,7 @@ export default class TestCaseHookDefinition extends Definition
   implements IDefinition {
   private readonly pickleTagFilter: PickleTagFilter
 
-  constructor(data) {
+  constructor(data: IDefinitionParameters<IHookDefinitionOptions>) {
     super(data)
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }

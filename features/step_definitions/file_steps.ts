@@ -7,37 +7,46 @@ import path from 'path'
 import Mustache from 'mustache'
 import { World } from '../support/world'
 
-Given(/^a file named "(.*)" with:$/, function(
+Given(/^a file named "(.*)" with:$/, async function(
   this: World,
-  filePath,
-  fileContent
+  filePath: string,
+  fileContent: string
 ) {
   const absoluteFilePath = path.join(this.tmpDir, filePath)
   if (filePath === '@rerun.txt') {
     fileContent = fileContent.replace(/\//g, path.sep)
   }
-  return fsExtra.outputFile(absoluteFilePath, fileContent)
+  await fsExtra.outputFile(absoluteFilePath, fileContent)
 })
 
-Given(/^an empty file named "(.*)"$/, function(this: World, filePath) {
+Given(/^an empty file named "(.*)"$/, async function(
+  this: World,
+  filePath: string
+) {
   const absoluteFilePath = path.join(this.tmpDir, filePath)
-  return fsExtra.outputFile(absoluteFilePath, '')
+  await fsExtra.outputFile(absoluteFilePath, '')
 })
 
-Given(/^a directory named "(.*)"$/, function(this: World, filePath) {
+Given(/^a directory named "(.*)"$/, async function(
+  this: World,
+  filePath: string
+) {
   const absoluteFilePath = path.join(this.tmpDir, filePath)
-  return fsExtra.mkdirp(absoluteFilePath)
+  await fsExtra.mkdirp(absoluteFilePath)
 })
 
-Given(/^"([^"]*)" is an absolute path$/, function(this: World, filePath) {
+Given(/^"([^"]*)" is an absolute path$/, function(
+  this: World,
+  filePath: string
+) {
   filePath = Mustache.render(filePath, this)
   expect(path.isAbsolute(filePath)).to.eql(true)
 })
 
 Then(/^the file "([^"]*)" has the text:$/, async function(
   this: World,
-  filePath,
-  text
+  filePath: string,
+  text: string
 ) {
   filePath = Mustache.render(filePath, this)
   const absoluteFilePath = path.resolve(this.tmpDir, filePath)

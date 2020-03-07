@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageFormatter', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })
@@ -45,11 +45,11 @@ describe('UsageFormatter', () => {
 ┌────────────────┬──────────┬───────────────────┐
 │ Pattern / Text │ Duration │ Location          │
 ├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:8  │
+│ abc            │ UNUSED   │ usage_steps.ts:11 │
 ├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ UNUSED   │ usage_steps.ts:13 │
+│ /def?/         │ UNUSED   │ usage_steps.ts:16 │
 ├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:22 │
+│ ghi            │ UNUSED   │ usage_steps.ts:25 │
 └────────────────┴──────────┴───────────────────┘
 `)
       })
@@ -81,13 +81,13 @@ describe('UsageFormatter', () => {
 ┌────────────────┬──────────┬───────────────────┐
 │ Pattern / Text │ Duration │ Location          │
 ├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:8  │
+│ abc            │ UNUSED   │ usage_steps.ts:11 │
 ├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ -        │ usage_steps.ts:13 │
+│ /def?/         │ -        │ usage_steps.ts:16 │
 │   de           │ -        │ a.feature:4       │
 │   def          │ -        │ a.feature:3       │
 ├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:22 │
+│ ghi            │ UNUSED   │ usage_steps.ts:25 │
 └────────────────┴──────────┴───────────────────┘
 `)
         })
@@ -116,13 +116,13 @@ describe('UsageFormatter', () => {
 ┌────────────────┬──────────┬───────────────────┐
 │ Pattern / Text │ Duration │ Location          │
 ├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ 1.50ms   │ usage_steps.ts:13 │
+│ /def?/         │ 1.50ms   │ usage_steps.ts:16 │
 │   def          │ 2ms      │ a.feature:3       │
 │   de           │ 1ms      │ a.feature:4       │
 ├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:8  │
+│ abc            │ UNUSED   │ usage_steps.ts:11 │
 ├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:22 │
+│ ghi            │ UNUSED   │ usage_steps.ts:25 │
 └────────────────┴──────────┴───────────────────┘
 `)
         })

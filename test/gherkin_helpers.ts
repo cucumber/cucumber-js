@@ -1,6 +1,7 @@
 import Gherkin from 'gherkin'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue } from '../src/value_checker'
+import { EventEmitter } from 'events'
 
 export interface IParsedSource {
   pickles: messages.IPickle[]
@@ -12,10 +13,15 @@ export interface IParsedSourceWithEnvelopes extends IParsedSource {
   envelopes: messages.IEnvelope[]
 }
 
+export interface IParseRequest {
+  data: string
+  uri: string
+}
+
 export async function parse({
   data,
   uri,
-}): Promise<IParsedSourceWithEnvelopes> {
+}: IParseRequest): Promise<IParsedSourceWithEnvelopes> {
   const sources = [
     {
       source: {
@@ -68,11 +74,17 @@ export async function parse({
   })
 }
 
+export interface IGenerateEventsRequest {
+  data: string
+  eventBroadcaster: EventEmitter
+  uri: string
+}
+
 export async function generateEvents({
   data,
   eventBroadcaster,
   uri,
-}): Promise<IParsedSource> {
+}: IGenerateEventsRequest): Promise<IParsedSource> {
   const { envelopes, source, gherkinDocument, pickles } = await parse({
     data,
     uri,

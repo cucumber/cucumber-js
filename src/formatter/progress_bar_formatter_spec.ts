@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import sinon from 'sinon'
+import sinon, { SinonStubbedInstance } from 'sinon'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from './helpers'
 import {
@@ -10,7 +10,7 @@ import {
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FormatterBuilder from './builder'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
 import { messages } from 'cucumber-messages'
@@ -18,6 +18,7 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { PassThrough } from 'stream'
+import ProgressBar from 'progress'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -69,6 +70,12 @@ async function testProgressBarFormatter({
       progressBarFormatter.progressBar = {
         interrupt: sinon.stub(),
         tick: sinon.stub(),
+        render: sinon.stub(),
+        update: sinon.stub(),
+        terminate: sinon.stub(),
+        complete: false,
+        curr: null,
+        total: null,
       }
       mocked = true
     }
@@ -319,25 +326,20 @@ describe('ProgressBarFormatter', () => {
           sources,
           supportCodeLibrary,
         })
+        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<
+          ProgressBar
+        >
 
         // Assert
-        expect(progressBarFormatter.progressBar.interrupt).to.have.callCount(1)
-        expect(progressBarFormatter.progressBar.tick).to.have.callCount(7)
-        expect(progressBarFormatter.progressBar.tick.args).to.eql([
-          [],
-          [],
-          [],
-          [-3],
-          [],
-          [],
-          [],
-        ])
+        expect(progressBar.interrupt).to.have.callCount(1)
+        expect(progressBar.tick).to.have.callCount(7)
+        expect(progressBar.tick.args).to.deep.eq([[], [], [], [-3], [], [], []])
       })
     })
   })
 
   describe('testRunFinished', () => {
-    let clock
+    let clock: InstalledClock
 
     beforeEach(() => {
       clock = lolex.install({ target: timeMethods })

@@ -8,6 +8,7 @@ export { default as PickleFilter } from './pickle_filter'
 export { default as Runtime } from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as Status } from './status'
+export { default as DataTable } from './models/data_table'
 
 // Formatters
 export { default as Formatter } from './formatter'

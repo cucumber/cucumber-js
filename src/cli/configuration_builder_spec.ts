@@ -3,13 +3,15 @@ import { expect } from 'chai'
 import ConfigurationBuilder from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
-import tmp from 'tmp'
+import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
 async function buildTestWorkingDirectory(): Promise<string> {
-  const cwd = await promisify(tmp.dir)({ unsafeCleanup: true })
-  await promisify(fsExtra.mkdirp)(path.join(cwd, 'features'))
+  const cwd = await promisify<DirOptions, string>(tmp.dir)({
+    unsafeCleanup: true,
+  })
+  await fsExtra.mkdirp(path.join(cwd, 'features'))
   return cwd
 }
 

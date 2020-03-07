@@ -2,8 +2,11 @@
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
+import { InstalledClock } from 'lolex'
 
-export function getJsonFormatterSupportCodeLibrary(clock): ISupportCodeLibrary {
+export function getJsonFormatterSupportCodeLibrary(
+  clock: InstalledClock
+): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a passing step', function() {
       clock.tick(1)

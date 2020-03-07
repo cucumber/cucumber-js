@@ -43,8 +43,8 @@ describe('Usage Helpers', () => {
             ({ Given, setDefinitionFunctionWrapper }) => {
               Given('a step', code)
               setDefinitionFunctionWrapper(
-                fn =>
-                  function(fn) {
+                (fn: Function) =>
+                  function(fn: Function) {
                     if (fn.length === 1) {
                       return fn
                     }

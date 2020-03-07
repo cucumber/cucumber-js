@@ -47,7 +47,7 @@ export async function parseGherkinMessageStream({
   pickleFilter,
 }: IParseGherkinMessageStreamRequest): Promise<string[]> {
   return new Promise<string[]>((resolve, reject) => {
-    const result = []
+    const result: string[] = []
     gherkinMessageStream.on('data', envelope => {
       eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.pickle)) {

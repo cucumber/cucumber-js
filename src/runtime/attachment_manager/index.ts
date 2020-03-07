@@ -8,6 +8,7 @@ export interface IAttachment {
   media: messages.Media
 }
 
+export type IAttachFunction = (attachment: IAttachment) => void
 export type ICreateAttachment = (
   data: Buffer | stream.Readable | string,
   mediaType?: string,
@@ -15,9 +16,9 @@ export type ICreateAttachment = (
 ) => void | Promise<void>
 
 export default class AttachmentManager {
-  private readonly onAttachment: (attachment: IAttachment) => void
+  private readonly onAttachment: IAttachFunction
 
-  constructor(onAttachment: (attachment: IAttachment) => void) {
+  constructor(onAttachment: IAttachFunction) {
     this.onAttachment = onAttachment
   }
 
@@ -70,7 +71,7 @@ export default class AttachmentManager {
     callback: () => void
   ): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
-      const buffers = []
+      const buffers: Uint8Array[] = []
       data.on('data', chunk => {
         buffers.push(chunk)
       })

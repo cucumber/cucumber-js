@@ -1,13 +1,13 @@
 import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import figures from 'figures'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 
 describe('SummaryFormatter', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })

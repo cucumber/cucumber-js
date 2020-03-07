@@ -7,11 +7,12 @@ import { messages } from 'cucumber-messages'
 import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods, { millisecondsToDuration, getZeroDuration } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import IEnvelope = messages.IEnvelope
 
 interface ITestPickleRunnerRequest {
   gherkinDocument: messages.IGherkinDocument
@@ -29,7 +30,7 @@ interface ITestPickleRunnerResponse {
 async function testPickleRunner(
   options: ITestPickleRunnerRequest
 ): Promise<ITestPickleRunnerResponse> {
-  const envelopes = []
+  const envelopes: IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', e => envelopes.push(e))
   const pickleRunner = new PickleRunner({
@@ -47,7 +48,7 @@ async function testPickleRunner(
 }
 
 describe('PickleRunner', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })

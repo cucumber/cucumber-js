@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import fs from 'mz/fs'
 import path from 'path'
 import ProfileLoader from './profile_loader'
-import tmp from 'tmp'
+import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { valueOrDefault, doesHaveValue } from '../value_checker'
 
@@ -15,7 +15,9 @@ interface TestProfileLoaderOptions {
 async function testProfileLoader(
   opts: TestProfileLoaderOptions = {}
 ): Promise<string[]> {
-  const cwd = await promisify(tmp.dir)({ unsafeCleanup: true })
+  const cwd = await promisify<DirOptions, string>(tmp.dir)({
+    unsafeCleanup: true,
+  })
   if (doesHaveValue(opts.definitionsFileContent)) {
     await fs.writeFile(
       path.join(cwd, 'cucumber.js'),

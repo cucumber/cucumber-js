@@ -5,7 +5,7 @@ export const NANOSECONDS_IN_MILLISECOND = 1e6
 export const MILLISECONDS_IN_SECOND = 1e3
 export const NANOSECONDS_IN_SECOND = 1e9
 
-let previousTimestamp
+let previousTimestamp: number
 
 const methods: any = {
   beginTiming() {

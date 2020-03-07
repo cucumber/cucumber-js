@@ -3,8 +3,14 @@
     "esModuleInterop": true,
     "lib": ["es2017"],
     "module": "commonjs",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
     "noImplicitThis": true,
     "sourceMap": true,
-    "target": "es2017"
+    "target": "es2017",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
 }

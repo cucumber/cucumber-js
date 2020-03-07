@@ -3,11 +3,11 @@ import { expect } from 'chai'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { testFormatter } from '../../test/formatter_helpers'
 import figures from 'figures'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 
 describe('ProgressFormatter', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })
