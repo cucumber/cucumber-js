@@ -49,7 +49,7 @@ export default class Cli {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
-    this.console = new Console(stderr)
+    this.console = new Console({ stdout, stderr })
   }
 
   async getConfiguration(): Promise<IConfiguration> {
