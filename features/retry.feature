@@ -26,7 +26,7 @@ Feature: Retry flaky tests
       Given(/^a step$/, function() {})
       """
     When I run cucumber-js with `--retry 1 --retryTagFilter @flaky`
-    Then the output contains the text:
+    Then the error output contains the text:
       """
       the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter
       """

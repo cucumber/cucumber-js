@@ -12,6 +12,7 @@ export default async function run(): Promise<void> {
     argv: process.argv,
     cwd,
     stdout: process.stdout,
+    stderr: process.stderr,
   })
 
   let result: ICliRunResult

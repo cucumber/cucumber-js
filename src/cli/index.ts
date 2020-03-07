@@ -45,11 +45,11 @@ export default class Cli {
   private readonly stdout: IFormatterStream
   private readonly console: Console
 
-  constructor({ argv, cwd, stdout }) {
+  constructor({ argv, cwd, stdout, stderr }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
-    this.console = new Console(stdout)
+    this.console = new Console(stderr)
   }
 
   async getConfiguration(): Promise<IConfiguration> {
