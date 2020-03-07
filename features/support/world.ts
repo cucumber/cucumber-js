@@ -63,7 +63,7 @@ export class World {
       const cli = new Cli({
         argv: args,
         cwd,
-        stdout: stdout,
+        stdout,
       })
       let error: any, stderr: string
       try {
