@@ -16,7 +16,7 @@ interface IDefineStepArguments {
 
 const optionsValidation = {
   expectedType: 'object or function',
-  predicate({ options }: Partial<IDefineStepArguments>) {
+  predicate({ options }: IDefineStepArguments) {
     return _.isPlainObject(options)
   },
 }
@@ -24,14 +24,14 @@ const optionsValidation = {
 const optionsTimeoutValidation = {
   identifier: '"options.timeout"',
   expectedType: 'integer',
-  predicate({ options }: Partial<IDefineStepArguments>) {
+  predicate({ options }: IDefineStepArguments) {
     return doesNotHaveValue(options.timeout) || _.isInteger(options.timeout)
   },
 }
 
 const fnValidation = {
   expectedType: 'function',
-  predicate({ code }: Partial<IDefineStepArguments>) {
+  predicate({ code }: IDefineStepArguments) {
     return _.isFunction(code)
   },
 }
