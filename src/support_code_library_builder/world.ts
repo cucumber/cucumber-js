@@ -1,6 +1,4 @@
-import { IAttachment } from '../runtime/attachment_manager'
-
-export type IAttachFunction = (attachment: IAttachment) => void
+import { IAttachFunction } from '../runtime/attachment_manager'
 
 export interface IWorldOptions {
   attach: IAttachFunction

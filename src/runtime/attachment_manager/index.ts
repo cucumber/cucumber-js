@@ -8,6 +8,8 @@ export interface IAttachment {
   media: messages.Media
 }
 
+export type IAttachFunction = (attachment: IAttachment) => void
+
 export default class AttachmentManager {
   private readonly onAttachment: (attachment: IAttachment) => void
 
