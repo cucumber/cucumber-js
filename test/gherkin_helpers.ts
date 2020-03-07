@@ -13,13 +13,15 @@ export interface IParsedSourceWithEnvelopes extends IParsedSource {
   envelopes: messages.IEnvelope[]
 }
 
+export interface IParseRequest {
+  data: string
+  uri: string
+}
+
 export async function parse({
   data,
   uri,
-}: {
-  data: string
-  uri: string
-}): Promise<IParsedSourceWithEnvelopes> {
+}: IParseRequest): Promise<IParsedSourceWithEnvelopes> {
   const sources = [
     {
       source: {
@@ -72,15 +74,17 @@ export async function parse({
   })
 }
 
+export interface IGenerateEventsRequest {
+  data: string
+  eventBroadcaster: EventEmitter
+  uri: string
+}
+
 export async function generateEvents({
   data,
   eventBroadcaster,
   uri,
-}: {
-  data: string
-  eventBroadcaster: EventEmitter
-  uri: string
-}): Promise<IParsedSource> {
+}: IGenerateEventsRequest): Promise<IParsedSource> {
   const { envelopes, source, gherkinDocument, pickles } = await parse({
     data,
     uri,
