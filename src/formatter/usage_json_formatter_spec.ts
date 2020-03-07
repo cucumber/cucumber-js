@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageJsonFormatter', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })
@@ -38,7 +38,7 @@ describe('UsageJsonFormatter', () => {
     expect(parsedOutput).to.eql([
       {
         code: parsedOutput[0].code,
-        line: 13,
+        line: 16,
         matches: [
           {
             duration: {
@@ -60,7 +60,7 @@ describe('UsageJsonFormatter', () => {
       },
       {
         code: parsedOutput[1].code,
-        line: 8,
+        line: 11,
         matches: [
           {
             duration: {
@@ -82,7 +82,7 @@ describe('UsageJsonFormatter', () => {
       },
       {
         code: parsedOutput[2].code,
-        line: 22,
+        line: 25,
         matches: [],
         pattern: 'ghi',
         patternType: 'CucumberExpression',

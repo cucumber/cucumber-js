@@ -14,7 +14,7 @@ const keywords = [
   'then',
   'and',
   'but',
-]
+] as const
 
 function getAsTable(header: string[], rows: string[][]): string {
   const table = new Table({

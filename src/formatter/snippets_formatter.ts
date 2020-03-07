@@ -1,12 +1,14 @@
-import Formatter from './'
+import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import { parseTestCaseAttempt } from './helpers'
 import { doesHaveValue } from '../value_checker'
+import { messages } from 'cucumber-messages'
+import IEnvelope = messages.IEnvelope
 
 export default class SnippetsFormatter extends Formatter {
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', envelope => {
+    options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.logSnippets()
       }
@@ -14,7 +16,7 @@ export default class SnippetsFormatter extends Formatter {
   }
 
   logSnippets(): void {
-    const snippets = []
+    const snippets: string[] = []
     this.eventDataCollector.getTestCaseAttempts().map(testCaseAttempt => {
       const parsed = parseTestCaseAttempt({
         cwd: this.cwd,

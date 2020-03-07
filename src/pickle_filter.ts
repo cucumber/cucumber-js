@@ -2,8 +2,10 @@ import _, { Dictionary } from 'lodash'
 import path from 'path'
 import parse from 'cucumber-tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
-import { messages } from 'cucumber-messages'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
+import { messages } from 'cucumber-messages'
+import IGherkinDocument = messages.IGherkinDocument
+import IPickle = messages.IPickle
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -35,7 +37,13 @@ export default class PickleFilter {
     this.tagFilter = new PickleTagFilter(tagExpression)
   }
 
-  matches({ gherkinDocument, pickle }): boolean {
+  matches({
+    gherkinDocument,
+    pickle,
+  }: {
+    gherkinDocument: IGherkinDocument
+    pickle: IPickle
+  }): boolean {
     return (
       this.lineFilter.matchesAnyLine({ gherkinDocument, pickle }) &&
       this.nameFilter.matchesAnyName(pickle) &&
@@ -54,7 +62,13 @@ export class PickleLineFilter {
     })
   }
 
-  getFeatureUriToLinesMapping({ cwd, featurePaths }): Dictionary<number[]> {
+  getFeatureUriToLinesMapping({
+    cwd,
+    featurePaths,
+  }: {
+    cwd: string
+    featurePaths: string[]
+  }): Dictionary<number[]> {
     const mapping: Dictionary<number[]> = {}
     featurePaths.forEach(featurePath => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)

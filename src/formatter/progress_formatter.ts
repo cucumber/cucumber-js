@@ -1,8 +1,12 @@
 import SummaryFormatter from './summary_formatter'
 import Status from '../status'
 import { doesHaveValue } from '../value_checker'
+import { IFormatterOptions } from './index'
+import { messages } from 'cucumber-messages'
+import IEnvelope = messages.IEnvelope
+import ITestStepFinished = messages.ITestStepFinished
 
-const STATUS_CHARACTER_MAPPING = {
+const STATUS_CHARACTER_MAPPING: { [key: number]: string } = {
   [Status.AMBIGUOUS]: 'A',
   [Status.FAILED]: 'F',
   [Status.PASSED]: '.',
@@ -12,8 +16,8 @@ const STATUS_CHARACTER_MAPPING = {
 }
 
 export default class ProgressFormatter extends SummaryFormatter {
-  constructor(options) {
-    options.eventBroadcaster.on('envelope', envelope => {
+  constructor(options: IFormatterOptions) {
+    options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.log('\n\n')
       } else if (doesHaveValue(envelope.testStepFinished)) {
@@ -23,7 +27,7 @@ export default class ProgressFormatter extends SummaryFormatter {
     super(options)
   }
 
-  logProgress({ testResult: { status } }): void {
+  logProgress({ testResult: { status } }: ITestStepFinished): void {
     const character = this.colorFns.forStatus(status)(
       STATUS_CHARACTER_MAPPING[status]
     )

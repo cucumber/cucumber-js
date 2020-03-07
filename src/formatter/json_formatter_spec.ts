@@ -5,11 +5,11 @@ import {
   getJsonFormatterSupportCodeLibrary,
   getJsonFormatterSupportCodeLibraryWithHooks,
 } from '../../test/fixtures/json_formatter_steps'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 
 describe('JsonFormatter', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })
@@ -77,7 +77,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 8,
                     match: {
-                      location: 'json_formatter_steps.ts:8',
+                      location: 'json_formatter_steps.ts:11',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',

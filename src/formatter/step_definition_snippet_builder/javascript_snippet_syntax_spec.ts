@@ -1,173 +1,162 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 import { SnippetInterface } from './snippet_syntax'
+import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
+import GeneratedExpression from 'cucumber-expressions/dist/src/GeneratedExpression'
+import {
+  CucumberExpressionGenerator,
+  ParameterTypeRegistry,
+} from 'cucumber-expressions'
+
+function generateExpressions(text: string): GeneratedExpression[] {
+  const parameterTypeRegistry = new ParameterTypeRegistry()
+  const cucumberExpressionGenerator = new CucumberExpressionGenerator(
+    parameterTypeRegistry
+  )
+  return cucumberExpressionGenerator.generateExpressions(text)
+}
 
 describe('JavascriptSnippetSyntax', () => {
   describe('build()', () => {
     describe('callback interface', () => {
-      beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Callback)
-      })
-
       it('returns the proper snippet', function() {
-        const actual = this.syntax.build({
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Callback)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
           comment: 'comment',
           functionName: 'functionName',
-          generatedExpressions: [
-            {
-              source: 'pattern',
-              parameterNames: ['arg1', 'arg2'],
-            },
-          ],
+          generatedExpressions: generateExpressions('"abc" def "ghi"'),
           stepParameterNames: [],
-        })
-        const expected =
-          "functionName('pattern', function (arg1, arg2, callback) {\n" +
-          '  // comment\n' +
-          "  callback(null, 'pending');\n" +
-          '});'
-        expect(actual).to.eql(expected)
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(`\
+functionName('{string} def {string}', function (string, string2, callback) {
+  // comment
+  callback(null, 'pending');
+});`)
       })
     })
 
     describe('generator interface', () => {
-      beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Generator)
-      })
-
       it('returns the proper snippet', function() {
-        const actual = this.syntax.build({
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Generator)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
           comment: 'comment',
           functionName: 'functionName',
-          generatedExpressions: [
-            {
-              source: 'pattern',
-              parameterNames: ['arg1', 'arg2'],
-            },
-          ],
+          generatedExpressions: generateExpressions('"abc" def "ghi"'),
           stepParameterNames: [],
-        })
-        const expected =
-          "functionName('pattern', function *(arg1, arg2) {\n" +
-          '  // comment\n' +
-          "  return 'pending';\n" +
-          '});'
-        expect(actual).to.eql(expected)
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(`\
+functionName('{string} def {string}', function *(string, string2) {
+  // comment
+  return 'pending';
+});`)
       })
     })
 
     describe('promise interface', () => {
-      beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Promise)
-      })
-
       it('returns the proper snippet', function() {
-        const actual = this.syntax.build({
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Promise)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
           comment: 'comment',
           functionName: 'functionName',
-          generatedExpressions: [
-            {
-              source: 'pattern',
-              parameterNames: ['arg1', 'arg2'],
-            },
-          ],
+          generatedExpressions: generateExpressions('"abc" def "ghi"'),
           stepParameterNames: [],
-        })
-        const expected =
-          "functionName('pattern', function (arg1, arg2) {\n" +
-          '  // comment\n' +
-          "  return 'pending';\n" +
-          '});'
-        expect(actual).to.eql(expected)
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(`\
+functionName('{string} def {string}', function (string, string2) {
+  // comment
+  return 'pending';
+});`)
       })
     })
 
     describe('synchronous interface', () => {
-      beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
-      })
-
       it('returns the proper snippet', function() {
-        const actual = this.syntax.build({
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
           comment: 'comment',
           functionName: 'functionName',
-          generatedExpressions: [
-            {
-              source: 'pattern',
-              parameterNames: ['arg1', 'arg2'],
-            },
-          ],
+          generatedExpressions: generateExpressions('"abc" def "ghi"'),
           stepParameterNames: [],
-        })
-        const expected =
-          "functionName('pattern', function (arg1, arg2) {\n" +
-          '  // comment\n' +
-          "  return 'pending';\n" +
-          '});'
-        expect(actual).to.eql(expected)
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(`\
+functionName('{string} def {string}', function (string, string2) {
+  // comment
+  return 'pending';
+});`)
       })
     })
 
     describe('pattern contains single quote', () => {
-      beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
-      })
-
       it('returns the proper snippet', function() {
-        const actual = this.syntax.build({
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
           comment: 'comment',
           functionName: 'functionName',
-          generatedExpressions: [
-            {
-              source: "pattern'",
-              parameterNames: ['arg1', 'arg2'],
-            },
-          ],
+          generatedExpressions: generateExpressions("pattern'"),
           stepParameterNames: [],
-        })
-        const expected =
-          "functionName('pattern\\'', function (arg1, arg2) {\n" +
-          '  // comment\n' +
-          "  return 'pending';\n" +
-          '});'
-        expect(actual).to.eql(expected)
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(`\
+functionName('pattern\\'', function () {
+  // comment
+  return 'pending';
+});`)
       })
     })
 
     describe('multiple patterns', () => {
-      beforeEach(function() {
-        this.syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
-      })
-
       it('returns the snippet with the other choices commented out', function() {
-        const actual = this.syntax.build({
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
           comment: 'comment',
           functionName: 'functionName',
-          generatedExpressions: [
-            {
-              parameterNames: ['argA', 'argB'],
-              source: 'pattern1',
-            },
-            {
-              parameterNames: ['argC', 'argD'],
-              source: 'pattern2',
-            },
-            {
-              parameterNames: ['argE', 'argF'],
-              source: 'pattern3',
-            },
-          ],
+          generatedExpressions: generateExpressions('123 456'),
           stepParameterNames: [],
-        })
-        const expected =
-          "functionName('pattern1', function (argA, argB) {\n" +
-          "// functionName('pattern2', function (argC, argD) {\n" +
-          "// functionName('pattern3', function (argE, argF) {\n" +
-          '  // comment\n' +
-          "  return 'pending';\n" +
-          '});'
-        expect(actual).to.eql(expected)
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(`\
+functionName('{int} {int}', function (int, int2) {
+// functionName('{int} {float}', function (int, float) {
+// functionName('{float} {int}', function (float, int) {
+// functionName('{float} {float}', function (float, float2) {
+  // comment
+  return 'pending';
+});`)
       })
     })
   })
