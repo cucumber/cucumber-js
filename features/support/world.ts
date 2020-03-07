@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import toString from 'stream-to-string'
 import { PassThrough } from 'stream'
 import colors from 'colors/safe'
-import fs, { WriteStream } from 'fs'
+import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
@@ -63,7 +63,7 @@ export class World {
       const cli = new Cli({
         argv: args,
         cwd,
-        stdout: (stdout as unknown) as WriteStream,
+        stdout: stdout,
       })
       let error: any, stderr: string
       try {
