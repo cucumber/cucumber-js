@@ -57,11 +57,11 @@ Failures:
 1) Scenario: a1 # a.feature:2
    ${figures.cross} Given an ambiguous step
        Multiple step definitions match:
-         an ambiguous step    - steps.ts:12
-         /an? ambiguous step/ - steps.ts:13
+         an ambiguous step    - steps.ts:13
+         /an? ambiguous step/ - steps.ts:14
 
 2) Scenario: a2 # a.feature:4
-   ${figures.cross} Given a failing step # steps.ts:8
+   ${figures.cross} Given a failing step # steps.ts:9
        error
 
 3) Scenario: a6 # a.feature:12
@@ -77,7 +77,7 @@ Failures:
 Warnings:
 
 1) Scenario: a3 # a.feature:6
-   ? Given a pending step # steps.ts:15
+   ? Given a pending step # steps.ts:16
        Pending
 
 6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)

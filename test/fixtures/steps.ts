@@ -2,6 +2,7 @@
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
+import World from '../../src/support_code_library_builder/world'
 
 export function getBaseSupportCodeLibrary(): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
@@ -31,14 +32,14 @@ export function getBaseSupportCodeLibrary(): ISupportCodeLibrary {
       return 'skipped'
     })
 
-    Given('attachment step1', function() {
-      this.attach('Some info')
-      this.attach('{"name": "some JSON"}', 'application/json')
-      this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
+    Given('attachment step1', async function(this: World) {
+      await this.attach('Some info')
+      await this.attach('{"name": "some JSON"}', 'application/json')
+      await this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
     })
 
-    Given('attachment step2', function() {
-      this.attach('Other info')
+    Given('attachment step2', async function(this: World) {
+      await this.attach('Other info')
       throw 'error' // eslint-disable-line no-throw-literal
     })
   })

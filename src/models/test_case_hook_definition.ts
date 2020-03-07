@@ -4,6 +4,7 @@ import Definition, {
   IGetInvocationDataResponse,
   IGetInvocationDataRequest,
 } from './definition'
+import { messages } from 'cucumber-messages'
 
 export default class TestCaseHookDefinition extends Definition
   implements IDefinition {
@@ -14,7 +15,7 @@ export default class TestCaseHookDefinition extends Definition
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }
 
-  appliesToTestCase(pickle): boolean {
+  appliesToTestCase(pickle: messages.IPickle): boolean {
     return this.pickleTagFilter.matchesAllTagExpressions(pickle)
   }
 

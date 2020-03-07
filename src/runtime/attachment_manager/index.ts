@@ -8,6 +8,12 @@ export interface IAttachment {
   media: messages.Media
 }
 
+export type ICreateAttachment = (
+  data: Buffer | stream.Readable | string,
+  mediaType?: string,
+  callback?: () => void
+) => void | Promise<void>
+
 export default class AttachmentManager {
   private readonly onAttachment: (attachment: IAttachment) => void
 
