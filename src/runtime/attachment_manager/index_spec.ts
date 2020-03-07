@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import AttachmentManager from './'
+import AttachmentManager, { IAttachment } from './'
 import stream, { Readable } from 'stream'
 import { messages } from 'cucumber-messages'
 
@@ -10,7 +10,7 @@ describe('AttachmentManager', () => {
       describe('with mime type', () => {
         it('adds the data and media', function() {
           // Arrange
-          const attachments = []
+          const attachments: IAttachment[] = []
           const attachmentManager = new AttachmentManager(x =>
             attachments.push(x)
           )
@@ -43,7 +43,7 @@ describe('AttachmentManager', () => {
       describe('without media type', () => {
         it('throws', function() {
           // Arrange
-          const attachments = []
+          const attachments: IAttachment[] = []
           const attachmentManager = new AttachmentManager(x =>
             attachments.push(x)
           )
@@ -72,7 +72,7 @@ describe('AttachmentManager', () => {
         describe('with callback', () => {
           it('does not return a promise and adds the data and media', async function() {
             // Arrange
-            const attachments = []
+            const attachments: IAttachment[] = []
             const attachmentManager = new AttachmentManager(x =>
               attachments.push(x)
             )
@@ -114,7 +114,7 @@ describe('AttachmentManager', () => {
         describe('without callback', () => {
           it('returns a promise and adds the data and media', async function() {
             // Arrange
-            const attachments = []
+            const attachments: IAttachment[] = []
             const attachmentManager = new AttachmentManager(x =>
               attachments.push(x)
             )
@@ -153,7 +153,7 @@ describe('AttachmentManager', () => {
       describe('without media type', () => {
         it('throws', function() {
           // Arrange
-          const attachments = []
+          const attachments: IAttachment[] = []
           const attachmentManager = new AttachmentManager(x =>
             attachments.push(x)
           )
@@ -182,7 +182,7 @@ describe('AttachmentManager', () => {
       describe('with media type', () => {
         it('adds the data and media', function() {
           // Arrange
-          const attachments = []
+          const attachments: IAttachment[] = []
           const attachmentManager = new AttachmentManager(x =>
             attachments.push(x)
           )
@@ -207,7 +207,7 @@ describe('AttachmentManager', () => {
       describe('without mime type', () => {
         it('adds the data with the default mime type', function() {
           // Arrange
-          const attachments = []
+          const attachments: IAttachment[] = []
           const attachmentManager = new AttachmentManager(x =>
             attachments.push(x)
           )
@@ -233,7 +233,7 @@ describe('AttachmentManager', () => {
     describe('unsupported data type', () => {
       it('throws', function() {
         // Arrange
-        const attachments = []
+        const attachments: IAttachment[] = []
         const attachmentManager = new AttachmentManager(x =>
           attachments.push(x)
         )

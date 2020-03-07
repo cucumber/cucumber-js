@@ -23,7 +23,7 @@ interface ITestParseGherkinMessageStreamResponse {
 async function testParseGherkinMessageStream(
   options: ITestParseGherkinMessageStreamRequest
 ): Promise<ITestParseGherkinMessageStreamResponse> {
-  const envelopes = []
+  const envelopes: messages.IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', e => envelopes.push(e))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
