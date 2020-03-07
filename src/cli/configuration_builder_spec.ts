@@ -1,35 +1,34 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import ConfigurationBuilder, {
-  IConfigurationFormat,
-  INewConfigurationBuilderOptions,
-} from './configuration_builder'
+import ConfigurationBuilder from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
-describe('Configuration', () => {
-  beforeEach(async function() {
-    this.tmpDir = await promisify<DirOptions, string>(tmp.dir)({
-      unsafeCleanup: true,
-    })
-    await fsExtra.mkdirp(path.join(this.tmpDir, 'features'))
-    this.argv = ['path/to/node', 'path/to/cucumber.js']
-    this.configurationOptions = {
-      argv: this.argv,
-      cwd: this.tmpDir,
-    }
+async function buildTestWorkingDirectory(): Promise<string> {
+  const cwd = await promisify<DirOptions, string>(tmp.dir)({
+    unsafeCleanup: true,
   })
+  await fsExtra.mkdirp(path.join(cwd, 'features'))
+  return cwd
+}
 
+const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
+
+describe('Configuration', () => {
   describe('no argv', () => {
-    beforeEach(async function() {
-      this.result = await ConfigurationBuilder.build(this.configurationOptions)
-    })
+    it('returns the default configuration', async function() {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv
 
-    it('returns the default configuration', function() {
-      expect(this.result).to.eql({
+      // Act
+      const result = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(result).to.eql({
         featureDefaultLanguage: 'en',
         featurePaths: [],
         formatOptions: {},
@@ -39,7 +38,7 @@ describe('Configuration', () => {
         order: 'defined',
         parallel: 0,
         pickleFilterOptions: {
-          cwd: this.tmpDir,
+          cwd,
           featurePaths: ['features/**/*.feature'],
           names: [],
           tagExpression: '',
@@ -63,65 +62,80 @@ describe('Configuration', () => {
   })
 
   describe('path to a feature', () => {
-    beforeEach(async function() {
-      this.relativeFeaturePath = path.join('features', 'a.feature')
-      this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
-      await fsExtra.outputFile(this.featurePath, '')
-      this.supportCodePath = path.join(this.tmpDir, 'features', 'a.js')
-      await fsExtra.outputFile(this.supportCodePath, '')
-      this.argv.push(this.relativeFeaturePath)
-      this.result = await ConfigurationBuilder.build(this.configurationOptions)
-    })
+    it('returns the appropriate feature and support code paths', async function() {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      const supportCodePath = path.join(cwd, 'features', 'a.js')
+      await fsExtra.outputFile(supportCodePath, '')
+      const argv = baseArgv.concat([relativeFeaturePath])
 
-    it('returns the appropriate feature and support code paths', function() {
+      // Act
       const {
         featurePaths,
         pickleFilterOptions,
         supportCodePaths,
-      } = this.result
-      expect(featurePaths).to.eql([this.featurePath])
-      expect(pickleFilterOptions.featurePaths).to.eql([
-        this.relativeFeaturePath,
-      ])
-      expect(supportCodePaths).to.eql([this.supportCodePath])
+      } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(featurePaths).to.eql([featurePath])
+      expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+      expect(supportCodePaths).to.eql([supportCodePath])
     })
   })
 
   describe('path to a nested feature', () => {
-    beforeEach(async function() {
-      this.relativeFeaturePath = path.join('features', 'nested', 'a.feature')
-      this.featurePath = path.join(this.tmpDir, this.relativeFeaturePath)
-      await fsExtra.outputFile(this.featurePath, '')
-      this.supportCodePath = path.join(this.tmpDir, 'features', 'a.js')
-      await fsExtra.outputFile(this.supportCodePath, '')
-      this.argv.push(this.relativeFeaturePath)
-      this.result = await ConfigurationBuilder.build(this.configurationOptions)
-    })
+    it('returns the appropriate feature and support code paths', async function() {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'nested', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      const supportCodePath = path.join(cwd, 'features', 'a.js')
+      await fsExtra.outputFile(supportCodePath, '')
+      const argv = baseArgv.concat([relativeFeaturePath])
 
-    it('returns the appropriate feature and support code paths', function() {
+      // Act
       const {
         featurePaths,
         pickleFilterOptions,
         supportCodePaths,
-      } = this.result
-      expect(featurePaths).to.eql([this.featurePath])
-      expect(pickleFilterOptions.featurePaths).to.eql([
-        this.relativeFeaturePath,
-      ])
-      expect(supportCodePaths).to.eql([this.supportCodePath])
+      } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(featurePaths).to.eql([featurePath])
+      expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+      expect(supportCodePaths).to.eql([supportCodePath])
     })
   })
 
   describe('formatters', () => {
     it('adds a default', async function() {
-      const formats = await getFormats(this.configurationOptions)
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv
+
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
     })
 
     it('splits relative unix paths', async function() {
-      this.argv.push('-f', '../custom/formatter:../formatter/output.txt')
-      const formats = await getFormats(this.configurationOptions)
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat([
+        '-f',
+        '../custom/formatter:../formatter/output.txt',
+      ])
 
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
         { outputTo: '../formatter/output.txt', type: '../custom/formatter' },
@@ -129,9 +143,17 @@ describe('Configuration', () => {
     })
 
     it('splits absolute unix paths', async function() {
-      this.argv.push('-f', '/custom/formatter:/formatter/output.txt')
-      const formats = await getFormats(this.configurationOptions)
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat([
+        '-f',
+        '/custom/formatter:/formatter/output.txt',
+      ])
 
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
         { outputTo: '/formatter/output.txt', type: '/custom/formatter' },
@@ -139,9 +161,17 @@ describe('Configuration', () => {
     })
 
     it('splits absolute windows paths', async function() {
-      this.argv.push('-f', 'C:\\custom\\formatter:D:\\formatter\\output.txt')
-      const formats = await getFormats(this.configurationOptions)
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat([
+        '-f',
+        'C:\\custom\\formatter:D:\\formatter\\output.txt',
+      ])
 
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
         {
@@ -152,30 +182,34 @@ describe('Configuration', () => {
     })
 
     it('does not split absolute windows paths without an output', async function() {
-      this.argv.push('-f', 'C:\\custom\\formatter')
-      const formats = await getFormats(this.configurationOptions)
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['-f', 'C:\\custom\\formatter'])
 
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
       expect(formats).to.eql([{ outputTo: '', type: 'C:\\custom\\formatter' }])
     })
-
-    async function getFormats(
-      options: INewConfigurationBuilderOptions
-    ): Promise<IConfigurationFormat[]> {
-      const result = await ConfigurationBuilder.build(options)
-      return result.formats
-    }
   })
 
   describe('formatOptions', () => {
     it('joins the objects', async function() {
-      this.argv.push(
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat([
         '--format-options',
         '{"snippetInterface": "promise"}',
         '--format-options',
-        '{"colorsEnabled": false}'
-      )
-      const result = await ConfigurationBuilder.build(this.configurationOptions)
-      expect(result.formatOptions).to.eql({
+        '{"colorsEnabled": false}',
+      ])
+
+      // Act
+      const { formatOptions } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(formatOptions).to.eql({
         colorsEnabled: false,
         snippetInterface: SnippetInterface.Promise,
       })

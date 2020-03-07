@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getAmbiguousStepException, retriesForPickle } from './helpers'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
@@ -7,8 +7,9 @@ import { buildOptions } from '../../test/runtime_helpers'
 
 describe('Helpers', () => {
   describe('getAmbiguousStepException', () => {
-    beforeEach(function() {
-      this.result = getAmbiguousStepException([
+    it('returns a nicely formatted error', function() {
+      // Arrange
+      const stepDefinitions = [
         new StepDefinition({
           code: undefined,
           expression: undefined,
@@ -27,11 +28,13 @@ describe('Helpers', () => {
           pattern: 'longer pattern2',
           uri: 'steps2.js',
         }),
-      ])
-    })
+      ]
 
-    it('returns a nicely formatted error', function() {
-      expect(this.result).to.eql(
+      // Act
+      const result = getAmbiguousStepException(stepDefinitions)
+
+      // Assert
+      expect(result).to.eql(
         'Multiple step definitions match:\n' +
           '  pattern1        - steps1.js:3\n' +
           '  longer pattern2 - steps2.js:4'

@@ -1,58 +1,70 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import UserCodeRunner from './user_code_runner'
+import UserCodeRunner, { IRunRequest, IRunResponse } from './user_code_runner'
 import bluebird from 'bluebird'
+
+async function testUserCodeRunner(
+  opts: Partial<IRunRequest>
+): Promise<IRunResponse> {
+  return UserCodeRunner.run({
+    argsArray: [],
+    fn: () => 'result',
+    thisArg: {},
+    timeoutInMilliseconds: 100,
+    ...opts,
+  })
+}
+
+type CallbackFn = (error?: any, result?: any) => void
 
 describe('UserCodeRunner', () => {
   describe('run()', () => {
-    beforeEach(function() {
-      this.options = {
-        argsArray: [],
-        thisArg: {},
-        timeoutInMilliseconds: 100,
-      }
-    })
-
     describe('function uses synchronous interface', () => {
       describe('function throws serializable error', () => {
-        beforeEach(function() {
-          this.options.fn = function() {
+        it('returns the error', async function() {
+          // Arrange
+          const fn = function(): void {
             throw 'error' // eslint-disable-line no-throw-literal
           }
-        })
 
-        it('returns the error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql('error')
           expect(result).to.eql(undefined)
         })
       })
 
       describe('function throws non-serializable error', () => {
-        beforeEach(function() {
-          this.options.fn = function() {
+        it('returns the error', async function() {
+          // Arrange
+          const fn = function(): void {
             const error: any = {}
             error.loop = error
             throw error
           }
-        })
 
-        it('returns the error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql('{ loop: [Circular] }')
           expect(result).to.eql(undefined)
         })
       })
 
       describe('function returns', () => {
-        beforeEach(function() {
-          this.options.fn = function() {
+        it('returns the return value of the function', async function() {
+          // Arrange
+          const fn = function(): string {
             return 'result'
           }
-        })
 
-        it('returns the return value of the function', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql(undefined)
           expect(result).to.eql('result')
         })
@@ -65,66 +77,74 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function calls back with serializable error', () => {
-        beforeEach(function() {
-          this.options.fn = function(callback: Function) {
+        it('returns the error', async function() {
+          // Arrange
+          const fn = function(callback: CallbackFn): void {
             setTimeout(() => {
               callback('error') // eslint-disable-line standard/no-callback-literal
             }, 25)
           }
-        })
 
-        it('returns the error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql('error')
           expect(result).to.eql(undefined)
         })
       })
 
       describe('function calls back with non-serializable rror', () => {
-        beforeEach(function() {
-          this.options.fn = function(callback: Function) {
+        it('returns the error', async function() {
+          // Arrange
+          const fn = function(callback: CallbackFn): void {
             const error: any = {}
             error.loop = error
             setTimeout(() => {
               callback(error)
             }, 25)
           }
-        })
 
-        it('returns the error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql('{ loop: [Circular] }')
           expect(result).to.eql(undefined)
         })
       })
 
       describe('function calls back with result', () => {
-        beforeEach(function() {
-          this.options.fn = function(callback: Function) {
+        it('returns the what the function calls back with', async function() {
+          // Arrange
+          const fn = function(callback: CallbackFn): void {
             setTimeout(() => {
               callback(null, 'result')
             }, 25)
           }
-        })
 
-        it('returns the what the function calls back with', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql(undefined)
           expect(result).to.eql('result')
         })
       })
 
       describe('function times out', () => {
-        beforeEach(function() {
-          this.options.fn = function(callback: Function) {
+        it('returns timeout as an error', async function() {
+          // Arrange
+          const fn = function(callback: CallbackFn): void {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
           }
-        })
 
-        it('returns timeout as an error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.be.instanceof(Error)
           expect(error.message).to.eql(
             'function timed out, ensure the callback is executed within 100 milliseconds'
@@ -134,17 +154,21 @@ describe('UserCodeRunner', () => {
       })
 
       describe('timeout of -1', () => {
-        beforeEach(function() {
-          this.options.fn = function(callback: Function) {
+        it('disables timeout protection', async function() {
+          // Arrange
+          const fn = function(callback: CallbackFn): void {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
           }
-          this.options.timeoutInMilliseconds = -1
-        })
 
-        it('disables timeout protection', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({
+            fn,
+            timeoutInMilliseconds: -1,
+          })
+
+          // Assert
           expect(error).to.eql(undefined)
           expect(result).to.eql('result')
         })
@@ -157,42 +181,48 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise resolves', () => {
-        beforeEach(function() {
-          this.options.fn = async function() {
+        it('returns what the promise resolves to', async function() {
+          // Arrange
+          const fn = async function(): Promise<string> {
             return Promise.resolve('result')
           }
-        })
 
-        it('returns what the promise resolves to', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql(undefined)
           expect(result).to.eql('result')
         })
       })
 
       describe('promise rejects with reason', () => {
-        beforeEach(function() {
-          this.options.fn = async function() {
+        it('returns what the promise rejects as an error', async function() {
+          // Arrange
+          const fn = async function(): Promise<void> {
             return Promise.reject('error') // eslint-disable-line prefer-promise-reject-errors
           }
-        })
 
-        it('returns what the promise rejects as an error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.eql('error')
           expect(result).to.eql(undefined)
         })
       })
 
       describe('promise rejects without reason', () => {
-        beforeEach(function() {
-          this.options.fn = async function() {
+        it('returns a helpful error message', async function() {
+          // Arrange
+          const fn = async function(): Promise<void> {
             return Promise.reject() // eslint-disable-line prefer-promise-reject-errors
           }
-        })
 
-        it('returns a helpful error message', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.be.instanceOf(Error)
           expect(error.message).to.eql('Promise rejected without a reason')
           expect(result).to.eql(undefined)
@@ -200,14 +230,16 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise times out', function() {
-        beforeEach(function() {
-          this.options.fn = async function() {
+        it('returns timeout as an error', async function() {
+          // Arrange
+          const fn = async function(): Promise<string> {
             return bluebird.resolve('result').delay(200)
           }
-        })
 
-        it('returns timeout as an error', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({ fn })
+
+          // Assert
           expect(error).to.be.instanceof(Error)
           expect(error.message).to.eql(
             'function timed out, ensure the promise resolves within 100 milliseconds'
@@ -217,15 +249,19 @@ describe('UserCodeRunner', () => {
       })
 
       describe('timeout of -1', () => {
-        beforeEach(function() {
-          this.options.fn = async function() {
+        it('disables timeout protection', async function() {
+          // Arrange
+          const fn = async function(): Promise<string> {
             return bluebird.resolve('result').delay(200)
           }
-          this.options.timeoutInMilliseconds = -1
-        })
 
-        it('disables timeout protection', async function() {
-          const { error, result } = await UserCodeRunner.run(this.options)
+          // Act
+          const { error, result } = await testUserCodeRunner({
+            fn,
+            timeoutInMilliseconds: -1,
+          })
+
+          // Assert
           expect(error).to.eql(undefined)
           expect(result).to.eql('result')
         })
@@ -233,15 +269,17 @@ describe('UserCodeRunner', () => {
     })
 
     describe('function uses multiple asynchronous interfaces: callback and promise', () => {
-      beforeEach(function() {
-        this.options.fn = async function(callback: Function) {
+      it('returns an error that multiple interface are used', async function() {
+        // Arrange
+        const fn = async function(callback: CallbackFn): Promise<void> {
           callback()
           return Promise.resolve()
         }
-      })
 
-      it('returns an error that multiple interface are used', async function() {
-        const { error, result } = await UserCodeRunner.run(this.options)
+        // Act
+        const { error, result } = await testUserCodeRunner({ fn })
+
+        // Assert
         expect(error).to.be.instanceof(Error)
         expect(error.message).to.eql(
           'function uses multiple asynchronous interfaces: callback and promise\n' +

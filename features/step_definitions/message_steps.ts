@@ -11,6 +11,7 @@ import {
   getTestStepResults,
 } from '../support/message_helpers'
 import { messages } from 'cucumber-messages'
+import { World } from '../support/world'
 
 type StringifiedStatus =
   | 'UNKNOWN'
@@ -23,7 +24,7 @@ type StringifiedStatus =
 
 const { Status } = messages.TestResult
 
-Then('it runs {int} scenarios', function(expectedCount: number) {
+Then('it runs {int} scenarios', function(this: World, expectedCount: number) {
   const testCaseStartedEvents = _.filter(
     this.lastRun.envelopes,
     e => e.testCaseStarted
@@ -31,12 +32,13 @@ Then('it runs {int} scenarios', function(expectedCount: number) {
   expect(testCaseStartedEvents).to.have.lengthOf(expectedCount)
 })
 
-Then('it runs the scenario {string}', function(name: string) {
+Then('it runs the scenario {string}', function(this: World, name: string) {
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(actualNames).to.eql([name])
 })
 
 Then('it runs the scenarios {string} and {string}', function(
+  this: World,
   name1: string,
   name2: string
 ) {
@@ -44,13 +46,14 @@ Then('it runs the scenarios {string} and {string}', function(
   expect(actualNames).to.eql([name1, name2])
 })
 
-Then('it runs the scenarios:', function(table: DataTable) {
+Then('it runs the scenarios:', function(this: World, table: DataTable) {
   const expectedNames = table.rows().map(row => row[0])
   const actualNames = getPickleNamesInOrderOfExecution(this.lastRun.envelopes)
   expect(expectedNames).to.eql(actualNames)
 })
 
 Then('scenario {string} has status {string}', function(
+  this: World,
   name: string,
   status: string
 ) {
@@ -61,6 +64,7 @@ Then('scenario {string} has status {string}', function(
 })
 
 Then('the scenario {string} has the steps:', function(
+  this: World,
   name: string,
   table: DataTable
 ) {
@@ -72,6 +76,7 @@ Then('the scenario {string} has the steps:', function(
 })
 
 Then('scenario {string} step {string} has status {string}', function(
+  this: World,
   pickleName: string,
   stepText: string,
   status: string
@@ -86,6 +91,7 @@ Then('scenario {string} step {string} has status {string}', function(
 Then(
   'scenario {string} attempt {int} step {string} has status {string}',
   function(
+    this: World,
     pickleName: string,
     attempt: number,
     stepText: string,
@@ -104,6 +110,7 @@ Then(
 )
 
 Then('scenario {string} {string} hook has status {string}', function(
+  this: World,
   pickleName: string,
   hookKeyword: string,
   status: string
@@ -116,6 +123,7 @@ Then('scenario {string} {string} hook has status {string}', function(
 })
 
 Then('scenario {string} step {string} failed with:', function(
+  this: World,
   pickleName: string,
   stepText: string,
   errorMessage: string
@@ -127,6 +135,7 @@ Then('scenario {string} step {string} failed with:', function(
 })
 
 Then('scenario {string} attempt {int} step {string} failed with:', function(
+  this: World,
   pickleName: string,
   attempt: number,
   stepText: string,
@@ -143,6 +152,7 @@ Then('scenario {string} attempt {int} step {string} failed with:', function(
 })
 
 Then('scenario {string} step {string} has the doc string:', function(
+  this: World,
   pickleName: string,
   stepText: string,
   docString: string
@@ -152,6 +162,7 @@ Then('scenario {string} step {string} has the doc string:', function(
 })
 
 Then('scenario {string} step {string} has the data table:', function(
+  this: World,
   pickleName: string,
   stepText: string,
   dataTable: DataTable
@@ -161,6 +172,7 @@ Then('scenario {string} step {string} has the data table:', function(
 })
 
 Then('scenario {string} step {string} has the attachments:', function(
+  this: World,
   pickleName: string,
   stepText: string,
   table: DataTable
@@ -186,6 +198,7 @@ Then('scenario {string} step {string} has the attachments:', function(
 })
 
 Then('scenario {string} {string} hook has the attachments:', function(
+  this: World,
   pickleName: string,
   hookKeyword: string,
   table: DataTable

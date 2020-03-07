@@ -1,13 +1,13 @@
-import { IAttachFunction } from '../runtime/attachment_manager'
+import { ICreateAttachment } from '../runtime/attachment_manager'
 
 export interface IWorldOptions {
-  attach: IAttachFunction
+  attach: ICreateAttachment
   parameters: any
 }
 
 export default class World {
-  private readonly attach: IAttachFunction
-  private readonly parameters: any
+  public readonly attach: ICreateAttachment
+  public readonly parameters: any
 
   constructor({ attach, parameters }: IWorldOptions) {
     this.attach = attach

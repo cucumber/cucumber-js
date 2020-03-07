@@ -9,11 +9,16 @@ export interface IAttachment {
 }
 
 export type IAttachFunction = (attachment: IAttachment) => void
+export type ICreateAttachment = (
+  data: Buffer | stream.Readable | string,
+  mediaType?: string,
+  callback?: () => void
+) => void | Promise<void>
 
 export default class AttachmentManager {
-  private readonly onAttachment: (attachment: IAttachment) => void
+  private readonly onAttachment: IAttachFunction
 
-  constructor(onAttachment: (attachment: IAttachment) => void) {
+  constructor(onAttachment: IAttachFunction) {
     this.onAttachment = onAttachment
   }
 
