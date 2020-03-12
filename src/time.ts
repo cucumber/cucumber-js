@@ -42,10 +42,10 @@ export function addDurations(
   if (doesNotHaveValue(b)) {
     return a
   }
-  let seconds = new Long(0).add(a.seconds).add(b.seconds)
+  let seconds = toNumber(a.seconds) + toNumber(b.seconds)
   let nanos = a.nanos + b.nanos
   if (nanos > NANOSECONDS_IN_SECOND) {
-    seconds = seconds.add(1)
+    seconds += 1
     nanos -= NANOSECONDS_IN_SECOND
   }
   return new messages.Duration({ seconds, nanos })
