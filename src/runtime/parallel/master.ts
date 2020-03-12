@@ -15,14 +15,7 @@ import {
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 
-const slaveCommand = path.resolve(
-  __dirname,
-  '..',
-  '..',
-  '..',
-  'bin',
-  'run_slave'
-)
+const runSlavePath = path.resolve(__dirname, 'run_slave.js')
 
 export interface INewMasterOptions {
   cwd: string
@@ -138,7 +131,7 @@ export default class Master {
   }
 
   startSlave(id: string, total: number): void {
-    const slaveProcess = fork(slaveCommand, [], {
+    const slaveProcess = fork(runSlavePath, [], {
       cwd: this.cwd,
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
