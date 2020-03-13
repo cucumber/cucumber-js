@@ -65,7 +65,6 @@ export class World {
         argv: args,
         cwd,
         stdout,
-        stderr,
       })
       let error: any
       try {

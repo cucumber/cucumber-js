@@ -12,6 +12,7 @@ Feature: Retry flaky tests
       """
     And it fails
 
+  @spawn
   Scenario: running Cucumber JS with --retryTagFilter in camel case will result in a warning
     Given a file named "features/a.feature" with:
       """

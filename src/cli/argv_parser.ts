@@ -224,6 +224,14 @@ const ArgvParser = {
       args: program.args,
     }
   },
+
+  lint(fullArgv: string[]): void {
+    if (fullArgv.includes('--retryTagFilter')) {
+      console.warn(
+        'the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter'
+      )
+    }
+  },
 }
 
 export default ArgvParser
