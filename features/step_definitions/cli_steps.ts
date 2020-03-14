@@ -1,4 +1,4 @@
-import { When, Then } from '../../'
+import { When, Then, DataTable } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
@@ -39,7 +39,7 @@ When(
 When(
   /^I run cucumber-js \(installed (locally|globally)\)$/,
   { timeout: 10000 },
-  async function(this: World, location) {
+  async function(this: World, location: string) {
     if (location === 'locally') {
       return this.run(this.localExecutablePath, [])
     }
@@ -57,19 +57,22 @@ Then(/^it fails$/, function(this: World) {
   this.verifiedLastRunError = true
 })
 
-Then(/^it outputs the text:$/, function(this: World, text) {
+Then(/^it outputs the text:$/, function(this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.eql(expectedOutput)
 })
 
-Then(/^the output contains the text:$/, function(this: World, text) {
+Then(/^the output contains the text:$/, function(this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.include(expectedOutput)
 })
 
-Then('the output does not contain the text:', function(this: World, text) {
+Then('the output does not contain the text:', function(
+  this: World,
+  text: string
+) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).not.to.include(expectedOutput)
@@ -77,7 +80,7 @@ Then('the output does not contain the text:', function(this: World, text) {
 
 Then(/^the error output contains the text snippets:$/, function(
   this: World,
-  table
+  table: DataTable
 ) {
   const actualOutput = normalizeText(this.lastRun.errorOutput)
   table.rows().forEach(row => {
@@ -86,7 +89,10 @@ Then(/^the error output contains the text snippets:$/, function(
   })
 })
 
-Then(/^the error output contains the text:$/, function(this: World, text) {
+Then(/^the error output contains the text:$/, function(
+  this: World,
+  text: string
+) {
   const actualOutput = normalizeText(this.lastRun.errorOutput)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.include(expectedOutput)

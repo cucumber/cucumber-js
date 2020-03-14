@@ -44,7 +44,7 @@ This option may be used multiple times in order to output different formats to d
 If multiple formats are specified with the same output, only the last is used.
 
 Built-in formatters
-* event-protocol - prints the event protocol. See [current docs](https://docs.cucumber.io/event-protocol/) and the [proposed updates](https://github.com/cucumber/cucumber/pull/172) which were implemented.
+* message - prints the full [`cucumber-messages`](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) object in [varint](https://developers.google.com/protocol-buffers/docs/encoding#varints)-delimited protobuf binary form, which can then be piped to other tools.
 * json - prints the feature as JSON.
 * progress - prints one character per scenario (default).
 * progress-bar - prints a progress bar and outputs errors/warnings along the way.
@@ -78,6 +78,12 @@ By default, cucumber exits when the event loop drains. Use the `--exit` flag in 
 ## Undefined Step Snippets
 
 Undefined steps snippets are printed in JavaScript using the callback interface by default.
+
+## --no-strict
+
+disable _strict_ mode.
+
+By default, cucumber works in _strict_ mode, meaning it will fail if there are pending steps.
 
 ### Interface
 
@@ -115,6 +121,12 @@ In order to store and reuse commonly used CLI options, you can add a `cucumber.j
 
 Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with an `and` operator.
 `<EXPRESSION>` is a [cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions).
+
+## --fail-fast
+
+abort the run on first failure (default: false)
+
+By default, cucumber-js runs the entire suite and reports all the failures. This flag allows a developer workflow where you work on one failure at a time. Combining this feature with rerun files allows you to work through all failures in an efficient manner.
 
 ## Retry failing tests
 

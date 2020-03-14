@@ -30,7 +30,7 @@ Given('I have {int} cucumbers in my belly', function (cucumberCount) {
 Matching groups in the regular expression are passed as parameters to the step definition.
 
 ```javascript
-const {Then, When} = require('cucumber');
+const { Then, When } = require('cucumber');
 const assert = require('assert');
 const fs = require('fs');
 const mzFs = require('mz/fs')
@@ -60,7 +60,7 @@ Then(/^the file named (.*) is empty$/, function (fileName, callback) {
 // Return a promise. The step is done when the promise resolves or rejects
 When(/^I view my profile$/, function () {
   // Assuming this.driver is a selenium webdriver
-  return this.driver.findElement({css: '.profile-link'}).then(function(element) {
+  return this.driver.findElement({ css: '.profile-link' }).then(function(element) {
     return element.click();
   });
 });
@@ -73,9 +73,9 @@ If you would like to wrap step or hook definitions in with some additional logic
 
 ```javascript
 // features/step_definitions/file_steps.js
-var {Then} = require('cucumber');
-var assert = require('assert');
-var mzFs = require('mz/fs');
+const { Then } = require('cucumber');
+const assert = require('assert');
+const mzFs = require('mz/fs');
 
 Then(/^the file named (.*) is empty$/, function *(fileName) {
   contents = yield mzFs.readFile(fileName, 'utf8');
@@ -83,9 +83,9 @@ Then(/^the file named (.*) is empty$/, function *(fileName) {
 });
 
 // features/support/setup.js
-var {setDefinitionFunctionWrapper} = require('cucumber');
-var isGenerator = require('is-generator');
-var Promise = require('bluebird');
+const { setDefinitionFunctionWrapper } = require('cucumber');
+const isGenerator = require('is-generator');
+const Promise = require('bluebird');
 
 setDefinitionFunctionWrapper(function (fn) {
   if (isGenerator.fn(fn)) {

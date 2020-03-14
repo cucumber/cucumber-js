@@ -15,27 +15,38 @@ import { messages, IdGenerator } from 'cucumber-messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
+import { IRuntimeOptions } from '../index'
 
 const { uuid } = IdGenerator
 
+type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
+type IMessageSender = (command: IMasterReport) => void
+
 export default class Slave {
   private readonly cwd: string
-  private readonly exit: (
-    exitCode: number,
-    error?: Error,
-    message?: string
-  ) => void
+  private readonly exit: IExitFunction
 
   private readonly id: string
   private readonly eventBroadcaster: EventEmitter
   private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
-  private readonly sendMessage: (command: IMasterReport) => void
+  private readonly sendMessage: IMessageSender
   private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
+  private options: IRuntimeOptions
 
-  constructor({ cwd, exit, id, sendMessage }) {
+  constructor({
+    cwd,
+    exit,
+    id,
+    sendMessage,
+  }: {
+    cwd: string
+    exit: IExitFunction
+    id: string
+    sendMessage: IMessageSender
+  }) {
     this.id = id
     this.newId = uuid()
     this.cwd = cwd
@@ -54,7 +65,7 @@ export default class Slave {
     filterStacktraces,
     supportCodeRequiredModules,
     supportCodePaths,
-    worldParameters,
+    options,
   }: ISlaveCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map(module => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
@@ -73,7 +84,8 @@ export default class Slave {
         ),
       },
     })
-    this.worldParameters = worldParameters
+    this.worldParameters = options.worldParameters
+    this.options = options
     this.filterStacktraces = filterStacktraces
     if (this.filterStacktraces) {
       this.stackTraceFilter.filter()
@@ -130,6 +142,9 @@ export default class Slave {
     testRunHookDefinitions: TestRunHookDefinition[],
     name: string
   ): Promise<void> {
+    if (this.options.dryRun) {
+      return
+    }
     await bluebird.each(testRunHookDefinitions, async hookDefinition => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],

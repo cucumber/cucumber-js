@@ -2,6 +2,7 @@ import Gherkin from 'gherkin'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue } from '../src/value_checker'
 import IGherkinOptions from 'gherkin/src/IGherkinOptions'
+import { EventEmitter } from 'events'
 
 export interface IParsedSource {
   pickles: messages.IPickle[]
@@ -13,15 +14,17 @@ export interface IParsedSourceWithEnvelopes extends IParsedSource {
   envelopes: messages.IEnvelope[]
 }
 
+export interface IParseRequest {
+  data: string
+  uri: string
+  options?: IGherkinOptions
+}
+
 export async function parse({
   data,
   uri,
   options,
-}: {
-  data: string
-  uri: string
-  options?: IGherkinOptions
-}): Promise<IParsedSourceWithEnvelopes> {
+}: IParseRequest): Promise<IParsedSourceWithEnvelopes> {
   const sources = [
     {
       source: {
@@ -74,11 +77,17 @@ export async function parse({
   })
 }
 
+export interface IGenerateEventsRequest {
+  data: string
+  eventBroadcaster: EventEmitter
+  uri: string
+}
+
 export async function generateEvents({
   data,
   eventBroadcaster,
   uri,
-}): Promise<IParsedSource> {
+}: IGenerateEventsRequest): Promise<IParsedSource> {
   const { envelopes, source, gherkinDocument, pickles } = await parse({
     data,
     uri,
@@ -102,4 +111,20 @@ Feature: a
     uri: 'a.feature',
   })
   return pickle
+}
+
+export async function getPickleStepWithText(
+  text: string
+): Promise<messages.IPickle> {
+  const {
+    pickles: [pickle],
+  } = await parse({
+    data: `\
+Feature: a
+  Scenario: b
+    ${text}
+`,
+    uri: 'a.feature',
+  })
+  return pickle.steps[0]
 }

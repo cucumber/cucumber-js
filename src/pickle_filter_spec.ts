@@ -6,7 +6,7 @@ import { parse } from '../test/gherkin_helpers'
 
 describe('PickleFilter', () => {
   const cwd = '/project'
-  let pickleFilter
+  let pickleFilter: PickleFilter
 
   describe('matches', () => {
     describe('no filters', () => {

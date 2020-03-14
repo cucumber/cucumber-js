@@ -1,7 +1,9 @@
+import UncaughtExceptionListener = NodeJS.UncaughtExceptionListener
+
 declare var window: any // For browsers
 
 const UncaughtExceptionManager = {
-  registerHandler(handler): void {
+  registerHandler(handler: UncaughtExceptionListener): void {
     if (typeof window === 'undefined') {
       process.addListener('uncaughtException', handler)
     } else {
@@ -9,7 +11,7 @@ const UncaughtExceptionManager = {
     }
   },
 
-  unregisterHandler(handler): void {
+  unregisterHandler(handler: UncaughtExceptionListener): void {
     if (typeof window === 'undefined') {
       process.removeListener('uncaughtException', handler)
     } else {

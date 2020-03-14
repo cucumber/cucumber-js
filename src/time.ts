@@ -1,11 +1,12 @@
 import { messages } from 'cucumber-messages'
 import { doesNotHaveValue } from './value_checker'
+import Long from 'long'
 
 export const NANOSECONDS_IN_MILLISECOND = 1e6
 export const MILLISECONDS_IN_SECOND = 1e3
 export const NANOSECONDS_IN_SECOND = 1e9
 
-let previousTimestamp
+let previousTimestamp: number
 
 const methods: any = {
   beginTiming() {
@@ -30,6 +31,10 @@ function getTimestamp(): number {
   return new methods.Date().getTime()
 }
 
+function toNumber(x: number | Long): number {
+  return typeof x === 'number' ? x : x.toNumber()
+}
+
 export function addDurations(
   a: messages.IDuration,
   b: messages.IDuration
@@ -37,7 +42,7 @@ export function addDurations(
   if (doesNotHaveValue(b)) {
     return a
   }
-  let seconds = (a.seconds as number) + (b.seconds as number)
+  let seconds = toNumber(a.seconds) + toNumber(b.seconds)
   let nanos = a.nanos + b.nanos
   if (nanos > NANOSECONDS_IN_SECOND) {
     seconds += 1
@@ -59,14 +64,13 @@ export function millisecondsToDuration(
 }
 
 export function durationToMilliseconds(duration: messages.IDuration): number {
-  return (
-    (duration.seconds as number) * MILLISECONDS_IN_SECOND +
-    duration.nanos / NANOSECONDS_IN_MILLISECOND
-  )
+  const secondMillis = toNumber(duration.seconds) * MILLISECONDS_IN_SECOND
+  const nanoMillis = duration.nanos / NANOSECONDS_IN_MILLISECOND
+  return secondMillis + nanoMillis
 }
 
 export function durationToNanoseconds(duration: messages.IDuration): number {
-  return (duration.seconds as number) * NANOSECONDS_IN_SECOND + duration.nanos
+  return toNumber(duration.seconds) * NANOSECONDS_IN_SECOND + duration.nanos
 }
 
 export function getZeroDuration(): messages.IDuration {

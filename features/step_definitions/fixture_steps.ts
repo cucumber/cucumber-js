@@ -6,13 +6,16 @@ import {
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
 import path from 'path'
+import { messages } from 'cucumber-messages'
+import { World } from '../support/world'
+import Envelope = messages.Envelope
 
 Then(
   'the {string} formatter output matches the fixture {string}',
-  async function(formatter: string, filePath: string) {
+  async function(this: World, formatter: string, filePath: string) {
     let actual: any
     if (formatter === 'message') {
-      actual = this.lastRun.envelopes.map(e => e.toJSON())
+      actual = this.lastRun.envelopes.map((e: Envelope) => e.toJSON())
       actual = normalizeMessageOutput(actual, this.tmpDir)
     } else {
       const actualPath = path.join(this.tmpDir, `${formatter}.out`)

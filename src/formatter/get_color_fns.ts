@@ -23,6 +23,7 @@ export default function getColorFns(enabled: boolean): IColorFns {
           [Status.PENDING]: colors.yellow.bind(colors),
           [Status.SKIPPED]: colors.cyan.bind(colors),
           [Status.UNDEFINED]: colors.yellow.bind(colors),
+          [Status.UNKNOWN]: colors.yellow.bind(colors),
         }[status]
       },
       location: colors.gray.bind(colors),
