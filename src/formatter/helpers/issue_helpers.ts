@@ -2,6 +2,10 @@ import indentString from 'indent-string'
 import Status from '../../status'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 import { messages } from 'cucumber-messages'
+import { IColorFns } from '../get_color_fns'
+import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { ITestCaseAttempt } from './event_data_collector'
 
 export function isFailure(result: messages.ITestResult): boolean {
   return (
@@ -22,6 +26,15 @@ export function isIssue(result: messages.ITestResult): boolean {
   return isFailure(result) || isWarning(result)
 }
 
+export interface IFormatIssueRequest {
+  colorFns: IColorFns
+  cwd: string
+  number: number
+  snippetBuilder: StepDefinitionSnippetBuilder
+  testCaseAttempt: ITestCaseAttempt
+  supportCodeLibrary: ISupportCodeLibrary
+}
+
 export function formatIssue({
   colorFns,
   cwd,
@@ -29,7 +42,7 @@ export function formatIssue({
   snippetBuilder,
   testCaseAttempt,
   supportCodeLibrary,
-}): string {
+}: IFormatIssueRequest): string {
   const prefix = `${number}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,

@@ -9,7 +9,9 @@ export async function validateInstall(cwd: string): Promise<void> {
     return // cucumber testing itself
   }
   const currentCucumberPath = require.resolve(projectPath)
-  let localCucumberPath = await promisify(resolve)('cucumber', {
+  let localCucumberPath: string = await promisify<string, resolve.Opts, string>(
+    resolve
+  )('cucumber', {
     basedir: cwd,
   })
   localCucumberPath = await fs.realpath(localCucumberPath)

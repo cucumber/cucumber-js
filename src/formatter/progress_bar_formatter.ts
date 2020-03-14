@@ -1,5 +1,5 @@
 import { formatIssue, formatSummary, isIssue } from './helpers'
-import Formatter from './'
+import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { messages } from 'cucumber-messages'
@@ -11,7 +11,7 @@ export default class ProgressBarFormatter extends Formatter {
   private issueCount: number
   public progressBar: ProgressBar
 
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
     this.numberOfSteps = 0

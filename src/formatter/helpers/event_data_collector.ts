@@ -1,6 +1,7 @@
 import _, { Dictionary } from 'lodash'
 import { messages } from 'cucumber-messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
+import { EventEmitter } from 'events'
 
 interface ITestCaseAttemptData {
   attempt: number
@@ -26,7 +27,7 @@ export default class EventDataCollector {
   private testCaseMap: Dictionary<messages.ITestCase> = {}
   private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
 
-  constructor(eventBroadcaster) {
+  constructor(eventBroadcaster: EventEmitter) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
   }
 

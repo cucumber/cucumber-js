@@ -1,14 +1,16 @@
 import _ from 'lodash'
 import { formatLocation, getUsage } from './helpers'
-import Formatter from './'
+import Formatter, { IFormatterOptions } from './'
 import Table from 'cli-table3'
 import { durationToMilliseconds } from '../time'
 import { doesHaveValue } from '../value_checker'
+import { messages } from 'cucumber-messages'
+import IEnvelope = messages.IEnvelope
 
 export default class UsageFormatter extends Formatter {
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', envelope => {
+    options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.logUsage()
       }

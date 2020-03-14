@@ -51,10 +51,10 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given a passing step # steps.ts:28
-   ${figures.cross} When a failing step # steps.ts:8
+   ${figures.tick} Given a passing step # steps.ts:29
+   ${figures.cross} When a failing step # steps.ts:9
        error
-   - Then a passing step # steps.ts:28
+   - Then a passing step # steps.ts:29
 
 `)
       })
@@ -77,12 +77,12 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given a passing step # steps.ts:28
+   ${figures.tick} Given a passing step # steps.ts:29
    ${figures.cross} When an ambiguous step
        Multiple step definitions match:
-         an ambiguous step    - steps.ts:12
-         /an? ambiguous step/ - steps.ts:13
-   - Then a passing step # steps.ts:28
+         an ambiguous step    - steps.ts:13
+         /an? ambiguous step/ - steps.ts:14
+   - Then a passing step # steps.ts:29
 
 `)
       })
@@ -105,7 +105,7 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given a passing step # steps.ts:28
+   ${figures.tick} Given a passing step # steps.ts:29
    ? When an undefined step
        Undefined. Implement with the following snippet:
 
@@ -114,7 +114,7 @@ Feature: my feature
            return 'pending';
          });
 
-   - Then a passing step # steps.ts:28
+   - Then a passing step # steps.ts:29
 
 `)
       })
@@ -137,10 +137,10 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given a passing step # steps.ts:28
-   ? When a pending step # steps.ts:15
+   ${figures.tick} Given a passing step # steps.ts:29
+   ? When a pending step # steps.ts:16
        Pending
-   - Then a passing step # steps.ts:28
+   - Then a passing step # steps.ts:29
 
 `)
       })
@@ -166,10 +166,10 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given a passing step # steps.ts:28
-   ? When a pending step # steps.ts:15
+   ${figures.tick} Given a passing step # steps.ts:29
+   ? When a pending step # steps.ts:16
        Pending
-   - Then a passing step # steps.ts:28
+   - Then a passing step # steps.ts:29
        | aaa | b | c   |
        | d   | e | ff  |
        | gg  | h | iii |
@@ -201,10 +201,10 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given a passing step # steps.ts:28
-   ? When a pending step # steps.ts:15
+   ${figures.tick} Given a passing step # steps.ts:29
+   ? When a pending step # steps.ts:16
        Pending
-   - Then a passing step # steps.ts:28
+   - Then a passing step # steps.ts:29
        """
        this is a multiline
        doc string
@@ -232,14 +232,14 @@ Feature: my feature
         // Assert
         expect(output).to.eql(`\
 1) Scenario: my scenario # a.feature:2
-   ${figures.tick} Given attachment step1 # steps.ts:34
+   ${figures.tick} Given attachment step1 # steps.ts:35
        Attachment (text/plain): Some info
        Attachment (application/json)
        Attachment (image/png)
-   ${figures.cross} When attachment step2 # steps.ts:40
+   ${figures.cross} When attachment step2 # steps.ts:41
        Attachment (text/plain): Other info
        error
-   - Then a passing step # steps.ts:28
+   - Then a passing step # steps.ts:29
 
 `)
       })

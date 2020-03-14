@@ -10,6 +10,10 @@ describe('TestCaseHookDefinition', () => {
         // Arrange
         const pickle = await getPickleWithTags([])
         const testCaseHookDefinition = new TestCaseHookDefinition({
+          code: undefined,
+          id: '',
+          line: 0,
+          uri: '',
           options: {},
         })
 
@@ -26,6 +30,10 @@ describe('TestCaseHookDefinition', () => {
         // Arrange
         const pickle = await getPickleWithTags(['@tagA'])
         const testCaseHookDefinition = new TestCaseHookDefinition({
+          code: undefined,
+          id: '',
+          line: 0,
+          uri: '',
           options: { tags: '@tagA' },
         })
 
@@ -42,6 +50,10 @@ describe('TestCaseHookDefinition', () => {
         // Arrange
         const pickle = await getPickleWithTags([])
         const testCaseHookDefinition = new TestCaseHookDefinition({
+          code: undefined,
+          id: '',
+          line: 0,
+          uri: '',
           options: { tags: '@tagA' },
         })
 

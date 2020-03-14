@@ -1,13 +1,13 @@
 import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import figures from 'figures'
-import lolex from 'lolex'
+import lolex, { InstalledClock } from 'lolex'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 
 describe('SummaryFormatter', () => {
-  let clock
+  let clock: InstalledClock
 
   beforeEach(() => {
     clock = lolex.install({ target: timeMethods })
@@ -41,7 +41,7 @@ describe('SummaryFormatter', () => {
           'Failures:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
-            `   ${figures.cross} Given a failing step # steps.ts:8\n` +
+            `   ${figures.cross} Given a failing step # steps.ts:9\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +
@@ -76,8 +76,8 @@ describe('SummaryFormatter', () => {
             '1) Scenario: b # a.feature:2\n' +
             `   ${figures.cross} Given an ambiguous step\n` +
             '       Multiple step definitions match:\n' +
-            '         an ambiguous step    - steps.ts:12\n' +
-            '         /an? ambiguous step/ - steps.ts:13\n' +
+            '         an ambiguous step    - steps.ts:13\n' +
+            '         /an? ambiguous step/ - steps.ts:14\n' +
             '\n' +
             '1 scenario (1 ambiguous)\n' +
             '1 step (1 ambiguous)\n' +
@@ -146,7 +146,7 @@ describe('SummaryFormatter', () => {
           'Warnings:\n' +
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
-            '   ? Given a pending step # steps.ts:15\n' +
+            '   ? Given a pending step # steps.ts:16\n' +
             '       Pending\n' +
             '\n' +
             '1 scenario (1 pending)\n' +
@@ -180,7 +180,7 @@ describe('SummaryFormatter', () => {
           'Warnings:\n' +
             '\n' +
             '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
-            `   ${figures.cross} Given a flaky step # steps.ts:20\n` +
+            `   ${figures.cross} Given a flaky step # steps.ts:21\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 passed)\n' +
@@ -214,13 +214,13 @@ describe('SummaryFormatter', () => {
           'Failures:\n' +
             '\n' +
             '1) Scenario: b (attempt 2) # a.feature:2\n' +
-            `   ${figures.cross} Given a failing step # steps.ts:8\n` +
+            `   ${figures.cross} Given a failing step # steps.ts:9\n` +
             '       error\n' +
             '\n' +
             'Warnings:\n' +
             '\n' +
             '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
-            `   ${figures.cross} Given a failing step # steps.ts:8\n` +
+            `   ${figures.cross} Given a failing step # steps.ts:9\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +

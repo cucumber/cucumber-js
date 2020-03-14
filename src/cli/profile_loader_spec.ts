@@ -1,53 +1,73 @@
-import { beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import fs from 'mz/fs'
 import path from 'path'
 import ProfileLoader from './profile_loader'
-import tmp from 'tmp'
+import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
+import { valueOrDefault, doesHaveValue } from '../value_checker'
+
+interface TestProfileLoaderOptions {
+  definitionsFileContent?: string
+  profiles?: string[]
+}
+
+async function testProfileLoader(
+  opts: TestProfileLoaderOptions = {}
+): Promise<string[]> {
+  const cwd = await promisify<DirOptions, string>(tmp.dir)({
+    unsafeCleanup: true,
+  })
+  if (doesHaveValue(opts.definitionsFileContent)) {
+    await fs.writeFile(
+      path.join(cwd, 'cucumber.js'),
+      opts.definitionsFileContent
+    )
+  }
+  const profileLoader = new ProfileLoader(cwd)
+  return profileLoader.getArgv(valueOrDefault(opts.profiles, []))
+}
 
 describe('ProfileLoader', () => {
   describe('getArgv', () => {
-    beforeEach(async function() {
-      this.tmpDir = await promisify(tmp.dir)({ unsafeCleanup: true })
-      this.profileLoader = new ProfileLoader(this.tmpDir)
-    })
-
     describe('with no identifiers', () => {
       describe('no definition file', () => {
         it('returns an empty array', async function() {
-          const result = await this.profileLoader.getArgv([])
+          // Arrange
+
+          // Act
+          const result = await testProfileLoader()
+
+          // Assert
           expect(result).to.eql([])
         })
       })
 
       describe('with definition file', () => {
         describe('with a default', () => {
-          beforeEach(async function() {
-            const fileContent = 'module.exports = {default: "--opt1 --opt2"}'
-            await fs.writeFile(
-              path.join(this.tmpDir, 'cucumber.js'),
-              fileContent
-            )
-          })
-
           it('returns the argv for the default profile', async function() {
-            const result = await this.profileLoader.getArgv([])
+            // Arrange
+            const definitionsFileContent =
+              'module.exports = {default: "--opt1 --opt2"}'
+
+            // Act
+            const result = await testProfileLoader({ definitionsFileContent })
+
+            // Assert
             expect(result).to.eql(['--opt1', '--opt2'])
           })
         })
 
         describe('without a default', () => {
-          beforeEach(async function() {
-            const fileContent = 'module.exports = {profile1: "--opt1 --opt2"}'
-            await fs.writeFile(
-              path.join(this.tmpDir, 'cucumber.js'),
-              fileContent
-            )
-          })
-
           it('returns an empty array', async function() {
-            const result = await this.profileLoader.getArgv([])
+            // Arrange
+            const definitionsFileContent =
+              'module.exports = {profile1: "--opt1 --opt2"}'
+
+            // Act
+            const result = await testProfileLoader({ definitionsFileContent })
+
+            // Assert
             expect(result).to.eql([])
           })
         })
@@ -57,51 +77,75 @@ describe('ProfileLoader', () => {
     describe('with identifiers', () => {
       describe('no definition file', () => {
         it('throws', async function() {
-          let thrown = false
+          // Arrange
+          let caughtErrorMessage = ''
+
+          // Act
           try {
-            await this.profileLoader.getArgv(['profile1'])
+            await testProfileLoader({ profiles: ['profile1'] })
           } catch (error) {
-            thrown = true
-            expect(error.message).to.eql('Undefined profile: profile1')
+            caughtErrorMessage = error.message
           }
-          expect(thrown).to.eql(true)
+
+          // Assert
+          expect(caughtErrorMessage).to.eql('Undefined profile: profile1')
         })
       })
 
       describe('with definition file', () => {
-        beforeEach(async function() {
-          const fileContent =
-            'module.exports = {\n' +
-            '  profile1: "--opt1 --opt2",\n' +
-            '  profile2: "--opt3 \'some value\'"\n' +
-            '}'
-          await fs.writeFile(path.join(this.tmpDir, 'cucumber.js'), fileContent)
-        })
-
         describe('profile is defined', () => {
           it('returns the argv for the given profile', async function() {
-            const result = await this.profileLoader.getArgv(['profile1'])
+            // Arrange
+            const definitionsFileContent =
+              'module.exports = {profile1: "--opt1 --opt2"}'
+
+            // Act
+            const result = await testProfileLoader({
+              definitionsFileContent,
+              profiles: ['profile1'],
+            })
+
+            // Assert
             expect(result).to.eql(['--opt1', '--opt2'])
           })
         })
 
         describe('profile is defined and contains quoted string', () => {
           it('returns the argv for the given profile', async function() {
-            const result = await this.profileLoader.getArgv(['profile2'])
+            // Arrange
+            const definitionsFileContent =
+              'module.exports = {profile1: "--opt3 \'some value\'"}'
+
+            // Act
+            const result = await testProfileLoader({
+              definitionsFileContent,
+              profiles: ['profile1'],
+            })
+
+            // Assert
             expect(result).to.eql(['--opt3', 'some value'])
           })
         })
 
         describe('profile is not defined', () => {
           it('throws', async function() {
-            let thrown = false
+            // Arrange
+            let caughtErrorMessage = ''
+            const definitionsFileContent =
+              'module.exports = {profile1: "--opt1 --opt2"}'
+
+            // Act
             try {
-              await this.profileLoader.getArgv(['profile3'])
+              await testProfileLoader({
+                definitionsFileContent,
+                profiles: ['profile2'],
+              })
             } catch (error) {
-              thrown = true
-              expect(error.message).to.eql('Undefined profile: profile3')
+              caughtErrorMessage = error.message
             }
-            expect(thrown).to.eql(true)
+
+            // Assert
+            expect(caughtErrorMessage).to.eql('Undefined profile: profile2')
           })
         })
       })

@@ -77,7 +77,7 @@ function getCountSummary({
     .value()
   let text = `${total} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
-    const details = []
+    const details: string[] = []
     STATUS_REPORT_ORDER.forEach(status => {
       if (counts[status] > 0) {
         details.push(

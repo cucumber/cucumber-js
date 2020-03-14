@@ -1,5 +1,6 @@
 import _, { Dictionary } from 'lodash'
 import { doesNotHaveValue } from '../value_checker'
+import { DefineStepPattern, IDefineStepOptions } from './types'
 
 interface IValidation {
   identifier: string
@@ -7,9 +8,15 @@ interface IValidation {
   predicate: (args: any) => boolean
 }
 
+interface IDefineStepArguments {
+  pattern?: DefineStepPattern
+  options?: IDefineStepOptions
+  code?: Function
+}
+
 const optionsValidation = {
   expectedType: 'object or function',
-  predicate({ options }) {
+  predicate({ options }: IDefineStepArguments) {
     return _.isPlainObject(options)
   },
 }
@@ -17,14 +24,14 @@ const optionsValidation = {
 const optionsTimeoutValidation = {
   identifier: '"options.timeout"',
   expectedType: 'integer',
-  predicate({ options }) {
+  predicate({ options }: IDefineStepArguments) {
     return doesNotHaveValue(options.timeout) || _.isInteger(options.timeout)
   },
 }
 
 const fnValidation = {
   expectedType: 'function',
-  predicate({ code }) {
+  predicate({ code }: IDefineStepArguments) {
     return _.isFunction(code)
   },
 }
@@ -61,7 +68,15 @@ const validations: Dictionary<IValidation[]> = {
   ],
 }
 
-export default function validateArguments({ args, fnName, location }): void {
+export default function validateArguments({
+  args,
+  fnName,
+  location,
+}: {
+  args?: IDefineStepArguments
+  fnName: string
+  location: string
+}): void {
   validations[fnName].forEach(({ identifier, expectedType, predicate }) => {
     if (!predicate(args)) {
       throw new Error(
