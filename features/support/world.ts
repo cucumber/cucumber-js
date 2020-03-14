@@ -8,7 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
-import protobuf from 'protobufjs'
+import ndjsonParse from 'ndjson-parse'
 import { messages } from 'cucumber-messages'
 
 interface ILastRun {
@@ -80,14 +80,11 @@ export class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    const envelopes: messages.Envelope[] = []
+    let envelopes: messages.Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)
     if (fs.existsSync(messageOutputPath)) {
-      const data = fs.readFileSync(messageOutputPath)
-      const reader = protobuf.Reader.create(data)
-      while (reader.pos < reader.len) {
-        envelopes.push(messages.Envelope.decodeDelimited(reader))
-      }
+      const data = fs.readFileSync(messageOutputPath, { encoding: 'utf-8' })
+      envelopes = ndjsonParse(data).map(messages.Envelope.fromObject)
       fs.writeFileSync(
         path.join(cwd, 'message.out.json'),
         JSON.stringify(
