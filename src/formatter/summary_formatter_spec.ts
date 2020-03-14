@@ -74,7 +74,7 @@ describe('SummaryFormatter', () => {
           'Failures:\n' +
             '\n' +
             '1) Scenario: c # a.feature:3\n' +
-            `   ${figures.cross} Given a failing step # steps.ts:8\n` +
+            `   ${figures.cross} Given a failing step # steps.ts:9\n` +
             '       error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +

@@ -386,7 +386,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 11,
                     match: {
-                      location: 'json_formatter_steps.ts:8',
+                      location: 'json_formatter_steps.ts:11',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',
@@ -413,7 +413,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 16,
                     match: {
-                      location: 'json_formatter_steps.ts:8',
+                      location: 'json_formatter_steps.ts:11',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',
