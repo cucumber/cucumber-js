@@ -1,5 +1,6 @@
 import { messages } from 'cucumber-messages'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
+import { Expression } from 'cucumber-expressions'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
@@ -14,8 +15,27 @@ export interface IGetInvocationDataResponse {
 }
 
 export interface IDefinitionOptions {
-  timeout: number
-  wrapperOptions: any
+  timeout?: number
+  wrapperOptions?: any
+}
+
+export interface IHookDefinitionOptions extends IDefinitionOptions {
+  tags?: string
+}
+
+export interface IDefinitionParameters<T extends IDefinitionOptions> {
+  code: Function
+  id: string
+  line: number
+  options: T
+  unwrappedCode?: Function
+  uri: string
+}
+
+export interface IStepDefinitionParameters
+  extends IDefinitionParameters<IDefinitionOptions> {
+  pattern: string | RegExp
+  expression: Expression
 }
 
 export interface IDefinition {
@@ -39,7 +59,14 @@ export default abstract class Definition {
   public readonly unwrappedCode: Function
   public readonly uri: string
 
-  constructor({ code, id, line, options, unwrappedCode, uri }) {
+  constructor({
+    code,
+    id,
+    line,
+    options,
+    unwrappedCode,
+    uri,
+  }: IDefinitionParameters<IDefinitionOptions>) {
     this.code = code
     this.id = id
     this.line = line

@@ -19,25 +19,34 @@ import { IRuntimeOptions } from '../index'
 
 const { uuid } = IdGenerator
 
+type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
+type IMessageSender = (command: IMasterReport) => void
+
 export default class Slave {
   private readonly cwd: string
-  private readonly exit: (
-    exitCode: number,
-    error?: Error,
-    message?: string
-  ) => void
+  private readonly exit: IExitFunction
 
   private readonly id: string
   private readonly eventBroadcaster: EventEmitter
   private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
-  private readonly sendMessage: (command: IMasterReport) => void
+  private readonly sendMessage: IMessageSender
   private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
   private options: IRuntimeOptions
 
-  constructor({ cwd, exit, id, sendMessage }) {
+  constructor({
+    cwd,
+    exit,
+    id,
+    sendMessage,
+  }: {
+    cwd: string
+    exit: IExitFunction
+    id: string
+    sendMessage: IMessageSender
+  }) {
     this.id = id
     this.newId = uuid()
     this.cwd = cwd

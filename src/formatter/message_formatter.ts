@@ -1,9 +1,10 @@
-import Formatter from '.'
+import Formatter, { IFormatterOptions } from '.'
+import { messages } from 'cucumber-messages'
 
 export default class MessageFormatter extends Formatter {
-  constructor(options) {
+  constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', envelope =>
+    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) =>
       this.log(JSON.stringify(envelope.toJSON()) + '\n')
     )
   }

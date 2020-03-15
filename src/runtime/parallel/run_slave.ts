@@ -2,7 +2,7 @@ import Slave from './slave'
 import VError from 'verror'
 import { doesHaveValue } from '../../value_checker'
 
-export default function run(): void {
+function run(): void {
   const exit = (exitCode: number, error?: Error, message?: string): void => {
     if (doesHaveValue(error)) {
       console.error(VError.fullStack(new VError(error, message))) // eslint-disable-line no-console
@@ -23,3 +23,5 @@ export default function run(): void {
       )
   })
 }
+
+run()
