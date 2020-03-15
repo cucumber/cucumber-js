@@ -94,6 +94,9 @@ export default class JsonFormatter extends Formatter {
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
+        console.warn(
+          'The built-in JSON formatter is deprecated and will be removed in the next major release; please migrate to the standalone JSON formatter (see https://github.com/cucumber/cucumber/tree/master/json-formatter)'
+        )
       }
     })
   }
