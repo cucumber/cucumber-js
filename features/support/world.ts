@@ -34,7 +34,7 @@ export class World {
   public globalExecutablePath: string
 
   async run(executablePath: string, inputArgs: string[]): Promise<void> {
-    const messageFilename = 'message.out'
+    const messageFilename = 'message.ndjson'
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
@@ -85,14 +85,6 @@ export class World {
     if (fs.existsSync(messageOutputPath)) {
       const data = fs.readFileSync(messageOutputPath, { encoding: 'utf-8' })
       envelopes = ndjsonParse(data).map(messages.Envelope.fromObject)
-      fs.writeFileSync(
-        path.join(cwd, 'message.out.json'),
-        JSON.stringify(
-          envelopes.map(e => e.toJSON()),
-          null,
-          2
-        )
-      )
     }
     if (this.debug) {
       console.log(result.stdout + result.stderr) // eslint-disable-line no-console
