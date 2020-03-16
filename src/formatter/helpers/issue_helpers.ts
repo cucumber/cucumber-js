@@ -43,7 +43,7 @@ export function formatIssue({
   testCaseAttempt,
   supportCodeLibrary,
 }: IFormatIssueRequest): string {
-  const prefix = `${number}) `
+  const prefix = `${number.toString()}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
     cwd,

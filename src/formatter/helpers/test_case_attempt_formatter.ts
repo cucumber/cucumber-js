@@ -105,11 +105,10 @@ export function formatTestCaseAttempt({
 }
 
 function getAttemptText(attempt: number, willBeRetried: boolean): string {
-  if (willBeRetried) {
-    return ` (attempt ${attempt + 1}, retried)`
-  }
-  if (attempt > 0) {
-    return ` (attempt ${attempt + 1})`
+  if (attempt > 0 || willBeRetried) {
+    const numberStr = (attempt + 1).toString()
+    const retriedStr = willBeRetried ? ', retried' : ''
+    return ` (attempt ${numberStr}${retriedStr})`
   }
   return ''
 }

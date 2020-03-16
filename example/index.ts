@@ -43,7 +43,7 @@ async function runFeature(): Promise<boolean> {
   })
 
   Cucumber.supportCodeLibraryBuilder.reset('', newId)
-  new Function(stepDefinitionsEditor.getValue())() // eslint-disable-line no-new-func
+  new Function(stepDefinitionsEditor.getValue())() // eslint-disable-line no-new-func, @typescript-eslint/no-implied-eval
   const supportCodeLibrary = await Cucumber.supportCodeLibraryBuilder.finalize()
 
   const formatterOptions = {

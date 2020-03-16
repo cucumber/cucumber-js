@@ -2,7 +2,7 @@
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
-import { InstalledClock } from 'lolex'
+import { InstalledClock } from '@sinonjs/fake-timers'
 
 export function getJsonFormatterSupportCodeLibrary(
   clock: InstalledClock
@@ -18,11 +18,11 @@ export function getJsonFormatterSupportCodeLibrary(
         return
       }
       willPass = true
-      throw 'error' // eslint-disable-line no-throw-literal
+      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
     })
 
     Given('a failing step', function() {
-      throw 'error' // eslint-disable-line no-throw-literal
+      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
     })
   })
 }
