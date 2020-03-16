@@ -55,14 +55,14 @@ export default class UsageFormatter extends Formatter {
         _.take(matches, 5).forEach(match => {
           col1.push(`  ${match.text}`)
           if (doesHaveValue(match.duration)) {
-            col2.push(`${durationToMilliseconds(match.duration)}ms`)
+            col2.push(`${durationToMilliseconds(match.duration).toString()}ms`)
           } else {
             col2.push('-')
           }
           col3.push(formatLocation(match))
         })
         if (matches.length > 5) {
-          col1.push(`  ${matches.length - 5} more`)
+          col1.push(`  ${(matches.length - 5).toString()} more`)
         }
         table.push([col1.join('\n'), col2.join('\n'), col3.join('\n')] as any)
       }

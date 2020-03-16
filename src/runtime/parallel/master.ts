@@ -89,7 +89,9 @@ export default class Master {
         this.parseTestCaseResult(envelope.testCaseFinished.testResult)
       }
     } else {
-      throw new Error(`Unexpected message from slave: ${message}`)
+      throw new Error(
+        `Unexpected message from slave: ${JSON.stringify(message)}`
+      )
     }
   }
 
