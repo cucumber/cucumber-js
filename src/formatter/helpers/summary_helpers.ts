@@ -96,10 +96,6 @@ function getDurationSummary(durationMsg: messages.IDuration): string {
   const start = new Date(0)
   const end = new Date(durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
-
-  const minutesStr = duration.minutes.toString()
-  const secondsStr = duration.toString('%S')
-  const fractionalSecondsStr = duration.toString('%L')
-
-  return `${minutesStr}m${secondsStr}.${fractionalSecondsStr}s` + '\n'
+  // Use spaces in toString method for readability and to avoid %Ls which is a format
+  return duration.toString('%Ms m %S . %L s').replace(/ /g, '') + '\n'
 }
