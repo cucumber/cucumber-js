@@ -10,7 +10,7 @@ declare var window: any
 
 const { uuid } = IdGenerator
 
-let featureEditor, stepDefinitionsEditor, $output
+let featureEditor: any, stepDefinitionsEditor: any, $output: any
 
 async function runFeature(): Promise<boolean> {
   $output.empty()
@@ -47,12 +47,13 @@ async function runFeature(): Promise<boolean> {
   const supportCodeLibrary = await Cucumber.supportCodeLibraryBuilder.finalize()
 
   const formatterOptions = {
-    colorsEnabled: true,
     cwd: '/',
     eventBroadcaster,
     eventDataCollector,
-    parsedArgvOptions: {},
-    log(data) {
+    parsedArgvOptions: {
+      colorsEnabled: true,
+    },
+    log(data: string) {
       appendToOutput(ansiHTML(data))
     },
     supportCodeLibrary,
@@ -70,7 +71,7 @@ async function runFeature(): Promise<boolean> {
   return runtime.start()
 }
 
-function appendToOutput(data): void {
+function appendToOutput(data: string): void {
   $output.append(data)
   $output.scrollTop($output.prop('scrollHeight'))
 }

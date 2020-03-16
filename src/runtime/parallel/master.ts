@@ -217,7 +217,7 @@ export default class Master {
     slave.process.send(runCommand)
   }
 
-  shouldCauseFailure(status: Status): boolean {
+  shouldCauseFailure(status: messages.TestResult.Status): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)
