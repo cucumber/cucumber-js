@@ -92,7 +92,7 @@ const ArgvParser = {
   validateRetryOptions(options: IParsedArgvOptions): void {
     if (options.retryTagFilter !== '' && options.retry === 0) {
       throw new Error(
-        'a positive --retry count must be specified when setting --retryTagFilter'
+        'a positive --retry count must be specified when setting --retry-tag-filter'
       )
     }
   },
@@ -187,7 +187,7 @@ const ArgvParser = {
         0
       )
       .option(
-        '--retryTagFilter <EXPRESSION>',
+        '--retryTagFilter, --retry-tag-filter <EXPRESSION>',
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags,
@@ -221,6 +221,14 @@ const ArgvParser = {
     return {
       options,
       args: program.args,
+    }
+  },
+
+  lint(fullArgv: string[]): void {
+    if (fullArgv.includes('--retryTagFilter')) {
+      console.warn(
+        'the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter'
+      )
     }
   },
 }

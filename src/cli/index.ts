@@ -23,6 +23,7 @@ import Gherkin from 'gherkin'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import { WriteStream } from 'fs'
+
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
@@ -64,8 +65,14 @@ export default class Cli {
   }
 
   async getConfiguration(): Promise<IConfiguration> {
-    const fullArgv = await getExpandedArgv({ argv: this.argv, cwd: this.cwd })
-    return ConfigurationBuilder.build({ argv: fullArgv, cwd: this.cwd })
+    const fullArgv = await getExpandedArgv({
+      argv: this.argv,
+      cwd: this.cwd,
+    })
+    return ConfigurationBuilder.build({
+      argv: fullArgv,
+      cwd: this.cwd,
+    })
   }
 
   async initializeFormatters({

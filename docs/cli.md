@@ -131,7 +131,7 @@ By default, cucumber-js runs the entire suite and reports all the failures. This
 ## Retry failing tests
 
 Use `--retry <int>` to rerun tests that have been failing. This can be very helpful for flaky tests.
-To only retry failing tests in a subset of test use `--retryTagFilter <EXPRESSION>` (use the same as in Use [Tags](#tags))
+To only retry failing tests in a subset of test use `--retry-tag-filter <EXPRESSION>` (use the same as in Use [Tags](#tags))
 
 ## Transpilation
 
