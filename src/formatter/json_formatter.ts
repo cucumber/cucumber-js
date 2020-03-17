@@ -12,13 +12,12 @@ import {
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
-import { io } from 'cucumber-messages/dist/src/cucumber-messages'
 import ITag = messages.GherkinDocument.Feature.ITag
 import IFeature = messages.GherkinDocument.IFeature
 import IPickle = messages.IPickle
 import IScenario = messages.GherkinDocument.Feature.IScenario
 import IEnvelope = messages.IEnvelope
-import IRule = io.cucumber.messages.GherkinDocument.Feature.FeatureChild.IRule
+import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
