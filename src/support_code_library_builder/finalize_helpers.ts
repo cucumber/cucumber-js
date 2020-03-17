@@ -23,7 +23,10 @@ export function validateNoGeneratorFunctions({
     const references = generatorDefinitionConfigs
       .map(
         definitionConfig =>
-          `${path.relative(cwd, definitionConfig.uri)}:${definitionConfig.line}`
+          `${path.relative(
+            cwd,
+            definitionConfig.uri
+          )}:${definitionConfig.line.toString()}`
       )
       .join('\n  ')
     const message = `

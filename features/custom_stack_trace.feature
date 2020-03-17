@@ -1,5 +1,6 @@
 Feature: Custom stack trace
 
+  @spawn
   Scenario: Error.prepareStackTrace override
     Given a file named "features/a.feature" with:
       """

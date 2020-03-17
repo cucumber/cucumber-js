@@ -99,7 +99,7 @@ Then(/^the error output contains the text:$/, function(
 })
 
 Then(/^I see the version of Cucumber$/, function(this: World) {
-  const version = require('../../package.json').version
+  const version = require('../../package.json').version as string
   const actualOutput = this.lastRun.output
   const expectedOutput = `${version}\n`
   expect(actualOutput).to.eql(expectedOutput)

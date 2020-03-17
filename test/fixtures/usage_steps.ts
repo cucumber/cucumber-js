@@ -2,7 +2,7 @@
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
-import { InstalledClock } from 'lolex'
+import { InstalledClock } from '@sinonjs/fake-timers'
 
 export function getUsageSupportCodeLibrary(
   clock: InstalledClock

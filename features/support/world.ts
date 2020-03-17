@@ -8,7 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
-import protobuf from 'protobufjs'
+import ndjsonParse from 'ndjson-parse'
 import { messages } from 'cucumber-messages'
 
 interface ILastRun {
@@ -34,7 +34,7 @@ export class World {
   public globalExecutablePath: string
 
   async run(executablePath: string, inputArgs: string[]): Promise<void> {
-    const messageFilename = 'message.out'
+    const messageFilename = 'message.ndjson'
     const args = ['node', executablePath]
       .concat(inputArgs, [
         '--backtrace',
@@ -80,22 +80,11 @@ export class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    const envelopes: messages.Envelope[] = []
+    let envelopes: messages.Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)
     if (fs.existsSync(messageOutputPath)) {
-      const data = fs.readFileSync(messageOutputPath)
-      const reader = protobuf.Reader.create(data)
-      while (reader.pos < reader.len) {
-        envelopes.push(messages.Envelope.decodeDelimited(reader))
-      }
-      fs.writeFileSync(
-        path.join(cwd, 'message.out.json'),
-        JSON.stringify(
-          envelopes.map(e => e.toJSON()),
-          null,
-          2
-        )
-      )
+      const data = fs.readFileSync(messageOutputPath, { encoding: 'utf-8' })
+      envelopes = ndjsonParse(data).map(messages.Envelope.fromObject)
     }
     if (this.debug) {
       console.log(result.stdout + result.stderr) // eslint-disable-line no-console

@@ -10,7 +10,7 @@ import {
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FormatterBuilder from './builder'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import lolex, { InstalledClock } from 'lolex'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
 import { messages } from 'cucumber-messages'
@@ -342,7 +342,7 @@ describe('ProgressBarFormatter', () => {
     let clock: InstalledClock
 
     beforeEach(() => {
-      clock = lolex.install({ target: timeMethods })
+      clock = FakeTimers.install({ target: timeMethods })
     })
 
     afterEach(() => {

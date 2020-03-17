@@ -5,7 +5,7 @@ import {
   ISlaveCommandInitialize,
   ISlaveCommandRun,
 } from './command_types'
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
