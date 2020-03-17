@@ -73,10 +73,8 @@ interface IBuildJsonFeatureOptions {
 
 interface IBuildJsonScenarioOptions {
   feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
-  gherkinExampleRuleMap: Dictionary<
-    messages.GherkinDocument.Feature.FeatureChild.IRule
-  >
+  gherkinScenarioMap: Dictionary<IScenario>
+  gherkinExampleRuleMap: Dictionary<IRule>
   gherkinScenarioLocationMap: Dictionary<messages.ILocation>
   pickle: messages.IPickle
   steps: IJsonStep[]
