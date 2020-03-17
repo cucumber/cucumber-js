@@ -80,9 +80,9 @@ export default abstract class Definition {
     callbackLength: number | string
   ): string {
     return (
-      `function has ${this.code.length} arguments` +
-      `, should have ${syncOrPromiseLength} (if synchronous or returning a promise)` +
-      ` or ${callbackLength} (if accepting a callback)`
+      `function has ${this.code.length.toString()} arguments` +
+      `, should have ${syncOrPromiseLength.toString()} (if synchronous or returning a promise)` +
+      ` or ${callbackLength.toString()} (if accepting a callback)`
     )
   }
 

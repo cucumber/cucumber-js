@@ -15,14 +15,7 @@ import {
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 
-const slaveCommand = path.resolve(
-  __dirname,
-  '..',
-  '..',
-  '..',
-  'bin',
-  'run_slave'
-)
+const runSlavePath = path.resolve(__dirname, 'run_slave.js')
 
 export interface INewMasterOptions {
   cwd: string
@@ -96,7 +89,9 @@ export default class Master {
         this.parseTestCaseResult(envelope.testCaseFinished.testResult)
       }
     } else {
-      throw new Error(`Unexpected message from slave: ${message}`)
+      throw new Error(
+        `Unexpected message from slave: ${JSON.stringify(message)}`
+      )
     }
   }
 
@@ -138,7 +133,7 @@ export default class Master {
   }
 
   startSlave(id: string, total: number): void {
-    const slaveProcess = fork(slaveCommand, [], {
+    const slaveProcess = fork(runSlavePath, [], {
       cwd: this.cwd,
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
@@ -224,7 +219,7 @@ export default class Master {
     slave.process.send(runCommand)
   }
 
-  shouldCauseFailure(status: Status): boolean {
+  shouldCauseFailure(status: messages.TestResult.Status): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

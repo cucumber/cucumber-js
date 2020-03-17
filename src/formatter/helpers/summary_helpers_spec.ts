@@ -4,7 +4,7 @@ import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
-import lolex, { InstalledClock } from 'lolex'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
@@ -46,7 +46,7 @@ describe('SummaryHelpers', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = lolex.install({ target: timeMethods })
+    clock = FakeTimers.install({ target: timeMethods })
   })
 
   afterEach(() => {
@@ -129,7 +129,7 @@ describe('SummaryHelpers', () => {
               return
             }
             willPass = true
-            throw 'error' // eslint-disable-line no-throw-literal
+            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
           })
         })
 

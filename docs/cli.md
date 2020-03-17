@@ -44,7 +44,7 @@ This option may be used multiple times in order to output different formats to d
 If multiple formats are specified with the same output, only the last is used.
 
 Built-in formatters
-* message - prints the full [`cucumber-messages`](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) object in [varint](https://developers.google.com/protocol-buffers/docs/encoding#varints)-delimited protobuf binary form, which can then be piped to other tools.
+* message - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
 * json - prints the feature as JSON.
 * progress - prints one character per scenario (default).
 * progress-bar - prints a progress bar and outputs errors/warnings along the way.

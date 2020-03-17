@@ -76,7 +76,7 @@ const UserCodeRunner = {
           const timeoutMessage =
             'function timed out, ensure the ' +
             (callbackInterface ? 'callback is executed' : 'promise resolves') +
-            ` within ${timeoutInMilliseconds} milliseconds`
+            ` within ${timeoutInMilliseconds.toString()} milliseconds`
           reject(new Error(timeoutMessage))
         }, timeoutInMilliseconds)
       })

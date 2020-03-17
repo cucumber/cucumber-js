@@ -6,7 +6,7 @@ import ConfigurationBuilder, {
   IConfiguration,
   IConfigurationFormat,
 } from './configuration_builder'
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
 import path from 'path'

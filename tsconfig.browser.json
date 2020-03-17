@@ -2,6 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "lib": ["es6", "dom"],
-    "target": "es5"
+    "target": "es5",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types",
+      "./example/types"
+    ]
   }
 }

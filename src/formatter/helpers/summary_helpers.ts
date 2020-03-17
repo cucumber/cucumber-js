@@ -75,14 +75,14 @@ function getCountSummary({
     .values()
     .sum()
     .value()
-  let text = `${total} ${type}${total === 1 ? '' : 's'}`
+  let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
     const details: string[] = []
     STATUS_REPORT_ORDER.forEach(status => {
       if (counts[status] > 0) {
         details.push(
           colorFns.forStatus(status)(
-            `${counts[status]} ${Status[status].toLowerCase()}`
+            `${counts[status].toString()} ${Status[status].toLowerCase()}`
           )
         )
       }
@@ -96,10 +96,6 @@ function getDurationSummary(durationMsg: messages.IDuration): string {
   const start = new Date(0)
   const end = new Date(durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
-
-  return (
-    `${duration.minutes}m${duration.toString('%S')}.${duration.toString(
-      '%L'
-    )}s` + '\n'
-  )
+  // Use spaces in toString method for readability and to avoid %Ls which is a format
+  return duration.toString('%Ms m %S . %L s').replace(/ /g, '') + '\n'
 }

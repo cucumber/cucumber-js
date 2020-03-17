@@ -24,7 +24,7 @@ describe('UserCodeRunner', () => {
         it('returns the error', async function() {
           // Arrange
           const fn = function(): void {
-            throw 'error' // eslint-disable-line no-throw-literal
+            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
           }
 
           // Act
