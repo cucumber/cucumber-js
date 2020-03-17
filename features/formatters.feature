@@ -11,7 +11,6 @@ Feature: Formatters
     Then the "message" formatter output matches the fixture "formatters/rejected-pickle-scenario.message.json"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
-  @rule
   Scenario: rejected pickle from Rule
     Given a file named "features/a.feature" with:
       """
@@ -41,7 +40,6 @@ Feature: Formatters
     Then the "message" formatter output matches the fixture "formatters/passed-scenario.message.json"
     Then the "json" formatter output matches the fixture "formatters/passed-scenario.json"
 
-  @rule
   Scenario: passed from Rule
     Given a file named "features/a.feature" with:
       """
@@ -78,7 +76,6 @@ Feature: Formatters
     Then the "json" formatter output matches the fixture "formatters/failed-scenario.json"
     And it fails
 
-  @rule
   Scenario: failed from Rule
     Given a file named "features/a.feature" with:
       """
