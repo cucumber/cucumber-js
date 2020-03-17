@@ -2,7 +2,21 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.5...master) (In Git)
 
-* format: add support for gherkin rule/example syntax
+#### New Features
+
+* Add support for Gherkin's [Rule/Example syntax](https://cucumber.io/docs/gherkin/reference/#rule)
+
+#### Breaking changes
+
+* Drop support for Node.js 8
+* Formatters
+  * Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
+  * `event-protocol` formatter has been removed and replaced with `message`
+  * Custom formatters will need to migrate
+
+#### Bug fixes
+
+* don't execute BeforeAll and AfterAll hooks when in dry-run
 
 ### [6.0.5](https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5) (2019-11-13)
 
