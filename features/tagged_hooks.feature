@@ -3,23 +3,14 @@ Feature: Tagged Hooks
   I want the ability to control which scenarios my hooks run for
   Because not all my scenarios have the same setup and teardown
 
-  Scenario: ability to specify tags for hooks
-    Given a file named "features/a.feature" with:
-      """
-      Feature:
-        Scenario:
-          Then the value is 0
-
-        @foo
-        Scenario:
-          Then the value is 1
-      """
-    And a file named "features/step_definitions/world.js" with:
+  Background:
+    Given a file named "features/step_definitions/world.js" with:
       """
       const {setWorldConstructor} = require('cucumber')
 
       setWorldConstructor(function() {
-        this.value = 0
+        this.foo = false
+        this.bar = false
       })
       """
     And a file named "features/step_definitions/my_steps.js" with:
@@ -27,8 +18,12 @@ Feature: Tagged Hooks
       const assert = require('assert')
       const {Then} = require('cucumber')
 
-      Then(/^the value is (\d*)$/, function(number) {
-        assert.equal(number, this.value)
+      Then('{word} is true', function(prop) {
+        assert.equal(true, this[prop])
+      })
+
+      Then('{word} is false', function(prop) {
+        assert.equal(false, this[prop])
       })
       """
     And a file named "features/step_definitions/my_tagged_hooks.js" with:
@@ -36,8 +31,34 @@ Feature: Tagged Hooks
       const {Before} = require('cucumber')
 
       Before({tags: '@foo'}, function() {
-        this.value += 1
+        this.foo = true
       })
+
+      Before({tags: '@bar'}, function() {
+        this.bar = true
+      })
+      """
+
+  Scenario: hooks filtered by tags on scenario
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        @foo
+        Scenario:
+          Then foo is true
+          And bar is false
+      """
+    When I run cucumber-js
+    Then it passes
+
+  Scenario: tags cascade from feature to scenario
+    Given a file named "features/a.feature" with:
+      """
+      @foo
+      Feature:
+        Scenario:
+          Then foo is true
+          And bar is false
       """
     When I run cucumber-js
     Then it passes

@@ -4,7 +4,11 @@ import { ParameterType } from 'cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import { isFileNameInCucumber } from '../stack_trace_filter'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import {
+  doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
+} from '../value_checker'
 import { ILineAndUri } from '../types'
 import { IParameterTypeDefinition } from './types'
 
@@ -22,7 +26,10 @@ export function getDefinitionLineAndUri(cwd: string): ILineAndUri {
       uri = path.relative(cwd, uri)
     }
   }
-  return { line, uri }
+  return {
+    line: valueOrDefault(line, 0),
+    uri: valueOrDefault(uri, 'unknown'),
+  }
 }
 
 export function buildParameterType({

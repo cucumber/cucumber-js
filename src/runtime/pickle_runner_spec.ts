@@ -7,7 +7,7 @@ import { messages } from 'cucumber-messages'
 import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
-import lolex, { InstalledClock } from 'lolex'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods, { millisecondsToDuration, getZeroDuration } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
@@ -51,7 +51,7 @@ describe('PickleRunner', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = lolex.install({ target: timeMethods })
+    clock = FakeTimers.install({ target: timeMethods })
   })
 
   afterEach(() => {
@@ -137,7 +137,7 @@ describe('PickleRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a step', function() {
-            throw 'fail' // eslint-disable-line no-throw-literal
+            throw 'fail' // eslint-disable-line @typescript-eslint/no-throw-literal
           })
         })
         const {
@@ -263,7 +263,7 @@ describe('PickleRunner', () => {
               return
             }
             willPass = true
-            throw 'error' // eslint-disable-line no-throw-literal
+            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
           })
         })
         const {

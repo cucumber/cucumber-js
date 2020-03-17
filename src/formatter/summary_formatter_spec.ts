@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import figures from 'figures'
-import lolex, { InstalledClock } from 'lolex'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
@@ -10,7 +10,7 @@ describe('SummaryFormatter', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = lolex.install({ target: timeMethods })
+    clock = FakeTimers.install({ target: timeMethods })
   })
 
   afterEach(() => {

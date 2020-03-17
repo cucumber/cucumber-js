@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { parseGherkinMessageStream } from './helpers'
-import EventEmitter from 'events'
+import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { messages } from 'cucumber-messages'
 import { EventDataCollector } from '../formatter/helpers'

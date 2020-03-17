@@ -30,7 +30,7 @@ Before(function(
   this.tmpDir = path.join(
     projectPath,
     'tmp',
-    `${path.basename(pickle.uri)}_${line}`
+    `${path.basename(pickle.uri)}_${line.toString()}`
   )
 
   fsExtra.removeSync(this.tmpDir)

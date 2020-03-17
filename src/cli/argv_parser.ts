@@ -60,9 +60,8 @@ const ArgvParser = {
       try {
         val = JSON.parse(str)
       } catch (error) {
-        throw new Error(
-          `${option} passed invalid JSON: ${error.message}: ${str}`
-        )
+        const e: Error = error
+        throw new Error(`${option} passed invalid JSON: ${e.message}: ${str}`)
       }
       if (!_.isPlainObject(val)) {
         throw new Error(`${option} must be passed JSON of an object: ${str}`)

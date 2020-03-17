@@ -5,14 +5,14 @@ import {
   getJsonFormatterSupportCodeLibrary,
   getJsonFormatterSupportCodeLibraryWithHooks,
 } from '../../test/fixtures/json_formatter_steps'
-import lolex, { InstalledClock } from 'lolex'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 
 describe('JsonFormatter', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = lolex.install({ target: timeMethods })
+    clock = FakeTimers.install({ target: timeMethods })
   })
 
   afterEach(() => {
