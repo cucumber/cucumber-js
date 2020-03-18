@@ -31,7 +31,7 @@ Feature: a
     Given a pending step
   Scenario: a4
     Given a passing step
- Scenario: a5
+  Scenario: a5
     Given a skipped step
   Scenario: a6
     Given an undefined step
