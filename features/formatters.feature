@@ -1,6 +1,6 @@
 Feature: Formatters
 
-  Scenario: rejected pickle from Scenario
+  Scenario: rejected pickle
     Given a file named "features/a.feature" with:
       """
       Feature: a feature
@@ -8,7 +8,7 @@ Feature: Formatters
           Given a step
       """
     When I run cucumber-js with all formatters and `--tags @a`
-    Then the "message" formatter output matches the fixture "formatters/rejected-pickle-scenario.message.json"
+    Then the "message" formatter output matches the fixture "formatters/rejected-pickle.message.json"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
   Scenario: passed from Scenario
@@ -46,7 +46,7 @@ Feature: Formatters
     Then the "message" formatter output matches the fixture "formatters/passed-rule.message.json"
     Then the "json" formatter output matches the fixture "formatters/passed-rule.json"
 
-  Scenario: failed from Scenario
+  Scenario: failed
     Given a file named "features/a.feature" with:
       """
       Feature: a feature
@@ -60,8 +60,8 @@ Feature: Formatters
       Given(/^a step$/, function(callback) { callback(new Error('my error')) })
       """
     When I run cucumber-js with all formatters
-    Then the "message" formatter output matches the fixture "formatters/failed-scenario.message.json"
-    Then the "json" formatter output matches the fixture "formatters/failed-scenario.json"
+    Then the "message" formatter output matches the fixture "formatters/failed.message.json"
+    Then the "json" formatter output matches the fixture "formatters/failed.json"
     And it fails
 
   Scenario: retried and passed
