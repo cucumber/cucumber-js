@@ -46,3 +46,35 @@ Feature: Background
       | IDENTIFIER                 |
       | Given a background step    |
       | When another scenario step |
+
+  Scenario: Two examples within a rule with a background, plus a feature-level background
+    Given a file named "features/background.feature" with:
+      """
+      Feature: a feature
+        Background:
+          Given a feature-level background step
+
+        Rule: a rule
+          Background:
+            Given a rule-level background step
+
+          Example: first example
+            When an example step
+
+          Example: second example
+            When an example step
+            When another example step
+      """
+    When I run cucumber-js
+    Then it fails
+    And the scenario "first example" has the steps:
+      | IDENTIFIER                            |
+      | Given a feature-level background step |
+      | Given a rule-level background step    |
+      | When an example step                  |
+    And the scenario "second example" has the steps:
+      | IDENTIFIER                            |
+      | Given a feature-level background step |
+      | Given a rule-level background step    |
+      | When an example step                  |
+      | When another example step             |

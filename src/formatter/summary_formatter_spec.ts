@@ -51,6 +51,39 @@ describe('SummaryFormatter', () => {
       })
     })
 
+    describe('with a failing rule -> example', () => {
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nRule: b\nExample: c\nGiven a failing step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
+          'Failures:\n' +
+            '\n' +
+            '1) Scenario: c # a.feature:3\n' +
+            `   ${figures.cross} Given a failing step # steps.ts:9\n` +
+            '       error\n' +
+            '\n' +
+            '1 scenario (1 failed)\n' +
+            '1 step (1 failed)\n' +
+            '0m00.000s\n'
+        )
+      })
+    })
+
     describe('with an ambiguous step', () => {
       it('logs the issue', async () => {
         // Arrange

@@ -331,4 +331,116 @@ describe('JsonFormatter', () => {
       })
     })
   })
+
+  describe('one rule with several examples (scenarios)', () => {
+    describe('passed', () => {
+      it('outputs the feature', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              '@tag1 @tag2',
+              'Feature: my feature',
+              '  my feature description',
+              '',
+              '  Rule: my rule',
+              '    my rule description',
+              '',
+              '    Example: first example',
+              '      first example description',
+              '',
+              '      Given a passing step',
+              '',
+              '    Example: second example',
+              '      second example description',
+              '',
+              '      Given a passing step',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        // Assert
+        expect(JSON.parse(output)).to.eql([
+          {
+            description: '  my feature description',
+            elements: [
+              {
+                description: '      first example description',
+                id: 'my-feature;my-rule;first-example',
+                keyword: 'Example',
+                line: 8,
+                name: 'first example',
+                type: 'scenario',
+                steps: [
+                  {
+                    arguments: [],
+                    line: 11,
+                    match: {
+                      location: 'json_formatter_steps.ts:11',
+                    },
+                    keyword: 'Given ',
+                    name: 'a passing step',
+                    result: {
+                      status: 'passed',
+                      duration: 1000000,
+                    },
+                  },
+                ],
+                tags: [
+                  { name: '@tag1', line: 1 },
+                  { name: '@tag2', line: 1 },
+                ],
+              },
+              {
+                description: '      second example description',
+                id: 'my-feature;my-rule;second-example',
+                keyword: 'Example',
+                line: 13,
+                name: 'second example',
+                type: 'scenario',
+                steps: [
+                  {
+                    arguments: [],
+                    line: 16,
+                    match: {
+                      location: 'json_formatter_steps.ts:11',
+                    },
+                    keyword: 'Given ',
+                    name: 'a passing step',
+                    result: {
+                      status: 'passed',
+                      duration: 1000000,
+                    },
+                  },
+                ],
+                tags: [
+                  { name: '@tag1', line: 1 },
+                  { name: '@tag2', line: 1 },
+                ],
+              },
+            ],
+            id: 'my-feature',
+            keyword: 'Feature',
+            line: 2,
+            name: 'my feature',
+            tags: [
+              { name: '@tag1', line: 1 },
+              { name: '@tag2', line: 1 },
+            ],
+            uri: 'a.feature',
+          },
+        ])
+      })
+    })
+  })
 })

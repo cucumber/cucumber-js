@@ -114,7 +114,7 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if pickle name matches', async function() {
+        it('returns true if pickle name matches from scenario', async function() {
           // Arrange
           const {
             pickles: [pickle],
@@ -123,6 +123,28 @@ describe('PickleFilter', () => {
             data: [
               'Feature: a',
               'Scenario: nameA descriptionA',
+              'Given a step',
+            ].join('\n'),
+            uri: path.resolve(cwd, 'features/a.feature'),
+          })
+
+          // Act
+          const result = pickleFilter.matches({ pickle, gherkinDocument })
+
+          // Assert
+          expect(result).to.eql(true)
+        })
+
+        it('returns true if pickle name matches from rule -> example', async function() {
+          // Arrange
+          const {
+            pickles: [pickle],
+            gherkinDocument,
+          } = await parse({
+            data: [
+              'Feature: a',
+              'Rule: nameR descriptionR',
+              'Example: nameA descriptionA',
               'Given a step',
             ].join('\n'),
             uri: path.resolve(cwd, 'features/a.feature'),

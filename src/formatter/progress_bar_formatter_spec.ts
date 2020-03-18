@@ -85,7 +85,7 @@ async function testProgressBarFormatter({
 
 describe('ProgressBarFormatter', () => {
   describe('pickleAccepted / testStepStarted', () => {
-    it('initializes a progress bar with the total number of steps', async () => {
+    it('initializes a progress bar with the total number of steps for a scenario', async () => {
       // Arrange
       const sources = [
         {
@@ -95,6 +95,30 @@ describe('ProgressBarFormatter', () => {
         {
           data:
             'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          uri: 'b.feature',
+        },
+      ]
+
+      // Act
+      const { progressBarFormatter } = await testProgressBarFormatter({
+        shouldStopFn: envelope => doesHaveValue(envelope.testStepStarted),
+        sources,
+      })
+
+      // Assert
+      expect(progressBarFormatter.progressBar.total).to.eql(5)
+    })
+
+    it('initializes a progress bar with the total number of steps for a rule', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nRule: b\nExample: c\nGiven a step\nThen a step',
+          uri: 'a.feature',
+        },
+        {
+          data:
+            'Feature: a\nRule: b\nExample: c\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -349,7 +373,7 @@ describe('ProgressBarFormatter', () => {
       clock.uninstall()
     })
 
-    it('outputs step totals, scenario totals, and duration', async () => {
+    it('outputs step totals, scenario totals, and duration - singular', async () => {
       // Arrange
       const sources = [
         {
@@ -369,6 +393,33 @@ describe('ProgressBarFormatter', () => {
       // Assert
       expect(output).to.contain(
         '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+      )
+    })
+
+    it('outputs step totals, scenario totals, and duration - plural', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a passing step',
+          uri: 'a.feature',
+        },
+        {
+          data: 'Feature: a\nRule: b\nExample: c\nGiven a passing step',
+          uri: 'b.feature',
+        },
+      ]
+      const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+      // Act
+      const { output } = await testProgressBarFormatter({
+        shouldStopFn: envelope => false,
+        sources,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      expect(output).to.contain(
+        '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
       )
     })
   })

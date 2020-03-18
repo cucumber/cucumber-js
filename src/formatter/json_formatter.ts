@@ -5,7 +5,10 @@ import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { durationToNanoseconds } from '../time'
 import path from 'path'
 import { messages } from 'cucumber-messages'
-import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
+import {
+  getGherkinExampleRuleMap,
+  getGherkinScenarioLocationMap,
+} from './helpers/gherkin_document_parser'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
@@ -14,6 +17,7 @@ import IFeature = messages.GherkinDocument.IFeature
 import IPickle = messages.IPickle
 import IScenario = messages.GherkinDocument.Feature.IScenario
 import IEnvelope = messages.IEnvelope
+import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -69,7 +73,8 @@ interface IBuildJsonFeatureOptions {
 
 interface IBuildJsonScenarioOptions {
   feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
+  gherkinScenarioMap: Dictionary<IScenario>
+  gherkinExampleRuleMap: Dictionary<IRule>
   gherkinScenarioLocationMap: Dictionary<messages.ILocation>
   pickle: messages.IPickle
   steps: IJsonStep[]
@@ -151,6 +156,7 @@ export default class JsonFormatter extends Formatter {
       const { gherkinDocument } = group[0]
       const gherkinStepMap = getGherkinStepMap(gherkinDocument)
       const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
+      const gherkinExampleRuleMap = getGherkinExampleRuleMap(gherkinDocument)
       const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
         gherkinDocument
       )
@@ -172,6 +178,7 @@ export default class JsonFormatter extends Formatter {
         return this.getScenarioData({
           feature: gherkinDocument.feature,
           gherkinScenarioLocationMap,
+          gherkinExampleRuleMap,
           gherkinScenarioMap,
           pickle,
           steps,
@@ -206,6 +213,7 @@ export default class JsonFormatter extends Formatter {
   getScenarioData({
     feature,
     gherkinScenarioLocationMap,
+    gherkinExampleRuleMap,
     gherkinScenarioMap,
     pickle,
     steps,
@@ -216,14 +224,33 @@ export default class JsonFormatter extends Formatter {
     })
     return {
       description,
-      id: `${this.convertNameToId(feature)};${this.convertNameToId(pickle)}`,
-      keyword: 'Scenario',
+      id: this.formatScenarioId({ feature, pickle, gherkinExampleRuleMap }),
+      keyword: gherkinScenarioMap[pickle.astNodeIds[0]].keyword,
       line: gherkinScenarioLocationMap[pickle.astNodeIds[0]].line,
       name: pickle.name,
       steps,
       tags: this.getScenarioTags({ feature, pickle, gherkinScenarioMap }),
       type: 'scenario',
     }
+  }
+
+  private formatScenarioId({
+    feature,
+    pickle,
+    gherkinExampleRuleMap,
+  }: {
+    feature: IFeature
+    pickle: IPickle
+    gherkinExampleRuleMap: Dictionary<IRule>
+  }): string {
+    let parts: any[]
+    const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
+    if (doesHaveValue(rule)) {
+      parts = [feature, rule, pickle]
+    } else {
+      parts = [feature, pickle]
+    }
+    return parts.map(part => this.convertNameToId(part)).join(';')
   }
 
   getStepData({

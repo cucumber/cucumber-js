@@ -11,7 +11,7 @@ Feature: Formatters
     Then the "message" formatter output matches the fixture "formatters/rejected-pickle.message.json"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
 
-  Scenario: passed
+  Scenario: passed from Scenario
     Given a file named "features/a.feature" with:
       """
       Feature: a feature
@@ -25,8 +25,26 @@ Feature: Formatters
       Given(/^a step$/, function() {})
       """
     When I run cucumber-js with all formatters
-    Then the "message" formatter output matches the fixture "formatters/passed.message.json"
-    Then the "json" formatter output matches the fixture "formatters/passed.json"
+    Then the "message" formatter output matches the fixture "formatters/passed-scenario.message.json"
+    Then the "json" formatter output matches the fixture "formatters/passed-scenario.json"
+
+  Scenario: passed from Rule
+    Given a file named "features/a.feature" with:
+      """
+      Feature: a feature
+        Rule: a rule
+          Example: an example
+            Given a step
+      """
+    Given a file named "features/step_definitions/steps.js" with:
+      """
+      const {Given} = require('cucumber')
+
+      Given(/^a step$/, function() {})
+      """
+    When I run cucumber-js with all formatters
+    Then the "message" formatter output matches the fixture "formatters/passed-rule.message.json"
+    Then the "json" formatter output matches the fixture "formatters/passed-rule.json"
 
   Scenario: failed
     Given a file named "features/a.feature" with:

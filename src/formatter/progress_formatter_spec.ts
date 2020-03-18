@@ -85,4 +85,43 @@ Warnings:
 0m00.000s
 `)
   })
+
+  it('handles rule/example results', async () => {
+    // Arrange
+    const sources = [
+      {
+        data: `\
+Feature: feature
+  Rule: rule1
+    Example: example1
+      Given a passing step
+      
+    Example: example2
+      Given a passing step
+      
+  Rule: rule2
+    Example: example1
+      Given a passing step
+`,
+        uri: 'a.feature',
+      },
+    ]
+    const supportCodeLibrary = getBaseSupportCodeLibrary()
+
+    // Act
+    const output = await testFormatter({
+      sources,
+      supportCodeLibrary,
+      type: 'progress',
+    })
+
+    // Assert
+    expect(output).to.eql(`\
+...
+
+3 scenarios (3 passed)
+3 steps (3 passed)
+0m00.000s
+`)
+  })
 })

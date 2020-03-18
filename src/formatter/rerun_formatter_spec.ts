@@ -195,6 +195,31 @@ describe('RerunFormatter', () => {
             // Assert
             expect(output).to.eql(`a.feature:2${separator.expected}b.feature:3`)
           })
+
+          it('outputs the reference needed to run the rule example again', async () => {
+            // Arrange
+            const parsedArgvOptions = { rerun: { separator: separator.opt } }
+            const sources = [
+              {
+                data: 'Feature: a\nRule: b\nExample: c\nGiven a step',
+                uri: 'a.feature',
+              },
+              {
+                data: 'Feature: a\n\nRule: b\nExample: c\nGiven a step',
+                uri: 'b.feature',
+              },
+            ]
+
+            // Act
+            const output = await testFormatter({
+              parsedArgvOptions,
+              sources,
+              type: 'rerun',
+            })
+
+            // Assert
+            expect(output).to.eql(`a.feature:3${separator.expected}b.feature:4`)
+          })
         })
       }
     )
