@@ -91,12 +91,12 @@ interface UriToTestCaseAttemptsMap {
 export default class JsonFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
+    console.warn(
+        "The built-in JSON formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter)."
+    )
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
-        console.warn(
-          "The built-in JSON formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter)."
-        )
       }
     })
   }
