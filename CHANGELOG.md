@@ -9,6 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   * Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
   * `event-protocol` formatter has been removed and replaced with `message`
   * Custom formatters will need to migrate
+  * `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
 
 #### Bug fixes
 
