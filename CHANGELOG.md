@@ -1695,7 +1695,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 #### New features
 
-* Publish Cucumber.js to NPM as [`cucumber`](http://search.npmjs.org/#/cucumber) (Julien Biezemans)
+* Publish Cucumber.js to NPM as [`cucumber`](https://www.npmjs.com/search?q=cucumber) (Julien Biezemans)
 
 #### Changed features
 
