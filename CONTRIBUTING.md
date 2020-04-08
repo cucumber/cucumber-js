@@ -13,12 +13,12 @@ See the `package.json` scripts section for how to run the tests.
 
 * lint
   * [prettier](https://github.com/prettier/prettier)
-  * [eslint](http://eslint.org/)
+  * [eslint](https://eslint.org/)
   * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
 * unit tests
   * [mocha](https://mochajs.org/)
-  * [chai](http://chaijs.com/)
-  * [sinon](http://sinonjs.org/)
+  * [chai](https://www.chaijs.com/)
+  * [sinon](https://sinonjs.org/)
 * feature tests
   * cucumber-js tests itself
 
@@ -76,6 +76,6 @@ Review the changes, if everything looks good, squash merge into master.
 * commit message should have the format "Release 0.1.2" (replacing *0.1.2* with the actual version)
 * Tag commit as "v0.1.2"
 * CI will publish to NPM
-* Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io) 
+* Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
   * Update the cucumber-js version `data/versions.yaml`
   * Ensure the javascript examples are up to date

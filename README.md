@@ -1,6 +1,6 @@
 # Cucumber.js
 
-[![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber) 
+[![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
 
 [![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
@@ -17,7 +17,7 @@ Cucumber.js is the JavaScript implementation of Cucumber and runs on the [mainta
 
 ## Try it now
 
-We've put a demo of Cucumber.js to [run in your browser](http://cucumber.github.io/cucumber-js/). Why don't you give it a try before anything else?
+We've put a demo of Cucumber.js to [run in your browser](https://cucumber.github.io/cucumber-js/). Why don't you give it a try before anything else?
 
 ## Help & support
 
@@ -33,8 +33,7 @@ Everyone interacting in this codebase and issue tracker is expected to follow th
 
 ## Install
 
-[![npm downloads](https://img.shields.io/npm/dm/cucumber.svg?style=flat-square)](http://npm-stat.com/charts.html?package=cucumber&from=2015-09-01)
-
+[![npm downloads](https://img.shields.io/npm/dm/cucumber.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cucumber&from=2015-09-01)
 
 ### Node
 
@@ -50,7 +49,7 @@ $ npm install cucumber
 
 ## Documentation
 
-The following documentation is for master. See below for documentation for older versions. 
+The following documentation is for master. See below for documentation for older versions.
 
 * [CLI](/docs/cli.md)
 * [Custom Formatters](/docs/custom_formatters.md)

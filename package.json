@@ -9,10 +9,10 @@
     "tests"
   ],
   "version": "6.0.5",
-  "homepage": "http://github.com/cucumber/cucumber-js",
-  "author": "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
+  "homepage": "https://github.com/cucumber/cucumber-js",
+  "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
-    "Julien Biezemans <jb@jbpros.com> (http://jbpros.net)",
+    "Julien Biezemans <jb@jbpros.com>",
     "Fernando Acorreia <fernandoacorreia@gmail.com>",
     "Paul Jensen <paulbjensen@gmail.com>",
     "Kushal Pisavadia",
@@ -31,8 +31,8 @@
     "Michael Zedeler <michael@zedeler.dk>",
     "Tom V <tom@toc.com>",
     "David Godfrey <reactiveraven@reactiveraven.co.uk>",
-    "Paul Shannon (http://devpaul.com)",
-    "Simon Dean <simon@simondean.org> (http://www.simondean.org)",
+    "Paul Shannon (https://devpaul.com)",
+    "Simon Dean <simon@simondean.org>",
     "John Wright <johngeorge.wright@gmail.com>",
     "Johny Jose <johny@playlyfe.com>",
     "Marat Dyatko <vectart@gmail.com>",
@@ -145,7 +145,7 @@
   },
   "bugs": {
     "email": "cukes@googlegroups.com",
-    "url": "http://github.com/cucumber/cucumber-js/issues"
+    "url": "https://github.com/cucumber/cucumber-js/issues"
   },
   "directories": {
     "lib": "./lib"
