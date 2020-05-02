@@ -1,7 +1,7 @@
 Feature: step definition snippets custom syntax
 
   As a developer writing my step definitions in another JS dialect
-  I want to be able to see step definition snippets in the language I perfer
+  I want to be able to see step definition snippets in the language I prefer
 
   Background:
     Given a file named "features/undefined.feature" with:
