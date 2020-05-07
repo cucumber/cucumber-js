@@ -241,6 +241,7 @@
     "build-browser-example": "browserify example/index.ts -o dist/browser-example.js -p [ tsify -p tsconfig.browser.json ]",
     "build-local": "tsc -p tsconfig.node.json",
     "build-release": "browserify scripts/cucumber.ts -o dist/cucumber.js -p [ tsify -p tsconfig.browser.json ] --standalone Cucumber --debug",
+    "cck-test": "node ./bin/cucumber-js -p cck",
     "feature-test": "node ./bin/cucumber-js",
     "lint-autofix": "eslint --fix \"{example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{example,features,scripts,src,test}/**/*.ts\"",
