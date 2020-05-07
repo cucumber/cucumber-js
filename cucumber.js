@@ -15,6 +15,7 @@ var cck = [
   `--format ${
     process.env.CI || !process.stdout.isTTY ? 'progress' : 'progress-bar'
   }`,
+  '--format message:compatibility/out.ndjson',
 ].join(' ')
 
 module.exports = {

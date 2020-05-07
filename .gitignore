@@ -3,6 +3,7 @@
 .nyc_output_unit/
 .nyc_output/
 @rerun.txt
+compatibility/out.ndjson
 coverage/
 dist/browser-example.js
 lib/
