@@ -1,6 +1,5 @@
-import { When } from '../..'
+import { When, World } from '../..'
 import { ReadableStreamBuffer } from 'stream-buffers'
-import World from "../../src/support_code_library_builder/world";
 
 When('the string {string} is attached as {string}', async function(
   this: World,
