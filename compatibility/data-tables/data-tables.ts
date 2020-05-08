@@ -1,12 +1,13 @@
-import { When, Then, DataTable, World } from '../..'
+import { When, Then, DataTable } from '../..'
+import { expect } from 'chai'
 
 When('the following table is transposed:', function(
-  this: World,
+  this: any,
   table: DataTable
 ) {
-  // this.transposed = table.transpose()
+  this.transposed = table.transpose()
 })
 
-Then('it should be:', function(this: World, expected: DataTable) {
-  // this.transposed.diff(expected)
+Then('it should be:', function(this: any, expected: DataTable) {
+  expect(this.transposed.raw()).to.deep.eq(expected.raw())
 })
