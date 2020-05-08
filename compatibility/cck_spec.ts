@@ -23,7 +23,7 @@ describe('Cucumber Compatibility Kit', () => {
         '--require-module',
         'ts-node/register',
         '--require',
-        'compatibility/**/*.ts',
+        `compatibility/${suiteName}/${suiteName}.ts`,
         '--predictable-ids',
         '--format',
         'message',
@@ -35,7 +35,9 @@ describe('Cucumber Compatibility Kit', () => {
           cwd: PROJECT_PATH,
           stdout,
         }).run()
-      } catch (ignored) {}
+      } catch (ignored) {
+        console.error(ignored)
+      }
       stdout.end()
 
       const actualMessages = ndjsonParse(await toString(stdout))
