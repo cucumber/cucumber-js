@@ -1,5 +1,6 @@
 import { describe, it } from 'mocha'
-import { expect } from 'chai'
+import { expect, use } from 'chai'
+import chaiExclude from 'chai-exclude'
 import globby from 'globby'
 import fs from 'fs'
 import ndjsonParse from 'ndjson-parse'
@@ -10,6 +11,8 @@ import toString from 'stream-to-string'
 
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
+
+use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
   globby.sync([`${CCK_FEATURES_PATH}/**/*.ndjson`]).forEach(fixturePath => {
@@ -44,7 +47,9 @@ describe('Cucumber Compatibility Kit', () => {
       const expectedMessages = ndjsonParse(
         fs.readFileSync(fixturePath, { encoding: 'utf-8' })
       )
-      expect(actualMessages).to.deep.eq(expectedMessages)
+      expect(actualMessages)
+        .excludingEvery('uri')
+        .to.deep.eq(expectedMessages)
     }).timeout(10000)
   })
 })

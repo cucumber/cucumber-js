@@ -953,6 +953,13 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
+chai-exclude@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/chai-exclude/-/chai-exclude-2.0.2.tgz#8f2f2881ee8f3ddf4c5af0f949c063503eee30f8"
+  integrity sha512-QmNVnvdSw8Huccdjm49mKu3HtoHxvjdavgYkY0KPQ5MI5UWfbc9sX1YqRgaMPf2GGtDXPoF2ram3AeNS4945Xw==
+  dependencies:
+    fclone "^1.0.11"
+
 chai@^4.0.1:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
@@ -1930,6 +1937,11 @@ fastq@^1.6.0:
   integrity sha512-YOadQRnHd5q6PogvAR/x62BGituF2ufiEA6s8aavQANw5YKHERI4AREboX6KotzP8oX2klxYF2wcV/7bn1clfQ==
   dependencies:
     reusify "^1.0.4"
+
+fclone@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/fclone/-/fclone-1.0.11.tgz#10e85da38bfea7fc599341c296ee1d77266ee640"
+  integrity sha1-EOhdo4v+p/xZk0HClu4ddyZu5kA=
 
 figures@^3.0.0:
   version "3.2.0"

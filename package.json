@@ -208,6 +208,7 @@
     "ansi-html": "^0.0.7",
     "browserify": "^16.2.2",
     "chai": "^4.0.1",
+    "chai-exclude": "^2.0.2",
     "coffeescript": "^2.4.1",
     "connect": "^3.4.0",
     "core-js": "^3.2.1",
