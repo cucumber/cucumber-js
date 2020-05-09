@@ -37,11 +37,11 @@ export interface IDefineTestRunHookOptions {
 
 export interface IParameterTypeDefinition<T> {
   name: string
-  typeName: string
+  typeName?: string
   regexp: RegExp
   transformer: (...match: string[]) => T
-  useForSnippets: boolean
-  preferForRegexpMatch: boolean
+  useForSnippets?: boolean
+  preferForRegexpMatch?: boolean
 }
 
 export interface IDefineSupportCodeMethods {
