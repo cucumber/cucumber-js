@@ -14,7 +14,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   * `event-protocol` formatter has been removed and replaced with `message`
   * Custom formatters will need to migrate
   * `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
-* Remove `typeName` from options object for `defineParameterType` in favour of `name`
+* Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
 
 #### Bug fixes
 
