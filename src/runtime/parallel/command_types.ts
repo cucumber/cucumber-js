@@ -1,4 +1,4 @@
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
 
 // Messages from Master to Slave

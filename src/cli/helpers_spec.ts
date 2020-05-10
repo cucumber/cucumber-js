@@ -3,9 +3,9 @@ import { expect } from 'chai'
 import { parseGherkinMessageStream } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
-import Gherkin from 'gherkin'
+import { GherkinStreams } from '@cucumber/gherkin'
 import { Readable } from 'stream'
 
 interface ITestParseGherkinMessageStreamRequest {
@@ -47,14 +47,14 @@ describe('helpers', () => {
         const sourceEnvelope = messages.Envelope.create({
           source: {
             data: '',
-            media: {
-              contentType: 'text/x.cucumber.gherkin+plain',
-              encoding: messages.Media.Encoding.UTF8,
-            },
+            mediaType: 'text/x.cucumber.gherkin+plain',
             uri: '/project/features/a.feature',
           },
         })
-        const gherkinMessageStream = Gherkin.fromSources([sourceEnvelope])
+        const gherkinMessageStream = GherkinStreams.fromSources(
+          [sourceEnvelope],
+          {}
+        )
         const order = 'defined'
         const pickleFilter = new PickleFilter({ cwd })
 
@@ -82,14 +82,14 @@ describe('helpers', () => {
         const sourceEnvelope = messages.Envelope.create({
           source: {
             data: '@tagA\nFeature: a\nScenario: b\nGiven a step',
-            media: {
-              contentType: 'text/x.cucumber.gherkin+plain',
-              encoding: messages.Media.Encoding.UTF8,
-            },
+            mediaType: 'text/x.cucumber.gherkin+plain',
             uri: '/project/features/a.feature',
           },
         })
-        const gherkinMessageStream = Gherkin.fromSources([sourceEnvelope])
+        const gherkinMessageStream = GherkinStreams.fromSources(
+          [sourceEnvelope],
+          {}
+        )
         const order = 'defined'
         const pickleFilter = new PickleFilter({
           cwd,
@@ -119,10 +119,6 @@ describe('helpers', () => {
           'tags',
           'uri',
         ])
-        expect(envelopes[3].pickleRejected).to.exist()
-        expect(envelopes[3].pickleRejected.pickleId).to.eql(
-          envelopes[2].pickle.id
-        )
       })
     })
 
@@ -133,14 +129,14 @@ describe('helpers', () => {
         const sourceEnvelope = messages.Envelope.create({
           source: {
             data: 'Feature: a\nScenario: b\nGiven a step',
-            media: {
-              contentType: 'text/x.cucumber.gherkin+plain',
-              encoding: messages.Media.Encoding.UTF8,
-            },
+            mediaType: 'text/x.cucumber.gherkin+plain',
             uri: '/project/features/a.feature',
           },
         })
-        const gherkinMessageStream = Gherkin.fromSources([sourceEnvelope])
+        const gherkinMessageStream = GherkinStreams.fromSources(
+          [sourceEnvelope],
+          {}
+        )
         const order = 'defined'
         const pickleFilter = new PickleFilter({ cwd })
 
@@ -158,10 +154,6 @@ describe('helpers', () => {
         expect(envelopes[0]).to.eql(sourceEnvelope)
         expect(envelopes[1].gherkinDocument).to.exist()
         expect(envelopes[2].pickle).to.exist()
-        expect(envelopes[3].pickleAccepted).to.exist()
-        expect(envelopes[3].pickleAccepted.pickleId).to.eql(
-          envelopes[2].pickle.id
-        )
       })
     })
   })

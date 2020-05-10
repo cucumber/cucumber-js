@@ -1,12 +1,12 @@
 import { Then } from '../../'
 import { expect } from 'chai'
 import {
-  normalizeMessageOutput,
   normalizeJsonOutput,
+  normalizeMessageOutput,
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
 import path from 'path'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { World } from '../support/world'
 import Envelope = messages.Envelope
 

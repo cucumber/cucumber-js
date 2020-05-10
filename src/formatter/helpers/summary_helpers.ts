@@ -8,7 +8,7 @@ import {
 } from '../../time'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,
@@ -28,8 +28,8 @@ export function formatSummary({
   colorFns,
   testCaseAttempts,
 }: IFormatSummaryRequest): string {
-  const testCaseResults: messages.ITestResult[] = []
-  const testStepResults: messages.ITestResult[] = []
+  const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
+  const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
   let totalDuration = getZeroDuration()
   testCaseAttempts.forEach(({ testCase, result, stepResults }) => {
     totalDuration = addDurations(totalDuration, result.duration)
@@ -58,7 +58,7 @@ export function formatSummary({
 
 interface IGetCountSummaryRequest {
   colorFns: IColorFns
-  objects: messages.ITestResult[]
+  objects: messages.TestStepFinished.ITestStepResult[]
   type: string
 }
 

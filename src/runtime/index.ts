@@ -1,17 +1,17 @@
 import _ from 'lodash'
-import { formatLocation, EventDataCollector } from '../formatter/helpers'
+import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
 import Status from '../status'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 import { retriesForPickle } from './helpers'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import PickleRunner from './pickle_runner'
 import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { valueOrDefault, doesHaveValue } from '../value_checker'
+import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -133,7 +133,9 @@ export default class Runtime {
     return this.success
   }
 
-  shouldCauseFailure(status: messages.TestResult.Status): boolean {
+  shouldCauseFailure(
+    status: messages.TestStepFinished.TestStepResult.Status
+  ): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

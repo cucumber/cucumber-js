@@ -1,5 +1,5 @@
 import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
-import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
+import { IdGenerator } from '@cucumber/messages'
 import { IRuntimeOptions } from '../src/runtime'
 import {
   IDefineSupportCodeMethods,
@@ -33,7 +33,7 @@ export function buildSupportCodeLibrary(
     cwd = __dirname
   }
   const supportCodeLibraryBuilder = new SupportCodeLibraryBuilder()
-  supportCodeLibraryBuilder.reset(cwd, incrementing())
+  supportCodeLibraryBuilder.reset(cwd, IdGenerator.incrementing())
   if (doesHaveValue(fn)) {
     fn(supportCodeLibraryBuilder.methods)
   }

@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
@@ -14,7 +14,7 @@ import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
 import { doesNotHaveValue } from '../value_checker'
 
-const { Status } = messages.TestResult
+const { Status } = messages.TestStepFinished.TestStepResult
 
 interface ITestStep {
   id: string
@@ -45,7 +45,7 @@ export default class PickleRunner {
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.IPickle
   private readonly maxAttempts: number
-  private result: messages.ITestResult
+  private result: messages.TestStepFinished.ITestStepResult
   private readonly skip: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testCaseId: string
@@ -99,7 +99,7 @@ export default class PickleRunner {
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       parameters: this.worldParameters,
     })
-    this.result = messages.TestResult.fromObject({
+    this.result = messages.TestStepFinished.TestStepResult.fromObject({
       duration: getZeroDuration(),
       status: this.skip ? Status.SKIPPED : Status.PASSED,
     })
@@ -183,7 +183,7 @@ export default class PickleRunner {
     step: messages.Pickle.IPickleStep,
     stepDefinition: IDefinition,
     hookParameter?: any
-  ): Promise<messages.ITestResult> {
+  ): Promise<messages.TestStepFinished.ITestStepResult> {
     return StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
@@ -201,7 +201,9 @@ export default class PickleRunner {
     return this.skip || (this.isSkippingSteps() && isBeforeHook)
   }
 
-  shouldUpdateStatus(testStepResult: messages.ITestResult): boolean {
+  shouldUpdateStatus(
+    testStepResult: messages.TestStepFinished.ITestStepResult
+  ): boolean {
     switch (testStepResult.status) {
       case Status.UNDEFINED:
       case Status.FAILED:
@@ -218,7 +220,7 @@ export default class PickleRunner {
   async aroundTestStep(
     testStepId: string,
     attempt: number,
-    runStepFn: () => Promise<messages.ITestResult>
+    runStepFn: () => Promise<messages.TestStepFinished.ITestStepResult>
   ): Promise<void> {
     this.eventBroadcaster.emit(
       'envelope',
@@ -254,13 +256,13 @@ export default class PickleRunner {
         testStepFinished: {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
-          testResult: testStepResult,
+          testStepResult,
         },
       })
     )
   }
 
-  async run(): Promise<messages.ITestResult> {
+  async run(): Promise<messages.TestStepFinished.ITestStepResult> {
     this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = this.newId()
@@ -316,23 +318,31 @@ export default class PickleRunner {
     hookDefinition: TestCaseHookDefinition,
     hookParameter: ITestCaseHookParameter,
     isBeforeHook: boolean
-  ): Promise<messages.ITestResult> {
+  ): Promise<messages.TestStepFinished.ITestStepResult> {
     if (this.shouldSkipHook(isBeforeHook)) {
-      return messages.TestResult.fromObject({ status: Status.SKIPPED })
+      return messages.TestStepFinished.TestStepResult.fromObject({
+        status: Status.SKIPPED,
+      })
     }
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
-  async runStep(testStep: ITestStep): Promise<messages.ITestResult> {
+  async runStep(
+    testStep: ITestStep
+  ): Promise<messages.TestStepFinished.ITestStepResult> {
     if (testStep.stepDefinitions.length === 0) {
-      return messages.TestResult.fromObject({ status: Status.UNDEFINED })
+      return messages.TestStepFinished.TestStepResult.fromObject({
+        status: Status.UNDEFINED,
+      })
     } else if (testStep.stepDefinitions.length > 1) {
-      return messages.TestResult.fromObject({
+      return messages.TestStepFinished.TestStepResult.fromObject({
         message: getAmbiguousStepException(testStep.stepDefinitions),
         status: Status.AMBIGUOUS,
       })
     } else if (this.isSkippingSteps()) {
-      return messages.TestResult.fromObject({ status: Status.SKIPPED })
+      return messages.TestStepFinished.TestStepResult.fromObject({
+        status: Status.SKIPPED,
+      })
     }
     return this.invokeStep(testStep.pickleStep, testStep.stepDefinitions[0])
   }

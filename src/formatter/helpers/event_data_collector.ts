@@ -1,23 +1,23 @@
 import _, { Dictionary } from 'lodash'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
 
 interface ITestCaseAttemptData {
   attempt: number
   testCaseId: string
-  result: messages.ITestResult
+  result: messages.TestStepFinished.ITestStepResult
   stepAttachments: Dictionary<messages.IAttachment[]>
-  stepResults: Dictionary<messages.ITestResult>
+  stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
 }
 
 export interface ITestCaseAttempt {
   attempt: number
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
-  result: messages.ITestResult
+  result: messages.TestStepFinished.ITestStepResult
   stepAttachments: Dictionary<messages.IAttachment[]>
-  stepResults: Dictionary<messages.ITestResult>
+  stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
   testCase: messages.ITestCase
 }
 
@@ -92,32 +92,30 @@ export default class EventDataCollector {
   storeAttachment({
     testCaseStartedId,
     testStepId,
-    data,
-    media,
+    body,
+    mediaType,
   }: messages.IAttachment): void {
     if (doesHaveValue(testCaseStartedId) && doesHaveValue(testStepId)) {
       const { stepAttachments } = this.testCaseAttemptDataMap[testCaseStartedId]
       if (doesNotHaveValue(stepAttachments[testStepId])) {
         stepAttachments[testStepId] = []
       }
-      stepAttachments[testStepId].push({ data, media })
+      stepAttachments[testStepId].push({ body, mediaType })
     }
   }
 
   storeTestStepResult({
     testCaseStartedId,
     testStepId,
-    testResult,
+    testStepResult,
   }: messages.ITestStepFinished): void {
     this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
       testStepId
-    ] = testResult
+    ] = testStepResult
   }
 
-  storeTestCaseResult({
-    testCaseStartedId,
-    testResult,
-  }: messages.ITestCaseFinished): void {
-    this.testCaseAttemptDataMap[testCaseStartedId].result = testResult
+  storeTestCaseResult({ testCaseStartedId }: messages.ITestCaseFinished): void {
+    // TODO derive from steps, figure out willBeRetried
+    // this.testCaseAttemptDataMap[testCaseStartedId].result = testResult
   }
 }

@@ -1,16 +1,17 @@
 import _, { Dictionary } from 'lodash'
 import { getGherkinStepMap } from '../../src/formatter/helpers/gherkin_document_parser'
 import {
-  getStepKeyword,
   getPickleStepMap,
+  getStepKeyword,
 } from '../../src/formatter/helpers/pickle_parser'
 import util from 'util'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
+import { Query } from '@cucumber/query'
 import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'
 
 export interface IStepTextAndResult {
   text: string
-  result: messages.ITestResult
+  result: messages.TestStepFinished.ITestStepResult
 }
 
 export function getPickleNamesInOrderOfExecution(
@@ -45,17 +46,13 @@ export function getPickleStep(
 export function getTestCaseResult(
   envelopes: messages.IEnvelope[],
   pickleName: string
-): messages.ITestResult {
+): messages.TestStepFinished.ITestStepResult {
+  const query = new Query()
+  envelopes.forEach(query.update)
   const pickle = getAcceptedPickle(envelopes, pickleName)
-  const testCase = getTestCase(envelopes, pickle.id)
-  const testCaseStartedId = getTestCaseStarted(envelopes, testCase.id).id
-  const testCaseFinishedEnvelope = _.find(
-    envelopes,
-    e =>
-      doesHaveValue(e.testCaseFinished) &&
-      e.testCaseFinished.testCaseStartedId === testCaseStartedId
+  return query.getWorstTestStepResult(
+    query.getPickleTestStepResults([pickle.id])
   )
-  return testCaseFinishedEnvelope.testCaseFinished.testResult
 }
 
 export function getTestStepResults(
@@ -73,7 +70,10 @@ export function getTestStepResults(
         doesHaveValue(e.testStepFinished) &&
         e.testStepFinished.testCaseStartedId === testCaseStarted.id
     )
-    .map(e => [e.testStepFinished.testStepId, e.testStepFinished.testResult])
+    .map(e => [
+      e.testStepFinished.testStepId,
+      e.testStepFinished.testStepResult,
+    ])
     .fromPairs()
     .value()
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
@@ -134,19 +134,6 @@ function getAcceptedPickle(
   if (doesNotHaveValue(pickleEnvelope)) {
     throw new Error(
       `No pickle with name "${pickleName}" in envelopes:\n ${util.inspect(
-        envelopes
-      )}`
-    )
-  }
-  const acceptedPickleEnvelope = _.find(
-    envelopes,
-    e =>
-      doesHaveValue(e.pickleAccepted) &&
-      e.pickleAccepted.pickleId === pickleEnvelope.pickle.id
-  )
-  if (doesNotHaveValue(acceptedPickleEnvelope)) {
-    throw new Error(
-      `Pickle with name "${pickleName}" not accepted in envelopes:\n ${util.inspect(
         envelopes
       )}`
     )

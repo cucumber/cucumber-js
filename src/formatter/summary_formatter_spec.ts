@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import figures from 'figures'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'

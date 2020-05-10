@@ -15,14 +15,14 @@ import bluebird from 'bluebird'
 import ParallelRuntimeMaster from '../runtime/parallel/master'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
-import { IdGenerator } from 'cucumber-messages'
+import { IdGenerator } from '@cucumber/messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
-import Gherkin from 'gherkin'
+import { GherkinStreams } from '@cucumber/gherkin'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-import { WriteStream } from 'fs'
+import { createReadStream, WriteStream } from 'fs'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -158,10 +158,16 @@ export default class Cli {
       formats: configuration.formats,
       supportCodeLibrary,
     })
-    const gherkinMessageStream = Gherkin.fromPaths(configuration.featurePaths, {
-      defaultDialect: configuration.featureDefaultLanguage,
-      newId,
-    })
+    const gherkinMessageStream = GherkinStreams.fromPaths(
+      configuration.featurePaths,
+      {
+        defaultDialect: configuration.featureDefaultLanguage,
+        newId,
+        createReadStream(path) {
+          return createReadStream(path, { encoding: 'utf-8' })
+        },
+      }
+    )
     const pickleIds = await parseGherkinMessageStream({
       cwd: this.cwd,
       eventBroadcaster,

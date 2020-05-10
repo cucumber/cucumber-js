@@ -1,9 +1,9 @@
 import _, { Dictionary } from 'lodash'
-import { fork, ChildProcess } from 'child_process'
+import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'
 import { retriesForPickle } from '../helpers'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
@@ -86,7 +86,7 @@ export default class Master {
         this.remapDefinitionIds(envelope.testCase)
       }
       if (doesHaveValue(envelope.testCaseFinished)) {
-        this.parseTestCaseResult(envelope.testCaseFinished.testResult)
+        this.parseTestCaseResult(envelope.testCaseFinished)
       }
     } else {
       throw new Error(
@@ -177,13 +177,14 @@ export default class Master {
     }
   }
 
-  parseTestCaseResult(testCaseResult: messages.ITestResult): void {
-    if (
-      !testCaseResult.willBeRetried &&
-      this.shouldCauseFailure(testCaseResult.status)
-    ) {
-      this.success = false
-    }
+  parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
+    // TODO derive from steps, figure out willBeRetried
+    // if (
+    //   !testCaseFinished.willBeRetried &&
+    //   this.shouldCauseFailure(testCaseFinished.status)
+    // ) {
+    //   this.success = false
+    // }
   }
 
   run(numberOfSlaves: number, done: (success: boolean) => void): void {
@@ -219,7 +220,9 @@ export default class Master {
     slave.process.send(runCommand)
   }
 
-  shouldCauseFailure(status: messages.TestResult.Status): boolean {
+  shouldCauseFailure(
+    status: messages.TestStepFinished.TestStepResult.Status
+  ): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

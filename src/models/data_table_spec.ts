@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import DataTable from './data_table'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 describe('DataTable', () => {
   describe('table with headers', () => {

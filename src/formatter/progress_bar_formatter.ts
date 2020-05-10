@@ -1,14 +1,14 @@
-import { formatIssue, formatSummary, isIssue } from './helpers'
+import { formatSummary } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
   private numberOfSteps: number
-  private issueCount: number
+  private readonly issueCount: number
   public progressBar: ProgressBar
 
   constructor(options: IFormatterOptions) {
@@ -50,26 +50,27 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
-    if (isIssue(testCaseFinished.testResult)) {
-      this.issueCount += 1
-      const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
-        testCaseFinished.testCaseStartedId
-      )
-      this.progressBar.interrupt(
-        formatIssue({
-          colorFns: this.colorFns,
-          cwd: this.cwd,
-          number: this.issueCount,
-          snippetBuilder: this.snippetBuilder,
-          supportCodeLibrary: this.supportCodeLibrary,
-          testCaseAttempt,
-        })
-      )
-      if (testCaseFinished.testResult.willBeRetried) {
-        const stepsToRetry = testCaseAttempt.pickle.steps.length
-        this.progressBar.tick(-stepsToRetry)
-      }
-    }
+    // TODO derive from steps, figure out willBeRetried
+    // if (isIssue(testCaseFinished.testResult)) {
+    //   this.issueCount += 1
+    //   const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
+    //     testCaseFinished.testCaseStartedId
+    //   )
+    //   this.progressBar.interrupt(
+    //     formatIssue({
+    //       colorFns: this.colorFns,
+    //       cwd: this.cwd,
+    //       number: this.issueCount,
+    //       snippetBuilder: this.snippetBuilder,
+    //       supportCodeLibrary: this.supportCodeLibrary,
+    //       testCaseAttempt,
+    //     })
+    //   )
+    //   if (testCaseFinished.testResult.willBeRetried) {
+    //     const stepsToRetry = testCaseAttempt.pickle.steps.length
+    //     this.progressBar.tick(-stepsToRetry)
+    //   }
+    // }
   }
 
   logSummary(): void {
@@ -82,8 +83,8 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   parseEnvelope(envelope: messages.IEnvelope): void {
-    if (doesHaveValue(envelope.pickleAccepted)) {
-      this.incrementStepCount(envelope.pickleAccepted.pickleId)
+    if (doesHaveValue(envelope.pickle)) {
+      this.incrementStepCount(envelope.pickle.id)
     } else if (doesHaveValue(envelope.testStepStarted)) {
       this.initializeProgressBar()
     } else if (doesHaveValue(envelope.testStepFinished)) {

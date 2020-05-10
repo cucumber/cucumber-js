@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Gherkin from 'gherkin'
+import { dialects } from '@cucumber/gherkin'
 import Table, { HorizontalTable } from 'cli-table3'
 import { capitalCase } from 'capital-case'
 
@@ -47,7 +47,7 @@ function getAsTable(header: string[], rows: string[][]): string {
 }
 
 export function getLanguages(): string {
-  const rows = _.map(Gherkin.dialects(), (data, isoCode) => [
+  const rows = _.map(dialects, (data, isoCode) => [
     isoCode,
     data.name,
     data.native,
@@ -56,7 +56,7 @@ export function getLanguages(): string {
 }
 
 export function getKeywords(isoCode: string): string {
-  const language = Gherkin.dialects()[isoCode]
+  const language = dialects[isoCode]
   const rows = _.map(keywords, keyword => {
     const words = _.map(language[keyword], s => `"${s}"`).join(', ')
     return [capitalCase(keyword), words]

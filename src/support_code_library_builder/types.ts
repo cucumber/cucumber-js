@@ -1,4 +1,4 @@
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
@@ -9,7 +9,7 @@ export type DefineStepPattern = string | RegExp
 export interface ITestCaseHookParameter {
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
-  result?: messages.ITestResult
+  result?: messages.TestStepFinished.ITestStepResult
   testCaseStartedId: string
 }
 

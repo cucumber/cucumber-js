@@ -1,5 +1,5 @@
 import _, { Dictionary } from 'lodash'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]

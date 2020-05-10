@@ -1,4 +1,4 @@
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { doesNotHaveValue } from './value_checker'
 import Long from 'long'
 

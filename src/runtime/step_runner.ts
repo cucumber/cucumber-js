@@ -2,14 +2,14 @@ import _ from 'lodash'
 import Status from '../status'
 import Time, { millisecondsToDuration } from '../time'
 import UserCodeRunner from '../user_code_runner'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { format } from 'assertion-error-formatter'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
 import {
-  valueOrDefault,
-  doesNotHaveValue,
   doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
 } from '../value_checker'
 
 const { beginTiming, endTiming } = Time
@@ -28,10 +28,10 @@ export async function run({
   step,
   stepDefinition,
   world,
-}: IRunOptions): Promise<messages.ITestResult> {
+}: IRunOptions): Promise<messages.TestStepFinished.ITestStepResult> {
   beginTiming()
   let error: any,
-    result: messages.ITestResult,
+    result: messages.TestStepFinished.ITestStepResult,
     invocationData: IGetInvocationDataResponse
 
   try {
@@ -66,7 +66,7 @@ export async function run({
     }
   }
 
-  const testStepResult = messages.TestResult.fromObject({
+  const testStepResult = messages.TestStepFinished.TestStepResult.fromObject({
     duration: millisecondsToDuration(endTiming()),
   })
 

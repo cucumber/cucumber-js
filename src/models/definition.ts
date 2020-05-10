@@ -1,4 +1,4 @@
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { Expression } from 'cucumber-expressions'
 

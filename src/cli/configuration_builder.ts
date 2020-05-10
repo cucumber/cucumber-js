@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import ArgvParser, {
-  IParsedArgvOptions,
   IParsedArgvFormatOptions,
+  IParsedArgvOptions,
 } from './argv_parser'
 import fs from 'mz/fs'
 import path from 'path'

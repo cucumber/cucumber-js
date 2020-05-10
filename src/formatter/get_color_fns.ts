@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import colors from 'colors/safe'
 import Status from '../status'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 colors.enable()
 
 export type IColorFn = (text: string) => string
 
 export interface IColorFns {
-  forStatus(status: messages.TestResult.Status): IColorFn
+  forStatus(status: messages.TestStepFinished.TestStepResult.Status): IColorFn
   location: IColorFn
   tag: IColorFn
 }
@@ -16,7 +16,7 @@ export interface IColorFns {
 export default function getColorFns(enabled: boolean): IColorFns {
   if (enabled) {
     return {
-      forStatus(status: messages.TestResult.Status) {
+      forStatus(status: messages.TestStepFinished.TestStepResult.Status) {
         return {
           [Status.AMBIGUOUS]: colors.red.bind(colors),
           [Status.FAILED]: colors.red.bind(colors),
@@ -32,7 +32,7 @@ export default function getColorFns(enabled: boolean): IColorFns {
     }
   } else {
     return {
-      forStatus(status: messages.TestResult.Status) {
+      forStatus(status: messages.TestStepFinished.TestStepResult.Status) {
         return _.identity
       },
       location: _.identity,

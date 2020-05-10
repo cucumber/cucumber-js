@@ -3,7 +3,7 @@ import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
@@ -75,7 +75,7 @@ export async function parseGherkinMessageStream({
             `Parse error in '${path.relative(
               cwd,
               envelope.attachment.source.uri
-            )}': ${envelope.attachment.data}`
+            )}': ${envelope.attachment.body}`
           )
         )
       }
