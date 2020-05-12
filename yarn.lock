@@ -159,6 +159,15 @@
     protobufjs "^6.9.0"
     uuid "^7.0.3"
 
+"@cucumber/query@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-6.0.0.tgz#31b086773003f354537c9d488bde143be39f5a6e"
+  integrity sha512-hroBwAc4xO2gfWgX3QrcmFwDLNu0seJesx2PGTls7b1zT+jKH5Hk8XW/c0wox1K601qOZoXTW85Zmu4EcQsKQA==
+  dependencies:
+    "@cucumber/gherkin" "^13.0.0"
+    "@cucumber/messages" "^12.0.0"
+    "@teppeis/multimaps" "^1.1.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.0.0.tgz#10602de5570baea82f8afbfa2630b24e7a8cfe5b"

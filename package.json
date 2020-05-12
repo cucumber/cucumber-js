@@ -158,6 +158,7 @@
   "dependencies": {
     "@cucumber/gherkin": "^13.0.0",
     "@cucumber/messages": "^12.1.1",
+    "@cucumber/query": "^6.0.0",
     "assertion-error-formatter": "^3.0.0",
     "bluebird": "^3.4.1",
     "capital-case": "^1.0.3",
