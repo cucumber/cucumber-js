@@ -1,7 +1,8 @@
-import _, { Dictionary } from 'lodash'
+import _, { Dictionary, values } from 'lodash'
 import { messages } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
+import { Query } from '@cucumber/query'
 
 interface ITestCaseAttemptData {
   attempt: number
@@ -115,7 +116,11 @@ export default class EventDataCollector {
   }
 
   storeTestCaseResult({ testCaseStartedId }: messages.ITestCaseFinished): void {
-    // TODO derive from steps, figure out willBeRetried
-    // this.testCaseAttemptDataMap[testCaseStartedId].result = testResult
+    // TODO figure out willBeRetried
+    const stepResults = values(
+      this.testCaseAttemptDataMap[testCaseStartedId].stepResults
+    )
+    const worstResult = new Query().getWorstTestStepResult(stepResults)
+    this.testCaseAttemptDataMap[testCaseStartedId].result = worstResult
   }
 }
