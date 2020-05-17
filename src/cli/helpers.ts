@@ -57,16 +57,7 @@ export async function parseGherkinMessageStream({
           pickle.uri
         )
         if (pickleFilter.matches({ gherkinDocument, pickle })) {
-          eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({ pickleAccepted: { pickleId } })
-          )
           result.push(pickleId)
-        } else {
-          eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({ pickleRejected: { pickleId } })
-          )
         }
       }
       if (doesHaveValue(envelope.attachment)) {
