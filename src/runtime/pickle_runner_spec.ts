@@ -12,6 +12,7 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import IEnvelope = messages.IEnvelope
+import {fail} from "assert";
 
 interface ITestPickleRunnerRequest {
   gherkinDocument: messages.IGherkinDocument
@@ -129,7 +130,7 @@ describe('PickleRunner', () => {
             },
           }),
         ])
-        // expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(result).to.eql(passedTestResult)
       })
     })
 
@@ -164,14 +165,11 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        // expect(envelopes).to.have.lengthOf(5)
-        // expect(envelopes[3].testStepFinished.testResult).to.eql(
-        //   failingTestResult
-        // )
-        // expect(envelopes[4].testCaseFinished.testResult).to.eql(
-        //   failingTestResult
-        // )
-        // expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          failingTestResult
+        )
+        expect(result).to.eql(failingTestResult)
       })
     })
 
