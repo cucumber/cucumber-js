@@ -1,4 +1,4 @@
-import { formatSummary } from './helpers'
+import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
@@ -8,7 +8,7 @@ import { doesHaveValue, valueOrDefault } from '../value_checker'
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
   private numberOfSteps: number
-  private readonly issueCount: number
+  private issueCount: number
   public progressBar: ProgressBar
 
   constructor(options: IFormatterOptions) {
@@ -50,27 +50,30 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
-    // TODO derive from steps, figure out willBeRetried
-    // if (isIssue(testCaseFinished.testResult)) {
-    //   this.issueCount += 1
-    //   const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
-    //     testCaseFinished.testCaseStartedId
-    //   )
-    //   this.progressBar.interrupt(
-    //     formatIssue({
-    //       colorFns: this.colorFns,
-    //       cwd: this.cwd,
-    //       number: this.issueCount,
-    //       snippetBuilder: this.snippetBuilder,
-    //       supportCodeLibrary: this.supportCodeLibrary,
-    //       testCaseAttempt,
-    //     })
-    //   )
-    //   if (testCaseFinished.testResult.willBeRetried) {
-    //     const stepsToRetry = testCaseAttempt.pickle.steps.length
-    //     this.progressBar.tick(-stepsToRetry)
-    //   }
-    // }
+    // TODO figure out willBeRetried
+    const { result } = this.eventDataCollector.getTestCaseAttempt(
+      testCaseFinished.testCaseStartedId
+    )
+    if (isIssue(result)) {
+      this.issueCount += 1
+      const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
+        testCaseFinished.testCaseStartedId
+      )
+      this.progressBar.interrupt(
+        formatIssue({
+          colorFns: this.colorFns,
+          cwd: this.cwd,
+          number: this.issueCount,
+          snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
+          testCaseAttempt,
+        })
+      )
+      if (result.willBeRetried) {
+        const stepsToRetry = testCaseAttempt.pickle.steps.length
+        this.progressBar.tick(-stepsToRetry)
+      }
+    }
   }
 
   logSummary(): void {

@@ -48,7 +48,7 @@ export function getTestCaseResult(
   pickleName: string
 ): messages.TestStepFinished.ITestStepResult {
   const query = new Query()
-  envelopes.forEach(query.update)
+  envelopes.forEach(envelope => query.update(envelope))
   const pickle = getAcceptedPickle(envelopes, pickleName)
   return query.getWorstTestStepResult(
     query.getPickleTestStepResults([pickle.id])

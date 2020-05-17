@@ -11,8 +11,8 @@ import timeMethods, { millisecondsToDuration } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import { fail } from 'assert'
 import IEnvelope = messages.IEnvelope
-import {fail} from "assert";
 
 interface ITestPickleRunnerRequest {
   gherkinDocument: messages.IGherkinDocument

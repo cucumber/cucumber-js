@@ -27,6 +27,7 @@ export default class EventDataCollector {
   private pickleMap: Dictionary<messages.IPickle> = {}
   private testCaseMap: Dictionary<messages.ITestCase> = {}
   private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
+  readonly query = new Query()
 
   constructor(eventBroadcaster: EventEmitter) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
@@ -62,6 +63,7 @@ export default class EventDataCollector {
   }
 
   parseEnvelope(envelope: messages.Envelope): void {
+    this.query.update(envelope)
     if (doesHaveValue(envelope.gherkinDocument)) {
       this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
         envelope.gherkinDocument
@@ -120,7 +122,7 @@ export default class EventDataCollector {
     const stepResults = values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
-    const worstResult = new Query().getWorstTestStepResult(stepResults)
+    const worstResult = this.query.getWorstTestStepResult(stepResults)
     this.testCaseAttemptDataMap[testCaseStartedId].result = worstResult
   }
 }
