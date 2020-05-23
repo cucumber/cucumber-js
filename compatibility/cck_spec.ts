@@ -49,14 +49,6 @@ describe('Cucumber Compatibility Kit', () => {
         .excludingEvery([
           // TODO normalise uris
           'uri',
-          // TODO make ids line up
-          'id',
-          'astNodeIds',
-          'hookId',
-          'testCaseId',
-          'testCaseStartedId',
-          'testStepId',
-          'pickleIds',
         ])
         .to.deep.eq(expectedMessages)
     }).timeout(10000)
