@@ -10,6 +10,10 @@ import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
+import StepDefinition from '../models/step_definition'
+
+const StepDefinitionPatternType =
+  messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -97,4 +101,36 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
         'Unrecgonized order type. Should be `defined` or `random`'
       )
   }
+}
+
+export function emitSupportCodeMessages({
+  eventBroadcaster,
+  stepDefinitions,
+}: {
+  eventBroadcaster: EventEmitter
+  stepDefinitions: StepDefinition[]
+}): void {
+  stepDefinitions.forEach(stepDefinition => {
+    eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        stepDefinition: {
+          id: stepDefinition.id,
+          pattern: {
+            source: stepDefinition.pattern.toString(),
+            type:
+              typeof stepDefinition.pattern === 'string'
+                ? StepDefinitionPatternType.CUCUMBER_EXPRESSION
+                : StepDefinitionPatternType.REGULAR_EXPRESSION,
+          },
+          sourceReference: {
+            uri: stepDefinition.uri,
+            location: {
+              line: stepDefinition.line,
+            },
+          },
+        },
+      })
+    )
+  })
 }

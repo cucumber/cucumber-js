@@ -1,5 +1,9 @@
 import { EventDataCollector } from '../formatter/helpers'
-import { getExpandedArgv, parseGherkinMessageStream } from './helpers'
+import {
+  emitSupportCodeMessages,
+  getExpandedArgv,
+  parseGherkinMessageStream,
+} from './helpers'
 import { validateInstall } from './install_validator'
 import * as I18n from './i18n'
 import ConfigurationBuilder, {
@@ -175,6 +179,10 @@ export default class Cli {
       gherkinMessageStream,
       order: configuration.order,
       pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
+    })
+    emitSupportCodeMessages({
+      eventBroadcaster,
+      stepDefinitions: supportCodeLibrary.stepDefinitions,
     })
     let success
     if (configuration.parallel > 1) {

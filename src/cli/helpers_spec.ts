@@ -1,12 +1,22 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { parseGherkinMessageStream } from './helpers'
+import { emitSupportCodeMessages, parseGherkinMessageStream } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { messages } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { GherkinStreams } from '@cucumber/gherkin'
 import { Readable } from 'stream'
+import StepDefinition from '../models/step_definition'
+import {
+  CucumberExpression,
+  ParameterTypeRegistry,
+  RegularExpression,
+} from 'cucumber-expressions'
+
+const noopFunction = (): void => {
+  // no code
+}
 
 interface ITestParseGherkinMessageStreamRequest {
   cwd: string
@@ -38,7 +48,96 @@ async function testParseGherkinMessageStream(
   return { envelopes, result }
 }
 
+function testEmitSupportCodeMessages(
+  stepDefinitions: StepDefinition[]
+): messages.IEnvelope[] {
+  const envelopes: messages.IEnvelope[] = []
+  const eventBroadcaster = new EventEmitter()
+  eventBroadcaster.on('envelope', e => envelopes.push(e))
+  emitSupportCodeMessages({
+    eventBroadcaster,
+    stepDefinitions,
+  })
+  return envelopes
+}
+
 describe('helpers', () => {
+  describe('emitSupportCodeMessages', () => {
+    it('emits messages for step definitions using cucumber expressions', () => {
+      const envelopes = testEmitSupportCodeMessages([
+        new StepDefinition({
+          code: noopFunction,
+          unwrappedCode: noopFunction,
+          id: '0',
+          line: 9,
+          options: {},
+          uri: 'features/support/cukes.js',
+          pattern: 'I have {int} cukes in my belly',
+          expression: new CucumberExpression(
+            'I have {int} cukes in my belly',
+            new ParameterTypeRegistry()
+          ),
+        }),
+      ])
+
+      expect(envelopes).to.deep.eq([
+        messages.Envelope.fromObject({
+          stepDefinition: {
+            id: '0',
+            pattern: {
+              source: 'I have {int} cukes in my belly',
+              type:
+                messages.StepDefinition.StepDefinitionPattern
+                  .StepDefinitionPatternType.CUCUMBER_EXPRESSION,
+            },
+            sourceReference: {
+              uri: 'features/support/cukes.js',
+              location: {
+                line: 9,
+              },
+            },
+          },
+        }),
+      ])
+    })
+    it('emits messages for step definitions using regular expressions', () => {
+      const envelopes = testEmitSupportCodeMessages([
+        new StepDefinition({
+          code: noopFunction,
+          unwrappedCode: noopFunction,
+          id: '0',
+          line: 9,
+          options: {},
+          uri: 'features/support/cukes.js',
+          pattern: /I have (\d+) cukes in my belly/,
+          expression: new RegularExpression(
+            /I have (\d+) cukes in my belly/,
+            new ParameterTypeRegistry()
+          ),
+        }),
+      ])
+
+      expect(envelopes).to.deep.eq([
+        messages.Envelope.fromObject({
+          stepDefinition: {
+            id: '0',
+            pattern: {
+              source: '/I have (\\d+) cukes in my belly/',
+              type:
+                messages.StepDefinition.StepDefinitionPattern
+                  .StepDefinitionPatternType.REGULAR_EXPRESSION,
+            },
+            sourceReference: {
+              uri: 'features/support/cukes.js',
+              location: {
+                line: 9,
+              },
+            },
+          },
+        }),
+      ])
+    })
+  })
   describe('parseGherkinMessageStream', () => {
     describe('empty feature', () => {
       it('emits source and gherkinDocument events and returns an empty array', async function() {
