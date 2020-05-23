@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha'
-import { expect, use } from 'chai'
+import { expect, use, config } from 'chai'
 import chaiExclude from 'chai-exclude'
 import globby from 'globby'
 import fs from 'fs'
@@ -10,8 +10,9 @@ import { Cli } from '../lib'
 import toString from 'stream-to-string'
 
 const PROJECT_PATH = path.join(__dirname, '..')
-const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
+const CCK_FEATURES_PATH = 'compatibility/features'
 
+config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
@@ -24,7 +25,7 @@ describe('Cucumber Compatibility Kit', () => {
       ].concat([
         `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}.feature`,
         '--require',
-        `compatibility/${suiteName}/${suiteName}.ts`,
+        `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}.ts`,
         '--profile',
         'cck',
       ])

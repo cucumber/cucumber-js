@@ -1,5 +1,7 @@
-import { When, World } from '../..'
+import { When, World } from '../../..'
 import { ReadableStreamBuffer } from 'stream-buffers'
+import fs from 'fs'
+import path from 'path'
 
 When('the string {string} is attached as {string}', async function(
   this: World,
@@ -7,6 +9,10 @@ When('the string {string} is attached as {string}', async function(
   mediaType: string
 ) {
   await this.attach(text, mediaType)
+})
+
+When('the string {string} is logged', function(text: string) {
+  // this.log(text)
 })
 
 When('an array with {int} bytes are attached as {string}', async function(
@@ -30,4 +36,11 @@ When('a stream with {int} bytes are attached as {string}', async function(
   stream.put(buffer)
   stream.stop()
   await this.attach(stream, mediaType)
+})
+
+When('a JPEG image is attached', async function(this: World) {
+  await this.attach(
+    fs.createReadStream(path.join(__dirname, 'cucumber-growing-on-vine.jpg')),
+    'image/jpg'
+  )
 })

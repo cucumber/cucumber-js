@@ -1,4 +1,4 @@
-import { When, Then, DataTable } from '../..'
+import { When, Then, DataTable } from '../../..'
 import { expect } from 'chai'
 
 When('the following table is transposed:', function(

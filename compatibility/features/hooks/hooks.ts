@@ -1,4 +1,4 @@
-import { When, Before, After } from '../..'
+import { When, Before, After } from '../../..'
 
 Before(function() {
   // no-op
