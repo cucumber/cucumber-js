@@ -1,4 +1,4 @@
-var common = [
+const common = [
   '--require-module ts-node/register',
   '--require features/**/*.ts',
   `--format ${
@@ -8,6 +8,15 @@ var common = [
   '--format usage:usage.txt',
 ].join(' ')
 
+const cck = [
+  '--require-module',
+  'ts-node/register',
+  '--predictable-ids',
+  '--format',
+  'message',
+].join(' ')
+
 module.exports = {
   default: common,
+  cck,
 }

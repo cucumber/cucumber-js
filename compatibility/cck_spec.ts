@@ -23,13 +23,10 @@ describe('Cucumber Compatibility Kit', () => {
         path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
       ].concat([
         `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}.feature`,
-        '--require-module',
-        'ts-node/register',
         '--require',
         `compatibility/${suiteName}/${suiteName}.ts`,
-        '--predictable-ids',
-        '--format',
-        'message',
+        '--profile',
+        'cck',
       ])
       const stdout = new PassThrough()
       try {
@@ -43,7 +40,8 @@ describe('Cucumber Compatibility Kit', () => {
       }
       stdout.end()
 
-      const actualMessages = ndjsonParse(await toString(stdout))
+      const rawOutput = await toString(stdout)
+      const actualMessages = ndjsonParse(rawOutput)
       const expectedMessages = ndjsonParse(
         fs.readFileSync(fixturePath, { encoding: 'utf-8' })
       )
