@@ -3,7 +3,6 @@ import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
-import { messages } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
@@ -11,6 +10,9 @@ import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
 import StepDefinition from '../models/step_definition'
+import os from 'os'
+import { messages } from '@cucumber/messages'
+import readPkgUp from 'read-pkg-up'
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -101,6 +103,47 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
         'Unrecgonized order type. Should be `defined` or `random`'
       )
   }
+}
+
+export async function emitMetaMessage(
+  eventBroadcaster: EventEmitter
+): Promise<void> {
+  const version = (await readPkgUp()).packageJson.version
+  const protocolVersion = (
+    await readPkgUp({
+      cwd: path.join(
+        __dirname,
+        '..',
+        '..',
+        'node_modules',
+        '@cucumber',
+        'messages'
+      ),
+    })
+  ).packageJson.version
+  eventBroadcaster.emit(
+    'envelope',
+    new messages.Envelope({
+      meta: new messages.Meta({
+        protocolVersion,
+        implementation: new messages.Meta.Product({
+          name: 'cucumber-js',
+          version,
+        }),
+        cpu: new messages.Meta.Product({
+          name: os.arch(),
+        }),
+        os: new messages.Meta.Product({
+          name: os.platform(),
+          version: os.release(),
+        }),
+        runtime: new messages.Meta.Product({
+          name: 'node.js',
+          version: process.versions.node,
+        }),
+      }),
+    })
+  )
 }
 
 export function emitSupportCodeMessages({

@@ -1,5 +1,6 @@
 import { EventDataCollector } from '../formatter/helpers'
 import {
+  emitMetaMessage,
   emitSupportCodeMessages,
   getExpandedArgv,
   parseGherkinMessageStream,
@@ -162,6 +163,7 @@ export default class Cli {
       formats: configuration.formats,
       supportCodeLibrary,
     })
+    await emitMetaMessage(eventBroadcaster)
     const gherkinMessageStream = GherkinStreams.fromPaths(
       configuration.featurePaths,
       {
