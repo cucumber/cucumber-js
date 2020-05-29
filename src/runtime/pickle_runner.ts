@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { IdGenerator, messages } from 'cucumber-messages'
 import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
@@ -10,6 +10,7 @@ import {
   ITestCaseHookParameter,
 } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
 import { doesNotHaveValue } from '../value_checker'
@@ -21,6 +22,7 @@ interface ITestStep {
   isBeforeHook?: boolean
   isHook: boolean
   hookDefinition?: TestCaseHookDefinition
+  stepHookDefinition?: TestStepHookDefinition
   pickleStep?: messages.Pickle.IPickleStep
   stepDefinitions?: StepDefinition[]
 }
@@ -167,6 +169,18 @@ export default class PickleRunner {
 
   getBeforeHookDefinitions(): TestCaseHookDefinition[] {
     return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
+      hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
+    )
+  }
+
+  getBeforeStepHookDefinitions(): TestStepHookDefinition[] {
+    return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter(
+      hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
+    )
+  }
+
+  getAfterStepHookDefinitions(): TestStepHookDefinition[] {
+    return this.supportCodeLibrary.afterTestStepHookDefinitions.filter(
       hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
@@ -323,6 +337,21 @@ export default class PickleRunner {
     return this.invokeStep(null, hookDefinition, hookParameter)
   }
 
+  async runStepHook(
+    stepHookDefinition: TestStepHookDefinition
+  ): Promise<messages.ITestResult> {
+    if (this.isSkippingSteps()) {
+      return messages.TestResult.fromObject({ status: Status.SKIPPED })
+    }
+    const hookParameter: ITestCaseHookParameter = {
+      gherkinDocument: this.gherkinDocument,
+      pickle: this.pickle,
+      testCaseStartedId: this.currentTestCaseStartedId,
+    }
+
+    return this.invokeStep(null, stepHookDefinition, hookParameter)
+  }
+
   async runStep(testStep: ITestStep): Promise<messages.ITestResult> {
     if (testStep.stepDefinitions.length === 0) {
       return messages.TestResult.fromObject({ status: Status.UNDEFINED })
@@ -334,6 +363,78 @@ export default class PickleRunner {
     } else if (this.isSkippingSteps()) {
       return messages.TestResult.fromObject({ status: Status.SKIPPED })
     }
-    return this.invokeStep(testStep.pickleStep, testStep.stepDefinitions[0])
+    let stepResult
+    let afterStepHooksResult
+    const beforeStepHooksResult = await this.runStepHooks(
+      this.getBeforeStepHookDefinitions()
+    )
+
+    if (beforeStepHooksResult.status !== Status.FAILED) {
+      stepResult = await this.invokeStep(
+        testStep.pickleStep,
+        testStep.stepDefinitions[0]
+      )
+      if (stepResult.status === Status.PASSED) {
+        afterStepHooksResult = await this.runStepHooks(
+          this.getAfterStepHookDefinitions()
+        )
+      }
+    }
+    let cumulatedStepResult = beforeStepHooksResult
+
+    if (stepResult !== undefined) {
+      cumulatedStepResult = stepResult
+      if (beforeStepHooksResult.duration !== null) {
+        cumulatedStepResult.duration = addDurations(
+          cumulatedStepResult.duration,
+          beforeStepHooksResult.duration
+        )
+      }
+      if (afterStepHooksResult !== undefined) {
+        if (afterStepHooksResult.duration !== null) {
+          cumulatedStepResult.duration = addDurations(
+            cumulatedStepResult.duration,
+            afterStepHooksResult.duration
+          )
+        }
+        if (this.shouldUpdateStatus(afterStepHooksResult)) {
+          cumulatedStepResult.status = afterStepHooksResult.status
+        }
+        if (afterStepHooksResult.message !== null) {
+          cumulatedStepResult.message = afterStepHooksResult.message
+        }
+      }
+    }
+
+    return cumulatedStepResult
+  }
+
+  async runStepHooks(
+    stepHooks: TestStepHookDefinition[]
+  ): Promise<messages.ITestResult> {
+    const stepHooksResult = messages.TestResult.fromObject({
+      status:
+        this.result.status === Status.FAILED
+          ? Status.SKIPPED
+          : this.result.status,
+    })
+
+    for (const stepHookDefinition of stepHooks) {
+      const stepHookResult = await this.runStepHook(stepHookDefinition)
+      if (this.shouldUpdateStatus(stepHookResult)) {
+        stepHooksResult.status = stepHookResult.status
+        this.result.status = stepHookResult.status
+      }
+      if (stepHookResult.message !== null) {
+        stepHooksResult.message = stepHookResult.message
+      }
+      if (stepHookResult.duration !== null) {
+        stepHooksResult.duration =
+          stepHooksResult.duration !== null
+            ? addDurations(stepHooksResult.duration, stepHookResult.duration)
+            : stepHookResult.duration
+      }
+    }
+    return stepHooksResult
   }
 }
