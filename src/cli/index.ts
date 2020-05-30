@@ -184,7 +184,7 @@ export default class Cli {
     })
     emitSupportCodeMessages({
       eventBroadcaster,
-      stepDefinitions: supportCodeLibrary.stepDefinitions,
+      supportCodeLibrary,
     })
     let success
     if (configuration.parallel > 1) {

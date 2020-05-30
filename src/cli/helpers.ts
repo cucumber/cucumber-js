@@ -13,6 +13,8 @@ import StepDefinition from '../models/step_definition'
 import os from 'os'
 import { messages } from '@cucumber/messages'
 import readPkgUp from 'read-pkg-up'
+import { SupportCodeLibraryBuilder } from '../support_code_library_builder'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -148,12 +150,12 @@ export async function emitMetaMessage(
 
 export function emitSupportCodeMessages({
   eventBroadcaster,
-  stepDefinitions,
+  supportCodeLibrary,
 }: {
   eventBroadcaster: EventEmitter
-  stepDefinitions: StepDefinition[]
+  supportCodeLibrary: ISupportCodeLibrary
 }): void {
-  stepDefinitions.forEach(stepDefinition => {
+  supportCodeLibrary.stepDefinitions.forEach(stepDefinition => {
     eventBroadcaster.emit(
       'envelope',
       messages.Envelope.fromObject({

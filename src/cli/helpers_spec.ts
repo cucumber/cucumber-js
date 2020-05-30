@@ -17,6 +17,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from 'cucumber-expressions'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 
 const noopFunction = (): void => {
   // no code
@@ -53,14 +54,26 @@ async function testParseGherkinMessageStream(
 }
 
 function testEmitSupportCodeMessages(
-  stepDefinitions: StepDefinition[]
+  supportCode: Partial<ISupportCodeLibrary>
 ): messages.IEnvelope[] {
   const envelopes: messages.IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', e => envelopes.push(e))
   emitSupportCodeMessages({
     eventBroadcaster,
-    stepDefinitions,
+    supportCodeLibrary: Object.assign(
+      {
+        stepDefinitions: [],
+        beforeTestRunHookDefinitions: [],
+        beforeTestCaseHookDefinitions: [],
+        afterTestRunHookDefinitions: [],
+        afterTestCaseHookDefinitions: [],
+        defaultTimeout: 0,
+        parameterTypeRegistry: null,
+        World: null,
+      },
+      supportCode
+    ),
   })
   return envelopes
 }
@@ -79,21 +92,23 @@ describe('helpers', () => {
   })
   describe('emitSupportCodeMessages', () => {
     it('emits messages for step definitions using cucumber expressions', () => {
-      const envelopes = testEmitSupportCodeMessages([
-        new StepDefinition({
-          code: noopFunction,
-          unwrappedCode: noopFunction,
-          id: '0',
-          line: 9,
-          options: {},
-          uri: 'features/support/cukes.js',
-          pattern: 'I have {int} cukes in my belly',
-          expression: new CucumberExpression(
-            'I have {int} cukes in my belly',
-            new ParameterTypeRegistry()
-          ),
-        }),
-      ])
+      const envelopes = testEmitSupportCodeMessages({
+        stepDefinitions: [
+          new StepDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '0',
+            line: 9,
+            options: {},
+            uri: 'features/support/cukes.js',
+            pattern: 'I have {int} cukes in my belly',
+            expression: new CucumberExpression(
+              'I have {int} cukes in my belly',
+              new ParameterTypeRegistry()
+            ),
+          }),
+        ],
+      })
 
       expect(envelopes).to.deep.eq([
         messages.Envelope.fromObject({
@@ -116,21 +131,23 @@ describe('helpers', () => {
       ])
     })
     it('emits messages for step definitions using regular expressions', () => {
-      const envelopes = testEmitSupportCodeMessages([
-        new StepDefinition({
-          code: noopFunction,
-          unwrappedCode: noopFunction,
-          id: '0',
-          line: 9,
-          options: {},
-          uri: 'features/support/cukes.js',
-          pattern: /I have (\d+) cukes in my belly/,
-          expression: new RegularExpression(
-            /I have (\d+) cukes in my belly/,
-            new ParameterTypeRegistry()
-          ),
-        }),
-      ])
+      const envelopes = testEmitSupportCodeMessages({
+        stepDefinitions: [
+          new StepDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '0',
+            line: 9,
+            options: {},
+            uri: 'features/support/cukes.js',
+            pattern: /I have (\d+) cukes in my belly/,
+            expression: new RegularExpression(
+              /I have (\d+) cukes in my belly/,
+              new ParameterTypeRegistry()
+            ),
+          }),
+        ],
+      })
 
       expect(envelopes).to.deep.eq([
         messages.Envelope.fromObject({
