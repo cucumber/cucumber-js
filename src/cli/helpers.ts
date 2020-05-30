@@ -150,7 +150,7 @@ export async function emitMetaMessage(
 function emitStepDefinitions(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
-) {
+): void {
   supportCodeLibrary.stepDefinitions.forEach(stepDefinition => {
     eventBroadcaster.emit(
       'envelope',
@@ -179,7 +179,7 @@ function emitStepDefinitions(
 function emitTestCaseHooks(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
-) {
+): void {
   ;[]
     .concat(
       supportCodeLibrary.beforeTestCaseHookDefinitions,
@@ -211,6 +211,6 @@ export function emitSupportCodeMessages({
   eventBroadcaster: EventEmitter
   supportCodeLibrary: ISupportCodeLibrary
 }): void {
-  emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
+  emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
 }
