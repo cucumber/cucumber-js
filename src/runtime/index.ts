@@ -116,7 +116,14 @@ export default class Runtime {
     }
     this.eventBroadcaster.emit(
       'envelope',
-      new messages.Envelope({ testRunStarted: {} })
+      new messages.Envelope({
+        testRunStarted: {
+          timestamp: {
+            nanos: 0,
+            seconds: 0,
+          },
+        },
+      })
     )
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
     await bluebird.each(this.pickleIds, this.runPickle.bind(this))
