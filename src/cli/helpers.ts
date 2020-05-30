@@ -14,6 +14,7 @@ import { messages } from '@cucumber/messages'
 import readPkgUp from 'read-pkg-up'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -204,6 +205,33 @@ function emitTestCaseHooks(
     })
 }
 
+function emitTestRunHooks(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  ;[]
+    .concat(
+      supportCodeLibrary.beforeTestRunHookDefinitions,
+      supportCodeLibrary.afterTestRunHookDefinitions
+    )
+    .forEach((testRunHookDefinition: TestRunHookDefinition) => {
+      eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          hook: {
+            id: testRunHookDefinition.id,
+            sourceReference: {
+              uri: testRunHookDefinition.uri,
+              location: {
+                line: testRunHookDefinition.line,
+              },
+            },
+          },
+        })
+      )
+    })
+}
+
 export function emitSupportCodeMessages({
   eventBroadcaster,
   supportCodeLibrary,
@@ -213,4 +241,5 @@ export function emitSupportCodeMessages({
 }): void {
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
   emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
+  emitTestRunHooks(supportCodeLibrary, eventBroadcaster)
 }

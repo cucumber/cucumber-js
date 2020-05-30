@@ -19,6 +19,7 @@ import {
 } from 'cucumber-expressions'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
 
 const noopFunction = (): void => {
   // no code
@@ -214,6 +215,55 @@ describe('helpers', () => {
             id: '1',
             sourceReference: {
               uri: 'features/support/hooks.js',
+              location: {
+                line: 7,
+              },
+            },
+          },
+        }),
+      ])
+    })
+    it('emits messages for test run level hooks', () => {
+      const envelopes = testEmitSupportCodeMessages({
+        beforeTestRunHookDefinitions: [
+          new TestRunHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '0',
+            line: 3,
+            options: {},
+            uri: 'features/support/run-hooks.js',
+          }),
+        ],
+        afterTestRunHookDefinitions: [
+          new TestRunHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '1',
+            line: 7,
+            options: {},
+            uri: 'features/support/run-hooks.js',
+          }),
+        ],
+      })
+
+      expect(envelopes).to.deep.eq([
+        messages.Envelope.fromObject({
+          hook: {
+            id: '0',
+            sourceReference: {
+              uri: 'features/support/run-hooks.js',
+              location: {
+                line: 3,
+              },
+            },
+          },
+        }),
+        messages.Envelope.fromObject({
+          hook: {
+            id: '1',
+            sourceReference: {
+              uri: 'features/support/run-hooks.js',
               location: {
                 line: 7,
               },
