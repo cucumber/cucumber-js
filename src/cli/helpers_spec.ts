@@ -18,6 +18,7 @@ import {
   RegularExpression,
 } from 'cucumber-expressions'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
 
 const noopFunction = (): void => {
   // no code
@@ -163,6 +164,58 @@ describe('helpers', () => {
               uri: 'features/support/cukes.js',
               location: {
                 line: 9,
+              },
+            },
+          },
+        }),
+      ])
+    })
+    it('emits messages for test case level hooks', () => {
+      const envelopes = testEmitSupportCodeMessages({
+        beforeTestCaseHookDefinitions: [
+          new TestCaseHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '0',
+            line: 3,
+            options: {
+              tags: '@hooks-tho',
+            },
+            uri: 'features/support/hooks.js',
+          }),
+        ],
+        afterTestCaseHookDefinitions: [
+          new TestCaseHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '1',
+            line: 7,
+            options: {},
+            uri: 'features/support/hooks.js',
+          }),
+        ],
+      })
+
+      expect(envelopes).to.deep.eq([
+        messages.Envelope.fromObject({
+          hook: {
+            id: '0',
+            tagExpression: '@hooks-tho',
+            sourceReference: {
+              uri: 'features/support/hooks.js',
+              location: {
+                line: 3,
+              },
+            },
+          },
+        }),
+        messages.Envelope.fromObject({
+          hook: {
+            id: '1',
+            sourceReference: {
+              uri: 'features/support/hooks.js',
+              location: {
+                line: 7,
               },
             },
           },

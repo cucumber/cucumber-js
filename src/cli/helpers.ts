@@ -9,12 +9,11 @@ import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
-import StepDefinition from '../models/step_definition'
 import os from 'os'
 import { messages } from '@cucumber/messages'
 import readPkgUp from 'read-pkg-up'
-import { SupportCodeLibraryBuilder } from '../support_code_library_builder'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -148,13 +147,10 @@ export async function emitMetaMessage(
   )
 }
 
-export function emitSupportCodeMessages({
-  eventBroadcaster,
-  supportCodeLibrary,
-}: {
+function emitStepDefinitions(
+  supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
-  supportCodeLibrary: ISupportCodeLibrary
-}): void {
+) {
   supportCodeLibrary.stepDefinitions.forEach(stepDefinition => {
     eventBroadcaster.emit(
       'envelope',
@@ -178,4 +174,43 @@ export function emitSupportCodeMessages({
       })
     )
   })
+}
+
+function emitTestCaseHooks(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+) {
+  ;[]
+    .concat(
+      supportCodeLibrary.beforeTestCaseHookDefinitions,
+      supportCodeLibrary.afterTestCaseHookDefinitions
+    )
+    .forEach((testCaseHookDefinition: TestCaseHookDefinition) => {
+      eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          hook: {
+            id: testCaseHookDefinition.id,
+            tagExpression: testCaseHookDefinition.tagExpression,
+            sourceReference: {
+              uri: testCaseHookDefinition.uri,
+              location: {
+                line: testCaseHookDefinition.line,
+              },
+            },
+          },
+        })
+      )
+    })
+}
+
+export function emitSupportCodeMessages({
+  eventBroadcaster,
+  supportCodeLibrary,
+}: {
+  eventBroadcaster: EventEmitter
+  supportCodeLibrary: ISupportCodeLibrary
+}): void {
+  emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
+  emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
 }
