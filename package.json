@@ -190,7 +190,7 @@
     "@types/dirty-chai": "2.0.2",
     "@types/fs-extra": "8.1.0",
     "@types/glob": "7.1.2",
-    "@types/lodash": "4.14.149",
+    "@types/lodash": "4.14.155",
     "@types/mocha": "7.0.2",
     "@types/mustache": "4.0.1",
     "@types/mz": "2.7.0",
