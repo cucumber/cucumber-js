@@ -185,7 +185,7 @@
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "6.0.1",
-    "@types/bluebird": "3.5.30",
+    "@types/bluebird": "3.5.32",
     "@types/chai": "4.2.11",
     "@types/dirty-chai": "2.0.2",
     "@types/fs-extra": "8.1.0",
