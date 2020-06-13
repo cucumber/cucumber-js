@@ -184,7 +184,7 @@
     "verror": "^1.9.0"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "6.0.0",
+    "@sinonjs/fake-timers": "6.0.1",
     "@types/bluebird": "3.5.30",
     "@types/chai": "4.2.11",
     "@types/dirty-chai": "2.0.2",
