@@ -12,6 +12,7 @@ export function buildOptions(
 ): IRuntimeOptions {
   return {
     dryRun: false,
+    predictableIds: false,
     failFast: false,
     filterStacktraces: false,
     retry: 0,

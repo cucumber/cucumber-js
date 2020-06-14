@@ -12,6 +12,11 @@ import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
+import {
+  ITestRunStopwatch,
+  PredictableTestRunStopwatch,
+  RealTestRunStopwatch,
+} from './stopwatch'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -24,6 +29,7 @@ export interface INewRuntimeOptions {
 
 export interface IRuntimeOptions {
   dryRun: boolean
+  predictableIds: boolean
   failFast: boolean
   filterStacktraces: boolean
   retry: number
@@ -35,6 +41,7 @@ export interface IRuntimeOptions {
 export default class Runtime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
+  private readonly stopwatch: ITestRunStopwatch
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
@@ -52,6 +59,9 @@ export default class Runtime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
+    this.stopwatch = options.predictableIds
+      ? new PredictableTestRunStopwatch()
+      : new RealTestRunStopwatch()
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
@@ -125,13 +135,18 @@ export default class Runtime {
         },
       })
     )
+    this.stopwatch.start()
     await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
     await bluebird.each(this.pickleIds, this.runPickle.bind(this))
     await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
+    this.stopwatch.stop()
     this.eventBroadcaster.emit(
       'envelope',
       messages.Envelope.fromObject({
-        testRunFinished: { success: this.success },
+        testRunFinished: {
+          success: this.success,
+          timestamp: this.stopwatch.timestamp(),
+        },
       })
     )
     if (this.options.filterStacktraces) {
