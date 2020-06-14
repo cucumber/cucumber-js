@@ -126,6 +126,8 @@ export default class Slave {
   }: ISlaveCommandRun): Promise<void> {
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      // TODO fix stopwatch for parallel
+      stopwatch: null,
       gherkinDocument,
       newId: this.newId,
       pickle,

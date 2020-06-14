@@ -106,6 +106,7 @@ export default class Runtime {
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      stopwatch: this.stopwatch,
       gherkinDocument: this.eventDataCollector.getGherkinDocument(pickle.uri),
       newId: this.newId,
       pickle,

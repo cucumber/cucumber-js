@@ -13,6 +13,7 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
 import { doesNotHaveValue } from '../value_checker'
+import { ITestRunStopwatch } from './stopwatch'
 
 const { Status } = messages.TestStepFinished.TestStepResult
 
@@ -27,6 +28,7 @@ interface ITestStep {
 
 export interface INewPickleRunnerOptions {
   eventBroadcaster: EventEmitter
+  stopwatch: ITestRunStopwatch
   gherkinDocument: messages.IGherkinDocument
   newId: IdGenerator.NewId
   pickle: messages.IPickle
@@ -41,6 +43,7 @@ export default class PickleRunner {
   private currentTestCaseStartedId: string
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
+  private readonly stopwatch: ITestRunStopwatch
   private readonly gherkinDocument: messages.IGherkinDocument
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.IPickle
@@ -55,6 +58,7 @@ export default class PickleRunner {
 
   constructor({
     eventBroadcaster,
+    stopwatch,
     gherkinDocument,
     newId,
     pickle,
@@ -82,6 +86,7 @@ export default class PickleRunner {
       )
     })
     this.eventBroadcaster = eventBroadcaster
+    this.stopwatch = stopwatch
     this.gherkinDocument = gherkinDocument
     this.maxAttempts = 1 + (skip ? 0 : retries)
     this.newId = newId
@@ -228,6 +233,7 @@ export default class PickleRunner {
         testStepStarted: {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
+          timestamp: this.stopwatch.timestamp(),
         },
       })
     )
@@ -257,6 +263,7 @@ export default class PickleRunner {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
           testStepResult,
+          timestamp: this.stopwatch.timestamp(),
         },
       })
     )
@@ -273,6 +280,7 @@ export default class PickleRunner {
             attempt,
             testCaseId: this.testCaseId,
             id: this.currentTestCaseStartedId,
+            timestamp: this.stopwatch.timestamp(),
           },
         })
       )
@@ -303,6 +311,7 @@ export default class PickleRunner {
           testCaseFinished: {
             testCaseStartedId: this.currentTestCaseStartedId,
             testResult: this.result,
+            timestamp: this.stopwatch.timestamp(),
           },
         })
       )
