@@ -200,7 +200,7 @@
     "@types/sinon-chai": "3.2.4",
     "@types/sinonjs__fake-timers": "6.0.0",
     "@types/tmp": "0.1.0",
-    "@types/verror": "1.10.3",
+    "@types/verror": "1.10.4",
     "@typescript-eslint/eslint-plugin": "2.23.0",
     "@typescript-eslint/parser": "2.23.0",
     "ansi-html": "0.0.7",
