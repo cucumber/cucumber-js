@@ -194,7 +194,7 @@
     "@types/mocha": "7.0.2",
     "@types/mustache": "4.0.1",
     "@types/mz": "2.7.1",
-    "@types/node": "13.9.1",
+    "@types/node": "13.13.12",
     "@types/progress": "2.0.3",
     "@types/resolve": "1.14.0",
     "@types/sinon-chai": "3.2.4",
