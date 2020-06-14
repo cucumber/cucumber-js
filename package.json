@@ -196,7 +196,7 @@
     "@types/mz": "2.7.1",
     "@types/node": "13.9.1",
     "@types/progress": "2.0.3",
-    "@types/resolve": "1.14.0",
+    "@types/resolve": "1.17.1",
     "@types/sinon-chai": "3.2.4",
     "@types/sinonjs__fake-timers": "6.0.0",
     "@types/tmp": "0.1.0",
