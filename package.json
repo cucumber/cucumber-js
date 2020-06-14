@@ -234,7 +234,7 @@
     "tmp": "0.1.0",
     "ts-node": "8.6.2",
     "tsify": "4.0.1",
-    "typescript": "3.8.3"
+    "typescript": "3.9.5"
   },
   "scripts": {
     "build-browser-example": "browserify example/index.ts -o dist/browser-example.js -p [ tsify -p tsconfig.browser.json ]",
