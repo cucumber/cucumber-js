@@ -326,10 +326,10 @@
   resolved "https://registry.yarnpkg.com/@types/mustache/-/mustache-4.0.1.tgz#e4d421ed2d06d463b120621774185a5cd1b92d77"
   integrity sha512-wH6Tu9mbiOt0n5EvdoWy0VGQaJMHfLIxY/6wS0xLC7CV1taM6gESEzcYy0ZlWvxxiiljYvfDIvz4hHbUUDRlhw==
 
-"@types/mz@2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@types/mz/-/mz-2.7.0.tgz#3ef27f457c4c3e8b197ca2670ee41d6f4effddf2"
-  integrity sha512-Q5TZYMKnH0hdV5fNstmMWL2LLw5eRRtTd73KNtsZxoQ2gtCQyET5X79uERUEwGneuxPglg441I7OSY00+9CkSw==
+"@types/mz@2.7.1":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@types/mz/-/mz-2.7.1.tgz#1ac1d69b039c8b3cbe603972b5c12d3167a84f58"
+  integrity sha512-H86h7KmRDVs9UeSiQvtUeVhS+WYpJSYSsZrRvNYpGWGiytEqxwEtvgRnINESQtCgnojIH2wS2WgaMTJP0firBw==
   dependencies:
     "@types/node" "*"
 

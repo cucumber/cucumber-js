@@ -193,7 +193,7 @@
     "@types/lodash": "4.14.155",
     "@types/mocha": "7.0.2",
     "@types/mustache": "4.0.1",
-    "@types/mz": "2.7.0",
+    "@types/mz": "2.7.1",
     "@types/node": "13.9.1",
     "@types/progress": "2.0.3",
     "@types/resolve": "1.14.0",
