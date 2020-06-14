@@ -12,6 +12,7 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import { fail } from 'assert'
+import { PredictableTestRunStopwatch } from './stopwatch'
 import IEnvelope = messages.IEnvelope
 
 interface ITestPickleRunnerRequest {
@@ -35,6 +36,7 @@ async function testPickleRunner(
   eventBroadcaster.on('envelope', e => envelopes.push(e))
   const pickleRunner = new PickleRunner({
     eventBroadcaster,
+    stopwatch: new PredictableTestRunStopwatch(),
     gherkinDocument: options.gherkinDocument,
     newId: IdGenerator.incrementing(),
     pickle: options.pickle,
@@ -108,12 +110,28 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
+              timestamp: {
+                nanos: 1000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
+              timestamp: {
+                nanos: 2000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
@@ -121,12 +139,28 @@ describe('PickleRunner', () => {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
+              timestamp: {
+                nanos: 3000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
               testResult: passedTestResult,
+              timestamp: {
+                nanos: 4000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
         ])
@@ -303,12 +337,28 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
+              timestamp: {
+                nanos: 1000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
+              timestamp: {
+                nanos: 2000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
@@ -320,6 +370,14 @@ describe('PickleRunner', () => {
                 status: Status.FAILED,
               },
               testStepId: '1',
+              timestamp: {
+                nanos: 3000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
@@ -331,6 +389,14 @@ describe('PickleRunner', () => {
                 status: Status.FAILED,
                 willBeRetried: true,
               },
+              timestamp: {
+                nanos: 4000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
@@ -338,12 +404,28 @@ describe('PickleRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
+              timestamp: {
+                nanos: 5000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
+              timestamp: {
+                nanos: 6000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
@@ -354,6 +436,14 @@ describe('PickleRunner', () => {
                 status: Status.PASSED,
               },
               testStepId: '1',
+              timestamp: {
+                nanos: 7000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
+              },
             },
           }),
           messages.Envelope.fromObject({
@@ -362,6 +452,14 @@ describe('PickleRunner', () => {
               testStepResult: {
                 duration: millisecondsToDuration(0),
                 status: Status.PASSED,
+              },
+              timestamp: {
+                nanos: 8000000,
+                seconds: {
+                  high: 0,
+                  low: 0,
+                  unsigned: false,
+                },
               },
             },
           }),
