@@ -230,6 +230,31 @@ describe('AttachmentManager', () => {
       })
     })
 
+    describe('log', () => {
+      it('adds a string attachment with the appropriate mime type', function() {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager(x =>
+          attachments.push(x)
+        )
+
+        // Act
+        const result = attachmentManager.log('stuff happened')
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'stuff happened',
+            media: {
+              contentType: 'text/x.cucumber.log+plain',
+              encoding: messages.Attachment.ContentEncoding.IDENTITY,
+            },
+          },
+        ])
+      })
+    })
+
     describe('unsupported data type', () => {
       it('throws', function() {
         // Arrange

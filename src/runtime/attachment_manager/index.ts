@@ -19,12 +19,17 @@ export type ICreateAttachment = (
   mediaType?: string,
   callback?: () => void
 ) => void | Promise<void>
+export type ICreateLog = (text: string) => void | Promise<void>
 
 export default class AttachmentManager {
   private readonly onAttachment: IAttachFunction
 
   constructor(onAttachment: IAttachFunction) {
     this.onAttachment = onAttachment
+  }
+
+  log(text: string): void | Promise<void> {
+    return this.create(text, 'text/x.cucumber.log+plain')
   }
 
   create(

@@ -13,8 +13,11 @@ When('the string {string} is attached as {string}', async function(
   await this.attach(text, mediaType)
 })
 
-When('the string {string} is logged', function(text: string) {
-  // this.log(text)
+When('the string {string} is logged', async function(
+  this: World,
+  text: string
+) {
+  await this.log(text)
 })
 
 When('an array with {int} bytes are attached as {string}', async function(

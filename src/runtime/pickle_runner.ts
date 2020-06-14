@@ -102,6 +102,7 @@ export default class PickleRunner {
   resetTestProgressData(): void {
     this.world = new this.supportCodeLibrary.World({
       attach: this.attachmentManager.create.bind(this.attachmentManager),
+      log: this.attachmentManager.log.bind(this.attachmentManager),
       parameters: this.worldParameters,
     })
     this.result = messages.TestStepFinished.TestStepResult.fromObject({
