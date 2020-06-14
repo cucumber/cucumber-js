@@ -1,7 +1,9 @@
-import { When, World } from '../../..'
+import { Before, When, World } from '../../..'
 import { ReadableStreamBuffer } from 'stream-buffers'
 import fs from 'fs'
 import path from 'path'
+
+Before((): void => undefined)
 
 When('the string {string} is attached as {string}', async function(
   this: World,
