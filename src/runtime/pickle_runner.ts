@@ -77,8 +77,9 @@ export default class PickleRunner {
         'envelope',
         messages.Envelope.fromObject({
           attachment: {
-            data,
-            media,
+            body: data,
+            contentEncoding: media.encoding,
+            mediaType: media.contentType,
             testCaseStartedId: this.currentTestCaseStartedId,
             testStepId: this.currentTestStepId,
           },
