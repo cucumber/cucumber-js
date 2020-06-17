@@ -3735,7 +3735,7 @@ seed-random@~2.2.0:
   resolved "https://registry.yarnpkg.com/seed-random/-/seed-random-2.2.0.tgz#2a9b19e250a817099231a5b99a4daf80b7fbed54"
   integrity sha1-KpsZ4lCoFwmSMaW5mk2vgLf77VQ=
 
-"semver@2 || 3 || 4 || 5", semver@^5.4.1, semver@^5.6.0, semver@^5.7.0:
+"semver@2 || 3 || 4 || 5", semver@^5.4.1, semver@^5.7.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
   integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
@@ -4304,15 +4304,15 @@ tsconfig@^5.0.3:
     strip-bom "^2.0.0"
     strip-json-comments "^2.0.0"
 
-tsify@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/tsify/-/tsify-4.0.1.tgz#b19b0ddf7f184368dbf65839293d2c5a6d48453d"
-  integrity sha512-ClznEI+pmwY5wmD0J7HCSVERwkD+l71ch3Dqyod2JuQLEsFaiNDI+vPjaGadsuVFVvmzgoI7HghrBtWsSmCDHQ==
+tsify@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/tsify/-/tsify-4.0.2.tgz#e3b0911ea79da4db1efbd5252226489ba25be0b6"
+  integrity sha512-XZ4jziRS8SBnoSnp1QOtASxjqhvOSfXhO8cD5WPBpXD6UKDCMQ/n7L1cr+Wlb5htIZJuvfhfxely+HODsVRWLA==
   dependencies:
     convert-source-map "^1.1.0"
     fs.realpath "^1.0.0"
     object-assign "^4.1.0"
-    semver "^5.6.0"
+    semver "^6.1.0"
     through2 "^2.0.0"
     tsconfig "^5.0.3"
 
