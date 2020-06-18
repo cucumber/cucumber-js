@@ -1,5 +1,19 @@
 {
   "extends": [
     "config:base"
+  ],
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "packagePatterns": ["eslint", "prettier"],
+      "groupName": "eslint packages"
+    },
+    {
+      "packagePatterns": ["mocha", "chai", "sinon"],
+      "groupName": "unit test packages"
+    }
   ]
 }
