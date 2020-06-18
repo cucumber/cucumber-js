@@ -1,4 +1,4 @@
-import Table, { HorizontalTable } from 'cli-table3'
+import Table from 'cli-table3'
 import { parseStepArgument } from '../../step_arguments'
 import { messages } from 'cucumber-messages'
 
@@ -28,7 +28,7 @@ function formatDataTable(
       'padding-left': 1,
       'padding-right': 1,
     },
-  }) as HorizontalTable
+  })
   const rows = dataTable.rows.map((row) =>
     row.cells.map((cell) =>
       cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')

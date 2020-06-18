@@ -1,5 +1,5 @@
 import { formatLocation } from '../formatter/helpers/location_helpers'
-import Table, { HorizontalTable } from 'cli-table3'
+import Table from 'cli-table3'
 import indentString from 'indent-string'
 import { PickleTagFilter } from '../pickle_filter'
 import StepDefinition from '../models/step_definition'
@@ -32,7 +32,7 @@ export function getAmbiguousStepException(
       'padding-left': 0,
       'padding-right': 0,
     },
-  }) as HorizontalTable
+  })
   table.push(
     ...stepDefinitions.map((stepDefinition) => {
       const pattern = stepDefinition.pattern.toString()
