@@ -32,7 +32,7 @@ async function testPickleRunner(
 ): Promise<ITestPickleRunnerResponse> {
   const envelopes: IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
-  eventBroadcaster.on('envelope', e => envelopes.push(e))
+  eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const pickleRunner = new PickleRunner({
     eventBroadcaster,
     gherkinDocument: options.gherkinDocument,
@@ -63,7 +63,7 @@ describe('PickleRunner', () => {
       it('emits testCase / testCaseStarted / testStepStarted / testStepFinished / testCaseFinished envelopes and returns the result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {
+          Given('a step', function () {
             clock.tick(1)
           })
         })
@@ -136,7 +136,7 @@ describe('PickleRunner', () => {
       it('emits and returns failing results', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {
+          Given('a step', function () {
             throw 'fail' // eslint-disable-line @typescript-eslint/no-throw-literal
           })
         })
@@ -258,7 +258,7 @@ describe('PickleRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
-          Given('a step', function() {
+          Given('a step', function () {
             if (willPass) {
               return
             }
@@ -373,7 +373,7 @@ describe('PickleRunner', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {
+          Given('a step', function () {
             clock.tick(1)
           })
         })
@@ -415,11 +415,11 @@ describe('PickleRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Given, Before, After }) => {
-            Given('a step', function() {
+            Given('a step', function () {
               clock.tick(1)
             })
-            Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
         const {

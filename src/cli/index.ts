@@ -69,7 +69,7 @@ export default class Cli {
       argv: this.argv,
       cwd: this.cwd,
     })
-    return ConfigurationBuilder.build({
+    return await ConfigurationBuilder.build({
       argv: fullArgv,
       cwd: this.cwd,
     })
@@ -111,8 +111,8 @@ export default class Cli {
       }
       return FormatterBuilder.build(type, typeOptions)
     })
-    return async function() {
-      await bluebird.each(streamsToClose, stream =>
+    return async function () {
+      await bluebird.each(streamsToClose, (stream) =>
         bluebird.promisify(stream.end.bind(stream))()
       )
     }
@@ -123,9 +123,9 @@ export default class Cli {
     supportCodeRequiredModules,
     supportCodePaths,
   }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
-    supportCodeRequiredModules.map(module => require(module))
+    supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    supportCodePaths.forEach(codePath => require(codePath))
+    supportCodePaths.forEach((codePath) => require(codePath))
     return supportCodeLibraryBuilder.finalize()
   }
 
@@ -182,8 +182,8 @@ export default class Cli {
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
-      await new Promise(resolve => {
-        parallelRuntimeMaster.run(configuration.parallel, s => {
+      await new Promise((resolve) => {
+        parallelRuntimeMaster.run(configuration.parallel, (s) => {
           success = s
           resolve()
         })

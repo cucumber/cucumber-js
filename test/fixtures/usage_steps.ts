@@ -8,12 +8,12 @@ export function getUsageSupportCodeLibrary(
   clock: InstalledClock
 ): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
-    Given('abc', function() {
+    Given('abc', function () {
       clock.tick(1)
     })
 
     let count = 0
-    Given(/def?/, function() {
+    Given(/def?/, function () {
       if (count === 0) {
         clock.tick(2)
         count += 1
@@ -22,6 +22,6 @@ export function getUsageSupportCodeLibrary(
       }
     })
 
-    Given('ghi', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Given('ghi', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
   })
 }

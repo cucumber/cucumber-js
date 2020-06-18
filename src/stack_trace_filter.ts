@@ -8,7 +8,7 @@ const projectRootPath = path.join(__dirname, '..')
 const projectChildDirs = ['src', 'lib', 'node_modules']
 
 export function isFileNameInCucumber(fileName: string): boolean {
-  return _.some(projectChildDirs, dir =>
+  return _.some(projectChildDirs, (dir) =>
     _.startsWith(fileName, path.join(projectRootPath, dir))
   )
 }

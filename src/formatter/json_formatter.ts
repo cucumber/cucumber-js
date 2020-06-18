@@ -112,7 +112,7 @@ export default class JsonFormatter extends Formatter {
 
   formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): any {
     return {
-      rows: dataTable.rows.map(row => ({ cells: _.map(row.cells, 'value') })),
+      rows: dataTable.rows.map((row) => ({ cells: _.map(row.cells, 'value') })),
     }
   }
 
@@ -135,8 +135,8 @@ export default class JsonFormatter extends Formatter {
     }
     return [
       parseStepArgument<any>(stepArgument, {
-        dataTable: dataTable => this.formatDataTable(dataTable),
-        docString: docString => this.formatDocString(docString, gherkinStep),
+        dataTable: (dataTable) => this.formatDataTable(dataTable),
+        docString: (docString) => this.formatDocString(docString, gherkinStep),
       }),
     ]
   }
@@ -167,7 +167,7 @@ export default class JsonFormatter extends Formatter {
         const { pickle } = testCaseAttempt
         const pickleStepMap = getPickleStepMap(pickle)
         let isBeforeHook = true
-        const steps = testCaseAttempt.testCase.testSteps.map(testStep => {
+        const steps = testCaseAttempt.testCase.testSteps.map((testStep) => {
           isBeforeHook = isBeforeHook && testStep.pickleStepId === ''
           return this.getStepData({
             isBeforeHook,
@@ -253,7 +253,7 @@ export default class JsonFormatter extends Formatter {
     } else {
       parts = [feature, pickle]
     }
-    return parts.map(part => this.convertNameToId(part)).join(';')
+    return parts.map((part) => this.convertNameToId(part)).join(';')
   }
 
   getStepData({
@@ -280,7 +280,7 @@ export default class JsonFormatter extends Formatter {
     }
     if (testStep.stepDefinitionIds.length === 1) {
       const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
-        s => s.id === testStep.stepDefinitionIds[0]
+        (s) => s.id === testStep.stepDefinitionIds[0]
       )
       data.match = { location: formatLocation(stepDefinition) }
     }
@@ -293,7 +293,7 @@ export default class JsonFormatter extends Formatter {
       data.result.error_message = message
     }
     if (_.size(testStepAttachments) > 0) {
-      data.embeddings = testStepAttachments.map(attachment => ({
+      data.embeddings = testStepAttachments.map((attachment) => ({
         data: attachment.data,
         mime_type: attachment.media.contentType,
       }))
@@ -302,7 +302,7 @@ export default class JsonFormatter extends Formatter {
   }
 
   getFeatureTags(feature: IFeature): IJsonTag[] {
-    return _.map(feature.tags, tagData => ({
+    return _.map(feature.tags, (tagData) => ({
       name: tagData.name,
       line: tagData.location.line,
     }))
@@ -317,7 +317,7 @@ export default class JsonFormatter extends Formatter {
     pickle: IPickle
     gherkinScenarioMap: { [id: string]: IScenario }
   }): IJsonTag[] {
-    return _.map(pickle.tags, tagData => {
+    return _.map(pickle.tags, (tagData) => {
       const featureSource = feature.tags.find(
         (t: ITag) => t.id === tagData.astNodeId
       )

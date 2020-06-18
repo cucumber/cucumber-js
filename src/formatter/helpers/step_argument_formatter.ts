@@ -29,8 +29,8 @@ function formatDataTable(
       'padding-right': 1,
     },
   }) as HorizontalTable
-  const rows = dataTable.rows.map(row =>
-    row.cells.map(cell =>
+  const rows = dataTable.rows.map((row) =>
+    row.cells.map((cell) =>
       cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
     )
   )

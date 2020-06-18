@@ -107,7 +107,7 @@ export default class PickleRunner {
 
   buildTestSteps(): ITestStep[] {
     const testSteps: ITestStep[] = []
-    this.getBeforeHookDefinitions().forEach(hookDefinition => {
+    this.getBeforeHookDefinitions().forEach((hookDefinition) => {
       testSteps.push({
         id: this.newId(),
         hookDefinition,
@@ -115,7 +115,7 @@ export default class PickleRunner {
         isBeforeHook: true,
       })
     })
-    this.pickle.steps.forEach(pickleStep => {
+    this.pickle.steps.forEach((pickleStep) => {
       const stepDefinitions = this.getStepDefinitions(pickleStep)
       testSteps.push({
         id: this.newId(),
@@ -124,7 +124,7 @@ export default class PickleRunner {
         isHook: false,
       })
     })
-    this.getAfterHookDefinitions().forEach(hookDefinition => {
+    this.getAfterHookDefinitions().forEach((hookDefinition) => {
       testSteps.push({
         id: this.newId(),
         hookDefinition,
@@ -138,7 +138,7 @@ export default class PickleRunner {
     const testCase = {
       pickleId: this.pickle.id,
       id: this.testCaseId,
-      testSteps: this.testSteps.map(testStep => {
+      testSteps: this.testSteps.map((testStep) => {
         if (testStep.isHook) {
           return {
             id: testStep.id,
@@ -148,7 +148,7 @@ export default class PickleRunner {
           return {
             id: testStep.id,
             pickleStepId: testStep.pickleStep.id,
-            stepDefinitionIds: testStep.stepDefinitions.map(x => x.id),
+            stepDefinitionIds: testStep.stepDefinitions.map((x) => x.id),
           }
         }
       }),
@@ -161,20 +161,20 @@ export default class PickleRunner {
 
   getAfterHookDefinitions(): TestCaseHookDefinition[] {
     return this.supportCodeLibrary.afterTestCaseHookDefinitions.filter(
-      hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
+      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
   getBeforeHookDefinitions(): TestCaseHookDefinition[] {
     return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
-      hookDefinition => hookDefinition.appliesToTestCase(this.pickle)
+      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
   getStepDefinitions(
     pickleStep: messages.Pickle.IPickleStep
   ): StepDefinition[] {
-    return this.supportCodeLibrary.stepDefinitions.filter(stepDefinition =>
+    return this.supportCodeLibrary.stepDefinitions.filter((stepDefinition) =>
       stepDefinition.matchesStepName(pickleStep.text)
     )
   }
@@ -184,7 +184,7 @@ export default class PickleRunner {
     stepDefinition: IDefinition,
     hookParameter?: any
   ): Promise<messages.ITestResult> {
-    return StepRunner.run({
+    return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
       step,
@@ -285,13 +285,13 @@ export default class PickleRunner {
             if (!testStep.isBeforeHook) {
               hookParameter.result = this.result
             }
-            return this.runHook(
+            return await this.runHook(
               testStep.hookDefinition,
               hookParameter,
               testStep.isBeforeHook
             )
           } else {
-            return this.runStep(testStep)
+            return await this.runStep(testStep)
           }
         })
       }
@@ -320,7 +320,7 @@ export default class PickleRunner {
     if (this.shouldSkipHook(isBeforeHook)) {
       return messages.TestResult.fromObject({ status: Status.SKIPPED })
     }
-    return this.invokeStep(null, hookDefinition, hookParameter)
+    return await this.invokeStep(null, hookDefinition, hookParameter)
   }
 
   async runStep(testStep: ITestStep): Promise<messages.ITestResult> {
@@ -334,6 +334,9 @@ export default class PickleRunner {
     } else if (this.isSkippingSteps()) {
       return messages.TestResult.fromObject({ status: Status.SKIPPED })
     }
-    return this.invokeStep(testStep.pickleStep, testStep.stepDefinitions[0])
+    return await this.invokeStep(
+      testStep.pickleStep,
+      testStep.stepDefinitions[0]
+    )
   }
 }

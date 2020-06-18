@@ -52,7 +52,7 @@ export default class UsageFormatter extends Formatter {
           col2.push('UNUSED')
         }
         const col3 = [formatLocation({ line, uri })]
-        _.take(matches, 5).forEach(match => {
+        _.take(matches, 5).forEach((match) => {
           col1.push(`  ${match.text}`)
           if (doesHaveValue(match.duration)) {
             col2.push(`${durationToMilliseconds(match.duration).toString()}ms`)

@@ -24,7 +24,7 @@ function extractStepContainers(
   if (doesHaveValue(child.background)) {
     return [child.background]
   } else if (doesHaveValue(child.rule)) {
-    return child.rule.children.map(ruleChild =>
+    return child.rule.children.map((ruleChild) =>
       doesHaveValue(ruleChild.background)
         ? ruleChild.background
         : ruleChild.scenario
@@ -60,10 +60,10 @@ export function getGherkinExampleRuleMap(
   return _.chain(gherkinDocument.feature.children)
     .filter('rule')
     .map('rule')
-    .map(rule => {
+    .map((rule) => {
       return rule.children
-        .filter(child => doesHaveValue(child.scenario))
-        .map(child => [child.scenario.id, rule])
+        .filter((child) => doesHaveValue(child.scenario))
+        .map((child) => [child.scenario.id, rule])
     })
     .flatten()
     .fromPairs()
@@ -84,7 +84,7 @@ export function getGherkinScenarioLocationMap(
         _.chain(scenario.examples)
           .map('tableBody')
           .flatten()
-          .forEach(tableRow => {
+          .forEach((tableRow) => {
             locationMap[tableRow.id] = tableRow.location
           })
           .value()

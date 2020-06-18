@@ -55,7 +55,7 @@ const ArgvParser = {
   },
 
   mergeJson(option: string): (str: string, memo: object) => object {
-    return function(str: string, memo: object) {
+    return function (str: string, memo: object) {
       let val: object
       try {
         val = JSON.parse(str)
@@ -160,7 +160,7 @@ const ArgvParser = {
       .option(
         '--parallel <NUMBER_OF_SLAVES>',
         'run in parallel with the given number of slaves',
-        val => ArgvParser.validateCountOption(val, '--parallel'),
+        (val) => ArgvParser.validateCountOption(val, '--parallel'),
         0
       )
       .option(
@@ -183,7 +183,7 @@ const ArgvParser = {
       .option(
         '--retry <NUMBER_OF_RETRIES>',
         'specify the number of times to retry failing test cases (default: 0)',
-        val => ArgvParser.validateCountOption(val, '--retry'),
+        (val) => ArgvParser.validateCountOption(val, '--retry'),
         0
       )
       .option(

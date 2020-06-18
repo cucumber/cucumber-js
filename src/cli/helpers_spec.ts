@@ -25,7 +25,7 @@ async function testParseGherkinMessageStream(
 ): Promise<ITestParseGherkinMessageStreamResponse> {
   const envelopes: messages.IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
-  eventBroadcaster.on('envelope', e => envelopes.push(e))
+  eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const result = await parseGherkinMessageStream({
     cwd: options.cwd,
@@ -41,7 +41,7 @@ async function testParseGherkinMessageStream(
 describe('helpers', () => {
   describe('parseGherkinMessageStream', () => {
     describe('empty feature', () => {
-      it('emits source and gherkinDocument events and returns an empty array', async function() {
+      it('emits source and gherkinDocument events and returns an empty array', async function () {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
@@ -76,7 +76,7 @@ describe('helpers', () => {
     })
 
     describe('feature with scenario that does not match the filter', () => {
-      it('emits pickle and pickleRejected events and returns an empty array', async function() {
+      it('emits pickle and pickleRejected events and returns an empty array', async function () {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
@@ -127,7 +127,7 @@ describe('helpers', () => {
     })
 
     describe('feature with scenario that matches the filter', () => {
-      it('emits pickleAccepted and returns the pickleId', async function() {
+      it('emits pickleAccepted and returns the pickleId', async function () {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({

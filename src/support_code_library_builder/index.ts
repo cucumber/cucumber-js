@@ -81,13 +81,13 @@ export class SupportCodeLibraryBuilder {
       defineParameterType: this.defineParameterType.bind(this),
       defineStep,
       Given: defineStep,
-      setDefaultTimeout: milliseconds => {
+      setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
       },
-      setDefinitionFunctionWrapper: fn => {
+      setDefinitionFunctionWrapper: (fn) => {
         this.definitionFunctionWrapper = fn
       },
-      setWorldConstructor: fn => {
+      setWorldConstructor: (fn) => {
         this.World = fn
       },
       Then: defineStep,

@@ -4,12 +4,12 @@ import { expect } from 'chai'
 import path from 'path'
 import { World } from '../support/world'
 
-Then('it outputs the usage data:', function(this: World, table: DataTable) {
+Then('it outputs the usage data:', function (this: World, table: DataTable) {
   const usageData = JSON.parse(this.lastRun.output)
   table.hashes().forEach((row: any) => {
     const rowUsage = _.find(
       usageData,
-      datum =>
+      (datum) =>
         datum.pattern === row.PATTERN && datum.patternType === row.PATTERN_TYPE
     )
     expect(rowUsage).to.be.an('object')

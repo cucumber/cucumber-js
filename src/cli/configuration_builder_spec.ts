@@ -19,7 +19,7 @@ const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
 
 describe('Configuration', () => {
   describe('no argv', () => {
-    it('returns the default configuration', async function() {
+    it('returns the default configuration', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv
@@ -62,7 +62,7 @@ describe('Configuration', () => {
   })
 
   describe('path to a feature', () => {
-    it('returns the appropriate feature and support code paths', async function() {
+    it('returns the appropriate feature and support code paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'a.feature')
@@ -87,7 +87,7 @@ describe('Configuration', () => {
   })
 
   describe('path to a nested feature', () => {
-    it('returns the appropriate feature and support code paths', async function() {
+    it('returns the appropriate feature and support code paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'nested', 'a.feature')
@@ -112,7 +112,7 @@ describe('Configuration', () => {
   })
 
   describe('formatters', () => {
-    it('adds a default', async function() {
+    it('adds a default', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv
@@ -124,7 +124,7 @@ describe('Configuration', () => {
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
     })
 
-    it('splits relative unix paths', async function() {
+    it('splits relative unix paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat([
@@ -142,7 +142,7 @@ describe('Configuration', () => {
       ])
     })
 
-    it('splits absolute unix paths', async function() {
+    it('splits absolute unix paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat([
@@ -160,7 +160,7 @@ describe('Configuration', () => {
       ])
     })
 
-    it('splits absolute windows paths', async function() {
+    it('splits absolute windows paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat([
@@ -181,7 +181,7 @@ describe('Configuration', () => {
       ])
     })
 
-    it('does not split absolute windows paths without an output', async function() {
+    it('does not split absolute windows paths without an output', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat(['-f', 'C:\\custom\\formatter'])
@@ -195,7 +195,7 @@ describe('Configuration', () => {
   })
 
   describe('formatOptions', () => {
-    it('joins the objects', async function() {
+    it('joins the objects', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat([

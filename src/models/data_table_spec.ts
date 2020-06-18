@@ -88,7 +88,7 @@ describe('DataTable', () => {
     )
 
     describe('rowsHash', () => {
-      it('throws an error if not all rows have two columns', function() {
+      it('throws an error if not all rows have two columns', function () {
         expect(() => new DataTable(dataTable).rowsHash()).to.throw(
           'rowsHash can only be called on a data table where all rows have exactly two columns'
         )

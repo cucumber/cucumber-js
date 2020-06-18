@@ -124,7 +124,7 @@ describe('SummaryHelpers', () => {
         ].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
-          Given('a flaky step', function() {
+          Given('a flaky step', function () {
             if (willPass) {
               return
             }

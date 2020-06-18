@@ -12,7 +12,7 @@ import Envelope = messages.Envelope
 
 Then(
   'the {string} formatter output matches the fixture {string}',
-  async function(this: World, formatter: string, filePath: string) {
+  async function (this: World, formatter: string, filePath: string) {
     let actual: any
     if (formatter === 'message') {
       actual = this.lastRun.envelopes.map((e: Envelope) => e.toJSON())

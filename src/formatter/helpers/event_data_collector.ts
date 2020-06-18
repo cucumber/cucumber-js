@@ -40,7 +40,7 @@ export default class EventDataCollector {
   }
 
   getTestCaseAttempts(): ITestCaseAttempt[] {
-    return _.keys(this.testCaseAttemptDataMap).map(testCaseStartedId => {
+    return _.keys(this.testCaseAttemptDataMap).map((testCaseStartedId) => {
       return this.getTestCaseAttempt(testCaseStartedId)
     })
   }

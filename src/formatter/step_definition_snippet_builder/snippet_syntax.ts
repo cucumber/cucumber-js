@@ -16,5 +16,5 @@ export interface ISnippetSyntaxBuildOptions {
 }
 
 export interface ISnippetSnytax {
-  build(options: ISnippetSyntaxBuildOptions): string
+  build: (options: ISnippetSyntaxBuildOptions) => string
 }

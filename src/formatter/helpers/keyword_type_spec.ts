@@ -5,7 +5,7 @@ import { KeywordType, getStepKeywordType } from './keyword_type'
 describe('KeywordType', () => {
   describe('getStepKeywordType()', () => {
     describe('keyword is Given', () => {
-      it('returns precondition', function() {
+      it('returns precondition', function () {
         // Arrange
 
         // Act
@@ -20,7 +20,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is When', () => {
-      it('returns event', function() {
+      it('returns event', function () {
         // Arrange
 
         // Act
@@ -35,7 +35,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is Then', () => {
-      it('returns outcome', function() {
+      it('returns outcome', function () {
         // Arrange
 
         // Act
@@ -50,7 +50,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is And, no previous step', () => {
-      it('returns precondition', function() {
+      it('returns precondition', function () {
         // Arrange
 
         // Act
@@ -65,7 +65,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is And, previous keyword type is event', () => {
-      it('returns event', function() {
+      it('returns event', function () {
         // Arrange
 
         // Act
@@ -81,7 +81,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is But, no previous step', () => {
-      it('returns precondition', function() {
+      it('returns precondition', function () {
         // Arrange
 
         // Act
@@ -96,7 +96,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is But, previous keyword type is outcome', () => {
-      it('returns outcome', function() {
+      it('returns outcome', function () {
         // Arrange
 
         // Act
@@ -112,7 +112,7 @@ describe('KeywordType', () => {
     })
 
     describe('keyword is unknown', () => {
-      it('returns precondition', function() {
+      it('returns precondition', function () {
         // Arrange
 
         // Act

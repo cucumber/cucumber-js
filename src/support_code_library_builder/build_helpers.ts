@@ -11,7 +11,7 @@ export function getDefinitionLineAndUri(cwd: string): ILineAndUri {
   let line: number
   let uri: string
   const stackframes = StackTrace.getSync()
-  const stackframe = _.find(stackframes, frame => {
+  const stackframe = _.find(stackframes, (frame) => {
     return !isFileNameInCucumber(frame.getFileName())
   })
   if (doesHaveValue(stackframe)) {

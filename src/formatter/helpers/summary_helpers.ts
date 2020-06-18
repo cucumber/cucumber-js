@@ -35,7 +35,7 @@ export function formatSummary({
     totalDuration = addDurations(totalDuration, result.duration)
     if (!result.willBeRetried) {
       testCaseResults.push(result)
-      _.each(testCase.testSteps, testStep => {
+      _.each(testCase.testSteps, (testStep) => {
         if (testStep.pickleStepId !== '') {
           testStepResults.push(stepResults[testStep.id])
         }
@@ -67,18 +67,12 @@ function getCountSummary({
   objects,
   type,
 }: IGetCountSummaryRequest): string {
-  const counts = _.chain(objects)
-    .groupBy('status')
-    .mapValues('length')
-    .value()
-  const total = _.chain(counts)
-    .values()
-    .sum()
-    .value()
+  const counts = _.chain(objects).groupBy('status').mapValues('length').value()
+  const total = _.chain(counts).values().sum().value()
   let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
     const details: string[] = []
-    STATUS_REPORT_ORDER.forEach(status => {
+    STATUS_REPORT_ORDER.forEach((status) => {
       if (counts[status] > 0) {
         details.push(
           colorFns.forStatus(status)(

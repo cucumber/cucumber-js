@@ -43,7 +43,7 @@ export default class ProgressBarFormatter extends Formatter {
     const { testCase } = this.eventDataCollector.getTestCaseAttempt(
       testCaseStartedId
     )
-    const testStep = testCase.testSteps.find(s => s.id === testStepId)
+    const testStep = testCase.testSteps.find((s) => s.id === testStepId)
     if (testStep.pickleStepId !== '') {
       this.progressBar.tick()
     }

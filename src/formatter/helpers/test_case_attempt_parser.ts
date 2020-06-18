@@ -79,11 +79,11 @@ function parseStep({
     let hookDefinition: TestCaseHookDefinition
     if (isBeforeHook) {
       hookDefinition = supportCodeLibrary.beforeTestCaseHookDefinitions.find(
-        x => x.id === testStep.hookId
+        (x) => x.id === testStep.hookId
       )
     } else {
       hookDefinition = supportCodeLibrary.afterTestCaseHookDefinitions.find(
-        x => x.id === testStep.hookId
+        (x) => x.id === testStep.hookId
       )
     }
     out.actionLocation = {
@@ -96,7 +96,7 @@ function parseStep({
     testStep.stepDefinitionIds.length === 1
   ) {
     const stepDefinition = supportCodeLibrary.stepDefinitions.find(
-      x => x.id === testStep.stepDefinitionIds[0]
+      (x) => x.id === testStep.stepDefinitionIds[0]
     )
     out.actionLocation = {
       uri: stepDefinition.uri,
@@ -153,7 +153,7 @@ export function parseTestCaseAttempt({
   const parsedTestSteps: IParsedTestStep[] = []
   let isBeforeHook = true
   let previousKeywordType = KeywordType.Precondition
-  _.each(testCase.testSteps, testStep => {
+  _.each(testCase.testSteps, (testStep) => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
     isBeforeHook = isBeforeHook && testStep.hookId !== ''
     let keyword, keywordType, pickleStep

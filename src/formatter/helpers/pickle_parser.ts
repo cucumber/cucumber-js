@@ -22,7 +22,7 @@ export function getScenarioDescription({
   gherkinScenarioMap,
 }: IGetScenarioDescriptionRequest): string {
   return _.chain(pickle.astNodeIds)
-    .map(id => gherkinScenarioMap[id])
+    .map((id) => gherkinScenarioMap[id])
     .compact()
     .first()
     .value().description
@@ -33,7 +33,7 @@ export function getStepKeyword({
   gherkinStepMap,
 }: IGetStepKeywordRequest): string {
   return _.chain(pickleStep.astNodeIds)
-    .map(id => gherkinStepMap[id])
+    .map((id) => gherkinStepMap[id])
     .compact()
     .first()
     .value().keyword
@@ -43,7 +43,7 @@ export function getPickleStepMap(
   pickle: messages.IPickle
 ): Dictionary<messages.Pickle.IPickleStep> {
   return _.chain(pickle.steps)
-    .map(pickleStep => [pickleStep.id, pickleStep])
+    .map((pickleStep) => [pickleStep.id, pickleStep])
     .fromPairs()
     .value()
 }

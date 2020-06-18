@@ -101,7 +101,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { progressBarFormatter } = await testProgressBarFormatter({
-        shouldStopFn: envelope => doesHaveValue(envelope.testStepStarted),
+        shouldStopFn: (envelope) => doesHaveValue(envelope.testStepStarted),
         sources,
       })
 
@@ -125,7 +125,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { progressBarFormatter } = await testProgressBarFormatter({
-        shouldStopFn: envelope => doesHaveValue(envelope.testStepStarted),
+        shouldStopFn: (envelope) => doesHaveValue(envelope.testStepStarted),
         sources,
       })
 
@@ -146,14 +146,14 @@ describe('ProgressBarFormatter', () => {
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Before, Given }) => {
-            Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testStepFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testStepFinished),
           sources,
           supportCodeLibrary,
         })
@@ -174,14 +174,14 @@ describe('ProgressBarFormatter', () => {
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Before, Given }) => {
-            Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => false,
+          shouldStopFn: (envelope) => false,
           sources,
           supportCodeLibrary,
         })
@@ -206,7 +206,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testCaseFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testCaseFinished),
           sources,
           supportCodeLibrary,
         })
@@ -229,7 +229,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testCaseFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testCaseFinished),
           sources,
           supportCodeLibrary,
         })
@@ -252,7 +252,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testCaseFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testCaseFinished),
           sources,
           supportCodeLibrary,
         })
@@ -275,7 +275,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testCaseFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testCaseFinished),
           sources,
           supportCodeLibrary,
         })
@@ -298,7 +298,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testCaseFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testCaseFinished),
           sources,
           supportCodeLibrary,
         })
@@ -321,7 +321,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: envelope => doesHaveValue(envelope.testCaseFinished),
+          shouldStopFn: (envelope) => doesHaveValue(envelope.testCaseFinished),
           sources,
           supportCodeLibrary,
         })
@@ -346,7 +346,7 @@ describe('ProgressBarFormatter', () => {
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
           runtimeOptions: { retry: 1 },
-          shouldStopFn: envelope => false,
+          shouldStopFn: (envelope) => false,
           sources,
           supportCodeLibrary,
         })
@@ -385,7 +385,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { output } = await testProgressBarFormatter({
-        shouldStopFn: envelope => false,
+        shouldStopFn: (envelope) => false,
         sources,
         supportCodeLibrary,
       })
@@ -412,7 +412,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { output } = await testProgressBarFormatter({
-        shouldStopFn: envelope => false,
+        shouldStopFn: (envelope) => false,
         sources,
         supportCodeLibrary,
       })

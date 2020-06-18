@@ -28,8 +28,9 @@ function getStepMessage(testStep: IParsedTestStep): string {
     case Status.FAILED:
       return testStep.result.message
     case Status.UNDEFINED:
-      return `${'Undefined. Implement with the following snippet:' +
-        '\n\n'}${indentString(testStep.snippet, 2)}\n`
+      return `${
+        'Undefined. Implement with the following snippet:' + '\n\n'
+      }${indentString(testStep.snippet, 2)}\n`
     case Status.PENDING:
       return 'Pending'
   }
@@ -98,7 +99,7 @@ export function formatTestCaseAttempt({
   text += ` # ${colorFns.location(
     formatLocation(parsed.testCase.sourceLocation)
   )}\n`
-  parsed.testSteps.forEach(testStep => {
+  parsed.testSteps.forEach((testStep) => {
     text += formatStep({ colorFns, testStep })
   })
   return `${text}\n`

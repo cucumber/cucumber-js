@@ -57,8 +57,8 @@ export function getLanguages(): string {
 
 export function getKeywords(isoCode: string): string {
   const language = Gherkin.dialects()[isoCode]
-  const rows = _.map(keywords, keyword => {
-    const words = _.map(language[keyword], s => `"${s}"`).join(', ')
+  const rows = _.map(keywords, (keyword) => {
+    const words = _.map(language[keyword], (s) => `"${s}"`).join(', ')
     return [capitalCase(keyword), words]
   })
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)

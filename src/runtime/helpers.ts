@@ -34,7 +34,7 @@ export function getAmbiguousStepException(
     },
   }) as HorizontalTable
   table.push(
-    ...stepDefinitions.map(stepDefinition => {
+    ...stepDefinitions.map((stepDefinition) => {
       const pattern = stepDefinition.pattern.toString()
       return [pattern, formatLocation(stepDefinition)]
     })

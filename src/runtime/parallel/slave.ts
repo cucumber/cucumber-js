@@ -67,20 +67,20 @@ export default class Slave {
     supportCodePaths,
     options,
   }: ISlaveCommandInitialize): Promise<void> {
-    supportCodeRequiredModules.map(module => require(module))
+    supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
-    supportCodePaths.forEach(codePath => require(codePath))
+    supportCodePaths.forEach((codePath) => require(codePath))
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
     this.sendMessage({
       supportCodeIds: {
         stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
-          s => s.id
+          (s) => s.id
         ),
         beforeTestCaseHookDefinitionIds: this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-          h => h.id
+          (h) => h.id
         ),
         afterTestCaseHookDefinitionIds: this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
-          h => h.id
+          (h) => h.id
         ),
       },
     })
@@ -145,7 +145,7 @@ export default class Slave {
     if (this.options.dryRun) {
       return
     }
-    await bluebird.each(testRunHookDefinitions, async hookDefinition => {
+    await bluebird.each(testRunHookDefinitions, async (hookDefinition) => {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,

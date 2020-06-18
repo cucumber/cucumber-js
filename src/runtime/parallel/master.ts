@@ -126,7 +126,7 @@ export default class Master {
       }
       if (doesHaveValue(testStep.stepDefinitionIds)) {
         testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
-          id => this.supportCodeIdMap[id]
+          (id) => this.supportCodeIdMap[id]
         )
       }
     }
@@ -147,7 +147,7 @@ export default class Master {
     slave.process.on('message', (message: IMasterReport) => {
       this.parseSlaveMessage(slave, message)
     })
-    slave.process.on('close', exitCode => {
+    slave.process.on('close', (exitCode) => {
       slave.closed = true
       this.onSlaveClose(exitCode)
     })
@@ -188,7 +188,7 @@ export default class Master {
 
   run(numberOfSlaves: number, done: (success: boolean) => void): void {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(numberOfSlaves, id =>
+    _.times(numberOfSlaves, (id) =>
       this.startSlave(id.toString(), numberOfSlaves)
     )
     this.onFinish = done
