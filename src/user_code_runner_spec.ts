@@ -2,6 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import UserCodeRunner, { IRunRequest, IRunResponse } from './user_code_runner'
 import bluebird from 'bluebird'
+import semver from 'semver'
 
 async function testUserCodeRunner(
   opts: Partial<IRunRequest>
@@ -49,7 +50,11 @@ describe('UserCodeRunner', () => {
           const { error, result } = await testUserCodeRunner({ fn })
 
           // Assert
-          expect(error).to.eql('{ loop: [Circular] }')
+          if (semver.satisfies(process.version, '>=14.0.0')) {
+            expect(error).to.eql('<ref *1> { loop: [Circular *1] }')
+          } else {
+            expect(error).to.eql('{ loop: [Circular] }')
+          }
           expect(result).to.eql(undefined)
         })
       })
@@ -109,7 +114,11 @@ describe('UserCodeRunner', () => {
           const { error, result } = await testUserCodeRunner({ fn })
 
           // Assert
-          expect(error).to.eql('{ loop: [Circular] }')
+          if (semver.satisfies(process.version, '>=14.0.0')) {
+            expect(error).to.eql('<ref *1> { loop: [Circular *1] }')
+          } else {
+            expect(error).to.eql('{ loop: [Circular] }')
+          }
           expect(result).to.eql(undefined)
         })
       })
