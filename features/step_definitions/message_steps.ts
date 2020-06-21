@@ -12,6 +12,7 @@ import {
 } from '../support/message_helpers'
 import { messages } from 'cucumber-messages'
 import { World } from '../support/world'
+import semver from 'semver'
 
 type StringifiedStatus =
   | 'UNKNOWN'
@@ -130,6 +131,9 @@ Then('scenario {string} step {string} failed with:', function (
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
   const testStepResult = _.find(testStepResults, ['text', stepText])
+  if (semver.satisfies(process.version, '>=14.0.0')) {
+    errorMessage = errorMessage.replace('{ member: [Circular] }', '<ref *1> { member: [Circular *1] }')
+  }
   expect(testStepResult.result.status).to.eql(Status.FAILED)
   expect(testStepResult.result.message).to.include(errorMessage)
 })
