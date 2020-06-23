@@ -213,7 +213,7 @@
     "coveralls": "3.1.0",
     "dependency-lint": "6.0.0",
     "dirty-chai": "2.0.1",
-    "eslint": "7.3.0",
+    "eslint": "7.3.1",
     "eslint-config-prettier": "6.11.0",
     "eslint-config-standard-with-typescript": "18.0.2",
     "eslint-plugin-import": "2.21.2",
