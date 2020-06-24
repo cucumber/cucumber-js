@@ -374,10 +374,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/semver@7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.2.0.tgz#0d72066965e910531e1db4621c15d0ca36b8d83b"
-  integrity sha512-TbB0A8ACUWZt3Y6bQPstW9QNbhNeebdgLX4T/ZfkrswAfUzRiXrgd9seol+X379Wa589Pu4UEx9Uok0D4RjRCQ==
+"@types/semver@7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.0.tgz#87f2d6920729fd3e9c3f0911b39d305d0de3f873"
+  integrity sha512-tZXznf+e/B9vRK8NO5CRWhkQwi323mhMsMvIZDK+r1WpHPbK+BS7F8NYaUBv9kwTzmc0kZO7qI870It79VfS9A==
   dependencies:
     "@types/node" "*"
 
