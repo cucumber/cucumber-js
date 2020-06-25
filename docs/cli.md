@@ -104,14 +104,14 @@ Note that the rerun file parser can only work with the default separator for now
 
 ## Parallel (experimental)
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_SLAVES>`. Each slave is run in a separate node process and receives the following env variables:
+You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate node process and receives the following env variables:
 * `CUCUMBER_PARALLEL` - set to 'true'
-* `CUCUMBER_TOTAL_SLAVES` - set to the number of slaves
-* `CUCUMBER_SLAVE_ID` - ID for slave ('0', '1', '2', etc.)
+* `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
+* `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
 
 **Notes**
 * The reported runtime from the summary formatter is the total time from running the steps and thus be higher than the runtime for the command. The command runtime can be measured with other tools (time / Measure-Command)
-* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the slave processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
+* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the worker processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
 
 ## Profiles
 

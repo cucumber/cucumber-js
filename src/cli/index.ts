@@ -12,7 +12,7 @@ import fs from 'mz/fs'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
 import bluebird from 'bluebird'
-import ParallelRuntimeMaster from '../runtime/parallel/master'
+import ParallelRuntimeCoordinator from '../runtime/parallel/coordinator'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import { IdGenerator } from 'cucumber-messages'
@@ -172,7 +172,7 @@ export default class Cli {
     })
     let success
     if (configuration.parallel > 1) {
-      const parallelRuntimeMaster = new ParallelRuntimeMaster({
+      const parallelRuntimeMaster = new ParallelRuntimeCoordinator({
         cwd: this.cwd,
         eventBroadcaster,
         eventDataCollector,

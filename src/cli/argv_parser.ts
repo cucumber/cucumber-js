@@ -158,8 +158,8 @@ const ArgvParser = {
         []
       )
       .option(
-        '--parallel <NUMBER_OF_SLAVES>',
-        'run in parallel with the given number of slaves',
+        '--parallel <NUMBER_OF_WORKERS>',
+        'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel'),
         0
       )

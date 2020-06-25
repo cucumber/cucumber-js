@@ -160,7 +160,7 @@ export default class Slave {
         this.exit(
           1,
           error,
-          `${name} hook errored on slave ${this.id}, process exiting: ${location}`
+          `${name} hook errored on worker ${this.id}, process exiting: ${location}`
         )
       }
     })
