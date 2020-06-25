@@ -1,6 +1,6 @@
 Parallelization is achieved by having multiple child processes running scenarios.
 
-#### Master
+#### Coordinator
 - load all features, generate test cases
 - broadcast `test-run-started`
 - create workers and for each worker
@@ -11,7 +11,7 @@ Parallelization is achieved by having multiple child processes running scenarios
     and on `test-case-finished` update the overall result
 - when all workers have exited, broadcast `test-run-finished`
 
-#### Slave
+#### Worker
 - when receiving the `initialize` command
   - load the support code and runs `BeforeAll` hooks
   - output the `ready` command

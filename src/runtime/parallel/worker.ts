@@ -1,9 +1,9 @@
 import { formatLocation } from '../../formatter/helpers'
 import {
-  IMasterReport,
-  ISlaveCommand,
-  ISlaveCommandInitialize,
-  ISlaveCommandRun,
+  ICoordinatorReport,
+  IWorkerCommand,
+  IWorkerCommandInitialize,
+  IWorkerCommandRun,
 } from './command_types'
 import { EventEmitter } from 'events'
 import bluebird from 'bluebird'
@@ -20,9 +20,9 @@ import { IRuntimeOptions } from '../index'
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
-type IMessageSender = (command: IMasterReport) => void
+type IMessageSender = (command: ICoordinatorReport) => void
 
-export default class Slave {
+export default class Worker {
   private readonly cwd: string
   private readonly exit: IExitFunction
 
@@ -66,7 +66,7 @@ export default class Slave {
     supportCodeRequiredModules,
     supportCodePaths,
     options,
-  }: ISlaveCommandInitialize): Promise<void> {
+  }: IWorkerCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     supportCodePaths.forEach((codePath) => require(codePath))
@@ -108,7 +108,7 @@ export default class Slave {
     this.exit(0)
   }
 
-  async receiveMessage(message: ISlaveCommand): Promise<void> {
+  async receiveMessage(message: IWorkerCommand): Promise<void> {
     if (doesHaveValue(message.initialize)) {
       await this.initialize(message.initialize)
     } else if (message.finalize) {
@@ -123,7 +123,7 @@ export default class Slave {
     pickle,
     retries,
     skip,
-  }: ISlaveCommandRun): Promise<void> {
+  }: IWorkerCommandRun): Promise<void> {
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       gherkinDocument,

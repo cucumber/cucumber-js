@@ -9,15 +9,15 @@ import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import {
-  IMasterReport,
-  IMasterReportSupportCodeIds,
-  ISlaveCommand,
+  ICoordinatorReport,
+  ICoordinatorReportSupportCodeIds,
+  IWorkerCommand,
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 
-const runSlavePath = path.resolve(__dirname, 'run_worker.js')
+const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
-export interface INewMasterOptions {
+export interface INewCoordinatorOptions {
   cwd: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -57,7 +57,7 @@ export default class Coordinator {
     supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules,
-  }: INewMasterOptions) {
+  }: INewCoordinatorOptions) {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
@@ -72,7 +72,7 @@ export default class Coordinator {
     this.supportCodeIdMap = {}
   }
 
-  parseSlaveMessage(worker: IWorker, message: IMasterReport): void {
+  parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
     if (doesHaveValue(message.supportCodeIds)) {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
@@ -95,7 +95,7 @@ export default class Coordinator {
     }
   }
 
-  saveDefinitionIdMapping(message: IMasterReportSupportCodeIds): void {
+  saveDefinitionIdMapping(message: ICoordinatorReportSupportCodeIds): void {
     _.each(message.stepDefinitionIds, (id: string, index: number) => {
       this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
         index
@@ -132,8 +132,8 @@ export default class Coordinator {
     }
   }
 
-  startSlave(id: string, total: number): void {
-    const workerProcess = fork(runSlavePath, [], {
+  startWorker(id: string, total: number): void {
+    const workerProcess = fork(runWorkerPath, [], {
       cwd: this.cwd,
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
@@ -144,14 +144,14 @@ export default class Coordinator {
     })
     const worker = { closed: false, process: workerProcess }
     this.workers[id] = worker
-    worker.process.on('message', (message: IMasterReport) => {
-      this.parseSlaveMessage(worker, message)
+    worker.process.on('message', (message: ICoordinatorReport) => {
+      this.parseWorkerMessage(worker, message)
     })
     worker.process.on('close', (exitCode) => {
       worker.closed = true
-      this.onSlaveClose(exitCode)
+      this.onWorkerProcessClose(exitCode)
     })
-    const initializeCommand: ISlaveCommand = {
+    const initializeCommand: IWorkerCommand = {
       initialize: {
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
@@ -162,7 +162,7 @@ export default class Coordinator {
     worker.process.send(initializeCommand)
   }
 
-  onSlaveClose(exitCode: number): void {
+  onWorkerProcessClose(exitCode: number): void {
     if (exitCode !== 0) {
       this.success = false
     }
@@ -186,17 +186,17 @@ export default class Coordinator {
     }
   }
 
-  run(numberOfSlaves: number, done: (success: boolean) => void): void {
+  run(numberOfWorkers: number, done: (success: boolean) => void): void {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(numberOfSlaves, (id) =>
-      this.startSlave(id.toString(), numberOfSlaves)
+    _.times(numberOfWorkers, (id) =>
+      this.startWorker(id.toString(), numberOfWorkers)
     )
     this.onFinish = done
   }
 
   giveWork(worker: IWorker): void {
     if (this.nextPickleIdIndex === this.pickleIds.length) {
-      const finalizeCommand: ISlaveCommand = { finalize: true }
+      const finalizeCommand: IWorkerCommand = { finalize: true }
       worker.process.send(finalizeCommand)
       return
     }
@@ -208,7 +208,7 @@ export default class Coordinator {
     )
     const retries = retriesForPickle(pickle, this.options)
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
-    const runCommand: ISlaveCommand = {
+    const runCommand: IWorkerCommand = {
       run: {
         retries,
         skip,

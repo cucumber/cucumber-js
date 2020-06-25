@@ -172,7 +172,7 @@ export default class Cli {
     })
     let success
     if (configuration.parallel > 1) {
-      const parallelRuntimeMaster = new ParallelRuntimeCoordinator({
+      const parallelRuntimeCoordinator = new ParallelRuntimeCoordinator({
         cwd: this.cwd,
         eventBroadcaster,
         eventDataCollector,
@@ -183,7 +183,7 @@ export default class Cli {
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
       await new Promise((resolve) => {
-        parallelRuntimeMaster.run(configuration.parallel, (s) => {
+        parallelRuntimeCoordinator.run(configuration.parallel, (s) => {
           success = s
           resolve()
         })
