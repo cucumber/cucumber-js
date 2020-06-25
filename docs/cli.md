@@ -111,7 +111,7 @@ You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Ea
 
 **Notes**
 * The reported runtime from the summary formatter is the total time from running the steps and thus be higher than the runtime for the command. The command runtime can be measured with other tools (time / Measure-Command)
-* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the worker processes communicate with the master process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
+* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the worker processes communicate with the coordinator process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
 
 ## Profiles
 
