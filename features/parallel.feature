@@ -46,11 +46,11 @@ Feature: Running scenarios in parallel
     When I run cucumber-js with `--parallel 2`
     And the error output contains the text:
       """
-      BeforeAll hook errored on slave 0, process exiting:
+      BeforeAll hook errored on worker 0, process exiting:
       """
     And the error output contains the text:
       """
-      BeforeAll hook errored on slave 1, process exiting:
+      BeforeAll hook errored on worker 1, process exiting:
       """
     And the error output contains the text:
       """
