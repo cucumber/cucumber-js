@@ -293,7 +293,7 @@ export default class JsonFormatter extends Formatter {
       data.result.error_message = message
     }
     if (_.size(testStepAttachments) > 0) {
-      data.embeddings = testStepAttachments.map(attachment => ({
+      data.embeddings = testStepAttachments.map((attachment) => ({
         data: attachment.body,
         // TODO derive from attachment.contentEncoding - either utf-8 or base64
         mime_type: 'nope',

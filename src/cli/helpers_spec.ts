@@ -60,7 +60,7 @@ function testEmitSupportCodeMessages(
 ): messages.IEnvelope[] {
   const envelopes: messages.IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
-  eventBroadcaster.on('envelope', e => envelopes.push(e))
+  eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   emitSupportCodeMessages({
     eventBroadcaster,
     supportCodeLibrary: Object.assign(
@@ -85,7 +85,7 @@ describe('helpers', () => {
     it('emits a meta message', async () => {
       const envelopes: messages.IEnvelope[] = []
       const eventBroadcaster = new EventEmitter()
-      eventBroadcaster.on('envelope', e => envelopes.push(e))
+      eventBroadcaster.on('envelope', (e) => envelopes.push(e))
       await emitMetaMessage(eventBroadcaster)
 
       expect(envelopes).to.have.length(1)

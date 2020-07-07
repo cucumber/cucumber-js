@@ -196,7 +196,7 @@ Then('scenario {string} step {string} has the attachments:', function (
     pickleName,
     stepText
   )
-  const actualAttachments = stepAttachments.map(e => {
+  const actualAttachments = stepAttachments.map((e) => {
     return {
       body: e.body,
       mediaType: e.mediaType,
@@ -212,19 +212,21 @@ Then('scenario {string} {string} hook has the attachments:', function (
   hookKeyword: string,
   table: DataTable
 ) {
-  const expectedAttachments: messages.IAttachment[] = table.hashes().map(x => {
-    return {
-      body: x.DATA,
-      mediaType: x['MEDIA TYPE'],
-      contentEncoding: x['MEDIA ENCODING'],
-    }
-  })
+  const expectedAttachments: messages.IAttachment[] = table
+    .hashes()
+    .map((x) => {
+      return {
+        body: x.DATA,
+        mediaType: x['MEDIA TYPE'],
+        contentEncoding: x['MEDIA ENCODING'],
+      }
+    })
   const hookAttachments = getTestStepAttachmentsForHook(
     this.lastRun.envelopes,
     pickleName,
     hookKeyword === 'Before'
   )
-  const actualAttachments = hookAttachments.map(e => {
+  const actualAttachments = hookAttachments.map((e) => {
     return {
       body: e.body,
       mediaType: e.mediaType,

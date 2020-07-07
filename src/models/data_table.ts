@@ -10,8 +10,8 @@ export default class DataTable {
     if (sourceTable instanceof Array) {
       this.rawTable = sourceTable
     } else {
-      this.rawTable = sourceTable.rows.map(row =>
-        row.cells.map(cell => cell.value)
+      this.rawTable = sourceTable.rows.map((row) =>
+        row.cells.map((cell) => cell.value)
       )
     }
   }
@@ -46,7 +46,7 @@ export default class DataTable {
 
   transpose(): DataTable {
     const transposed = this.rawTable[0].map((x, i) =>
-      this.rawTable.map(y => y[i])
+      this.rawTable.map((y) => y[i])
     )
     return new DataTable(transposed)
   }

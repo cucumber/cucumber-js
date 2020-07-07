@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { dialects } from '@cucumber/gherkin'
-import Table, { HorizontalTable } from 'cli-table3'
+import Table from 'cli-table3'
 import { capitalCase } from 'capital-case'
 
 const keywords = [
@@ -57,8 +57,8 @@ export function getLanguages(): string {
 
 export function getKeywords(isoCode: string): string {
   const language = dialects[isoCode]
-  const rows = _.map(keywords, keyword => {
-    const words = _.map(language[keyword], s => `"${s}"`).join(', ')
+  const rows = _.map(keywords, (keyword) => {
+    const words = _.map(language[keyword], (s) => `"${s}"`).join(', ')
     return [capitalCase(keyword), words]
   })
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)

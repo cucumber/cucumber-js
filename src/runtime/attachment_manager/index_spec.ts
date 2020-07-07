@@ -231,10 +231,10 @@ describe('AttachmentManager', () => {
     })
 
     describe('log', () => {
-      it('adds a string attachment with the appropriate mime type', function() {
+      it('adds a string attachment with the appropriate mime type', function () {
         // Arrange
         const attachments: IAttachment[] = []
-        const attachmentManager = new AttachmentManager(x =>
+        const attachmentManager = new AttachmentManager((x) =>
           attachments.push(x)
         )
 

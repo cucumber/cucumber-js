@@ -13,7 +13,7 @@ defineParameterType({
   },
 })
 
-Given('{flight} has been delayed {int} minutes', function(
+Given('{flight} has been delayed {int} minutes', function (
   flight: Flight,
   delay: number
 ) {

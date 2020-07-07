@@ -2,9 +2,9 @@ import { messages } from '@cucumber/messages'
 import { stopwatch, Stopwatch, duration } from 'durations'
 
 export interface ITestRunStopwatch {
-  start(): ITestRunStopwatch
-  stop(): ITestRunStopwatch
-  timestamp(): messages.ITimestamp
+  start: () => ITestRunStopwatch
+  stop: () => ITestRunStopwatch
+  timestamp: () => messages.ITimestamp
 }
 
 export class RealTestRunStopwatch implements ITestRunStopwatch {

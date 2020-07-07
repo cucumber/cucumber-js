@@ -5,7 +5,7 @@ import path from 'path'
 
 Before((): void => undefined)
 
-When('the string {string} is attached as {string}', async function(
+When('the string {string} is attached as {string}', async function (
   this: World,
   text: string,
   mediaType: string
@@ -13,14 +13,14 @@ When('the string {string} is attached as {string}', async function(
   await this.attach(text, mediaType)
 })
 
-When('the string {string} is logged', async function(
+When('the string {string} is logged', async function (
   this: World,
   text: string
 ) {
   await this.log(text)
 })
 
-When('an array with {int} bytes are attached as {string}', async function(
+When('an array with {int} bytes are attached as {string}', async function (
   this: World,
   size: number,
   mediaType: string
@@ -30,7 +30,7 @@ When('an array with {int} bytes are attached as {string}', async function(
   await this.attach(buffer, mediaType)
 })
 
-When('a stream with {int} bytes are attached as {string}', async function(
+When('a stream with {int} bytes are attached as {string}', async function (
   this: World,
   size: number,
   mediaType: string
@@ -43,7 +43,7 @@ When('a stream with {int} bytes are attached as {string}', async function(
   await this.attach(stream, mediaType)
 })
 
-When('a JPEG image is attached', async function(this: World) {
+When('a JPEG image is attached', async function (this: World) {
   await this.attach(
     fs.createReadStream(path.join(__dirname, 'cucumber-growing-on-vine.jpg')),
     'image/jpg'

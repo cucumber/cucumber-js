@@ -152,7 +152,7 @@ function emitStepDefinitions(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
-  supportCodeLibrary.stepDefinitions.forEach(stepDefinition => {
+  supportCodeLibrary.stepDefinitions.forEach((stepDefinition) => {
     eventBroadcaster.emit(
       'envelope',
       messages.Envelope.fromObject({

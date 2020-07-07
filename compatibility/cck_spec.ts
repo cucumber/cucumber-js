@@ -16,7 +16,7 @@ config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  globby.sync([`${CCK_FEATURES_PATH}/**/*.ndjson`]).forEach(fixturePath => {
+  globby.sync([`${CCK_FEATURES_PATH}/**/*.ndjson`]).forEach((fixturePath) => {
     const suiteName = /^.+\/(.+)\.ndjson$/.exec(fixturePath)[1]
     it(`passes the cck suite for '${suiteName}'`, async () => {
       const args = [
