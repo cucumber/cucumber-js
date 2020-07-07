@@ -311,7 +311,7 @@ async function parseGherkinDocument(data: string): Promise<IGherkinDocument> {
 }
 
 async function withBackgroundAndScenario(): Promise<IGherkinDocument> {
-  return parseGherkinDocument(`\
+  return await parseGherkinDocument(`\
 Feature: a feature
   Background:
     Given a setup step
@@ -322,7 +322,7 @@ Feature: a feature
 }
 
 async function withBackgroundAndScenarioOutline(): Promise<IGherkinDocument> {
-  return parseGherkinDocument(`\
+  return await parseGherkinDocument(`\
 Feature: a feature
   Background:
     Given a setup step
@@ -337,7 +337,7 @@ Feature: a feature
 }
 
 async function withBackgroundAndRuleWithExamples(): Promise<IGherkinDocument> {
-  return parseGherkinDocument(`\
+  return await parseGherkinDocument(`\
 Feature: a feature
   Background:
     Given a setup step
@@ -356,7 +356,7 @@ Feature: a feature
 async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<
   IGherkinDocument
 > {
-  return parseGherkinDocument(`\
+  return await parseGherkinDocument(`\
 Feature: a feature
   Background:
     Given a feature-level setup step

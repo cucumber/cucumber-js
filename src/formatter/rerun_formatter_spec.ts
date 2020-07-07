@@ -29,7 +29,7 @@ describe('RerunFormatter', () => {
       it('outputs nothing', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
         })
 
         // Act
@@ -48,8 +48,8 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
-          Given('a step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
         })
 
         // Act
@@ -68,7 +68,7 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {
+          Given('a step', function () {
             throw new Error('error')
           })
         })
@@ -89,7 +89,7 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {
+          Given('a step', function () {
             return 'pending'
           })
         })
@@ -110,7 +110,7 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function() {
+          Given('a step', function () {
             return 'skipped'
           })
         })

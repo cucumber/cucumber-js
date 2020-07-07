@@ -21,7 +21,7 @@ export function getStepKeywordType({
 }: IGetStepKeywordTypeOptions): KeywordType {
   const dialect: Dialect = dialects[language]
   const stepKeywords = ['given', 'when', 'then', 'and', 'but'] as const
-  const type = _.find(stepKeywords, key => _.includes(dialect[key], keyword))
+  const type = _.find(stepKeywords, (key) => _.includes(dialect[key], keyword))
   switch (type) {
     case 'when':
       return KeywordType.Event

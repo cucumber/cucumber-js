@@ -67,7 +67,7 @@ export async function testFormatter({
       eventBroadcaster,
       uri: source.uri,
     })
-    pickleIds = pickleIds.concat(pickles.map(p => p.id))
+    pickleIds = pickleIds.concat(pickles.map((p) => p.id))
   }
   const runtime = new Runtime({
     eventBroadcaster,
@@ -100,7 +100,7 @@ export async function getTestCaseAttempts({
       eventBroadcaster,
       uri: source.uri,
     })
-    pickleIds = pickleIds.concat(pickles.map(p => p.id))
+    pickleIds = pickleIds.concat(pickles.map((p) => p.id))
   }
   const runtime = new Runtime({
     eventBroadcaster,
@@ -127,7 +127,7 @@ export async function getEnvelopesAndEventDataCollector({
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const envelopes: IEnvelope[] = []
-  eventBroadcaster.on('envelope', envelope => envelopes.push(envelope))
+  eventBroadcaster.on('envelope', (envelope) => envelopes.push(envelope))
   let pickleIds: string[] = []
   for (const source of sources) {
     const { pickles } = await generateEvents({
@@ -135,7 +135,7 @@ export async function getEnvelopesAndEventDataCollector({
       eventBroadcaster,
       uri: source.uri,
     })
-    pickleIds = pickleIds.concat(pickles.map(p => p.id))
+    pickleIds = pickleIds.concat(pickles.map((p) => p.id))
   }
   const runtime = new Runtime({
     eventBroadcaster,

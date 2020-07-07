@@ -247,7 +247,7 @@ describe('JsonFormatter', () => {
     })
 
     describe('with attachments', () => {
-      it('outputs the step with embeddings', function() {
+      it('outputs the step with embeddings', function () {
         // TODO
       })
     })

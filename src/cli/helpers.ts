@@ -54,7 +54,7 @@ export async function parseGherkinMessageStream({
   order,
   pickleFilter,
 }: IParseGherkinMessageStreamRequest): Promise<string[]> {
-  return new Promise<string[]>((resolve, reject) => {
+  return await new Promise<string[]>((resolve, reject) => {
     const result: string[] = []
     gherkinMessageStream.on('data', (envelope: messages.IEnvelope) => {
       eventBroadcaster.emit('envelope', envelope)

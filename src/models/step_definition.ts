@@ -25,12 +25,12 @@ export default class StepDefinition extends Definition implements IDefinition {
     world,
   }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
     const parameters = await bluebird.all(
-      this.expression.match(step.text).map(arg => arg.getValue(world))
+      this.expression.match(step.text).map((arg) => arg.getValue(world))
     )
     if (doesHaveValue(step.argument)) {
       const argumentParamater = parseStepArgument<any>(step.argument, {
-        dataTable: arg => new DataTable(arg),
-        docString: arg => arg.content,
+        dataTable: (arg) => new DataTable(arg),
+        docString: (arg) => arg.content,
       })
       parameters.push(argumentParamater)
     }

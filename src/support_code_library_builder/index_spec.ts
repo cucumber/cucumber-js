@@ -10,7 +10,7 @@ const { uuid } = IdGenerator
 
 describe('supportCodeLibraryBuilder', () => {
   describe('no support code fns', () => {
-    it('returns the default options', function() {
+    it('returns the default options', function () {
       // Arrange
       const attachFn = sinon.stub()
       supportCodeLibraryBuilder.reset('path/to/project', uuid())
@@ -39,9 +39,9 @@ describe('supportCodeLibraryBuilder', () => {
 
   describe('step', () => {
     describe('without definition function wrapper', () => {
-      it('adds a step definition and makes original code available', function() {
+      it('adds a step definition and makes original code available', function () {
         // Arrange
-        const step = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
 
@@ -57,16 +57,16 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('with definition function wrapper', () => {
-      it('adds a step definition and makes original code available', function() {
+      it('adds a step definition and makes original code available', function () {
         // Arrange
-        const step = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
-        supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(function(
-          fn: Function
-        ) {
-          return fn()
-        })
+        supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(
+          function (fn: Function) {
+            return fn()
+          }
+        )
 
         // Act
         const options = supportCodeLibraryBuilder.finalize()
@@ -82,9 +82,9 @@ describe('supportCodeLibraryBuilder', () => {
 
   describe('After', () => {
     describe('function only', () => {
-      it('adds a test case hook definition', function() {
+      it('adds a test case hook definition', function () {
         // Arrange
-        const hook = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(hook)
 
@@ -99,9 +99,9 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('tag and function', () => {
-      it('adds a scenario hook definition', async function() {
+      it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After('@tagA', hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -124,9 +124,9 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('options and function', () => {
-      it('adds a scenario hook definition', async function() {
+      it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -149,7 +149,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('multiple', () => {
-      it('adds the scenario hook definitions in the reverse order of definition', function() {
+      it('adds the scenario hook definitions in the reverse order of definition', function () {
         // Arrange
         const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
@@ -170,9 +170,9 @@ describe('supportCodeLibraryBuilder', () => {
 
   describe('this.Before', () => {
     describe('function only', () => {
-      it('adds a scenario hook definition', function() {
+      it('adds a scenario hook definition', function () {
         // Arrange
-        const hook = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(hook)
 
@@ -187,9 +187,9 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('tag and function', () => {
-      it('adds a scenario hook definition', async function() {
+      it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before('@tagA', hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -212,9 +212,9 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('options and function', () => {
-      it('adds a scenario hook definition', async function() {
+      it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -237,7 +237,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('multiple', () => {
-      it('adds the scenario hook definitions in the order of definition', function() {
+      it('adds the scenario hook definitions in the order of definition', function () {
         // Arrange
         const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function

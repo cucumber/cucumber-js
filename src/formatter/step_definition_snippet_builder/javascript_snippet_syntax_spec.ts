@@ -20,7 +20,7 @@ function generateExpressions(text: string): GeneratedExpression[] {
 describe('JavascriptSnippetSyntax', () => {
   describe('build()', () => {
     describe('callback interface', () => {
-      it('returns the proper snippet', function() {
+      it('returns the proper snippet', function () {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Callback)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -43,7 +43,7 @@ functionName('{string} def {string}', function (string, string2, callback) {
     })
 
     describe('generator interface', () => {
-      it('returns the proper snippet', function() {
+      it('returns the proper snippet', function () {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Generator)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -66,7 +66,7 @@ functionName('{string} def {string}', function *(string, string2) {
     })
 
     describe('promise interface', () => {
-      it('returns the proper snippet', function() {
+      it('returns the proper snippet', function () {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Promise)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -89,7 +89,7 @@ functionName('{string} def {string}', function (string, string2) {
     })
 
     describe('synchronous interface', () => {
-      it('returns the proper snippet', function() {
+      it('returns the proper snippet', function () {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -112,7 +112,7 @@ functionName('{string} def {string}', function (string, string2) {
     })
 
     describe('pattern contains single quote', () => {
-      it('returns the proper snippet', function() {
+      it('returns the proper snippet', function () {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -135,7 +135,7 @@ functionName('pattern\\'', function () {
     })
 
     describe('multiple patterns', () => {
-      it('returns the snippet with the other choices commented out', function() {
+      it('returns the snippet with the other choices commented out', function () {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
         const buildOptions: ISnippetSyntaxBuildOptions = {

@@ -8,10 +8,10 @@ describe('AttachmentManager', () => {
   describe('create()', () => {
     describe('buffer', () => {
       describe('with mime type', () => {
-        it('adds the data and media', function() {
+        it('adds the data and media', function () {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager(x =>
+          const attachmentManager = new AttachmentManager((x) =>
             attachments.push(x)
           )
 
@@ -41,10 +41,10 @@ describe('AttachmentManager', () => {
       })
 
       describe('without media type', () => {
-        it('throws', function() {
+        it('throws', function () {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager(x =>
+          const attachmentManager = new AttachmentManager((x) =>
             attachments.push(x)
           )
           let error: Error
@@ -70,17 +70,17 @@ describe('AttachmentManager', () => {
     describe('readable stream', () => {
       describe('with mime type', () => {
         describe('with callback', () => {
-          it('does not return a promise and adds the data and media', async function() {
+          it('does not return a promise and adds the data and media', async function () {
             // Arrange
             const attachments: IAttachment[] = []
-            const attachmentManager = new AttachmentManager(x =>
+            const attachmentManager = new AttachmentManager((x) =>
               attachments.push(x)
             )
             const readableStream = new stream.PassThrough()
             let result: any
 
             // Act
-            await new Promise(resolve => {
+            await new Promise((resolve) => {
               result = attachmentManager.create(
                 readableStream,
                 'text/special',
@@ -112,10 +112,10 @@ describe('AttachmentManager', () => {
         })
 
         describe('without callback', () => {
-          it('returns a promise and adds the data and media', async function() {
+          it('returns a promise and adds the data and media', async function () {
             // Arrange
             const attachments: IAttachment[] = []
-            const attachmentManager = new AttachmentManager(x =>
+            const attachmentManager = new AttachmentManager((x) =>
               attachments.push(x)
             )
             const readableStream = new stream.PassThrough()
@@ -151,10 +151,10 @@ describe('AttachmentManager', () => {
       })
 
       describe('without media type', () => {
-        it('throws', function() {
+        it('throws', function () {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager(x =>
+          const attachmentManager = new AttachmentManager((x) =>
             attachments.push(x)
           )
           const readableStream = new stream.PassThrough()
@@ -180,10 +180,10 @@ describe('AttachmentManager', () => {
 
     describe('string', () => {
       describe('with media type', () => {
-        it('adds the data and media', function() {
+        it('adds the data and media', function () {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager(x =>
+          const attachmentManager = new AttachmentManager((x) =>
             attachments.push(x)
           )
 
@@ -205,10 +205,10 @@ describe('AttachmentManager', () => {
       })
 
       describe('without mime type', () => {
-        it('adds the data with the default mime type', function() {
+        it('adds the data with the default mime type', function () {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager(x =>
+          const attachmentManager = new AttachmentManager((x) =>
             attachments.push(x)
           )
 
@@ -256,10 +256,10 @@ describe('AttachmentManager', () => {
     })
 
     describe('unsupported data type', () => {
-      it('throws', function() {
+      it('throws', function () {
         // Arrange
         const attachments: IAttachment[] = []
-        const attachmentManager = new AttachmentManager(x =>
+        const attachmentManager = new AttachmentManager((x) =>
           attachments.push(x)
         )
         let error: Error

@@ -70,7 +70,7 @@ export class PickleLineFilter {
     featurePaths: string[]
   }): Dictionary<number[]> {
     const mapping: Dictionary<number[]> = {}
-    featurePaths.forEach(featurePath => {
+    featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {
         const uri = path.resolve(cwd, match[1])
@@ -82,7 +82,7 @@ export class PickleLineFilter {
           linesExpression
             .slice(1)
             .split(':')
-            .forEach(line => {
+            .forEach((line) => {
               mapping[uri].push(parseInt(line))
             })
         }
@@ -98,7 +98,7 @@ export class PickleLineFilter {
         gherkinDocument
       )
       const pickleLines = pickle.astNodeIds.map(
-        sourceId => gherkinScenarioLocationMap[sourceId].line
+        (sourceId) => gherkinScenarioLocationMap[sourceId].line
       )
       return _.size(_.intersection(linesToMatch, pickleLines)) > 0
     }
@@ -117,7 +117,7 @@ export class PickleNameFilter {
     if (this.names.length === 0) {
       return true
     }
-    return _.some(this.names, name => pickle.name.match(name))
+    return _.some(this.names, (name) => pickle.name.match(name))
   }
 }
 

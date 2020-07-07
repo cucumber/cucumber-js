@@ -2,11 +2,12 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import UserCodeRunner, { IRunRequest, IRunResponse } from './user_code_runner'
 import bluebird from 'bluebird'
+import semver from 'semver'
 
 async function testUserCodeRunner(
   opts: Partial<IRunRequest>
 ): Promise<IRunResponse> {
-  return UserCodeRunner.run({
+  return await UserCodeRunner.run({
     argsArray: [],
     fn: () => 'result',
     thisArg: {},
@@ -21,9 +22,9 @@ describe('UserCodeRunner', () => {
   describe('run()', () => {
     describe('function uses synchronous interface', () => {
       describe('function throws serializable error', () => {
-        it('returns the error', async function() {
+        it('returns the error', async function () {
           // Arrange
-          const fn = function(): void {
+          const fn = function (): void {
             throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
           }
 
@@ -37,9 +38,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function throws non-serializable error', () => {
-        it('returns the error', async function() {
+        it('returns the error', async function () {
           // Arrange
-          const fn = function(): void {
+          const fn = function (): void {
             const error: any = {}
             error.loop = error
             throw error
@@ -49,15 +50,19 @@ describe('UserCodeRunner', () => {
           const { error, result } = await testUserCodeRunner({ fn })
 
           // Assert
-          expect(error).to.eql('{ loop: [Circular] }')
+          if (semver.satisfies(process.version, '>=14.0.0')) {
+            expect(error).to.eql('<ref *1> { loop: [Circular *1] }')
+          } else {
+            expect(error).to.eql('{ loop: [Circular] }')
+          }
           expect(result).to.eql(undefined)
         })
       })
 
       describe('function returns', () => {
-        it('returns the return value of the function', async function() {
+        it('returns the return value of the function', async function () {
           // Arrange
-          const fn = function(): string {
+          const fn = function (): string {
             return 'result'
           }
 
@@ -77,9 +82,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function calls back with serializable error', () => {
-        it('returns the error', async function() {
+        it('returns the error', async function () {
           // Arrange
-          const fn = function(callback: CallbackFn): void {
+          const fn = function (callback: CallbackFn): void {
             setTimeout(() => {
               callback('error') // eslint-disable-line standard/no-callback-literal
             }, 25)
@@ -95,9 +100,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function calls back with non-serializable rror', () => {
-        it('returns the error', async function() {
+        it('returns the error', async function () {
           // Arrange
-          const fn = function(callback: CallbackFn): void {
+          const fn = function (callback: CallbackFn): void {
             const error: any = {}
             error.loop = error
             setTimeout(() => {
@@ -109,15 +114,19 @@ describe('UserCodeRunner', () => {
           const { error, result } = await testUserCodeRunner({ fn })
 
           // Assert
-          expect(error).to.eql('{ loop: [Circular] }')
+          if (semver.satisfies(process.version, '>=14.0.0')) {
+            expect(error).to.eql('<ref *1> { loop: [Circular *1] }')
+          } else {
+            expect(error).to.eql('{ loop: [Circular] }')
+          }
           expect(result).to.eql(undefined)
         })
       })
 
       describe('function calls back with result', () => {
-        it('returns the what the function calls back with', async function() {
+        it('returns the what the function calls back with', async function () {
           // Arrange
-          const fn = function(callback: CallbackFn): void {
+          const fn = function (callback: CallbackFn): void {
             setTimeout(() => {
               callback(null, 'result')
             }, 25)
@@ -133,9 +142,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function times out', () => {
-        it('returns timeout as an error', async function() {
+        it('returns timeout as an error', async function () {
           // Arrange
-          const fn = function(callback: CallbackFn): void {
+          const fn = function (callback: CallbackFn): void {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
@@ -154,9 +163,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('timeout of -1', () => {
-        it('disables timeout protection', async function() {
+        it('disables timeout protection', async function () {
           // Arrange
-          const fn = function(callback: CallbackFn): void {
+          const fn = function (callback: CallbackFn): void {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
@@ -181,10 +190,10 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise resolves', () => {
-        it('returns what the promise resolves to', async function() {
+        it('returns what the promise resolves to', async function () {
           // Arrange
-          const fn = async function(): Promise<string> {
-            return Promise.resolve('result')
+          const fn = async function (): Promise<string> {
+            return await Promise.resolve('result')
           }
 
           // Act
@@ -197,10 +206,10 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise rejects with reason', () => {
-        it('returns what the promise rejects as an error', async function() {
+        it('returns what the promise rejects as an error', async function () {
           // Arrange
-          const fn = async function(): Promise<void> {
-            return Promise.reject('error') // eslint-disable-line prefer-promise-reject-errors
+          const fn = async function (): Promise<void> {
+            return await Promise.reject('error') // eslint-disable-line prefer-promise-reject-errors
           }
 
           // Act
@@ -213,10 +222,10 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise rejects without reason', () => {
-        it('returns a helpful error message', async function() {
+        it('returns a helpful error message', async function () {
           // Arrange
-          const fn = async function(): Promise<void> {
-            return Promise.reject() // eslint-disable-line prefer-promise-reject-errors
+          const fn = async function (): Promise<void> {
+            return await Promise.reject() // eslint-disable-line prefer-promise-reject-errors
           }
 
           // Act
@@ -229,11 +238,11 @@ describe('UserCodeRunner', () => {
         })
       })
 
-      describe('promise times out', function() {
-        it('returns timeout as an error', async function() {
+      describe('promise times out', function () {
+        it('returns timeout as an error', async function () {
           // Arrange
-          const fn = async function(): Promise<string> {
-            return bluebird.resolve('result').delay(200)
+          const fn = async function (): Promise<string> {
+            return await bluebird.resolve('result').delay(200)
           }
 
           // Act
@@ -249,10 +258,10 @@ describe('UserCodeRunner', () => {
       })
 
       describe('timeout of -1', () => {
-        it('disables timeout protection', async function() {
+        it('disables timeout protection', async function () {
           // Arrange
-          const fn = async function(): Promise<string> {
-            return bluebird.resolve('result').delay(200)
+          const fn = async function (): Promise<string> {
+            return await bluebird.resolve('result').delay(200)
           }
 
           // Act
@@ -269,11 +278,11 @@ describe('UserCodeRunner', () => {
     })
 
     describe('function uses multiple asynchronous interfaces: callback and promise', () => {
-      it('returns an error that multiple interface are used', async function() {
+      it('returns an error that multiple interface are used', async function () {
         // Arrange
-        const fn = async function(callback: CallbackFn): Promise<void> {
+        const fn = async function (callback: CallbackFn): Promise<void> {
           callback()
-          return Promise.resolve()
+          return await Promise.resolve()
         }
 
         // Act

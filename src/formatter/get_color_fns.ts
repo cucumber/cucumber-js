@@ -8,7 +8,7 @@ colors.enable()
 export type IColorFn = (text: string) => string
 
 export interface IColorFns {
-  forStatus(status: messages.TestStepFinished.TestStepResult.Status): IColorFn
+  forStatus: (status: messages.TestStepFinished.TestStepResult.Status) => IColorFn
   location: IColorFn
   tag: IColorFn
 }

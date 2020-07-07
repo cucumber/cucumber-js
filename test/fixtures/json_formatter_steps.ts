@@ -8,12 +8,12 @@ export function getJsonFormatterSupportCodeLibrary(
   clock: InstalledClock
 ): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
-    Given('a passing step', function() {
+    Given('a passing step', function () {
       clock.tick(1)
     })
 
     let willPass = false
-    Given('a flaky step', function() {
+    Given('a flaky step', function () {
       if (willPass) {
         return
       }
@@ -21,7 +21,7 @@ export function getJsonFormatterSupportCodeLibrary(
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
     })
 
-    Given('a failing step', function() {
+    Given('a failing step', function () {
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
     })
   })
@@ -29,8 +29,8 @@ export function getJsonFormatterSupportCodeLibrary(
 
 export function getJsonFormatterSupportCodeLibraryWithHooks(): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ After, Before, Given }) => {
-    Given('a passing step', function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
-    Before(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
-    After(function() {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Given('a passing step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
   })
 }

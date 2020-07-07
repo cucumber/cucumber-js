@@ -1,37 +1,37 @@
 import { messages } from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
 
-// Messages from Master to Slave
+// Messages from Coordinator to Worker
 
-export interface ISlaveCommand {
-  initialize?: ISlaveCommandInitialize
-  run?: ISlaveCommandRun
+export interface IWorkerCommand {
+  initialize?: IWorkerCommandInitialize
+  run?: IWorkerCommandRun
   finalize?: boolean
 }
 
-export interface ISlaveCommandInitialize {
+export interface IWorkerCommandInitialize {
   filterStacktraces: boolean
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
   options: IRuntimeOptions
 }
 
-export interface ISlaveCommandRun {
+export interface IWorkerCommandRun {
   retries: number
   skip: boolean
   pickle: messages.IPickle
   gherkinDocument: messages.IGherkinDocument
 }
 
-// Messages from Slave to Master
+// Messages from Worker to Coordinator
 
-export interface IMasterReport {
+export interface ICoordinatorReport {
   jsonEnvelope?: string
   ready?: boolean
-  supportCodeIds?: IMasterReportSupportCodeIds
+  supportCodeIds?: ICoordinatorReportSupportCodeIds
 }
 
-export interface IMasterReportSupportCodeIds {
+export interface ICoordinatorReportSupportCodeIds {
   stepDefinitionIds: string[]
   beforeTestCaseHookDefinitionIds: string[]
   afterTestCaseHookDefinitionIds: string[]

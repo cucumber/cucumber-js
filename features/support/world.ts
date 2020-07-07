@@ -42,7 +42,7 @@ export class World {
         '--format',
         `message:${messageFilename}`,
       ])
-      .map(arg => {
+      .map((arg) => {
         if (_.includes(arg, '/')) {
           return path.normalize(arg)
         }
@@ -53,7 +53,7 @@ export class World {
     let result: IRunResult
 
     if (this.spawn) {
-      result = await new Promise(resolve => {
+      result = await new Promise((resolve) => {
         execFile(args[0], args.slice(1), { cwd }, (error, stdout, stderr) => {
           resolve({ error, stdout, stderr })
         })

@@ -40,7 +40,7 @@ function getAsTable(header: string[], rows: string[][]): string {
       'padding-left': 0,
       'padding-right': 0,
     },
-  }) as HorizontalTable
+  })
   table.push(header)
   table.push(...rows)
   return table.toString()

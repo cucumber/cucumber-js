@@ -25,14 +25,14 @@ async function testProfileLoader(
     )
   }
   const profileLoader = new ProfileLoader(cwd)
-  return profileLoader.getArgv(valueOrDefault(opts.profiles, []))
+  return await profileLoader.getArgv(valueOrDefault(opts.profiles, []))
 }
 
 describe('ProfileLoader', () => {
   describe('getArgv', () => {
     describe('with no identifiers', () => {
       describe('no definition file', () => {
-        it('returns an empty array', async function() {
+        it('returns an empty array', async function () {
           // Arrange
 
           // Act
@@ -45,7 +45,7 @@ describe('ProfileLoader', () => {
 
       describe('with definition file', () => {
         describe('with a default', () => {
-          it('returns the argv for the default profile', async function() {
+          it('returns the argv for the default profile', async function () {
             // Arrange
             const definitionsFileContent =
               'module.exports = {default: "--opt1 --opt2"}'
@@ -59,7 +59,7 @@ describe('ProfileLoader', () => {
         })
 
         describe('without a default', () => {
-          it('returns an empty array', async function() {
+          it('returns an empty array', async function () {
             // Arrange
             const definitionsFileContent =
               'module.exports = {profile1: "--opt1 --opt2"}'
@@ -76,7 +76,7 @@ describe('ProfileLoader', () => {
 
     describe('with identifiers', () => {
       describe('no definition file', () => {
-        it('throws', async function() {
+        it('throws', async function () {
           // Arrange
           let caughtErrorMessage = ''
 
@@ -94,7 +94,7 @@ describe('ProfileLoader', () => {
 
       describe('with definition file', () => {
         describe('profile is defined', () => {
-          it('returns the argv for the given profile', async function() {
+          it('returns the argv for the given profile', async function () {
             // Arrange
             const definitionsFileContent =
               'module.exports = {profile1: "--opt1 --opt2"}'
@@ -111,7 +111,7 @@ describe('ProfileLoader', () => {
         })
 
         describe('profile is defined and contains quoted string', () => {
-          it('returns the argv for the given profile', async function() {
+          it('returns the argv for the given profile', async function () {
             // Arrange
             const definitionsFileContent =
               'module.exports = {profile1: "--opt3 \'some value\'"}'
@@ -128,7 +128,7 @@ describe('ProfileLoader', () => {
         })
 
         describe('profile is not defined', () => {
-          it('throws', async function() {
+          it('throws', async function () {
             // Arrange
             let caughtErrorMessage = ''
             const definitionsFileContent =

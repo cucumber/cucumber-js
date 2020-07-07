@@ -17,14 +17,14 @@ export default class SnippetsFormatter extends Formatter {
 
   logSnippets(): void {
     const snippets: string[] = []
-    this.eventDataCollector.getTestCaseAttempts().map(testCaseAttempt => {
+    this.eventDataCollector.getTestCaseAttempts().map((testCaseAttempt) => {
       const parsed = parseTestCaseAttempt({
         cwd: this.cwd,
         snippetBuilder: this.snippetBuilder,
         supportCodeLibrary: this.supportCodeLibrary,
         testCaseAttempt,
       })
-      parsed.testSteps.forEach(testStep => {
+      parsed.testSteps.forEach((testStep) => {
         if (testStep.result.status === Status.UNDEFINED) {
           snippets.push(testStep.snippet)
         }

@@ -35,7 +35,7 @@ function buildEmptyMapping(
   stepDefinitions: StepDefinition[]
 ): Dictionary<IUsage> {
   const mapping: Dictionary<IUsage> = {}
-  stepDefinitions.forEach(stepDefinition => {
+  stepDefinitions.forEach((stepDefinition) => {
     mapping[stepDefinition.id] = {
       code: stepDefinition.unwrappedCode.toString(),
       line: stepDefinition.line,
@@ -54,10 +54,10 @@ function buildMapping({
   eventDataCollector,
 }: IGetUsageRequest): Dictionary<IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
-  _.each(eventDataCollector.getTestCaseAttempts(), testCaseAttempt => {
+  _.each(eventDataCollector.getTestCaseAttempts(), (testCaseAttempt) => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
-    testCaseAttempt.testCase.testSteps.forEach(testStep => {
+    testCaseAttempt.testCase.testSteps.forEach((testStep) => {
       if (
         testStep.pickleStepId !== '' &&
         testStep.stepDefinitionIds.length === 1

@@ -76,7 +76,7 @@ export default class AttachmentManager {
   ): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       const buffers: Uint8Array[] = []
-      data.on('data', chunk => {
+      data.on('data', (chunk) => {
         buffers.push(chunk)
       })
       data.on('end', () => {

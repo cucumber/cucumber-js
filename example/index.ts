@@ -95,7 +95,7 @@ $(() => {
 
   $('#run-feature').click(() => {
     runFeature()
-      .then(success => {
+      .then((success) => {
         const exitStatus = success ? '0' : '1'
         const exitStatusContainer = $('<div>')
         exitStatusContainer

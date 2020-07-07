@@ -7,7 +7,7 @@ import { buildOptions } from '../../test/runtime_helpers'
 
 describe('Helpers', () => {
   describe('getAmbiguousStepException', () => {
-    it('returns a nicely formatted error', function() {
+    it('returns a nicely formatted error', function () {
       // Arrange
       const stepDefinitions = [
         new StepDefinition({

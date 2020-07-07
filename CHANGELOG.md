@@ -8,7 +8,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 #### Breaking changes
 
-* Drop support for Node.js 8
+* Drop support for Node.js 8, add support for Node.js 14
 * Formatters
   * Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
   * `event-protocol` formatter has been removed and replaced with `message`

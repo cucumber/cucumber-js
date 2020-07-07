@@ -11,15 +11,15 @@ const projectPath = path.join(__dirname, '..', '..')
 const projectNodeModulesPath = path.join(projectPath, 'node_modules')
 const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
-Before('@debug', function(this: World) {
+Before('@debug', function (this: World) {
   this.debug = true
 })
 
-Before('@spawn', function(this: World) {
+Before('@spawn', function (this: World) {
   this.spawn = true
 })
 
-Before(function(
+Before(function (
   this: World,
   { gherkinDocument, pickle }: ITestCaseHookParameter
 ) {
@@ -41,11 +41,11 @@ Before(function(
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
 })
 
-Before('@global-install', function(this: World) {
+Before('@global-install', function (this: World) {
   const tmpObject = tmp.dirSync({ unsafeCleanup: true })
 
   const globalInstallNodeModulesPath = path.join(tmpObject.name, 'node_modules')
-  moduleNames.forEach(moduleName => {
+  moduleNames.forEach((moduleName) => {
     const globalInstallNodeModulePath = path.join(
       globalInstallNodeModulesPath,
       moduleName
@@ -66,7 +66,7 @@ Before('@global-install', function(this: World) {
     'cucumber'
   )
   const itemsToCopy = ['bin', 'lib', 'package.json']
-  itemsToCopy.forEach(item => {
+  itemsToCopy.forEach((item) => {
     fsExtra.copySync(
       path.join(projectPath, item),
       path.join(globalInstallCucumberPath, item)
@@ -80,7 +80,7 @@ Before('@global-install', function(this: World) {
   )
 })
 
-After(function(this: World) {
+After(function (this: World) {
   if (
     doesHaveValue(this.lastRun) &&
     doesHaveValue(this.lastRun.error) &&

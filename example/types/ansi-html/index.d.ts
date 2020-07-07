@@ -1,3 +1,3 @@
 declare module 'ansi-html' {
-  export default function(input: string): string
+  export default function (input: string): string
 }

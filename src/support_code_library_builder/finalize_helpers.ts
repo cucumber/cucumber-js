@@ -17,12 +17,12 @@ export function validateNoGeneratorFunctions({
   definitionConfigs,
 }: IValidateNoGeneratorFunctionsRequest): void {
   const generatorDefinitionConfigs = definitionConfigs.filter(
-    definitionConfig => isGenerator.fn(definitionConfig.code)
+    (definitionConfig) => isGenerator.fn(definitionConfig.code)
   )
   if (generatorDefinitionConfigs.length > 0) {
     const references = generatorDefinitionConfigs
       .map(
-        definitionConfig =>
+        (definitionConfig) =>
           `${path.relative(
             cwd,
             definitionConfig.uri

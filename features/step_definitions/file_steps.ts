@@ -7,7 +7,7 @@ import path from 'path'
 import Mustache from 'mustache'
 import { World } from '../support/world'
 
-Given(/^a file named "(.*)" with:$/, async function(
+Given(/^a file named "(.*)" with:$/, async function (
   this: World,
   filePath: string,
   fileContent: string
@@ -19,7 +19,7 @@ Given(/^a file named "(.*)" with:$/, async function(
   await fsExtra.outputFile(absoluteFilePath, fileContent)
 })
 
-Given(/^an empty file named "(.*)"$/, async function(
+Given(/^an empty file named "(.*)"$/, async function (
   this: World,
   filePath: string
 ) {
@@ -27,7 +27,7 @@ Given(/^an empty file named "(.*)"$/, async function(
   await fsExtra.outputFile(absoluteFilePath, '')
 })
 
-Given(/^a directory named "(.*)"$/, async function(
+Given(/^a directory named "(.*)"$/, async function (
   this: World,
   filePath: string
 ) {
@@ -35,7 +35,7 @@ Given(/^a directory named "(.*)"$/, async function(
   await fsExtra.mkdirp(absoluteFilePath)
 })
 
-Given(/^"([^"]*)" is an absolute path$/, function(
+Given(/^"([^"]*)" is an absolute path$/, function (
   this: World,
   filePath: string
 ) {
@@ -43,7 +43,7 @@ Given(/^"([^"]*)" is an absolute path$/, function(
   expect(path.isAbsolute(filePath)).to.eql(true)
 })
 
-Then(/^the file "([^"]*)" has the text:$/, async function(
+Then(/^the file "([^"]*)" has the text:$/, async function (
   this: World,
   filePath: string,
   text: string

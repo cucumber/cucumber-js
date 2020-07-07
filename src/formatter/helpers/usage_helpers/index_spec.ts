@@ -10,7 +10,7 @@ describe('Usage Helpers', () => {
       describe('without function definition wrapper', () => {
         it('includes stringified code', async () => {
           // Arrange
-          const code = function(): string {
+          const code = function (): string {
             return 'original code'
           }
           const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
@@ -36,7 +36,7 @@ describe('Usage Helpers', () => {
       describe('with function definition wrapper', () => {
         it('includes unwrapped version of stringified code', async () => {
           // Arrange
-          const code = function(): string {
+          const code = function (): string {
             return 'original code'
           }
           const supportCodeLibrary = buildSupportCodeLibrary(
@@ -44,7 +44,7 @@ describe('Usage Helpers', () => {
               Given('a step', code)
               setDefinitionFunctionWrapper(
                 (fn: Function) =>
-                  function(fn: Function) {
+                  function (fn: Function) {
                     if (fn.length === 1) {
                       return fn
                     }

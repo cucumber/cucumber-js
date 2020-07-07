@@ -9,15 +9,15 @@ import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import {
-  IMasterReport,
-  IMasterReportSupportCodeIds,
-  ISlaveCommand,
+  ICoordinatorReport,
+  ICoordinatorReportSupportCodeIds,
+  IWorkerCommand,
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 
-const runSlavePath = path.resolve(__dirname, 'run_slave.js')
+const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
-export interface INewMasterOptions {
+export interface INewCoordinatorOptions {
   cwd: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -28,12 +28,12 @@ export interface INewMasterOptions {
   supportCodeRequiredModules: string[]
 }
 
-interface ISlave {
+interface IWorker {
   closed: boolean
   process: ChildProcess
 }
 
-export default class Master {
+export default class Coordinator {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
@@ -41,7 +41,7 @@ export default class Master {
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private slaves: Dictionary<ISlave>
+  private workers: Dictionary<IWorker>
   private supportCodeIdMap: Dictionary<string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly supportCodePaths: string[]
@@ -57,7 +57,7 @@ export default class Master {
     supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules,
-  }: INewMasterOptions) {
+  }: INewCoordinatorOptions) {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
@@ -68,15 +68,15 @@ export default class Master {
     this.pickleIds = pickleIds
     this.nextPickleIdIndex = 0
     this.success = true
-    this.slaves = {}
+    this.workers = {}
     this.supportCodeIdMap = {}
   }
 
-  parseSlaveMessage(slave: ISlave, message: IMasterReport): void {
+  parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
     if (doesHaveValue(message.supportCodeIds)) {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
-      this.giveSlaveWork(slave)
+      this.giveWork(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
       const envelope = messages.Envelope.fromObject(
         JSON.parse(message.jsonEnvelope)
@@ -90,12 +90,12 @@ export default class Master {
       }
     } else {
       throw new Error(
-        `Unexpected message from slave: ${JSON.stringify(message)}`
+        `Unexpected message from worker: ${JSON.stringify(message)}`
       )
     }
   }
 
-  saveDefinitionIdMapping(message: IMasterReportSupportCodeIds): void {
+  saveDefinitionIdMapping(message: ICoordinatorReportSupportCodeIds): void {
     _.each(message.stepDefinitionIds, (id: string, index: number) => {
       this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
         index
@@ -126,32 +126,32 @@ export default class Master {
       }
       if (doesHaveValue(testStep.stepDefinitionIds)) {
         testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
-          id => this.supportCodeIdMap[id]
+          (id) => this.supportCodeIdMap[id]
         )
       }
     }
   }
 
-  startSlave(id: string, total: number): void {
-    const slaveProcess = fork(runSlavePath, [], {
+  startWorker(id: string, total: number): void {
+    const workerProcess = fork(runWorkerPath, [], {
       cwd: this.cwd,
       env: _.assign({}, process.env, {
         CUCUMBER_PARALLEL: 'true',
-        CUCUMBER_TOTAL_SLAVES: total,
-        CUCUMBER_SLAVE_ID: id,
+        CUCUMBER_TOTAL_WORKERS: total,
+        CUCUMBER_WORKER_ID: id,
       }),
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-    const slave = { closed: false, process: slaveProcess }
-    this.slaves[id] = slave
-    slave.process.on('message', (message: IMasterReport) => {
-      this.parseSlaveMessage(slave, message)
+    const worker = { closed: false, process: workerProcess }
+    this.workers[id] = worker
+    worker.process.on('message', (message: ICoordinatorReport) => {
+      this.parseWorkerMessage(worker, message)
     })
-    slave.process.on('close', exitCode => {
-      slave.closed = true
-      this.onSlaveClose(exitCode)
+    worker.process.on('close', (exitCode) => {
+      worker.closed = true
+      this.onWorkerProcessClose(exitCode)
     })
-    const initializeCommand: ISlaveCommand = {
+    const initializeCommand: IWorkerCommand = {
       initialize: {
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
@@ -159,14 +159,14 @@ export default class Master {
         options: this.options,
       },
     }
-    slave.process.send(initializeCommand)
+    worker.process.send(initializeCommand)
   }
 
-  onSlaveClose(exitCode: number): void {
+  onWorkerProcessClose(exitCode: number): void {
     if (exitCode !== 0) {
       this.success = false
     }
-    if (_.every(this.slaves, 'closed')) {
+    if (_.every(this.workers, 'closed')) {
       this.eventBroadcaster.emit(
         'envelope',
         messages.Envelope.fromObject({
@@ -187,18 +187,18 @@ export default class Master {
     // }
   }
 
-  run(numberOfSlaves: number, done: (success: boolean) => void): void {
+  run(numberOfWorkers: number, done: (success: boolean) => void): void {
     this.eventBroadcaster.emit('test-run-started')
-    _.times(numberOfSlaves, id =>
-      this.startSlave(id.toString(), numberOfSlaves)
+    _.times(numberOfWorkers, (id) =>
+      this.startWorker(id.toString(), numberOfWorkers)
     )
     this.onFinish = done
   }
 
-  giveSlaveWork(slave: ISlave): void {
+  giveWork(worker: IWorker): void {
     if (this.nextPickleIdIndex === this.pickleIds.length) {
-      const finalizeCommand: ISlaveCommand = { finalize: true }
-      slave.process.send(finalizeCommand)
+      const finalizeCommand: IWorkerCommand = { finalize: true }
+      worker.process.send(finalizeCommand)
       return
     }
     const pickleId = this.pickleIds[this.nextPickleIdIndex]
@@ -209,7 +209,7 @@ export default class Master {
     )
     const retries = retriesForPickle(pickle, this.options)
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
-    const runCommand: ISlaveCommand = {
+    const runCommand: IWorkerCommand = {
       run: {
         retries,
         skip,
@@ -217,7 +217,7 @@ export default class Master {
         gherkinDocument,
       },
     }
-    slave.process.send(runCommand)
+    worker.process.send(runCommand)
   }
 
   shouldCauseFailure(

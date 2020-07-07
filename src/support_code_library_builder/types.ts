@@ -44,44 +44,44 @@ export interface IParameterTypeDefinition<T> {
 }
 
 export interface IDefineSupportCodeMethods {
-  defineParameterType(options: IParameterTypeDefinition<any>): void
-  defineStep(pattern: DefineStepPattern, code: Function): void
-  defineStep(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-  setDefaultTimeout(milliseconds: number): void
-  setDefinitionFunctionWrapper(fn: Function): void
-  setWorldConstructor(fn: any): void
-  After(code: TestCaseHookFunction): void
-  After(tags: string, code: TestCaseHookFunction): void
-  After(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction): void
-  AfterAll(code: Function): void
-  AfterAll(options: IDefineTestRunHookOptions, code: Function): void
-  Before(code: TestCaseHookFunction): void
-  Before(tags: string, code: TestCaseHookFunction): void
-  Before(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction): void
-  BeforeAll(code: Function): void
-  BeforeAll(options: IDefineTestRunHookOptions, code: Function): void
-  Given(pattern: DefineStepPattern, code: Function): void
-  Given(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-  Then(pattern: DefineStepPattern, code: Function): void
-  Then(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
-  When(pattern: DefineStepPattern, code: Function): void
-  When(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions,
-    code: Function
-  ): void
+  defineParameterType: (options: IParameterTypeDefinition<any>) => void
+  defineStep: ((pattern: DefineStepPattern, code: Function) => void) &
+    ((
+      pattern: DefineStepPattern,
+      options: IDefineStepOptions,
+      code: Function
+    ) => void)
+  setDefaultTimeout: (milliseconds: number) => void
+  setDefinitionFunctionWrapper: (fn: Function) => void
+  setWorldConstructor: (fn: any) => void
+  After: ((code: TestCaseHookFunction) => void) &
+    ((tags: string, code: TestCaseHookFunction) => void) &
+    ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
+  AfterAll: ((code: Function) => void) &
+    ((options: IDefineTestRunHookOptions, code: Function) => void)
+  Before: ((code: TestCaseHookFunction) => void) &
+    ((tags: string, code: TestCaseHookFunction) => void) &
+    ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
+  BeforeAll: ((code: Function) => void) &
+    ((options: IDefineTestRunHookOptions, code: Function) => void)
+  Given: ((pattern: DefineStepPattern, code: Function) => void) &
+    ((
+      pattern: DefineStepPattern,
+      options: IDefineStepOptions,
+      code: Function
+    ) => void)
+  Then: ((pattern: DefineStepPattern, code: Function) => void) &
+    ((
+      pattern: DefineStepPattern,
+      options: IDefineStepOptions,
+      code: Function
+    ) => void)
+  When: ((pattern: DefineStepPattern, code: Function) => void) &
+    ((
+      pattern: DefineStepPattern,
+      options: IDefineStepOptions,
+      code: Function
+    ) => void)
 }
 
 export interface ISupportCodeLibrary {

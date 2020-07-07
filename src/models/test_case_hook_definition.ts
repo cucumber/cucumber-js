@@ -26,7 +26,7 @@ export default class TestCaseHookDefinition extends Definition
   async getInvocationParameters({
     hookParameter,
   }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
-    return Promise.resolve({
+    return await Promise.resolve({
       getInvalidCodeLengthMessage: () =>
         this.buildInvalidCodeLengthMessage('0 or 1', '2'),
       parameters: [hookParameter],

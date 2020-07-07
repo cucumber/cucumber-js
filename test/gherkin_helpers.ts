@@ -33,7 +33,7 @@ export async function parse({
       },
     },
   ]
-  return new Promise<IParsedSourceWithEnvelopes>((resolve, reject) => {
+  return await new Promise<IParsedSourceWithEnvelopes>((resolve, reject) => {
     let source: messages.ISource
     let gherkinDocument: messages.IGherkinDocument
     const pickles: messages.IPickle[] = []
@@ -83,7 +83,7 @@ export async function generateEvents({
     data,
     uri,
   })
-  envelopes.forEach(envelope => eventBroadcaster.emit('envelope', envelope))
+  envelopes.forEach((envelope) => eventBroadcaster.emit('envelope', envelope))
   return { source, gherkinDocument, pickles }
 }
 
