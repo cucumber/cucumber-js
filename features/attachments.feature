@@ -26,7 +26,7 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" "Before" hook has the attachments:
       | DATA     | MEDIA TYPE | MEDIA ENCODING |
-      | iVBORw== | image/png  | BASE64         |
+      | iVBORw== | image/png  | 1              |
 
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
@@ -45,7 +45,7 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" "Before" hook has the attachments:
       | DATA     | MEDIA TYPE | MEDIA ENCODING |
-      | iVBORw== | image/png  | BASE64         |
+      | iVBORw== | image/png  | 1              |
 
     Scenario: Attach a stream (promise)
       Given a file named "features/support/hooks.js" with:
@@ -65,7 +65,7 @@ Feature: Attachments
       When I run cucumber-js
       Then scenario "some scenario" "Before" hook has the attachments:
         | DATA     | MEDIA TYPE | MEDIA ENCODING |
-        | iVBORw== | image/png  | BASE64         |
+        | iVBORw== | image/png  | 1              |
 
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
@@ -79,7 +79,7 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" "Before" hook has the attachments:
       | DATA | MEDIA TYPE | MEDIA ENCODING |
-      | text | text/plain | UTF8           |
+      | text | text/plain | 0              |
 
   Scenario: Attach from an after hook
     Given a file named "features/support/hooks.js" with:
@@ -93,7 +93,7 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" "After" hook has the attachments:
       | DATA | MEDIA TYPE | MEDIA ENCODING |
-      | text | text/plain | UTF8           |
+      | text | text/plain | 0              |
 
   Scenario: Attach from a step definition
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -107,7 +107,7 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" step "Given a step" has the attachments:
       | DATA | MEDIA TYPE | MEDIA ENCODING |
-      | text | text/plain | UTF8           |
+      | text | text/plain | 0              |
 
   @spawn
   Scenario: Attaching after hook/step finishes

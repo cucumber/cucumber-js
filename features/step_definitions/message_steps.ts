@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { find, filter, toNumber } from 'lodash'
 import { Then } from '../../'
 import { expect } from 'chai'
 import DataTable from '../../src/models/data_table'
@@ -26,7 +26,7 @@ type StringifiedStatus =
 const { Status } = messages.TestStepFinished.TestStepResult
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
-  const testCaseStartedEvents = _.filter(
+  const testCaseStartedEvents = filter(
     this.lastRun.envelopes,
     (e) => e.testCaseStarted
   )
@@ -83,7 +83,7 @@ Then('scenario {string} step {string} has status {string}', function (
   status: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
-  const testStepResult = _.find(testStepResults, ['text', stepText])
+  const testStepResult = find(testStepResults, ['text', stepText])
   expect(testStepResult.result.status).to.eql(
     Status[status.toUpperCase() as StringifiedStatus]
   )
@@ -103,7 +103,7 @@ Then(
       pickleName,
       attempt
     )
-    const testStepResult = _.find(testStepResults, ['text', stepText])
+    const testStepResult = find(testStepResults, ['text', stepText])
     expect(testStepResult.result.status).to.eql(
       Status[status.toUpperCase() as StringifiedStatus]
     )
@@ -117,7 +117,7 @@ Then('scenario {string} {string} hook has status {string}', function (
   status: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
-  const testStepResult = _.find(testStepResults, ['text', hookKeyword])
+  const testStepResult = find(testStepResults, ['text', hookKeyword])
   expect(testStepResult.result.status).to.eql(
     Status[status.toUpperCase() as StringifiedStatus]
   )
@@ -130,7 +130,7 @@ Then('scenario {string} step {string} failed with:', function (
   errorMessage: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
-  const testStepResult = _.find(testStepResults, ['text', stepText])
+  const testStepResult = find(testStepResults, ['text', stepText])
   if (semver.satisfies(process.version, '>=14.0.0')) {
     errorMessage = errorMessage.replace(
       '{ member: [Circular] }',
@@ -153,7 +153,7 @@ Then('scenario {string} attempt {int} step {string} failed with:', function (
     pickleName,
     attempt
   )
-  const testStepResult = _.find(testStepResults, ['text', stepText])
+  const testStepResult = find(testStepResults, ['text', stepText])
   expect(testStepResult.result.status).to.eql(Status.FAILED)
   expect(testStepResult.result.message).to.include(errorMessage)
 })
@@ -188,7 +188,7 @@ Then('scenario {string} step {string} has the attachments:', function (
     return {
       body: x.DATA,
       mediaType: x['MEDIA TYPE'],
-      contentEncoding: x['MEDIA ENCODING'],
+      contentEncoding: toNumber(x['MEDIA ENCODING']),
     }
   })
   const stepAttachments = getTestStepAttachmentsForStep(
@@ -218,7 +218,7 @@ Then('scenario {string} {string} hook has the attachments:', function (
       return {
         body: x.DATA,
         mediaType: x['MEDIA TYPE'],
-        contentEncoding: x['MEDIA ENCODING'],
+        contentEncoding: toNumber(x['MEDIA ENCODING']),
       }
     })
   const hookAttachments = getTestStepAttachmentsForHook(
