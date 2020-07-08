@@ -310,7 +310,7 @@ describe('helpers', () => {
     })
 
     describe('feature with scenario that does not match the filter', () => {
-      it('emits pickle and pickleRejected events and returns an empty array', async function () {
+      it('emits pickle event and returns an empty array', async function () {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
@@ -340,7 +340,7 @@ describe('helpers', () => {
 
         // Assert
         expect(result).to.eql([])
-        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes).to.have.lengthOf(3)
         expect(envelopes[0]).to.eql(sourceEnvelope)
         expect(envelopes[1].gherkinDocument).to.exist()
         expect(envelopes[2].pickle).to.exist()
@@ -357,7 +357,7 @@ describe('helpers', () => {
     })
 
     describe('feature with scenario that matches the filter', () => {
-      it('emits pickleAccepted and returns the pickleId', async function () {
+      it('emits pickle and returns the pickleId', async function () {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
@@ -384,7 +384,7 @@ describe('helpers', () => {
 
         // Assert
         expect(result).to.eql([envelopes[2].pickle.id])
-        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes).to.have.lengthOf(3)
         expect(envelopes[0]).to.eql(sourceEnvelope)
         expect(envelopes[1].gherkinDocument).to.exist()
         expect(envelopes[2].pickle).to.exist()
