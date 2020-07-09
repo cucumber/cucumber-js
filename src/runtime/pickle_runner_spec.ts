@@ -235,20 +235,13 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        // expect(envelopes[3].testStepFinished.testResult).to.eql(
-        //   messages.TestStepFinished.TestStepResult.fromObject({
-        //     message,
-        //     status: Status.AMBIGUOUS,
-        //   })
-        // )
-        // expect(envelopes[4].testCaseFinished.testResult).to.eql(
-        //   messages.TestStepFinished.TestStepResult.fromObject({
-        //     duration: getZeroDuration(),
-        //     message,
-        //     status: Status.AMBIGUOUS,
-        //   })
-        // )
-        // expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          messages.TestStepFinished.TestStepResult.fromObject({
+            message,
+            status: Status.AMBIGUOUS,
+          })
+        )
+        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult)
       })
     })
 
@@ -273,18 +266,12 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        // expect(envelopes[3].testStepFinished.testResult).to.eql(
-        //   messages.TestStepFinished.TestStepResult.fromObject({
-        //     status: Status.UNDEFINED,
-        //   })
-        // )
-        // expect(envelopes[4].testCaseFinished.testResult).to.eql(
-        //   messages.TestStepFinished.TestStepResult.fromObject({
-        //     duration: getZeroDuration(),
-        //     status: Status.UNDEFINED,
-        //   })
-        // )
-        // expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          messages.TestStepFinished.TestStepResult.fromObject({
+            status: Status.UNDEFINED,
+          })
+        )
+        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult)
       })
     })
 
@@ -464,7 +451,7 @@ describe('PickleRunner', () => {
             },
           }),
         ])
-        // expect(result).to.eql(envelopes[8].testCaseFinished.testResult)
+        expect(result).to.eql(envelopes[7].testStepFinished.testStepResult)
       })
     })
 
@@ -494,18 +481,12 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        // expect(envelopes[3].testStepFinished.testResult).to.eql(
-        //   messages.TestStepFinished.TestStepResult.fromObject({
-        //     status: Status.SKIPPED,
-        //   })
-        // )
-        // expect(envelopes[4].testCaseFinished.testResult).to.eql(
-        //   messages.TestStepFinished.TestStepResult.fromObject({
-        //     duration: getZeroDuration(),
-        //     status: Status.SKIPPED,
-        //   })
-        // )
-        // expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          messages.TestStepFinished.TestStepResult.fromObject({
+            status: Status.SKIPPED,
+          })
+        )
+        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult)
       })
     })
 
@@ -565,7 +546,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        // expect(result).to.eql(envelopes[8].testCaseFinished.testResult)
+        expect(result).to.eql(envelopes[7].testStepFinished.testStepResult)
       })
     })
   })
