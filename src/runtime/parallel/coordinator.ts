@@ -14,6 +14,11 @@ import {
   IWorkerCommand,
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
+import {
+  ITestRunStopwatch,
+  PredictableTestRunStopwatch,
+  RealTestRunStopwatch,
+} from '../stopwatch'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -37,6 +42,7 @@ export default class Coordinator {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
+  private readonly stopwatch: ITestRunStopwatch
   private onFinish: (success: boolean) => void
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
@@ -61,6 +67,9 @@ export default class Coordinator {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
+    this.stopwatch = options.predictableIds
+      ? new PredictableTestRunStopwatch()
+      : new RealTestRunStopwatch()
     this.options = options
     this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
@@ -213,6 +222,7 @@ export default class Coordinator {
       run: {
         retries,
         skip,
+        elapsed: this.stopwatch.duration().nanos(),
         pickle,
         gherkinDocument,
       },

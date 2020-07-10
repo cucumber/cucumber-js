@@ -1,14 +1,22 @@
 import { messages } from '@cucumber/messages'
-import { stopwatch, Stopwatch, duration } from 'durations'
+import { stopwatch, Stopwatch, duration, Duration } from 'durations'
 
 export interface ITestRunStopwatch {
+  from: (duration: Duration) => ITestRunStopwatch
   start: () => ITestRunStopwatch
   stop: () => ITestRunStopwatch
+  duration: () => Duration
   timestamp: () => messages.ITimestamp
 }
 
 export class RealTestRunStopwatch implements ITestRunStopwatch {
   private readonly stopwatch: Stopwatch = stopwatch()
+  private base: Duration = null
+
+  from(duration: Duration): ITestRunStopwatch {
+    this.base = duration
+    return this
+  }
 
   start(): ITestRunStopwatch {
     this.stopwatch.start()
@@ -20,17 +28,31 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
     return this
   }
 
+  duration(): Duration {
+    const current = this.stopwatch.duration()
+    if (this.base !== null) {
+      return duration(this.base.nanos() + current.nanos())
+    }
+    return current
+  }
+
   timestamp(): messages.ITimestamp {
-    const duration = this.stopwatch.duration()
+    const current = this.duration()
     return {
-      nanos: duration.nanos(),
-      seconds: duration.seconds(),
+      nanos: current.nanos(),
+      seconds: current.seconds(),
     }
   }
 }
 
 export class PredictableTestRunStopwatch implements ITestRunStopwatch {
-  private count = 0
+  private readonly count = 0
+  private base: Duration = null
+
+  from(duration: Duration): ITestRunStopwatch {
+    this.base = duration
+    return this
+  }
 
   start(): ITestRunStopwatch {
     return this
@@ -40,12 +62,19 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
     return this
   }
 
+  duration(): Duration {
+    const current = duration(this.count + 1000000)
+    if (this.base !== null) {
+      return duration(this.base.nanos() + current.nanos())
+    }
+    return current
+  }
+
   timestamp(): messages.ITimestamp {
-    this.count++
-    const nanos = this.count * 1000000
+    const current = this.duration()
     return {
-      nanos,
-      seconds: duration(nanos).seconds(),
+      nanos: current.nanos(),
+      seconds: current.seconds(),
     }
   }
 }

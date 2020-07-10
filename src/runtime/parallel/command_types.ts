@@ -19,6 +19,7 @@ export interface IWorkerCommandInitialize {
 export interface IWorkerCommandRun {
   retries: number
   skip: boolean
+  elapsed: number
   pickle: messages.IPickle
   gherkinDocument: messages.IGherkinDocument
 }

@@ -16,6 +16,8 @@ import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { IRuntimeOptions } from '../index'
+import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
+import { duration } from 'durations'
 
 const { uuid } = IdGenerator
 
@@ -121,13 +123,17 @@ export default class Worker {
   async runTestCase({
     gherkinDocument,
     pickle,
+    elapsed,
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
+    const stopwatch = this.options.predictableIds
+      ? new PredictableTestRunStopwatch()
+      : new RealTestRunStopwatch()
+    stopwatch.from(duration(elapsed))
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
-      // TODO fix stopwatch for parallel
-      stopwatch: null,
+      stopwatch,
       gherkinDocument,
       newId: this.newId,
       pickle,
