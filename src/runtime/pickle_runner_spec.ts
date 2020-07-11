@@ -369,7 +369,7 @@ describe('PickleRunner', () => {
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              testStepResult: {
+              testResult: {
                 duration: millisecondsToDuration(0),
                 message: 'error',
                 status: Status.FAILED,
@@ -435,7 +435,7 @@ describe('PickleRunner', () => {
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '3',
-              testStepResult: {
+              testResult: {
                 duration: millisecondsToDuration(0),
                 status: Status.PASSED,
               },
