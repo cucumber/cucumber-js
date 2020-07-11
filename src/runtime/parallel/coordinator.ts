@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _, {Dictionary, values} from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'
@@ -187,13 +187,13 @@ export default class Coordinator {
   }
 
   parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
-    // TODO derive from steps, figure out willBeRetried
-    // if (
-    //   !testCaseFinished.willBeRetried &&
-    //   this.shouldCauseFailure(testCaseFinished.status)
-    // ) {
-    //   this.success = false
-    // }
+    // TODO figure out willBeRetried
+    const { result } = this.eventDataCollector.getTestCaseAttempt(
+      testCaseFinished.testCaseStartedId
+    )
+    if (!result.willBeRetried && this.shouldCauseFailure(result.status)) {
+      this.success = false
+    }
   }
 
   run(numberOfWorkers: number, done: (success: boolean) => void): void {
