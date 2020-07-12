@@ -253,6 +253,7 @@ export default class PickleRunner {
       this.result.status === Status.FAILED &&
       attempt + 1 < this.maxAttempts
     ) {
+      testStepResult.willBeRetried = true
       this.result.willBeRetried = true
     }
     if (testStepResult.message !== '') {
@@ -312,7 +313,6 @@ export default class PickleRunner {
         messages.Envelope.fromObject({
           testCaseFinished: {
             testCaseStartedId: this.currentTestCaseStartedId,
-            testResult: this.result,
             timestamp: this.stopwatch.timestamp(),
           },
         })
