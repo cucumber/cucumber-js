@@ -253,6 +253,10 @@ export default class PickleRunner {
       this.result.status === Status.FAILED &&
       attempt + 1 < this.maxAttempts
     ) {
+      /*
+      TODO dont rely on `testStepResult.willBeRetried`, it will be moved or removed
+      see https://github.com/cucumber/cucumber/issues/902
+       */
       testStepResult.willBeRetried = true
       this.result.willBeRetried = true
     }
