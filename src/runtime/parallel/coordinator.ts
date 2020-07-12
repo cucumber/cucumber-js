@@ -1,4 +1,4 @@
-import _, {Dictionary, values} from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'

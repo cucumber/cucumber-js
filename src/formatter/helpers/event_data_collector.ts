@@ -118,11 +118,11 @@ export default class EventDataCollector {
   }
 
   storeTestCaseResult({ testCaseStartedId }: messages.ITestCaseFinished): void {
-    // TODO figure out willBeRetried
     const stepResults = values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
-    const worstResult = this.query.getWorstTestStepResult(stepResults)
-    this.testCaseAttemptDataMap[testCaseStartedId].result = worstResult
+    this.testCaseAttemptDataMap[
+      testCaseStartedId
+    ].result = this.query.getWorstTestStepResult(stepResults)
   }
 }
