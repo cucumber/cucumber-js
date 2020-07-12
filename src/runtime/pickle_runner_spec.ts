@@ -151,7 +151,6 @@ describe('PickleRunner', () => {
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              testResult: passedTestResult,
               timestamp: {
                 nanos: 4000000,
                 seconds: {
@@ -240,7 +239,12 @@ describe('PickleRunner', () => {
             status: Status.AMBIGUOUS,
           })
         )
-        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult)
+        expect(result.status).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
+        )
+        expect(result.message).to.eql(
+          envelopes[3].testStepFinished.testStepResult.message
+        )
       })
     })
 
@@ -270,7 +274,9 @@ describe('PickleRunner', () => {
             status: Status.UNDEFINED,
           })
         )
-        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult)
+        expect(result.status).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
+        )
       })
     })
 
@@ -354,6 +360,7 @@ describe('PickleRunner', () => {
                 duration: millisecondsToDuration(0),
                 message: 'error',
                 status: Status.FAILED,
+                willBeRetried: true,
               },
               testStepId: '1',
               timestamp: {
@@ -369,12 +376,6 @@ describe('PickleRunner', () => {
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              testResult: {
-                duration: millisecondsToDuration(0),
-                message: 'error',
-                status: Status.FAILED,
-                willBeRetried: true,
-              },
               timestamp: {
                 nanos: 4000000,
                 seconds: {
@@ -435,10 +436,6 @@ describe('PickleRunner', () => {
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '3',
-              testResult: {
-                duration: millisecondsToDuration(0),
-                status: Status.PASSED,
-              },
               timestamp: {
                 nanos: 8000000,
                 seconds: {
@@ -485,7 +482,9 @@ describe('PickleRunner', () => {
             status: Status.SKIPPED,
           })
         )
-        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult)
+        expect(result.status).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
+        )
       })
     })
 
@@ -545,7 +544,9 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result).to.eql(envelopes[7].testStepFinished.testStepResult)
+        expect(result.status).to.eql(
+          envelopes[7].testStepFinished.testStepResult.status
+        )
       })
     })
   })
