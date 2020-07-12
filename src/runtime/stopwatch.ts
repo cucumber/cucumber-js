@@ -46,7 +46,7 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
 }
 
 export class PredictableTestRunStopwatch implements ITestRunStopwatch {
-  private readonly count = 0
+  private count = 0
   private base: Duration = null
 
   from(duration: Duration): ITestRunStopwatch {
@@ -63,7 +63,7 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   }
 
   duration(): Duration {
-    const current = duration(this.count + 1000000)
+    const current = duration(this.count * 1000000)
     if (this.base !== null) {
       return duration(this.base.nanos() + current.nanos())
     }
@@ -71,6 +71,7 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
+    this.count++
     const current = this.duration()
     return {
       nanos: current.nanos(),
