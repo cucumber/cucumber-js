@@ -187,7 +187,6 @@ export default class Coordinator {
   }
 
   parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
-    // TODO figure out willBeRetried
     const { result } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )

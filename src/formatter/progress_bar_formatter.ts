@@ -50,7 +50,6 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
-    // TODO figure out willBeRetried
     const { result } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
