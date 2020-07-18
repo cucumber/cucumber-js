@@ -48,6 +48,17 @@ async function testPickleRunner(
   return { envelopes, result }
 }
 
+function predictableTimestamp(counter: number): any {
+  return {
+    nanos: 1000000 * counter,
+    seconds: {
+      high: 0,
+      low: 0,
+      unsigned: false,
+    },
+  }
+}
+
 describe('PickleRunner', () => {
   let clock: InstalledClock
 
@@ -109,28 +120,14 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
-              timestamp: {
-                nanos: 1000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(1),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: {
-                nanos: 2000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(2),
             },
           }),
           messages.Envelope.fromObject({
@@ -138,27 +135,13 @@ describe('PickleRunner', () => {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
-              timestamp: {
-                nanos: 3000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(3),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: {
-                nanos: 4000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(4),
             },
           }),
         ])
@@ -329,28 +312,14 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
-              timestamp: {
-                nanos: 1000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(1),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: {
-                nanos: 2000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(2),
             },
           }),
           messages.Envelope.fromObject({
@@ -363,27 +332,13 @@ describe('PickleRunner', () => {
                 willBeRetried: true,
               },
               testStepId: '1',
-              timestamp: {
-                nanos: 3000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(3),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: {
-                nanos: 4000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(4),
             },
           }),
           messages.Envelope.fromObject({
@@ -391,28 +346,14 @@ describe('PickleRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
-              timestamp: {
-                nanos: 5000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(5),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
-              timestamp: {
-                nanos: 6000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(6),
             },
           }),
           messages.Envelope.fromObject({
@@ -423,27 +364,13 @@ describe('PickleRunner', () => {
                 status: Status.PASSED,
               },
               testStepId: '1',
-              timestamp: {
-                nanos: 7000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(7),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '3',
-              timestamp: {
-                nanos: 8000000,
-                seconds: {
-                  high: 0,
-                  low: 0,
-                  unsigned: false,
-                },
-              },
+              timestamp: predictableTimestamp(8),
             },
           }),
         ])
