@@ -84,7 +84,7 @@ async function testProgressBarFormatter({
 }
 
 describe('ProgressBarFormatter', () => {
-  describe('pickleAccepted / testStepStarted', () => {
+  describe('testStepStarted', () => {
     it('initializes a progress bar with the total number of steps for a scenario', async () => {
       // Arrange
       const sources = [
