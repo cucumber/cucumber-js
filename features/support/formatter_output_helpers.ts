@@ -1,5 +1,9 @@
 import _ from 'lodash'
-import { doesHaveValue, valueOrDefault } from '../../src/value_checker'
+import {
+  doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
+} from '../../src/value_checker'
 import {
   IJsonFeature,
   IJsonScenario,
@@ -43,7 +47,10 @@ export function normalizeMessageOutput(
       normalizeProtobufObject(e[key], cwd)
     }
   })
-  return envelopeObjects
+  return envelopeObjects.filter((e: any) => {
+    // filter off meta objects, almost none of it predictable/useful for testing
+    return doesNotHaveValue(e.meta)
+  })
 }
 
 export function normalizeJsonOutput(str: string, cwd: string): IJsonFeature[] {
