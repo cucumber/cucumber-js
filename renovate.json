@@ -15,5 +15,8 @@
       "packagePatterns": ["mocha", "chai", "sinon"],
       "groupName": "unit test packages"
     }
+  ],
+  "schedule": [
+    "before 3am on the first day of the month"
   ]
 }
