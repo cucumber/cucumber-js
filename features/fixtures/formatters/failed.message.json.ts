@@ -3,10 +3,7 @@ module.exports = [
     source: {
       uri: 'features/a.feature',
       data: 'Feature: a feature\n  Scenario: a scenario\n    Given a step',
-      media: {
-        encoding: 'UTF8',
-        contentType: 'text/x.cucumber.gherkin+plain',
-      },
+      mediaType: 'text/x.cucumber.gherkin+plain',
     },
   },
   {
@@ -64,12 +61,27 @@ module.exports = [
     },
   },
   {
-    pickleAccepted: {
-      pickleId: '4',
+    stepDefinition: {
+      id: '0',
+      pattern: {
+        source: '/^a step$/',
+        type: 'REGULAR_EXPRESSION',
+      },
+      sourceReference: {
+        uri: 'features/step_definitions/steps.js',
+        location: {
+          line: 3,
+        },
+      },
     },
   },
   {
-    testRunStarted: {},
+    testRunStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 0,
+      },
+    },
   },
   {
     testCase: {
@@ -86,6 +98,10 @@ module.exports = [
   },
   {
     testCaseStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 1000000,
+      },
       attempt: 0,
       testCaseId: '5',
       id: '7',
@@ -93,20 +109,28 @@ module.exports = [
   },
   {
     testStepStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 2000000,
+      },
       testStepId: '6',
       testCaseStartedId: '7',
     },
   },
   {
     testStepFinished: {
-      testResult: {
+      testStepResult: {
         status: 'FAILED',
         message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:3:49)',
+          'Error: my error\n    at World.<anonymous> (/Users/davidgoss/Documents/Projects/cucumber-js/tmp/formatters.feature_49/features/step_definitions/steps.js:3:49)',
         duration: {
           seconds: '0',
-          nanos: 0,
+          nanos: 1000000,
         },
+      },
+      timestamp: {
+        seconds: '0',
+        nanos: 3000000,
       },
       testStepId: '6',
       testCaseStartedId: '7',
@@ -114,14 +138,9 @@ module.exports = [
   },
   {
     testCaseFinished: {
-      testResult: {
-        status: 'FAILED',
-        message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:3:49)',
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+      timestamp: {
+        seconds: '0',
+        nanos: 4000000,
       },
       testCaseStartedId: '7',
     },
@@ -129,6 +148,10 @@ module.exports = [
   {
     testRunFinished: {
       success: false,
+      timestamp: {
+        seconds: '0',
+        nanos: 5000000,
+      },
     },
   },
 ]
