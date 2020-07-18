@@ -1,4 +1,4 @@
-import { find, filter, toNumber } from 'lodash'
+import { find, filter } from 'lodash'
 import { Then } from '../../'
 import { expect } from 'chai'
 import DataTable from '../../src/models/data_table'
@@ -24,6 +24,11 @@ type StringifiedStatus =
   | 'FAILED'
 
 const { Status } = messages.TestStepFinished.TestStepResult
+
+const ENCODING_MAP: { [key: string]: messages.Attachment.ContentEncoding } = {
+  IDENTITY: messages.Attachment.ContentEncoding.IDENTITY,
+  BASE64: messages.Attachment.ContentEncoding.BASE64,
+}
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
   const testCaseStartedEvents = filter(
@@ -188,7 +193,7 @@ Then('scenario {string} step {string} has the attachments:', function (
     return {
       body: x.DATA,
       mediaType: x['MEDIA TYPE'],
-      contentEncoding: toNumber(x['MEDIA ENCODING']),
+      contentEncoding: ENCODING_MAP[x['MEDIA ENCODING']],
     }
   })
   const stepAttachments = getTestStepAttachmentsForStep(
@@ -218,7 +223,7 @@ Then('scenario {string} {string} hook has the attachments:', function (
       return {
         body: x.DATA,
         mediaType: x['MEDIA TYPE'],
-        contentEncoding: toNumber(x['MEDIA ENCODING']),
+        contentEncoding: ENCODING_MAP[x['MEDIA ENCODING']],
       }
     })
   const hookAttachments = getTestStepAttachmentsForHook(
