@@ -21,10 +21,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * don't execute BeforeAll and AfterAll hooks when in dry-run
 * support correct case for `--retry-tag-filter` CLI argument
 
-#### Internals
-
-* Bump Lodash
-
 ### [6.0.5](https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5) (2019-11-13)
 
 #### Bug fixes
