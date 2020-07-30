@@ -122,7 +122,7 @@ module.exports = [
       testStepResult: {
         status: 'FAILED',
         message:
-          'Error: my error\n    at World.<anonymous> (/Users/davidgoss/Documents/Projects/cucumber-js/tmp/formatters.feature_49/features/step_definitions/steps.js:3:49)',
+          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:3:49)',
         duration: {
           seconds: '0',
           nanos: 1000000,
