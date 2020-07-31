@@ -10,11 +10,12 @@ import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
 import os from 'os'
-import { messages } from '@cucumber/messages'
+import { messages, IdGenerator } from '@cucumber/messages'
 import readPkgUp from 'read-pkg-up'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { builtinParameterTypes } from '../support_code_library_builder'
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -148,6 +149,31 @@ export async function emitMetaMessage(
   )
 }
 
+function emitParameterTypes(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter,
+  newId: IdGenerator.NewId
+): void {
+  for (const parameterType of supportCodeLibrary.parameterTypeRegistry
+    .parameterTypes) {
+    if (builtinParameterTypes.includes(parameterType.name)) {
+      continue
+    }
+    eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        parameterType: {
+          id: newId(),
+          name: parameterType.name,
+          preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
+          regularExpressions: parameterType.regexpStrings,
+          useForSnippets: parameterType.useForSnippets,
+        },
+      })
+    )
+  }
+}
+
 function emitStepDefinitions(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
@@ -235,10 +261,13 @@ function emitTestRunHooks(
 export function emitSupportCodeMessages({
   eventBroadcaster,
   supportCodeLibrary,
+  newId,
 }: {
   eventBroadcaster: EventEmitter
   supportCodeLibrary: ISupportCodeLibrary
+  newId: IdGenerator.NewId
 }): void {
+  emitParameterTypes(supportCodeLibrary, eventBroadcaster, newId)
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
   emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
   emitTestRunHooks(supportCodeLibrary, eventBroadcaster)

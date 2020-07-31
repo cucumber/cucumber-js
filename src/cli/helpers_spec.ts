@@ -7,13 +7,14 @@ import {
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
-import { messages } from '@cucumber/messages'
+import { messages, IdGenerator } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { GherkinStreams } from '@cucumber/gherkin'
 import { Readable } from 'stream'
 import StepDefinition from '../models/step_definition'
 import {
   CucumberExpression,
+  ParameterType,
   ParameterTypeRegistry,
   RegularExpression,
 } from 'cucumber-expressions'
@@ -71,11 +72,12 @@ function testEmitSupportCodeMessages(
         afterTestRunHookDefinitions: [],
         afterTestCaseHookDefinitions: [],
         defaultTimeout: 0,
-        parameterTypeRegistry: null,
+        parameterTypeRegistry: new ParameterTypeRegistry(),
         World: null,
       },
       supportCode
     ),
+    newId: IdGenerator.incrementing(),
   })
   return envelopes
 }
@@ -93,6 +95,35 @@ describe('helpers', () => {
     })
   })
   describe('emitSupportCodeMessages', () => {
+    it('emits messages for parameter types', () => {
+      const parameterTypeRegistry = new ParameterTypeRegistry()
+      parameterTypeRegistry.defineParameterType(
+        new ParameterType<string>(
+          'flight',
+          ['([A-Z]{3})-([A-Z]{3})'],
+          null,
+          () => 'argh',
+          true,
+          false
+        )
+      )
+
+      const envelopes = testEmitSupportCodeMessages({
+        parameterTypeRegistry,
+      })
+
+      expect(envelopes).to.deep.eq([
+        messages.Envelope.fromObject({
+          parameterType: {
+            id: '0',
+            name: 'flight',
+            preferForRegularExpressionMatch: false,
+            regularExpressions: ['([A-Z]{3})-([A-Z]{3})'],
+            useForSnippets: true,
+          },
+        }),
+      ])
+    })
     it('emits messages for step definitions using cucumber expressions', () => {
       const envelopes = testEmitSupportCodeMessages({
         stepDefinitions: [
