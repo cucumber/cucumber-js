@@ -92,6 +92,7 @@ module.exports = [
           id: '6',
           pickleStepId: '3',
           stepDefinitionIds: ['0'],
+          stepMatchArgumentsLists: [{}],
         },
       ],
     },
