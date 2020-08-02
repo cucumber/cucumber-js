@@ -77,7 +77,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 8,
                     match: {
-                      location: 'json_formatter_steps.ts:11',
+                      location: 'json_formatter_steps.ts:12',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',
@@ -247,8 +247,35 @@ describe('JsonFormatter', () => {
     })
 
     describe('with attachments', () => {
-      it('outputs the step with embeddings', function () {
-        // TODO
+      it('outputs the step with embeddings', async function () {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a step that attaches',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        const steps = JSON.parse(output)[0].elements[0].steps
+        expect(steps[0].embeddings).to.deep.eq([
+          {
+            data: 'iVBORw==',
+            mime_type: 'image/png',
+          },
+        ])
       })
     })
 
@@ -386,7 +413,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 11,
                     match: {
-                      location: 'json_formatter_steps.ts:11',
+                      location: 'json_formatter_steps.ts:12',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',
@@ -413,7 +440,7 @@ describe('JsonFormatter', () => {
                     arguments: [],
                     line: 16,
                     match: {
-                      location: 'json_formatter_steps.ts:11',
+                      location: 'json_formatter_steps.ts:12',
                     },
                     keyword: 'Given ',
                     name: 'a passing step',
