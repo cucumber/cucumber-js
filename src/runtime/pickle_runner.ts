@@ -12,8 +12,9 @@ import {
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
-import { doesNotHaveValue } from '../value_checker'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
+import { Group } from '@cucumber/cucumber-expressions'
 
 const { Status } = messages.TestStepFinished.TestStepResult
 
@@ -161,10 +162,7 @@ export default class PickleRunner {
               return {
                 stepMatchArguments: result.map((arg) => {
                   return {
-                    group: {
-                      start: arg.group.start,
-                      value: arg.group.value,
-                    },
+                    group: this.mapArgumentGroup(arg.group),
                     parameterTypeName: arg.parameterType.name,
                   }
                 }),
@@ -178,6 +176,18 @@ export default class PickleRunner {
       'envelope',
       messages.Envelope.fromObject({ testCase })
     )
+  }
+
+  private mapArgumentGroup(
+    group: Group
+  ): messages.TestCase.TestStep.StepMatchArgumentsList.StepMatchArgument.IGroup {
+    return {
+      start: group.start,
+      value: group.value,
+      children: doesHaveValue(group.children)
+        ? group.children.map((child) => this.mapArgumentGroup(child))
+        : undefined,
+    }
   }
 
   getAfterHookDefinitions(): TestCaseHookDefinition[] {
