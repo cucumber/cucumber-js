@@ -156,6 +156,20 @@ export default class PickleRunner {
             id: testStep.id,
             pickleStepId: testStep.pickleStep.id,
             stepDefinitionIds: testStep.stepDefinitions.map((x) => x.id),
+            stepMatchArgumentsLists: testStep.stepDefinitions.map((x) => {
+              const result = x.expression.match(testStep.pickleStep.text)
+              return {
+                stepMatchArguments: result.map((arg) => {
+                  return {
+                    group: {
+                      start: arg.group.start,
+                      value: arg.group.value,
+                    },
+                    parameterTypeName: arg.parameterType.name,
+                  }
+                }),
+              }
+            }),
           }
         }
       }),
