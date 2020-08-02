@@ -111,6 +111,11 @@ describe('PickleRunner', () => {
                   id: '1',
                   pickleStepId: pickle.steps[0].id,
                   stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
                 },
               ],
             },
@@ -303,6 +308,11 @@ describe('PickleRunner', () => {
                   id: '1',
                   pickleStepId: pickle.steps[0].id,
                   stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
                 },
               ],
             },
@@ -460,6 +470,11 @@ describe('PickleRunner', () => {
                   id: '2',
                   pickleStepId: pickle.steps[0].id,
                   stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
                 },
                 {
                   id: '3',
