@@ -310,11 +310,11 @@ describe('helpers', () => {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
-          source: {
+          source: messages.Source.fromObject({
             data: '',
             mediaType: 'text/x.cucumber.gherkin+plain',
             uri: '/project/features/a.feature',
-          },
+          }),
         })
         const gherkinMessageStream = GherkinStreams.fromSources(
           [sourceEnvelope],
@@ -345,11 +345,11 @@ describe('helpers', () => {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
-          source: {
+          source: messages.Source.fromObject({
             data: '@tagA\nFeature: a\nScenario: b\nGiven a step',
             mediaType: 'text/x.cucumber.gherkin+plain',
             uri: '/project/features/a.feature',
-          },
+          }),
         })
         const gherkinMessageStream = GherkinStreams.fromSources(
           [sourceEnvelope],
@@ -392,11 +392,11 @@ describe('helpers', () => {
         // Arrange
         const cwd = '/project'
         const sourceEnvelope = messages.Envelope.create({
-          source: {
+          source: messages.Source.fromObject({
             data: 'Feature: a\nScenario: b\nGiven a step',
             mediaType: 'text/x.cucumber.gherkin+plain',
             uri: '/project/features/a.feature',
-          },
+          }),
         })
         const gherkinMessageStream = GherkinStreams.fromSources(
           [sourceEnvelope],
