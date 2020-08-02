@@ -49,6 +49,7 @@ describe('Cucumber Compatibility Kit', () => {
       expect(actualMessages)
         .excludingEvery([
           // TODO normalise uris
+          'body',
           'uri',
         ])
         .to.deep.eq(expectedMessages)

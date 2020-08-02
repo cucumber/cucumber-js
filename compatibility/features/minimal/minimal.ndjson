@@ -1,0 +1,12 @@
+{"meta":{"protocolVersion":"12.2.0","implementation":{"name":"fake-cucumber","version":"7.1.0"},"runtime":{"name":"node.js","version":"14.4.0"},"os":{"name":"darwin","version":"19.5.0"},"cpu":{"name":"x64"},"ci":{"name":"GitHub Actions","url":"https://github.com/cucumber-ltd/shouty.rb/actions/runs/154666429","git":{"remote":"https://github.com/cucumber-ltd/shouty.rb.git","revision":"99684bcacf01d95875834d87903dcb072306c9ad","branch":"master"}}}}
+{"source":{"uri":"features/minimal/minimal.feature","data":"Feature: minimal\n  \n  Cucumber doesn't execute this markdown, but @cucumber/react renders it\n  \n  * This is\n  * a bullet\n  * list\n  \n  Scenario: cukes\n    Given I have 42 cukes in my belly\n","mediaType":"text/x.cucumber.gherkin+plain"}}
+{"gherkinDocument":{"uri":"features/minimal/minimal.feature","feature":{"location":{"line":1,"column":1},"language":"en","keyword":"Feature","name":"minimal","description":"  Cucumber doesn't execute this markdown, but @cucumber/react renders it\n  \n  * This is\n  * a bullet\n  * list","children":[{"scenario":{"location":{"line":9,"column":3},"keyword":"Scenario","name":"cukes","steps":[{"location":{"line":10,"column":5},"keyword":"Given ","text":"I have 42 cukes in my belly","id":"1"}],"id":"2"}}]}}}
+{"pickle":{"id":"4","uri":"features/minimal/minimal.feature","name":"cukes","language":"en","steps":[{"text":"I have 42 cukes in my belly","id":"3","astNodeIds":["1"]}],"astNodeIds":["2"]}}
+{"stepDefinition":{"id":"0","pattern":{"source":"I have {int} cukes in my belly","type":"CUCUMBER_EXPRESSION"},"sourceReference":{"uri":"features/minimal/minimal.ts","location":{"line":4}}}}
+{"testRunStarted":{"timestamp":{"seconds":"0","nanos":0}}}
+{"testCase":{"id":"6","pickleId":"4","testSteps":[{"id":"5","pickleStepId":"3","stepDefinitionIds":["0"],"stepMatchArgumentsLists":[{"stepMatchArguments":[{"parameterTypeName":"int","group":{"start":7,"value":"42"}}]}]}]}}
+{"testCaseStarted":{"timestamp":{"seconds":"0","nanos":1000000},"attempt":0,"testCaseId":"6","id":"7"}}
+{"testStepStarted":{"timestamp":{"seconds":"0","nanos":2000000},"testStepId":"5","testCaseStartedId":"7"}}
+{"testStepFinished":{"testStepResult":{"status":"PASSED","duration":{"seconds":"0","nanos":1000000}},"timestamp":{"seconds":"0","nanos":5000000},"testStepId":"5","testCaseStartedId":"7"}}
+{"testCaseFinished":{"timestamp":{"seconds":"0","nanos":6000000},"testCaseStartedId":"7"}}
+{"testRunFinished":{"timestamp":{"seconds":"0","nanos":7000000}}}
