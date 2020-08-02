@@ -179,7 +179,9 @@ export default class Coordinator {
       this.eventBroadcaster.emit(
         'envelope',
         messages.Envelope.fromObject({
-          testRunFinished: { success: this.success },
+          testRunFinished: {
+            timestamp: this.stopwatch.timestamp(),
+          },
         })
       )
       this.onFinish(this.success)

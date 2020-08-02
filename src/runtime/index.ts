@@ -145,7 +145,6 @@ export default class Runtime {
       'envelope',
       messages.Envelope.fromObject({
         testRunFinished: {
-          success: this.success,
           timestamp: this.stopwatch.timestamp(),
         },
       })

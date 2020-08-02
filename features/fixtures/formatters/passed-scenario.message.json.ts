@@ -146,7 +146,6 @@ module.exports = [
   },
   {
     testRunFinished: {
-      success: true,
       timestamp: {
         seconds: '0',
         nanos: 5000000,
