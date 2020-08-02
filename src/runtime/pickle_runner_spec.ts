@@ -154,6 +154,77 @@ describe('PickleRunner', () => {
       })
     })
 
+    describe('with a parameterised step', () => {
+      it('emits stepMatchArgumentLists correctly within the testCase message', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a step with {int} and {string} parameters', function () {
+            clock.tick(1)
+          })
+        })
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: [
+            'Feature: a',
+            'Scenario: b',
+            'Given a step with 1 and "foo" parameters',
+          ].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes } = await testPickleRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        expect(
+          envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
+        ).to.deep.eq([
+          messages.TestCase.TestStep.StepMatchArgumentsList.fromObject({
+            stepMatchArguments: [
+              {
+                group: {
+                  children: [],
+                  start: 12,
+                  value: '1',
+                },
+                parameterTypeName: 'int',
+              },
+              {
+                group: {
+                  children: [
+                    {
+                      children: [
+                        {
+                          children: [],
+                        },
+                      ],
+                      start: 19,
+                      value: 'foo',
+                    },
+                    {
+                      children: [
+                        {
+                          children: [],
+                        },
+                      ],
+                    },
+                  ],
+                  start: 18,
+                  value: '"foo"',
+                },
+                parameterTypeName: 'string',
+              },
+            ],
+          }),
+        ])
+      })
+    })
+
     describe('with a failing step', () => {
       it('emits and returns failing results', async () => {
         // Arrange
