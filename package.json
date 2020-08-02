@@ -156,6 +156,7 @@
     "node": ">=10"
   },
   "dependencies": {
+    "@cucumber/create-meta": "^1.2.0",
     "@cucumber/cucumber-expressions": "^10.2.2",
     "@cucumber/gherkin": "14.2.0",
     "@cucumber/messages": "12.4.0",

@@ -9,8 +9,8 @@ import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
-import os from 'os'
 import { messages, IdGenerator } from '@cucumber/messages'
+import createMeta from '@cucumber/create-meta'
 import readPkgUp from 'read-pkg-up'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
@@ -112,39 +112,10 @@ export async function emitMetaMessage(
   eventBroadcaster: EventEmitter
 ): Promise<void> {
   const version = (await readPkgUp()).packageJson.version
-  const protocolVersion = (
-    await readPkgUp({
-      cwd: path.join(
-        __dirname,
-        '..',
-        '..',
-        'node_modules',
-        '@cucumber',
-        'messages'
-      ),
-    })
-  ).packageJson.version
   eventBroadcaster.emit(
     'envelope',
     new messages.Envelope({
-      meta: new messages.Meta({
-        protocolVersion,
-        implementation: new messages.Meta.Product({
-          name: 'cucumber-js',
-          version,
-        }),
-        cpu: new messages.Meta.Product({
-          name: os.arch(),
-        }),
-        os: new messages.Meta.Product({
-          name: os.platform(),
-          version: os.release(),
-        }),
-        runtime: new messages.Meta.Product({
-          name: 'node.js',
-          version: process.versions.node,
-        }),
-      }),
+      meta: createMeta('cucumber-js', version, process.env),
     })
   )
 }

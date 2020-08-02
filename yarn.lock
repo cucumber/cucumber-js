@@ -132,6 +132,15 @@
   resolved "https://registry.yarnpkg.com/@cucumber/compatibility-kit/-/compatibility-kit-1.0.0.tgz#80b2cdfb39e5c0856ae3a84b67023e35559fc1d0"
   integrity sha512-F7m3YywwzHmy8Poy93OvqVVtZ4bXumlL8KQ+V0cBNxG7FYvOLWZtvljc40tTby0F/pIOdlSxlf/9Z08Qf6BkNQ==
 
+"@cucumber/create-meta@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/create-meta/-/create-meta-1.2.0.tgz#0031f66248ab6efdee2153a8c1cdea3750014605"
+  integrity sha512-+Uu75AVtBzZzHPk3hzcqvp6FUO4hJkZ9a+uVl/PMrzfgWe+i0w87G45fjGgJYwyGydkZsK5kBSWSCIWFDdO95w==
+  dependencies:
+    "@cucumber/messages" "^12.4.0"
+    ts-node "^8.10.2"
+    typescript "^3.9.7"
+
 "@cucumber/cucumber-expressions@^10.2.2":
   version "10.2.2"
   resolved "https://registry.yarnpkg.com/@cucumber/cucumber-expressions/-/cucumber-expressions-10.2.2.tgz#6fc147821791ebafa87c587cb62eb8c6db1ac268"
@@ -4485,7 +4494,7 @@ tough-cookie@~2.5.0:
     psl "^1.1.28"
     punycode "^2.1.1"
 
-ts-node@8.10.2:
+ts-node@8.10.2, ts-node@^8.10.2:
   version "8.10.2"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.10.2.tgz#eee03764633b1234ddd37f8db9ec10b75ec7fb8d"
   integrity sha512-ISJJGgkIpDdBhWVu3jufsWpK3Rzo7bdiIXJjQc0ynKxVOVcg2oIrf2H2cejminGrptVc6q6/uynAHNCuWGbpVA==
@@ -4601,7 +4610,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@3.9.7:
+typescript@3.9.7, typescript@^3.9.7:
   version "3.9.7"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
   integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
