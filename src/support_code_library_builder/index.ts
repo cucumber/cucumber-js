@@ -11,7 +11,7 @@ import {
   CucumberExpression,
   ParameterTypeRegistry,
   RegularExpression,
-} from 'cucumber-expressions'
+} from '@cucumber/cucumber-expressions'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { validateNoGeneratorFunctions } from './finalize_helpers'
 import {

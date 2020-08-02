@@ -6,7 +6,7 @@ import Definition, {
   IStepDefinitionParameters,
 } from './definition'
 import { parseStepArgument } from '../step_arguments'
-import { Expression } from 'cucumber-expressions'
+import { Expression } from '@cucumber/cucumber-expressions'
 import bluebird from 'bluebird'
 import { doesHaveValue } from '../value_checker'
 

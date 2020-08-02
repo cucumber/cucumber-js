@@ -2,7 +2,7 @@ import { messages } from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
-import { ParameterTypeRegistry } from 'cucumber-expressions'
+import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 
 export type DefineStepPattern = string | RegExp
 

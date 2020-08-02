@@ -1,6 +1,6 @@
 import { messages } from '@cucumber/messages'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
-import { Expression } from 'cucumber-expressions'
+import { Expression } from '@cucumber/cucumber-expressions'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter

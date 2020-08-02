@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { ParameterTypeRegistry } from 'cucumber-expressions'
+import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import supportCodeLibraryBuilder from './'
 import { IdGenerator } from '@cucumber/messages'
 import { getPickleWithTags } from '../../test/gherkin_helpers'

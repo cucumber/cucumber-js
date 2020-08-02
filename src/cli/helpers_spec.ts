@@ -17,7 +17,7 @@ import {
   ParameterType,
   ParameterTypeRegistry,
   RegularExpression,
-} from 'cucumber-expressions'
+} from '@cucumber/cucumber-expressions'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
