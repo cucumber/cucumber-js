@@ -69,13 +69,13 @@ export async function parseGherkinMessageStream({
           result.push(pickleId)
         }
       }
-      if (doesHaveValue(envelope.attachment)) {
+      if (doesHaveValue(envelope.parseError)) {
         reject(
           new Error(
             `Parse error in '${path.relative(
               cwd,
-              envelope.attachment.source.uri
-            )}': ${envelope.attachment.body}`
+              envelope.parseError.source.uri
+            )}': ${envelope.parseError.message}`
           )
         )
       }
