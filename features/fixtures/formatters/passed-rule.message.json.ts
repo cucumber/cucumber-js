@@ -138,7 +138,7 @@ module.exports = [
         status: 'PASSED',
         duration: {
           seconds: '0',
-          nanos: 1000000,
+          nanos: 0,
         },
       },
       timestamp: {

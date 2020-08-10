@@ -126,7 +126,7 @@ module.exports = [
           'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
         duration: {
           seconds: '0',
-          nanos: 3000000,
+          nanos: 0,
         },
         willBeRetried: true,
       },
@@ -174,7 +174,7 @@ module.exports = [
         status: 'PASSED',
         duration: {
           seconds: '0',
-          nanos: 1000000,
+          nanos: 0,
         },
       },
       timestamp: {

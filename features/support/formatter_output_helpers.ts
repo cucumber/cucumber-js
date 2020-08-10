@@ -25,13 +25,13 @@ function normalizeProtobufObject(obj: any, cwd: string): void {
   if (doesHaveValue(obj.uri)) {
     obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
   }
-  if (doesHaveValue(obj.testResult)) {
-    if (doesHaveValue(obj.testResult.duration)) {
-      obj.testResult.duration.nanos = 0
+  if (doesHaveValue(obj.testStepResult)) {
+    if (doesHaveValue(obj.testStepResult.duration)) {
+      obj.testStepResult.duration.nanos = 0
     }
-    if (doesHaveValue(obj.testResult.message)) {
-      obj.testResult.message = normalizeExceptionAndUri(
-        obj.testResult.message,
+    if (doesHaveValue(obj.testStepResult.message)) {
+      obj.testStepResult.message = normalizeExceptionAndUri(
+        obj.testStepResult.message,
         cwd
       )
     }
