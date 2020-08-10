@@ -25,6 +25,12 @@ function normalizeProtobufObject(obj: any, cwd: string): void {
   if (doesHaveValue(obj.uri)) {
     obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
   }
+  if (doesHaveValue(obj.sourceReference?.uri)) {
+    obj.sourceReference.uri = normalizeExceptionAndUri(
+      obj.sourceReference.uri,
+      cwd
+    )
+  }
   if (doesHaveValue(obj.testStepResult)) {
     if (doesHaveValue(obj.testStepResult.duration)) {
       obj.testStepResult.duration.nanos = 0
