@@ -59,7 +59,17 @@ When('a stream with {int} bytes are attached as {string}', async function (
 
 When('a JPEG image is attached', async function (this: World) {
   await this.attach(
-    fs.createReadStream(path.join(__dirname, 'cucumber-growing-on-vine.jpg')),
+    fs.createReadStream(
+      path.join(
+        process.cwd(),
+        'node_modules',
+        '@cucumber',
+        'compatibility-kit',
+        'features',
+        'attachments',
+        'cucumber-growing-on-vine.jpg'
+      )
+    ),
     'image/jpg'
   )
 })

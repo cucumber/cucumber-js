@@ -10,7 +10,8 @@ import { Cli } from '../lib'
 import toString from 'stream-to-string'
 
 const PROJECT_PATH = path.join(__dirname, '..')
-const CCK_FEATURES_PATH = 'compatibility/features'
+const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
+const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 
 config.truncateThreshold = 100
 use(chaiExclude)
@@ -25,7 +26,7 @@ describe('Cucumber Compatibility Kit', () => {
       ].concat([
         `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}.feature`,
         '--require',
-        `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}.ts`,
+        `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
         '--profile',
         'cck',
       ])
