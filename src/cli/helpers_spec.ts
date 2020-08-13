@@ -73,6 +73,7 @@ function testEmitSupportCodeMessages(
         afterTestCaseHookDefinitions: [],
         defaultTimeout: 0,
         parameterTypeRegistry: new ParameterTypeRegistry(),
+        undefinedParameterTypes: [],
         World: null,
       },
       supportCode
