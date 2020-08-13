@@ -145,6 +145,20 @@ function emitParameterTypes(
   }
 }
 
+function emitUndefinedParameterTypes(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  for (const undefinedParameterType of supportCodeLibrary.undefinedParameterTypes) {
+    eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        undefinedParameterType,
+      })
+    )
+  }
+}
+
 function emitStepDefinitions(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
@@ -239,6 +253,7 @@ export function emitSupportCodeMessages({
   newId: IdGenerator.NewId
 }): void {
   emitParameterTypes(supportCodeLibrary, eventBroadcaster, newId)
+  emitUndefinedParameterTypes(supportCodeLibrary, eventBroadcaster)
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
   emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
   emitTestRunHooks(supportCodeLibrary, eventBroadcaster)

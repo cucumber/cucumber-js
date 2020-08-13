@@ -91,6 +91,7 @@ export interface ISupportCodeLibrary {
   readonly beforeTestRunHookDefinitions: TestRunHookDefinition[]
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
+  readonly undefinedParameterTypes: messages.IUndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
 }
