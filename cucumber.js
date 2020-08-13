@@ -12,7 +12,6 @@ const common = [
 const cck = [
   '--require-module',
   'ts-node/register',
-  '--predictable-ids',
   '--format',
   'message',
 ].join(' ')
