@@ -6,6 +6,7 @@ const common = [
   }`,
   '--format rerun:@rerun.txt',
   '--format usage:usage.txt',
+  '--format message:messages.ndjson',
 ].join(' ')
 
 const cck = [

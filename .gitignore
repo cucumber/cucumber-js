@@ -6,6 +6,7 @@
 coverage/
 dist/browser-example.js
 lib/
+messages.ndjson
 node_modules
 tmp/
 usage.txt
