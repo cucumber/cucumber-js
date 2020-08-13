@@ -9,7 +9,7 @@ import { PassThrough } from 'stream'
 import { Cli } from '../lib'
 import toString from 'stream-to-string'
 import { cloneDeepWith } from 'lodash'
-import {doesHaveValue} from "../src/value_checker";
+import { doesHaveValue, doesNotHaveValue } from '../src/value_checker'
 
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
@@ -45,7 +45,7 @@ describe('Cucumber Compatibility Kit', () => {
       stdout.end()
 
       const rawOutput = await toString(stdout)
-      const actualMessages = parseAndNormalize(rawOutput)
+      const actualMessages = reorder(parseAndNormalize(rawOutput))
       const expectedMessages = parseAndNormalize(
         fs.readFileSync(fixturePath, { encoding: 'utf-8' })
       )
@@ -76,6 +76,21 @@ describe('Cucumber Compatibility Kit', () => {
     })
   })
 })
+
+function reorder(messages: any[]): any[] {
+  const testCases: any[] = messages.filter((message) =>
+    doesHaveValue(message.testCase)
+  )
+  const everythingElse: any[] = messages.filter((message) =>
+    doesNotHaveValue(message.testCase)
+  )
+  const testRunStarted = everythingElse.findIndex((message) =>
+    doesHaveValue(message.testRunStarted)
+  )
+  // move all `testCase` messages to just after `testRunStarted`
+  everythingElse.splice(testRunStarted + 1, 0, ...testCases)
+  return everythingElse
+}
 
 function parseAndNormalize(raw: string): any[] {
   const parsed = ndjsonParse(raw)
