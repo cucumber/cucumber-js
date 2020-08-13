@@ -127,10 +127,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cucumber/compatibility-kit@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/compatibility-kit/-/compatibility-kit-1.0.0.tgz#80b2cdfb39e5c0856ae3a84b67023e35559fc1d0"
-  integrity sha512-F7m3YywwzHmy8Poy93OvqVVtZ4bXumlL8KQ+V0cBNxG7FYvOLWZtvljc40tTby0F/pIOdlSxlf/9Z08Qf6BkNQ==
+"@cucumber/compatibility-kit@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/compatibility-kit/-/compatibility-kit-2.0.0.tgz#563e9fc09692501abc179b1becb177d92af0fb92"
+  integrity sha512-3bwCMrct41lKoIGwsv62IkknTVee7nAIuQqkl5Xu7YWPZjHv4UjEci8vRoERX0MRXv0MEb/GkNRoWGr4cmI4Sw==
 
 "@cucumber/create-meta@^2.0.0":
   version "2.0.0"
