@@ -52,8 +52,6 @@ describe('Cucumber Compatibility Kit', () => {
       expect(actualMessages)
         .excludingEvery([
           'meta',
-          // TODO temporary
-          'body',
           // sources
           'uri',
           'line',
