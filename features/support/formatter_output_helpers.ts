@@ -53,6 +53,10 @@ export function normalizeMessageOutput(
       normalizeProtobufObject(e[key], cwd)
     }
   })
+  return envelopeObjects
+}
+
+export function stripMetaMessages(envelopeObjects: any[]): any[] {
   return envelopeObjects.filter((e: any) => {
     // filter off meta objects, almost none of it predictable/useful for testing
     return doesNotHaveValue(e.meta)

@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import {
   normalizeJsonOutput,
   normalizeMessageOutput,
+  stripMetaMessages,
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
 import path from 'path'
@@ -17,6 +18,7 @@ Then(
     if (formatter === 'message') {
       actual = this.lastRun.envelopes.map((e: Envelope) => e.toJSON())
       actual = normalizeMessageOutput(actual, this.tmpDir)
+      actual = stripMetaMessages(actual)
     } else {
       const actualPath = path.join(this.tmpDir, `${formatter}.out`)
       actual = await fs.readFile(actualPath, 'utf8')

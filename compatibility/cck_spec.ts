@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha'
-import { expect, use, config } from 'chai'
+import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
 import globby from 'globby'
 import fs from 'fs'
@@ -8,8 +8,8 @@ import path from 'path'
 import { PassThrough } from 'stream'
 import { Cli } from '../lib'
 import toString from 'stream-to-string'
-import { cloneDeepWith } from 'lodash'
 import { doesHaveValue, doesNotHaveValue } from '../src/value_checker'
+import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
 
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
@@ -45,8 +45,8 @@ describe('Cucumber Compatibility Kit', () => {
       stdout.end()
 
       const rawOutput = await toString(stdout)
-      const actualMessages = reorder(parseAndNormalize(rawOutput))
-      const expectedMessages = parseAndNormalize(
+      const actualMessages = normalize(ndjsonParse(rawOutput))
+      const expectedMessages = ndjsonParse(
         fs.readFileSync(fixturePath, { encoding: 'utf-8' })
       )
       expect(actualMessages)
@@ -69,13 +69,19 @@ describe('Cucumber Compatibility Kit', () => {
           // time
           'nanos',
           'seconds',
+          // errors
+          'message',
         ])
         .to.deep.eq(expectedMessages)
     })
   })
 })
 
-function reorder(messages: any[]): any[] {
+function normalize(messages: any[]): any[] {
+  messages = normalizeMessageOutput(
+    messages,
+    path.join(PROJECT_PATH, 'compatibility')
+  )
   const testCases: any[] = messages.filter((message) =>
     doesHaveValue(message.testCase)
   )
@@ -88,13 +94,4 @@ function reorder(messages: any[]): any[] {
   // move all `testCase` messages to just after `testRunStarted`
   everythingElse.splice(testRunStarted + 1, 0, ...testCases)
   return everythingElse
-}
-
-function parseAndNormalize(raw: string): any[] {
-  const parsed = ndjsonParse(raw)
-  return cloneDeepWith(parsed, normalizeValue)
-}
-
-function normalizeValue(value: any): any {
-  return undefined
 }
