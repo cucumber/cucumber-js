@@ -1,12 +1,12 @@
 ## Setup
 
 - Install [Node.js](https://nodejs.org) (6 or higher)
-- Install the last version of [Chai](https://www.chaijs.com/) and Cucumber modules with [yarn](https://yarnpkg.com/en/) **or** [npm](https://www.npmjs.com/)
+- Install Cucumber modules with [yarn](https://yarnpkg.com/en/) **or** [npm](https://www.npmjs.com/)
 
   ```
-  yarn add -D chai@latest cucumber@latest
+  yarn add -D cucumber@latest
 
-  npm i -D chai@latest cucumber@latest
+  npm i -D cucumber@latest
   ```
 
 * Add the following files
@@ -59,7 +59,7 @@
   ```javascript
   // features/support/steps.js
   const { Given, When, Then } = require("cucumber");
-  const { expect } = require("chai");
+  const assert = require("assert").strict
 
   Given("a variable set to {int}", function(number) {
     this.setTo(number);
@@ -70,7 +70,7 @@
   });
 
   Then("the variable should contain {int}", function(number) {
-    expect(this.variable).to.eql(number);
+    assert.equal(this.variable, number);
   });
   ```
 
