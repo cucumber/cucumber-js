@@ -221,6 +221,14 @@ describe('helpers', () => {
           new TestCaseHookDefinition({
             code: noopFunction,
             unwrappedCode: noopFunction,
+            id: '2',
+            line: 11,
+            options: {},
+            uri: 'features/support/hooks.js',
+          }),
+          new TestCaseHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '1',
             line: 7,
             options: {},
@@ -253,6 +261,17 @@ describe('helpers', () => {
             },
           },
         }),
+        messages.Envelope.fromObject({
+          hook: {
+            id: '2',
+            sourceReference: {
+              uri: 'features/support/hooks.js',
+              location: {
+                line: 11,
+              },
+            },
+          },
+        }),
       ])
     })
     it('emits messages for test run level hooks', () => {
@@ -268,6 +287,14 @@ describe('helpers', () => {
           }),
         ],
         afterTestRunHookDefinitions: [
+          new TestRunHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '2',
+            line: 11,
+            options: {},
+            uri: 'features/support/run-hooks.js',
+          }),
           new TestRunHookDefinition({
             code: noopFunction,
             unwrappedCode: noopFunction,
@@ -298,6 +325,17 @@ describe('helpers', () => {
               uri: 'features/support/run-hooks.js',
               location: {
                 line: 7,
+              },
+            },
+          },
+        }),
+        messages.Envelope.fromObject({
+          hook: {
+            id: '2',
+            sourceReference: {
+              uri: 'features/support/run-hooks.js',
+              location: {
+                line: 11,
               },
             },
           },

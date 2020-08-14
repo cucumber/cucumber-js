@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { clone } from 'lodash'
 import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
@@ -195,7 +195,8 @@ function emitTestCaseHooks(
   ;[]
     .concat(
       supportCodeLibrary.beforeTestCaseHookDefinitions,
-      supportCodeLibrary.afterTestCaseHookDefinitions
+      // order has been reversed before - need it back in original order
+      clone(supportCodeLibrary.afterTestCaseHookDefinitions).reverse()
     )
     .forEach((testCaseHookDefinition: TestCaseHookDefinition) => {
       eventBroadcaster.emit(
@@ -223,7 +224,8 @@ function emitTestRunHooks(
   ;[]
     .concat(
       supportCodeLibrary.beforeTestRunHookDefinitions,
-      supportCodeLibrary.afterTestRunHookDefinitions
+      // order has been reversed before - need it back in original order
+      clone(supportCodeLibrary.afterTestRunHookDefinitions).reverse()
     )
     .forEach((testRunHookDefinition: TestRunHookDefinition) => {
       eventBroadcaster.emit(
