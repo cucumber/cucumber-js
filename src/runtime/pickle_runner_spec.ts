@@ -296,6 +296,10 @@ describe('PickleRunner', () => {
           messages.TestStepFinished.TestStepResult.fromObject({
             message,
             status: Status.AMBIGUOUS,
+            duration: {
+              seconds: '0',
+              nanos: 0,
+            },
           })
         )
         expect(result.status).to.eql(
@@ -331,6 +335,10 @@ describe('PickleRunner', () => {
         expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.UNDEFINED,
+            duration: {
+              seconds: '0',
+              nanos: 0,
+            },
           })
         )
         expect(result.status).to.eql(
@@ -488,6 +496,10 @@ describe('PickleRunner', () => {
         expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.SKIPPED,
+            duration: {
+              seconds: '0',
+              nanos: 0,
+            },
           })
         )
         expect(result.status).to.eql(

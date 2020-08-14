@@ -372,15 +372,27 @@ export default class PickleRunner {
     if (testStep.stepDefinitions.length === 0) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: Status.UNDEFINED,
+        duration: {
+          seconds: '0',
+          nanos: 0,
+        },
       })
     } else if (testStep.stepDefinitions.length > 1) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         message: getAmbiguousStepException(testStep.stepDefinitions),
         status: Status.AMBIGUOUS,
+        duration: {
+          seconds: '0',
+          nanos: 0,
+        },
       })
     } else if (this.isSkippingSteps()) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: Status.SKIPPED,
+        duration: {
+          seconds: '0',
+          nanos: 0,
+        },
       })
     }
     return await this.invokeStep(
