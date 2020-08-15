@@ -70,8 +70,15 @@ function buildMapping({
           text: pickleStep.text,
           uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
-        const { duration } = testCaseAttempt.stepResults[testStep.id]
-        if (doesHaveValue(duration) && duration.nanos > 0) {
+        const { duration, status } = testCaseAttempt.stepResults[testStep.id]
+        if (
+          ![
+            messages.TestStepFinished.TestStepResult.Status.AMBIGUOUS,
+            messages.TestStepFinished.TestStepResult.Status.SKIPPED,
+            messages.TestStepFinished.TestStepResult.Status.UNDEFINED,
+          ].includes(status) &&
+          doesHaveValue(duration)
+        ) {
           match.duration = duration
         }
         if (doesHaveValue(mapping[stepDefinitionId])) {
