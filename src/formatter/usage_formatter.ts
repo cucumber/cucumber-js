@@ -54,7 +54,7 @@ export default class UsageFormatter extends Formatter {
         const col3 = [formatLocation({ line, uri })]
         _.take(matches, 5).forEach((match) => {
           col1.push(`  ${match.text}`)
-          if (doesHaveValue(match.duration)) {
+          if (doesHaveValue(match.duration) && match.duration.nanos > 0) {
             col2.push(`${durationToMilliseconds(match.duration).toString()}ms`)
           } else {
             col2.push('-')

@@ -71,7 +71,7 @@ function buildMapping({
           uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
         const { duration } = testCaseAttempt.stepResults[testStep.id]
-        if (doesHaveValue(duration)) {
+        if (doesHaveValue(duration) && duration.nanos > 0) {
           match.duration = duration
         }
         if (doesHaveValue(mapping[stepDefinitionId])) {
