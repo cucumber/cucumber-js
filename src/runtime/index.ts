@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { clone } from 'lodash'
 import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
@@ -71,14 +71,14 @@ export default class Runtime {
   }
 
   async runTestRunHooks(
-    key: 'beforeTestRunHookDefinitions' | 'afterTestRunHookDefinitions',
+    definitions: TestRunHookDefinition[],
     name: string
   ): Promise<void> {
     if (this.options.dryRun) {
       return
     }
     await bluebird.each(
-      this.supportCodeLibrary[key],
+      definitions,
       async (hookDefinition: TestRunHookDefinition) => {
         const { error } = await UserCodeRunner.run({
           argsArray: [],
@@ -137,9 +137,15 @@ export default class Runtime {
       })
     )
     this.stopwatch.start()
-    await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
+    await this.runTestRunHooks(
+      this.supportCodeLibrary.beforeTestRunHookDefinitions,
+      'a BeforeAll'
+    )
     await bluebird.each(this.pickleIds, this.runPickle.bind(this))
-    await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
+    await this.runTestRunHooks(
+      clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
+      'an AfterAll'
+    )
     this.stopwatch.stop()
     this.eventBroadcaster.emit(
       'envelope',

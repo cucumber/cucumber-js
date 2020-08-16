@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
@@ -191,9 +191,9 @@ export default class PickleRunner {
   }
 
   getAfterHookDefinitions(): TestCaseHookDefinition[] {
-    return this.supportCodeLibrary.afterTestCaseHookDefinitions.filter(
-      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
-    )
+    return clone(this.supportCodeLibrary.afterTestCaseHookDefinitions)
+      .reverse()
+      .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }
 
   getBeforeHookDefinitions(): TestCaseHookDefinition[] {

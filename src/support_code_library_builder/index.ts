@@ -239,10 +239,10 @@ export class SupportCodeLibraryBuilder {
 
   buildStepDefinitions(): {
     stepDefinitions: StepDefinition[]
-    invalidParameterTypes: messages.IUndefinedParameterType[]
+    undefinedParameterTypes: messages.IUndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
-    const invalidParameterTypes: messages.IUndefinedParameterType[] = []
+    const undefinedParameterTypes: messages.IUndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
       ({ code, line, options, pattern, uri }) => {
         let expression
@@ -254,7 +254,7 @@ export class SupportCodeLibraryBuilder {
             )
           } catch (e) {
             if (doesHaveValue(e.undefinedParameterTypeName)) {
-              invalidParameterTypes.push({
+              undefinedParameterTypes.push({
                 name: e.undefinedParameterTypeName,
                 expression: pattern,
               })
@@ -287,7 +287,7 @@ export class SupportCodeLibraryBuilder {
         )
       }
     )
-    return { stepDefinitions, invalidParameterTypes }
+    return { stepDefinitions, undefinedParameterTypes }
   }
 
   finalize(): ISupportCodeLibrary {
@@ -307,10 +307,10 @@ export class SupportCodeLibraryBuilder {
     return {
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
         this.afterTestCaseHookDefinitionConfigs
-      ).reverse(),
+      ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.afterTestRunHookDefinitionConfigs
-      ).reverse(),
+      ),
       beforeTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
         this.beforeTestCaseHookDefinitionConfigs
       ),
@@ -319,7 +319,7 @@ export class SupportCodeLibraryBuilder {
       ),
       defaultTimeout: this.defaultTimeout,
       parameterTypeRegistry: this.parameterTypeRegistry,
-      undefinedParameterTypes: stepDefinitionsResult.invalidParameterTypes,
+      undefinedParameterTypes: stepDefinitionsResult.undefinedParameterTypes,
       stepDefinitions: stepDefinitionsResult.stepDefinitions,
       World: this.World,
     }
