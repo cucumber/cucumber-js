@@ -16,12 +16,22 @@ const cck = [
   'message',
 ].join(' ')
 
+const FORMATTERS_INCLUDE = [
+  'attachments',
+  'data-tables',
+  'minimal',
+  'parameter-types',
+  'rules',
+]
+
 const formatters = [
-  'node_modules/@cucumber/compatibility-kit/features/minimal/minimal.feature',
+  `node_modules/@cucumber/compatibility-kit/features/{${FORMATTERS_INCLUDE.join(
+    ','
+  )}}/*.feature`,
   '--require-module',
   'ts-node/register',
   '--require',
-  'compatibility/features/minimal/minimal.ts',
+  `compatibility/features/{${FORMATTERS_INCLUDE.join(',')}}/*.ts`,
   '--format',
   'message',
 ].join(' ')
