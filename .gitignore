@@ -5,7 +5,7 @@
 @rerun.txt
 coverage/
 dist/browser-example.js
-e2e.html
+html-formatter.html
 lib/
 messages.ndjson
 node_modules

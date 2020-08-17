@@ -16,7 +16,7 @@ const cck = [
   'message',
 ].join(' ')
 
-const e2e = [
+const formatters = [
   'node_modules/@cucumber/compatibility-kit/features/minimal/minimal.feature',
   '--require-module',
   'ts-node/register',
@@ -29,5 +29,5 @@ const e2e = [
 module.exports = {
   default: feature,
   cck,
-  e2e,
+  formatters,
 }
