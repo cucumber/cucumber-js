@@ -289,7 +289,7 @@ describe('SummaryFormatter', () => {
 
         // Assert
         expect(output).to.eql(
-          `Undefined Parameter Types:
+          `Undefined parameter types:
 
 - "param" e.g. \`another {param} step\`
 - "foo" e.g. \`a different {foo} step\`

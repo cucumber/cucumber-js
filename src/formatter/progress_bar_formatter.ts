@@ -4,6 +4,7 @@ import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { messages } from '@cucumber/messages'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
+import { formatUndefinedParameterType } from './helpers/issue_helpers'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
@@ -49,6 +50,16 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
+  logUndefinedParametertype(
+    parameterType: messages.IUndefinedParameterType
+  ): void {
+    this.log(
+      `Undefined parameter type: ${formatUndefinedParameterType(
+        parameterType
+      )}\n`
+    )
+  }
+
   logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
     const { result } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
@@ -85,7 +96,9 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   parseEnvelope(envelope: messages.IEnvelope): void {
-    if (doesHaveValue(envelope.pickle)) {
+    if (doesHaveValue(envelope.undefinedParameterType)) {
+      this.logUndefinedParametertype(envelope.undefinedParameterType)
+    } else if (doesHaveValue(envelope.pickle)) {
       this.incrementStepCount(envelope.pickle.id)
     } else if (doesHaveValue(envelope.testStepStarted)) {
       this.initializeProgressBar()

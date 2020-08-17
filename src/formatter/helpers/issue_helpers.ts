@@ -71,13 +71,24 @@ export function formatIssue({
 export function formatUndefinedParameterTypes(
   undefinedParameterTypes: messages.IUndefinedParameterType[]
 ): string {
+  const output = [`Undefined parameter types:\n\n`]
   const withLatest: Dictionary<messages.IUndefinedParameterType> = {}
   undefinedParameterTypes.forEach((parameterType) => {
     withLatest[parameterType.name] = parameterType
   })
-  return Object.values(withLatest)
-    .map((parameterType) => {
-      return `- "${parameterType.name}" e.g. \`${parameterType.expression}\``
-    })
-    .join('\n')
+  output.push(
+    Object.values(withLatest)
+      .map(
+        (parameterType) => `- ${formatUndefinedParameterType(parameterType)}`
+      )
+      .join('\n')
+  )
+  output.push('\n\n')
+  return output.join('')
+}
+
+export function formatUndefinedParameterType(
+  parameterType: messages.IUndefinedParameterType
+): string {
+  return `"${parameterType.name}" e.g. \`${parameterType.expression}\``
 }

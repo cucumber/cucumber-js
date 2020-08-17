@@ -133,7 +133,7 @@ Feature: Parameter types
     Then it fails
     And the output contains the text:
       """
-      Undefined Parameter Types:
+      Undefined parameter types:
 
       - "param" e.g. `a {param} step`
       """

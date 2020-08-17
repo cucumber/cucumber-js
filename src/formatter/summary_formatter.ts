@@ -33,8 +33,10 @@ export default class SummaryFormatter extends Formatter {
       }
     })
     if (this.eventDataCollector.undefinedParameterTypes.length > 0) {
-      this.logUndefinedParameterTypes(
-        this.eventDataCollector.undefinedParameterTypes
+      this.log(
+        formatUndefinedParameterTypes(
+          this.eventDataCollector.undefinedParameterTypes
+        )
       )
     }
     if (failures.length > 0) {
@@ -49,14 +51,6 @@ export default class SummaryFormatter extends Formatter {
         testCaseAttempts,
       })
     )
-  }
-
-  logUndefinedParameterTypes(
-    undefinedParameterTypes: messages.IUndefinedParameterType[]
-  ): void {
-    this.log(`Undefined Parameter Types:\n\n`)
-    this.log(formatUndefinedParameterTypes(undefinedParameterTypes))
-    this.log('\n\n')
   }
 
   logIssues({ issues, title }: ILogIssuesRequest): void {

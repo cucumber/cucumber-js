@@ -134,6 +134,11 @@ export async function getEnvelopesAndEventDataCollector({
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const envelopes: IEnvelope[] = []
   eventBroadcaster.on('envelope', (envelope) => envelopes.push(envelope))
+  emitSupportCodeMessages({
+    supportCodeLibrary,
+    eventBroadcaster,
+    newId: IdGenerator.uuid(),
+  })
   let pickleIds: string[] = []
   for (const source of sources) {
     const { pickles } = await generateEvents({

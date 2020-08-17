@@ -41,12 +41,13 @@ async function testProgressBarFormatter({
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
   }
+  const eventBroadcaster = new EventEmitter()
   const { envelopes } = await getEnvelopesAndEventDataCollector({
     runtimeOptions,
     sources,
     supportCodeLibrary,
   })
-  const eventBroadcaster = new EventEmitter()
+
   let output = ''
   const logFn = (data: string): void => {
     output += data
@@ -420,6 +421,40 @@ describe('ProgressBarFormatter', () => {
       // Assert
       expect(output).to.contain(
         '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
+      )
+    })
+  })
+
+  describe('undefinedParameterType', function () {
+    it('outputs undefined parameter types', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a step',
+          uri: 'a.feature',
+        },
+      ]
+      const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+        Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('a {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('another {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('a different {foo} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+      })
+
+      // Act
+      const { output } = await testProgressBarFormatter({
+        shouldStopFn: (envelope) => false,
+        sources,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      // Assert
+      expect(output).to.contain(
+        `Undefined parameter type: "param" e.g. \`a {param} step\`
+Undefined parameter type: "param" e.g. \`another {param} step\`
+Undefined parameter type: "foo" e.g. \`a different {foo} step\`
+`
       )
     })
   })
