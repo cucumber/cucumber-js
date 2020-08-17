@@ -189,7 +189,6 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "^2.0.0",
-    "@cucumber/html-formatter": "^9.0.0",
     "@sinonjs/fake-timers": "6.0.1",
     "@types/bluebird": "3.5.32",
     "@types/chai": "4.2.11",
@@ -253,7 +252,7 @@
     "build-local": "tsc -p tsconfig.node.json",
     "build-release": "browserify scripts/cucumber.ts -o dist/cucumber.js -p [ tsify -p tsconfig.browser.json ] --standalone Cucumber --debug",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
-    "e2e-test": "node ./bin/cucumber-js --profile e2e | cucumber-html-formatter --format ndjson > e2e.html",
+    "e2e-test": "node ./bin/cucumber-js --profile e2e | npx @cucumber/html-formatter@9.0.0 --format ndjson > e2e.html",
     "feature-test": "node ./bin/cucumber-js",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
