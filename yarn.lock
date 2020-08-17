@@ -158,10 +158,10 @@
     commander "^6.0.0"
     source-map-support "^0.5.19"
 
-"@cucumber/gherkin@^15.0.1":
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-15.0.1.tgz#596cd905fced11d2ea6921ee70ed5860254b06e8"
-  integrity sha512-L/0bWHQKpXnanXUb/8citkyL/lgoybbVXMaf5/JKKqnlBq4xsWEFugWe71t4hlBNrcbZ6zBujycFJu1iz2f74A==
+"@cucumber/gherkin@^15.0.2":
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-15.0.2.tgz#43572df618fdeb9136e16412e4d3025e1a184115"
+  integrity sha512-E8GIulakxjXPlGatW6DxYQ1jJSHvT9mDLginqe7AkjyIjBuddQvXFShI/4fdYa6XaF3gO4ybhQvHtcza/1ob/Q==
   dependencies:
     "@cucumber/messages" "^13.0.1"
     "@teppeis/multimaps" "^1.1.0"
