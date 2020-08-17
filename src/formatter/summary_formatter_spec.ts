@@ -5,6 +5,7 @@ import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 
 describe('SummaryFormatter', () => {
   let clock: InstalledClock
@@ -259,6 +260,44 @@ describe('SummaryFormatter', () => {
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
             '0m00.000s\n'
+        )
+      })
+    })
+
+    describe('with an undefined parameter type', () => {
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('another {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a different {foo} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        })
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
+          `Undefined Parameter Types:
+
+- "param" e.g. \`another {param} step\`
+- "foo" e.g. \`a different {foo} step\`
+
+1 scenario (1 passed)
+1 step (1 passed)
+0m00.000s
+`
         )
       })
     })

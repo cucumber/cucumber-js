@@ -27,6 +27,7 @@ export default class EventDataCollector {
   private pickleMap: Dictionary<messages.IPickle> = {}
   private testCaseMap: Dictionary<messages.ITestCase> = {}
   private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
+  readonly undefinedParameterTypes: messages.IUndefinedParameterType[] = []
   readonly query = new Query()
 
   constructor(eventBroadcaster: EventEmitter) {
@@ -69,6 +70,8 @@ export default class EventDataCollector {
         envelope.gherkinDocument
     } else if (doesHaveValue(envelope.pickle)) {
       this.pickleMap[envelope.pickle.id] = envelope.pickle
+    } else if (doesHaveValue(envelope.undefinedParameterType)) {
+      this.undefinedParameterTypes.push(envelope.undefinedParameterType)
     } else if (doesHaveValue(envelope.testCase)) {
       this.testCaseMap[envelope.testCase.id] = envelope.testCase
     } else if (doesHaveValue(envelope.testCaseStarted)) {

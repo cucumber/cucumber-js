@@ -10,6 +10,7 @@ import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
+import { emitSupportCodeMessages } from '../src/cli/helpers'
 import IEnvelope = messages.IEnvelope
 
 const { uuid } = IdGenerator
@@ -47,6 +48,11 @@ export async function testFormatter({
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
+  emitSupportCodeMessages({
+    supportCodeLibrary,
+    eventBroadcaster,
+    newId: uuid(),
+  })
   let output = ''
   const logFn = (data: string): void => {
     output += data

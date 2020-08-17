@@ -4,6 +4,7 @@ import Formatter, { IFormatterOptions } from './'
 import { doesHaveValue } from '../value_checker'
 import { messages } from '@cucumber/messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
+import { formatUndefinedParameterTypes } from './helpers/issue_helpers'
 
 interface ILogIssuesRequest {
   issues: ITestCaseAttempt[]
@@ -31,6 +32,11 @@ export default class SummaryFormatter extends Formatter {
         warnings.push(testCaseAttempt)
       }
     })
+    if (this.eventDataCollector.undefinedParameterTypes.length > 0) {
+      this.logUndefinedParameterTypes(
+        this.eventDataCollector.undefinedParameterTypes
+      )
+    }
     if (failures.length > 0) {
       this.logIssues({ issues: failures, title: 'Failures' })
     }
@@ -43,6 +49,14 @@ export default class SummaryFormatter extends Formatter {
         testCaseAttempts,
       })
     )
+  }
+
+  logUndefinedParameterTypes(
+    undefinedParameterTypes: messages.IUndefinedParameterType[]
+  ): void {
+    this.log(`Undefined Parameter Types:\n\n`)
+    this.log(formatUndefinedParameterTypes(undefinedParameterTypes))
+    this.log('\n\n')
   }
 
   logIssues({ issues, title }: ILogIssuesRequest): void {

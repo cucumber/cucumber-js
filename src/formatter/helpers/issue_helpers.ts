@@ -6,6 +6,7 @@ import { IColorFns } from '../get_color_fns'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ITestCaseAttempt } from './event_data_collector'
+import { Dictionary } from 'lodash'
 
 export function isFailure(
   result: messages.TestStepFinished.ITestStepResult
@@ -65,4 +66,18 @@ export function formatIssue({
     return indentString(line, prefix.length)
   })
   return updatedLines.join('\n')
+}
+
+export function formatUndefinedParameterTypes(
+  undefinedParameterTypes: messages.IUndefinedParameterType[]
+): string {
+  const withLatest: Dictionary<messages.IUndefinedParameterType> = {}
+  undefinedParameterTypes.forEach((parameterType) => {
+    withLatest[parameterType.name] = parameterType
+  })
+  return Object.values(withLatest)
+    .map((parameterType) => {
+      return `- "${parameterType.name}" e.g. \`${parameterType.expression}\``
+    })
+    .join('\n')
 }
