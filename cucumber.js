@@ -1,4 +1,4 @@
-const common = [
+const feature = [
   '--require-module ts-node/register',
   '--require features/**/*.ts',
   `--format ${
@@ -16,7 +16,17 @@ const cck = [
   'message',
 ].join(' ')
 
+const e2e = [
+  '--require-module',
+  'ts-node/register',
+  '--require',
+  'compatibility/features/minimal/minimal.ts',
+  '--format',
+  'message:e2e.ndjson',
+].join(' ')
+
 module.exports = {
-  default: common,
+  default: feature,
   cck,
+  e2e,
 }
