@@ -17,6 +17,7 @@ const cck = [
 ].join(' ')
 
 const e2e = [
+  'node_modules/@cucumber/compatibility-kit/features/minimal/minimal.feature',
   '--require-module',
   'ts-node/register',
   '--require',

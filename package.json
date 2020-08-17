@@ -253,7 +253,7 @@
     "build-local": "tsc -p tsconfig.node.json",
     "build-release": "browserify scripts/cucumber.ts -o dist/cucumber.js -p [ tsify -p tsconfig.browser.json ] --standalone Cucumber --debug",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
-    "e2e-test": "node ./bin/cucumber-js node_modules/@cucumber/compatibility-kit/features/minimal/minimal.feature --profile e2e",
+    "e2e-test": "node ./bin/cucumber-js --profile e2e",
     "feature-test": "node ./bin/cucumber-js",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
