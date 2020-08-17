@@ -5,6 +5,7 @@
 @rerun.txt
 coverage/
 dist/browser-example.js
+e2e.html
 e2e.ndjson
 lib/
 messages.ndjson

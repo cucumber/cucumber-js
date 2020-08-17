@@ -23,7 +23,7 @@ const e2e = [
   '--require',
   'compatibility/features/minimal/minimal.ts',
   '--format',
-  'message:e2e.ndjson',
+  'message',
 ].join(' ')
 
 module.exports = {
