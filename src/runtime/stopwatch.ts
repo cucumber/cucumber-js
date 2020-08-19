@@ -37,11 +37,7 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
-    const current = this.duration()
-    return {
-      nanos: current.nanos(),
-      seconds: current.seconds(),
-    }
+    return convertToTimestamp(this.duration())
   }
 }
 
@@ -72,10 +68,15 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
 
   timestamp(): messages.ITimestamp {
     this.count++
-    const current = this.duration()
-    return {
-      nanos: current.nanos(),
-      seconds: current.seconds(),
-    }
+    return convertToTimestamp(this.duration())
+  }
+}
+
+function convertToTimestamp(duration: Duration): messages.ITimestamp {
+  const seconds = Math.floor(duration.seconds())
+  const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
+  return {
+    seconds,
+    nanos,
   }
 }
