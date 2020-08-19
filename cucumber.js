@@ -19,9 +19,11 @@ const cck = [
 const FORMATTERS_INCLUDE = [
   'attachments',
   'data-tables',
+  'examples-tables',
   'minimal',
   'parameter-types',
   'rules',
+  'stack-traces',
 ]
 
 const formatters = [
