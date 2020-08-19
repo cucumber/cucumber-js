@@ -29,8 +29,8 @@ export interface IParsedTestStep {
 export interface IParsedTestCase {
   attempt: number
   name: string
-  result: messages.TestStepFinished.ITestStepResult
   sourceLocation?: ILineAndUri
+  worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export interface IParsedTestCaseAttempt {
@@ -144,11 +144,11 @@ export function parseTestCaseAttempt({
   const parsedTestCase: IParsedTestCase = {
     attempt: testCaseAttempt.attempt,
     name: pickle.name,
-    result: testCaseAttempt.result,
     sourceLocation: {
       uri: relativePickleUri,
       line: gherkinScenarioLocationMap[_.last(pickle.astNodeIds)].line,
     },
+    worstTestStepResult: testCaseAttempt.worstTestStepResult,
   }
   const parsedTestSteps: IParsedTestStep[] = []
   let isBeforeHook = true

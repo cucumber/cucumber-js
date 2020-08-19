@@ -146,7 +146,7 @@ export default class JsonFormatter extends Formatter {
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
       (testCaseAttempt: ITestCaseAttempt) => {
-        if (!testCaseAttempt.result.willBeRetried) {
+        if (!testCaseAttempt.worstTestStepResult.willBeRetried) {
           const uri = path.relative(this.cwd, testCaseAttempt.pickle.uri)
           if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
             groupedTestCaseAttempts[uri] = []

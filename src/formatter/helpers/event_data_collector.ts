@@ -7,19 +7,19 @@ import { Query } from '@cucumber/query'
 interface ITestCaseAttemptData {
   attempt: number
   testCaseId: string
-  result: messages.TestStepFinished.ITestStepResult
   stepAttachments: Dictionary<messages.IAttachment[]>
   stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
+  worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export interface ITestCaseAttempt {
   attempt: number
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
-  result: messages.TestStepFinished.ITestStepResult
   stepAttachments: Dictionary<messages.IAttachment[]>
   stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
   testCase: messages.ITestCase
+  worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export default class EventDataCollector {
@@ -57,9 +57,9 @@ export default class EventDataCollector {
       pickle,
       testCase,
       attempt: testCaseAttemptData.attempt,
-      result: testCaseAttemptData.result,
       stepAttachments: testCaseAttemptData.stepAttachments,
       stepResults: testCaseAttemptData.stepResults,
+      worstTestStepResult: testCaseAttemptData.worstTestStepResult,
     }
   }
 
@@ -89,9 +89,9 @@ export default class EventDataCollector {
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       testCaseId: testCaseStarted.testCaseId,
-      result: {},
       stepAttachments: {},
       stepResults: {},
+      worstTestStepResult: {},
     }
   }
 
@@ -126,6 +126,6 @@ export default class EventDataCollector {
     )
     this.testCaseAttemptDataMap[
       testCaseStartedId
-    ].result = this.query.getWorstTestStepResult(stepResults)
+    ].worstTestStepResult = this.query.getWorstTestStepResult(stepResults)
   }
 }

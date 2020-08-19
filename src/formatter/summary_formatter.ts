@@ -26,9 +26,9 @@ export default class SummaryFormatter extends Formatter {
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
     _.each(testCaseAttempts, (testCaseAttempt) => {
-      if (isFailure(testCaseAttempt.result)) {
+      if (isFailure(testCaseAttempt.worstTestStepResult)) {
         failures.push(testCaseAttempt)
-      } else if (isWarning(testCaseAttempt.result)) {
+      } else if (isWarning(testCaseAttempt.worstTestStepResult)) {
         warnings.push(testCaseAttempt)
       }
     })

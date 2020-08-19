@@ -31,10 +31,12 @@ export function formatSummary({
   const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
   const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
   let totalDuration = getZeroDuration()
-  testCaseAttempts.forEach(({ testCase, result, stepResults }) => {
-    totalDuration = addDurations(totalDuration, result.duration)
-    if (!result.willBeRetried) {
-      testCaseResults.push(result)
+  testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
+    Object.values(stepResults).forEach((stepResult) => {
+      totalDuration = addDurations(totalDuration, stepResult.duration)
+    })
+    if (!worstTestStepResult.willBeRetried) {
+      testCaseResults.push(worstTestStepResult)
       _.each(testCase.testSteps, (testStep) => {
         if (testStep.pickleStepId !== '') {
           testStepResults.push(stepResults[testStep.id])

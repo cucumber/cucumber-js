@@ -189,10 +189,13 @@ export default class Coordinator {
   }
 
   parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
-    const { result } = this.eventDataCollector.getTestCaseAttempt(
+    const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
-    if (!result.willBeRetried && this.shouldCauseFailure(result.status)) {
+    if (
+      !worstTestStepResult.willBeRetried &&
+      this.shouldCauseFailure(worstTestStepResult.status)
+    ) {
       this.success = false
     }
   }

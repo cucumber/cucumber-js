@@ -61,10 +61,10 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
-    const { result } = this.eventDataCollector.getTestCaseAttempt(
+    const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
-    if (isIssue(result)) {
+    if (isIssue(worstTestStepResult)) {
       this.issueCount += 1
       const testCaseAttempt = this.eventDataCollector.getTestCaseAttempt(
         testCaseFinished.testCaseStartedId
@@ -79,7 +79,7 @@ export default class ProgressBarFormatter extends Formatter {
           testCaseAttempt,
         })
       )
-      if (result.willBeRetried) {
+      if (worstTestStepResult.willBeRetried) {
         const stepsToRetry = testCaseAttempt.pickle.steps.length
         this.progressBar.tick(-stepsToRetry)
       }
