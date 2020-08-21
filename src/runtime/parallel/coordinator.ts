@@ -207,12 +207,12 @@ export default class Coordinator {
         testRunStarted: {
           timestamp: {
             nanos: 0,
-            seconds: 0
-          }
+            seconds: 0,
+          },
         },
       })
     )
-    this.stopwatch.start();
+    this.stopwatch.start()
     _.times(numberOfWorkers, (id) =>
       this.startWorker(id.toString(), numberOfWorkers)
     )

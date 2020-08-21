@@ -91,7 +91,7 @@ export default class ProgressBarFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts: this.eventDataCollector.getTestCaseAttempts(),
-        testRunFinished
+        testRunFinished,
       })
     )
   }

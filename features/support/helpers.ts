@@ -7,7 +7,10 @@ export function normalizeText(text: string): string {
     .replace(/\r\n|\r/g, '\n')
     .trim()
     .replace(/[ \t]+\n/g, '\n')
-    .replace(/\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/, '<duration-stat>')
+    .replace(
+      /\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/,
+      '<duration-stat>'
+    )
     .replace(/\d+(.\d+)?ms/g, '<d>ms')
     .replace(/\//g, path.sep)
     .replace(/ +/g, ' ')

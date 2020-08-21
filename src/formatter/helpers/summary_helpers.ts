@@ -56,7 +56,9 @@ export function formatSummary({
     objects: testStepResults,
     type: 'step',
   })
-  const durationSummary = `${getDurationSummary(testRunFinished.timestamp)} (executing steps: ${getDurationSummary(totalStepDuration)})\n`
+  const durationSummary = `${getDurationSummary(
+    testRunFinished.timestamp
+  )} (executing steps: ${getDurationSummary(totalStepDuration)})\n`
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
@@ -90,7 +92,9 @@ function getCountSummary({
   return text
 }
 
-function getDurationSummary(durationMsg: messages.IDuration | messages.ITimestamp): string {
+function getDurationSummary(
+  durationMsg: messages.IDuration | messages.ITimestamp
+): string {
   const start = new Date(0)
   const end = new Date(durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
