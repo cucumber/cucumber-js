@@ -22,18 +22,20 @@ const STATUS_REPORT_ORDER = [
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
+  testRunFinished: messages.ITestRunFinished
 }
 
 export function formatSummary({
   colorFns,
   testCaseAttempts,
+  testRunFinished,
 }: IFormatSummaryRequest): string {
   const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
   const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
-  let totalDuration = getZeroDuration()
+  let totalStepDuration = getZeroDuration()
   testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
     Object.values(stepResults).forEach((stepResult) => {
-      totalDuration = addDurations(totalDuration, stepResult.duration)
+      totalStepDuration = addDurations(totalStepDuration, stepResult.duration)
     })
     if (!worstTestStepResult.willBeRetried) {
       testCaseResults.push(worstTestStepResult)
@@ -54,7 +56,7 @@ export function formatSummary({
     objects: testStepResults,
     type: 'step',
   })
-  const durationSummary = getDurationSummary(totalDuration)
+  const durationSummary = `${getDurationSummary(testRunFinished.timestamp)} (executing steps: ${getDurationSummary(totalStepDuration)})\n`
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
@@ -88,10 +90,10 @@ function getCountSummary({
   return text
 }
 
-function getDurationSummary(durationMsg: messages.IDuration): string {
+function getDurationSummary(durationMsg: messages.IDuration | messages.ITimestamp): string {
   const start = new Date(0)
   const end = new Date(durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
   // Use spaces in toString method for readability and to avoid %Ls which is a format
-  return duration.toString('%Ms m %S . %L s').replace(/ /g, '') + '\n'
+  return duration.toString('%Ms m %S . %L s').replace(/ /g, '')
 }

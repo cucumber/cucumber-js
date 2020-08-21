@@ -86,11 +86,12 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logSummary(): void {
+  logSummary(testRunFinished: messages.ITestRunFinished): void {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts: this.eventDataCollector.getTestCaseAttempts(),
+        testRunFinished
       })
     )
   }
@@ -107,7 +108,7 @@ export default class ProgressBarFormatter extends Formatter {
     } else if (doesHaveValue(envelope.testCaseFinished)) {
       this.logErrorIfNeeded(envelope.testCaseFinished)
     } else if (doesHaveValue(envelope.testRunFinished)) {
-      this.logSummary()
+      this.logSummary(envelope.testRunFinished)
     }
   }
 }
