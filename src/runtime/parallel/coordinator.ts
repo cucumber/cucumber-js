@@ -201,7 +201,18 @@ export default class Coordinator {
   }
 
   run(numberOfWorkers: number, done: (success: boolean) => void): void {
-    this.eventBroadcaster.emit('test-run-started')
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({
+        testRunStarted: {
+          timestamp: {
+            nanos: 0,
+            seconds: 0
+          }
+        },
+      })
+    )
+    this.stopwatch.start();
     _.times(numberOfWorkers, (id) =>
       this.startWorker(id.toString(), numberOfWorkers)
     )
