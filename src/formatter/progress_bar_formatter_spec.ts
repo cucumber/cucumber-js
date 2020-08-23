@@ -6,6 +6,7 @@ import { EventDataCollector } from './helpers'
 import {
   getEnvelopesAndEventDataCollector,
   ITestSource,
+  normalizeSummaryDuration,
 } from '../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FormatterBuilder from './builder'
@@ -81,7 +82,7 @@ async function testProgressBarFormatter({
       mocked = true
     }
   }
-  return { progressBarFormatter, output }
+  return { progressBarFormatter, output: normalizeSummaryDuration(output) }
 }
 
 describe('ProgressBarFormatter', () => {
@@ -393,7 +394,7 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(output).to.contain(
-        '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+        '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '<duration-stat>\n'
       )
     })
 
@@ -420,7 +421,7 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(output).to.contain(
-        '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
+        '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '<duration-stat>\n'
       )
     })
   })

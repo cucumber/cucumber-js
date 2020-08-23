@@ -1,20 +1,18 @@
 import path from 'path'
 import figures from 'figures'
+import { normalizeSummaryDuration } from '../../test/formatter_helpers'
 
 export function normalizeText(text: string): string {
-  return figures(text)
+  const normalized = figures(text)
     .replace(/\033\[[0-9;]*m/g, '')
     .replace(/\r\n|\r/g, '\n')
     .trim()
     .replace(/[ \t]+\n/g, '\n')
-    .replace(
-      /\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/,
-      '<duration-stat>'
-    )
     .replace(/\d+(.\d+)?ms/g, '<d>ms')
     .replace(/\//g, path.sep)
     .replace(/ +/g, ' ')
     .split('\n')
     .map((line) => line.trim())
     .join('\n')
+  return normalizeSummaryDuration(normalized)
 }

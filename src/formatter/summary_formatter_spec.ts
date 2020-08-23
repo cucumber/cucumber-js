@@ -47,7 +47,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -80,7 +80,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -115,7 +115,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 ambiguous)\n' +
             '1 step (1 ambiguous)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -152,7 +152,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 undefined)\n' +
             '1 step (1 undefined)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -185,7 +185,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 pending)\n' +
             '1 step (1 pending)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -219,7 +219,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -259,7 +259,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -296,7 +296,7 @@ describe('SummaryFormatter', () => {
 
 1 scenario (1 passed)
 1 step (1 passed)
-0m00.000s
+<duration-stat>
 `
         )
       })
