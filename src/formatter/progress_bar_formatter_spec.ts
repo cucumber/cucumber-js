@@ -421,7 +421,9 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(output).to.contain(
-        '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '<duration-stat>\n'
+        '2 scenarios (2 passed)\n' +
+          '2 steps (2 passed)\n' +
+          '<duration-stat>\n'
       )
     })
   })

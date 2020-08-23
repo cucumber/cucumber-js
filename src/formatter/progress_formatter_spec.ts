@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import { testFormatter, normalizeSummaryDuration } from '../../test/formatter_helpers'
+import { testFormatter } from '../../test/formatter_helpers'
 import figures from 'figures'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
