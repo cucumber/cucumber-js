@@ -1,11 +1,16 @@
 import isStream from 'is-stream'
 import stream from 'stream'
-import { messages } from 'cucumber-messages'
-import { doesNotHaveValue, doesHaveValue } from '../../value_checker'
+import { messages } from '@cucumber/messages'
+import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
+
+export interface IAttachmentMedia {
+  encoding: messages.Attachment.ContentEncoding
+  contentType: string
+}
 
 export interface IAttachment {
   data: string
-  media: messages.Media
+  media: IAttachmentMedia
 }
 
 export type IAttachFunction = (attachment: IAttachment) => void
@@ -14,12 +19,17 @@ export type ICreateAttachment = (
   mediaType?: string,
   callback?: () => void
 ) => void | Promise<void>
+export type ICreateLog = (text: string) => void | Promise<void>
 
 export default class AttachmentManager {
   private readonly onAttachment: IAttachFunction
 
   constructor(onAttachment: IAttachFunction) {
     this.onAttachment = onAttachment
+  }
+
+  log(text: string): void | Promise<void> {
+    return this.create(text, 'text/x.cucumber.log+plain')
   }
 
   create(
@@ -41,13 +51,10 @@ export default class AttachmentManager {
       if (doesNotHaveValue(mediaType)) {
         mediaType = 'text/plain'
       }
-      this.createStringAttachment(
-        data,
-        messages.Media.fromObject({
-          encoding: messages.Media.Encoding.UTF8,
-          contentType: mediaType,
-        })
-      )
+      this.createStringAttachment(data, {
+        encoding: messages.Attachment.ContentEncoding.IDENTITY,
+        contentType: mediaType,
+      })
     } else {
       throw Error(
         'Invalid attachment data: must be a buffer, readable stream, or string'
@@ -56,13 +63,10 @@ export default class AttachmentManager {
   }
 
   createBufferAttachment(data: Buffer, mediaType: string): void {
-    this.createStringAttachment(
-      data.toString('base64'),
-      messages.Media.fromObject({
-        encoding: messages.Media.Encoding.BASE64,
-        contentType: mediaType,
-      })
-    )
+    this.createStringAttachment(data.toString('base64'), {
+      encoding: messages.Attachment.ContentEncoding.BASE64,
+      contentType: mediaType,
+    })
   }
 
   createStreamAttachment(
@@ -88,7 +92,7 @@ export default class AttachmentManager {
     }
   }
 
-  createStringAttachment(data: string, media: messages.Media): void {
+  createStringAttachment(data: string, media: IAttachmentMedia): void {
     this.onAttachment({ data, media })
   }
 }

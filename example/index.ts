@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import ansiHTML from 'ansi-html'
-import Gherkin from 'gherkin'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { GherkinStreams } from '@cucumber/gherkin'
+import { messages, IdGenerator } from '@cucumber/messages'
 
 declare var Cucumber: any
 declare var $: any
@@ -22,7 +22,7 @@ async function runFeature(): Promise<boolean> {
   )
 
   const newId = uuid()
-  const gherkinMessageStream = Gherkin.fromSources(
+  const gherkinMessageStream = GherkinStreams.fromSources(
     [
       messages.Envelope.fromObject({
         source: {

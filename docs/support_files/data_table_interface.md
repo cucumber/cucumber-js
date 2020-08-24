@@ -8,5 +8,6 @@ When steps have a data table, they are passed an object with methods that can be
 - without column headers
   - `raw`: returns the table as a 2-D array
   - `rowsHash`: returns an object where each row corresponds to an entry (first column is the key, second column is the value)
+  - `transpose`: returns a new instance with the data transposed
 
 See this [feature](/features/data_tables.feature) for examples

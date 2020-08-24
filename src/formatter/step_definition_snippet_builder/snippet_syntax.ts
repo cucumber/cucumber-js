@@ -1,4 +1,4 @@
-import GeneratedExpression from 'cucumber-expressions/dist/src/GeneratedExpression'
+import GeneratedExpression from '@cucumber/cucumber-expressions/dist/src/GeneratedExpression'
 
 export enum SnippetInterface {
   AsyncAwait = 'async-await',
@@ -11,7 +11,7 @@ export enum SnippetInterface {
 export interface ISnippetSyntaxBuildOptions {
   comment: string
   functionName: string
-  generatedExpressions: GeneratedExpression[]
+  generatedExpressions: readonly GeneratedExpression[]
   stepParameterNames: string[]
 }
 

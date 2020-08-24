@@ -1,5 +1,5 @@
 import _, { Dictionary } from 'lodash'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(

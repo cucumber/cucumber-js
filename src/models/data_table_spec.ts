@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import DataTable from './data_table'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 describe('DataTable', () => {
   describe('table with headers', () => {
@@ -35,6 +35,15 @@ describe('DataTable', () => {
         expect(new DataTable(dataTable).hashes()).to.eql([
           { 'header 1': 'row 1 col 1', 'header 2': 'row 1 col 2' },
           { 'header 1': 'row 2 col 1', 'header 2': 'row 2 col 2' },
+        ])
+      })
+    })
+
+    describe('transpose', () => {
+      it('returns a new DataTable, with the data transposed', () => {
+        expect(new DataTable(dataTable).transpose().raw()).to.eql([
+          ['header 1', 'row 1 col 1', 'row 2 col 1'],
+          ['header 2', 'row 1 col 2', 'row 2 col 2'],
         ])
       })
     })

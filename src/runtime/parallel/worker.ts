@@ -11,11 +11,13 @@ import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { IRuntimeOptions } from '../index'
+import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
+import { duration } from 'durations'
 
 const { uuid } = IdGenerator
 
@@ -121,11 +123,17 @@ export default class Worker {
   async runTestCase({
     gherkinDocument,
     pickle,
+    elapsed,
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
+    const stopwatch = this.options.predictableIds
+      ? new PredictableTestRunStopwatch()
+      : new RealTestRunStopwatch()
+    stopwatch.from(duration(elapsed))
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      stopwatch,
       gherkinDocument,
       newId: this.newId,
       pickle,

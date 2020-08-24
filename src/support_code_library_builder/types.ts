@@ -1,15 +1,15 @@
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
-import { ParameterTypeRegistry } from 'cucumber-expressions'
+import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 
 export type DefineStepPattern = string | RegExp
 
 export interface ITestCaseHookParameter {
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
-  result?: messages.ITestResult
+  result?: messages.TestStepFinished.ITestStepResult
   testCaseStartedId: string
 }
 
@@ -39,8 +39,8 @@ export interface IParameterTypeDefinition<T> {
   name: string
   regexp: RegExp
   transformer: (...match: string[]) => T
-  useForSnippets: boolean
-  preferForRegexpMatch: boolean
+  useForSnippets?: boolean
+  preferForRegexpMatch?: boolean
 }
 
 export interface IDefineSupportCodeMethods {
@@ -91,6 +91,7 @@ export interface ISupportCodeLibrary {
   readonly beforeTestRunHookDefinitions: TestRunHookDefinition[]
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
+  readonly undefinedParameterTypes: messages.IUndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
 }

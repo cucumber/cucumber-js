@@ -1,28 +1,29 @@
 import _ from 'lodash'
 import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
-import { IdGenerator } from 'cucumber-messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
 import arity from 'util-arity'
+
 import {
   CucumberExpression,
-  RegularExpression,
   ParameterTypeRegistry,
-} from 'cucumber-expressions'
+  RegularExpression,
+} from '@cucumber/cucumber-expressions'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { validateNoGeneratorFunctions } from './finalize_helpers'
 import {
-  IDefineSupportCodeMethods,
   DefineStepPattern,
   IDefineStepOptions,
+  IDefineSupportCodeMethods,
   IDefineTestCaseHookOptions,
-  TestCaseHookFunction,
   IDefineTestRunHookOptions,
-  ISupportCodeLibrary,
   IParameterTypeDefinition,
+  ISupportCodeLibrary,
+  TestCaseHookFunction,
 } from './types'
 import World from './world'
 
@@ -47,6 +48,8 @@ interface ITestRunHookDefinitionConfig {
   options: any
   uri: string
 }
+
+export const builtinParameterTypes = ['int', 'float', 'word', 'string', '']
 
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
@@ -234,29 +237,57 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  buildStepDefinitions(): StepDefinition[] {
-    return this.stepDefinitionConfigs.map(
+  buildStepDefinitions(): {
+    stepDefinitions: StepDefinition[]
+    undefinedParameterTypes: messages.IUndefinedParameterType[]
+  } {
+    const stepDefinitions: StepDefinition[] = []
+    const undefinedParameterTypes: messages.IUndefinedParameterType[] = []
+    this.stepDefinitionConfigs.forEach(
       ({ code, line, options, pattern, uri }) => {
-        const expression =
-          typeof pattern === 'string'
-            ? new CucumberExpression(pattern, this.parameterTypeRegistry)
-            : new RegularExpression(pattern, this.parameterTypeRegistry)
+        let expression
+        if (typeof pattern === 'string') {
+          try {
+            expression = new CucumberExpression(
+              pattern,
+              this.parameterTypeRegistry
+            )
+          } catch (e) {
+            if (doesHaveValue(e.undefinedParameterTypeName)) {
+              undefinedParameterTypes.push({
+                name: e.undefinedParameterTypeName,
+                expression: pattern,
+              })
+              return
+            }
+            throw e
+          }
+        } else {
+          expression = new RegularExpression(
+            pattern,
+            this.parameterTypeRegistry
+          )
+        }
+
         const wrappedCode = this.wrapCode({
           code,
           wrapperOptions: options.wrapperOptions,
         })
-        return new StepDefinition({
-          code: wrappedCode,
-          expression,
-          id: this.newId(),
-          line,
-          options,
-          pattern,
-          unwrappedCode: code,
-          uri,
-        })
+        stepDefinitions.push(
+          new StepDefinition({
+            code: wrappedCode,
+            expression,
+            id: this.newId(),
+            line,
+            options,
+            pattern,
+            unwrappedCode: code,
+            uri,
+          })
+        )
       }
     )
+    return { stepDefinitions, undefinedParameterTypes }
   }
 
   finalize(): ISupportCodeLibrary {
@@ -272,13 +303,14 @@ export class SupportCodeLibraryBuilder {
         .value()
       validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
     }
+    const stepDefinitionsResult = this.buildStepDefinitions()
     return {
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
         this.afterTestCaseHookDefinitionConfigs
-      ).reverse(),
+      ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.afterTestRunHookDefinitionConfigs
-      ).reverse(),
+      ),
       beforeTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
         this.beforeTestCaseHookDefinitionConfigs
       ),
@@ -287,7 +319,8 @@ export class SupportCodeLibraryBuilder {
       ),
       defaultTimeout: this.defaultTimeout,
       parameterTypeRegistry: this.parameterTypeRegistry,
-      stepDefinitions: this.buildStepDefinitions(),
+      undefinedParameterTypes: stepDefinitionsResult.undefinedParameterTypes,
+      stepDefinitions: stepDefinitionsResult.stepDefinitions,
       World: this.World,
     }
   }

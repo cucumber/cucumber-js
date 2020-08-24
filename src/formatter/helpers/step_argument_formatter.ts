@@ -1,6 +1,6 @@
 import Table from 'cli-table3'
 import { parseStepArgument } from '../../step_arguments'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 function formatDataTable(
   dataTable: messages.PickleStepArgument.IPickleTable

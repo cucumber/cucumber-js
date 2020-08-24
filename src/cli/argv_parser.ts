@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { Command } from 'commander'
 import path from 'path'
-import Gherkin from 'gherkin'
+import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
@@ -83,7 +83,7 @@ const ArgvParser = {
   },
 
   validateLanguage(value: string): string {
-    if (!_.includes(_.keys(Gherkin.dialects()), value)) {
+    if (!_.includes(_.keys(dialects), value)) {
       throw new Error(`Unsupported ISO 639-1: ${value}`)
     }
     return value

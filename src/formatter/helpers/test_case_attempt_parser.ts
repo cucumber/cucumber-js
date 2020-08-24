@@ -1,13 +1,13 @@
 import _, { Dictionary } from 'lodash'
 import Status from '../../status'
-import { KeywordType, getStepKeywordType } from './keyword_type'
+import { getStepKeywordType, KeywordType } from './keyword_type'
 import {
-  getGherkinStepMap,
   getGherkinScenarioLocationMap,
+  getGherkinStepMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 import path from 'path'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -20,7 +20,7 @@ export interface IParsedTestStep {
   argument?: messages.IPickleStepArgument
   attachments: messages.IAttachment[]
   keyword: string
-  result: messages.ITestResult
+  result: messages.TestStepFinished.ITestStepResult
   snippet?: string
   sourceLocation?: ILineAndUri
   text?: string
@@ -29,8 +29,8 @@ export interface IParsedTestStep {
 export interface IParsedTestCase {
   attempt: number
   name: string
-  result: messages.ITestResult
   sourceLocation?: ILineAndUri
+  worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export interface IParsedTestCaseAttempt {
@@ -48,7 +48,7 @@ interface IParseStepRequest {
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
   testStep: messages.TestCase.ITestStep
-  testStepResult: messages.ITestResult
+  testStepResult: messages.TestStepFinished.ITestStepResult
   testStepAttachments: messages.IAttachment[]
 }
 
@@ -144,11 +144,11 @@ export function parseTestCaseAttempt({
   const parsedTestCase: IParsedTestCase = {
     attempt: testCaseAttempt.attempt,
     name: pickle.name,
-    result: testCaseAttempt.result,
     sourceLocation: {
       uri: relativePickleUri,
       line: gherkinScenarioLocationMap[_.last(pickle.astNodeIds)].line,
     },
+    worstTestStepResult: testCaseAttempt.worstTestStepResult,
   }
   const parsedTestSteps: IParsedTestStep[] = []
   let isBeforeHook = true

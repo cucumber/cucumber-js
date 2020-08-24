@@ -3,12 +3,12 @@ import Status from '../../status'
 import figures from 'figures'
 import { formatLocation } from './location_helpers'
 import {
-  parseTestCaseAttempt,
   IParsedTestStep,
+  parseTestCaseAttempt,
 } from './test_case_attempt_parser'
 import { formatStepArgument } from './step_argument_formatter'
 import { IColorFns } from '../get_color_fns'
-import { valueOrDefault, doesHaveValue } from '../../value_checker'
+import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -59,9 +59,9 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
     const argumentsText = formatStepArgument(testStep.argument)
     text += indentString(`${colorFn(argumentsText)}\n`, 4)
   }
-  attachments.forEach(({ media, data }) => {
-    const message = media.contentType === 'text/plain' ? `: ${data}` : ''
-    text += indentString(`Attachment (${media.contentType})${message}\n`, 4)
+  attachments.forEach(({ body, mediaType }) => {
+    const message = mediaType === 'text/plain' ? `: ${body}` : ''
+    text += indentString(`Attachment (${mediaType})${message}\n`, 4)
   })
   const message = getStepMessage(testStep)
   if (message !== '') {
@@ -94,7 +94,7 @@ export function formatTestCaseAttempt({
   let text = `Scenario: ${parsed.testCase.name}`
   text += getAttemptText(
     parsed.testCase.attempt,
-    parsed.testCase.result.willBeRetried
+    parsed.testCase.worstTestStepResult.willBeRetried
   )
   text += ` # ${colorFns.location(
     formatLocation(parsed.testCase.sourceLocation)

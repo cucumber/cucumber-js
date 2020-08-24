@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { find, filter } from 'lodash'
 import { Then } from '../../'
 import { expect } from 'chai'
 import DataTable from '../../src/models/data_table'
@@ -10,7 +10,7 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { World } from '../support/world'
 import semver from 'semver'
 
@@ -23,10 +23,15 @@ type StringifiedStatus =
   | 'AMBIGUOUS'
   | 'FAILED'
 
-const { Status } = messages.TestResult
+const { Status } = messages.TestStepFinished.TestStepResult
+
+const ENCODING_MAP: { [key: string]: messages.Attachment.ContentEncoding } = {
+  IDENTITY: messages.Attachment.ContentEncoding.IDENTITY,
+  BASE64: messages.Attachment.ContentEncoding.BASE64,
+}
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
-  const testCaseStartedEvents = _.filter(
+  const testCaseStartedEvents = filter(
     this.lastRun.envelopes,
     (e) => e.testCaseStarted
   )
@@ -83,7 +88,7 @@ Then('scenario {string} step {string} has status {string}', function (
   status: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
-  const testStepResult = _.find(testStepResults, ['text', stepText])
+  const testStepResult = find(testStepResults, ['text', stepText])
   expect(testStepResult.result.status).to.eql(
     Status[status.toUpperCase() as StringifiedStatus]
   )
@@ -103,7 +108,7 @@ Then(
       pickleName,
       attempt
     )
-    const testStepResult = _.find(testStepResults, ['text', stepText])
+    const testStepResult = find(testStepResults, ['text', stepText])
     expect(testStepResult.result.status).to.eql(
       Status[status.toUpperCase() as StringifiedStatus]
     )
@@ -117,7 +122,7 @@ Then('scenario {string} {string} hook has status {string}', function (
   status: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
-  const testStepResult = _.find(testStepResults, ['text', hookKeyword])
+  const testStepResult = find(testStepResults, ['text', hookKeyword])
   expect(testStepResult.result.status).to.eql(
     Status[status.toUpperCase() as StringifiedStatus]
   )
@@ -130,7 +135,7 @@ Then('scenario {string} step {string} failed with:', function (
   errorMessage: string
 ) {
   const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
-  const testStepResult = _.find(testStepResults, ['text', stepText])
+  const testStepResult = find(testStepResults, ['text', stepText])
   if (semver.satisfies(process.version, '>=14.0.0')) {
     errorMessage = errorMessage.replace(
       '{ member: [Circular] }',
@@ -153,7 +158,7 @@ Then('scenario {string} attempt {int} step {string} failed with:', function (
     pickleName,
     attempt
   )
-  const testStepResult = _.find(testStepResults, ['text', stepText])
+  const testStepResult = find(testStepResults, ['text', stepText])
   expect(testStepResult.result.status).to.eql(Status.FAILED)
   expect(testStepResult.result.message).to.include(errorMessage)
 })
@@ -186,11 +191,9 @@ Then('scenario {string} step {string} has the attachments:', function (
 ) {
   const expectedAttachments = table.hashes().map((x) => {
     return {
-      data: x.DATA,
-      media: messages.Media.fromObject({
-        contentType: x['MEDIA TYPE'],
-        encoding: messages.Media.Encoding[x['MEDIA ENCODING']],
-      }),
+      body: x.DATA,
+      mediaType: x['MEDIA TYPE'],
+      contentEncoding: ENCODING_MAP[x['MEDIA ENCODING']],
     }
   })
   const stepAttachments = getTestStepAttachmentsForStep(
@@ -199,7 +202,11 @@ Then('scenario {string} step {string} has the attachments:', function (
     stepText
   )
   const actualAttachments = stepAttachments.map((e) => {
-    return { data: e.data, media: e.media }
+    return {
+      body: e.body,
+      mediaType: e.mediaType,
+      contentEncoding: e.contentEncoding,
+    }
   })
   expect(actualAttachments).to.eql(expectedAttachments)
 })
@@ -210,22 +217,26 @@ Then('scenario {string} {string} hook has the attachments:', function (
   hookKeyword: string,
   table: DataTable
 ) {
-  const expectedAttachments = table.hashes().map((x) => {
-    return {
-      data: x.DATA,
-      media: messages.Media.fromObject({
-        contentType: x['MEDIA TYPE'],
-        encoding: messages.Media.Encoding[x['MEDIA ENCODING']],
-      }),
-    }
-  })
+  const expectedAttachments: messages.IAttachment[] = table
+    .hashes()
+    .map((x) => {
+      return {
+        body: x.DATA,
+        mediaType: x['MEDIA TYPE'],
+        contentEncoding: ENCODING_MAP[x['MEDIA ENCODING']],
+      }
+    })
   const hookAttachments = getTestStepAttachmentsForHook(
     this.lastRun.envelopes,
     pickleName,
     hookKeyword === 'Before'
   )
   const actualAttachments = hookAttachments.map((e) => {
-    return { data: e.data, media: e.media }
+    return {
+      body: e.body,
+      mediaType: e.mediaType,
+      contentEncoding: e.contentEncoding,
+    }
   })
   expect(actualAttachments).to.eql(expectedAttachments)
 })

@@ -3,7 +3,7 @@ import { getPickleStepMap } from '../pickle_parser'
 import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
 import { durationToMilliseconds, millisecondsToDuration } from '../../../time'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import StepDefinition from '../../../models/step_definition'
 import { doesHaveValue } from '../../../value_checker'
 import EventDataCollector from '../event_data_collector'
@@ -70,8 +70,15 @@ function buildMapping({
           text: pickleStep.text,
           uri: path.relative(cwd, testCaseAttempt.pickle.uri),
         }
-        const { duration } = testCaseAttempt.stepResults[testStep.id]
-        if (doesHaveValue(duration)) {
+        const { duration, status } = testCaseAttempt.stepResults[testStep.id]
+        if (
+          ![
+            messages.TestStepFinished.TestStepResult.Status.AMBIGUOUS,
+            messages.TestStepFinished.TestStepResult.Status.SKIPPED,
+            messages.TestStepFinished.TestStepResult.Status.UNDEFINED,
+          ].includes(status) &&
+          doesHaveValue(duration)
+        ) {
           match.duration = duration
         }
         if (doesHaveValue(mapping[stepDefinitionId])) {

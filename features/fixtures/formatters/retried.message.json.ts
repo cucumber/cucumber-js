@@ -3,10 +3,7 @@ module.exports = [
     source: {
       uri: 'features/a.feature',
       data: 'Feature: a feature\n  Scenario: a scenario\n    Given a step',
-      media: {
-        encoding: 'UTF8',
-        contentType: 'text/x.cucumber.gherkin+plain',
-      },
+      mediaType: 'text/x.cucumber.gherkin+plain',
     },
   },
   {
@@ -64,12 +61,27 @@ module.exports = [
     },
   },
   {
-    pickleAccepted: {
-      pickleId: '4',
+    stepDefinition: {
+      id: '0',
+      pattern: {
+        source: '/^a step$/',
+        type: 'REGULAR_EXPRESSION',
+      },
+      sourceReference: {
+        uri: 'features/step_definitions/steps.js',
+        location: {
+          line: 5,
+        },
+      },
     },
   },
   {
-    testRunStarted: {},
+    testRunStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 0,
+      },
+    },
   },
   {
     testCase: {
@@ -80,12 +92,17 @@ module.exports = [
           id: '6',
           pickleStepId: '3',
           stepDefinitionIds: ['0'],
+          stepMatchArgumentsLists: [{}],
         },
       ],
     },
   },
   {
     testCaseStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 1000000,
+      },
       attempt: 0,
       testCaseId: '5',
       id: '7',
@@ -93,28 +110,17 @@ module.exports = [
   },
   {
     testStepStarted: {
-      testStepId: '6',
-      testCaseStartedId: '7',
-    },
-  },
-  {
-    testStepFinished: {
-      testResult: {
-        status: 'FAILED',
-        message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+      timestamp: {
+        seconds: '0',
+        nanos: 2000000,
       },
       testStepId: '6',
       testCaseStartedId: '7',
     },
   },
   {
-    testCaseFinished: {
-      testResult: {
+    testStepFinished: {
+      testStepResult: {
         status: 'FAILED',
         message:
           'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
@@ -124,11 +130,29 @@ module.exports = [
         },
         willBeRetried: true,
       },
+      timestamp: {
+        seconds: '0',
+        nanos: 3000000,
+      },
+      testStepId: '6',
+      testCaseStartedId: '7',
+    },
+  },
+  {
+    testCaseFinished: {
+      timestamp: {
+        seconds: '0',
+        nanos: 4000000,
+      },
       testCaseStartedId: '7',
     },
   },
   {
     testCaseStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 5000000,
+      },
       attempt: 1,
       testCaseId: '5',
       id: '8',
@@ -136,18 +160,26 @@ module.exports = [
   },
   {
     testStepStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 6000000,
+      },
       testStepId: '6',
       testCaseStartedId: '8',
     },
   },
   {
     testStepFinished: {
-      testResult: {
+      testStepResult: {
         status: 'PASSED',
         duration: {
           seconds: '0',
           nanos: 0,
         },
+      },
+      timestamp: {
+        seconds: '0',
+        nanos: 7000000,
       },
       testStepId: '6',
       testCaseStartedId: '8',
@@ -155,19 +187,19 @@ module.exports = [
   },
   {
     testCaseFinished: {
-      testResult: {
-        status: 'PASSED',
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+      timestamp: {
+        seconds: '0',
+        nanos: 8000000,
       },
       testCaseStartedId: '8',
     },
   },
   {
     testRunFinished: {
-      success: true,
+      timestamp: {
+        seconds: '0',
+        nanos: 9000000,
+      },
     },
   },
 ]
