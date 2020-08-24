@@ -36,7 +36,11 @@ Before(function (
   fsExtra.removeSync(this.tmpDir)
 
   const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-  const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
+  const tmpDirCucumberPath = path.join(
+    tmpDirNodeModulesPath,
+    '@cucumber',
+    'cucumber'
+  )
   fsExtra.ensureSymlinkSync(projectPath, tmpDirCucumberPath)
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
 })
@@ -63,6 +67,7 @@ Before('@global-install', function (this: World) {
 
   const globalInstallCucumberPath = path.join(
     globalInstallNodeModulesPath,
+    '@cucumber',
     'cucumber'
   )
   const itemsToCopy = ['bin', 'lib', 'package.json']
