@@ -17,7 +17,7 @@ Feature: usage json formatter
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When('step A', function() {});
       When('step B', function() {});

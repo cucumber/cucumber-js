@@ -25,7 +25,7 @@ Feature: Summary Formatter
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       Given(/^another step$/, function() {})

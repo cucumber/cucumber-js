@@ -13,7 +13,7 @@ Feature: Exit
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, After} = require('cucumber')
+      const {Given, After} = require('@cucumber/cucumber')
 
       Given('a step', function() {})
 
