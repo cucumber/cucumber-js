@@ -98,3 +98,17 @@ Given(/^a basic step$/, function() {
 //    Attachment (text/plain): Some info.
 //    Attachment (application/json)
 ```
+
+## Logging
+
+You can log useful information from your support code with the simple `log` function:
+
+```javascript
+var {After} = require('cucumber');
+
+After(function () {
+  this.log('Something interesting happened!');
+});
+```
+
+Anything you log will be attached as a string with a MIME type of `text/x.cucumber.log+plain`

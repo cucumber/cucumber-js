@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { ParameterTypeRegistry } from 'cucumber-expressions'
+import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import supportCodeLibraryBuilder from './'
-import { IdGenerator } from 'cucumber-messages'
+import { IdGenerator } from '@cucumber/messages'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
 
 const { uuid } = IdGenerator
@@ -149,7 +149,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('multiple', () => {
-      it('adds the scenario hook definitions in the reverse order of definition', function () {
+      it('adds the scenario hook definitions in the order of definition', function () {
         // Arrange
         const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
@@ -162,8 +162,8 @@ describe('supportCodeLibraryBuilder', () => {
 
         // Assert
         expect(options.afterTestCaseHookDefinitions).to.have.lengthOf(2)
-        expect(options.afterTestCaseHookDefinitions[0].code).to.eql(hook2)
-        expect(options.afterTestCaseHookDefinitions[1].code).to.eql(hook1)
+        expect(options.afterTestCaseHookDefinitions[0].code).to.eql(hook1)
+        expect(options.afterTestCaseHookDefinitions[1].code).to.eql(hook2)
       })
     })
   })

@@ -2,8 +2,9 @@ import _ from 'lodash'
 import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import { doesHaveValue } from '../value_checker'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
+import { formatUndefinedParameterTypes } from './helpers/issue_helpers'
 
 interface ILogIssuesRequest {
   issues: ITestCaseAttempt[]
@@ -15,22 +16,29 @@ export default class SummaryFormatter extends Formatter {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
-        this.logSummary()
+        this.logSummary(envelope.testRunFinished)
       }
     })
   }
 
-  logSummary(): void {
+  logSummary(testRunFinished: messages.ITestRunFinished): void {
     const failures: ITestCaseAttempt[] = []
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
     _.each(testCaseAttempts, (testCaseAttempt) => {
-      if (isFailure(testCaseAttempt.result)) {
+      if (isFailure(testCaseAttempt.worstTestStepResult)) {
         failures.push(testCaseAttempt)
-      } else if (isWarning(testCaseAttempt.result)) {
+      } else if (isWarning(testCaseAttempt.worstTestStepResult)) {
         warnings.push(testCaseAttempt)
       }
     })
+    if (this.eventDataCollector.undefinedParameterTypes.length > 0) {
+      this.log(
+        formatUndefinedParameterTypes(
+          this.eventDataCollector.undefinedParameterTypes
+        )
+      )
+    }
     if (failures.length > 0) {
       this.logIssues({ issues: failures, title: 'Failures' })
     }
@@ -41,6 +49,7 @@ export default class SummaryFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts,
+        testRunFinished,
       })
     )
   }

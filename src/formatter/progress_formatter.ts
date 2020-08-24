@@ -2,7 +2,7 @@ import SummaryFormatter from './summary_formatter'
 import Status from '../status'
 import { doesHaveValue } from '../value_checker'
 import { IFormatterOptions } from './index'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import IEnvelope = messages.IEnvelope
 import ITestStepFinished = messages.ITestStepFinished
 
@@ -27,7 +27,7 @@ export default class ProgressFormatter extends SummaryFormatter {
     super(options)
   }
 
-  logProgress({ testResult: { status } }: ITestStepFinished): void {
+  logProgress({ testStepResult: { status } }: ITestStepFinished): void {
     const character = this.colorFns.forStatus(status)(
       STATUS_CHARACTER_MAPPING[status]
     )

@@ -36,3 +36,7 @@ export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
 export const Then = methods.Then
 export const When = methods.When
+export {
+  default as World,
+  IWorldOptions,
+} from './support_code_library_builder/world'

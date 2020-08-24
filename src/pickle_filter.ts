@@ -1,9 +1,9 @@
 import _, { Dictionary } from 'lodash'
 import path from 'path'
-import parse from 'cucumber-tag-expressions'
+import parse from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import IGherkinDocument = messages.IGherkinDocument
 import IPickle = messages.IPickle
 

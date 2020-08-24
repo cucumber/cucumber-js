@@ -1,12 +1,12 @@
-import { When, Then, DataTable } from '../../'
+import { DataTable, Then, When } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
 import Mustache from 'mustache'
 import {
-  valueOrDefault,
-  doesNotHaveValue,
   doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
 } from '../../src/value_checker'
 import { World } from '../support/world'
 

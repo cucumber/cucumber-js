@@ -1,12 +1,13 @@
 import { Then } from '../../'
 import { expect } from 'chai'
 import {
-  normalizeMessageOutput,
   normalizeJsonOutput,
+  normalizeMessageOutput,
+  stripMetaMessages,
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
 import path from 'path'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { World } from '../support/world'
 import Envelope = messages.Envelope
 
@@ -17,6 +18,7 @@ Then(
     if (formatter === 'message') {
       actual = this.lastRun.envelopes.map((e: Envelope) => e.toJSON())
       actual = normalizeMessageOutput(actual, this.tmpDir)
+      actual = stripMetaMessages(actual)
     } else {
       const actualPath = path.join(this.tmpDir, `${formatter}.out`)
       actual = await fs.readFile(actualPath, 'utf8')

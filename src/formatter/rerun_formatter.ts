@@ -8,7 +8,7 @@ import {
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 const DEFAULT_SEPARATOR = '\n'
 
@@ -34,8 +34,8 @@ export default class RerunFormatter extends Formatter {
     const mapping: UriToLinesMap = {}
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
-      ({ gherkinDocument, pickle, result }) => {
-        if (result.status !== Status.PASSED) {
+      ({ gherkinDocument, pickle, worstTestStepResult }) => {
+        if (worstTestStepResult.status !== Status.PASSED) {
           const relativeUri = path.relative(this.cwd, pickle.uri)
           const line = getGherkinScenarioLocationMap(gherkinDocument)[
             _.last(pickle.astNodeIds)

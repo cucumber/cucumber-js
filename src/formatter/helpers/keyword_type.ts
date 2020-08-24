@@ -1,7 +1,6 @@
 import _ from 'lodash'
-import Gherkin from 'gherkin'
+import { Dialect, dialects } from '@cucumber/gherkin'
 import { doesHaveValue } from '../../value_checker'
-import Dialect from 'gherkin/dist/src/Dialect'
 
 export enum KeywordType {
   Precondition = 'precondition',
@@ -20,7 +19,7 @@ export function getStepKeywordType({
   language,
   previousKeywordType,
 }: IGetStepKeywordTypeOptions): KeywordType {
-  const dialect: Dialect = Gherkin.dialects()[language]
+  const dialect: Dialect = dialects[language]
   const stepKeywords = ['given', 'when', 'then', 'and', 'but'] as const
   const type = _.find(stepKeywords, (key) => _.includes(dialect[key], keyword))
   switch (type) {

@@ -4,12 +4,13 @@ import Runtime, { IRuntimeOptions } from '../src/runtime'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
-import { IdGenerator, messages } from 'cucumber-messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
+import { emitSupportCodeMessages } from '../src/cli/helpers'
 import IEnvelope = messages.IEnvelope
 
 const { uuid } = IdGenerator
@@ -47,6 +48,11 @@ export async function testFormatter({
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
+  emitSupportCodeMessages({
+    supportCodeLibrary,
+    eventBroadcaster,
+    newId: uuid(),
+  })
   let output = ''
   const logFn = (data: string): void => {
     output += data
@@ -80,7 +86,7 @@ export async function testFormatter({
 
   await runtime.start()
 
-  return output
+  return normalizeSummaryDuration(output)
 }
 
 export async function getTestCaseAttempts({
@@ -128,6 +134,11 @@ export async function getEnvelopesAndEventDataCollector({
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const envelopes: IEnvelope[] = []
   eventBroadcaster.on('envelope', (envelope) => envelopes.push(envelope))
+  emitSupportCodeMessages({
+    supportCodeLibrary,
+    eventBroadcaster,
+    newId: IdGenerator.uuid(),
+  })
   let pickleIds: string[] = []
   for (const source of sources) {
     const { pickles } = await generateEvents({
@@ -149,4 +160,11 @@ export async function getEnvelopesAndEventDataCollector({
   await runtime.start()
 
   return { envelopes, eventDataCollector }
+}
+
+export function normalizeSummaryDuration(output: string): string {
+  return output.replace(
+    /\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/,
+    '<duration-stat>'
+  )
 }

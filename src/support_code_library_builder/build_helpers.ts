@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { ParameterType } from 'cucumber-expressions'
+import { ParameterType } from '@cucumber/cucumber-expressions'
 import path from 'path'
 import StackTrace from 'stacktrace-js'
 import { isFileNameInCucumber } from '../stack_trace_filter'

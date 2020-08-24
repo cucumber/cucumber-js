@@ -5,7 +5,7 @@ import path from 'path'
 import ProfileLoader from './profile_loader'
 import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
-import { valueOrDefault, doesHaveValue } from '../value_checker'
+import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string

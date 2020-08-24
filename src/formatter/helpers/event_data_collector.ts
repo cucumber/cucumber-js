@@ -1,24 +1,25 @@
-import _, { Dictionary } from 'lodash'
-import { messages } from 'cucumber-messages'
+import _, { Dictionary, values } from 'lodash'
+import { messages } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
+import { Query } from '@cucumber/query'
 
 interface ITestCaseAttemptData {
   attempt: number
   testCaseId: string
-  result: messages.ITestResult
   stepAttachments: Dictionary<messages.IAttachment[]>
-  stepResults: Dictionary<messages.ITestResult>
+  stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
+  worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export interface ITestCaseAttempt {
   attempt: number
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
-  result: messages.ITestResult
   stepAttachments: Dictionary<messages.IAttachment[]>
-  stepResults: Dictionary<messages.ITestResult>
+  stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
   testCase: messages.ITestCase
+  worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export default class EventDataCollector {
@@ -26,6 +27,8 @@ export default class EventDataCollector {
   private pickleMap: Dictionary<messages.IPickle> = {}
   private testCaseMap: Dictionary<messages.ITestCase> = {}
   private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
+  readonly undefinedParameterTypes: messages.IUndefinedParameterType[] = []
+  readonly query = new Query()
 
   constructor(eventBroadcaster: EventEmitter) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
@@ -54,18 +57,21 @@ export default class EventDataCollector {
       pickle,
       testCase,
       attempt: testCaseAttemptData.attempt,
-      result: testCaseAttemptData.result,
       stepAttachments: testCaseAttemptData.stepAttachments,
       stepResults: testCaseAttemptData.stepResults,
+      worstTestStepResult: testCaseAttemptData.worstTestStepResult,
     }
   }
 
   parseEnvelope(envelope: messages.Envelope): void {
+    this.query.update(envelope)
     if (doesHaveValue(envelope.gherkinDocument)) {
       this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
         envelope.gherkinDocument
     } else if (doesHaveValue(envelope.pickle)) {
       this.pickleMap[envelope.pickle.id] = envelope.pickle
+    } else if (doesHaveValue(envelope.undefinedParameterType)) {
+      this.undefinedParameterTypes.push(envelope.undefinedParameterType)
     } else if (doesHaveValue(envelope.testCase)) {
       this.testCaseMap[envelope.testCase.id] = envelope.testCase
     } else if (doesHaveValue(envelope.testCaseStarted)) {
@@ -83,41 +89,43 @@ export default class EventDataCollector {
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       testCaseId: testCaseStarted.testCaseId,
-      result: {},
       stepAttachments: {},
       stepResults: {},
+      worstTestStepResult: {},
     }
   }
 
   storeAttachment({
     testCaseStartedId,
     testStepId,
-    data,
-    media,
+    body,
+    mediaType,
   }: messages.IAttachment): void {
     if (doesHaveValue(testCaseStartedId) && doesHaveValue(testStepId)) {
       const { stepAttachments } = this.testCaseAttemptDataMap[testCaseStartedId]
       if (doesNotHaveValue(stepAttachments[testStepId])) {
         stepAttachments[testStepId] = []
       }
-      stepAttachments[testStepId].push({ data, media })
+      stepAttachments[testStepId].push({ body, mediaType })
     }
   }
 
   storeTestStepResult({
     testCaseStartedId,
     testStepId,
-    testResult,
+    testStepResult,
   }: messages.ITestStepFinished): void {
     this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
       testStepId
-    ] = testResult
+    ] = testStepResult
   }
 
-  storeTestCaseResult({
-    testCaseStartedId,
-    testResult,
-  }: messages.ITestCaseFinished): void {
-    this.testCaseAttemptDataMap[testCaseStartedId].result = testResult
+  storeTestCaseResult({ testCaseStartedId }: messages.ITestCaseFinished): void {
+    const stepResults = values(
+      this.testCaseAttemptDataMap[testCaseStartedId].stepResults
+    )
+    this.testCaseAttemptDataMap[
+      testCaseStartedId
+    ].worstTestStepResult = this.query.getWorstTestStepResult(stepResults)
   }
 }

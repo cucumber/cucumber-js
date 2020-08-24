@@ -1,7 +1,6 @@
-import Gherkin from 'gherkin'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { doesHaveValue } from '../src/value_checker'
-import IGherkinOptions from 'gherkin/src/IGherkinOptions'
+import { GherkinStreams, IGherkinOptions } from '@cucumber/gherkin'
 import { EventEmitter } from 'events'
 
 export interface IParsedSource {
@@ -30,10 +29,7 @@ export async function parse({
       source: {
         uri,
         data: data,
-        media: {
-          encoding: messages.Media.Encoding.UTF8,
-          contentType: 'text/x.cucumber.gherkin+plain',
-        },
+        mediaType: 'text/x.cucumber.gherkin+plain',
       },
     },
   ]
@@ -42,7 +38,7 @@ export async function parse({
     let gherkinDocument: messages.IGherkinDocument
     const pickles: messages.IPickle[] = []
     const envelopes: messages.IEnvelope[] = []
-    const messageStream = Gherkin.fromSources(sources, options)
+    const messageStream = GherkinStreams.fromSources(sources, options)
     messageStream.on('data', (envelope: messages.IEnvelope) => {
       envelopes.push(envelope)
       if (doesHaveValue(envelope.source)) {
@@ -53,15 +49,10 @@ export async function parse({
       }
       if (doesHaveValue(envelope.pickle)) {
         pickles.push(envelope.pickle)
-        envelopes.push(
-          messages.Envelope.fromObject({
-            pickleAccepted: { pickleId: envelope.pickle.id },
-          })
-        )
       }
       if (doesHaveValue(envelope.attachment)) {
         reject(
-          new Error(`Parse error in '${uri}': ${envelope.attachment.data}`)
+          new Error(`Parse error in '${uri}': ${envelope.attachment.body}`)
         )
       }
     })

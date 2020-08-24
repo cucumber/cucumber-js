@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import AttachmentManager, { IAttachment } from './'
 import stream, { Readable } from 'stream'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {
@@ -26,10 +26,10 @@ describe('AttachmentManager', () => {
           expect(attachments).to.eql([
             {
               data: 'bXkgc3RyaW5n',
-              media: messages.Media.fromObject({
+              media: {
                 contentType: 'text/special',
-                encoding: messages.Media.Encoding.BASE64,
-              }),
+                encoding: messages.Attachment.ContentEncoding.BASE64,
+              },
             },
           ])
           const decodedData = Buffer.from(
@@ -97,10 +97,10 @@ describe('AttachmentManager', () => {
             expect(attachments).to.eql([
               {
                 data: 'bXkgc3RyaW5n',
-                media: messages.Media.fromObject({
+                media: {
                   contentType: 'text/special',
-                  encoding: messages.Media.Encoding.BASE64,
-                }),
+                  encoding: messages.Attachment.ContentEncoding.BASE64,
+                },
               },
             ])
             const decodedData = Buffer.from(
@@ -135,10 +135,10 @@ describe('AttachmentManager', () => {
             expect(attachments).to.eql([
               {
                 data: 'bXkgc3RyaW5n',
-                media: messages.Media.fromObject({
+                media: {
                   contentType: 'text/special',
-                  encoding: messages.Media.Encoding.BASE64,
-                }),
+                  encoding: messages.Attachment.ContentEncoding.BASE64,
+                },
               },
             ])
             const decodedData = Buffer.from(
@@ -195,10 +195,10 @@ describe('AttachmentManager', () => {
           expect(attachments).to.eql([
             {
               data: 'my string',
-              media: messages.Media.fromObject({
+              media: {
                 contentType: 'text/special',
-                encoding: messages.Media.Encoding.UTF8,
-              }),
+                encoding: messages.Attachment.ContentEncoding.IDENTITY,
+              },
             },
           ])
         })
@@ -220,13 +220,38 @@ describe('AttachmentManager', () => {
           expect(attachments).to.eql([
             {
               data: 'my string',
-              media: messages.Media.fromObject({
+              media: {
                 contentType: 'text/plain',
-                encoding: messages.Media.Encoding.UTF8,
-              }),
+                encoding: messages.Attachment.ContentEncoding.IDENTITY,
+              },
             },
           ])
         })
+      })
+    })
+
+    describe('log', () => {
+      it('adds a string attachment with the appropriate mime type', function () {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) =>
+          attachments.push(x)
+        )
+
+        // Act
+        const result = attachmentManager.log('stuff happened')
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'stuff happened',
+            media: {
+              contentType: 'text/x.cucumber.log+plain',
+              encoding: messages.Attachment.ContentEncoding.IDENTITY,
+            },
+          },
+        ])
       })
     })
 

@@ -10,7 +10,7 @@ import {
   IParsedSourceWithEnvelopes,
   parse,
 } from '../../../test/gherkin_helpers'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import IGherkinDocument = messages.IGherkinDocument
 
 describe('GherkinDocumentParser', () => {

@@ -5,6 +5,9 @@ set -ex
 # Get coverage from unit tests
 ./node_modules/.bin/nyc --silent ./node_modules/.bin/mocha 'src/**/*_spec.ts'
 
+# Get coverage from cck tests
+./node_modules/.bin/nyc --silent ./node_modules/.bin/mocha 'compatibility/cck_spec.ts'
+
 # Get coverage from feature tests (join with unit test via --no-clean)
 yarn build-local
 ./node_modules/.bin/nyc --silent --no-clean node ./bin/cucumber-js

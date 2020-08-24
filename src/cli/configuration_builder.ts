@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import ArgvParser, {
-  IParsedArgvOptions,
   IParsedArgvFormatOptions,
+  IParsedArgvOptions,
 } from './argv_parser'
 import fs from 'mz/fs'
 import path from 'path'
@@ -97,6 +97,7 @@ export default class ConfigurationBuilder {
       profiles: this.options.profile,
       runtimeOptions: {
         dryRun: this.options.dryRun,
+        predictableIds: this.options.predictableIds,
         failFast: this.options.failFast,
         filterStacktraces: !this.options.backtrace,
         retry: this.options.retry,

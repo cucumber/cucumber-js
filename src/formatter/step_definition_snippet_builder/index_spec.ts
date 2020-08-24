@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { KeywordType } from '../helpers'
 import StepDefinitionSnippetBuilder, { IBuildRequest } from './'
 import sinon from 'sinon'
-import { ParameterTypeRegistry } from 'cucumber-expressions'
+import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import { ISnippetSyntaxBuildOptions } from './snippet_syntax'
 import { getPickleStepWithText } from '../../../test/gherkin_helpers'
 

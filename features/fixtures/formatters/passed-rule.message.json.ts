@@ -4,10 +4,7 @@ module.exports = [
       uri: 'features/a.feature',
       data:
         'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
-      media: {
-        encoding: 'UTF8',
-        contentType: 'text/x.cucumber.gherkin+plain',
-      },
+      mediaType: 'text/x.cucumber.gherkin+plain',
     },
   },
   {
@@ -54,6 +51,7 @@ module.exports = [
                   },
                 },
               ],
+              id: '3',
             },
           },
         ],
@@ -62,14 +60,14 @@ module.exports = [
   },
   {
     pickle: {
-      id: '4',
+      id: '5',
       uri: 'features/a.feature',
       name: 'an example',
       language: 'en',
       steps: [
         {
           text: 'a step',
-          id: '3',
+          id: '4',
           astNodeIds: ['1'],
         },
       ],
@@ -77,67 +75,95 @@ module.exports = [
     },
   },
   {
-    pickleAccepted: {
-      pickleId: '4',
+    stepDefinition: {
+      id: '0',
+      pattern: {
+        source: '/^a step$/',
+        type: 'REGULAR_EXPRESSION',
+      },
+      sourceReference: {
+        uri: 'features/step_definitions/steps.js',
+        location: {
+          line: 3,
+        },
+      },
     },
   },
   {
-    testRunStarted: {},
+    testRunStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 0,
+      },
+    },
   },
   {
     testCase: {
-      id: '5',
-      pickleId: '4',
+      id: '6',
+      pickleId: '5',
       testSteps: [
         {
-          id: '6',
-          pickleStepId: '3',
+          id: '7',
+          pickleStepId: '4',
           stepDefinitionIds: ['0'],
+          stepMatchArgumentsLists: [{}],
         },
       ],
     },
   },
   {
     testCaseStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 1000000,
+      },
       attempt: 0,
-      testCaseId: '5',
-      id: '7',
+      testCaseId: '6',
+      id: '8',
     },
   },
   {
     testStepStarted: {
-      testStepId: '6',
-      testCaseStartedId: '7',
+      timestamp: {
+        seconds: '0',
+        nanos: 2000000,
+      },
+      testStepId: '7',
+      testCaseStartedId: '8',
     },
   },
   {
     testStepFinished: {
-      testResult: {
+      testStepResult: {
         status: 'PASSED',
         duration: {
           seconds: '0',
           nanos: 0,
         },
       },
-      testStepId: '6',
-      testCaseStartedId: '7',
+      timestamp: {
+        seconds: '0',
+        nanos: 3000000,
+      },
+      testStepId: '7',
+      testCaseStartedId: '8',
     },
   },
   {
     testCaseFinished: {
-      testResult: {
-        status: 'PASSED',
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+      timestamp: {
+        seconds: '0',
+        nanos: 4000000,
       },
-      testCaseStartedId: '7',
+      testCaseStartedId: '8',
     },
   },
   {
     testRunFinished: {
-      success: true,
+      timestamp: {
+        seconds: '0',
+        nanos: 5000000,
+      },
     },
   },
 ]

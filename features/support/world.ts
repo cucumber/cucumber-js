@@ -1,4 +1,4 @@
-import { setWorldConstructor, Cli } from '../../'
+import { Cli, setWorldConstructor } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
@@ -9,7 +9,7 @@ import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
 import ndjsonParse from 'ndjson-parse'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 interface ILastRun {
   error: any
