@@ -107,8 +107,15 @@ const FormatterBuilder = {
   },
 
   loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    const fullCustomFormatterPath = path.resolve(cwd, customFormatterPath)
-    const CustomFormatter = require(fullCustomFormatterPath) // eslint-disable-line @typescript-eslint/no-var-requires
+    let CustomFormatter = null
+
+    if (customFormatterPath.startsWith('.')) {
+      const fullCustomFormatterPath = path.resolve(cwd, customFormatterPath)
+      CustomFormatter = require(fullCustomFormatterPath) // eslint-disable-line @typescript-eslint/no-var-requires
+    } else {
+      CustomFormatter = require(customFormatterPath) // eslint-disable-line @typescript-eslint/no-var-requires
+    }
+
     if (typeof CustomFormatter === 'function') {
       return CustomFormatter
     } else if (

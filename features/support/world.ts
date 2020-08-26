@@ -54,19 +54,12 @@ export class World {
     envOverride: NodeJS.ProcessEnv = null
   ): Promise<void> {
     const messageFilename = 'message.ndjson'
-    const args = ['node', executablePath]
-      .concat(inputArgs, [
-        '--backtrace',
-        '--predictable-ids',
-        '--format',
-        `message:${messageFilename}`,
-      ])
-      .map((arg) => {
-        if (_.includes(arg, '/')) {
-          return path.normalize(arg)
-        }
-        return arg
-      })
+    const args = ['node', executablePath].concat(inputArgs, [
+      '--backtrace',
+      '--predictable-ids',
+      '--format',
+      `message:${messageFilename}`,
+    ])
     const env = _.merge({}, process.env, this.sharedEnv, envOverride)
     const cwd = this.tmpDir
 
