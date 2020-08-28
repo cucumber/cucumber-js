@@ -19,7 +19,8 @@ executedModules:
 ignoreErrors:
   missing: []
   shouldBeDependency: []
-  shouldBeDevDependency: []
+  shouldBeDevDependency:
+    - '@cucumber/cucumber' # false positive of own package, not sure why yet
   unused:
     - '@cucumber/compatibility-kit' # files dynamically loaded in cck test, not require'd
     - '@typescript-eslint/eslint-plugin' # peer dependency of standard-with-typescript
