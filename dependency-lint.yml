@@ -17,8 +17,7 @@ executedModules:
     root: 'scripts/*.sh'
 
 ignoreErrors:
-  missing:
-    - '@cucumber/cucumber' # false positive of own package, not sure why yet
+  missing: []
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
