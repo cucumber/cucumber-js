@@ -102,3 +102,19 @@ AfterAll(function () {
   return Promise.resolve()
 });
 ```
+
+# BeforeStep / AfterStep
+
+If you have some execution that needs to be done before or after all step, use `BeforeStep` / `AfterStep` hooks. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario..
+
+```javascript
+var {AfterStep, BeforeStep} = require('cucumber');
+
+BeforeStep(function () {
+  // This hook will be executed before all steps
+});
+
+AfterStep({tags: "@foo"}, function () {
+  // This hook will be executed before every step in a scenario tagged with @foo
+});
+```
