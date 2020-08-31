@@ -7,7 +7,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * Add support for Gherkin's [Rule/Example syntax](https://cucumber.io/docs/gherkin/reference/#rule)
 * Add `transpose` method to [data table interface](docs/support_files/data_table_interface.md)
 * Add `log` function to world, providing a shorthand to log plain text as [attachment(s)](docs/support_files/attachments.md)
-* `cucumber-js` is now written in [TypeScript](https://www.typescriptlang.org/) and includes its own typings, so you no longer need to depend on `@types/cucumber` in your own TypeScript projects
+* Now includes [TypeScript](https://www.typescriptlang.org/) type definitions, deprecating the need for `@types/cucumber` in TypeScript projects
 
 #### Breaking changes
 
