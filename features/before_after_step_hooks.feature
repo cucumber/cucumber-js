@@ -4,6 +4,7 @@ Feature: Before and After Step Hooks
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
+        @this-tag
         Scenario: some scenario
           Given a step
       """
@@ -51,12 +52,11 @@ Feature: Before and After Step Hooks
     When I run cucumber-js
     Then it fails
 
-  @before
   Scenario: Only run BeforeStep hooks with appropriate tags
     Given a file named "features/support/hooks.js" with:
       """
       const { BeforeStep } = require('cucumber')
-      BeforeStep('@any-tag', function() {
+      BeforeStep({tags: "@any-tag"}, function() {
         throw Error("Would fail if ran")
       })
       """
@@ -67,9 +67,9 @@ Feature: Before and After Step Hooks
     Given a file named "features/support/hooks.js" with:
       """
       const { AfterStep } = require('cucumber')
-      AfterStep('@any-tag', function() {
+      AfterStep({tags: "@this-tag"}, function() {
         throw Error("Would fail if ran")
       })
       """
     When I run cucumber-js
-    Then it passes
+    Then it fails
