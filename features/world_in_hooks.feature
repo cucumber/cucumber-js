@@ -1,3 +1,4 @@
+@BeforeAfterStep
 Feature: World in Hooks
 
   Background:
@@ -9,12 +10,12 @@ Feature: World in Hooks
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      import {Given} from 'cucumber'
+      const {Given} = require('cucumber')
       Given(/^a step$/, function() {})
       """
     And a file named "features/support/world.js" with:
       """
-      import {setWorldConstructor} from 'cucumber'
+      const {setWorldConstructor} = require('cucumber')
       function WorldConstructor() {
         return {
           isWorld: function() { return true }
@@ -26,7 +27,7 @@ Feature: World in Hooks
   Scenario: World is this in hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {After, Before } from 'cucumber'
+      const {After, Before } = require('cucumber')
       Before(function() {
         if (!this.isWorld()) {
           throw Error("Expected this to be world")
@@ -44,7 +45,7 @@ Feature: World in Hooks
   Scenario: World is this in BeforeStep hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {BeforeStep } from 'cucumber'
+      const {BeforeStep } = require('cucumber')
       BeforeStep(function() {
         if (!this.isWorld()) {
           throw Error("Expected this to be world")
@@ -57,7 +58,7 @@ Feature: World in Hooks
   Scenario: World is this in AfterStep hooks
     Given a file named "features/support/hooks.js" with:
       """
-      import {AfterStep } from 'cucumber'
+      const {AfterStep } = require('cucumber')
       AfterStep(function() {
         if (!this.isWorld()) {
           throw Error("Expected this to be world")
