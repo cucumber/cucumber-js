@@ -1,5 +1,6 @@
 import { messages } from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
@@ -7,6 +8,13 @@ import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 export type DefineStepPattern = string | RegExp
 
 export interface ITestCaseHookParameter {
+  gherkinDocument: messages.IGherkinDocument
+  pickle: messages.IPickle
+  result?: messages.TestStepFinished.ITestStepResult
+  testCaseStartedId: string
+}
+
+export interface ITestStepHookParameter {
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
   result?: messages.TestStepFinished.ITestStepResult
@@ -21,12 +29,25 @@ export type TestCaseHookFunction =
   | TestCaseHookFunctionWithoutParameter
   | TestCaseHookFunctionWithParameter
 
+export type TestStepHookFunctionWithoutParameter = () => void
+export type TestStepHookFunctionWithParameter = (
+  arg: ITestStepHookParameter
+) => void
+export type TestStepHookFunction =
+  | TestStepHookFunctionWithoutParameter
+  | TestStepHookFunctionWithParameter
+
 export interface IDefineStepOptions {
   timeout?: number
   wrapperOptions?: any
 }
 
 export interface IDefineTestCaseHookOptions {
+  tags?: string
+  timeout?: number
+}
+
+export interface IDefineTestStepHookOptions {
   tags?: string
   timeout?: number
 }
@@ -57,11 +78,17 @@ export interface IDefineSupportCodeMethods {
   After: ((code: TestCaseHookFunction) => void) &
     ((tags: string, code: TestCaseHookFunction) => void) &
     ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
+  AfterStep: ((code: TestStepHookFunction) => void) &
+    ((tags: string, code: TestStepHookFunction) => void) &
+    ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
   AfterAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
   Before: ((code: TestCaseHookFunction) => void) &
     ((tags: string, code: TestCaseHookFunction) => void) &
     ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
+  BeforeStep: ((code: TestStepHookFunction) => void) &
+    ((tags: string, code: TestStepHookFunction) => void) &
+    ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
   Given: ((pattern: DefineStepPattern, code: Function) => void) &
@@ -86,8 +113,10 @@ export interface IDefineSupportCodeMethods {
 
 export interface ISupportCodeLibrary {
   readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[]
+  readonly afterTestStepHookDefinitions: TestStepHookDefinition[]
   readonly afterTestRunHookDefinitions: TestRunHookDefinition[]
   readonly beforeTestCaseHookDefinitions: TestCaseHookDefinition[]
+  readonly beforeTestStepHookDefinitions: TestStepHookDefinition[]
   readonly beforeTestRunHookDefinitions: TestRunHookDefinition[]
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
