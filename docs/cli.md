@@ -3,7 +3,7 @@
 Cucumber.js includes an executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
-$ ./node_modules/.bin/cucumber-js
+$ npx cucumber-js
 ```
 
 **Note on global installs:** Cucumber does not work when installed globally because cucumber
@@ -12,15 +12,15 @@ needs to be required in your support files and globally installed modules cannot
 ## Running specific features
 
 * Specify a [glob](https://github.com/isaacs/node-glob) pattern
-  * `$ cucumber-js features/**/*.feature`
+  * `$ npx cucumber-js features/**/*.feature`
 * Specify a feature directory
-  * `$ cucumber-js features/dir`
+  * `$ npx cucumber-js features/dir`
 * Specify a feature file
-  * `$ cucumber-js features/my_feature.feature`
+  * `$ npx cucumber-js features/my_feature.feature`
 * Specify a scenario by its line number
-  * `$ cucumber-js features/my_feature.feature:3`
+  * `$ npx cucumber-js features/my_feature.feature:3`
 * Specify a scenario by its name matching a regular expression
-  * `$ cucumber-js --name "topic 1"`
+  * `$ npx cucumber-js --name "topic 1"`
   * If used multiple times, the scenario name needs to match only one of the names supplied
 * Use [Tags](#tags)
 
