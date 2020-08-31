@@ -1,4 +1,3 @@
-@BeforeAfterStep
 Feature: Before and After Step Hooks
 
   Background:
@@ -13,6 +12,26 @@ Feature: Before and After Step Hooks
       const {Given} = require('cucumber')
       Given(/^a step$/, function() {})
       """
+
+  Scenario: Before and After Hooks work correctly
+    Given a file named "features/support/hooks.js" with:
+      """
+      const {BeforeStep, AfterStep, BeforeAll, AfterAll} = require('cucumber')
+      const {expect} = require('chai')
+
+      let counter = 1
+
+      BeforeStep(function() { 
+        expect(counter).to.eql(1)
+        counter += counter
+      })
+
+      AfterStep(function() { 
+        expect(counter).to.eql(2)
+      })
+      """
+    When I run cucumber-js
+    Then it passes
 
   Scenario: Failing before step fails the scenario
     Given a file named "features/support/hooks.js" with:
@@ -32,7 +51,7 @@ Feature: Before and After Step Hooks
     When I run cucumber-js
     Then it fails
 
-  @any-tag
+  @before
   Scenario: Only run BeforeStep hooks with appropriate tags
     Given a file named "features/support/hooks.js" with:
       """
