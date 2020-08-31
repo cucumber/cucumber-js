@@ -443,7 +443,7 @@ export default class PickleRunner {
         if (this.shouldUpdateStatus(afterStepHooksResult)) {
           cumulatedStepResult.status = afterStepHooksResult.status
         }
-        if (afterStepHooksResult.message !== null) {
+        if (afterStepHooksResult.message !== '') {
           cumulatedStepResult.message = afterStepHooksResult.message
         }
       }
@@ -470,7 +470,7 @@ export default class PickleRunner {
         stepHooksResult.status = stepHookResult.status
         this.result.status = stepHookResult.status
       }
-      if (stepHookResult.message !== null) {
+      if (stepHookResult.message !== '') {
         stepHooksResult.message = stepHookResult.message
       }
       if (stepHookResult.duration !== null) {
