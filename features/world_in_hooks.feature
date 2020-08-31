@@ -1,4 +1,3 @@
-@BeforeAfterStep
 Feature: World in Hooks
 
   Background:
@@ -67,3 +66,4 @@ Feature: World in Hooks
       """
     When I run cucumber-js
     Then it passes
+    
