@@ -7,18 +7,28 @@ import { promisify } from 'util'
 import tmp from 'tmp'
 import assert from 'assert'
 import { URL } from 'url'
+import bodyParser from 'body-parser'
 
 class ReportServer {
   private readonly server: Server
+  public readonly bodies: Buffer[] = []
+
   constructor(private readonly port: number) {
     const app = express()
+    app.use(bodyParser.raw({ type: () => true }))
+
+    app.put('/s3', (req, res) => {
+      const body: Buffer = req.body
+      this.bodies.push(body)
+      res.end()
+    })
+
     this.server = http.createServer(app)
   }
 
   async start(): Promise<void> {
     const listen = promisify(this.server.listen.bind(this.server))
     await listen(this.port)
-    console.log(this.server.address())
   }
 
   async stop(): Promise<void> {
@@ -86,12 +96,12 @@ describe('HttpStream', () => {
   it('sends a request with written data when the stream is closed', (callback: Callback) => {
     const stream = new HttpStream(`http://localhost:${port}/s3`)
 
-    stream
-      .on('error', callback)
-      .on('finish', callback)
+    stream.on('error', callback).on('finish', callback)
 
     stream.write('hello')
     stream.write(' work')
     stream.end()
+
+    assert.strictEqual(reportServer.bodies[0].toString('utf-8'), 'hello work')
   })
 })
