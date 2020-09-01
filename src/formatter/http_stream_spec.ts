@@ -1,26 +1,23 @@
-import http from 'http'
 import { Server } from 'net'
 import { Writable } from 'stream'
+import assert from 'assert'
 import express from 'express'
 import fs from 'fs'
+import http from 'http'
 import { promisify } from 'util'
 import tmp from 'tmp'
-import assert from 'assert'
-import { URL } from 'url'
-import bodyParser from 'body-parser'
 
 class ReportServer {
   private readonly server: Server
-  public readonly bodies: Buffer[] = []
 
-  constructor(private readonly port: number) {
+  constructor(
+    private readonly port: number,
+    private readonly stream: Writable
+  ) {
     const app = express()
-    app.use(bodyParser.raw({ type: () => true }))
 
     app.put('/s3', (req, res) => {
-      const body: Buffer = req.body
-      this.bodies.push(body)
-      res.end()
+      req.pipe(this.stream).on('finish', () => res.end())
     })
 
     this.server = http.createServer(app)
@@ -66,8 +63,7 @@ class HttpStream extends Writable {
   _final(callback: (error?: Error | null) => void): void {
     this.stream.end((err?: Error | null) => {
       if (err !== undefined && err !== null) return callback(err)
-      const url = new URL(this.url)
-      const req = http.request(url, {
+      const req = http.request(this.url, {
         method: 'PUT',
       })
       fs.createReadStream(this.tempfile)
@@ -83,9 +79,18 @@ type Callback = (err?: Error | null) => void
 describe('HttpStream', () => {
   const port = 8998
   let reportServer: ReportServer
+  let receivedBodies: Buffer
+  let receivedBodiesStream: Writable
 
   beforeEach(async () => {
-    reportServer = new ReportServer(port)
+    receivedBodies = Buffer.alloc(0)
+    receivedBodiesStream = new Writable({
+      write(chunk: Buffer, encoding: string, callback: Callback) {
+        receivedBodies = Buffer.concat([receivedBodies, chunk])
+        callback()
+      },
+    })
+    reportServer = new ReportServer(port, receivedBodiesStream)
     await reportServer.start()
   })
 
@@ -94,14 +99,21 @@ describe('HttpStream', () => {
   })
 
   it('sends a request with written data when the stream is closed', (callback: Callback) => {
+    receivedBodiesStream.on('finish', () => {
+      try {
+        assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
+        callback()
+      } catch (error) {
+        callback(error)
+      }
+    })
+
     const stream = new HttpStream(`http://localhost:${port}/s3`)
 
-    stream.on('error', callback).on('finish', callback)
+    stream.on('error', callback)
 
     stream.write('hello')
     stream.write(' work')
     stream.end()
-
-    assert.strictEqual(reportServer.bodies[0].toString('utf-8'), 'hello work')
   })
 })
