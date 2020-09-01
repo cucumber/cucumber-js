@@ -38,7 +38,7 @@ class HttpStream extends Writable {
   private stream: Writable
   tempfile: string
 
-  constructor(private readonly url: string) {
+  constructor(private readonly url: string, private readonly method: string) {
     super()
   }
 
@@ -64,7 +64,7 @@ class HttpStream extends Writable {
     this.stream.end((err?: Error | null) => {
       if (err !== undefined && err !== null) return callback(err)
       const req = http.request(this.url, {
-        method: 'PUT',
+        method: this.method,
       })
       fs.createReadStream(this.tempfile)
         .pipe(req)
@@ -98,7 +98,7 @@ describe('HttpStream', () => {
     await reportServer.stop()
   })
 
-  it('sends a request with written data when the stream is closed', (callback: Callback) => {
+  it('sends a PUT request with written data when the stream is closed', (callback: Callback) => {
     receivedBodiesStream.on('finish', () => {
       try {
         assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
@@ -108,12 +108,32 @@ describe('HttpStream', () => {
       }
     })
 
-    const stream = new HttpStream(`http://localhost:${port}/s3`)
+    const stream = new HttpStream(`http://localhost:${port}/s3`, "PUT")
 
     stream.on('error', callback)
 
     stream.write('hello')
     stream.write(' work')
     stream.end()
+  })
+
+  it ("follows location from GET response, and sends body in a PUT request", (callback: Callback) => {
+    receivedBodiesStream.on('finish', () => {
+      try {
+        assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
+        callback()
+      } catch (error) {
+        callback(error)
+      }
+    })
+
+    const stream = new HttpStream(`http://localhost:${port}/api/reports`, "GET")
+
+    stream.on('error', callback)
+
+    stream.write('hello')
+    stream.write(' work')
+    stream.end()
+
   })
 })
