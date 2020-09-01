@@ -10,6 +10,7 @@ import VError from 'verror'
 import _ from 'lodash'
 import ndjsonParse from 'ndjson-parse'
 import { messages } from '@cucumber/messages'
+import ReportServer from './report_server'
 
 interface ILastRun {
   error: any
@@ -32,6 +33,7 @@ export class World {
   public verifiedLastRunError: boolean
   public localExecutablePath: string
   public globalExecutablePath: string
+  public reportServer: ReportServer
 
   async run(
     executablePath: string,
