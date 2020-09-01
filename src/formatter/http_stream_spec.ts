@@ -17,12 +17,10 @@ class ReportServer {
     const app = express()
 
     app.put('/s3', (req, res) => {
-      console.log('/s3')
       req.pipe(this.stream).on('finish', () => res.end())
     })
 
     app.get('/api/reports', (req, res) => {
-      console.log('/api/reports')
       res.setHeader('Location', `http://localhost:${port}/s3`)
       res.status(202).end()
     })
@@ -57,8 +55,8 @@ class HttpStream extends Writable {
     if (this.tempFile === undefined) {
       tmp.file((error, name, fd) => {
         if (error !== null) return callback(error)
-        this.tempFilePath = name
 
+        this.tempFilePath = name
         this.tempFile = fs.createWriteStream(name, { fd })
         this.tempFile.write(chunk, encoding, callback)
       })
@@ -68,8 +66,7 @@ class HttpStream extends Writable {
   }
 
   _final(callback: (error?: Error | null) => void): void {
-    this.tempFile.end((err?: Error | null) => {
-      if (err !== undefined && err !== null) return callback(err)
+    this.tempFile.end(() => {
       this.sendRequest(this.url, this.method, callback)
     })
   }
@@ -140,7 +137,7 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  it.only('follows location from GET response, and sends body in a PUT request', (callback: Callback) => {
+  it('follows location from GET response, and sends body in a PUT request', (callback: Callback) => {
     receivedBodiesStream.on('finish', () => {
       try {
         assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
