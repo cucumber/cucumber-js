@@ -23,6 +23,24 @@ When(
 )
 
 When(
+  /^I run cucumber-js with arguments `(|.+)` and env `(|.+)`$/,
+  { timeout: 10000 },
+  async function (this: World, args: string, envs: string) {
+    const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
+    const stringArgs = stringArgv(renderedArgs)
+    const initialValue: NodeJS.ProcessEnv = {}
+    const env: NodeJS.ProcessEnv = envs
+      .split(/\s+/)
+      .map((keyValue) => keyValue.split('='))
+      .reduce((dict, pair) => {
+        dict[pair[0]] = pair[1]
+        return dict
+      }, initialValue)
+    return await this.run(this.localExecutablePath, stringArgs, env)
+  }
+)
+
+When(
   /^I run cucumber-js with all formatters(?: and `(|.+)`)?$/,
   { timeout: 10000 },
   async function (this: World, args: string) {

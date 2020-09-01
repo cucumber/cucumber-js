@@ -33,7 +33,11 @@ export class World {
   public localExecutablePath: string
   public globalExecutablePath: string
 
-  async run(executablePath: string, inputArgs: string[]): Promise<void> {
+  async run(
+    executablePath: string,
+    inputArgs: string[],
+    env: NodeJS.ProcessEnv = process.env
+  ): Promise<void> {
     const messageFilename = 'message.ndjson'
     const args = ['node', executablePath]
       .concat(inputArgs, [
@@ -54,9 +58,14 @@ export class World {
 
     if (this.spawn) {
       result = await new Promise((resolve) => {
-        execFile(args[0], args.slice(1), { cwd }, (error, stdout, stderr) => {
-          resolve({ error, stdout, stderr })
-        })
+        execFile(
+          args[0],
+          args.slice(1),
+          { cwd, env },
+          (error, stdout, stderr) => {
+            resolve({ error, stdout, stderr })
+          }
+        )
       })
     } else {
       const stdout = new PassThrough()
