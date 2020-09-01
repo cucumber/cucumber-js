@@ -1,11 +1,12 @@
-import * as http from 'http'
-
+import http from 'http'
 import { Server } from 'net'
 import { Writable } from 'stream'
 import express from 'express'
 import fs from 'fs'
 import { promisify } from 'util'
 import tmp from 'tmp'
+import assert from 'assert'
+import { URL } from 'url'
 
 class ReportServer {
   private readonly server: Server
@@ -27,8 +28,9 @@ class ReportServer {
 
 class HttpStream extends Writable {
   private stream: Writable
+  tempfile: string
 
-  constructor(url: string) {
+  constructor(private readonly url: string) {
     super()
   }
 
@@ -39,7 +41,8 @@ class HttpStream extends Writable {
   ): void {
     if (this.stream === undefined) {
       tmp.file((error, name, fd) => {
-        if (error !== undefined) return callback(error)
+        if (error !== null) return callback(error)
+        this.tempfile = name
 
         this.stream = fs.createWriteStream(name, { fd })
         this.stream.write(chunk, encoding, callback)
@@ -47,6 +50,17 @@ class HttpStream extends Writable {
     } else {
       this.stream.write(chunk, encoding, callback)
     }
+  }
+
+  _final(callback: (error?: Error | null) => void): void {
+    this.stream.end((err?: Error | null) => {
+      if (err !== undefined && err !== null) return callback(err)
+      const url = new URL(this.url)
+      const req = http.request(url, {
+        method: 'PUT',
+      })
+      fs.createReadStream(this.tempfile).pipe(req)
+    })
   }
 }
 
@@ -65,7 +79,15 @@ describe('HttpStream', () => {
 
   it('sends a request with written data when the stream is closed', async () => {
     const stream = new HttpStream(`http://localhost:${port}/s3`)
+    const end = await promisify(stream.end.bind(stream))
+
     stream.write('hello')
-    stream.end()
+    stream.write(' work')
+    await end()
+
+    // assert(stream.tempfile)
+
+    // const contents = fs.readFileSync(stream.tempfile, 'utf-8')
+    // assert.strictEqual(contents, 'hello work')
   })
 })
