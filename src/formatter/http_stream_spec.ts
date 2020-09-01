@@ -1,8 +1,11 @@
+import * as http from 'http'
+
+import { Server } from 'net'
 import { Writable } from 'stream'
 import express from 'express'
-import * as http from 'http'
+import fs from 'fs'
 import { promisify } from 'util'
-import { Server } from 'net'
+import tmp from 'tmp'
 
 class ReportServer {
   private readonly server: Server
@@ -23,8 +26,27 @@ class ReportServer {
 }
 
 class HttpStream extends Writable {
+  private stream: Writable
+
   constructor(url: string) {
     super()
+  }
+
+  _write(
+    chunk: any,
+    encoding: string,
+    callback: (error?: Error | null) => void
+  ): void {
+    if (this.stream === undefined) {
+      tmp.file((error, name, fd) => {
+        if (error !== undefined) return callback(error)
+
+        this.stream = fs.createWriteStream(name, { fd })
+        this.stream.write(chunk, encoding, callback)
+      })
+    } else {
+      this.stream.write(chunk, encoding, callback)
+    }
   }
 }
 
