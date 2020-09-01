@@ -8,6 +8,12 @@ Feature: Publish reports
         Scenario: a scenario
           Given a step
       """
+    And a file named "features/step_definitions/steps.js" with:
+      """
+      const {Given} = require('cucumber')
+
+      Given(/^a step$/, function() {})
+      """
     When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
     Then it passes
     And the server should receive the following message types:
