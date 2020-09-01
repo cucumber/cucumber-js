@@ -18,6 +18,7 @@ class ReportServer {
   async start(): Promise<void> {
     const listen = promisify(this.server.listen.bind(this.server))
     await listen(this.port)
+    console.log(this.server.address())
   }
 
   async stop(): Promise<void> {
@@ -59,10 +60,15 @@ class HttpStream extends Writable {
       const req = http.request(url, {
         method: 'PUT',
       })
-      fs.createReadStream(this.tempfile).pipe(req)
+      fs.createReadStream(this.tempfile)
+        .pipe(req)
+        .on('error', callback)
+        .on('finish', callback)
     })
   }
 }
+
+type Callback = (err?: Error | null) => void
 
 describe('HttpStream', () => {
   const port = 8998
@@ -77,17 +83,15 @@ describe('HttpStream', () => {
     await reportServer.stop()
   })
 
-  it('sends a request with written data when the stream is closed', async () => {
+  it('sends a request with written data when the stream is closed', (callback: Callback) => {
     const stream = new HttpStream(`http://localhost:${port}/s3`)
-    const end = await promisify(stream.end.bind(stream))
+
+    stream
+      .on('error', callback)
+      .on('finish', callback)
 
     stream.write('hello')
     stream.write(' work')
-    await end()
-
-    // assert(stream.tempfile)
-
-    // const contents = fs.readFileSync(stream.tempfile, 'utf-8')
-    // assert.strictEqual(contents, 'hello work')
+    stream.end()
   })
 })
