@@ -17,7 +17,14 @@ class ReportServer {
     const app = express()
 
     app.put('/s3', (req, res) => {
+      console.log('/s3')
       req.pipe(this.stream).on('finish', () => res.end())
+    })
+
+    app.get('/api/reports', (req, res) => {
+      console.log('/api/reports')
+      res.setHeader('Location', `http://localhost:${port}/s3`)
+      res.status(202).end()
     })
 
     this.server = http.createServer(app)
@@ -35,8 +42,8 @@ class ReportServer {
 }
 
 class HttpStream extends Writable {
-  private stream: Writable
-  tempfile: string
+  private tempFilePath: string
+  private tempFile: Writable
 
   constructor(private readonly url: string, private readonly method: string) {
     super()
@@ -47,30 +54,46 @@ class HttpStream extends Writable {
     encoding: string,
     callback: (error?: Error | null) => void
   ): void {
-    if (this.stream === undefined) {
+    if (this.tempFile === undefined) {
       tmp.file((error, name, fd) => {
         if (error !== null) return callback(error)
-        this.tempfile = name
+        this.tempFilePath = name
 
-        this.stream = fs.createWriteStream(name, { fd })
-        this.stream.write(chunk, encoding, callback)
+        this.tempFile = fs.createWriteStream(name, { fd })
+        this.tempFile.write(chunk, encoding, callback)
       })
     } else {
-      this.stream.write(chunk, encoding, callback)
+      this.tempFile.write(chunk, encoding, callback)
     }
   }
 
   _final(callback: (error?: Error | null) => void): void {
-    this.stream.end((err?: Error | null) => {
+    this.tempFile.end((err?: Error | null) => {
       if (err !== undefined && err !== null) return callback(err)
-      const req = http.request(this.url, {
-        method: this.method,
-      })
-      fs.createReadStream(this.tempfile)
+      this.sendRequest(this.url, this.method, callback)
+    })
+  }
+
+  private sendRequest(
+    url: string,
+    method: string,
+    callback: (error?: Error | null) => void
+  ): void {
+    const req = http.request(url, {
+      method: method,
+    })
+    if (method !== 'GET') {
+      fs.createReadStream(this.tempFilePath)
         .pipe(req)
         .on('error', callback)
         .on('finish', callback)
-    })
+    } else {
+      // TODO: Check if status is 202 and if we actually have a location
+      req.on('response', (res) => {
+        this.sendRequest(res.headers.location, 'PUT', callback)
+      })
+      req.end()
+    }
   }
 }
 
@@ -108,7 +131,7 @@ describe('HttpStream', () => {
       }
     })
 
-    const stream = new HttpStream(`http://localhost:${port}/s3`, "PUT")
+    const stream = new HttpStream(`http://localhost:${port}/s3`, 'PUT')
 
     stream.on('error', callback)
 
@@ -117,7 +140,7 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  it ("follows location from GET response, and sends body in a PUT request", (callback: Callback) => {
+  it.only('follows location from GET response, and sends body in a PUT request', (callback: Callback) => {
     receivedBodiesStream.on('finish', () => {
       try {
         assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
@@ -127,13 +150,12 @@ describe('HttpStream', () => {
       }
     })
 
-    const stream = new HttpStream(`http://localhost:${port}/api/reports`, "GET")
+    const stream = new HttpStream(`http://localhost:${port}/api/reports`, 'GET')
 
     stream.on('error', callback)
 
     stream.write('hello')
     stream.write(' work')
     stream.end()
-
   })
 })
