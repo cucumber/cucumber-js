@@ -1,5 +1,5 @@
-import { Server } from 'net'
-import { Writable } from 'stream'
+import { Server, Socket } from 'net'
+import { pipeline, Writable } from 'stream'
 import assert from 'assert'
 import express from 'express'
 import fs from 'fs'
@@ -8,16 +8,28 @@ import { promisify } from 'util'
 import tmp from 'tmp'
 
 class ReportServer {
+  private readonly sockets = new Set<Socket>()
   private readonly server: Server
+  private receivedBodies = Buffer.alloc(0)
 
-  constructor(
-    private readonly port: number,
-    private readonly stream: Writable
-  ) {
+  constructor(private readonly port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
-      req.pipe(this.stream).on('finish', () => res.end())
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      const server = this
+      const captureBodyStream = new Writable({
+        write(chunk: Buffer, encoding: string, callback: Callback) {
+          server.receivedBodies = Buffer.concat([server.receivedBodies, chunk])
+          callback()
+        },
+      })
+
+      pipeline(req, captureBodyStream, (err) => {
+        if (err !== null && err !== undefined)
+          return res.status(500).end(err.stack)
+        res.end()
+      })
     })
 
     app.get('/api/reports', (req, res) => {
@@ -26,6 +38,13 @@ class ReportServer {
     })
 
     this.server = http.createServer(app)
+
+    this.server.on('connection', (socket) => {
+      this.sockets.add(socket)
+      socket.on('close', () => {
+        this.sockets.delete(socket)
+      })
+    })
   }
 
   async start(): Promise<void> {
@@ -33,17 +52,51 @@ class ReportServer {
     await listen(this.port)
   }
 
-  async stop(): Promise<void> {
-    const close = promisify(this.server.close.bind(this.server))
-    await close()
+  /**
+   * @return all the received request bodies
+   */
+  async stop(): Promise<Buffer> {
+    // Wait for all sockets to be closed
+    await Promise.all(
+      Array.from(this.sockets).map(
+        // eslint-disable-next-line @typescript-eslint/promise-function-async
+        (socket) =>
+          new Promise((resolve, reject) => {
+            if (socket.destroyed) return resolve()
+            socket.on('close', resolve)
+            socket.on('error', reject)
+          })
+      )
+    )
+    return new Promise((resolve, reject) => {
+      this.server.close((err) => {
+        if (err !== null && err !== undefined) return reject(err)
+        resolve(this.receivedBodies)
+      })
+    })
   }
 }
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+type HttpMethod =
+  | 'GET'
+  | 'HEAD'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'CONNECT'
+  | 'OPTIONS'
+  | 'TRACE'
+  | 'PATCH'
 
 class HttpStream extends Writable {
   private tempFilePath: string
   private tempFile: Writable
 
-  constructor(private readonly url: string, private readonly method: string) {
+  constructor(
+    private readonly url: string,
+    private readonly method: HttpMethod
+  ) {
     super()
   }
 
@@ -53,8 +106,8 @@ class HttpStream extends Writable {
     callback: (error?: Error | null) => void
   ): void {
     if (this.tempFile === undefined) {
-      tmp.file((error, name, fd) => {
-        if (error !== null) return callback(error)
+      tmp.file((err, name, fd) => {
+        if (err !== null && err !== undefined) return callback(err)
 
         this.tempFilePath = name
         this.tempFile = fs.createWriteStream(name, { fd })
@@ -73,23 +126,40 @@ class HttpStream extends Writable {
 
   private sendRequest(
     url: string,
-    method: string,
+    method: HttpMethod,
     callback: (error?: Error | null) => void
   ): void {
-    const req = http.request(url, {
-      method: method,
-    })
-    if (method !== 'GET') {
-      fs.createReadStream(this.tempFilePath)
-        .pipe(req)
-        .on('error', callback)
-        .on('finish', callback)
-    } else {
-      // TODO: Check if status is 202 and if we actually have a location
-      req.on('response', (res) => {
+    // TODO: Follow regular 3xx redirects
+
+    if (method === 'GET') {
+      http.get(url, (res) => {
+        if (res.statusCode >= 400) {
+          return callback(
+            new Error(`${method} ${url} returned status ${res.statusCode}`)
+          )
+        }
+        if (res.statusCode !== 202 || res.headers.location === undefined) {
+          return callback()
+        }
         this.sendRequest(res.headers.location, 'PUT', callback)
       })
-      req.end()
+    } else {
+      const req = http.request(url, {
+        method,
+      })
+
+      req.on('response', (res) => {
+        if (res.statusCode >= 400) {
+          return callback(
+            new Error(`${method} ${url} returned status ${res.statusCode}`)
+          )
+        }
+        callback()
+      })
+
+      pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
+        if (err !== null && err !== undefined) callback(err)
+      })
     }
   }
 }
@@ -99,57 +169,52 @@ type Callback = (err?: Error | null) => void
 describe('HttpStream', () => {
   const port = 8998
   let reportServer: ReportServer
-  let receivedBodies: Buffer
-  let receivedBodiesStream: Writable
 
   beforeEach(async () => {
-    receivedBodies = Buffer.alloc(0)
-    receivedBodiesStream = new Writable({
-      write(chunk: Buffer, encoding: string, callback: Callback) {
-        receivedBodies = Buffer.concat([receivedBodies, chunk])
-        callback()
-      },
-    })
-    reportServer = new ReportServer(port, receivedBodiesStream)
+    reportServer = new ReportServer(port)
     await reportServer.start()
   })
 
-  afterEach(async () => {
-    await reportServer.stop()
-  })
-
-  it('sends a PUT request with written data when the stream is closed', (callback: Callback) => {
-    receivedBodiesStream.on('finish', () => {
-      try {
-        assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
-        callback()
-      } catch (error) {
-        callback(error)
-      }
-    })
-
+  it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
     const stream = new HttpStream(`http://localhost:${port}/s3`, 'PUT')
 
     stream.on('error', callback)
+    stream.on('finish', () => {
+      reportServer
+        .stop()
+        .then((receivedBodies) => {
+          try {
+            assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
+            callback()
+          } catch (err) {
+            callback(err)
+          }
+        })
+        .catch(callback)
+    })
 
     stream.write('hello')
     stream.write(' work')
     stream.end()
   })
 
-  it('follows location from GET response, and sends body in a PUT request', (callback: Callback) => {
-    receivedBodiesStream.on('finish', () => {
-      try {
-        assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
-        callback()
-      } catch (error) {
-        callback(error)
-      }
-    })
-
+  it(`follows location from GET response, and sends body in a PUT request`, (callback: Callback) => {
     const stream = new HttpStream(`http://localhost:${port}/api/reports`, 'GET')
 
     stream.on('error', callback)
+    stream.on('finish', () => {
+      reportServer
+        .stop()
+        .then((receivedBodies) => {
+          try {
+            assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
+            callback()
+          } catch (err) {
+            callback(err)
+          }
+        })
+        .catch(callback)
+    })
 
     stream.write('hello')
     stream.write(' work')
