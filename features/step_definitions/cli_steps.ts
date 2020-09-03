@@ -36,7 +36,10 @@ When(
         dict[pair[0]] = pair[1]
         return dict
       }, initialValue)
-    return await this.run(this.localExecutablePath, stringArgs, env)
+    return await this.run(this.localExecutablePath, stringArgs, {
+      ...process.env,
+      ...env,
+    })
   }
 )
 

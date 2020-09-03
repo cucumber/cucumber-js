@@ -40,6 +40,8 @@ export interface INewConfigurationBuilderOptions {
   cwd: string
 }
 
+const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
+
 export default class ConfigurationBuilder {
   static async build(
     options: INewConfigurationBuilderOptions
@@ -163,6 +165,12 @@ export default class ConfigurationBuilder {
       const [type, outputTo] = OptionSplitter.split(format)
       mapping[outputTo] = type
     })
+    if (this.options.publish) {
+      const publishUrl =
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        process.env.CUCUMBER_PUBLISH_URL || DEFAULT_CUCUMBER_PUBLISH_URL
+      mapping[publishUrl] = 'message'
+    }
     return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
   }
 

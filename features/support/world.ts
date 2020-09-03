@@ -10,7 +10,7 @@ import VError from 'verror'
 import _ from 'lodash'
 import ndjsonParse from 'ndjson-parse'
 import { messages } from '@cucumber/messages'
-import FakeReportServer from '../../src/formatter/fake_report_server'
+import FakeReportServer from '../../test/fake_report_server'
 
 interface ILastRun {
   error: any

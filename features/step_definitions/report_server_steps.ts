@@ -2,7 +2,7 @@ import { Given, Then, DataTable } from '../..'
 import { World } from '../support/world'
 import { expect } from 'chai'
 import { URL } from 'url'
-import FakeReportServer from '../../src/formatter/fake_report_server'
+import FakeReportServer from '../../test/fake_report_server'
 import assert from 'assert'
 
 Given('a report server is running on {string}', async function (
@@ -19,16 +19,17 @@ Then('the server should receive the following message types:', async function (
   expectedMessageTypesTable: DataTable
 ) {
   const expectedMessageTypes = expectedMessageTypesTable
-    .rows()
+    .raw()
     .map((row) => row[0])
 
   const receivedBodies = await this.reportServer.stop()
-  const ndjson = receivedBodies.toString('utf-8')
+  const ndjson = receivedBodies.toString('utf-8').trim()
   if (ndjson === '') assert.fail('Server received nothing')
 
   const receivedMessageTypes = ndjson
     .split(/\n/)
     .map((line) => JSON.parse(line))
     .map((envelope) => Object.keys(envelope)[0])
+
   expect(receivedMessageTypes).to.deep.eq(expectedMessageTypes)
 })

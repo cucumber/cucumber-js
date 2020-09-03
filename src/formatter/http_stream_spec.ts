@@ -1,6 +1,6 @@
 import assert from 'assert'
 import HttpStream from './http_stream'
-import FakeReportServer from './fake_report_server'
+import FakeReportServer from '../../test/fake_report_server'
 
 type Callback = (err?: Error | null) => void
 

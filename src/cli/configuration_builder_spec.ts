@@ -137,7 +137,7 @@ describe('Configuration', () => {
       expect(formats).to.eql([
         { outputTo: '', type: 'progress' },
         {
-          outputTo: 'https://messages.cucumber.io/api/reports -X GET',
+          outputTo: 'https://messages.cucumber.io/api/reports',
           type: 'message',
         },
       ])

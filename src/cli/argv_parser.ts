@@ -25,6 +25,7 @@ export interface IParsedArgvOptions {
   exit: boolean
   failFast: boolean
   format: string[]
+  publish: boolean
   formatOptions: IParsedArgvFormatOptions
   i18nKeywords: string
   i18nLanguages: boolean

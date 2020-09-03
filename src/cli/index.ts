@@ -27,7 +27,8 @@ import { doesNotHaveValue } from '../value_checker'
 import { GherkinStreams } from '@cucumber/gherkin'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-import { createReadStream, WriteStream } from 'fs'
+import { createReadStream } from 'fs'
+import HttpStream from '../formatter/http_stream'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -87,12 +88,16 @@ export default class Cli {
     formats,
     supportCodeLibrary,
   }: IInitializeFormattersRequest): Promise<() => Promise<void>> {
-    const streamsToClose: WriteStream[] = []
+    const streamsToClose: IFormatterStream[] = []
     await bluebird.map(formats, async ({ type, outputTo }) => {
       let stream: IFormatterStream = this.stdout
       if (outputTo !== '') {
-        const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
-        stream = fs.createWriteStream(null, { fd })
+        if (outputTo.match(new RegExp('^https?://')) !== null) {
+          stream = new HttpStream(outputTo, 'GET')
+        } else {
+          const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
+          stream = fs.createWriteStream(null, { fd })
+        }
         streamsToClose.push(stream)
       }
       const typeOptions = {
