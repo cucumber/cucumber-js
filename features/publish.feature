@@ -17,7 +17,7 @@ Feature: Publish reports
     When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
     Then it passes
     And the server should receive the following message types:
-    | type |
-    | meta |
-    | testRunStarted |
-    | testRunFinished |
+      | type            |
+      | meta            |
+      | testRunStarted  |
+      | testRunFinished |

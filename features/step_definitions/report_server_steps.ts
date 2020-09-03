@@ -1,22 +1,34 @@
 import { Given, Then, DataTable } from '../..'
 import { World } from '../support/world'
 import { expect } from 'chai'
-import ReportServer from '../support/report_server'
+import { URL } from 'url'
+import FakeReportServer from '../../src/formatter/fake_report_server'
+import assert from 'assert'
 
-Given('a report server is running on {string}', function (
+Given('a report server is running on {string}', async function (
   this: World,
   url: string
 ) {
-  this.reportServer = new ReportServer()
+  const port = parseInt(new URL(url).port)
+  this.reportServer = new FakeReportServer(port)
+  await this.reportServer.start()
 })
 
-Then('the server should receive the following message types:', function (
+Then('the server should receive the following message types:', async function (
   this: World,
   expectedMessageTypesTable: DataTable
 ) {
   const expectedMessageTypes = expectedMessageTypesTable
     .rows()
     .map((row) => row[0])
-  const receivedMessageTypes = this.reportServer.getReceivedMessageTypes()
+
+  const receivedBodies = await this.reportServer.stop()
+  const ndjson = receivedBodies.toString('utf-8')
+  if (ndjson === '') assert.fail('Server received nothing')
+
+  const receivedMessageTypes = ndjson
+    .split(/\n/)
+    .map((line) => JSON.parse(line))
+    .map((envelope) => Object.keys(envelope)[0])
   expect(receivedMessageTypes).to.deep.eq(expectedMessageTypes)
 })
