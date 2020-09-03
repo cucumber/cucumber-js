@@ -2,6 +2,7 @@ import { pipeline, Writable } from 'stream'
 import tmp from 'tmp'
 import fs from 'fs'
 import http from 'http'
+import https from 'https'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
 type HttpMethod =
@@ -37,7 +38,7 @@ export default class HttpStream extends Writable {
   _write(
     chunk: any,
     encoding: string,
-    callback: (error?: Error | null) => void
+    callback: (err?: Error | null) => void
   ): void {
     if (this.tempFile === undefined) {
       tmp.file((err, name, fd) => {
@@ -54,41 +55,68 @@ export default class HttpStream extends Writable {
 
   _final(callback: (error?: Error | null) => void): void {
     this.tempFile.end(() => {
-      this.sendRequest(this.url, this.method, callback)
+      this.sendRequest(
+        this.url,
+        this.method,
+        (err: Error | null | undefined, url: string) => {
+          if (err !== null && err !== undefined) return callback(err)
+          console.log('***** SENT SOMETHING TO', url)
+          callback(null)
+        }
+      )
     })
   }
 
   private sendRequest(
     url: string,
     method: HttpMethod,
-    callback: (error?: Error | null) => void
+    callback: (err: Error | null | undefined, url?: string) => void
   ): void {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    const httpx = url.match(/^https:/) ? https : http
+
     // TODO: Follow regular 3xx redirects
 
     if (method === 'GET') {
-      http.get(url, (res) => {
+      httpx.get(url, (res) => {
         if (res.statusCode >= 400) {
           return callback(
             new Error(`${method} ${url} returned status ${res.statusCode}`)
           )
         }
         if (res.statusCode !== 202 || res.headers.location === undefined) {
-          return callback()
+          return callback(null, url)
         }
         this.sendRequest(res.headers.location, 'PUT', callback)
       })
     } else {
-      const req = http.request(url, {
+      const contentLength = fs.statSync(this.tempFilePath).size
+      const req = httpx.request(url, {
         method,
+        headers: {
+          'Content-Length': contentLength,
+        },
       })
 
       req.on('response', (res) => {
         if (res.statusCode >= 400) {
-          return callback(
-            new Error(`${method} ${url} returned status ${res.statusCode}`)
-          )
+          let body = Buffer.alloc(0)
+          res.on('data', (chunk) => {
+            body = Buffer.concat([body, chunk])
+          })
+          res.on('end', () => {
+            callback(
+              new Error(
+                `${method} ${url} returned status ${
+                  res.statusCode
+                }:\n${body.toString('utf-8')}`
+              )
+            )
+          })
+          res.on('error', callback)
+        } else {
+          callback(null, url)
         }
-        callback()
       })
 
       pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
