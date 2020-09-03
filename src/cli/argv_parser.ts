@@ -104,7 +104,11 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
-      .option('--publish', 'Publish a report to https://reports.cucumber.io')
+      .option(
+        '--publish',
+        'Publish a report to https://reports.cucumber.io',
+        false
+      )
       .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',

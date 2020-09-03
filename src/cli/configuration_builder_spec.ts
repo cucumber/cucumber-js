@@ -125,6 +125,24 @@ describe('Configuration', () => {
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
     })
 
+    it('adds a message formatter with reports URL when --publish specified', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['--publish'])
+
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(formats).to.eql([
+        { outputTo: '', type: 'progress' },
+        {
+          outputTo: 'https://messages.cucumber.io/api/reports -X GET',
+          type: 'message',
+        },
+      ])
+    })
+
     it('splits relative unix paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
