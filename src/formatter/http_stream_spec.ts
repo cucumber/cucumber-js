@@ -84,7 +84,16 @@ describe('HttpStream', () => {
         .stop()
         .then((receivedBodies) => {
           try {
-            assert.strictEqual(reported, 'Some banner content')
+            assert.strictEqual(
+              reported,
+              `┌──────────────────────────────────────────────────────────────────────────┐
+│ View your Cucumber Report at:                                            │
+│ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
+│                                                                          │
+│ This report will self-destruct in 24h unless it is claimed or deleted.   │
+└──────────────────────────────────────────────────────────────────────────┘
+`
+            )
             callback()
           } catch (err) {
             callback(err)

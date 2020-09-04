@@ -27,6 +27,7 @@ type HttpMethod =
 export default class HttpStream extends Writable {
   private tempFilePath: string
   private tempFile: Writable
+  private responseBodyFromGet: string | null = null
 
   constructor(
     private readonly url: string,
@@ -61,14 +62,7 @@ export default class HttpStream extends Writable {
         this.method,
         (err: Error | null | undefined, url: string) => {
           if (err !== null && err !== undefined) return callback(err)
-          console.log('***** SENT SOMETHING TO', url)
-          console.log(`┌──────────────────────────────────────────────────────────────────────────┐
-│ View your Cucumber Report at:                                            │
-│ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
-│                                                                          │
-│ This report will self-destruct in 24h unless it is claimed or deleted.   │
-└──────────────────────────────────────────────────────────────────────────┘
-`)
+          this.reportLocation(this.responseBodyFromGet)
           callback(null)
         }
       )
@@ -92,10 +86,19 @@ export default class HttpStream extends Writable {
             new Error(`${method} ${url} returned status ${res.statusCode}`)
           )
         }
+
         if (res.statusCode !== 202 || res.headers.location === undefined) {
-          return callback(null, url)
+          callback(null, url)
+        } else {
+          let body = Buffer.alloc(0)
+          res.on('data', (chunk) => {
+            body = Buffer.concat([body, chunk])
+          })
+          res.on('end', () => {
+            this.responseBodyFromGet = body.toString('utf-8')
+            this.sendRequest(res.headers.location, 'PUT', callback)
+          })
         }
-        this.sendRequest(res.headers.location, 'PUT', callback)
       })
     } else {
       const contentLength = fs.statSync(this.tempFilePath).size
