@@ -34,6 +34,26 @@ Feature: Publish reports
       | testRunFinished  |
 
   @spawn
+  Scenario: Report is published when CUCUMBER_PUBLISH_ENABLED is set
+    Given a report server is running on 'http://localhost:9987'
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_ENABLED=1 CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    Then it passes
+    And the server should receive the following message types:
+      | meta             |
+      | source           |
+      | gherkinDocument  |
+      | pickle           |
+      | stepDefinition   |
+      | testRunStarted   |
+      | testCase         |
+      | testCaseStarted  |
+      | testStepStarted  |
+      | testStepFinished |
+      | testCaseFinished |
+      | testRunFinished  |
+
+
+  @spawn
   Scenario: a banner is displayed after publication
     Given a report server is running on 'http://localhost:9987'
     When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`

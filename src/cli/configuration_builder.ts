@@ -165,13 +165,23 @@ export default class ConfigurationBuilder {
       const [type, outputTo] = OptionSplitter.split(format)
       mapping[outputTo] = type
     })
-    if (this.options.publish) {
+    if (
+      this.options.publish ||
+      this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED)
+    ) {
       const publishUrl =
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         process.env.CUCUMBER_PUBLISH_URL || DEFAULT_CUCUMBER_PUBLISH_URL
       mapping[publishUrl] = 'message'
     }
     return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
+  }
+
+  isTruthyString(s: string | undefined): boolean {
+    if (s === undefined) {
+      return false
+    }
+    return s.match(/^(false|no|0)$/i) === null
   }
 
   async getUnexpandedFeaturePaths(): Promise<string[]> {
