@@ -81,7 +81,7 @@ export default class HttpStream extends Writable {
     // TODO: Follow regular 3xx redirects
 
     if (method === 'GET') {
-      httpx.get(url, (res) => {
+      httpx.get(url, { headers: this.headers }, (res) => {
         if (res.statusCode >= 400) {
           return callback(
             new Error(`${method} ${url} returned status ${res.statusCode}`)

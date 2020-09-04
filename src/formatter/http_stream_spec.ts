@@ -57,10 +57,14 @@ describe('HttpStream', () => {
           try {
             const expectedBody = 'hello work'
             assert.strictEqual(receivedBodies.toString('utf-8'), expectedBody)
-            assert.deepStrictEqual(reportServer.receivedHeaders, {
-              'Content-Length': expectedBody.length,
-              Authorization: 'Bearer blablabla',
-            })
+            assert.strictEqual(
+              reportServer.receivedHeaders['content-length'],
+              expectedBody.length.toString()
+            )
+            assert.strictEqual(
+              reportServer.receivedHeaders.authorization,
+              'Bearer blablabla'
+            )
             callback()
           } catch (err) {
             callback(err)

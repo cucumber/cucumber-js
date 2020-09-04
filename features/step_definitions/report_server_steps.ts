@@ -37,6 +37,6 @@ Then('the server should receive the following message types:', async function (
 Then(
   'the server should receive a(n) {string} header with value {string}',
   function (this: World, name: string, value: string) {
-    expect(this.reportServer.receivedHeaders[name]).to.eq(value)
+    expect(this.reportServer.receivedHeaders[name.toLowerCase()]).to.eq(value)
   }
 )

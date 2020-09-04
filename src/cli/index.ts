@@ -93,7 +93,12 @@ export default class Cli {
       let stream: IFormatterStream = this.stdout
       if (outputTo !== '') {
         if (outputTo.match(new RegExp('^https?://')) !== null) {
-          stream = new HttpStream(outputTo, 'GET', {}, (content) =>
+          const headers: { [key: string]: string } = {}
+          if (process.env.CUCUMBER_PUBLISH_TOKEN !== undefined) {
+            headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
+          }
+
+          stream = new HttpStream(outputTo, 'GET', headers, (content) =>
             console.log(content)
           )
         } else {

@@ -14,13 +14,13 @@ export default class FakeReportServer {
   private readonly sockets = new Set<Socket>()
   private readonly server: Server
   private receivedBodies = Buffer.alloc(0)
-  public receivedHeaders: { [key: string]: string } = {}
+  public receivedHeaders: http.IncomingHttpHeaders = {}
 
   constructor(private readonly port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
-      // this.receivedHeaders = {...this.receivedHeaders, }
+      this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
 
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const server = this
@@ -39,6 +39,8 @@ export default class FakeReportServer {
     })
 
     app.get('/api/reports', (req, res) => {
+      this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
+
       res.setHeader('Location', `http://localhost:${port}/s3`)
       res.status(202)
         .end(`┌──────────────────────────────────────────────────────────────────────────┐
