@@ -58,4 +58,28 @@ describe('HttpStream', () => {
     stream.write(' work')
     stream.end()
   })
+
+  it('outputs the body provided by the server', (callback: Callback) => {
+    let reported: string;
+
+    const stream = new HttpStream(`http://localhost:${port}/api/reports`, 'GET', (content) => { reported = content})
+
+    stream.on('error', callback)
+    stream.on('finish', () => {
+      reportServer
+        .stop()
+        .then((receivedBodies) => {
+          try {
+            assert.strictEqual(reported, "Some banner content")
+            callback()
+          } catch (err) {
+            callback(err)
+          }
+        })
+        .catch(callback)
+    })
+
+    stream.write('hello')
+    stream.end()
+  })
 })

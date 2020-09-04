@@ -30,7 +30,8 @@ export default class HttpStream extends Writable {
 
   constructor(
     private readonly url: string,
-    private readonly method: HttpMethod
+    private readonly method: HttpMethod,
+    private readonly reportLocation: (content: string) => void
   ) {
     super()
   }
@@ -61,6 +62,13 @@ export default class HttpStream extends Writable {
         (err: Error | null | undefined, url: string) => {
           if (err !== null && err !== undefined) return callback(err)
           console.log('***** SENT SOMETHING TO', url)
+          console.log(`┌──────────────────────────────────────────────────────────────────────────┐
+│ View your Cucumber Report at:                                            │
+│ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
+│                                                                          │
+│ This report will self-destruct in 24h unless it is claimed or deleted.   │
+└──────────────────────────────────────────────────────────────────────────┘
+`)
           callback(null)
         }
       )
