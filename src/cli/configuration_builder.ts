@@ -167,7 +167,8 @@ export default class ConfigurationBuilder {
     })
     if (
       this.options.publish ||
-      this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED)
+      this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED) ||
+      process.env.CUCUMBER_PUBLISH_TOKEN !== undefined
     ) {
       const publishUrl =
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions

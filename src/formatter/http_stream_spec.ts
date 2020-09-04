@@ -17,6 +17,7 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/s3`,
       'PUT',
+      {},
       () => undefined
     )
 
@@ -40,10 +41,11 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  it(`follows location from GET response, and sends body in a PUT request`, (callback: Callback) => {
+  it(`follows location from GET response, and sends body and headers in a PUT request`, (callback: Callback) => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
+      { Authorization: 'Bearer blablabla' },
       () => undefined
     )
 
@@ -53,7 +55,12 @@ describe('HttpStream', () => {
         .stop()
         .then((receivedBodies) => {
           try {
-            assert.strictEqual(receivedBodies.toString('utf-8'), 'hello work')
+            const expectedBody = 'hello work'
+            assert.strictEqual(receivedBodies.toString('utf-8'), expectedBody)
+            assert.deepStrictEqual(reportServer.receivedHeaders, {
+              'Content-Length': expectedBody.length,
+              Authorization: 'Bearer blablabla',
+            })
             callback()
           } catch (err) {
             callback(err)
@@ -73,6 +80,7 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
+      {},
       (content) => {
         reported = content
       }

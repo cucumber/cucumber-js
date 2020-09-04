@@ -32,6 +32,7 @@ export default class HttpStream extends Writable {
   constructor(
     private readonly url: string,
     private readonly method: HttpMethod,
+    private readonly headers: { [name: string]: string },
     private readonly reportLocation: (content: string) => void
   ) {
     super()

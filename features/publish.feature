@@ -15,7 +15,7 @@ Feature: Publish reports
       """
 
   @spawn
-  Scenario: Report is published
+  Scenario: Report is published when --publish is specified
     Given a report server is running on 'http://localhost:9987'
     When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
     Then it passes
@@ -52,6 +52,25 @@ Feature: Publish reports
       | testCaseFinished |
       | testRunFinished  |
 
+  @spawn
+  Scenario: Report is published when CUCUMBER_PUBLISH_TOKEN is set
+    Given a report server is running on 'http://localhost:9987'
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=keyboardcat CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    Then it passes
+    And the server should receive the following message types:
+      | meta             |
+      | source           |
+      | gherkinDocument  |
+      | pickle           |
+      | stepDefinition   |
+      | testRunStarted   |
+      | testCase         |
+      | testCaseStarted  |
+      | testStepStarted  |
+      | testStepFinished |
+      | testCaseFinished |
+      | testRunFinished  |
+    And the server should receive an "Authorization" header with value "Bearer keyboardcat"
 
   @spawn
   Scenario: a banner is displayed after publication

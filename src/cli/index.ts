@@ -93,7 +93,7 @@ export default class Cli {
       let stream: IFormatterStream = this.stdout
       if (outputTo !== '') {
         if (outputTo.match(new RegExp('^https?://')) !== null) {
-          stream = new HttpStream(outputTo, 'GET', (content) =>
+          stream = new HttpStream(outputTo, 'GET', {}, (content) =>
             console.log(content)
           )
         } else {

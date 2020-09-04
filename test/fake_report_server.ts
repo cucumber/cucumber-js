@@ -14,11 +14,14 @@ export default class FakeReportServer {
   private readonly sockets = new Set<Socket>()
   private readonly server: Server
   private receivedBodies = Buffer.alloc(0)
+  public receivedHeaders: { [key: string]: string } = {}
 
   constructor(private readonly port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
+      // this.receivedHeaders = {...this.receivedHeaders, }
+
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const server = this
       const captureBodyStream = new Writable({
