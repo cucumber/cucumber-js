@@ -37,7 +37,8 @@ export default class FakeReportServer {
 
     app.get('/api/reports', (req, res) => {
       res.setHeader('Location', `http://localhost:${port}/s3`)
-      res.status(202).end(`┌──────────────────────────────────────────────────────────────────────────┐
+      res.status(202)
+        .end(`┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │

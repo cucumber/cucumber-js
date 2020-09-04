@@ -38,7 +38,7 @@ export default class HttpStream extends Writable {
 
   _write(
     chunk: any,
-    encoding: string,
+    encoding: BufferEncoding,
     callback: (err?: Error | null) => void
   ): void {
     if (this.tempFile === undefined) {

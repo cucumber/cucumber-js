@@ -14,7 +14,11 @@ describe('HttpStream', () => {
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
-    const stream = new HttpStream(`http://localhost:${port}/s3`, 'PUT')
+    const stream = new HttpStream(
+      `http://localhost:${port}/s3`,
+      'PUT',
+      () => undefined
+    )
 
     stream.on('error', callback)
     stream.on('finish', () => {
@@ -37,7 +41,11 @@ describe('HttpStream', () => {
   })
 
   it(`follows location from GET response, and sends body in a PUT request`, (callback: Callback) => {
-    const stream = new HttpStream(`http://localhost:${port}/api/reports`, 'GET')
+    const stream = new HttpStream(
+      `http://localhost:${port}/api/reports`,
+      'GET',
+      () => undefined
+    )
 
     stream.on('error', callback)
     stream.on('finish', () => {
@@ -60,9 +68,15 @@ describe('HttpStream', () => {
   })
 
   it('outputs the body provided by the server', (callback: Callback) => {
-    let reported: string;
+    let reported: string
 
-    const stream = new HttpStream(`http://localhost:${port}/api/reports`, 'GET', (content) => { reported = content})
+    const stream = new HttpStream(
+      `http://localhost:${port}/api/reports`,
+      'GET',
+      (content) => {
+        reported = content
+      }
+    )
 
     stream.on('error', callback)
     stream.on('finish', () => {
@@ -70,7 +84,7 @@ describe('HttpStream', () => {
         .stop()
         .then((receivedBodies) => {
           try {
-            assert.strictEqual(reported, "Some banner content")
+            assert.strictEqual(reported, 'Some banner content')
             callback()
           } catch (err) {
             callback(err)

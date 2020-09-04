@@ -1,4 +1,4 @@
-import { Given, Then, DataTable, After } from '../..'
+import { Given, Then, DataTable } from '../..'
 import { World } from '../support/world'
 import { expect } from 'chai'
 import { URL } from 'url'
@@ -32,12 +32,4 @@ Then('the server should receive the following message types:', async function (
     .map((envelope) => Object.keys(envelope)[0])
 
   expect(receivedMessageTypes).to.deep.eq(expectedMessageTypes)
-})
-
-After(async function (
-  this: World
-) {
-  if (this.reportServer && this.reportServer.started) {
-    this.reportServer.stop()
-  }
 })

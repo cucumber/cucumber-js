@@ -93,7 +93,9 @@ export default class Cli {
       let stream: IFormatterStream = this.stdout
       if (outputTo !== '') {
         if (outputTo.match(new RegExp('^https?://')) !== null) {
-          stream = new HttpStream(outputTo, 'GET')
+          stream = new HttpStream(outputTo, 'GET', (content) =>
+            console.log(content)
+          )
         } else {
           const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
           stream = fs.createWriteStream(null, { fd })
