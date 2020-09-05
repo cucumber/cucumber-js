@@ -37,7 +37,7 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.deepEqual(this.parameters, {})
@@ -50,7 +50,7 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.equal(this.parameters.a, 1)
@@ -63,7 +63,7 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.equal(this.parameters.a, 3)
@@ -76,7 +76,7 @@ Feature: World Parameters
   Scenario: custom world constructor is passed the parameters
     Given a file named "features/support/world.js" with:
       """
-      const {setWorldConstructor} = require('cucumber')
+      const {setWorldConstructor} = require('@cucumber/cucumber')
 
       function CustomWorld(options) {
         for(const key in options.parameters) {
@@ -89,7 +89,7 @@ Feature: World Parameters
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^the world parameters are correct$/, function() {
         assert.equal(this.a, 1)

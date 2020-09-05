@@ -10,13 +10,13 @@ Feature: Hook Parameters
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When(/^a step$/, function() {})
       """
     And a file named "features/support/hooks.js" with:
       """
-      const {Before, formatterHelpers} = require('cucumber')
+      const {Before, formatterHelpers} = require('@cucumber/cucumber')
 
       Before(function({pickle, gherkinDocument}) {
         const { line } = formatterHelpers.PickleParser.getPickleLocation({ gherkinDocument, pickle })
@@ -46,14 +46,14 @@ Feature: Hook Parameters
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When(/^a passing step$/, function() {})
       When(/^a failing step$/, function() { throw new Error("my error") })
       """
     And a file named "features/support/hooks.js" with:
       """
-      const { After, formatterHelpers, Status } = require('cucumber')
+      const { After, formatterHelpers, Status } = require('@cucumber/cucumber')
 
       After(function({pickle, gherkinDocument, result}) {
         const { line } = formatterHelpers.PickleParser.getPickleLocation({ gherkinDocument, pickle })

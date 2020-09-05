@@ -11,7 +11,7 @@ Feature: Passing steps
   Scenario: synchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a passing step$/, function() {})
       """
@@ -21,7 +21,7 @@ Feature: Passing steps
   Scenario: asynchronous
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a passing step$/, function(callback) {
         setTimeout(callback)
@@ -33,7 +33,7 @@ Feature: Passing steps
   Scenario: promise
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       Given(/^a passing step$/, function() {

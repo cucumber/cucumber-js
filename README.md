@@ -40,7 +40,7 @@ Everyone interacting in this codebase and issue tracker is expected to follow th
 Cucumber.js is available as an npm module.
 
 ``` shell
-$ npm install cucumber
+$ npm install @cucumber/cucumber
 ```
 
 ### Browser
