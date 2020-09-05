@@ -11,7 +11,7 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
@@ -38,7 +38,7 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
@@ -64,7 +64,7 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Given(/^a table step$/, function(table) {
@@ -91,7 +91,7 @@ Feature: Data Tables
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Given(/^a table step$/, function(table) {

@@ -9,7 +9,7 @@ Feature: Attachments
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -17,7 +17,7 @@ Feature: Attachments
   Scenario: Attach a buffer
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
 
       Before(function() {
         this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
@@ -31,7 +31,7 @@ Feature: Attachments
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
       const stream = require('stream')
 
       Before(function(testCase, callback) {
@@ -50,7 +50,7 @@ Feature: Attachments
   Scenario: Attach a stream (promise)
     Given a file named "features/support/hooks.js" with:
         """
-        const {Before} = require('cucumber')
+        const {Before} = require('@cucumber/cucumber')
         const stream = require('stream')
 
         Before(function() {
@@ -70,7 +70,7 @@ Feature: Attachments
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
 
       Before(function() {
         this.attach("text")
@@ -84,7 +84,7 @@ Feature: Attachments
   Scenario: Attach from an after hook
     Given a file named "features/support/hooks.js" with:
       """
-      const {After} = require('cucumber')
+      const {After} = require('@cucumber/cucumber')
 
       After(function() {
         this.attach("text")
@@ -98,7 +98,7 @@ Feature: Attachments
   Scenario: Attach from a step definition
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {
         this.attach("text")
@@ -113,7 +113,7 @@ Feature: Attachments
   Scenario: Attaching after hook/step finishes
     Given a file named "features/support/hooks.js" with:
       """
-      const {After} = require('cucumber')
+      const {After} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       After(function() {

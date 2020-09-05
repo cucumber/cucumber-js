@@ -6,7 +6,7 @@ Feature: Tagged Hooks
   Background:
     Given a file named "features/step_definitions/world.js" with:
       """
-      const {setWorldConstructor} = require('cucumber')
+      const {setWorldConstructor} = require('@cucumber/cucumber')
 
       setWorldConstructor(function() {
         this.foo = false
@@ -16,7 +16,7 @@ Feature: Tagged Hooks
     And a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Then} = require('cucumber')
+      const {Then} = require('@cucumber/cucumber')
 
       Then('{word} is true', function(prop) {
         assert.equal(true, this[prop])
@@ -28,7 +28,7 @@ Feature: Tagged Hooks
       """
     And a file named "features/step_definitions/my_tagged_hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
 
       Before({tags: '@foo'}, function() {
         this.foo = true

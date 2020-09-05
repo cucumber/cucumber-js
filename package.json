@@ -1,5 +1,5 @@
 {
-  "name": "cucumber",
+  "name": "@cucumber/cucumber",
   "description": "The official JavaScript implementation of Cucumber.",
   "keywords": [
     "testing",

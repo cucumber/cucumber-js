@@ -14,7 +14,7 @@ Feature: Parameter types
     Given a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given('a {param} step', function(param) {
         assert.equal(param, 'PARTICULAR')
@@ -24,7 +24,7 @@ Feature: Parameter types
   Scenario: delegate transform to world
     Given a file named "features/support/transforms.js" with:
       """
-      const {setWorldConstructor, defineParameterType} = require('cucumber')
+      const {setWorldConstructor, defineParameterType} = require('@cucumber/cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -47,7 +47,7 @@ Feature: Parameter types
   Scenario: sync transform (success)
     Given a file named "features/support/transforms.js" with:
       """
-      const {defineParameterType} = require('cucumber')
+      const {defineParameterType} = require('@cucumber/cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -61,7 +61,7 @@ Feature: Parameter types
   Scenario: sync transform (error)
     Given a file named "features/support/transforms.js" with:
       """
-      const {defineParameterType} = require('cucumber')
+      const {defineParameterType} = require('@cucumber/cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -81,7 +81,7 @@ Feature: Parameter types
   Scenario: no transform
     Given a file named "features/support/transforms.js" with:
       """
-      const {defineParameterType} = require('cucumber')
+      const {defineParameterType} = require('@cucumber/cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -98,7 +98,7 @@ Feature: Parameter types
   Scenario: async transform (success)
     Given a file named "features/step_definitions/particular_steps.js" with:
       """
-      const {defineParameterType} = require('cucumber')
+      const {defineParameterType} = require('@cucumber/cucumber')
 
       defineParameterType({
         regexp: /particular/,
@@ -112,7 +112,7 @@ Feature: Parameter types
   Scenario: async transform (error)
     Given a file named "features/step_definitions/particular_steps.js" with:
       """
-      const {defineParameterType} = require('cucumber')
+      const {defineParameterType} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       defineParameterType({
