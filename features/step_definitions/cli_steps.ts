@@ -29,7 +29,7 @@ When(
     const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
     const stringArgs = stringArgv(renderedArgs)
     const initialValue: NodeJS.ProcessEnv = {}
-    const env: NodeJS.ProcessEnv = envs
+    const env: NodeJS.ProcessEnv = (envs || '')
       .split(/\s+/)
       .map((keyValue) => keyValue.split('='))
       .reduce((dict, pair) => {
