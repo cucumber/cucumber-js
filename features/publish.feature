@@ -96,16 +96,13 @@ Feature: Publish reports
       │                                                                          │
       │ Command line option:    --publish                                        │
       │ Environment variable:   CUCUMBER_PUBLISH_ENABLED=true                    │
-      │ cucumber.yml:           default: --publish                               │
       │                                                                          │
       │ More information at https://reports.cucumber.io/docs/cucumber-js         │
       │                                                                          │
-      │ To disable this message, specify CUCUMBER_PUBLISH_QUIET=true or use the  │
-      │ --publish-quiet option. You can also add this to your cucumber.yml:      │
-      │ default: --publish-quiet                                                 │
+      │ To disable this message, add this to your ./cucumber.js:                 │
+      │ module.exports = { default: '--publish-quiet' }                          │
       └──────────────────────────────────────────────────────────────────────────┘
       """
-
   @spawn
   Scenario: the publication banner is not shown when publication is done
     When I run cucumber-js with arguments `<args>` and env `<env>`
