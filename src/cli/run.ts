@@ -1,26 +1,12 @@
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
-import { URL } from 'url'
 
 function exitWithError(error: Error): void {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
   process.exit(1)
 }
 
-async function displayBanner(cli: Cli): Promise<void> {
-  const config = await cli.getConfiguration()
-  const publish = config.formats.find((format) => {
-    try {
-      return format.type === 'message' && new URL(format.outputTo)
-    } catch (err) {
-      return false
-    }
-  })
-
-  if (publish !== undefined) {
-    return
-  }
-
+function displayPublishAdvertismentBanner(): void {
   console.log(`┌──────────────────────────────────────────────────────────────────────────┐
 │ Share your Cucumber Report with your team at https://reports.cucumber.io │
 │                                                                          │
@@ -52,7 +38,10 @@ export default async function run(): Promise<void> {
     exitWithError(error)
   }
 
-  await displayBanner(cli)
+  const config = await cli.getConfiguration()
+  if (!config.isPublishing) {
+    displayPublishAdvertismentBanner()
+  }
 
   const exitCode = result.success ? 0 : 1
   if (result.shouldExitImmediately) {

@@ -22,6 +22,7 @@ export interface IConfiguration {
   featurePaths: string[]
   formats: IConfigurationFormat[]
   formatOptions: IParsedArgvFormatOptions
+  isPublishing: boolean
   listI18nKeywordsFor: string
   listI18nLanguages: boolean
   order: string
@@ -85,6 +86,7 @@ export default class ConfigurationBuilder {
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.options.formatOptions,
+      isPublishing: this.isPublishing(),
       listI18nKeywordsFor,
       listI18nLanguages,
       order: this.options.order,
@@ -159,17 +161,21 @@ export default class ConfigurationBuilder {
     return _.uniq(featureDirs)
   }
 
+  isPublishing(): boolean {
+    return (
+      this.options.publish ||
+      this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED) ||
+      process.env.CUCUMBER_PUBLISH_TOKEN !== undefined
+    )
+  }
+
   getFormats(): IConfigurationFormat[] {
     const mapping: { [key: string]: string } = { '': 'progress' }
     this.options.format.forEach((format) => {
       const [type, outputTo] = OptionSplitter.split(format)
       mapping[outputTo] = type
     })
-    if (
-      this.options.publish ||
-      this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED) ||
-      process.env.CUCUMBER_PUBLISH_TOKEN !== undefined
-    ) {
+    if (this.isPublishing()) {
       const publishUrl =
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         process.env.CUCUMBER_PUBLISH_URL || DEFAULT_CUCUMBER_PUBLISH_URL

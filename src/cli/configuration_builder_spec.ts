@@ -33,6 +33,7 @@ describe('Configuration', () => {
         featurePaths: [],
         formatOptions: {},
         formats: [{ outputTo: '', type: 'progress' }],
+        isPublishing: false,
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         order: 'defined',
@@ -141,6 +142,14 @@ describe('Configuration', () => {
           type: 'message',
         },
       ])
+    })
+
+    it('sets isPublishing to true when --publish is specified', async function () {
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['--publish'])
+      const configuration = await ConfigurationBuilder.build({ argv, cwd })
+
+      expect(configuration.isPublishing).to.eq(true)
     })
 
     it('splits relative unix paths', async function () {
