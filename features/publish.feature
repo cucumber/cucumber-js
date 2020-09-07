@@ -87,7 +87,7 @@ Feature: Publish reports
       """
 
   @spawn
-  Scenario: when results are not published, a banner shows explains how to publish
+  Scenario: when results are not published, a banner explains how to publish
     When I run cucumber-js
     Then the output contains the text:
       """
