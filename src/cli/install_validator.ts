@@ -9,11 +9,19 @@ export async function validateInstall(cwd: string): Promise<void> {
     return // cucumber testing itself
   }
   const currentCucumberPath = require.resolve(projectPath)
-  let localCucumberPath: string = await promisify<string, resolve.Opts, string>(
-    resolve
-  )('cucumber', {
-    basedir: cwd,
-  })
+  let localCucumberPath: string
+  try {
+    localCucumberPath = await promisify<string, resolve.Opts, string>(resolve)(
+      '@cucumber/cucumber',
+      {
+        basedir: cwd,
+      }
+    )
+  } catch (e) {
+    throw new Error(
+      '`@cucumber/cucumber` module not resolvable. Must be locally installed.'
+    )
+  }
   localCucumberPath = await fs.realpath(localCucumberPath)
   if (localCucumberPath !== currentCucumberPath) {
     throw new Error(

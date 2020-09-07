@@ -9,7 +9,7 @@ Feature: After hook interface
       """
     And a file named "features/step_definitions/my_steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When(/^a step$/, function() {
         this.value = 1;
@@ -19,7 +19,7 @@ Feature: After hook interface
   Scenario Outline: too many arguments
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
 
       <TYPE>(function(arg1, arg2, arg3) {})
       """
@@ -38,7 +38,7 @@ Feature: After hook interface
   Scenario Outline: synchronous
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       <TYPE>(function() {})
@@ -54,7 +54,7 @@ Feature: After hook interface
   Scenario Outline: synchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
 
       <TYPE>(function() {
         throw new Error('my error')
@@ -71,7 +71,7 @@ Feature: After hook interface
   Scenario Outline: callback without error
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       <TYPE>(function(scenario, callback) {
@@ -89,7 +89,7 @@ Feature: After hook interface
   Scenario Outline: callback with error
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
 
       <TYPE>(function(scenario, callback) {
         setTimeout(() => {
@@ -109,7 +109,7 @@ Feature: After hook interface
   Scenario Outline: callback asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
 
       <TYPE>(function(scenario, callback) {
         setTimeout(() => {
@@ -128,7 +128,7 @@ Feature: After hook interface
   Scenario Outline: callback - returning a promise
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       <TYPE>(function(scenario, callback) {
@@ -152,7 +152,7 @@ Feature: After hook interface
   Scenario Outline: promise resolves
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       <TYPE>(function() {
@@ -170,7 +170,7 @@ Feature: After hook interface
   Scenario Outline: promise rejects with error
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       <TYPE>(function(){
@@ -192,7 +192,7 @@ Feature: After hook interface
   Scenario Outline: promise rejects without error
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       <TYPE>(function() {
@@ -215,7 +215,7 @@ Feature: After hook interface
   Scenario Outline: promise asynchronously throws
     Given a file named "features/support/hooks.js" with:
       """
-      const {<TYPE>} = require('cucumber')
+      const {<TYPE>} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       <TYPE>(function(){

@@ -3,7 +3,7 @@ Feature: Running scenarios in parallel
   Scenario: running in parallel can improve speed if there are async operations
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       Given(/^a slow step$/, function(callback) {
@@ -26,7 +26,7 @@ Feature: Running scenarios in parallel
   Scenario: an error in BeforeAll fails the test
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {BeforeAll, Given} = require('cucumber')
+      const {BeforeAll, Given} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       Given(/^a slow step$/, function(callback) {

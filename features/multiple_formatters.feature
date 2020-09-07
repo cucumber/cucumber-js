@@ -9,7 +9,7 @@ Feature: Multiple Formatters
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a passing step$/, function() {})
       """
