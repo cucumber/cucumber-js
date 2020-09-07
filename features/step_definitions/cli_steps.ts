@@ -121,6 +121,15 @@ Then(/^the error output contains the text:$/, function (
   expect(actualOutput).to.include(expectedOutput)
 })
 
+Then('the error output does not contain the text:', function (
+  this: World,
+  text: string
+) {
+  const actualOutput = normalizeText(this.lastRun.errorOutput)
+  const expectedOutput = normalizeText(text)
+  expect(actualOutput).not.to.include(expectedOutput)
+})
+
 Then(/^I see the version of Cucumber$/, function (this: World) {
   const actualOutput = this.lastRun.output
   const expectedOutput = `${version as string}\n`

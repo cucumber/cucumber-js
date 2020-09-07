@@ -8,7 +8,8 @@ import Definition, {
 } from './definition'
 import { messages } from '@cucumber/messages'
 
-export default class TestCaseHookDefinition extends Definition
+export default class TestCaseHookDefinition
+  extends Definition
   implements IDefinition {
   public readonly tagExpression: string
   private readonly pickleTagFilter: PickleTagFilter

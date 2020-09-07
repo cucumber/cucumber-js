@@ -59,7 +59,7 @@ describe('Configuration', () => {
         shouldExitImmediately: false,
         supportCodePaths: [],
         supportCodeRequiredModules: [],
-        suppressPublishAdvertisement: false
+        suppressPublishAdvertisement: false,
       })
     })
   })

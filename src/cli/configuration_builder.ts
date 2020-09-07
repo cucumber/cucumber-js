@@ -113,7 +113,7 @@ export default class ConfigurationBuilder {
       shouldExitImmediately: this.options.exit,
       supportCodePaths,
       supportCodeRequiredModules: this.options.requireModule,
-      suppressPublishAdvertisement: false
+      suppressPublishAdvertisement: this.isPublishAdvertisementSuppressed(),
     }
   }
 
@@ -168,6 +168,13 @@ export default class ConfigurationBuilder {
       this.options.publish ||
       this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED) ||
       process.env.CUCUMBER_PUBLISH_TOKEN !== undefined
+    )
+  }
+
+  isPublishAdvertisementSuppressed(): boolean {
+    return (
+      this.options.publishQuiet ||
+      this.isTruthyString(process.env.CUCUMBER_PUBLISH_QUIET)
     )
   }
 

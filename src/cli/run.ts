@@ -6,8 +6,8 @@ function exitWithError(error: Error): void {
   process.exit(1)
 }
 
-function displayPublishAdvertismentBanner(): void {
-  console.log(`┌──────────────────────────────────────────────────────────────────────────┐
+function displayPublishAdvertisementBanner(): void {
+  console.error(`┌──────────────────────────────────────────────────────────────────────────┐
 │ Share your Cucumber Report with your team at https://reports.cucumber.io │
 │                                                                          │
 │ Command line option:    --publish                                        │
@@ -39,8 +39,8 @@ export default async function run(): Promise<void> {
   }
 
   const config = await cli.getConfiguration()
-  if (!config.isPublishing) {
-    displayPublishAdvertismentBanner()
+  if (!config.publishing && !config.suppressPublishAdvertisement) {
+    displayPublishAdvertisementBanner()
   }
 
   const exitCode = result.success ? 0 : 1

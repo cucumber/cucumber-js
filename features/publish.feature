@@ -9,7 +9,7 @@ Feature: Publish reports
       """
     And a file named "features/step_definitions/steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -76,7 +76,7 @@ Feature: Publish reports
   Scenario: a banner is displayed after publication
     Given a report server is running on 'http://localhost:9987'
     When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
-    Then the output contains the text:
+    Then the error output contains the text:
       """
       ┌──────────────────────────────────────────────────────────────────────────┐
       │ View your Cucumber Report at:                                            │
@@ -89,7 +89,7 @@ Feature: Publish reports
   @spawn
   Scenario: when results are not published, a banner explains how to publish
     When I run cucumber-js
-    Then the output contains the text:
+    Then the error output contains the text:
       """
       ┌──────────────────────────────────────────────────────────────────────────┐
       │ Share your Cucumber Report with your team at https://reports.cucumber.io │
@@ -109,7 +109,7 @@ Feature: Publish reports
   @spawn
   Scenario: the publication banner is not shown when publication is done
     When I run cucumber-js with arguments `<args>` and env `<env>`
-    Then the output does not contain the text:
+    Then the error output does not contain the text:
       """
       Share your Cucumber Report with your team at https://reports.cucumber.io
       """
@@ -123,7 +123,7 @@ Feature: Publish reports
   @spawn
   Scenario: the publication banner is not shown when publication is disabled
     When I run cucumber-js with arguments `<args>` and env `<env>`
-    Then the output does not contain the text:
+    Then the error output does not contain the text:
       """
       Share your Cucumber Report with your team at https://reports.cucumber.io
       """
