@@ -19,8 +19,7 @@ executedModules:
 ignoreErrors:
   missing: []
   shouldBeDependency: []
-  shouldBeDevDependency:
-    - tmp # used in http_stream.ts as well as in test code
+  shouldBeDevDependency: []
   unused:
     - '@cucumber/compatibility-kit' # files dynamically loaded in cck test, not require'd
     - '@typescript-eslint/eslint-plugin' # peer dependency of standard-with-typescript
