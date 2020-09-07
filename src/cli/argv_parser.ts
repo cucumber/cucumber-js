@@ -25,7 +25,6 @@ export interface IParsedArgvOptions {
   exit: boolean
   failFast: boolean
   format: string[]
-  publish: boolean
   formatOptions: IParsedArgvFormatOptions
   i18nKeywords: string
   i18nLanguages: boolean
@@ -35,6 +34,8 @@ export interface IParsedArgvOptions {
   parallel: number
   predictableIds: boolean
   profile: string[]
+  publish: boolean
+  publishQuiet: boolean
   require: string[]
   requireModule: string[]
   retry: number
@@ -106,11 +107,6 @@ const ArgvParser = {
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
       .option(
-        '--publish',
-        'Publish a report to https://reports.cucumber.io',
-        false
-      )
-      .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',
         false
@@ -172,6 +168,16 @@ const ArgvParser = {
       .option(
         '--predictable-ids',
         'Use predictable ids in messages (option ignored if using parallel)',
+        false
+      )
+      .option(
+        '--publish',
+        'Publish a report to https://reports.cucumber.io',
+        false
+      )
+      .option(
+        '--publish-quiet',
+        "Don't print information banner about publishing reports",
         false
       )
       .option(

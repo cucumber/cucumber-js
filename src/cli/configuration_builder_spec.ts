@@ -33,7 +33,7 @@ describe('Configuration', () => {
         featurePaths: [],
         formatOptions: {},
         formats: [{ outputTo: '', type: 'progress' }],
-        isPublishing: false,
+        publishing: false,
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         order: 'defined',
@@ -59,6 +59,7 @@ describe('Configuration', () => {
         shouldExitImmediately: false,
         supportCodePaths: [],
         supportCodeRequiredModules: [],
+        suppressPublishAdvertisement: false
       })
     })
   })
@@ -144,12 +145,20 @@ describe('Configuration', () => {
       ])
     })
 
-    it('sets isPublishing to true when --publish is specified', async function () {
+    it('sets publishing to true when --publish is specified', async function () {
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat(['--publish'])
       const configuration = await ConfigurationBuilder.build({ argv, cwd })
 
-      expect(configuration.isPublishing).to.eq(true)
+      expect(configuration.publishing).to.eq(true)
+    })
+
+    it('sets suppressPublishAdvertisement to true when --publish-quiet is specified', async function () {
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['--publish-quiet'])
+      const configuration = await ConfigurationBuilder.build({ argv, cwd })
+
+      expect(configuration.suppressPublishAdvertisement).to.eq(true)
     })
 
     it('splits relative unix paths', async function () {

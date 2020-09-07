@@ -22,7 +22,7 @@ export interface IConfiguration {
   featurePaths: string[]
   formats: IConfigurationFormat[]
   formatOptions: IParsedArgvFormatOptions
-  isPublishing: boolean
+  publishing: boolean
   listI18nKeywordsFor: string
   listI18nLanguages: boolean
   order: string
@@ -34,6 +34,7 @@ export interface IConfiguration {
   shouldExitImmediately: boolean
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
+  suppressPublishAdvertisement: boolean
 }
 
 export interface INewConfigurationBuilderOptions {
@@ -86,7 +87,7 @@ export default class ConfigurationBuilder {
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.options.formatOptions,
-      isPublishing: this.isPublishing(),
+      publishing: this.isPublishing(),
       listI18nKeywordsFor,
       listI18nLanguages,
       order: this.options.order,
@@ -112,6 +113,7 @@ export default class ConfigurationBuilder {
       shouldExitImmediately: this.options.exit,
       supportCodePaths,
       supportCodeRequiredModules: this.options.requireModule,
+      suppressPublishAdvertisement: false
     }
   }
 
