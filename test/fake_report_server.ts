@@ -3,6 +3,7 @@ import express from 'express'
 import { pipeline, Writable } from 'stream'
 import http from 'http'
 import { promisify } from 'util'
+import { doesHaveValue } from '../src/value_checker'
 
 type Callback = (err?: Error | null) => void
 
@@ -30,8 +31,7 @@ export default class FakeReportServer {
       })
 
       pipeline(req, captureBodyStream, (err) => {
-        if (err !== null && err !== undefined)
-          return res.status(500).end(err.stack)
+        if (doesHaveValue(err)) return res.status(500).end(err.stack)
         res.end()
       })
     })
@@ -83,7 +83,7 @@ export default class FakeReportServer {
     )
     return new Promise((resolve, reject) => {
       this.server.close((err) => {
-        if (err !== null && err !== undefined) return reject(err)
+        if (doesHaveValue(err)) return reject(err)
         resolve(this.receivedBodies)
       })
     })

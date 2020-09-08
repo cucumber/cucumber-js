@@ -3,6 +3,7 @@ import tmp from 'tmp'
 import fs from 'fs'
 import http from 'http'
 import https from 'https'
+import { doesHaveValue } from '../value_checker'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
 type HttpMethod =
@@ -23,6 +24,8 @@ type HttpMethod =
  * which uses an API where the first request is a `GET`,
  * and if the response is 202 with a Location header, issues
  * a PUT request to that URL.
+ *
+ * 3xx redirects are not currently followed.
  */
 export default class HttpStream extends Writable {
   private tempFilePath: string
@@ -45,7 +48,7 @@ export default class HttpStream extends Writable {
   ): void {
     if (this.tempFile === undefined) {
       tmp.file((err, name, fd) => {
-        if (err !== null && err !== undefined) return callback(err)
+        if (doesHaveValue(err)) return callback(err)
 
         this.tempFilePath = name
         this.tempFile = fs.createWriteStream(name, { fd })
@@ -61,8 +64,8 @@ export default class HttpStream extends Writable {
       this.sendRequest(
         this.url,
         this.method,
-        (err: Error | null | undefined, url: string) => {
-          if (err !== null && err !== undefined) return callback(err)
+        (err: Error | null | undefined) => {
+          if (doesHaveValue(err)) return callback(err)
           this.reportLocation(this.responseBodyFromGet)
           callback(null)
         }
@@ -75,10 +78,7 @@ export default class HttpStream extends Writable {
     method: HttpMethod,
     callback: (err: Error | null | undefined, url?: string) => void
   ): void {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const httpx = url.match(/^https:/) ? https : http
-
-    // TODO: Follow regular 3xx redirects
+    const httpx = doesHaveValue(url.match(/^https:/)) ? https : http
 
     if (method === 'GET') {
       httpx.get(url, { headers: this.headers }, (res) => {
@@ -132,7 +132,7 @@ export default class HttpStream extends Writable {
       })
 
       pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
-        if (err !== null && err !== undefined) callback(err)
+        if (doesHaveValue(err)) callback(err)
       })
     }
   }
