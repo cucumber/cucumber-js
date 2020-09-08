@@ -22,11 +22,9 @@ export default class FakeReportServer {
     app.put('/s3', (req, res) => {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
 
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const server = this
       const captureBodyStream = new Writable({
-        write(chunk: Buffer, encoding: string, callback: Callback) {
-          server.receivedBodies = Buffer.concat([server.receivedBodies, chunk])
+        write: (chunk: Buffer, encoding: string, callback: Callback) => {
+          this.receivedBodies = Buffer.concat([this.receivedBodies, chunk])
           callback()
         },
       })
