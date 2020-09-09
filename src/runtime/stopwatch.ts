@@ -1,4 +1,4 @@
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 import { stopwatch, Stopwatch, duration, Duration } from 'durations'
 
 export interface ITestRunStopwatch {
@@ -37,7 +37,7 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
-    return convertToTimestamp(this.duration())
+    return TimeConversion.millisecondsSinceEpochToTimestamp(Date.now())
   }
 }
 
