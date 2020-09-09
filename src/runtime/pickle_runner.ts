@@ -437,11 +437,9 @@ export default class PickleRunner {
         testStep.pickleStep,
         testStep.stepDefinitions[0]
       )
-      if (stepResult.status === Status.PASSED) {
-        afterStepHooksResult = await this.runStepHooks(
-          this.getAfterStepHookDefinitions()
-        )
-      }
+      afterStepHooksResult = await this.runStepHooks(
+        this.getAfterStepHookDefinitions()
+      )
     }
     let cumulatedStepResult = beforeStepHooksResult
 
