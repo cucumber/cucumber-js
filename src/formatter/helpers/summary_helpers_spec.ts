@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
@@ -16,14 +16,14 @@ interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   sourceData: string
   supportCodeLibrary?: ISupportCodeLibrary
-  testRunFinished?: messages.ITestRunFinished
+  testRunDuration?: messages.IDuration
 }
 
 async function testFormatSummary({
   runtimeOptions,
   sourceData,
   supportCodeLibrary,
-  testRunFinished,
+  testRunDuration,
 }: ITestFormatSummaryOptions): Promise<string> {
   const sources = [
     {
@@ -34,10 +34,8 @@ async function testFormatSummary({
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = getBaseSupportCodeLibrary()
   }
-  if (doesNotHaveValue(testRunFinished)) {
-    testRunFinished = messages.TestRunFinished.fromObject({
-      timestamp: TimeConversion.millisecondsSinceEpochToTimestamp(0),
-    })
+  if (doesNotHaveValue(testRunDuration)) {
+    testRunDuration = TimeConversion.millisecondsToDuration(1234)
   }
   const testCaseAttempts = await getTestCaseAttempts({
     runtimeOptions,
@@ -47,7 +45,7 @@ async function testFormatSummary({
   return formatSummary({
     colorFns: getColorFns(false),
     testCaseAttempts,
-    testRunFinished,
+    testRunDuration,
   })
 }
 
@@ -78,7 +76,7 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '0 scenarios\n' +
             '0 steps\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+            '0m01.234s (executing steps: 0m00.000s)\n'
         )
       })
     })
@@ -102,7 +100,7 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
-            '0m01.000s (executing steps: 0m00.100s)\n'
+            '0m01.234s (executing steps: 0m00.100s)\n'
         )
       })
     })
@@ -133,7 +131,7 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+            '0m01.234s (executing steps: 0m00.200s)\n'
         )
       })
     })
@@ -168,7 +166,7 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+            '0m01.234s (executing steps: 0m00.200s)\n'
         )
       })
     })
@@ -193,7 +191,7 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '1 scenario (1 passed)\n' +
             '2 steps (2 passed)\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+            '0m01.234s (executing steps: 0m00.200s)\n'
         )
       })
     })
@@ -227,7 +225,7 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+            '0m01.234s (executing steps: 0m00.400s)\n'
         )
       })
     })
@@ -252,12 +250,10 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
-          runtimeOptions: { predictableIds: true },
-          testRunFinished: messages.TestRunFinished.fromObject({
-            timestamp: {
-              nanos: 124000000,
-              seconds: 0,
-            },
+          runtimeOptions: { predictableIds: false },
+          testRunDuration: new messages.Duration({
+            nanos: 124000000,
+            seconds: 0,
           }),
         })
 
@@ -290,12 +286,10 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
-          runtimeOptions: { predictableIds: true },
-          testRunFinished: messages.TestRunFinished.fromObject({
-            timestamp: {
-              nanos: 400000000,
-              seconds: 12,
-            },
+          runtimeOptions: { predictableIds: false },
+          testRunDuration: new messages.Duration({
+            nanos: 400000000,
+            seconds: 0,
           }),
         })
 
@@ -328,12 +322,10 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
-          runtimeOptions: { predictableIds: true },
-          testRunFinished: messages.TestRunFinished.fromObject({
-            timestamp: {
-              nanos: 0,
-              seconds: 124,
-            },
+          runtimeOptions: { predictableIds: false },
+          testRunDuration: new messages.Duration({
+            nanos: 0,
+            seconds: 124,
           }),
         })
 

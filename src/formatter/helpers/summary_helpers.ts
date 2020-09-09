@@ -17,13 +17,13 @@ const STATUS_REPORT_ORDER = [
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
-  testRunFinished: messages.ITestRunFinished
+  testRunDuration: messages.IDuration
 }
 
 export function formatSummary({
   colorFns,
   testCaseAttempts,
-  testRunFinished,
+  testRunDuration,
 }: IFormatSummaryRequest): string {
   const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
   const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
@@ -54,9 +54,9 @@ export function formatSummary({
     objects: testStepResults,
     type: 'step',
   })
-  const durationSummary = `${getDurationSummary(
-    testRunFinished.timestamp
-  )} (executing steps: ${getDurationSummary(totalStepDuration)})\n`
+  const durationSummary = `${formatDuration(
+    testRunDuration
+  )} (executing steps: ${formatDuration(totalStepDuration)})\n`
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
@@ -90,9 +90,7 @@ function getCountSummary({
   return text
 }
 
-function getDurationSummary(
-  durationMsg: messages.IDuration | messages.ITimestamp
-): string {
+export function formatDuration(durationMsg: messages.IDuration): string {
   const start = new Date(0)
   const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)

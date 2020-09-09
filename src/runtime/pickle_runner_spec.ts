@@ -7,7 +7,10 @@ import { IdGenerator, messages } from '@cucumber/messages'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods, { epochTimestamp, makeStartHundredMillisStopwatch } from '../time'
+import timeMethods, {
+  epochTimestamp,
+  makeStartHundredMillisStopwatch,
+} from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'

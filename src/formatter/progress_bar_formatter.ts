@@ -2,8 +2,12 @@ import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
-import { messages } from '@cucumber/messages'
-import { doesHaveValue, valueOrDefault } from '../value_checker'
+import { messages, TimeConversion } from '@cucumber/messages'
+import {
+  doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
+} from '../value_checker'
 import { formatUndefinedParameterType } from './helpers/issue_helpers'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
@@ -11,6 +15,7 @@ export default class ProgressBarFormatter extends Formatter {
   private numberOfSteps: number
   private issueCount: number
   public progressBar: ProgressBar
+  private testRunStartedTimestamp: messages.ITimestamp
 
   constructor(options: IFormatterOptions) {
     super(options)
@@ -86,12 +91,12 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logSummary(testRunFinished: messages.ITestRunFinished): void {
+  logSummary(testRunDuration: messages.IDuration): void {
     this.log(
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts: this.eventDataCollector.getTestCaseAttempts(),
-        testRunFinished,
+        testRunDuration,
       })
     )
   }
@@ -107,8 +112,26 @@ export default class ProgressBarFormatter extends Formatter {
       this.logProgress(envelope.testStepFinished)
     } else if (doesHaveValue(envelope.testCaseFinished)) {
       this.logErrorIfNeeded(envelope.testCaseFinished)
+    } else if (doesHaveValue(envelope.testRunStarted)) {
+      this.testRunStartedTimestamp = envelope.testRunStarted.timestamp
     } else if (doesHaveValue(envelope.testRunFinished)) {
-      this.logSummary(envelope.testRunFinished)
+      if (doesNotHaveValue(this.testRunStartedTimestamp)) {
+        throw new Error('No timestamp for testRunStarted')
+      }
+      if (doesNotHaveValue(envelope.testRunFinished.timestamp)) {
+        throw new Error('No timestamp for testRunStarted')
+      }
+      const testRunDurationMillis =
+        TimeConversion.timestampToMillisecondsSinceEpoch(
+          envelope.testRunFinished.timestamp
+        ) -
+        TimeConversion.timestampToMillisecondsSinceEpoch(
+          this.testRunStartedTimestamp
+        )
+      const testRunDuration = TimeConversion.millisecondsToDuration(
+        testRunDurationMillis
+      )
+      this.logSummary(testRunDuration)
     }
   }
 }

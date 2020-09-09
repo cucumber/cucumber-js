@@ -83,7 +83,7 @@ describe('JsonFormatter', () => {
                     name: 'a passing step',
                     result: {
                       status: 'passed',
-                      duration: 1000000,
+                      duration: 100000000,
                     },
                   },
                 ],
@@ -137,7 +137,7 @@ describe('JsonFormatter', () => {
         expect(result[0].elements).to.have.lengthOf(1)
         expect(result[0].elements[0].steps).to.have.lengthOf(1)
         expect(result[0].elements[0].steps[0].result).to.eql({
-          duration: 0,
+          duration: 100000000,
           status: 'passed',
         })
       })
@@ -169,7 +169,7 @@ describe('JsonFormatter', () => {
         // Assert
         const step = JSON.parse(output)[0].elements[0].steps[0]
         expect(step.result).to.eql({
-          duration: 0,
+          duration: 100000000,
           error_message: 'error',
           status: 'failed',
         })
@@ -231,7 +231,7 @@ describe('JsonFormatter', () => {
           hidden: true,
           keyword: 'Before',
           result: {
-            duration: 0,
+            duration: 100000000,
             status: 'passed',
           },
         })
@@ -239,7 +239,7 @@ describe('JsonFormatter', () => {
           hidden: true,
           keyword: 'After',
           result: {
-            duration: 0,
+            duration: 100000000,
             status: 'passed',
           },
         })
@@ -419,7 +419,7 @@ describe('JsonFormatter', () => {
                     name: 'a passing step',
                     result: {
                       status: 'passed',
-                      duration: 1000000,
+                      duration: 100000000,
                     },
                   },
                 ],
@@ -446,7 +446,7 @@ describe('JsonFormatter', () => {
                     name: 'a passing step',
                     result: {
                       status: 'passed',
-                      duration: 1000000,
+                      duration: 100000000,
                     },
                   },
                 ],

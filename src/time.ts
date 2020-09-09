@@ -3,6 +3,7 @@ import { messages, TimeConversion } from '@cucumber/messages'
 
 export type StartStopwatch = () => StopStopwatch
 export type StopStopwatch = () => messages.IDuration
+
 export type Timestamp = () => messages.ITimestamp
 
 const methods: any = {

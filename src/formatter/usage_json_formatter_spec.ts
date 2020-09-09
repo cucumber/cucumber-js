@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
+import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
@@ -43,7 +43,7 @@ describe('UsageJsonFormatter', () => {
           {
             duration: {
               seconds: 0,
-              nanos: 2000000,
+              nanos: 100000000,
             },
             line: 4,
             text: 'def',
@@ -52,7 +52,7 @@ describe('UsageJsonFormatter', () => {
         ],
         meanDuration: {
           seconds: 0,
-          nanos: 2000000,
+          nanos: 100000000,
         },
         pattern: 'def?',
         patternType: 'RegularExpression',
@@ -65,7 +65,7 @@ describe('UsageJsonFormatter', () => {
           {
             duration: {
               seconds: 0,
-              nanos: 1000000,
+              nanos: 100000000,
             },
             line: 3,
             text: 'abc',
@@ -74,7 +74,7 @@ describe('UsageJsonFormatter', () => {
         ],
         meanDuration: {
           seconds: 0,
-          nanos: 1000000,
+          nanos: 100000000,
         },
         pattern: 'abc',
         patternType: 'CucumberExpression',

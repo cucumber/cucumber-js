@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
 import Formatter, { IFormatterOptions } from './'
-import { doesHaveValue } from '../value_checker'
-import { messages } from '@cucumber/messages'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { messages, TimeConversion } from '@cucumber/messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { formatUndefinedParameterTypes } from './helpers/issue_helpers'
 
@@ -12,16 +12,38 @@ interface ILogIssuesRequest {
 }
 
 export default class SummaryFormatter extends Formatter {
+  private testRunStartedTimestamp: messages.ITimestamp
+
   constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
-      if (doesHaveValue(envelope.testRunFinished)) {
-        this.logSummary(envelope.testRunFinished)
+      if (doesHaveValue(envelope.testRunStarted)) {
+        this.testRunStartedTimestamp = envelope.testRunStarted.timestamp
+      } else if (doesHaveValue(envelope.testRunFinished)) {
+        if (doesNotHaveValue(this.testRunStartedTimestamp)) {
+          throw new Error('No timestamp for testRunStarted')
+        }
+        if (doesNotHaveValue(envelope.testRunFinished.timestamp)) {
+          throw new Error('No timestamp for testRunStarted')
+        }
+
+        const testRunDurationMillis =
+          TimeConversion.timestampToMillisecondsSinceEpoch(
+            envelope.testRunFinished.timestamp
+          ) -
+          TimeConversion.timestampToMillisecondsSinceEpoch(
+            this.testRunStartedTimestamp
+          )
+        const testRunDuration = TimeConversion.millisecondsToDuration(
+          testRunDurationMillis
+        )
+
+        this.logSummary(testRunDuration)
       }
     })
   }
 
-  logSummary(testRunFinished: messages.ITestRunFinished): void {
+  logSummary(testRunDuration: messages.IDuration): void {
     const failures: ITestCaseAttempt[] = []
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
@@ -49,7 +71,7 @@ export default class SummaryFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts,
-        testRunFinished,
+        testRunDuration,
       })
     )
   }

@@ -286,7 +286,11 @@ export default class JsonFormatter extends Formatter {
     const { message, status } = testStepResult
     data.result = { status: Status[status].toLowerCase() }
     if (doesHaveValue(testStepResult.duration)) {
-      data.result.duration = testStepResult.duration
+      const seconds =
+        typeof testStepResult.duration.seconds === 'number'
+          ? testStepResult.duration.seconds
+          : testStepResult.duration.seconds.toNumber()
+      data.result.duration = seconds * 1000000 + testStepResult.duration.nanos
     }
     if (status === Status.FAILED && doesHaveValue(message)) {
       data.result.error_message = message
