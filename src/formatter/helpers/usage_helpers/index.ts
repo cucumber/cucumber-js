@@ -2,8 +2,7 @@ import _, { Dictionary } from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
 import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
-import { durationToMilliseconds, millisecondsToDuration } from '../../../time'
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 import StepDefinition from '../../../models/step_definition'
 import { doesHaveValue } from '../../../value_checker'
 import EventDataCollector from '../event_data_collector'
@@ -92,7 +91,7 @@ function buildMapping({
 
 function invertDuration(duration: messages.IDuration): number {
   if (doesHaveValue(duration)) {
-    return -1 * durationToMilliseconds(duration)
+    return -1 * TimeConversion.durationToMilliseconds(duration)
   }
   return 1
 }
@@ -110,9 +109,9 @@ function buildResult(mapping: Dictionary<IUsage>): IUsage[] {
         .compact()
         .value()
       if (durations.length > 0) {
-        result.meanDuration = millisecondsToDuration(
+        result.meanDuration = TimeConversion.millisecondsToDuration(
           _.meanBy(durations, (d: messages.IDuration) =>
-            durationToMilliseconds(d)
+            TimeConversion.durationToMilliseconds(d)
           )
         )
       }

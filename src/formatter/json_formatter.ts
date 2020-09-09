@@ -2,7 +2,6 @@ import _, { Dictionary } from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import { durationToNanoseconds } from '../time'
 import path from 'path'
 import { messages } from '@cucumber/messages'
 import {
@@ -287,7 +286,7 @@ export default class JsonFormatter extends Formatter {
     const { message, status } = testStepResult
     data.result = { status: Status[status].toLowerCase() }
     if (doesHaveValue(testStepResult.duration)) {
-      data.result.duration = durationToNanoseconds(testStepResult.duration)
+      data.result.duration = testStepResult.duration
     }
     if (status === Status.FAILED && doesHaveValue(message)) {
       data.result.error_message = message

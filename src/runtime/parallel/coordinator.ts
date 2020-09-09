@@ -15,10 +15,13 @@ import {
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 import {
-  ITestRunStopwatch,
-  PredictableTestRunStopwatch,
-  RealTestRunStopwatch,
-} from '../stopwatch'
+  epochTimestamp,
+  makeStartHundredMillisStopwatch,
+  realTimestamp,
+  startRealStopwatch,
+  StartStopwatch,
+  Timestamp,
+} from '../../time'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -42,7 +45,6 @@ export default class Coordinator {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: ITestRunStopwatch
   private onFinish: (success: boolean) => void
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
@@ -53,6 +55,8 @@ export default class Coordinator {
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
   private success: boolean
+  private readonly startStopwatch: StartStopwatch
+  private readonly timestamp: Timestamp
 
   constructor({
     cwd,
@@ -67,9 +71,10 @@ export default class Coordinator {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    this.startStopwatch = options.predictableIds
+      ? makeStartHundredMillisStopwatch()
+      : startRealStopwatch
+    this.timestamp = options.predictableIds ? epochTimestamp : realTimestamp
     this.options = options
     this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
@@ -180,7 +185,7 @@ export default class Coordinator {
         'envelope',
         messages.Envelope.fromObject({
           testRunFinished: {
-            timestamp: this.stopwatch.timestamp(),
+            timestamp: this.timestamp(),
           },
         })
       )
@@ -205,14 +210,10 @@ export default class Coordinator {
       'envelope',
       new messages.Envelope({
         testRunStarted: {
-          timestamp: {
-            nanos: 0,
-            seconds: 0,
-          },
+          timestamp: this.timestamp(),
         },
       })
     )
-    this.stopwatch.start()
     _.times(numberOfWorkers, (id) =>
       this.startWorker(id.toString(), numberOfWorkers)
     )
@@ -237,7 +238,8 @@ export default class Coordinator {
       run: {
         retries,
         skip,
-        elapsed: this.stopwatch.duration().nanos(),
+        startStopwatch: this.startStopwatch,
+        timestamp: this.timestamp,
         pickle,
         gherkinDocument,
       },

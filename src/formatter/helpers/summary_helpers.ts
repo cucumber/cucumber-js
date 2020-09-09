@@ -1,14 +1,9 @@
 import _ from 'lodash'
 import Duration from 'duration'
 import Status from '../../status'
-import {
-  addDurations,
-  durationToMilliseconds,
-  getZeroDuration,
-} from '../../time'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,
@@ -32,10 +27,13 @@ export function formatSummary({
 }: IFormatSummaryRequest): string {
   const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
   const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
-  let totalStepDuration = getZeroDuration()
+  let totalStepDuration = TimeConversion.millisecondsToDuration(0)
   testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
     Object.values(stepResults).forEach((stepResult) => {
-      totalStepDuration = addDurations(totalStepDuration, stepResult.duration)
+      totalStepDuration = TimeConversion.addDurations(
+        totalStepDuration,
+        stepResult.duration
+      )
     })
     if (!worstTestStepResult.willBeRetried) {
       testCaseResults.push(worstTestStepResult)
@@ -96,7 +94,7 @@ function getDurationSummary(
   durationMsg: messages.IDuration | messages.ITimestamp
 ): string {
   const start = new Date(0)
-  const end = new Date(durationToMilliseconds(durationMsg))
+  const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
   // Use spaces in toString method for readability and to avoid %Ls which is a format
   return duration.toString('%Ms m %S . %L s').replace(/ /g, '')

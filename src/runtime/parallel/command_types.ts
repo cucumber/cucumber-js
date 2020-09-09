@@ -1,5 +1,6 @@
 import { messages } from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
+import { StartStopwatch, Timestamp } from '../../time'
 
 // Messages from Coordinator to Worker
 
@@ -19,7 +20,8 @@ export interface IWorkerCommandInitialize {
 export interface IWorkerCommandRun {
   retries: number
   skip: boolean
-  elapsed: number
+  startStopwatch: StartStopwatch
+  timestamp: Timestamp
   pickle: messages.IPickle
   gherkinDocument: messages.IGherkinDocument
 }

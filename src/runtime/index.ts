@@ -13,10 +13,13 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import {
-  ITestRunStopwatch,
-  PredictableTestRunStopwatch,
-  RealTestRunStopwatch,
-} from './stopwatch'
+  epochTimestamp,
+  makeStartHundredMillisStopwatch,
+  realTimestamp,
+  startRealStopwatch,
+  StartStopwatch,
+  Timestamp,
+} from '../time'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -41,7 +44,8 @@ export interface IRuntimeOptions {
 export default class Runtime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly startStopwatch: StartStopwatch
+  private readonly timestamp: Timestamp
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
@@ -59,9 +63,10 @@ export default class Runtime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    this.startStopwatch = options.predictableIds
+      ? makeStartHundredMillisStopwatch()
+      : startRealStopwatch
+    this.timestamp = options.predictableIds ? epochTimestamp : realTimestamp
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
@@ -106,7 +111,8 @@ export default class Runtime {
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
-      stopwatch: this.stopwatch,
+      startStopwatch: this.startStopwatch,
+      timestamp: this.timestamp,
       gherkinDocument: this.eventDataCollector.getGherkinDocument(pickle.uri),
       newId: this.newId,
       pickle,
@@ -136,7 +142,6 @@ export default class Runtime {
         },
       })
     )
-    this.stopwatch.start()
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
@@ -146,12 +151,11 @@ export default class Runtime {
       clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
       'an AfterAll'
     )
-    this.stopwatch.stop()
     this.eventBroadcaster.emit(
       'envelope',
       messages.Envelope.fromObject({
         testRunFinished: {
-          timestamp: this.stopwatch.timestamp(),
+          timestamp: this.timestamp(),
         },
       })
     )

@@ -2,8 +2,8 @@ import _, { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import { IdGenerator, messages } from '@cucumber/messages'
-import { addDurations, getZeroDuration } from '../time'
+import { IdGenerator, messages, TimeConversion } from '@cucumber/messages'
+import { StartStopwatch, Timestamp } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -13,7 +13,6 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
 
 const { Status } = messages.TestStepFinished.TestStepResult
@@ -29,7 +28,8 @@ interface ITestStep {
 
 export interface INewPickleRunnerOptions {
   eventBroadcaster: EventEmitter
-  stopwatch: ITestRunStopwatch
+  startStopwatch: StartStopwatch
+  timestamp: Timestamp
   gherkinDocument: messages.IGherkinDocument
   newId: IdGenerator.NewId
   pickle: messages.IPickle
@@ -44,7 +44,8 @@ export default class PickleRunner {
   private currentTestCaseStartedId: string
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly startStopwatch: StartStopwatch
+  private readonly timestamp: Timestamp
   private readonly gherkinDocument: messages.IGherkinDocument
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.IPickle
@@ -59,7 +60,8 @@ export default class PickleRunner {
 
   constructor({
     eventBroadcaster,
-    stopwatch,
+    startStopwatch,
+    timestamp,
     gherkinDocument,
     newId,
     pickle,
@@ -88,7 +90,8 @@ export default class PickleRunner {
       )
     })
     this.eventBroadcaster = eventBroadcaster
-    this.stopwatch = stopwatch
+    this.startStopwatch = startStopwatch
+    this.timestamp = timestamp
     this.gherkinDocument = gherkinDocument
     this.maxAttempts = 1 + (skip ? 0 : retries)
     this.newId = newId
@@ -108,7 +111,7 @@ export default class PickleRunner {
       parameters: this.worldParameters,
     })
     this.result = messages.TestStepFinished.TestStepResult.fromObject({
-      duration: getZeroDuration(),
+      duration: TimeConversion.millisecondsToDuration(0),
       status: this.skip ? Status.SKIPPED : Status.PASSED,
     })
   }
@@ -217,6 +220,7 @@ export default class PickleRunner {
   ): Promise<messages.TestStepFinished.ITestStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
+      startStopwatch: this.startStopwatch,
       hookParameter,
       step,
       stepDefinition,
@@ -259,14 +263,14 @@ export default class PickleRunner {
         testStepStarted: {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
-          timestamp: this.stopwatch.timestamp(),
+          timestamp: this.timestamp(),
         },
       })
     )
     this.currentTestStepId = testStepId
     const testStepResult = await runStepFn()
     this.currentTestStepId = null
-    this.result.duration = addDurations(
+    this.result.duration = TimeConversion.addDurations(
       this.result.duration,
       testStepResult.duration
     )
@@ -294,7 +298,7 @@ export default class PickleRunner {
           testCaseStartedId: this.currentTestCaseStartedId,
           testStepId,
           testStepResult,
-          timestamp: this.stopwatch.timestamp(),
+          timestamp: this.timestamp(),
         },
       })
     )
@@ -311,7 +315,7 @@ export default class PickleRunner {
             attempt,
             testCaseId: this.testCaseId,
             id: this.currentTestCaseStartedId,
-            timestamp: this.stopwatch.timestamp(),
+            timestamp: this.timestamp(),
           },
         })
       )
@@ -341,7 +345,7 @@ export default class PickleRunner {
         messages.Envelope.fromObject({
           testCaseFinished: {
             testCaseStartedId: this.currentTestCaseStartedId,
-            timestamp: this.stopwatch.timestamp(),
+            timestamp: this.timestamp(),
           },
         })
       )
@@ -372,27 +376,18 @@ export default class PickleRunner {
     if (testStep.stepDefinitions.length === 0) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: Status.UNDEFINED,
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+        duration: TimeConversion.millisecondsToDuration(0),
       })
     } else if (testStep.stepDefinitions.length > 1) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         message: getAmbiguousStepException(testStep.stepDefinitions),
         status: Status.AMBIGUOUS,
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+        duration: TimeConversion.millisecondsToDuration(0),
       })
     } else if (this.isSkippingSteps()) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: Status.SKIPPED,
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
+        duration: TimeConversion.millisecondsToDuration(0),
       })
     }
     return await this.invokeStep(

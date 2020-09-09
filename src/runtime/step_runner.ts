@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Status from '../status'
-import Time, { millisecondsToDuration } from '../time'
+import { StartStopwatch } from '../time'
 import UserCodeRunner from '../user_code_runner'
 import { messages } from '@cucumber/messages'
 import { format } from 'assertion-error-formatter'
@@ -12,10 +12,11 @@ import {
   valueOrDefault,
 } from '../value_checker'
 
-const { beginTiming, endTiming } = Time
+// const { beginTiming, endTiming } = Time
 
 export interface IRunOptions {
   defaultTimeout: number
+  startStopwatch: StartStopwatch
   hookParameter: ITestCaseHookParameter
   step: messages.Pickle.IPickleStep
   stepDefinition: IDefinition
@@ -24,12 +25,13 @@ export interface IRunOptions {
 
 export async function run({
   defaultTimeout,
+  startStopwatch,
   hookParameter,
   step,
   stepDefinition,
   world,
 }: IRunOptions): Promise<messages.TestStepFinished.ITestStepResult> {
-  beginTiming()
+  const stopStopwatch = startStopwatch()
   let error: any,
     result: messages.TestStepFinished.ITestStepResult,
     invocationData: IGetInvocationDataResponse
@@ -67,7 +69,7 @@ export async function run({
   }
 
   const testStepResult = messages.TestStepFinished.TestStepResult.fromObject({
-    duration: millisecondsToDuration(endTiming()),
+    duration: stopStopwatch(),
   })
 
   if (result === 'skipped') {

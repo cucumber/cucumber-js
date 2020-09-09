@@ -10,7 +10,7 @@ import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -36,10 +36,7 @@ async function testFormatSummary({
   }
   if (doesNotHaveValue(testRunFinished)) {
     testRunFinished = messages.TestRunFinished.fromObject({
-      timestamp: {
-        nanos: 0,
-        seconds: 0,
-      },
+      timestamp: TimeConversion.millisecondsSinceEpochToTimestamp(0),
     })
   }
   const testCaseAttempts = await getTestCaseAttempts({
@@ -72,7 +69,10 @@ describe('SummaryHelpers', () => {
         const sourceData = ''
 
         // Act
-        const output = await testFormatSummary({ sourceData })
+        const output = await testFormatSummary({
+          sourceData,
+          runtimeOptions: { predictableIds: true },
+        })
 
         // Assert
         expect(output).to.contain(
@@ -93,13 +93,16 @@ describe('SummaryHelpers', () => {
         ].join('\n')
 
         // Act
-        const output = await testFormatSummary({ sourceData })
+        const output = await testFormatSummary({
+          sourceData,
+          runtimeOptions: { predictableIds: true },
+        })
 
         // Assert
         expect(output).to.contain(
           '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+            '0m01.000s (executing steps: 0m00.100s)\n'
         )
       })
     })
@@ -123,6 +126,7 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          runtimeOptions: { predictableIds: true },
         })
 
         // Assert
@@ -155,7 +159,7 @@ describe('SummaryHelpers', () => {
 
         // Act
         const output = await testFormatSummary({
-          runtimeOptions: { retry: 1 },
+          runtimeOptions: { retry: 1, predictableIds: true },
           sourceData,
           supportCodeLibrary,
         })
@@ -180,7 +184,10 @@ describe('SummaryHelpers', () => {
         ].join('\n')
 
         // Act
-        const output = await testFormatSummary({ sourceData })
+        const output = await testFormatSummary({
+          sourceData,
+          runtimeOptions: { predictableIds: true },
+        })
 
         // Assert
         expect(output).to.contain(
@@ -211,7 +218,10 @@ describe('SummaryHelpers', () => {
         ].join('\n')
 
         // Act
-        const output = await testFormatSummary({ sourceData })
+        const output = await testFormatSummary({
+          sourceData,
+          runtimeOptions: { predictableIds: true },
+        })
 
         // Assert
         expect(output).to.contain(
@@ -242,6 +252,7 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          runtimeOptions: { predictableIds: true },
           testRunFinished: messages.TestRunFinished.fromObject({
             timestamp: {
               nanos: 124000000,
@@ -279,6 +290,7 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          runtimeOptions: { predictableIds: true },
           testRunFinished: messages.TestRunFinished.fromObject({
             timestamp: {
               nanos: 400000000,
@@ -316,6 +328,7 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          runtimeOptions: { predictableIds: true },
           testRunFinished: messages.TestRunFinished.fromObject({
             timestamp: {
               nanos: 0,

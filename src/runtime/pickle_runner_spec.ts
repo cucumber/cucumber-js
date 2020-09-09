@@ -7,12 +7,21 @@ import { IdGenerator, messages } from '@cucumber/messages'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods, { millisecondsToDuration } from '../time'
+import timeMethods, { epochTimestamp, makeStartHundredMillisStopwatch } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { PredictableTestRunStopwatch } from './stopwatch'
+import {
+  millisecondsSinceEpochToTimestamp,
+  millisecondsToDuration,
+} from '@cucumber/messages/dist/src/TimeConversion'
 import IEnvelope = messages.IEnvelope
+
+const epoch = millisecondsSinceEpochToTimestamp(0)
+
+const startStopwatch = makeStartHundredMillisStopwatch()
+const stopwatchDuration = startStopwatch()()
+const zeroDuration = millisecondsToDuration(0)
 
 interface ITestPickleRunnerRequest {
   gherkinDocument: messages.IGherkinDocument
@@ -35,7 +44,8 @@ async function testPickleRunner(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const pickleRunner = new PickleRunner({
     eventBroadcaster,
-    stopwatch: new PredictableTestRunStopwatch(),
+    startStopwatch: startStopwatch,
+    timestamp: epochTimestamp,
     gherkinDocument: options.gherkinDocument,
     newId: IdGenerator.incrementing(),
     pickle: options.pickle,
@@ -46,17 +56,6 @@ async function testPickleRunner(
   })
   const result = await pickleRunner.run()
   return { envelopes, result }
-}
-
-function predictableTimestamp(counter: number): any {
-  return {
-    nanos: 1000000 * counter,
-    seconds: {
-      high: 0,
-      low: 0,
-      unsigned: false,
-    },
-  }
 }
 
 describe('PickleRunner', () => {
@@ -88,7 +87,7 @@ describe('PickleRunner', () => {
         })
         const passedTestResult = messages.TestStepFinished.TestStepResult.fromObject(
           {
-            duration: millisecondsToDuration(1),
+            duration: stopwatchDuration,
             status: Status.PASSED,
           }
         )
@@ -125,14 +124,14 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
-              timestamp: predictableTimestamp(1),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
@@ -140,13 +139,13 @@ describe('PickleRunner', () => {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
-              timestamp: predictableTimestamp(3),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(4),
+              timestamp: epoch,
             },
           }),
         ])
@@ -242,7 +241,7 @@ describe('PickleRunner', () => {
         })
         const failingTestResult = messages.TestStepFinished.TestStepResult.fromObject(
           {
-            duration: millisecondsToDuration(0),
+            duration: stopwatchDuration,
             status: Status.FAILED,
             message: 'fail',
           }
@@ -296,10 +295,7 @@ describe('PickleRunner', () => {
           messages.TestStepFinished.TestStepResult.fromObject({
             message,
             status: Status.AMBIGUOUS,
-            duration: {
-              seconds: '0',
-              nanos: 0,
-            },
+            duration: zeroDuration,
           })
         )
         expect(result.status).to.eql(
@@ -335,10 +331,7 @@ describe('PickleRunner', () => {
         expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.UNDEFINED,
-            duration: {
-              seconds: '0',
-              nanos: 0,
-            },
+            duration: zeroDuration,
           })
         )
         expect(result.status).to.eql(
@@ -401,33 +394,33 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
-              timestamp: predictableTimestamp(1),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: '2',
               testStepResult: {
-                duration: millisecondsToDuration(0),
+                duration: stopwatchDuration,
                 message: 'error',
                 status: Status.FAILED,
                 willBeRetried: true,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(3),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(4),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
@@ -435,31 +428,31 @@ describe('PickleRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
-              timestamp: predictableTimestamp(5),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
-              timestamp: predictableTimestamp(6),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: '3',
               testStepResult: {
-                duration: millisecondsToDuration(0),
+                duration: stopwatchDuration,
                 status: Status.PASSED,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(7),
+              timestamp: epoch,
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '3',
-              timestamp: predictableTimestamp(8),
+              timestamp: epoch,
             },
           }),
         ])
@@ -493,13 +486,11 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
+
         expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.SKIPPED,
-            duration: {
-              seconds: '0',
-              nanos: 0,
-            },
+            duration: zeroDuration,
           })
         )
         expect(result.status).to.eql(

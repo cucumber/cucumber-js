@@ -2,9 +2,8 @@ import _ from 'lodash'
 import { formatLocation, getUsage } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import Table from 'cli-table3'
-import { durationToMilliseconds } from '../time'
 import { doesHaveValue } from '../value_checker'
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 import IEnvelope = messages.IEnvelope
 
 export default class UsageFormatter extends Formatter {
@@ -44,7 +43,11 @@ export default class UsageFormatter extends Formatter {
         const col2 = []
         if (matches.length > 0) {
           if (doesHaveValue(meanDuration)) {
-            col2.push(`${durationToMilliseconds(meanDuration).toFixed(2)}ms`)
+            col2.push(
+              `${TimeConversion.durationToMilliseconds(meanDuration).toFixed(
+                2
+              )}ms`
+            )
           } else {
             col2.push('-')
           }
@@ -55,7 +58,11 @@ export default class UsageFormatter extends Formatter {
         _.take(matches, 5).forEach((match) => {
           col1.push(`  ${match.text}`)
           if (doesHaveValue(match.duration)) {
-            col2.push(`${durationToMilliseconds(match.duration).toString()}ms`)
+            col2.push(
+              `${TimeConversion.durationToMilliseconds(
+                match.duration
+              ).toString()}ms`
+            )
           } else {
             col2.push('-')
           }
