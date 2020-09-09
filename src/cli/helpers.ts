@@ -13,6 +13,7 @@ import { IdGenerator, messages } from '@cucumber/messages'
 import createMeta from '@cucumber/create-meta'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
 
@@ -216,6 +217,33 @@ function emitTestCaseHooks(
     })
 }
 
+function emitTestStepHooks(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  ;[]
+    .concat(
+      supportCodeLibrary.beforeTestStepHookDefinitions,
+      supportCodeLibrary.afterTestStepHookDefinitions
+    )
+    .forEach((testStepHookDefinition: TestStepHookDefinition) => {
+      eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          hook: {
+            id: testStepHookDefinition.id,
+            sourceReference: {
+              uri: testStepHookDefinition.uri,
+              location: {
+                line: testStepHookDefinition.line,
+              },
+            },
+          },
+        })
+      )
+    })
+}
+
 function emitTestRunHooks(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
@@ -256,5 +284,6 @@ export function emitSupportCodeMessages({
   emitUndefinedParameterTypes(supportCodeLibrary, eventBroadcaster)
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
   emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
+  emitTestStepHooks(supportCodeLibrary, eventBroadcaster)
   emitTestRunHooks(supportCodeLibrary, eventBroadcaster)
 }
