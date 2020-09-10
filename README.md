@@ -39,6 +39,16 @@ Everyone interacting in this codebase and issue tracker is expected to follow th
 
 Cucumber.js is available as an npm module.
 
+#### 6.x.x and below
+
+``` shell
+$ npm install cucumber
+```
+
+#### 7.x.x and above
+
+(Not yet released)
+
 ``` shell
 $ npm install @cucumber/cucumber
 ```
