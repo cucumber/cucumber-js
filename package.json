@@ -255,7 +255,7 @@
     "build-release": "browserify scripts/cucumber.ts -o dist/cucumber.js -p [ tsify -p tsconfig.browser.json ] --standalone Cucumber --debug",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
     "feature-test": "node ./bin/cucumber-js",
-    "formatters-test": "node ./bin/cucumber-js --profile formatters | npx @cucumber/html-formatter@9.0.0 --format ndjson > html-formatter.html",
+    "formatters-test": "node ./bin/cucumber-js --profile formatters | cucumber-html-formatter --format ndjson > html-formatter.html",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-dependencies": "dependency-lint",
