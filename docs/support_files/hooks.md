@@ -103,7 +103,7 @@ AfterAll(function () {
 });
 ```
 
-# BeforeStep / AfterStep
+## BeforeStep / AfterStep
 
 If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
 
