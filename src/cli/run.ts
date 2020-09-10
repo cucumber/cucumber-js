@@ -1,9 +1,14 @@
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
+import publishBanner from './publish_banner'
 
 function exitWithError(error: Error): void {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
   process.exit(1)
+}
+
+function displayPublishAdvertisementBanner(): void {
+  console.error(publishBanner)
 }
 
 export default async function run(): Promise<void> {
@@ -19,6 +24,11 @@ export default async function run(): Promise<void> {
     result = await cli.run()
   } catch (error) {
     exitWithError(error)
+  }
+
+  const config = await cli.getConfiguration()
+  if (!config.publishing && !config.suppressPublishAdvertisement) {
+    displayPublishAdvertisementBanner()
   }
 
   const exitCode = result.success ? 0 : 1

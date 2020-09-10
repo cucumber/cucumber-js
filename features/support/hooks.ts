@@ -106,3 +106,9 @@ After(function (this: World) {
     )
   }
 })
+
+After(async function (this: World) {
+  if (this.reportServer?.started) {
+    await this.reportServer.stop()
+  }
+})
