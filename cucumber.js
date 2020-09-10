@@ -7,6 +7,7 @@ const feature = [
   '--format rerun:@rerun.txt',
   '--format usage:usage.txt',
   '--format message:messages.ndjson',
+  '--publish-quiet',
 ].join(' ')
 
 const cck = [
@@ -24,6 +25,7 @@ const FORMATTERS_INCLUDE = [
   'parameter-types',
   'rules',
   'stack-traces',
+  '--publish-quiet',
 ]
 
 const formatters = [
@@ -36,6 +38,7 @@ const formatters = [
   `compatibility/features/{${FORMATTERS_INCLUDE.join(',')}}/*.ts`,
   '--format',
   'message',
+  '--publish-quiet',
 ].join(' ')
 
 module.exports = {

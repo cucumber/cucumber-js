@@ -23,6 +23,27 @@ When(
 )
 
 When(
+  /^I run cucumber-js with arguments `(|.+)` and env `(|.+)`$/,
+  { timeout: 10000 },
+  async function (this: World, args: string, envs: string) {
+    const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
+    const stringArgs = stringArgv(renderedArgs)
+    const initialValue: NodeJS.ProcessEnv = {}
+    const env: NodeJS.ProcessEnv = (envs === null ? '' : envs)
+      .split(/\s+/)
+      .map((keyValue) => keyValue.split('='))
+      .reduce((dict, pair) => {
+        dict[pair[0]] = pair[1]
+        return dict
+      }, initialValue)
+    return await this.run(this.localExecutablePath, stringArgs, {
+      ...process.env,
+      ...env,
+    })
+  }
+)
+
+When(
   /^I run cucumber-js with all formatters(?: and `(|.+)`)?$/,
   { timeout: 10000 },
   async function (this: World, args: string) {
@@ -98,6 +119,15 @@ Then(/^the error output contains the text:$/, function (
   const actualOutput = normalizeText(this.lastRun.errorOutput)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.include(expectedOutput)
+})
+
+Then('the error output does not contain the text:', function (
+  this: World,
+  text: string
+) {
+  const actualOutput = normalizeText(this.lastRun.errorOutput)
+  const expectedOutput = normalizeText(text)
+  expect(actualOutput).not.to.include(expectedOutput)
 })
 
 Then(/^I see the version of Cucumber$/, function (this: World) {

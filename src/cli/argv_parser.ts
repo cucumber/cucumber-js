@@ -34,6 +34,8 @@ export interface IParsedArgvOptions {
   parallel: number
   predictableIds: boolean
   profile: string[]
+  publish: boolean
+  publishQuiet: boolean
   require: string[]
   requireModule: string[]
   retry: number
@@ -166,6 +168,16 @@ const ArgvParser = {
       .option(
         '--predictable-ids',
         'Use predictable ids in messages (option ignored if using parallel)',
+        false
+      )
+      .option(
+        '--publish',
+        'Publish a report to https://reports.cucumber.io',
+        false
+      )
+      .option(
+        '--publish-quiet',
+        "Don't print information banner about publishing reports",
         false
       )
       .option(

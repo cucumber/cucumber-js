@@ -4,6 +4,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 #### New Features
 
+* Add `--publish` option to publish reports to [reports.cucumber.io](https://reports.cucumber.io) [#1424](https://github.com/cucumber/cucumber-js/pull/1424)
 * Add support for Gherkin's [Rule/Example syntax](https://cucumber.io/docs/gherkin/reference/#rule)
 * Add `transpose` method to [data table interface](docs/support_files/data_table_interface.md)
 * Add `log` function to world, providing a shorthand to log plain text as [attachment(s)](docs/support_files/attachments.md)
