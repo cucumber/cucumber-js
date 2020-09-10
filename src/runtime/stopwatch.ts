@@ -67,8 +67,9 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
+    const fakeTimestamp = convertToTimestamp(this.duration())
     this.count++
-    return convertToTimestamp(this.duration())
+    return fakeTimestamp
   }
 }
 

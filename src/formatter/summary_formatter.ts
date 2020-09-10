@@ -5,6 +5,7 @@ import { doesHaveValue } from '../value_checker'
 import { messages } from '@cucumber/messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { formatUndefinedParameterTypes } from './helpers/issue_helpers'
+import { durationBetweenTimestamps } from '../time'
 
 interface ILogIssuesRequest {
   issues: ITestCaseAttempt[]
@@ -14,14 +15,24 @@ interface ILogIssuesRequest {
 export default class SummaryFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
+    let testRunStartedTimestamp: messages.ITimestamp
     options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
+      if (doesHaveValue(envelope.testRunStarted)) {
+        testRunStartedTimestamp = envelope.testRunStarted.timestamp
+      }
       if (doesHaveValue(envelope.testRunFinished)) {
-        this.logSummary(envelope.testRunFinished)
+        const testRunFinishedTimestamp = envelope.testRunFinished.timestamp
+        this.logSummary(
+          durationBetweenTimestamps(
+            testRunStartedTimestamp,
+            testRunFinishedTimestamp
+          )
+        )
       }
     })
   }
 
-  logSummary(testRunFinished: messages.ITestRunFinished): void {
+  logSummary(testRunDuration: messages.IDuration): void {
     const failures: ITestCaseAttempt[] = []
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
@@ -49,7 +60,7 @@ export default class SummaryFormatter extends Formatter {
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts,
-        testRunFinished,
+        testRunDuration,
       })
     )
   }
