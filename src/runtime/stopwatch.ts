@@ -67,17 +67,18 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
-    const fakeTimestamp = convertToTimestamp(this.duration())
+    const fakeTimestamp = this.convertToTimestamp(this.duration())
     this.count++
     return fakeTimestamp
   }
-}
 
-function convertToTimestamp(duration: Duration): messages.ITimestamp {
-  const seconds = Math.floor(duration.seconds())
-  const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
-  return {
-    seconds,
-    nanos,
+  // TODO: Remove. It's impossible to convert timestamps to durations and vice-versa
+  private convertToTimestamp(duration: Duration): messages.ITimestamp {
+    const seconds = Math.floor(duration.seconds())
+    const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
+    return {
+      seconds,
+      nanos,
+    }
   }
 }
