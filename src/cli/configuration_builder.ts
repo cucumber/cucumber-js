@@ -11,6 +11,7 @@ import glob from 'glob'
 import { promisify } from 'util'
 import { IPickleFilterOptions } from '../pickle_filter'
 import { IRuntimeOptions } from '../runtime'
+import { valueOrDefault } from '../value_checker'
 
 export interface IConfigurationFormat {
   outputTo: string
@@ -185,9 +186,11 @@ export default class ConfigurationBuilder {
       mapping[outputTo] = type
     })
     if (this.isPublishing()) {
-      const publishUrl =
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        process.env.CUCUMBER_PUBLISH_URL || DEFAULT_CUCUMBER_PUBLISH_URL
+      const publishUrl = valueOrDefault(
+        process.env.CUCUMBER_PUBLISH_URL,
+        DEFAULT_CUCUMBER_PUBLISH_URL
+      )
+
       mapping[publishUrl] = 'message'
     }
     return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
