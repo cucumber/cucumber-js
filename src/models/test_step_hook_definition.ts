@@ -10,10 +10,12 @@ import { messages } from '@cucumber/messages'
 
 export default class TestStepHookDefinition extends Definition
   implements IDefinition {
+  public readonly tagExpression: string
   private readonly pickleTagFilter: PickleTagFilter
 
   constructor(data: IDefinitionParameters<IHookDefinitionOptions>) {
     super(data)
+    this.tagExpression = data.options.tags
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }
 
