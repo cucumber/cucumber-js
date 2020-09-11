@@ -266,7 +266,7 @@
     "prefeature-test": "yarn run build-local",
     "prepublishOnly": "rm -r lib && yarn run build-local",
     "test-browser-example": "yarn build-release && yarn build-browser-example && git checkout -- dist/cucumber.js",
-    "test-coverage": "yarn run lint && ./scripts/test-coverage.sh && yarn run formatters-test",
+    "test-coverage": "yarn run lint && ./scripts/test-coverage.sh",
     "test": "yarn run lint && yarn run unit-test && yarn run cck-test && yarn run feature-test",
     "unit-test": "mocha 'src/**/*_spec.ts'"
   },
