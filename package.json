@@ -182,6 +182,7 @@
     "progress": "^2.0.3",
     "read-pkg-up": "^7.0.1",
     "resolve": "^1.17.0",
+    "resolve-pkg": "^2.0.0",
     "stack-chain": "^2.0.0",
     "stacktrace-js": "^2.0.2",
     "string-argv": "^0.3.1",
