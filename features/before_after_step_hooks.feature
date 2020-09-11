@@ -23,12 +23,16 @@ Feature: Before and After Step Hooks
       let counter = 1
 
       BeforeStep(function() { 
-        expect(counter).to.eql(1)
-        counter += counter
+        counter = counter + 1
       })
 
-      AfterStep(function() { 
+      AfterStep(function() {
         expect(counter).to.eql(2)
+        counter = counter + 1
+      })
+
+      AfterAll(function() {
+        expect(counter).to.eql(3)
       })
       """
     When I run cucumber-js
@@ -73,3 +77,23 @@ Feature: Before and After Step Hooks
       """
     When I run cucumber-js
     Then it fails
+
+  @AK
+  Scenario: after hook parameter can access result status of step
+    Given a file named "features/support/hooks.js" with:
+      """
+      const { BeforeStep, AfterStep, Status } = require('cucumber')
+
+      AfterStep(function({result}) {
+        if (result.status === Status.FAILED) {
+          console.log('AfterStep Hook ran even through step failed')
+        } else {
+           console.log('AfterStep Hook ran after step passed')
+        }
+      })
+      """
+    When I run cucumber-js
+    Then the output contains the text:
+      """
+      AfterStep Hook ran after step passed
+      """
