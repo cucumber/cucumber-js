@@ -265,6 +265,7 @@
     "prelint-code": "yarn build-local",
     "precck-test": "yarn run build-local",
     "prefeature-test": "yarn run build-local",
+    "preformatters-test": "yarn run build-local",
     "prepublishOnly": "rm -r lib && yarn run build-local",
     "test-browser-example": "yarn build-release && yarn build-browser-example && git checkout -- dist/cucumber.js",
     "test-coverage": "yarn run lint && ./scripts/test-coverage.sh && yarn run formatters-test",
