@@ -255,8 +255,7 @@
     "build-local": "tsc -p tsconfig.node.json",
     "build-release": "browserify scripts/cucumber.ts -o dist/cucumber.js -p [ tsify -p tsconfig.browser.json ] --standalone Cucumber --debug",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
-    "feature-test": "node ./bin/cucumber-js",
-    "formatters-test": "node ./bin/cucumber-js --profile formatters",
+    "html-formatter": "node ./bin/cucumber-js --profile htmlFormatter",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-dependencies": "dependency-lint",
@@ -265,11 +264,10 @@
     "prelint-code": "yarn build-local",
     "precck-test": "yarn run build-local",
     "prefeature-test": "yarn run build-local",
-    "preformatters-test": "yarn run build-local",
     "prepublishOnly": "rm -r lib && yarn run build-local",
     "test-browser-example": "yarn build-release && yarn build-browser-example && git checkout -- dist/cucumber.js",
     "test-coverage": "yarn run lint && ./scripts/test-coverage.sh && yarn run formatters-test",
-    "test": "yarn run lint && yarn run unit-test && yarn run cck-test && yarn run feature-test && yarn run formatters-test",
+    "test": "yarn run lint && yarn run unit-test && yarn run cck-test && yarn run feature-test",
     "unit-test": "mocha 'src/**/*_spec.ts'"
   },
   "bin": {
