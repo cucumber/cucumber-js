@@ -8,8 +8,6 @@ import { World } from './world'
 import { ITestCaseHookParameter } from '../../src/support_code_library_builder/types'
 
 const projectPath = path.join(__dirname, '..', '..')
-const projectNodeModulesPath = path.join(projectPath, 'node_modules')
-const moduleNames = fs.readdirSync(projectNodeModulesPath)
 
 Before('@debug', function (this: World) {
   this.debug = true
@@ -36,7 +34,11 @@ Before(function (
   fsExtra.removeSync(this.tmpDir)
 
   const tmpDirNodeModulesPath = path.join(this.tmpDir, 'node_modules')
-  const tmpDirCucumberPath = path.join(tmpDirNodeModulesPath, 'cucumber')
+  const tmpDirCucumberPath = path.join(
+    tmpDirNodeModulesPath,
+    '@cucumber',
+    'cucumber'
+  )
   fsExtra.ensureSymlinkSync(projectPath, tmpDirCucumberPath)
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
 })
@@ -44,25 +46,37 @@ Before(function (
 Before('@global-install', function (this: World) {
   const tmpObject = tmp.dirSync({ unsafeCleanup: true })
 
+  // Symlink everything in node_modules so the fake global install has all the dependencies it needs
+  const projectNodeModulesPath = path.join(projectPath, 'node_modules')
+  const projectNodeModulesDirs = fs.readdirSync(projectNodeModulesPath)
   const globalInstallNodeModulesPath = path.join(tmpObject.name, 'node_modules')
-  moduleNames.forEach((moduleName) => {
-    const globalInstallNodeModulePath = path.join(
-      globalInstallNodeModulesPath,
-      moduleName
-    )
-    const projectNodeModulePath = path.join(
-      projectPath,
-      'node_modules',
-      moduleName
-    )
-    fsExtra.ensureSymlinkSync(
-      projectNodeModulePath,
-      globalInstallNodeModulePath
-    )
+  projectNodeModulesDirs.forEach((nodeModuleDir) => {
+    let pathsToLink = [nodeModuleDir]
+    if (nodeModuleDir[0] === '@') {
+      const scopeNodeModuleDirs = fs.readdirSync(
+        path.join(projectNodeModulesPath, nodeModuleDir)
+      )
+      pathsToLink = scopeNodeModuleDirs.map((x) => path.join(nodeModuleDir, x))
+    }
+    pathsToLink.forEach((pathToLink) => {
+      const globalInstallNodeModulePath = path.join(
+        globalInstallNodeModulesPath,
+        pathToLink
+      )
+      const projectNodeModulePath = path.join(
+        projectNodeModulesPath,
+        pathToLink
+      )
+      fsExtra.ensureSymlinkSync(
+        projectNodeModulePath,
+        globalInstallNodeModulePath
+      )
+    })
   })
 
   const globalInstallCucumberPath = path.join(
     globalInstallNodeModulesPath,
+    '@cucumber',
     'cucumber'
   )
   const itemsToCopy = ['bin', 'lib', 'package.json']
@@ -90,5 +104,11 @@ After(function (this: World) {
       `Last run errored unexpectedly. Output:\n\n${this.lastRun.output}\n\n` +
         `Error Output:\n\n${this.lastRun.errorOutput}`
     )
+  }
+})
+
+After(async function (this: World) {
+  if (this.reportServer?.started) {
+    await this.reportServer.stop()
   }
 })

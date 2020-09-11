@@ -13,7 +13,7 @@ Feature: Automatically required support files for nested features
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       """

@@ -1,14 +1,10 @@
 import _ from 'lodash'
 import Duration from 'duration'
 import Status from '../../status'
-import {
-  addDurations,
-  durationToMilliseconds,
-  getZeroDuration,
-} from '../../time'
+import { addDurations, getZeroDuration } from '../../time'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,
@@ -22,13 +18,13 @@ const STATUS_REPORT_ORDER = [
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
-  testRunFinished: messages.ITestRunFinished
+  testRunDuration: messages.IDuration
 }
 
 export function formatSummary({
   colorFns,
   testCaseAttempts,
-  testRunFinished,
+  testRunDuration,
 }: IFormatSummaryRequest): string {
   const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
   const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
@@ -57,7 +53,7 @@ export function formatSummary({
     type: 'step',
   })
   const durationSummary = `${getDurationSummary(
-    testRunFinished.timestamp
+    testRunDuration
   )} (executing steps: ${getDurationSummary(totalStepDuration)})\n`
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
@@ -92,11 +88,9 @@ function getCountSummary({
   return text
 }
 
-function getDurationSummary(
-  durationMsg: messages.IDuration | messages.ITimestamp
-): string {
+function getDurationSummary(durationMsg: messages.IDuration): string {
   const start = new Date(0)
-  const end = new Date(durationToMilliseconds(durationMsg))
+  const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
   // Use spaces in toString method for readability and to avoid %Ls which is a format
   return duration.toString('%Ms m %S . %L s').replace(/ /g, '')

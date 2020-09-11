@@ -22,7 +22,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -50,7 +50,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -70,7 +70,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -90,7 +90,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -130,7 +130,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -172,7 +172,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -220,7 +220,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -269,7 +269,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -328,7 +328,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a failing step$/, function() { throw 'fail' })
       """
@@ -353,7 +353,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -380,7 +380,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -409,7 +409,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -453,7 +453,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       let willPass = false
 
@@ -502,7 +502,7 @@ Feature: Retry flaky tests
       """
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Before, After, Given, setWorldConstructor} = require('cucumber')
+      const {Before, After, Given, setWorldConstructor} = require('@cucumber/cucumber')
 
       Before(function() {
         this.usedCount++

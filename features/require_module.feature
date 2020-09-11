@@ -14,7 +14,7 @@ Feature: compilers
       """
     Given a file named "features/step_definitions/cucumber_steps.coffee" with:
       """
-      {Given} = require 'cucumber'
+      {Given} = require '@cucumber/cucumber'
 
       Given /^a step$/, ->
       """

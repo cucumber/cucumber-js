@@ -13,13 +13,13 @@ Feature: Step Wrapper with Options
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When(/^I run a step with options$/, {wrapperOptions: {retry: 2}}, function () {})
       """
     And a file named "features/support/setup.js" with:
       """
-      const {setDefinitionFunctionWrapper} = require('cucumber')
+      const {setDefinitionFunctionWrapper} = require('@cucumber/cucumber')
 
       setDefinitionFunctionWrapper(function (fn, options = {}) {
         if (options.retry) {

@@ -205,10 +205,7 @@ export default class Coordinator {
       'envelope',
       new messages.Envelope({
         testRunStarted: {
-          timestamp: {
-            nanos: 0,
-            seconds: 0,
-          },
+          timestamp: this.stopwatch.timestamp(),
         },
       })
     )

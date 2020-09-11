@@ -7,8 +7,13 @@ import { WriteStream as FsWriteStream } from 'fs'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { EventEmitter } from 'events'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
+import HttpStream from './http_stream'
 
-export type IFormatterStream = FsWriteStream | TtyWriteStream | PassThrough
+export type IFormatterStream =
+  | FsWriteStream
+  | TtyWriteStream
+  | PassThrough
+  | HttpStream
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
 
 export interface IFormatterOptions {

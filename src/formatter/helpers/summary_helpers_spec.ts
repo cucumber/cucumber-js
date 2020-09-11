@@ -5,7 +5,7 @@ import { formatSummary } from './summary_helpers'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods from '../../time'
+import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -16,6 +16,7 @@ interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   sourceData: string
   supportCodeLibrary?: ISupportCodeLibrary
+  testRunStarted?: messages.ITestRunStarted
   testRunFinished?: messages.ITestRunFinished
 }
 
@@ -23,6 +24,7 @@ async function testFormatSummary({
   runtimeOptions,
   sourceData,
   supportCodeLibrary,
+  testRunStarted,
   testRunFinished,
 }: ITestFormatSummaryOptions): Promise<string> {
   const sources = [
@@ -33,6 +35,14 @@ async function testFormatSummary({
   ]
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = getBaseSupportCodeLibrary()
+  }
+  if (doesNotHaveValue(testRunStarted)) {
+    testRunStarted = messages.TestRunStarted.fromObject({
+      timestamp: {
+        nanos: 0,
+        seconds: 0,
+      },
+    })
   }
   if (doesNotHaveValue(testRunFinished)) {
     testRunFinished = messages.TestRunFinished.fromObject({
@@ -50,7 +60,10 @@ async function testFormatSummary({
   return formatSummary({
     colorFns: getColorFns(false),
     testCaseAttempts,
-    testRunFinished,
+    testRunDuration: durationBetweenTimestamps(
+      testRunStarted.timestamp,
+      testRunFinished.timestamp
+    ),
   })
 }
 
@@ -242,10 +255,16 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          testRunStarted: messages.TestRunStarted.fromObject({
+            timestamp: {
+              nanos: 0,
+              seconds: 3,
+            },
+          }),
           testRunFinished: messages.TestRunFinished.fromObject({
             timestamp: {
               nanos: 124000000,
-              seconds: 0,
+              seconds: 3,
             },
           }),
         })

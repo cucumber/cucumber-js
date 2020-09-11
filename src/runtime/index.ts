@@ -129,10 +129,7 @@ export default class Runtime {
       'envelope',
       new messages.Envelope({
         testRunStarted: {
-          timestamp: {
-            nanos: 0,
-            seconds: 0,
-          },
+          timestamp: this.stopwatch.timestamp(),
         },
       })
     )

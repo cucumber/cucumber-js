@@ -9,7 +9,7 @@ Feature: Environment Hooks
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -17,7 +17,7 @@ Feature: Environment Hooks
   Scenario: Hooks are steps
     Given a file named "features/support/hooks.js" with:
       """
-      const {After, Before} = require('cucumber')
+      const {After, Before} = require('@cucumber/cucumber')
 
       Before(function() {})
       After(function() {})
@@ -32,7 +32,7 @@ Feature: Environment Hooks
   Scenario: Failing before fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
 
       Before(function() { throw 'Fail' })
       """
@@ -43,7 +43,7 @@ Feature: Environment Hooks
   Scenario: Failing after hook fails the scenario
     Given a file named "features/support/hooks.js" with:
       """
-      const {After} = require('cucumber')
+      const {After} = require('@cucumber/cucumber')
 
       After(function() { throw 'Fail' })
       """
@@ -54,7 +54,7 @@ Feature: Environment Hooks
   Scenario: After hooks still execute after a failure
     Given a file named "features/support/hooks.js" with:
       """
-      const {After, Before} = require('cucumber')
+      const {After, Before} = require('@cucumber/cucumber')
 
       Before(function() { throw 'Fail' })
       After(function() {})
@@ -66,7 +66,7 @@ Feature: Environment Hooks
   Scenario: World is this in hooks
     Given a file named "features/support/world.js" with:
       """
-      const {setWorldConstructor} = require('cucumber')
+      const {setWorldConstructor} = require('@cucumber/cucumber')
 
       function WorldConstructor() {
         return {
@@ -78,7 +78,7 @@ Feature: Environment Hooks
       """
     Given a file named "features/support/hooks.js" with:
       """
-      const {After, Before} = require('cucumber')
+      const {After, Before} = require('@cucumber/cucumber')
 
       Before(function() {
         if (!this.isWorld()) {

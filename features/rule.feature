@@ -21,7 +21,7 @@ Feature: Rule keyword
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, When, Then} = require('cucumber')
+      const {Given, When, Then} = require('@cucumber/cucumber')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
@@ -84,7 +84,7 @@ Feature: Rule keyword
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, When, Then} = require('cucumber')
+      const {Given, When, Then} = require('@cucumber/cucumber')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count

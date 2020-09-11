@@ -12,7 +12,7 @@ Feature: Command line interface
       """
     And a file named "step_definitions/cucumber_steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When(/^a step is passing$/, function() {})
       """
@@ -27,7 +27,7 @@ Feature: Command line interface
       """
     And a file named "step_definitions/cucumber_steps.js" with:
       """
-      const {When} = require('cucumber')
+      const {When} = require('@cucumber/cucumber')
 
       When(/^a step is passing$/, function() {});
       """
