@@ -19,6 +19,7 @@ import EventDataCollector from './helpers/event_data_collector'
 import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
+import HtmlFormatter from './html_formatter'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -63,6 +64,8 @@ const FormatterBuilder = {
         return JsonFormatter
       case 'message':
         return MessageFormatter
+      case 'html':
+        return HtmlFormatter
       case 'progress':
         return ProgressFormatter
       case 'progress-bar':
