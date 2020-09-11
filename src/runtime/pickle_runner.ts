@@ -211,9 +211,9 @@ export default class PickleRunner {
   }
 
   getAfterStepHookDefinitions(): TestStepHookDefinition[] {
-    return this.supportCodeLibrary.afterTestStepHookDefinitions.filter(
-      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
-    )
+    return clone(this.supportCodeLibrary.afterTestStepHookDefinitions)
+      .reverse()
+      .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }
 
   getStepDefinitions(
@@ -457,9 +457,6 @@ export default class PickleRunner {
             cumulatedStepResult.duration,
             afterStepHooksResult.duration
           )
-        }
-        if (this.shouldUpdateStatus(afterStepHooksResult)) {
-          cumulatedStepResult.status = afterStepHooksResult.status
         }
         if (afterStepHooksResult.message !== '') {
           cumulatedStepResult.message = afterStepHooksResult.message
