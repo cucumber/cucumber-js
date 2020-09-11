@@ -3,8 +3,12 @@ import { messages } from '@cucumber/messages'
 import resolvePkg from 'resolve-pkg'
 import CucumberHtmlStream from '@cucumber/html-formatter'
 import { doesHaveValue } from '../value_checker'
+import { finished } from 'stream'
+import { promisify } from 'util'
 
 export default class HtmlFormatter extends Formatter {
+  private readonly _finished: Promise<void>
+
   constructor(options: IFormatterOptions) {
     super(options)
     const cucumberHtmlStream = new CucumberHtmlStream(
@@ -19,6 +23,11 @@ export default class HtmlFormatter extends Formatter {
         cucumberHtmlStream.end()
       }
     })
-    cucumberHtmlStream.pipe(this.stream)
+    cucumberHtmlStream.on('data', (chunk) => this.log(chunk))
+    this._finished = promisify(finished)(cucumberHtmlStream)
+  }
+
+  async finished(): Promise<void> {
+    return await this._finished
   }
 }
