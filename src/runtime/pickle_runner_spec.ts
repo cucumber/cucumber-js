@@ -125,14 +125,14 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
-              timestamp: predictableTimestamp(1),
+              timestamp: predictableTimestamp(0),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: predictableTimestamp(1),
             },
           }),
           messages.Envelope.fromObject({
@@ -140,13 +140,13 @@ describe('PickleRunner', () => {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
-              timestamp: predictableTimestamp(3),
+              timestamp: predictableTimestamp(2),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(4),
+              timestamp: predictableTimestamp(3),
             },
           }),
         ])
@@ -401,14 +401,14 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
-              timestamp: predictableTimestamp(1),
+              timestamp: predictableTimestamp(0),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: predictableTimestamp(1),
             },
           }),
           messages.Envelope.fromObject({
@@ -421,13 +421,13 @@ describe('PickleRunner', () => {
                 willBeRetried: true,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(3),
+              timestamp: predictableTimestamp(2),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(4),
+              timestamp: predictableTimestamp(3),
             },
           }),
           messages.Envelope.fromObject({
@@ -435,14 +435,14 @@ describe('PickleRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
-              timestamp: predictableTimestamp(5),
+              timestamp: predictableTimestamp(4),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
-              timestamp: predictableTimestamp(6),
+              timestamp: predictableTimestamp(5),
             },
           }),
           messages.Envelope.fromObject({
@@ -453,13 +453,13 @@ describe('PickleRunner', () => {
                 status: Status.PASSED,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(7),
+              timestamp: predictableTimestamp(6),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '3',
-              timestamp: predictableTimestamp(8),
+              timestamp: predictableTimestamp(7),
             },
           }),
         ])

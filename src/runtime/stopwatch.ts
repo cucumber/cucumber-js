@@ -1,4 +1,4 @@
-import { messages } from '@cucumber/messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 import { stopwatch, Stopwatch, duration, Duration } from 'durations'
 
 export interface ITestRunStopwatch {
@@ -37,7 +37,7 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
-    return convertToTimestamp(this.duration())
+    return TimeConversion.millisecondsSinceEpochToTimestamp(Date.now())
   }
 }
 
@@ -67,16 +67,18 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.ITimestamp {
+    const fakeTimestamp = this.convertToTimestamp(this.duration())
     this.count++
-    return convertToTimestamp(this.duration())
+    return fakeTimestamp
   }
-}
 
-function convertToTimestamp(duration: Duration): messages.ITimestamp {
-  const seconds = Math.floor(duration.seconds())
-  const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
-  return {
-    seconds,
-    nanos,
+  // TODO: Remove. It's impossible to convert timestamps to durations and vice-versa
+  private convertToTimestamp(duration: Duration): messages.ITimestamp {
+    const seconds = Math.floor(duration.seconds())
+    const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
+    return {
+      seconds,
+      nanos,
+    }
   }
 }
