@@ -110,11 +110,15 @@ If you have some code execution that needs to be done before or after all steps,
 ```javascript
 var {AfterStep, BeforeStep} = require('cucumber');
 
-BeforeStep(function () {
-  // This hook will be executed before all steps
+BeforeStep({tags: "@foo"}, function () {
+  // This hook will be executed before all steps in a scenario with tag @foo
 });
 
-AfterStep({tags: "@foo"}, function () {
-  // This hook will be executed after every step in a scenario tagged with @foo
+AfterStep( function ({result}) {
+  // This hook will be executed after all steps, and take a screenshot on step failure
+  if (result.status === 'FAILED') {
+    this.driver.takeScreenshot();
+  }
 });
 ```
+
