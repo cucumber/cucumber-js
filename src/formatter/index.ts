@@ -46,4 +46,8 @@ export default class Formatter {
     this.stream = options.stream
     this.supportCodeLibrary = options.supportCodeLibrary
   }
+
+  async finished(): Promise<void> {
+    return await Promise.resolve()
+  }
 }

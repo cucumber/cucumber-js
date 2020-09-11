@@ -89,46 +89,52 @@ export default class Cli {
     supportCodeLibrary,
   }: IInitializeFormattersRequest): Promise<() => Promise<void>> {
     const streamsToClose: IFormatterStream[] = []
-    await bluebird.map(formats, async ({ type, outputTo }) => {
-      let stream: IFormatterStream = this.stdout
-      if (outputTo !== '') {
-        if (outputTo.match(new RegExp('^https?://')) !== null) {
-          const headers: { [key: string]: string } = {}
-          if (process.env.CUCUMBER_PUBLISH_TOKEN !== undefined) {
-            headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
-          }
+    const formatters = await bluebird.map(
+      formats,
+      async ({ type, outputTo }) => {
+        let stream: IFormatterStream = this.stdout
+        if (outputTo !== '') {
+          if (outputTo.match(new RegExp('^https?://')) !== null) {
+            const headers: { [key: string]: string } = {}
+            if (process.env.CUCUMBER_PUBLISH_TOKEN !== undefined) {
+              headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
+            }
 
-          stream = new HttpStream(outputTo, 'GET', headers, (content) =>
-            console.error(content)
-          )
-        } else {
-          const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
-          stream = fs.createWriteStream(null, { fd })
+            stream = new HttpStream(outputTo, 'GET', headers, (content) =>
+              console.error(content)
+            )
+          } else {
+            const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
+            stream = fs.createWriteStream(null, { fd })
+          }
+          streamsToClose.push(stream)
         }
-        streamsToClose.push(stream)
+        const typeOptions = {
+          cwd: this.cwd,
+          eventBroadcaster,
+          eventDataCollector,
+          log: stream.write.bind(stream),
+          parsedArgvOptions: formatOptions,
+          stream,
+          supportCodeLibrary,
+        }
+        if (doesNotHaveValue(formatOptions.colorsEnabled)) {
+          typeOptions.parsedArgvOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
+        }
+        if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
+          const outputToName = outputTo === '' ? 'stdout' : outputTo
+          console.warn(
+            `Cannot use 'progress-bar' formatter for output to '${outputToName}' as not a TTY. Switching to 'progress' formatter.`
+          )
+          type = 'progress'
+        }
+        return FormatterBuilder.build(type, typeOptions)
       }
-      const typeOptions = {
-        cwd: this.cwd,
-        eventBroadcaster,
-        eventDataCollector,
-        log: stream.write.bind(stream),
-        parsedArgvOptions: formatOptions,
-        stream,
-        supportCodeLibrary,
-      }
-      if (doesNotHaveValue(formatOptions.colorsEnabled)) {
-        typeOptions.parsedArgvOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
-      }
-      if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
-        const outputToName = outputTo === '' ? 'stdout' : outputTo
-        console.warn(
-          `Cannot use 'progress-bar' formatter for output to '${outputToName}' as not a TTY. Switching to 'progress' formatter.`
-        )
-        type = 'progress'
-      }
-      return FormatterBuilder.build(type, typeOptions)
-    })
+    )
     return async function () {
+      await bluebird.each(formatters, async (formatter) => {
+        await formatter.finished()
+      })
       await bluebird.each(streamsToClose, (stream) =>
         bluebird.promisify(stream.end.bind(stream))()
       )
