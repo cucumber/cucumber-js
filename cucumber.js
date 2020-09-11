@@ -37,7 +37,7 @@ const formatters = [
   '--require',
   `compatibility/features/{${FORMATTERS_INCLUDE.join(',')}}/*.ts`,
   '--format',
-  'message',
+  'html:html-formatter.html',
   '--publish-quiet',
 ].join(' ')
 
