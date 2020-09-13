@@ -217,6 +217,12 @@ const ArgvParser = {
         ArgvParser.mergeJson('--world-parameters'),
         {}
       )
+     .option(
+        '--config, -c <TYPE[:PATH]>',
+        'provide config file path in lieu of cucumber.js at root directory',
+        ArgvParser.collect,
+        []
+      )
 
     program.on('--help', () => {
       /* eslint-disable no-console */
