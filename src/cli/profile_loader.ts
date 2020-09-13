@@ -14,14 +14,19 @@ export default class ProfileLoader {
   async getDefinitions(): Promise<Dictionary<string>> {
     const isConfigPresent = process.argv.indexOf('--config') || process.argv.indexOf('-c')
     let definitionsFilePath = null
-    if (isConfigPresent > 0) {
+    if ( isConfigPresent > 0 || 
+        !Number.isNaN(isConfigPresent) ||
+        isConfigPresent != null ||
+        // eslint-disable-next-line eqeqeq
+        isConfigPresent != undefined
+      ){
       definitionsFilePath = path.join(
         this.directory,
         process.argv[isConfigPresent + 1].toString()
       )
-    } else {
+      } else {
       definitionsFilePath = path.join(this.directory, 'cucumber.js')
-    }
+     }
     
     const exists = await fs.exists(definitionsFilePath)
     if (!exists) {
