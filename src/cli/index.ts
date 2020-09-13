@@ -88,7 +88,6 @@ export default class Cli {
     formats,
     supportCodeLibrary,
   }: IInitializeFormattersRequest): Promise<() => Promise<void>> {
-    const streamsToClose: IFormatterStream[] = []
     const formatters = await bluebird.map(
       formats,
       async ({ type, outputTo }) => {
@@ -107,7 +106,6 @@ export default class Cli {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
             stream = fs.createWriteStream(null, { fd })
           }
-          streamsToClose.push(stream)
         }
         const typeOptions = {
           cwd: this.cwd,
@@ -116,6 +114,10 @@ export default class Cli {
           log: stream.write.bind(stream),
           parsedArgvOptions: formatOptions,
           stream,
+          cleanup:
+            stream === this.stdout
+              ? async () => await Promise.resolve()
+              : bluebird.promisify(stream.end.bind(stream)),
           supportCodeLibrary,
         }
         if (doesNotHaveValue(formatOptions.colorsEnabled)) {
@@ -135,9 +137,6 @@ export default class Cli {
       await bluebird.each(formatters, async (formatter) => {
         await formatter.finished()
       })
-      await bluebird.each(streamsToClose, (stream) =>
-        bluebird.promisify(stream.end.bind(stream))()
-      )
     }
   }
 

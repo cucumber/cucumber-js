@@ -28,6 +28,7 @@ export default class HtmlFormatter extends Formatter {
   }
 
   async finished(): Promise<void> {
-    return await this._finished
+    await this._finished
+    await super.finished()
   }
 }

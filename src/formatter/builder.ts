@@ -12,7 +12,7 @@ import SummaryFormatter from './summary_formatter'
 import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter, { IFormatterLogFn } from '.'
+import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { EventEmitter } from 'events'
 import EventDataCollector from './helpers/event_data_collector'
@@ -35,6 +35,7 @@ export interface IBuildOptions {
   log: IFormatterLogFn
   parsedArgvOptions: IParsedArgvFormatOptions
   stream: WritableStream
+  cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
 }
 
