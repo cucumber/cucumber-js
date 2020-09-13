@@ -12,8 +12,8 @@ export default class ProfileLoader {
   }
 
   async getDefinitions(): Promise<Dictionary<string>> {
-    let isConfigPresent: number = 0;
-    isConfigPresent = process.argv.indexOf('--config') || process.argv.indexOf('-c')
+    let isConfigPresent: number = process.argv.indexOf('--config')
+    
     let definitionsFilePath: string = ''
     if ( isConfigPresent > 0){
       definitionsFilePath = path.join(
