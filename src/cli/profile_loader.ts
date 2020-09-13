@@ -12,14 +12,10 @@ export default class ProfileLoader {
   }
 
   async getDefinitions(): Promise<Dictionary<string>> {
-    const isConfigPresent = process.argv.indexOf('--config') || process.argv.indexOf('-c')
-    let definitionsFilePath = null
-    if ( isConfigPresent > 0 || 
-        !Number.isNaN(isConfigPresent) ||
-        isConfigPresent != null ||
-        // eslint-disable-next-line eqeqeq
-        isConfigPresent != undefined
-      ){
+    let isConfigPresent: number = 0;
+    isConfigPresent = process.argv.indexOf('--config') || process.argv.indexOf('-c')
+    let definitionsFilePath: string = ''
+    if ( isConfigPresent > 0){
       definitionsFilePath = path.join(
         this.directory,
         process.argv[isConfigPresent + 1].toString()
