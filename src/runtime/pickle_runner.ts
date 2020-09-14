@@ -452,16 +452,11 @@ export default class PickleRunner {
           beforeStepHooksResult.duration
         )
       }
-      if (afterStepHooksResult !== undefined) {
-        if (this.shouldUpdateStatus(afterStepHooksResult)) {
-          // cumulatedStepResult.status = afterStepHooksResult.status
-        }
-        if (afterStepHooksResult.duration !== null) {
-          cumulatedStepResult.duration = addDurations(
-            cumulatedStepResult.duration,
-            afterStepHooksResult.duration
-          )
-        }
+      if (afterStepHooksResult?.duration !== null) {
+        cumulatedStepResult.duration = addDurations(
+          cumulatedStepResult.duration,
+          afterStepHooksResult.duration
+        )
       }
     }
     return cumulatedStepResult
