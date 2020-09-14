@@ -46,7 +46,7 @@ line_number_colon_unreleased_link=$(echo "${changelog}" | grep -n "\[Unreleased\
 line_number=$(echo "${line_number_colon_unreleased_link}" | cut -d: -f1)
 unreleased_link=$(echo "${line_number_colon_unreleased_link}" | awk '{print $2}')
 
-if [[ "${unreleased_link}" =~ \/v([0-9]+\.[0-9]+\.[0-9]+(-RC[0-9]+)?) ]]; then
+if [[ "${unreleased_link}" =~ \/v([0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?) ]]; then
   last_version="${BASH_REMATCH[1]}"
   changelog=$(echo "${changelog}" | sed "s/v${last_version}\.\.\./v${new_version}.../")
 else
@@ -58,9 +58,10 @@ fi
 
 insertion_line_number=$((line_number + 1))
 release_link=$(echo "${changelog}" | head -n ${insertion_line_number} | tail -1)
+
 new_release_link=$(echo "${release_link}" | \
   sed "s/${last_version}/${new_version}/g" | \
-  sed -E "s/v[0-9]\+.[0-9]\+.[0-9]\+/v${last_version}/")
+  sed "s/v[0-9]\+.[0-9]\+.[0-9]\+/${last_version}/")
 
 changelog=$(echo "${changelog}" | sed "${insertion_line_number} i \\
 ${new_release_link}
