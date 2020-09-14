@@ -508,7 +508,7 @@ describe('PickleRunner', () => {
       })
     })
 
-    describe('with hooks', () => {
+    describe('with test case hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(
@@ -571,6 +571,61 @@ describe('PickleRunner', () => {
         )
         expect(result.status).to.eql(
           envelopes[7].testStepFinished.testStepResult.status
+        )
+      })
+    })
+
+    describe('with step hooks', () => {
+      it('emits the expected envelopes and returns a skipped result', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, BeforeStep, AfterStep }) => {
+            Given('a step', function () {
+              clock.tick(1)
+            })
+            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          }
+        )
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes[0]).to.eql(
+          messages.Envelope.fromObject({
+            testCase: {
+              id: '0',
+              pickleId: pickle.id,
+              testSteps: [
+                {
+                  id: '1',
+                  pickleStepId: pickle.steps[0].id,
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          })
+        )
+        expect(result.status).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
         )
       })
     })

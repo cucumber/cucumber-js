@@ -21,6 +21,7 @@ import {
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 
 const noopFunction = (): void => {
   // no code
@@ -336,6 +337,77 @@ describe('helpers', () => {
             id: '2',
             sourceReference: {
               uri: 'features/support/run-hooks.js',
+              location: {
+                line: 11,
+              },
+            },
+          },
+        }),
+      ])
+    })
+    it('emits messages for test step level hooks', () => {
+      const envelopes = testEmitSupportCodeMessages({
+        beforeTestStepHookDefinitions: [
+          new TestStepHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '0',
+            line: 3,
+            options: {
+              tags: '@hooks-tho',
+            },
+            uri: 'features/support/hooks.js',
+          }),
+        ],
+        afterTestStepHookDefinitions: [
+          new TestStepHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '1',
+            line: 7,
+            options: {},
+            uri: 'features/support/hooks.js',
+          }),
+          new TestStepHookDefinition({
+            code: noopFunction,
+            unwrappedCode: noopFunction,
+            id: '2',
+            line: 11,
+            options: {},
+            uri: 'features/support/hooks.js',
+          }),
+        ],
+      })
+
+      expect(envelopes).to.deep.eq([
+        messages.Envelope.fromObject({
+          hook: {
+            id: '0',
+            tagExpression: '@hooks-tho',
+            sourceReference: {
+              uri: 'features/support/hooks.js',
+              location: {
+                line: 3,
+              },
+            },
+          },
+        }),
+        messages.Envelope.fromObject({
+          hook: {
+            id: '1',
+            sourceReference: {
+              uri: 'features/support/hooks.js',
+              location: {
+                line: 7,
+              },
+            },
+          },
+        }),
+        messages.Envelope.fromObject({
+          hook: {
+            id: '2',
+            sourceReference: {
+              uri: 'features/support/hooks.js',
               location: {
                 line: 11,
               },

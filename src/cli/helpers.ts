@@ -232,6 +232,7 @@ function emitTestStepHooks(
         messages.Envelope.fromObject({
           hook: {
             id: testStepHookDefinition.id,
+            tagExpression: testStepHookDefinition.tagExpression,
             sourceReference: {
               uri: testStepHookDefinition.uri,
               location: {
