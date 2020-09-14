@@ -392,7 +392,7 @@ export default class PickleRunner {
       gherkinDocument: this.gherkinDocument,
       pickle: this.pickle,
       testCaseStartedId: this.currentTestCaseStartedId,
-      result: this.result
+      result: this.result,
     }
 
     return await this.invokeStep(null, stepHookDefinition, hookParameter)
@@ -454,7 +454,7 @@ export default class PickleRunner {
       }
       if (afterStepHooksResult !== undefined) {
         if (this.shouldUpdateStatus(afterStepHooksResult)) {
-          cumulatedStepResult.status = afterStepHooksResult.status
+          // cumulatedStepResult.status = afterStepHooksResult.status
         }
         if (afterStepHooksResult.duration !== null) {
           cumulatedStepResult.duration = addDurations(
