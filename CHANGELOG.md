@@ -32,7 +32,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * don't execute BeforeAll and AfterAll hooks when in dry-run
 * support correct case for `--retry-tag-filter` CLI argument
 
-## [6.0.5](https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5) (2019-11-13)
+## [6.0.5] (2019-11-13)
 
 ### Bug fixes
 
@@ -1762,3 +1762,4 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 <!-- Releases -->
 [Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v6.0.5...master
+[6.0.5]:        https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5
