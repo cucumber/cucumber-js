@@ -55,13 +55,30 @@ The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.ht
 * Promises and ES7 async/await
 * Try to make things as unit testable as possible. If its hard to unit test, the class/function may be doing too much.
 
+## Changelog
+
+* Every PR should have a changelog entry
+* The contributor should update the changelog
+* Each entry in the changelog should include a link to the relevant issues/PRs
+
 ## Release process
 
 _The following is a checklist for maintainers when preparing a new release_
 
-Perform the following steps on a feature branch.
+### Major releases
+
+We will always make a release candidate before issuing a major release. The release candidate will be available for at least a month to give users 
+time to validate that there are no unexpected breaking changes.
+
+TODO: document npm --preid option if necessary.
+
+### Process
+
+Perform the following steps on a feature branch called `release-v${version}` 
+e.g. `release-v7.0.0` or `release-v7.0.0-rc.0`.
 
 * Update `CHANGELOG.md`
+  * Ideally the CHANGELOG should be up-to-date, but sometimes there will be accidental omissions when merging PRs. Missing PRs should be added.
   * Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
   * `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
 * Update `package.json`
