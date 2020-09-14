@@ -1,3 +1,8 @@
+update-changelog:
+	cat CHANGELOG.md | ./scripts/update-changelog.sh $(NEW_VERSION) > CHANGELOG.md.tmp
+	mv CHANGELOG.md.tmp CHANGELOG.md
+.PHONY: update-changelog
+
 docker-run:
 	[ -d '../secrets' ]  || git clone keybase://team/cucumberbdd/secrets ../secrets
 	git -C ../secrets pull
