@@ -38,25 +38,25 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * json formatter: fix duration to be nanoseconds (was femtoseconds)
 
-## [6.0.4](https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4) (2019-11-10)
+## [6.0.4] (2019-11-10)
 
 ### Bug fixes
 
 * retry: create a new World instance for every attempt
 
-## [6.0.3](https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3) (2019-10-27)
+## [6.0.3] (2019-10-27)
 
 * Revert JSON formatter changes to be backward compatible
 
-## [6.0.2](https://github.com/cucumber/cucumber-js/compare/v6.0.1...v6.0.2) (2019-10-07)
+## [6.0.2] (2019-10-07)
 
 * Upgrade to cucumber-expressions 8.0.1 to fix failure on multiple installs
 
-## [6.0.1](https://github.com/cucumber/cucumber-js/compare/v6.0.0...v6.0.1) (2019-10-06)
+## [6.0.1] (2019-10-06)
 
 * Release to fix missing lib
 
-## [6.0.0](https://github.com/cucumber/cucumber-js/compare/v5.1.0...v6.0.0) (2019-10-06)
+## [6.0.0] (2019-10-06)
 
 ### BREAKING CHANGES
 
@@ -79,19 +79,19 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * usage-json formatter: add code and patternType
 * Add support for Node.js 12
 
-## [5.1.0](https://github.com/cucumber/cucumber-js/compare/v5.0.3...v5.1.0) (2018-12-28)
+## [5.1.0] (2018-12-28)
 
 ### Internals
 
 * Upgrade to babel 7
 
-## [5.0.3](https://github.com/cucumber/cucumber-js/compare/v5.0.2...v5.0.3) (2018-12-03)
+## [5.0.3] (2018-12-03)
 
 ### Speed Improvements
 
 * Only create Cucumber Expressions once
 
-## [5.0.2](https://github.com/cucumber/cucumber-js/compare/v5.0.1...v5.0.2) (2018-10-06)
+## [5.0.2] (2018-10-06)
 
 ### Bug Fixes
 
@@ -99,13 +99,13 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * Allow writing to stdout when running in parallel
 * Skip other before hooks if one returns skipped
 
-## [5.0.1](https://github.com/cucumber/cucumber-js/compare/v5.0.0...v5.0.1) (2018-04-09)
+## [5.0.1]  (2018-04-09)
 
 ### Bug Fixes
 
 * Update dependencies to avoid licensing problems
 
-## [5.0.0](https://github.com/cucumber/cucumber-js/compare/v4.2.1...v5.0.0) (2018-04-09)
+## [5.0.0] (2018-04-09)
 
 ### BREAKING CHANGES
 
@@ -120,7 +120,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * Add support for Node.js 10
 
-## [4.2.1](https://github.com/cucumber/cucumber-js/compare/v4.2.0...v4.2.1) (2018-04-09)
+## [4.2.1] (2018-04-09)
 
 ### Bug Fixes
 
@@ -1763,3 +1763,13 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 <!-- Releases -->
 [Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v6.0.5...master
 [6.0.5]:        https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5
+[6.0.4]:        https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4
+[6.0.3]:        https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3
+[6.0.2]:        https://github.com/cucumber/cucumber-js/compare/v6.0.1...v6.0.2
+[6.0.1]:        https://github.com/cucumber/cucumber-js/compare/v6.0.0...v6.0.1
+[6.0.0]:        https://github.com/cucumber/cucumber-js/compare/v5.1.0...v6.0.0
+[5.1.0]:        https://github.com/cucumber/cucumber-js/compare/v5.0.3...v5.1.0
+[5.0.3]:        https://github.com/cucumber/cucumber-js/compare/v5.0.2...v5.0.3
+[5.0.2]:        https://github.com/cucumber/cucumber-js/compare/v5.0.1...v5.0.2
+[5.0.1]:        https://github.com/cucumber/cucumber-js/compare/v4.2.1...v5.0.1
+[4.2.1]:        https://github.com/cucumber/cucumber-js/compare/v4.2.0...v4.2.1
