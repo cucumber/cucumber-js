@@ -67,26 +67,28 @@ _The following is a checklist for maintainers when preparing a new release_
 
 ### Major releases
 
-We will always make a release candidate before issuing a major release. The release candidate will be available for at least a month to give users 
+We will always make a release candidate before issuing a major release. The release candidate will be available for at least a month to give users
 time to validate that there are no unexpected breaking changes.
 
 TODO: document npm --preid option if necessary.
 
 ### Process
 
-Perform the following steps on a feature branch called `release-v${version}` 
+Perform the following steps on a feature branch called `release-v${version}`
 e.g. `release-v7.0.0` or `release-v7.0.0-rc.0`.
 
+* Update dependencies
+  * `yarn update-dependencies`
+  * `yarn`
+  * `yarn test`
 * Update `CHANGELOG.md`
   * Ideally the CHANGELOG should be up-to-date, but sometimes there will be accidental omissions when merging PRs. Missing PRs should be added.
   * Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
   * `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
 * Update `package.json`
-  * bump version
   * add new contributors, if any
-    * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD`
-* Compile the bundle with `yarn run build-release`
-  * Ensure the browser example works
+    * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD  | grep -vEi "(renovate|dependabot|Snyk)" | sort| uniq -i`
+
 
 Review the changes, if everything looks good, squash merge into master.
 
