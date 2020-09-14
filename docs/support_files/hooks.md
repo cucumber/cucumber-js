@@ -116,7 +116,7 @@ BeforeStep({tags: "@foo"}, function () {
 
 AfterStep( function ({result}) {
   // This hook will be executed after all steps, and take a screenshot on step failure
-  if (result.status === 'FAILED') {
+  if (result.status === Status.FAILED) {
     this.driver.takeScreenshot();
   }
 });
