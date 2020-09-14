@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
-## [Unreleased](https://github.com/cucumber/cucumber-js/compare/v6.0.5...master) (In Git)
+----
+## [Unreleased] (In Git)
 
 ### New Features
 
@@ -1757,3 +1758,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 ## [v0.0.1](https://github.com/cucumber/cucumber-js/tree/v0.0.1)
 
 * Emerge Cucumber.js with bare support for features, scenarios and steps. It does not handle several Gherkin elements nor failures yet. (Julien Biezemans)
+
+
+<!-- Releases -->
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v6.0.5...master
