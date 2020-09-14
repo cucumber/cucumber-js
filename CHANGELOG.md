@@ -126,11 +126,11 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * improve the error message for gherkin parse errors
 
-## [4.2.0](https://github.com/cucumber/cucumber-js/compare/v4.1.0...v4.2.0) (2018-04-03)
+## [4.2.0] (2018-04-03)
 
 * add cli option `--order <TYPE[:SEED]>` to run scenarios in the specified order. Type should be `defined` or `random`
 
-## [4.1.0](https://github.com/cucumber/cucumber-js/compare/v4.0.0...v4.1.0) (2018-03-27)
+## [4.1.0] (2018-03-27)
 
 ### New Features
 
@@ -143,7 +143,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#5013---2018-01-21)
 * fix error serialization in parallel mode
 
-## [4.0.0](https://github.com/cucumber/cucumber-js/compare/v3.2.1...v4.0.0) (2018-01-24)
+## [4.0.0] (2018-01-24)
 
 ### BREAKING CHANGES
 
@@ -180,12 +180,12 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   Given(/^a step$/, function() {});
   ```
 
-## [3.2.1](https://github.com/cucumber/cucumber-js/compare/v3.2.0...v3.2.1) (2018-01-03)
+## [3.2.1] (2018-01-03)
 
 ### Bug Fixes
 * revert json formatter mime type ([#995](https://github.com/cucumber/cucumber-js/pull/995)
 
-## [3.2.0](https://github.com/cucumber/cucumber-js/compare/v3.1.0...v3.2.0) (2017-12-08)
+## [3.2.0] (2017-12-08)
 
 ### New Features
 * add exception to `test-case-finished` event ([#952](https://github.com/cucumber/cucumber-js/pull/952) Giuseppe DiBella)
@@ -196,7 +196,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
 * tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#111---2017-12-01)
 
-## [3.1.0](https://github.com/cucumber/cucumber-js/compare/v3.0.6...v3.1.0) (2017-10-25)
+## [3.1.0] (2017-10-25)
 
 ### New Features
 * add `--language` cli option to provide the default language for feature files
@@ -204,11 +204,11 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Bug Fixes
 * pickle filter: support relative paths ([#962](https://github.com/cucumber/cucumber-js/pull/962) Marco Muller)
 
-## [3.0.6](https://github.com/cucumber/cucumber-js/compare/v3.0.5...v3.0.6) (2017-10-18)
+## [3.0.6] (2017-10-18)
 
 * cli: fix `--format` option parsing on Windows ([#954](https://github.com/cucumber/cucumber-js/pull/954) Darrin Holst)
 
-## [3.0.5](https://github.com/cucumber/cucumber-js/compare/v3.0.4...v3.0.5) (2017-10-14)
+## [3.0.5] (2017-10-14)
 
 ### New Features
 
@@ -216,20 +216,20 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * `Before` / `After`: The first argument now includes a `pickle` property which can
 be used to get the name / tags of the running scenario. ([#947](https://github.com/cucumber/cucumber-js/pull/947) Giuseppe DiBella)
 
-## [3.0.4](https://github.com/cucumber/cucumber-js/compare/v3.0.3...v3.0.4) (2017-10-04)
+## [3.0.4] (2017-10-04)
 
 ### New Features
 
 * cli: make `--tags` option repeatable (joined with `and`) ([#940](https://github.com/cucumber/cucumber-js/issues/940), Ilya Kozhevnikov)
 * rerun formatter: make separator configurable. See docs [here](https://github.com/cucumber/cucumber-js/blob/fb9e8fc2e68d4395b9b0a124d18e036d00a8c69f/docs/cli.md) ([#930](https://github.com/cucumber/cucumber-js/issues/930), Máté Karácsony)
 
-## [3.0.3](https://github.com/cucumber/cucumber-js/compare/v3.0.2...v3.0.3) (2017-09-23)
+## [3.0.3] (2017-09-23)
 
 ### New Features
 
 * support to imperatively skip steps. See documentation [here](/docs/support_files/step_definitions.md#skipped-steps) ([#912](https://github.com/cucumber/cucumber-js/issues/912), jshifflet)
 
-## [3.0.2](https://github.com/cucumber/cucumber-js/compare/v3.0.1...v3.0.2) (2017-09-13)
+## [3.0.2] (2017-09-13)
 
 ### New Features
 
@@ -243,7 +243,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * `defineParameterType`: `typeName` option is deprecated in favor of `name`
 
-## [3.0.1](https://github.com/cucumber/cucumber-js/compare/v3.0.0...v3.0.1) (2017-08-28)
+## [3.0.1] (2017-08-28)
 
 ### Bug Fixes
 
@@ -261,7 +261,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * normalize CHANGELOG
 ([#915](https://github.com/cucumber/cucumber-js/issues/915), Jayson Smith)
 
-## [3.0.0](https://github.com/cucumber/cucumber-js/compare/v2.3.1...v3.0.0) (2017-08-08)
+## [3.0.0] (2017-08-08)
 
 ### BREAKING CHANGES
 
@@ -288,13 +288,13 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * Fix support code line and uri references when using direct imports
 
-## [2.3.1](https://github.com/cucumber/cucumber-js/compare/v2.3.0...v2.3.1) (2017-06-09)
+## [2.3.1] (2017-06-09)
 
 ### New Features
 
 * pass step specific options to definition function wrapper ([#838](https://github.com/cucumber/cucumber-js/issues/838), Łukasz Gandecki)
 
-## [2.3.0](https://github.com/cucumber/cucumber-js/compare/v2.2.0...v2.3.0) (2017-06-01)
+## [2.3.0] (2017-06-01)
 
 ### New Features
 
@@ -314,7 +314,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
   ```
   (Nico Jansen and Łukasz Gandecki)
 
-## [2.2.0](https://github.com/cucumber/cucumber-js/compare/v2.1.0...v2.2.0) (2017-05-20)
+## [2.2.0] (2017-05-20)
 
 ### New Features
 
@@ -326,13 +326,13 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * throw descriptive error message when running a global install
 
-## [1.3.3](https://github.com/cucumber/cucumber-js/compare/v1.3.2...v1.3.3) (2016-04-26)
+## [1.3.3] (2016-04-26)
 
 ### Bug Fixes
 
 * fix unhandled rejections in handlers ([#792](https://github.com/cucumber/cucumber-js/issues/792), yaronassa)
 
-## [1.3.2](https://github.com/cucumber/cucumber-js/compare/v1.3.1...v1.3.2) (2016-03-20)
+## [1.3.2] (2016-03-20)
 
 ### Bug Fixes
 
@@ -562,7 +562,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * fix typo ([#659](https://github.com/cucumber/cucumber-js/issues/659), gforceg)
 * update support files api reference ([#661](https://github.com/cucumber/cucumber-js/issues/661), Zearin)
 
-## [1.3.1](https://github.com/cucumber/cucumber-js/compare/v1.3.0...v1.3.1) (2016-09-30)
+## [1.3.1] (2016-09-30)
 
 ### Bug Fixes
 
@@ -578,7 +578,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * fix links in event_handlers.md ([#638](https://github.com/cucumber/cucumber-js/issues/638), Oliver Rogers)
 * fix hooks example ([#644](https://github.com/cucumber/cucumber-js/issues/644), John McLaughlin)
 
-## [1.3.0](https://github.com/cucumber/cucumber-js/compare/v1.2.2...v1.3.0) (2016-09-08)
+## [1.3.0] (2016-09-08)
 
 ### New Features
 
@@ -598,19 +598,19 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * document order of execution for multiple hooks (John McLaughlin)
 * breakup README.md, organize docs (Charlie Rudolph)
 
-## [1.2.2](https://github.com/cucumber/cucumber-js/compare/v1.2.1...v1.2.2) (2016-08-05)
+## [1.2.2] (2016-08-05)
 
 ### Bug Fixes
 
 * Fix error when stack trace has no frames ([#610](https://github.com/cucumber/cucumber-js/issues/610), Jan Molak)
 
-## [1.2.1](https://github.com/cucumber/cucumber-js/compare/v1.2.0...v1.2.1) (2016-07-01)
+## [1.2.1] (2016-07-01)
 
 ### Bug Fixes
 
 * Fix hook / step definition location and stacktraces in the browser ([#567](https://github.com/cucumber/cucumber-js/issues/567), [#538](https://github.com/cucumber/cucumber-js/issues/538), Charlie Rudolph)
 
-## [1.2.0](https://github.com/cucumber/cucumber-js/compare/v1.1.0...v1.2.0) (2016-06-24)
+## [1.2.0] (2016-06-24)
 
 ### Bug Fixes
 
@@ -618,7 +618,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
   * Remove intermediate conversion to string (Charlie Rudolph)
   * Use native base64 encoding which can encode binary ([#589](https://github.com/cucumber/cucumber-js/issues/589), Benjamín Eidelman)
 
-## [1.1.0](https://github.com/cucumber/cucumber-js/compare/v1.0.0...v1.1.0) (2016-06-23)
+## [1.1.0] (2016-06-23)
 
 ### New Features
 
@@ -634,26 +634,26 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Fix typo in event name. ([#590](https://github.com/cucumber/cucumber-js/issues/590), Artur Pomadowski)
 * Don't run hooks in dry run mode (Charlie Rudolph)
 
-## [1.0.0](https://github.com/cucumber/cucumber-js/compare/v0.10.4...v1.0.0) (2016-05-30)
+## [1.0.0] (2016-05-30)
 
 ### Bug Fixes
 
 * Escape all instances of special characters in example / data table  (Charlie Rudolph)
 
-## [0.10.4](https://github.com/cucumber/cucumber-js/compare/v0.10.3...v0.10.4) (2016-05-30)
+## [0.10.4] (2016-05-30)
 
 ### New Features
 
 * Allow time to be faked by utilities such as `sinon.useFakeTimers` (John McLaughlin)
 
-## [0.10.3](https://github.com/cucumber/cucumber-js/compare/v0.10.2...v0.10.3) (2016-05-19)
+## [0.10.3] (2016-05-19)
 
 ### Bug Fixes
 
 * Escape newlines in table cells in pretty formatter (Julien Biezemans)
 * Fix handling of unusual error objects (efokschaner)
 
-## [0.10.2](https://github.com/cucumber/cucumber-js/compare/v0.10.1...v0.10.2) (2016-04-07)
+## [0.10.2] (2016-04-07)
 
 ### New Features
 
@@ -663,13 +663,13 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * Undefined background step (Scott Deakin)
 
-## [0.10.1](https://github.com/cucumber/cucumber-js/compare/v0.10.0...v0.10.1) (2016-04-01)
+## [0.10.1] (2016-04-01)
 
 ### New Features
 
 * Support generators for hooks/step definitions (Ádám Gólya)
 
-## [0.10.0](https://github.com/cucumber/cucumber-js/compare/v0.9.5...v0.10.0) (2016-04-01)
+## [0.10.0] (2016-04-01)
 
 ### Breaking changes
 
@@ -698,7 +698,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * support hook specific timeouts (Charlie Rudolph)
 * reworked formatter error reporting (Charlie Rudolph)
 
-## [0.9.5](https://github.com/cucumber/cucumber-js/compare/v0.9.4...v0.9.5) (2016-02-16)
+## [0.9.5] (2016-02-16)
 
 ### Bug Fixes
 
@@ -708,13 +708,13 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * Allow rerun file to be in subfolder (Charlie Rudolph)
 
-## [0.9.4](https://github.com/cucumber/cucumber-js/compare/v0.9.3...v0.9.4) (2016-01-28)
+## [0.9.4] (2016-01-28)
 
 ### Bug Fixes
 
 * Publish release folder to npm  (Charlie Rudolph)
 
-## [0.9.3](https://github.com/cucumber/cucumber-js/compare/v0.9.2...v0.9.3) (2016-01-27)
+## [0.9.3] (2016-01-27)
 
 ### New Features
 
@@ -729,13 +729,13 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Add documentation of profiles (Charlie Rudolph)
 * README improvements (Miika Hänninen, Kevin Goslar, Maxim Koretskiy)
 
-## [0.9.2](https://github.com/cucumber/cucumber-js/compare/v0.9.1...v0.9.2)
+## [0.9.2]
 
 ### New Features
 
 * Bump stack-chain (Rick Lee-Morlang)
 
-## [0.9.1](https://github.com/cucumber/cucumber-js/compare/v0.9.0...v0.9.1)
+## [0.9.1]
 
 ### New Features
 
@@ -750,7 +750,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 * Fix invalid hook documentation (Charlie Rudolph)
 
-## [0.9.0](https://github.com/cucumber/cucumber-js/compare/v0.8.1...v0.9.0)
+## [0.9.0]
 
 ### Breaking changes
 
@@ -773,14 +773,14 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Remove useless callbacks in documentation (Julien Biezemans)
 * Fix browser example (Karine Pires)
 
-## [v0.8.1](https://github.com/cucumber/cucumber-js/compare/v0.8.0...v0.8.1)
+## [v0.8.1]
 
 ### Documentation, internals and tests
 
 * Update World constructor documentation (Charlie Rudolph)
 * Remove badges from README.md (Charlie Rudolph)
 
-## [v0.8.0](https://github.com/cucumber/cucumber-js/compare/v0.7.0...v0.8.0)
+## [v0.8.0]
 
 ### Breaking changes
 
@@ -815,7 +815,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Require maintainers to document API changes in release tag descriptions (Julien Biezemans)
 * Add build-release NPM script (Julien Biezemans)
 
-## [v0.7.0](https://github.com/cucumber/cucumber-js/compare/v0.6.0...v0.7.0)
+## [v0.7.0]
 
 ### New features
 
@@ -844,7 +844,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Separate test output (Charles Rudolph)
 * Remove ruby, legacy features, cucumber-tck (Charles Rudolph)
 
-## [v0.6.0](https://github.com/cucumber/cucumber-js/compare/v0.5.3...v0.6.0)
+## [v0.6.0]
 
 ### New features
 
@@ -864,7 +864,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Fix loading of external compiler modules (Julien Biezemans)
 * Document a few common compiler usages (Julien Biezemans)
 
-## [v0.5.3](https://github.com/cucumber/cucumber-js/compare/v0.5.2...v0.5.3)
+## [v0.5.3]
 
 ### New features
 
@@ -901,7 +901,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Officially support Node.js 4.x (Julien Biezemans)
 * Use a profile for own build (Julien Biezemans)
 
-## [v0.5.2](https://github.com/cucumber/cucumber-js/compare/v0.5.1...v0.5.2)
+## [v0.5.2]
 
 ### New features
 
@@ -922,7 +922,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Add Util.Collection.sort() (Mark Derbecker)
 * Add waffle.io badge (Julien Biezemans)
 
-## [v0.5.1](https://github.com/cucumber/cucumber-js/compare/v0.5.0...v0.5.1)
+## [v0.5.1]
 
 ### New features
 
@@ -939,7 +939,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Add documentation for attachments (Simon Dean)
 * Fix name of Cucumber.Api.Scenario in README (Simon Dean)
 
-## [v0.5.0](https://github.com/cucumber/cucumber-js/compare/v0.4.9...v0.5.0)
+## [v0.5.0]
 
 ### New features
 
@@ -954,7 +954,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Document new step definition styles (Julien Biezemans)
 * Make step definitions synchronous in example app (Julien Biezemans)
 
-## [v0.4.9](https://github.com/cucumber/cucumber-js/compare/v0.4.8...v0.4.9)
+## [v0.4.9]
 
 ### New features
 
@@ -973,7 +973,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Explicitly require json module in Ruby stepdefs (Julien Biezemans)
 * Add CLI help section for --backtrace (Julien Biezemans)
 
-## [v0.4.8](https://github.com/cucumber/cucumber-js/compare/v0.4.7...v0.4.8)
+## [v0.4.8]
 
 ### New features
 
@@ -998,7 +998,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Add more diagnostics to build (Julien Biezemans)
 * Remove unnecessary spaces in shell commands (Julien Biezemans)
 
-## [v0.4.7](https://github.com/cucumber/cucumber-js/compare/v0.4.6...v0.4.7)
+## [v0.4.7]
 
 ### Documentation, internals and tests
 
@@ -1009,7 +1009,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Indent (Julien Biezemans)
 * Spec domain enter/exit in AstTreeWalker (Julien Biezemans)
 
-## [v0.4.6](https://github.com/cucumber/cucumber-js/compare/v0.4.5...v0.4.6)
+## [v0.4.6]
 
 ### New features
 
@@ -1035,14 +1035,14 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Unix EOLs (Julien Biezemans)
 * Ignore .ruby-* (Julien Biezemans)
 
-## [v0.4.5](https://github.com/cucumber/cucumber-js/compare/v0.4.4...v0.4.5)
+## [v0.4.5]
 
 ### Documentation, internals and tests
 
 * Fix issue with npm upgrade on node.js v0.8 (Simon Dean)
 * Use Node domain to handle asynchronous exceptions (Julien Biezemans)
 
-## [v0.4.4](https://github.com/cucumber/cucumber-js/compare/v0.4.3...v0.4.4)
+## [v0.4.4]
 
 ### Fixes
 
@@ -1064,14 +1064,14 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Drop Node 0.6 support (Julien Biezemans)
 * Drop Node 0.6 support (manifest) (Julien Biezemans)
 
-## [v0.4.3](https://github.com/cucumber/cucumber-js/compare/v0.4.2...v0.4.3)
+## [v0.4.3]
 
 ### Fixes
 
 * Scenario outline fixes (Simon Dean)
 * Correct the embeddings JSON to match other ports of Cucumber (Simon Dean)
 
-## [v0.4.2](https://github.com/cucumber/cucumber-js/compare/v0.4.1...v0.4.2)
+## [v0.4.2]
 
 ### New features
 
@@ -1082,7 +1082,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Fix world example in main readme (Sam Saccone)
 * Update instructings for running tests (Sam Saccone)
 
-## [v0.4.1](https://github.com/cucumber/cucumber-js/compare/v0.4.0...v0.4.1)
+## [v0.4.1]
 
 ### New features
 
@@ -1106,7 +1106,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Remove development status table from README (Julien Biezemans)
 * Help the guy produce changelogs (Julien Biezemans)
 
-## [v0.4.0](https://github.com/cucumber/cucumber-js/compare/v0.3.3...v0.4.0)
+## [v0.4.0]
 
 ### New features
 
@@ -1126,7 +1126,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Update README with Hook scenario object doc (Julien Biezemans)
 * Style (Julien Biezemans)
 
-## [v0.3.3](https://github.com/cucumber/cucumber-js/compare/v0.3.2...v0.3.3)
+## [v0.3.3]
 
 ### New features
 
@@ -1143,7 +1143,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * DRY (Julien Biezemans)
 * Refactor (Julien Biezemans)
 
-## [v0.3.2](https://github.com/cucumber/cucumber-js/compare/v0.3.1...v0.3.2)
+## [v0.3.2]
 
 ### New features
 
@@ -1157,7 +1157,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Add Code Climate badge to README (Julien Biezemans)
 * Update README.md (Sebastian Schürmann)
 
-## [v0.3.1](https://github.com/cucumber/cucumber-js/compare/v0.3.0...v0.3.1)
+## [v0.3.1]
 
 ### New features
 
@@ -1195,7 +1195,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.3.0](https://github.com/cucumber/cucumber-js/compare/v0.2.22...v0.3.0)
+## [v0.3.0]
 
 ### New features
 
@@ -1219,7 +1219,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 ## [v0.2.x](https://github.com/cucumber/cucumber-js/compare/v0.2.0...v0.3.0^)
 
-## [v0.2.22](https://github.com/cucumber/cucumber-js/compare/v0.2.21...v0.2.22)
+## [v0.2.22]
 
 ### New features
 
@@ -1231,7 +1231,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.21](https://github.com/cucumber/cucumber-js/compare/v0.2.20...v0.2.21)
+## [v0.2.21]
 
 ### New features
 
@@ -1241,7 +1241,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 **TBD**
 
-## [v0.2.20](https://github.com/cucumber/cucumber-js/compare/v0.2.19...v0.2.20)
+## [v0.2.20]
 
 ### New features
 
@@ -1257,7 +1257,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.19](https://github.com/cucumber/cucumber-js/compare/v0.2.18...v0.2.19)
+## [v0.2.19]
 
 ### Fixes
 
@@ -1271,7 +1271,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.18](https://github.com/cucumber/cucumber-js/compare/v0.2.17...v0.2.18)
+## [v0.2.18]
 
 ### Fixes
 
@@ -1286,7 +1286,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.17](https://github.com/cucumber/cucumber-js/compare/v0.2.16...v0.2.17)
+## [v0.2.17]
 
 ### New features
 
@@ -1300,7 +1300,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.16](https://github.com/cucumber/cucumber-js/compare/v0.2.15...v0.2.16)
+## [v0.2.16]
 
 ### New features
 
@@ -1316,7 +1316,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.15](https://github.com/cucumber/cucumber-js/compare/v0.2.14...v0.2.15)
+## [v0.2.15]
 
 ### New features
 
@@ -1328,7 +1328,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.14](https://github.com/cucumber/cucumber-js/compare/v0.2.13...v0.2.14)
+## [v0.2.14]
 
 ### New features
 
@@ -1341,7 +1341,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.13](https://github.com/cucumber/cucumber-js/compare/v0.2.12...v0.2.13)
+## [v0.2.13]
 
 ### New features
 
@@ -1357,7 +1357,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.12](https://github.com/cucumber/cucumber-js/compare/v0.2.11...v0.2.12)
+## [v0.2.12]
 
 ### Changed features
 
@@ -1370,7 +1370,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.11](https://github.com/cucumber/cucumber-js/compare/v0.2.10...v0.2.11)
+## [v0.2.11]
 
 ### Changed features
 
@@ -1388,7 +1388,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.10](https://github.com/cucumber/cucumber-js/compare/v0.2.9...v0.2.10)
+## [v0.2.10]
 
 ### Fixes
 
@@ -1404,7 +1404,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.9](https://github.com/cucumber/cucumber-js/compare/v0.2.8...v0.2.9)
+## [v0.2.9]
 
 ### New features
 
@@ -1424,7 +1424,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.8](https://github.com/cucumber/cucumber-js/compare/v0.2.7...v0.2.8)
+## [v0.2.8]
 
 ### New features
 
@@ -1446,7 +1446,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.7](https://github.com/cucumber/cucumber-js/compare/v0.2.6...v0.2.7)
+## [v0.2.7]
 
 ### New features
 
@@ -1466,7 +1466,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Switch from throwing exceptions to callback.fail() in web example (Julien Biezemans)
 * Add callback.fail() example to README (Julien Biezemans)
 
-## [v0.2.6](https://github.com/cucumber/cucumber-js/compare/v0.2.5...v0.2.6)
+## [v0.2.6]
 
 ### New features
 
@@ -1489,7 +1489,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.5](https://github.com/cucumber/cucumber-js/compare/v0.2.4...v0.2.5)
+## [v0.2.5]
 
 ### New features
 
@@ -1508,7 +1508,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.4](https://github.com/cucumber/cucumber-js/compare/v0.2.3...v0.2.4)
+## [v0.2.4]
 
 ### New features
 
@@ -1544,7 +1544,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.3](https://github.com/cucumber/cucumber-js/compare/v0.2.2...v0.2.3)
+## [v0.2.3]
 
 ### New features
 
@@ -1575,7 +1575,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.2](https://github.com/cucumber/cucumber-js/compare/v0.2.1...v0.2.2)
+## [v0.2.2]
 
 ### New features
 
@@ -1591,7 +1591,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.1](https://github.com/cucumber/cucumber-js/compare/v0.2.0...v0.2.1)
+## [v0.2.1]
 
 ### New features
 
@@ -1604,7 +1604,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.2.0](https://github.com/cucumber/cucumber-js/compare/v0.1.5...v0.2.0)
+## [v0.2.0]
 
 ### New features
 
@@ -1650,7 +1650,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 ## [v0.1.x](https://github.com/cucumber/cucumber-js/compare/v0.1.0...v0.2.0^)
 
-## [v0.1.5](https://github.com/cucumber/cucumber-js/compare/v0.1.4...v0.1.5)
+## [v0.1.5]
 
 ### New features
 
@@ -1663,7 +1663,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.1.4](https://github.com/cucumber/cucumber-js/compare/v0.1.3...v0.1.4)
+## [v0.1.4]
 
 ### Changed features
 
@@ -1678,7 +1678,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.1.3](https://github.com/cucumber/cucumber-js/compare/v0.1.2...v0.1.3)
+## [v0.1.3]
 
 ### New features
 
@@ -1695,7 +1695,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.1.2](https://github.com/cucumber/cucumber-js/compare/v0.1.1...v0.1.2)
+## [v0.1.2]
 
 ### New features
 
@@ -1703,7 +1703,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.1.1](https://github.com/cucumber/cucumber-js/compare/v0.1.0...v0.1.1)
+## [v0.1.1]
 
 ### New features
 
@@ -1719,7 +1719,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 
-## [v0.1.0](https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.0)
+## [v0.1.0]
 
 ### New features
 
