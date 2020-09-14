@@ -70,31 +70,49 @@ _The following is a checklist for maintainers when preparing a new release_
 We will always make a release candidate before issuing a major release. The release candidate will be available for at least a month to give users
 time to validate that there are no unexpected breaking changes.
 
-TODO: document npm --preid option if necessary.
-
 ### Process
 
-Perform the following steps on a feature branch called `release-v${version}`
-e.g. `release-v7.0.0` or `release-v7.0.0-rc.0`.
+The release is done from the [cucumber-build](https://github.com/cucumber/cucumber-build/) docker container. This makes
+sure we use the same environment for all releases.
 
-* Update dependencies
-  * `yarn update-dependencies`
-  * `yarn`
-  * `yarn test`
+**Every command should be run from within the Docker container**.
+
+Start the container:
+
+    make docker-run
+
+Inside the container, update dependencies:
+
+    yarn update-dependencies
+    yarn
+    yarn test
+
+If the tests fail, update your code to be compatible with the new libraries, or revert the library upgrades that break the build.
+
 * Update `CHANGELOG.md`
   * Ideally the CHANGELOG should be up-to-date, but sometimes there will be accidental omissions when merging PRs. Missing PRs should be added.
   * Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
   * `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
-* Update `package.json`
-  * add new contributors, if any
-    * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD  | grep -vEi "(renovate|dependabot|Snyk)" | sort| uniq -i`
+* Update the contributors list in `package.json`
+  * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD  | grep -vEi "(renovate|dependabot|Snyk)" | sort| uniq -i`
+  * Manually add contributors (in alphabetical order)
 
+[Decide what the next version should be](https://github.com/cucumber/cucumber/blob/master/RELEASE_PROCESS.md#decide-what-the-next-version-should-be).
+Then bump the version number and create a git tag. Run *one* of the following:
 
-Review the changes, if everything looks good, squash merge into master.
+    # Major prelease
+    npm version premajor --preid=rc
 
-* commit message should have the format "Release 0.1.2" (replacing *0.1.2* with the actual version)
-* Tag commit as "v0.1.2"
-* CI will publish to NPM
+    # Major release
+    npm version major
+
+    # Minor release
+    npm version minor
+
+Publish to npm:
+
+    npm publish --access public
+
 * Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
   * Update the cucumber-js version `data/versions.yaml`
   * Ensure the javascript examples are up to date

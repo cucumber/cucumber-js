@@ -53,10 +53,6 @@ $ npm install cucumber
 $ npm install @cucumber/cucumber
 ```
 
-### Browser
-
-* Grab the browserified code from the latest release in the [dist](/dist) folder
-
 ## Documentation
 
 The following documentation is for master. See below for documentation for older versions.
