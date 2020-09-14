@@ -84,15 +84,12 @@ Feature: Before and After Step Hooks
       const { AfterStep, Status } = require('@cucumber/cucumber')
 
       AfterStep(function({result}) {
-        if (result.status === Status.FAILED) {
-          throw Error("AfterStep Hook correctly runs even if step failed")
+        if (result.status === Status.PASSED) {
+          return
+        } else {
+          throw Error("Result object did not get passed properly to AfterStep Hook.")
         }
-        throw Error("AfterStep Hook correctly runs even if step did not fail")
       })
       """
     When I run cucumber-js
-    Then it fails
-    And the error output contains the text:
-      """
-      AfterStep Hook correctly runs even if step failed
-      """
+    Then it passes
