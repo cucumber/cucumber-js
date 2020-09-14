@@ -106,6 +106,7 @@ Update CHANGELOG links:
 Verify changes to the CHANGELOG are correct. Stage uncommitted changes: 
     
     git add .
+    git commit -am "Release <major.minor.patch(-rc.X)>"
 
 Then bump the version number and create a git tag. Run *one* of the following:
 
