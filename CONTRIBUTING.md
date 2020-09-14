@@ -77,6 +77,10 @@ TODO: document npm --preid option if necessary.
 Perform the following steps on a feature branch called `release-v${version}`
 e.g. `release-v7.0.0` or `release-v7.0.0-rc.0`.
 
+* Update dependencies
+  * `yarn update-dependencies`
+  * `yarn`
+  * `yarn test`
 * Update `CHANGELOG.md`
   * Ideally the CHANGELOG should be up-to-date, but sometimes there will be accidental omissions when merging PRs. Missing PRs should be added.
   * Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
@@ -84,6 +88,7 @@ e.g. `release-v7.0.0` or `release-v7.0.0-rc.0`.
 * Update `package.json`
   * add new contributors, if any
     * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD  | grep -vEi "(renovate|dependabot|Snyk)" | sort| uniq -i`
+
 
 Review the changes, if everything looks good, squash merge into master.
 

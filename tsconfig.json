@@ -8,6 +8,7 @@
     "noImplicitThis": true,
     "resolveJsonModule": true,
     "sourceMap": true,
+    "strictNullChecks": true,
     "target": "es2017",
     "typeRoots": [
       "./node_modules/@types",
