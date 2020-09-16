@@ -11,11 +11,11 @@ import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
 import { messages, IdGenerator } from '@cucumber/messages'
 import createMeta from '@cucumber/create-meta'
-import readPkgUp from 'read-pkg-up'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
+import pkg = require('../../package.json')
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -111,7 +111,7 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter
 ): Promise<void> {
-  const version = (await readPkgUp()).packageJson.version
+  const { version } = pkg
   eventBroadcaster.emit(
     'envelope',
     new messages.Envelope({
