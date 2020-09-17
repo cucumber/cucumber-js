@@ -3,19 +3,18 @@ import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
-import { EventEmitter } from 'events'
+import {EventEmitter} from 'events'
 import PickleFilter from '../pickle_filter'
-import { EventDataCollector } from '../formatter/helpers'
-import { doesHaveValue } from '../value_checker'
+import {EventDataCollector} from '../formatter/helpers'
+import {doesHaveValue} from '../value_checker'
 import OptionSplitter from './option_splitter'
-import { Readable } from 'stream'
-import { messages, IdGenerator } from '@cucumber/messages'
+import {Readable} from 'stream'
+import {IdGenerator, messages} from '@cucumber/messages'
 import createMeta from '@cucumber/create-meta'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import {ISupportCodeLibrary} from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { builtinParameterTypes } from '../support_code_library_builder'
-const pkg = require('../../package.json')
+import {builtinParameterTypes} from '../support_code_library_builder'
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
@@ -111,7 +110,8 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter
 ): Promise<void> {
-  const { version } = pkg
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { version } = require('../../package.json')
   eventBroadcaster.emit(
     'envelope',
     new messages.Envelope({
