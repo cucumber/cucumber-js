@@ -21,6 +21,19 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [7.0.0-rc.0] (2020-09-14)
 
+Starting with version 7, the npm module has been changed from `cucumber` to `@cucumber/cucumber`
+
+Migration guide:
+
+- `npm uninstall cucumber`
+- `npm install --save-dev @cucumber/cucumber`
+- require/import `@cucumber/cucumber` instead of `cucumber`
+- TypeScript
+  - Replace `TableDefinition` with `DataTable`
+  - `npm uninstall @types/cucumber`
+
+If anything is missing from the migration guide, please submit an issue.
+
 ### New Features
 
 * Add `--publish` option to publish reports to [reports.cucumber.io](https://reports.cucumber.io) [#1424](https://github.com/cucumber/cucumber-js/pull/1424)
