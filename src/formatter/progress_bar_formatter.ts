@@ -5,10 +5,12 @@ import { WriteStream as TtyWriteStream } from 'tty'
 import { messages } from '@cucumber/messages'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { formatUndefinedParameterType } from './helpers/issue_helpers'
+import { durationBetweenTimestamps } from '../time'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
   private numberOfSteps: number
+  private testRunStarted: messages.ITestRunStarted
   private issueCount: number
   public progressBar: ProgressBar
 
@@ -87,11 +89,15 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logSummary(testRunFinished: messages.ITestRunFinished): void {
+    const testRunDuration = durationBetweenTimestamps(
+      this.testRunStarted.timestamp,
+      testRunFinished.timestamp
+    )
     this.log(
       formatSummary({
         colorFns: this.colorFns,
         testCaseAttempts: this.eventDataCollector.getTestCaseAttempts(),
-        testRunFinished,
+        testRunDuration,
       })
     )
   }
@@ -107,6 +113,8 @@ export default class ProgressBarFormatter extends Formatter {
       this.logProgress(envelope.testStepFinished)
     } else if (doesHaveValue(envelope.testCaseFinished)) {
       this.logErrorIfNeeded(envelope.testCaseFinished)
+    } else if (doesHaveValue(envelope.testRunStarted)) {
+      this.testRunStarted = envelope.testRunStarted
     } else if (doesHaveValue(envelope.testRunFinished)) {
       this.logSummary(envelope.testRunFinished)
     }
