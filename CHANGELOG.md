@@ -23,6 +23,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [7.0.0-rc.0] (2020-09-14)
 
+Starting with version 7, the npm module has been changed from `cucumber` to `@cucumber/cucumber`
+
 Migration guide:
 
 - `npm uninstall cucumber`
@@ -36,7 +38,6 @@ If anything is missing from the migration guide, please submit an issue.
 
 ### New Features
 
-Starting with version 7, the npm module has been changed from `cucumber` to `@cucumber/cucumber`
 * Add `--publish` option to publish reports to [reports.cucumber.io](https://reports.cucumber.io) [#1423](https://github.com/cucumber/cucumber-js/issues/1423), [#1424](https://github.com/cucumber/cucumber-js/pull/1424)
 * Add support for Gherkin's [Rule/Example syntax](https://cucumber.io/docs/gherkin/reference/#rule)
 * Add `transpose` method to [data table interface](docs/support_files/data_table_interface.md)
