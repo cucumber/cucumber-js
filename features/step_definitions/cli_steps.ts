@@ -17,16 +17,16 @@ const { version } = require('../../package.json') // eslint-disable-line @typesc
  */
 
 Given(/^Cake exist$/, function cakeExists() {
-    // console.log(name);
-});
+    // console.log(name)
+})
 
 When(/^I eat cake$/, function iEatCake() {
-    // console.log(name);
-});
+    // console.log(name)
+})
 
 Then(/^My belly is full$/, function bellyIsFull() {
-    throw new Error("Cake does not exist");
-});
+    throw new Error("Cake does not exist")
+})
 
 /**
  * Left for testing

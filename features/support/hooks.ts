@@ -17,23 +17,23 @@ const iAmArrowFunction = () => {
   //
 }
 
-Before(iAmArrowFunction);
+Before(iAmArrowFunction)
 
 Before(async function asyncHook() {
     //
-});
+})
 
 Before(function doStuff() {
     //
-});
+})
 
 Before(function doStuffAgain() {
     //
-});
+})
 
 Before(function doStuffAgainC2() {
     //
-});
+})
 
 /**
  * Left for testing

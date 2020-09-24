@@ -86,7 +86,7 @@ export async function run({
     testStepResult.status = Status.PASSED
   }
 
-  testStepResult.functionName = stepDefinition.code.name;
+  testStepResult.functionName = stepDefinition.code.name
 
   return testStepResult
 }
