@@ -1,7 +1,7 @@
 import _, { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
-import StepRunner from './step_runner'
+import StepRunner, { TestResult } from './step_runner'
 import { IdGenerator, messages } from '@cucumber/messages'
 import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
@@ -300,7 +300,7 @@ export default class PickleRunner {
     )
   }
 
-  async run(): Promise<messages.TestStepFinished.ITestStepResult> {
+  async run(): Promise<TestResult> {
     this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = this.newId()

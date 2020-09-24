@@ -1,4 +1,4 @@
-import { DataTable, Then, When } from '../../'
+import { DataTable, Given, Then, When } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
@@ -11,6 +11,26 @@ import {
 import { World } from '../support/world'
 
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+
+/**
+ * Left for testing
+ */
+
+Given(/^Cake exist$/, function cakeExists() {
+    // console.log(name);
+});
+
+When(/^I eat cake$/, function iEatCake() {
+    // console.log(name);
+});
+
+Then(/^My belly is full$/, function bellyIsFull() {
+    throw new Error("Cake does not exist");
+});
+
+/**
+ * Left for testing
+ */
 
 When(
   /^I run cucumber-js(?: with `(|.+)`)?$/,

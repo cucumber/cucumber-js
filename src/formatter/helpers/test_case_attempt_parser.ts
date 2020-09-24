@@ -14,13 +14,14 @@ import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import TestCaseHookDefinition from '../../models/test_case_hook_definition'
 import { ILineAndUri } from '../../types'
+import { TestResult } from '../../runtime/step_runner'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri
   argument?: messages.IPickleStepArgument
   attachments: messages.IAttachment[]
   keyword: string
-  result: messages.TestStepFinished.ITestStepResult
+  result: TestResult
   snippet?: string
   sourceLocation?: ILineAndUri
   text?: string

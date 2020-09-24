@@ -1,5 +1,12 @@
 Feature: Ambiguous Steps
 
+  # Left here for testing purposes
+  @test
+  Scenario: Test this
+    Given Cake exist
+    When I eat cake
+    Then My belly is full
+
   Scenario:
     Given a file named "features/a.feature" with:
       """

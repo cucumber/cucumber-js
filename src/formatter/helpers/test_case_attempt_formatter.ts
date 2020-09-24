@@ -52,7 +52,7 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
   const identifier = testStep.keyword + valueOrDefault(testStep.text, '')
   let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
   if (doesHaveValue(actionLocation)) {
-    text += ` # ${colorFns.location(formatLocation(actionLocation))}`
+    text += ` # ${(testStep.result.functionName) ? `Function: ${testStep.result.functionName} #` : ''}${colorFns.location(formatLocation(actionLocation))}`
   }
   text += '\n'
   if (doesHaveValue(testStep.argument)) {

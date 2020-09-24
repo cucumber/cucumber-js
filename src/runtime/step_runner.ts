@@ -22,13 +22,18 @@ export interface IRunOptions {
   world: any
 }
 
+// Just for testing since I am not updating cucumber/messages for this experiment
+export interface TestResult extends messages.TestStepFinished.ITestStepResult {
+  functionName?: string
+}
+
 export async function run({
   defaultTimeout,
   hookParameter,
   step,
   stepDefinition,
   world,
-}: IRunOptions): Promise<messages.TestStepFinished.ITestStepResult> {
+}: IRunOptions): Promise<TestResult> {
   beginTiming()
   let error: any,
     result: messages.TestStepFinished.ITestStepResult,
@@ -66,7 +71,7 @@ export async function run({
     }
   }
 
-  const testStepResult = messages.TestStepFinished.TestStepResult.fromObject({
+  const testStepResult: TestResult = messages.TestStepFinished.TestStepResult.fromObject({
     duration: millisecondsToDuration(endTiming()),
   })
 
@@ -80,6 +85,8 @@ export async function run({
   } else {
     testStepResult.status = Status.PASSED
   }
+
+  testStepResult.functionName = stepDefinition.code.name;
 
   return testStepResult
 }

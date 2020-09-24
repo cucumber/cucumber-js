@@ -3,13 +3,14 @@ import { messages } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
 import { Query } from '@cucumber/query'
+import { TestResult } from '../../runtime/step_runner'
 
 interface ITestCaseAttemptData {
   attempt: number
   testCaseId: string
   stepAttachments: Dictionary<messages.IAttachment[]>
   stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
-  worstTestStepResult: messages.TestStepFinished.ITestStepResult
+  worstTestStepResult: TestResult
 }
 
 export interface ITestCaseAttempt {
