@@ -208,7 +208,7 @@ describe('PickleFilter', () => {
 
           // Assert
           expect(result).to.eql(true)
-        });
+        })
       })
 
       describe('should match name A or B', () => {
