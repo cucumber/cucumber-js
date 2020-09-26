@@ -1,4 +1,4 @@
-import { DataTable, Given, Then, When } from '../../'
+import { DataTable, Then, When } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
