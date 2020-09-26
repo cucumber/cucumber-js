@@ -9,36 +9,6 @@ import { ITestCaseHookParameter } from '../../src/support_code_library_builder/t
 
 const projectPath = path.join(__dirname, '..', '..')
 
-/**
- * Left for testing
- */
-
-const iAmArrowFunction = () => {
-  //
-}
-
-Before(iAmArrowFunction)
-
-Before(async function asyncHook() {
-    //
-})
-
-Before(function doStuff() {
-    //
-})
-
-Before(function doStuffAgain() {
-    //
-})
-
-Before(function doStuffAgainC2() {
-    //
-})
-
-/**
- * Left for testing
- */
-
 Before('@debug', function (this: World) {
   this.debug = true
 })
