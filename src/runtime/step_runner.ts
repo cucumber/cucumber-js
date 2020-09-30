@@ -71,9 +71,11 @@ export async function run({
     }
   }
 
-  const testStepResult: TestResult = messages.TestStepFinished.TestStepResult.fromObject({
-    duration: millisecondsToDuration(endTiming()),
-  })
+  const testStepResult: TestResult = messages.TestStepFinished.TestStepResult.fromObject(
+    {
+      duration: millisecondsToDuration(endTiming()),
+    }
+  )
 
   if (result === 'skipped') {
     testStepResult.status = Status.SKIPPED

@@ -53,10 +53,16 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
   let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
 
   const isHook = testStep.keyword === 'Before' || testStep.keyword === 'After'
-  const functionName = `${colorFns.functionName(testStep.result.functionName || 'anonymous')}()`
+
+  const functionName =
+    testStep.result.functionName !== undefined
+      ? colorFns.functionName(testStep.result.functionName)
+      : colorFns.functionName('anonymous')
 
   if (doesHaveValue(actionLocation)) {
-    text += ` # ${isHook ? `${functionName} # ` : ''}${colorFns.location(formatLocation(actionLocation))}`
+    text += ` # ${isHook ? `${functionName}() # ` : ''}${colorFns.location(
+      formatLocation(actionLocation)
+    )}`
   }
   text += '\n'
   if (doesHaveValue(testStep.argument)) {

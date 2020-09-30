@@ -12,7 +12,7 @@ export interface IColorFns {
     status: messages.TestStepFinished.TestStepResult.Status
   ) => IColorFn
   location: IColorFn
-  tag: IColorFn,
+  tag: IColorFn
   functionName: IColorFn
 }
 
@@ -32,7 +32,7 @@ export default function getColorFns(enabled: boolean): IColorFns {
       },
       location: colors.gray.bind(colors),
       tag: colors.cyan.bind(colors),
-      functionName: colors.yellow.bind(colors)
+      functionName: colors.yellow.bind(colors),
     }
   } else {
     return {
@@ -41,7 +41,7 @@ export default function getColorFns(enabled: boolean): IColorFns {
       },
       location: _.identity,
       tag: _.identity,
-      functionName: _.identity
+      functionName: _.identity,
     }
   }
 }
