@@ -253,7 +253,7 @@
     "stream-to-string": "1.2.0",
     "ts-node": "9.0.0",
     "tsify": "5.0.2",
-    "typescript": "4.0.2"
+    "typescript": "4.0.3"
   },
   "scripts": {
     "build-browser-example": "browserify example/index.ts -o dist/browser-example.js -p [ tsify -p tsconfig.browser.json ]",
