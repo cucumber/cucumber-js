@@ -11,6 +11,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+* Add a built in `html` formatter for rich HTML reports output as a standalone page
+
 ### Changed
 
 ### Deprecated
