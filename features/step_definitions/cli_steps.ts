@@ -51,7 +51,7 @@ When(
       args = ''
     }
     // message is always outputted as part of run
-    const formats = ['json:json.out']
+    const formats = ['html:html.out', 'json:json.out']
     args += ' ' + formats.map((f) => `--format ${f}`).join(' ')
     const renderedArgs = Mustache.render(args, this)
     const stringArgs = stringArgv(renderedArgs)
