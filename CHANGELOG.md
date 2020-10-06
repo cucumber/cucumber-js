@@ -1792,7 +1792,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 <!-- Releases -->
 [Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.0.0-rc.0...master
-[7.0.0-rc.0]:        https://github.com/cucumber/cucumber-js/compare/6.0.5...v7.0.0-rc.0
+[7.0.0-rc.0]:        https://github.com/cucumber/cucumber-js/compare/v6.0.5...v7.0.0-rc.0
 [6.0.5]:        https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5
 [6.0.4]:        https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4
 [6.0.3]:        https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3
