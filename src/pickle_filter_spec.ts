@@ -179,17 +179,17 @@ describe('PickleFilter', () => {
         })
       })
 
-      describe('should match name with brackets', () => {
+      describe('should match name with regex', () => {
         beforeEach(function () {
           pickleFilter = new PickleFilter({
             cwd,
             featurePaths: ['features'],
-            names: ['(nameA) descriptionA'],
+            names: ['^startA.+endA$'],
             tagExpression: '',
           })
         })
 
-        it('returns true if pickle name matches from scenario', async function () {
+        it('returns true if regex matches', async function () {
           // Arrange
           const {
             pickles: [pickle],
@@ -197,7 +197,7 @@ describe('PickleFilter', () => {
           } = await parse({
             data: [
               'Feature: a',
-              'Scenario: (nameA) descriptionA',
+              'Scenario: startA descriptionA endA',
               'Given a step',
             ].join('\n'),
             uri: path.resolve(cwd, 'features/a.feature'),

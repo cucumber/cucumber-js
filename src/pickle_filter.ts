@@ -117,7 +117,7 @@ export class PickleNameFilter {
     if (this.names.length === 0) {
       return true
     }
-    return _.some(this.names, (name) => pickle.name.includes(name))
+    return _.some(this.names, (name) => pickle.name.match(name))
   }
 }
 
