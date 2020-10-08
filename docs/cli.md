@@ -20,7 +20,8 @@ needs to be required in your support files and globally installed modules cannot
 * Specify a scenario by its line number
   * `$ cucumber-js features/my_feature.feature:3`
 * Specify a scenario by its name matching a regular expression
-  * `$ cucumber-js --name "topic 1"` ; `$ cucumber-js --name "^start.+end$"`
+  * `$ cucumber-js --name "topic 1"`
+  * `$ cucumber-js --name "^start.+end$"`
   * If used multiple times, the scenario name needs to match only one of the names supplied
   * To escape special regex characters in scenario name, use backslash e.g., `\(Scenario Name\)`
 * Use [Tags](#tags)
