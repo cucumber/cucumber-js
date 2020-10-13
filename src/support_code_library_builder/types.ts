@@ -19,6 +19,7 @@ export interface ITestStepHookParameter {
   pickle: messages.IPickle
   result: messages.TestStepFinished.ITestStepResult
   testCaseStartedId: string
+  testStepId: string
 }
 
 export type TestCaseHookFunctionWithoutParameter = () => void | Promise<void>

@@ -7,6 +7,7 @@ import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,
+  ITestStepHookParameter,
 } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
@@ -368,10 +369,11 @@ export default class PickleRunner {
         status: Status.SKIPPED,
       })
     }
-    const hookParameter: ITestCaseHookParameter = {
+    const hookParameter: ITestStepHookParameter = {
       gherkinDocument: this.gherkinDocument,
       pickle: this.pickle,
       testCaseStartedId: this.currentTestCaseStartedId,
+      testStepId: this.currentTestStepId,
       result: this.result,
     }
 
