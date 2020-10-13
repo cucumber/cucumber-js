@@ -217,34 +217,6 @@ function emitTestCaseHooks(
     })
 }
 
-function emitTestStepHooks(
-  supportCodeLibrary: ISupportCodeLibrary,
-  eventBroadcaster: EventEmitter
-): void {
-  ;[]
-    .concat(
-      supportCodeLibrary.beforeTestStepHookDefinitions,
-      supportCodeLibrary.afterTestStepHookDefinitions
-    )
-    .forEach((testStepHookDefinition: TestStepHookDefinition) => {
-      eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          hook: {
-            id: testStepHookDefinition.id,
-            tagExpression: testStepHookDefinition.tagExpression,
-            sourceReference: {
-              uri: testStepHookDefinition.uri,
-              location: {
-                line: testStepHookDefinition.line,
-              },
-            },
-          },
-        })
-      )
-    })
-}
-
 function emitTestRunHooks(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter
@@ -285,6 +257,5 @@ export function emitSupportCodeMessages({
   emitUndefinedParameterTypes(supportCodeLibrary, eventBroadcaster)
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
   emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
-  emitTestStepHooks(supportCodeLibrary, eventBroadcaster)
   emitTestRunHooks(supportCodeLibrary, eventBroadcaster)
 }

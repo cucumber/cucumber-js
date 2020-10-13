@@ -256,7 +256,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
   })
 
-  describe('After', () => {
+  describe('AfterStep', () => {
     describe('function only', () => {
       it('adds a test step hook definition', function () {
         // Arrange
@@ -344,7 +344,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
   })
 
-  describe('this.Before', () => {
+  describe('BeforeStep', () => {
     describe('function only', () => {
       it('adds a step hook definition', function () {
         // Arrange
