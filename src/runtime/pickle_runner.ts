@@ -407,36 +407,34 @@ export default class PickleRunner {
         },
       })
     }
-    let stepResult
-    let afterStepHooksResult
+
     const beforeStepHooksResult = await this.runStepHooks(
       this.getBeforeStepHookDefinitions()
     )
+    let cumulatedStepResult = beforeStepHooksResult
 
     if (beforeStepHooksResult.status !== Status.FAILED) {
-      stepResult = await this.invokeStep(
+      const stepResult = await this.invokeStep(
         testStep.pickleStep,
         testStep.stepDefinitions[0]
       )
-      afterStepHooksResult = await this.runStepHooks(
-        this.getAfterStepHookDefinitions()
-      )
-    }
-    let cumulatedStepResult = beforeStepHooksResult
-
-    if (stepResult !== undefined) {
-      cumulatedStepResult = stepResult
-      if (beforeStepHooksResult?.duration !== null) {
-        cumulatedStepResult.duration = addDurations(
-          cumulatedStepResult.duration,
-          beforeStepHooksResult.duration
+      if (stepResult !== undefined) {
+        cumulatedStepResult = stepResult
+        if (beforeStepHooksResult?.duration !== null) {
+          cumulatedStepResult.duration = addDurations(
+            cumulatedStepResult.duration,
+            beforeStepHooksResult.duration
+          )
+        }
+        const afterStepHooksResult = await this.runStepHooks(
+          this.getAfterStepHookDefinitions()
         )
-      }
-      if (afterStepHooksResult?.duration !== null) {
-        cumulatedStepResult.duration = addDurations(
-          cumulatedStepResult.duration,
-          afterStepHooksResult.duration
-        )
+        if (afterStepHooksResult?.duration !== null) {
+          cumulatedStepResult.duration = addDurations(
+            cumulatedStepResult.duration,
+            afterStepHooksResult.duration
+          )
+        }
       }
     }
     return cumulatedStepResult
