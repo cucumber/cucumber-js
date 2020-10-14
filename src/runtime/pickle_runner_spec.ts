@@ -24,7 +24,7 @@ interface ITestPickleRunnerRequest {
 
 interface ITestPickleRunnerResponse {
   envelopes: messages.IEnvelope[]
-  result: messages.TestStepFinished.ITestStepResult
+  result: messages.TestStepFinished.TestStepResult.Status
 }
 
 async function testPickleRunner(
@@ -302,11 +302,8 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result.status).to.eql(
+        expect(result).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
-        )
-        expect(result.message).to.eql(
-          envelopes[3].testStepFinished.testStepResult.message
         )
       })
     })
@@ -341,7 +338,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result.status).to.eql(
+        expect(result).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
         )
       })
@@ -502,7 +499,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result.status).to.eql(
+        expect(result).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
         )
       })
@@ -569,7 +566,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result.status).to.eql(
+        expect(result).to.eql(
           envelopes[7].testStepFinished.testStepResult.status
         )
       })

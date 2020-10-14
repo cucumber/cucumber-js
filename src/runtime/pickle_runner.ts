@@ -1,9 +1,8 @@
-import _, { clone } from 'lodash'
+import { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import { IdGenerator, messages } from '@cucumber/messages'
-import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -54,7 +53,7 @@ export default class PickleRunner {
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testCaseId: string
   private readonly testSteps: ITestStep[]
-  private testStepResults: messages.TestStepFinished.ITestStepResult[];
+  private testStepResults: messages.TestStepFinished.ITestStepResult[]
   private world: any
   private readonly worldParameters: any
 
@@ -300,7 +299,9 @@ export default class PickleRunner {
               testCaseStartedId: this.currentTestCaseStartedId,
             }
             if (!testStep.isBeforeHook) {
-              hookParameter.result = { status: this.getWorstStepResult().status }
+              hookParameter.result = {
+                status: this.getWorstStepResult().status,
+              }
             }
             return await this.runHook(
               testStep.hookDefinition,
