@@ -53,6 +53,7 @@ export default class PickleRunner {
   private readonly pickle: messages.IPickle
   private readonly maxAttempts: number
   private result: messages.TestStepFinished.ITestStepResult
+  private stepResult: messages.TestStepFinished.ITestStepResult
   private readonly skip: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testCaseId: string
@@ -394,7 +395,7 @@ export default class PickleRunner {
       pickle: this.pickle,
       testCaseStartedId: this.currentTestCaseStartedId,
       testStepId: this.currentTestStepId,
-      result: this.result,
+      result: this.stepResult,
     }
 
     return await this.invokeStep(null, stepHookDefinition, hookParameter)
@@ -430,6 +431,7 @@ export default class PickleRunner {
       })
     }
 
+    this.stepResult = undefined
     const beforeStepHooksResult = await this.runStepHooks(
       this.getBeforeStepHookDefinitions()
     )
@@ -441,22 +443,19 @@ export default class PickleRunner {
         testStep.stepDefinitions[0]
       )
       if (stepResult !== undefined) {
+        this.stepResult = stepResult
         cumulatedStepResult = stepResult
-        if (beforeStepHooksResult?.duration !== null) {
-          cumulatedStepResult.duration = addDurations(
-            cumulatedStepResult.duration,
-            beforeStepHooksResult.duration
-          )
-        }
+        cumulatedStepResult.duration = addDurations(
+          cumulatedStepResult.duration,
+          beforeStepHooksResult.duration
+        )
         const afterStepHooksResult = await this.runStepHooks(
           this.getAfterStepHookDefinitions()
         )
-        if (afterStepHooksResult?.duration !== null) {
-          cumulatedStepResult.duration = addDurations(
-            cumulatedStepResult.duration,
-            afterStepHooksResult.duration
-          )
-        }
+        cumulatedStepResult.duration = addDurations(
+          cumulatedStepResult.duration,
+          afterStepHooksResult.duration
+        )
       }
     }
     return cumulatedStepResult
@@ -471,6 +470,10 @@ export default class PickleRunner {
           this.result.status === Status.FAILED
             ? Status.SKIPPED
             : this.result.status,
+        duration:
+          this.result.duration === null
+            ? this.result.duration
+            : getZeroDuration(),
       }
     )
 
@@ -483,12 +486,10 @@ export default class PickleRunner {
       if (stepHookResult.message !== '') {
         stepHooksResult.message = stepHookResult.message
       }
-      if (stepHookResult.duration !== null) {
-        stepHooksResult.duration =
-          stepHooksResult.duration !== null
-            ? addDurations(stepHooksResult.duration, stepHookResult.duration)
-            : stepHookResult.duration
-      }
+      stepHooksResult.duration =
+        stepHooksResult.duration !== null
+          ? addDurations(stepHooksResult.duration, stepHookResult.duration)
+          : stepHookResult.duration
     }
     return stepHooksResult
   }
