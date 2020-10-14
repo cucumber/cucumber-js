@@ -36,7 +36,7 @@ Defines a hook which is run after each scenario.
   * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
-  * The first argument will be an object of the form `{pickle, gherkinDocument, result}`
+  * The first argument will be an object of the form `{pickle, gherkinDocument, result, testCaseStartedId}`
     * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
   * When using the asynchronous callback interface, have one final argument for the callback function.
 
@@ -67,7 +67,7 @@ Defines a hook which is run after each step.
   * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
-  * The first argument will be an object of the form `{pickle, gherkinDocument, result}`
+  * The first argument will be an object of the form `{pickle, gherkinDocument, result, testCaseStartedId, testStepId}`
     * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
   * When using the asynchronous callback interface, have one final argument for the callback function.
 
