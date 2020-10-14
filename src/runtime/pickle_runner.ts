@@ -304,9 +304,7 @@ export default class PickleRunner {
               testCaseStartedId: this.currentTestCaseStartedId,
             }
             if (!testStep.isBeforeHook) {
-              hookParameter.result = {
-                status: this.getWorstStepResult().status,
-              }
+              hookParameter.result = this.getWorstStepResult()
             }
             return await this.runHook(
               testStep.hookDefinition,
