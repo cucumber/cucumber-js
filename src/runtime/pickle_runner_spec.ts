@@ -150,7 +150,7 @@ describe('PickleRunner', () => {
             },
           }),
         ])
-        expect(result).to.eql(passedTestResult)
+        expect(result).to.eql(Status.PASSED)
       })
     })
 
@@ -260,7 +260,7 @@ describe('PickleRunner', () => {
         expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           failingTestResult
         )
-        expect(result).to.eql(failingTestResult)
+        expect(result).to.eql(Status.FAILED)
       })
     })
 
@@ -460,7 +460,7 @@ describe('PickleRunner', () => {
             },
           }),
         ])
-        expect(result).to.eql(envelopes[7].testStepFinished.testStepResult)
+        expect(result).to.eql(Status.PASSED)
       })
     })
 

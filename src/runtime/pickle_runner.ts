@@ -208,6 +208,11 @@ export default class PickleRunner {
   }
 
   getWorstStepResult(): messages.TestStepFinished.ITestStepResult {
+    if (this.testStepResults.length == 0) {
+      return messages.TestStepFinished.TestStepResult.fromObject({
+        status: this.skip ? Status.SKIPPED : Status.PASSED,
+      })
+    }
     return new Query().getWorstTestStepResult(this.testStepResults)
   }
 
