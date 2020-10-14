@@ -362,7 +362,8 @@ export default class PickleRunner {
   }
 
   async runStepHook(
-    stepHookDefinition: TestStepHookDefinition
+    stepHookDefinition: TestStepHookDefinition,
+    stepResult: messages.TestStepFinished.ITestStepResult
   ): Promise<messages.TestStepFinished.ITestStepResult> {
     if (this.isSkippingSteps()) {
       return messages.TestStepFinished.TestStepResult.fromObject({
@@ -374,7 +375,7 @@ export default class PickleRunner {
       pickle: this.pickle,
       testCaseStartedId: this.currentTestCaseStartedId,
       testStepId: this.currentTestStepId,
-      result: this.stepResult,
+      result: stepResult,
     }
 
     return await this.invokeStep(null, stepHookDefinition, hookParameter)
@@ -410,11 +411,12 @@ export default class PickleRunner {
       })
     }
 
-    this.stepResult = undefined
+    let cumulatedStepResult
     const beforeStepHooksResult = await this.runStepHooks(
-      this.getBeforeStepHookDefinitions()
+      this.getBeforeStepHookDefinitions(),
+      cumulatedStepResult
     )
-    let cumulatedStepResult = beforeStepHooksResult
+    cumulatedStepResult = beforeStepHooksResult
 
     if (beforeStepHooksResult.status !== Status.FAILED) {
       const stepResult = await this.invokeStep(
@@ -422,14 +424,14 @@ export default class PickleRunner {
         testStep.stepDefinitions[0]
       )
       if (stepResult !== undefined) {
-        this.stepResult = stepResult
         cumulatedStepResult = stepResult
         cumulatedStepResult.duration = addDurations(
           cumulatedStepResult.duration,
           beforeStepHooksResult.duration
         )
         const afterStepHooksResult = await this.runStepHooks(
-          this.getAfterStepHookDefinitions()
+          this.getAfterStepHookDefinitions(),
+          cumulatedStepResult
         )
         cumulatedStepResult.duration = addDurations(
           cumulatedStepResult.duration,
@@ -441,7 +443,8 @@ export default class PickleRunner {
   }
 
   async runStepHooks(
-    stepHooks: TestStepHookDefinition[]
+    stepHooks: TestStepHookDefinition[],
+    stepResult: messages.TestStepFinished.ITestStepResult
   ): Promise<messages.TestStepFinished.ITestStepResult> {
     const stepHooksResult = messages.TestStepFinished.TestStepResult.fromObject(
       {
@@ -449,15 +452,15 @@ export default class PickleRunner {
           this.result.status === Status.FAILED
             ? Status.SKIPPED
             : this.result.status,
-        duration:
-          this.result.duration === null
-            ? this.result.duration
-            : getZeroDuration(),
+        duration: getZeroDuration(),
       }
     )
 
     for (const stepHookDefinition of stepHooks) {
-      const stepHookResult = await this.runStepHook(stepHookDefinition)
+      const stepHookResult = await this.runStepHook(
+        stepHookDefinition,
+        stepResult
+      )
       if (this.shouldUpdateStatus(stepHookResult)) {
         stepHooksResult.status = stepHookResult.status
         this.result.status = stepHookResult.status
@@ -465,10 +468,10 @@ export default class PickleRunner {
       if (stepHookResult.message !== '') {
         stepHooksResult.message = stepHookResult.message
       }
-      stepHooksResult.duration =
-        stepHooksResult.duration !== null
-          ? addDurations(stepHooksResult.duration, stepHookResult.duration)
-          : stepHookResult.duration
+      stepHooksResult.duration = addDurations(
+        stepHooksResult.duration,
+        stepHookResult.duration
+      )
     }
     return stepHooksResult
   }
