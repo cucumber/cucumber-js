@@ -3,6 +3,7 @@ import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import { IdGenerator, messages } from '@cucumber/messages'
+import { addDurations } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -17,7 +18,6 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
 import { Query } from '@cucumber/query'
-import { addDurations, getZeroDuration } from '../time'
 
 const { Status } = messages.TestStepFinished.TestStepResult
 
