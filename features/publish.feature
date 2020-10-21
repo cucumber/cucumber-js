@@ -1,7 +1,9 @@
 Feature: Publish reports
 
   Background:
-    Given a file named "features/a.feature" with:
+    Given a report server is running on 'http://localhost:9987'
+    And my env includes "CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports"
+    And a file named "features/a.feature" with:
       """
       Feature: a feature
         Scenario: a scenario
@@ -16,8 +18,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when --publish is specified
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `--publish` and env ``
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -35,8 +36,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_ENABLED is set
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_ENABLED=1 CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_ENABLED=1`
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -54,8 +54,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_TOKEN is set
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=keyboardcat CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -74,8 +73,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: a banner is displayed after publication
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `--publish` and env ``
     Then the error output contains the text:
       """
       ┌──────────────────────────────────────────────────────────────────────────┐
@@ -105,8 +103,7 @@ Feature: Publish reports
       """
   @spawn
   Scenario: the publication banner is not shown when publication is done
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `<args>` and env `<env> CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `<args>` and env `<env>`
     Then the error output does not contain the text:
       """
       Share your Cucumber Report with your team at https://reports.cucumber.io

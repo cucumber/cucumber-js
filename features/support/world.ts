@@ -11,6 +11,7 @@ import _ from 'lodash'
 import ndjsonParse from 'ndjson-parse'
 import { messages } from '@cucumber/messages'
 import FakeReportServer from '../../test/fake_report_server'
+import { doesHaveValue } from '../../src/value_checker'
 
 interface ILastRun {
   error: any
@@ -27,6 +28,7 @@ interface IRunResult {
 
 export class World {
   public tmpDir: string
+  public sharedEnv: NodeJS.ProcessEnv
   public spawn: boolean = false
   public debug: boolean = false
   public lastRun: ILastRun
@@ -35,10 +37,21 @@ export class World {
   public globalExecutablePath: string
   public reportServer: FakeReportServer
 
+  parseEnvString(str: string): NodeJS.ProcessEnv {
+    const result: NodeJS.ProcessEnv = {}
+    if (doesHaveValue(str)) {
+      str
+        .split(/\s+/)
+        .map((keyValue) => keyValue.split('='))
+        .forEach((pair) => (result[pair[0]] = pair[1]))
+    }
+    return result
+  }
+
   async run(
     executablePath: string,
     inputArgs: string[],
-    env: NodeJS.ProcessEnv = process.env
+    envOverride: NodeJS.ProcessEnv = null
   ): Promise<void> {
     const messageFilename = 'message.ndjson'
     const args = ['node', executablePath]
@@ -54,6 +67,7 @@ export class World {
         }
         return arg
       })
+    const env = _.merge({}, process.env, this.sharedEnv, envOverride)
     const cwd = this.tmpDir
 
     let result: IRunResult
