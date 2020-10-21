@@ -17,6 +17,7 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
 import { Query } from '@cucumber/query'
+import { addDurations, getZeroDuration } from '../time'
 
 const { Status } = messages.TestStepFinished.TestStepResult
 
@@ -449,9 +450,9 @@ export default class PickleRunner {
     const stepHooksResult = messages.TestStepFinished.TestStepResult.fromObject(
       {
         status:
-          this.result.status === Status.FAILED
+          this.getWorstStepResult().status === Status.FAILED
             ? Status.SKIPPED
-            : this.result.status,
+            : this.getWorstStepResult().status,
         duration: getZeroDuration(),
       }
     )
@@ -461,10 +462,12 @@ export default class PickleRunner {
         stepHookDefinition,
         stepResult
       )
+      /*
       if (this.shouldUpdateStatus(stepHookResult)) {
         stepHooksResult.status = stepHookResult.status
         this.result.status = stepHookResult.status
       }
+      */
       if (stepHookResult.message !== '') {
         stepHooksResult.message = stepHookResult.message
       }
