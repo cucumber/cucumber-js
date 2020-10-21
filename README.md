@@ -53,14 +53,6 @@ $ npm install cucumber
 $ npm install @cucumber/cucumber
 ```
 
-#### 7.x.x and above
-
-(Not yet released)
-
-``` shell
-$ npm install @cucumber/cucumber
-```
-
 ## Documentation
 
 The following documentation is for master. See below for documentation for older versions.
