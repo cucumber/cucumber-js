@@ -382,6 +382,35 @@ export default class PickleRunner {
     return await this.invokeStep(null, stepHookDefinition, hookParameter)
   }
 
+  async runStepHooks(
+    stepHooks: TestStepHookDefinition[],
+    stepResult: messages.TestStepFinished.ITestStepResult
+  ): Promise<messages.TestStepFinished.ITestStepResult> {
+    const stepHooksResult = messages.TestStepFinished.TestStepResult.fromObject(
+      {
+        status:
+          this.getWorstStepResult().status === Status.FAILED
+            ? Status.SKIPPED
+            : this.getWorstStepResult().status,
+        duration: getZeroDuration(),
+      }
+    )
+    for (const stepHookDefinition of stepHooks) {
+      const stepHookResult = await this.runStepHook(
+        stepHookDefinition,
+        stepResult
+      )
+      if (stepHookResult.message !== '') {
+        stepHooksResult.message = stepHookResult.message
+      }
+      stepHooksResult.duration = addDurations(
+        stepHooksResult.duration,
+        stepHookResult.duration
+      )
+    }
+    return stepHooksResult
+  }
+
   async runStep(
     testStep: ITestStep
   ): Promise<messages.TestStepFinished.ITestStepResult> {
@@ -413,6 +442,7 @@ export default class PickleRunner {
     }
 
     let cumulatedStepResult
+
     const beforeStepHooksResult = await this.runStepHooks(
       this.getBeforeStepHookDefinitions(),
       cumulatedStepResult
@@ -441,41 +471,5 @@ export default class PickleRunner {
       }
     }
     return cumulatedStepResult
-  }
-
-  async runStepHooks(
-    stepHooks: TestStepHookDefinition[],
-    stepResult: messages.TestStepFinished.ITestStepResult
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
-    const stepHooksResult = messages.TestStepFinished.TestStepResult.fromObject(
-      {
-        status:
-          this.getWorstStepResult().status === Status.FAILED
-            ? Status.SKIPPED
-            : this.getWorstStepResult().status,
-        duration: getZeroDuration(),
-      }
-    )
-
-    for (const stepHookDefinition of stepHooks) {
-      const stepHookResult = await this.runStepHook(
-        stepHookDefinition,
-        stepResult
-      )
-      /*
-      if (this.shouldUpdateStatus(stepHookResult)) {
-        stepHooksResult.status = stepHookResult.status
-        this.result.status = stepHookResult.status
-      }
-      */
-      if (stepHookResult.message !== '') {
-        stepHooksResult.message = stepHookResult.message
-      }
-      stepHooksResult.duration = addDurations(
-        stepHooksResult.duration,
-        stepHookResult.duration
-      )
-    }
-    return stepHooksResult
   }
 }
