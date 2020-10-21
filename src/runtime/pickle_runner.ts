@@ -407,10 +407,12 @@ export default class PickleRunner {
   ): Promise<messages.TestStepFinished.ITestStepResult> {
     const stepHooksResult = messages.TestStepFinished.TestStepResult.fromObject(
       {
+        /** 
         status:
           this.getWorstStepResult().status === Status.FAILED
             ? Status.SKIPPED
             : this.getWorstStepResult().status,
+            */
         duration: getZeroDuration(),
       }
     )
