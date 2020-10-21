@@ -17,6 +17,7 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
 import { Query } from '@cucumber/query'
+import { addDurations, getZeroDuration } from '../time'
 
 const { Status } = messages.TestStepFinished.TestStepResult
 
@@ -361,15 +362,11 @@ export default class PickleRunner {
     return await this.invokeStep(null, hookDefinition, hookParameter)
   }
 
-  async runStepHook(
-    stepHookDefinition: TestStepHookDefinition,
-    stepResult: messages.TestStepFinished.ITestStepResult
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
-    if (this.isSkippingSteps()) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
-        status: Status.SKIPPED,
-      })
-    }
+  async runStepHooks(
+    stepHooks: TestStepHookDefinition[],
+    stepResult?: messages.TestStepFinished.ITestStepResult
+  ): Promise<messages.TestStepFinished.ITestStepResult[]> {
+    const stepHooksResult = []
     const hookParameter: ITestStepHookParameter = {
       gherkinDocument: this.gherkinDocument,
       pickle: this.pickle,
@@ -377,36 +374,9 @@ export default class PickleRunner {
       testStepId: this.currentTestStepId,
       result: stepResult,
     }
-
-    return await this.invokeStep(null, stepHookDefinition, hookParameter)
-  }
-
-  async runStepHooks(
-    stepHooks: TestStepHookDefinition[],
-    stepResult: messages.TestStepFinished.ITestStepResult
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
-    const stepHooksResult = messages.TestStepFinished.TestStepResult.fromObject(
-      {
-        /** 
-        status:
-          this.getWorstStepResult().status === Status.FAILED
-            ? Status.SKIPPED
-            : this.getWorstStepResult().status,
-            */
-        duration: getZeroDuration(),
-      }
-    )
     for (const stepHookDefinition of stepHooks) {
-      const stepHookResult = await this.runStepHook(
-        stepHookDefinition,
-        stepResult
-      )
-      if (stepHookResult.message !== '') {
-        stepHooksResult.message = stepHookResult.message
-      }
-      stepHooksResult.duration = addDurations(
-        stepHooksResult.duration,
-        stepHookResult.duration
+      stepHooksResult.push(
+        await this.invokeStep(null, stepHookDefinition, hookParameter)
       )
     }
     return stepHooksResult
@@ -442,35 +412,35 @@ export default class PickleRunner {
       })
     }
 
-    let cumulatedStepResult
-
     const beforeStepHooksResult = await this.runStepHooks(
       this.getBeforeStepHookDefinitions(),
-      cumulatedStepResult
+      null
     )
-    cumulatedStepResult = beforeStepHooksResult
-
-    if (beforeStepHooksResult.status !== Status.FAILED) {
+    let finalStepResult = new Query().getWorstTestStepResult(
+      beforeStepHooksResult
+    )
+    if (finalStepResult.status !== Status.FAILED) {
       const stepResult = await this.invokeStep(
         testStep.pickleStep,
         testStep.stepDefinitions[0]
       )
-      if (stepResult !== undefined) {
-        cumulatedStepResult = stepResult
-        cumulatedStepResult.duration = addDurations(
-          cumulatedStepResult.duration,
-          beforeStepHooksResult.duration
-        )
-        const afterStepHooksResult = await this.runStepHooks(
-          this.getAfterStepHookDefinitions(),
-          cumulatedStepResult
-        )
-        cumulatedStepResult.duration = addDurations(
-          cumulatedStepResult.duration,
-          afterStepHooksResult.duration
+      const afterStepHooksResult = await this.runStepHooks(
+        this.getAfterStepHookDefinitions(),
+        stepResult
+      )
+
+      const stepHookResults = beforeStepHooksResult.concat(afterStepHooksResult)
+      finalStepResult = stepResult
+      finalStepResult = new Query().getWorstTestStepResult(
+        stepHookResults.concat(stepResult)
+      )
+      for (const stepHookResult of stepHookResults) {
+        finalStepResult.duration = addDurations(
+          finalStepResult.duration,
+          stepHookResult.duration
         )
       }
     }
-    return cumulatedStepResult
+    return finalStepResult
   }
 }
