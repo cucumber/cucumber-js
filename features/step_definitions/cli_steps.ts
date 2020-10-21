@@ -12,10 +12,6 @@ import { World } from '../support/world'
 
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
 
-When('my env includes {string}', function (this: World, envString: string) {
-  this.sharedEnv = this.parseEnvString(envString)
-})
-
 When(
   /^I run cucumber-js(?: with `(|.+)`)?$/,
   { timeout: 10000 },
@@ -29,11 +25,21 @@ When(
 When(
   /^I run cucumber-js with arguments `(|.+)` and env `(|.+)`$/,
   { timeout: 10000 },
-  async function (this: World, args: string, envString: string) {
+  async function (this: World, args: string, envs: string) {
     const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
     const stringArgs = stringArgv(renderedArgs)
-    const env = this.parseEnvString(envString)
-    return await this.run(this.localExecutablePath, stringArgs, env)
+    const initialValue: NodeJS.ProcessEnv = {}
+    const env: NodeJS.ProcessEnv = (envs === null ? '' : envs)
+      .split(/\s+/)
+      .map((keyValue) => keyValue.split('='))
+      .reduce((dict, pair) => {
+        dict[pair[0]] = pair[1]
+        return dict
+      }, initialValue)
+    return await this.run(this.localExecutablePath, stringArgs, {
+      ...process.env,
+      ...env,
+    })
   }
 )
 
@@ -45,7 +51,7 @@ When(
       args = ''
     }
     // message is always outputted as part of run
-    const formats = ['html:html.out', 'json:json.out']
+    const formats = ['json:json.out']
     args += ' ' + formats.map((f) => `--format ${f}`).join(' ')
     const renderedArgs = Mustache.render(args, this)
     const stringArgs = stringArgv(renderedArgs)

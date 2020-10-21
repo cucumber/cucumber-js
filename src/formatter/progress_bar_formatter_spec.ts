@@ -20,7 +20,6 @@ import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { PassThrough } from 'stream'
 import ProgressBar from 'progress'
-import bluebird from 'bluebird'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -54,15 +53,13 @@ async function testProgressBarFormatter({
   const logFn = (data: string): void => {
     output += data
   }
-  const passThrough = new PassThrough()
   const progressBarFormatter = FormatterBuilder.build('progress-bar', {
     cwd: '',
     eventBroadcaster,
     eventDataCollector: new EventDataCollector(eventBroadcaster),
     log: logFn,
     parsedArgvOptions: {},
-    stream: passThrough,
-    cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
+    stream: new PassThrough(),
     supportCodeLibrary,
   }) as ProgressBarFormatter
   let mocked = false

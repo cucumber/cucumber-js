@@ -115,8 +115,8 @@ export default class Runtime {
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
     })
-    const status = await pickleRunner.run()
-    if (this.shouldCauseFailure(status)) {
+    const testResult = await pickleRunner.run()
+    if (this.shouldCauseFailure(testResult.status)) {
       this.success = false
     }
   }

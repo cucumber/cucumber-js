@@ -28,7 +28,7 @@ const FORMATTERS_INCLUDE = [
   '--publish-quiet',
 ]
 
-const htmlFormatter = [
+const formatters = [
   `node_modules/@cucumber/compatibility-kit/features/{${FORMATTERS_INCLUDE.join(
     ','
   )}}/*.feature`,
@@ -37,12 +37,12 @@ const htmlFormatter = [
   '--require',
   `compatibility/features/{${FORMATTERS_INCLUDE.join(',')}}/*.ts`,
   '--format',
-  'html:html-formatter.html',
+  'message',
   '--publish-quiet',
 ].join(' ')
 
 module.exports = {
   default: feature,
   cck,
-  htmlFormatter,
+  formatters,
 }

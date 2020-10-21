@@ -31,10 +31,3 @@ Then(
     expect(actual).to.eql(expected)
   }
 )
-
-Then('the html formatter output is complete', async function (this: World) {
-  const actualPath = path.join(this.tmpDir, `html.out`)
-  const actual = await fs.readFile(actualPath, 'utf8')
-  expect(actual).to.contain('<html lang="en">')
-  expect(actual).to.contain('</html>')
-})

@@ -12,14 +12,13 @@ import SummaryFormatter from './summary_formatter'
 import UsageFormatter from './usage_formatter'
 import UsageJsonFormatter from './usage_json_formatter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
+import Formatter, { IFormatterLogFn } from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { EventEmitter } from 'events'
 import EventDataCollector from './helpers/event_data_collector'
 import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import HtmlFormatter from './html_formatter'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -35,7 +34,6 @@ export interface IBuildOptions {
   log: IFormatterLogFn
   parsedArgvOptions: IParsedArgvFormatOptions
   stream: WritableStream
-  cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
 }
 
@@ -65,8 +63,6 @@ const FormatterBuilder = {
         return JsonFormatter
       case 'message':
         return MessageFormatter
-      case 'html':
-        return HtmlFormatter
       case 'progress':
         return ProgressFormatter
       case 'progress-bar':
