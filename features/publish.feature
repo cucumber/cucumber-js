@@ -105,7 +105,8 @@ Feature: Publish reports
       """
   @spawn
   Scenario: the publication banner is not shown when publication is done
-    When I run cucumber-js with arguments `<args>` and env `<env>`
+    Given a report server is running on 'http://localhost:9987'
+    When I run cucumber-js with arguments `<args>` and env `<env> CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
     Then the error output does not contain the text:
       """
       Share your Cucumber Report with your team at https://reports.cucumber.io
