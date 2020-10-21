@@ -621,7 +621,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result.status).to.eql(
+        expect(result).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
         )
       })
