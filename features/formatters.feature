@@ -10,7 +10,6 @@ Feature: Formatters
     When I run cucumber-js with all formatters and `--tags @a`
     Then the "message" formatter output matches the fixture "formatters/rejected-pickle.message.json"
     Then the "json" formatter output matches the fixture "formatters/rejected-pickle.json"
-    Then the html formatter output is complete
 
   Scenario: passed from Scenario
     Given a file named "features/a.feature" with:
@@ -28,7 +27,6 @@ Feature: Formatters
     When I run cucumber-js with all formatters
     Then the "message" formatter output matches the fixture "formatters/passed-scenario.message.json"
     Then the "json" formatter output matches the fixture "formatters/passed-scenario.json"
-    Then the html formatter output is complete
 
   Scenario: passed from Rule
     Given a file named "features/a.feature" with:
@@ -47,7 +45,6 @@ Feature: Formatters
     When I run cucumber-js with all formatters
     Then the "message" formatter output matches the fixture "formatters/passed-rule.message.json"
     Then the "json" formatter output matches the fixture "formatters/passed-rule.json"
-    Then the html formatter output is complete
 
   Scenario: failed
     Given a file named "features/a.feature" with:
@@ -65,7 +62,6 @@ Feature: Formatters
     When I run cucumber-js with all formatters
     Then the "message" formatter output matches the fixture "formatters/failed.message.json"
     Then the "json" formatter output matches the fixture "formatters/failed.json"
-    Then the html formatter output is complete
     And it fails
 
   Scenario: retried and passed
@@ -93,4 +89,3 @@ Feature: Formatters
     When I run cucumber-js with all formatters and `--retry 1`
     Then the "message" formatter output matches the fixture "formatters/retried.message.json"
     Then the "json" formatter output matches the fixture "formatters/retried.json"
-    Then the html formatter output is complete

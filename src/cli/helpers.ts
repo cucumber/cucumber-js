@@ -9,8 +9,9 @@ import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { messages, IdGenerator } from '@cucumber/messages'
 import createMeta from '@cucumber/create-meta'
+import readPkgUp from 'read-pkg-up'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -110,8 +111,7 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { version } = require('../../package.json')
+  const version = (await readPkgUp()).packageJson.version
   eventBroadcaster.emit(
     'envelope',
     new messages.Envelope({

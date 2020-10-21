@@ -11,7 +11,6 @@ import { doesNotHaveValue } from '../src/value_checker'
 import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
 import { emitSupportCodeMessages } from '../src/cli/helpers'
-import bluebird from 'bluebird'
 import IEnvelope = messages.IEnvelope
 
 const { uuid } = IdGenerator
@@ -58,15 +57,13 @@ export async function testFormatter({
   const logFn = (data: string): void => {
     output += data
   }
-  const passThrough = new PassThrough()
   FormatterBuilder.build(type, {
     cwd: '',
     eventBroadcaster,
     eventDataCollector,
     log: logFn,
     parsedArgvOptions,
-    stream: passThrough,
-    cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
+    stream: new PassThrough(),
     supportCodeLibrary,
   })
   let pickleIds: string[] = []

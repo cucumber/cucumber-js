@@ -1,8 +1,9 @@
-import { clone } from 'lodash'
+import _, { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import { IdGenerator, messages } from '@cucumber/messages'
+import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -16,8 +17,6 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
-import { Query } from '@cucumber/query'
-import { addDurations, getZeroDuration } from '../time'
 
 const { Status } = messages.TestStepFinished.TestStepResult
 
@@ -53,11 +52,11 @@ export default class PickleRunner {
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.IPickle
   private readonly maxAttempts: number
+  private result: messages.TestStepFinished.ITestStepResult
   private readonly skip: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testCaseId: string
   private readonly testSteps: ITestStep[]
-  private testStepResults: messages.TestStepFinished.ITestStepResult[]
   private world: any
   private readonly worldParameters: any
 
@@ -111,7 +110,10 @@ export default class PickleRunner {
       log: this.attachmentManager.log.bind(this.attachmentManager),
       parameters: this.worldParameters,
     })
-    this.testStepResults = []
+    this.result = messages.TestStepFinished.TestStepResult.fromObject({
+      duration: getZeroDuration(),
+      status: this.skip ? Status.SKIPPED : Status.PASSED,
+    })
   }
 
   buildTestSteps(): ITestStep[] {
@@ -223,15 +225,6 @@ export default class PickleRunner {
     )
   }
 
-  getWorstStepResult(): messages.TestStepFinished.ITestStepResult {
-    if (this.testStepResults.length === 0) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
-        status: this.skip ? Status.SKIPPED : Status.PASSED,
-      })
-    }
-    return new Query().getWorstTestStepResult(this.testStepResults)
-  }
-
   async invokeStep(
     step: messages.Pickle.IPickleStep,
     stepDefinition: IDefinition,
@@ -247,11 +240,27 @@ export default class PickleRunner {
   }
 
   isSkippingSteps(): boolean {
-    return this.getWorstStepResult().status !== Status.PASSED
+    return this.result.status !== Status.PASSED
   }
 
   shouldSkipHook(isBeforeHook: boolean): boolean {
     return this.skip || (this.isSkippingSteps() && isBeforeHook)
+  }
+
+  shouldUpdateStatus(
+    testStepResult: messages.TestStepFinished.ITestStepResult
+  ): boolean {
+    switch (testStepResult.status) {
+      case Status.UNDEFINED:
+      case Status.FAILED:
+      case Status.AMBIGUOUS:
+        return !_.some(
+          [Status.FAILED, Status.AMBIGUOUS, Status.UNDEFINED],
+          this.result.status
+        )
+      default:
+        return this.result.status === Status.PASSED
+    }
   }
 
   async aroundTestStep(
@@ -272,9 +281,15 @@ export default class PickleRunner {
     this.currentTestStepId = testStepId
     const testStepResult = await runStepFn()
     this.currentTestStepId = null
-    this.testStepResults.push(testStepResult)
+    this.result.duration = addDurations(
+      this.result.duration,
+      testStepResult.duration
+    )
+    if (this.shouldUpdateStatus(testStepResult)) {
+      this.result.status = testStepResult.status
+    }
     if (
-      testStepResult.status === Status.FAILED &&
+      this.result.status === Status.FAILED &&
       attempt + 1 < this.maxAttempts
     ) {
       /*
@@ -282,6 +297,10 @@ export default class PickleRunner {
       see https://github.com/cucumber/cucumber/issues/902
        */
       testStepResult.willBeRetried = true
+      this.result.willBeRetried = true
+    }
+    if (testStepResult.message !== '') {
+      this.result.message = testStepResult.message
     }
     this.eventBroadcaster.emit(
       'envelope',
@@ -296,7 +315,7 @@ export default class PickleRunner {
     )
   }
 
-  async run(): Promise<messages.TestStepFinished.TestStepResult.Status> {
+  async run(): Promise<messages.TestStepFinished.ITestStepResult> {
     this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = this.newId()
@@ -320,7 +339,7 @@ export default class PickleRunner {
               testCaseStartedId: this.currentTestCaseStartedId,
             }
             if (!testStep.isBeforeHook) {
-              hookParameter.result = this.getWorstStepResult()
+              hookParameter.result = this.result
             }
             return await this.runHook(
               testStep.hookDefinition,
@@ -341,12 +360,12 @@ export default class PickleRunner {
           },
         })
       )
-      if (!this.getWorstStepResult().willBeRetried) {
+      if (!this.result.willBeRetried) {
         break
       }
       this.resetTestProgressData()
     }
-    return this.getWorstStepResult().status
+    return this.result
   }
 
   async runHook(

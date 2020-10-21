@@ -24,7 +24,7 @@ interface ITestPickleRunnerRequest {
 
 interface ITestPickleRunnerResponse {
   envelopes: messages.IEnvelope[]
-  result: messages.TestStepFinished.TestStepResult.Status
+  result: messages.TestStepFinished.ITestStepResult
 }
 
 async function testPickleRunner(
@@ -150,7 +150,7 @@ describe('PickleRunner', () => {
             },
           }),
         ])
-        expect(result).to.eql(Status.PASSED)
+        expect(result).to.eql(passedTestResult)
       })
     })
 
@@ -260,7 +260,7 @@ describe('PickleRunner', () => {
         expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           failingTestResult
         )
-        expect(result).to.eql(Status.FAILED)
+        expect(result).to.eql(failingTestResult)
       })
     })
 
@@ -302,8 +302,11 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result).to.eql(
+        expect(result.status).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
+        )
+        expect(result.message).to.eql(
+          envelopes[3].testStepFinished.testStepResult.message
         )
       })
     })
@@ -338,7 +341,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result).to.eql(
+        expect(result.status).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
         )
       })
@@ -460,7 +463,7 @@ describe('PickleRunner', () => {
             },
           }),
         ])
-        expect(result).to.eql(Status.PASSED)
+        expect(result).to.eql(envelopes[7].testStepFinished.testStepResult)
       })
     })
 
@@ -499,7 +502,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result).to.eql(
+        expect(result.status).to.eql(
           envelopes[3].testStepFinished.testStepResult.status
         )
       })
@@ -566,7 +569,7 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result).to.eql(
+        expect(result.status).to.eql(
           envelopes[7].testStepFinished.testStepResult.status
         )
       })

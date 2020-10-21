@@ -21,9 +21,7 @@ needs to be required in your support files and globally installed modules cannot
   * `$ cucumber-js features/my_feature.feature:3`
 * Specify a scenario by its name matching a regular expression
   * `$ cucumber-js --name "topic 1"`
-  * `$ cucumber-js --name "^start.+end$"`
   * If used multiple times, the scenario name needs to match only one of the names supplied
-  * To escape special regex characters in scenario name, use backslash e.g., `\(Scenario Name\)`
 * Use [Tags](#tags)
 
 ## Requiring support files
@@ -47,7 +45,6 @@ If multiple formats are specified with the same output, only the last is used.
 
 Built-in formatters
 * message - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
-* html - prints a rich HTML report to a standalone page
 * json - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
 * progress - prints one character per scenario (default).
 * progress-bar - prints a progress bar and outputs errors/warnings along the way.

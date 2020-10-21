@@ -179,38 +179,6 @@ describe('PickleFilter', () => {
         })
       })
 
-      describe('should match name with regex', () => {
-        beforeEach(function () {
-          pickleFilter = new PickleFilter({
-            cwd,
-            featurePaths: ['features'],
-            names: ['^startA.+endA$'],
-            tagExpression: '',
-          })
-        })
-
-        it('returns true if regex matches', async function () {
-          // Arrange
-          const {
-            pickles: [pickle],
-            gherkinDocument,
-          } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: startA descriptionA endA',
-              'Given a step',
-            ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
-          })
-
-          // Act
-          const result = pickleFilter.matches({ pickle, gherkinDocument })
-
-          // Assert
-          expect(result).to.eql(true)
-        })
-      })
-
       describe('should match name A or B', () => {
         beforeEach(function () {
           pickleFilter = new PickleFilter({
