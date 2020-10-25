@@ -42,7 +42,7 @@ Cucumber.js is available as an npm module.
 #### 6.x.x and below
 
 ``` shell
-$ npm install cucumber
+$ npm install cucumber@6
 ```
 
 #### 7.x.x and above
