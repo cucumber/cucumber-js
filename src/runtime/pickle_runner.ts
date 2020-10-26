@@ -430,10 +430,10 @@ export default class PickleRunner {
       )
 
       const stepHookResults = beforeStepHooksResult.concat(afterStepHooksResult)
-      finalStepResult = new Query().getWorstTestStepResult(
+      finalStepResult = stepResult
+      finalStepResult.status = new Query().getWorstTestStepResult(
         stepHookResults.concat(stepResult)
-      )
-      finalStepResult.duration = stepResult.duration
+      ).status
       for (const stepHookResult of stepHookResults) {
         finalStepResult.duration = addDurations(
           finalStepResult.duration,
