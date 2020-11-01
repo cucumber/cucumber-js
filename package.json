@@ -222,7 +222,7 @@
     "@typescript-eslint/eslint-plugin": "3.10.1",
     "@typescript-eslint/parser": "3.10.1",
     "ansi-html": "0.0.7",
-    "browserify": "16.5.2",
+    "browserify": "17.0.0",
     "chai": "4.2.0",
     "chai-exclude": "2.0.2",
     "coffeescript": "2.5.1",
