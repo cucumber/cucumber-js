@@ -200,7 +200,7 @@
   "devDependencies": {
     "@cucumber/compatibility-kit": "2.0.0",
     "@sinonjs/fake-timers": "6.0.1",
-    "@types/bluebird": "3.5.32",
+    "@types/bluebird": "3.5.33",
     "@types/chai": "4.2.14",
     "@types/dirty-chai": "2.0.2",
     "@types/express": "4.17.8",
