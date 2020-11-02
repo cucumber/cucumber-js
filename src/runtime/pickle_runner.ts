@@ -412,35 +412,32 @@ export default class PickleRunner {
       })
     }
 
-    const beforeStepHooksResult = await this.runStepHooks(
+    let stepResult
+    const beforeStepHookResults = await this.runStepHooks(
       this.getBeforeStepHookDefinitions(),
-      null
+      stepResult
     )
-    let finalStepResult = new Query().getWorstTestStepResult(
-      beforeStepHooksResult
-    )
-    if (finalStepResult.status !== Status.FAILED) {
-      const stepResult = await this.invokeStep(
+    stepResult = new Query().getWorstTestStepResult(beforeStepHookResults)
+    if (stepResult.status !== Status.FAILED) {
+      stepResult = await this.invokeStep(
         testStep.pickleStep,
         testStep.stepDefinitions[0]
       )
-      const afterStepHooksResult = await this.runStepHooks(
-        this.getAfterStepHookDefinitions(),
-        stepResult
-      )
-
-      const stepHookResults = beforeStepHooksResult.concat(afterStepHooksResult)
-      finalStepResult = stepResult
-      finalStepResult.status = new Query().getWorstTestStepResult(
-        stepHookResults.concat(stepResult)
-      ).status
-      for (const stepHookResult of stepHookResults) {
-        finalStepResult.duration = addDurations(
-          finalStepResult.duration,
-          stepHookResult.duration
-        )
-      }
     }
-    return finalStepResult
+    const afterStepHookResults = await this.runStepHooks(
+      this.getAfterStepHookDefinitions(),
+      stepResult
+    )
+    const stepHookResults = beforeStepHookResults.concat(afterStepHookResults)
+    stepResult.status = new Query().getWorstTestStepResult(
+      stepHookResults.concat(stepResult)
+    ).status
+    for (const stepHookResult of stepHookResults) {
+      stepResult.duration = addDurations(
+        stepResult.duration,
+        stepHookResult.duration
+      )
+    }
+    return stepResult
   }
 }
