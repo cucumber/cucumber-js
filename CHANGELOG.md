@@ -56,6 +56,7 @@ If anything is missing from the migration guide, please submit an issue.
   * Custom formatters will need to migrate
   * `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
 * Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
+* Custom formatters are no longer loaded relative to the current directory unless it begins with a dot (e.g. `--format=./relpath/to/formatter`)
 
 ### Bug fixes
 
