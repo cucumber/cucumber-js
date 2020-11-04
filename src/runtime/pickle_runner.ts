@@ -426,14 +426,17 @@ export default class PickleRunner {
       )
       stepResults.push(stepResult)
     }
-    const afterStepHookResults = await this.runStepHooks(this.getAfterStepHookDefinitions(), stepResult)
+    const afterStepHookResults = await this.runStepHooks(
+      this.getAfterStepHookDefinitions(),
+      stepResult
+    )
     for (const afterHook of afterStepHookResults) {
       stepResults.push(afterHook)
     }
 
     const finalStepResult = new Query().getWorstTestStepResult(stepResults)
     let finalDuration = getZeroDuration()
-    for (const result of stepResults){
+    for (const result of stepResults) {
       finalDuration = addDurations(finalDuration, result.duration)
     }
     finalStepResult.duration = finalDuration
