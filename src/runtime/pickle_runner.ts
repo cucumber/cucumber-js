@@ -3,7 +3,7 @@ import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import { IdGenerator, messages } from '@cucumber/messages'
-import { addDurations } from '../time'
+import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -413,31 +413,30 @@ export default class PickleRunner {
     }
 
     let stepResult
-    const beforeStepHookResults = await this.runStepHooks(
+    const stepResults = await this.runStepHooks(
       this.getBeforeStepHookDefinitions(),
       stepResult
     )
-    stepResult = new Query().getWorstTestStepResult(beforeStepHookResults)
-    if (stepResult.status !== Status.FAILED) {
+    if (
+      new Query().getWorstTestStepResult(stepResults).status !== Status.FAILED
+    ) {
       stepResult = await this.invokeStep(
         testStep.pickleStep,
         testStep.stepDefinitions[0]
       )
+      stepResults.push(stepResult)
     }
-    const afterStepHookResults = await this.runStepHooks(
-      this.getAfterStepHookDefinitions(),
-      stepResult
-    )
-    const stepHookResults = beforeStepHookResults.concat(afterStepHookResults)
-    stepResult.status = new Query().getWorstTestStepResult(
-      stepHookResults.concat(stepResult)
-    ).status
-    for (const stepHookResult of stepHookResults) {
-      stepResult.duration = addDurations(
-        stepResult.duration,
-        stepHookResult.duration
-      )
+    const afterStepHookResults = await this.runStepHooks(this.getAfterStepHookDefinitions(), stepResult)
+    for (const afterHook of afterStepHookResults) {
+      stepResults.push(afterHook)
     }
-    return stepResult
+
+    const finalStepResult = new Query().getWorstTestStepResult(stepResults)
+    let finalDuration = getZeroDuration()
+    for (const result of stepResults){
+      finalDuration = addDurations(finalDuration, result.duration)
+    }
+    finalStepResult.duration = finalDuration
+    return finalStepResult
   }
 }
