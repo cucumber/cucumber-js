@@ -36,8 +36,8 @@ Defines a hook which is run after each scenario.
   * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
-  * The first argument will be an object of the form `{sourceLocation: {line, uri}, result: {duration, status, exception?}, pickle}`
-    * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin-v4.1.3/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
+  * The first argument will be an object of the form `{pickle, gherkinDocument, result, testCaseStartedId}`
+    * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
   * When using the asynchronous callback interface, have one final argument for the callback function.
 
 `options` can also be a string as a shorthand for specifying `tags`.
@@ -59,6 +59,24 @@ Multiple `AfterAll` hooks are executed in the **reverse** order that they are de
 
 ---
 
+#### `AfterStep([options,] fn)`
+
+Defines a hook which is run after each step.
+
+* `options`: An object with the following keys:
+  * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
+  * `timeout`: A hook-specific timeout, to override the default timeout.
+* `fn`: A function, defined as follows:
+  * The first argument will be an object of the form `{pickle, gherkinDocument, result, testCaseStartedId, testStepId}`
+    * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
+  * When using the asynchronous callback interface, have one final argument for the callback function.
+
+`options` can also be a string as a shorthand for specifying `tags`.
+
+Multiple `AfterStep` hooks are executed in the **reverse** order that they are defined.
+
+---
+
 #### `Before([options,] fn)`
 
 Defines a hook which is run before each scenario. Same interface as `After` except the first argument passed to `fn` will not have the `result` property.
@@ -72,6 +90,14 @@ Multiple `Before` hooks are executed in the order that they are defined.
 Defines a hook which is run before all scenarios. Same interface as `AfterAll`.
 
 Multiple `BeforeAll` hooks are executed in the order that they are defined.
+
+---
+
+#### `BeforeStep([options,] fn)`
+
+Defines a hook which is run before each step. Same interface as `AfterStep` except the first argument passed to `fn` will not have the `result` property.
+
+Multiple `BeforeStep` hooks are executed in the order that they are defined.
 
 ---
 
