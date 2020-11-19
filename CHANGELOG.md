@@ -27,7 +27,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 Starting with version 7, the npm module has been changed from `cucumber` to `@cucumber/cucumber`
 
-Migration guide:
+### Migration guide
 
 - `npm uninstall cucumber`
 - `npm install --save-dev @cucumber/cucumber`
