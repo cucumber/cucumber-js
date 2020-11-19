@@ -21,6 +21,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+* Wrong version in meta message [#1439](https://github.com/cucumber/cucumber-js/issues/1439) [#1442](https://github.com/cucumber/cucumber-js/pull/1442)
+
 ## [7.0.0-rc.0] (2020-09-14)
 
 Starting with version 7, the npm module has been changed from `cucumber` to `@cucumber/cucumber`
