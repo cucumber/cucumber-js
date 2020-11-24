@@ -351,5 +351,48 @@ describe('SummaryHelpers', () => {
         )
       })
     })
+
+    describe('with one passing scenario with one step and a beforeStep and afterStep hook', () => {
+      it('outputs the duration as `0m24.000s (executing steps: 0m24.000s)`', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, BeforeStep, AfterStep }) => {
+            Given('a passing step', () => {
+              clock.tick(12.3 * 1000)
+            })
+            BeforeStep(() => {
+              clock.tick(5 * 1000)
+            })
+            AfterStep(() => {
+              clock.tick(6.7 * 1000)
+            })
+          }
+        )
+
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+          testRunFinished: messages.TestRunFinished.fromObject({
+            timestamp: {
+              nanos: 0,
+              seconds: 24,
+            },
+          }),
+        })
+
+        // Assert
+        expect(output).to.contain(
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m24.000s (executing steps: 0m24.000s)\n'
+        )
+      })
+    })
   })
 })

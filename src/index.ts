@@ -22,12 +22,14 @@ export { default as UsageFormatter } from './formatter/usage_formatter'
 export { default as UsageJsonFormatter } from './formatter/usage_json_formatter'
 export { formatterHelpers }
 
-// Support Code Fuctions
+// Support Code Functions
 const { methods } = supportCodeLibraryBuilder
 export const After = methods.After
 export const AfterAll = methods.AfterAll
+export const AfterStep = methods.AfterStep
 export const Before = methods.Before
 export const BeforeAll = methods.BeforeAll
+export const BeforeStep = methods.BeforeStep
 export const defineParameterType = methods.defineParameterType
 export const defineStep = methods.defineStep
 export const Given = methods.Given

@@ -102,3 +102,23 @@ AfterAll(function () {
   return Promise.resolve()
 });
 ```
+
+## BeforeStep / AfterStep
+
+If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
+
+```javascript
+var {AfterStep, BeforeStep} = require('cucumber');
+
+BeforeStep({tags: "@foo"}, function () {
+  // This hook will be executed before all steps in a scenario with tag @foo
+});
+
+AfterStep( function ({result}) {
+  // This hook will be executed after all steps, and take a screenshot on step failure
+  if (result.status === Status.FAILED) {
+    this.driver.takeScreenshot();
+  }
+});
+```
+

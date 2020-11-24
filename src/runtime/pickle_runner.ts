@@ -3,12 +3,15 @@ import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import { IdGenerator, messages } from '@cucumber/messages'
+import { addDurations, getZeroDuration } from '../time'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,
+  ITestStepHookParameter,
 } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
@@ -23,6 +26,7 @@ interface ITestStep {
   isBeforeHook?: boolean
   isHook: boolean
   hookDefinition?: TestCaseHookDefinition
+  stepHookDefinition?: TestStepHookDefinition
   pickleStep?: messages.Pickle.IPickleStep
   stepDefinitions?: StepDefinition[]
 }
@@ -199,6 +203,18 @@ export default class PickleRunner {
     )
   }
 
+  getBeforeStepHookDefinitions(): TestStepHookDefinition[] {
+    return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter(
+      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
+    )
+  }
+
+  getAfterStepHookDefinitions(): TestStepHookDefinition[] {
+    return clone(this.supportCodeLibrary.afterTestStepHookDefinitions)
+      .reverse()
+      .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
+  }
+
   getStepDefinitions(
     pickleStep: messages.Pickle.IPickleStep
   ): StepDefinition[] {
@@ -346,6 +362,26 @@ export default class PickleRunner {
     return await this.invokeStep(null, hookDefinition, hookParameter)
   }
 
+  async runStepHooks(
+    stepHooks: TestStepHookDefinition[],
+    stepResult?: messages.TestStepFinished.ITestStepResult
+  ): Promise<messages.TestStepFinished.ITestStepResult[]> {
+    const stepHooksResult = []
+    const hookParameter: ITestStepHookParameter = {
+      gherkinDocument: this.gherkinDocument,
+      pickle: this.pickle,
+      testCaseStartedId: this.currentTestCaseStartedId,
+      testStepId: this.currentTestStepId,
+      result: stepResult,
+    }
+    for (const stepHookDefinition of stepHooks) {
+      stepHooksResult.push(
+        await this.invokeStep(null, stepHookDefinition, hookParameter)
+      )
+    }
+    return stepHooksResult
+  }
+
   async runStep(
     testStep: ITestStep
   ): Promise<messages.TestStepFinished.ITestStepResult> {
@@ -375,9 +411,33 @@ export default class PickleRunner {
         },
       })
     }
-    return await this.invokeStep(
-      testStep.pickleStep,
-      testStep.stepDefinitions[0]
+
+    let stepResult
+    let stepResults = await this.runStepHooks(
+      this.getBeforeStepHookDefinitions(),
+      stepResult
     )
+    if (
+      new Query().getWorstTestStepResult(stepResults).status !== Status.FAILED
+    ) {
+      stepResult = await this.invokeStep(
+        testStep.pickleStep,
+        testStep.stepDefinitions[0]
+      )
+      stepResults.push(stepResult)
+    }
+    const afterStepHookResults = await this.runStepHooks(
+      this.getAfterStepHookDefinitions(),
+      stepResult
+    )
+    stepResults = stepResults.concat(afterStepHookResults)
+
+    const finalStepResult = new Query().getWorstTestStepResult(stepResults)
+    let finalDuration = getZeroDuration()
+    for (const result of stepResults) {
+      finalDuration = addDurations(finalDuration, result.duration)
+    }
+    finalStepResult.duration = finalDuration
+    return finalStepResult
   }
 }
