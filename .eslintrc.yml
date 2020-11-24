@@ -10,3 +10,5 @@ rules:
     - trailingComma: es5
       singleQuote: true
       semi: false
+  # requires strictNullChecks compiler option, produces many errors with messages objects
+  '@typescript-eslint/strict-boolean-expressions': off
