@@ -43,6 +43,7 @@ If anything is missing from the migration guide, please submit an issue.
 * Add `transpose` method to [data table interface](docs/support_files/data_table_interface.md)
 * Add `log` function to world, providing a shorthand to log plain text as [attachment(s)](docs/support_files/attachments.md)
 * Now includes [TypeScript](https://www.typescriptlang.org/) type definitions, deprecating the need for `@types/cucumber` in TypeScript projects
+* Yarn PnP can now be used with this project with custom formatters [#1413](https://github.com/cucumber/cucumber-js/pull/1413)
 
 ### Breaking changes
 
@@ -56,7 +57,7 @@ If anything is missing from the migration guide, please submit an issue.
   * Custom formatters will need to migrate
   * `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
 * Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
-* Custom formatters are no longer loaded relative to the current directory unless it begins with a dot (e.g. `--format=./relpath/to/formatter`)
+* Custom formatters are no longer loaded relative to the current directory unless it begins with a dot (e.g. `--format=./relpath/to/formatter`). 
 
 ### Bug fixes
 
