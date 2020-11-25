@@ -108,9 +108,7 @@ const FormatterBuilder = {
   },
 
   loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    let CustomFormatter = null
-
-    CustomFormatter = createRequire(cwd)(customFormatterPath)
+    const CustomFormatter = createRequire(cwd)(customFormatterPath)
 
     if (typeof CustomFormatter === 'function') {
       return CustomFormatter
