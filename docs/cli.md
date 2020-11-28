@@ -28,14 +28,17 @@ needs to be required in your support files and globally installed modules cannot
 
 ## Requiring support files
 
-Use `--require <GLOB|DIR|FILE>` to require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
-If not used, the following files are required:
+By default, the following files are required:
 * If the features live in a `features` directory (at any level)
   * `features/**/*.js`
 * Otherwise
   * `<DIR>/**/*.js` for each directory containing the selected features
 
-Automatic loading is disabled when this option is specified, and all loading becomes explicit.
+Alternatively, you can use `--require <GLOB|DIR|FILE>` to explicitly require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
+
+This option may be used multiple times in order to e.g. require files from several different locations.
+
+_Note that once you specify any `--require` options, the defaults described above are no longer applied._
 
 ## Formats
 
