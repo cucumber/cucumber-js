@@ -4,6 +4,7 @@
   "extension": [".ts"],
   "exclude": [
     "**/*_spec.ts",
+    "compatibility/**/*.ts",
     "cucumber.js",
     "features/**/*.ts",
     "test/**/*.ts",
