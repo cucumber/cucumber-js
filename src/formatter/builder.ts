@@ -20,6 +20,7 @@ import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
+import createRequire from 'create-require'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -107,8 +108,8 @@ const FormatterBuilder = {
   },
 
   loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    const fullCustomFormatterPath = path.resolve(cwd, customFormatterPath)
-    const CustomFormatter = require(fullCustomFormatterPath) // eslint-disable-line @typescript-eslint/no-var-requires
+    const CustomFormatter = createRequire(cwd)(customFormatterPath)
+
     if (typeof CustomFormatter === 'function') {
       return CustomFormatter
     } else if (
