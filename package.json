@@ -229,7 +229,7 @@
     "chai-exclude": "2.0.2",
     "coffeescript": "2.5.1",
     "connect": "3.7.0",
-    "core-js": "3.6.5",
+    "core-js": "3.8.1",
     "coveralls": "3.1.0",
     "dependency-lint": "6.0.0",
     "dirty-chai": "2.0.1",
