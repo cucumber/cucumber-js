@@ -36,7 +36,6 @@ ignoreErrors:
     - eslint-plugin-standard # peer dependency of eslint-config-standard-with-typescript
     - prettier # peer dependency of eslint-plugin-prettier
     - ts-node # .mocharc.yml / cucumber.js
-    - tsify # package.json - scripts - build-browser-example, build-release
 
 requiredModules:
   files:
