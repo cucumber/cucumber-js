@@ -11,7 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
-* Add a built in `html` formatter for rich HTML reports output as a standalone page
+* Add a built in `html` formatter for rich HTML reports output as a standalone page ([#1432](https://github.com/cucumber/cucumber-js/pull/1432))
+* Add support for `BeforeStep` and `AfterStep` hooks ([#1416](https://github.com/cucumber/cucumber-js/pull/1416))
+* Custom formatters can now be resolved by a module name (as well as by a relative path), enabling use of Yarn PnP ([#1413](https://github.com/cucumber/cucumber-js/pull/1413))
 
 ### Changed
 
@@ -45,7 +47,6 @@ If anything is missing from the migration guide, please submit an issue.
 * Add `transpose` method to [data table interface](docs/support_files/data_table_interface.md)
 * Add `log` function to world, providing a shorthand to log plain text as [attachment(s)](docs/support_files/attachments.md)
 * Now includes [TypeScript](https://www.typescriptlang.org/) type definitions, deprecating the need for `@types/cucumber` in TypeScript projects
-* Yarn PnP can now be used with this project with custom formatters [#1413](https://github.com/cucumber/cucumber-js/pull/1413)
 
 ### Breaking changes
 
@@ -59,6 +60,9 @@ If anything is missing from the migration guide, please submit an issue.
   * Custom formatters will need to migrate
   * `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
 * Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
+* Parallel runtime environment variables renamed for inclusivity:
+  * `CUCUMBER_TOTAL_SLAVES` is now `CUCUMBER_TOTAL_WORKERS`
+  * `CUCUMBER_SLAVE_ID` is now `CUCUMBER_WORKER_ID`
 * Custom formatters are now loaded via the regular require paths relative to the current directory, unless it begins with a dot (e.g. `--format=./relpath/to/formatter`). Previously this was always loaded as a file relative to the current directory.
 
 ### Bug fixes
