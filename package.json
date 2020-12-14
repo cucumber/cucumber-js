@@ -279,7 +279,6 @@
   "license": "MIT",
   "files": [
     "bin/",
-    "dist/",
     "lib/"
   ]
 }
