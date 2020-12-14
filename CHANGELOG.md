@@ -21,6 +21,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Removed
 
+* Support for running Cucumber in web browsers has been removed ([#1508](https://github.com/cucumber/cucumber-js/pull/1508))
+
 ### Fixed
 
 * Wrong version in meta message [#1439](https://github.com/cucumber/cucumber-js/issues/1439) [#1442](https://github.com/cucumber/cucumber-js/pull/1442)
