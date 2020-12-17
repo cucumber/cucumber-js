@@ -10,7 +10,7 @@ notifications:
 matrix:
   include:
     - node_js: "14"
-      script: "yarn test-coverage && yarn test-browser-example && yarn audit"
+      script: "yarn test-coverage && yarn audit"
       after_success: "nyc report --reporter=text-lcov | coveralls"
     - node_js: "12"
       script: "yarn test"

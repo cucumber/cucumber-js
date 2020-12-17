@@ -4,7 +4,6 @@
 .nyc_output/
 @rerun.txt
 coverage/
-dist/browser-example.js
 html-formatter.html
 lib/
 messages.ndjson

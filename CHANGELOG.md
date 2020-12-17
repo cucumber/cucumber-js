@@ -21,6 +21,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Removed
 
+* Support for running Cucumber in web browsers has been removed ([#1508](https://github.com/cucumber/cucumber-js/pull/1508)). This feature was increasingly difficult to support and seldom used. Node.js will now be the only support runtime for Cucumber itself; of course as before you can still use tools like WebDriver and Puppeteer to instrument testing of browser-based software. See [the discussion in #1437](https://github.com/cucumber/cucumber-js/issues/1437) for more about why this change is happening.
+
 ### Fixed
 
 * Wrong version in meta message [#1439](https://github.com/cucumber/cucumber-js/issues/1439) [#1442](https://github.com/cucumber/cucumber-js/pull/1442)
