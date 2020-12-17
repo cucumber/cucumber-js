@@ -355,9 +355,7 @@ describe('ProgressBarFormatter', () => {
           sources,
           supportCodeLibrary,
         })
-        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<
-          ProgressBar
-        >
+        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
 
         // Assert
         expect(progressBar.interrupt).to.have.callCount(1)

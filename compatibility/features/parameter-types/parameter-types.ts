@@ -13,10 +13,10 @@ defineParameterType({
   },
 })
 
-Given('{flight} has been delayed {int} minutes', function (
-  flight: Flight,
-  delay: number
-) {
-  expect(flight.from).to.eq('LHR')
-  expect(flight.to).to.eq('CDG')
-})
+Given(
+  '{flight} has been delayed {int} minutes',
+  function (flight: Flight, delay: number) {
+    expect(flight.from).to.eq('LHR')
+    expect(flight.to).to.eq('CDG')
+  }
+)
