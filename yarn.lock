@@ -213,16 +213,6 @@
     "@cucumber/messages" "^13.2.1"
     "@teppeis/multimaps" "^1.1.0"
 
-"@cucumber/gherkin@^15.0.0":
-  version "15.0.2"
-  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-15.0.2.tgz#43572df618fdeb9136e16412e4d3025e1a184115"
-  integrity sha512-E8GIulakxjXPlGatW6DxYQ1jJSHvT9mDLginqe7AkjyIjBuddQvXFShI/4fdYa6XaF3gO4ybhQvHtcza/1ob/Q==
-  dependencies:
-    "@cucumber/messages" "^13.0.1"
-    "@teppeis/multimaps" "^1.1.0"
-    commander "^6.0.0"
-    source-map-support "^0.5.19"
-
 "@cucumber/gherkin@^16.0.0":
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-16.0.0.tgz#29c2130ba7d1b2edcc983767d32c1969507625fe"
@@ -232,29 +222,20 @@
     commander "^6.2.0"
     source-map-support "^0.5.19"
 
-"@cucumber/html-formatter@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-11.0.1.tgz#3dbb63eda6364ae5f19ad52781f53dfbf58cdc66"
-  integrity sha512-s7ccEDWS9ldyPKz6o+nEZ7+mNpbtUwYblL00Vp1dozIXe/MFb3wNEkgadNInSIELf3yfuQbKW76JHanGGZ6CnA==
+"@cucumber/html-formatter@^11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-11.0.2.tgz#7e376594472f44df2d823fc72051294fd6d60b6a"
+  integrity sha512-e0yl+zURLTwW9GUbe0fO2WOZWjqnjeJ72wH0N4E6M/jSBFYtNteWEB6Hw74NDjRLuQE7N3kreEWY8V0ohr69Gw==
   dependencies:
     "@cucumber/gherkin-utils" "^2.1.1"
     "@cucumber/messages" "^13.2.1"
-    "@cucumber/query" "^7.0.0"
-    "@cucumber/react" "^11.0.1"
+    "@cucumber/query" "^7.0.1"
+    "@cucumber/react" "^11.0.2"
     commander "^6.2.1"
     react "^17.0.1"
     react-dom "^17.0.1"
     resolve-pkg "^2.0.0"
     source-map-support "^0.5.19"
-
-"@cucumber/messages@^13.0.1":
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-13.0.1.tgz#49bde82ba47b5db782105f4b878e085709d68a6d"
-  integrity sha512-9UJWrbQG8KlQvXYwfSTvIe67aB5ZWh77xmNlgbrT1jfEsMTGI9yQpYRmYDJ2IpBqEeSxftarN6I+zEdChQatNA==
-  dependencies:
-    "@types/uuid" "^8.0.1"
-    protobufjs "^6.10.1"
-    uuid "^8.3.0"
 
 "@cucumber/messages@^13.1.0", "@cucumber/messages@^13.2.1":
   version "13.2.1"
@@ -265,23 +246,22 @@
     protobufjs "^6.10.2"
     uuid "^8.3.1"
 
-"@cucumber/query@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-7.0.0.tgz#97beb27df49578a6b9c968d324c88481d3f23b39"
-  integrity sha512-14pdaDXOgKQ2liNdj75zUo14b8A8JDHGLaypOEfgM450/X9gNqwv3OmeDuiKtelUuwM7AYRdIv4eVLKArAdrJA==
+"@cucumber/query@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-7.0.1.tgz#e1b3b02648c7ff9c978871538531f0607cfeb799"
+  integrity sha512-Ocxtm0LLLbYa3TwZZFzHG4/uHnb7GkYNUsRzf+bLyKOYymkffMkgLcITkx+X4Kw/tq+xzzHh3z/YivEAXxBJdQ==
   dependencies:
-    "@cucumber/gherkin" "^15.0.0"
-    "@cucumber/messages" "^13.0.1"
+    "@cucumber/messages" "^13.2.1"
     "@teppeis/multimaps" "^1.1.0"
 
-"@cucumber/react@^11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/react/-/react-11.0.1.tgz#f7937618df1fa7616007e33446eac730f2004237"
-  integrity sha512-2/TGYosWmceTIh/ooTcUF7/X9kZxZrA+kR39u5LB5FAh/Jmbo+eTQ8odVgm+YGTNJmuYJOIgLPKkVeGuQFDAUw==
+"@cucumber/react@^11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@cucumber/react/-/react-11.0.2.tgz#f96b682484ee732814db0e70432a54df2806f550"
+  integrity sha512-kT3T2zakMI9JDOHGpCxFgq54T/xkGFIvbEKm6vRjW5WjbDXV7pp5sMsxqeL5TS9MgmNRkZ3gNr1hX7MKytWb9g==
   dependencies:
     "@cucumber/gherkin-utils" "^2.1.1"
     "@cucumber/messages" "^13.2.1"
-    "@cucumber/query" "^7.0.0"
+    "@cucumber/query" "^7.0.1"
     "@cucumber/tag-expressions" "^2.0.4"
     "@fortawesome/fontawesome-svg-core" "^1.2.32"
     "@fortawesome/free-solid-svg-icons" "^5.15.1"
@@ -719,7 +699,7 @@
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.3.tgz#9c088679876f374eb5983f150d4787aa6fb32d7e"
   integrity sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==
 
-"@types/uuid@^8.0.1", "@types/uuid@^8.3.0":
+"@types/uuid@^8.3.0":
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.0.tgz#215c231dff736d5ba92410e6d602050cce7e273f"
   integrity sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
@@ -1346,11 +1326,6 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
   dependencies:
     delayed-stream "~1.0.0"
-
-commander@^6.0.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
-  integrity sha512-wl7PNrYWd2y5mp1OK/LhTlv8Ff4kQJQRXXAvF+uU/TPNiVJUxZLRYGj/B0y/lPGAVcSbJqH2Za/cvHmrPMC8mA==
 
 commander@^6.2.0:
   version "6.2.0"
@@ -3580,25 +3555,6 @@ prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-protobufjs@^6.10.1:
-  version "6.10.1"
-  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.10.1.tgz#e6a484dd8f04b29629e9053344e3970cccf13cd2"
-  integrity sha512-pb8kTchL+1Ceg4lFd5XUpK8PdWacbvV5SK2ULH2ebrYtl4GjJmS24m6CKME67jzV53tbJxHlnNOSqQHbTsR9JQ==
-  dependencies:
-    "@protobufjs/aspromise" "^1.1.2"
-    "@protobufjs/base64" "^1.1.2"
-    "@protobufjs/codegen" "^2.0.4"
-    "@protobufjs/eventemitter" "^1.1.0"
-    "@protobufjs/fetch" "^1.1.0"
-    "@protobufjs/float" "^1.0.2"
-    "@protobufjs/inquire" "^1.1.0"
-    "@protobufjs/path" "^1.1.2"
-    "@protobufjs/pool" "^1.1.0"
-    "@protobufjs/utf8" "^1.1.0"
-    "@types/long" "^4.0.1"
-    "@types/node" "^13.7.0"
-    long "^4.0.0"
-
 protobufjs@^6.10.2:
   version "6.10.2"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.10.2.tgz#b9cb6bd8ec8f87514592ba3fdfd28e93f33a469b"
@@ -4518,11 +4474,6 @@ uuid@^3.3.2, uuid@^3.3.3:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uuid@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
-  integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
 
 uuid@^8.3.1:
   version "8.3.2"
