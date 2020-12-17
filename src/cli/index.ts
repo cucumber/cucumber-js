@@ -216,7 +216,7 @@ export default class Cli {
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
-      await new Promise((resolve) => {
+      await new Promise<void>((resolve) => {
         parallelRuntimeCoordinator.run(configuration.parallel, (s) => {
           success = s
           resolve()
