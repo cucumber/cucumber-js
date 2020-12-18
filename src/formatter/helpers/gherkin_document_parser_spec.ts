@@ -353,9 +353,7 @@ Feature: a feature
 `)
 }
 
-async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<
-  IGherkinDocument
-> {
+async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<IGherkinDocument> {
   return await parseGherkinDocument(`\
 Feature: a feature
   Background:

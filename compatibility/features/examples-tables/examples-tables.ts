@@ -9,9 +9,9 @@ When('I eat {int} cucumbers', function (this: any, eatCount: number) {
   this.count -= eatCount
 })
 
-Then('I should have {int} cucumbers', function (
-  this: any,
-  expectedCount: number
-) {
-  assert.strictEqual(this.count, expectedCount)
-})
+Then(
+  'I should have {int} cucumbers',
+  function (this: any, expectedCount: number) {
+    assert.strictEqual(this.count, expectedCount)
+  }
+)

@@ -74,7 +74,7 @@ export default class FakeReportServer {
       Array.from(this.sockets).map(
         // eslint-disable-next-line @typescript-eslint/promise-function-async
         (socket) =>
-          new Promise((resolve, reject) => {
+          new Promise<void>((resolve, reject) => {
             if (socket.destroyed) return resolve()
             socket.on('close', resolve)
             socket.on('error', reject)

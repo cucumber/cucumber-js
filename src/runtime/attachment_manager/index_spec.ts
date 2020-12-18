@@ -80,7 +80,7 @@ describe('AttachmentManager', () => {
             let result: any
 
             // Act
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
               result = attachmentManager.create(
                 readableStream,
                 'text/special',
