@@ -168,7 +168,7 @@
     "@cucumber/create-meta": "^2.0.4",
     "@cucumber/cucumber-expressions": "^11.0.0",
     "@cucumber/gherkin": "^16.0.0",
-    "@cucumber/html-formatter": "^11.0.2",
+    "@cucumber/html-formatter": "^11.0.3",
     "@cucumber/messages": "^13.2.1",
     "@cucumber/query": "^7.0.1",
     "@cucumber/tag-expressions": "^2.0.4",

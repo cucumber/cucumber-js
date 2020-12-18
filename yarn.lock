@@ -222,10 +222,10 @@
     commander "^6.2.0"
     source-map-support "^0.5.19"
 
-"@cucumber/html-formatter@^11.0.2":
-  version "11.0.2"
-  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-11.0.2.tgz#7e376594472f44df2d823fc72051294fd6d60b6a"
-  integrity sha512-e0yl+zURLTwW9GUbe0fO2WOZWjqnjeJ72wH0N4E6M/jSBFYtNteWEB6Hw74NDjRLuQE7N3kreEWY8V0ohr69Gw==
+"@cucumber/html-formatter@^11.0.3":
+  version "11.0.4"
+  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-11.0.4.tgz#1f0d6d684bb4ed0de1a95add8932056ec6150237"
+  integrity sha512-Ojsx8U6C5IMLpQRYHugan2XM0/+5qXSCrds2Z7/bySuoaZr6ppVYB2jb03aXKWKA4GaMVbflpFOajb4Bc3niUg==
   dependencies:
     "@cucumber/gherkin-utils" "^2.1.1"
     "@cucumber/messages" "^13.2.1"
