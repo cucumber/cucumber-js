@@ -222,7 +222,7 @@
     commander "^6.2.0"
     source-map-support "^0.5.19"
 
-"@cucumber/html-formatter@^11.0.3":
+"@cucumber/html-formatter@^11.0.4":
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-11.0.4.tgz#1f0d6d684bb4ed0de1a95add8932056ec6150237"
   integrity sha512-Ojsx8U6C5IMLpQRYHugan2XM0/+5qXSCrds2Z7/bySuoaZr6ppVYB2jb03aXKWKA4GaMVbflpFOajb4Bc3niUg==
