@@ -119,6 +119,11 @@ Publish to npm:
 
     npm publish --access public
 
+Push to git:
+
+    git push
+    git push --tags
+
 * Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
   * Update the cucumber-js version `data/versions.yaml`
   * Ensure the javascript examples are up to date
