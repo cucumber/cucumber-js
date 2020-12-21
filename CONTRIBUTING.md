@@ -75,6 +75,7 @@ Start the container:
 
 Inside the container, update dependencies:
 
+    npm install -g yarn
     yarn update-dependencies
     yarn
     yarn test
@@ -91,12 +92,12 @@ If the tests fail, update your code to be compatible with the new libraries, or 
 
 [Decide what the next version should be](https://github.com/cucumber/cucumber/blob/master/RELEASE_PROCESS.md#decide-what-the-next-version-should-be).
 
-Update CHANGELOG links: 
-    
+Update CHANGELOG links:
+
     NEW_VERSION=<major.minor.patch(-rc.X)> make update-changelog
-    
-Verify changes to the CHANGELOG are correct. Stage uncommitted changes: 
-    
+
+Verify changes to the CHANGELOG are correct. Stage uncommitted changes:
+
     git add .
     git commit -am "Release <major.minor.patch(-rc.X)>"
 
@@ -110,7 +111,7 @@ Then bump the version number and create a git tag. Run *one* of the following:
 
     # Minor release
     npm version minor
-    
+
     # Patch release
     npm version patch
 

@@ -11,13 +11,21 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
-* Add a built in `html` formatter for rich HTML reports output as a standalone page ([#1432](https://github.com/cucumber/cucumber-js/pull/1432))
-* Add support for `BeforeStep` and `AfterStep` hooks ([#1416](https://github.com/cucumber/cucumber-js/pull/1416))
-* Custom formatters can now be resolved by a module name (as well as by a relative path), enabling use of Yarn PnP ([#1413](https://github.com/cucumber/cucumber-js/pull/1413))
-
 ### Changed
 
 ### Deprecated
+
+### Removed
+
+### Fixed
+
+## [7.0.0] (2020-12-21)
+
+### Added
+
+* Add a built in `html` formatter for rich HTML reports output as a standalone page ([#1432](https://github.com/cucumber/cucumber-js/pull/1432))
+* Add support for `BeforeStep` and `AfterStep` hooks ([#1416](https://github.com/cucumber/cucumber-js/pull/1416))
+* Custom formatters can now be resolved by a module name (as well as by a relative path), enabling use of Yarn PnP ([#1413](https://github.com/cucumber/cucumber-js/pull/1413))
 
 ### Removed
 
@@ -1801,8 +1809,9 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.0.0-rc.0...master
-[7.0.0-rc.0]:        https://github.com/cucumber/cucumber-js/compare/v6.0.5...v7.0.0-rc.0
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.0.0...master
+[7.0.0]:        https://github.com/cucumber/cucumber-js/compare/7.0.0-rc.0...v7.0.0
+[7.0.0-rc.0]:   https://github.com/cucumber/cucumber-js/compare/v6.0.5...v7.0.0-rc.0
 [6.0.5]:        https://github.com/cucumber/cucumber-js/compare/v6.0.4...v6.0.5
 [6.0.4]:        https://github.com/cucumber/cucumber-js/compare/v6.0.3...v6.0.4
 [6.0.3]:        https://github.com/cucumber/cucumber-js/compare/v6.0.2...v6.0.3
