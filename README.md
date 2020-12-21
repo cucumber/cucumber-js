@@ -47,8 +47,6 @@ $ npm install cucumber@6
 
 #### 7.x.x and above
 
-(Not yet released)
-
 ``` shell
 $ npm install @cucumber/cucumber
 ```
