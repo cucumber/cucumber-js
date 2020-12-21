@@ -33,24 +33,18 @@ Everyone interacting in this codebase and issue tracker is expected to follow th
 
 ## Install
 
-[![npm downloads](https://img.shields.io/npm/dm/cucumber.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cucumber&from=2015-09-01)
-
-### Node
-
 Cucumber.js is available as an npm module.
 
-#### 6.x.x and below
-
-``` shell
-$ npm install cucumber@6
-```
-
-#### 7.x.x and above
-
-(Not yet released)
+### 7.x.x and above
 
 ``` shell
 $ npm install @cucumber/cucumber
+```
+
+### 6.x.x and below
+
+``` shell
+$ npm install cucumber@6
 ```
 
 ## Documentation
