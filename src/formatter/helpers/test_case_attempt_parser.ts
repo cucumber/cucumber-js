@@ -154,7 +154,9 @@ export function parseTestCaseAttempt({
   let isBeforeHook = true
   let previousKeywordType = KeywordType.Precondition
   _.each(testCase.testSteps, (testStep) => {
-    const testStepResult = testCaseAttempt.stepResults[testStep.id]
+    const testStepResult = testCaseAttempt.stepResults[testStep.id] || {
+      status: Status.UNKNOWN,
+    }
     isBeforeHook = isBeforeHook && testStep.hookId !== ''
     let keyword, keywordType, pickleStep
     if (testStep.pickleStepId !== '') {
