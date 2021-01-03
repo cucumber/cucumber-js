@@ -1,5 +1,5 @@
 import isStream from 'is-stream'
-import stream from 'stream'
+import { Readable } from 'stream'
 import { messages } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
@@ -15,7 +15,7 @@ export interface IAttachment {
 
 export type IAttachFunction = (attachment: IAttachment) => void
 export type ICreateAttachment = (
-  data: Buffer | stream.Readable | string,
+  data: Buffer | Readable | string,
   mediaType?: string,
   callback?: () => void
 ) => void | Promise<void>
@@ -33,7 +33,7 @@ export default class AttachmentManager {
   }
 
   create(
-    data: Buffer | stream.Readable | string,
+    data: Buffer | Readable | string,
     mediaType?: string,
     callback?: () => void
   ): void | Promise<void> {
@@ -70,7 +70,7 @@ export default class AttachmentManager {
   }
 
   createStreamAttachment(
-    data: stream.Readable,
+    data: Readable,
     mediaType: string,
     callback: () => void
   ): void | Promise<void> {
