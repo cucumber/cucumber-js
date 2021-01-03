@@ -228,7 +228,6 @@
     "chai": "4.2.0",
     "chai-exclude": "2.0.2",
     "coffeescript": "2.5.1",
-    "coveralls": "3.1.0",
     "dependency-lint": "6.0.0",
     "dirty-chai": "2.0.1",
     "eslint": "7.16.0",
@@ -268,7 +267,8 @@
     "precck-test": "yarn run build-local",
     "prefeature-test": "yarn run build-local",
     "prepublishOnly": "rm -rf lib && npm run build-local",
-    "test-coverage": "yarn run lint && ./scripts/test-coverage.sh",
+    "pretest-coverage": "yarn build-local",
+    "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node ./bin/cucumber-js && nyc report --reporter=lcov",
     "test": "yarn run lint && yarn run unit-test && yarn run cck-test && yarn run feature-test",
     "unit-test": "mocha 'src/**/*_spec.ts'",
     "update-dependencies": "npx npm-check-updates --upgrade"
