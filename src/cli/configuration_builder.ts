@@ -85,7 +85,7 @@ export default class ConfigurationBuilder {
     }
     return {
       featureDefaultLanguage: this.options.language,
-      featurePaths,
+      featurePaths: featurePaths.map((abs) => path.relative(this.cwd, abs)),
       formats: this.getFormats(),
       formatOptions: this.options.formatOptions,
       publishing: this.isPublishing(),

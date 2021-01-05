@@ -83,7 +83,7 @@ describe('Configuration', () => {
       } = await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
-      expect(featurePaths).to.eql([featurePath])
+      expect(featurePaths).to.eql([relativeFeaturePath])
       expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
       expect(supportCodePaths).to.eql([supportCodePath])
     })
@@ -108,7 +108,7 @@ describe('Configuration', () => {
       } = await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
-      expect(featurePaths).to.eql([featurePath])
+      expect(featurePaths).to.eql([relativeFeaturePath])
       expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
       expect(supportCodePaths).to.eql([supportCodePath])
     })
