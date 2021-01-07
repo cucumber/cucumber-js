@@ -63,6 +63,9 @@ Built-in formatters
 * usage - prints a table with data about step definitions usage.
 * usage-json - prints the step definitions usage data as JSON.
 
+Officially-supported standalone formatters
+* [@cucumber/pretty-formatter](https://www.npmjs.com/package/@cucumber/pretty-formatter) - prints the feature with inline results,  colours and custom themes.
+
 ### Format Options
 
 You can pass in format options with `--format-options <JSON>`. The JSON string must define an object. This option is repeatable and the objects will be merged with the last instance taking precedence.
