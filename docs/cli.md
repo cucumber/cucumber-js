@@ -48,7 +48,8 @@ If PATH is supplied, it prints to the given file.
 This option may be used multiple times in order to output different formats to different files.
 If multiple formats are specified with the same output, only the last is used.
 
-Built-in formatters
+### Built-in formatters
+
 * message - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
 * html - prints a rich HTML report to a standalone page
 * json - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
@@ -63,7 +64,8 @@ Built-in formatters
 * usage - prints a table with data about step definitions usage.
 * usage-json - prints the step definitions usage data as JSON.
 
-Officially-supported standalone formatters
+### Officially-supported standalone formatters
+
 * [@cucumber/pretty-formatter](https://www.npmjs.com/package/@cucumber/pretty-formatter) - prints the feature with inline results,  colours and custom themes.
 
 ### Format Options
