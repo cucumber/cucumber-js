@@ -113,16 +113,23 @@ This is useful when one needs to rerun failed tests locally by copying a line fr
 The default separator is a newline character.
 Note that the rerun file parser can only work with the default separator for now.
 
-## Parallel (experimental)
+## Parallel
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate node process and receives the following env variables:
+You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables:
+
 * `CUCUMBER_PARALLEL` - set to 'true'
 * `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
 * `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
 
-**Notes**
-* The reported runtime from the summary formatter is the total time from running the steps and thus be higher than the runtime for the command. The command runtime can be measured with other tools (time / Measure-Command)
-* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the worker processes communicate with the coordinator process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
+### Timing
+
+When using parallel mode, the last line of the summary output differentiates between real time elapsed during the test run and aggregate time spent actually running steps: 
+
+```
+73 scenarios (73 passed)
+512 steps (512 passed)
+0m51.627s (executing steps: 4m51.228s)
+```
 
 ## Profiles
 
