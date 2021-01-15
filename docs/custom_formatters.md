@@ -23,3 +23,7 @@ The base `Formatter` does very little aside from saving some of the options on t
 `formatterHelpers` are also exposed to give some of the functionality in more modular pieces.
 
 If there is any other formatter functionality you would like access to, please create an [issue](https://github.com/cucumber/cucumber-js).
+
+## Distribution
+
+If you want to share your formatter with other users, [publish it as an npm package](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) and make sure your formatter class is the default export of the entry point defined in `package.json` - that way users will be able to just reference it by the package name when running cucumber-js, once they've added it as a dependency.
