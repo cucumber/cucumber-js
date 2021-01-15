@@ -50,19 +50,19 @@ If multiple formats are specified with the same output, only the last is used.
 
 ### Built-in formatters
 
-* message - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
-* html - prints a rich HTML report to a standalone page
-* json - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
-* progress - prints one character per scenario (default).
-* progress-bar - prints a progress bar and outputs errors/warnings along the way.
-* rerun - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
+* **message** - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
+* **html** - prints a rich HTML report to a standalone page
+* **json** - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
+* **progress** - prints one character per scenario (default).
+* **progress-bar** - prints a progress bar and outputs errors/warnings along the way.
+* **rerun** - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
   * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`.
   * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with an `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
   * Use with `--fail-fast` to rerun the failure and the remaining features.
-* snippets - prints just the code snippets for undefined steps.
-* summary - prints a summary only, after all scenarios were executed.
-* usage - prints a table with data about step definitions usage.
-* usage-json - prints the step definitions usage data as JSON.
+* **snippets** - prints just the code snippets for undefined steps.
+* **summary** - prints a summary only, after all scenarios were executed.
+* **usage** - prints a table with data about step definitions usage.
+* **usage-json** - prints the step definitions usage data as JSON.
 
 ### Officially-supported standalone formatters
 
