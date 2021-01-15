@@ -43,8 +43,15 @@ _Note that once you specify any `--require` options, the defaults described abov
 ## Formats
 
 Use `--format <TYPE[:PATH]>` to specify the format of the output.
-If PATH is not supplied, the formatter prints to `stdout`.
-If PATH is supplied, it prints to the given file.
+
+The `TYPE` can be one of:
+* The name of one of the built-in formatters (below) e.g. `progress`
+* A module/package name e.g. `@cucumber/pretty-formatter`
+* A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
+
+If `PATH` is not supplied, the formatter prints to `stdout`.
+If `PATH` is supplied, it prints to the given file.
+
 This option may be used multiple times in order to output different formats to different files.
 If multiple formats are specified with the same output, only the last is used.
 
