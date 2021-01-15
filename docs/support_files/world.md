@@ -18,7 +18,7 @@ function World({ attach, log, parameters }) {
 The default can be overridden with `setWorldConstructor`:
 
 ```javascript
-const { setWorldConstructor } = require('cucumber')
+const { setWorldConstructor } = require('@cucumber/cucumber')
 const seleniumWebdriver = require('selenium-webdriver')
 
 function CustomWorld() {
