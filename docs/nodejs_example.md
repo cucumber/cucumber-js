@@ -59,7 +59,7 @@
   ```javascript
   // features/support/steps.js
   const { Given, When, Then } = require("cucumber");
-  const assert = require("assert").strict
+  const assert = require("assert").strict;
 
   Given("a variable set to {int}", function(number) {
     this.setTo(number);
