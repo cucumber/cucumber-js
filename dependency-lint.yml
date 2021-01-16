@@ -28,6 +28,7 @@ ignoreErrors:
     - eslint-plugin-prettier # .eslintrc.yml - extends - prettier
     - eslint-plugin-promise # peer dependency of eslint-config-standard-with-typescript
     - eslint-plugin-standard # peer dependency of eslint-config-standard-with-typescript
+    - long # implicit dependency of protobufjs via cucumber-messages, keeps typescript compiler happy
     - prettier # peer dependency of eslint-plugin-prettier
     - ts-node # .mocharc.yml / cucumber.js
 
