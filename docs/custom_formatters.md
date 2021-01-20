@@ -18,7 +18,7 @@ See a couple examples [here](/features/custom_formatter.feature) and the built i
 
 ## Extending Built-Ins
 
-The base `Formatter` does very little aside from saving some of the options on the instance. You can extend the `SummaryFormatter` (as the `ProgressFormatter` and `PrettyFormatter` do) in order to get the same error reporting at the end.
+The base `Formatter` does very little aside from saving some of the options on the instance. You can extend the `SummaryFormatter` (as the `ProgressFormatter` does) in order to get the same error reporting at the end.
 
 `formatterHelpers` are also exposed to give some of the functionality in more modular pieces.
 
