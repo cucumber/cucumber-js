@@ -1,12 +1,12 @@
 ## Setup
 
-- Install [Node.js](https://nodejs.org) (6 or higher)
+- Install [Node.js](https://nodejs.org) (10 or higher)
 - Install Cucumber modules with [yarn](https://yarnpkg.com/en/) **or** [npm](https://www.npmjs.com/)
 
   ```
-  yarn add -D cucumber@latest
+  yarn add -D npm install @cucumber/cucumber
 
-  npm i -D cucumber@latest
+  npm i -D npm install @cucumber/cucumber
   ```
 
 * Add the following files
@@ -37,7 +37,7 @@
 
   ```javascript
   // features/support/world.js
-  const { setWorldConstructor } = require("cucumber");
+  const { setWorldConstructor } = require("@cucumber/cucumber");
 
   class CustomWorld {
     constructor() {
@@ -58,18 +58,18 @@
 
   ```javascript
   // features/support/steps.js
-  const { Given, When, Then } = require("cucumber");
+  const { Given, When, Then } = require("@cucumber/cucumber");
   const assert = require("assert").strict;
 
-  Given("a variable set to {int}", function(number) {
+  Given("a variable set to {int}", function (number) {
     this.setTo(number);
   });
 
-  When("I increment the variable by {int}", function(number) {
+  When("I increment the variable by {int}", function (number) {
     this.incrementBy(number);
   });
 
-  Then("the variable should contain {int}", function(number) {
+  Then("the variable should contain {int}", function (number) {
     assert.equal(this.variable, number);
   });
   ```
