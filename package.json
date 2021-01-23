@@ -173,6 +173,7 @@
     "@cucumber/html-formatter": "^11.0.4",
     "@cucumber/messages": "^13.2.1",
     "@cucumber/query": "^7.0.1",
+    "@cucumber/react": "^11.0.2",
     "@cucumber/tag-expressions": "^2.0.4",
     "assertion-error-formatter": "^3.0.0",
     "bluebird": "^3.7.2",
