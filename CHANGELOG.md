@@ -11,6 +11,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+- Support attachments that are already base64-encoded
+
 ### Changed
 
 ### Deprecated
