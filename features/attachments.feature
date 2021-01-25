@@ -34,7 +34,7 @@ Feature: Attachments
       const {Before} = require('@cucumber/cucumber')
 
       Before(function() {
-        this.attach(Buffer.from([137, 80, 78, 71]).toString('base64'), 'image/png')
+        this.attach(Buffer.from([137, 80, 78, 71]).toString('base64'), 'base64:image/png')
       })
       """
     When I run cucumber-js
