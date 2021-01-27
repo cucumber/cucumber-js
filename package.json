@@ -225,7 +225,7 @@
     "@types/verror": "1.10.4",
     "@typescript-eslint/eslint-plugin": "4.11.1",
     "@typescript-eslint/parser": "4.11.1",
-    "chai": "4.2.0",
+    "chai": "^4.2.0",
     "chai-exclude": "2.0.2",
     "coffeescript": "2.5.1",
     "dependency-lint": "6.0.0",
