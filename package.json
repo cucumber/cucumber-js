@@ -214,7 +214,7 @@
     "@types/mocha": "8.2.0",
     "@types/mustache": "4.1.1",
     "@types/mz": "2.7.3",
-    "@types/node": "14.14.19",
+    "@types/node": "14.14.22",
     "@types/progress": "2.0.3",
     "@types/resolve": "1.17.1",
     "@types/semver": "7.3.4",
