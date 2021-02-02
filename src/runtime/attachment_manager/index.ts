@@ -51,10 +51,17 @@ export default class AttachmentManager {
       if (doesNotHaveValue(mediaType)) {
         mediaType = 'text/plain'
       }
-      this.createStringAttachment(data, {
-        encoding: messages.Attachment.ContentEncoding.IDENTITY,
-        contentType: mediaType,
-      })
+      if (mediaType.startsWith('base64:')) {
+        this.createStringAttachment(data, {
+          encoding: messages.Attachment.ContentEncoding.BASE64,
+          contentType: mediaType.replace('base64:', ''),
+        })
+      } else {
+        this.createStringAttachment(data, {
+          encoding: messages.Attachment.ContentEncoding.IDENTITY,
+          contentType: mediaType,
+        })
+      }
     } else {
       throw Error(
         'Invalid attachment data: must be a buffer, readable stream, or string'
