@@ -204,6 +204,34 @@ describe('AttachmentManager', () => {
         })
       })
 
+      describe('with media type, already base64 encoded', () => {
+        it('adds the data and media', function () {
+          // Arrange
+          const attachments: IAttachment[] = []
+          const attachmentManager = new AttachmentManager((x) =>
+            attachments.push(x)
+          )
+
+          // Act
+          const result = attachmentManager.create(
+            Buffer.from('my string', 'utf8').toString('base64'),
+            'base64:text/special'
+          )
+
+          // Assert
+          expect(result).to.eql(undefined)
+          expect(attachments).to.eql([
+            {
+              data: 'bXkgc3RyaW5n',
+              media: {
+                contentType: 'text/special',
+                encoding: messages.Attachment.ContentEncoding.BASE64,
+              },
+            },
+          ])
+        })
+      })
+
       describe('without mime type', () => {
         it('adds the data with the default mime type', function () {
           // Arrange

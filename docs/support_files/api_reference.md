@@ -2,7 +2,7 @@
 
 ## API Reference
 
-Each method can be destructed from the object returned by `require('cucumber')`. 
+Each method can be destructed from the object returned by `require('@cucumber/cucumber')`. 
 
 ---
 
