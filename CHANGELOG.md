@@ -11,7 +11,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
-- Support attachments that are already base64-encoded via a prefix on the MIME type e.g. `this.attach(base64String, 'base64:image/png')` ([https://github.com/cucumber/cucumber-js/pull/1552](#1552))
+- Support attachments that are already base64-encoded via a prefix on the MIME type e.g. `this.attach(base64String, 'base64:image/png')` ([#1552](https://github.com/cucumber/cucumber-js/pull/1552))
 
 ### Changed
 
