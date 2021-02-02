@@ -93,7 +93,7 @@ export default class Cli {
       async ({ type, outputTo }) => {
         let stream: IFormatterStream = this.stdout
         if (outputTo !== '') {
-          if (outputTo.match(new RegExp('^https?://')) !== null) {
+          if (outputTo.match(/^https?:\/\//) !== null) {
             const headers: { [key: string]: string } = {}
             if (process.env.CUCUMBER_PUBLISH_TOKEN !== undefined) {
               headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`

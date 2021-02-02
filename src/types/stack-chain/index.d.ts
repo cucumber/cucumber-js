@@ -1,4 +1,4 @@
 declare module 'stack-chain' {
-  var _temp: any
+  const _temp: any
   export = _temp
 }
