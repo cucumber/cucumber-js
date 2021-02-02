@@ -251,6 +251,7 @@
     "stream-buffers": "3.0.2",
     "stream-to-string": "1.2.0",
     "ts-node": "9.1.1",
+    "tsd": "^0.14.0",
     "typescript": "4.1.3"
   },
   "scripts": {
@@ -268,10 +269,17 @@
     "prefeature-test": "yarn run build-local",
     "prepublishOnly": "rm -rf lib && npm run build-local",
     "pretest-coverage": "yarn build-local",
+    "pretypes-test": "yarn build-local",
     "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node ./bin/cucumber-js && nyc report --reporter=lcov",
-    "test": "yarn run lint && yarn run unit-test && yarn run cck-test && yarn run feature-test",
+    "test": "yarn run lint && yarn run types-test && yarn run unit-test && yarn run cck-test && yarn run feature-test",
+    "types-test": "tsd",
     "unit-test": "mocha 'src/**/*_spec.ts'",
     "update-dependencies": "npx npm-check-updates --upgrade"
+  },
+  "tsd": {
+    "compilerOptions": {
+      "types": ["long"]
+    }
   },
   "bin": {
     "cucumber-js": "./bin/cucumber-js"
