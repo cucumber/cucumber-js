@@ -12,6 +12,9 @@
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"
-    ]
+    ],
+    "paths": {
+      "@sinonjs/fake-timers": ["./node_modules/@types/sinonjs__fake-timers"]
+    }
   }
 }
