@@ -1,6 +1,5 @@
 import _, { clone } from 'lodash'
 import { EventDataCollector, formatLocation } from '../formatter/helpers'
-import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
 import Status from '../status'
 import UserCodeRunner from '../user_code_runner'
@@ -77,27 +76,24 @@ export default class Runtime {
     if (this.options.dryRun) {
       return
     }
-    await bluebird.each(
-      definitions,
-      async (hookDefinition: TestRunHookDefinition) => {
-        const { error } = await UserCodeRunner.run({
-          argsArray: [],
-          fn: hookDefinition.code,
-          thisArg: null,
-          timeoutInMilliseconds: valueOrDefault(
-            hookDefinition.options.timeout,
-            this.supportCodeLibrary.defaultTimeout
-          ),
-        })
-        if (doesHaveValue(error)) {
-          const location = formatLocation(hookDefinition)
-          throw new VError(
-            error,
-            `${name} hook errored, process exiting: ${location}`
-          )
-        }
+    for (const hookDefinition of definitions) {
+      const { error } = await UserCodeRunner.run({
+        argsArray: [],
+        fn: hookDefinition.code,
+        thisArg: null,
+        timeoutInMilliseconds: valueOrDefault(
+          hookDefinition.options.timeout,
+          this.supportCodeLibrary.defaultTimeout
+        ),
+      })
+      if (doesHaveValue(error)) {
+        const location = formatLocation(hookDefinition)
+        throw new VError(
+          error,
+          `${name} hook errored, process exiting: ${location}`
+        )
       }
-    )
+    }
   }
 
   async runPickle(pickleId: string): Promise<void> {
@@ -138,7 +134,9 @@ export default class Runtime {
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
     )
-    await bluebird.each(this.pickleIds, this.runPickle.bind(this))
+    for (const pickleId in this.pickleIds) {
+      this.runPickle(pickleId)
+    }
     await this.runTestRunHooks(
       clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
       'an AfterAll'

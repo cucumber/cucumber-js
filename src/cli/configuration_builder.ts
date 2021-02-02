@@ -6,7 +6,6 @@ import ArgvParser, {
 import fs from 'mz/fs'
 import path from 'path'
 import OptionSplitter from './option_splitter'
-import bluebird from 'bluebird'
 import glob from 'glob'
 import { promisify } from 'util'
 import { IPickleFilterOptions } from '../pickle_filter'
@@ -122,21 +121,20 @@ export default class ConfigurationBuilder {
     unexpandedPaths: string[],
     defaultExtension: string
   ): Promise<string[]> {
-    const expandedPaths = await bluebird.map(
-      unexpandedPaths,
-      async (unexpandedPath) => {
+    const expandedPaths = await Promise.all(
+      unexpandedPaths.map(async (unexpandedPath) => {
         const matches = await promisify(glob)(unexpandedPath, {
           absolute: true,
           cwd: this.cwd,
         })
-        const expanded = await bluebird.map(matches, async (match) => {
+        const expanded = await Promise.all(matches.map(async (match) => {
           if (path.extname(match) === '') {
             return await promisify(glob)(`${match}/**/*${defaultExtension}`)
           }
           return [match]
-        })
+        }))
         return _.flatten(expanded)
-      }
+      })
     )
     return _.flatten(expandedPaths).map((x) => path.normalize(x))
   }
@@ -205,7 +203,7 @@ export default class ConfigurationBuilder {
 
   async getUnexpandedFeaturePaths(): Promise<string[]> {
     if (this.args.length > 0) {
-      const nestedFeaturePaths = await bluebird.map(this.args, async (arg) => {
+      const nestedFeaturePaths = await Promise.all(this.args.map(async (arg) => {
         const filename = path.basename(arg)
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
@@ -213,7 +211,7 @@ export default class ConfigurationBuilder {
           return _.chain(content).split('\n').map(_.trim).compact().value()
         }
         return [arg]
-      })
+      }))
       const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {
         return featurePaths

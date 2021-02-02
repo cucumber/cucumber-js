@@ -4,7 +4,6 @@ Feature: Step definition timeouts
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given, setDefaultTimeout} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       setDefaultTimeout(500)
 
@@ -21,15 +20,21 @@ Feature: Step definition timeouts
       })
 
       Given(/^a promise step runs slowly$/, function() {
-        return Promise.resolve().delay(1000)
+        return new Promise(resolve => {
+          setTimeout(resolve, 1000)
+        })
       })
 
       Given(/^a promise step runs slowly with an increased timeout$/, {timeout: 1500}, function() {
-        return Promise.resolve().delay(1000)
+        return new Promise(resolve => {
+          setTimeout(resolve, 1000)
+        })
       })
 
       Given(/^a promise step with a disabled timeout$/, {timeout: -1}, function() {
-        return Promise.resolve().delay(1000)
+        return new Promise(resolve => {
+          setTimeout(resolve, 1000)
+        })
       })
       """
 

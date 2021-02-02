@@ -42,3 +42,6 @@ export {
   default as World,
   IWorldOptions,
 } from './support_code_library_builder/world'
+
+// Time helpers
+export { wrapPromiseWithTimeout } from './time'
