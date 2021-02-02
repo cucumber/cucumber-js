@@ -127,12 +127,14 @@ export default class ConfigurationBuilder {
           absolute: true,
           cwd: this.cwd,
         })
-        const expanded = await Promise.all(matches.map(async (match) => {
-          if (path.extname(match) === '') {
-            return await promisify(glob)(`${match}/**/*${defaultExtension}`)
-          }
-          return [match]
-        }))
+        const expanded = await Promise.all(
+          matches.map(async (match) => {
+            if (path.extname(match) === '') {
+              return await promisify(glob)(`${match}/**/*${defaultExtension}`)
+            }
+            return [match]
+          })
+        )
         return _.flatten(expanded)
       })
     )
@@ -203,15 +205,17 @@ export default class ConfigurationBuilder {
 
   async getUnexpandedFeaturePaths(): Promise<string[]> {
     if (this.args.length > 0) {
-      const nestedFeaturePaths = await Promise.all(this.args.map(async (arg) => {
-        const filename = path.basename(arg)
-        if (filename[0] === '@') {
-          const filePath = path.join(this.cwd, arg)
-          const content = await fs.readFile(filePath, 'utf8')
-          return _.chain(content).split('\n').map(_.trim).compact().value()
-        }
-        return [arg]
-      }))
+      const nestedFeaturePaths = await Promise.all(
+        this.args.map(async (arg) => {
+          const filename = path.basename(arg)
+          if (filename[0] === '@') {
+            const filePath = path.join(this.cwd, arg)
+            const content = await fs.readFile(filePath, 'utf8')
+            return _.chain(content).split('\n').map(_.trim).compact().value()
+          }
+          return [arg]
+        })
+      )
       const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {
         return featurePaths

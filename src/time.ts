@@ -87,17 +87,23 @@ export function getZeroDuration(): messages.IDuration {
   return new messages.Duration({ seconds: 0, nanos: 0 })
 }
 
-export async function wrapPromiseWithTimeout(promise: Promise<any>, timeoutInMilliseconds: number, timeoutMessage: string = '') {
+export async function wrapPromiseWithTimeout<T>(
+  promise: Promise<T>,
+  timeoutInMilliseconds: number,
+  timeoutMessage: string = ''
+): Promise<T> {
   let timeoutId: NodeJS.Timeout
-  if (timeoutMessage == '') {
-    timeoutMessage = `Action did not complete within ${timeoutInMilliseconds} milliseconds`;
+  if (timeoutMessage === '') {
+    timeoutMessage = `Action did not complete within ${timeoutInMilliseconds} milliseconds`
   }
-  const timeoutPromise = new Promise((resolve, reject) => {
+  const timeoutPromise = new Promise<T>((resolve, reject) => {
     timeoutId = methods.setTimeout(() => {
       reject(new Error(timeoutMessage))
     }, timeoutInMilliseconds)
   })
-  return await Promise.race([promise, timeoutPromise]).finally(() => methods.clearTimeout(timeoutId))
+  return await Promise.race([promise, timeoutPromise]).finally(() =>
+    methods.clearTimeout(timeoutId)
+  )
 }
 
 export default methods

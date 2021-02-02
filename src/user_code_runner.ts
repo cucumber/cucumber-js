@@ -68,13 +68,17 @@ const UserCodeRunner = {
     })
     racingPromises.push(uncaughtExceptionPromise)
 
-    let finalPromise = Promise.race(racingPromises);
+    let finalPromise = Promise.race(racingPromises)
     if (timeoutInMilliseconds >= 0) {
       const timeoutMessage =
         'function timed out, ensure the ' +
         (callbackInterface ? 'callback is executed' : 'promise resolves') +
-        ` within ${timeoutInMilliseconds.toString()} milliseconds`;
-      finalPromise = wrapPromiseWithTimeout(finalPromise, timeoutInMilliseconds, timeoutMessage )
+        ` within ${timeoutInMilliseconds.toString()} milliseconds`
+      finalPromise = wrapPromiseWithTimeout(
+        finalPromise,
+        timeoutInMilliseconds,
+        timeoutMessage
+      )
     }
 
     let error, result

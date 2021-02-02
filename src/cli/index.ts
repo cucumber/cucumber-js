@@ -28,6 +28,7 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import { createReadStream } from 'fs'
 import HttpStream from '../formatter/http_stream'
+import { promisify } from 'util'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -115,7 +116,7 @@ export default class Cli {
           cleanup:
             stream === this.stdout
               ? async () => await Promise.resolve()
-              : promisify(stream.end.bind(stream)),
+              : promisify<any>(stream.end.bind(stream)),
           supportCodeLibrary,
         }
         if (doesNotHaveValue(formatOptions.colorsEnabled)) {

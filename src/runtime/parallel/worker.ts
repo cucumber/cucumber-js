@@ -170,6 +170,6 @@ export default class Worker {
           `${name} hook errored on worker ${this.id}, process exiting: ${location}`
         )
       }
-    })
+    }
   }
 }

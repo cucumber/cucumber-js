@@ -134,8 +134,8 @@ export default class Runtime {
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
     )
-    for (const pickleId in this.pickleIds) {
-      this.runPickle(pickleId)
+    for (const pickleId of this.pickleIds) {
+      await this.runPickle(pickleId)
     }
     await this.runTestRunHooks(
       clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),

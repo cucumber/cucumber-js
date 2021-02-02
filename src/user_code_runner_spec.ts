@@ -242,7 +242,7 @@ describe('UserCodeRunner', () => {
           // Arrange
           const fn = async function (): Promise<string> {
             return await new Promise((resolve) => {
-              setTimeout(() => resolve('result'), 200);
+              setTimeout(() => resolve('result'), 200)
             })
           }
 
@@ -263,7 +263,7 @@ describe('UserCodeRunner', () => {
           // Arrange
           const fn = async function (): Promise<string> {
             return await new Promise((resolve) => {
-              setTimeout(() => resolve('result'), 200);
+              setTimeout(() => resolve('result'), 200)
             })
           }
 

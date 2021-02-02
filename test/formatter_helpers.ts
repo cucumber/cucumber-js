@@ -11,8 +11,8 @@ import { doesNotHaveValue } from '../src/value_checker'
 import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
 import { emitSupportCodeMessages } from '../src/cli/helpers'
-import IEnvelope = messages.IEnvelope
 import { promisify } from 'util'
+import IEnvelope = messages.IEnvelope
 
 const { uuid } = IdGenerator
 
