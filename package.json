@@ -179,7 +179,7 @@
     "capital-case": "^1.0.4",
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
-    "commander": "^6.2.1",
+    "commander": "^7.0.0",
     "create-require": "^1.1.1",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
