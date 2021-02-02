@@ -37,7 +37,6 @@ var {Before, Given, wrapPromiseWithTimeout} = require('@cucumber/cucumber');
 
 Given('the operation completes within {n} minutes', {timeout: -1}, function(minutes) {
   const milliseconds = (minutes + 1) * 60 * 1000
-  const message = `operation did not complete within ${minutes} minutes`
-  return Promise(this.verifyOperationComplete()).timeout(milliseconds, message);
+  return wrapPromiseWithTimeout(this.verifyOperationComplete(), milliseconds);
 });
 ```
