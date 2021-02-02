@@ -88,7 +88,6 @@ After(function (testCase) {
   var world = this;
   if (testCase.result.status === Status.FAILED) {
     return webDriver.takeScreenshot().then(function(screenShot) {
-      // screenShot is a base-64 encoded PNG
       world.attach(screenShot, 'base64:image/png');
     });
   }
