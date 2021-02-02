@@ -12,7 +12,7 @@ describe('JsonFormatter', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = FakeTimers.install({ target: timeMethods })
+    clock = FakeTimers.withGlobal(timeMethods).install()
   })
 
   afterEach(() => {
