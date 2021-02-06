@@ -588,6 +588,6 @@ Feature: Retry flaky tests
       """
       When I run cucumber-js with `--retry 1 --fail-fast`
       Then it fails
-      And scenario "Failing" attempt 0 step "Given a flaky step" has status "failed"
-      And scenario "Failing" attempt 1 step "Given a flaky step" has status "failed"
+      And scenario "Failing" attempt 0 step "Given a failing step" has status "failed"
+      And scenario "Failing" attempt 1 step "Given a failing step" has status "failed"
       And scenario "Passing" step "Given a passing step" has status "skipped"
