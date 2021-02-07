@@ -95,19 +95,10 @@ Feature: Rerun Formatter
     When I run cucumber-js with `@rerun.txt`
     Then it runs the scenario "C - passing"
 
-  Scenario: empty rerun file
+  Scenario: empty rerun file exits without running any scenarios
     Given an empty file named "@rerun.txt"
     When I run cucumber-js with `@rerun.txt`
-    Then it fails
-    And it runs the scenarios:
-      | NAME          |
-      | A - passing   |
-      | A - failing   |
-      | A - ambiguous |
-      | B - passing   |
-      | B - pending   |
-      | C - passing   |
-      | C - undefined |
+    Then it passes
 
   Scenario: rerun with fail fast outputs all skipped scenarios
     When I run cucumber-js with `--fail-fast --format rerun:@rerun.txt`

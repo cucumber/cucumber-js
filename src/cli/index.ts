@@ -181,6 +181,9 @@ export default class Cli {
       supportCodeLibrary,
     })
     await emitMetaMessage(eventBroadcaster)
+    if (configuration.featurePaths.length === 0) {
+      return { shouldExitImmediately: true, success: true }
+    }
     const gherkinMessageStream = GherkinStreams.fromPaths(
       configuration.featurePaths,
       {
