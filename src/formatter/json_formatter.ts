@@ -113,9 +113,9 @@ export default class JsonFormatter extends Formatter {
   formatDataTable(
     dataTable: messages.PickleStepArgument.IPickleTable
   ): {
-    rows: {
+    rows: Array<{
       cells: string[]
-    }[]
+    }>
   } {
     return {
       rows: dataTable.rows.map((row) => ({ cells: _.map(row.cells, 'value') })),
