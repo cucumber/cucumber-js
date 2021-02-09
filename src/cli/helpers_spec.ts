@@ -9,7 +9,7 @@ import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { messages, IdGenerator } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
-import { GherkinStreams } from '@cucumber/gherkin'
+import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
 import { Readable } from 'stream'
 import StepDefinition from '../models/step_definition'
 import {
