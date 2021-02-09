@@ -110,10 +110,12 @@ export default class JsonFormatter extends Formatter {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): {
+  formatDataTable(
+    dataTable: messages.PickleStepArgument.IPickleTable
+  ): {
     rows: {
-      cells: string[];
-    }[];
+      cells: string[]
+    }[]
   } {
     return {
       rows: dataTable.rows.map((row) => ({ cells: _.map(row.cells, 'value') })),
@@ -124,8 +126,8 @@ export default class JsonFormatter extends Formatter {
     docString: messages.PickleStepArgument.IPickleDocString,
     gherkinStep: messages.GherkinDocument.Feature.IStep
   ): {
-    content: string;
-    line: number;
+    content: string
+    line: number
   } {
     return {
       content: docString.content,
