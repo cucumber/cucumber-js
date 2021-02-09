@@ -168,7 +168,7 @@
   },
   "dependencies": {
     "@cucumber/create-meta": "^2.0.4",
-    "@cucumber/cucumber-expressions": "^11.0.0",
+    "@cucumber/cucumber-expressions": "^11.0.1",
     "@cucumber/gherkin": "^16.0.0",
     "@cucumber/html-formatter": "^11.0.4",
     "@cucumber/messages": "^13.2.1",
