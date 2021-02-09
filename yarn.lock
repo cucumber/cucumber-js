@@ -189,14 +189,14 @@
   resolved "https://registry.yarnpkg.com/@cucumber/compatibility-kit/-/compatibility-kit-2.0.0.tgz#563e9fc09692501abc179b1becb177d92af0fb92"
   integrity sha512-3bwCMrct41lKoIGwsv62IkknTVee7nAIuQqkl5Xu7YWPZjHv4UjEci8vRoERX0MRXv0MEb/GkNRoWGr4cmI4Sw==
 
-"@cucumber/create-meta@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@cucumber/create-meta/-/create-meta-2.0.4.tgz#692379105fb599703fc2dfe39bcc408d55d5df74"
-  integrity sha512-upbfuih3NVm1efWSbPGH7HI6O2O037QRAPLMgTDIGaf2lfcrMCgB/qkqPHk8DOUuz7Vjpg5tFFoJODSDcxtNOA==
+"@cucumber/create-meta@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/create-meta/-/create-meta-3.0.0.tgz#febc8933eea23cd1ffe2dfb3345708d0db27fb82"
+  integrity sha512-DFi+mILvIOQL71Itel1A7EliUTbu7jZ/i7Zqa8cziuf7YrLi0xz8Afb5VxZ6YOBzRzVg/T6N3K/wytRkMToAeA==
   dependencies:
-    "@cucumber/messages" "^13.1.0"
-    ts-node "^9.0.0"
-    typescript "^4.0.5"
+    "@cucumber/messages" "^14.0.1"
+    ts-node "^9.1.1"
+    typescript "^4.1.3"
 
 "@cucumber/cucumber-expressions@11.0.1":
   version "11.0.1"
@@ -230,15 +230,6 @@
     "@types/uuid" "^8.3.0"
     protobufjs "^6.10.2"
     uuid "^8.3.2"
-
-"@cucumber/messages@^13.1.0":
-  version "13.2.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-13.2.1.tgz#e43300d8abe7bbb56d98422e3eb6661bfa8603af"
-  integrity sha512-2cu6P1JsEcH0/RlMx302KOK9rkKDHYS1H+6/VhQ6L+yrVW458wOU3CiVgurLn3heCDdJH8r4L87pkSwt0rxiGQ==
-  dependencies:
-    "@types/uuid" "^8.3.0"
-    protobufjs "^6.10.2"
-    uuid "^8.3.1"
 
 "@cucumber/query@8.0.0":
   version "8.0.0"
@@ -4187,24 +4178,13 @@ trim-newlines@^3.0.0:
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-3.0.0.tgz#79726304a6a898aa8373427298d54c2ee8b1cb30"
   integrity sha512-C4+gOpvmxaSMKuEf9Qc134F1ZuOHVXKRbtEflf4NTtuuJDEIJ9p5PXsalL8SkeRw+qit1Mo+yuvMPAKwWg/1hA==
 
-ts-node@9.1.1:
+ts-node@9.1.1, ts-node@^9.1.1:
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-9.1.1.tgz#51a9a450a3e959401bda5f004a72d54b936d376d"
   integrity sha512-hPlt7ZACERQGf03M253ytLY3dHbGNGrAq9qIHWUY9XHYl1z7wYngSr3OQ5xmui8o2AaxsONxIzjafLUiWBo1Fg==
   dependencies:
     arg "^4.1.0"
     create-require "^1.1.0"
-    diff "^4.0.1"
-    make-error "^1.1.1"
-    source-map-support "^0.5.17"
-    yn "3.1.1"
-
-ts-node@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-9.0.0.tgz#e7699d2a110cc8c0d3b831715e417688683460b3"
-  integrity sha512-/TqB4SnererCDR/vb4S/QvSZvzQMJN8daAslg7MeaiHvD8rDZsSfXmNeNumyZZzMned72Xoq/isQljYSt8Ynfg==
-  dependencies:
-    arg "^4.1.0"
     diff "^4.0.1"
     make-error "^1.1.1"
     source-map-support "^0.5.17"
@@ -4306,7 +4286,7 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@4.1.3, typescript@^4.0.5:
+typescript@4.1.3, typescript@^4.1.3:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
   integrity sha512-B3ZIOf1IKeH2ixgHhj6la6xdwR9QrLC5d1VKeCSY4tvkqhF2eqd9O7txNlS0PO3GrBAFIdr3L1ndNwteUbZLYg==
@@ -4398,7 +4378,7 @@ uuid@^3.3.3:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@^8.3.1, uuid@^8.3.2:
+uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==

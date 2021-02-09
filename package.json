@@ -167,7 +167,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@cucumber/create-meta": "2.0.4",
+    "@cucumber/create-meta": "3.0.0",
     "@cucumber/cucumber-expressions": "11.0.1",
     "@cucumber/gherkin": "17.0.1",
     "@cucumber/html-formatter": "12.0.0",
