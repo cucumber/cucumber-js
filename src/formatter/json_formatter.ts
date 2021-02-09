@@ -50,7 +50,7 @@ export interface IJsonScenario {
 }
 
 export interface IJsonStep {
-  arguments?: any // TODO
+  arguments?: {} | []
   embeddings?: any // TODO
   hidden?: boolean
   keyword?: string // TODO, not optional
@@ -110,7 +110,11 @@ export default class JsonFormatter extends Formatter {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): any {
+  formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): {
+    rows: {
+      cells: string[];
+    }[];
+  } {
     return {
       rows: dataTable.rows.map((row) => ({ cells: _.map(row.cells, 'value') })),
     }
@@ -119,7 +123,10 @@ export default class JsonFormatter extends Formatter {
   formatDocString(
     docString: messages.PickleStepArgument.IPickleDocString,
     gherkinStep: messages.GherkinDocument.Feature.IStep
-  ): any {
+  ): {
+    content: string;
+    line: number;
+  } {
     return {
       content: docString.content,
       line: gherkinStep.docString.location.line,
@@ -129,12 +136,12 @@ export default class JsonFormatter extends Formatter {
   formatStepArgument(
     stepArgument: messages.IPickleStepArgument,
     gherkinStep: messages.GherkinDocument.Feature.IStep
-  ): any {
+  ): [] | {} {
     if (doesNotHaveValue(stepArgument)) {
       return []
     }
     return [
-      parseStepArgument<any>(stepArgument, {
+      parseStepArgument<{}>(stepArgument, {
         dataTable: (dataTable) => this.formatDataTable(dataTable),
         docString: (docString) => this.formatDocString(docString, gherkinStep),
       }),
