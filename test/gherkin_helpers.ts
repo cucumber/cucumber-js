@@ -1,6 +1,7 @@
 import { messages } from '@cucumber/messages'
 import { doesHaveValue } from '../src/value_checker'
-import { GherkinStreams, IGherkinOptions } from '@cucumber/gherkin'
+import { IGherkinOptions } from '@cucumber/gherkin'
+import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
 import { EventEmitter } from 'events'
 
 export interface IParsedSource {

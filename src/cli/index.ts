@@ -24,10 +24,9 @@ import { IdGenerator } from '@cucumber/messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
-import { GherkinStreams } from '@cucumber/gherkin'
+import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-import { createReadStream } from 'fs'
 import HttpStream from '../formatter/http_stream'
 
 const { incrementing, uuid } = IdGenerator
@@ -93,7 +92,7 @@ export default class Cli {
       async ({ type, outputTo }) => {
         let stream: IFormatterStream = this.stdout
         if (outputTo !== '') {
-          if (outputTo.match(new RegExp('^https?://')) !== null) {
+          if (outputTo.match(/^https?:\/\//) !== null) {
             const headers: { [key: string]: string } = {}
             if (process.env.CUCUMBER_PUBLISH_TOKEN !== undefined) {
               headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
@@ -186,9 +185,6 @@ export default class Cli {
       {
         defaultDialect: configuration.featureDefaultLanguage,
         newId,
-        createReadStream(path) {
-          return createReadStream(path, { encoding: 'utf-8' })
-        },
       }
     )
     const pickleIds = await parseGherkinMessageStream({

@@ -11,6 +11,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+- Support attachments that are already base64-encoded via a prefix on the MIME type e.g. `this.attach(base64String, 'base64:image/png')` ([#1552](https://github.com/cucumber/cucumber-js/pull/1552))
+
 ### Changed
 
 ### Deprecated
@@ -18,6 +20,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Removed
 
 ### Fixed
+
+* Fix types for hook functions so they can return e.g. `'skipped'` ([#1542](https://github.com/cucumber/cucumber-js/pull/1542))
 
 ## [7.0.0] (2020-12-21)
 
@@ -37,18 +41,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [7.0.0-rc.0] (2020-09-14)
 
-Starting with version 7, the npm module has been changed from `cucumber` to `@cucumber/cucumber`
-
-### Migration guide
-
-- `npm uninstall cucumber`
-- `npm install --save-dev @cucumber/cucumber`
-- require/import `@cucumber/cucumber` instead of `cucumber`
-- TypeScript
-  - Replace `TableDefinition` with `DataTable`
-  - `npm uninstall @types/cucumber`
-
-If anything is missing from the migration guide, please submit an issue.
+See the [migration guide](./docs/migration.md) for details of how to migrate from 6.x.x.
 
 ### New Features
 
@@ -60,20 +53,21 @@ If anything is missing from the migration guide, please submit an issue.
 
 ### Breaking changes
 
-* The npm module has changed name from `cucumber` to `@cucumber/cucumber`
-* Your `require` / `import` statements must be changed from `cucumber` to `@cucumber/cucumber`
+* The npm module has changed name from `cucumber` to `@cucumber/cucumber` -  `require`/`import` statements must be changed from `cucumber` to `@cucumber/cucumber`
 * TypeScript users must rename `TableDefinition` to `DataTable`
 * Drop support for Node.js 8, add support for Node.js 14
 * Formatters
   * Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
   * `event-protocol` formatter has been removed and replaced with `message`
-  * Custom formatters will need to migrate
-  * `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
 * Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
 * Parallel runtime environment variables renamed for inclusivity:
   * `CUCUMBER_TOTAL_SLAVES` is now `CUCUMBER_TOTAL_WORKERS`
   * `CUCUMBER_SLAVE_ID` is now `CUCUMBER_WORKER_ID`
 * Custom formatters are now loaded via the regular require paths relative to the current directory, unless it begins with a dot (e.g. `--format=./relpath/to/formatter`). Previously this was always loaded as a file relative to the current directory.
+
+### Deprecations
+
+* `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
 
 ### Bug fixes
 

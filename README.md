@@ -41,6 +41,8 @@ Cucumber.js is available as an npm module.
 $ npm install @cucumber/cucumber
 ```
 
+If you're upgrading from 6.x.x or below, see the [migration guide](./docs/migration.md).
+
 ### 6.x.x and below
 
 ``` shell
