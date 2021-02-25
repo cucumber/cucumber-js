@@ -6,7 +6,10 @@ import StepDefinition from '../models/step_definition'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 
 export type DefineStepPattern = string | RegExp
-
+export type ParallelAssignmentValidator = (
+  pickle: messages.IPickle,
+  runningPickles: messages.IPickle[]
+) => boolean
 export interface ITestCaseHookParameter {
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
@@ -75,12 +78,7 @@ export interface IDefineSupportCodeMethods {
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
-  setParallelCanAssign: (
-    fn: (
-      pickle: messages.IPickle,
-      runningPickles: messages.IPickle[]
-    ) => boolean
-  ) => void
+  setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
   setWorldConstructor: (fn: any) => void
   After: ((code: TestCaseHookFunction) => void) &
     ((tags: string, code: TestCaseHookFunction) => void) &

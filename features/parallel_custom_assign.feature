@@ -47,29 +47,23 @@ Feature: Running scenarios in parallel
       const {Given, Then, setParallelCanAssign} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
       let flag = true
-      const order = []
       setParallelCanAssign(() => (flag = !flag))
       Given(/^step (\d+)$/, function(step, cb) {
-        order.push(step)
         setTimeout(cb, 250)
         if (step === 1) throw Error(`#${step} this guy should be last`)
       })
-      Then(/^log order$/, function() { console.log(order) })
       """
     And a file named "features/a.feature" with:
       """
       Feature: slow
         Scenario: a
           Given step 1
-          Then log order
 
         Scenario: b
           Given step 2
-          Then log order
 
         Scenario: c
           Given step 3
-          Then log order
       """
     When I run cucumber-js with `--parallel 2`
     Then it fails
