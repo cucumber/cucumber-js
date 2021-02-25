@@ -35,7 +35,13 @@ export interface INewCoordinatorOptions {
 
 interface IWorker {
   closed: boolean
+  idle: boolean
   process: ChildProcess
+}
+
+interface IPicklePlacement {
+  index: number
+  pickle: messages.IPickle
 }
 
 export default class Coordinator {
@@ -47,6 +53,7 @@ export default class Coordinator {
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
+  private readonly pickleWIP: Map<IWorker, messages.IPickle>
   private workers: Dictionary<IWorker>
   private supportCodeIdMap: Dictionary<string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
@@ -78,6 +85,7 @@ export default class Coordinator {
     this.nextPickleIdIndex = 0
     this.success = true
     this.workers = {}
+    this.pickleWIP = new Map()
     this.supportCodeIdMap = {}
   }
 
@@ -85,7 +93,7 @@ export default class Coordinator {
     if (doesHaveValue(message.supportCodeIds)) {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
-      this.giveWork(worker)
+      this.awakenWorkers()
     } else if (doesHaveValue(message.jsonEnvelope)) {
       const envelope = messages.Envelope.fromObject(
         JSON.parse(message.jsonEnvelope)
@@ -95,6 +103,7 @@ export default class Coordinator {
         this.remapDefinitionIds(envelope.testCase)
       }
       if (doesHaveValue(envelope.testCaseFinished)) {
+        worker.idle = true
         this.parseTestCaseResult(envelope.testCaseFinished)
       }
     } else {
@@ -141,6 +150,31 @@ export default class Coordinator {
     }
   }
 
+  awakenWorkers(): void {
+    let oneWokeWorker = false
+    _.forOwn(this.workers, (worker): boolean => {
+      if (worker.idle) {
+        this.giveWork(worker)
+      }
+      return (oneWokeWorker = oneWokeWorker || !worker.idle)
+    })
+
+    if (
+      !oneWokeWorker &&
+      _.values(this.workers).every((worker) => worker.idle)
+    ) {
+      _.values(this.workers).forEach((worker) => {
+        if (!worker.closed) {
+          this.closeWorker(worker)
+        }
+      })
+      console.error(
+        'Bad state, all workers are idle! Check handler passed to setParallelCanAssign'
+      )
+      this.onFinish(false)
+    }
+  }
+
   startWorker(id: string, total: number): void {
     const workerProcess = fork(runWorkerPath, [], {
       cwd: this.cwd,
@@ -151,7 +185,7 @@ export default class Coordinator {
       }),
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-    const worker = { closed: false, process: workerProcess }
+    const worker = { closed: false, idle: true, process: workerProcess }
     this.workers[id] = worker
     worker.process.on('message', (message: ICoordinatorReport) => {
       this.parseWorkerMessage(worker, message)
@@ -216,15 +250,53 @@ export default class Coordinator {
     this.onFinish = done
   }
 
+  nextPicklePlacement(): IPicklePlacement {
+    for (
+      let index = this.nextPickleIdIndex;
+      index < this.pickleIds.length;
+      index++
+    ) {
+      const pickle = this.eventDataCollector.getPickle(this.pickleIds[index])
+
+      if (
+        this.supportCodeLibrary.parallelCanAssign(
+          pickle,
+          this.pickleWIP.values()
+        )
+      ) {
+        return { index, pickle }
+      }
+    }
+
+    return null
+  }
+
+  closeWorker(worker: IWorker): void {
+    worker.idle = false
+    const finalizeCommand: IWorkerCommand = { finalize: true }
+    worker.process.send(finalizeCommand)
+  }
+
   giveWork(worker: IWorker): void {
-    if (this.nextPickleIdIndex === this.pickleIds.length) {
-      const finalizeCommand: IWorkerCommand = { finalize: true }
-      worker.process.send(finalizeCommand)
+    if (this.nextPickleIdIndex >= this.pickleIds.length) {
+      this.closeWorker(worker)
+    }
+
+    const picklePlacement = this.nextPicklePlacement()
+    if (picklePlacement === null) {
       return
     }
-    const pickleId = this.pickleIds[this.nextPickleIdIndex]
+
+    if (this.nextPickleIdIndex !== picklePlacement.index) {
+      this.pickleIds.splice(
+        picklePlacement.index,
+        0,
+        this.pickleIds.splice(this.nextPickleIdIndex, 1)[0]
+      )
+    }
     this.nextPickleIdIndex += 1
-    const pickle = this.eventDataCollector.getPickle(pickleId)
+    const pickle = picklePlacement.pickle
+    this.pickleWIP.set(worker, pickle)
     const gherkinDocument = this.eventDataCollector.getGherkinDocument(
       pickle.uri
     )
@@ -239,6 +311,7 @@ export default class Coordinator {
         gherkinDocument,
       },
     }
+    worker.idle = false
     worker.process.send(runCommand)
   }
 

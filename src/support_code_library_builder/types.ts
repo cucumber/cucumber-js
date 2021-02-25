@@ -75,6 +75,12 @@ export interface IDefineSupportCodeMethods {
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
+  setParallelCanAssign: (
+    fn: (
+      pickle: messages.IPickle,
+      runningPickles: IterableIterator<messages.IPickle>
+    ) => boolean
+  ) => void
   setWorldConstructor: (fn: any) => void
   After: ((code: TestCaseHookFunction) => void) &
     ((tags: string, code: TestCaseHookFunction) => void) &
@@ -124,4 +130,8 @@ export interface ISupportCodeLibrary {
   readonly undefinedParameterTypes: messages.IUndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
+  readonly parallelCanAssign: (
+    pickle: messages.IPickle,
+    runningPickles: IterableIterator<messages.IPickle>
+  ) => Boolean
 }

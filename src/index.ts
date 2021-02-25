@@ -36,6 +36,7 @@ export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
 export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
+export const setParallelCanAssign = methods.setParallelCanAssign
 export const Then = methods.Then
 export const When = methods.When
 export {
