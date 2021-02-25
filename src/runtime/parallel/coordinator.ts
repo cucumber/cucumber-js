@@ -153,16 +153,19 @@ export default class Coordinator {
   }
 
   awakenWorkers(): void {
-    let oneWokeWorker = false
-    _.forOwn(this.workers, (worker): boolean => {
+    const workers = _.values(this.workers)
+    _.every(workers, (worker): boolean => {
       if (worker.idle) {
         this.giveWork(worker)
       }
-      return (oneWokeWorker = oneWokeWorker || !worker.idle)
+      return !worker.idle
     })
 
-    if (!oneWokeWorker && _.isEmpty(this.inProgressPickles)) {
-      _.values(this.workers).forEach((worker) => {
+    if (
+      _.isEmpty(this.inProgressPickles) &&
+      _.every(workers, (worker) => worker.idle)
+    ) {
+      _.each(this.workers, (worker) => {
         if (!worker.closed) {
           this.closeWorker(worker)
         }
