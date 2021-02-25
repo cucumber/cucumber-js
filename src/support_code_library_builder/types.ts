@@ -78,7 +78,7 @@ export interface IDefineSupportCodeMethods {
   setParallelCanAssign: (
     fn: (
       pickle: messages.IPickle,
-      runningPickles: IterableIterator<messages.IPickle>
+      runningPickles: messages.IPickle[]
     ) => boolean
   ) => void
   setWorldConstructor: (fn: any) => void
@@ -132,6 +132,6 @@ export interface ISupportCodeLibrary {
   readonly World: any
   readonly parallelCanAssign: (
     pickle: messages.IPickle,
-    runningPickles: IterableIterator<messages.IPickle>
+    runningPickles: messages.IPickle[]
   ) => Boolean
 }

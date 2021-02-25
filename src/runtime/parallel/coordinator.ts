@@ -37,6 +37,7 @@ interface IWorker {
   closed: boolean
   idle: boolean
   process: ChildProcess
+  id: string
 }
 
 interface IPicklePlacement {
@@ -53,7 +54,7 @@ export default class Coordinator {
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private readonly pickleWIP: Map<IWorker, messages.IPickle>
+  private inProgressPickles: Dictionary<messages.IPickle>
   private workers: Dictionary<IWorker>
   private supportCodeIdMap: Dictionary<string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
@@ -85,7 +86,7 @@ export default class Coordinator {
     this.nextPickleIdIndex = 0
     this.success = true
     this.workers = {}
-    this.pickleWIP = new Map()
+    this.inProgressPickles = {}
     this.supportCodeIdMap = {}
   }
 
@@ -104,6 +105,7 @@ export default class Coordinator {
       }
       if (doesHaveValue(envelope.testCaseFinished)) {
         worker.idle = true
+        this.inProgressPickles = _.omit(this.inProgressPickles, worker.id)
         this.parseTestCaseResult(envelope.testCaseFinished)
       }
     } else {
@@ -159,10 +161,7 @@ export default class Coordinator {
       return (oneWokeWorker = oneWokeWorker || !worker.idle)
     })
 
-    if (
-      !oneWokeWorker &&
-      _.values(this.workers).every((worker) => worker.idle)
-    ) {
+    if (!oneWokeWorker && _.isEmpty(this.inProgressPickles)) {
       _.values(this.workers).forEach((worker) => {
         if (!worker.closed) {
           this.closeWorker(worker)
@@ -185,7 +184,7 @@ export default class Coordinator {
       }),
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-    const worker = { closed: false, idle: true, process: workerProcess }
+    const worker = { closed: false, idle: true, process: workerProcess, id }
     this.workers[id] = worker
     worker.process.on('message', (message: ICoordinatorReport) => {
       this.parseWorkerMessage(worker, message)
@@ -261,7 +260,7 @@ export default class Coordinator {
       if (
         this.supportCodeLibrary.parallelCanAssign(
           pickle,
-          this.pickleWIP.values()
+          _.values(this.inProgressPickles)
         )
       ) {
         return { index, pickle }
@@ -296,7 +295,7 @@ export default class Coordinator {
     }
     this.nextPickleIdIndex += 1
     const pickle = picklePlacement.pickle
-    this.pickleWIP.set(worker, pickle)
+    this.inProgressPickles[worker.id] = pickle
     const gherkinDocument = this.eventDataCollector.getGherkinDocument(
       pickle.uri
     )

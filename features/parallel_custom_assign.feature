@@ -1,32 +1,9 @@
 Feature: Running scenarios in parallel
 
-  Scenario: running in parallel can improve speed if there are async operations
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      const {Given, setParallelCanAssign} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
-      setParallelCanAssign(() => true)
-
-      Given(/^a slow step$/, function(callback) {
-        setTimeout(callback, 1000)
-      })
-      """
-    And a file named "features/a.feature" with:
-      """
-      Feature: slow
-        Scenario: a
-          Given a slow step
-
-        Scenario: b
-          Given a slow step
-      """
-    When I run cucumber-js with `--parallel 2`
-    Then it passes
-
   Scenario: invalid parallel assignment handler fails the test
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, setParallelCanAssign} = require('@cucumber/cucumber')
+      const {Given, Then, setParallelCanAssign} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
       setParallelCanAssign(() => false)
       Given(/^a step$/, function() { })
@@ -48,8 +25,9 @@ Feature: Running scenarios in parallel
       """
       const {Given, setParallelCanAssign} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
+      let flag = true
       setParallelCanAssign(() => true)
-      //Given(/^a step$/, function() { })
+      Given(/^a step$/, function() { })
       """
     And a file named "features/a.feature" with:
       """
@@ -62,44 +40,40 @@ Feature: Running scenarios in parallel
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
-#    Then it fails
-#    And it outputs the text:
-#    """
-#    Please help me
-#    """
 
-  @spawn
-  Scenario: an error in BeforeAll fails the test
+  Scenario: assignment is appropriately applied and fails processing scenario a last
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {BeforeAll, Given} = require('@cucumber/cucumber')
+      const {Given, Then, setParallelCanAssign} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
-
-      Given(/^a slow step$/, function(callback) {
-        setTimeout(callback, 1000)
+      let flag = true
+      const order = []
+      setParallelCanAssign(() => (flag = !flag))
+      Given(/^step (\d+)$/, function(step, cb) {
+        order.push(step)
+        setTimeout(cb, 250)
+        if (step === 1) throw Error(`#${step} this guy should be last`)
       })
-
-      BeforeAll(function() {
-        throw new Error('my error')
-      })
+      Then(/^log order$/, function() { console.log(order) })
       """
     And a file named "features/a.feature" with:
       """
       Feature: slow
         Scenario: a
-          Given a slow step
+          Given step 1
+          Then log order
+
+        Scenario: b
+          Given step 2
+          Then log order
+
+        Scenario: c
+          Given step 3
+          Then log order
       """
     When I run cucumber-js with `--parallel 2`
-    And the error output contains the text:
-      """
-      BeforeAll hook errored on worker 0, process exiting:
-      """
-    And the error output contains the text:
-      """
-      BeforeAll hook errored on worker 1, process exiting:
-      """
-    And the error output contains the text:
-      """
-      my error
-      """
     Then it fails
+    And the output contains the text:
+    """
+    #1 this guy should be last
+    """

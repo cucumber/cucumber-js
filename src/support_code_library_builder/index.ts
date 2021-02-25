@@ -79,7 +79,7 @@ export class SupportCodeLibraryBuilder {
   private World: any
   private parallelCanAssign: (
     pickle: messages.IPickle,
-    runningPickles: IterableIterator<messages.IPickle>
+    runningPickles: messages.IPickle[]
   ) => boolean
 
   constructor() {
@@ -118,7 +118,7 @@ export class SupportCodeLibraryBuilder {
       setParallelCanAssign: (
         fn: (
           pickle: messages.IPickle,
-          runningPickles: IterableIterator<messages.IPickle>
+          runningPickles: messages.IPickle[]
         ) => boolean
       ): void => {
         this.parallelCanAssign = fn
