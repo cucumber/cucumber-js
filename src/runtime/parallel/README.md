@@ -31,8 +31,8 @@ setParallelCanAssign((pickleInQuestion, picklesInProgress) => counter++ % 5 < 1)
 - create workers and for each worker
   - send an `initialize` command
   - when a worker outputs a `ready` command
-    - If there are no more test cases, send a `finalize` command
-    - Identify the next processable test case (the next test by default)
+    - if there are no more test cases, send a `finalize` command
+    - identify the next processable test case (the next test by default)
     - when there are no processable test cases all idle workers remain idle
     - send a `run` command with the test case to an idle worker 
     - repeat if there are still idle workers
