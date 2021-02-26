@@ -162,6 +162,10 @@
     "lib": "./lib"
   },
   "main": "./lib/index.js",
+  "exports": {
+    "import": "./wrapper.mjs",
+    "require": "./lib/index.js"
+  },
   "types": "./lib/index.d.ts",
   "engines": {
     "node": ">=10"
