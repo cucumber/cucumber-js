@@ -37,6 +37,7 @@ const enum WorkerState {
   'idle',
   'closed',
   'running',
+  'new',
 }
 
 interface IWorker {
@@ -99,6 +100,7 @@ export default class Coordinator {
     if (doesHaveValue(message.supportCodeIds)) {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
+      worker.state = WorkerState.idle
       this.awakenWorkers()
     } else if (doesHaveValue(message.jsonEnvelope)) {
       const envelope = messages.Envelope.fromObject(
@@ -109,7 +111,6 @@ export default class Coordinator {
         this.remapDefinitionIds(envelope.testCase)
       }
       if (doesHaveValue(envelope.testCaseFinished)) {
-        worker.state = WorkerState.idle
         this.inProgressPickles = _.omit(this.inProgressPickles, worker.id)
         this.parseTestCaseResult(envelope.testCaseFinished)
       }
@@ -177,7 +178,7 @@ export default class Coordinator {
       }),
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-    const worker = { state: WorkerState.idle, process: workerProcess, id }
+    const worker = { state: WorkerState.new, process: workerProcess, id }
     this.workers[id] = worker
     worker.process.on('message', (message: ICoordinatorReport) => {
       this.parseWorkerMessage(worker, message)

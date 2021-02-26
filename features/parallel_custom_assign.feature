@@ -1,17 +1,20 @@
-Feature: Running scenarios in parallel
+Feature: Running scenarios in parallel with custom assignment
 
   Scenario: Bad parallel assignment helper uses 1 worker
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Then, setParallelCanAssign} = require('@cucumber/cucumber')
-      const assert = require('assert')
+      const {expect} = require('chai')
       let value = 0;
       setParallelCanAssign(() => false)
-      Then(/^value is (\d+)$/, function(v) { assert(++value === v) })
+      Then(/^value is (\d+)$/, function(v, cb) {
+        expect(++value).to.eq(v)
+         setTimeout(cb, 150)
+      })
       """
     And a file named "features/a.feature" with:
       """
-      Feature: no processing
+      Feature: only one worker works
         Scenario: someone must do work
           Then value is 1
 
@@ -25,14 +28,17 @@ Feature: Running scenarios in parallel
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Then, setParallelCanAssign} = require('@cucumber/cucumber')
-      const assert = require('assert')
+      const {expect} = require('chai')
       let value = 0;
       setParallelCanAssign(() => true)
-      Then(/^value is (\d+)$/, function(v) { assert(++value === v) })
+      Then(/^value is (\d+)$/, function(v, cb) {
+        expect(++value).to.eq(v)
+         setTimeout(cb, 150)
+      })
       """
     And a file named "features/a.feature" with:
       """
-      Feature: no processing
+      Feature: separate worker for each scenario
         Scenario: a
           Then value is 1
 
@@ -55,7 +61,7 @@ Feature: Running scenarios in parallel
       """
     And a file named "features/a.feature" with:
       """
-      Feature: slow
+      Feature: adheres to setParallelCanAssign handler
         Scenario: a
           Given scenario 1
 
