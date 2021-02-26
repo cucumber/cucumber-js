@@ -128,8 +128,5 @@ export interface ISupportCodeLibrary {
   readonly undefinedParameterTypes: messages.IUndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
-  readonly parallelCanAssign: (
-    pickle: messages.IPickle,
-    runningPickles: messages.IPickle[]
-  ) => Boolean
+  readonly parallelCanAssign: ParallelAssignmentValidator
 }

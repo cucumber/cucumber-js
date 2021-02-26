@@ -33,9 +33,14 @@ export interface INewCoordinatorOptions {
   supportCodeRequiredModules: string[]
 }
 
+const enum WorkerState {
+  'idle',
+  'closed',
+  'running',
+}
+
 interface IWorker {
-  closed: boolean
-  idle: boolean
+  state: WorkerState
   process: ChildProcess
   id: string
 }
@@ -104,7 +109,7 @@ export default class Coordinator {
         this.remapDefinitionIds(envelope.testCase)
       }
       if (doesHaveValue(envelope.testCaseFinished)) {
-        worker.idle = true
+        worker.state = WorkerState.idle
         this.inProgressPickles = _.omit(this.inProgressPickles, worker.id)
         this.parseTestCaseResult(envelope.testCaseFinished)
       }
@@ -155,10 +160,10 @@ export default class Coordinator {
   awakenWorkers(): void {
     const workers = _.values(this.workers)
     _.each(workers, (worker): boolean => {
-      if (worker.idle) {
+      if (worker.state === WorkerState.idle) {
         this.giveWork(worker)
       }
-      return !worker.idle
+      return worker.state !== WorkerState.idle
     })
   }
 
@@ -172,13 +177,13 @@ export default class Coordinator {
       }),
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
-    const worker = { closed: false, idle: true, process: workerProcess, id }
+    const worker = { state: WorkerState.idle, process: workerProcess, id }
     this.workers[id] = worker
     worker.process.on('message', (message: ICoordinatorReport) => {
       this.parseWorkerMessage(worker, message)
     })
     worker.process.on('close', (exitCode) => {
-      worker.closed = true
+      worker.state = WorkerState.closed
       this.onWorkerProcessClose(exitCode)
     })
     const initializeCommand: IWorkerCommand = {
@@ -196,7 +201,7 @@ export default class Coordinator {
     if (exitCode !== 0) {
       this.success = false
     }
-    if (_.every(this.workers, 'closed')) {
+    if (_.every(this.workers, ({ state }) => state === WorkerState.closed)) {
       this.eventBroadcaster.emit(
         'envelope',
         messages.Envelope.fromObject({
@@ -260,8 +265,8 @@ export default class Coordinator {
 
   giveWork(worker: IWorker): void {
     if (this.nextPickleIdIndex >= this.pickleIds.length) {
-      worker.idle = false
       const finalizeCommand: IWorkerCommand = { finalize: true }
+      worker.state = WorkerState.running
       worker.process.send(finalizeCommand)
       return
     }
@@ -295,7 +300,7 @@ export default class Coordinator {
         gherkinDocument,
       },
     }
-    worker.idle = false
+    worker.state = WorkerState.running
     worker.process.send(runCommand)
   }
 
