@@ -258,15 +258,12 @@ export default class Coordinator {
     return null
   }
 
-  closeWorker(worker: IWorker): void {
-    worker.idle = false
-    const finalizeCommand: IWorkerCommand = { finalize: true }
-    worker.process.send(finalizeCommand)
-  }
-
   giveWork(worker: IWorker): void {
     if (this.nextPickleIdIndex >= this.pickleIds.length) {
-      this.closeWorker(worker)
+      worker.idle = false
+      const finalizeCommand: IWorkerCommand = { finalize: true }
+      worker.process.send(finalizeCommand)
+      return
     }
 
     const picklePlacement = this.nextPicklePlacement()
