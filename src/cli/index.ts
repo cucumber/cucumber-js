@@ -139,14 +139,18 @@ export default class Cli {
     }
   }
 
-  getSupportCodeLibrary({
+  async getSupportCodeLibrary({
     newId,
     supportCodeRequiredModules,
     supportCodePaths,
-  }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
-    supportCodeRequiredModules.map((module) => require(module))
+  }: IGetSupportCodeLibraryRequest): Promise<ISupportCodeLibrary> {
+    for (const requiredModule of supportCodeRequiredModules) {
+      await import(requiredModule)
+    }
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    supportCodePaths.forEach((codePath) => require(codePath))
+    for (const codePath of supportCodePaths) {
+      await import(codePath)
+    }
     return supportCodeLibraryBuilder.finalize()
   }
 
@@ -165,7 +169,7 @@ export default class Cli {
       configuration.predictableIds && configuration.parallel <= 1
         ? incrementing()
         : uuid()
-    const supportCodeLibrary = this.getSupportCodeLibrary({
+    const supportCodeLibrary = await this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,
       supportCodeRequiredModules: configuration.supportCodeRequiredModules,
