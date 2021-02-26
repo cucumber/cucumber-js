@@ -154,27 +154,12 @@ export default class Coordinator {
 
   awakenWorkers(): void {
     const workers = _.values(this.workers)
-    _.every(workers, (worker): boolean => {
+    _.each(workers, (worker): boolean => {
       if (worker.idle) {
         this.giveWork(worker)
       }
       return !worker.idle
     })
-
-    if (
-      _.isEmpty(this.inProgressPickles) &&
-      _.every(workers, (worker) => worker.idle)
-    ) {
-      _.each(this.workers, (worker) => {
-        if (!worker.closed) {
-          this.closeWorker(worker)
-        }
-      })
-      console.error(
-        'Bad state, all workers are idle! Check handler passed to setParallelCanAssign'
-      )
-      this.onFinish(false)
-    }
   }
 
   startWorker(id: string, total: number): void {
@@ -259,8 +244,8 @@ export default class Coordinator {
       index++
     ) {
       const pickle = this.eventDataCollector.getPickle(this.pickleIds[index])
-
       if (
+        _.isEmpty(this.inProgressPickles) ||
         this.supportCodeLibrary.parallelCanAssign(
           pickle,
           _.values(this.inProgressPickles)
