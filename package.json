@@ -292,6 +292,7 @@
   "license": "MIT",
   "files": [
     "bin/",
-    "lib/"
+    "lib/",
+    "wrapper.mjs"
   ]
 }
