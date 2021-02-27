@@ -286,7 +286,8 @@
     }
   },
   "bin": {
-    "cucumber-js": "./bin/cucumber-js"
+    "cucumber-js": "./bin/cucumber-js",
+    "cucumber-es": "./bin/cucumber-es.mjs"
   },
   "license": "MIT",
   "files": [

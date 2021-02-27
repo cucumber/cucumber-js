@@ -50,22 +50,30 @@ interface IGetSupportCodeLibraryRequest {
   supportCodePaths: string[]
 }
 
+export type ISupportCodeImporter = (path: string) => Promise<any>
+
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
+  private readonly importer: ISupportCodeImporter
   private readonly stdout: IFormatterStream
 
   constructor({
     argv,
     cwd,
+    importer,
     stdout,
   }: {
     argv: string[]
     cwd: string
+    importer?: ISupportCodeImporter
     stdout: IFormatterStream
   }) {
     this.argv = argv
     this.cwd = cwd
+    this.importer =
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      importer ?? (async (path) => await Promise.resolve(require(path)))
     this.stdout = stdout
   }
 
@@ -145,11 +153,11 @@ export default class Cli {
     supportCodePaths,
   }: IGetSupportCodeLibraryRequest): Promise<ISupportCodeLibrary> {
     for (const requiredModule of supportCodeRequiredModules) {
-      await import(requiredModule)
+      await this.importer(requiredModule)
     }
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     for (const codePath of supportCodePaths) {
-      await import(codePath)
+      await this.importer(codePath)
     }
     return supportCodeLibraryBuilder.finalize()
   }
