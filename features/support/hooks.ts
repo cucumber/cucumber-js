@@ -45,10 +45,14 @@ Before(function (
 })
 
 Before('@esm', function (this: World) {
+  if (process.platform === 'win32') {
+    return 'skipped'
+  }
   fsExtra.writeJSONSync(path.join(this.tmpDir, 'package.json'), {
     name: 'feature-test-pickle',
     type: 'module',
   })
+  return undefined
 })
 
 Before('@global-install', function (this: World) {
