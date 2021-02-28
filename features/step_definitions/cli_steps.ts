@@ -17,6 +17,16 @@ When('my env includes {string}', function (this: World, envString: string) {
 })
 
 When(
+  /^I run cucumber-es(?: with `(|.+)`)?$/,
+  { timeout: 10000 },
+  async function (this: World, args: string) {
+    const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
+    const stringArgs = stringArgv(renderedArgs)
+    return await this.run(this.localEsmExecutablePath, stringArgs)
+  }
+)
+
+When(
   /^I run cucumber-js(?: with `(|.+)`)?$/,
   { timeout: 10000 },
   async function (this: World, args: string) {

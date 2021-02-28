@@ -13,7 +13,7 @@ Before('@debug', function (this: World) {
   this.debug = true
 })
 
-Before('@spawn', function (this: World) {
+Before('@spawn or @esm', function (this: World) {
   this.spawn = true
 })
 
@@ -41,6 +41,14 @@ Before(function (
   )
   fsExtra.ensureSymlinkSync(projectPath, tmpDirCucumberPath)
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
+  this.localEsmExecutablePath = path.join(projectPath, 'bin', 'cucumber-es.mjs')
+})
+
+Before('@esm', function (this: World) {
+  fsExtra.writeJSONSync(path.join(this.tmpDir, 'package.json'), {
+    name: 'feature-test-pickle',
+    type: 'module',
+  })
 })
 
 Before('@global-install', function (this: World) {

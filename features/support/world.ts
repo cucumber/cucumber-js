@@ -34,6 +34,7 @@ export class World {
   public lastRun: ILastRun
   public verifiedLastRunError: boolean
   public localExecutablePath: string
+  public localEsmExecutablePath: string
   public globalExecutablePath: string
   public reportServer: FakeReportServer
 
