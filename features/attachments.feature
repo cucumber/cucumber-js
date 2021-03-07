@@ -138,7 +138,7 @@ Feature: Attachments
       """
     When I run cucumber-js
     Then it fails
-    Ands the error output contains the text:
+    And the error output contains the text:
       """
       Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.
       """
