@@ -1,7 +1,6 @@
 extends:
   - standard-with-typescript
   - "plugin:prettier/recommended"
-  - "prettier/@typescript-eslint"
 parserOptions:
   project: './tsconfig.json'
 rules:

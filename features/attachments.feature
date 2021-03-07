@@ -28,6 +28,20 @@ Feature: Attachments
       | DATA     | MEDIA TYPE | MEDIA ENCODING |
       | iVBORw== | image/png  | BASE64         |
 
+  Scenario: Attach a string that is already base64 encoded
+    Given a file named "features/support/hooks.js" with:
+      """
+      const {Before} = require('@cucumber/cucumber')
+
+      Before(function() {
+        this.attach(Buffer.from([137, 80, 78, 71]).toString('base64'), 'base64:image/png')
+      })
+      """
+    When I run cucumber-js
+    Then scenario "some scenario" "Before" hook has the attachments:
+      | DATA     | MEDIA TYPE | MEDIA ENCODING |
+      | iVBORw== | image/png  | BASE64         |
+
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
       """

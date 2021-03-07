@@ -28,7 +28,7 @@ export default class StepDefinitionSnippetBuilder {
   }: INewStepDefinitionSnippetBuilderOptions) {
     this.snippetSyntax = snippetSyntax
     this.cucumberExpressionGenerator = new CucumberExpressionGenerator(
-      parameterTypeRegistry
+      () => parameterTypeRegistry.parameterTypes
     )
   }
 

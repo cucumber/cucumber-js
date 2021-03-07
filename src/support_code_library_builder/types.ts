@@ -22,10 +22,10 @@ export interface ITestStepHookParameter {
   testStepId: string
 }
 
-export type TestCaseHookFunctionWithoutParameter = () => void | Promise<void>
+export type TestCaseHookFunctionWithoutParameter = () => any | Promise<any>
 export type TestCaseHookFunctionWithParameter = (
   arg: ITestCaseHookParameter
-) => void | Promise<void>
+) => any | Promise<any>
 export type TestCaseHookFunction =
   | TestCaseHookFunctionWithoutParameter
   | TestCaseHookFunctionWithParameter

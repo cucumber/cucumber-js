@@ -65,6 +65,19 @@ After(function (testCase) {
 });
 ```
 
+If you've already got a base64-encoded string, you can prefix your mime type with `base64:` to indicate this:
+
+```javascript
+var {After, Status} = require('@cucumber/cucumber');
+
+After(function (testCase) {
+  if (testCase.result.status === Status.FAILED) {
+    var base64String = getScreenshotOfError();
+    this.attach(base64String, 'base64:image/png');
+  }
+});
+```
+
 Here is an example of saving a screenshot using [Selenium WebDriver](https://www.npmjs.com/package/selenium-webdriver)
 when a scenario fails:
 
@@ -75,8 +88,7 @@ After(function (testCase) {
   var world = this;
   if (testCase.result.status === Status.FAILED) {
     return webDriver.takeScreenshot().then(function(screenShot) {
-      // screenShot is a base-64 encoded PNG
-      world.attach(screenShot, 'image/png');
+      world.attach(screenShot, 'base64:image/png');
     });
   }
 });

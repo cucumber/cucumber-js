@@ -9,17 +9,21 @@ Before anything else, thank you. Thank you for taking some of your precious time
 
 ## Tests
 
-See the `package.json` scripts section for how to run the tests.
+See the `package.json` scripts section for how to run each category of tests.
 
-* lint
+* lint - `yarn lint`
   * [prettier](https://github.com/prettier/prettier)
   * [eslint](https://eslint.org/)
   * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
-* unit tests
+* typescript tests - `yarn types-test`
+  * [tsd](https://github.com/SamVerschueren/tsd)
+* unit tests - `yarn unit-test`
   * [mocha](https://mochajs.org/)
   * [chai](https://www.chaijs.com/)
   * [sinon](https://sinonjs.org/)
-* feature tests
+* compatibility kit - `yarn cck-test`
+  * checking that cucumber-js emits the [correct messages](https://github.com/cucumber/cucumber/tree/master/compatibility-kit) 
+* feature tests - `yarn feature-test`
   * cucumber-js tests itself
 
 ## Internals
@@ -45,7 +49,7 @@ The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.ht
 ### Coding style
 
 * Promises and ES7 async/await
-* Try to make things as unit testable as possible. If its hard to unit test, the class/function may be doing too much.
+* Try to make things as unit testable as possible. If it's hard to unit test, the class/function may be doing too much.
 
 ## Changelog
 

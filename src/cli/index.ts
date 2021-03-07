@@ -23,10 +23,9 @@ import { IdGenerator } from '@cucumber/messages'
 import Formatter, { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
-import { GherkinStreams } from '@cucumber/gherkin'
+import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-import { createReadStream } from 'fs'
 import HttpStream from '../formatter/http_stream'
 import { promisify } from 'util'
 
@@ -185,9 +184,6 @@ export default class Cli {
       {
         defaultDialect: configuration.featureDefaultLanguage,
         newId,
-        createReadStream(path) {
-          return createReadStream(path, { encoding: 'utf-8' })
-        },
       }
     )
     const pickleIds = await parseGherkinMessageStream({
