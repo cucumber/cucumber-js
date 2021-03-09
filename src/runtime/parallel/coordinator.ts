@@ -67,6 +67,7 @@ export default class Coordinator {
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
   private success: boolean
+  private idleInterventions: number
 
   constructor({
     cwd,
@@ -94,6 +95,7 @@ export default class Coordinator {
     this.workers = {}
     this.inProgressPickles = {}
     this.supportCodeIdMap = {}
+    this.idleInterventions = 0
   }
 
   parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
@@ -166,6 +168,14 @@ export default class Coordinator {
       }
       return worker.state !== WorkerState.idle
     })
+
+    if (
+      _.isEmpty(this.inProgressPickles) &&
+      this.pickleIds.length > this.nextPickleIdIndex
+    ) {
+      this.giveWork(workers[0], true)
+      this.idleInterventions++
+    }
   }
 
   startWorker(id: string, total: number): void {
@@ -240,7 +250,15 @@ export default class Coordinator {
     _.times(numberOfWorkers, (id) =>
       this.startWorker(id.toString(), numberOfWorkers)
     )
-    this.onFinish = done
+    this.onFinish = (status) => {
+      if (this.idleInterventions > 0) {
+        console.warn(
+          `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+        )
+      }
+
+      done(status)
+    }
   }
 
   nextPicklePlacement(): IPicklePlacement {
@@ -251,7 +269,6 @@ export default class Coordinator {
     ) {
       const pickle = this.eventDataCollector.getPickle(this.pickleIds[index])
       if (
-        _.isEmpty(this.inProgressPickles) ||
         this.supportCodeLibrary.parallelCanAssign(
           pickle,
           _.values(this.inProgressPickles)
@@ -264,7 +281,7 @@ export default class Coordinator {
     return null
   }
 
-  giveWork(worker: IWorker): void {
+  giveWork(worker: IWorker, force: boolean = false): void {
     if (this.nextPickleIdIndex >= this.pickleIds.length) {
       const finalizeCommand: IWorkerCommand = { finalize: true }
       worker.state = WorkerState.running
@@ -272,7 +289,14 @@ export default class Coordinator {
       return
     }
 
-    const picklePlacement = this.nextPicklePlacement()
+    const picklePlacement = force
+      ? {
+          index: this.nextPickleIdIndex,
+          pickle: this.eventDataCollector.getPickle(
+            this.pickleIds[this.nextPickleIdIndex]
+          ),
+        }
+      : this.nextPicklePlacement()
     if (picklePlacement === null) {
       return
     }

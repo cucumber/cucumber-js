@@ -53,10 +53,12 @@ Feature: Running scenarios in parallel with custom assignment
       """
       const {Given, setParallelCanAssign} = require('@cucumber/cucumber')
       let flag = true
+      let processed = 0;
       setParallelCanAssign(() => (flag = !flag))
       Given(/^scenario (\d+)$/, function(scenario, cb) {
         setTimeout(cb, 150)
-        if (scenario === 1) throw Error(`#${scenario} this guy should be last`)
+        if (scenario === 1) throw Error(`#${scenario} was test ${++processed} on this worker`)
+        processed++;
       })
       """
     And a file named "features/a.feature" with:
@@ -75,5 +77,5 @@ Feature: Running scenarios in parallel with custom assignment
     Then it fails
     And the output contains the text:
     """
-      #1 this guy should be last
+      #1 was test 2 on this worker
     """

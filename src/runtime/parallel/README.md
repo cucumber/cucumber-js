@@ -3,36 +3,43 @@ Parallelization is achieved by having multiple child processes running scenarios
 #### Customizable work assignment
 Cucumber exposes customization of worker assignment via `setParallelCanAssign`.
 The example below overrides the default, `() => true` which processes test cases 
-indiscriminately, with a 1, 2 skip a few processing scheme. This means, the first
-2 *remaining* steps will be executed then the 4th *remaining* step will be executed.
+indiscriminately, with a scheme that accepts untagged test cases as well as test cases
+where the first tag doesn't match the first tag of any in progress tests.
 
 ```typescript
 import { setParallelCanAssign } from '@cucumber/cucumber'
-const counter = 0;
-setParallelCanAssign((pickleInQuestion, picklesInProgress) => counter++ % 5 < 1)
-/** Processing order of: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
- * After   Worked | Waiting    
- * first 2 [0, 1] | [2, 3, 4, 5, 6, 7, 8, 9]
- * 4th     [0, 1, 5] | [2, 3, 4, 6, 7, 8, 9]
- * first 2 [0, 1, 5, 2, 3] | [4, 6, 7, 8, 9]
- * 4th     [0, 1, 5, 2, 3, 8] | [4, 6, 7, 9]
- * fisrt 2 [0, 1, 5, 2, 3, 8, 4, 6] | [7, 9]
- * 4th     [0, 1, 5, 2, 3, 8, 4, 6, 9] | [7]
- * first    [0, 1, 5, 2, 3, 8, 4, 6, 9, 7]
- */ 
+// Accept tests missing tags or no test is running having the same first tag
+setParallelCanAssign((pickleInQuestion, picklesInProgress) => _.isEmpty(pickleInQuestion.tags) 
+    || _.every(picklesInProgress, ({tags}) => _.isEmpty(tags) || tags[0].name !== picklesInProgress.tags[0].name))
 ```
+Using the handler above and these assumptions:
+* Utilizing 2 workers, `A` and `B`
+*  Scenarios tagged as `@simple` (2 secs) or `@complex` (3 secs)
+* Tests: `[@complex, @complex, @complex, @simple, @simple, @simple]`
 
-As you can see, the coordinator always returns to the beginning of the list when 
-assigning work. Therefore, on assignment 3 `[2, 3, 4]` will be skipped, but the 
-next assignment will check test case `2` as it is the first unworked test case in 
-the list.
+| Time | WIP | Events |
+|---|---|---|
+| 0 |  | assigned `1 (@complex)` to `worker A` | 
+| 0 | `@complex` | skip `2 & 3 (@complex)` - assign `4 (@simple)` to `worker B` |
+| 2 | `@complex` |  skip `2 & 3 (@complex)` - assign `5 (@simple)` to `worker B` |
+| 3 | `@simple` | assign `2 (@complex)` to `worker A` |
+| 4 | `@complex` | skip `3 (@complex)` - assign `6 (@simple)` to `worker B` |
+| 6 |  | assign `3 (@complex)` to `worker A` |
+| 9 |  | done |
+ 
+####Note
+The coordinator doesn't reorder work as it skips un-assignable tests. Also, it always
+returns to the beginning of the unprocessed list when attempting to make assignments
+to an idle worker. Though assignment to worker 1 may skip the first 3 tests, 
+assignment to worker 2 will check 1, 2, and 3 as well to determine if they have 
+become assignable.
 
-It is also important to note that this processing scheme could potentially result in 
-all workers becoming idle. However, Cucumber prevents this by assigning work regardless 
-of the custom handler if no work is in progress. This example is purely explanatory as 
-there is no benefit to randomly skipping tests. Workers become idle after checking all 
-remaining test cases against the handler. Assignment is attempted on all idle workers 
-when a busy worker becomes `ready`.
+Custom work assignment prioritizes your definition of assignable work over efficiency. 
+The exception to this rule is if all remaining work is un-assignable, such that all 
+workers are idle. In this case Cucumber assigns the next test to the first worker 
+before continuing to utilize the handler to determine assignable work. Workers become
+idle after checking all remaining test cases against the handler. Assignment is 
+attempted on all idle workers when a busy worker becomes `ready`.
 
 #### Coordinator
 - load all features, generate test cases
@@ -45,7 +52,7 @@ when a busy worker becomes `ready`.
     - when there are no processable test cases all idle workers remain idle
     - send a `run` command with the test case to an idle worker 
     - repeat if there are still idle workers
-  - if all workers become idle then exit in failure
+  - if all workers become idle and there are more tests, process the next test case
   - when a worker outputs an `event` command,
     broadcast the event to the formatters,
     and on `test-case-finished` update the overall result
