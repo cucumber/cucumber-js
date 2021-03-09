@@ -12,27 +12,28 @@ import { setParallelCanAssign } from '@cucumber/cucumber'
 setParallelCanAssign((pickleInQuestion, picklesInProgress) => _.isEmpty(pickleInQuestion.tags) 
     || _.every(picklesInProgress, ({tags}) => _.isEmpty(tags) || tags[0].name !== picklesInProgress.tags[0].name))
 ```
-Using the handler above and these assumptions:
-* Utilizing 2 workers, `A` and `B`
-*  Scenarios tagged as `@simple` (2 secs) or `@complex` (3 secs)
-* Tests: `[@complex, @complex, @complex, @simple, @simple, @simple]`
+* Example using the handler above
+* 2 workers, `A` and `B`
+* Scenarios tagged as `@simple` (2 secs) or `@complex` (3 secs)
+* The first tag of the scenarios: `[@complex, @complex, @complex, @simple, @simple, @simple]`
 
 | Time | WIP | Events |
 |---|---|---|
 | 0 |  | assigned `1 (@complex)` to `worker A` | 
 | 0 | `@complex` | skip `2 & 3 (@complex)` - assign `4 (@simple)` to `worker B` |
-| 2 | `@complex` |  skip `2 & 3 (@complex)` - assign `5 (@simple)` to `worker B` |
+| 2 | `@complex` | skip `2 & 3 (@complex)` - assign `5 (@simple)` to `worker B` |
 | 3 | `@simple` | assign `2 (@complex)` to `worker A` |
 | 4 | `@complex` | skip `3 (@complex)` - assign `6 (@simple)` to `worker B` |
 | 6 |  | assign `3 (@complex)` to `worker A` |
 | 9 |  | done |
  
-####Note
+
+#### Note
 The coordinator doesn't reorder work as it skips un-assignable tests. Also, it always
 returns to the beginning of the unprocessed list when attempting to make assignments
-to an idle worker. Though assignment to worker 1 may skip the first 3 tests, 
-assignment to worker 2 will check 1, 2, and 3 as well to determine if they have 
-become assignable.
+to an idle worker. If there was a worker C in the example above, assignment to worker B
+would skip 2 & 3 as shown; then assignment to worker C would also skip 2 & 3 upon
+checking the test cases against the handler to determine if they have become assignable.
 
 Custom work assignment prioritizes your definition of assignable work over efficiency. 
 The exception to this rule is if all remaining work is un-assignable, such that all 
