@@ -111,6 +111,7 @@ Feature: Publish reports
       │ Error invalid token │
       └─────────────────────┘
       """
+    And it fails
 
   @spawn
   Scenario: the publication banner is not shown when publication is done

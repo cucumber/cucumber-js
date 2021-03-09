@@ -96,7 +96,7 @@ describe('HttpStream', () => {
     stream.on('finish', () => {
       reportServer
         .stop()
-        .then((receivedBodies) => {
+        .then(() => {
           try {
             assert.strictEqual(
               reported,
@@ -106,6 +106,43 @@ describe('HttpStream', () => {
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
+`
+            )
+            callback()
+          } catch (err) {
+            callback(err)
+          }
+        })
+        .catch(callback)
+    })
+
+    stream.write('hello')
+    stream.end()
+  })
+
+  it('outputs the body provided by the server even when an error is returned by the server', (callback: Callback) => {
+    let reported: string
+
+    const stream = new HttpStream(
+      `http://localhost:${port}/api/reports`,
+      'GET',
+      { Authorization: `Bearer an-invalid-token` },
+      (content) => {
+        reported = content
+      }
+    )
+
+    stream.on('error', callback)
+    stream.on('finish', () => {
+      reportServer
+        .stop()
+        .then(() => {
+          try {
+            assert.strictEqual(
+              reported,
+              `┌─────────────────────┐
+│ Error invalid token │
+└─────────────────────┘
 `
             )
             callback()

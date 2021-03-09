@@ -82,19 +82,21 @@ export default class HttpStream extends Writable {
 
     if (method === 'GET') {
       httpx.get(url, { headers: this.headers }, (res) => {
+        let body = Buffer.alloc(0)
+        res.on('data', (chunk) => {
+          body = Buffer.concat([body, chunk])
+        })
+
         if (res.statusCode >= 400) {
-          return callback(
-            new Error(`${method} ${url} returned status ${res.statusCode}`)
-          )
+          res.on('end', () => {
+            this.responseBodyFromGet = body.toString('utf-8')
+            callback(null)
+          })
         }
 
         if (res.statusCode !== 202 || res.headers.location === undefined) {
           callback(null, url)
         } else {
-          let body = Buffer.alloc(0)
-          res.on('data', (chunk) => {
-            body = Buffer.concat([body, chunk])
-          })
           res.on('end', () => {
             this.responseBodyFromGet = body.toString('utf-8')
             this.sendRequest(res.headers.location, 'PUT', callback)

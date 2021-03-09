@@ -98,9 +98,10 @@ export default class Cli {
               headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
             }
 
-            stream = new HttpStream(outputTo, 'GET', headers, (content) =>
+            stream = new HttpStream(outputTo, 'GET', headers, (content) => {
               console.error(content)
-            )
+              console.error('..........')
+            })
           } else {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
             stream = fs.createWriteStream(null, { fd })
