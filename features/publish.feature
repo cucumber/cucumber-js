@@ -54,7 +54,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_TOKEN is set
-    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3`
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -69,7 +69,7 @@ Feature: Publish reports
       | testStepFinished |
       | testCaseFinished |
       | testRunFinished  |
-    And the server should receive an "Authorization" header with value "Bearer keyboardcat"
+    And the server should receive an "Authorization" header with value "Bearer f318d9ec-5a3d-4727-adec-bd7b69e2edd3"
 
   @spawn
   Scenario: a banner is displayed after publication
@@ -101,6 +101,17 @@ Feature: Publish reports
       │ module.exports = { default: '--publish-quiet' }                          │
       └──────────────────────────────────────────────────────────────────────────┘
       """
+
+  @spawn
+  Scenario: when results are not published due to an error raised by the server, the banner is displayed
+    When I run cucumber-js with env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
+    Then the error output contains the text:
+      """
+      ┌─────────────────────┐
+      │ Error invalid token │
+      └─────────────────────┘
+      """
+
   @spawn
   Scenario: the publication banner is not shown when publication is done
     When I run cucumber-js with arguments `<args>` and env `<env>`
@@ -110,10 +121,10 @@ Feature: Publish reports
       """
 
   Examples:
-    | args      | env                           |
-    | --publish |                               |
-    |           | CUCUMBER_PUBLISH_ENABLED=true |
-    |           | CUCUMBER_PUBLISH_TOKEN=123456 |
+    | args      | env                                                         |
+    | --publish |                                                             |
+    |           | CUCUMBER_PUBLISH_ENABLED=true                               |
+    |           | CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3 |
 
   @spawn
   Scenario: the publication banner is not shown when publication is disabled

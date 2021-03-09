@@ -38,6 +38,15 @@ When(
 )
 
 When(
+  /^I run cucumber-js with env `(|.+)`$/,
+  { timeout: 10000 },
+  async function (this: World, envString: string) {
+    const env = this.parseEnvString(envString)
+    return await this.run(this.localExecutablePath, [], env)
+  }
+)
+
+When(
   /^I run cucumber-js with all formatters(?: and `(|.+)`)?$/,
   { timeout: 10000 },
   async function (this: World, args: string) {

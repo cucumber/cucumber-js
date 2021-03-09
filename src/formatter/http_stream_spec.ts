@@ -42,10 +42,12 @@ describe('HttpStream', () => {
   })
 
   it(`follows location from GET response, and sends body and headers in a PUT request`, (callback: Callback) => {
+    const bearerToken = 'f318d9ec-5a3d-4727-adec-bd7b69e2edd3'
+
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      { Authorization: 'Bearer blablabla' },
+      { Authorization: `Bearer ${bearerToken}` },
       () => undefined
     )
 
@@ -63,7 +65,7 @@ describe('HttpStream', () => {
             )
             assert.strictEqual(
               reportServer.receivedHeaders.authorization,
-              'Bearer blablabla'
+              `Bearer ${bearerToken}`
             )
             callback()
           } catch (err) {

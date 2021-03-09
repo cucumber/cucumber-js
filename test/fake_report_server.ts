@@ -38,6 +38,14 @@ export default class FakeReportServer {
 
     app.get('/api/reports', (req, res) => {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
+      const token = extractAuthorizationToken(req.headers.authorization)
+      if (token && !isValidUUID(token)) {
+        res.status(401).end(`┌─────────────────────┐
+│ Error invalid token │
+└─────────────────────┘
+`)
+        return
+      }
 
       res.setHeader('Location', `http://localhost:${port}/s3`)
       res.status(202)
@@ -92,4 +100,18 @@ export default class FakeReportServer {
   get started(): boolean {
     return this.server.listening
   }
+}
+
+function extractAuthorizationToken(
+  authorizationHeader: string | undefined
+): string | null {
+  if (!authorizationHeader) return null
+
+  const tokenMatch = authorizationHeader.match(/Bearer (.*)/)
+  return tokenMatch ? tokenMatch[1] : null
+}
+
+function isValidUUID(token: string): boolean {
+  const v4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+  return v4.test(token)
 }
