@@ -29,6 +29,7 @@ describe('Configuration', () => {
 
       // Assert
       expect(result).to.eql({
+        esm: false,
         featureDefaultLanguage: 'en',
         featurePaths: [],
         formatOptions: {},

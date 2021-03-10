@@ -41,6 +41,7 @@ requiredModules:
     ignore:
       - coverage/**/*
       - 'dist/**/*'
+      - 'importer.js'
       - 'lib/**/*'
       - 'node_modules/**/*'
       - 'tmp/**/*'
