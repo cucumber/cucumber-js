@@ -29,6 +29,8 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const esmImporter = require('../../importer')
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
@@ -55,25 +57,22 @@ export type ISupportCodeImporter = (path: string) => Promise<any>
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
-  private readonly importer: ISupportCodeImporter
   private readonly stdout: IFormatterStream
+  private importer: ISupportCodeImporter = async (path) =>
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    await Promise.resolve(require(path))
 
   constructor({
     argv,
     cwd,
-    importer,
     stdout,
   }: {
     argv: string[]
     cwd: string
-    importer?: ISupportCodeImporter
     stdout: IFormatterStream
   }) {
     this.argv = argv
     this.cwd = cwd
-    this.importer =
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      importer ?? (async (path) => await Promise.resolve(require(path)))
     this.stdout = stdout
   }
 
@@ -177,6 +176,9 @@ export default class Cli {
       configuration.predictableIds && configuration.parallel <= 1
         ? incrementing()
         : uuid()
+    if (configuration.esm) {
+      this.importer = esmImporter
+    }
     const supportCodeLibrary = await this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,

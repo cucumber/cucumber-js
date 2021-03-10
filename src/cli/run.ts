@@ -1,4 +1,4 @@
-import Cli, { ICliRunResult, ISupportCodeImporter } from './'
+import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 import publishBanner from './publish_banner'
 
@@ -11,14 +11,11 @@ function displayPublishAdvertisementBanner(): void {
   console.error(publishBanner)
 }
 
-export default async function run(
-  importer?: ISupportCodeImporter
-): Promise<void> {
+export default async function run(): Promise<void> {
   const cwd = process.cwd()
   const cli = new Cli({
     argv: process.argv,
     cwd,
-    importer,
     stdout: process.stdout,
   })
 

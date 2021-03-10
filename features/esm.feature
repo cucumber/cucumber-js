@@ -17,7 +17,7 @@ Feature: ES modules support
 
       Given(/^a step passes$/, function() {});
       """
-    When I run cucumber-es
+    When I run cucumber-js with `--esm`
     Then it passes
 
   Scenario: native module syntax doesn't work when using cucumber-js

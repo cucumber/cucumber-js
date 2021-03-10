@@ -41,7 +41,6 @@ Before(function (
   )
   fsExtra.ensureSymlinkSync(projectPath, tmpDirCucumberPath)
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
-  this.localEsmExecutablePath = path.join(projectPath, 'bin', 'cucumber-es.mjs')
 })
 
 Before('@esm', function (this: World) {
@@ -91,7 +90,13 @@ Before('@global-install', function (this: World) {
     '@cucumber',
     'cucumber'
   )
-  const itemsToCopy = ['bin', 'lib', 'package.json']
+  const itemsToCopy = [
+    'bin',
+    'lib',
+    'importer.js',
+    'wrapper.mjs',
+    'package.json',
+  ]
   itemsToCopy.forEach((item) => {
     fsExtra.copySync(
       path.join(projectPath, item),

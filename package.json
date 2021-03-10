@@ -286,13 +286,13 @@
     }
   },
   "bin": {
-    "cucumber-js": "./bin/cucumber-js",
-    "cucumber-es": "./bin/cucumber-es.mjs"
+    "cucumber-js": "./bin/cucumber-js"
   },
   "license": "MIT",
   "files": [
     "bin/",
     "lib/",
+    "importer.js",
     "wrapper.mjs"
   ]
 }
