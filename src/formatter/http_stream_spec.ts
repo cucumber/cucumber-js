@@ -134,7 +134,7 @@ describe('HttpStream', () => {
       }
     )
 
-    stream.on('error', callback)
+    stream.on('error', () => {})
     stream.on('finish', () => {
       reportServer
         .stop()
