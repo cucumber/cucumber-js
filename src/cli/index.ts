@@ -100,7 +100,6 @@ export default class Cli {
 
             stream = new HttpStream(outputTo, 'GET', headers, (content) => {
               console.error(content)
-              console.error('..........')
             })
           } else {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')

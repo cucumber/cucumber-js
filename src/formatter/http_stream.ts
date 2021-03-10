@@ -65,9 +65,8 @@ export default class HttpStream extends Writable {
         this.url,
         this.method,
         (err: Error | null | undefined) => {
-          if (doesHaveValue(err)) return callback(err)
           this.reportLocation(this.responseBodyFromGet)
-          callback(null)
+          return callback(err)
         }
       )
     })
@@ -90,7 +89,9 @@ export default class HttpStream extends Writable {
         if (res.statusCode >= 400) {
           res.on('end', () => {
             this.responseBodyFromGet = body.toString('utf-8')
-            callback(null)
+            callback(
+              new Error(`${method} ${url} returned status ${res.statusCode}`)
+            )
           })
         }
 

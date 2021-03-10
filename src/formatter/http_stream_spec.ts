@@ -120,8 +120,9 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  it('outputs the body provided by the server even when an error is returned by the server', (callback: Callback) => {
+  it('reports the body provided by the server even when an error is returned by the server and still fail', (callback: Callback) => {
     let reported: string
+    let errorThrown = false
 
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
@@ -132,25 +133,27 @@ describe('HttpStream', () => {
       }
     )
 
-    stream.on('error', callback)
+    stream.on('error', () => {
+      errorThrown = true
+    })
+
     stream.on('finish', () => {
       reportServer
         .stop()
         .then(() => {
-          try {
-            assert.strictEqual(
-              reported,
-              `┌─────────────────────┐
+          assert.strictEqual(
+            reported,
+            `┌─────────────────────┐
 │ Error invalid token │
 └─────────────────────┘
 `
-            )
-            callback()
-          } catch (err) {
-            callback(err)
-          }
+          )
+          assert(errorThrown, 'Stream has thrown an error event')
+          callback()
         })
-        .catch(callback)
+        .catch((err) => {
+          callback(err)
+        })
     })
 
     stream.write('hello')
