@@ -1,10 +1,9 @@
 Feature: ES modules support
 
-  cucumber-js works with native ES modules, via a separate executable
-  called `cucumber-es`.
+  cucumber-js works with native ES modules, via a Cli flag `--esm`
 
   @esm
-  Scenario: native module syntax works when using cucumber-es
+  Scenario: native module syntax works when using --esm
     Given a file named "features/a.feature" with:
       """
       Feature:
@@ -20,7 +19,7 @@ Feature: ES modules support
     When I run cucumber-js with `--esm`
     Then it passes
 
-  Scenario: native module syntax doesn't work when using cucumber-js
+  Scenario: native module syntax doesn't work without --esm
     Given a file named "features/a.feature" with:
       """
       Feature:
