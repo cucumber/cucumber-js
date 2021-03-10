@@ -22,8 +22,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Fixed
 
 * Fix types for hook functions so they can return e.g. `'skipped'` ([#1542](https://github.com/cucumber/cucumber-js/pull/1542))
-
-* Do not display stack trace when reports server returns a status code greater than 400, display the server banner instead.
+* Display the response of the reports server when an error is returned before failing. ([#1608](https://github.com/cucumber/cucumber-js/pull/1608))
 
 ## [7.0.0] (2020-12-21)
 

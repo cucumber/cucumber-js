@@ -36,7 +36,10 @@ export default class HttpStream extends Writable {
     private readonly url: string,
     private readonly method: HttpMethod,
     private readonly headers: { [name: string]: string },
-    private readonly reportLocation: (content: string) => void
+    private readonly reportLocation: (
+      content: string,
+      error: Error | null | undefined
+    ) => void
   ) {
     super()
   }
@@ -65,7 +68,7 @@ export default class HttpStream extends Writable {
         this.url,
         this.method,
         (err: Error | null | undefined) => {
-          this.reportLocation(this.responseBodyFromGet)
+          this.reportLocation(this.responseBodyFromGet, err)
           return callback(err)
         }
       )
@@ -89,7 +92,7 @@ export default class HttpStream extends Writable {
         if (res.statusCode >= 400) {
           res.on('end', () => {
             this.responseBodyFromGet = body.toString('utf-8')
-            callback(
+            return callback(
               new Error(`${method} ${url} returned status ${res.statusCode}`)
             )
           })

@@ -122,21 +122,19 @@ describe('HttpStream', () => {
 
   it('reports the body provided by the server even when an error is returned by the server and still fail', (callback: Callback) => {
     let reported: string
-    let errorThrown = false
+    let errorThrown: Error | undefined
 
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
       { Authorization: `Bearer an-invalid-token` },
-      (content) => {
+      (content, err) => {
         reported = content
+        errorThrown = err
       }
     )
 
-    stream.on('error', () => {
-      errorThrown = true
-    })
-
+    stream.on('error', callback)
     stream.on('finish', () => {
       reportServer
         .stop()
@@ -148,10 +146,7 @@ describe('HttpStream', () => {
 └─────────────────────┘
 `
           )
-          // There seems to be different handling of this depending on npm version, so let's
-          // use the CI to investigate that.
-          console.log({ errorThrown })
-          // assert(errorThrown, 'Stream has thrown an error event')
+          assert.notStrictEqual(errorThrown, undefined)
           callback()
         })
         .catch((err) => {
