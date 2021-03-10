@@ -105,13 +105,13 @@ Feature: Publish reports
   @spawn
   Scenario: when results are not published due to an error raised by the server, the banner is displayed
     When I run cucumber-js with env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
-    Then the error output contains the text:
+    Then it fails
+    And the error output contains the text:
       """
       ┌─────────────────────┐
       │ Error invalid token │
       └─────────────────────┘
       """
-    And it fails
 
   @spawn
   Scenario: the publication banner is not shown when publication is done
