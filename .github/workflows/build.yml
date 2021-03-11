@@ -14,8 +14,6 @@ jobs:
           - ubuntu-latest
           - windows-latest
         node-version: [10.x, 12.x, 14.x, 15.x]
-      # This could be disabled before merging PR, but honestly, it's a bit frustrating
-      # not having an overview of what works and what don't as soon as one job fails.
       fail-fast: false
 
     steps:
