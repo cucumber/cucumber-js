@@ -107,7 +107,7 @@ export default class HttpStream extends Transform {
         if (res.statusCode >= 400) {
           res.on('end', () => {
             this.responseBodyFromGet = body.toString('utf-8')
-            return callback(null, url)
+            callback(null, url)
           })
         }
 
