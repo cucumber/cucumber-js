@@ -114,10 +114,6 @@ Feature: Running scenarios in parallel with custom assignment
         Scenario: 2
           Given scenario complex 2
 
-        @complex
-        Scenario: 3
-          Given scenario complex 3
-
         @simple
         Scenario: 4
           Given scenario simple 1
