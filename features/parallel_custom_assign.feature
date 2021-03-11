@@ -94,8 +94,13 @@ Feature: Running scenarios in parallel with custom assignment
       function step_def(name, delay) {
         return function(scenario, cb) {
           if (worker == null) worker = name;
-          expect(worker).to.eq(name)
-          expect(scenario).to.eq(++processed)
+          if (processed !== 3) {
+            expect(worker).to.eq(name)
+            expect(scenario).to.eq(++processed)
+          } else {
+            // Scenario 3 might get picked up by B as both are ready at this point
+            expect(scenario).to.eq(processed++)
+          }
           setTimeout(cb, delay)
         }
       }
@@ -113,6 +118,10 @@ Feature: Running scenarios in parallel with custom assignment
         @complex
         Scenario: 2
           Given scenario complex 2
+
+        @complex
+        Scenario: 3
+          Given scenario complex 3
 
         @simple
         Scenario: 4

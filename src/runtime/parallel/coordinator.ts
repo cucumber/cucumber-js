@@ -101,7 +101,7 @@ export default class Coordinator {
       this.saveDefinitionIdMapping(message.supportCodeIds)
     } else if (message.ready) {
       worker.state = WorkerState.idle
-      this.awakenWorkers()
+      this.awakenWorkers(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
       const envelope = messages.Envelope.fromObject(
         JSON.parse(message.jsonEnvelope)
@@ -158,9 +158,8 @@ export default class Coordinator {
     }
   }
 
-  awakenWorkers(): void {
-    const workers = _.values(this.workers)
-    _.each(workers, (worker): boolean => {
+  awakenWorkers(triggeringWorker: IWorker): void {
+    _.each(this.workers, (worker): boolean => {
       if (worker.state === WorkerState.idle) {
         this.giveWork(worker)
       }
@@ -168,7 +167,7 @@ export default class Coordinator {
     })
 
     if (_.isEmpty(this.inProgressPickles) && this.pickleIds.length > 0) {
-      this.giveWork(workers[0], true)
+      this.giveWork(triggeringWorker, true)
       this.idleInterventions++
     }
   }
