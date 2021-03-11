@@ -4,11 +4,8 @@ Feature: Running scenarios in parallel with custom assignment
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Then, setParallelCanAssign} = require('@cucumber/cucumber')
-      const {expect} = require('chai')
-      let value = 0;
       setParallelCanAssign(() => false)
       Then(/^value is (\d+)$/, function(v, cb) {
-        expect(++value).to.eq(v)
          setTimeout(cb, 150)
       })
       """
@@ -23,6 +20,10 @@ Feature: Running scenarios in parallel with custom assignment
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
+    And tandem tests verified
+    """
+    expect.fail('No tests should have executed at the same time')
+    """
 
   Scenario: Both works run tests when a valid assignment helper is used
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -33,7 +34,7 @@ Feature: Running scenarios in parallel with custom assignment
       setParallelCanAssign(() => true)
       Then(/^value is (\d+)$/, function(v, cb) {
         expect(++value).to.eq(v)
-         setTimeout(cb, 150)
+         setTimeout(cb, 300)
       })
       """
     And a file named "features/a.feature" with:
@@ -53,12 +54,9 @@ Feature: Running scenarios in parallel with custom assignment
       """
       const {Given, setParallelCanAssign} = require('@cucumber/cucumber')
       let flag = true
-      let processed = 0;
       setParallelCanAssign(() => (flag = !flag))
       Given(/^scenario (\d+)$/, function(scenario, cb) {
         setTimeout(cb, 150)
-        if (scenario === 1) throw Error(`#${scenario} was test ${++processed} on this worker`)
-        processed++;
       })
       """
     And a file named "features/a.feature" with:
@@ -74,11 +72,8 @@ Feature: Running scenarios in parallel with custom assignment
           Given scenario 3
       """
     When I run cucumber-js with `--parallel 2`
-    Then it fails
-    And the output contains the text:
-    """
-      #1 was test 2 on this worker
-    """
+    Then it passes
+    And it runs tests in order b, c, a
 
   Scenario: assignment is appropriately applied and fails at last processed scenario 'a'
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -137,3 +132,7 @@ Feature: Running scenarios in parallel with custom assignment
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
+    And tandem tests verified
+    """
+    expect(_pickle1.tags[0].name).to.not.eq(_pickle2.tags[0].name)
+    """
