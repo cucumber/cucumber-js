@@ -16,6 +16,12 @@ Feature: ES modules support
 
       Given(/^a step passes$/, function() {});
       """
+    And a file named "cucumber.js" with:
+      """
+      export default {
+        'default': '--format summary',
+      }
+      """
     When I run cucumber-js with `--esm`
     Then it passes
 
