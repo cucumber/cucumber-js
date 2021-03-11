@@ -153,6 +153,8 @@ abort the run on first failure (default: false)
 
 By default, cucumber-js runs the entire suite and reports all the failures. This flag allows a developer workflow where you work on one failure at a time. Combining this feature with rerun files allows you to work through all failures in an efficient manner.
 
+A note on using in conjunction with `--retry`: we consider a test case to have failed if it exhausts retries and still fails, but passed if it passes on a retry having failed previous attempts, so `--fail-fast` does still allow retries to happen.
+
 ## Retry failing tests
 
 Use `--retry <int>` to rerun tests that have been failing. This can be very helpful for flaky tests.
