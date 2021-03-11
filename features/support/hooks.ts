@@ -97,7 +97,7 @@ Before('@global-install', function (this: World) {
   const itemsToCopy = [
     'bin',
     'lib',
-    'importer.js',
+    'importers.js',
     'wrapper.mjs',
     'package.json',
   ]

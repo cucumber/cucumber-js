@@ -30,7 +30,7 @@ import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const esmImporter = require('../../importer')
+const importers = require('../../importers')
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
@@ -58,9 +58,7 @@ export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
-  private importer: ISupportCodeImporter = async (path) =>
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    await Promise.resolve(require(path))
+  private importer: ISupportCodeImporter = importers.legacy
 
   constructor({
     argv,
@@ -177,7 +175,7 @@ export default class Cli {
         ? incrementing()
         : uuid()
     if (configuration.esm) {
-      this.importer = esmImporter
+      this.importer = importers.esm
     }
     const supportCodeLibrary = await this.getSupportCodeLibrary({
       newId,

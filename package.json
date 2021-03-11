@@ -292,7 +292,7 @@
   "files": [
     "bin/",
     "lib/",
-    "importer.js",
+    "importers.js",
     "wrapper.mjs"
   ]
 }

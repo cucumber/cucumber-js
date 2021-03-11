@@ -16,6 +16,9 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const importers = require('../../importers')
+
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
 
@@ -29,8 +32,11 @@ export async function getExpandedArgv({
   cwd,
 }: IGetExpandedArgvRequest): Promise<string[]> {
   const { options } = ArgvParser.parse(argv)
+  const importer = options.esm ? importers.esm : importers.legacy
   let fullArgv = argv
-  const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
+  const profileArgv = await new ProfileLoader(cwd, importer).getArgv(
+    options.profile
+  )
   if (profileArgv.length > 0) {
     fullArgv = _.concat(argv.slice(0, 2), profileArgv, argv.slice(2))
   }
