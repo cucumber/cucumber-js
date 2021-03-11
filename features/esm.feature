@@ -22,7 +22,13 @@ Feature: ES modules support
         'default': '--format summary',
       }
       """
-    When I run cucumber-js with `--esm`
+    And a file named "custom-formatter.js" with:
+      """
+      import {SummaryFormatter} from '@cucumber/cucumber'
+
+      export default class CustomFormatter extends SummaryFormatter {}
+      """
+    When I run cucumber-js with `--esm --format ./custom-formatter.js`
     Then it passes
 
   Scenario: native module syntax doesn't work without --esm
