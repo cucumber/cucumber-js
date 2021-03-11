@@ -1,4 +1,4 @@
-import { pipeline, Writable } from 'stream'
+import { pipeline, Transform, Writable } from 'stream'
 import tmp from 'tmp'
 import fs from 'fs'
 import http from 'http'
@@ -17,6 +17,11 @@ type HttpMethod =
   | 'TRACE'
   | 'PATCH'
 
+export type HttpResult = {
+  httpOk: boolean
+  responseBody: string
+}
+
 /**
  * This Writable writes data to a HTTP/HTTPS URL.
  *
@@ -27,21 +32,20 @@ type HttpMethod =
  *
  * 3xx redirects are not currently followed.
  */
-export default class HttpStream extends Writable {
+export default class HttpStream extends Transform {
   private tempFilePath: string
   private tempFile: Writable
   private responseBodyFromGet: string | null = null
+  private httpOk: boolean
 
   constructor(
     private readonly url: string,
     private readonly method: HttpMethod,
-    private readonly headers: { [name: string]: string },
-    private readonly reportLocation: (
-      error: Error | null | undefined,
-      content: string
-    ) => void
+    private readonly headers: { [name: string]: string }
   ) {
-    super()
+    super({
+      readableObjectMode: true,
+    })
   }
 
   _write(
@@ -68,7 +72,15 @@ export default class HttpStream extends Writable {
         this.url,
         this.method,
         (err: Error | null | undefined) => {
-          this.reportLocation(err, this.responseBodyFromGet)
+          if (doesHaveValue(err)) {
+            this.emit('error', err)
+          } else {
+            this.push({
+              httpOk: this.httpOk,
+              responseBody: this.responseBodyFromGet,
+            })
+          }
+
           return callback(err)
         }
       )
@@ -85,6 +97,9 @@ export default class HttpStream extends Writable {
     if (method === 'GET') {
       httpx.get(url, { headers: this.headers }, (res) => {
         let body = Buffer.alloc(0)
+
+        this.httpOk = res.statusCode === 202
+
         res.on('data', (chunk) => {
           body = Buffer.concat([body, chunk])
         })
@@ -92,9 +107,7 @@ export default class HttpStream extends Writable {
         if (res.statusCode >= 400) {
           res.on('end', () => {
             this.responseBodyFromGet = body.toString('utf-8')
-            return callback(
-              new Error(`${method} ${url} returned status ${res.statusCode}`)
-            )
+            return callback(null, url)
           })
         }
 
@@ -107,6 +120,7 @@ export default class HttpStream extends Writable {
           })
         }
       })
+      // TODO: call callback with error if httpx request fails
     } else {
       const contentLength = fs.statSync(this.tempFilePath).size
       const req = httpx.request(url, {
@@ -123,13 +137,7 @@ export default class HttpStream extends Writable {
             body = Buffer.concat([body, chunk])
           })
           res.on('end', () => {
-            callback(
-              new Error(
-                `${method} ${url} returned status ${
-                  res.statusCode
-                }:\n${body.toString('utf-8')}`
-              )
-            )
+            callback(null, url)
           })
           res.on('error', callback)
         } else {

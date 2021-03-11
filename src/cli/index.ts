@@ -28,6 +28,7 @@ import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
+import { Stream } from 'node:stream'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -107,11 +108,19 @@ export default class Cli {
                 if (doesHaveValue(err)) throw err
               }
             )
+
+            stream.pipe(process.stderr)
           } else {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
             stream = fs.createWriteStream(null, { fd })
           }
         }
+
+        stream.on('error', (error) => {
+          console.error(error.stack)
+          process.exit(1)
+        })
+
         const typeOptions = {
           cwd: this.cwd,
           eventBroadcaster,

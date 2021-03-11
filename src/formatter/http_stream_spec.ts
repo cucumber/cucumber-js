@@ -1,6 +1,7 @@
 import assert from 'assert'
-import HttpStream from './http_stream'
+import HttpStream, { HttpResult } from './http_stream'
 import FakeReportServer from '../../test/fake_report_server'
+import { Writable } from 'stream'
 
 type Callback = (err?: Error | null) => void
 
@@ -14,12 +15,7 @@ describe('HttpStream', () => {
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
-    const stream = new HttpStream(
-      `http://localhost:${port}/s3`,
-      'PUT',
-      {},
-      () => undefined
-    )
+    const stream = new HttpStream(`http://localhost:${port}/s3`, 'PUT', {})
 
     stream.on('error', callback)
     stream.on('finish', () => {
@@ -47,8 +43,7 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      { Authorization: `Bearer ${bearerToken}` },
-      () => undefined
+      { Authorization: `Bearer ${bearerToken}` }
     )
 
     stream.on('error', callback)
@@ -81,16 +76,25 @@ describe('HttpStream', () => {
   })
 
   it('outputs the body provided by the server', (callback: Callback) => {
-    let reported: string
+    let reported: HttpResult
 
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      {},
-      (err, content) => {
-        if (err) return callback(err)
-        reported = content
-      }
+      {} //,
+      // (err, content) => {
+      //   if (err) return callback(err)
+      //   reported = content
+      // }
+    )
+
+    stream.pipe(
+      new Writable({
+        write: function (httpResult: HttpResult, encoding, writeCallback) {
+          reported = httpResult
+          writeCallback()
+        },
+      })
     )
 
     stream.on('error', callback)
@@ -128,11 +132,11 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      { Authorization: `Bearer an-invalid-token` },
-      (err, content) => {
-        reported = content
-        errorThrown = err
-      }
+      { Authorization: `Bearer an-invalid-token` }
+      // (err, content) => {
+      //   reported = content
+      //   errorThrown = err
+      // }
     )
 
     stream.on('error', () => {})
