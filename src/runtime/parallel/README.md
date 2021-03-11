@@ -10,7 +10,7 @@ where the first tag doesn't match the first tag of any in progress tests.
 import { setParallelCanAssign } from '@cucumber/cucumber'
 // Accept tests missing tags or no test is running having the same first tag
 setParallelCanAssign((pickleInQuestion, picklesInProgress) => _.isEmpty(pickleInQuestion.tags) 
-    || _.every(picklesInProgress, ({tags}) => _.isEmpty(tags) || tags[0].name !== picklesInProgress.tags[0].name))
+    || _.every(picklesInProgress, ({tags}) => _.isEmpty(tags) || tags[0].name !== pickleInQuestion.tags[0].name))
 ```
 * Example using the handler above
 * 2 workers, `A` and `B`

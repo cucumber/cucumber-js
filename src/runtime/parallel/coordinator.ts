@@ -57,7 +57,6 @@ export default class Coordinator {
   private readonly eventDataCollector: EventDataCollector
   private readonly stopwatch: ITestRunStopwatch
   private onFinish: (success: boolean) => void
-  private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
   private inProgressPickles: Dictionary<messages.IPickle>
@@ -90,7 +89,6 @@ export default class Coordinator {
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
     this.pickleIds = pickleIds
-    this.nextPickleIdIndex = 0
     this.success = true
     this.workers = {}
     this.inProgressPickles = {}
@@ -169,10 +167,7 @@ export default class Coordinator {
       return worker.state !== WorkerState.idle
     })
 
-    if (
-      _.isEmpty(this.inProgressPickles) &&
-      this.pickleIds.length > this.nextPickleIdIndex
-    ) {
+    if (_.isEmpty(this.inProgressPickles) && this.pickleIds.length > 0) {
       this.giveWork(workers[0], true)
       this.idleInterventions++
     }
@@ -262,27 +257,30 @@ export default class Coordinator {
   }
 
   nextPicklePlacement(): IPicklePlacement {
-    for (
-      let index = this.nextPickleIdIndex;
-      index < this.pickleIds.length;
-      index++
-    ) {
-      const pickle = this.eventDataCollector.getPickle(this.pickleIds[index])
+    for (let index = 0; index < this.pickleIds.length; index++) {
+      const placement = this.placementAt(index)
       if (
         this.supportCodeLibrary.parallelCanAssign(
-          pickle,
+          placement.pickle,
           _.values(this.inProgressPickles)
         )
       ) {
-        return { index, pickle }
+        return placement
       }
     }
 
     return null
   }
 
+  placementAt(index: number): IPicklePlacement {
+    return {
+      index,
+      pickle: this.eventDataCollector.getPickle(this.pickleIds[index]),
+    }
+  }
+
   giveWork(worker: IWorker, force: boolean = false): void {
-    if (this.nextPickleIdIndex >= this.pickleIds.length) {
+    if (this.pickleIds.length < 1) {
       const finalizeCommand: IWorkerCommand = { finalize: true }
       worker.state = WorkerState.running
       worker.process.send(finalizeCommand)
@@ -290,26 +288,16 @@ export default class Coordinator {
     }
 
     const picklePlacement = force
-      ? {
-          index: this.nextPickleIdIndex,
-          pickle: this.eventDataCollector.getPickle(
-            this.pickleIds[this.nextPickleIdIndex]
-          ),
-        }
+      ? this.placementAt(0)
       : this.nextPicklePlacement()
+
     if (picklePlacement === null) {
       return
     }
 
-    if (this.nextPickleIdIndex !== picklePlacement.index) {
-      this.pickleIds.splice(
-        picklePlacement.index,
-        0,
-        this.pickleIds.splice(this.nextPickleIdIndex, 1)[0]
-      )
-    }
-    this.nextPickleIdIndex += 1
-    const pickle = picklePlacement.pickle
+    const { index: nextPickleIndex, pickle } = picklePlacement
+
+    this.pickleIds.splice(nextPickleIndex, 1)
     this.inProgressPickles[worker.id] = pickle
     const gherkinDocument = this.eventDataCollector.getGherkinDocument(
       pickle.uri
