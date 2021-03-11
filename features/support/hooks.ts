@@ -44,6 +44,10 @@ Before(function (
 })
 
 Before('@esm', function (this: World) {
+  const [majorVersion] = process.versions.node.split('.')
+  if (Number(majorVersion) < 12) {
+    return 'skipped'
+  }
   if (process.platform === 'win32') {
     return 'skipped'
   }
