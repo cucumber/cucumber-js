@@ -88,7 +88,7 @@ export default class Coordinator {
     this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
-    this.pickleIds = pickleIds
+    this.pickleIds = Array.from(pickleIds)
     this.success = true
     this.workers = {}
     this.inProgressPickles = {}
