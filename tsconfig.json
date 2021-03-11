@@ -8,6 +8,7 @@
     "noImplicitThis": true,
     "resolveJsonModule": true,
     "sourceMap": true,
+    "inlineSources": true,
     "target": "es2018",
     "typeRoots": [
       "./node_modules/@types",

@@ -4,9 +4,9 @@
 - Install Cucumber modules with [yarn](https://yarnpkg.com/en/) **or** [npm](https://www.npmjs.com/)
 
   ```
-  yarn add -D npm install @cucumber/cucumber
+  yarn add -D @cucumber/cucumber
 
-  npm i -D npm install @cucumber/cucumber
+  npm i -D @cucumber/cucumber
   ```
 
 * Add the following files
