@@ -102,7 +102,7 @@ export default class Cli {
               outputTo,
               'GET',
               headers,
-              (content, err) => {
+              (err, content) => {
                 console.error(content)
                 if (doesHaveValue(err)) throw err
               }

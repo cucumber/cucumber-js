@@ -87,7 +87,8 @@ describe('HttpStream', () => {
       `http://localhost:${port}/api/reports`,
       'GET',
       {},
-      (content) => {
+      (err, content) => {
+        if (err) return callback(err)
         reported = content
       }
     )
@@ -128,7 +129,7 @@ describe('HttpStream', () => {
       `http://localhost:${port}/api/reports`,
       'GET',
       { Authorization: `Bearer an-invalid-token` },
-      (content, err) => {
+      (err, content) => {
         reported = content
         errorThrown = err
       }

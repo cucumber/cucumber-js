@@ -37,8 +37,8 @@ export default class HttpStream extends Writable {
     private readonly method: HttpMethod,
     private readonly headers: { [name: string]: string },
     private readonly reportLocation: (
-      content: string,
-      error: Error | null | undefined
+      error: Error | null | undefined,
+      content: string
     ) => void
   ) {
     super()
@@ -68,7 +68,7 @@ export default class HttpStream extends Writable {
         this.url,
         this.method,
         (err: Error | null | undefined) => {
-          this.reportLocation(this.responseBodyFromGet, err)
+          this.reportLocation(err, this.responseBodyFromGet)
           return callback(err)
         }
       )
