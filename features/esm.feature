@@ -19,7 +19,7 @@ Feature: ES modules support
     And a file named "cucumber.js" with:
       """
       export default {
-        'default': '--format summary',
+        'default': '--format message:messages.ndjson',
       }
       """
     And a file named "custom-formatter.js" with:
