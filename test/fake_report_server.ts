@@ -32,7 +32,7 @@ export default class FakeReportServer {
 
       pipeline(req, captureBodyStream, (err) => {
         if (doesHaveValue(err)) return res.status(500).end(err.stack)
-        res.end()
+        res.end('Do not display this response')
       })
     })
 

@@ -17,7 +17,7 @@ type HttpMethod =
   | 'TRACE'
   | 'PATCH'
 
-export type HttpResult = {
+export interface HttpResult {
   httpOk: boolean
   responseBody: string
 }
@@ -35,8 +35,6 @@ export type HttpResult = {
 export default class HttpStream extends Transform {
   private tempFilePath: string
   private tempFile: Writable
-  private responseBodyFromGet: string | null = null
-  private httpOk: boolean
 
   constructor(
     private readonly url: string,
@@ -71,14 +69,11 @@ export default class HttpStream extends Transform {
       this.sendRequest(
         this.url,
         this.method,
-        (err: Error | null | undefined) => {
+        (err: Error | null | undefined, httpResult) => {
           if (doesHaveValue(err)) {
             this.emit('error', err)
           } else {
-            this.push({
-              httpOk: this.httpOk,
-              responseBody: this.responseBodyFromGet,
-            })
+            this.push(httpResult)
           }
 
           return callback(err)
@@ -90,35 +85,31 @@ export default class HttpStream extends Transform {
   private sendRequest(
     url: string,
     method: HttpMethod,
-    callback: (err: Error | null | undefined, url?: string) => void
+    callback: (err: Error | null | undefined, httpResult?: HttpResult) => void
   ): void {
     const httpx = doesHaveValue(url.match(/^https:/)) ? https : http
 
     if (method === 'GET') {
       httpx.get(url, { headers: this.headers }, (res) => {
         let body = Buffer.alloc(0)
-
-        this.httpOk = res.statusCode === 202
-
         res.on('data', (chunk) => {
           body = Buffer.concat([body, chunk])
         })
 
-        if (res.statusCode >= 400) {
-          res.on('end', () => {
-            this.responseBodyFromGet = body.toString('utf-8')
-            callback(null, url)
-          })
-        }
+        res.on('end', () => {
+          const httpOk =
+            res.statusCode === 202 && res.headers.location !== undefined
 
-        if (res.statusCode !== 202 || res.headers.location === undefined) {
-          callback(null, url)
-        } else {
-          res.on('end', () => {
-            this.responseBodyFromGet = body.toString('utf-8')
+          if (httpOk) {
             this.sendRequest(res.headers.location, 'PUT', callback)
-          })
-        }
+          } else {
+            const httpResult: HttpResult = {
+              responseBody: body.toString('utf-8'),
+              httpOk,
+            }
+            callback(null, httpResult)
+          }
+        })
       })
       // TODO: call callback with error if httpx request fails
     } else {
@@ -131,18 +122,19 @@ export default class HttpStream extends Transform {
       })
 
       req.on('response', (res) => {
-        if (res.statusCode >= 400) {
-          let body = Buffer.alloc(0)
-          res.on('data', (chunk) => {
-            body = Buffer.concat([body, chunk])
-          })
-          res.on('end', () => {
-            callback(null, url)
-          })
-          res.on('error', callback)
-        } else {
-          callback(null, url)
-        }
+        let body = Buffer.alloc(0)
+        res.on('data', (chunk) => {
+          body = Buffer.concat([body, chunk])
+        })
+        res.on('end', () => {
+          const httpOk = res.statusCode < 300
+          const httpResult: HttpResult = {
+            responseBody: body.toString('utf-8'),
+            httpOk,
+          }
+          callback(null, httpResult)
+        })
+        res.on('error', callback)
       })
 
       pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {

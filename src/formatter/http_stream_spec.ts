@@ -81,11 +81,7 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      {} //,
-      // (err, content) => {
-      //   if (err) return callback(err)
-      //   reported = content
-      // }
+      {}
     )
 
     const readerStream = new Writable({
@@ -106,17 +102,17 @@ describe('HttpStream', () => {
         .stop()
         .then(() => {
           try {
-            assert.strictEqual(
-              reported.responseBody,
-              `┌──────────────────────────────────────────────────────────────────────────┐
+            const expectedResult: HttpResult = {
+              httpOk: true,
+              responseBody: `┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
-`
-            )
-            assert(reported.httpOk)
+`,
+            }
+            assert.deepStrictEqual(reported, expectedResult)
             callback()
           } catch (err) {
             callback(err)
@@ -155,14 +151,14 @@ describe('HttpStream', () => {
       reportServer
         .stop()
         .then(() => {
-          assert.strictEqual(
-            reported.responseBody,
-            `┌─────────────────────┐
+          const expectedResult: HttpResult = {
+            httpOk: false,
+            responseBody: `┌─────────────────────┐
 │ Error invalid token │
 └─────────────────────┘
-`
-          )
-          assert(!reported.httpOk)
+`,
+          }
+          assert.deepStrictEqual(reported, expectedResult)
           callback()
         })
         .catch((err) => {
