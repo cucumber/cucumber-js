@@ -135,7 +135,11 @@ export default class HttpStream extends Transform {
 
     if (upload) {
       pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
-        if (doesHaveValue(err)) this.emit('error', err)
+        if (doesHaveValue(err)) {
+          // temporary debug
+          console.error('Emitting error:', err.stack)
+          this.emit('error', err)
+        }
       })
     } else {
       req.end()
