@@ -76,10 +76,14 @@ When(
 Then(/^it passes$/, () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
 
 Then(/^it fails$/, function (this: World) {
-  const actualCode = doesHaveValue(this.lastRun.error)
+  const actualCode: number = doesHaveValue(this.lastRun.error)
     ? this.lastRun.error.code
     : 0
-  expect(actualCode).not.to.eql(0)
+
+  expect(actualCode).not.to.eql(
+    0,
+    `Expected non-zero exit status, but got ${actualCode}`
+  )
   this.verifiedLastRunError = true
 })
 

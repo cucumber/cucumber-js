@@ -108,6 +108,7 @@ export default class Cli {
                 writeCallback
               ) {
                 console.error(httpResult.responseBody)
+                if (!httpResult.httpOk) process.exit(2)
                 writeCallback()
               },
             })
