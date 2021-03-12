@@ -120,8 +120,9 @@ export default class Cli {
         }
 
         stream.on('error', (error) => {
-          console.error('Exiting due to failing stream', { stream, error })
           console.error(error.stack)
+          console.error('Exiting due to failing stream', { stream, error })
+
           process.exit(1)
         })
 
