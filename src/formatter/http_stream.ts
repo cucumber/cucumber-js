@@ -5,22 +5,7 @@ import http from 'http'
 import https from 'https'
 import { doesHaveValue } from '../value_checker'
 
-// https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
-type HttpMethod =
-  | 'GET'
-  | 'HEAD'
-  | 'POST'
-  | 'PUT'
-  | 'DELETE'
-  | 'CONNECT'
-  | 'OPTIONS'
-  | 'TRACE'
-  | 'PATCH'
-
-export interface HttpResult {
-  httpOk: boolean
-  responseBody: string
-}
+type HttpMethod = 'GET' | 'POST' | 'PUT'
 
 /**
  * This Writable writes data to a HTTP/HTTPS URL.
@@ -35,25 +20,15 @@ export interface HttpResult {
 export default class HttpStream extends Transform {
   private tempFilePath: string
   private tempFile: Writable
-  private redirectResult: HttpResult
-
-  public currentStatus:
-    | 'created'
-    | 'start 1st request'
-    | 'finished 1st request'
-    | 'started 2nd request'
-    | 'finished 2nd request'
-    | 'Finalized'
 
   constructor(
     private readonly url: string,
     private readonly method: HttpMethod,
-    private readonly headers: { [name: string]: string }
+    private readonly headers: http.OutgoingHttpHeaders
   ) {
     super({
       readableObjectMode: true,
     })
-    this.currentStatus = 'created'
   }
 
   _write(
@@ -64,7 +39,6 @@ export default class HttpStream extends Transform {
     if (this.tempFile === undefined) {
       tmp.file((err, name, fd) => {
         if (doesHaveValue(err)) return callback(err)
-
         this.tempFilePath = name
         this.tempFile = fs.createWriteStream(name, { fd })
         this.tempFile.write(chunk, encoding, callback)
@@ -76,109 +50,95 @@ export default class HttpStream extends Transform {
 
   _final(callback: (error?: Error | null) => void): void {
     this.tempFile.end(() => {
-      this.sendRequest(
+      this.sendHttpRequest(
         this.url,
         this.method,
-        (err: Error | null | undefined, httpResult) => {
-          this.currentStatus = 'Finalized'
-
-          if (doesHaveValue(err)) {
-            this.emit('error', err)
-          } else {
-            this.push(httpResult)
-          }
-
-          return callback(err)
+        this.headers,
+        (err1, res1) => {
+          if (doesHaveValue(err1)) return callback(err1)
+          this.pushResponseBody(res1, () => {
+            this.emitErrorUnlessHttp2xx(res1, this.url, this.method)
+            if (
+              res1.statusCode === 202 &&
+              res1.headers.location !== undefined
+            ) {
+              this.sendHttpRequest(
+                res1.headers.location,
+                'PUT',
+                {},
+                (err2, res2) => {
+                  if (doesHaveValue(err2)) return callback(err2)
+                  this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
+                  callback()
+                }
+              )
+            } else {
+              callback()
+            }
+          })
         }
       )
     })
   }
 
-  private sendRequest(
+  private pushResponseBody(res: http.IncomingMessage, done: () => void): void {
+    let body = Buffer.alloc(0)
+    res.on('data', (chunk) => {
+      body = Buffer.concat([body, chunk])
+    })
+    res.on('end', () => {
+      this.push(body.toString('utf-8'))
+      done()
+    })
+  }
+
+  private emitErrorUnlessHttp2xx(
+    res: http.IncomingMessage,
+    url: string,
+    method: string
+  ): void {
+    if (res.statusCode >= 300)
+      this.emit(
+        'error',
+        new Error(
+          `Unexpected http status ${res.statusCode} from ${method} ${url}`
+        )
+      )
+  }
+
+  private sendHttpRequest(
     url: string,
     method: HttpMethod,
-    callback: (err: Error | null | undefined, httpResult?: HttpResult) => void
+    headers: http.OutgoingHttpHeaders,
+    callback: (err?: Error | null, res?: http.IncomingMessage) => void
   ): void {
     const httpx = doesHaveValue(url.match(/^https:/)) ? https : http
+    const additionalHttpHeaders: http.OutgoingHttpHeaders = {}
 
-    if (method === 'GET') {
-      this.sendRedirectRequest(url, method, callback, httpx)
-    } else {
-      this.sendUploadRequest(url, method, callback, httpx)
+    const upload = method === 'PUT' || method === 'POST'
+    if (upload) {
+      additionalHttpHeaders['Content-Length'] = fs.statSync(
+        this.tempFilePath
+      ).size
     }
-  }
 
-  private sendRedirectRequest(
-    url: string,
-    method: HttpMethod,
-    callback: (err: Error | null | undefined, httpResult?: HttpResult) => void,
-    httpx: typeof http | typeof https
-  ): void {
-    this.currentStatus = 'start 1st request'
-    httpx.get(url, { headers: this.headers }, (res) => {
-      let body = Buffer.alloc(0)
-      res.on('data', (chunk) => {
-        body = Buffer.concat([body, chunk])
-      })
-
-      res.on('end', () => {
-        this.currentStatus = 'finished 1st request'
-
-        const httpOk =
-          res.statusCode === 202 && res.headers.location !== undefined
-        const httpResult: HttpResult = {
-          responseBody: body.toString('utf-8'),
-          httpOk,
-        }
-
-        if (httpOk) {
-          this.redirectResult = httpResult
-          this.sendUploadRequest(res.headers.location, 'PUT', callback, httpx)
-        } else {
-          callback(null, httpResult)
-        }
-      })
-
-      res.on('error', callback)
-    })
-  }
-
-  private sendUploadRequest(
-    url: string,
-    method: HttpMethod,
-    callback: (err: Error | null | undefined, httpResult?: HttpResult) => void,
-    httpx: typeof http | typeof https
-  ): void {
-    this.currentStatus = 'started 2nd request'
-    const contentLength = fs.statSync(this.tempFilePath).size
+    const allHeaders = { ...headers, ...additionalHttpHeaders }
     const req = httpx.request(url, {
       method,
-      headers: {
-        'Content-Length': contentLength,
-      },
+      headers: allHeaders,
     })
-
+    req.on('error', (err) => this.emit('error', err))
     req.on('response', (res) => {
-      let body = Buffer.alloc(0)
-      res.on('data', (chunk) => {
-        body = Buffer.concat([body, chunk])
-      })
-      res.on('end', () => {
-        this.currentStatus = 'finished 2nd request'
-        const httpOk = res.statusCode < 300
-        const httpResult: HttpResult = {
-          responseBody: this.redirectResult
-            ? this.redirectResult.responseBody
-            : body.toString('utf-8'),
-          httpOk,
-        }
-        callback(null, httpResult)
-      })
-      res.on('error', callback)
+      res.on('error', (err) => this.emit('error', err))
+      callback(null, res)
     })
 
-    pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
-      if (doesHaveValue(err)) callback(err)
-    })
+    if (upload) {
+      pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
+        if (doesHaveValue(err)) this.emit('error', err)
+      })
+    } else {
+      req.end()
+    }
   }
 }

@@ -1,5 +1,5 @@
 import assert from 'assert'
-import HttpStream, { HttpResult } from './http_stream'
+import HttpStream from './http_stream'
 import FakeReportServer from '../../test/fake_report_server'
 import { Writable } from 'stream'
 
@@ -76,7 +76,7 @@ describe('HttpStream', () => {
   })
 
   it('outputs the body provided by the server', (callback: Callback) => {
-    let reported: HttpResult
+    let reported: string
 
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
@@ -86,8 +86,8 @@ describe('HttpStream', () => {
 
     const readerStream = new Writable({
       objectMode: true,
-      write: function (httpResult: HttpResult, encoding, writeCallback) {
-        reported = httpResult
+      write: function (responseBody: string, encoding, writeCallback) {
+        reported = responseBody
         writeCallback()
       },
     })
@@ -102,16 +102,13 @@ describe('HttpStream', () => {
         .stop()
         .then(() => {
           try {
-            const expectedResult: HttpResult = {
-              httpOk: true,
-              responseBody: `┌──────────────────────────────────────────────────────────────────────────┐
+            const expectedResult = `┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
-`,
-            }
+`
             assert.deepStrictEqual(reported, expectedResult)
             callback()
           } catch (err) {
@@ -126,7 +123,7 @@ describe('HttpStream', () => {
   })
 
   it('reports the body provided by the server even when an error is returned by the server and still fail', (callback: Callback) => {
-    let reported: HttpResult
+    let reported: string
 
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
@@ -136,35 +133,28 @@ describe('HttpStream', () => {
 
     const readerStream = new Writable({
       objectMode: true,
-      write: function (httpResult: HttpResult, encoding, writeCallback) {
-        reported = httpResult
+      write: function (responseBody: string, encoding, writeCallback) {
+        reported = responseBody
         writeCallback()
       },
     })
 
     stream.pipe(readerStream)
 
-    stream.on('error', callback)
-    readerStream.on('error', callback)
-
-    readerStream.on('finish', () => {
+    stream.on('error', () => {
       reportServer
         .stop()
         .then(() => {
-          const expectedResult: HttpResult = {
-            httpOk: false,
-            responseBody: `┌─────────────────────┐
+          const expectedResult = `┌─────────────────────┐
 │ Error invalid token │
 └─────────────────────┘
-`,
-          }
+`
           assert.deepStrictEqual(reported, expectedResult)
           callback()
         })
-        .catch((err) => {
-          callback(err)
-        })
+        .catch(callback)
     })
+    readerStream.on('error', callback)
 
     stream.write('hello')
     stream.end()

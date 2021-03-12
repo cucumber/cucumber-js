@@ -27,7 +27,7 @@ import { doesNotHaveValue } from '../value_checker'
 import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-import HttpStream, { HttpResult } from '../formatter/http_stream'
+import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
 
 const { incrementing, uuid } = IdGenerator
@@ -102,13 +102,8 @@ export default class Cli {
             stream = new HttpStream(outputTo, 'GET', headers)
             const readerStream = new Writable({
               objectMode: true,
-              write: function (
-                httpResult: HttpResult,
-                encoding,
-                writeCallback
-              ) {
-                console.error(httpResult.responseBody)
-                if (!httpResult.httpOk) process.exit(2)
+              write: function (responseBody: string, encoding, writeCallback) {
+                console.error(responseBody)
                 writeCallback()
               },
             })
@@ -120,15 +115,7 @@ export default class Cli {
         }
 
         stream.on('error', (error) => {
-          console.error(error.stack)
-          if (stream instanceof HttpStream) {
-            console.error('Exiting due to failing stream', {
-              status: stream.currentStatus,
-              stream,
-              error,
-            })
-          }
-
+          console.error(error.message)
           process.exit(1)
         })
 
