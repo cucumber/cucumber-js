@@ -35,6 +35,7 @@ export interface HttpResult {
 export default class HttpStream extends Transform {
   private tempFilePath: string
   private tempFile: Writable
+  private redirectResult: HttpResult
 
   constructor(
     private readonly url: string,
@@ -90,56 +91,78 @@ export default class HttpStream extends Transform {
     const httpx = doesHaveValue(url.match(/^https:/)) ? https : http
 
     if (method === 'GET') {
-      httpx.get(url, { headers: this.headers }, (res) => {
-        let body = Buffer.alloc(0)
-        res.on('data', (chunk) => {
-          body = Buffer.concat([body, chunk])
-        })
-
-        res.on('end', () => {
-          const httpOk =
-            res.statusCode === 202 && res.headers.location !== undefined
-
-          if (httpOk) {
-            this.sendRequest(res.headers.location, 'PUT', callback)
-          } else {
-            const httpResult: HttpResult = {
-              responseBody: body.toString('utf-8'),
-              httpOk,
-            }
-            callback(null, httpResult)
-          }
-        })
-      })
-      // TODO: call callback with error if httpx request fails
+      this.sendRedirectRequest(url, method, callback, httpx)
     } else {
-      const contentLength = fs.statSync(this.tempFilePath).size
-      const req = httpx.request(url, {
-        method,
-        headers: {
-          'Content-Length': contentLength,
-        },
-      })
-
-      req.on('response', (res) => {
-        let body = Buffer.alloc(0)
-        res.on('data', (chunk) => {
-          body = Buffer.concat([body, chunk])
-        })
-        res.on('end', () => {
-          const httpOk = res.statusCode < 300
-          const httpResult: HttpResult = {
-            responseBody: body.toString('utf-8'),
-            httpOk,
-          }
-          callback(null, httpResult)
-        })
-        res.on('error', callback)
-      })
-
-      pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
-        if (doesHaveValue(err)) callback(err)
-      })
+      this.sendUploadRequest(url, method, callback, httpx)
     }
+  }
+
+  private sendRedirectRequest(
+    url: string,
+    method: HttpMethod,
+    callback: (err: Error | null | undefined, httpResult?: HttpResult) => void,
+    httpx: typeof http | typeof https
+  ): void {
+    httpx.get(url, { headers: this.headers }, (res) => {
+      let body = Buffer.alloc(0)
+      res.on('data', (chunk) => {
+        body = Buffer.concat([body, chunk])
+      })
+
+      res.on('end', () => {
+        const httpOk =
+          res.statusCode === 202 && res.headers.location !== undefined
+        const httpResult: HttpResult = {
+          responseBody: body.toString('utf-8'),
+          httpOk,
+        }
+
+        if (httpOk) {
+          this.redirectResult = httpResult
+          this.sendUploadRequest(res.headers.location, 'PUT', callback, httpx)
+        } else {
+          callback(null, httpResult)
+        }
+      })
+
+      res.on('error', callback)
+    })
+  }
+
+  private sendUploadRequest(
+    url: string,
+    method: HttpMethod,
+    callback: (err: Error | null | undefined, httpResult?: HttpResult) => void,
+    httpx: typeof http | typeof https
+  ): void {
+    const contentLength = fs.statSync(this.tempFilePath).size
+    const req = httpx.request(url, {
+      method,
+      headers: {
+        'Content-Length': contentLength,
+      },
+    })
+
+    req.on('response', (res) => {
+      let body = Buffer.alloc(0)
+      res.on('data', (chunk) => {
+        body = Buffer.concat([body, chunk])
+      })
+      res.on('end', () => {
+        const httpOk = res.statusCode < 300
+        const httpResult: HttpResult = {
+          responseBody: this.redirectResult
+            ? this.redirectResult.responseBody
+            : body.toString('utf-8'),
+          httpOk,
+        }
+        callback(null, httpResult)
+      })
+      res.on('error', callback)
+    })
+
+    pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
+      if (doesHaveValue(err)) callback(err)
+    })
   }
 }
