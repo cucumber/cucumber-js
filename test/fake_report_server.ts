@@ -31,6 +31,8 @@ export default class FakeReportServer {
       })
 
       pipeline(req, captureBodyStream, (err) => {
+        // TODO: remove temporary debug
+        console.error('FakeServer::Res.end. Error?: ', err)
         if (doesHaveValue(err)) return res.status(500).end(err.stack)
         res.end('Do not display this response')
       })
@@ -63,6 +65,8 @@ export default class FakeReportServer {
     this.server.on('connection', (socket) => {
       this.sockets.add(socket)
       socket.on('close', () => {
+        // TODO: remove temporary debug
+        console.error('FakeServer on close deleting sockets')
         this.sockets.delete(socket)
       })
     })
@@ -77,12 +81,16 @@ export default class FakeReportServer {
    * @return all the received request bodies
    */
   async stop(): Promise<Buffer> {
+    // TODO: remove temporary debug
+    console.error('FakeServer: stop()')
     // Wait for all sockets to be closed
     await Promise.all(
       Array.from(this.sockets).map(
         // eslint-disable-next-line @typescript-eslint/promise-function-async
         (socket) =>
           new Promise<void>((resolve, reject) => {
+            // TODO: remove temporary debug
+            console.error('socket destroyed?', socket.destroyed)
             if (socket.destroyed) return resolve()
             socket.on('close', resolve)
             socket.on('error', reject)

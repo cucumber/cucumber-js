@@ -96,6 +96,8 @@ Before('@global-install', function (this: World) {
 
 After(async function (this: World) {
   if (this.reportServer?.started) {
+    // TODO: remove temporary debug
+    console.error('Stopping fake server')
     await this.reportServer.stop()
   }
 
