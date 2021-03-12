@@ -121,7 +121,13 @@ export default class Cli {
 
         stream.on('error', (error) => {
           console.error(error.stack)
-          console.error('Exiting due to failing stream', { stream, error })
+          if (stream instanceof HttpStream) {
+            console.error('Exiting due to failing stream', {
+              status: stream.currentStatus,
+              stream,
+              error,
+            })
+          }
 
           process.exit(1)
         })

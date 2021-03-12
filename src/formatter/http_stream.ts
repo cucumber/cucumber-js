@@ -37,6 +37,14 @@ export default class HttpStream extends Transform {
   private tempFile: Writable
   private redirectResult: HttpResult
 
+  public currentStatus:
+    | 'created'
+    | 'start 1st request'
+    | 'finished 1st request'
+    | 'started 2nd request'
+    | 'finished 2nd request'
+    | 'Finalized'
+
   constructor(
     private readonly url: string,
     private readonly method: HttpMethod,
@@ -45,6 +53,7 @@ export default class HttpStream extends Transform {
     super({
       readableObjectMode: true,
     })
+    this.currentStatus = 'created'
   }
 
   _write(
@@ -71,6 +80,8 @@ export default class HttpStream extends Transform {
         this.url,
         this.method,
         (err: Error | null | undefined, httpResult) => {
+          this.currentStatus = 'Finalized'
+
           if (doesHaveValue(err)) {
             this.emit('error', err)
           } else {
@@ -103,6 +114,7 @@ export default class HttpStream extends Transform {
     callback: (err: Error | null | undefined, httpResult?: HttpResult) => void,
     httpx: typeof http | typeof https
   ): void {
+    this.currentStatus = 'start 1st request'
     httpx.get(url, { headers: this.headers }, (res) => {
       let body = Buffer.alloc(0)
       res.on('data', (chunk) => {
@@ -110,6 +122,8 @@ export default class HttpStream extends Transform {
       })
 
       res.on('end', () => {
+        this.currentStatus = 'finished 1st request'
+
         const httpOk =
           res.statusCode === 202 && res.headers.location !== undefined
         const httpResult: HttpResult = {
@@ -135,6 +149,7 @@ export default class HttpStream extends Transform {
     callback: (err: Error | null | undefined, httpResult?: HttpResult) => void,
     httpx: typeof http | typeof https
   ): void {
+    this.currentStatus = 'started 2nd request'
     const contentLength = fs.statSync(this.tempFilePath).size
     const req = httpx.request(url, {
       method,
@@ -149,6 +164,7 @@ export default class HttpStream extends Transform {
         body = Buffer.concat([body, chunk])
       })
       res.on('end', () => {
+        this.currentStatus = 'finished 2nd request'
         const httpOk = res.statusCode < 300
         const httpResult: HttpResult = {
           responseBody: this.redirectResult
