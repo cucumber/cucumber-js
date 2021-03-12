@@ -112,7 +112,7 @@ Feature: Publish reports
       │ Error invalid token │
       └─────────────────────┘
 
-      Error: Unexpected http status 401 from GET http://localhost:9987
+      Unexpected http status 401 from GET http://localhost:9987
       """
 
   @spawn
