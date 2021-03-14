@@ -18,18 +18,9 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
 import { Query } from '@cucumber/query'
+import { ITestStep } from './assemble_test_cases'
 
 const { Status } = messages.TestStepFinished.TestStepResult
-
-interface ITestStep {
-  id: string
-  isBeforeHook?: boolean
-  isHook: boolean
-  hookDefinition?: TestCaseHookDefinition
-  stepHookDefinition?: TestStepHookDefinition
-  pickleStep?: messages.Pickle.IPickleStep
-  stepDefinitions?: StepDefinition[]
-}
 
 export interface INewPickleRunnerOptions {
   eventBroadcaster: EventEmitter
