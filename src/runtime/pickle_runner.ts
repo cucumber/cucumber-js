@@ -14,9 +14,8 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
-import { Group } from '@cucumber/cucumber-expressions'
 import { Query } from '@cucumber/query'
 import { ITestStep } from './assemble_test_cases'
 
@@ -134,54 +133,6 @@ export default class PickleRunner {
     return testSteps
   }
 
-  emitTestCase(): void {
-    const testCase = {
-      pickleId: this.pickle.id,
-      id: this.testCaseId,
-      testSteps: this.testSteps.map((testStep) => {
-        if (testStep.isHook) {
-          return {
-            id: testStep.id,
-            hookId: testStep.hookDefinition.id,
-          }
-        } else {
-          return {
-            id: testStep.id,
-            pickleStepId: testStep.pickleStep.id,
-            stepDefinitionIds: testStep.stepDefinitions.map((x) => x.id),
-            stepMatchArgumentsLists: testStep.stepDefinitions.map((x) => {
-              const result = x.expression.match(testStep.pickleStep.text)
-              return {
-                stepMatchArguments: result.map((arg) => {
-                  return {
-                    group: this.mapArgumentGroup(arg.group),
-                    parameterTypeName: arg.parameterType.name,
-                  }
-                }),
-              }
-            }),
-          }
-        }
-      }),
-    }
-    this.eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({ testCase })
-    )
-  }
-
-  private mapArgumentGroup(
-    group: Group
-  ): messages.TestCase.TestStep.StepMatchArgumentsList.StepMatchArgument.IGroup {
-    return {
-      start: group.start,
-      value: group.value,
-      children: doesHaveValue(group.children)
-        ? group.children.map((child) => this.mapArgumentGroup(child))
-        : undefined,
-    }
-  }
-
   getAfterHookDefinitions(): TestCaseHookDefinition[] {
     return clone(this.supportCodeLibrary.afterTestCaseHookDefinitions)
       .reverse()
@@ -288,7 +239,6 @@ export default class PickleRunner {
   }
 
   async run(): Promise<messages.TestStepFinished.TestStepResult.Status> {
-    this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = this.newId()
       this.eventBroadcaster.emit(
