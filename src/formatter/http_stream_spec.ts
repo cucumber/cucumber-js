@@ -176,12 +176,19 @@ describe('HttpStream', () => {
       })
 
       stream.pipe(readerStream)
-      readerStream.on('error', (err) => sleepThenCallback(callback, err))
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      readerStream.on('error', async (err) => {
+        await sleepThenCallback(callback, err)
+      })
       readerStream.on('finish', () => {
         reportServer
           .stop()
-          .then(() => sleepThenCallback(callback))
-          .catch((err) => sleepThenCallback(callback, err))
+          .then(async () => {
+            await sleepThenCallback(callback)
+          })
+          .catch(async (err) => {
+            await sleepThenCallback(callback, err)
+          })
       })
       stream.write('hello')
       stream.end()
@@ -189,10 +196,13 @@ describe('HttpStream', () => {
   }
 })
 
-function sleepThenCallback( callback: Callback, err?: Error) {
-  sleep(75).then(() => callback(err))
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+async function sleepThenCallback(
+  callback: Callback,
+  err?: Error
+): Promise<void> {
+  await new Promise(() =>
+    setTimeout(() => {
+      callback(err)
+    }, 75)
+  )
 }
