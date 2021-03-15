@@ -185,6 +185,11 @@ describe('HttpStream', () => {
       })
       stream.write('hello')
       stream.end()
+      sleep(75)
     })
   }
 })
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
