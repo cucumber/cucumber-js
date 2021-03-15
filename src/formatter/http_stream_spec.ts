@@ -176,19 +176,22 @@ describe('HttpStream', () => {
       })
 
       stream.pipe(readerStream)
-      readerStream.on('error', callback)
+      readerStream.on('error', (err) => sleepThenCallback(callback, err))
       readerStream.on('finish', () => {
         reportServer
           .stop()
-          .then(() => callback())
-          .catch(callback)
+          .then(() => sleepThenCallback(callback))
+          .catch((err) => sleepThenCallback(callback, err))
       })
       stream.write('hello')
       stream.end()
-      sleep(75)
     })
   }
 })
+
+function sleepThenCallback( callback: Callback, err?: Error) {
+  sleep(75).then(() => callback(err))
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
