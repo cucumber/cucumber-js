@@ -160,8 +160,8 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  for (let i = 0; i < 100; i++) {
-    it(`runs fuzz test ${i}`, (callback) => {
+  for (let i = 0; i < 1000; i++) {
+    it(`runs race condition test ${i}`, (callback) => {
       const stream = new HttpStream(
         `http://localhost:${port}/api/reports`,
         'GET',
