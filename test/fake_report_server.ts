@@ -91,7 +91,7 @@ export default class FakeReportServer {
           new Promise<void>((resolve, reject) => {
             // TODO: remove temporary debug
             console.error('socket destroyed?', socket.destroyed)
-            if (socket.destroyed) return resolve()
+            // if (socket.destroyed) return resolve()
             socket.on('close', resolve)
             socket.on('error', reject)
           })
