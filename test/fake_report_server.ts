@@ -1,4 +1,4 @@
-import { Server, Socket } from 'net'
+import { AddressInfo, Server, Socket } from 'net'
 import express from 'express'
 import { pipeline, Writable } from 'stream'
 import http from 'http'
@@ -17,7 +17,7 @@ export default class FakeReportServer {
   private receivedBodies = Buffer.alloc(0)
   public receivedHeaders: http.IncomingHttpHeaders = {}
 
-  constructor(private readonly port: number) {
+  constructor(private port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
@@ -51,7 +51,7 @@ export default class FakeReportServer {
         return
       }
 
-      res.setHeader('Location', `http://localhost:${port}/s3`)
+      res.setHeader('Location', `http://localhost:${this.port}/s3`)
       res.status(202)
 
       setTimeout(() => {
@@ -73,9 +73,11 @@ export default class FakeReportServer {
     })
   }
 
-  async start(): Promise<void> {
+  async start(): Promise<number> {
     const listen = promisify(this.server.listen.bind(this.server))
     await listen(this.port)
+    this.port = (this.server.address() as AddressInfo).port
+    return this.port
   }
 
   /**

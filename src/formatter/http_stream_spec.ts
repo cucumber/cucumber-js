@@ -6,12 +6,12 @@ import { Writable } from 'stream'
 type Callback = (err?: Error | null) => void
 
 describe('HttpStream', () => {
-  const port = 8998
   let reportServer: FakeReportServer
+  let port: number
 
   beforeEach(async () => {
-    reportServer = new FakeReportServer(port)
-    await reportServer.start()
+    reportServer = new FakeReportServer(0)
+    port = await reportServer.start()
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
@@ -162,6 +162,7 @@ describe('HttpStream', () => {
 
   for (let i = 0; i < 1000; i++) {
     it(`runs race condition test ${i}`, (callback) => {
+      console.log({ port })
       const stream = new HttpStream(
         `http://localhost:${port}/api/reports`,
         'GET',
