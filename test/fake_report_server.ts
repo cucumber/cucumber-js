@@ -97,7 +97,7 @@ export default class FakeReportServer {
           })
       )
     )
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.server.close((err) => {
         if (doesHaveValue(err)) return reject(err)
         resolve(this.receivedBodies)
