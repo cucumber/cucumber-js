@@ -162,7 +162,6 @@ describe('HttpStream', () => {
 
   for (let i = 0; i < 1000; i++) {
     it(`runs race condition test ${i}`, (callback) => {
-      console.log({ port })
       const stream = new HttpStream(
         `http://localhost:${port}/api/reports`,
         'GET',

@@ -129,25 +129,13 @@ export default class HttpStream extends Transform {
     })
     req.on('error', (err) => this.emit('error', err))
     req.on('response', (res) => {
-      // TODO: remove temporary debug
-      console.error('Response received: status: ', res.statusCode)
-      res.on('error', (err) => {
-        // TODO: remove temporary debug
-        console.error(
-          'Emmitting error in req.response:',
-          err.message,
-          err.stack
-        )
-        this.emit('error', err)
-      })
+      res.on('error', (err) => this.emit('error', err))
       callback(null, res)
     })
 
     if (upload) {
       pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
         if (doesHaveValue(err)) {
-          // TODO: remove temporary debug
-          console.error('Emitting error:', err.stack)
           this.emit('error', err)
         }
       })

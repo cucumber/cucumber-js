@@ -31,12 +31,8 @@ export default class FakeReportServer {
       })
 
       pipeline(req, captureBodyStream, (err) => {
-        // TODO: remove temporary debug
-        console.error('FakeServer::Res.end. Error?: ', err)
         if (doesHaveValue(err)) return res.status(500).end(err.stack)
-        setTimeout(() => {
-          res.end('Do not display this response')
-        }, Math.random() * 10)
+        res.end('Do not display this response')
       })
     })
 
@@ -54,15 +50,13 @@ export default class FakeReportServer {
       res.setHeader('Location', `http://localhost:${this.port}/s3`)
       res.status(202)
 
-      setTimeout(() => {
-        res.end(`┌──────────────────────────────────────────────────────────────────────────┐
+      res.end(`┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
 `)
-      }, Math.random() * 10)
     })
 
     this.server = http.createServer(app)
@@ -84,17 +78,13 @@ export default class FakeReportServer {
    * @return all the received request bodies
    */
   async stop(): Promise<Buffer> {
-    // TODO: remove temporary debug
-    console.error('FakeServer: stop()')
     // Wait for all sockets to be closed
     await Promise.all(
       Array.from(this.sockets).map(
         // eslint-disable-next-line @typescript-eslint/promise-function-async
         (socket) =>
           new Promise<void>((resolve, reject) => {
-            // TODO: remove temporary debug
-            console.error('socket destroyed?', socket.destroyed)
-            // if (socket.destroyed) return resolve()
+            if (socket.destroyed) return resolve()
             socket.on('close', resolve)
             socket.on('error', reject)
           })
