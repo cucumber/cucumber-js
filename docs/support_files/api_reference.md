@@ -46,12 +46,6 @@ Multiple `After` hooks are executed in the **reverse** order that they are defin
 
 ---
 
-#### `And(pattern[, options], fn)`
-
-Alias of `defineStep`.
-
----
-
 #### `AfterAll([options,] fn)`
 
 Defines a hook which is run after all scenarios have completed.
@@ -104,12 +98,6 @@ Multiple `BeforeAll` hooks are executed in the order that they are defined.
 Defines a hook which is run before each step. Same interface as `AfterStep` except the first argument passed to `fn` will not have the `result` property.
 
 Multiple `BeforeStep` hooks are executed in the order that they are defined.
-
----
-
-#### `But(pattern[, options], fn)`
-
-Alias of `defineStep`.
 
 ---
 
