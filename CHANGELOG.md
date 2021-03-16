@@ -22,7 +22,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Fixed
 
 * Fix types for hook functions so they can return e.g. `'skipped'` ([#1542](https://github.com/cucumber/cucumber-js/pull/1542))
-* Fixed API reference for `And` and `But` methods ([#1611](https://github.com/cucumber/cucumber-js/pull/1611))
 
 ## [7.0.0] (2020-12-21)
 
