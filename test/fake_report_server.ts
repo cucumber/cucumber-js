@@ -34,7 +34,9 @@ export default class FakeReportServer {
         // TODO: remove temporary debug
         console.error('FakeServer::Res.end. Error?: ', err)
         if (doesHaveValue(err)) return res.status(500).end(err.stack)
-        res.end('Do not display this response')
+        setTimeout(() => {
+          res.end('Do not display this response')
+        }, Math.random() * 10)
       })
     })
 
@@ -51,24 +53,23 @@ export default class FakeReportServer {
 
       res.setHeader('Location', `http://localhost:${port}/s3`)
       res.status(202)
-        .end(`┌──────────────────────────────────────────────────────────────────────────┐
+
+      setTimeout(() => {
+        res.end(`┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
 `)
+      }, Math.random() * 10)
     })
 
     this.server = http.createServer(app)
 
     this.server.on('connection', (socket) => {
       this.sockets.add(socket)
-      socket.on('close', () => {
-        // TODO: remove temporary debug
-        console.error('FakeServer on close deleting sockets')
-        this.sockets.delete(socket)
-      })
+      socket.on('close', () => this.sockets.delete(socket))
     })
   }
 
