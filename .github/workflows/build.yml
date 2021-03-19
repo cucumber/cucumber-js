@@ -14,6 +14,8 @@ jobs:
           - ubuntu-latest
           - windows-latest
         node-version: [10.x, 12.x, 14.x, 15.x]
+      fail-fast: false
+
     steps:
     - uses: actions/checkout@v2
     - name: with Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
