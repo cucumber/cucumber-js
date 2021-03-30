@@ -36,7 +36,7 @@ async function testAssembleTestCases(options: IRequest): Promise<IResponse> {
   return { envelopes, result }
 }
 
-describe('PickleRunner', () => {
+describe('assembleTestCases', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
@@ -67,53 +67,60 @@ describe('PickleRunner', () => {
       })
 
       // Act
-      const { envelopes } = await testAssembleTestCases({
+      const { envelopes, result } = await testAssembleTestCases({
         gherkinDocument,
         pickles,
         supportCodeLibrary,
       })
 
+      const testCase1: messages.ITestCase = {
+        id: '0',
+        pickleId: pickles[0].id,
+        testSteps: [
+          {
+            id: '1',
+            pickleStepId: pickles[0].steps[0].id,
+            stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+            stepMatchArgumentsLists: [
+              {
+                stepMatchArguments: [],
+              },
+            ],
+          },
+        ],
+      }
+
+      const testCase2: messages.ITestCase = {
+        id: '2',
+        pickleId: pickles[1].id,
+        testSteps: [
+          {
+            id: '3',
+            pickleStepId: pickles[1].steps[0].id,
+            stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+            stepMatchArgumentsLists: [
+              {
+                stepMatchArguments: [],
+              },
+            ],
+          },
+        ],
+      }
+
       // Assert
       expect(envelopes).to.eql([
         messages.Envelope.fromObject({
-          testCase: {
-            id: '0',
-            pickleId: pickles[0].id,
-            testSteps: [
-              {
-                id: '1',
-                pickleStepId: pickles[0].steps[0].id,
-                stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                stepMatchArgumentsLists: [
-                  {
-                    stepMatchArguments: [],
-                  },
-                ],
-              },
-            ],
-          },
+          testCase: testCase1,
         }),
         messages.Envelope.fromObject({
-          testCase: {
-            id: '2',
-            pickleId: pickles[1].id,
-            testSteps: [
-              {
-                id: '3',
-                pickleStepId: pickles[1].steps[0].id,
-                stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                stepMatchArgumentsLists: [
-                  {
-                    stepMatchArguments: [],
-                  },
-                ],
-              },
-            ],
-          },
+          testCase: testCase2,
         }),
       ])
 
-      // TODO assert on result map
+      expect(result).to.eql({
+        [pickles[0].id]: testCase1,
+        [pickles[1].id]: testCase2,
+      })
     })
   })
 })

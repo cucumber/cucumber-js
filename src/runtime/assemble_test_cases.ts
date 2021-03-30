@@ -28,12 +28,7 @@ export interface ISupportCodeFilterOptionsForTestStep {
   pickleStep: messages.Pickle.IPickleStep
 }
 
-export interface IAssembledTestCase {
-  pickleId: string
-  testCaseId: string
-}
-
-export declare type IAssembledTestCasesMap = Record<string, IAssembledTestCase>
+export declare type IAssembledTestCasesMap = Record<string, messages.ITestCase>
 
 export interface IAssembleTestCasesOptions {
   eventBroadcaster: EventEmitter
@@ -90,6 +85,7 @@ export async function assembleTestCases({
       'envelope',
       messages.Envelope.fromObject({ testCase })
     )
+    result[pickleId] = testCase
   }
   return result
 }
