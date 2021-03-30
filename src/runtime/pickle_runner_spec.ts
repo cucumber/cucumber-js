@@ -136,77 +136,6 @@ describe('PickleRunner', () => {
       })
     })
 
-    describe('with a parameterised step', () => {
-      it('emits stepMatchArgumentLists correctly within the testCase message', async () => {
-        // Arrange
-        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step with {int} and {string} parameters', function () {
-            clock.tick(1)
-          })
-        })
-        const {
-          gherkinDocument,
-          pickles: [pickle],
-        } = await parse({
-          data: [
-            'Feature: a',
-            'Scenario: b',
-            'Given a step with 1 and "foo" parameters',
-          ].join('\n'),
-          uri: 'a.feature',
-        })
-
-        // Act
-        const { envelopes } = await testPickleRunner({
-          gherkinDocument,
-          pickle,
-          supportCodeLibrary,
-        })
-
-        expect(
-          envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
-        ).to.deep.eq([
-          messages.TestCase.TestStep.StepMatchArgumentsList.fromObject({
-            stepMatchArguments: [
-              {
-                group: {
-                  children: [],
-                  start: 12,
-                  value: '1',
-                },
-                parameterTypeName: 'int',
-              },
-              {
-                group: {
-                  children: [
-                    {
-                      children: [
-                        {
-                          children: [],
-                        },
-                      ],
-                      start: 19,
-                      value: 'foo',
-                    },
-                    {
-                      children: [
-                        {
-                          children: [],
-                        },
-                      ],
-                    },
-                  ],
-                  start: 18,
-                  value: '"foo"',
-                },
-                parameterTypeName: 'string',
-              },
-            ],
-          }),
-        ])
-      })
-    })
-
     describe('with a failing step', () => {
       it('emits and returns failing results', async () => {
         // Arrange
@@ -497,41 +426,9 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(9)
-        expect(envelopes[0]).to.eql(
-          messages.Envelope.fromObject({
-            testCase: {
-              id: '0',
-              pickleId: pickle.id,
-              testSteps: [
-                {
-                  id: '1',
-                  hookId: [
-                    supportCodeLibrary.beforeTestCaseHookDefinitions[0].id,
-                  ],
-                },
-                {
-                  id: '2',
-                  pickleStepId: pickle.steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-                {
-                  id: '3',
-                  hookId: [
-                    supportCodeLibrary.afterTestCaseHookDefinitions[0].id,
-                  ],
-                },
-              ],
-            },
-          })
-        )
+        expect(envelopes).to.have.lengthOf(8)
         expect(result).to.eql(
-          envelopes[7].testStepFinished.testStepResult.status
+          envelopes[6].testStepFinished.testStepResult.status
         )
       })
     })
@@ -564,29 +461,9 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[0]).to.eql(
-          messages.Envelope.fromObject({
-            testCase: {
-              id: '0',
-              pickleId: pickle.id,
-              testSteps: [
-                {
-                  id: '1',
-                  pickleStepId: pickle.steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          })
-        )
+        expect(envelopes).to.have.lengthOf(4)
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })

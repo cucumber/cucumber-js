@@ -5,7 +5,7 @@ import {
   assembleTestCases,
   IAssembledTestCasesMap,
 } from './assemble_test_cases'
-import { afterEach, beforeEach, describe } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
@@ -120,6 +120,182 @@ describe('assembleTestCases', () => {
       expect(result).to.eql({
         [pickles[0].id]: testCase1,
         [pickles[1].id]: testCase2,
+      })
+    })
+
+    describe('with a parameterised step', () => {
+      it('emits stepMatchArgumentLists correctly within the testCase message', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a step with {int} and {string} parameters', function () {
+            clock.tick(1)
+          })
+        })
+        const { gherkinDocument, pickles } = await parse({
+          data: [
+            'Feature: a',
+            'Scenario: b',
+            'Given a step with 1 and "foo" parameters',
+          ].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes } = await testAssembleTestCases({
+          gherkinDocument,
+          pickles,
+          supportCodeLibrary,
+        })
+
+        expect(
+          envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
+        ).to.deep.eq([
+          messages.TestCase.TestStep.StepMatchArgumentsList.fromObject({
+            stepMatchArguments: [
+              {
+                group: {
+                  children: [],
+                  start: 12,
+                  value: '1',
+                },
+                parameterTypeName: 'int',
+              },
+              {
+                group: {
+                  children: [
+                    {
+                      children: [
+                        {
+                          children: [],
+                        },
+                      ],
+                      start: 19,
+                      value: 'foo',
+                    },
+                    {
+                      children: [
+                        {
+                          children: [],
+                        },
+                      ],
+                    },
+                  ],
+                  start: 18,
+                  value: '"foo"',
+                },
+                parameterTypeName: 'string',
+              },
+            ],
+          }),
+        ])
+      })
+    })
+
+    describe('with test case hooks', () => {
+      it('emits the expected envelopes and returns a skipped result', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, Before, After }) => {
+            Given('a step', function () {
+              clock.tick(1)
+            })
+            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          }
+        )
+        const { gherkinDocument, pickles } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes } = await testAssembleTestCases({
+          gherkinDocument,
+          pickles,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(envelopes[0]).to.eql(
+          messages.Envelope.fromObject({
+            testCase: {
+              id: '0',
+              pickleId: pickles[0].id,
+              testSteps: [
+                {
+                  id: '1',
+                  hookId: [
+                    supportCodeLibrary.beforeTestCaseHookDefinitions[0].id,
+                  ],
+                },
+                {
+                  id: '2',
+                  pickleStepId: pickles[0].steps[0].id,
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
+                },
+                {
+                  id: '3',
+                  hookId: [
+                    supportCodeLibrary.afterTestCaseHookDefinitions[0].id,
+                  ],
+                },
+              ],
+            },
+          })
+        )
+      })
+    })
+
+    describe('with step hooks', () => {
+      it('emits the expected envelopes and returns a skipped result', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, BeforeStep, AfterStep }) => {
+            Given('a step', function () {
+              clock.tick(1)
+            })
+            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          }
+        )
+        const { gherkinDocument, pickles } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes } = await testAssembleTestCases({
+          gherkinDocument,
+          pickles,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(envelopes[0]).to.eql(
+          messages.Envelope.fromObject({
+            testCase: {
+              id: '0',
+              pickleId: pickles[0].id,
+              testSteps: [
+                {
+                  id: '1',
+                  pickleStepId: pickles[0].steps[0].id,
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          })
+        )
       })
     })
   })
