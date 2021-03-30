@@ -103,24 +103,6 @@ describe('PickleRunner', () => {
         // Assert
         expect(envelopes).to.eql([
           messages.Envelope.fromObject({
-            testCase: {
-              id: '0',
-              pickleId: pickle.id,
-              testSteps: [
-                {
-                  id: '1',
-                  pickleStepId: pickle.steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          }),
-          messages.Envelope.fromObject({
             testCaseStarted: {
               attempt: 0,
               id: '2',
@@ -256,8 +238,8 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
           failingTestResult
         )
         expect(result).to.eql(Status.FAILED)
@@ -291,8 +273,8 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             message,
             status: Status.AMBIGUOUS,
@@ -303,7 +285,7 @@ describe('PickleRunner', () => {
           })
         )
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })
@@ -328,8 +310,8 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.UNDEFINED,
             duration: {
@@ -339,7 +321,7 @@ describe('PickleRunner', () => {
           })
         )
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })
@@ -375,24 +357,6 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.eql([
-          messages.Envelope.fromObject({
-            testCase: {
-              id: '0',
-              pickleId: pickle.id,
-              testSteps: [
-                {
-                  id: '1',
-                  pickleStepId: pickle.steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          }),
           messages.Envelope.fromObject({
             testCaseStarted: {
               attempt: 0,
@@ -489,8 +453,8 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
           messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.SKIPPED,
             duration: {
@@ -500,7 +464,7 @@ describe('PickleRunner', () => {
           })
         )
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })
