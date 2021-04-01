@@ -212,14 +212,13 @@
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
 
-"@cucumber/gherkin@17.0.2":
-  version "17.0.2"
-  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-17.0.2.tgz#c6644ecb5c2c4671360d9e5affa2a00e7897ab78"
-  integrity sha512-U8ZxbYVLEXqUy4Fx9BJ5ncIzXz/eVg+fKV2F8B1t5f6eDMgPQ2Aq3M8gy3yE422OAuJ+RFRuezNtuEbpmf2r4g==
+"@cucumber/gherkin@18.0.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-18.0.0.tgz#af51ca7173aa7818ed1aa50e3477d9bbe9d1c954"
+  integrity sha512-Az+VD2NyOM2ZjzuVGrpJTl1VDv1j50graLtjUp7GfGYN+wMMV+jPgKV5fGYQeocjDnJYYlKymiUZzxcxvStJmg==
   dependencies:
-    "@cucumber/messages" "^14.0.1"
-    commander "^7.1.0"
-    source-map-support "^0.5.19"
+    "@cucumber/message-streams" "^1.0.0"
+    "@cucumber/messages" "^15.0.0"
 
 "@cucumber/html-formatter@12.0.0":
   version "12.0.0"
@@ -229,10 +228,27 @@
     "@cucumber/messages" "^14.0.1"
     commander "^7.0.0"
 
+"@cucumber/message-streams@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/message-streams/-/message-streams-1.0.0.tgz#5162e65df51eb51e0aa484ef0ed46200b19a699a"
+  integrity sha512-i1Jx0EDnE+3Na82UxJ2VqE6aWWJJ+1H+3ax+SYgHmCmlUDJiJzx9dHxAAO3GISrM/RYUAuqMGHNAMnIcxkL3Pw==
+  dependencies:
+    "@cucumber/messages" "^15.0.0"
+    protobufjs "^6.10.2"
+
 "@cucumber/messages@14.0.1", "@cucumber/messages@^14.0.0", "@cucumber/messages@^14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-14.0.1.tgz#cb2abaa64bd9b4a3ddf0913ff17cafe5b901051c"
   integrity sha512-uCD/yP7P5em0KP1r59x6JayAxH7n8QXU9FbC3H8XMosZuM9z4PVLeU5pdJRkkCLFXqjpAZ3LJw65hlYDrBujEQ==
+  dependencies:
+    "@types/uuid" "^8.3.0"
+    protobufjs "^6.10.2"
+    uuid "^8.3.2"
+
+"@cucumber/messages@^15.0.0":
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-15.0.0.tgz#58e6541a6c21c4f0d3d4a82c24bbbfe72a6ff94c"
+  integrity sha512-LtxzSCRmYZTAKO6ucAcMflz0u90l2fev539OG+EioJ26F14KmmtxZwGabfjTxLf8NgyKeWsO8TGI2G3z4Kjr+A==
   dependencies:
     "@types/uuid" "^8.3.0"
     protobufjs "^6.10.2"
@@ -1269,11 +1285,6 @@ commander@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.0.0.tgz#3e2bbfd8bb6724760980988fb5b22b7ee6b71ab2"
   integrity sha512-ovx/7NkTrnPuIV8sqk/GjUIIM1+iUQeqA3ye2VNpq9sVoiZsooObWlQy+OPWGI17GDaEoybuAGJm6U8yC077BA==
-
-commander@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-7.1.0.tgz#f2eaecf131f10e36e07d894698226e36ae0eb5ff"
-  integrity sha512-pRxBna3MJe6HKnBGsDyMv8ETbptw3axEdYHoqNh7gu5oDcew8fs0xnivZGm06Ogk8zGAJ9VX+OPEr2GXEQK4dg==
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -3885,7 +3896,7 @@ sorted-object@^2.0.0:
   resolved "https://registry.yarnpkg.com/sorted-object/-/sorted-object-2.0.1.tgz#7d631f4bd3a798a24af1dffcfbfe83337a5df5fc"
   integrity sha1-fWMfS9OnmKJK8d/8+/6DM3pd9fw=
 
-source-map-support@^0.5.17, source-map-support@^0.5.19:
+source-map-support@^0.5.17:
   version "0.5.19"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
