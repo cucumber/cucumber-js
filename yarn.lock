@@ -229,7 +229,16 @@
     "@cucumber/messages" "^14.0.1"
     commander "^7.0.0"
 
-"@cucumber/messages@14.0.1", "@cucumber/messages@^14.0.0", "@cucumber/messages@^14.0.1":
+"@cucumber/messages@15.0.0":
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-15.0.0.tgz#58e6541a6c21c4f0d3d4a82c24bbbfe72a6ff94c"
+  integrity sha512-LtxzSCRmYZTAKO6ucAcMflz0u90l2fev539OG+EioJ26F14KmmtxZwGabfjTxLf8NgyKeWsO8TGI2G3z4Kjr+A==
+  dependencies:
+    "@types/uuid" "^8.3.0"
+    protobufjs "^6.10.2"
+    uuid "^8.3.2"
+
+"@cucumber/messages@^14.0.0", "@cucumber/messages@^14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-14.0.1.tgz#cb2abaa64bd9b4a3ddf0913ff17cafe5b901051c"
   integrity sha512-uCD/yP7P5em0KP1r59x6JayAxH7n8QXU9FbC3H8XMosZuM9z4PVLeU5pdJRkkCLFXqjpAZ3LJw65hlYDrBujEQ==
