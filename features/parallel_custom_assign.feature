@@ -1,5 +1,6 @@
 Feature: Running scenarios in parallel with custom assignment
 
+  @spawn
   Scenario: Bad parallel assignment helper uses 1 worker
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
@@ -19,11 +20,11 @@ Feature: Running scenarios in parallel with custom assignment
           Then value is 2
       """
     When I run cucumber-js with `--parallel 2`
-    Then it passes
-    And tandem tests verified
+    Then the error output contains the text:
     """
-    expect.fail('No tests should have executed at the same time')
+    WARNING: All workers went idle 2 time(s). Consider revising handler passed to setParallelCanAssign.
     """
+    And no tests ran in tandem
 
   Scenario: Both works run tests when a valid assignment helper is used
     Given a file named "features/step_definitions/cucumber_steps.js" with:
@@ -132,7 +133,4 @@ Feature: Running scenarios in parallel with custom assignment
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
-    And tandem tests verified
-    """
-    expect(_pickle1.tags[0].name).to.not.eq(_pickle2.tags[0].name)
-    """
+    And tandem tests have unique first tag
