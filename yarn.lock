@@ -229,7 +229,7 @@
     "@cucumber/messages" "^14.0.1"
     commander "^7.0.0"
 
-"@cucumber/messages@14.0.1", "@cucumber/messages@^14.0.0", "@cucumber/messages@^14.0.1":
+"@cucumber/messages@14.0.1", "@cucumber/messages@^14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-14.0.1.tgz#cb2abaa64bd9b4a3ddf0913ff17cafe5b901051c"
   integrity sha512-uCD/yP7P5em0KP1r59x6JayAxH7n8QXU9FbC3H8XMosZuM9z4PVLeU5pdJRkkCLFXqjpAZ3LJw65hlYDrBujEQ==
@@ -238,12 +238,21 @@
     protobufjs "^6.10.2"
     uuid "^8.3.2"
 
-"@cucumber/query@8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-8.0.0.tgz#58e2bf98a2025a2bb3fa79ae56d27496c092eb5e"
-  integrity sha512-dCe3OiurIQZa1rppq/g0kweT6y0c6+XxtsCuNvL0qvqICYz9ZyoXX9wKOMt0s6HD9mNVLm00XI078sHPqgylUw==
+"@cucumber/messages@^15.0.0":
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-15.0.0.tgz#58e6541a6c21c4f0d3d4a82c24bbbfe72a6ff94c"
+  integrity sha512-LtxzSCRmYZTAKO6ucAcMflz0u90l2fev539OG+EioJ26F14KmmtxZwGabfjTxLf8NgyKeWsO8TGI2G3z4Kjr+A==
   dependencies:
-    "@cucumber/messages" "^14.0.0"
+    "@types/uuid" "^8.3.0"
+    protobufjs "^6.10.2"
+    uuid "^8.3.2"
+
+"@cucumber/query@9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-9.0.0.tgz#7b9276551590f941ccb97d08619fbadd8b223bb1"
+  integrity sha512-IRvurpJsn0VBPWA9C093+8gSYOY/RmvLSQ0P9BALhctLD+6CaFlTRw+PoBUFCogzOBtAIDL3HhnLsGC/yJ9rag==
+  dependencies:
+    "@cucumber/messages" "^15.0.0"
     "@teppeis/multimaps" "^2.0.0"
 
 "@cucumber/tag-expressions@3.0.1":
