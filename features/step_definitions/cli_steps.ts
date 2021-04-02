@@ -38,6 +38,15 @@ When(
 )
 
 When(
+  /^I run cucumber-js with env `(|.+)`$/,
+  { timeout: 10000 },
+  async function (this: World, envString: string) {
+    const env = this.parseEnvString(envString)
+    return await this.run(this.localExecutablePath, [], env)
+  }
+)
+
+When(
   /^I run cucumber-js with all formatters(?: and `(|.+)`)?$/,
   { timeout: 10000 },
   async function (this: World, args: string) {
@@ -67,10 +76,14 @@ When(
 Then(/^it passes$/, () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
 
 Then(/^it fails$/, function (this: World) {
-  const actualCode = doesHaveValue(this.lastRun.error)
+  const actualCode: number = doesHaveValue(this.lastRun.error)
     ? this.lastRun.error.code
     : 0
-  expect(actualCode).not.to.eql(0)
+
+  expect(actualCode).not.to.eql(
+    0,
+    `Expected non-zero exit status, but got ${actualCode}`
+  )
   this.verifiedLastRunError = true
 })
 
