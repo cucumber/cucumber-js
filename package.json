@@ -242,7 +242,7 @@
     "express": "4.17.1",
     "fs-extra": "9.1.0",
     "mocha": "8.3.2",
-    "mustache": "4.1.0",
+    "mustache": "4.2.0",
     "ndjson-parse": "1.0.4",
     "nyc": "15.1.0",
     "prettier": "2.2.1",
