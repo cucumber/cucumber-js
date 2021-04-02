@@ -277,13 +277,6 @@
     "unit-test": "mocha 'src/**/*_spec.ts'",
     "update-dependencies": "npx npm-check-updates --upgrade"
   },
-  "tsd": {
-    "compilerOptions": {
-      "types": [
-        "long"
-      ]
-    }
-  },
   "bin": {
     "cucumber-js": "./bin/cucumber-js"
   },
