@@ -246,10 +246,10 @@
     "@cucumber/messages" "^14.0.0"
     "@teppeis/multimaps" "^2.0.0"
 
-"@cucumber/tag-expressions@2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@cucumber/tag-expressions/-/tag-expressions-2.0.4.tgz#ad4f43bb567e5046ada6e94ad681087c536dc123"
-  integrity sha512-HiNncmg/gS34yNpMFAeoIyUHqLFFN92MXIj3rs+BKo7vn16SxvYsigDvd2PAHyjSIThsp9TO1XDtl0SLKVB58g==
+"@cucumber/tag-expressions@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/tag-expressions/-/tag-expressions-3.0.1.tgz#ca0702342bc4234ad73d9de3f1bf97461c3b5eb7"
+  integrity sha512-OGCXaJ1BQXmQ5b9pw+JYsBGumK2/LPZiLmbj1o1JFVeSNs2PY8WPQFSyXrskhrHz5Nd/6lYg7lvGMtFHOncC4w==
 
 "@eslint/eslintrc@^0.4.0":
   version "0.4.0"
