@@ -230,13 +230,14 @@
     "@cucumber/message-streams" "^1.0.0"
     "@cucumber/messages" "^15.0.0"
 
-"@cucumber/html-formatter@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-12.0.0.tgz#a5a0bab1ddc1a391043083fbab1683b520ba8c39"
-  integrity sha512-OdENyDmYiNUQ/+gRPfTGJB6L9KAKx+f9KRyt56FkQaPQCaJKi3KI5PB3SIp1GAP4juha85xq6cF6hPTx9eXPgg==
+"@cucumber/html-formatter@13.0.0":
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-13.0.0.tgz#ac6abe30813e455efe5e19e01daa00cf2d9fe32b"
+  integrity sha512-+gNLbgeti/5UXm2bVYvtjgdlEiY6r1WsNWChezXE6LJsviy7HrA6WWbwFWFSxs3CLgee5Us5Pe8JonQAnFEiBw==
   dependencies:
-    "@cucumber/messages" "^14.0.1"
-    commander "^7.0.0"
+    "@cucumber/messages" "^15.0.0"
+    commander "^7.2.0"
+    source-map-support "^0.5.19"
 
 "@cucumber/message-streams@^1.0.0":
   version "1.0.0"
@@ -250,15 +251,6 @@
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-15.0.0.tgz#58e6541a6c21c4f0d3d4a82c24bbbfe72a6ff94c"
   integrity sha512-LtxzSCRmYZTAKO6ucAcMflz0u90l2fev539OG+EioJ26F14KmmtxZwGabfjTxLf8NgyKeWsO8TGI2G3z4Kjr+A==
-  dependencies:
-    "@types/uuid" "^8.3.0"
-    protobufjs "^6.10.2"
-    uuid "^8.3.2"
-
-"@cucumber/messages@^14.0.1":
-  version "14.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-14.0.1.tgz#cb2abaa64bd9b4a3ddf0913ff17cafe5b901051c"
-  integrity sha512-uCD/yP7P5em0KP1r59x6JayAxH7n8QXU9FbC3H8XMosZuM9z4PVLeU5pdJRkkCLFXqjpAZ3LJw65hlYDrBujEQ==
   dependencies:
     "@types/uuid" "^8.3.0"
     protobufjs "^6.10.2"
