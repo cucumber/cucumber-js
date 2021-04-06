@@ -169,12 +169,12 @@
   },
   "dependencies": {
     "@cucumber/create-meta": "4.0.0",
-    "@cucumber/cucumber-expressions": "12.0.0",
+    "@cucumber/cucumber-expressions": "12.0.1",
     "@cucumber/gherkin": "18.0.0",
     "@cucumber/gherkin-streams": "1.0.0",
     "@cucumber/html-formatter": "12.0.0",
     "@cucumber/messages": "15.0.0",
-    "@cucumber/query": "9.0.1",
+    "@cucumber/query": "9.0.2",
     "@cucumber/tag-expressions": "3.0.1",
     "assertion-error-formatter": "3.0.0",
     "bluebird": "^3.7.2",
@@ -204,7 +204,7 @@
     "verror": "^1.10.0"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "3.0.0",
+    "@cucumber/compatibility-kit": "4.0.1",
     "@sinonjs/fake-timers": "7.0.2",
     "@types/bluebird": "3.5.33",
     "@types/chai": "4.2.15",

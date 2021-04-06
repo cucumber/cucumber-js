@@ -191,10 +191,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cucumber/compatibility-kit@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/compatibility-kit/-/compatibility-kit-3.0.0.tgz#adc7521d188e550806ee3a8fddd51dc392989e83"
-  integrity sha512-WEwQv58ZKXw6rtYqTN9b0+vIIGb1c/fkw8H6lm/z+gO/x1WuqKMJkbMc1iImuQJ7NwsnXfiuvTGl/Fn5N0mnjQ==
+"@cucumber/compatibility-kit@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/compatibility-kit/-/compatibility-kit-4.0.1.tgz#566f95f2b1ca9f9b8c10ef463e9558ee03a393a4"
+  integrity sha512-M6UPb4wnrk8Ue2tb0rH89kddFPO0Ccsp7Gkz1ruytQaFvIWqnlyjpadY3YdXjH3bkIisbGXK+djSh3PfwRZ8ew==
 
 "@cucumber/create-meta@4.0.0":
   version "4.0.0"
@@ -203,10 +203,10 @@
   dependencies:
     "@cucumber/messages" "^15.0.0"
 
-"@cucumber/cucumber-expressions@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber-expressions/-/cucumber-expressions-12.0.0.tgz#f63a576b828b99ffed6133e6c3b0deaf138eb00e"
-  integrity sha512-FxegCKKW2w1k9OS1Lpt3IhUrLmVKYjroQY8DiRd2e/r0Ygal6WCpljgMiRSh56P2hYkAtrkgFHgDwleNAYjs1Q==
+"@cucumber/cucumber-expressions@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber-expressions/-/cucumber-expressions-12.0.1.tgz#7ab8936adb82d2bb45b86baa494e4e6e3dc9839f"
+  integrity sha512-ANzu80Mw9GzTQ5ImuLdBtHnQfG8MghVvvtud4GHBvlQ4Wzu1SvkUj3RsdtW9w3p7mATSw8SiSFj6Jel3cEWN6Q==
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
 
@@ -264,10 +264,10 @@
     protobufjs "^6.10.2"
     uuid "^8.3.2"
 
-"@cucumber/query@9.0.1":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-9.0.1.tgz#e977a3f5f9943fc2f5dc8c8a5d2d28207be54aab"
-  integrity sha512-gvroI+S5YDRX+Eq2U8hQZsXBhAZx3bsLsaqJUh5eRt9hz5QhIS7iplUtCsz69uwi6EierrDnFac8rHIAheu2YA==
+"@cucumber/query@9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@cucumber/query/-/query-9.0.2.tgz#2b7ef65df4bba58f14d9415b5eb167fde10e670e"
+  integrity sha512-YrOSZQzWWVle+8B57zaSFfQt9jYTPDamBnwdc1EGKI1sXyALjHnGgCLXUFH/HjDieQkXIh2y+MHJ51t2u9ys1A==
   dependencies:
     "@cucumber/messages" "^15.0.0"
     "@teppeis/multimaps" "^2.0.0"
