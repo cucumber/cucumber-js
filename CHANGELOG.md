@@ -12,7 +12,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 
 - Support attachments that are already base64-encoded via a prefix on the MIME type e.g. `this.attach(base64String, 'base64:image/png')` ([#1552](https://github.com/cucumber/cucumber-js/pull/1552))
-- Support tagged rules (see <https://github.com/cucumber/cucumber/issues/1123>)
+- Support tagged rules ([cucumber#1123](https://github.com/cucumber/cucumber/issues/1123))
 
 ### Changed
 
@@ -24,6 +24,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * Fix types for hook functions so they can return e.g. `'skipped'` ([#1542](https://github.com/cucumber/cucumber-js/pull/1542))
 * Display the response of the reports server when an error is returned before failing. ([#1608](https://github.com/cucumber/cucumber-js/pull/1608))
+* Remove unnecessary implicit dependency on `long` package ([cucumber#1313](https://github.com/cucumber/cucumber/pull/1313))
+* Remove unnecessary transitive dependencies on `react` etc ([cucumber#1308](https://github.com/cucumber/cucumber/pull/1308))
 
 ## [7.0.0] (2020-12-21)
 
