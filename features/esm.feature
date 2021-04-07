@@ -3,11 +3,14 @@ Feature: ES modules support
   cucumber-js works with native ES modules, via a Cli flag `--esm`
 
   @esm
-  Scenario: native module syntax works when using --esm
+  Scenario Outline: native module syntax works when using --esm
     Given a file named "features/a.feature" with:
       """
       Feature:
-        Scenario:
+        Scenario: one
+          Given a step passes
+
+        Scenario: two
           Given a step passes
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
@@ -36,8 +39,12 @@ Feature: ES modules support
           }
       }
       """
-    When I run cucumber-js with `--esm --format ./custom-formatter.js --format-options '{"snippetSyntax": "./custom-snippet-syntax.js"}'`
+    When I run cucumber-js with `<options> --format ./custom-formatter.js --format-options '{"snippetSyntax": "./custom-snippet-syntax.js"}'`
     Then it passes
+    Examples:
+      | options            |
+      | --esm              |
+      | --esm --parallel 2 |
 
   @esm
   Scenario: .mjs support code files are matched by default when using --esm
