@@ -3,12 +3,12 @@ import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { ISupportCodeImporter } from './index'
+import { IUserCodeImporter } from './index'
 
 export default class ProfileLoader {
   constructor(
     private readonly directory: string,
-    private readonly importer: ISupportCodeImporter
+    private readonly importer: IUserCodeImporter
   ) {}
 
   async getDefinitions(): Promise<Dictionary<string>> {

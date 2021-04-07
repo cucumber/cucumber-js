@@ -53,13 +53,13 @@ interface IGetSupportCodeLibraryRequest {
   supportCodePaths: string[]
 }
 
-export type ISupportCodeImporter = (path: string) => Promise<any>
+export type IUserCodeImporter = (path: string) => Promise<any>
 
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
-  private importer: ISupportCodeImporter = importers.legacy
+  private importer: IUserCodeImporter = importers.legacy
 
   constructor({
     argv,

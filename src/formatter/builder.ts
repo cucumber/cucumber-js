@@ -20,11 +20,11 @@ import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
-import { ISupportCodeImporter } from '../cli'
+import { IUserCodeImporter } from '../cli'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
-  importer: ISupportCodeImporter
+  importer: IUserCodeImporter
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
   supportCodeLibrary: ISupportCodeLibrary
@@ -36,7 +36,7 @@ export interface IBuildOptions {
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
   parsedArgvOptions: IParsedArgvFormatOptions
-  importer: ISupportCodeImporter
+  importer: IUserCodeImporter
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
@@ -69,7 +69,7 @@ const FormatterBuilder = {
   async getConstructorByType(
     type: string,
     cwd: string,
-    importer: ISupportCodeImporter
+    importer: IUserCodeImporter
   ): Promise<typeof Formatter> {
     switch (type) {
       case 'json':
@@ -122,7 +122,7 @@ const FormatterBuilder = {
   async loadCustomFormatter(
     customFormatterPath: string,
     cwd: string,
-    importer: ISupportCodeImporter
+    importer: IUserCodeImporter
   ) {
     let CustomFormatter = customFormatterPath.startsWith(`.`)
       ? await importer(path.resolve(cwd, customFormatterPath))
