@@ -172,7 +172,7 @@ For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
 --require-module @babel/register
 ```
 
-This will effectivally call `require('@babel/register')` prior to requiring any support files.
+This will effectively call `require('@babel/register')` prior to requiring any support files.
 
 ### Non JS files
 

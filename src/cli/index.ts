@@ -24,10 +24,11 @@ import { IdGenerator } from '@cucumber/messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
-import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
+import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
+import { Writable } from 'stream'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const importers = require('../../importers')
@@ -103,14 +104,26 @@ export default class Cli {
               headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
             }
 
-            stream = new HttpStream(outputTo, 'GET', headers, (content) =>
-              console.error(content)
-            )
+            stream = new HttpStream(outputTo, 'GET', headers)
+            const readerStream = new Writable({
+              objectMode: true,
+              write: function (responseBody: string, encoding, writeCallback) {
+                console.error(responseBody)
+                writeCallback()
+              },
+            })
+            stream.pipe(readerStream)
           } else {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
             stream = fs.createWriteStream(null, { fd })
           }
         }
+
+        stream.on('error', (error) => {
+          console.error(error.message)
+          process.exit(1)
+        })
+
         const typeOptions = {
           cwd: this.cwd,
           eventBroadcaster,
