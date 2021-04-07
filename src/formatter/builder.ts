@@ -110,7 +110,7 @@ const FormatterBuilder = {
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = await importer(fullSyntaxPath)
+      Syntax = await importer(fullSyntaxPath, true)
       Syntax = FormatterBuilder.resolveConstructor(Syntax)
     }
     return new StepDefinitionSnippetBuilder({
@@ -125,7 +125,7 @@ const FormatterBuilder = {
     importer: IUserCodeImporter
   ) {
     let CustomFormatter = customFormatterPath.startsWith(`.`)
-      ? await importer(path.resolve(cwd, customFormatterPath))
+      ? await importer(path.resolve(cwd, customFormatterPath), true)
       : await importer(customFormatterPath)
     CustomFormatter = FormatterBuilder.resolveConstructor(CustomFormatter)
     if (doesHaveValue(CustomFormatter)) {

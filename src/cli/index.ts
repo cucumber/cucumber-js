@@ -53,7 +53,10 @@ interface IGetSupportCodeLibraryRequest {
   supportCodePaths: string[]
 }
 
-export type IUserCodeImporter = (path: string) => Promise<any>
+export type IUserCodeImporter = (
+  path: string,
+  isFilePath?: boolean
+) => Promise<any>
 
 export default class Cli {
   private readonly argv: string[]
@@ -168,7 +171,7 @@ export default class Cli {
     }
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     for (const codePath of supportCodePaths) {
-      await this.importer(codePath)
+      await this.importer(codePath, true)
     }
     return supportCodeLibraryBuilder.finalize()
   }

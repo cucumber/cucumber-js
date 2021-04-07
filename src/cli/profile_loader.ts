@@ -17,7 +17,7 @@ export default class ProfileLoader {
     if (!exists) {
       return {}
     }
-    const definitions = await this.importer(definitionsFilePath)
+    const definitions = await this.importer(definitionsFilePath, true)
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }
