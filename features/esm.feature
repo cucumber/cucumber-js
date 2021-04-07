@@ -39,6 +39,23 @@ Feature: ES modules support
     When I run cucumber-js with `--esm --format ./custom-formatter.js --format-options '{"snippetSyntax": "./custom-snippet-syntax.js"}'`
     Then it passes
 
+  @esm
+  Scenario: .mjs support code files are matched by default when using --esm
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario:
+          Given a step passes
+      """
+    And a file named "features/step_definitions/cucumber_steps.mjs" with:
+      """
+      import {Given} from '@cucumber/cucumber'
+
+      Given(/^a step passes$/, function() {});
+      """
+    When I run cucumber-js with `--esm`
+    Then it passes
+
   Scenario: native module syntax doesn't work without --esm
     Given a file named "features/a.feature" with:
       """
