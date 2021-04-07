@@ -11,6 +11,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+* Experimental support for native ES modules via the `--esm` flag ([#1589](https://github.com/cucumber/cucumber-js/pull/1589))
+
 ### Changed
 
 ### Deprecated
