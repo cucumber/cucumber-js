@@ -28,7 +28,15 @@ Feature: ES modules support
 
       export default class CustomFormatter extends SummaryFormatter {}
       """
-    When I run cucumber-js with `--esm --format ./custom-formatter.js`
+    And a file named "custom-snippet-syntax.js" with:
+      """
+      export default class CustomSnippetSyntax {
+          build(opts) {
+              return 'hello world'
+          }
+      }
+      """
+    When I run cucumber-js with `--esm --format ./custom-formatter.js --format-options '{"snippetSyntax": "./custom-snippet-syntax.js"}'`
     Then it passes
 
   Scenario: native module syntax doesn't work without --esm
