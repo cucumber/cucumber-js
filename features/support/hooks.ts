@@ -48,9 +48,6 @@ Before('@esm', function (this: World) {
   if (Number(majorVersion) < 12) {
     return 'skipped'
   }
-  if (process.platform === 'win32') {
-    return 'skipped'
-  }
   fsExtra.writeJSONSync(path.join(this.tmpDir, 'package.json'), {
     name: 'feature-test-pickle',
     type: 'module',
