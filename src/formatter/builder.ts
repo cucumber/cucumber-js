@@ -20,7 +20,7 @@ import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
-import createRequire from 'create-require'
+import { ISupportCodeImporter } from '../cli'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -35,16 +35,18 @@ export interface IBuildOptions {
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
   parsedArgvOptions: IParsedArgvFormatOptions
+  importer: ISupportCodeImporter
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
 }
 
 const FormatterBuilder = {
-  build(type: string, options: IBuildOptions): Formatter {
-    const FormatterConstructor = FormatterBuilder.getConstructorByType(
+  async build(type: string, options: IBuildOptions): Promise<Formatter> {
+    const FormatterConstructor = await FormatterBuilder.getConstructorByType(
       type,
-      options.cwd
+      options.cwd,
+      options.importer
     )
     const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
     const snippetBuilder = FormatterBuilder.getStepDefinitionSnippetBuilder({
@@ -60,7 +62,11 @@ const FormatterBuilder = {
     })
   },
 
-  getConstructorByType(type: string, cwd: string): typeof Formatter {
+  async getConstructorByType(
+    type: string,
+    cwd: string,
+    importer: ISupportCodeImporter
+  ): Promise<typeof Formatter> {
     switch (type) {
       case 'json':
         return JsonFormatter
@@ -83,7 +89,7 @@ const FormatterBuilder = {
       case 'usage-json':
         return UsageJsonFormatter
       default:
-        return FormatterBuilder.loadCustomFormatter(type, cwd)
+        return await FormatterBuilder.loadCustomFormatter(type, cwd, importer)
     }
   },
 
@@ -107,8 +113,14 @@ const FormatterBuilder = {
     })
   },
 
-  loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    const CustomFormatter = createRequire(cwd)(customFormatterPath)
+  async loadCustomFormatter(
+    customFormatterPath: string,
+    cwd: string,
+    importer: ISupportCodeImporter
+  ) {
+    const CustomFormatter = customFormatterPath.startsWith(`.`)
+      ? await importer(path.resolve(cwd, customFormatterPath))
+      : await importer(customFormatterPath)
 
     if (typeof CustomFormatter === 'function') {
       return CustomFormatter

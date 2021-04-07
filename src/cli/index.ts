@@ -130,6 +130,7 @@ export default class Cli {
           eventDataCollector,
           log: stream.write.bind(stream),
           parsedArgvOptions: formatOptions,
+          importer: this.importer,
           stream,
           cleanup:
             stream === this.stdout
@@ -147,7 +148,7 @@ export default class Cli {
           )
           type = 'progress'
         }
-        return FormatterBuilder.build(type, typeOptions)
+        return await FormatterBuilder.build(type, typeOptions)
       }
     )
     return async function () {
