@@ -190,7 +190,7 @@ If you are using [ts-node](https://github.com/TypeStrong/ts-node):
 --require-module ts-node/register --require 'step-definitions/**/*.ts'
 ```
 
-> ⚠️ Some typescript setups uses `esnext` modules by default, 
+> ⚠️ Some TypeScript setups use `esnext` modules by default, 
 >   which doesn't marry well with Node. You may consider using commonjs instead.
 >   See how to add [extra configuration](#extra-configuration) below.
 
