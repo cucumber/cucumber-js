@@ -147,31 +147,35 @@ For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
 
 This will effectivally call `require('@babel/register')` prior to requiring any support files.
 
-### Typescript (and other non-JS files)
-
-If your files end with an extension other than `js`, make sure to also include the `--require` option to state the required support files.
-
-When using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
-
-```
---require-module @babel/register --require 'step-definitions/**/*.ts'
-```
-
-If not using babel you can use [ts-node](https://github.com/TypeStrong/ts-node):
-
-```
---require-module ts-node/register --require 'step-definitions/**/*.ts'
-```
-
-> ⚠️ Note the Extra Configuration section below for more required settings for this setup
-
-or for [CoffeeScript](https://www.npmjs.com/package/coffeescript):
+If your files end with an extension other than `js`, make sure to also include the `--require` option to state the required support files. For example, if using [CoffeeScript](https://www.npmjs.com/package/coffeescript):
 
 ```
 --require-module coffeescript/register --require 'features/**/*.coffee'
 ```
 
-#### Extra Configuration
+### Typescript
+
+#### With ts-node
+
+If you are using [ts-node](https://github.com/TypeStrong/ts-node):
+
+```
+--require-module ts-node/register --require 'step-definitions/**/*.ts'
+```
+
+> ⚠️ Some typescript setups uses `esnext` modules by default, 
+>   which doesn't marry well with Node. You may consider using commonjs instead.
+>   See how to add [extra configuration](#extra-configuration) below.
+
+#### With babel
+
+If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
+
+```
+--require-module @babel/register --require 'step-definitions/**/*.ts'
+```
+
+### Extra Configuration
 
 Sometimes the required module (say `@ts-node/register`) needs extra configuration. For example, you might want to configure it such that it prevents the compiled JS being written out to files, and pass some compiler options. In such cases, create a script (say, `tests.setup.js`):
 
@@ -179,8 +183,6 @@ Sometimes the required module (say `@ts-node/register`) needs extra configuratio
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: {
-    // Some typescript setups use `esnext` modules by default,
-    // which doesn't marry well with Node. So Use commonjs instead.
     "module": "commonjs",
   },
 });
