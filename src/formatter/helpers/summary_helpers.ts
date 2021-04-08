@@ -1,14 +1,10 @@
 import _ from 'lodash'
 import Duration from 'duration'
 import Status from '../../status'
-import {
-  addDurations,
-  durationToMilliseconds,
-  getZeroDuration,
-} from '../../time'
+import { addDurations, getZeroDuration } from '../../time'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import { messages } from 'cucumber-messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 
 const STATUS_REPORT_ORDER = [
   Status.FAILED,
@@ -22,19 +18,23 @@ const STATUS_REPORT_ORDER = [
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
+  testRunDuration: messages.IDuration
 }
 
 export function formatSummary({
   colorFns,
   testCaseAttempts,
+  testRunDuration,
 }: IFormatSummaryRequest): string {
-  const testCaseResults: messages.ITestResult[] = []
-  const testStepResults: messages.ITestResult[] = []
-  let totalDuration = getZeroDuration()
-  testCaseAttempts.forEach(({ testCase, result, stepResults }) => {
-    totalDuration = addDurations(totalDuration, result.duration)
-    if (!result.willBeRetried) {
-      testCaseResults.push(result)
+  const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
+  const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
+  let totalStepDuration = getZeroDuration()
+  testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
+    Object.values(stepResults).forEach((stepResult) => {
+      totalStepDuration = addDurations(totalStepDuration, stepResult.duration)
+    })
+    if (!worstTestStepResult.willBeRetried) {
+      testCaseResults.push(worstTestStepResult)
       _.each(testCase.testSteps, (testStep) => {
         if (testStep.pickleStepId !== '') {
           testStepResults.push(stepResults[testStep.id])
@@ -52,13 +52,15 @@ export function formatSummary({
     objects: testStepResults,
     type: 'step',
   })
-  const durationSummary = getDurationSummary(totalDuration)
+  const durationSummary = `${getDurationSummary(
+    testRunDuration
+  )} (executing steps: ${getDurationSummary(totalStepDuration)})\n`
   return [scenarioSummary, stepSummary, durationSummary].join('\n')
 }
 
 interface IGetCountSummaryRequest {
   colorFns: IColorFns
-  objects: messages.ITestResult[]
+  objects: messages.TestStepFinished.ITestStepResult[]
   type: string
 }
 
@@ -88,8 +90,8 @@ function getCountSummary({
 
 function getDurationSummary(durationMsg: messages.IDuration): string {
   const start = new Date(0)
-  const end = new Date(durationToMilliseconds(durationMsg))
+  const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
   const duration = new Duration(start, end)
   // Use spaces in toString method for readability and to avoid %Ls which is a format
-  return duration.toString('%Ms m %S . %L s').replace(/ /g, '') + '\n'
+  return duration.toString('%Ms m %S . %L s').replace(/ /g, '')
 }

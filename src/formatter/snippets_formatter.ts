@@ -2,7 +2,7 @@ import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import { parseTestCaseAttempt } from './helpers'
 import { doesHaveValue } from '../value_checker'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import IEnvelope = messages.IEnvelope
 
 export default class SnippetsFormatter extends Formatter {
@@ -17,7 +17,7 @@ export default class SnippetsFormatter extends Formatter {
 
   logSnippets(): void {
     const snippets: string[] = []
-    this.eventDataCollector.getTestCaseAttempts().map((testCaseAttempt) => {
+    this.eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
       const parsed = parseTestCaseAttempt({
         cwd: this.cwd,
         snippetBuilder: this.snippetBuilder,

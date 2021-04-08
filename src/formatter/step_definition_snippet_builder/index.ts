@@ -4,8 +4,8 @@ import { ISnippetSnytax } from './snippet_syntax'
 import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
-} from 'cucumber-expressions'
-import { messages } from 'cucumber-messages'
+} from '@cucumber/cucumber-expressions'
+import { messages } from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export interface INewStepDefinitionSnippetBuilderOptions {
@@ -28,7 +28,7 @@ export default class StepDefinitionSnippetBuilder {
   }: INewStepDefinitionSnippetBuilderOptions) {
     this.snippetSyntax = snippetSyntax
     this.cucumberExpressionGenerator = new CucumberExpressionGenerator(
-      parameterTypeRegistry
+      () => parameterTypeRegistry.parameterTypes
     )
   }
 

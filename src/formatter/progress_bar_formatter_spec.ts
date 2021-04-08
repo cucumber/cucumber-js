@@ -1,11 +1,12 @@
-import { beforeEach, afterEach, describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import sinon, { SinonStubbedInstance } from 'sinon'
+import sinon from 'sinon'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from './helpers'
 import {
   getEnvelopesAndEventDataCollector,
   ITestSource,
+  normalizeSummaryDuration,
 } from '../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FormatterBuilder from './builder'
@@ -13,12 +14,13 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { PassThrough } from 'stream'
 import ProgressBar from 'progress'
+import bluebird from 'bluebird'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -41,23 +43,26 @@ async function testProgressBarFormatter({
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
   }
+  const eventBroadcaster = new EventEmitter()
   const { envelopes } = await getEnvelopesAndEventDataCollector({
     runtimeOptions,
     sources,
     supportCodeLibrary,
   })
-  const eventBroadcaster = new EventEmitter()
+
   let output = ''
   const logFn = (data: string): void => {
     output += data
   }
+  const passThrough = new PassThrough()
   const progressBarFormatter = FormatterBuilder.build('progress-bar', {
     cwd: '',
     eventBroadcaster,
     eventDataCollector: new EventDataCollector(eventBroadcaster),
     log: logFn,
     parsedArgvOptions: {},
-    stream: new PassThrough(),
+    stream: passThrough,
+    cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
   }) as ProgressBarFormatter
   let mocked = false
@@ -80,11 +85,11 @@ async function testProgressBarFormatter({
       mocked = true
     }
   }
-  return { progressBarFormatter, output }
+  return { progressBarFormatter, output: normalizeSummaryDuration(output) }
 }
 
 describe('ProgressBarFormatter', () => {
-  describe('pickleAccepted / testStepStarted', () => {
+  describe('testStepStarted', () => {
     it('initializes a progress bar with the total number of steps for a scenario', async () => {
       // Arrange
       const sources = [
@@ -350,9 +355,7 @@ describe('ProgressBarFormatter', () => {
           sources,
           supportCodeLibrary,
         })
-        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<
-          ProgressBar
-        >
+        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
 
         // Assert
         expect(progressBar.interrupt).to.have.callCount(1)
@@ -366,7 +369,7 @@ describe('ProgressBarFormatter', () => {
     let clock: InstalledClock
 
     beforeEach(() => {
-      clock = FakeTimers.install({ target: timeMethods })
+      clock = FakeTimers.withGlobal(timeMethods).install()
     })
 
     afterEach(() => {
@@ -392,7 +395,7 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(output).to.contain(
-        '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+        '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '<duration-stat>\n'
       )
     })
 
@@ -419,7 +422,43 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(output).to.contain(
-        '2 scenarios (2 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
+        '2 scenarios (2 passed)\n' +
+          '2 steps (2 passed)\n' +
+          '<duration-stat>\n'
+      )
+    })
+  })
+
+  describe('undefinedParameterType', function () {
+    it('outputs undefined parameter types', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: 'Feature: a\nScenario: b\nGiven a step',
+          uri: 'a.feature',
+        },
+      ]
+      const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+        Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('a {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('another {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('a different {foo} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+      })
+
+      // Act
+      const { output } = await testProgressBarFormatter({
+        shouldStopFn: (envelope) => false,
+        sources,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      // Assert
+      expect(output).to.contain(
+        `Undefined parameter type: "param" e.g. \`a {param} step\`
+Undefined parameter type: "param" e.g. \`another {param} step\`
+Undefined parameter type: "foo" e.g. \`a different {foo} step\`
+`
       )
     })
   })

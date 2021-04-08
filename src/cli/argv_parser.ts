@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { Command } from 'commander'
 import path from 'path'
-import Gherkin from 'gherkin'
+import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
@@ -34,6 +34,8 @@ export interface IParsedArgvOptions {
   parallel: number
   predictableIds: boolean
   profile: string[]
+  publish: boolean
+  publishQuiet: boolean
   require: string[]
   requireModule: string[]
   retry: number
@@ -83,7 +85,7 @@ const ArgvParser = {
   },
 
   validateLanguage(value: string): string {
-    if (!_.includes(_.keys(Gherkin.dialects()), value)) {
+    if (!_.includes(_.keys(dialects), value)) {
       throw new Error(`Unsupported ISO 639-1: ${value}`)
     }
     return value
@@ -101,6 +103,7 @@ const ArgvParser = {
     const program = new Command(path.basename(argv[1]))
 
     program
+      .storeOptionsAsProperties(false)
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
@@ -166,6 +169,16 @@ const ArgvParser = {
       .option(
         '--predictable-ids',
         'Use predictable ids in messages (option ignored if using parallel)',
+        false
+      )
+      .option(
+        '--publish',
+        'Publish a report to https://reports.cucumber.io',
+        false
+      )
+      .option(
+        '--publish-quiet',
+        "Don't print information banner about publishing reports",
         false
       )
       .option(

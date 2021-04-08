@@ -1,16 +1,17 @@
-import { beforeEach, afterEach, describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import figures from 'figures'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 
 describe('SummaryFormatter', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = FakeTimers.install({ target: timeMethods })
+    clock = FakeTimers.withGlobal(timeMethods).install()
   })
 
   afterEach(() => {
@@ -46,7 +47,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -79,7 +80,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -114,7 +115,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 ambiguous)\n' +
             '1 step (1 ambiguous)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -151,7 +152,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 undefined)\n' +
             '1 step (1 undefined)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -184,7 +185,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 pending)\n' +
             '1 step (1 pending)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -218,7 +219,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
         )
       })
     })
@@ -258,7 +259,45 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
-            '0m00.000s\n'
+            '<duration-stat>\n'
+        )
+      })
+    })
+
+    describe('with an undefined parameter type', () => {
+      it('logs the issue', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: 'Feature: a\nScenario: b\nGiven a step',
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('another {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a different {foo} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        })
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'summary',
+        })
+
+        // Assert
+        expect(output).to.eql(
+          `Undefined parameter types:
+
+- "param" e.g. \`another {param} step\`
+- "foo" e.g. \`a different {foo} step\`
+
+1 scenario (1 passed)
+1 step (1 passed)
+<duration-stat>
+`
         )
       })
     })

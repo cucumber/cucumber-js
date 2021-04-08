@@ -1,9 +1,9 @@
 import _, { Dictionary } from 'lodash'
-import { fork, ChildProcess } from 'child_process'
+import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'
 import { retriesForPickle } from '../helpers'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
@@ -14,6 +14,11 @@ import {
   IWorkerCommand,
 } from './command_types'
 import { doesHaveValue } from '../../value_checker'
+import {
+  ITestRunStopwatch,
+  PredictableTestRunStopwatch,
+  RealTestRunStopwatch,
+} from '../stopwatch'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -37,6 +42,7 @@ export default class Coordinator {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
+  private readonly stopwatch: ITestRunStopwatch
   private onFinish: (success: boolean) => void
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
@@ -61,6 +67,9 @@ export default class Coordinator {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
+    this.stopwatch = options.predictableIds
+      ? new PredictableTestRunStopwatch()
+      : new RealTestRunStopwatch()
     this.options = options
     this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
@@ -86,7 +95,7 @@ export default class Coordinator {
         this.remapDefinitionIds(envelope.testCase)
       }
       if (doesHaveValue(envelope.testCaseFinished)) {
-        this.parseTestCaseResult(envelope.testCaseFinished.testResult)
+        this.parseTestCaseResult(envelope.testCaseFinished)
       }
     } else {
       throw new Error(
@@ -170,24 +179,37 @@ export default class Coordinator {
       this.eventBroadcaster.emit(
         'envelope',
         messages.Envelope.fromObject({
-          testRunFinished: { success: this.success },
+          testRunFinished: {
+            timestamp: this.stopwatch.timestamp(),
+          },
         })
       )
       this.onFinish(this.success)
     }
   }
 
-  parseTestCaseResult(testCaseResult: messages.ITestResult): void {
+  parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
+    const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
+      testCaseFinished.testCaseStartedId
+    )
     if (
-      !testCaseResult.willBeRetried &&
-      this.shouldCauseFailure(testCaseResult.status)
+      !worstTestStepResult.willBeRetried &&
+      this.shouldCauseFailure(worstTestStepResult.status)
     ) {
       this.success = false
     }
   }
 
   run(numberOfWorkers: number, done: (success: boolean) => void): void {
-    this.eventBroadcaster.emit('test-run-started')
+    this.eventBroadcaster.emit(
+      'envelope',
+      new messages.Envelope({
+        testRunStarted: {
+          timestamp: this.stopwatch.timestamp(),
+        },
+      })
+    )
+    this.stopwatch.start()
     _.times(numberOfWorkers, (id) =>
       this.startWorker(id.toString(), numberOfWorkers)
     )
@@ -212,6 +234,7 @@ export default class Coordinator {
       run: {
         retries,
         skip,
+        elapsed: this.stopwatch.duration().nanos(),
         pickle,
         gherkinDocument,
       },
@@ -219,7 +242,9 @@ export default class Coordinator {
     worker.process.send(runCommand)
   }
 
-  shouldCauseFailure(status: messages.TestResult.Status): boolean {
+  shouldCauseFailure(
+    status: messages.TestStepFinished.TestStepResult.Status
+  ): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

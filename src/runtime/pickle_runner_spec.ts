@@ -3,15 +3,15 @@ import { expect } from 'chai'
 import PickleRunner from './pickle_runner'
 import Status from '../status'
 import { EventEmitter } from 'events'
-import { messages } from 'cucumber-messages'
-import { incrementing } from 'cucumber-messages/dist/src/IdGenerator'
+import { IdGenerator, messages } from '@cucumber/messages'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods, { millisecondsToDuration, getZeroDuration } from '../time'
+import timeMethods, { millisecondsToDuration } from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import { PredictableTestRunStopwatch } from './stopwatch'
 import IEnvelope = messages.IEnvelope
 
 interface ITestPickleRunnerRequest {
@@ -24,7 +24,7 @@ interface ITestPickleRunnerRequest {
 
 interface ITestPickleRunnerResponse {
   envelopes: messages.IEnvelope[]
-  result: messages.ITestResult
+  result: messages.TestStepFinished.TestStepResult.Status
 }
 
 async function testPickleRunner(
@@ -35,8 +35,9 @@ async function testPickleRunner(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const pickleRunner = new PickleRunner({
     eventBroadcaster,
+    stopwatch: new PredictableTestRunStopwatch(),
     gherkinDocument: options.gherkinDocument,
-    newId: incrementing(),
+    newId: IdGenerator.incrementing(),
     pickle: options.pickle,
     retries: valueOrDefault(options.retries, 0),
     skip: valueOrDefault(options.skip, false),
@@ -47,11 +48,22 @@ async function testPickleRunner(
   return { envelopes, result }
 }
 
+function predictableTimestamp(counter: number): any {
+  return {
+    nanos: 1000000 * counter,
+    seconds: {
+      high: 0,
+      low: 0,
+      unsigned: false,
+    },
+  }
+}
+
 describe('PickleRunner', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = FakeTimers.install({ target: timeMethods })
+    clock = FakeTimers.withGlobal(timeMethods).install()
   })
 
   afterEach(() => {
@@ -74,10 +86,12 @@ describe('PickleRunner', () => {
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
         })
-        const passedTestResult = messages.TestResult.fromObject({
-          duration: millisecondsToDuration(1),
-          status: Status.PASSED,
-        })
+        const passedTestResult = messages.TestStepFinished.TestStepResult.fromObject(
+          {
+            duration: millisecondsToDuration(1),
+            status: Status.PASSED,
+          }
+        )
 
         // Act
         const { envelopes, result } = await testPickleRunner({
@@ -97,6 +111,11 @@ describe('PickleRunner', () => {
                   id: '1',
                   pickleStepId: pickle.steps[0].id,
                   stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
                 },
               ],
             },
@@ -106,29 +125,103 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
+              timestamp: predictableTimestamp(0),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
+              timestamp: predictableTimestamp(1),
             },
           }),
           messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: '2',
-              testResult: passedTestResult,
+              testStepResult: passedTestResult,
               testStepId: '1',
+              timestamp: predictableTimestamp(2),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '2',
-              testResult: passedTestResult,
+              timestamp: predictableTimestamp(3),
             },
           }),
         ])
-        expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(result).to.eql(Status.PASSED)
+      })
+    })
+
+    describe('with a parameterised step', () => {
+      it('emits stepMatchArgumentLists correctly within the testCase message', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a step with {int} and {string} parameters', function () {
+            clock.tick(1)
+          })
+        })
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: [
+            'Feature: a',
+            'Scenario: b',
+            'Given a step with 1 and "foo" parameters',
+          ].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes } = await testPickleRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        expect(
+          envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
+        ).to.deep.eq([
+          messages.TestCase.TestStep.StepMatchArgumentsList.fromObject({
+            stepMatchArguments: [
+              {
+                group: {
+                  children: [],
+                  start: 12,
+                  value: '1',
+                },
+                parameterTypeName: 'int',
+              },
+              {
+                group: {
+                  children: [
+                    {
+                      children: [
+                        {
+                          children: [],
+                        },
+                      ],
+                      start: 19,
+                      value: 'foo',
+                    },
+                    {
+                      children: [
+                        {
+                          children: [],
+                        },
+                      ],
+                    },
+                  ],
+                  start: 18,
+                  value: '"foo"',
+                },
+                parameterTypeName: 'string',
+              },
+            ],
+          }),
+        ])
       })
     })
 
@@ -147,11 +240,13 @@ describe('PickleRunner', () => {
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
         })
-        const failingTestResult = messages.TestResult.fromObject({
-          duration: millisecondsToDuration(0),
-          status: Status.FAILED,
-          message: 'fail',
-        })
+        const failingTestResult = messages.TestStepFinished.TestStepResult.fromObject(
+          {
+            duration: millisecondsToDuration(0),
+            status: Status.FAILED,
+            message: 'fail',
+          }
+        )
 
         // Act
         const { envelopes, result } = await testPickleRunner({
@@ -162,13 +257,10 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testResult).to.eql(
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
           failingTestResult
         )
-        expect(envelopes[4].testCaseFinished.testResult).to.eql(
-          failingTestResult
-        )
-        expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
+        expect(result).to.eql(Status.FAILED)
       })
     })
 
@@ -200,20 +292,19 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testResult).to.eql(
-          messages.TestResult.fromObject({
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          messages.TestStepFinished.TestStepResult.fromObject({
             message,
             status: Status.AMBIGUOUS,
+            duration: {
+              seconds: '0',
+              nanos: 0,
+            },
           })
         )
-        expect(envelopes[4].testCaseFinished.testResult).to.eql(
-          messages.TestResult.fromObject({
-            duration: getZeroDuration(),
-            message,
-            status: Status.AMBIGUOUS,
-          })
+        expect(result).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
         )
-        expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
       })
     })
 
@@ -238,18 +329,18 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testResult).to.eql(
-          messages.TestResult.fromObject({
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.UNDEFINED,
+            duration: {
+              seconds: '0',
+              nanos: 0,
+            },
           })
         )
-        expect(envelopes[4].testCaseFinished.testResult).to.eql(
-          messages.TestResult.fromObject({
-            duration: getZeroDuration(),
-            status: Status.UNDEFINED,
-          })
+        expect(result).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
         )
-        expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
       })
     })
 
@@ -293,6 +384,11 @@ describe('PickleRunner', () => {
                   id: '1',
                   pickleStepId: pickle.steps[0].id,
                   stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
                 },
               ],
             },
@@ -302,34 +398,33 @@ describe('PickleRunner', () => {
               attempt: 0,
               id: '2',
               testCaseId: '0',
+              timestamp: predictableTimestamp(0),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
+              timestamp: predictableTimestamp(1),
             },
           }),
           messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: '2',
-              testResult: {
-                duration: millisecondsToDuration(0),
-                message: 'error',
-                status: Status.FAILED,
-              },
-              testStepId: '1',
-            },
-          }),
-          messages.Envelope.fromObject({
-            testCaseFinished: {
-              testCaseStartedId: '2',
-              testResult: {
+              testStepResult: {
                 duration: millisecondsToDuration(0),
                 message: 'error',
                 status: Status.FAILED,
                 willBeRetried: true,
               },
+              testStepId: '1',
+              timestamp: predictableTimestamp(2),
+            },
+          }),
+          messages.Envelope.fromObject({
+            testCaseFinished: {
+              testCaseStartedId: '2',
+              timestamp: predictableTimestamp(3),
             },
           }),
           messages.Envelope.fromObject({
@@ -337,35 +432,35 @@ describe('PickleRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
+              timestamp: predictableTimestamp(4),
             },
           }),
           messages.Envelope.fromObject({
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
+              timestamp: predictableTimestamp(5),
             },
           }),
           messages.Envelope.fromObject({
             testStepFinished: {
               testCaseStartedId: '3',
-              testResult: {
+              testStepResult: {
                 duration: millisecondsToDuration(0),
                 status: Status.PASSED,
               },
               testStepId: '1',
+              timestamp: predictableTimestamp(6),
             },
           }),
           messages.Envelope.fromObject({
             testCaseFinished: {
               testCaseStartedId: '3',
-              testResult: {
-                duration: millisecondsToDuration(0),
-                status: Status.PASSED,
-              },
+              timestamp: predictableTimestamp(7),
             },
           }),
         ])
-        expect(result).to.eql(envelopes[8].testCaseFinished.testResult)
+        expect(result).to.eql(Status.PASSED)
       })
     })
 
@@ -395,22 +490,22 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testResult).to.eql(
-          messages.TestResult.fromObject({
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+          messages.TestStepFinished.TestStepResult.fromObject({
             status: Status.SKIPPED,
+            duration: {
+              seconds: '0',
+              nanos: 0,
+            },
           })
         )
-        expect(envelopes[4].testCaseFinished.testResult).to.eql(
-          messages.TestResult.fromObject({
-            duration: getZeroDuration(),
-            status: Status.SKIPPED,
-          })
+        expect(result).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
         )
-        expect(result).to.eql(envelopes[4].testCaseFinished.testResult)
       })
     })
 
-    describe('with hooks', () => {
+    describe('with test case hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(
@@ -455,6 +550,11 @@ describe('PickleRunner', () => {
                   id: '2',
                   pickleStepId: pickle.steps[0].id,
                   stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
                 },
                 {
                   id: '3',
@@ -466,7 +566,64 @@ describe('PickleRunner', () => {
             },
           })
         )
-        expect(result).to.eql(envelopes[8].testCaseFinished.testResult)
+        expect(result).to.eql(
+          envelopes[7].testStepFinished.testStepResult.status
+        )
+      })
+    })
+
+    describe('with step hooks', () => {
+      it('emits the expected envelopes and returns a skipped result', async () => {
+        // Arrange
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, BeforeStep, AfterStep }) => {
+            Given('a step', function () {
+              clock.tick(1)
+            })
+            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          }
+        )
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        const { envelopes, result } = await testPickleRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes[0]).to.eql(
+          messages.Envelope.fromObject({
+            testCase: {
+              id: '0',
+              pickleId: pickle.id,
+              testSteps: [
+                {
+                  id: '1',
+                  pickleStepId: pickle.steps[0].id,
+                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                  stepMatchArgumentsLists: [
+                    {
+                      stepMatchArguments: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          })
+        )
+        expect(result).to.eql(
+          envelopes[3].testStepFinished.testStepResult.status
+        )
       })
     })
   })

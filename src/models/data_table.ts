@@ -1,13 +1,19 @@
 import _, { Dictionary } from 'lodash'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]
 
-  constructor(pickleTable: messages.PickleStepArgument.IPickleTable) {
-    this.rawTable = pickleTable.rows.map((row) =>
-      row.cells.map((cell) => cell.value)
-    )
+  constructor(
+    sourceTable: messages.PickleStepArgument.IPickleTable | string[][]
+  ) {
+    if (sourceTable instanceof Array) {
+      this.rawTable = sourceTable
+    } else {
+      this.rawTable = sourceTable.rows.map((row) =>
+        row.cells.map((cell) => cell.value)
+      )
+    }
   }
 
   hashes(): any[] {
@@ -36,5 +42,12 @@ export default class DataTable {
       )
     }
     return _.fromPairs(rows)
+  }
+
+  transpose(): DataTable {
+    const transposed = this.rawTable[0].map((x, i) =>
+      this.rawTable.map((y) => y[i])
+    )
+    return new DataTable(transposed)
   }
 }

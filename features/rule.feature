@@ -21,7 +21,7 @@ Feature: Rule keyword
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, When, Then} = require('cucumber')
+      const {Given, When, Then} = require('@cucumber/cucumber')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
@@ -84,7 +84,7 @@ Feature: Rule keyword
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, When, Then} = require('cucumber')
+      const {Given, When, Then} = require('@cucumber/cucumber')
 
       Given('there are {int} ninjas', function(count) {
         this.total = count
@@ -133,5 +133,33 @@ Feature: Rule keyword
 
     2 scenarios (1 failed, 1 passed)
     8 steps (1 failed, 1 skipped, 6 passed)
+    <duration-stat>
+    """
+
+  Scenario: Tags on Rules are honoured
+    Given a file named "features/highlander.feature" with:
+      """
+      Feature: a feature
+
+        @mytag
+        Rule: a rule
+
+          Example: a scenario
+            Given a step
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step', function() {})
+      """
+    When I run cucumber-js with arguments `--tags @mytag` and env ``
+    Then it passes
+    And it outputs the text:
+    """
+    .
+
+    1 scenario (1 passed)
+    1 step (1 passed)
     <duration-stat>
     """

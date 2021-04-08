@@ -1,4 +1,4 @@
-import { messages } from 'cucumber-messages'
+import { messages, TimeConversion } from '@cucumber/messages'
 import { doesNotHaveValue } from './value_checker'
 import Long from 'long'
 
@@ -71,6 +71,16 @@ export function durationToMilliseconds(duration: messages.IDuration): number {
 
 export function durationToNanoseconds(duration: messages.IDuration): number {
   return toNumber(duration.seconds) * NANOSECONDS_IN_SECOND + duration.nanos
+}
+
+export function durationBetweenTimestamps(
+  startedTimestamp: messages.ITimestamp,
+  finishedTimestamp: messages.ITimestamp
+): messages.IDuration {
+  const durationMillis =
+    TimeConversion.timestampToMillisecondsSinceEpoch(finishedTimestamp) -
+    TimeConversion.timestampToMillisecondsSinceEpoch(startedTimestamp)
+  return TimeConversion.millisecondsToDuration(durationMillis)
 }
 
 export function getZeroDuration(): messages.IDuration {

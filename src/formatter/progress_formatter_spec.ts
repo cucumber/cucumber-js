@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { testFormatter } from '../../test/formatter_helpers'
@@ -10,7 +10,7 @@ describe('ProgressFormatter', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = FakeTimers.install({ target: timeMethods })
+    clock = FakeTimers.withGlobal(timeMethods).install()
   })
 
   afterEach(() => {
@@ -82,7 +82,7 @@ Warnings:
 
 6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)
 6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)
-0m00.000s
+<duration-stat>
 `)
   })
 
@@ -121,7 +121,7 @@ Feature: feature
 
 3 scenarios (3 passed)
 3 steps (3 passed)
-0m00.000s
+<duration-stat>
 `)
   })
 })

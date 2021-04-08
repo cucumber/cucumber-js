@@ -3,13 +3,21 @@ import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import path from 'path'
-import { messages } from 'cucumber-messages'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
+import { IdGenerator, messages } from '@cucumber/messages'
+import createMeta from '@cucumber/create-meta'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { builtinParameterTypes } from '../support_code_library_builder'
+
+const StepDefinitionPatternType =
+  messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -57,25 +65,16 @@ export async function parseGherkinMessageStream({
           pickle.uri
         )
         if (pickleFilter.matches({ gherkinDocument, pickle })) {
-          eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({ pickleAccepted: { pickleId } })
-          )
           result.push(pickleId)
-        } else {
-          eventBroadcaster.emit(
-            'envelope',
-            messages.Envelope.fromObject({ pickleRejected: { pickleId } })
-          )
         }
       }
-      if (doesHaveValue(envelope.attachment)) {
+      if (doesHaveValue(envelope.parseError)) {
         reject(
           new Error(
             `Parse error in '${path.relative(
               cwd,
-              envelope.attachment.source.uri
-            )}': ${envelope.attachment.data}`
+              envelope.parseError.source.uri
+            )}': ${envelope.parseError.message}`
           )
         )
       }
@@ -106,4 +105,156 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
         'Unrecgonized order type. Should be `defined` or `random`'
       )
   }
+}
+
+export async function emitMetaMessage(
+  eventBroadcaster: EventEmitter
+): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { version } = require('../../package.json')
+  eventBroadcaster.emit(
+    'envelope',
+    new messages.Envelope({
+      meta: createMeta('cucumber-js', version, process.env),
+    })
+  )
+}
+
+function emitParameterTypes(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter,
+  newId: IdGenerator.NewId
+): void {
+  for (const parameterType of supportCodeLibrary.parameterTypeRegistry
+    .parameterTypes) {
+    if (builtinParameterTypes.includes(parameterType.name)) {
+      continue
+    }
+    eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        parameterType: {
+          id: newId(),
+          name: parameterType.name,
+          preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
+          regularExpressions: parameterType.regexpStrings,
+          useForSnippets: parameterType.useForSnippets,
+        },
+      })
+    )
+  }
+}
+
+function emitUndefinedParameterTypes(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  for (const undefinedParameterType of supportCodeLibrary.undefinedParameterTypes) {
+    eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        undefinedParameterType,
+      })
+    )
+  }
+}
+
+function emitStepDefinitions(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  supportCodeLibrary.stepDefinitions.forEach((stepDefinition) => {
+    eventBroadcaster.emit(
+      'envelope',
+      messages.Envelope.fromObject({
+        stepDefinition: {
+          id: stepDefinition.id,
+          pattern: {
+            source: stepDefinition.pattern.toString(),
+            type:
+              typeof stepDefinition.pattern === 'string'
+                ? StepDefinitionPatternType.CUCUMBER_EXPRESSION
+                : StepDefinitionPatternType.REGULAR_EXPRESSION,
+          },
+          sourceReference: {
+            uri: stepDefinition.uri,
+            location: {
+              line: stepDefinition.line,
+            },
+          },
+        },
+      })
+    )
+  })
+}
+
+function emitTestCaseHooks(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  ;[]
+    .concat(
+      supportCodeLibrary.beforeTestCaseHookDefinitions,
+      supportCodeLibrary.afterTestCaseHookDefinitions
+    )
+    .forEach((testCaseHookDefinition: TestCaseHookDefinition) => {
+      eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          hook: {
+            id: testCaseHookDefinition.id,
+            tagExpression: testCaseHookDefinition.tagExpression,
+            sourceReference: {
+              uri: testCaseHookDefinition.uri,
+              location: {
+                line: testCaseHookDefinition.line,
+              },
+            },
+          },
+        })
+      )
+    })
+}
+
+function emitTestRunHooks(
+  supportCodeLibrary: ISupportCodeLibrary,
+  eventBroadcaster: EventEmitter
+): void {
+  ;[]
+    .concat(
+      supportCodeLibrary.beforeTestRunHookDefinitions,
+      supportCodeLibrary.afterTestRunHookDefinitions
+    )
+    .forEach((testRunHookDefinition: TestRunHookDefinition) => {
+      eventBroadcaster.emit(
+        'envelope',
+        messages.Envelope.fromObject({
+          hook: {
+            id: testRunHookDefinition.id,
+            sourceReference: {
+              uri: testRunHookDefinition.uri,
+              location: {
+                line: testRunHookDefinition.line,
+              },
+            },
+          },
+        })
+      )
+    })
+}
+
+export function emitSupportCodeMessages({
+  eventBroadcaster,
+  supportCodeLibrary,
+  newId,
+}: {
+  eventBroadcaster: EventEmitter
+  supportCodeLibrary: ISupportCodeLibrary
+  newId: IdGenerator.NewId
+}): void {
+  emitParameterTypes(supportCodeLibrary, eventBroadcaster, newId)
+  emitUndefinedParameterTypes(supportCodeLibrary, eventBroadcaster)
+  emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
+  emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
+  emitTestRunHooks(supportCodeLibrary, eventBroadcaster)
 }

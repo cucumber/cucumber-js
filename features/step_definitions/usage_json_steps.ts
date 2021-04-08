@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Then, DataTable } from '../../'
+import { DataTable, Then } from '../../'
 import { expect } from 'chai'
 import path from 'path'
 import { World } from '../support/world'

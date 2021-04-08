@@ -3,7 +3,7 @@ Feature: Step definition timeouts
   Background:
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Before, Given, setDefaultTimeout} = require('cucumber')
+      const {Before, Given, setDefaultTimeout} = require('@cucumber/cucumber')
 
       setDefaultTimeout(500);
 

@@ -14,7 +14,7 @@ Feature: Generator Step Definitions
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const assert = require('assert')
-      const {setWorldConstructor, Then, When} = require('cucumber')
+      const {setWorldConstructor, Then, When} = require('@cucumber/cucumber')
 
       setWorldConstructor(function () {
         this.context = ""
@@ -47,7 +47,7 @@ Feature: Generator Step Definitions
       """
       const isGenerator = require('is-generator')
       const {coroutine} = require('bluebird')
-      const {setDefinitionFunctionWrapper} = require('cucumber')
+      const {setDefinitionFunctionWrapper} = require('@cucumber/cucumber')
 
       setDefinitionFunctionWrapper(function (fn) {
         if (isGenerator.fn(fn)) {

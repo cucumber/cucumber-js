@@ -2,7 +2,7 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
   Background: Before and After hooks to enable faking time.
     Given a file named "features/support/hooks.js" with:
     """
-    const {After, Before} = require('cucumber')
+    const {After, Before} = require('@cucumber/cucumber')
     const sinon = require('sinon')
 
     Before(function(scenario) {
@@ -25,7 +25,7 @@ Feature: Allow time to be faked by utilities such as sinon.useFakeTimers
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const sinon = require('sinon')
 
       Given(/^a faked time step$/, function () {

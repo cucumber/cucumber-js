@@ -21,41 +21,59 @@ needs to be required in your support files and globally installed modules cannot
   * `$ cucumber-js features/my_feature.feature:3`
 * Specify a scenario by its name matching a regular expression
   * `$ cucumber-js --name "topic 1"`
+  * `$ cucumber-js --name "^start.+end$"`
   * If used multiple times, the scenario name needs to match only one of the names supplied
+  * To escape special regex characters in scenario name, use backslash e.g., `\(Scenario Name\)`
 * Use [Tags](#tags)
 
 ## Requiring support files
 
-Use `--require <GLOB|DIR|FILE>` to require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
-If not used, the following files are required:
+By default, the following files are required:
 * If the features live in a `features` directory (at any level)
   * `features/**/*.js`
 * Otherwise
   * `<DIR>/**/*.js` for each directory containing the selected features
 
-Automatic loading is disabled when this option is specified, and all loading becomes explicit.
+Alternatively, you can use `--require <GLOB|DIR|FILE>` to explicitly require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
+
+This option may be used multiple times in order to e.g. require files from several different locations.
+
+_Note that once you specify any `--require` options, the defaults described above are no longer applied._
 
 ## Formats
 
 Use `--format <TYPE[:PATH]>` to specify the format of the output.
-If PATH is not supplied, the formatter prints to `stdout`.
-If PATH is supplied, it prints to the given file.
+
+The `TYPE` can be one of:
+* The name of one of the built-in formatters (below) e.g. `progress`
+* A module/package name e.g. `@cucumber/pretty-formatter`
+* A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
+
+If `PATH` is not supplied, the formatter prints to `stdout`.
+If `PATH` is supplied, it prints to the given file.
+
 This option may be used multiple times in order to output different formats to different files.
 If multiple formats are specified with the same output, only the last is used.
 
-Built-in formatters
-* message - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
-* json - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
-* progress - prints one character per scenario (default).
-* progress-bar - prints a progress bar and outputs errors/warnings along the way.
-* rerun - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
+### Built-in formatters
+
+* **message** - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
+* **html** - prints a rich HTML report to a standalone page
+* **json** - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
+* **progress** - prints one character per scenario (default).
+* **progress-bar** - prints a progress bar and outputs errors/warnings along the way.
+* **rerun** - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
   * suggested use: add the rerun formatter to your default profile and the output file to your `.gitignore`.
   * After a failed run, remove any arguments used for selecting feature files and add the rerun file in order to rerun just failed scenarios. The rerun file must start with an `@` sign in order for cucumber to parse it as a rerun file instead of a feature file.
   * Use with `--fail-fast` to rerun the failure and the remaining features.
-* snippets - prints just the code snippets for undefined steps.
-* summary - prints a summary only, after all scenarios were executed.
-* usage - prints a table with data about step definitions usage.
-* usage-json - prints the step definitions usage data as JSON.
+* **snippets** - prints just the code snippets for undefined steps.
+* **summary** - prints a summary only, after all scenarios were executed.
+* **usage** - prints a table with data about step definitions usage.
+* **usage-json** - prints the step definitions usage data as JSON.
+
+### Officially-supported standalone formatters
+
+* [@cucumber/pretty-formatter](https://www.npmjs.com/package/@cucumber/pretty-formatter) - prints the feature with inline results,  colours and custom themes.
 
 ### Format Options
 
@@ -102,16 +120,23 @@ This is useful when one needs to rerun failed tests locally by copying a line fr
 The default separator is a newline character.
 Note that the rerun file parser can only work with the default separator for now.
 
-## Parallel (experimental)
+## Parallel
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate node process and receives the following env variables:
+You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables:
+
 * `CUCUMBER_PARALLEL` - set to 'true'
 * `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
 * `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
 
-**Notes**
-* The reported runtime from the summary formatter is the total time from running the steps and thus be higher than the runtime for the command. The command runtime can be measured with other tools (time / Measure-Command)
-* Prior to 5.0.2, printing to `stdout` (using `console.log` or other means) will cause an error, because the worker processes communicate with the coordinator process over `stdout`. Instead print to `stderr` (using `console.error` or other means). In versions 5.0.2 and newer, processes communicate with IPC and this is no longer an issue.
+### Timing
+
+When using parallel mode, the last line of the summary output differentiates between real time elapsed during the test run and aggregate time spent actually running steps: 
+
+```
+73 scenarios (73 passed)
+512 steps (512 passed)
+0m51.627s (executing steps: 4m51.228s)
+```
 
 ## Profiles
 
@@ -127,6 +152,8 @@ Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is 
 abort the run on first failure (default: false)
 
 By default, cucumber-js runs the entire suite and reports all the failures. This flag allows a developer workflow where you work on one failure at a time. Combining this feature with rerun files allows you to work through all failures in an efficient manner.
+
+A note on using in conjunction with `--retry`: we consider a test case to have failed if it exhausts retries and still fails, but passed if it passes on a retry having failed previous attempts, so `--fail-fast` does still allow retries to happen.
 
 ## Retry failing tests
 
@@ -145,7 +172,7 @@ For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
 --require-module @babel/register
 ```
 
-This will effectivally call `require('@babel/register')` prior to requiring any support files.
+This will effectively call `require('@babel/register')` prior to requiring any support files.
 
 If your files end with an extension other than `js`, make sure to also include the `--require` option to state the required support files. For example, if using [CoffeeScript](https://www.npmjs.com/package/coffeescript):
 

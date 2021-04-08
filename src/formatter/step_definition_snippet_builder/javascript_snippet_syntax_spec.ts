@@ -3,16 +3,16 @@ import { expect } from 'chai'
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 import { SnippetInterface } from './snippet_syntax'
 import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
-import GeneratedExpression from 'cucumber-expressions/dist/src/GeneratedExpression'
+import GeneratedExpression from '@cucumber/cucumber-expressions/dist/src/GeneratedExpression'
 import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
-} from 'cucumber-expressions'
+} from '@cucumber/cucumber-expressions'
 
-function generateExpressions(text: string): GeneratedExpression[] {
+function generateExpressions(text: string): readonly GeneratedExpression[] {
   const parameterTypeRegistry = new ParameterTypeRegistry()
   const cucumberExpressionGenerator = new CucumberExpressionGenerator(
-    parameterTypeRegistry
+    () => parameterTypeRegistry.parameterTypes
   )
   return cucumberExpressionGenerator.generateExpressions(text)
 }

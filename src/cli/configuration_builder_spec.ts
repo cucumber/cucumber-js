@@ -33,6 +33,7 @@ describe('Configuration', () => {
         featurePaths: [],
         formatOptions: {},
         formats: [{ outputTo: '', type: 'progress' }],
+        publishing: false,
         listI18nKeywordsFor: '',
         listI18nLanguages: false,
         order: 'defined',
@@ -49,6 +50,7 @@ describe('Configuration', () => {
           dryRun: false,
           failFast: false,
           filterStacktraces: true,
+          predictableIds: false,
           retry: 0,
           retryTagFilter: '',
           strict: true,
@@ -57,6 +59,7 @@ describe('Configuration', () => {
         shouldExitImmediately: false,
         supportCodePaths: [],
         supportCodeRequiredModules: [],
+        suppressPublishAdvertisement: false,
       })
     })
   })
@@ -122,6 +125,40 @@ describe('Configuration', () => {
 
       // Assert
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
+    })
+
+    it('adds a message formatter with reports URL when --publish specified', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['--publish'])
+
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(formats).to.eql([
+        { outputTo: '', type: 'progress' },
+        {
+          outputTo: 'https://messages.cucumber.io/api/reports',
+          type: 'message',
+        },
+      ])
+    })
+
+    it('sets publishing to true when --publish is specified', async function () {
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['--publish'])
+      const configuration = await ConfigurationBuilder.build({ argv, cwd })
+
+      expect(configuration.publishing).to.eq(true)
+    })
+
+    it('sets suppressPublishAdvertisement to true when --publish-quiet is specified', async function () {
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat(['--publish-quiet'])
+      const configuration = await ConfigurationBuilder.build({ argv, cwd })
+
+      expect(configuration.suppressPublishAdvertisement).to.eq(true)
     })
 
     it('splits relative unix paths', async function () {

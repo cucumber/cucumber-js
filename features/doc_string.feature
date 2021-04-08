@@ -12,7 +12,7 @@ Feature: doc string
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Given(/^a doc string step$/, function(docString) {
@@ -35,7 +35,7 @@ Feature: doc string
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Given(/^a "([^"]*)" step$/, function(type, docString) {

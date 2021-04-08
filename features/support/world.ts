@@ -1,4 +1,4 @@
-import { setWorldConstructor, Cli } from '../../'
+import { Cli, setWorldConstructor } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
@@ -9,7 +9,9 @@ import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
 import ndjsonParse from 'ndjson-parse'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
+import FakeReportServer from '../../test/fake_report_server'
+import { doesHaveValue } from '../../src/value_checker'
 
 interface ILastRun {
   error: any
@@ -26,37 +28,53 @@ interface IRunResult {
 
 export class World {
   public tmpDir: string
+  public sharedEnv: NodeJS.ProcessEnv
   public spawn: boolean = false
   public debug: boolean = false
   public lastRun: ILastRun
   public verifiedLastRunError: boolean
   public localExecutablePath: string
   public globalExecutablePath: string
+  public reportServer: FakeReportServer
 
-  async run(executablePath: string, inputArgs: string[]): Promise<void> {
+  parseEnvString(str: string): NodeJS.ProcessEnv {
+    const result: NodeJS.ProcessEnv = {}
+    if (doesHaveValue(str)) {
+      str
+        .split(/\s+/)
+        .map((keyValue) => keyValue.split('='))
+        .forEach((pair) => (result[pair[0]] = pair[1]))
+    }
+    return result
+  }
+
+  async run(
+    executablePath: string,
+    inputArgs: string[],
+    envOverride: NodeJS.ProcessEnv = null
+  ): Promise<void> {
     const messageFilename = 'message.ndjson'
-    const args = ['node', executablePath]
-      .concat(inputArgs, [
-        '--backtrace',
-        '--predictable-ids',
-        '--format',
-        `message:${messageFilename}`,
-      ])
-      .map((arg) => {
-        if (_.includes(arg, '/')) {
-          return path.normalize(arg)
-        }
-        return arg
-      })
+    const args = ['node', executablePath].concat(inputArgs, [
+      '--backtrace',
+      '--predictable-ids',
+      '--format',
+      `message:${messageFilename}`,
+    ])
+    const env = _.merge({}, process.env, this.sharedEnv, envOverride)
     const cwd = this.tmpDir
 
     let result: IRunResult
 
     if (this.spawn) {
       result = await new Promise((resolve) => {
-        execFile(args[0], args.slice(1), { cwd }, (error, stdout, stderr) => {
-          resolve({ error, stdout, stderr })
-        })
+        execFile(
+          args[0],
+          args.slice(1),
+          { cwd, env },
+          (error, stdout, stderr) => {
+            resolve({ error, stdout, stderr })
+          }
+        )
       })
     } else {
       const stdout = new PassThrough()

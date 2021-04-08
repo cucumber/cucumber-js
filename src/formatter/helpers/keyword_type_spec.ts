@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { KeywordType, getStepKeywordType } from './keyword_type'
+import { getStepKeywordType, KeywordType } from './keyword_type'
 
 describe('KeywordType', () => {
   describe('getStepKeywordType()', () => {

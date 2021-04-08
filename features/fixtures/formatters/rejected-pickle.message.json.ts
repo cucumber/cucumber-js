@@ -3,10 +3,7 @@ module.exports = [
     source: {
       uri: 'features/a.feature',
       data: 'Feature: a feature\n  Scenario: a scenario\n    Given a step',
-      media: {
-        encoding: 'UTF8',
-        contentType: 'text/x.cucumber.gherkin+plain',
-      },
+      mediaType: 'text/x.cucumber.gherkin+plain',
     },
   },
   {
@@ -64,16 +61,19 @@ module.exports = [
     },
   },
   {
-    pickleRejected: {
-      pickleId: '3',
+    testRunStarted: {
+      timestamp: {
+        seconds: '0',
+        nanos: 0,
+      },
     },
   },
   {
-    testRunStarted: {},
-  },
-  {
     testRunFinished: {
-      success: true,
+      timestamp: {
+        seconds: '0',
+        nanos: 1000000,
+      },
     },
   },
 ]

@@ -5,22 +5,27 @@ import { formatSummary } from './summary_helpers'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods from '../../time'
+import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
+import { messages } from '@cucumber/messages'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   sourceData: string
   supportCodeLibrary?: ISupportCodeLibrary
+  testRunStarted?: messages.ITestRunStarted
+  testRunFinished?: messages.ITestRunFinished
 }
 
 async function testFormatSummary({
   runtimeOptions,
   sourceData,
   supportCodeLibrary,
+  testRunStarted,
+  testRunFinished,
 }: ITestFormatSummaryOptions): Promise<string> {
   const sources = [
     {
@@ -31,6 +36,22 @@ async function testFormatSummary({
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = getBaseSupportCodeLibrary()
   }
+  if (doesNotHaveValue(testRunStarted)) {
+    testRunStarted = messages.TestRunStarted.fromObject({
+      timestamp: {
+        nanos: 0,
+        seconds: 0,
+      },
+    })
+  }
+  if (doesNotHaveValue(testRunFinished)) {
+    testRunFinished = messages.TestRunFinished.fromObject({
+      timestamp: {
+        nanos: 0,
+        seconds: 0,
+      },
+    })
+  }
   const testCaseAttempts = await getTestCaseAttempts({
     runtimeOptions,
     sources,
@@ -39,6 +60,10 @@ async function testFormatSummary({
   return formatSummary({
     colorFns: getColorFns(false),
     testCaseAttempts,
+    testRunDuration: durationBetweenTimestamps(
+      testRunStarted.timestamp,
+      testRunFinished.timestamp
+    ),
   })
 }
 
@@ -46,7 +71,7 @@ describe('SummaryHelpers', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = FakeTimers.install({ target: timeMethods })
+    clock = FakeTimers.withGlobal(timeMethods).install()
   })
 
   afterEach(() => {
@@ -63,7 +88,11 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({ sourceData })
 
         // Assert
-        expect(output).to.contain('0 scenarios\n' + '0 steps\n' + '0m00.000s\n')
+        expect(output).to.contain(
+          '0 scenarios\n' +
+            '0 steps\n' +
+            '0m00.000s (executing steps: 0m00.000s)\n'
+        )
       })
     })
 
@@ -81,7 +110,9 @@ describe('SummaryHelpers', () => {
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m00.000s (executing steps: 0m00.000s)\n'
         )
       })
     })
@@ -109,7 +140,9 @@ describe('SummaryHelpers', () => {
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m00.000s (executing steps: 0m00.000s)\n'
         )
       })
     })
@@ -142,7 +175,9 @@ describe('SummaryHelpers', () => {
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.000s\n'
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m00.000s (executing steps: 0m00.000s)\n'
         )
       })
     })
@@ -162,7 +197,9 @@ describe('SummaryHelpers', () => {
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '2 steps (2 passed)\n' + '0m00.000s\n'
+          '1 scenario (1 passed)\n' +
+            '2 steps (2 passed)\n' +
+            '0m00.000s (executing steps: 0m00.000s)\n'
         )
       })
     })
@@ -193,13 +230,13 @@ describe('SummaryHelpers', () => {
         expect(output).to.contain(
           '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
-            '0m00.000s\n'
+            '0m00.000s (executing steps: 0m00.000s)\n'
         )
       })
     })
 
-    describe('with a duration of 123 milliseconds', () => {
-      it('outputs the duration as 0m00.123s', async () => {
+    describe('with a test run finished timestamp of 124 milliseconds and total step duration of 123 milliseconds', () => {
+      it('outputs the duration as `0m00.124s (executing steps: 0m00.123s)`', async () => {
         // Arrange
         const sourceData = [
           'Feature: a',
@@ -218,17 +255,31 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          testRunStarted: messages.TestRunStarted.fromObject({
+            timestamp: {
+              nanos: 0,
+              seconds: 3,
+            },
+          }),
+          testRunFinished: messages.TestRunFinished.fromObject({
+            timestamp: {
+              nanos: 124000000,
+              seconds: 3,
+            },
+          }),
         })
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m00.123s\n'
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m00.124s (executing steps: 0m00.123s)\n'
         )
       })
     })
 
-    describe('with a duration of 12.3 seconds', () => {
-      it('outputs the duration as 0m12.300s', async () => {
+    describe('with a test run finished timestamp of 12.4 seconds and total step duration of 12.3 seconds', () => {
+      it('outputs the duration as `0m12.400s (executing steps: 0m12.300s)`', async () => {
         // Arrange
         const sourceData = [
           'Feature: a',
@@ -247,17 +298,25 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          testRunFinished: messages.TestRunFinished.fromObject({
+            timestamp: {
+              nanos: 400000000,
+              seconds: 12,
+            },
+          }),
         })
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '0m12.300s\n'
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m12.400s (executing steps: 0m12.300s)\n'
         )
       })
     })
 
-    describe('with a duration of 123 seconds', () => {
-      it('outputs the duration as 2m03.000s', async () => {
+    describe('with a test run finished timestamp of 124 seconds and total step duration of 123 seconds', () => {
+      it('outputs the duration as `2m04.000s (executing steps: 2m03.000s)`', async () => {
         // Arrange
         const sourceData = [
           'Feature: a',
@@ -276,11 +335,62 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
+          testRunFinished: messages.TestRunFinished.fromObject({
+            timestamp: {
+              nanos: 0,
+              seconds: 124,
+            },
+          }),
         })
 
         // Assert
         expect(output).to.contain(
-          '1 scenario (1 passed)\n' + '1 step (1 passed)\n' + '2m03.000s\n'
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '2m04.000s (executing steps: 2m03.000s)\n'
+        )
+      })
+    })
+
+    describe('with one passing scenario with one step and a beforeStep and afterStep hook', () => {
+      it('outputs the duration as `0m24.000s (executing steps: 0m24.000s)`', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, BeforeStep, AfterStep }) => {
+            Given('a passing step', () => {
+              clock.tick(12.3 * 1000)
+            })
+            BeforeStep(() => {
+              clock.tick(5 * 1000)
+            })
+            AfterStep(() => {
+              clock.tick(6.7 * 1000)
+            })
+          }
+        )
+
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+          testRunFinished: messages.TestRunFinished.fromObject({
+            timestamp: {
+              nanos: 0,
+              seconds: 24,
+            },
+          }),
+        })
+
+        // Assert
+        expect(output).to.contain(
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m24.000s (executing steps: 0m24.000s)\n'
         )
       })
     })

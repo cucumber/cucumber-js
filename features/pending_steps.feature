@@ -11,7 +11,7 @@ Feature: Pending steps
   Scenario: Synchronous pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a pending step$/, function() {
         return 'pending'
@@ -25,7 +25,7 @@ Feature: Pending steps
   Scenario: Callback pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a pending step$/, function(callback) {
         callback(null, 'pending')
@@ -38,7 +38,7 @@ Feature: Pending steps
   Scenario: Promise pending step
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a pending step$/, function(){
         return {

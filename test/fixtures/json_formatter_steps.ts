@@ -3,6 +3,7 @@
 import { buildSupportCodeLibrary } from '../runtime_helpers'
 import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
 import { InstalledClock } from '@sinonjs/fake-timers'
+import { World } from '../../src'
 
 export function getJsonFormatterSupportCodeLibrary(
   clock: InstalledClock
@@ -23,6 +24,10 @@ export function getJsonFormatterSupportCodeLibrary(
 
     Given('a failing step', function () {
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+    })
+
+    Given('a step that attaches', async function (this: World) {
+      await this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
     })
   })
 }

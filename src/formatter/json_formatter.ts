@@ -4,7 +4,7 @@ import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { durationToNanoseconds } from '../time'
 import path from 'path'
-import { messages } from 'cucumber-messages'
+import { messages } from '@cucumber/messages'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
@@ -86,7 +86,7 @@ interface IBuildJsonStepOptions {
   pickleStepMap: Dictionary<messages.Pickle.IPickleStep>
   testStep: messages.TestCase.ITestStep
   testStepAttachments: messages.IAttachment[]
-  testStepResult: messages.ITestResult
+  testStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 interface UriToTestCaseAttemptsMap {
@@ -146,7 +146,7 @@ export default class JsonFormatter extends Formatter {
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
       (testCaseAttempt: ITestCaseAttempt) => {
-        if (!testCaseAttempt.result.willBeRetried) {
+        if (!testCaseAttempt.worstTestStepResult.willBeRetried) {
           const uri = path.relative(this.cwd, testCaseAttempt.pickle.uri)
           if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
             groupedTestCaseAttempts[uri] = []
@@ -294,8 +294,8 @@ export default class JsonFormatter extends Formatter {
     }
     if (_.size(testStepAttachments) > 0) {
       data.embeddings = testStepAttachments.map((attachment) => ({
-        data: attachment.data,
-        mime_type: attachment.media.contentType,
+        data: attachment.body,
+        mime_type: attachment.mediaType,
       }))
     }
     return data

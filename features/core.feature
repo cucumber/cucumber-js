@@ -14,7 +14,7 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step passes$/, function() {});
       """
@@ -43,7 +43,7 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given, Then, When} = require('cucumber')
+      const {Given, Then, When} = require('@cucumber/cucumber')
 
       Given(/^a "Given" step passes$/, function() {})
       When(/^a "When" step passes$/, function() {})
@@ -68,7 +68,7 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {setWorldConstructor, Then, When} = require('cucumber')
+      const {setWorldConstructor, Then, When} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       setWorldConstructor(function () {
@@ -102,7 +102,7 @@ Feature: Core feature elements execution
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {setWorldConstructor, Then, When} = require('cucumber')
+      const {setWorldConstructor, Then, When} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       setWorldConstructor(function () {

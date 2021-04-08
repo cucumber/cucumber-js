@@ -1,16 +1,20 @@
-import { When, Then, DataTable } from '../../'
+import { DataTable, Then, When } from '../../'
 import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
 import Mustache from 'mustache'
 import {
-  valueOrDefault,
-  doesNotHaveValue,
   doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
 } from '../../src/value_checker'
 import { World } from '../support/world'
 
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+
+When('my env includes {string}', function (this: World, envString: string) {
+  this.sharedEnv = this.parseEnvString(envString)
+})
 
 When(
   /^I run cucumber-js(?: with `(|.+)`)?$/,
@@ -23,6 +27,26 @@ When(
 )
 
 When(
+  /^I run cucumber-js with arguments `(|.+)` and env `(|.+)`$/,
+  { timeout: 10000 },
+  async function (this: World, args: string, envString: string) {
+    const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
+    const stringArgs = stringArgv(renderedArgs)
+    const env = this.parseEnvString(envString)
+    return await this.run(this.localExecutablePath, stringArgs, env)
+  }
+)
+
+When(
+  /^I run cucumber-js with env `(|.+)`$/,
+  { timeout: 10000 },
+  async function (this: World, envString: string) {
+    const env = this.parseEnvString(envString)
+    return await this.run(this.localExecutablePath, [], env)
+  }
+)
+
+When(
   /^I run cucumber-js with all formatters(?: and `(|.+)`)?$/,
   { timeout: 10000 },
   async function (this: World, args: string) {
@@ -30,7 +54,7 @@ When(
       args = ''
     }
     // message is always outputted as part of run
-    const formats = ['json:json.out']
+    const formats = ['html:html.out', 'json:json.out']
     args += ' ' + formats.map((f) => `--format ${f}`).join(' ')
     const renderedArgs = Mustache.render(args, this)
     const stringArgs = stringArgv(renderedArgs)
@@ -52,10 +76,14 @@ When(
 Then(/^it passes$/, () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
 
 Then(/^it fails$/, function (this: World) {
-  const actualCode = doesHaveValue(this.lastRun.error)
+  const actualCode: number = doesHaveValue(this.lastRun.error)
     ? this.lastRun.error.code
     : 0
-  expect(actualCode).not.to.eql(0)
+
+  expect(actualCode).not.to.eql(
+    0,
+    `Expected non-zero exit status, but got ${actualCode}`
+  )
   this.verifiedLastRunError = true
 })
 
@@ -71,34 +99,43 @@ Then(/^the output contains the text:$/, function (this: World, text: string) {
   expect(actualOutput).to.include(expectedOutput)
 })
 
-Then('the output does not contain the text:', function (
-  this: World,
-  text: string
-) {
-  const actualOutput = normalizeText(this.lastRun.output)
-  const expectedOutput = normalizeText(text)
-  expect(actualOutput).not.to.include(expectedOutput)
-})
+Then(
+  'the output does not contain the text:',
+  function (this: World, text: string) {
+    const actualOutput = normalizeText(this.lastRun.output)
+    const expectedOutput = normalizeText(text)
+    expect(actualOutput).not.to.include(expectedOutput)
+  }
+)
 
-Then(/^the error output contains the text snippets:$/, function (
-  this: World,
-  table: DataTable
-) {
-  const actualOutput = normalizeText(this.lastRun.errorOutput)
-  table.rows().forEach((row) => {
-    const expectedOutput = normalizeText(row[0])
+Then(
+  /^the error output contains the text snippets:$/,
+  function (this: World, table: DataTable) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
+    table.rows().forEach((row) => {
+      const expectedOutput = normalizeText(row[0])
+      expect(actualOutput).to.include(expectedOutput)
+    })
+  }
+)
+
+Then(
+  /^the error output contains the text:$/,
+  function (this: World, text: string) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
+    const expectedOutput = normalizeText(text)
     expect(actualOutput).to.include(expectedOutput)
-  })
-})
+  }
+)
 
-Then(/^the error output contains the text:$/, function (
-  this: World,
-  text: string
-) {
-  const actualOutput = normalizeText(this.lastRun.errorOutput)
-  const expectedOutput = normalizeText(text)
-  expect(actualOutput).to.include(expectedOutput)
-})
+Then(
+  'the error output does not contain the text:',
+  function (this: World, text: string) {
+    const actualOutput = normalizeText(this.lastRun.errorOutput)
+    const expectedOutput = normalizeText(text)
+    expect(actualOutput).not.to.include(expectedOutput)
+  }
+)
 
 Then(/^I see the version of Cucumber$/, function (this: World) {
   const actualOutput = this.lastRun.output

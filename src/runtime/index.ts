@@ -1,17 +1,22 @@
-import _ from 'lodash'
-import { formatLocation, EventDataCollector } from '../formatter/helpers'
+import _, { clone } from 'lodash'
+import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
 import Status from '../status'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 import { retriesForPickle } from './helpers'
-import { messages, IdGenerator } from 'cucumber-messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import PickleRunner from './pickle_runner'
 import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { valueOrDefault, doesHaveValue } from '../value_checker'
+import { doesHaveValue, valueOrDefault } from '../value_checker'
+import {
+  ITestRunStopwatch,
+  PredictableTestRunStopwatch,
+  RealTestRunStopwatch,
+} from './stopwatch'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -24,6 +29,7 @@ export interface INewRuntimeOptions {
 
 export interface IRuntimeOptions {
   dryRun: boolean
+  predictableIds: boolean
   failFast: boolean
   filterStacktraces: boolean
   retry: number
@@ -35,6 +41,7 @@ export interface IRuntimeOptions {
 export default class Runtime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
+  private readonly stopwatch: ITestRunStopwatch
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
@@ -52,6 +59,9 @@ export default class Runtime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
+    this.stopwatch = options.predictableIds
+      ? new PredictableTestRunStopwatch()
+      : new RealTestRunStopwatch()
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
@@ -61,14 +71,14 @@ export default class Runtime {
   }
 
   async runTestRunHooks(
-    key: 'beforeTestRunHookDefinitions' | 'afterTestRunHookDefinitions',
+    definitions: TestRunHookDefinition[],
     name: string
   ): Promise<void> {
     if (this.options.dryRun) {
       return
     }
     await bluebird.each(
-      this.supportCodeLibrary[key],
+      definitions,
       async (hookDefinition: TestRunHookDefinition) => {
         const { error } = await UserCodeRunner.run({
           argsArray: [],
@@ -96,6 +106,7 @@ export default class Runtime {
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
+      stopwatch: this.stopwatch,
       gherkinDocument: this.eventDataCollector.getGherkinDocument(pickle.uri),
       newId: this.newId,
       pickle,
@@ -104,8 +115,8 @@ export default class Runtime {
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
     })
-    const testResult = await pickleRunner.run()
-    if (this.shouldCauseFailure(testResult.status)) {
+    const status = await pickleRunner.run()
+    if (this.shouldCauseFailure(status)) {
       this.success = false
     }
   }
@@ -116,15 +127,29 @@ export default class Runtime {
     }
     this.eventBroadcaster.emit(
       'envelope',
-      new messages.Envelope({ testRunStarted: {} })
+      new messages.Envelope({
+        testRunStarted: {
+          timestamp: this.stopwatch.timestamp(),
+        },
+      })
     )
-    await this.runTestRunHooks('beforeTestRunHookDefinitions', 'a BeforeAll')
+    this.stopwatch.start()
+    await this.runTestRunHooks(
+      this.supportCodeLibrary.beforeTestRunHookDefinitions,
+      'a BeforeAll'
+    )
     await bluebird.each(this.pickleIds, this.runPickle.bind(this))
-    await this.runTestRunHooks('afterTestRunHookDefinitions', 'an AfterAll')
+    await this.runTestRunHooks(
+      clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
+      'an AfterAll'
+    )
+    this.stopwatch.stop()
     this.eventBroadcaster.emit(
       'envelope',
       messages.Envelope.fromObject({
-        testRunFinished: { success: this.success },
+        testRunFinished: {
+          timestamp: this.stopwatch.timestamp(),
+        },
       })
     )
     if (this.options.filterStacktraces) {
@@ -133,7 +158,9 @@ export default class Runtime {
     return this.success
   }
 
-  shouldCauseFailure(status: messages.TestResult.Status): boolean {
+  shouldCauseFailure(
+    status: messages.TestStepFinished.TestStepResult.Status
+  ): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
       (status === Status.PENDING && this.options.strict)

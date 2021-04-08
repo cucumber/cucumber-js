@@ -13,7 +13,7 @@ Feature: Multiple Hooks
       """
     And a file named "features/step_definitions/world.js" with:
       """
-      const {setWorldConstructor} = require('cucumber')
+      const {setWorldConstructor} = require('@cucumber/cucumber')
 
       setWorldConstructor(function() {
         this.value = 0
@@ -22,13 +22,13 @@ Feature: Multiple Hooks
     And a file named "features/step_definitions/my_steps.js" with:
       """
       const assert = require('assert')
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given('a step', function() {})
       """
     And a file named "features/step_definitions/hooks.js" with:
       """
-      const {After, Before} = require('cucumber')
+      const {After, Before} = require('@cucumber/cucumber')
       const assert = require('assert')
 
       Before(function() {

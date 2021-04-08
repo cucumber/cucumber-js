@@ -14,6 +14,13 @@
     {
       "packagePatterns": ["mocha", "chai", "sinon"],
       "groupName": "unit test packages"
+    },
+    {
+      "packagePatterns": ["@cucumber"],
+      "groupName": "cucumber packages"
     }
+  ],
+  "schedule": [
+    "on the first day of the month"
   ]
 }

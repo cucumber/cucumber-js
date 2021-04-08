@@ -9,7 +9,7 @@ Feature: Attachments
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {})
       """
@@ -17,7 +17,7 @@ Feature: Attachments
   Scenario: Attach a buffer
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
 
       Before(function() {
         this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
@@ -28,10 +28,24 @@ Feature: Attachments
       | DATA     | MEDIA TYPE | MEDIA ENCODING |
       | iVBORw== | image/png  | BASE64         |
 
+  Scenario: Attach a string that is already base64 encoded
+    Given a file named "features/support/hooks.js" with:
+      """
+      const {Before} = require('@cucumber/cucumber')
+
+      Before(function() {
+        this.attach(Buffer.from([137, 80, 78, 71]).toString('base64'), 'base64:image/png')
+      })
+      """
+    When I run cucumber-js
+    Then scenario "some scenario" "Before" hook has the attachments:
+      | DATA     | MEDIA TYPE | MEDIA ENCODING |
+      | iVBORw== | image/png  | BASE64         |
+
   Scenario: Attach a stream (callback)
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
       const stream = require('stream')
 
       Before(function(testCase, callback) {
@@ -47,10 +61,10 @@ Feature: Attachments
       | DATA     | MEDIA TYPE | MEDIA ENCODING |
       | iVBORw== | image/png  | BASE64         |
 
-    Scenario: Attach a stream (promise)
-      Given a file named "features/support/hooks.js" with:
+  Scenario: Attach a stream (promise)
+    Given a file named "features/support/hooks.js" with:
         """
-        const {Before} = require('cucumber')
+        const {Before} = require('@cucumber/cucumber')
         const stream = require('stream')
 
         Before(function() {
@@ -62,15 +76,15 @@ Feature: Attachments
           return promise
         })
         """
-      When I run cucumber-js
-      Then scenario "some scenario" "Before" hook has the attachments:
-        | DATA     | MEDIA TYPE | MEDIA ENCODING |
-        | iVBORw== | image/png  | BASE64         |
+    When I run cucumber-js
+    Then scenario "some scenario" "Before" hook has the attachments:
+      | DATA     | MEDIA TYPE | MEDIA ENCODING |
+      | iVBORw== | image/png  | BASE64         |
 
   Scenario: Attach from a before hook
     Given a file named "features/support/hooks.js" with:
       """
-      const {Before} = require('cucumber')
+      const {Before} = require('@cucumber/cucumber')
 
       Before(function() {
         this.attach("text")
@@ -79,12 +93,12 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" "Before" hook has the attachments:
       | DATA | MEDIA TYPE | MEDIA ENCODING |
-      | text | text/plain | UTF8           |
+      | text | text/plain | IDENTITY       |
 
   Scenario: Attach from an after hook
     Given a file named "features/support/hooks.js" with:
       """
-      const {After} = require('cucumber')
+      const {After} = require('@cucumber/cucumber')
 
       After(function() {
         this.attach("text")
@@ -93,12 +107,12 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" "After" hook has the attachments:
       | DATA | MEDIA TYPE | MEDIA ENCODING |
-      | text | text/plain | UTF8           |
+      | text | text/plain | IDENTITY       |
 
   Scenario: Attach from a step definition
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given(/^a step$/, function() {
         this.attach("text")
@@ -107,13 +121,13 @@ Feature: Attachments
     When I run cucumber-js
     Then scenario "some scenario" step "Given a step" has the attachments:
       | DATA | MEDIA TYPE | MEDIA ENCODING |
-      | text | text/plain | UTF8           |
+      | text | text/plain | IDENTITY       |
 
   @spawn
   Scenario: Attaching after hook/step finishes
     Given a file named "features/support/hooks.js" with:
       """
-      const {After} = require('cucumber')
+      const {After} = require('@cucumber/cucumber')
       const Promise = require('bluebird')
 
       After(function() {

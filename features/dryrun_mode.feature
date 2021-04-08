@@ -13,7 +13,7 @@ Feature: Dryrun mode
   Scenario: default behavior
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given('a step', function() {})
       """
@@ -24,7 +24,7 @@ Feature: Dryrun mode
   Scenario: ambiguous step
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('cucumber')
+      const {Given} = require('@cucumber/cucumber')
 
       Given('a step', function() {});
       Given('a(n) step', function() {});
@@ -41,7 +41,7 @@ Feature: Dryrun mode
   Scenario: hooks should not execute in dry run, serial runtime
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
-    const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
+    const {BeforeAll, Before, After, AfterAll, Given} = require('@cucumber/cucumber')
 
     Before(function() {throw 'shouldnt run Before'})
     After(function() {throw 'shouldnt run After'})
@@ -58,7 +58,7 @@ Feature: Dryrun mode
   Scenario: hooks should not execute in dry run, parallel runtime
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """
-    const {BeforeAll, Before, After, AfterAll, Given} = require('cucumber')
+    const {BeforeAll, Before, After, AfterAll, Given} = require('@cucumber/cucumber')
 
     Before(function() {throw 'shouldnt run Before'})
     After(function() {throw 'shouldnt run After'})
