@@ -174,31 +174,43 @@ For instance, for ES6 support with [Babel](https://babeljs.io/) 7 add:
 
 This will effectively call `require('@babel/register')` prior to requiring any support files.
 
-### Non JS files
-
-If your files end in an extension other than `js`, make sure to also include the `--require` option to state the support files to require.
-
-For example, with [TypeScript](https://www.typescriptlang.org/):
-
-```
---require-module ts-node/register --require 'step-definitions/**/*.ts'
-```
-
-or [CoffeeScript](https://www.npmjs.com/package/coffeescript):
+If your files end with an extension other than `js`, make sure to also include the `--require` option to state the required support files. For example, if using [CoffeeScript](https://www.npmjs.com/package/coffeescript):
 
 ```
 --require-module coffeescript/register --require 'features/**/*.coffee'
 ```
 
-### Extra configuration
+### Typescript
 
-Sometimes the required module (say `@ts-node/register`) needs extra configuration (e.g. you might want to configure it such that it prevents the compiled JS being written out to files, and pass some compiler options). In such cases, create a script (say, `tests.setup.js`):
+#### With ts-node
+
+If you are using [ts-node](https://github.com/TypeStrong/ts-node):
+
+```
+--require-module ts-node/register --require 'step-definitions/**/*.ts'
+```
+
+> ⚠️ Some TypeScript setups use `esnext` modules by default, 
+>   which doesn't marry well with Node. You may consider using commonjs instead.
+>   See how to add [extra configuration](#extra-configuration) below.
+
+#### With babel
+
+If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
+
+```
+--require-module @babel/register --require 'step-definitions/**/*.ts'
+```
+
+### Extra Configuration
+
+Sometimes the required module (say `@ts-node/register`) needs extra configuration. For example, you might want to configure it such that it prevents the compiled JS being written out to files, and pass some compiler options. In such cases, create a script (say, `tests.setup.js`):
 
 ```js
 require('ts-node').register({
   transpileOnly: true,
   compilerOptions: {
-    // your compiler options here
+    "module": "commonjs",
   },
 });
 ```
