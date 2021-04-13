@@ -73,10 +73,8 @@ describe('Configuration', () => {
         const relativeFeaturePath = path.join('features', 'a.feature')
         const featurePath = path.join(cwd, relativeFeaturePath)
         await fsExtra.outputFile(featurePath, '')
-        const jsSupportCodePath = path.join(cwd, 'features', 'a.js')
-        await fsExtra.outputFile(jsSupportCodePath, '')
-        const mjsSupportCodePath = path.join(cwd, 'features', 'b.mjs')
-        await fsExtra.outputFile(mjsSupportCodePath, '')
+        const supportCodePath = path.join(cwd, 'features', 'a.js')
+        await fsExtra.outputFile(supportCodePath, '')
         const argv = baseArgv.concat([relativeFeaturePath])
 
         // Act
@@ -89,7 +87,7 @@ describe('Configuration', () => {
         // Assert
         expect(featurePaths).to.eql([featurePath])
         expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
-        expect(supportCodePaths).to.eql([jsSupportCodePath])
+        expect(supportCodePaths).to.eql([supportCodePath])
       })
     })
 
@@ -151,10 +149,8 @@ describe('Configuration', () => {
       const relativeFeaturePath = path.join('features', 'nested', 'a.feature')
       const featurePath = path.join(cwd, relativeFeaturePath)
       await fsExtra.outputFile(featurePath, '')
-      const jsSupportCodePath = path.join(cwd, 'features', 'a.js')
-      await fsExtra.outputFile(jsSupportCodePath, '')
-      const mjsSupportCodePath = path.join(cwd, 'features', 'b.mjs')
-      await fsExtra.outputFile(mjsSupportCodePath, '')
+      const supportCodePath = path.join(cwd, 'features', 'a.js')
+      await fsExtra.outputFile(supportCodePath, '')
       const argv = baseArgv.concat([relativeFeaturePath])
 
       // Act
@@ -167,7 +163,7 @@ describe('Configuration', () => {
       // Assert
       expect(featurePaths).to.eql([featurePath])
       expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
-      expect(supportCodePaths).to.eql([jsSupportCodePath])
+      expect(supportCodePaths).to.eql([supportCodePath])
     })
   })
 
