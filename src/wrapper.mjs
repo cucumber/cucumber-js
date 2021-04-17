@@ -1,4 +1,4 @@
-import cucumber from './lib/index.js'
+import cucumber from './index.js'
 
 export const Cli = cucumber.Cli
 export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
