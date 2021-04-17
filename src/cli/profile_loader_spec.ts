@@ -8,7 +8,7 @@ import { promisify } from 'util'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const importers = require('../../importers')
+const importers = require('../importers')
 
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string

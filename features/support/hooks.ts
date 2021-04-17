@@ -91,13 +91,7 @@ Before('@global-install', function (this: World) {
     '@cucumber',
     'cucumber'
   )
-  const itemsToCopy = [
-    'bin',
-    'lib',
-    'importers.js',
-    'wrapper.mjs',
-    'package.json',
-  ]
+  const itemsToCopy = ['bin', 'lib', 'wrapper.mjs', 'package.json']
   itemsToCopy.forEach((item) => {
     fsExtra.copySync(
       path.join(projectPath, item),

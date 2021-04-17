@@ -41,9 +41,9 @@ requiredModules:
     ignore:
       - coverage/**/*
       - 'dist/**/*'
-      - 'importers.js'
       - 'lib/**/*'
       - 'node_modules/**/*'
+      - 'src/importers.js'
       - 'tmp/**/*'
     root: '**/*.{js,ts}'
   stripLoaders: false

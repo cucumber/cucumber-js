@@ -17,7 +17,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const importers = require('../../importers')
+const importers = require('../importers')
 
 const StepDefinitionPatternType =
   messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType

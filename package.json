@@ -260,7 +260,7 @@
     "typescript": "4.2.3"
   },
   "scripts": {
-    "build-local": "tsc -p tsconfig.node.json",
+    "build-local": "tsc -p tsconfig.node.json && cp src/importers.js lib/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
     "feature-test": "node ./bin/cucumber-js",
     "html-formatter": "node ./bin/cucumber-js --profile htmlFormatter",
@@ -288,7 +288,6 @@
   "files": [
     "bin/",
     "lib/",
-    "importers.js",
     "wrapper.mjs"
   ]
 }
