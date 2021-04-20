@@ -3,7 +3,7 @@ import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'
 import { retriesForPickle } from '../helpers'
-import { messages } from '@cucumber/messages'
+import messages, { parseEnvelope } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
@@ -87,9 +87,7 @@ export default class Coordinator {
     } else if (message.ready) {
       this.giveWork(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
-      const envelope = messages.Envelope.fromObject(
-        JSON.parse(message.jsonEnvelope)
-      )
+      const envelope = parseEnvelope(message.jsonEnvelope)
       this.eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.testCase)) {
         this.remapDefinitionIds(envelope.testCase)
@@ -128,7 +126,7 @@ export default class Coordinator {
     )
   }
 
-  remapDefinitionIds(testCase: messages.ITestCase): void {
+  remapDefinitionIds(testCase: messages.TestCase): void {
     for (const testStep of testCase.testSteps) {
       if (testStep.hookId !== '') {
         testStep.hookId = this.supportCodeIdMap[testStep.hookId]
@@ -172,23 +170,23 @@ export default class Coordinator {
   }
 
   onWorkerProcessClose(exitCode: number): void {
-    if (exitCode !== 0) {
+    const success = exitCode === 0
+    if (!success) {
       this.success = false
     }
     if (_.every(this.workers, 'closed')) {
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testRunFinished: {
-            timestamp: this.stopwatch.timestamp(),
-          },
-        })
-      )
+      const envelope: messages.Envelope = {
+        testRunFinished: {
+          timestamp: this.stopwatch.timestamp(),
+          success,
+        },
+      }
+      this.eventBroadcaster.emit('envelope', envelope)
       this.onFinish(this.success)
     }
   }
 
-  parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
+  parseTestCaseResult(testCaseFinished: messages.TestCaseFinished): void {
     const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
@@ -201,14 +199,12 @@ export default class Coordinator {
   }
 
   run(numberOfWorkers: number, done: (success: boolean) => void): void {
-    this.eventBroadcaster.emit(
-      'envelope',
-      new messages.Envelope({
-        testRunStarted: {
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const envelope: messages.Envelope = {
+      testRunStarted: {
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', envelope)
     this.stopwatch.start()
     _.times(numberOfWorkers, (id) =>
       this.startWorker(id.toString(), numberOfWorkers)
@@ -243,7 +239,15 @@ export default class Coordinator {
   }
 
   shouldCauseFailure(
-    status: messages.TestStepFinished.TestStepResult.Status
+    // TODO: use messages.Status type
+    status:
+      | 'UNKNOWN'
+      | 'PASSED'
+      | 'SKIPPED'
+      | 'PENDING'
+      | 'UNDEFINED'
+      | 'AMBIGUOUS'
+      | 'FAILED'
   ): boolean {
     return (
       _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||

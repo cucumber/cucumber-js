@@ -2,7 +2,7 @@ import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { formatUndefinedParameterType } from './helpers/issue_helpers'
 import { durationBetweenTimestamps } from '../time'
@@ -42,7 +42,7 @@ export default class ProgressBarFormatter extends Formatter {
   logProgress({
     testStepId,
     testCaseStartedId,
-  }: messages.ITestStepFinished): void {
+  }: messages.TestStepFinished): void {
     const { testCase } = this.eventDataCollector.getTestCaseAttempt(
       testCaseStartedId
     )
@@ -53,7 +53,7 @@ export default class ProgressBarFormatter extends Formatter {
   }
 
   logUndefinedParametertype(
-    parameterType: messages.IUndefinedParameterType
+    parameterType: messages.UndefinedParameterType
   ): void {
     this.log(
       `Undefined parameter type: ${formatUndefinedParameterType(
@@ -62,7 +62,7 @@ export default class ProgressBarFormatter extends Formatter {
     )
   }
 
-  logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
+  logErrorIfNeeded(testCaseFinished: messages.TestCaseFinished): void {
     const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )

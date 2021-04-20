@@ -4,7 +4,7 @@ import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import { durationToNanoseconds } from '../time'
 import path from 'path'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
@@ -14,7 +14,7 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
 import ITag = messages.GherkinDocument.Feature.ITag
 import IFeature = messages.GherkinDocument.IFeature
-import IPickle = messages.IPickle
+import IPickle = messages.Pickle
 import IScenario = messages.GherkinDocument.Feature.IScenario
 import IEnvelope = messages.IEnvelope
 import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
@@ -76,17 +76,17 @@ interface IBuildJsonScenarioOptions {
   gherkinScenarioMap: Dictionary<IScenario>
   gherkinExampleRuleMap: Dictionary<IRule>
   gherkinScenarioLocationMap: Dictionary<messages.ILocation>
-  pickle: messages.IPickle
+  pickle: messages.Pickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
   gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
-  pickleStepMap: Dictionary<messages.Pickle.IPickleStep>
+  pickleStepMap: Dictionary<messages.PickleStep>
   testStep: messages.TestCase.ITestStep
-  testStepAttachments: messages.IAttachment[]
-  testStepResult: messages.TestStepFinished.ITestStepResult
+  testStepAttachments: messages.Attachment[]
+  testStepResult: messages.TestStepResult
 }
 
 interface UriToTestCaseAttemptsMap {
@@ -110,7 +110,7 @@ export default class JsonFormatter extends Formatter {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): any {
+  formatDataTable(dataTable: messages.PickleTable): any {
     return {
       rows: dataTable.rows.map((row) => ({ cells: _.map(row.cells, 'value') })),
     }
@@ -127,7 +127,7 @@ export default class JsonFormatter extends Formatter {
   }
 
   formatStepArgument(
-    stepArgument: messages.IPickleStepArgument,
+    stepArgument: messages.PickleStepArgument,
     gherkinStep: messages.GherkinDocument.Feature.IStep
   ): any {
     if (doesNotHaveValue(stepArgument)) {

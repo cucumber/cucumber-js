@@ -1,5 +1,5 @@
 import Formatter, { IFormatterOptions } from '.'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 
 export default class MessageFormatter extends Formatter {
   constructor(options: IFormatterOptions) {

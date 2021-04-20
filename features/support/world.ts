@@ -9,7 +9,7 @@ import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
 import ndjsonParse from 'ndjson-parse'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import FakeReportServer from '../../test/fake_report_server'
 import { doesHaveValue } from '../../src/value_checker'
 

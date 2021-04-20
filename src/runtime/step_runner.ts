@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Status from '../status'
 import Time, { millisecondsToDuration } from '../time'
 import UserCodeRunner from '../user_code_runner'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { format } from 'assertion-error-formatter'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
@@ -17,7 +17,7 @@ const { beginTiming, endTiming } = Time
 export interface IRunOptions {
   defaultTimeout: number
   hookParameter: ITestCaseHookParameter
-  step: messages.Pickle.IPickleStep
+  step: messages.PickleStep
   stepDefinition: IDefinition
   world: any
 }
@@ -28,10 +28,10 @@ export async function run({
   step,
   stepDefinition,
   world,
-}: IRunOptions): Promise<messages.TestStepFinished.ITestStepResult> {
+}: IRunOptions): Promise<messages.TestStepResult> {
   beginTiming()
   let error: any,
-    result: messages.TestStepFinished.ITestStepResult,
+    result: messages.TestStepResult,
     invocationData: IGetInvocationDataResponse
 
   try {

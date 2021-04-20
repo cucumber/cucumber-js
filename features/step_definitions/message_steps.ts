@@ -10,7 +10,7 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { World } from '../support/world'
 import semver from 'semver'
 
@@ -249,7 +249,7 @@ Then(
     hookKeyword: string,
     table: DataTable
   ) {
-    const expectedAttachments: messages.IAttachment[] = table
+    const expectedAttachments: messages.Attachment[] = table
       .hashes()
       .map((x) => {
         return {

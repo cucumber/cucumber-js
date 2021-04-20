@@ -4,7 +4,7 @@ import Formatter, { IFormatterOptions } from './'
 import Table from 'cli-table3'
 import { durationToMilliseconds } from '../time'
 import { doesHaveValue } from '../value_checker'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import IEnvelope = messages.IEnvelope
 
 export default class UsageFormatter extends Formatter {

@@ -307,10 +307,10 @@ export class SupportCodeLibraryBuilder {
 
   buildStepDefinitions(): {
     stepDefinitions: StepDefinition[]
-    undefinedParameterTypes: messages.IUndefinedParameterType[]
+    undefinedParameterTypes: messages.UndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
-    const undefinedParameterTypes: messages.IUndefinedParameterType[] = []
+    const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
       ({ code, line, options, pattern, uri }) => {
         let expression

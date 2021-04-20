@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import AttachmentManager, { IAttachment } from './'
 import stream, { Readable } from 'stream'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {

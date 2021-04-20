@@ -15,8 +15,8 @@ import { PredictableTestRunStopwatch } from './stopwatch'
 import IEnvelope = messages.IEnvelope
 
 interface ITestPickleRunnerRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
   retries?: number
   skip?: boolean
   supportCodeLibrary: ISupportCodeLibrary

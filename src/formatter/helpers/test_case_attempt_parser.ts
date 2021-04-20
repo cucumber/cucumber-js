@@ -7,7 +7,7 @@ import {
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 import path from 'path'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -17,10 +17,10 @@ import { ILineAndUri } from '../../types'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri
-  argument?: messages.IPickleStepArgument
-  attachments: messages.IAttachment[]
+  argument?: messages.PickleStepArgument
+  attachments: messages.Attachment[]
   keyword: string
-  result: messages.TestStepFinished.ITestStepResult
+  result: messages.TestStepResult
   snippet?: string
   sourceLocation?: ILineAndUri
   text?: string
@@ -30,7 +30,7 @@ export interface IParsedTestCase {
   attempt: number
   name: string
   sourceLocation?: ILineAndUri
-  worstTestStepResult: messages.TestStepFinished.ITestStepResult
+  worstTestStepResult: messages.TestStepResult
 }
 
 export interface IParsedTestCaseAttempt {
@@ -43,13 +43,13 @@ interface IParseStepRequest {
   gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
   keyword: string
   keywordType: KeywordType
-  pickleStep: messages.Pickle.IPickleStep
+  pickleStep: messages.PickleStep
   pickleUri: string
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
   testStep: messages.TestCase.ITestStep
-  testStepResult: messages.TestStepFinished.ITestStepResult
-  testStepAttachments: messages.IAttachment[]
+  testStepResult: messages.TestStepResult
+  testStepAttachments: messages.Attachment[]
 }
 
 function parseStep({

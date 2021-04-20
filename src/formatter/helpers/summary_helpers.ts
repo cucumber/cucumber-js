@@ -26,8 +26,8 @@ export function formatSummary({
   testCaseAttempts,
   testRunDuration,
 }: IFormatSummaryRequest): string {
-  const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
-  const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
+  const testCaseResults: messages.TestStepResult[] = []
+  const testStepResults: messages.TestStepResult[] = []
   let totalStepDuration = getZeroDuration()
   testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
     Object.values(stepResults).forEach((stepResult) => {
@@ -60,7 +60,7 @@ export function formatSummary({
 
 interface IGetCountSummaryRequest {
   colorFns: IColorFns
-  objects: messages.TestStepFinished.ITestStepResult[]
+  objects: messages.TestStepResult[]
   type: string
 }
 

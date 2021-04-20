@@ -1,9 +1,9 @@
 import _, { Dictionary } from 'lodash'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(
-  gherkinDocument: messages.IGherkinDocument
+  gherkinDocument: messages.GherkinDocument
 ): Dictionary<messages.GherkinDocument.Feature.IStep> {
   return _.chain(gherkinDocument.feature.children)
     .map(extractStepContainers)
@@ -34,7 +34,7 @@ function extractStepContainers(
 }
 
 export function getGherkinScenarioMap(
-  gherkinDocument: messages.IGherkinDocument
+  gherkinDocument: messages.GherkinDocument
 ): Dictionary<messages.GherkinDocument.Feature.IScenario> {
   return _.chain(gherkinDocument.feature.children)
     .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
@@ -55,7 +55,7 @@ export function getGherkinScenarioMap(
 }
 
 export function getGherkinExampleRuleMap(
-  gherkinDocument: messages.IGherkinDocument
+  gherkinDocument: messages.GherkinDocument
 ): Dictionary<messages.GherkinDocument.Feature.FeatureChild.IRule> {
   return _.chain(gherkinDocument.feature.children)
     .filter('rule')
@@ -71,7 +71,7 @@ export function getGherkinExampleRuleMap(
 }
 
 export function getGherkinScenarioLocationMap(
-  gherkinDocument: messages.IGherkinDocument
+  gherkinDocument: messages.GherkinDocument
 ): Dictionary<messages.ILocation> {
   const locationMap: Dictionary<messages.ILocation> = {}
   const scenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario> = getGherkinScenarioMap(

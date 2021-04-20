@@ -2,9 +2,9 @@ import SummaryFormatter from './summary_formatter'
 import Status from '../status'
 import { doesHaveValue } from '../value_checker'
 import { IFormatterOptions } from './index'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import IEnvelope = messages.IEnvelope
-import ITestStepFinished = messages.ITestStepFinished
+import ITestStepFinished = messages.TestStepFinished
 
 const STATUS_CHARACTER_MAPPING: { [key: number]: string } = {
   [Status.AMBIGUOUS]: 'A',

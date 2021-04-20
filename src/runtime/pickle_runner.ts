@@ -27,16 +27,16 @@ interface ITestStep {
   isHook: boolean
   hookDefinition?: TestCaseHookDefinition
   stepHookDefinition?: TestStepHookDefinition
-  pickleStep?: messages.Pickle.IPickleStep
+  pickleStep?: messages.PickleStep
   stepDefinitions?: StepDefinition[]
 }
 
 export interface INewPickleRunnerOptions {
   eventBroadcaster: EventEmitter
   stopwatch: ITestRunStopwatch
-  gherkinDocument: messages.IGherkinDocument
+  gherkinDocument: messages.GherkinDocument
   newId: IdGenerator.NewId
-  pickle: messages.IPickle
+  pickle: messages.Pickle
   retries: number
   skip: boolean
   supportCodeLibrary: ISupportCodeLibrary
@@ -49,15 +49,15 @@ export default class PickleRunner {
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
   private readonly stopwatch: ITestRunStopwatch
-  private readonly gherkinDocument: messages.IGherkinDocument
+  private readonly gherkinDocument: messages.GherkinDocument
   private readonly newId: IdGenerator.NewId
-  private readonly pickle: messages.IPickle
+  private readonly pickle: messages.Pickle
   private readonly maxAttempts: number
   private readonly skip: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testCaseId: string
   private readonly testSteps: ITestStep[]
-  private testStepResults: messages.TestStepFinished.ITestStepResult[]
+  private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: any
 
@@ -215,15 +215,13 @@ export default class PickleRunner {
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }
 
-  getStepDefinitions(
-    pickleStep: messages.Pickle.IPickleStep
-  ): StepDefinition[] {
+  getStepDefinitions(pickleStep: messages.PickleStep): StepDefinition[] {
     return this.supportCodeLibrary.stepDefinitions.filter((stepDefinition) =>
       stepDefinition.matchesStepName(pickleStep.text)
     )
   }
 
-  getWorstStepResult(): messages.TestStepFinished.ITestStepResult {
+  getWorstStepResult(): messages.TestStepResult {
     if (this.testStepResults.length === 0) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: this.skip ? Status.SKIPPED : Status.PASSED,
@@ -233,10 +231,10 @@ export default class PickleRunner {
   }
 
   async invokeStep(
-    step: messages.Pickle.IPickleStep,
+    step: messages.PickleStep,
     stepDefinition: IDefinition,
     hookParameter?: any
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
+  ): Promise<messages.TestStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
@@ -257,7 +255,7 @@ export default class PickleRunner {
   async aroundTestStep(
     testStepId: string,
     attempt: number,
-    runStepFn: () => Promise<messages.TestStepFinished.ITestStepResult>
+    runStepFn: () => Promise<messages.TestStepResult>
   ): Promise<void> {
     this.eventBroadcaster.emit(
       'envelope',
@@ -353,7 +351,7 @@ export default class PickleRunner {
     hookDefinition: TestCaseHookDefinition,
     hookParameter: ITestCaseHookParameter,
     isBeforeHook: boolean
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
+  ): Promise<messages.TestStepResult> {
     if (this.shouldSkipHook(isBeforeHook)) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: Status.SKIPPED,
@@ -364,8 +362,8 @@ export default class PickleRunner {
 
   async runStepHooks(
     stepHooks: TestStepHookDefinition[],
-    stepResult?: messages.TestStepFinished.ITestStepResult
-  ): Promise<messages.TestStepFinished.ITestStepResult[]> {
+    stepResult?: messages.TestStepResult
+  ): Promise<messages.TestStepResult[]> {
     const stepHooksResult = []
     const hookParameter: ITestStepHookParameter = {
       gherkinDocument: this.gherkinDocument,
@@ -382,9 +380,7 @@ export default class PickleRunner {
     return stepHooksResult
   }
 
-  async runStep(
-    testStep: ITestStep
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
+  async runStep(testStep: ITestStep): Promise<messages.TestStepResult> {
     if (testStep.stepDefinitions.length === 0) {
       return messages.TestStepFinished.TestStepResult.fromObject({
         status: Status.UNDEFINED,
