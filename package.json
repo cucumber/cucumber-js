@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "7.1.0",
+  "version": "7.2.0",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
