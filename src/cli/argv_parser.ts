@@ -22,6 +22,7 @@ export interface IParsedArgvFormatOptions {
 export interface IParsedArgvOptions {
   backtrace: boolean
   dryRun: boolean
+  esm: boolean
   exit: boolean
   failFast: boolean
   format: string[]
@@ -112,6 +113,7 @@ const ArgvParser = {
         'invoke formatters without executing steps',
         false
       )
+      .option('--esm', 'import support code via ES module imports', false)
       .option(
         '--exit',
         'force shutdown of the event loop when the test run has finished: cucumber will call process.exit',
