@@ -1,4 +1,4 @@
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
 
 // Messages from Coordinator to Worker

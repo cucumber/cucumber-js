@@ -7,7 +7,7 @@ import {
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
 import path from 'path'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { World } from '../support/world'
 import Envelope = messages.Envelope
 

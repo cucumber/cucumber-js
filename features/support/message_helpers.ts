@@ -5,7 +5,7 @@ import {
   getStepKeyword,
 } from '../../src/formatter/helpers/pickle_parser'
 import util from 'util'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'
 

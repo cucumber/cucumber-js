@@ -10,7 +10,7 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { World } from '../support/world'
 import semver from 'semver'
 

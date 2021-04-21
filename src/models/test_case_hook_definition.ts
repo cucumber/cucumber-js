@@ -6,7 +6,7 @@ import Definition, {
   IGetInvocationDataResponse,
   IHookDefinitionOptions,
 } from './definition'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 export default class TestCaseHookDefinition
   extends Definition

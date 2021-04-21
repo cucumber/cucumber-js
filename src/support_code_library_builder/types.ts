@@ -1,4 +1,4 @@
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'

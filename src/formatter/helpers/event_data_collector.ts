@@ -1,5 +1,5 @@
 import _, { Dictionary, values } from 'lodash'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
 import { Query } from '@cucumber/query'

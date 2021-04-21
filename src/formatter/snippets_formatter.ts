@@ -1,7 +1,7 @@
 import Formatter, { IFormatterOptions } from './'
 import { parseTestCaseAttempt } from './helpers'
 import { doesHaveValue } from '../value_checker'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 
 export default class SnippetsFormatter extends Formatter {

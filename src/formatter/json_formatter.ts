@@ -2,7 +2,7 @@ import _, { Dictionary } from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import path from 'path'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,

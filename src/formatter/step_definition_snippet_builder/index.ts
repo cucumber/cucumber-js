@@ -5,7 +5,7 @@ import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export interface INewStepDefinitionSnippetBuilderOptions {

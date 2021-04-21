@@ -7,7 +7,7 @@ import {
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 const DEFAULT_SEPARATOR = '\n'
 

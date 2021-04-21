@@ -1,4 +1,4 @@
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../src/value_checker'
 import { IGherkinOptions } from '@cucumber/gherkin'
 import { GherkinStreams } from '@cucumber/gherkin-streams'

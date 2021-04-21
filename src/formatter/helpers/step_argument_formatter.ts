@@ -1,6 +1,6 @@
 import Table from 'cli-table3'
 import { parseStepArgument } from '../../step_arguments'
-import messages from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 function formatDataTable(dataTable: messages.PickleTable): string {
   const table = new Table({
