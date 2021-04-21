@@ -74,7 +74,7 @@ function parseStep({
         : 'After',
     result: testStepResult,
   }
-  if (testStep.hookId !== '') {
+  if (doesHaveValue(testStep.hookId)) {
     let hookDefinition: TestCaseHookDefinition
     if (isBeforeHook) {
       hookDefinition = supportCodeLibrary.beforeTestCaseHookDefinitions.find(

@@ -85,6 +85,7 @@ describe('PickleRunner', () => {
         const passedTestResult: messages.TestStepResult = {
           duration: messages.TimeConversion.millisecondsToDuration(1),
           status: messages.TestStepResultStatus.PASSED,
+          message: undefined,
           willBeRetried: false,
         }
 

@@ -160,7 +160,7 @@ export default class JsonFormatter extends Formatter {
         const pickleStepMap = getPickleStepMap(pickle)
         let isBeforeHook = true
         const steps = testCaseAttempt.testCase.testSteps.map((testStep) => {
-          isBeforeHook = isBeforeHook && testStep.pickleStepId === ''
+          isBeforeHook = isBeforeHook && !doesHaveValue(testStep.pickleStepId)
           return this.getStepData({
             isBeforeHook,
             gherkinStepMap,
@@ -257,7 +257,7 @@ export default class JsonFormatter extends Formatter {
     testStepResult,
   }: IBuildJsonStepOptions): IJsonStep {
     const data: IJsonStep = {}
-    if (testStep.pickleStepId !== '') {
+    if (doesHaveValue(testStep.pickleStepId)) {
       const pickleStep = pickleStepMap[testStep.pickleStepId]
       data.arguments = this.formatStepArgument(
         pickleStep.argument,
@@ -270,7 +270,10 @@ export default class JsonFormatter extends Formatter {
       data.keyword = isBeforeHook ? 'Before' : 'After'
       data.hidden = true
     }
-    if (testStep.stepDefinitionIds.length === 1) {
+    if (
+      doesHaveValue(testStep.stepDefinitionIds) &&
+      testStep.stepDefinitionIds.length === 1
+    ) {
       const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
         (s) => s.id === testStep.stepDefinitionIds[0]
       )
@@ -284,7 +287,7 @@ export default class JsonFormatter extends Formatter {
       data.result.duration =
         messages.TimeConversion.durationToMilliseconds(
           testStepResult.duration
-        ) * 1000
+        ) * 1000000
     }
     if (
       status === messages.TestStepResultStatus.FAILED &&
