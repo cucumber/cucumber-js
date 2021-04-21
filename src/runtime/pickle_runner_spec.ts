@@ -48,14 +48,10 @@ async function testPickleRunner(
   return { envelopes, result }
 }
 
-function predictableTimestamp(counter: number): any {
+function predictableTimestamp(counter: number): messages.Timestamp {
   return {
     nanos: 1000000 * counter,
-    seconds: {
-      high: 0,
-      low: 0,
-      unsigned: false,
-    },
+    seconds: 0,
   }
 }
 
@@ -447,6 +443,7 @@ describe('PickleRunner', () => {
               testCaseStartedId: '3',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(0),
+                message: undefined,
                 status: messages.TestStepResultStatus.PASSED,
                 willBeRetried: false,
               },
