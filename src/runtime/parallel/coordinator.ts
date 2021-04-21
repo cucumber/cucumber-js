@@ -2,7 +2,7 @@ import _, { Dictionary } from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import { retriesForPickle } from '../helpers'
-import * as messages, { parseEnvelope } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
@@ -86,7 +86,7 @@ export default class Coordinator {
     } else if (message.ready) {
       this.giveWork(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
-      const envelope = parseEnvelope(message.jsonEnvelope)
+      const envelope = messages.parseEnvelope(message.jsonEnvelope)
       this.eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.testCase)) {
         this.remapDefinitionIds(envelope.testCase)
