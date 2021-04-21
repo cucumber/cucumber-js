@@ -195,8 +195,8 @@ describe('PickleRunner', () => {
                       children: [
                         {
                           children: [],
-                          start: 0,
-                          value: '',
+                          start: undefined,
+                          value: undefined,
                         },
                       ],
                       start: 19,
@@ -206,12 +206,12 @@ describe('PickleRunner', () => {
                       children: [
                         {
                           children: [],
-                          start: 0,
-                          value: '',
+                          start: undefined,
+                          value: undefined,
                         },
                       ],
-                      start: 0,
-                      value: '',
+                      start: undefined,
+                      value: undefined,
                     },
                   ],
                   start: 18,
