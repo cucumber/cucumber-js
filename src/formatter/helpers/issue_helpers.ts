@@ -1,5 +1,4 @@
 import indentString from 'indent-string'
-import Status from '../../status'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 import messages from '@cucumber/messages'
 import { IColorFns } from '../get_color_fns'
@@ -10,16 +9,16 @@ import { Dictionary } from 'lodash'
 
 export function isFailure(result: messages.TestStepResult): boolean {
   return (
-    result.status === Status.AMBIGUOUS ||
-    result.status === Status.UNDEFINED ||
-    (result.status === Status.FAILED && !result.willBeRetried)
+    result.status === 'AMBIGUOUS' ||
+    result.status === 'UNDEFINED' ||
+    (result.status === 'FAILED' && !result.willBeRetried)
   )
 }
 
 export function isWarning(result: messages.TestStepResult): boolean {
   return (
-    result.status === Status.PENDING ||
-    (result.status === Status.FAILED && result.willBeRetried)
+    result.status === 'PENDING' ||
+    (result.status === 'FAILED' && result.willBeRetried)
   )
 }
 

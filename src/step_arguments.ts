@@ -4,7 +4,7 @@ import { doesHaveValue } from './value_checker'
 
 export interface IPickleStepArgumentFunctionMap<T> {
   dataTable: (arg: messages.PickleTable) => T
-  docString: (arg: messages.PickleStepArgument.IPickleDocString) => T
+  docString: (arg: messages.PickleDocString) => T
 }
 
 export function parseStepArgument<T>(

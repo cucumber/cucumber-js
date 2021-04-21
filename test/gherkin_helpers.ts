@@ -6,12 +6,12 @@ import { EventEmitter } from 'events'
 
 export interface IParsedSource {
   pickles: messages.Pickle[]
-  source: messages.ISource
+  source: messages.Source
   gherkinDocument: messages.GherkinDocument
 }
 
 export interface IParsedSourceWithEnvelopes extends IParsedSource {
-  envelopes: messages.IEnvelope[]
+  envelopes: messages.Envelope[]
 }
 
 export interface IParseRequest {
@@ -35,12 +35,12 @@ export async function parse({
     },
   ]
   return await new Promise<IParsedSourceWithEnvelopes>((resolve, reject) => {
-    let source: messages.ISource
+    let source: messages.Source
     let gherkinDocument: messages.GherkinDocument
     const pickles: messages.Pickle[] = []
-    const envelopes: messages.IEnvelope[] = []
+    const envelopes: messages.Envelope[] = []
     const messageStream = GherkinStreams.fromSources(sources, options)
-    messageStream.on('data', (envelope: messages.IEnvelope) => {
+    messageStream.on('data', (envelope: messages.Envelope) => {
       envelopes.push(envelope)
       if (doesHaveValue(envelope.source)) {
         source = envelope.source
@@ -107,7 +107,7 @@ Feature: a
 
 export async function getPickleStepWithText(
   text: string
-): Promise<messages.Pickle> {
+): Promise<messages.PickleStep> {
   const {
     pickles: [pickle],
   } = await parse({

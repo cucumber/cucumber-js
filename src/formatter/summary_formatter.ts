@@ -15,8 +15,8 @@ interface ILogIssuesRequest {
 export default class SummaryFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
-    let testRunStartedTimestamp: messages.ITimestamp
-    options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
+    let testRunStartedTimestamp: messages.Timestamp
+    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunStarted)) {
         testRunStartedTimestamp = envelope.testRunStarted.timestamp
       }
@@ -32,7 +32,7 @@ export default class SummaryFormatter extends Formatter {
     })
   }
 
-  logSummary(testRunDuration: messages.IDuration): void {
+  logSummary(testRunDuration: messages.Duration): void {
     const failures: ITestCaseAttempt[] = []
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()

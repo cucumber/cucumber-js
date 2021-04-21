@@ -208,6 +208,7 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "4.0.1",
+    "@cucumber/message-streams": "1.0.0",
     "@sinonjs/fake-timers": "7.0.2",
     "@types/bluebird": "3.5.33",
     "@types/chai": "4.2.15",
@@ -247,7 +248,6 @@
     "fs-extra": "9.1.0",
     "mocha": "8.3.2",
     "mustache": "4.2.0",
-    "ndjson-parse": "1.0.4",
     "nyc": "15.1.0",
     "prettier": "2.2.1",
     "semver": "7.3.5",

@@ -1,24 +1,22 @@
 import _ from 'lodash'
 import Duration from 'duration'
-import Status from '../../status'
-import { addDurations, getZeroDuration } from '../../time'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import { messages, TimeConversion } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 const STATUS_REPORT_ORDER = [
-  Status.FAILED,
-  Status.AMBIGUOUS,
-  Status.UNDEFINED,
-  Status.PENDING,
-  Status.SKIPPED,
-  Status.PASSED,
+  messages.TestStepResultStatus.FAILED,
+  messages.TestStepResultStatus.AMBIGUOUS,
+  messages.TestStepResultStatus.UNDEFINED,
+  messages.TestStepResultStatus.PENDING,
+  messages.TestStepResultStatus.SKIPPED,
+  messages.TestStepResultStatus.PASSED,
 ]
 
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
-  testRunDuration: messages.IDuration
+  testRunDuration: messages.Duration
 }
 
 export function formatSummary({
@@ -28,10 +26,13 @@ export function formatSummary({
 }: IFormatSummaryRequest): string {
   const testCaseResults: messages.TestStepResult[] = []
   const testStepResults: messages.TestStepResult[] = []
-  let totalStepDuration = getZeroDuration()
+  let totalStepDuration = messages.TimeConversion.millisecondsToDuration(0)
   testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
     Object.values(stepResults).forEach((stepResult) => {
-      totalStepDuration = addDurations(totalStepDuration, stepResult.duration)
+      totalStepDuration = messages.TimeConversion.addDurations(
+        totalStepDuration,
+        stepResult.duration
+      )
     })
     if (!worstTestStepResult.willBeRetried) {
       testCaseResults.push(worstTestStepResult)
@@ -78,7 +79,7 @@ function getCountSummary({
       if (counts[status] > 0) {
         details.push(
           colorFns.forStatus(status)(
-            `${counts[status].toString()} ${Status[status].toLowerCase()}`
+            `${counts[status].toString()} ${status.toLowerCase()}`
           )
         )
       }
@@ -88,9 +89,11 @@ function getCountSummary({
   return text
 }
 
-function getDurationSummary(durationMsg: messages.IDuration): string {
+function getDurationSummary(durationMsg: messages.Duration): string {
   const start = new Date(0)
-  const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
+  const end = new Date(
+    messages.TimeConversion.durationToMilliseconds(durationMsg)
+  )
   const duration = new Duration(start, end)
   // Use spaces in toString method for readability and to avoid %Ls which is a format
   return duration.toString('%Ms m %S . %L s').replace(/ /g, '')

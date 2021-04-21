@@ -94,7 +94,7 @@ export default class EventDataCollector {
       worstTestStepResult: {
         willBeRetried: false,
         duration: { seconds: 0, nanos: 0 },
-        status: 'UNKNOWN',
+        status: messages.TestStepResultStatus.UNKNOWN,
       },
     }
   }

@@ -36,9 +36,7 @@ function formatDataTable(dataTable: messages.PickleTable): string {
   return table.toString()
 }
 
-function formatDocString(
-  docString: messages.PickleStepArgument.IPickleDocString
-): string {
+function formatDocString(docString: messages.PickleDocString): string {
   return `"""\n${docString.content}\n"""`
 }
 

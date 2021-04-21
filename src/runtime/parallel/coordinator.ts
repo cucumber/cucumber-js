@@ -1,7 +1,6 @@
 import _, { Dictionary } from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
-import Status from '../../status'
 import { retriesForPickle } from '../helpers'
 import messages, { parseEnvelope } from '@cucumber/messages'
 import { EventEmitter } from 'events'
@@ -238,20 +237,10 @@ export default class Coordinator {
     worker.process.send(runCommand)
   }
 
-  shouldCauseFailure(
-    // TODO: use messages.Status type
-    status:
-      | 'UNKNOWN'
-      | 'PASSED'
-      | 'SKIPPED'
-      | 'PENDING'
-      | 'UNDEFINED'
-      | 'AMBIGUOUS'
-      | 'FAILED'
-  ): boolean {
+  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
     return (
-      _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
-      (status === Status.PENDING && this.options.strict)
+      _.includes(['AMBIGUOUS', 'FAILED', 'UNDEFINED'], status) ||
+      (status === 'PENDING' && this.options.strict)
     )
   }
 }

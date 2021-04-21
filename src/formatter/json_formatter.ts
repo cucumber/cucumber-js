@@ -1,8 +1,6 @@
 import _, { Dictionary } from 'lodash'
 import Formatter, { IFormatterOptions } from './'
-import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import { durationToNanoseconds } from '../time'
 import path from 'path'
 import messages from '@cucumber/messages'
 import {
@@ -12,12 +10,6 @@ import {
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
-import ITag = messages.GherkinDocument.Feature.ITag
-import IFeature = messages.GherkinDocument.IFeature
-import IPickle = messages.Pickle
-import IScenario = messages.GherkinDocument.Feature.IScenario
-import IEnvelope = messages.IEnvelope
-import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -66,25 +58,25 @@ export interface IJsonTag {
 }
 
 interface IBuildJsonFeatureOptions {
-  feature: messages.GherkinDocument.IFeature
+  feature: messages.Feature
   elements: IJsonScenario[]
   uri: string
 }
 
 interface IBuildJsonScenarioOptions {
-  feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: Dictionary<IScenario>
-  gherkinExampleRuleMap: Dictionary<IRule>
-  gherkinScenarioLocationMap: Dictionary<messages.ILocation>
+  feature: messages.Feature
+  gherkinScenarioMap: Dictionary<messages.Scenario>
+  gherkinExampleRuleMap: Dictionary<messages.Rule>
+  gherkinScenarioLocationMap: Dictionary<messages.Location>
   pickle: messages.Pickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  gherkinStepMap: Dictionary<messages.Step>
   pickleStepMap: Dictionary<messages.PickleStep>
-  testStep: messages.TestCase.ITestStep
+  testStep: messages.TestStep
   testStepAttachments: messages.Attachment[]
   testStepResult: messages.TestStepResult
 }
@@ -99,14 +91,14 @@ export default class JsonFormatter extends Formatter {
     console.warn(
       "The built-in JSON formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter)."
     )
-    options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
+    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
       }
     })
   }
 
-  convertNameToId(obj: IFeature | IPickle): string {
+  convertNameToId(obj: messages.Feature | messages.Pickle): string {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
@@ -117,8 +109,8 @@ export default class JsonFormatter extends Formatter {
   }
 
   formatDocString(
-    docString: messages.PickleStepArgument.IPickleDocString,
-    gherkinStep: messages.GherkinDocument.Feature.IStep
+    docString: messages.PickleDocString,
+    gherkinStep: messages.Step
   ): any {
     return {
       content: docString.content,
@@ -128,7 +120,7 @@ export default class JsonFormatter extends Formatter {
 
   formatStepArgument(
     stepArgument: messages.PickleStepArgument,
-    gherkinStep: messages.GherkinDocument.Feature.IStep
+    gherkinStep: messages.Step
   ): any {
     if (doesNotHaveValue(stepArgument)) {
       return []
@@ -242,9 +234,9 @@ export default class JsonFormatter extends Formatter {
     pickle,
     gherkinExampleRuleMap,
   }: {
-    feature: IFeature
-    pickle: IPickle
-    gherkinExampleRuleMap: Dictionary<IRule>
+    feature: messages.Feature
+    pickle: messages.Pickle
+    gherkinExampleRuleMap: Dictionary<messages.Rule>
   }): string {
     let parts: any[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
@@ -285,11 +277,19 @@ export default class JsonFormatter extends Formatter {
       data.match = { location: formatLocation(stepDefinition) }
     }
     const { message, status } = testStepResult
-    data.result = { status: Status[status].toLowerCase() }
-    if (doesHaveValue(testStepResult.duration)) {
-      data.result.duration = durationToNanoseconds(testStepResult.duration)
+    data.result = {
+      status: messages.TestStepResultStatus[status].toLowerCase(),
     }
-    if (status === Status.FAILED && doesHaveValue(message)) {
+    if (doesHaveValue(testStepResult.duration)) {
+      data.result.duration =
+        messages.TimeConversion.durationToMilliseconds(
+          testStepResult.duration
+        ) * 1000
+    }
+    if (
+      status === messages.TestStepResultStatus.FAILED &&
+      doesHaveValue(message)
+    ) {
       data.result.error_message = message
     }
     if (_.size(testStepAttachments) > 0) {
@@ -301,7 +301,7 @@ export default class JsonFormatter extends Formatter {
     return data
   }
 
-  getFeatureTags(feature: IFeature): IJsonTag[] {
+  getFeatureTags(feature: messages.Feature): IJsonTag[] {
     return _.map(feature.tags, (tagData) => ({
       name: tagData.name,
       line: tagData.location.line,
@@ -313,16 +313,16 @@ export default class JsonFormatter extends Formatter {
     pickle,
     gherkinScenarioMap,
   }: {
-    feature: IFeature
-    pickle: IPickle
-    gherkinScenarioMap: { [id: string]: IScenario }
+    feature: messages.Feature
+    pickle: messages.Pickle
+    gherkinScenarioMap: Dictionary<messages.Scenario>
   }): IJsonTag[] {
     return _.map(pickle.tags, (tagData) => {
       const featureSource = feature.tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
+        (t: messages.Tag) => t.id === tagData.astNodeId
       )
       const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
+        (t: messages.Tag) => t.id === tagData.astNodeId
       )
       const line = doesHaveValue(featureSource)
         ? featureSource.location.line

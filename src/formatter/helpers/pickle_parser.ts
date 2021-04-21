@@ -9,12 +9,12 @@ export interface IGetPickleLocationRequest {
 
 export interface IGetStepKeywordRequest {
   pickleStep: messages.PickleStep
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  gherkinStepMap: Dictionary<messages.Step>
 }
 
 export interface IGetScenarioDescriptionRequest {
   pickle: messages.Pickle
-  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
+  gherkinScenarioMap: Dictionary<messages.Scenario>
 }
 
 export function getScenarioDescription({
@@ -51,7 +51,7 @@ export function getPickleStepMap(
 export function getPickleLocation({
   gherkinDocument,
   pickle,
-}: IGetPickleLocationRequest): messages.ILocation {
+}: IGetPickleLocationRequest): messages.Location {
   const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
     gherkinDocument
   )

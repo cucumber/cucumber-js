@@ -10,7 +10,7 @@ import { durationBetweenTimestamps } from '../time'
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
   private numberOfSteps: number
-  private testRunStarted: messages.ITestRunStarted
+  private testRunStarted: messages.TestRunStarted
   private issueCount: number
   public progressBar: ProgressBar
 
@@ -88,7 +88,7 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logSummary(testRunFinished: messages.ITestRunFinished): void {
+  logSummary(testRunFinished: messages.TestRunFinished): void {
     const testRunDuration = durationBetweenTimestamps(
       this.testRunStarted.timestamp,
       testRunFinished.timestamp
@@ -102,7 +102,7 @@ export default class ProgressBarFormatter extends Formatter {
     )
   }
 
-  parseEnvelope(envelope: messages.IEnvelope): void {
+  parseEnvelope(envelope: messages.Envelope): void {
     if (doesHaveValue(envelope.undefinedParameterType)) {
       this.logUndefinedParametertype(envelope.undefinedParameterType)
     } else if (doesHaveValue(envelope.pickle)) {

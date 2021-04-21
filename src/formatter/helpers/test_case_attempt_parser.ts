@@ -1,5 +1,4 @@
 import _, { Dictionary } from 'lodash'
-import Status from '../../status'
 import { getStepKeywordType, KeywordType } from './keyword_type'
 import {
   getGherkinScenarioLocationMap,
@@ -40,14 +39,14 @@ export interface IParsedTestCaseAttempt {
 
 interface IParseStepRequest {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  gherkinStepMap: Dictionary<messages.Step>
   keyword: string
   keywordType: KeywordType
   pickleStep: messages.PickleStep
   pickleUri: string
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
-  testStep: messages.TestCase.ITestStep
+  testStep: messages.TestStep
   testStepResult: messages.TestStepResult
   testStepAttachments: messages.Attachment[]
 }
@@ -113,7 +112,7 @@ function parseStep({
       out.argument = pickleStep.argument
     }
   }
-  if (testStepResult.status === Status.UNDEFINED) {
+  if (testStepResult.status === messages.TestStepResultStatus.UNDEFINED) {
     out.snippet = snippetBuilder.build({ keywordType, pickleStep })
   }
   return out

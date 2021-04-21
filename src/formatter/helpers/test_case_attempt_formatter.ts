@@ -1,5 +1,5 @@
 import indentString from 'indent-string'
-import Status from '../../status'
+import * as messages from '@cucumber/messages'
 import figures from 'figures'
 import { formatLocation } from './location_helpers'
 import {
@@ -13,25 +13,25 @@ import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 
-const CHARACTERS: { [status: number]: string } = {
-  [Status.AMBIGUOUS]: figures.cross,
-  [Status.FAILED]: figures.cross,
-  [Status.PASSED]: figures.tick,
-  [Status.PENDING]: '?',
-  [Status.SKIPPED]: '-',
-  [Status.UNDEFINED]: '?',
-}
+const CHARACTERS: Map<messages.TestStepResultStatus, string> = new Map([
+  [messages.TestStepResultStatus.AMBIGUOUS, figures.cross],
+  [messages.TestStepResultStatus.FAILED, figures.cross],
+  [messages.TestStepResultStatus.PASSED, figures.tick],
+  [messages.TestStepResultStatus.PENDING, '?'],
+  [messages.TestStepResultStatus.SKIPPED, '-'],
+  [messages.TestStepResultStatus.UNDEFINED, '?'],
+])
 
 function getStepMessage(testStep: IParsedTestStep): string {
   switch (testStep.result.status) {
-    case Status.AMBIGUOUS:
-    case Status.FAILED:
+    case messages.TestStepResultStatus.AMBIGUOUS:
+    case messages.TestStepResultStatus.FAILED:
       return testStep.result.message
-    case Status.UNDEFINED:
+    case messages.TestStepResultStatus.UNDEFINED:
       return `${
         'Undefined. Implement with the following snippet:' + '\n\n'
       }${indentString(testStep.snippet, 2)}\n`
-    case Status.PENDING:
+    case messages.TestStepResultStatus.PENDING:
       return 'Pending'
   }
   return ''
@@ -50,7 +50,7 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
   } = testStep
   const colorFn = colorFns.forStatus(status)
   const identifier = testStep.keyword + valueOrDefault(testStep.text, '')
-  let text = colorFn(`${CHARACTERS[status]} ${identifier}`)
+  let text = colorFn(`${CHARACTERS.get(status)} ${identifier}`)
   if (doesHaveValue(actionLocation)) {
     text += ` # ${colorFns.location(formatLocation(actionLocation))}`
   }

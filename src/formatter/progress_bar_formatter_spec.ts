@@ -24,7 +24,7 @@ import bluebird from 'bluebird'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
-  shouldStopFn: (envelope: messages.IEnvelope) => boolean
+  shouldStopFn: (envelope: messages.Envelope) => boolean
   sources?: ITestSource[]
   supportCodeLibrary?: ISupportCodeLibrary
 }

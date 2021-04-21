@@ -2,11 +2,11 @@ import _, { clone } from 'lodash'
 import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
-import Status from '../status'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 import { retriesForPickle } from './helpers'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import PickleRunner from './pickle_runner'
 import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
@@ -125,14 +125,12 @@ export default class Runtime {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    this.eventBroadcaster.emit(
-      'envelope',
-      new messages.Envelope({
-        testRunStarted: {
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const testRunStarted: messages.Envelope = {
+      testRunStarted: {
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testRunStarted)
     this.stopwatch.start()
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
@@ -144,26 +142,27 @@ export default class Runtime {
       'an AfterAll'
     )
     this.stopwatch.stop()
-    this.eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        testRunFinished: {
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const testRunFinished: messages.Envelope = {
+      testRunFinished: {
+        timestamp: this.stopwatch.timestamp(),
+        success: this.success,
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testRunFinished)
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
     return this.success
   }
 
-  shouldCauseFailure(
-    status: messages.TestStepFinished.TestStepResult.Status
-  ): boolean {
-    return (
-      _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
-      (status === Status.PENDING && this.options.strict)
-    )
+  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
+    const failureStatuses: messages.TestStepResultStatus[] = [
+      messages.TestStepResultStatus.AMBIGUOUS,
+      messages.TestStepResultStatus.FAILED,
+      messages.TestStepResultStatus.UNDEFINED,
+    ]
+    if (this.options.strict)
+      failureStatuses.push(messages.TestStepResultStatus.PENDING)
+    return _.includes(failureStatuses, status)
   }
 }

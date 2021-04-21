@@ -16,7 +16,7 @@ Then(
   async function (this: World, formatter: string, filePath: string) {
     let actual: any
     if (formatter === 'message') {
-      actual = this.lastRun.envelopes.map((e: Envelope) => e.toJSON())
+      actual = this.lastRun.envelopes.map((e: Envelope) => JSON.stringify(e))
       actual = normalizeMessageOutput(actual, this.tmpDir)
       actual = stripMetaMessages(actual)
     } else {

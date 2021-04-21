@@ -4,23 +4,20 @@ import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.IStep> {
+): Dictionary<messages.Step> {
   return _.chain(gherkinDocument.feature.children)
     .map(extractStepContainers)
     .flatten()
     .map('steps')
     .flatten()
-    .map((step: messages.GherkinDocument.Feature.IStep) => [step.id, step])
+    .map((step: messages.Step) => [step.id, step])
     .fromPairs()
     .value()
 }
 
 function extractStepContainers(
-  child: messages.GherkinDocument.Feature.IFeatureChild
-): Array<
-  | messages.GherkinDocument.Feature.IScenario
-  | messages.GherkinDocument.Feature.IBackground
-> {
+  child: messages.FeatureChild
+): Array<messages.Scenario | messages.Background> {
   if (doesHaveValue(child.background)) {
     return [child.background]
   } else if (doesHaveValue(child.rule)) {
@@ -35,9 +32,9 @@ function extractStepContainers(
 
 export function getGherkinScenarioMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.IScenario> {
+): Dictionary<messages.Scenario> {
   return _.chain(gherkinDocument.feature.children)
-    .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
+    .map((child: messages.FeatureChild) => {
       if (doesHaveValue(child.rule)) {
         return child.rule.children
       }
@@ -46,17 +43,14 @@ export function getGherkinScenarioMap(
     .flatten()
     .filter('scenario')
     .map('scenario')
-    .map((scenario: messages.GherkinDocument.Feature.IScenario) => [
-      scenario.id,
-      scenario,
-    ])
+    .map((scenario: messages.Scenario) => [scenario.id, scenario])
     .fromPairs()
     .value()
 }
 
 export function getGherkinExampleRuleMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.FeatureChild.IRule> {
+): Dictionary<messages.Rule> {
   return _.chain(gherkinDocument.feature.children)
     .filter('rule')
     .map('rule')
@@ -72,24 +66,22 @@ export function getGherkinExampleRuleMap(
 
 export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.ILocation> {
-  const locationMap: Dictionary<messages.ILocation> = {}
-  const scenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario> = getGherkinScenarioMap(
+): Dictionary<messages.Location> {
+  const locationMap: Dictionary<messages.Location> = {}
+  const scenarioMap: Dictionary<messages.Scenario> = getGherkinScenarioMap(
     gherkinDocument
   )
-  _.entries<messages.GherkinDocument.Feature.IScenario>(scenarioMap).forEach(
-    ([id, scenario]) => {
-      locationMap[id] = scenario.location
-      if (doesHaveValue(scenario.examples)) {
-        _.chain(scenario.examples)
-          .map('tableBody')
-          .flatten()
-          .forEach((tableRow) => {
-            locationMap[tableRow.id] = tableRow.location
-          })
-          .value()
-      }
+  _.entries<messages.Scenario>(scenarioMap).forEach(([id, scenario]) => {
+    locationMap[id] = scenario.location
+    if (doesHaveValue(scenario.examples)) {
+      _.chain(scenario.examples)
+        .map('tableBody')
+        .flatten()
+        .forEach((tableRow) => {
+          locationMap[tableRow.id] = tableRow.location
+        })
+        .value()
     }
-  )
+  })
   return locationMap
 }
