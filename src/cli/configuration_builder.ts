@@ -19,7 +19,6 @@ export interface IConfigurationFormat {
 }
 
 export interface IConfiguration {
-  esm: boolean
   featureDefaultLanguage: string
   featurePaths: string[]
   formats: IConfigurationFormat[]
@@ -81,11 +80,10 @@ export default class ConfigurationBuilder {
       }
       supportCodePaths = await this.expandPaths(
         unexpandedSupportCodePaths,
-        this.options.esm ? '.@(js|mjs)' : '.js'
+        '.js'
       )
     }
     return {
-      esm: this.options.esm,
       featureDefaultLanguage: this.options.language,
       featurePaths,
       formats: this.getFormats(),
