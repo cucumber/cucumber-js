@@ -59,13 +59,12 @@ export async function testFormatter({
     output += data
   }
   const passThrough = new PassThrough()
-  await FormatterBuilder.build(type, {
+  FormatterBuilder.build(type, {
     cwd: '',
     eventBroadcaster,
     eventDataCollector,
     log: logFn,
     parsedArgvOptions,
-    importer: async (path) => await import(path),
     stream: passThrough,
     cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,

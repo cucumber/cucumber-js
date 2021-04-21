@@ -30,8 +30,6 @@ import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const importers = require('../importers')
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
@@ -53,16 +51,10 @@ interface IGetSupportCodeLibraryRequest {
   supportCodePaths: string[]
 }
 
-export type IUserCodeImporter = (
-  path: string,
-  isFilePath?: boolean
-) => Promise<any>
-
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
-  private importer: IUserCodeImporter = importers.legacy
 
   constructor({
     argv,
@@ -133,7 +125,6 @@ export default class Cli {
           eventDataCollector,
           log: stream.write.bind(stream),
           parsedArgvOptions: formatOptions,
-          importer: this.importer,
           stream,
           cleanup:
             stream === this.stdout
@@ -151,7 +142,7 @@ export default class Cli {
           )
           type = 'progress'
         }
-        return await FormatterBuilder.build(type, typeOptions)
+        return FormatterBuilder.build(type, typeOptions)
       }
     )
     return async function () {
@@ -161,18 +152,14 @@ export default class Cli {
     }
   }
 
-  async getSupportCodeLibrary({
+  getSupportCodeLibrary({
     newId,
     supportCodeRequiredModules,
     supportCodePaths,
-  }: IGetSupportCodeLibraryRequest): Promise<ISupportCodeLibrary> {
-    for (const requiredModule of supportCodeRequiredModules) {
-      await this.importer(requiredModule)
-    }
+  }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
+    supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    for (const codePath of supportCodePaths) {
-      await this.importer(codePath, true)
-    }
+    supportCodePaths.forEach((codePath) => require(codePath))
     return supportCodeLibraryBuilder.finalize()
   }
 
@@ -191,10 +178,7 @@ export default class Cli {
       configuration.predictableIds && configuration.parallel <= 1
         ? incrementing()
         : uuid()
-    if (configuration.esm) {
-      this.importer = importers.esm
-    }
-    const supportCodeLibrary = await this.getSupportCodeLibrary({
+    const supportCodeLibrary = this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,
       supportCodeRequiredModules: configuration.supportCodeRequiredModules,
