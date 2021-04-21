@@ -7,6 +7,9 @@ import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const importers = require('../importers')
+
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string
   profiles?: string[]
@@ -24,7 +27,7 @@ async function testProfileLoader(
       opts.definitionsFileContent
     )
   }
-  const profileLoader = new ProfileLoader(cwd)
+  const profileLoader = new ProfileLoader(cwd, importers.legacy)
   return await profileLoader.getArgv(valueOrDefault(opts.profiles, []))
 }
 

@@ -29,6 +29,7 @@ describe('Configuration', () => {
 
       // Assert
       expect(result).to.eql({
+        esm: false,
         featureDefaultLanguage: 'en',
         featurePaths: [],
         formatOptions: {},
@@ -65,27 +66,79 @@ describe('Configuration', () => {
   })
 
   describe('path to a feature', () => {
-    it('returns the appropriate feature and support code paths', async function () {
-      // Arrange
-      const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join('features', 'a.feature')
-      const featurePath = path.join(cwd, relativeFeaturePath)
-      await fsExtra.outputFile(featurePath, '')
-      const supportCodePath = path.join(cwd, 'features', 'a.js')
-      await fsExtra.outputFile(supportCodePath, '')
-      const argv = baseArgv.concat([relativeFeaturePath])
+    describe('without esm', () => {
+      it('returns the appropriate feature and support code paths', async function () {
+        // Arrange
+        const cwd = await buildTestWorkingDirectory()
+        const relativeFeaturePath = path.join('features', 'a.feature')
+        const featurePath = path.join(cwd, relativeFeaturePath)
+        await fsExtra.outputFile(featurePath, '')
+        const supportCodePath = path.join(cwd, 'features', 'a.js')
+        await fsExtra.outputFile(supportCodePath, '')
+        const argv = baseArgv.concat([relativeFeaturePath])
 
-      // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+        // Act
+        const {
+          featurePaths,
+          pickleFilterOptions,
+          supportCodePaths,
+        } = await ConfigurationBuilder.build({ argv, cwd })
 
-      // Assert
-      expect(featurePaths).to.eql([featurePath])
-      expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
-      expect(supportCodePaths).to.eql([supportCodePath])
+        // Assert
+        expect(featurePaths).to.eql([featurePath])
+        expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+        expect(supportCodePaths).to.eql([supportCodePath])
+      })
+    })
+
+    describe('with esm and js support files', () => {
+      it('returns the appropriate feature and support code paths', async function () {
+        // Arrange
+        const cwd = await buildTestWorkingDirectory()
+        const relativeFeaturePath = path.join('features', 'a.feature')
+        const featurePath = path.join(cwd, relativeFeaturePath)
+        await fsExtra.outputFile(featurePath, '')
+        const supportCodePath = path.join(cwd, 'features', 'a.js')
+        await fsExtra.outputFile(supportCodePath, '')
+        const argv = baseArgv.concat([relativeFeaturePath, '--esm'])
+
+        // Act
+        const {
+          featurePaths,
+          pickleFilterOptions,
+          supportCodePaths,
+        } = await ConfigurationBuilder.build({ argv, cwd })
+
+        // Assert
+        expect(featurePaths).to.eql([featurePath])
+        expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+        expect(supportCodePaths).to.eql([supportCodePath])
+      })
+    })
+
+    describe('with esm and mjs support files', () => {
+      it('returns the appropriate feature and support code paths', async function () {
+        // Arrange
+        const cwd = await buildTestWorkingDirectory()
+        const relativeFeaturePath = path.join('features', 'a.feature')
+        const featurePath = path.join(cwd, relativeFeaturePath)
+        await fsExtra.outputFile(featurePath, '')
+        const supportCodePath = path.join(cwd, 'features', 'a.mjs')
+        await fsExtra.outputFile(supportCodePath, '')
+        const argv = baseArgv.concat([relativeFeaturePath, '--esm'])
+
+        // Act
+        const {
+          featurePaths,
+          pickleFilterOptions,
+          supportCodePaths,
+        } = await ConfigurationBuilder.build({ argv, cwd })
+
+        // Assert
+        expect(featurePaths).to.eql([featurePath])
+        expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+        expect(supportCodePaths).to.eql([supportCodePath])
+      })
     })
   })
 

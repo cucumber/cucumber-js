@@ -20,10 +20,11 @@ import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
-import createRequire from 'create-require'
+import { IUserCodeImporter } from '../cli'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
+  importer: IUserCodeImporter
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
   supportCodeLibrary: ISupportCodeLibrary
@@ -35,24 +36,29 @@ export interface IBuildOptions {
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
   parsedArgvOptions: IParsedArgvFormatOptions
+  importer: IUserCodeImporter
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
 }
 
 const FormatterBuilder = {
-  build(type: string, options: IBuildOptions): Formatter {
-    const FormatterConstructor = FormatterBuilder.getConstructorByType(
+  async build(type: string, options: IBuildOptions): Promise<Formatter> {
+    const FormatterConstructor = await FormatterBuilder.getConstructorByType(
       type,
-      options.cwd
+      options.cwd,
+      options.importer
     )
     const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
-    const snippetBuilder = FormatterBuilder.getStepDefinitionSnippetBuilder({
-      cwd: options.cwd,
-      snippetInterface: options.parsedArgvOptions.snippetInterface,
-      snippetSyntax: options.parsedArgvOptions.snippetSyntax,
-      supportCodeLibrary: options.supportCodeLibrary,
-    })
+    const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
+      {
+        cwd: options.cwd,
+        importer: options.importer,
+        snippetInterface: options.parsedArgvOptions.snippetInterface,
+        snippetSyntax: options.parsedArgvOptions.snippetSyntax,
+        supportCodeLibrary: options.supportCodeLibrary,
+      }
+    )
     return new FormatterConstructor({
       colorFns,
       snippetBuilder,
@@ -60,7 +66,11 @@ const FormatterBuilder = {
     })
   },
 
-  getConstructorByType(type: string, cwd: string): typeof Formatter {
+  async getConstructorByType(
+    type: string,
+    cwd: string,
+    importer: IUserCodeImporter
+  ): Promise<typeof Formatter> {
     switch (type) {
       case 'json':
         return JsonFormatter
@@ -83,12 +93,13 @@ const FormatterBuilder = {
       case 'usage-json':
         return UsageJsonFormatter
       default:
-        return FormatterBuilder.loadCustomFormatter(type, cwd)
+        return await FormatterBuilder.loadCustomFormatter(type, cwd, importer)
     }
   },
 
-  getStepDefinitionSnippetBuilder({
+  async getStepDefinitionSnippetBuilder({
     cwd,
+    importer,
     snippetInterface,
     snippetSyntax,
     supportCodeLibrary,
@@ -99,7 +110,8 @@ const FormatterBuilder = {
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = require(fullSyntaxPath) // eslint-disable-line @typescript-eslint/no-var-requires
+      Syntax = await importer(fullSyntaxPath, true)
+      Syntax = FormatterBuilder.resolveConstructor(Syntax)
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
@@ -107,20 +119,34 @@ const FormatterBuilder = {
     })
   },
 
-  loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    const CustomFormatter = createRequire(cwd)(customFormatterPath)
-
-    if (typeof CustomFormatter === 'function') {
+  async loadCustomFormatter(
+    customFormatterPath: string,
+    cwd: string,
+    importer: IUserCodeImporter
+  ) {
+    let CustomFormatter = customFormatterPath.startsWith(`.`)
+      ? await importer(path.resolve(cwd, customFormatterPath), true)
+      : await importer(customFormatterPath)
+    CustomFormatter = FormatterBuilder.resolveConstructor(CustomFormatter)
+    if (doesHaveValue(CustomFormatter)) {
       return CustomFormatter
-    } else if (
-      doesHaveValue(CustomFormatter) &&
-      typeof CustomFormatter.default === 'function'
-    ) {
-      return CustomFormatter.default
+    } else {
+      throw new Error(
+        `Custom formatter (${customFormatterPath}) does not export a function`
+      )
     }
-    throw new Error(
-      `Custom formatter (${customFormatterPath}) does not export a function`
-    )
+  },
+
+  resolveConstructor(ImportedCode: any) {
+    if (typeof ImportedCode === 'function') {
+      return ImportedCode
+    } else if (
+      doesHaveValue(ImportedCode) &&
+      typeof ImportedCode.default === 'function'
+    ) {
+      return ImportedCode.default
+    }
+    return null
   },
 }
 
