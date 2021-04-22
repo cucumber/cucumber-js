@@ -77,9 +77,13 @@ Start the container:
 
     make docker-run
 
-Inside the container, update dependencies:
+Inside the container, install the correct versions of Node and Yarn:
 
+    nvm install --lts
     npm install -g yarn
+
+Then update the dependencies and test:
+
     yarn update-dependencies
     yarn
     yarn test

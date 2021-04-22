@@ -256,6 +256,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '1',
+            tagExpression: undefined,
             sourceReference: {
               uri: 'features/support/hooks.js',
               location: {
@@ -267,6 +268,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '2',
+            tagExpression: undefined,
             sourceReference: {
               uri: 'features/support/hooks.js',
               location: {
@@ -380,7 +382,11 @@ describe('helpers', () => {
         expect(envelopes).to.have.lengthOf(2)
         expect(envelopes[0]).to.eql(sourceEnvelope)
         expect(envelopes[1].gherkinDocument).to.exist()
-        expect(envelopes[1].gherkinDocument).to.have.keys(['comments', 'uri'])
+        expect(envelopes[1].gherkinDocument).to.have.keys([
+          'comments',
+          'feature',
+          'uri',
+        ])
       })
     })
 

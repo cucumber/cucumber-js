@@ -3,14 +3,17 @@ import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
 import glob from 'glob'
 import fs from 'fs'
-import ndjsonParse from 'ndjson-parse'
 import path from 'path'
-import { PassThrough } from 'stream'
+import { PassThrough, pipeline, Writable } from 'stream'
 import { Cli } from '../lib'
 import toString from 'stream-to-string'
 import { doesHaveValue, doesNotHaveValue } from '../src/value_checker'
 import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
+import * as messages from '@cucumber/messages'
+import * as messageStreams from '@cucumber/message-streams'
+import util from 'util'
 
+const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
@@ -45,10 +48,22 @@ describe('Cucumber Compatibility Kit', () => {
       stdout.end()
 
       const rawOutput = await toString(stdout)
-      const actualMessages = normalize(ndjsonParse(rawOutput))
-      const expectedMessages = ndjsonParse(
-        fs.readFileSync(fixturePath, { encoding: 'utf-8' })
+      const actualMessages = normalize(
+        rawOutput.split('\n').map((line) => JSON.parse(line))
       )
+
+      const expectedMessages: messages.Envelope[] = []
+      await asyncPipeline(
+        fs.createReadStream(fixturePath, { encoding: 'utf-8' }),
+        new messageStreams.NdjsonToMessageStream(),
+        new Writable({
+          write(envelope: messages.Envelope, _: BufferEncoding, callback) {
+            expectedMessages.push(envelope)
+            callback()
+          },
+        })
+      )
+
       expect(actualMessages)
         .excludingEvery([
           'meta',
