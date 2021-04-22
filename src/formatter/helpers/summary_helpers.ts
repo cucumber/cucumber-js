@@ -3,6 +3,7 @@ import Duration from 'duration'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
 import * as messages from '@cucumber/messages'
+import { doesHaveValue } from '../../value_checker'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,
@@ -37,7 +38,7 @@ export function formatSummary({
     if (!worstTestStepResult.willBeRetried) {
       testCaseResults.push(worstTestStepResult)
       _.each(testCase.testSteps, (testStep) => {
-        if (testStep.pickleStepId !== '') {
+        if (doesHaveValue(testStep.pickleStepId)) {
           testStepResults.push(stepResults[testStep.id])
         }
       })
