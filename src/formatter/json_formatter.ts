@@ -16,7 +16,7 @@ import ITag = messages.GherkinDocument.Feature.ITag
 import IFeature = messages.GherkinDocument.IFeature
 import IPickle = messages.IPickle
 import IScenario = messages.GherkinDocument.Feature.IScenario
-import IExamples = messages.GherkinDocument.Feature.Scenario.IExamples
+import IPickleTag = messages.Pickle.IPickleTag
 import IEnvelope = messages.IEnvelope
 import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
@@ -318,31 +318,33 @@ export default class JsonFormatter extends Formatter {
     pickle: IPickle
     gherkinScenarioMap: { [id: string]: IScenario }
   }): IJsonTag[] {
-    return _.map(pickle.tags, (tagData) => {
-      const featureSource = feature.tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
-      )
-      const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
-      )
-      let exampleSource: ITag
+    const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
 
-      gherkinScenarioMap[pickle.astNodeIds[0]].examples.forEach(
-        (e: IExamples) => {
-          exampleSource ||= e.tags.find((t: ITag) => t.id === tagData.astNodeId)
-        }
-      )
+    const asJsonTag = (tagData: IPickleTag): IJsonTag =>
+      this.getScenarioTag(tagData, feature, scenario)
 
-      const line = doesHaveValue(featureSource)
-        ? featureSource.location.line
-        : doesHaveValue(scenarioSource)
-        ? scenarioSource.location.line
-        : exampleSource.location.line
+    return pickle.tags.map(asJsonTag)
+  }
 
-      return {
-        name: tagData.name,
-        line,
-      }
-    })
+  getScenarioTag(
+    tagData: IPickleTag,
+    feature: IFeature,
+    scenario: IScenario
+  ): IJsonTag {
+    const byAstNodeId = (tag: ITag): Boolean => tag.id === tagData.astNodeId
+    const flatten = (acc: ITag[], val: ITag[]): ITag[] => acc.concat(val)
+
+    const tag =
+      feature.tags.find(byAstNodeId) ||
+      scenario.tags.find(byAstNodeId) ||
+      scenario.examples
+        .map((e) => e.tags)
+        .reduce(flatten, [])
+        .find(byAstNodeId)
+
+    return {
+      name: tagData.name,
+      line: tag?.location?.line,
+    }
   }
 }
