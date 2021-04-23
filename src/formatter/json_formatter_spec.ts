@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { testFormatter } from '../../test/formatter_helpers'
