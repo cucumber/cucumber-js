@@ -357,6 +357,77 @@ describe('JsonFormatter', () => {
         ])
       })
     })
+
+    describe(' with tagged examples', () => {
+      it('outputs the examples', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a step <id>',
+              '',
+              '    @tag-1-2',
+              '    Examples:',
+              '      |id|',
+              '      | 1|',
+              '      | 2|',
+              '',
+              '    @tag-3-4',
+              '    Examples:',
+              '      |id|',
+              '      | 3|',
+              '      | 4|',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        // Assert
+        const resultingElements = JSON.parse(output)[0].elements
+
+        const buildExpectedElement = (stepName: String): Object => {
+          return {
+            description: '',
+            id: 'my-feature;my-scenario',
+            keyword: 'Scenario',
+            line: 2,
+            name: 'my scenario',
+            tags: [] as Object[],
+            type: 'scenario',
+            steps: [
+              {
+                arguments: [] as Object[],
+                keyword: 'Given ',
+                line: 3,
+                match: { location: 'json_formatter_steps.ts:33' },
+                name: stepName,
+                result: { duration: 0, status: 'passed' },
+              },
+            ],
+          }
+        }
+
+        const expectedElements = [
+          buildExpectedElement('a step 1'),
+          buildExpectedElement('a step 2'),
+          buildExpectedElement('a step 3'),
+          buildExpectedElement('a step 4'),
+        ]
+
+        expect(resultingElements).to.eql(expectedElements)
+      })
+    })
   })
 
   describe('one rule with several examples (scenarios)', () => {
