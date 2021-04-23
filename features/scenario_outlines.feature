@@ -93,3 +93,26 @@ Feature: Scenario Outlines and Examples
     When I run cucumber-js
     Then it fails
     And it runs 4 scenarios
+
+  Scenario: scenario outlines with tagged examples
+    Given a file named "features/scenario_outline.feature" with:
+      """
+      Feature: a feature
+        Scenario Outline: a scenario
+          Given a step <id>
+
+        @tag
+        Examples:
+          | id |
+          | 1  |
+          | 2  |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step {int}', function(int) {})
+      """
+    When I run cucumber-js with `-f json`
+    Then it passes
+    And it runs 2 scenarios
