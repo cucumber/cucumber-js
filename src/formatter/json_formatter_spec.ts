@@ -358,7 +358,7 @@ describe('JsonFormatter', () => {
       })
     })
 
-    describe(' with tagged examples', () => {
+    describe.only(' with tagged examples', () => {
       it('outputs the examples', async () => {
         // Arrange
         const sources = [
@@ -396,14 +396,17 @@ describe('JsonFormatter', () => {
         // Assert
         const resultingElements = JSON.parse(output)[0].elements
 
-        const buildExpectedElement = (stepName: String): Object => {
+        const buildExpectedElement = (
+          stepName: String,
+          tag: Object
+        ): Object => {
           return {
             description: '',
             id: 'my-feature;my-scenario',
             keyword: 'Scenario',
             line: 2,
             name: 'my scenario',
-            tags: [] as Object[],
+            tags: [tag],
             type: 'scenario',
             steps: [
               {
@@ -419,10 +422,10 @@ describe('JsonFormatter', () => {
         }
 
         const expectedElements = [
-          buildExpectedElement('a step 1'),
-          buildExpectedElement('a step 2'),
-          buildExpectedElement('a step 3'),
-          buildExpectedElement('a step 4'),
+          buildExpectedElement('a step 1', { line: 5, name: '@tag-1-2' }),
+          buildExpectedElement('a step 2', { line: 5, name: '@tag-1-2' }),
+          buildExpectedElement('a step 3', { line: 11, name: '@tag-3-4' }),
+          buildExpectedElement('a step 4', { line: 11, name: '@tag-3-4' }),
         ]
 
         expect(resultingElements).to.eql(expectedElements)

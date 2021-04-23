@@ -16,6 +16,7 @@ import ITag = messages.GherkinDocument.Feature.ITag
 import IFeature = messages.GherkinDocument.IFeature
 import IPickle = messages.IPickle
 import IScenario = messages.GherkinDocument.Feature.IScenario
+import IExamples = messages.GherkinDocument.Feature.Scenario.IExamples
 import IEnvelope = messages.IEnvelope
 import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
@@ -324,9 +325,20 @@ export default class JsonFormatter extends Formatter {
       const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
         (t: ITag) => t.id === tagData.astNodeId
       )
+      let exampleSource: ITag
+
+      gherkinScenarioMap[pickle.astNodeIds[0]].examples.forEach(
+        (e: IExamples) => {
+          exampleSource ||= e.tags.find((t: ITag) => t.id === tagData.astNodeId)
+        }
+      )
+
       const line = doesHaveValue(featureSource)
         ? featureSource.location.line
-        : scenarioSource.location.line
+        : doesHaveValue(scenarioSource)
+        ? scenarioSource.location.line
+        : exampleSource.location.line
+
       return {
         name: tagData.name,
         line,
