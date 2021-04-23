@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { testFormatter } from '../../test/formatter_helpers'
@@ -7,6 +8,7 @@ import {
 } from '../../test/fixtures/json_formatter_steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
+import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 
 describe('JsonFormatter', () => {
   let clock: InstalledClock
@@ -358,7 +360,7 @@ describe('JsonFormatter', () => {
       })
     })
 
-    describe.only(' with tagged examples', () => {
+    describe(' with tagged examples', () => {
       it('outputs the examples', async () => {
         // Arrange
         const sources = [
@@ -374,7 +376,7 @@ describe('JsonFormatter', () => {
               '      | 1|',
               '      | 2|',
               '',
-              '    @tag-3-4',
+              '    @tag @tag-3-4',
               '    Examples:',
               '      |id|',
               '      | 3|',
@@ -394,41 +396,24 @@ describe('JsonFormatter', () => {
         })
 
         // Assert
-        const resultingElements = JSON.parse(output)[0].elements
+        const jsonFeature: IJsonFeature = JSON.parse(output)[0]
+        const jsonScenarios = jsonFeature.elements
+        const jsonScenarioTags = jsonScenarios.map((s: IJsonScenario) => s.tags)
 
-        const buildExpectedElement = (
-          stepName: String,
-          tag: Object
-        ): Object => {
-          return {
-            description: '',
-            id: 'my-feature;my-scenario',
-            keyword: 'Scenario',
-            line: 2,
-            name: 'my scenario',
-            tags: [tag],
-            type: 'scenario',
-            steps: [
-              {
-                arguments: [] as Object[],
-                keyword: 'Given ',
-                line: 3,
-                match: { location: 'json_formatter_steps.ts:33' },
-                name: stepName,
-                result: { duration: 0, status: 'passed' },
-              },
-            ],
-          }
-        }
-
-        const expectedElements = [
-          buildExpectedElement('a step 1', { line: 5, name: '@tag-1-2' }),
-          buildExpectedElement('a step 2', { line: 5, name: '@tag-1-2' }),
-          buildExpectedElement('a step 3', { line: 11, name: '@tag-3-4' }),
-          buildExpectedElement('a step 4', { line: 11, name: '@tag-3-4' }),
+        const expectedTags = [
+          [{ line: 5, name: '@tag-1-2' }],
+          [{ line: 5, name: '@tag-1-2' }],
+          [
+            { line: 11, name: '@tag' },
+            { line: 11, name: '@tag-3-4' },
+          ],
+          [
+            { line: 11, name: '@tag' },
+            { line: 11, name: '@tag-3-4' },
+          ],
         ]
 
-        expect(resultingElements).to.eql(expectedElements)
+        expect(jsonScenarioTags).to.eql(expectedTags)
       })
     })
   })
