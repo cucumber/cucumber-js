@@ -49,7 +49,10 @@ describe('Cucumber Compatibility Kit', () => {
 
       const rawOutput = await toString(stdout)
       const actualMessages = normalize(
-        rawOutput.split('\n').map((line) => JSON.parse(line))
+        rawOutput
+          .split('\n')
+          .filter((line) => line.trim() !== '')
+          .map((line) => JSON.parse(line))
       )
 
       const expectedMessages: messages.Envelope[] = []
@@ -57,6 +60,7 @@ describe('Cucumber Compatibility Kit', () => {
         fs.createReadStream(fixturePath, { encoding: 'utf-8' }),
         new messageStreams.NdjsonToMessageStream(),
         new Writable({
+          objectMode: true,
           write(envelope: messages.Envelope, _: BufferEncoding, callback) {
             expectedMessages.push(envelope)
             callback()

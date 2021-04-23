@@ -108,6 +108,7 @@ export class World {
         fs.createReadStream(messageOutputPath, { encoding: 'utf-8' }),
         new messageStreams.NdjsonToMessageStream(),
         new Writable({
+          objectMode: true,
           write(envelope: messages.Envelope, _: BufferEncoding, callback) {
             envelopes.push(envelope)
             callback()

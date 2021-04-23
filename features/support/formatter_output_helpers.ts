@@ -21,7 +21,7 @@ function normalizeExceptionAndUri(exception: string, cwd: string): string {
     .replace('/features', 'features')
 }
 
-function normalizeProtobufObject(obj: any, cwd: string): void {
+function normalizeMessage(obj: any, cwd: string): void {
   if (doesHaveValue(obj.uri)) {
     obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
   }
@@ -50,7 +50,7 @@ export function normalizeMessageOutput(
 ): any[] {
   envelopeObjects.forEach((e: any) => {
     for (const key in e) {
-      normalizeProtobufObject(e[key], cwd)
+      normalizeMessage(e[key], cwd)
     }
   })
   return envelopeObjects
