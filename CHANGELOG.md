@@ -13,6 +13,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Changed
 
+* Clarify that the JSON formatter will not be removed any time soon
+
 ### Deprecated
 
 ### Removed
