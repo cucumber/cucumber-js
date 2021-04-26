@@ -320,10 +320,10 @@ export default class JsonFormatter extends Formatter {
   }): IJsonTag[] {
     const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
 
-    const asJsonTag = (tagData: IPickleTag): IJsonTag =>
-      this.getScenarioTag(tagData, feature, scenario)
-
-    return pickle.tags.map(asJsonTag)
+    return pickle.tags.map(
+      (tagData: IPickleTag): IJsonTag =>
+        this.getScenarioTag(tagData, feature, scenario)
+    )
   }
 
   private getScenarioTag(
