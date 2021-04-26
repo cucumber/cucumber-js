@@ -326,7 +326,7 @@ export default class JsonFormatter extends Formatter {
     return pickle.tags.map(asJsonTag)
   }
 
-  getScenarioTag(
+  private getScenarioTag(
     tagData: IPickleTag,
     feature: IFeature,
     scenario: IScenario
