@@ -101,7 +101,7 @@ Feature: Scenario Outlines and Examples
         Scenario Outline: a scenario
           Given a step <id>
 
-        @tag
+        @examples @tag
         Examples:
           | id |
           | 1  |
@@ -116,3 +116,32 @@ Feature: Scenario Outlines and Examples
     When I run cucumber-js with `-f json`
     Then it passes
     And it runs 2 scenarios
+
+  Scenario: scenario outlines with multiple example tables
+    Given a file named "features/scenario_outline.feature" with:
+      """
+      Feature: a feature
+        Scenario Outline: a scenario
+          Given a step <id>
+
+        @example @id-1-2
+        Examples:
+          | id |
+          | 1  |
+          | 2  |
+
+        @example @id-3-4
+        Examples:
+          | id |
+          | 3  |
+          | 4  |
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step {int}', function(int) {})
+      """
+    When I run cucumber-js with `-f json`
+    Then it passes
+    And it runs 4 scenarios
