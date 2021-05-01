@@ -386,10 +386,10 @@
   dependencies:
     type-detect "4.0.8"
 
-"@sinonjs/fake-timers@7.0.2":
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-7.0.2.tgz#a53e71d4154ee704ea9b36a6d0b0780e246fadd1"
-  integrity sha512-dF84L5YC90gIOegPDCYymPIsDmwMWWSh7BwfDXQYePi8lVIEp7IZ1UVGkME8FjXOsDPxan12x4aaK+Lo6wVh9A==
+"@sinonjs/fake-timers@7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-7.0.5.tgz#558a7f8145a01366c44b3dcbdd7172c05c461564"
+  integrity sha512-fUt6b15bjV/VW93UP5opNXJxdwZSbK1EdiwnhN7XrQrcpaOhMJpZ/CjwFpM3THpxwA+YviBUJKSuEqKlCK5alw==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
@@ -451,10 +451,10 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.12.tgz#6160ae454cd89dae05adc3bb97997f488b608201"
   integrity sha512-aN5IAC8QNtSUdQzxu7lGBgYAOuU1tmRU4c9dIq5OKGf/SBVjXo+ffM2wEjudAWbgpOhy60nLoAGH1xm8fpCKFQ==
 
-"@types/chai@4.2.15":
-  version "4.2.15"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.15.tgz#b7a6d263c2cecf44b6de9a051cf496249b154553"
-  integrity sha512-rYff6FI+ZTKAPkJUoyz7Udq3GaoDZnxYDEvdEdFZASiA7PoErltHezDishqQiSDWrGxvxmplH304jyzQmjp0AQ==
+"@types/chai@4.2.17":
+  version "4.2.17"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.17.tgz#85f9f0610f514b22a94125d441f73eef65bde5cc"
+  integrity sha512-LaiwWNnYuL8xJlQcE91QB2JoswWZckq9A4b+nMPq8dt8AP96727Nb3X4e74u+E3tm4NLTILNI9MYFsyVc30wSA==
 
 "@types/color-name@^1.1.1":
   version "1.1.1"
@@ -1135,10 +1135,10 @@ capital-case@^1.0.4:
     tslib "^2.0.3"
     upper-case-first "^2.0.2"
 
-chai-exclude@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/chai-exclude/-/chai-exclude-2.0.2.tgz#8f2f2881ee8f3ddf4c5af0f949c063503eee30f8"
-  integrity sha512-QmNVnvdSw8Huccdjm49mKu3HtoHxvjdavgYkY0KPQ5MI5UWfbc9sX1YqRgaMPf2GGtDXPoF2ram3AeNS4945Xw==
+chai-exclude@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/chai-exclude/-/chai-exclude-2.0.3.tgz#38c159a5e098971b795cafd492d48ae58d651a23"
+  integrity sha512-6VuTQX25rsh4hKPdLzsOtL20k9+tszksLQrLtsu6szTmSVJP9+gUkqYUsyM+xqCeGZKeRJCsamCMRUQJhWsQ+g==
   dependencies:
     fclone "^1.0.11"
 
