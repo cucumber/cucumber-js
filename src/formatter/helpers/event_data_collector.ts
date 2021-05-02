@@ -1,4 +1,4 @@
-import _, { Dictionary, values } from 'lodash'
+import _, { values } from 'lodash'
 import { messages } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
@@ -7,8 +7,8 @@ import { Query } from '@cucumber/query'
 interface ITestCaseAttemptData {
   attempt: number
   testCaseId: string
-  stepAttachments: Dictionary<messages.IAttachment[]>
-  stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
+  stepAttachments: Record<string, messages.IAttachment[]>
+  stepResults: Record<string, messages.TestStepFinished.ITestStepResult>
   worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
@@ -16,17 +16,17 @@ export interface ITestCaseAttempt {
   attempt: number
   gherkinDocument: messages.IGherkinDocument
   pickle: messages.IPickle
-  stepAttachments: Dictionary<messages.IAttachment[]>
-  stepResults: Dictionary<messages.TestStepFinished.ITestStepResult>
+  stepAttachments: Record<string, messages.IAttachment[]>
+  stepResults: Record<string, messages.TestStepFinished.ITestStepResult>
   testCase: messages.ITestCase
   worstTestStepResult: messages.TestStepFinished.ITestStepResult
 }
 
 export default class EventDataCollector {
-  private gherkinDocumentMap: Dictionary<messages.IGherkinDocument> = {}
-  private pickleMap: Dictionary<messages.IPickle> = {}
-  private testCaseMap: Dictionary<messages.ITestCase> = {}
-  private testCaseAttemptDataMap: Dictionary<ITestCaseAttemptData> = {}
+  private gherkinDocumentMap: Record<string, messages.IGherkinDocument> = {}
+  private pickleMap: Record<string, messages.IPickle> = {}
+  private testCaseMap: Record<string, messages.ITestCase> = {}
+  private testCaseAttemptDataMap: Record<string, ITestCaseAttemptData> = {}
   readonly undefinedParameterTypes: messages.IUndefinedParameterType[] = []
   readonly query = new Query()
 
