@@ -180,7 +180,9 @@ If your files end with an extension other than `js`, make sure to also include t
 --require-module coffeescript/register --require 'features/**/*.coffee'
 ```
 
-### Typescript
+### TypeScript
+
+Your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
 
 #### With ts-node
 
@@ -211,6 +213,7 @@ require('ts-node').register({
   transpileOnly: true,
   compilerOptions: {
     "module": "commonjs",
+    "resolveJsonModule": true,
   },
 });
 ```
