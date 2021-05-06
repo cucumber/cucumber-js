@@ -33,7 +33,7 @@ export default class DataTable {
     return copy
   }
 
-  rowsHash(): Record<string, any> {
+  rowsHash(): Record<string, string> {
     const rows = this.raw()
     const everyRowHasTwoColumns = _.every(rows, (row) => row.length === 2)
     if (!everyRowHasTwoColumns) {
