@@ -313,7 +313,7 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: IFeature
     pickle: IPickle
-    gherkinScenarioMap: { [id: string]: IScenario }
+    gherkinScenarioMap: Record<string, IScenario>
   }): IJsonTag[] {
     const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
 
