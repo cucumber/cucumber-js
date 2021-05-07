@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
@@ -74,17 +74,17 @@ interface IBuildJsonFeatureOptions {
 
 interface IBuildJsonScenarioOptions {
   feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: Dictionary<IScenario>
-  gherkinExampleRuleMap: Dictionary<IRule>
-  gherkinScenarioLocationMap: Dictionary<messages.ILocation>
+  gherkinScenarioMap: Record<string, IScenario>
+  gherkinExampleRuleMap: Record<string, IRule>
+  gherkinScenarioLocationMap: Record<string, messages.ILocation>
   pickle: messages.IPickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
-  pickleStepMap: Dictionary<messages.Pickle.IPickleStep>
+  gherkinStepMap: Record<string, messages.GherkinDocument.Feature.IStep>
+  pickleStepMap: Record<string, messages.Pickle.IPickleStep>
   testStep: messages.TestCase.ITestStep
   testStepAttachments: messages.IAttachment[]
   testStepResult: messages.TestStepFinished.ITestStepResult
@@ -242,7 +242,7 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: IFeature
     pickle: IPickle
-    gherkinExampleRuleMap: Dictionary<IRule>
+    gherkinExampleRuleMap: Record<string, IRule>
   }): string {
     let parts: any[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
@@ -313,7 +313,7 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: IFeature
     pickle: IPickle
-    gherkinScenarioMap: { [id: string]: IScenario }
+    gherkinScenarioMap: Record<string, IScenario>
   }): IJsonTag[] {
     const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
 

@@ -1,10 +1,10 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { messages } from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(
   gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.IStep> {
+): Record<string, messages.GherkinDocument.Feature.IStep> {
   return _.chain(gherkinDocument.feature.children)
     .map(extractStepContainers)
     .flatten()
@@ -35,7 +35,7 @@ function extractStepContainers(
 
 export function getGherkinScenarioMap(
   gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.IScenario> {
+): Record<string, messages.GherkinDocument.Feature.IScenario> {
   return _.chain(gherkinDocument.feature.children)
     .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
       if (doesHaveValue(child.rule)) {
@@ -56,7 +56,7 @@ export function getGherkinScenarioMap(
 
 export function getGherkinExampleRuleMap(
   gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.FeatureChild.IRule> {
+): Record<string, messages.GherkinDocument.Feature.FeatureChild.IRule> {
   return _.chain(gherkinDocument.feature.children)
     .filter('rule')
     .map('rule')
@@ -72,11 +72,12 @@ export function getGherkinExampleRuleMap(
 
 export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.ILocation> {
-  const locationMap: Dictionary<messages.ILocation> = {}
-  const scenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario> = getGherkinScenarioMap(
-    gherkinDocument
-  )
+): Record<string, messages.ILocation> {
+  const locationMap: Record<string, messages.ILocation> = {}
+  const scenarioMap: Record<
+    string,
+    messages.GherkinDocument.Feature.IScenario
+  > = getGherkinScenarioMap(gherkinDocument)
   _.entries<messages.GherkinDocument.Feature.IScenario>(scenarioMap).forEach(
     ([id, scenario]) => {
       locationMap[id] = scenario.location
