@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
@@ -16,6 +16,7 @@ import ITag = messages.GherkinDocument.Feature.ITag
 import IFeature = messages.GherkinDocument.IFeature
 import IPickle = messages.IPickle
 import IScenario = messages.GherkinDocument.Feature.IScenario
+import IPickleTag = messages.Pickle.IPickleTag
 import IEnvelope = messages.IEnvelope
 import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
@@ -73,17 +74,17 @@ interface IBuildJsonFeatureOptions {
 
 interface IBuildJsonScenarioOptions {
   feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: Dictionary<IScenario>
-  gherkinExampleRuleMap: Dictionary<IRule>
-  gherkinScenarioLocationMap: Dictionary<messages.ILocation>
+  gherkinScenarioMap: Record<string, IScenario>
+  gherkinExampleRuleMap: Record<string, IRule>
+  gherkinScenarioLocationMap: Record<string, messages.ILocation>
   pickle: messages.IPickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
-  pickleStepMap: Dictionary<messages.Pickle.IPickleStep>
+  gherkinStepMap: Record<string, messages.GherkinDocument.Feature.IStep>
+  pickleStepMap: Record<string, messages.Pickle.IPickleStep>
   testStep: messages.TestCase.ITestStep
   testStepAttachments: messages.IAttachment[]
   testStepResult: messages.TestStepFinished.ITestStepResult
@@ -96,9 +97,6 @@ interface UriToTestCaseAttemptsMap {
 export default class JsonFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
-    console.warn(
-      "The built-in JSON formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter)."
-    )
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
@@ -244,7 +242,7 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: IFeature
     pickle: IPickle
-    gherkinExampleRuleMap: Dictionary<IRule>
+    gherkinExampleRuleMap: Record<string, IRule>
   }): string {
     let parts: any[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
@@ -315,22 +313,35 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: IFeature
     pickle: IPickle
-    gherkinScenarioMap: { [id: string]: IScenario }
+    gherkinScenarioMap: Record<string, IScenario>
   }): IJsonTag[] {
-    return _.map(pickle.tags, (tagData) => {
-      const featureSource = feature.tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
-      )
-      const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
-      )
-      const line = doesHaveValue(featureSource)
-        ? featureSource.location.line
-        : scenarioSource.location.line
-      return {
-        name: tagData.name,
-        line,
-      }
-    })
+    const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
+
+    return pickle.tags.map(
+      (tagData: IPickleTag): IJsonTag =>
+        this.getScenarioTag(tagData, feature, scenario)
+    )
+  }
+
+  private getScenarioTag(
+    tagData: IPickleTag,
+    feature: IFeature,
+    scenario: IScenario
+  ): IJsonTag {
+    const byAstNodeId = (tag: ITag): Boolean => tag.id === tagData.astNodeId
+    const flatten = (acc: ITag[], val: ITag[]): ITag[] => acc.concat(val)
+
+    const tag =
+      feature.tags.find(byAstNodeId) ||
+      scenario.tags.find(byAstNodeId) ||
+      scenario.examples
+        .map((e) => e.tags)
+        .reduce(flatten, [])
+        .find(byAstNodeId)
+
+    return {
+      name: tagData.name,
+      line: tag?.location?.line,
+    }
   }
 }

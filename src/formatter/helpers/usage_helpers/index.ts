@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
 import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
@@ -33,8 +33,8 @@ export interface IGetUsageRequest {
 
 function buildEmptyMapping(
   stepDefinitions: StepDefinition[]
-): Dictionary<IUsage> {
-  const mapping: Dictionary<IUsage> = {}
+): Record<string, IUsage> {
+  const mapping: Record<string, IUsage> = {}
   stepDefinitions.forEach((stepDefinition) => {
     mapping[stepDefinition.id] = {
       code: stepDefinition.unwrappedCode.toString(),
@@ -52,7 +52,7 @@ function buildMapping({
   cwd,
   stepDefinitions,
   eventDataCollector,
-}: IGetUsageRequest): Dictionary<IUsage> {
+}: IGetUsageRequest): Record<string, IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
   _.each(eventDataCollector.getTestCaseAttempts(), (testCaseAttempt) => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
@@ -97,7 +97,7 @@ function invertDuration(duration: messages.IDuration): number {
   return 1
 }
 
-function buildResult(mapping: Dictionary<IUsage>): IUsage[] {
+function buildResult(mapping: Record<string, IUsage>): IUsage[] {
   return _.chain(mapping)
     .map(({ matches, ...rest }: IUsage) => {
       const sortedMatches = _.sortBy(matches, [

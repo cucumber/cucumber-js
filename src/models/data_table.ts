@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { messages } from '@cucumber/messages'
 
 export default class DataTable {
@@ -33,7 +33,7 @@ export default class DataTable {
     return copy
   }
 
-  rowsHash(): Dictionary<any> {
+  rowsHash(): Record<string, string> {
     const rows = this.raw()
     const everyRowHasTwoColumns = _.every(rows, (row) => row.length === 2)
     if (!everyRowHasTwoColumns) {
