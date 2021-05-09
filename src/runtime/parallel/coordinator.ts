@@ -200,7 +200,7 @@ export default class Coordinator {
     }
   }
 
-  run(numberOfWorkers: number, done: (success: boolean) => void): void {
+  async run(numberOfWorkers: number): Promise<boolean> {
     this.eventBroadcaster.emit(
       'envelope',
       new messages.Envelope({
@@ -210,10 +210,12 @@ export default class Coordinator {
       })
     )
     this.stopwatch.start()
-    _.times(numberOfWorkers, (id) =>
-      this.startWorker(id.toString(), numberOfWorkers)
-    )
-    this.onFinish = done
+    return await new Promise<boolean>((resolve) => {
+      _.times(numberOfWorkers, (id) =>
+        this.startWorker(id.toString(), numberOfWorkers)
+      )
+      this.onFinish = resolve
+    })
   }
 
   giveWork(worker: IWorker): void {
