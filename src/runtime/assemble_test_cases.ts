@@ -5,7 +5,6 @@ import { Group } from '@cucumber/cucumber-expressions'
 import { doesHaveValue } from '../value_checker'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import { clone } from 'lodash'
-import TestStepHookDefinition from '../models/test_step_hook_definition'
 import StepDefinition from '../models/step_definition'
 
 export interface ITestStep {
@@ -13,7 +12,6 @@ export interface ITestStep {
   isBeforeHook?: boolean
   isHook: boolean
   hookDefinition?: TestCaseHookDefinition
-  stepHookDefinition?: TestStepHookDefinition
   pickleStep?: messages.Pickle.IPickleStep
   stepDefinitions?: StepDefinition[]
 }
