@@ -12,6 +12,7 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import { PredictableTestRunStopwatch } from './stopwatch'
+import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.IEnvelope
 
 interface ITestPickleRunnerRequest {
@@ -32,15 +33,26 @@ async function testPickleRunner(
 ): Promise<ITestPickleRunnerResponse> {
   const envelopes: IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
+  const newId = IdGenerator.incrementing()
+  const { testCase, testSteps } = (
+    await assembleTestCases({
+      eventBroadcaster,
+      newId,
+      pickles: [options.pickle],
+      supportCodeLibrary: options.supportCodeLibrary,
+    })
+  )[options.pickle.id]
+
+  // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const pickleRunner = new PickleRunner({
     eventBroadcaster,
     stopwatch: new PredictableTestRunStopwatch(),
     gherkinDocument: options.gherkinDocument,
-    newId: IdGenerator.incrementing(),
+    newId,
     pickle: options.pickle,
-    testCase: null,
-    testSteps: [],
+    testCase,
+    testSteps,
     retries: valueOrDefault(options.retries, 0),
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,

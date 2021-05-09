@@ -156,8 +156,8 @@ export default class Runtime {
     await bluebird.each(this.pickleIds, async (pickleId) => {
       await this.runPickle(
         pickleId,
-        assembledTestCases[pickleId][0],
-        assembledTestCases[pickleId][1]
+        assembledTestCases[pickleId].testCase,
+        assembledTestCases[pickleId].testSteps
       )
     })
     await this.runTestRunHooks(

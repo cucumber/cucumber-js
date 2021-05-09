@@ -28,7 +28,10 @@ export interface ISupportCodeFilterOptionsForTestStep {
 
 export declare type IAssembledTestCases = Record<
   string,
-  [messages.ITestCase, ITestStep[]]
+  {
+    testCase: messages.ITestCase
+    testSteps: ITestStep[]
+  }
 >
 
 export interface IAssembleTestCasesOptions {
@@ -86,7 +89,7 @@ export async function assembleTestCases({
       'envelope',
       messages.Envelope.fromObject({ testCase })
     )
-    result[pickleId] = [testCase, testSteps]
+    result[pickleId] = { testCase, testSteps }
   }
   return result
 }
