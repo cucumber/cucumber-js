@@ -28,7 +28,10 @@ export interface ISupportCodeFilterOptionsForTestStep {
   pickleStep: messages.Pickle.IPickleStep
 }
 
-export declare type IAssembledTestCasesMap = Record<string, messages.ITestCase>
+export declare type IAssembledTestCases = Record<
+  string,
+  [messages.ITestCase, ITestStep[]]
+>
 
 export interface IAssembleTestCasesOptions {
   eventBroadcaster: EventEmitter
@@ -42,8 +45,8 @@ export async function assembleTestCases({
   newId,
   pickles,
   supportCodeLibrary,
-}: IAssembleTestCasesOptions): Promise<IAssembledTestCasesMap> {
-  const result: IAssembledTestCasesMap = {}
+}: IAssembleTestCasesOptions): Promise<IAssembledTestCases> {
+  const result: IAssembledTestCases = {}
   for (const pickle of pickles) {
     const { id: pickleId } = pickle
     const testCaseId = newId()
@@ -85,7 +88,7 @@ export async function assembleTestCases({
       'envelope',
       messages.Envelope.fromObject({ testCase })
     )
-    result[pickleId] = testCase
+    result[pickleId] = [testCase, testSteps]
   }
   return result
 }

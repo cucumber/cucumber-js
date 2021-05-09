@@ -12,7 +12,6 @@ import {
 } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
-import StepDefinition from '../models/step_definition'
 import { IDefinition } from '../models/definition'
 import { doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
@@ -27,6 +26,8 @@ export interface INewPickleRunnerOptions {
   gherkinDocument: messages.IGherkinDocument
   newId: IdGenerator.NewId
   pickle: messages.IPickle
+  testCase: messages.ITestCase
+  testSteps: ITestStep[]
   retries: number
   skip: boolean
   supportCodeLibrary: ISupportCodeLibrary
@@ -42,10 +43,10 @@ export default class PickleRunner {
   private readonly gherkinDocument: messages.IGherkinDocument
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.IPickle
+  private readonly testCase: messages.ITestCase
   private readonly maxAttempts: number
   private readonly skip: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
-  private readonly testCaseId: string
   private readonly testSteps: ITestStep[]
   private testStepResults: messages.TestStepFinished.ITestStepResult[]
   private world: any
@@ -57,6 +58,8 @@ export default class PickleRunner {
     gherkinDocument,
     newId,
     pickle,
+    testCase,
+    testSteps,
     retries = 0,
     skip,
     supportCodeLibrary,
@@ -87,11 +90,11 @@ export default class PickleRunner {
     this.maxAttempts = 1 + (skip ? 0 : retries)
     this.newId = newId
     this.pickle = pickle
+    this.testCase = testCase
     this.skip = skip
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
-    this.testCaseId = this.newId()
-    this.testSteps = this.buildTestSteps()
+    this.testSteps = testSteps
     this.resetTestProgressData()
   }
 
@@ -104,47 +107,6 @@ export default class PickleRunner {
     this.testStepResults = []
   }
 
-  buildTestSteps(): ITestStep[] {
-    const testSteps: ITestStep[] = []
-    this.getBeforeHookDefinitions().forEach((hookDefinition) => {
-      testSteps.push({
-        id: this.newId(),
-        hookDefinition,
-        isHook: true,
-        isBeforeHook: true,
-      })
-    })
-    this.pickle.steps.forEach((pickleStep) => {
-      const stepDefinitions = this.getStepDefinitions(pickleStep)
-      testSteps.push({
-        id: this.newId(),
-        pickleStep,
-        stepDefinitions,
-        isHook: false,
-      })
-    })
-    this.getAfterHookDefinitions().forEach((hookDefinition) => {
-      testSteps.push({
-        id: this.newId(),
-        hookDefinition,
-        isHook: true,
-      })
-    })
-    return testSteps
-  }
-
-  getAfterHookDefinitions(): TestCaseHookDefinition[] {
-    return clone(this.supportCodeLibrary.afterTestCaseHookDefinitions)
-      .reverse()
-      .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
-  }
-
-  getBeforeHookDefinitions(): TestCaseHookDefinition[] {
-    return this.supportCodeLibrary.beforeTestCaseHookDefinitions.filter(
-      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
-    )
-  }
-
   getBeforeStepHookDefinitions(): TestStepHookDefinition[] {
     return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter(
       (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
@@ -155,14 +117,6 @@ export default class PickleRunner {
     return clone(this.supportCodeLibrary.afterTestStepHookDefinitions)
       .reverse()
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
-  }
-
-  getStepDefinitions(
-    pickleStep: messages.Pickle.IPickleStep
-  ): StepDefinition[] {
-    return this.supportCodeLibrary.stepDefinitions.filter((stepDefinition) =>
-      stepDefinition.matchesStepName(pickleStep.text)
-    )
   }
 
   getWorstStepResult(): messages.TestStepFinished.ITestStepResult {
@@ -246,7 +200,7 @@ export default class PickleRunner {
         messages.Envelope.fromObject({
           testCaseStarted: {
             attempt,
-            testCaseId: this.testCaseId,
+            testCaseId: this.testCase.id,
             id: this.currentTestCaseStartedId,
             timestamp: this.stopwatch.timestamp(),
           },

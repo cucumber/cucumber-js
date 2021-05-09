@@ -17,7 +17,7 @@ import {
   PredictableTestRunStopwatch,
   RealTestRunStopwatch,
 } from './stopwatch'
-import { assembleTestCases } from './assemble_test_cases'
+import { assembleTestCases, ITestStep } from './assemble_test_cases'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -101,7 +101,11 @@ export default class Runtime {
     )
   }
 
-  async runPickle(pickleId: string): Promise<void> {
+  async runPickle(
+    pickleId: string,
+    testCase: messages.ITestCase,
+    testSteps: ITestStep[]
+  ): Promise<void> {
     const pickle = this.eventDataCollector.getPickle(pickleId)
     const retries = retriesForPickle(pickle, this.options)
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
@@ -111,6 +115,8 @@ export default class Runtime {
       gherkinDocument: this.eventDataCollector.getGherkinDocument(pickle.uri),
       newId: this.newId,
       pickle,
+      testCase,
+      testSteps,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
@@ -139,7 +145,7 @@ export default class Runtime {
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
     )
-    await assembleTestCases({
+    const assembledTestCases = await assembleTestCases({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
       pickles: this.pickleIds.map((pickleId) =>
@@ -147,7 +153,13 @@ export default class Runtime {
       ),
       supportCodeLibrary: this.supportCodeLibrary,
     })
-    await bluebird.each(this.pickleIds, this.runPickle.bind(this))
+    await bluebird.each(this.pickleIds, async (pickleId) => {
+      await this.runPickle(
+        pickleId,
+        assembledTestCases[pickleId][0],
+        assembledTestCases[pickleId][1]
+      )
+    })
     await this.runTestRunHooks(
       clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
       'an AfterAll'

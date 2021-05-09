@@ -39,6 +39,8 @@ async function testPickleRunner(
     gherkinDocument: options.gherkinDocument,
     newId: IdGenerator.incrementing(),
     pickle: options.pickle,
+    testCase: null,
+    testSteps: [],
     retries: valueOrDefault(options.retries, 0),
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,

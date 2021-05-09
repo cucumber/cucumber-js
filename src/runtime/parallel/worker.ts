@@ -137,6 +137,8 @@ export default class Worker {
       gherkinDocument,
       newId: this.newId,
       pickle,
+      testCase: null,
+      testSteps: [],
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,

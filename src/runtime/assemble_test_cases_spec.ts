@@ -1,10 +1,7 @@
 import { IdGenerator, messages } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { EventEmitter } from 'events'
-import {
-  assembleTestCases,
-  IAssembledTestCasesMap,
-} from './assemble_test_cases'
+import { assembleTestCases, IAssembledTestCases } from './assemble_test_cases'
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
@@ -20,7 +17,7 @@ interface IRequest {
 
 interface IResponse {
   envelopes: messages.IEnvelope[]
-  result: IAssembledTestCasesMap
+  result: IAssembledTestCases
 }
 
 async function testAssembleTestCases(options: IRequest): Promise<IResponse> {
