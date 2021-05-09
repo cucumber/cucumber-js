@@ -21,6 +21,7 @@ export interface IWorkerCommandRun {
   skip: boolean
   elapsed: number
   pickle: messages.IPickle
+  testCase: messages.ITestCase
   gherkinDocument: messages.IGherkinDocument
 }
 

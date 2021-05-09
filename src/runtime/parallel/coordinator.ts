@@ -3,7 +3,7 @@ import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'
 import { retriesForPickle } from '../helpers'
-import { messages } from '@cucumber/messages'
+import { IdGenerator, messages } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
@@ -19,6 +19,7 @@ import {
   PredictableTestRunStopwatch,
   RealTestRunStopwatch,
 } from '../stopwatch'
+import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -27,6 +28,7 @@ export interface INewCoordinatorOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
+  newId: IdGenerator.NewId
   pickleIds: string[]
   supportCodeLibrary: ISupportCodeLibrary
   supportCodePaths: string[]
@@ -46,7 +48,9 @@ export default class Coordinator {
   private onFinish: (success: boolean) => void
   private nextPickleIdIndex: number
   private readonly options: IRuntimeOptions
+  private readonly newId: IdGenerator.NewId
   private readonly pickleIds: string[]
+  private assembledTestCases: IAssembledTestCases
   private workers: Record<string, IWorker>
   private supportCodeIdMap: Record<string, string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
@@ -60,6 +64,7 @@ export default class Coordinator {
     eventDataCollector,
     pickleIds,
     options,
+    newId,
     supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules,
@@ -71,6 +76,7 @@ export default class Coordinator {
       ? new PredictableTestRunStopwatch()
       : new RealTestRunStopwatch()
     this.options = options
+    this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
@@ -210,6 +216,14 @@ export default class Coordinator {
       })
     )
     this.stopwatch.start()
+    this.assembledTestCases = await assembleTestCases({
+      eventBroadcaster: this.eventBroadcaster,
+      newId: this.newId,
+      pickles: this.pickleIds.map((pickleId) =>
+        this.eventDataCollector.getPickle(pickleId)
+      ),
+      supportCodeLibrary: this.supportCodeLibrary,
+    })
     return await new Promise<boolean>((resolve) => {
       _.times(numberOfWorkers, (id) =>
         this.startWorker(id.toString(), numberOfWorkers)
@@ -227,6 +241,7 @@ export default class Coordinator {
     const pickleId = this.pickleIds[this.nextPickleIdIndex]
     this.nextPickleIdIndex += 1
     const pickle = this.eventDataCollector.getPickle(pickleId)
+    const { testCase } = this.assembledTestCases[pickleId]
     const gherkinDocument = this.eventDataCollector.getGherkinDocument(
       pickle.uri
     )
@@ -238,6 +253,7 @@ export default class Coordinator {
         skip,
         elapsed: this.stopwatch.duration().nanos(),
         pickle,
+        testCase,
         gherkinDocument,
       },
     }

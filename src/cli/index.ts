@@ -220,6 +220,7 @@ export default class Cli {
         eventBroadcaster,
         eventDataCollector,
         options: configuration.runtimeOptions,
+        newId,
         pickleIds,
         supportCodeLibrary,
         supportCodePaths: configuration.supportCodePaths,

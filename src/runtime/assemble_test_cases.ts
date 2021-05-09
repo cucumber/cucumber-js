@@ -94,7 +94,7 @@ export async function assembleTestCases({
   return result
 }
 
-async function assembleTestSteps({
+export async function assembleTestSteps({
   newId,
   pickle,
   supportCodeLibrary,
