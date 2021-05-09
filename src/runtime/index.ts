@@ -17,6 +17,7 @@ import {
   PredictableTestRunStopwatch,
   RealTestRunStopwatch,
 } from './stopwatch'
+import { assembleTestCases } from './assemble_test_cases'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -138,6 +139,14 @@ export default class Runtime {
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
     )
+    await assembleTestCases({
+      eventBroadcaster: this.eventBroadcaster,
+      newId: this.newId,
+      pickles: this.pickleIds.map((pickleId) =>
+        this.eventDataCollector.getPickle(pickleId)
+      ),
+      supportCodeLibrary: this.supportCodeLibrary,
+    })
     await bluebird.each(this.pickleIds, this.runPickle.bind(this))
     await this.runTestRunHooks(
       clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
