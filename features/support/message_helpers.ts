@@ -8,6 +8,7 @@ import util from 'util'
 import * as messages from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'
+import { getWorstTestStepResult } from '@cucumber/messages'
 
 export interface IStepTextAndResult {
   text: string
@@ -50,9 +51,7 @@ export function getTestCaseResult(
   const query = new Query()
   envelopes.forEach((envelope) => query.update(envelope))
   const pickle = getAcceptedPickle(envelopes, pickleName)
-  return query.getWorstTestStepResult(
-    query.getPickleTestStepResults([pickle.id])
-  )
+  return getWorstTestStepResult(query.getPickleTestStepResults([pickle.id]))
 }
 
 export function getTestStepResults(

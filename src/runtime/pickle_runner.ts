@@ -2,7 +2,7 @@ import { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import { IdGenerator } from '@cucumber/messages'
+import { IdGenerator, getWorstTestStepResult } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import {
@@ -17,7 +17,6 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
-import { Query } from '@cucumber/query'
 
 interface ITestStep {
   id: string
@@ -223,7 +222,7 @@ export default class PickleRunner {
         duration: messages.TimeConversion.millisecondsToDuration(0),
       }
     }
-    return new Query().getWorstTestStepResult(this.testStepResults)
+    return getWorstTestStepResult(this.testStepResults)
   }
 
   async invokeStep(
@@ -399,7 +398,7 @@ export default class PickleRunner {
       this.getBeforeStepHookDefinitions()
     )
     if (
-      new Query().getWorstTestStepResult(stepResults).status !==
+      getWorstTestStepResult(stepResults).status !==
       messages.TestStepResultStatus.FAILED
     ) {
       stepResult = await this.invokeStep(
@@ -414,7 +413,7 @@ export default class PickleRunner {
     )
     stepResults = stepResults.concat(afterStepHookResults)
 
-    const finalStepResult = new Query().getWorstTestStepResult(stepResults)
+    const finalStepResult = getWorstTestStepResult(stepResults)
     let finalDuration = messages.TimeConversion.millisecondsToDuration(0)
     for (const result of stepResults) {
       finalDuration = messages.TimeConversion.addDurations(

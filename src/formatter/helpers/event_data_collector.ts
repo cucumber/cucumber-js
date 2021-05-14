@@ -2,7 +2,6 @@ import _, { values } from 'lodash'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
-import { Query } from '@cucumber/query'
 
 interface ITestCaseAttemptData {
   attempt: number
@@ -28,7 +27,6 @@ export default class EventDataCollector {
   private testCaseMap: Record<string, messages.TestCase> = {}
   private testCaseAttemptDataMap: Record<string, ITestCaseAttemptData> = {}
   readonly undefinedParameterTypes: messages.UndefinedParameterType[] = []
-  readonly query = new Query()
 
   constructor(eventBroadcaster: EventEmitter) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
@@ -64,7 +62,6 @@ export default class EventDataCollector {
   }
 
   parseEnvelope(envelope: messages.Envelope): void {
-    this.query.update(envelope)
     if (doesHaveValue(envelope.gherkinDocument)) {
       this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
         envelope.gherkinDocument
@@ -127,6 +124,6 @@ export default class EventDataCollector {
     )
     this.testCaseAttemptDataMap[
       testCaseStartedId
-    ].worstTestStepResult = this.query.getWorstTestStepResult(stepResults)
+    ].worstTestStepResult = messages.getWorstTestStepResult(stepResults)
   }
 }

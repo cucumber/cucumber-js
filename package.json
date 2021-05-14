@@ -174,7 +174,6 @@
     "@cucumber/gherkin-streams": "1.0.0",
     "@cucumber/html-formatter": "13.0.0",
     "@cucumber/messages": "15.0.0",
-    "@cucumber/query": "9.0.2",
     "@cucumber/tag-expressions": "3.0.1",
     "assertion-error-formatter": "3.0.0",
     "bluebird": "^3.7.2",
@@ -206,6 +205,7 @@
   "devDependencies": {
     "@cucumber/compatibility-kit": "4.0.1",
     "@cucumber/message-streams": "1.0.0",
+    "@cucumber/query": "9.0.2",
     "@sinonjs/fake-timers": "7.0.5",
     "@types/bluebird": "3.5.33",
     "@types/chai": "4.2.17",
