@@ -8,15 +8,17 @@ module.exports = [
   },
   {
     gherkinDocument: {
-      uri: 'features/a.feature',
+      comments: [],
       feature: {
         location: {
           line: 1,
           column: 1,
         },
+        tags: [],
         language: 'en',
         keyword: 'Feature',
         name: 'a feature',
+        description: '',
         children: [
           {
             scenario: {
@@ -24,8 +26,10 @@ module.exports = [
                 line: 2,
                 column: 3,
               },
+              tags: [],
               keyword: 'Scenario',
               name: 'a scenario',
+              description: '',
               steps: [
                 {
                   location: {
@@ -37,11 +41,13 @@ module.exports = [
                   id: '0',
                 },
               ],
+              examples: [],
               id: '1',
             },
           },
         ],
       },
+      uri: 'features/a.feature',
     },
   },
   {
@@ -52,26 +58,28 @@ module.exports = [
       language: 'en',
       steps: [
         {
-          text: 'a step',
-          id: '2',
           astNodeIds: ['0'],
+          id: '2',
+          text: 'a step',
         },
       ],
+      tags: [],
       astNodeIds: ['1'],
     },
   },
   {
     testRunStarted: {
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 0,
       },
     },
   },
   {
     testRunFinished: {
+      success: true,
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 1000000,
       },
     },

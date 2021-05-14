@@ -9,6 +9,7 @@ import {
   IJsonScenario,
   IJsonStep,
 } from '../../src/formatter/json_formatter'
+import * as messages from '@cucumber/messages'
 
 // Converting windows stack trace to posix and removing cwd
 //    C:\\project\\path\\features\\support/code.js
@@ -45,9 +46,9 @@ function normalizeMessage(obj: any, cwd: string): void {
 }
 
 export function normalizeMessageOutput(
-  envelopeObjects: any[],
+  envelopeObjects: messages.Envelope[],
   cwd: string
-): any[] {
+): messages.Envelope[] {
   envelopeObjects.forEach((e: any) => {
     for (const key in e) {
       normalizeMessage(e[key], cwd)
@@ -56,7 +57,9 @@ export function normalizeMessageOutput(
   return envelopeObjects
 }
 
-export function stripMetaMessages(envelopeObjects: any[]): any[] {
+export function stripMetaMessages(
+  envelopeObjects: messages.Envelope[]
+): messages.Envelope[] {
   return envelopeObjects.filter((e: any) => {
     // filter off meta objects, almost none of it predictable/useful for testing
     return doesNotHaveValue(e.meta)
