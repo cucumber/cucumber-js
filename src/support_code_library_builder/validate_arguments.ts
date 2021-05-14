@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { doesNotHaveValue } from '../value_checker'
 import { DefineStepPattern, IDefineStepOptions } from './types'
 
@@ -36,7 +36,7 @@ const fnValidation = {
   },
 }
 
-const validations: Dictionary<IValidation[]> = {
+const validations: Record<string, IValidation[]> = {
   defineTestRunHook: [
     { identifier: 'first argument', ...optionsValidation },
     optionsTimeoutValidation,

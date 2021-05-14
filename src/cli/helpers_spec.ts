@@ -7,8 +7,8 @@ import {
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
-import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import { IdGenerator, SourceMediaType } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { Readable } from 'stream'
@@ -358,7 +358,7 @@ describe('helpers', () => {
         const sourceEnvelope: messages.Envelope = {
           source: {
             data: '',
-            mediaType: 'text/x.cucumber.gherkin+plain',
+            mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
             uri: '/project/features/a.feature',
           },
         }
@@ -397,7 +397,7 @@ describe('helpers', () => {
         const sourceEnvelope: messages.Envelope = {
           source: {
             data: '@tagA\nFeature: a\nScenario: b\nGiven a step',
-            mediaType: 'text/x.cucumber.gherkin+plain',
+            mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
             uri: '/project/features/a.feature',
           },
         }
@@ -444,7 +444,7 @@ describe('helpers', () => {
         const sourceEnvelope: messages.Envelope = {
           source: {
             data: 'Feature: a\nScenario: b\nGiven a step',
-            mediaType: 'text/x.cucumber.gherkin+plain',
+            mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
             uri: '/project/features/a.feature',
           },
         }

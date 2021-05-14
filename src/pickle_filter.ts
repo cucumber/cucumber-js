@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import path from 'path'
 import parse from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
@@ -53,7 +53,7 @@ export default class PickleFilter {
 }
 
 export class PickleLineFilter {
-  private readonly featureUriToLinesMapping: Dictionary<number[]>
+  private readonly featureUriToLinesMapping: Record<string, number[]>
 
   constructor(cwd: string, featurePaths: string[] = []) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
@@ -68,8 +68,8 @@ export class PickleLineFilter {
   }: {
     cwd: string
     featurePaths: string[]
-  }): Dictionary<number[]> {
-    const mapping: Dictionary<number[]> = {}
+  }): Record<string, number[]> {
+    const mapping: Record<string, number[]> = {}
     featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {

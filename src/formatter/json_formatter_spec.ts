@@ -7,6 +7,7 @@ import {
 } from '../../test/fixtures/json_formatter_steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
+import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 
 describe('JsonFormatter', () => {
   let clock: InstalledClock
@@ -248,7 +249,7 @@ describe('JsonFormatter', () => {
           keyword: 'Given ',
           line: 3,
           match: {
-            location: 'json_formatter_steps.ts:37',
+            location: 'json_formatter_steps.ts:39',
           },
           name: 'a passing step',
           result: {
@@ -369,6 +370,63 @@ describe('JsonFormatter', () => {
             ],
           },
         ])
+      })
+    })
+
+    describe(' with tagged examples', () => {
+      it('outputs the examples', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a step <id>',
+              '',
+              '    @tag-1-2',
+              '    Examples:',
+              '      |id|',
+              '      | 1|',
+              '      | 2|',
+              '',
+              '    @tag @tag-3-4',
+              '    Examples:',
+              '      |id|',
+              '      | 3|',
+              '      | 4|',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        // Assert
+        const jsonFeature: IJsonFeature = JSON.parse(output)[0]
+        const jsonScenarios = jsonFeature.elements
+        const jsonScenarioTags = jsonScenarios.map((s: IJsonScenario) => s.tags)
+
+        const expectedTags = [
+          [{ line: 5, name: '@tag-1-2' }],
+          [{ line: 5, name: '@tag-1-2' }],
+          [
+            { line: 11, name: '@tag' },
+            { line: 11, name: '@tag-3-4' },
+          ],
+          [
+            { line: 11, name: '@tag' },
+            { line: 11, name: '@tag-3-4' },
+          ],
+        ]
+
+        expect(jsonScenarioTags).to.eql(expectedTags)
       })
     })
   })

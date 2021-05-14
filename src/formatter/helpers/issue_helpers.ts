@@ -5,7 +5,6 @@ import { IColorFns } from '../get_color_fns'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ITestCaseAttempt } from './event_data_collector'
-import { Dictionary } from 'lodash'
 
 export function isFailure(result: messages.TestStepResult): boolean {
   return (
@@ -65,7 +64,7 @@ export function formatUndefinedParameterTypes(
   undefinedParameterTypes: messages.UndefinedParameterType[]
 ): string {
   const output = [`Undefined parameter types:\n\n`]
-  const withLatest: Dictionary<messages.UndefinedParameterType> = {}
+  const withLatest: Record<string, messages.UndefinedParameterType> = {}
   undefinedParameterTypes.forEach((parameterType) => {
     withLatest[parameterType.name] = parameterType
   })

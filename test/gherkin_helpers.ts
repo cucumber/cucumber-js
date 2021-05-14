@@ -1,4 +1,5 @@
 import * as messages from '@cucumber/messages'
+import { SourceMediaType } from '@cucumber/messages'
 import { doesHaveValue } from '../src/value_checker'
 import { IGherkinOptions } from '@cucumber/gherkin'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
@@ -25,12 +26,12 @@ export async function parse({
   uri,
   options,
 }: IParseRequest): Promise<IParsedSourceWithEnvelopes> {
-  const sources = [
+  const sources: messages.Envelope[] = [
     {
       source: {
         uri,
         data: data,
-        mediaType: 'text/x.cucumber.gherkin+plain',
+        mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
       },
     },
   ]

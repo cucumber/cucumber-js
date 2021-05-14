@@ -1,10 +1,10 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.Step> {
+): Record<string, messages.Step> {
   return _.chain(gherkinDocument.feature.children)
     .map(extractStepContainers)
     .flatten()
@@ -32,7 +32,7 @@ function extractStepContainers(
 
 export function getGherkinScenarioMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.Scenario> {
+): Record<string, messages.Scenario> {
   return _.chain(gherkinDocument.feature.children)
     .map((child: messages.FeatureChild) => {
       if (doesHaveValue(child.rule)) {
@@ -50,7 +50,7 @@ export function getGherkinScenarioMap(
 
 export function getGherkinExampleRuleMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.Rule> {
+): Record<string, messages.Rule> {
   return _.chain(gherkinDocument.feature.children)
     .filter('rule')
     .map('rule')
@@ -66,9 +66,9 @@ export function getGherkinExampleRuleMap(
 
 export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.GherkinDocument
-): Dictionary<messages.Location> {
-  const locationMap: Dictionary<messages.Location> = {}
-  const scenarioMap: Dictionary<messages.Scenario> = getGherkinScenarioMap(
+): Record<string, messages.Location> {
+  const locationMap: Record<string, messages.Location> = {}
+  const scenarioMap: Record<string, messages.Scenario> = getGherkinScenarioMap(
     gherkinDocument
   )
   _.entries<messages.Scenario>(scenarioMap).forEach(([id, scenario]) => {

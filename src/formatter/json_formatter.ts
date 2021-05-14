@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import path from 'path'
@@ -65,17 +65,17 @@ interface IBuildJsonFeatureOptions {
 
 interface IBuildJsonScenarioOptions {
   feature: messages.Feature
-  gherkinScenarioMap: Dictionary<messages.Scenario>
-  gherkinExampleRuleMap: Dictionary<messages.Rule>
-  gherkinScenarioLocationMap: Dictionary<messages.Location>
+  gherkinScenarioMap: Record<string, messages.Scenario>
+  gherkinExampleRuleMap: Record<string, messages.Rule>
+  gherkinScenarioLocationMap: Record<string, messages.Location>
   pickle: messages.Pickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.Step>
-  pickleStepMap: Dictionary<messages.PickleStep>
+  gherkinStepMap: Record<string, messages.Step>
+  pickleStepMap: Record<string, messages.PickleStep>
   testStep: messages.TestStep
   testStepAttachments: messages.Attachment[]
   testStepResult: messages.TestStepResult
@@ -88,9 +88,6 @@ interface UriToTestCaseAttemptsMap {
 export default class JsonFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
-    console.warn(
-      "The built-in JSON formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter)."
-    )
     options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
@@ -236,7 +233,7 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: messages.Feature
     pickle: messages.Pickle
-    gherkinExampleRuleMap: Dictionary<messages.Rule>
+    gherkinExampleRuleMap: Record<string, messages.Rule>
   }): string {
     let parts: any[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
@@ -318,22 +315,39 @@ export default class JsonFormatter extends Formatter {
   }: {
     feature: messages.Feature
     pickle: messages.Pickle
-    gherkinScenarioMap: Dictionary<messages.Scenario>
+    gherkinScenarioMap: Record<string, messages.Scenario>
   }): IJsonTag[] {
-    return _.map(pickle.tags, (tagData) => {
-      const featureSource = feature.tags.find(
-        (t: messages.Tag) => t.id === tagData.astNodeId
-      )
-      const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
-        (t: messages.Tag) => t.id === tagData.astNodeId
-      )
-      const line = doesHaveValue(featureSource)
-        ? featureSource.location.line
-        : scenarioSource.location.line
-      return {
-        name: tagData.name,
-        line,
-      }
-    })
+    const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
+
+    return pickle.tags.map(
+      (tagData: messages.PickleTag): IJsonTag =>
+        this.getScenarioTag(tagData, feature, scenario)
+    )
+  }
+
+  private getScenarioTag(
+    tagData: messages.PickleTag,
+    feature: messages.Feature,
+    scenario: messages.Scenario
+  ): IJsonTag {
+    const byAstNodeId = (tag: messages.Tag): Boolean =>
+      tag.id === tagData.astNodeId
+    const flatten = (
+      acc: messages.Tag[],
+      val: messages.Tag[]
+    ): messages.Tag[] => acc.concat(val)
+
+    const tag =
+      feature.tags.find(byAstNodeId) ||
+      scenario.tags.find(byAstNodeId) ||
+      scenario.examples
+        .map((e) => e.tags)
+        .reduce(flatten, [])
+        .find(byAstNodeId)
+
+    return {
+      name: tagData.name,
+      line: tag?.location?.line,
+    }
   }
 }
