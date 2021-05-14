@@ -81,7 +81,7 @@ export function getTestStepResults(
   let isBeforeHook = true
   return testCase.testSteps.map((testStep) => {
     let text = ''
-    if (testStep.pickleStepId === '') {
+    if (!doesHaveValue(testStep.pickleStepId)) {
       text = isBeforeHook ? 'Before' : 'After'
     } else {
       isBeforeHook = false

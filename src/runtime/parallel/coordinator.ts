@@ -127,7 +127,7 @@ export default class Coordinator {
 
   remapDefinitionIds(testCase: messages.TestCase): void {
     for (const testStep of testCase.testSteps) {
-      if (testStep.hookId !== '') {
+      if (doesHaveValue(testStep.hookId)) {
         testStep.hookId = this.supportCodeIdMap[testStep.hookId]
       }
       if (doesHaveValue(testStep.stepDefinitionIds)) {

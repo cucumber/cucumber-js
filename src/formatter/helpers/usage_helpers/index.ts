@@ -64,7 +64,7 @@ function buildMapping({
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
     testCaseAttempt.testCase.testSteps.forEach((testStep) => {
       if (
-        testStep.pickleStepId !== '' &&
+        doesHaveValue(testStep.pickleStepId) &&
         testStep.stepDefinitionIds.length === 1
       ) {
         const stepDefinitionId = testStep.stepDefinitionIds[0]

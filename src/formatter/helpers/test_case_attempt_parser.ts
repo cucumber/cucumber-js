@@ -66,12 +66,11 @@ function parseStep({
 }: IParseStepRequest): IParsedTestStep {
   const out: IParsedTestStep = {
     attachments: testStepAttachments,
-    keyword:
-      testStep.pickleStepId !== ''
-        ? keyword
-        : isBeforeHook
-        ? 'Before'
-        : 'After',
+    keyword: doesHaveValue(testStep.pickleStepId)
+      ? keyword
+      : isBeforeHook
+      ? 'Before'
+      : 'After',
     result: testStepResult,
   }
   if (doesHaveValue(testStep.hookId)) {
@@ -102,7 +101,7 @@ function parseStep({
       line: stepDefinition.line,
     }
   }
-  if (testStep.pickleStepId !== '') {
+  if (doesHaveValue(testStep.pickleStepId)) {
     out.sourceLocation = {
       uri: pickleUri,
       line: gherkinStepMap[pickleStep.astNodeIds[0]].location.line,
@@ -154,9 +153,9 @@ export function parseTestCaseAttempt({
   let previousKeywordType = KeywordType.Precondition
   _.each(testCase.testSteps, (testStep) => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
-    isBeforeHook = isBeforeHook && testStep.hookId !== ''
+    isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
     let keyword, keywordType, pickleStep
-    if (testStep.pickleStepId !== '') {
+    if (doesHaveValue(testStep.pickleStepId)) {
       pickleStep = pickleStepMap[testStep.pickleStepId]
       keyword = getStepKeyword({ pickleStep, gherkinStepMap })
       keywordType = getStepKeywordType({
