@@ -1,4 +1,4 @@
-import { Then } from '../../src'
+import { Then } from '../../'
 import { expect } from 'chai'
 import {
   normalizeJsonOutput,
