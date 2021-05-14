@@ -1,5 +1,6 @@
 import * as formatterHelpers from './formatter/helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
+import * as messages from '@cucumber/messages'
 
 // Top level
 export { default as Cli } from './cli'
@@ -41,3 +42,4 @@ export {
   default as World,
   IWorldOptions,
 } from './support_code_library_builder/world'
+export const Status = messages.TestStepResultStatus
