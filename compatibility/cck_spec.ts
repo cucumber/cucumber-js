@@ -5,7 +5,7 @@ import glob from 'glob'
 import fs from 'fs'
 import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
-import { Cli } from '../lib'
+import { Cli } from '../src'
 import toString from 'stream-to-string'
 import { doesHaveValue, doesNotHaveValue } from '../src/value_checker'
 import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
@@ -22,80 +22,80 @@ config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  glob
-    .sync(`${CCK_FEATURES_PATH}/**/*.feature.ndjson`)
-    .forEach((fixturePath) => {
-      const suiteName = /^.+\/(.+)\.feature\.ndjson$/.exec(fixturePath)[1]
-      it(`passes the cck suite for '${suiteName}'`, async () => {
-        const args = [
-          'node',
-          path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
-        ].concat([
-          `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}.feature`,
-          '--require',
-          `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
-          '--profile',
-          'cck',
+  glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`).forEach((fixturePath) => {
+    const match = /^.+\/(.+)(\.md|\.feature)\.ndjson$/.exec(fixturePath)
+    const suiteName = match[1]
+    const extension = match[2]
+    it(`passes the cck suite for '${suiteName}'`, async () => {
+      const args = [
+        'node',
+        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
+      ].concat([
+        `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`,
+        '--require',
+        `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
+        '--profile',
+        'cck',
+      ])
+      const stdout = new PassThrough()
+      try {
+        await new Cli({
+          argv: args,
+          cwd: PROJECT_PATH,
+          stdout,
+        }).run()
+      } catch (ignored) {
+        console.error(ignored)
+      }
+      stdout.end()
+
+      const rawOutput = await toString(stdout)
+      const actualMessages = normalize(
+        rawOutput
+          .split('\n')
+          .filter((line) => line.trim() !== '')
+          .map((line) => JSON.parse(line))
+      )
+
+      const expectedMessages: messages.Envelope[] = []
+      await asyncPipeline(
+        fs.createReadStream(fixturePath, { encoding: 'utf-8' }),
+        new messageStreams.NdjsonToMessageStream(),
+        new Writable({
+          objectMode: true,
+          write(envelope: messages.Envelope, _: BufferEncoding, callback) {
+            expectedMessages.push(envelope)
+            callback()
+          },
+        })
+      )
+
+      expect(actualMessages)
+        .excludingEvery([
+          'meta',
+          // sources
+          'uri',
+          'line',
+          // ids
+          'astNodeId',
+          'astNodeIds',
+          'hookId',
+          'id',
+          'pickleId',
+          'pickleStepId',
+          'stepDefinitionIds',
+          'testCaseId',
+          'testCaseStartedId',
+          'testStepId',
+          // time
+          'nanos',
+          'seconds',
+          // errors
+          'message',
         ])
-        const stdout = new PassThrough()
-        try {
-          await new Cli({
-            argv: args,
-            cwd: PROJECT_PATH,
-            stdout,
-          }).run()
-        } catch (ignored) {
-          console.error(ignored)
-        }
-        stdout.end()
-
-        const rawOutput = await toString(stdout)
-        const actualMessages = normalize(
-          rawOutput
-            .split('\n')
-            .filter((line) => line.trim() !== '')
-            .map((line) => JSON.parse(line))
-        )
-
-        const expectedMessages: messages.Envelope[] = []
-        await asyncPipeline(
-          fs.createReadStream(fixturePath, { encoding: 'utf-8' }),
-          new messageStreams.NdjsonToMessageStream(),
-          new Writable({
-            objectMode: true,
-            write(envelope: messages.Envelope, _: BufferEncoding, callback) {
-              expectedMessages.push(envelope)
-              callback()
-            },
-          })
-        )
-
-        expect(actualMessages)
-          .excludingEvery([
-            'meta',
-            // sources
-            'uri',
-            'line',
-            // ids
-            'astNodeId',
-            'astNodeIds',
-            'hookId',
-            'id',
-            'pickleId',
-            'pickleStepId',
-            'stepDefinitionIds',
-            'testCaseId',
-            'testCaseStartedId',
-            'testStepId',
-            // time
-            'nanos',
-            'seconds',
-            // errors
-            'message',
-          ])
-          .to.deep.eq(expectedMessages)
-      })
+        .to.deep.eq(expectedMessages)
     })
+  })
 })
 
 function normalize(messages: any[]): any[] {

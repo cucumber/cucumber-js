@@ -1,4 +1,4 @@
-import { When, Before, After, World } from '../../..'
+import { When, Before, After, World } from '../../../src'
 import fs from 'fs'
 import path from 'path'
 

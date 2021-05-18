@@ -203,7 +203,7 @@
     "verror": "^1.10.0"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "5.0.0",
+    "@cucumber/compatibility-kit": "5.0.1",
     "@cucumber/message-streams": "2.0.0",
     "@cucumber/query": "10.0.0",
     "@sinonjs/fake-timers": "7.0.5",
