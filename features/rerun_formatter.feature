@@ -99,6 +99,7 @@ Feature: Rerun Formatter
     Given an empty file named "@rerun.txt"
     When I run cucumber-js with `@rerun.txt`
     Then it passes
+    And it runs 0 scenarios
 
   Scenario: rerun with fail fast outputs all skipped scenarios
     When I run cucumber-js with `--fail-fast --format rerun:@rerun.txt`
