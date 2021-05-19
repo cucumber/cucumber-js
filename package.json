@@ -170,7 +170,7 @@
   "dependencies": {
     "@cucumber/create-meta": "^5.0.0",
     "@cucumber/cucumber-expressions": "^12.1.1",
-    "@cucumber/gherkin": "^19.0.1",
+    "@cucumber/gherkin": "^19.0.2",
     "@cucumber/gherkin-streams": "^2.0.2",
     "@cucumber/html-formatter": "^14.0.0",
     "@cucumber/messages": "^16.0.0",
