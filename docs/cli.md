@@ -59,7 +59,7 @@ If multiple formats are specified with the same output, only the last is used.
 
 * **message** - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
 * **html** - prints a rich HTML report to a standalone page
-* **json** - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
+* **json** - prints the feature as JSON. *Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead.*
 * **progress** - prints one character per scenario (default).
 * **progress-bar** - prints a progress bar and outputs errors/warnings along the way.
 * **rerun** - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
@@ -81,22 +81,6 @@ You can pass in format options with `--format-options <JSON>`. The JSON string m
 
 * Suggested use: add with profiles so you can define an object and use `JSON.stringify` instead of writing `JSON` manually.
 
-## ES Modules (experimental) (Node.js 12+)
-
-You can optionally write your support code (steps, hooks, etc) with native ES modules syntax - i.e. using `import` and `export` statements without transpiling.
-
-To enable this, run with the `--esm` flag.
-
-This will also expand the default glob for support files to include the `.mjs` file extension.
-
-As well as support code, these things can also be in ES modules syntax:
-
-- Custom formatters
-- Custom snippets
-- Your `cucumber.js` config file
-
-You can use ES modules selectively/incrementally - the module loading strategy that the `--esm` flag activates supports both ES modules and CommonJS.
-
 ## Colors
 
 Colors can be disabled with `--format-options '{"colorsEnabled": false}'`
@@ -109,15 +93,15 @@ By default, cucumber exits when the event loop drains. Use the `--exit` flag in 
 * [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
 * Isolating what scenario or scenarios causes the hang
 
-## Undefined Step Snippets
-
-Undefined steps snippets are printed in JavaScript using the callback interface by default.
-
 ## --no-strict
 
 disable _strict_ mode.
 
 By default, cucumber works in _strict_ mode, meaning it will fail if there are pending steps.
+
+## Undefined Step Snippets
+
+Undefined steps snippets are printed in JavaScript using the callback interface by default.
 
 ### Interface
 
@@ -196,7 +180,9 @@ If your files end with an extension other than `js`, make sure to also include t
 --require-module coffeescript/register --require 'features/**/*.coffee'
 ```
 
-### Typescript
+### TypeScript
+
+Your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
 
 #### With ts-node
 
@@ -227,6 +213,7 @@ require('ts-node').register({
   transpileOnly: true,
   compilerOptions: {
     "module": "commonjs",
+    "resolveJsonModule": true,
   },
 });
 ```

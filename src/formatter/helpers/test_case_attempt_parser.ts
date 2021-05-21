@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import Status from '../../status'
 import { getStepKeywordType, KeywordType } from './keyword_type'
 import {
@@ -40,7 +40,7 @@ export interface IParsedTestCaseAttempt {
 
 interface IParseStepRequest {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  gherkinStepMap: Record<string, messages.GherkinDocument.Feature.IStep>
   keyword: string
   keywordType: KeywordType
   pickleStep: messages.Pickle.IPickleStep

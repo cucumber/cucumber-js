@@ -11,15 +11,31 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
-* Experimental support for native ES modules via the [`--esm` flag](./docs/cli.md#es-modules-experimental-nodejs-12) ([#1589](https://github.com/cucumber/cucumber-js/pull/1589))
-
 ### Changed
+
+* Clarify that the JSON formatter will not be removed any time soon
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+* Json formatter now works with tagged examples
+  ([#1621](https://github.com/cucumber/cucumber-js/issues/1621)
+   [#1651](https://github.com/cucumber/cucumber-js/pull/1651))
+
+## [7.2.1] (2021-04-21)
+
+### Fixed
+
+* Temporarily remove ESM changes due to impact on formatters
+
+## [7.2.0] (2021-04-20)
+
+### Added
+
+* Experimental support for native ES modules via the [`--esm` flag](./docs/cli.md#es-modules-experimental-nodejs-12) ([#1589](https://github.com/cucumber/cucumber-js/pull/1589))
 
 ## [7.1.0] (2021-04-06)
 
@@ -1815,7 +1831,9 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.1.0...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.2.1...master
+[7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
+[7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
 [7.1.0]:        https://github.com/cucumber/cucumber-js/compare/7.1.0-rc.0...7.0.0
 [7.0.0]:        https://github.com/cucumber/cucumber-js/compare/7.0.0-rc.0...v7.0.0
 [7.0.0-rc.0]:   https://github.com/cucumber/cucumber-js/compare/v6.0.5...v7.0.0-rc.0
