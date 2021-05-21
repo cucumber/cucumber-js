@@ -48,3 +48,5 @@ There are a few minor differences to be aware of:
 
 - The type for data tables was named `TableDefinition` - it's now named `DataTable`
 - `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](./custom_formatters.md)
+
+Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.

@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import Status from '../../status'
@@ -59,9 +59,9 @@ export default class Coordinator {
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private inProgressPickles: Dictionary<messages.IPickle>
-  private workers: Dictionary<IWorker>
-  private supportCodeIdMap: Dictionary<string>
+  private inProgressPickles: Record<string, messages.IPickle>
+  private workers: Record<string, IWorker>
+  private supportCodeIdMap: Record<string, string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]

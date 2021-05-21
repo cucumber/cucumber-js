@@ -23,9 +23,8 @@ async function testFormatIssue(sourceData: string): Promise<string> {
     cwd: 'project/',
     colorFns: getColorFns(false),
     number: 1,
-    snippetBuilder: await FormatterBuilder.getStepDefinitionSnippetBuilder({
+    snippetBuilder: FormatterBuilder.getStepDefinitionSnippetBuilder({
       cwd: 'project/',
-      importer: async (path) => await import(path),
       supportCodeLibrary,
     }),
     supportCodeLibrary,
