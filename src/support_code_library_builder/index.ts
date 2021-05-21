@@ -27,6 +27,7 @@ import {
   ISupportCodeLibrary,
   TestCaseHookFunction,
   TestStepHookFunction,
+  ParallelAssignmentValidator,
 } from './types'
 import World from './world'
 
@@ -77,6 +78,7 @@ export class SupportCodeLibraryBuilder {
   private parameterTypeRegistry: ParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
   private World: any
+  private parallelCanAssign: ParallelAssignmentValidator
 
   constructor() {
     const defineStep = this.defineStep.bind(this)
@@ -110,6 +112,9 @@ export class SupportCodeLibraryBuilder {
       },
       setWorldConstructor: (fn) => {
         this.World = fn
+      },
+      setParallelCanAssign: (fn: ParallelAssignmentValidator): void => {
+        this.parallelCanAssign = fn
       },
       Then: defineStep,
       When: defineStep,
@@ -396,6 +401,7 @@ export class SupportCodeLibraryBuilder {
       undefinedParameterTypes: stepDefinitionsResult.undefinedParameterTypes,
       stepDefinitions: stepDefinitionsResult.stepDefinitions,
       World: this.World,
+      parallelCanAssign: this.parallelCanAssign,
     }
   }
 
@@ -412,6 +418,7 @@ export class SupportCodeLibraryBuilder {
     this.defaultTimeout = 5000
     this.parameterTypeRegistry = new ParameterTypeRegistry()
     this.stepDefinitionConfigs = []
+    this.parallelCanAssign = () => true
     this.World = World
   }
 }
