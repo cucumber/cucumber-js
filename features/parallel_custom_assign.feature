@@ -67,8 +67,8 @@ Feature: Running scenarios in parallel with custom assignment
         }
       }
 
-      Given(/^scenario complex step$/, step_def(300))
-      Given(/^scenario simple step$/, step_def(200))
+      Given(/^complex step$/, step_def(300))
+      Given(/^simple step$/, step_def(200))
       """
     And a file named "features/a.feature" with:
       """
