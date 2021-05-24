@@ -23,7 +23,7 @@ use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
   glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`).forEach((fixturePath) => {
-    const match = /^.+\/(.+)(\.md|\.feature)\.ndjson$/.exec(fixturePath)
+    const match = /^.+\/(.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {

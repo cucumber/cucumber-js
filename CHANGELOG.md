@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+* Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
+  ([#1645](https://github.com/cucumber/cucumber-js/pull/1645))
+
 ### Changed
 
 * Clarify that the JSON formatter will not be removed any time soon

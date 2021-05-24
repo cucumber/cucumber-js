@@ -18,6 +18,24 @@ I want to run Cucumber on the command line
   When(/^a step is passing$/, function() {})
   ```
 * When I run cucumber-js with `-r step_definitions/cucumber_steps.js`
+* Then it passes
+
+## Scenario: run Markdown feature with non-default step definitions file location specified (-r option)
+
+* Given a file named "features/a.feature.md" with:
+  ```markdown
+  # Feature: some feature
+  ## Scenario:
+  * When a step is passing
+  ```
+* And a file named "step_definitions/cucumber_steps.js" with:
+  ```javascript
+  const {When} = require('@cucumber/cucumber')
+
+  When(/^a step is passing$/, function() {})
+  ```
+* When I run cucumber-js with `-r step_definitions/cucumber_steps.js`
+* Then it passes
 
 ## Scenario: run feature with step definitions in required directory (-r option)
 
@@ -34,6 +52,7 @@ I want to run Cucumber on the command line
   When(/^a step is passing$/, function() {});
   ```
 * When I run cucumber-js with `-r step_definitions`
+* Then it passes
 
 `@spawn`
 # Scenario: display Cucumber version

@@ -40,7 +40,7 @@ describe('Configuration', () => {
         parallel: 0,
         pickleFilterOptions: {
           cwd,
-          featurePaths: ['features/**/*.{feature,md}'],
+          featurePaths: ['features/**/*.{feature,feature.md}'],
           names: [],
           tagExpression: '',
         },
@@ -91,7 +91,7 @@ describe('Configuration', () => {
     it('returns the appropriate .md and support code paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join('features', 'a.md')
+      const relativeFeaturePath = path.join('features', 'a.feature.md')
       const featurePath = path.join(cwd, relativeFeaturePath)
       await fsExtra.outputFile(featurePath, '')
       const supportCodePath = path.join(cwd, 'features', 'a.js')
@@ -139,7 +139,11 @@ describe('Configuration', () => {
     it('returns the appropriate .md and support code paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join('features', 'nested', 'a.md')
+      const relativeFeaturePath = path.join(
+        'features',
+        'nested',
+        'a.feature.md'
+      )
       const featurePath = path.join(cwd, relativeFeaturePath)
       await fsExtra.outputFile(featurePath, '')
       const supportCodePath = path.join(cwd, 'features', 'a.js')

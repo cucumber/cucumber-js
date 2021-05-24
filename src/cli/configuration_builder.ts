@@ -143,7 +143,7 @@ export default class ConfigurationBuilder {
 
   async expandFeaturePaths(featurePaths: string[]): Promise<string[]> {
     featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-    return this.expandPaths(featurePaths, '.md')
+    return this.expandPaths(featurePaths, '.feature')
   }
 
   getFeatureDirectoryPaths(featurePaths: string[]): string[] {
@@ -219,6 +219,6 @@ export default class ConfigurationBuilder {
         return featurePaths
       }
     }
-    return ['features/**/*.{feature,md}']
+    return ['features/**/*.{feature,feature.md}']
   }
 }
