@@ -1,5 +1,5 @@
 import Formatter, { IFormatterOptions } from '.'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import resolvePkg from 'resolve-pkg'
 import CucumberHtmlStream from '@cucumber/html-formatter'
 import { doesHaveValue } from '../value_checker'

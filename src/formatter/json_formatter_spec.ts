@@ -228,22 +228,36 @@ describe('JsonFormatter', () => {
 
         // Assert
         const steps = JSON.parse(output)[0].elements[0].steps
-        expect(steps[0]).to.eql({
+        const expectedBefore = {
           hidden: true,
           keyword: 'Before',
           result: {
             duration: 0,
             status: 'passed',
           },
-        })
-        expect(steps[2]).to.eql({
+        }
+        const expectedAfter = {
           hidden: true,
           keyword: 'After',
           result: {
             duration: 0,
             status: 'passed',
           },
-        })
+        }
+        const expectedStep = {
+          arguments: [] as any[],
+          keyword: 'Given ',
+          line: 3,
+          match: {
+            location: 'json_formatter_steps.ts:39',
+          },
+          name: 'a passing step',
+          result: {
+            duration: 0,
+            status: 'passed',
+          },
+        }
+        expect(steps).to.eql([expectedBefore, expectedStep, expectedAfter])
       })
     })
 

@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
-import Status from '../status'
 import path from 'path'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import {
@@ -8,7 +7,7 @@ import {
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 const DEFAULT_SEPARATOR = '\n'
 
@@ -21,7 +20,7 @@ export default class RerunFormatter extends Formatter {
 
   constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
+    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.logFailedTestCases()
       }
@@ -35,7 +34,9 @@ export default class RerunFormatter extends Formatter {
     _.each(
       this.eventDataCollector.getTestCaseAttempts(),
       ({ gherkinDocument, pickle, worstTestStepResult }) => {
-        if (worstTestStepResult.status !== Status.PASSED) {
+        if (
+          worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
+        ) {
           const relativeUri = path.relative(this.cwd, pickle.uri)
           const line = getGherkinScenarioLocationMap(gherkinDocument)[
             _.last(pickle.astNodeIds)

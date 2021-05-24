@@ -14,7 +14,7 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
@@ -24,7 +24,7 @@ import bluebird from 'bluebird'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
-  shouldStopFn: (envelope: messages.IEnvelope) => boolean
+  shouldStopFn: (envelope: messages.Envelope) => boolean
   sources?: ITestSource[]
   supportCodeLibrary?: ISupportCodeLibrary
 }

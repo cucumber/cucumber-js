@@ -11,7 +11,8 @@ import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import PickleRunner from '../pickle_runner'
 import UserCodeRunner from '../../user_code_runner'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
@@ -58,7 +59,7 @@ export default class Worker {
     this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       this.sendMessage({
-        jsonEnvelope: JSON.stringify(envelope.toJSON()),
+        jsonEnvelope: JSON.stringify(envelope),
       })
     })
   }

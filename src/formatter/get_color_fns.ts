@@ -1,16 +1,13 @@
 import _ from 'lodash'
 import colors from 'colors/safe'
-import Status from '../status'
-import { messages } from '@cucumber/messages'
+import { TestStepResultStatus } from '@cucumber/messages'
 
 colors.enable()
 
 export type IColorFn = (text: string) => string
 
 export interface IColorFns {
-  forStatus: (
-    status: messages.TestStepFinished.TestStepResult.Status
-  ) => IColorFn
+  forStatus: (status: TestStepResultStatus) => IColorFn
   location: IColorFn
   tag: IColorFn
 }
@@ -18,15 +15,15 @@ export interface IColorFns {
 export default function getColorFns(enabled: boolean): IColorFns {
   if (enabled) {
     return {
-      forStatus(status: messages.TestStepFinished.TestStepResult.Status) {
+      forStatus(status: TestStepResultStatus) {
         return {
-          [Status.AMBIGUOUS]: colors.red.bind(colors),
-          [Status.FAILED]: colors.red.bind(colors),
-          [Status.PASSED]: colors.green.bind(colors),
-          [Status.PENDING]: colors.yellow.bind(colors),
-          [Status.SKIPPED]: colors.cyan.bind(colors),
-          [Status.UNDEFINED]: colors.yellow.bind(colors),
-          [Status.UNKNOWN]: colors.yellow.bind(colors),
+          AMBIGUOUS: colors.red.bind(colors),
+          FAILED: colors.red.bind(colors),
+          PASSED: colors.green.bind(colors),
+          PENDING: colors.yellow.bind(colors),
+          SKIPPED: colors.cyan.bind(colors),
+          UNDEFINED: colors.yellow.bind(colors),
+          UNKNOWN: colors.yellow.bind(colors),
         }[status]
       },
       location: colors.gray.bind(colors),
@@ -34,7 +31,7 @@ export default function getColorFns(enabled: boolean): IColorFns {
     }
   } else {
     return {
-      forStatus(status: messages.TestStepFinished.TestStepResult.Status) {
+      forStatus(status: TestStepResultStatus) {
         return _.identity
       },
       location: _.identity,

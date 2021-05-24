@@ -1,4 +1,4 @@
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
 
 // Messages from Coordinator to Worker
@@ -20,8 +20,8 @@ export interface IWorkerCommandRun {
   retries: number
   skip: boolean
   elapsed: number
-  pickle: messages.IPickle
-  gherkinDocument: messages.IGherkinDocument
+  pickle: messages.Pickle
+  gherkinDocument: messages.GherkinDocument
 }
 
 // Messages from Worker to Coordinator

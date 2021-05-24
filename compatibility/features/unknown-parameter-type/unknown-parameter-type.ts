@@ -1,4 +1,4 @@
-import { Given } from '../../..'
+import { Given } from '../../../src'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 Given('{airport} is closed because of a strike', function (airport: any) {

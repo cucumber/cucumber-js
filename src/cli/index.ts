@@ -159,7 +159,14 @@ export default class Cli {
   }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    supportCodePaths.forEach((codePath) => require(codePath))
+    supportCodePaths.forEach((codePath) => {
+      try {
+        require(codePath)
+      } catch (e) {
+        console.error(e.stack)
+        console.error('codepath: ' + codePath)
+      }
+    })
     return supportCodeLibraryBuilder.finalize()
   }
 

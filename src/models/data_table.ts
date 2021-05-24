@@ -1,12 +1,10 @@
 import _ from 'lodash'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]
 
-  constructor(
-    sourceTable: messages.PickleStepArgument.IPickleTable | string[][]
-  ) {
+  constructor(sourceTable: messages.PickleTable | string[][]) {
     if (sourceTable instanceof Array) {
       this.rawTable = sourceTable
     } else {
