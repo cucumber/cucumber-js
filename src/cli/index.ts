@@ -205,6 +205,7 @@ export default class Cli {
       {
         defaultDialect: configuration.featureDefaultLanguage,
         newId,
+        relativeTo: this.cwd,
       }
     )
     const pickleIds = await parseGherkinMessageStream({
