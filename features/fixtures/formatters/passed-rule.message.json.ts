@@ -9,15 +9,17 @@ module.exports = [
   },
   {
     gherkinDocument: {
-      uri: 'features/a.feature',
+      comments: [],
       feature: {
         location: {
           line: 1,
           column: 1,
         },
+        tags: [],
         language: 'en',
         keyword: 'Feature',
         name: 'a feature',
+        description: '',
         children: [
           {
             rule: {
@@ -25,8 +27,10 @@ module.exports = [
                 line: 2,
                 column: 3,
               },
+              tags: [],
               keyword: 'Rule',
               name: 'a rule',
+              description: '',
               children: [
                 {
                   scenario: {
@@ -34,8 +38,10 @@ module.exports = [
                       line: 3,
                       column: 5,
                     },
+                    tags: [],
                     keyword: 'Example',
                     name: 'an example',
+                    description: '',
                     steps: [
                       {
                         location: {
@@ -47,6 +53,7 @@ module.exports = [
                         id: '1',
                       },
                     ],
+                    examples: [],
                     id: '2',
                   },
                 },
@@ -56,6 +63,7 @@ module.exports = [
           },
         ],
       },
+      uri: 'features/a.feature',
     },
   },
   {
@@ -66,11 +74,12 @@ module.exports = [
       language: 'en',
       steps: [
         {
-          text: 'a step',
-          id: '4',
           astNodeIds: ['1'],
+          id: '4',
+          text: 'a step',
         },
       ],
+      tags: [],
       astNodeIds: ['2'],
     },
   },
@@ -92,7 +101,7 @@ module.exports = [
   {
     testRunStarted: {
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 0,
       },
     },
@@ -106,62 +115,68 @@ module.exports = [
           id: '7',
           pickleStepId: '4',
           stepDefinitionIds: ['0'],
-          stepMatchArgumentsLists: [{}],
+          stepMatchArgumentsLists: [
+            {
+              stepMatchArguments: [],
+            },
+          ],
         },
       ],
     },
   },
   {
     testCaseStarted: {
+      attempt: 0,
+      id: '8',
+      testCaseId: '6',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 1000000,
       },
-      attempt: 0,
-      testCaseId: '6',
-      id: '8',
     },
   },
   {
     testStepStarted: {
+      testCaseStartedId: '8',
+      testStepId: '7',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 2000000,
       },
-      testStepId: '7',
-      testCaseStartedId: '8',
     },
   },
   {
     testStepFinished: {
+      testCaseStartedId: '8',
+      testStepId: '7',
       testStepResult: {
-        status: 'PASSED',
         duration: {
-          seconds: '0',
+          seconds: 0,
           nanos: 0,
         },
+        status: 'PASSED',
+        willBeRetried: false,
       },
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 3000000,
       },
-      testStepId: '7',
-      testCaseStartedId: '8',
     },
   },
   {
     testCaseFinished: {
+      testCaseStartedId: '8',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 4000000,
       },
-      testCaseStartedId: '8',
     },
   },
   {
     testRunFinished: {
+      success: true,
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 5000000,
       },
     },

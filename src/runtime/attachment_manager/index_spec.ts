@@ -2,7 +2,6 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import AttachmentManager, { IAttachment } from './'
 import stream, { Readable } from 'stream'
-import { messages } from '@cucumber/messages'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {
@@ -28,7 +27,7 @@ describe('AttachmentManager', () => {
               data: 'bXkgc3RyaW5n',
               media: {
                 contentType: 'text/special',
-                encoding: messages.Attachment.ContentEncoding.BASE64,
+                encoding: 'BASE64',
               },
             },
           ])
@@ -99,7 +98,7 @@ describe('AttachmentManager', () => {
                 data: 'bXkgc3RyaW5n',
                 media: {
                   contentType: 'text/special',
-                  encoding: messages.Attachment.ContentEncoding.BASE64,
+                  encoding: 'BASE64',
                 },
               },
             ])
@@ -137,7 +136,7 @@ describe('AttachmentManager', () => {
                 data: 'bXkgc3RyaW5n',
                 media: {
                   contentType: 'text/special',
-                  encoding: messages.Attachment.ContentEncoding.BASE64,
+                  encoding: 'BASE64',
                 },
               },
             ])
@@ -197,7 +196,7 @@ describe('AttachmentManager', () => {
               data: 'my string',
               media: {
                 contentType: 'text/special',
-                encoding: messages.Attachment.ContentEncoding.IDENTITY,
+                encoding: 'IDENTITY',
               },
             },
           ])
@@ -225,7 +224,7 @@ describe('AttachmentManager', () => {
               data: 'bXkgc3RyaW5n',
               media: {
                 contentType: 'text/special',
-                encoding: messages.Attachment.ContentEncoding.BASE64,
+                encoding: 'BASE64',
               },
             },
           ])
@@ -250,7 +249,7 @@ describe('AttachmentManager', () => {
               data: 'my string',
               media: {
                 contentType: 'text/plain',
-                encoding: messages.Attachment.ContentEncoding.IDENTITY,
+                encoding: 'IDENTITY',
               },
             },
           ])
@@ -276,7 +275,7 @@ describe('AttachmentManager', () => {
             data: 'stuff happened',
             media: {
               contentType: 'text/x.cucumber.log+plain',
-              encoding: messages.Attachment.ContentEncoding.IDENTITY,
+              encoding: 'IDENTITY',
             },
           },
         ])

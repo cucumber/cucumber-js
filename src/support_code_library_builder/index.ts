@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -307,10 +308,10 @@ export class SupportCodeLibraryBuilder {
 
   buildStepDefinitions(): {
     stepDefinitions: StepDefinition[]
-    undefinedParameterTypes: messages.IUndefinedParameterType[]
+    undefinedParameterTypes: messages.UndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
-    const undefinedParameterTypes: messages.IUndefinedParameterType[] = []
+    const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
       ({ code, line, options, pattern, uri }) => {
         let expression

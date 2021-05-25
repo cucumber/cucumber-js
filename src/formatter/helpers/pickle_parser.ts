@@ -1,20 +1,20 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 export interface IGetPickleLocationRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
 }
 
 export interface IGetStepKeywordRequest {
-  pickleStep: messages.Pickle.IPickleStep
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  pickleStep: messages.PickleStep
+  gherkinStepMap: Record<string, messages.Step>
 }
 
 export interface IGetScenarioDescriptionRequest {
-  pickle: messages.IPickle
-  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
+  pickle: messages.Pickle
+  gherkinScenarioMap: Record<string, messages.Scenario>
 }
 
 export function getScenarioDescription({
@@ -40,8 +40,8 @@ export function getStepKeyword({
 }
 
 export function getPickleStepMap(
-  pickle: messages.IPickle
-): Dictionary<messages.Pickle.IPickleStep> {
+  pickle: messages.Pickle
+): Record<string, messages.PickleStep> {
   return _.chain(pickle.steps)
     .map((pickleStep) => [pickleStep.id, pickleStep])
     .fromPairs()
@@ -51,7 +51,7 @@ export function getPickleStepMap(
 export function getPickleLocation({
   gherkinDocument,
   pickle,
-}: IGetPickleLocationRequest): messages.ILocation {
+}: IGetPickleLocationRequest): messages.Location {
   const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
     gherkinDocument
   )

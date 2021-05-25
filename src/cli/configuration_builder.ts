@@ -219,6 +219,6 @@ export default class ConfigurationBuilder {
         return _.compact(featurePaths)
       }
     }
-    return ['features/**/*.feature']
+    return ['features/**/*.{feature,feature.md}']
   }
 }

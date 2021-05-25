@@ -8,15 +8,17 @@ module.exports = [
   },
   {
     gherkinDocument: {
-      uri: 'features/a.feature',
+      comments: [],
       feature: {
         location: {
           line: 1,
           column: 1,
         },
+        tags: [],
         language: 'en',
         keyword: 'Feature',
         name: 'a feature',
+        description: '',
         children: [
           {
             scenario: {
@@ -24,8 +26,10 @@ module.exports = [
                 line: 2,
                 column: 3,
               },
+              tags: [],
               keyword: 'Scenario',
               name: 'a scenario',
+              description: '',
               steps: [
                 {
                   location: {
@@ -37,11 +41,13 @@ module.exports = [
                   id: '1',
                 },
               ],
+              examples: [],
               id: '2',
             },
           },
         ],
       },
+      uri: 'features/a.feature',
     },
   },
   {
@@ -52,11 +58,12 @@ module.exports = [
       language: 'en',
       steps: [
         {
-          text: 'a step',
-          id: '3',
           astNodeIds: ['1'],
+          id: '3',
+          text: 'a step',
         },
       ],
+      tags: [],
       astNodeIds: ['2'],
     },
   },
@@ -78,7 +85,7 @@ module.exports = [
   {
     testRunStarted: {
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 0,
       },
     },
@@ -92,112 +99,118 @@ module.exports = [
           id: '6',
           pickleStepId: '3',
           stepDefinitionIds: ['0'],
-          stepMatchArgumentsLists: [{}],
+          stepMatchArgumentsLists: [
+            {
+              stepMatchArguments: [],
+            },
+          ],
         },
       ],
     },
   },
   {
     testCaseStarted: {
+      attempt: 0,
+      id: '7',
+      testCaseId: '5',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 1000000,
       },
-      attempt: 0,
-      testCaseId: '5',
-      id: '7',
     },
   },
   {
     testStepStarted: {
+      testCaseStartedId: '7',
+      testStepId: '6',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 2000000,
       },
-      testStepId: '6',
-      testCaseStartedId: '7',
     },
   },
   {
     testStepFinished: {
+      testCaseStartedId: '7',
+      testStepId: '6',
       testStepResult: {
-        status: 'FAILED',
-        message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
         duration: {
-          seconds: '0',
+          seconds: 0,
           nanos: 0,
         },
+        status: 'FAILED',
         willBeRetried: true,
+        message:
+          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
       },
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 3000000,
       },
-      testStepId: '6',
-      testCaseStartedId: '7',
     },
   },
   {
     testCaseFinished: {
+      testCaseStartedId: '7',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 4000000,
       },
-      testCaseStartedId: '7',
     },
   },
   {
     testCaseStarted: {
+      attempt: 1,
+      id: '8',
+      testCaseId: '5',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 5000000,
       },
-      attempt: 1,
-      testCaseId: '5',
-      id: '8',
     },
   },
   {
     testStepStarted: {
+      testCaseStartedId: '8',
+      testStepId: '6',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 6000000,
       },
-      testStepId: '6',
-      testCaseStartedId: '8',
     },
   },
   {
     testStepFinished: {
+      testCaseStartedId: '8',
+      testStepId: '6',
       testStepResult: {
-        status: 'PASSED',
         duration: {
-          seconds: '0',
+          seconds: 0,
           nanos: 0,
         },
+        status: 'PASSED',
+        willBeRetried: false,
       },
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 7000000,
       },
-      testStepId: '6',
-      testCaseStartedId: '8',
     },
   },
   {
     testCaseFinished: {
+      testCaseStartedId: '8',
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 8000000,
       },
-      testCaseStartedId: '8',
     },
   },
   {
     testRunFinished: {
+      success: true,
       timestamp: {
-        seconds: '0',
+        seconds: 0,
         nanos: 9000000,
       },
     },

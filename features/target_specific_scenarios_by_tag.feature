@@ -30,29 +30,29 @@ Feature: Target specific scenarios
       """
       const {Given} = require('@cucumber/cucumber')
 
-      Given(/^a step is (.*)$/, function() {})
+      Given('a step', function() {})
       """
 
   Scenario: run a single scenario
     When I run cucumber-js with `--tags @a`
-    Then it fails
+    Then it passes
     And it runs the scenario "first scenario"
 
   Scenario: filter out scenarios with ~
     When I run cucumber-js with `--tags "not @b"`
-    Then it fails
+    Then it passes
     And it runs the scenario "first scenario"
 
   Scenario: merge multiple tag expressions
     When I run cucumber-js with `--tags @b --tags "not @c"`
-    Then it fails
+    Then it passes
     And it runs the scenarios:
       | NAME |
       | second scenario - Z |
 
   Scenario: run a single scenario outline
     When I run cucumber-js with `--tags @b`
-    Then it fails
+    Then it passes
     And it runs the scenarios:
       | NAME |
       | second scenario - X |
@@ -61,7 +61,7 @@ Feature: Target specific scenarios
 
   Scenario: run a single scenario outline examples
     When I run cucumber-js with `--tags @c`
-    Then it fails
+    Then it passes
     And it runs the scenarios:
       | NAME |
       | second scenario - X |

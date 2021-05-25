@@ -1,11 +1,11 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import path from 'path'
 import parse from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
-import { messages } from '@cucumber/messages'
-import IGherkinDocument = messages.IGherkinDocument
-import IPickle = messages.IPickle
+import * as messages from '@cucumber/messages'
+import IGherkinDocument = messages.GherkinDocument
+import IPickle = messages.Pickle
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -17,8 +17,8 @@ export interface IPickleFilterOptions {
 }
 
 export interface IMatchesAnyLineRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
 }
 
 export default class PickleFilter {
@@ -53,7 +53,7 @@ export default class PickleFilter {
 }
 
 export class PickleLineFilter {
-  private readonly featureUriToLinesMapping: Dictionary<number[]>
+  private readonly featureUriToLinesMapping: Record<string, number[]>
 
   constructor(cwd: string, featurePaths: string[] = []) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
@@ -68,8 +68,8 @@ export class PickleLineFilter {
   }: {
     cwd: string
     featurePaths: string[]
-  }): Dictionary<number[]> {
-    const mapping: Dictionary<number[]> = {}
+  }): Record<string, number[]> {
+    const mapping: Record<string, number[]> = {}
     featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {
@@ -113,7 +113,7 @@ export class PickleNameFilter {
     this.names = names
   }
 
-  matchesAnyName(pickle: messages.IPickle): boolean {
+  matchesAnyName(pickle: messages.Pickle): boolean {
     if (this.names.length === 0) {
       return true
     }
@@ -130,7 +130,7 @@ export class PickleTagFilter {
     }
   }
 
-  matchesAllTagExpressions(pickle: messages.IPickle): boolean {
+  matchesAllTagExpressions(pickle: messages.Pickle): boolean {
     if (doesNotHaveValue(this.tagExpressionNode)) {
       return true
     }

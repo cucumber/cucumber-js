@@ -12,7 +12,7 @@ import {
 function generateExpressions(text: string): readonly GeneratedExpression[] {
   const parameterTypeRegistry = new ParameterTypeRegistry()
   const cucumberExpressionGenerator = new CucumberExpressionGenerator(
-    parameterTypeRegistry
+    () => parameterTypeRegistry.parameterTypes
   )
   return cucumberExpressionGenerator.generateExpressions(text)
 }

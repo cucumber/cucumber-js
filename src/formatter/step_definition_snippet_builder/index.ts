@@ -5,7 +5,7 @@ import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export interface INewStepDefinitionSnippetBuilderOptions {
@@ -15,7 +15,7 @@ export interface INewStepDefinitionSnippetBuilderOptions {
 
 export interface IBuildRequest {
   keywordType: KeywordType
-  pickleStep: messages.Pickle.IPickleStep
+  pickleStep: messages.PickleStep
 }
 
 export default class StepDefinitionSnippetBuilder {
@@ -28,7 +28,7 @@ export default class StepDefinitionSnippetBuilder {
   }: INewStepDefinitionSnippetBuilderOptions) {
     this.snippetSyntax = snippetSyntax
     this.cucumberExpressionGenerator = new CucumberExpressionGenerator(
-      parameterTypeRegistry
+      () => parameterTypeRegistry.parameterTypes
     )
   }
 
@@ -59,7 +59,7 @@ export default class StepDefinitionSnippetBuilder {
     }
   }
 
-  getStepParameterNames(step: messages.Pickle.IPickleStep): string[] {
+  getStepParameterNames(step: messages.PickleStep): string[] {
     if (doesHaveValue(step.argument)) {
       const argumentName = parseStepArgument(step.argument, {
         dataTable: () => 'dataTable',

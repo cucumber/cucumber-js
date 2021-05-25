@@ -24,11 +24,11 @@ import { IdGenerator } from '@cucumber/messages'
 import { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
-import { GherkinStreams } from '@cucumber/gherkin'
+import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
-import { createReadStream } from 'fs'
 import HttpStream from '../formatter/http_stream'
+import { Writable } from 'stream'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -99,14 +99,26 @@ export default class Cli {
               headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
             }
 
-            stream = new HttpStream(outputTo, 'GET', headers, (content) =>
-              console.error(content)
-            )
+            stream = new HttpStream(outputTo, 'GET', headers)
+            const readerStream = new Writable({
+              objectMode: true,
+              write: function (responseBody: string, encoding, writeCallback) {
+                console.error(responseBody)
+                writeCallback()
+              },
+            })
+            stream.pipe(readerStream)
           } else {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
             stream = fs.createWriteStream(null, { fd })
           }
         }
+
+        stream.on('error', (error) => {
+          console.error(error.message)
+          process.exit(1)
+        })
+
         const typeOptions = {
           cwd: this.cwd,
           eventBroadcaster,
@@ -147,7 +159,14 @@ export default class Cli {
   }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    supportCodePaths.forEach((codePath) => require(codePath))
+    supportCodePaths.forEach((codePath) => {
+      try {
+        require(codePath)
+      } catch (e) {
+        console.error(e.stack)
+        console.error('codepath: ' + codePath)
+      }
+    })
     return supportCodeLibraryBuilder.finalize()
   }
 
@@ -186,9 +205,6 @@ export default class Cli {
       {
         defaultDialect: configuration.featureDefaultLanguage,
         newId,
-        createReadStream(path) {
-          return createReadStream(path, { encoding: 'utf-8' })
-        },
       }
     )
     let pickleIds: string[] = []

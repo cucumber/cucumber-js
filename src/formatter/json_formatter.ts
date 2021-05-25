@@ -1,10 +1,8 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
-import Status from '../status'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import { durationToNanoseconds } from '../time'
 import path from 'path'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
@@ -12,12 +10,6 @@ import {
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
-import ITag = messages.GherkinDocument.Feature.ITag
-import IFeature = messages.GherkinDocument.IFeature
-import IPickle = messages.IPickle
-import IScenario = messages.GherkinDocument.Feature.IScenario
-import IEnvelope = messages.IEnvelope
-import IRule = messages.GherkinDocument.Feature.FeatureChild.IRule
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -66,27 +58,27 @@ export interface IJsonTag {
 }
 
 interface IBuildJsonFeatureOptions {
-  feature: messages.GherkinDocument.IFeature
+  feature: messages.Feature
   elements: IJsonScenario[]
   uri: string
 }
 
 interface IBuildJsonScenarioOptions {
-  feature: messages.GherkinDocument.IFeature
-  gherkinScenarioMap: Dictionary<IScenario>
-  gherkinExampleRuleMap: Dictionary<IRule>
-  gherkinScenarioLocationMap: Dictionary<messages.ILocation>
-  pickle: messages.IPickle
+  feature: messages.Feature
+  gherkinScenarioMap: Record<string, messages.Scenario>
+  gherkinExampleRuleMap: Record<string, messages.Rule>
+  gherkinScenarioLocationMap: Record<string, messages.Location>
+  pickle: messages.Pickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
-  pickleStepMap: Dictionary<messages.Pickle.IPickleStep>
-  testStep: messages.TestCase.ITestStep
-  testStepAttachments: messages.IAttachment[]
-  testStepResult: messages.TestStepFinished.ITestStepResult
+  gherkinStepMap: Record<string, messages.Step>
+  pickleStepMap: Record<string, messages.PickleStep>
+  testStep: messages.TestStep
+  testStepAttachments: messages.Attachment[]
+  testStepResult: messages.TestStepResult
 }
 
 interface UriToTestCaseAttemptsMap {
@@ -96,29 +88,26 @@ interface UriToTestCaseAttemptsMap {
 export default class JsonFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
-    console.warn(
-      "The built-in JSON formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter)."
-    )
-    options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
+    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
       }
     })
   }
 
-  convertNameToId(obj: IFeature | IPickle): string {
+  convertNameToId(obj: messages.Feature | messages.Pickle): string {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable: messages.PickleStepArgument.IPickleTable): any {
+  formatDataTable(dataTable: messages.PickleTable): any {
     return {
       rows: dataTable.rows.map((row) => ({ cells: _.map(row.cells, 'value') })),
     }
   }
 
   formatDocString(
-    docString: messages.PickleStepArgument.IPickleDocString,
-    gherkinStep: messages.GherkinDocument.Feature.IStep
+    docString: messages.PickleDocString,
+    gherkinStep: messages.Step
   ): any {
     return {
       content: docString.content,
@@ -127,8 +116,8 @@ export default class JsonFormatter extends Formatter {
   }
 
   formatStepArgument(
-    stepArgument: messages.IPickleStepArgument,
-    gherkinStep: messages.GherkinDocument.Feature.IStep
+    stepArgument: messages.PickleStepArgument,
+    gherkinStep: messages.Step
   ): any {
     if (doesNotHaveValue(stepArgument)) {
       return []
@@ -168,7 +157,7 @@ export default class JsonFormatter extends Formatter {
         const pickleStepMap = getPickleStepMap(pickle)
         let isBeforeHook = true
         const steps = testCaseAttempt.testCase.testSteps.map((testStep) => {
-          isBeforeHook = isBeforeHook && testStep.pickleStepId === ''
+          isBeforeHook = isBeforeHook && !doesHaveValue(testStep.pickleStepId)
           return this.getStepData({
             isBeforeHook,
             gherkinStepMap,
@@ -242,9 +231,9 @@ export default class JsonFormatter extends Formatter {
     pickle,
     gherkinExampleRuleMap,
   }: {
-    feature: IFeature
-    pickle: IPickle
-    gherkinExampleRuleMap: Dictionary<IRule>
+    feature: messages.Feature
+    pickle: messages.Pickle
+    gherkinExampleRuleMap: Record<string, messages.Rule>
   }): string {
     let parts: any[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
@@ -265,7 +254,7 @@ export default class JsonFormatter extends Formatter {
     testStepResult,
   }: IBuildJsonStepOptions): IJsonStep {
     const data: IJsonStep = {}
-    if (testStep.pickleStepId !== '') {
+    if (doesHaveValue(testStep.pickleStepId)) {
       const pickleStep = pickleStepMap[testStep.pickleStepId]
       data.arguments = this.formatStepArgument(
         pickleStep.argument,
@@ -278,18 +267,29 @@ export default class JsonFormatter extends Formatter {
       data.keyword = isBeforeHook ? 'Before' : 'After'
       data.hidden = true
     }
-    if (testStep.stepDefinitionIds.length === 1) {
+    if (
+      doesHaveValue(testStep.stepDefinitionIds) &&
+      testStep.stepDefinitionIds.length === 1
+    ) {
       const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
         (s) => s.id === testStep.stepDefinitionIds[0]
       )
       data.match = { location: formatLocation(stepDefinition) }
     }
     const { message, status } = testStepResult
-    data.result = { status: Status[status].toLowerCase() }
-    if (doesHaveValue(testStepResult.duration)) {
-      data.result.duration = durationToNanoseconds(testStepResult.duration)
+    data.result = {
+      status: messages.TestStepResultStatus[status].toLowerCase(),
     }
-    if (status === Status.FAILED && doesHaveValue(message)) {
+    if (doesHaveValue(testStepResult.duration)) {
+      data.result.duration =
+        messages.TimeConversion.durationToMilliseconds(
+          testStepResult.duration
+        ) * 1000000
+    }
+    if (
+      status === messages.TestStepResultStatus.FAILED &&
+      doesHaveValue(message)
+    ) {
       data.result.error_message = message
     }
     if (_.size(testStepAttachments) > 0) {
@@ -301,7 +301,7 @@ export default class JsonFormatter extends Formatter {
     return data
   }
 
-  getFeatureTags(feature: IFeature): IJsonTag[] {
+  getFeatureTags(feature: messages.Feature): IJsonTag[] {
     return _.map(feature.tags, (tagData) => ({
       name: tagData.name,
       line: tagData.location.line,
@@ -313,24 +313,41 @@ export default class JsonFormatter extends Formatter {
     pickle,
     gherkinScenarioMap,
   }: {
-    feature: IFeature
-    pickle: IPickle
-    gherkinScenarioMap: { [id: string]: IScenario }
+    feature: messages.Feature
+    pickle: messages.Pickle
+    gherkinScenarioMap: Record<string, messages.Scenario>
   }): IJsonTag[] {
-    return _.map(pickle.tags, (tagData) => {
-      const featureSource = feature.tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
-      )
-      const scenarioSource = gherkinScenarioMap[pickle.astNodeIds[0]].tags.find(
-        (t: ITag) => t.id === tagData.astNodeId
-      )
-      const line = doesHaveValue(featureSource)
-        ? featureSource.location.line
-        : scenarioSource.location.line
-      return {
-        name: tagData.name,
-        line,
-      }
-    })
+    const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
+
+    return pickle.tags.map(
+      (tagData: messages.PickleTag): IJsonTag =>
+        this.getScenarioTag(tagData, feature, scenario)
+    )
+  }
+
+  private getScenarioTag(
+    tagData: messages.PickleTag,
+    feature: messages.Feature,
+    scenario: messages.Scenario
+  ): IJsonTag {
+    const byAstNodeId = (tag: messages.Tag): Boolean =>
+      tag.id === tagData.astNodeId
+    const flatten = (
+      acc: messages.Tag[],
+      val: messages.Tag[]
+    ): messages.Tag[] => acc.concat(val)
+
+    const tag =
+      feature.tags.find(byAstNodeId) ||
+      scenario.tags.find(byAstNodeId) ||
+      scenario.examples
+        .map((e) => e.tags)
+        .reduce(flatten, [])
+        .find(byAstNodeId)
+
+    return {
+      name: tagData.name,
+      line: tag?.location?.line,
+    }
   }
 }

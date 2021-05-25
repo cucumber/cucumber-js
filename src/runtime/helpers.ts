@@ -3,7 +3,7 @@ import Table from 'cli-table3'
 import indentString from 'indent-string'
 import { PickleTagFilter } from '../pickle_filter'
 import StepDefinition from '../models/step_definition'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { IRuntimeOptions } from '.'
 
 export function getAmbiguousStepException(
@@ -46,7 +46,7 @@ export function getAmbiguousStepException(
 }
 
 export function retriesForPickle(
-  pickle: messages.IPickle,
+  pickle: messages.Pickle,
   options: IRuntimeOptions
 ): number {
   const retries = options.retry

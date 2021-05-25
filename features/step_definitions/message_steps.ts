@@ -10,24 +10,13 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { World } from '../support/world'
 import semver from 'semver'
 
-type StringifiedStatus =
-  | 'UNKNOWN'
-  | 'PASSED'
-  | 'SKIPPED'
-  | 'PENDING'
-  | 'UNDEFINED'
-  | 'AMBIGUOUS'
-  | 'FAILED'
-
-const { Status } = messages.TestStepFinished.TestStepResult
-
-const ENCODING_MAP: { [key: string]: messages.Attachment.ContentEncoding } = {
-  IDENTITY: messages.Attachment.ContentEncoding.IDENTITY,
-  BASE64: messages.Attachment.ContentEncoding.BASE64,
+const ENCODING_MAP: { [key: string]: messages.AttachmentContentEncoding } = {
+  IDENTITY: messages.AttachmentContentEncoding.IDENTITY,
+  BASE64: messages.AttachmentContentEncoding.BASE64,
 }
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
@@ -62,7 +51,7 @@ Then(
   function (this: World, name: string, status: string) {
     const result = getTestCaseResult(this.lastRun.envelopes, name)
     expect(result.status).to.eql(
-      Status[status.toUpperCase() as StringifiedStatus]
+      status.toUpperCase() as messages.TestStepResultStatus
     )
   }
 )
@@ -87,7 +76,7 @@ Then(
     )
     const testStepResult = find(testStepResults, ['text', stepText])
     expect(testStepResult.result.status).to.eql(
-      Status[status.toUpperCase() as StringifiedStatus]
+      status.toUpperCase() as messages.TestStepResultStatus
     )
   }
 )
@@ -108,7 +97,7 @@ Then(
     )
     const testStepResult = find(testStepResults, ['text', stepText])
     expect(testStepResult.result.status).to.eql(
-      Status[status.toUpperCase() as StringifiedStatus]
+      status.toUpperCase() as messages.TestStepResultStatus
     )
   }
 )
@@ -127,7 +116,7 @@ Then(
     )
     const testStepResult = find(testStepResults, ['text', hookKeyword])
     expect(testStepResult.result.status).to.eql(
-      Status[status.toUpperCase() as StringifiedStatus]
+      status.toUpperCase() as messages.TestStepResultStatus
     )
   }
 )
@@ -151,7 +140,9 @@ Then(
         '<ref *1> { member: [Circular *1] }'
       )
     }
-    expect(testStepResult.result.status).to.eql(Status.FAILED)
+    expect(testStepResult.result.status).to.eql(
+      messages.TestStepResultStatus.FAILED
+    )
     expect(testStepResult.result.message).to.include(errorMessage)
   }
 )
@@ -171,7 +162,9 @@ Then(
       attempt
     )
     const testStepResult = find(testStepResults, ['text', stepText])
-    expect(testStepResult.result.status).to.eql(Status.FAILED)
+    expect(testStepResult.result.status).to.eql(
+      messages.TestStepResultStatus.FAILED
+    )
     expect(testStepResult.result.message).to.include(errorMessage)
   }
 )
@@ -249,7 +242,7 @@ Then(
     hookKeyword: string,
     table: DataTable
   ) {
-    const expectedAttachments: messages.IAttachment[] = table
+    const expectedAttachments: messages.Attachment[] = table
       .hashes()
       .map((x) => {
         return {

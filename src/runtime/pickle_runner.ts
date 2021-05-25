@@ -2,8 +2,8 @@ import { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import { IdGenerator, messages } from '@cucumber/messages'
-import { addDurations, getZeroDuration } from '../time'
+import { IdGenerator, getWorstTestStepResult } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -17,9 +17,6 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import { Group } from '@cucumber/cucumber-expressions'
-import { Query } from '@cucumber/query'
-
-const { Status } = messages.TestStepFinished.TestStepResult
 
 interface ITestStep {
   id: string
@@ -27,16 +24,16 @@ interface ITestStep {
   isHook: boolean
   hookDefinition?: TestCaseHookDefinition
   stepHookDefinition?: TestStepHookDefinition
-  pickleStep?: messages.Pickle.IPickleStep
+  pickleStep?: messages.PickleStep
   stepDefinitions?: StepDefinition[]
 }
 
 export interface INewPickleRunnerOptions {
   eventBroadcaster: EventEmitter
   stopwatch: ITestRunStopwatch
-  gherkinDocument: messages.IGherkinDocument
+  gherkinDocument: messages.GherkinDocument
   newId: IdGenerator.NewId
-  pickle: messages.IPickle
+  pickle: messages.Pickle
   retries: number
   skip: boolean
   supportCodeLibrary: ISupportCodeLibrary
@@ -49,15 +46,15 @@ export default class PickleRunner {
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
   private readonly stopwatch: ITestRunStopwatch
-  private readonly gherkinDocument: messages.IGherkinDocument
+  private readonly gherkinDocument: messages.GherkinDocument
   private readonly newId: IdGenerator.NewId
-  private readonly pickle: messages.IPickle
+  private readonly pickle: messages.Pickle
   private readonly maxAttempts: number
   private readonly skip: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testCaseId: string
   private readonly testSteps: ITestStep[]
-  private testStepResults: messages.TestStepFinished.ITestStepResult[]
+  private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: any
 
@@ -78,18 +75,16 @@ export default class PickleRunner {
           'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
       }
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          attachment: {
-            body: data,
-            contentEncoding: media.encoding,
-            mediaType: media.contentType,
-            testCaseStartedId: this.currentTestCaseStartedId,
-            testStepId: this.currentTestStepId,
-          },
-        })
-      )
+      const attachment: messages.Envelope = {
+        attachment: {
+          body: data,
+          contentEncoding: media.encoding,
+          mediaType: media.contentType,
+          testCaseStartedId: this.currentTestCaseStartedId,
+          testStepId: this.currentTestStepId,
+        },
+      }
+      this.eventBroadcaster.emit('envelope', attachment)
     })
     this.eventBroadcaster = eventBroadcaster
     this.stopwatch = stopwatch
@@ -173,15 +168,11 @@ export default class PickleRunner {
         }
       }),
     }
-    this.eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({ testCase })
-    )
+    const envelope: messages.Envelope = { testCase }
+    this.eventBroadcaster.emit('envelope', envelope)
   }
 
-  private mapArgumentGroup(
-    group: Group
-  ): messages.TestCase.TestStep.StepMatchArgumentsList.StepMatchArgument.IGroup {
+  private mapArgumentGroup(group: Group): messages.Group {
     return {
       start: group.start,
       value: group.value,
@@ -215,28 +206,30 @@ export default class PickleRunner {
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }
 
-  getStepDefinitions(
-    pickleStep: messages.Pickle.IPickleStep
-  ): StepDefinition[] {
+  getStepDefinitions(pickleStep: messages.PickleStep): StepDefinition[] {
     return this.supportCodeLibrary.stepDefinitions.filter((stepDefinition) =>
       stepDefinition.matchesStepName(pickleStep.text)
     )
   }
 
-  getWorstStepResult(): messages.TestStepFinished.ITestStepResult {
+  getWorstStepResult(): messages.TestStepResult {
     if (this.testStepResults.length === 0) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
-        status: this.skip ? Status.SKIPPED : Status.PASSED,
-      })
+      return {
+        status: this.skip
+          ? messages.TestStepResultStatus.SKIPPED
+          : messages.TestStepResultStatus.PASSED,
+        willBeRetried: false,
+        duration: messages.TimeConversion.millisecondsToDuration(0),
+      }
     }
-    return new Query().getWorstTestStepResult(this.testStepResults)
+    return getWorstTestStepResult(this.testStepResults)
   }
 
   async invokeStep(
-    step: messages.Pickle.IPickleStep,
+    step: messages.PickleStep,
     stepDefinition: IDefinition,
     hookParameter?: any
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
+  ): Promise<messages.TestStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       hookParameter,
@@ -247,7 +240,9 @@ export default class PickleRunner {
   }
 
   isSkippingSteps(): boolean {
-    return this.getWorstStepResult().status !== Status.PASSED
+    return (
+      this.getWorstStepResult().status !== messages.TestStepResultStatus.PASSED
+    )
   }
 
   shouldSkipHook(isBeforeHook: boolean): boolean {
@@ -257,24 +252,22 @@ export default class PickleRunner {
   async aroundTestStep(
     testStepId: string,
     attempt: number,
-    runStepFn: () => Promise<messages.TestStepFinished.ITestStepResult>
+    runStepFn: () => Promise<messages.TestStepResult>
   ): Promise<void> {
-    this.eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        testStepStarted: {
-          testCaseStartedId: this.currentTestCaseStartedId,
-          testStepId,
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const testStepStarted: messages.Envelope = {
+      testStepStarted: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        testStepId,
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testStepStarted)
     this.currentTestStepId = testStepId
     const testStepResult = await runStepFn()
     this.currentTestStepId = null
     this.testStepResults.push(testStepResult)
     if (
-      testStepResult.status === Status.FAILED &&
+      testStepResult.status === messages.TestStepResultStatus.FAILED &&
       attempt + 1 < this.maxAttempts
     ) {
       /*
@@ -283,34 +276,30 @@ export default class PickleRunner {
        */
       testStepResult.willBeRetried = true
     }
-    this.eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        testStepFinished: {
-          testCaseStartedId: this.currentTestCaseStartedId,
-          testStepId,
-          testStepResult,
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const testStepFinished: messages.Envelope = {
+      testStepFinished: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        testStepId,
+        testStepResult,
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testStepFinished)
   }
 
-  async run(): Promise<messages.TestStepFinished.TestStepResult.Status> {
+  async run(): Promise<messages.TestStepResultStatus> {
     this.emitTestCase()
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       this.currentTestCaseStartedId = this.newId()
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCaseStarted: {
-            attempt,
-            testCaseId: this.testCaseId,
-            id: this.currentTestCaseStartedId,
-            timestamp: this.stopwatch.timestamp(),
-          },
-        })
-      )
+      const testCaseStarted: messages.Envelope = {
+        testCaseStarted: {
+          attempt,
+          testCaseId: this.testCaseId,
+          id: this.currentTestCaseStartedId,
+          timestamp: this.stopwatch.timestamp(),
+        },
+      }
+      this.eventBroadcaster.emit('envelope', testCaseStarted)
       for (const testStep of this.testSteps) {
         await this.aroundTestStep(testStep.id, attempt, async () => {
           if (testStep.isHook) {
@@ -332,15 +321,13 @@ export default class PickleRunner {
           }
         })
       }
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testCaseFinished: {
-            testCaseStartedId: this.currentTestCaseStartedId,
-            timestamp: this.stopwatch.timestamp(),
-          },
-        })
-      )
+      const testCaseFinished: messages.Envelope = {
+        testCaseFinished: {
+          testCaseStartedId: this.currentTestCaseStartedId,
+          timestamp: this.stopwatch.timestamp(),
+        },
+      }
+      this.eventBroadcaster.emit('envelope', testCaseFinished)
       if (!this.getWorstStepResult().willBeRetried) {
         break
       }
@@ -353,19 +340,21 @@ export default class PickleRunner {
     hookDefinition: TestCaseHookDefinition,
     hookParameter: ITestCaseHookParameter,
     isBeforeHook: boolean
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
+  ): Promise<messages.TestStepResult> {
     if (this.shouldSkipHook(isBeforeHook)) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
-        status: Status.SKIPPED,
-      })
+      return {
+        status: messages.TestStepResultStatus.SKIPPED,
+        duration: messages.TimeConversion.millisecondsToDuration(0),
+        willBeRetried: false,
+      }
     }
     return await this.invokeStep(null, hookDefinition, hookParameter)
   }
 
   async runStepHooks(
     stepHooks: TestStepHookDefinition[],
-    stepResult?: messages.TestStepFinished.ITestStepResult
-  ): Promise<messages.TestStepFinished.ITestStepResult[]> {
+    stepResult?: messages.TestStepResult
+  ): Promise<messages.TestStepResult[]> {
     const stepHooksResult = []
     const hookParameter: ITestStepHookParameter = {
       gherkinDocument: this.gherkinDocument,
@@ -382,43 +371,35 @@ export default class PickleRunner {
     return stepHooksResult
   }
 
-  async runStep(
-    testStep: ITestStep
-  ): Promise<messages.TestStepFinished.ITestStepResult> {
+  async runStep(testStep: ITestStep): Promise<messages.TestStepResult> {
     if (testStep.stepDefinitions.length === 0) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
-        status: Status.UNDEFINED,
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
-      })
+      return {
+        status: messages.TestStepResultStatus.UNDEFINED,
+        duration: messages.TimeConversion.millisecondsToDuration(0),
+        willBeRetried: false,
+      }
     } else if (testStep.stepDefinitions.length > 1) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
+      return {
         message: getAmbiguousStepException(testStep.stepDefinitions),
-        status: Status.AMBIGUOUS,
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
-      })
+        status: messages.TestStepResultStatus.AMBIGUOUS,
+        duration: messages.TimeConversion.millisecondsToDuration(0),
+        willBeRetried: false,
+      }
     } else if (this.isSkippingSteps()) {
-      return messages.TestStepFinished.TestStepResult.fromObject({
-        status: Status.SKIPPED,
-        duration: {
-          seconds: '0',
-          nanos: 0,
-        },
-      })
+      return {
+        status: messages.TestStepResultStatus.SKIPPED,
+        duration: messages.TimeConversion.millisecondsToDuration(0),
+        willBeRetried: false,
+      }
     }
 
     let stepResult
     let stepResults = await this.runStepHooks(
-      this.getBeforeStepHookDefinitions(),
-      stepResult
+      this.getBeforeStepHookDefinitions()
     )
     if (
-      new Query().getWorstTestStepResult(stepResults).status !== Status.FAILED
+      getWorstTestStepResult(stepResults).status !==
+      messages.TestStepResultStatus.FAILED
     ) {
       stepResult = await this.invokeStep(
         testStep.pickleStep,
@@ -432,10 +413,13 @@ export default class PickleRunner {
     )
     stepResults = stepResults.concat(afterStepHookResults)
 
-    const finalStepResult = new Query().getWorstTestStepResult(stepResults)
-    let finalDuration = getZeroDuration()
+    const finalStepResult = getWorstTestStepResult(stepResults)
+    let finalDuration = messages.TimeConversion.millisecondsToDuration(0)
     for (const result of stepResults) {
-      finalDuration = addDurations(finalDuration, result.duration)
+      finalDuration = messages.TimeConversion.addDurations(
+        finalDuration,
+        result.duration
+      )
     }
     finalStepResult.duration = finalDuration
     return finalStepResult
