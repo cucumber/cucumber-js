@@ -12,8 +12,8 @@ Given('some classic Gherkin:', function (gherkin: string) {
 When(
   'we use a data table and attach something and then {word}',
   async function (this: World, word: string, dataTable: DataTable) {
-    await this.log('We are logging some plain text')
     assert(dataTable)
+    await this.log(`We are logging some plain text (${word})`)
     if (word === 'fail') {
       throw new Error('You asked me to fail')
     }

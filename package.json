@@ -172,7 +172,7 @@
     "@cucumber/cucumber-expressions": "^12.1.1",
     "@cucumber/gherkin": "^19.0.3",
     "@cucumber/gherkin-streams": "^2.0.2",
-    "@cucumber/html-formatter": "^14.0.0",
+    "@cucumber/html-formatter": "^15.0.0",
     "@cucumber/messages": "^16.0.1",
     "@cucumber/tag-expressions": "^3.0.1",
     "assertion-error-formatter": "^3.0.0",
@@ -203,7 +203,7 @@
     "verror": "^1.10.0"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "6.0.0",
+    "@cucumber/compatibility-kit": "7.0.0",
     "@cucumber/message-streams": "2.0.0",
     "@cucumber/query": "10.0.0",
     "@sinonjs/fake-timers": "7.0.5",

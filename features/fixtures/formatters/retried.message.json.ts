@@ -140,8 +140,7 @@ module.exports = [
         },
         status: 'FAILED',
         willBeRetried: true,
-        message:
-          'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:11:12)',
+        message: 'Error: my error',
       },
       timestamp: {
         seconds: 0,

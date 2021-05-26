@@ -13,7 +13,7 @@ export default class HtmlFormatter extends Formatter {
     super(options)
     const cucumberHtmlStream = new CucumberHtmlStream(
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
-        '/dist/cucumber-react.css',
+        '/dist/main.css',
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
         '/dist/main.js'
     )
