@@ -5,7 +5,6 @@ import {
   getGherkinStepMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
-import path from 'path'
 import * as messages from '@cucumber/messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'

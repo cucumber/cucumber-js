@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
-import path from 'path'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import {
   doesHaveValue,
