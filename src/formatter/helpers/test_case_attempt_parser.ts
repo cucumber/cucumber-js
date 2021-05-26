@@ -138,7 +138,7 @@ export function parseTestCaseAttempt({
     gherkinDocument
   )
   const pickleStepMap = getPickleStepMap(pickle)
-  const relativePickleUri = path.relative(cwd, pickle.uri)
+  const relativePickleUri = pickle.uri
   const parsedTestCase: IParsedTestCase = {
     attempt: testCaseAttempt.attempt,
     name: pickle.name,
