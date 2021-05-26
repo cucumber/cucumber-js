@@ -73,7 +73,7 @@ export class PickleLineFilter {
     featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {
-        const uri = path.resolve(cwd, match[1])
+        const uri = match[1]
         const linesExpression = match[2]
         if (doesHaveValue(linesExpression)) {
           if (doesNotHaveValue(mapping[uri])) {
