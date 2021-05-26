@@ -73,7 +73,7 @@ function buildMapping({
         const match: IUsageMatch = {
           line: gherkinStep.location.line,
           text: pickleStep.text,
-          uri: path.relative(cwd, testCaseAttempt.pickle.uri),
+          uri: testCaseAttempt.pickle.uri,
         }
         const { duration, status } = testCaseAttempt.stepResults[testStep.id]
         if (!unexecutedStatuses.includes(status) && doesHaveValue(duration)) {

@@ -37,7 +37,7 @@ export default class RerunFormatter extends Formatter {
         if (
           worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
         ) {
-          const relativeUri = path.relative(this.cwd, pickle.uri)
+          const relativeUri = pickle.uri
           const line = getGherkinScenarioLocationMap(gherkinDocument)[
             _.last(pickle.astNodeIds)
           ].line
