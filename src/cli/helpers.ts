@@ -2,7 +2,6 @@ import _ from 'lodash'
 import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
-import path from 'path'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
@@ -69,10 +68,7 @@ export async function parseGherkinMessageStream({
       if (doesHaveValue(envelope.parseError)) {
         reject(
           new Error(
-            `Parse error in '${path.relative(
-              cwd,
-              envelope.parseError.source.uri
-            )}': ${envelope.parseError.message}`
+            `Parse error in '${envelope.parseError.source.uri}': ${envelope.parseError.message}`
           )
         )
       }
