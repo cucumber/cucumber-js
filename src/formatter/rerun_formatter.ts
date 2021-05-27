@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
-import path from 'path'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import {
   doesHaveValue,
@@ -37,7 +36,7 @@ export default class RerunFormatter extends Formatter {
         if (
           worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
         ) {
-          const relativeUri = path.relative(this.cwd, pickle.uri)
+          const relativeUri = pickle.uri
           const line = getGherkinScenarioLocationMap(gherkinDocument)[
             _.last(pickle.astNodeIds)
           ].line

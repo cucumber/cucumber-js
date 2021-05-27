@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
-import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
 import * as messages from '@cucumber/messages'
 import StepDefinition from '../../../models/step_definition'
@@ -73,7 +72,7 @@ function buildMapping({
         const match: IUsageMatch = {
           line: gherkinStep.location.line,
           text: pickleStep.text,
-          uri: path.relative(cwd, testCaseAttempt.pickle.uri),
+          uri: testCaseAttempt.pickle.uri,
         }
         const { duration, status } = testCaseAttempt.stepResults[testStep.id]
         if (!unexecutedStatuses.includes(status) && doesHaveValue(duration)) {

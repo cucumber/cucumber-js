@@ -11,7 +11,7 @@ async function testFormatIssue(sourceData: string): Promise<string> {
   const sources = [
     {
       data: sourceData,
-      uri: 'project/a.feature',
+      uri: 'a.feature',
     },
   ]
   const supportCodeLibrary = getBaseSupportCodeLibrary()
