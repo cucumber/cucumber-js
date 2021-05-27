@@ -51,6 +51,8 @@ Then(
           'utf-8'
         )
       } else {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        e.message = `${e.message}\n\nTry running again with GOLDEN=1 if you believe the fixtures need to be overwritten with actual results`
         throw e
       }
     }

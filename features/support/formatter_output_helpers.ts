@@ -20,6 +20,7 @@ function normalizeExceptionAndUri(exception: string, cwd: string): string {
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
+    .split('\n')[0]
 }
 
 function normalizeMessage(obj: any, cwd: string): void {
