@@ -1,7 +1,6 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import PickleFilter from './pickle_filter'
-import path from 'path'
 import { parse } from '../test/gherkin_helpers'
 
 describe('PickleFilter', () => {
@@ -84,7 +83,7 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns true if pickle line does not match', async function () {
+        it('returns false if pickle line does not match', async function () {
           // Arrange
           const {
             pickles: [pickle],
