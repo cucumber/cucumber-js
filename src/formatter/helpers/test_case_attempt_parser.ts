@@ -5,6 +5,7 @@ import {
   getGherkinStepMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
+import path from 'path'
 import * as messages from '@cucumber/messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
@@ -137,7 +138,7 @@ export function parseTestCaseAttempt({
     gherkinDocument
   )
   const pickleStepMap = getPickleStepMap(pickle)
-  const relativePickleUri = pickle.uri
+  const relativePickleUri = path.relative(cwd, pickle.uri)
   const parsedTestCase: IParsedTestCase = {
     attempt: testCaseAttempt.attempt,
     name: pickle.name,

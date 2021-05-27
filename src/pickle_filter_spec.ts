@@ -91,7 +91,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', '', 'Scenario: b', 'Given a step'].join('\n'),
-            uri: 'features/b.feature',
+            uri: path.resolve(cwd, 'features/b.feature'),
           })
 
           // Act
