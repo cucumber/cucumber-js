@@ -57,23 +57,20 @@ export class PickleLineFilter {
 
   constructor(cwd: string, featurePaths: string[] = []) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
-      cwd,
       featurePaths,
     })
   }
 
   getFeatureUriToLinesMapping({
-    cwd,
     featurePaths,
   }: {
-    cwd: string
     featurePaths: string[]
   }): Record<string, number[]> {
     const mapping: Record<string, number[]> = {}
     featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {
-        const uri = path.resolve(cwd, match[1])
+        const uri = path.normalize(match[1])
         const linesExpression = match[2]
         if (doesHaveValue(linesExpression)) {
           if (doesNotHaveValue(mapping[uri])) {
@@ -92,7 +89,8 @@ export class PickleLineFilter {
   }
 
   matchesAnyLine({ gherkinDocument, pickle }: IMatchesAnyLineRequest): boolean {
-    const linesToMatch = this.featureUriToLinesMapping[pickle.uri]
+    const uri = path.normalize(pickle.uri)
+    const linesToMatch = this.featureUriToLinesMapping[uri]
     if (doesHaveValue(linesToMatch)) {
       const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
         gherkinDocument
