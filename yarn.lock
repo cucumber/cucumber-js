@@ -246,10 +246,10 @@
     "@cucumber/message-streams" "^2.0.0"
     "@cucumber/messages" "^16.0.1"
 
-"@cucumber/html-formatter@^15.0.0":
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-15.0.0.tgz#0eeec01792b2ad4cac2782c9c8941e6b4987c54c"
-  integrity sha512-yJ0WHSh1+rRGkeAQHDDmPoAJ1upLsoPIWDplGDKnUX874v8kr6mWJqDOa2S20P6J2TIslX3IYSVp3pKdrXtwWQ==
+"@cucumber/html-formatter@^15.0.2":
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/@cucumber/html-formatter/-/html-formatter-15.0.2.tgz#0a4c7d3c5de7de0a1b87a8a9af9eca54280175aa"
+  integrity sha512-j+YGY4ytj78G/v1gZo53D+vuKXlTg/oxNwSCCGvRQo75+AqYDJSkm/vexXJQ5lY1rXAvlbZ9KI6jhg6LDs0YdQ==
   dependencies:
     "@cucumber/messages" "^16.0.1"
     commander "7.2.0"
