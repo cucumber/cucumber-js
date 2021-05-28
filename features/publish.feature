@@ -1,3 +1,4 @@
+@flaky
 Feature: Publish reports
 
   Background:
