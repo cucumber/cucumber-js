@@ -13,7 +13,14 @@ export interface IWorkerCommandInitialize {
   filterStacktraces: boolean
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
+  supportCodeIds?: ICanonicalSupportCodeIds
   options: IRuntimeOptions
+}
+
+export interface ICanonicalSupportCodeIds {
+  stepDefinitionIds: string[]
+  beforeTestCaseHookDefinitionIds: string[]
+  afterTestCaseHookDefinitionIds: string[]
 }
 
 export interface IWorkerCommandRun {
@@ -30,11 +37,4 @@ export interface IWorkerCommandRun {
 export interface ICoordinatorReport {
   jsonEnvelope?: string
   ready?: boolean
-  supportCodeIds?: ICoordinatorReportSupportCodeIds
-}
-
-export interface ICoordinatorReportSupportCodeIds {
-  stepDefinitionIds: string[]
-  beforeTestCaseHookDefinitionIds: string[]
-  afterTestCaseHookDefinitionIds: string[]
 }

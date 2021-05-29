@@ -7,11 +7,7 @@ import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
-import {
-  ICoordinatorReport,
-  ICoordinatorReportSupportCodeIds,
-  IWorkerCommand,
-} from './command_types'
+import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 import {
   ITestRunStopwatch,
@@ -52,7 +48,6 @@ export default class Coordinator {
   private readonly pickleIds: string[]
   private assembledTestCases: IAssembledTestCases
   private workers: Record<string, IWorker>
-  private supportCodeIdMap: Record<string, string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
@@ -84,20 +79,14 @@ export default class Coordinator {
     this.nextPickleIdIndex = 0
     this.success = true
     this.workers = {}
-    this.supportCodeIdMap = {}
   }
 
   parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
-    if (doesHaveValue(message.supportCodeIds)) {
-      this.saveDefinitionIdMapping(message.supportCodeIds)
-    } else if (message.ready) {
+    if (message.ready) {
       this.giveWork(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
       const envelope = messages.parseEnvelope(message.jsonEnvelope)
       this.eventBroadcaster.emit('envelope', envelope)
-      if (doesHaveValue(envelope.testCase)) {
-        this.remapDefinitionIds(envelope.testCase)
-      }
       if (doesHaveValue(envelope.testCaseFinished)) {
         this.parseTestCaseResult(envelope.testCaseFinished)
       }
@@ -105,43 +94,6 @@ export default class Coordinator {
       throw new Error(
         `Unexpected message from worker: ${JSON.stringify(message)}`
       )
-    }
-  }
-
-  saveDefinitionIdMapping(message: ICoordinatorReportSupportCodeIds): void {
-    _.each(message.stepDefinitionIds, (id: string, index: number) => {
-      this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
-        index
-      ].id
-    })
-    _.each(
-      message.beforeTestCaseHookDefinitionIds,
-      (id: string, index: number) => {
-        this.supportCodeIdMap[
-          id
-        ] = this.supportCodeLibrary.beforeTestCaseHookDefinitions[index].id
-      }
-    )
-    _.each(
-      message.afterTestCaseHookDefinitionIds,
-      (id: string, index: number) => {
-        this.supportCodeIdMap[
-          id
-        ] = this.supportCodeLibrary.afterTestCaseHookDefinitions[index].id
-      }
-    )
-  }
-
-  remapDefinitionIds(testCase: messages.TestCase): void {
-    for (const testStep of testCase.testSteps) {
-      if (doesHaveValue(testStep.hookId)) {
-        testStep.hookId = this.supportCodeIdMap[testStep.hookId]
-      }
-      if (doesHaveValue(testStep.stepDefinitionIds)) {
-        testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
-          (id) => this.supportCodeIdMap[id]
-        )
-      }
     }
   }
 
@@ -169,6 +121,17 @@ export default class Coordinator {
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
         supportCodeRequiredModules: this.supportCodeRequiredModules,
+        supportCodeIds: {
+          stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
+            (s) => s.id
+          ),
+          beforeTestCaseHookDefinitionIds: this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
+            (h) => h.id
+          ),
+          afterTestCaseHookDefinitionIds: this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
+            (h) => h.id
+          ),
+        },
         options: this.options,
       },
     }

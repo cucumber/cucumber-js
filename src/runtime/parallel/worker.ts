@@ -68,25 +68,14 @@ export default class Worker {
     filterStacktraces,
     supportCodeRequiredModules,
     supportCodePaths,
+    supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     supportCodePaths.forEach((codePath) => require(codePath))
-    this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
-    this.sendMessage({
-      supportCodeIds: {
-        stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
-          (s) => s.id
-        ),
-        beforeTestCaseHookDefinitionIds: this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-          (h) => h.id
-        ),
-        afterTestCaseHookDefinitionIds: this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
-          (h) => h.id
-        ),
-      },
-    })
+    this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
+
     this.worldParameters = options.worldParameters
     this.options = options
     this.filterStacktraces = filterStacktraces
