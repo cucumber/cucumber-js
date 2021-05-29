@@ -197,6 +197,7 @@ export default class TestCaseRunner {
         },
       }
       this.eventBroadcaster.emit('envelope', testCaseStarted)
+      // used to determine whether a hook is a Before or After
       let didWeRunStepsYet = false
       for (const testStep of this.testCase.testSteps) {
         await this.aroundTestStep(testStep.id, attempt, async () => {
