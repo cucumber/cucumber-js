@@ -115,12 +115,6 @@ export default class PickleRunner {
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }
 
-  getStepDefinitions(pickleStep: messages.PickleStep): StepDefinition[] {
-    return this.supportCodeLibrary.stepDefinitions.filter((stepDefinition) =>
-      stepDefinition.matchesStepName(pickleStep.text)
-    )
-  }
-
   getWorstStepResult(): messages.TestStepResult {
     if (this.testStepResults.length === 0) {
       return {
