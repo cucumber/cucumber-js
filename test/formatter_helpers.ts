@@ -25,6 +25,7 @@ export interface ITestRunOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   supportCodeLibrary?: ISupportCodeLibrary
   sources?: ITestSource[]
+  pickleFilter?: (pickle: messages.Pickle) => boolean
 }
 
 export interface ITestFormatterOptions extends ITestRunOptions {
@@ -129,6 +130,7 @@ export async function getEnvelopesAndEventDataCollector({
   runtimeOptions = {},
   supportCodeLibrary,
   sources = [],
+  pickleFilter = () => true,
 }: ITestRunOptions): Promise<IEnvelopesAndEventDataCollector> {
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
@@ -149,7 +151,7 @@ export async function getEnvelopesAndEventDataCollector({
       eventBroadcaster,
       uri: source.uri,
     })
-    pickleIds = pickleIds.concat(pickles.map((p) => p.id))
+    pickleIds = pickleIds.concat(pickles.filter(pickleFilter).map((p) => p.id))
   }
   const runtime = new Runtime({
     eventBroadcaster,
