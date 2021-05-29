@@ -27,13 +27,7 @@ export interface ISupportCodeFilterOptionsForTestStep {
   pickleStep: messages.PickleStep
 }
 
-export declare type IAssembledTestCases = Record<
-  string,
-  {
-    testCase: messages.TestCase
-    testSteps: ITestStep[]
-  }
->
+export declare type IAssembledTestCases = Record<string, messages.TestCase>
 
 export interface IAssembleTestCasesOptions {
   eventBroadcaster: EventEmitter
@@ -52,42 +46,57 @@ export async function assembleTestCases({
   for (const pickle of pickles) {
     const { id: pickleId } = pickle
     const testCaseId = newId()
-    const testSteps: ITestStep[] = await assembleTestSteps({
-      newId,
-      pickle,
+    const fromBeforeHooks: messages.TestStep[] = getBeforeHookDefinitions({
       supportCodeLibrary,
-    })
-    const testCase = {
+      pickle,
+    }).map((hookDefinition) => ({
+      id: newId(),
+      hookId: hookDefinition.id,
+    }))
+    const fromStepDefinitions: messages.TestStep[] = pickle.steps.map(
+      (pickleStep) => {
+        const stepDefinitions = getStepDefinitions({
+          supportCodeLibrary,
+          pickleStep,
+        })
+        return {
+          id: newId(),
+          pickleStepId: pickleStep.id,
+          stepDefinitionIds: stepDefinitions.map(
+            (stepDefinition) => stepDefinition.id
+          ),
+          stepMatchArgumentsLists: stepDefinitions.map((stepDefinition) => {
+            const result = stepDefinition.expression.match(pickleStep.text)
+            return {
+              stepMatchArguments: result.map((arg) => {
+                return {
+                  group: mapArgumentGroup(arg.group),
+                  parameterTypeName: arg.parameterType.name,
+                }
+              }),
+            }
+          }),
+        }
+      }
+    )
+    const fromAfterHooks: messages.TestStep[] = getAfterHookDefinitions({
+      supportCodeLibrary,
+      pickle,
+    }).map((hookDefinition) => ({
+      id: newId(),
+      hookId: hookDefinition.id,
+    }))
+    const testCase: messages.TestCase = {
       pickleId,
       id: testCaseId,
-      testSteps: testSteps.map((testStep) => {
-        if (testStep.isHook) {
-          return {
-            id: testStep.id,
-            hookId: testStep.hookDefinition.id,
-          }
-        } else {
-          return {
-            id: testStep.id,
-            pickleStepId: testStep.pickleStep.id,
-            stepDefinitionIds: testStep.stepDefinitions.map((x) => x.id),
-            stepMatchArgumentsLists: testStep.stepDefinitions.map((x) => {
-              const result = x.expression.match(testStep.pickleStep.text)
-              return {
-                stepMatchArguments: result.map((arg) => {
-                  return {
-                    group: mapArgumentGroup(arg.group),
-                    parameterTypeName: arg.parameterType.name,
-                  }
-                }),
-              }
-            }),
-          }
-        }
-      }),
+      testSteps: [
+        ...fromBeforeHooks,
+        ...fromStepDefinitions,
+        ...fromAfterHooks,
+      ],
     }
     eventBroadcaster.emit('envelope', { testCase })
-    result[pickleId] = { testCase, testSteps }
+    result[pickleId] = testCase
   }
   return result
 }
@@ -137,8 +146,6 @@ export async function assembleTestSteps({
   })
   return testSteps
 }
-
-// TODO break filter fns out to a new file?
 
 function getAfterHookDefinitions({
   supportCodeLibrary,

@@ -116,10 +116,7 @@ describe('assembleTestCases', () => {
       ])
 
       expect(Object.keys(result)).to.eql([pickles[0].id, pickles[1].id])
-      expect(Object.values(result).map((v) => v.testCase)).to.eql([
-        testCase1,
-        testCase2,
-      ])
+      expect(Object.values(result)).to.eql([testCase1, testCase2])
     })
 
     describe('with a parameterised step', () => {
