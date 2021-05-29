@@ -16,6 +16,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Changed
 
+* All `testCase` messages now emitted upfront at the start of the run ([#1408](https://github.com/cucumber/cucumber-js/issues/1408)
+  [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
 * Clarify that the JSON formatter will not be removed any time soon
 
 ### Deprecated
@@ -24,6 +26,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+* Progress bar formatter now reports total step count correctly ([#1579](https://github.com/cucumber/cucumber-js/issues/1579)
+  [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
 * All messages now emitted with project-relative `uri`s
   ([#1534](https://github.com/cucumber/cucumber-js/issues/1534)
   [#1672](https://github.com/cucumber/cucumber-js/pull/1672))
