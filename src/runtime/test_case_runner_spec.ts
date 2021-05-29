@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import PickleRunner from './pickle_runner'
+import TestCaseRunner from './test_case_runner'
 import { EventEmitter } from 'events'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
@@ -15,7 +15,7 @@ import { PredictableTestRunStopwatch } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
-interface ITestPickleRunnerRequest {
+interface ITestRunnerRequest {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   retries?: number
@@ -23,14 +23,14 @@ interface ITestPickleRunnerRequest {
   supportCodeLibrary: ISupportCodeLibrary
 }
 
-interface ITestPickleRunnerResponse {
+interface ITestRunnerResponse {
   envelopes: messages.Envelope[]
   result: messages.TestStepResultStatus
 }
 
-async function testPickleRunner(
-  options: ITestPickleRunnerRequest
-): Promise<ITestPickleRunnerResponse> {
+async function testRunner(
+  options: ITestRunnerRequest
+): Promise<ITestRunnerResponse> {
   const envelopes: IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
   const newId = IdGenerator.incrementing()
@@ -45,7 +45,7 @@ async function testPickleRunner(
 
   // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-  const pickleRunner = new PickleRunner({
+  const runner = new TestCaseRunner({
     eventBroadcaster,
     stopwatch: new PredictableTestRunStopwatch(),
     gherkinDocument: options.gherkinDocument,
@@ -57,7 +57,7 @@ async function testPickleRunner(
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
   })
-  const result = await pickleRunner.run()
+  const result = await runner.run()
   return { envelopes, result }
 }
 
@@ -68,7 +68,7 @@ function predictableTimestamp(counter: number): messages.Timestamp {
   }
 }
 
-describe('PickleRunner', () => {
+describe('TestCaseRunner', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
@@ -103,7 +103,7 @@ describe('PickleRunner', () => {
         }
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
@@ -169,7 +169,7 @@ describe('PickleRunner', () => {
         }
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
@@ -204,7 +204,7 @@ describe('PickleRunner', () => {
         ].join('\n')
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
@@ -238,7 +238,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
@@ -280,7 +280,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           retries: 1,
@@ -380,7 +380,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           skip: true,
@@ -422,7 +422,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
@@ -457,7 +457,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,

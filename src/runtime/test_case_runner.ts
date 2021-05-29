@@ -17,7 +17,7 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
 
-export interface INewPickleRunnerOptions {
+export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
   stopwatch: ITestRunStopwatch
   gherkinDocument: messages.GherkinDocument
@@ -30,7 +30,7 @@ export interface INewPickleRunnerOptions {
   worldParameters: any
 }
 
-export default class PickleRunner {
+export default class TestCaseRunner {
   private readonly attachmentManager: AttachmentManager
   private currentTestCaseStartedId: string
   private currentTestStepId: string
@@ -58,7 +58,7 @@ export default class PickleRunner {
     skip,
     supportCodeLibrary,
     worldParameters,
-  }: INewPickleRunnerOptions) {
+  }: INewTestCaseRunnerOptions) {
     this.attachmentManager = new AttachmentManager(({ data, media }) => {
       if (doesNotHaveValue(this.currentTestStepId)) {
         throw new Error(

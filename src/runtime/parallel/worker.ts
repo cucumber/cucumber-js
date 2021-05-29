@@ -9,7 +9,7 @@ import { EventEmitter } from 'events'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import PickleRunner from '../pickle_runner'
+import TestCaseRunner from '../test_case_runner'
 import UserCodeRunner from '../../user_code_runner'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
@@ -133,7 +133,7 @@ export default class Worker {
       ? new PredictableTestRunStopwatch()
       : new RealTestRunStopwatch()
     stopwatch.from(duration(elapsed))
-    const pickleRunner = new PickleRunner({
+    const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,
       gherkinDocument,
@@ -145,7 +145,7 @@ export default class Worker {
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.worldParameters,
     })
-    await pickleRunner.run()
+    await testCaseRunner.run()
     this.sendMessage({ ready: true })
   }
 
