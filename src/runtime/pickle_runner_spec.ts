@@ -34,7 +34,7 @@ async function testPickleRunner(
   const envelopes: IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
   const newId = IdGenerator.incrementing()
-  const { testCase, testSteps } = (
+  const testCase = (
     await assembleTestCases({
       eventBroadcaster,
       newId,
@@ -52,7 +52,6 @@ async function testPickleRunner(
     newId,
     pickle: options.pickle,
     testCase,
-    testSteps,
     retries: valueOrDefault(options.retries, 0),
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,

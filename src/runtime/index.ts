@@ -17,7 +17,7 @@ import {
   PredictableTestRunStopwatch,
   RealTestRunStopwatch,
 } from './stopwatch'
-import { assembleTestCases, ITestStep } from './assemble_test_cases'
+import { assembleTestCases } from './assemble_test_cases'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -103,8 +103,7 @@ export default class Runtime {
 
   async runPickle(
     pickleId: string,
-    testCase: messages.TestCase,
-    testSteps: ITestStep[]
+    testCase: messages.TestCase
   ): Promise<void> {
     const pickle = this.eventDataCollector.getPickle(pickleId)
     const retries = retriesForPickle(pickle, this.options)
@@ -116,7 +115,6 @@ export default class Runtime {
       newId: this.newId,
       pickle,
       testCase,
-      testSteps,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
@@ -152,11 +150,7 @@ export default class Runtime {
       supportCodeLibrary: this.supportCodeLibrary,
     })
     await bluebird.each(this.pickleIds, async (pickleId) => {
-      await this.runPickle(
-        pickleId,
-        assembledTestCases[pickleId].testCase,
-        assembledTestCases[pickleId].testSteps
-      )
+      await this.runPickle(pickleId, assembledTestCases[pickleId])
     })
     await this.runTestRunHooks(
       clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),

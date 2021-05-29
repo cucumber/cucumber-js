@@ -19,7 +19,6 @@ import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { IRuntimeOptions } from '../index'
 import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
-import { assembleTestSteps } from '../assemble_test_cases'
 
 const { uuid } = IdGenerator
 
@@ -134,11 +133,6 @@ export default class Worker {
       ? new PredictableTestRunStopwatch()
       : new RealTestRunStopwatch()
     stopwatch.from(duration(elapsed))
-    const testSteps = await assembleTestSteps({
-      newId: this.newId,
-      pickle,
-      supportCodeLibrary: this.supportCodeLibrary,
-    })
     const pickleRunner = new PickleRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,
@@ -146,7 +140,6 @@ export default class Worker {
       newId: this.newId,
       pickle,
       testCase,
-      testSteps,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,

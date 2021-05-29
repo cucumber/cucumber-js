@@ -8,15 +8,6 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import { clone } from 'lodash'
 import StepDefinition from '../models/step_definition'
 
-export interface ITestStep {
-  id: string
-  isBeforeHook?: boolean
-  isHook: boolean
-  hookDefinition?: TestCaseHookDefinition
-  pickleStep?: messages.PickleStep
-  stepDefinitions?: StepDefinition[]
-}
-
 export interface ISupportCodeFilterOptionsForTestCase {
   supportCodeLibrary: ISupportCodeLibrary
   pickle: messages.Pickle
@@ -99,52 +90,6 @@ export async function assembleTestCases({
     result[pickleId] = testCase
   }
   return result
-}
-
-export async function assembleTestSteps({
-  newId,
-  pickle,
-  supportCodeLibrary,
-}: {
-  newId: IdGenerator.NewId
-  pickle: messages.Pickle
-  supportCodeLibrary: ISupportCodeLibrary
-}): Promise<ITestStep[]> {
-  const testSteps: ITestStep[] = []
-  getBeforeHookDefinitions({
-    supportCodeLibrary,
-    pickle,
-  }).forEach((hookDefinition) => {
-    testSteps.push({
-      id: newId(),
-      hookDefinition,
-      isHook: true,
-      isBeforeHook: true,
-    })
-  })
-  pickle.steps.forEach((pickleStep) => {
-    const stepDefinitions = getStepDefinitions({
-      supportCodeLibrary,
-      pickleStep,
-    })
-    testSteps.push({
-      id: newId(),
-      pickleStep,
-      stepDefinitions,
-      isHook: false,
-    })
-  })
-  getAfterHookDefinitions({
-    supportCodeLibrary,
-    pickle,
-  }).forEach((hookDefinition) => {
-    testSteps.push({
-      id: newId(),
-      hookDefinition,
-      isHook: true,
-    })
-  })
-  return testSteps
 }
 
 function getAfterHookDefinitions({

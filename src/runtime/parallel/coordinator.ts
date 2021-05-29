@@ -237,7 +237,7 @@ export default class Coordinator {
     const pickleId = this.pickleIds[this.nextPickleIdIndex]
     this.nextPickleIdIndex += 1
     const pickle = this.eventDataCollector.getPickle(pickleId)
-    const { testCase } = this.assembledTestCases[pickleId]
+    const testCase = this.assembledTestCases[pickleId]
     const gherkinDocument = this.eventDataCollector.getGherkinDocument(
       pickle.uri
     )
