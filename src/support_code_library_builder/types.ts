@@ -1,4 +1,4 @@
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -8,16 +8,16 @@ import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 export type DefineStepPattern = string | RegExp
 
 export interface ITestCaseHookParameter {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
-  result?: messages.TestStepFinished.ITestStepResult
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
+  result?: messages.TestStepResult
   testCaseStartedId: string
 }
 
 export interface ITestStepHookParameter {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
-  result: messages.TestStepFinished.ITestStepResult
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
+  result: messages.TestStepResult
   testCaseStartedId: string
   testStepId: string
 }
@@ -121,7 +121,7 @@ export interface ISupportCodeLibrary {
   readonly beforeTestRunHookDefinitions: TestRunHookDefinition[]
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
-  readonly undefinedParameterTypes: messages.IUndefinedParameterType[]
+  readonly undefinedParameterTypes: messages.UndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
 }

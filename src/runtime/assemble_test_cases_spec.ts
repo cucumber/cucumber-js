@@ -1,4 +1,5 @@
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { EventEmitter } from 'events'
 import { assembleTestCases, IAssembledTestCases } from './assemble_test_cases'
@@ -10,18 +11,18 @@ import { parse } from '../../test/gherkin_helpers'
 import { expect } from 'chai'
 
 interface IRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickles: messages.IPickle[]
+  gherkinDocument: messages.GherkinDocument
+  pickles: messages.Pickle[]
   supportCodeLibrary: ISupportCodeLibrary
 }
 
 interface IResponse {
-  envelopes: messages.IEnvelope[]
+  envelopes: messages.Envelope[]
   result: IAssembledTestCases
 }
 
 async function testAssembleTestCases(options: IRequest): Promise<IResponse> {
-  const envelopes: messages.IEnvelope[] = []
+  const envelopes: messages.Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const result = await assembleTestCases({
@@ -70,7 +71,7 @@ describe('assembleTestCases', () => {
         supportCodeLibrary,
       })
 
-      const testCase1: messages.ITestCase = {
+      const testCase1: messages.TestCase = {
         id: '0',
         pickleId: pickles[0].id,
         testSteps: [
@@ -87,7 +88,7 @@ describe('assembleTestCases', () => {
         ],
       }
 
-      const testCase2: messages.ITestCase = {
+      const testCase2: messages.TestCase = {
         id: '2',
         pickleId: pickles[1].id,
         testSteps: [
@@ -106,12 +107,12 @@ describe('assembleTestCases', () => {
 
       // Assert
       expect(envelopes).to.eql([
-        messages.Envelope.fromObject({
+        {
           testCase: testCase1,
-        }),
-        messages.Envelope.fromObject({
+        },
+        {
           testCase: testCase2,
-        }),
+        },
       ])
 
       expect(Object.keys(result)).to.eql([pickles[0].id, pickles[1].id])
@@ -148,7 +149,7 @@ describe('assembleTestCases', () => {
         expect(
           envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
         ).to.deep.eq([
-          messages.TestCase.TestStep.StepMatchArgumentsList.fromObject({
+          {
             stepMatchArguments: [
               {
                 group: {
@@ -164,6 +165,8 @@ describe('assembleTestCases', () => {
                     {
                       children: [
                         {
+                          start: undefined,
+                          value: undefined,
                           children: [],
                         },
                       ],
@@ -171,8 +174,12 @@ describe('assembleTestCases', () => {
                       value: 'foo',
                     },
                     {
+                      start: undefined,
+                      value: undefined,
                       children: [
                         {
+                          start: undefined,
+                          value: undefined,
                           children: [],
                         },
                       ],
@@ -184,7 +191,7 @@ describe('assembleTestCases', () => {
                 parameterTypeName: 'string',
               },
             ],
-          }),
+          },
         ])
       })
     })
@@ -214,38 +221,32 @@ describe('assembleTestCases', () => {
         })
 
         // Assert
-        expect(envelopes[0]).to.eql(
-          messages.Envelope.fromObject({
-            testCase: {
-              id: '0',
-              pickleId: pickles[0].id,
-              testSteps: [
-                {
-                  id: '1',
-                  hookId: [
-                    supportCodeLibrary.beforeTestCaseHookDefinitions[0].id,
-                  ],
-                },
-                {
-                  id: '2',
-                  pickleStepId: pickles[0].steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-                {
-                  id: '3',
-                  hookId: [
-                    supportCodeLibrary.afterTestCaseHookDefinitions[0].id,
-                  ],
-                },
-              ],
-            },
-          })
-        )
+        expect(envelopes[0]).to.eql({
+          testCase: {
+            id: '0',
+            pickleId: pickles[0].id,
+            testSteps: [
+              {
+                id: '1',
+                hookId: supportCodeLibrary.beforeTestCaseHookDefinitions[0].id,
+              },
+              {
+                id: '2',
+                pickleStepId: pickles[0].steps[0].id,
+                stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                stepMatchArgumentsLists: [
+                  {
+                    stepMatchArguments: [],
+                  },
+                ],
+              },
+              {
+                id: '3',
+                hookId: supportCodeLibrary.afterTestCaseHookDefinitions[0].id,
+              },
+            ],
+          },
+        })
       })
     })
 
@@ -274,26 +275,24 @@ describe('assembleTestCases', () => {
         })
 
         // Assert
-        expect(envelopes[0]).to.eql(
-          messages.Envelope.fromObject({
-            testCase: {
-              id: '0',
-              pickleId: pickles[0].id,
-              testSteps: [
-                {
-                  id: '1',
-                  pickleStepId: pickles[0].steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          })
-        )
+        expect(envelopes[0]).to.eql({
+          testCase: {
+            id: '0',
+            pickleId: pickles[0].id,
+            testSteps: [
+              {
+                id: '1',
+                pickleStepId: pickles[0].steps[0].id,
+                stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
+                stepMatchArgumentsLists: [
+                  {
+                    stepMatchArguments: [],
+                  },
+                ],
+              },
+            ],
+          },
+        })
       })
     })
   })

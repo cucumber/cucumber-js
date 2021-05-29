@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { Group } from '@cucumber/cucumber-expressions'
 import { doesHaveValue } from '../value_checker'
@@ -12,24 +13,24 @@ export interface ITestStep {
   isBeforeHook?: boolean
   isHook: boolean
   hookDefinition?: TestCaseHookDefinition
-  pickleStep?: messages.Pickle.IPickleStep
+  pickleStep?: messages.PickleStep
   stepDefinitions?: StepDefinition[]
 }
 
 export interface ISupportCodeFilterOptionsForTestCase {
   supportCodeLibrary: ISupportCodeLibrary
-  pickle: messages.IPickle
+  pickle: messages.Pickle
 }
 
 export interface ISupportCodeFilterOptionsForTestStep {
   supportCodeLibrary: ISupportCodeLibrary
-  pickleStep: messages.Pickle.IPickleStep
+  pickleStep: messages.PickleStep
 }
 
 export declare type IAssembledTestCases = Record<
   string,
   {
-    testCase: messages.ITestCase
+    testCase: messages.TestCase
     testSteps: ITestStep[]
   }
 >
@@ -37,7 +38,7 @@ export declare type IAssembledTestCases = Record<
 export interface IAssembleTestCasesOptions {
   eventBroadcaster: EventEmitter
   newId: IdGenerator.NewId
-  pickles: messages.IPickle[]
+  pickles: messages.Pickle[]
   supportCodeLibrary: ISupportCodeLibrary
 }
 
@@ -85,10 +86,7 @@ export async function assembleTestCases({
         }
       }),
     }
-    eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({ testCase })
-    )
+    eventBroadcaster.emit('envelope', { testCase })
     result[pickleId] = { testCase, testSteps }
   }
   return result
@@ -100,7 +98,7 @@ export async function assembleTestSteps({
   supportCodeLibrary,
 }: {
   newId: IdGenerator.NewId
-  pickle: messages.IPickle
+  pickle: messages.Pickle
   supportCodeLibrary: ISupportCodeLibrary
 }): Promise<ITestStep[]> {
   const testSteps: ITestStep[] = []
@@ -169,9 +167,7 @@ function getStepDefinitions({
   )
 }
 
-function mapArgumentGroup(
-  group: Group
-): messages.TestCase.TestStep.StepMatchArgumentsList.StepMatchArgument.IGroup {
+function mapArgumentGroup(group: Group): messages.Group {
   return {
     start: group.start,
     value: group.value,

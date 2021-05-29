@@ -5,6 +5,7 @@ const feature = [
   '--format rerun:@rerun.txt',
   '--format usage:usage.txt',
   '--format message:messages.ndjson',
+  '--format html:html-formatter.html',
   '--publish-quiet',
 ].join(' ')
 

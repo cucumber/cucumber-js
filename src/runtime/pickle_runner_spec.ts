@@ -1,31 +1,31 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import PickleRunner from './pickle_runner'
-import Status from '../status'
 import { EventEmitter } from 'events'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { parse } from '../../test/gherkin_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods, { millisecondsToDuration } from '../time'
+import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import { PredictableTestRunStopwatch } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
-import IEnvelope = messages.IEnvelope
+import IEnvelope = messages.Envelope
 
 interface ITestPickleRunnerRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
   retries?: number
   skip?: boolean
   supportCodeLibrary: ISupportCodeLibrary
 }
 
 interface ITestPickleRunnerResponse {
-  envelopes: messages.IEnvelope[]
-  result: messages.TestStepFinished.TestStepResult.Status
+  envelopes: messages.Envelope[]
+  result: messages.TestStepResultStatus
 }
 
 async function testPickleRunner(
@@ -62,14 +62,10 @@ async function testPickleRunner(
   return { envelopes, result }
 }
 
-function predictableTimestamp(counter: number): any {
+function predictableTimestamp(counter: number): messages.Timestamp {
   return {
     nanos: 1000000 * counter,
-    seconds: {
-      high: 0,
-      low: 0,
-      unsigned: false,
-    },
+    seconds: 0,
   }
 }
 
@@ -100,12 +96,12 @@ describe('PickleRunner', () => {
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
         })
-        const passedTestResult = messages.TestStepFinished.TestStepResult.fromObject(
-          {
-            duration: millisecondsToDuration(1),
-            status: Status.PASSED,
-          }
-        )
+        const passedTestResult: messages.TestStepResult = {
+          duration: messages.TimeConversion.millisecondsToDuration(1),
+          status: messages.TestStepResultStatus.PASSED,
+          message: undefined,
+          willBeRetried: false,
+        }
 
         // Act
         const { envelopes, result } = await testPickleRunner({
@@ -115,38 +111,39 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.eql([
-          messages.Envelope.fromObject({
+        const expectedtEnvelopes = [
+          {
             testCaseStarted: {
               attempt: 0,
               id: '2',
               testCaseId: '0',
               timestamp: predictableTimestamp(0),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
               timestamp: predictableTimestamp(1),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testStepFinished: {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
               timestamp: predictableTimestamp(2),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testCaseFinished: {
               testCaseStartedId: '2',
               timestamp: predictableTimestamp(3),
             },
-          }),
-        ])
-        expect(result).to.eql(Status.PASSED)
+          },
+        ]
+        expect(envelopes).to.eql(expectedtEnvelopes)
+        expect(result).to.eql(messages.TestStepResultStatus.PASSED)
       })
     })
 
@@ -165,13 +162,12 @@ describe('PickleRunner', () => {
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
         })
-        const failingTestResult = messages.TestStepFinished.TestStepResult.fromObject(
-          {
-            duration: millisecondsToDuration(0),
-            status: Status.FAILED,
-            message: 'fail',
-          }
-        )
+        const failingTestResult: messages.TestStepResult = {
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+          status: messages.TestStepResultStatus.FAILED,
+          message: 'fail',
+          willBeRetried: false,
+        }
 
         // Act
         const { envelopes, result } = await testPickleRunner({
@@ -185,7 +181,7 @@ describe('PickleRunner', () => {
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(
           failingTestResult
         )
-        expect(result).to.eql(Status.FAILED)
+        expect(result).to.eql(messages.TestStepResultStatus.FAILED)
       })
     })
 
@@ -217,16 +213,13 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
-          messages.TestStepFinished.TestStepResult.fromObject({
-            message,
-            status: Status.AMBIGUOUS,
-            duration: {
-              seconds: '0',
-              nanos: 0,
-            },
-          })
-        )
+        const expected: messages.TestStepResult = {
+          message,
+          status: messages.TestStepResultStatus.AMBIGUOUS,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+          willBeRetried: false,
+        }
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
           envelopes[2].testStepFinished.testStepResult.status
         )
@@ -254,15 +247,12 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
-          messages.TestStepFinished.TestStepResult.fromObject({
-            status: Status.UNDEFINED,
-            duration: {
-              seconds: '0',
-              nanos: 0,
-            },
-          })
-        )
+        const expected: messages.TestStepResult = {
+          status: messages.TestStepResultStatus.UNDEFINED,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+          willBeRetried: false,
+        }
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
           envelopes[2].testStepFinished.testStepResult.status
         )
@@ -299,75 +289,78 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.eql([
-          messages.Envelope.fromObject({
+        const expected: messages.Envelope[] = [
+          {
             testCaseStarted: {
               attempt: 0,
               id: '2',
               testCaseId: '0',
               timestamp: predictableTimestamp(0),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
               timestamp: predictableTimestamp(1),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testStepFinished: {
               testCaseStartedId: '2',
               testStepResult: {
-                duration: millisecondsToDuration(0),
+                duration: messages.TimeConversion.millisecondsToDuration(0),
                 message: 'error',
-                status: Status.FAILED,
+                status: messages.TestStepResultStatus.FAILED,
                 willBeRetried: true,
               },
               testStepId: '1',
               timestamp: predictableTimestamp(2),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testCaseFinished: {
               testCaseStartedId: '2',
               timestamp: predictableTimestamp(3),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testCaseStarted: {
               attempt: 1,
               id: '3',
               testCaseId: '0',
               timestamp: predictableTimestamp(4),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
               timestamp: predictableTimestamp(5),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testStepFinished: {
               testCaseStartedId: '3',
               testStepResult: {
-                duration: millisecondsToDuration(0),
-                status: Status.PASSED,
+                duration: messages.TimeConversion.millisecondsToDuration(0),
+                message: undefined,
+                status: messages.TestStepResultStatus.PASSED,
+                willBeRetried: false,
               },
               testStepId: '1',
               timestamp: predictableTimestamp(6),
             },
-          }),
-          messages.Envelope.fromObject({
+          },
+          {
             testCaseFinished: {
               testCaseStartedId: '3',
               timestamp: predictableTimestamp(7),
             },
-          }),
-        ])
-        expect(result).to.eql(Status.PASSED)
+          },
+        ]
+        expect(envelopes).to.eql(expected)
+        expect(result).to.eql(messages.TestStepResultStatus.PASSED)
       })
     })
 
@@ -397,15 +390,12 @@ describe('PickleRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
-          messages.TestStepFinished.TestStepResult.fromObject({
-            status: Status.SKIPPED,
-            duration: {
-              seconds: '0',
-              nanos: 0,
-            },
-          })
-        )
+        const expected: messages.TestStepResult = {
+          status: messages.TestStepResultStatus.SKIPPED,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+          willBeRetried: false,
+        }
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
           envelopes[2].testStepFinished.testStepResult.status
         )

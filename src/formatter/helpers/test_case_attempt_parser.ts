@@ -1,13 +1,11 @@
 import _ from 'lodash'
-import Status from '../../status'
 import { getStepKeywordType, KeywordType } from './keyword_type'
 import {
   getGherkinScenarioLocationMap,
   getGherkinStepMap,
 } from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
-import path from 'path'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { ITestCaseAttempt } from './event_data_collector'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -17,10 +15,10 @@ import { ILineAndUri } from '../../types'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri
-  argument?: messages.IPickleStepArgument
-  attachments: messages.IAttachment[]
+  argument?: messages.PickleStepArgument
+  attachments: messages.Attachment[]
   keyword: string
-  result: messages.TestStepFinished.ITestStepResult
+  result: messages.TestStepResult
   snippet?: string
   sourceLocation?: ILineAndUri
   text?: string
@@ -30,7 +28,7 @@ export interface IParsedTestCase {
   attempt: number
   name: string
   sourceLocation?: ILineAndUri
-  worstTestStepResult: messages.TestStepFinished.ITestStepResult
+  worstTestStepResult: messages.TestStepResult
 }
 
 export interface IParsedTestCaseAttempt {
@@ -40,16 +38,16 @@ export interface IParsedTestCaseAttempt {
 
 interface IParseStepRequest {
   isBeforeHook: boolean
-  gherkinStepMap: Record<string, messages.GherkinDocument.Feature.IStep>
+  gherkinStepMap: Record<string, messages.Step>
   keyword: string
   keywordType: KeywordType
-  pickleStep: messages.Pickle.IPickleStep
+  pickleStep: messages.PickleStep
   pickleUri: string
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
-  testStep: messages.TestCase.ITestStep
-  testStepResult: messages.TestStepFinished.ITestStepResult
-  testStepAttachments: messages.IAttachment[]
+  testStep: messages.TestStep
+  testStepResult: messages.TestStepResult
+  testStepAttachments: messages.Attachment[]
 }
 
 function parseStep({
@@ -67,15 +65,14 @@ function parseStep({
 }: IParseStepRequest): IParsedTestStep {
   const out: IParsedTestStep = {
     attachments: testStepAttachments,
-    keyword:
-      testStep.pickleStepId !== ''
-        ? keyword
-        : isBeforeHook
-        ? 'Before'
-        : 'After',
+    keyword: doesHaveValue(testStep.pickleStepId)
+      ? keyword
+      : isBeforeHook
+      ? 'Before'
+      : 'After',
     result: testStepResult,
   }
-  if (testStep.hookId !== '') {
+  if (doesHaveValue(testStep.hookId)) {
     let hookDefinition: TestCaseHookDefinition
     if (isBeforeHook) {
       hookDefinition = supportCodeLibrary.beforeTestCaseHookDefinitions.find(
@@ -103,7 +100,7 @@ function parseStep({
       line: stepDefinition.line,
     }
   }
-  if (testStep.pickleStepId !== '') {
+  if (doesHaveValue(testStep.pickleStepId)) {
     out.sourceLocation = {
       uri: pickleUri,
       line: gherkinStepMap[pickleStep.astNodeIds[0]].location.line,
@@ -113,7 +110,7 @@ function parseStep({
       out.argument = pickleStep.argument
     }
   }
-  if (testStepResult.status === Status.UNDEFINED) {
+  if (testStepResult.status === messages.TestStepResultStatus.UNDEFINED) {
     out.snippet = snippetBuilder.build({ keywordType, pickleStep })
   }
   return out
@@ -140,7 +137,7 @@ export function parseTestCaseAttempt({
     gherkinDocument
   )
   const pickleStepMap = getPickleStepMap(pickle)
-  const relativePickleUri = path.relative(cwd, pickle.uri)
+  const relativePickleUri = pickle.uri
   const parsedTestCase: IParsedTestCase = {
     attempt: testCaseAttempt.attempt,
     name: pickle.name,
@@ -155,9 +152,9 @@ export function parseTestCaseAttempt({
   let previousKeywordType = KeywordType.Precondition
   _.each(testCase.testSteps, (testStep) => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id]
-    isBeforeHook = isBeforeHook && testStep.hookId !== ''
+    isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
     let keyword, keywordType, pickleStep
-    if (testStep.pickleStepId !== '') {
+    if (doesHaveValue(testStep.pickleStepId)) {
       pickleStep = pickleStepMap[testStep.pickleStepId]
       keyword = getStepKeyword({ pickleStep, gherkinStepMap })
       keywordType = getStepKeywordType({

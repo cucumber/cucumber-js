@@ -1,10 +1,10 @@
 import isStream from 'is-stream'
 import { Readable } from 'stream'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 export interface IAttachmentMedia {
-  encoding: messages.Attachment.ContentEncoding
+  encoding: messages.AttachmentContentEncoding
   contentType: string
 }
 
@@ -53,12 +53,12 @@ export default class AttachmentManager {
       }
       if (mediaType.startsWith('base64:')) {
         this.createStringAttachment(data, {
-          encoding: messages.Attachment.ContentEncoding.BASE64,
+          encoding: messages.AttachmentContentEncoding.BASE64,
           contentType: mediaType.replace('base64:', ''),
         })
       } else {
         this.createStringAttachment(data, {
-          encoding: messages.Attachment.ContentEncoding.IDENTITY,
+          encoding: messages.AttachmentContentEncoding.IDENTITY,
           contentType: mediaType,
         })
       }
@@ -71,7 +71,7 @@ export default class AttachmentManager {
 
   createBufferAttachment(data: Buffer, mediaType: string): void {
     this.createStringAttachment(data.toString('base64'), {
-      encoding: messages.Attachment.ContentEncoding.BASE64,
+      encoding: messages.AttachmentContentEncoding.BASE64,
       contentType: mediaType,
     })
   }
