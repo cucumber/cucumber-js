@@ -1,4 +1,3 @@
-@dg
 Feature: Core feature elements execution
   In order to have automated acceptance tests
   As a developer
