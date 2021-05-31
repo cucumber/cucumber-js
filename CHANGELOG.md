@@ -16,7 +16,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Changed
 
-* All `testCase` messages now emitted upfront at the start of the run ([#1408](https://github.com/cucumber/cucumber-js/issues/1408)
+* All `testCase` messages now emitted upfront at the start of the run (relevant for formatter authors) ([#1408](https://github.com/cucumber/cucumber-js/issues/1408)
   [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
 * Clarify that the JSON formatter will not be removed any time soon
 
