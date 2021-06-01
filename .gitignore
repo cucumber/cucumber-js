@@ -4,7 +4,6 @@
 .nyc_output/
 @rerun.txt
 coverage/
-dist/browser-example.js
 html-formatter.html
 lib/
 messages.ndjson
@@ -12,3 +11,4 @@ node_modules
 tmp/
 usage.txt
 yarn-error.log
+.vscode

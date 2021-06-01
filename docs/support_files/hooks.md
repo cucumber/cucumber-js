@@ -3,7 +3,7 @@
 Hooks are used for setup and teardown the environment before and after each scenario. See the [API reference](./api_reference.md) for the specification of the first argument passed to hooks. Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
 
 ```javascript
-var {After, Before} = require('cucumber');
+var {After, Before} = require('@cucumber/cucumber');
 
 // Synchronous
 Before(function () {
@@ -35,7 +35,7 @@ After(function () {
 Hooks can be conditionally selected for execution based on the tags of the scenario.
 
 ```javascript
-var {After, Before} = require('cucumber');
+var {After, Before} = require('@cucumber/cucumber');
 
 Before(function () {
   // This hook will be executed before all scenarios
@@ -82,7 +82,7 @@ If you have some setup / teardown that needs to be done before or after all scen
 Unlike `Before` / `After` these methods will not have a world instance as `this`. This is because each scenario gets its own world instance and these hooks run before / after **all** scenarios.
 
 ```javascript
-var {AfterAll, BeforeAll} = require('cucumber');
+var {AfterAll, BeforeAll} = require('@cucumber/cucumber');
 
 // Synchronous
 BeforeAll(function () {
@@ -102,3 +102,23 @@ AfterAll(function () {
   return Promise.resolve()
 });
 ```
+
+## BeforeStep / AfterStep
+
+If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
+
+```javascript
+var {AfterStep, BeforeStep} = require('@cucumber/cucumber');
+
+BeforeStep({tags: "@foo"}, function () {
+  // This hook will be executed before all steps in a scenario with tag @foo
+});
+
+AfterStep( function ({result}) {
+  // This hook will be executed after all steps, and take a screenshot on step failure
+  if (result.status === Status.FAILED) {
+    this.driver.takeScreenshot();
+  }
+});
+```
+

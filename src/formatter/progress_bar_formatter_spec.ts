@@ -14,18 +14,20 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { PassThrough } from 'stream'
 import ProgressBar from 'progress'
+import bluebird from 'bluebird'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
-  shouldStopFn: (envelope: messages.IEnvelope) => boolean
+  shouldStopFn: (envelope: messages.Envelope) => boolean
   sources?: ITestSource[]
   supportCodeLibrary?: ISupportCodeLibrary
+  pickleFilter?: (pickle: messages.Pickle) => boolean
 }
 
 interface ITestProgressBarFormatterOutput {
@@ -38,6 +40,7 @@ async function testProgressBarFormatter({
   shouldStopFn,
   sources,
   supportCodeLibrary,
+  pickleFilter = () => true,
 }: ITestProgressBarFormatterOptions): Promise<ITestProgressBarFormatterOutput> {
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
@@ -47,19 +50,22 @@ async function testProgressBarFormatter({
     runtimeOptions,
     sources,
     supportCodeLibrary,
+    pickleFilter,
   })
 
   let output = ''
   const logFn = (data: string): void => {
     output += data
   }
+  const passThrough = new PassThrough()
   const progressBarFormatter = FormatterBuilder.build('progress-bar', {
     cwd: '',
     eventBroadcaster,
     eventDataCollector: new EventDataCollector(eventBroadcaster),
     log: logFn,
     parsedArgvOptions: {},
-    stream: new PassThrough(),
+    stream: passThrough,
+    cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
   }) as ProgressBarFormatter
   let mocked = false
@@ -133,6 +139,32 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(progressBarFormatter.progressBar.total).to.eql(5)
+    })
+
+    it('initializes a progress bar with the total number of steps when some pickles filtered out', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: '@yep\nFeature: a\nScenario: b\nGiven a step\nThen a step',
+          uri: 'a.feature',
+        },
+        {
+          data:
+            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          uri: 'b.feature',
+        },
+      ]
+
+      // Act
+      const { progressBarFormatter } = await testProgressBarFormatter({
+        shouldStopFn: (envelope) => doesHaveValue(envelope.testStepStarted),
+        sources,
+        pickleFilter: (pickle) =>
+          pickle.tags.some((tag) => tag.name === '@yep'),
+      })
+
+      // Assert
+      expect(progressBarFormatter.progressBar.total).to.eql(2)
     })
   })
 
@@ -352,9 +384,7 @@ describe('ProgressBarFormatter', () => {
           sources,
           supportCodeLibrary,
         })
-        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<
-          ProgressBar
-        >
+        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
 
         // Assert
         expect(progressBar.interrupt).to.have.callCount(1)
@@ -368,7 +398,7 @@ describe('ProgressBarFormatter', () => {
     let clock: InstalledClock
 
     beforeEach(() => {
-      clock = FakeTimers.install({ target: timeMethods })
+      clock = FakeTimers.withGlobal(timeMethods).install()
     })
 
     afterEach(() => {

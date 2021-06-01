@@ -1,10 +1,10 @@
 import isStream from 'is-stream'
-import stream from 'stream'
-import { messages } from '@cucumber/messages'
+import { Readable } from 'stream'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 export interface IAttachmentMedia {
-  encoding: messages.Attachment.ContentEncoding
+  encoding: messages.AttachmentContentEncoding
   contentType: string
 }
 
@@ -15,7 +15,7 @@ export interface IAttachment {
 
 export type IAttachFunction = (attachment: IAttachment) => void
 export type ICreateAttachment = (
-  data: Buffer | stream.Readable | string,
+  data: Buffer | Readable | string,
   mediaType?: string,
   callback?: () => void
 ) => void | Promise<void>
@@ -33,7 +33,7 @@ export default class AttachmentManager {
   }
 
   create(
-    data: Buffer | stream.Readable | string,
+    data: Buffer | Readable | string,
     mediaType?: string,
     callback?: () => void
   ): void | Promise<void> {
@@ -51,10 +51,17 @@ export default class AttachmentManager {
       if (doesNotHaveValue(mediaType)) {
         mediaType = 'text/plain'
       }
-      this.createStringAttachment(data, {
-        encoding: messages.Attachment.ContentEncoding.IDENTITY,
-        contentType: mediaType,
-      })
+      if (mediaType.startsWith('base64:')) {
+        this.createStringAttachment(data, {
+          encoding: messages.AttachmentContentEncoding.BASE64,
+          contentType: mediaType.replace('base64:', ''),
+        })
+      } else {
+        this.createStringAttachment(data, {
+          encoding: messages.AttachmentContentEncoding.IDENTITY,
+          contentType: mediaType,
+        })
+      }
     } else {
       throw Error(
         'Invalid attachment data: must be a buffer, readable stream, or string'
@@ -64,13 +71,13 @@ export default class AttachmentManager {
 
   createBufferAttachment(data: Buffer, mediaType: string): void {
     this.createStringAttachment(data.toString('base64'), {
-      encoding: messages.Attachment.ContentEncoding.BASE64,
+      encoding: messages.AttachmentContentEncoding.BASE64,
       contentType: mediaType,
     })
   }
 
   createStreamAttachment(
-    data: stream.Readable,
+    data: Readable,
     mediaType: string,
     callback: () => void
   ): void | Promise<void> {

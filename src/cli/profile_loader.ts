@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'

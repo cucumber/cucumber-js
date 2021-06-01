@@ -2,9 +2,10 @@
 
 [![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
+[![pull requests](https://oselvar.com/api/badge?label=pull%20requests&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2FpullRequests.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
+[![issues](https://oselvar.com/api/badge?label=issues&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2Fissues.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
 
-[![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
-[![AppVeyor Status](https://img.shields.io/appveyor/ci/charlierudolph/cucumber-js/master.svg?label=appveyor)](https://ci.appveyor.com/project/charlierudolph/cucumber-js/history)
+[![GitHub Actions](https://github.com/cucumber/cucumber-js/workflows/Build/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
 [![Coverage Status](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=master)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
 
@@ -13,7 +14,7 @@ written in plain language, they can be read by anyone on your team. Because they
 read by anyone, you can use them to help improve communication, collaboration and trust on
 your team.
 
-Cucumber.js is the JavaScript implementation of Cucumber and runs on the [maintained Node.js versions](https://github.com/nodejs/Release) and *modern* web browsers.
+Cucumber.js is the JavaScript implementation of Cucumber and runs on the [maintained Node.js versions](https://github.com/nodejs/Release).
 
 ## Try it now
 
@@ -33,29 +34,21 @@ Everyone interacting in this codebase and issue tracker is expected to follow th
 
 ## Install
 
-[![npm downloads](https://img.shields.io/npm/dm/cucumber.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cucumber&from=2015-09-01)
-
-### Node
-
 Cucumber.js is available as an npm module.
 
-#### 6.x.x and below
-
-``` shell
-$ npm install cucumber
-```
-
-#### 7.x.x and above
-
-(Not yet released)
+### 7.x.x and above
 
 ``` shell
 $ npm install @cucumber/cucumber
 ```
 
-### Browser
+If you're upgrading from 6.x.x or below, see the [migration guide](./docs/migration.md).
 
-* Grab the browserified code from the latest release in the [dist](/dist) folder
+### 6.x.x and below
+
+``` shell
+$ npm install cucumber@6
+```
 
 ## Documentation
 

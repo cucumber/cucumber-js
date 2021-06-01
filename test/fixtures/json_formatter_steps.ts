@@ -29,6 +29,8 @@ export function getJsonFormatterSupportCodeLibrary(
     Given('a step that attaches', async function (this: World) {
       await this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
     })
+
+    Given('a step {int}', function (_int: Number) {})
   })
 }
 

@@ -10,8 +10,8 @@ import {
   IParsedSourceWithEnvelopes,
   parse,
 } from '../../../test/gherkin_helpers'
-import { messages } from '@cucumber/messages'
-import IGherkinDocument = messages.IGherkinDocument
+import * as messages from '@cucumber/messages'
+import IGherkinDocument = messages.GherkinDocument
 
 describe('GherkinDocumentParser', () => {
   describe('getGherkinStepMap', () => {
@@ -353,9 +353,7 @@ Feature: a feature
 `)
 }
 
-async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<
-  IGherkinDocument
-> {
+async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<IGherkinDocument> {
   return await parseGherkinDocument(`\
 Feature: a feature
   Background:

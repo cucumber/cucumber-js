@@ -54,6 +54,27 @@ describe('supportCodeLibraryBuilder', () => {
         expect(stepDefinition.code).to.eql(step)
         expect(stepDefinition.unwrappedCode).to.eql(step)
       })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
+        supportCodeLibraryBuilder.methods.defineStep('I do another thing', step)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: ['one', 'two'],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: [],
+        })
+
+        // Assert
+        expect(options.stepDefinitions).to.have.lengthOf(2)
+        expect(
+          options.stepDefinitions.map((stepDefinition) => stepDefinition.id)
+        ).to.deep.eq(['one', 'two'])
+      })
     })
 
     describe('with definition function wrapper', () => {
@@ -95,6 +116,29 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.afterTestCaseHookDefinitions).to.have.lengthOf(1)
         const testCaseHookDefinition = options.afterTestCaseHookDefinitions[0]
         expect(testCaseHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.After(hook)
+        supportCodeLibraryBuilder.methods.After(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: ['one', 'two'],
+        })
+
+        // Assert
+        expect(options.afterTestCaseHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.afterTestCaseHookDefinitions.map(
+            (definition) => definition.id
+          )
+        ).to.deep.eq(['one', 'two'])
       })
     })
 
@@ -168,7 +212,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
   })
 
-  describe('this.Before', () => {
+  describe('Before', () => {
     describe('function only', () => {
       it('adds a scenario hook definition', function () {
         // Arrange
@@ -183,6 +227,29 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.beforeTestCaseHookDefinitions).to.have.lengthOf(1)
         const testCaseHookDefinition = options.beforeTestCaseHookDefinitions[0]
         expect(testCaseHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.Before(hook)
+        supportCodeLibraryBuilder.methods.Before(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: ['one', 'two'],
+          afterTestCaseHookDefinitionIds: [],
+        })
+
+        // Assert
+        expect(options.beforeTestCaseHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.beforeTestCaseHookDefinitions.map(
+            (definition) => definition.id
+          )
+        ).to.deep.eq(['one', 'two'])
       })
     })
 
@@ -252,6 +319,182 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.beforeTestCaseHookDefinitions).to.have.lengthOf(2)
         expect(options.beforeTestCaseHookDefinitions[0].code).to.eql(hook1)
         expect(options.beforeTestCaseHookDefinitions[1].code).to.eql(hook2)
+      })
+    })
+  })
+
+  describe('AfterStep', () => {
+    describe('function only', () => {
+      it('adds a test step hook definition', function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterStep(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestStepHookDefinitions).to.have.lengthOf(1)
+        const testStepHookDefinition = options.afterTestStepHookDefinitions[0]
+        expect(testStepHookDefinition.code).to.eql(hook)
+      })
+    })
+
+    describe('tag and function', () => {
+      it('adds a step hook definition', async function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterStep('@tagA', hook)
+        const pickleWithTagA = await getPickleWithTags(['@tagA'])
+        const pickleWithTagB = await getPickleWithTags(['@tagB'])
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestStepHookDefinitions).to.have.lengthOf(1)
+        const testStepHookDefinition = options.afterTestStepHookDefinitions[0]
+        expect(testStepHookDefinition.code).to.eql(hook)
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagA)).to.eql(
+          true
+        )
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagB)).to.eql(
+          false
+        )
+      })
+    })
+
+    describe('options and function', () => {
+      it('adds a step hook definition', async function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterStep({ tags: '@tagA' }, hook)
+        const pickleWithTagA = await getPickleWithTags(['@tagA'])
+        const pickleWithTagB = await getPickleWithTags(['@tagB'])
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestStepHookDefinitions).to.have.lengthOf(1)
+        const testStepHookDefinition = options.afterTestStepHookDefinitions[0]
+        expect(testStepHookDefinition.code).to.eql(hook)
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagA)).to.eql(
+          true
+        )
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagB)).to.eql(
+          false
+        )
+      })
+    })
+
+    describe('multiple', () => {
+      it('adds the step hook definitions in the order of definition', function () {
+        // Arrange
+        const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterStep(hook1)
+        supportCodeLibraryBuilder.methods.AfterStep(hook2)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestStepHookDefinitions).to.have.lengthOf(2)
+        expect(options.afterTestStepHookDefinitions[0].code).to.eql(hook1)
+        expect(options.afterTestStepHookDefinitions[1].code).to.eql(hook2)
+      })
+    })
+  })
+
+  describe('BeforeStep', () => {
+    describe('function only', () => {
+      it('adds a step hook definition', function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeStep(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestStepHookDefinitions).to.have.lengthOf(1)
+        const testStepHookDefinition = options.beforeTestStepHookDefinitions[0]
+        expect(testStepHookDefinition.code).to.eql(hook)
+      })
+    })
+
+    describe('tag and function', () => {
+      it('adds a step hook definition', async function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeStep('@tagA', hook)
+        const pickleWithTagA = await getPickleWithTags(['@tagA'])
+        const pickleWithTagB = await getPickleWithTags(['@tagB'])
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestStepHookDefinitions).to.have.lengthOf(1)
+        const testStepHookDefinition = options.beforeTestStepHookDefinitions[0]
+        expect(testStepHookDefinition.code).to.eql(hook)
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagA)).to.eql(
+          true
+        )
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagB)).to.eql(
+          false
+        )
+      })
+    })
+
+    describe('options and function', () => {
+      it('adds a step hook definition', async function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeStep({ tags: '@tagA' }, hook)
+        const pickleWithTagA = await getPickleWithTags(['@tagA'])
+        const pickleWithTagB = await getPickleWithTags(['@tagB'])
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestStepHookDefinitions).to.have.lengthOf(1)
+        const testStepHookDefinition = options.beforeTestStepHookDefinitions[0]
+        expect(testStepHookDefinition.code).to.eql(hook)
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagA)).to.eql(
+          true
+        )
+        expect(testStepHookDefinition.appliesToTestCase(pickleWithTagB)).to.eql(
+          false
+        )
+      })
+    })
+
+    describe('multiple', () => {
+      it('adds the step hook definitions in the order of definition', function () {
+        // Arrange
+        const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeStep(hook1)
+        supportCodeLibraryBuilder.methods.BeforeStep(hook2)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestStepHookDefinitions).to.have.lengthOf(2)
+        expect(options.beforeTestStepHookDefinitions[0].code).to.eql(hook1)
+        expect(options.beforeTestStepHookDefinitions[1].code).to.eql(hook2)
       })
     })
   })

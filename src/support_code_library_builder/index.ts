@@ -1,7 +1,9 @@
 import _ from 'lodash'
 import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
@@ -20,12 +22,15 @@ import {
   IDefineStepOptions,
   IDefineSupportCodeMethods,
   IDefineTestCaseHookOptions,
+  IDefineTestStepHookOptions,
   IDefineTestRunHookOptions,
   IParameterTypeDefinition,
   ISupportCodeLibrary,
   TestCaseHookFunction,
+  TestStepHookFunction,
 } from './types'
 import World from './world'
+import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
 
 interface IStepDefinitionConfig {
   code: any
@@ -36,6 +41,13 @@ interface IStepDefinitionConfig {
 }
 
 interface ITestCaseHookDefinitionConfig {
+  code: any
+  line: number
+  options: any
+  uri: string
+}
+
+interface ITestStepHookDefinitionConfig {
   code: any
   line: number
   options: any
@@ -56,8 +68,10 @@ export class SupportCodeLibraryBuilder {
 
   private afterTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
   private afterTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
+  private afterTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
   private beforeTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
   private beforeTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
+  private beforeTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
   private cwd: string
   private defaultTimeout: number
   private definitionFunctionWrapper: any
@@ -75,11 +89,17 @@ export class SupportCodeLibraryBuilder {
       AfterAll: this.defineTestRunHook(
         () => this.afterTestRunHookDefinitionConfigs
       ),
+      AfterStep: this.defineTestStepHook(
+        () => this.afterTestStepHookDefinitionConfigs
+      ),
       Before: this.defineTestCaseHook(
         () => this.beforeTestCaseHookDefinitionConfigs
       ),
       BeforeAll: this.defineTestRunHook(
         () => this.beforeTestRunHookDefinitionConfigs
+      ),
+      BeforeStep: this.defineTestStepHook(
+        () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
       defineStep,
@@ -158,6 +178,37 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
+  defineTestStepHook(
+    getCollection: () => ITestStepHookDefinitionConfig[]
+  ): (
+    options: string | IDefineTestStepHookOptions | TestStepHookFunction,
+    code?: TestStepHookFunction
+  ) => void {
+    return (
+      options: string | IDefineTestStepHookOptions | TestStepHookFunction,
+      code?: TestStepHookFunction
+    ) => {
+      if (typeof options === 'string') {
+        options = { tags: options }
+      } else if (typeof options === 'function') {
+        code = options
+        options = {}
+      }
+      const { line, uri } = getDefinitionLineAndUri(this.cwd)
+      validateArguments({
+        args: { code, options },
+        fnName: 'defineTestStepHook',
+        location: formatLocation({ line, uri }),
+      })
+      getCollection().push({
+        code,
+        line,
+        options,
+        uri,
+      })
+    }
+  }
+
   defineTestRunHook(
     getCollection: () => ITestRunHookDefinitionConfig[]
   ): (options: IDefineTestRunHookOptions | Function, code?: Function) => void {
@@ -200,14 +251,34 @@ export class SupportCodeLibraryBuilder {
   }
 
   buildTestCaseHookDefinitions(
-    configs: ITestCaseHookDefinitionConfig[]
+    configs: ITestCaseHookDefinitionConfig[],
+    canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
-    return configs.map(({ code, line, options, uri }) => {
+    return configs.map(({ code, line, options, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
       })
       return new TestCaseHookDefinition({
+        code: wrappedCode,
+        id: canonicalIds ? canonicalIds[index] : this.newId(),
+        line,
+        options,
+        unwrappedCode: code,
+        uri,
+      })
+    })
+  }
+
+  buildTestStepHookDefinitions(
+    configs: ITestStepHookDefinitionConfig[]
+  ): TestStepHookDefinition[] {
+    return configs.map(({ code, line, options, uri }) => {
+      const wrappedCode = this.wrapCode({
+        code,
+        wrapperOptions: options.wrapperOptions,
+      })
+      return new TestStepHookDefinition({
         code: wrappedCode,
         id: this.newId(),
         line,
@@ -237,14 +308,16 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  buildStepDefinitions(): {
+  buildStepDefinitions(
+    canonicalIds?: string[]
+  ): {
     stepDefinitions: StepDefinition[]
-    undefinedParameterTypes: messages.IUndefinedParameterType[]
+    undefinedParameterTypes: messages.UndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
-    const undefinedParameterTypes: messages.IUndefinedParameterType[] = []
+    const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
-      ({ code, line, options, pattern, uri }) => {
+      ({ code, line, options, pattern, uri }, index) => {
         let expression
         if (typeof pattern === 'string') {
           try {
@@ -277,7 +350,7 @@ export class SupportCodeLibraryBuilder {
           new StepDefinition({
             code: wrappedCode,
             expression,
-            id: this.newId(),
+            id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
             pattern,
@@ -290,7 +363,7 @@ export class SupportCodeLibraryBuilder {
     return { stepDefinitions, undefinedParameterTypes }
   }
 
-  finalize(): ISupportCodeLibrary {
+  finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
     if (doesNotHaveValue(this.definitionFunctionWrapper)) {
       const definitionConfigs = _.chain([
         this.afterTestCaseHookDefinitionConfigs,
@@ -303,19 +376,29 @@ export class SupportCodeLibraryBuilder {
         .value()
       validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
     }
-    const stepDefinitionsResult = this.buildStepDefinitions()
+    const stepDefinitionsResult = this.buildStepDefinitions(
+      canonicalIds?.stepDefinitionIds
+    )
     return {
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
-        this.afterTestCaseHookDefinitionConfigs
+        this.afterTestCaseHookDefinitionConfigs,
+        canonicalIds?.afterTestCaseHookDefinitionIds
       ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.afterTestRunHookDefinitionConfigs
       ),
+      afterTestStepHookDefinitions: this.buildTestStepHookDefinitions(
+        this.afterTestStepHookDefinitionConfigs
+      ),
       beforeTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
-        this.beforeTestCaseHookDefinitionConfigs
+        this.beforeTestCaseHookDefinitionConfigs,
+        canonicalIds?.beforeTestCaseHookDefinitionIds
       ),
       beforeTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.beforeTestRunHookDefinitionConfigs
+      ),
+      beforeTestStepHookDefinitions: this.buildTestStepHookDefinitions(
+        this.beforeTestStepHookDefinitionConfigs
       ),
       defaultTimeout: this.defaultTimeout,
       parameterTypeRegistry: this.parameterTypeRegistry,
@@ -330,8 +413,10 @@ export class SupportCodeLibraryBuilder {
     this.newId = newId
     this.afterTestCaseHookDefinitionConfigs = []
     this.afterTestRunHookDefinitionConfigs = []
+    this.afterTestStepHookDefinitionConfigs = []
     this.beforeTestCaseHookDefinitionConfigs = []
     this.beforeTestRunHookDefinitionConfigs = []
+    this.beforeTestStepHookDefinitionConfigs = []
     this.definitionFunctionWrapper = null
     this.defaultTimeout = 5000
     this.parameterTypeRegistry = new ParameterTypeRegistry()

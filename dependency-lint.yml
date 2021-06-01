@@ -5,16 +5,11 @@ executedModules:
   npmScripts:
     dev:
       - build
-      - coverage
       - lint
       - publish
       - test
+      - test-coverage
       - version
-  shellScripts:
-    dev:
-      - test
-    ignore: []
-    root: 'scripts/*.sh'
 
 ignoreErrors:
   missing: []
@@ -26,7 +21,6 @@ ignoreErrors:
     - '@typescript-eslint/parser' # peer dependency of @typescript-eslint/eslint-plugin
     - '@types/*' # type definitions
     - coffeescript # features/compiler.feature
-    - coveralls # .travis.yml
     - eslint-config-prettier # .eslintrc.yml - extends - prettier
     - eslint-config-standard-with-typescript # .eslintrc.yml - extends - standard-with-typescript 
     - eslint-plugin-import # peer dependency of eslint-config-standard-with-typescript
@@ -36,7 +30,6 @@ ignoreErrors:
     - eslint-plugin-standard # peer dependency of eslint-config-standard-with-typescript
     - prettier # peer dependency of eslint-plugin-prettier
     - ts-node # .mocharc.yml / cucumber.js
-    - tsify # package.json - scripts - build-browser-example, build-release
 
 requiredModules:
   files:

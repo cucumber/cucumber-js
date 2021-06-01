@@ -1,4 +1,4 @@
-import _, { Dictionary } from 'lodash'
+import _ from 'lodash'
 import { doesNotHaveValue } from '../value_checker'
 import { DefineStepPattern, IDefineStepOptions } from './types'
 
@@ -36,13 +36,25 @@ const fnValidation = {
   },
 }
 
-const validations: Dictionary<IValidation[]> = {
+const validations: Record<string, IValidation[]> = {
   defineTestRunHook: [
     { identifier: 'first argument', ...optionsValidation },
     optionsTimeoutValidation,
     { identifier: 'second argument', ...fnValidation },
   ],
   defineTestCaseHook: [
+    { identifier: 'first argument', ...optionsValidation },
+    {
+      identifier: '"options.tags"',
+      expectedType: 'string',
+      predicate({ options }) {
+        return doesNotHaveValue(options.tags) || _.isString(options.tags)
+      },
+    },
+    optionsTimeoutValidation,
+    { identifier: 'second argument', ...fnValidation },
+  ],
+  defineTestStepHook: [
     { identifier: 'first argument', ...optionsValidation },
     {
       identifier: '"options.tags"',

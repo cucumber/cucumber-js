@@ -2,7 +2,6 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import AttachmentManager, { IAttachment } from './'
 import stream, { Readable } from 'stream'
-import { messages } from '@cucumber/messages'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {
@@ -28,7 +27,7 @@ describe('AttachmentManager', () => {
               data: 'bXkgc3RyaW5n',
               media: {
                 contentType: 'text/special',
-                encoding: messages.Attachment.ContentEncoding.BASE64,
+                encoding: 'BASE64',
               },
             },
           ])
@@ -80,7 +79,7 @@ describe('AttachmentManager', () => {
             let result: any
 
             // Act
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
               result = attachmentManager.create(
                 readableStream,
                 'text/special',
@@ -99,7 +98,7 @@ describe('AttachmentManager', () => {
                 data: 'bXkgc3RyaW5n',
                 media: {
                   contentType: 'text/special',
-                  encoding: messages.Attachment.ContentEncoding.BASE64,
+                  encoding: 'BASE64',
                 },
               },
             ])
@@ -137,7 +136,7 @@ describe('AttachmentManager', () => {
                 data: 'bXkgc3RyaW5n',
                 media: {
                   contentType: 'text/special',
-                  encoding: messages.Attachment.ContentEncoding.BASE64,
+                  encoding: 'BASE64',
                 },
               },
             ])
@@ -197,7 +196,35 @@ describe('AttachmentManager', () => {
               data: 'my string',
               media: {
                 contentType: 'text/special',
-                encoding: messages.Attachment.ContentEncoding.IDENTITY,
+                encoding: 'IDENTITY',
+              },
+            },
+          ])
+        })
+      })
+
+      describe('with media type, already base64 encoded', () => {
+        it('adds the data and media', function () {
+          // Arrange
+          const attachments: IAttachment[] = []
+          const attachmentManager = new AttachmentManager((x) =>
+            attachments.push(x)
+          )
+
+          // Act
+          const result = attachmentManager.create(
+            Buffer.from('my string', 'utf8').toString('base64'),
+            'base64:text/special'
+          )
+
+          // Assert
+          expect(result).to.eql(undefined)
+          expect(attachments).to.eql([
+            {
+              data: 'bXkgc3RyaW5n',
+              media: {
+                contentType: 'text/special',
+                encoding: 'BASE64',
               },
             },
           ])
@@ -222,7 +249,7 @@ describe('AttachmentManager', () => {
               data: 'my string',
               media: {
                 contentType: 'text/plain',
-                encoding: messages.Attachment.ContentEncoding.IDENTITY,
+                encoding: 'IDENTITY',
               },
             },
           ])
@@ -248,7 +275,7 @@ describe('AttachmentManager', () => {
             data: 'stuff happened',
             media: {
               contentType: 'text/x.cucumber.log+plain',
-              encoding: messages.Attachment.ContentEncoding.IDENTITY,
+              encoding: 'IDENTITY',
             },
           },
         ])

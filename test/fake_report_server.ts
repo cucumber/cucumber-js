@@ -1,4 +1,4 @@
-import { Server, Socket } from 'net'
+import { AddressInfo, Server, Socket } from 'net'
 import express from 'express'
 import { pipeline, Writable } from 'stream'
 import http from 'http'
@@ -17,7 +17,7 @@ export default class FakeReportServer {
   private receivedBodies = Buffer.alloc(0)
   public receivedHeaders: http.IncomingHttpHeaders = {}
 
-  constructor(private readonly port: number) {
+  constructor(private port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
@@ -32,16 +32,25 @@ export default class FakeReportServer {
 
       pipeline(req, captureBodyStream, (err) => {
         if (doesHaveValue(err)) return res.status(500).end(err.stack)
-        res.end()
+        res.end('Do not display this response')
       })
     })
 
     app.get('/api/reports', (req, res) => {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
+      const token = extractAuthorizationToken(req.headers.authorization)
+      if (token && !isValidUUID(token)) {
+        res.status(401).end(`┌─────────────────────┐
+│ Error invalid token │
+└─────────────────────┘
+`)
+        return
+      }
 
-      res.setHeader('Location', `http://localhost:${port}/s3`)
+      res.setHeader('Location', `http://localhost:${this.port}/s3`)
       res.status(202)
-        .end(`┌──────────────────────────────────────────────────────────────────────────┐
+
+      res.end(`┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
@@ -54,15 +63,15 @@ export default class FakeReportServer {
 
     this.server.on('connection', (socket) => {
       this.sockets.add(socket)
-      socket.on('close', () => {
-        this.sockets.delete(socket)
-      })
+      socket.on('close', () => this.sockets.delete(socket))
     })
   }
 
-  async start(): Promise<void> {
+  async start(): Promise<number> {
     const listen = promisify(this.server.listen.bind(this.server))
     await listen(this.port)
+    this.port = (this.server.address() as AddressInfo).port
+    return this.port
   }
 
   /**
@@ -74,7 +83,7 @@ export default class FakeReportServer {
       Array.from(this.sockets).map(
         // eslint-disable-next-line @typescript-eslint/promise-function-async
         (socket) =>
-          new Promise((resolve, reject) => {
+          new Promise<void>((resolve, reject) => {
             if (socket.destroyed) return resolve()
             socket.on('close', resolve)
             socket.on('error', reject)
@@ -92,4 +101,18 @@ export default class FakeReportServer {
   get started(): boolean {
     return this.server.listening
   }
+}
+
+function extractAuthorizationToken(
+  authorizationHeader: string | undefined
+): string | null {
+  if (!authorizationHeader) return null
+
+  const tokenMatch = authorizationHeader.match(/Bearer (.*)/)
+  return tokenMatch ? tokenMatch[1] : null
+}
+
+function isValidUUID(token: string): boolean {
+  const v4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+  return v4.test(token)
 }

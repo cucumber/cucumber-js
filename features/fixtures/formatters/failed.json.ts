@@ -13,15 +13,14 @@ module.exports = [
             arguments: [],
             keyword: 'Given ',
             line: 3,
+            name: 'a step',
             match: {
               location: 'features/step_definitions/steps.js:3',
             },
-            name: 'a step',
             result: {
-              duration: 0,
-              error_message:
-                'Error: my error\n    at World.<anonymous> (features/step_definitions/steps.js:3:49)',
               status: 'failed',
+              duration: 0,
+              error_message: 'Error: my error',
             },
           },
         ],
@@ -30,8 +29,8 @@ module.exports = [
       },
     ],
     id: 'a-feature',
-    keyword: 'Feature',
     line: 1,
+    keyword: 'Feature',
     name: 'a feature',
     tags: [],
     uri: 'features/a.feature',

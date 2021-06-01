@@ -1,7 +1,10 @@
+@flaky
 Feature: Publish reports
 
   Background:
-    Given a file named "features/a.feature" with:
+    Given a report server is running on 'http://localhost:9987'
+    And my env includes "CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports"
+    And a file named "features/a.feature" with:
       """
       Feature: a feature
         Scenario: a scenario
@@ -16,8 +19,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when --publish is specified
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `--publish` and env ``
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -35,8 +37,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_ENABLED is set
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_ENABLED=1 CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_ENABLED=1`
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -54,8 +55,7 @@ Feature: Publish reports
 
   @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_TOKEN is set
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=keyboardcat CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3`
     Then it passes
     And the server should receive the following message types:
       | meta             |
@@ -70,12 +70,11 @@ Feature: Publish reports
       | testStepFinished |
       | testCaseFinished |
       | testRunFinished  |
-    And the server should receive an "Authorization" header with value "Bearer keyboardcat"
+    And the server should receive an "Authorization" header with value "Bearer f318d9ec-5a3d-4727-adec-bd7b69e2edd3"
 
   @spawn
   Scenario: a banner is displayed after publication
-    Given a report server is running on 'http://localhost:9987'
-    When I run cucumber-js with arguments `--publish` and env `CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports`
+    When I run cucumber-js with arguments `--publish` and env ``
     Then the error output contains the text:
       """
       ┌──────────────────────────────────────────────────────────────────────────┐
@@ -103,6 +102,20 @@ Feature: Publish reports
       │ module.exports = { default: '--publish-quiet' }                          │
       └──────────────────────────────────────────────────────────────────────────┘
       """
+
+  @spawn
+  Scenario: when results are not published due to an error raised by the server, the banner is displayed
+    When I run cucumber-js with env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
+    Then it fails
+    And the error output contains the text:
+      """
+      ┌─────────────────────┐
+      │ Error invalid token │
+      └─────────────────────┘
+
+      Unexpected http status 401 from GET http://localhost:9987
+      """
+
   @spawn
   Scenario: the publication banner is not shown when publication is done
     When I run cucumber-js with arguments `<args>` and env `<env>`
@@ -112,10 +125,10 @@ Feature: Publish reports
       """
 
   Examples:
-    | args      | env                           |
-    | --publish |                               |
-    |           | CUCUMBER_PUBLISH_ENABLED=true |
-    |           | CUCUMBER_PUBLISH_TOKEN=123456 |
+    | args      | env                                                         |
+    | --publish |                                                             |
+    |           | CUCUMBER_PUBLISH_ENABLED=true                               |
+    |           | CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3 |
 
   @spawn
   Scenario: the publication banner is not shown when publication is disabled

@@ -10,14 +10,14 @@ import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   sourceData: string
   supportCodeLibrary?: ISupportCodeLibrary
-  testRunStarted?: messages.ITestRunStarted
-  testRunFinished?: messages.ITestRunFinished
+  testRunStarted?: messages.TestRunStarted
+  testRunFinished?: messages.TestRunFinished
 }
 
 async function testFormatSummary({
@@ -37,20 +37,15 @@ async function testFormatSummary({
     supportCodeLibrary = getBaseSupportCodeLibrary()
   }
   if (doesNotHaveValue(testRunStarted)) {
-    testRunStarted = messages.TestRunStarted.fromObject({
-      timestamp: {
-        nanos: 0,
-        seconds: 0,
-      },
-    })
+    testRunStarted = {
+      timestamp: messages.TimeConversion.millisecondsSinceEpochToTimestamp(0),
+    }
   }
   if (doesNotHaveValue(testRunFinished)) {
-    testRunFinished = messages.TestRunFinished.fromObject({
-      timestamp: {
-        nanos: 0,
-        seconds: 0,
-      },
-    })
+    testRunFinished = {
+      timestamp: messages.TimeConversion.millisecondsSinceEpochToTimestamp(0),
+      success: true,
+    }
   }
   const testCaseAttempts = await getTestCaseAttempts({
     runtimeOptions,
@@ -71,7 +66,7 @@ describe('SummaryHelpers', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
-    clock = FakeTimers.install({ target: timeMethods })
+    clock = FakeTimers.withGlobal(timeMethods).install()
   })
 
   afterEach(() => {
@@ -255,18 +250,19 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
-          testRunStarted: messages.TestRunStarted.fromObject({
+          testRunStarted: {
             timestamp: {
               nanos: 0,
               seconds: 3,
             },
-          }),
-          testRunFinished: messages.TestRunFinished.fromObject({
+          },
+          testRunFinished: {
             timestamp: {
               nanos: 124000000,
               seconds: 3,
             },
-          }),
+            success: true,
+          },
         })
 
         // Assert
@@ -298,12 +294,13 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
-          testRunFinished: messages.TestRunFinished.fromObject({
+          testRunFinished: {
             timestamp: {
               nanos: 400000000,
               seconds: 12,
             },
-          }),
+            success: true,
+          },
         })
 
         // Assert
@@ -335,12 +332,13 @@ describe('SummaryHelpers', () => {
         const output = await testFormatSummary({
           sourceData,
           supportCodeLibrary,
-          testRunFinished: messages.TestRunFinished.fromObject({
+          testRunFinished: {
             timestamp: {
               nanos: 0,
               seconds: 124,
             },
-          }),
+            success: true,
+          },
         })
 
         // Assert
@@ -348,6 +346,50 @@ describe('SummaryHelpers', () => {
           '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
             '2m04.000s (executing steps: 2m03.000s)\n'
+        )
+      })
+    })
+
+    describe('with one passing scenario with one step and a beforeStep and afterStep hook', () => {
+      it('outputs the duration as `0m24.000s (executing steps: 0m24.000s)`', async () => {
+        // Arrange
+        const sourceData = [
+          'Feature: a',
+          'Scenario: b',
+          'Given a passing step',
+        ].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, BeforeStep, AfterStep }) => {
+            Given('a passing step', () => {
+              clock.tick(12.3 * 1000)
+            })
+            BeforeStep(() => {
+              clock.tick(5 * 1000)
+            })
+            AfterStep(() => {
+              clock.tick(6.7 * 1000)
+            })
+          }
+        )
+
+        // Act
+        const output = await testFormatSummary({
+          sourceData,
+          supportCodeLibrary,
+          testRunFinished: {
+            timestamp: {
+              nanos: 0,
+              seconds: 24,
+            },
+            success: true,
+          },
+        })
+
+        // Assert
+        expect(output).to.contain(
+          '1 scenario (1 passed)\n' +
+            '1 step (1 passed)\n' +
+            '0m24.000s (executing steps: 0m24.000s)\n'
         )
       })
     })

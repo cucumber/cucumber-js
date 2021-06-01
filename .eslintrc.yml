@@ -1,7 +1,6 @@
 extends:
   - standard-with-typescript
   - "plugin:prettier/recommended"
-  - "prettier/@typescript-eslint"
 parserOptions:
   project: './tsconfig.json'
 rules:
@@ -10,3 +9,5 @@ rules:
     - trailingComma: es5
       singleQuote: true
       semi: false
+  # requires strictNullChecks compiler option, produces many errors with messages objects
+  '@typescript-eslint/strict-boolean-expressions': off

@@ -103,6 +103,7 @@ const ArgvParser = {
     const program = new Command(path.basename(argv[1]))
 
     program
+      .storeOptionsAsProperties(false)
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')

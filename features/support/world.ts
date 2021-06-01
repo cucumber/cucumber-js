@@ -2,20 +2,24 @@ import { Cli, setWorldConstructor } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
-import { PassThrough } from 'stream'
+import { PassThrough, pipeline, Writable } from 'stream'
 import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
 import _ from 'lodash'
-import ndjsonParse from 'ndjson-parse'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
+import { doesHaveValue } from '../../src/value_checker'
+import util from 'util'
+
+const asyncPipeline = util.promisify(pipeline)
 
 interface ILastRun {
   error: any
   errorOutput: string
-  envelopes: messages.IEnvelope[]
+  envelopes: messages.Envelope[]
   output: string
 }
 
@@ -27,6 +31,7 @@ interface IRunResult {
 
 export class World {
   public tmpDir: string
+  public sharedEnv: NodeJS.ProcessEnv
   public spawn: boolean = false
   public debug: boolean = false
   public lastRun: ILastRun
@@ -35,25 +40,30 @@ export class World {
   public globalExecutablePath: string
   public reportServer: FakeReportServer
 
+  parseEnvString(str: string): NodeJS.ProcessEnv {
+    const result: NodeJS.ProcessEnv = {}
+    if (doesHaveValue(str)) {
+      str
+        .split(/\s+/)
+        .map((keyValue) => keyValue.split('='))
+        .forEach((pair) => (result[pair[0]] = pair[1]))
+    }
+    return result
+  }
+
   async run(
     executablePath: string,
     inputArgs: string[],
-    env: NodeJS.ProcessEnv = process.env
+    envOverride: NodeJS.ProcessEnv = null
   ): Promise<void> {
     const messageFilename = 'message.ndjson'
-    const args = ['node', executablePath]
-      .concat(inputArgs, [
-        '--backtrace',
-        '--predictable-ids',
-        '--format',
-        `message:${messageFilename}`,
-      ])
-      .map((arg) => {
-        if (_.includes(arg, '/')) {
-          return path.normalize(arg)
-        }
-        return arg
-      })
+    const args = ['node', executablePath].concat(inputArgs, [
+      '--backtrace',
+      '--predictable-ids',
+      '--format',
+      `message:${messageFilename}`,
+    ])
+    const env = _.merge({}, process.env, this.sharedEnv, envOverride)
     const cwd = this.tmpDir
 
     let result: IRunResult
@@ -91,11 +101,20 @@ export class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    let envelopes: messages.Envelope[] = []
+    const envelopes: messages.Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)
     if (fs.existsSync(messageOutputPath)) {
-      const data = fs.readFileSync(messageOutputPath, { encoding: 'utf-8' })
-      envelopes = ndjsonParse(data).map(messages.Envelope.fromObject)
+      await asyncPipeline(
+        fs.createReadStream(messageOutputPath, { encoding: 'utf-8' }),
+        new messageStreams.NdjsonToMessageStream(),
+        new Writable({
+          objectMode: true,
+          write(envelope: messages.Envelope, _: BufferEncoding, callback) {
+            envelopes.push(envelope)
+            callback()
+          },
+        })
+      )
     }
     if (this.debug) {
       console.log(result.stdout + result.stderr) // eslint-disable-line no-console
