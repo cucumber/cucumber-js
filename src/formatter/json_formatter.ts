@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import path from 'path'
 import * as messages from '@cucumber/messages'
 import {
   getGherkinExampleRuleMap,
@@ -136,7 +135,7 @@ export default class JsonFormatter extends Formatter {
       this.eventDataCollector.getTestCaseAttempts(),
       (testCaseAttempt: ITestCaseAttempt) => {
         if (!testCaseAttempt.worstTestStepResult.willBeRetried) {
-          const uri = path.relative(this.cwd, testCaseAttempt.pickle.uri)
+          const uri = testCaseAttempt.pickle.uri
           if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
             groupedTestCaseAttempts[uri] = []
           }

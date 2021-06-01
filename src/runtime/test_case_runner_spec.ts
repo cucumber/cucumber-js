@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import PickleRunner from './pickle_runner'
+import TestCaseRunner from './test_case_runner'
 import { EventEmitter } from 'events'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
@@ -12,9 +12,10 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import { PredictableTestRunStopwatch } from './stopwatch'
+import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
-interface ITestPickleRunnerRequest {
+interface ITestRunnerRequest {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   retries?: number
@@ -22,29 +23,41 @@ interface ITestPickleRunnerRequest {
   supportCodeLibrary: ISupportCodeLibrary
 }
 
-interface ITestPickleRunnerResponse {
+interface ITestRunnerResponse {
   envelopes: messages.Envelope[]
   result: messages.TestStepResultStatus
 }
 
-async function testPickleRunner(
-  options: ITestPickleRunnerRequest
-): Promise<ITestPickleRunnerResponse> {
+async function testRunner(
+  options: ITestRunnerRequest
+): Promise<ITestRunnerResponse> {
   const envelopes: IEnvelope[] = []
   const eventBroadcaster = new EventEmitter()
+  const newId = IdGenerator.incrementing()
+  const testCase = (
+    await assembleTestCases({
+      eventBroadcaster,
+      newId,
+      pickles: [options.pickle],
+      supportCodeLibrary: options.supportCodeLibrary,
+    })
+  )[options.pickle.id]
+
+  // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-  const pickleRunner = new PickleRunner({
+  const runner = new TestCaseRunner({
     eventBroadcaster,
     stopwatch: new PredictableTestRunStopwatch(),
     gherkinDocument: options.gherkinDocument,
-    newId: IdGenerator.incrementing(),
+    newId,
     pickle: options.pickle,
+    testCase,
     retries: valueOrDefault(options.retries, 0),
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
   })
-  const result = await pickleRunner.run()
+  const result = await runner.run()
   return { envelopes, result }
 }
 
@@ -55,7 +68,7 @@ function predictableTimestamp(counter: number): messages.Timestamp {
   }
 }
 
-describe('PickleRunner', () => {
+describe('TestCaseRunner', () => {
   let clock: InstalledClock
 
   beforeEach(() => {
@@ -90,32 +103,14 @@ describe('PickleRunner', () => {
         }
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
 
         // Assert
-        const expectedtEnvelopes: messages.Envelope[] = [
-          {
-            testCase: {
-              id: '0',
-              pickleId: pickle.id,
-              testSteps: [
-                {
-                  id: '1',
-                  pickleStepId: pickle.steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
+        const expectedtEnvelopes = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -151,84 +146,6 @@ describe('PickleRunner', () => {
       })
     })
 
-    describe('with a parameterised step', () => {
-      it('emits stepMatchArgumentLists correctly within the testCase message', async () => {
-        // Arrange
-        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step with {int} and {string} parameters', function () {
-            clock.tick(1)
-          })
-        })
-        const {
-          gherkinDocument,
-          pickles: [pickle],
-        } = await parse({
-          data: [
-            'Feature: a',
-            'Scenario: b',
-            'Given a step with 1 and "foo" parameters',
-          ].join('\n'),
-          uri: 'a.feature',
-        })
-
-        // Act
-        const { envelopes } = await testPickleRunner({
-          gherkinDocument,
-          pickle,
-          supportCodeLibrary,
-        })
-
-        const expected: messages.StepMatchArgumentsList[] = [
-          {
-            stepMatchArguments: [
-              {
-                group: {
-                  children: [],
-                  start: 12,
-                  value: '1',
-                },
-                parameterTypeName: 'int',
-              },
-              {
-                group: {
-                  children: [
-                    {
-                      children: [
-                        {
-                          children: [],
-                          start: undefined,
-                          value: undefined,
-                        },
-                      ],
-                      start: 19,
-                      value: 'foo',
-                    },
-                    {
-                      children: [
-                        {
-                          children: [],
-                          start: undefined,
-                          value: undefined,
-                        },
-                      ],
-                      start: undefined,
-                      value: undefined,
-                    },
-                  ],
-                  start: 18,
-                  value: '"foo"',
-                },
-                parameterTypeName: 'string',
-              },
-            ],
-          },
-        ]
-        expect(
-          envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
-        ).to.deep.eq(expected)
-      })
-    })
-
     describe('with a failing step', () => {
       it('emits and returns failing results', async () => {
         // Arrange
@@ -252,15 +169,15 @@ describe('PickleRunner', () => {
         }
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(
+        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
           failingTestResult
         )
         expect(result).to.eql(messages.TestStepResultStatus.FAILED)
@@ -287,23 +204,23 @@ describe('PickleRunner', () => {
         ].join('\n')
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes).to.have.lengthOf(4)
         const expected: messages.TestStepResult = {
           message,
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
           willBeRetried: false,
         }
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(expected)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })
@@ -321,22 +238,22 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes).to.have.lengthOf(4)
         const expected: messages.TestStepResult = {
           status: messages.TestStepResultStatus.UNDEFINED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
           willBeRetried: false,
         }
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(expected)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })
@@ -363,7 +280,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           retries: 1,
@@ -372,24 +289,6 @@ describe('PickleRunner', () => {
 
         // Assert
         const expected: messages.Envelope[] = [
-          {
-            testCase: {
-              id: '0',
-              pickleId: pickle.id,
-              testSteps: [
-                {
-                  id: '1',
-                  pickleStepId: pickle.steps[0].id,
-                  stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                  stepMatchArgumentsLists: [
-                    {
-                      stepMatchArguments: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
           {
             testCaseStarted: {
               attempt: 0,
@@ -481,7 +380,7 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           skip: true,
@@ -489,15 +388,15 @@ describe('PickleRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes).to.have.lengthOf(4)
         const expected: messages.TestStepResult = {
           status: messages.TestStepResultStatus.SKIPPED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
           willBeRetried: false,
         }
-        expect(envelopes[3].testStepFinished.testStepResult).to.eql(expected)
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })
@@ -523,43 +422,16 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(9)
-        const expected: messages.Envelope = {
-          testCase: {
-            id: '0',
-            pickleId: pickle.id,
-            testSteps: [
-              {
-                id: '1',
-                hookId: supportCodeLibrary.beforeTestCaseHookDefinitions[0].id,
-              },
-              {
-                id: '2',
-                pickleStepId: pickle.steps[0].id,
-                stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                stepMatchArgumentsLists: [
-                  {
-                    stepMatchArguments: [],
-                  },
-                ],
-              },
-              {
-                id: '3',
-                hookId: supportCodeLibrary.afterTestCaseHookDefinitions[0].id,
-              },
-            ],
-          },
-        }
-        expect(envelopes[0]).to.eql(expected)
+        expect(envelopes).to.have.lengthOf(8)
         expect(result).to.eql(
-          envelopes[7].testStepFinished.testStepResult.status
+          envelopes[6].testStepFinished.testStepResult.status
         )
       })
     })
@@ -585,35 +457,16 @@ describe('PickleRunner', () => {
         })
 
         // Act
-        const { envelopes, result } = await testPickleRunner({
+        const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
           supportCodeLibrary,
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
-        const expected: messages.Envelope = {
-          testCase: {
-            id: '0',
-            pickleId: pickle.id,
-            testSteps: [
-              {
-                id: '1',
-                pickleStepId: pickle.steps[0].id,
-                stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-                stepMatchArgumentsLists: [
-                  {
-                    stepMatchArguments: [],
-                  },
-                ],
-              },
-            ],
-          },
-        }
-        expect(envelopes[0]).to.eql(expected)
+        expect(envelopes).to.have.lengthOf(4)
         expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
+          envelopes[2].testStepFinished.testStepResult.status
         )
       })
     })

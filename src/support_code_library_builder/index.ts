@@ -30,6 +30,7 @@ import {
   TestStepHookFunction,
 } from './types'
 import World from './world'
+import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
 
 interface IStepDefinitionConfig {
   code: any
@@ -250,16 +251,17 @@ export class SupportCodeLibraryBuilder {
   }
 
   buildTestCaseHookDefinitions(
-    configs: ITestCaseHookDefinitionConfig[]
+    configs: ITestCaseHookDefinitionConfig[],
+    canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
-    return configs.map(({ code, line, options, uri }) => {
+    return configs.map(({ code, line, options, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
       })
       return new TestCaseHookDefinition({
         code: wrappedCode,
-        id: this.newId(),
+        id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
         unwrappedCode: code,
@@ -306,14 +308,16 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  buildStepDefinitions(): {
+  buildStepDefinitions(
+    canonicalIds?: string[]
+  ): {
     stepDefinitions: StepDefinition[]
     undefinedParameterTypes: messages.UndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
     const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
-      ({ code, line, options, pattern, uri }) => {
+      ({ code, line, options, pattern, uri }, index) => {
         let expression
         if (typeof pattern === 'string') {
           try {
@@ -346,7 +350,7 @@ export class SupportCodeLibraryBuilder {
           new StepDefinition({
             code: wrappedCode,
             expression,
-            id: this.newId(),
+            id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
             pattern,
@@ -359,7 +363,7 @@ export class SupportCodeLibraryBuilder {
     return { stepDefinitions, undefinedParameterTypes }
   }
 
-  finalize(): ISupportCodeLibrary {
+  finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
     if (doesNotHaveValue(this.definitionFunctionWrapper)) {
       const definitionConfigs = _.chain([
         this.afterTestCaseHookDefinitionConfigs,
@@ -372,10 +376,13 @@ export class SupportCodeLibraryBuilder {
         .value()
       validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
     }
-    const stepDefinitionsResult = this.buildStepDefinitions()
+    const stepDefinitionsResult = this.buildStepDefinitions(
+      canonicalIds?.stepDefinitionIds
+    )
     return {
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
-        this.afterTestCaseHookDefinitionConfigs
+        this.afterTestCaseHookDefinitionConfigs,
+        canonicalIds?.afterTestCaseHookDefinitionIds
       ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.afterTestRunHookDefinitionConfigs
@@ -384,7 +391,8 @@ export class SupportCodeLibraryBuilder {
         this.afterTestStepHookDefinitionConfigs
       ),
       beforeTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
-        this.beforeTestCaseHookDefinitionConfigs
+        this.beforeTestCaseHookDefinitionConfigs,
+        canonicalIds?.beforeTestCaseHookDefinitionIds
       ),
       beforeTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.beforeTestRunHookDefinitionConfigs
