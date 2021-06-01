@@ -24,8 +24,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
     - run: yarn test
-      env:
-        CUCUMBER_PUBLISH_TOKEN: ${{ secrets.CUCUMBER_PUBLISH_TOKEN }}
 
   coverage:
     runs-on: ubuntu-latest
