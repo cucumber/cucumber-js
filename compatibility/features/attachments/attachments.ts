@@ -1,4 +1,4 @@
-import { Before, When, World } from '../../..'
+import { Before, When, World } from '../../../src'
 import { ReadableStreamBuffer } from 'stream-buffers'
 import fs from 'fs'
 import path from 'path'

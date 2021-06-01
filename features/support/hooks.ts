@@ -94,7 +94,11 @@ Before('@global-install', function (this: World) {
   )
 })
 
-After(function (this: World) {
+After(async function (this: World) {
+  if (this.reportServer?.started) {
+    await this.reportServer.stop()
+  }
+
   if (
     doesHaveValue(this.lastRun) &&
     doesHaveValue(this.lastRun.error) &&
@@ -104,11 +108,5 @@ After(function (this: World) {
       `Last run errored unexpectedly. Output:\n\n${this.lastRun.output}\n\n` +
         `Error Output:\n\n${this.lastRun.errorOutput}`
     )
-  }
-})
-
-After(async function (this: World) {
-  if (this.reportServer?.started) {
-    await this.reportServer.stop()
   }
 })

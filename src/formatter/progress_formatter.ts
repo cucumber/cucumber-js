@@ -1,19 +1,21 @@
 import SummaryFormatter from './summary_formatter'
-import Status from '../status'
 import { doesHaveValue } from '../value_checker'
 import { IFormatterOptions } from './index'
-import { messages } from '@cucumber/messages'
-import IEnvelope = messages.IEnvelope
-import ITestStepFinished = messages.ITestStepFinished
+import * as messages from '@cucumber/messages'
+import IEnvelope = messages.Envelope
+import ITestStepFinished = messages.TestStepFinished
 
-const STATUS_CHARACTER_MAPPING: { [key: number]: string } = {
-  [Status.AMBIGUOUS]: 'A',
-  [Status.FAILED]: 'F',
-  [Status.PASSED]: '.',
-  [Status.PENDING]: 'P',
-  [Status.SKIPPED]: '-',
-  [Status.UNDEFINED]: 'U',
-}
+const STATUS_CHARACTER_MAPPING: Map<
+  messages.TestStepResultStatus,
+  string
+> = new Map([
+  [messages.TestStepResultStatus.AMBIGUOUS, 'A'],
+  [messages.TestStepResultStatus.FAILED, 'F'],
+  [messages.TestStepResultStatus.PASSED, '.'],
+  [messages.TestStepResultStatus.PENDING, 'P'],
+  [messages.TestStepResultStatus.SKIPPED, '-'],
+  [messages.TestStepResultStatus.UNDEFINED, 'U'],
+])
 
 export default class ProgressFormatter extends SummaryFormatter {
   constructor(options: IFormatterOptions) {
@@ -29,7 +31,7 @@ export default class ProgressFormatter extends SummaryFormatter {
 
   logProgress({ testStepResult: { status } }: ITestStepFinished): void {
     const character = this.colorFns.forStatus(status)(
-      STATUS_CHARACTER_MAPPING[status]
+      STATUS_CHARACTER_MAPPING.get(status)
     )
     this.log(character)
   }

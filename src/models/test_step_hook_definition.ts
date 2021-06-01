@@ -6,7 +6,7 @@ import Definition, {
   IDefinitionParameters,
   IHookDefinitionOptions,
 } from './definition'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 export default class TestStepHookDefinition
   extends Definition
@@ -20,7 +20,7 @@ export default class TestStepHookDefinition
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }
 
-  appliesToTestCase(pickle: messages.IPickle): boolean {
+  appliesToTestCase(pickle: messages.Pickle): boolean {
     return this.pickleTagFilter.matchesAllTagExpressions(pickle)
   }
 

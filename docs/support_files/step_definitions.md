@@ -30,7 +30,7 @@ Given('I have {int} cucumbers in my belly', function (cucumberCount) {
 Matching groups in the regular expression are passed as parameters to the step definition.
 
 ```javascript
-const { Then, When } = require('cucumber');
+const { Then, When } = require('@cucumber/cucumber');
 const assert = require('assert');
 const fs = require('fs');
 const mzFs = require('mz/fs')
@@ -73,7 +73,7 @@ If you would like to wrap step or hook definitions in with some additional logic
 
 ```javascript
 // features/step_definitions/file_steps.js
-const { Then } = require('cucumber');
+const { Then } = require('@cucumber/cucumber');
 const assert = require('assert');
 const mzFs = require('mz/fs');
 
@@ -83,7 +83,7 @@ Then(/^the file named (.*) is empty$/, function *(fileName) {
 });
 
 // features/support/setup.js
-const { setDefinitionFunctionWrapper } = require('cucumber');
+const { setDefinitionFunctionWrapper } = require('@cucumber/cucumber');
 const isGenerator = require('is-generator');
 const Promise = require('bluebird');
 
