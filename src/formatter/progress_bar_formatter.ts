@@ -105,8 +105,8 @@ export default class ProgressBarFormatter extends Formatter {
   parseEnvelope(envelope: messages.Envelope): void {
     if (doesHaveValue(envelope.undefinedParameterType)) {
       this.logUndefinedParametertype(envelope.undefinedParameterType)
-    } else if (doesHaveValue(envelope.pickle)) {
-      this.incrementStepCount(envelope.pickle.id)
+    } else if (doesHaveValue(envelope.testCase)) {
+      this.incrementStepCount(envelope.testCase.pickleId)
     } else if (doesHaveValue(envelope.testStepStarted)) {
       this.initializeProgressBar()
     } else if (doesHaveValue(envelope.testStepFinished)) {

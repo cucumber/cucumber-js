@@ -27,6 +27,7 @@ interface ITestProgressBarFormatterOptions {
   shouldStopFn: (envelope: messages.Envelope) => boolean
   sources?: ITestSource[]
   supportCodeLibrary?: ISupportCodeLibrary
+  pickleFilter?: (pickle: messages.Pickle) => boolean
 }
 
 interface ITestProgressBarFormatterOutput {
@@ -39,6 +40,7 @@ async function testProgressBarFormatter({
   shouldStopFn,
   sources,
   supportCodeLibrary,
+  pickleFilter = () => true,
 }: ITestProgressBarFormatterOptions): Promise<ITestProgressBarFormatterOutput> {
   if (doesNotHaveValue(supportCodeLibrary)) {
     supportCodeLibrary = buildSupportCodeLibrary()
@@ -48,6 +50,7 @@ async function testProgressBarFormatter({
     runtimeOptions,
     sources,
     supportCodeLibrary,
+    pickleFilter,
   })
 
   let output = ''
@@ -136,6 +139,32 @@ describe('ProgressBarFormatter', () => {
 
       // Assert
       expect(progressBarFormatter.progressBar.total).to.eql(5)
+    })
+
+    it('initializes a progress bar with the total number of steps when some pickles filtered out', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: '@yep\nFeature: a\nScenario: b\nGiven a step\nThen a step',
+          uri: 'a.feature',
+        },
+        {
+          data:
+            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          uri: 'b.feature',
+        },
+      ]
+
+      // Act
+      const { progressBarFormatter } = await testProgressBarFormatter({
+        shouldStopFn: (envelope) => doesHaveValue(envelope.testStepStarted),
+        sources,
+        pickleFilter: (pickle) =>
+          pickle.tags.some((tag) => tag.name === '@yep'),
+      })
+
+      // Assert
+      expect(progressBarFormatter.progressBar.total).to.eql(2)
     })
   })
 

@@ -7,7 +7,6 @@ import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
 import { Cli } from '../src'
 import toString from 'stream-to-string'
-import { doesHaveValue, doesNotHaveValue } from '../src/value_checker'
 import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
@@ -103,16 +102,5 @@ function normalize(messages: any[]): any[] {
     messages,
     path.join(PROJECT_PATH, 'compatibility')
   )
-  const testCases: any[] = messages.filter((message) =>
-    doesHaveValue(message.testCase)
-  )
-  const everythingElse: any[] = messages.filter((message) =>
-    doesNotHaveValue(message.testCase)
-  )
-  const testRunStarted = everythingElse.findIndex((message) =>
-    doesHaveValue(message.testRunStarted)
-  )
-  // move all `testCase` messages to just after `testRunStarted`
-  everythingElse.splice(testRunStarted + 1, 0, ...testCases)
-  return everythingElse
+  return messages
 }

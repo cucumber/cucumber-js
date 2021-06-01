@@ -228,17 +228,13 @@ export default class Cli {
         eventBroadcaster,
         eventDataCollector,
         options: configuration.runtimeOptions,
+        newId,
         pickleIds,
         supportCodeLibrary,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
-      await new Promise<void>((resolve) => {
-        parallelRuntimeCoordinator.run(configuration.parallel, (s) => {
-          success = s
-          resolve()
-        })
-      })
+      success = await parallelRuntimeCoordinator.run(configuration.parallel)
     } else {
       const runtime = new Runtime({
         eventBroadcaster,
