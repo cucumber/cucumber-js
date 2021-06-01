@@ -41,6 +41,7 @@ export interface IConfiguration {
 export interface INewConfigurationBuilderOptions {
   argv: string[]
   cwd: string
+  env: Record<string, string | undefined>
 }
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
@@ -54,11 +55,13 @@ export default class ConfigurationBuilder {
   }
 
   private readonly cwd: string
+  private readonly env: Record<string, string | undefined>
   private readonly args: string[]
   private readonly options: IParsedArgvOptions
 
-  constructor({ argv, cwd }: INewConfigurationBuilderOptions) {
+  constructor({ argv, cwd, env }: INewConfigurationBuilderOptions) {
     this.cwd = cwd
+    this.env = env
 
     ArgvParser.lint(argv)
     const parsedArgv = ArgvParser.parse(argv)
@@ -167,15 +170,15 @@ export default class ConfigurationBuilder {
   isPublishing(): boolean {
     return (
       this.options.publish ||
-      this.isTruthyString(process.env.CUCUMBER_PUBLISH_ENABLED) ||
-      process.env.CUCUMBER_PUBLISH_TOKEN !== undefined
+      this.isTruthyString(this.env.CUCUMBER_PUBLISH_ENABLED) ||
+      this.env.CUCUMBER_PUBLISH_TOKEN !== undefined
     )
   }
 
   isPublishAdvertisementSuppressed(): boolean {
     return (
       this.options.publishQuiet ||
-      this.isTruthyString(process.env.CUCUMBER_PUBLISH_QUIET)
+      this.isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET)
     )
   }
 
@@ -187,7 +190,7 @@ export default class ConfigurationBuilder {
     })
     if (this.isPublishing()) {
       const publishUrl = valueOrDefault(
-        process.env.CUCUMBER_PUBLISH_URL,
+        this.env.CUCUMBER_PUBLISH_URL,
         DEFAULT_CUCUMBER_PUBLISH_URL
       )
 

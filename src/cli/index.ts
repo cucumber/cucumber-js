@@ -54,19 +54,23 @@ interface IGetSupportCodeLibraryRequest {
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
+  private readonly env: Record<string, string | undefined>
   private readonly stdout: IFormatterStream
 
   constructor({
     argv,
     cwd,
+    env,
     stdout,
   }: {
     argv: string[]
     cwd: string
+    env: Record<string, string | undefined>
     stdout: IFormatterStream
   }) {
     this.argv = argv
     this.cwd = cwd
+    this.env = env
     this.stdout = stdout
   }
 
@@ -78,6 +82,7 @@ export default class Cli {
     return await ConfigurationBuilder.build({
       argv: fullArgv,
       cwd: this.cwd,
+      env: this.env,
     })
   }
 

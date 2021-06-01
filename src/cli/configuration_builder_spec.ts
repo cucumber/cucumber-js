@@ -16,6 +16,7 @@ async function buildTestWorkingDirectory(): Promise<string> {
 }
 
 const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
+const env: Record<string, string | undefined> = {}
 
 describe('Configuration', () => {
   describe('no argv', () => {
@@ -25,7 +26,7 @@ describe('Configuration', () => {
       const argv = baseArgv
 
       // Act
-      const result = await ConfigurationBuilder.build({ argv, cwd })
+      const result = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(result).to.eql({
@@ -80,7 +81,7 @@ describe('Configuration', () => {
         featurePaths,
         pickleFilterOptions,
         supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -103,7 +104,7 @@ describe('Configuration', () => {
         featurePaths,
         pickleFilterOptions,
         supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -128,7 +129,7 @@ describe('Configuration', () => {
         featurePaths,
         pickleFilterOptions,
         supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -155,7 +156,7 @@ describe('Configuration', () => {
         featurePaths,
         pickleFilterOptions,
         supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -171,7 +172,7 @@ describe('Configuration', () => {
       const argv = baseArgv
 
       // Act
-      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(formats).to.eql([{ outputTo: '', type: 'progress' }])
@@ -183,7 +184,7 @@ describe('Configuration', () => {
       const argv = baseArgv.concat(['--publish'])
 
       // Act
-      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(formats).to.eql([
@@ -198,7 +199,7 @@ describe('Configuration', () => {
     it('sets publishing to true when --publish is specified', async function () {
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat(['--publish'])
-      const configuration = await ConfigurationBuilder.build({ argv, cwd })
+      const configuration = await ConfigurationBuilder.build({ argv, cwd, env })
 
       expect(configuration.publishing).to.eq(true)
     })
@@ -206,7 +207,7 @@ describe('Configuration', () => {
     it('sets suppressPublishAdvertisement to true when --publish-quiet is specified', async function () {
       const cwd = await buildTestWorkingDirectory()
       const argv = baseArgv.concat(['--publish-quiet'])
-      const configuration = await ConfigurationBuilder.build({ argv, cwd })
+      const configuration = await ConfigurationBuilder.build({ argv, cwd, env })
 
       expect(configuration.suppressPublishAdvertisement).to.eq(true)
     })
@@ -220,7 +221,7 @@ describe('Configuration', () => {
       ])
 
       // Act
-      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(formats).to.eql([
@@ -238,7 +239,7 @@ describe('Configuration', () => {
       ])
 
       // Act
-      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(formats).to.eql([
@@ -256,7 +257,7 @@ describe('Configuration', () => {
       ])
 
       // Act
-      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(formats).to.eql([
@@ -274,7 +275,7 @@ describe('Configuration', () => {
       const argv = baseArgv.concat(['-f', 'C:\\custom\\formatter'])
 
       // Act
-      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd, env })
 
       // Assert
       expect(formats).to.eql([{ outputTo: '', type: 'C:\\custom\\formatter' }])
@@ -293,7 +294,11 @@ describe('Configuration', () => {
       ])
 
       // Act
-      const { formatOptions } = await ConfigurationBuilder.build({ argv, cwd })
+      const { formatOptions } = await ConfigurationBuilder.build({
+        argv,
+        cwd,
+        env,
+      })
 
       // Assert
       expect(formatOptions).to.eql({
