@@ -22,21 +22,17 @@ export interface ITestStepHookParameter {
   testStepId: string
 }
 
-export type TestCaseHookFunctionWithoutParameter = () => any | Promise<any>
-export type TestCaseHookFunctionWithParameter = (
-  arg: ITestCaseHookParameter
+export type TestCaseHookFunction = (
+  this: any,
+  arg?: ITestCaseHookParameter
 ) => any | Promise<any>
-export type TestCaseHookFunction =
-  | TestCaseHookFunctionWithoutParameter
-  | TestCaseHookFunctionWithParameter
 
-export type TestStepHookFunctionWithoutParameter = () => void
-export type TestStepHookFunctionWithParameter = (
-  arg: ITestStepHookParameter
+export type TestStepHookFunction = (
+  this: any,
+  arg?: ITestStepHookParameter
 ) => void
-export type TestStepHookFunction =
-  | TestStepHookFunctionWithoutParameter
-  | TestStepHookFunctionWithParameter
+
+export type TestStepFunction = (this: any, ...args: any[]) => any | Promise<any>
 
 export interface IDefineStepOptions {
   timeout?: number
@@ -67,11 +63,11 @@ export interface IParameterTypeDefinition<T> {
 
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: ((pattern: DefineStepPattern, code: Function) => void) &
+  defineStep: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
     ((
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
@@ -92,23 +88,23 @@ export interface IDefineSupportCodeMethods {
     ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: ((pattern: DefineStepPattern, code: Function) => void) &
+  Given: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
     ((
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction
     ) => void)
-  Then: ((pattern: DefineStepPattern, code: Function) => void) &
+  Then: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
     ((
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction
     ) => void)
-  When: ((pattern: DefineStepPattern, code: Function) => void) &
+  When: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
     ((
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction
     ) => void)
 }
 
