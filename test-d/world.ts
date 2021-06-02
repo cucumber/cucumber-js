@@ -1,4 +1,4 @@
-import { Before, When, World } from '../'
+import { Before, setWorldConstructor, When, World } from '../'
 
 // should allow us to read parameters and add attachments
 Before(async function () {
@@ -24,6 +24,7 @@ class CustomWorld extends World {
     return 'foo'
   }
 }
+setWorldConstructor(CustomWorld)
 Before(async function (this: CustomWorld) {
   this.doThing()
 })
