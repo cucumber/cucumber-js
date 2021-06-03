@@ -17,7 +17,7 @@ You'll need to update any `import`/`require` statements in your support code to 
 
 The result object passed as the argument to your `After` hook function has a different structure.
 
-Previous in `cucumber`:
+Previously in `cucumber`:
 
 ```js
 {
