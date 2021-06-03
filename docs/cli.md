@@ -122,7 +122,7 @@ Note that the rerun file parser can only work with the default separator for now
 
 ## Parallel
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables:
+You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables (as well as a copy of `process.env` from the coordinator process):
 
 * `CUCUMBER_PARALLEL` - set to 'true'
 * `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
