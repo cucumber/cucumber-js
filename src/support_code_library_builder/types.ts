@@ -4,6 +4,7 @@ import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
+import { IWorld } from './world'
 
 export type DefineStepPattern = string | RegExp
 
@@ -22,17 +23,20 @@ export interface ITestStepHookParameter {
   testStepId: string
 }
 
-export type TestCaseHookFunction = (
-  this: any,
+export type TestCaseHookFunction<W> = (
+  this: W,
   arg?: ITestCaseHookParameter
 ) => any | Promise<any>
 
-export type TestStepHookFunction = (
-  this: any,
+export type TestStepHookFunction<W> = (
+  this: W,
   arg?: ITestStepHookParameter
 ) => void
 
-export type TestStepFunction = (this: any, ...args: any[]) => any | Promise<any>
+export type TestStepFunction<W> = (
+  this: W,
+  ...args: any[]
+) => any | Promise<any>
 
 export interface IDefineStepOptions {
   timeout?: number
@@ -63,48 +67,72 @@ export interface IParameterTypeDefinition<T> {
 
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
-    ((
+  defineStep: (<W = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<W>
+  ) => void) &
+    (<W = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction
+      code: TestStepFunction<W>
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setWorldConstructor: (fn: any) => void
-  After: ((code: TestCaseHookFunction) => void) &
-    ((tags: string, code: TestCaseHookFunction) => void) &
-    ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
-  AfterStep: ((code: TestStepHookFunction) => void) &
-    ((tags: string, code: TestStepHookFunction) => void) &
-    ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
+  After: (<W = IWorld>(code: TestCaseHookFunction<W>) => void) &
+    (<W = IWorld>(tags: string, code: TestCaseHookFunction<W>) => void) &
+    (<W = IWorld>(
+      options: IDefineTestCaseHookOptions,
+      code: TestCaseHookFunction<W>
+    ) => void)
+  AfterStep: (<W = IWorld>(code: TestStepHookFunction<W>) => void) &
+    (<W = IWorld>(tags: string, code: TestStepHookFunction<W>) => void) &
+    (<W = IWorld>(
+      options: IDefineTestStepHookOptions,
+      code: TestStepHookFunction<W>
+    ) => void)
   AfterAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Before: ((code: TestCaseHookFunction) => void) &
-    ((tags: string, code: TestCaseHookFunction) => void) &
-    ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
-  BeforeStep: ((code: TestStepHookFunction) => void) &
-    ((tags: string, code: TestStepHookFunction) => void) &
-    ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
+  Before: (<W = IWorld>(code: TestCaseHookFunction<W>) => void) &
+    (<W = IWorld>(tags: string, code: TestCaseHookFunction<W>) => void) &
+    (<W = IWorld>(
+      options: IDefineTestCaseHookOptions,
+      code: TestCaseHookFunction<W>
+    ) => void)
+  BeforeStep: (<W = IWorld>(code: TestStepHookFunction<W>) => void) &
+    (<W = IWorld>(tags: string, code: TestStepHookFunction<W>) => void) &
+    (<W = IWorld>(
+      options: IDefineTestStepHookOptions,
+      code: TestStepHookFunction<W>
+    ) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
-    ((
+  Given: (<W = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<W>
+  ) => void) &
+    (<W = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction
+      code: TestStepFunction<W>
     ) => void)
-  Then: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
-    ((
+  Then: (<W = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<W>
+  ) => void) &
+    (<W = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction
+      code: TestStepFunction<W>
     ) => void)
-  When: ((pattern: DefineStepPattern, code: TestStepFunction) => void) &
-    ((
+  When: (<W = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<W>
+  ) => void) &
+    (<W = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction
+      code: TestStepFunction<W>
     ) => void)
 }
 

@@ -36,6 +36,7 @@ requiredModules:
     dev:
       - '{compatibility,features,scripts,test}/**/*'
       - '**/*_spec.ts'
+      - 'test-d/**/*.ts'
       - 'example/index.ts'
       - '**/test_helpers.ts'
     ignore:

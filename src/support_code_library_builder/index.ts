@@ -149,13 +149,13 @@ export class SupportCodeLibraryBuilder {
 
   defineTestCaseHook(
     getCollection: () => ITestCaseHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-    code?: TestCaseHookFunction
+  ): <W>(
+    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction<W>,
+    code?: TestCaseHookFunction<W>
   ) => void {
-    return (
-      options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-      code?: TestCaseHookFunction
+    return <W>(
+      options: string | IDefineTestCaseHookOptions | TestCaseHookFunction<W>,
+      code?: TestCaseHookFunction<W>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
@@ -180,13 +180,13 @@ export class SupportCodeLibraryBuilder {
 
   defineTestStepHook(
     getCollection: () => ITestStepHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-    code?: TestStepHookFunction
+  ): <W>(
+    options: string | IDefineTestStepHookOptions | TestStepHookFunction<W>,
+    code?: TestStepHookFunction<W>
   ) => void {
-    return (
-      options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-      code?: TestStepHookFunction
+    return <W>(
+      options: string | IDefineTestStepHookOptions | TestStepHookFunction<W>,
+      code?: TestStepHookFunction<W>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }

@@ -1,4 +1,5 @@
 import { Before, setWorldConstructor, When, World } from '../'
+import { expectError } from 'tsd'
 
 // should allow us to read parameters and add attachments
 Before(async function () {
@@ -7,6 +8,18 @@ Before(async function () {
 When('stuff happens', async function () {
   await this.attach(this.parameters.foo)
 })
+
+// should prevent reassignment of parameters
+expectError(
+  Before(async function () {
+    this.parameters = null
+  })
+)
+expectError(
+  When('stuff happens', async function () {
+    this.parameters = null
+  })
+)
 
 // should allow us to set and get arbitrary properties
 Before(async function () {
