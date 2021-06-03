@@ -17,7 +17,7 @@ You'll need to update any `import`/`require` statements in your support code to 
 
 The result object passed as the second argument to your `After` hook function has a different structure.
 
-Before:
+Previous in `cucumber`:
 
 ```js
 {
@@ -40,7 +40,7 @@ Before:
 }
 ```
 
-After:
+Now in `@cucumber/cucumber`:
 
 ```js
 {
