@@ -23,18 +23,18 @@ export interface ITestStepHookParameter {
   testStepId: string
 }
 
-export type TestCaseHookFunction<W> = (
-  this: W,
+export type TestCaseHookFunction<WorldType> = (
+  this: WorldType,
   arg?: ITestCaseHookParameter
 ) => any | Promise<any>
 
-export type TestStepHookFunction<W> = (
-  this: W,
+export type TestStepHookFunction<WorldType> = (
+  this: WorldType,
   arg?: ITestStepHookParameter
 ) => void
 
-export type TestStepFunction<W> = (
-  this: W,
+export type TestStepFunction<WorldType> = (
+  this: WorldType,
   ...args: any[]
 ) => any | Promise<any>
 
@@ -67,72 +67,90 @@ export interface IParameterTypeDefinition<T> {
 
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: (<W = IWorld>(
+  defineStep: (<WorldType = IWorld>(
     pattern: DefineStepPattern,
-    code: TestStepFunction<W>
+    code: TestStepFunction<WorldType>
   ) => void) &
-    (<W = IWorld>(
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction<W>
+      code: TestStepFunction<WorldType>
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setWorldConstructor: (fn: any) => void
-  After: (<W = IWorld>(code: TestCaseHookFunction<W>) => void) &
-    (<W = IWorld>(tags: string, code: TestCaseHookFunction<W>) => void) &
-    (<W = IWorld>(
+  After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestCaseHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
       options: IDefineTestCaseHookOptions,
-      code: TestCaseHookFunction<W>
+      code: TestCaseHookFunction<WorldType>
     ) => void)
-  AfterStep: (<W = IWorld>(code: TestStepHookFunction<W>) => void) &
-    (<W = IWorld>(tags: string, code: TestStepHookFunction<W>) => void) &
-    (<W = IWorld>(
+  AfterStep: (<WorldType = IWorld>(
+    code: TestStepHookFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestStepHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
       options: IDefineTestStepHookOptions,
-      code: TestStepHookFunction<W>
+      code: TestStepHookFunction<WorldType>
     ) => void)
   AfterAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Before: (<W = IWorld>(code: TestCaseHookFunction<W>) => void) &
-    (<W = IWorld>(tags: string, code: TestCaseHookFunction<W>) => void) &
-    (<W = IWorld>(
+  Before: (<WorldType = IWorld>(
+    code: TestCaseHookFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestCaseHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
       options: IDefineTestCaseHookOptions,
-      code: TestCaseHookFunction<W>
+      code: TestCaseHookFunction<WorldType>
     ) => void)
-  BeforeStep: (<W = IWorld>(code: TestStepHookFunction<W>) => void) &
-    (<W = IWorld>(tags: string, code: TestStepHookFunction<W>) => void) &
-    (<W = IWorld>(
+  BeforeStep: (<WorldType = IWorld>(
+    code: TestStepHookFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestStepHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
       options: IDefineTestStepHookOptions,
-      code: TestStepHookFunction<W>
+      code: TestStepHookFunction<WorldType>
     ) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: (<W = IWorld>(
+  Given: (<WorldType = IWorld>(
     pattern: DefineStepPattern,
-    code: TestStepFunction<W>
+    code: TestStepFunction<WorldType>
   ) => void) &
-    (<W = IWorld>(
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction<W>
+      code: TestStepFunction<WorldType>
     ) => void)
-  Then: (<W = IWorld>(
+  Then: (<WorldType = IWorld>(
     pattern: DefineStepPattern,
-    code: TestStepFunction<W>
+    code: TestStepFunction<WorldType>
   ) => void) &
-    (<W = IWorld>(
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction<W>
+      code: TestStepFunction<WorldType>
     ) => void)
-  When: (<W = IWorld>(
+  When: (<WorldType = IWorld>(
     pattern: DefineStepPattern,
-    code: TestStepFunction<W>
+    code: TestStepFunction<WorldType>
   ) => void) &
-    (<W = IWorld>(
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: TestStepFunction<W>
+      code: TestStepFunction<WorldType>
     ) => void)
 }
 
