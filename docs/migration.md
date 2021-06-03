@@ -15,7 +15,7 @@ You'll need to update any `import`/`require` statements in your support code to 
 
 ## Hooks
 
-The result object passed as the second argument to your `After` hook function has a different structure.
+The result object passed as the argument to your `After` hook function has a different structure.
 
 Previous in `cucumber`:
 
