@@ -204,8 +204,8 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "7.0.0",
-    "@cucumber/message-streams": "2.0.0",
-    "@cucumber/query": "10.0.0",
+    "@cucumber/message-streams": "2.1.0",
+    "@cucumber/query": "10.1.0",
     "@sinonjs/fake-timers": "7.1.2",
     "@types/bluebird": "3.5.35",
     "@types/chai": "4.2.18",
