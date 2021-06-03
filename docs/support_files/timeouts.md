@@ -23,7 +23,7 @@ Given(/^a slow step$/, {timeout: 60 * 1000}, function() {
 });
 ```
 
-*Note that you should not call `setDefaultTimeout` from within a hook or step; it should be called globally.*
+*Note that you should not call `setDefaultTimeout` from within other support code e.g. a step, hook or your World class; it should be called globally.*
 
 ## Disable Timeouts
 
