@@ -164,6 +164,78 @@ describe('Configuration', () => {
     })
   })
 
+  describe('path to an empty rerun file', () => {
+    it('returns empty featurePaths and support code paths', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+
+      const relativeRerunPath = '@empty_rerun.txt'
+      const rerunPath = path.join(cwd, '@empty_rerun.txt')
+      await fsExtra.outputFile(rerunPath, '')
+      const argv = baseArgv.concat([relativeRerunPath])
+
+      // Act
+      const {
+        featurePaths,
+        pickleFilterOptions,
+        supportCodePaths,
+      } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(featurePaths).to.eql([])
+      expect(pickleFilterOptions.featurePaths).to.eql([])
+      expect(supportCodePaths).to.eql([])
+    })
+  })
+
+  describe('path to an rerun file with new line', () => {
+    it('returns empty featurePaths and support code paths', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+
+      const relativeRerunPath = '@empty_rerun.txt'
+      const rerunPath = path.join(cwd, '@empty_rerun.txt')
+      await fsExtra.outputFile(rerunPath, '\n')
+      const argv = baseArgv.concat([relativeRerunPath])
+
+      // Act
+      const {
+        featurePaths,
+        pickleFilterOptions,
+        supportCodePaths,
+      } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(featurePaths).to.eql([])
+      expect(pickleFilterOptions.featurePaths).to.eql([])
+      expect(supportCodePaths).to.eql([])
+    })
+  })
+
+  describe('path to a rerun file with one new line character', () => {
+    it('returns empty featurePaths and support code paths', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+
+      const relativeRerunPath = '@empty_rerun.txt'
+      const rerunPath = path.join(cwd, '@empty_rerun.txt')
+      await fsExtra.outputFile(rerunPath, '\n\n')
+      const argv = baseArgv.concat([relativeRerunPath])
+
+      // Act
+      const {
+        featurePaths,
+        pickleFilterOptions,
+        supportCodePaths,
+      } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(featurePaths).to.eql([])
+      expect(pickleFilterOptions.featurePaths).to.eql([])
+      expect(supportCodePaths).to.eql([])
+    })
+  })
+
   describe('formatters', () => {
     it('adds a default', async function () {
       // Arrange

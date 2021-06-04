@@ -29,6 +29,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * `this` now has correct TypeScript type in support code functions ([#1667](https://github.com/cucumber/cucumber-js/issues/1667) [#1690](https://github.com/cucumber/cucumber-js/pull/1690))
 * Progress bar formatter now reports total step count correctly ([#1579](https://github.com/cucumber/cucumber-js/issues/1579)
   [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
+* Rerun functionality will now run nothing if the rerun file is empty from the previous run ([#1302](https://github.com/cucumber/cucumber-js/issues/1302) [#1568](https://github.com/cucumber/cucumber-js/pull/1568))
 * All messages now emitted with project-relative `uri`s
   ([#1534](https://github.com/cucumber/cucumber-js/issues/1534)
   [#1672](https://github.com/cucumber/cucumber-js/pull/1672))
