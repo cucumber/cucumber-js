@@ -5,17 +5,15 @@ import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 import ITestStepFinished = messages.TestStepFinished
 
-const STATUS_CHARACTER_MAPPING: Map<
-  messages.TestStepResultStatus,
-  string
-> = new Map([
-  [messages.TestStepResultStatus.AMBIGUOUS, 'A'],
-  [messages.TestStepResultStatus.FAILED, 'F'],
-  [messages.TestStepResultStatus.PASSED, '.'],
-  [messages.TestStepResultStatus.PENDING, 'P'],
-  [messages.TestStepResultStatus.SKIPPED, '-'],
-  [messages.TestStepResultStatus.UNDEFINED, 'U'],
-])
+const STATUS_CHARACTER_MAPPING: Map<messages.TestStepResultStatus, string> =
+  new Map([
+    [messages.TestStepResultStatus.AMBIGUOUS, 'A'],
+    [messages.TestStepResultStatus.FAILED, 'F'],
+    [messages.TestStepResultStatus.PASSED, '.'],
+    [messages.TestStepResultStatus.PENDING, 'P'],
+    [messages.TestStepResultStatus.SKIPPED, '-'],
+    [messages.TestStepResultStatus.UNDEFINED, 'U'],
+  ])
 
 export default class ProgressFormatter extends SummaryFormatter {
   constructor(options: IFormatterOptions) {

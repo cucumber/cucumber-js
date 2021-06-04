@@ -308,9 +308,7 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  buildStepDefinitions(
-    canonicalIds?: string[]
-  ): {
+  buildStepDefinitions(canonicalIds?: string[]): {
     stepDefinitions: StepDefinition[]
     undefinedParameterTypes: messages.UndefinedParameterType[]
   } {

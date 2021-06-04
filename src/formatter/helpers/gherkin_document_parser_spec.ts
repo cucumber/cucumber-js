@@ -78,7 +78,8 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument =
+        await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = getGherkinStepMap(gherkinDocument)
@@ -156,7 +157,8 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument =
+        await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = getGherkinScenarioMap(gherkinDocument)
@@ -215,7 +217,8 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument =
+        await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = await getGherkinExampleRuleMap(gherkinDocument)
@@ -284,7 +287,8 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument =
+        await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = await getGherkinScenarioLocationMap(gherkinDocument)
