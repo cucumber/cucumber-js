@@ -44,8 +44,8 @@ Now in `@cucumber/cucumber`:
 
 ```js
 {
-  "gherkinDocument": {...}, // schema: https://github.com/cucumber/common/blob/main/messages/jsonschema/GherkinDocument.json
-  "pickle": {...}, // schema: https://github.com/cucumber/common/blob/main/messages/jsonschema/Pickle.json
+  "gherkinDocument": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/GherkinDocument.json
+  "pickle": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/Pickle.json
   "testCaseStartedId": "[uuid]",
   "result": {
     "status": "FAILED", // one of: UNKNOWN, PASSED, SKIPPED, PENDING, UNDEFINED, AMBIGUOUS, FAILED
