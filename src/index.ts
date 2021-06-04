@@ -40,6 +40,7 @@ export const Then = methods.Then
 export const When = methods.When
 export {
   default as World,
+  IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
 export const Status = messages.TestStepResultStatus

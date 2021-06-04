@@ -149,13 +149,19 @@ export class SupportCodeLibraryBuilder {
 
   defineTestCaseHook(
     getCollection: () => ITestCaseHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-    code?: TestCaseHookFunction
+  ): <WorldType>(
+    options:
+      | string
+      | IDefineTestCaseHookOptions
+      | TestCaseHookFunction<WorldType>,
+    code?: TestCaseHookFunction<WorldType>
   ) => void {
-    return (
-      options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-      code?: TestCaseHookFunction
+    return <WorldType>(
+      options:
+        | string
+        | IDefineTestCaseHookOptions
+        | TestCaseHookFunction<WorldType>,
+      code?: TestCaseHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
@@ -180,13 +186,19 @@ export class SupportCodeLibraryBuilder {
 
   defineTestStepHook(
     getCollection: () => ITestStepHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-    code?: TestStepHookFunction
+  ): <WorldType>(
+    options:
+      | string
+      | IDefineTestStepHookOptions
+      | TestStepHookFunction<WorldType>,
+    code?: TestStepHookFunction<WorldType>
   ) => void {
-    return (
-      options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-      code?: TestStepHookFunction
+    return <WorldType>(
+      options:
+        | string
+        | IDefineTestStepHookOptions
+        | TestStepHookFunction<WorldType>,
+      code?: TestStepHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
