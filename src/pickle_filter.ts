@@ -92,9 +92,8 @@ export class PickleLineFilter {
     const uri = path.normalize(pickle.uri)
     const linesToMatch = this.featureUriToLinesMapping[uri]
     if (doesHaveValue(linesToMatch)) {
-      const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-        gherkinDocument
-      )
+      const gherkinScenarioLocationMap =
+        getGherkinScenarioLocationMap(gherkinDocument)
       const pickleLines = pickle.astNodeIds.map(
         (sourceId) => gherkinScenarioLocationMap[sourceId].line
       )

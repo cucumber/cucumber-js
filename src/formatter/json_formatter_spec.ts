@@ -321,8 +321,8 @@ describe('JsonFormatter', () => {
         })
 
         // Assert
-        const stepArguments = JSON.parse(output)[0].elements[0].steps[0]
-          .arguments
+        const stepArguments =
+          JSON.parse(output)[0].elements[0].steps[0].arguments
         expect(stepArguments).to.eql([
           {
             content: 'This is a DocString',
@@ -359,8 +359,8 @@ describe('JsonFormatter', () => {
         })
 
         // Assert
-        const stepArguments = JSON.parse(output)[0].elements[0].steps[0]
-          .arguments
+        const stepArguments =
+          JSON.parse(output)[0].elements[0].steps[0].arguments
         expect(stepArguments).to.eql([
           {
             rows: [

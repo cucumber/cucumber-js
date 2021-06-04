@@ -12,11 +12,8 @@ import { parseStepArgument } from '../step_arguments'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
-const {
-  getScenarioDescription,
-  getPickleStepMap,
-  getStepKeyword,
-} = PickleParser
+const { getScenarioDescription, getPickleStepMap, getStepKeyword } =
+  PickleParser
 
 export interface IJsonFeature {
   description: string
@@ -148,9 +145,8 @@ export default class JsonFormatter extends Formatter {
       const gherkinStepMap = getGherkinStepMap(gherkinDocument)
       const gherkinScenarioMap = getGherkinScenarioMap(gherkinDocument)
       const gherkinExampleRuleMap = getGherkinExampleRuleMap(gherkinDocument)
-      const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-        gherkinDocument
-      )
+      const gherkinScenarioLocationMap =
+        getGherkinScenarioLocationMap(gherkinDocument)
       const elements = group.map((testCaseAttempt: ITestCaseAttempt) => {
         const { pickle } = testCaseAttempt
         const pickleStepMap = getPickleStepMap(pickle)

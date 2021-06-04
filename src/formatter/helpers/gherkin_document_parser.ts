@@ -68,9 +68,8 @@ export function getGherkinScenarioLocationMap(
   gherkinDocument: messages.GherkinDocument
 ): Record<string, messages.Location> {
   const locationMap: Record<string, messages.Location> = {}
-  const scenarioMap: Record<string, messages.Scenario> = getGherkinScenarioMap(
-    gherkinDocument
-  )
+  const scenarioMap: Record<string, messages.Scenario> =
+    getGherkinScenarioMap(gherkinDocument)
   _.entries<messages.Scenario>(scenarioMap).forEach(([id, scenario]) => {
     locationMap[id] = scenario.location
     if (doesHaveValue(scenario.examples)) {

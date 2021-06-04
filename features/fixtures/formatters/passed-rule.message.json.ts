@@ -2,8 +2,7 @@ module.exports = [
   {
     source: {
       uri: 'features/a.feature',
-      data:
-        'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
+      data: 'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
       mediaType: 'text/x.cucumber.gherkin+plain',
     },
   },
