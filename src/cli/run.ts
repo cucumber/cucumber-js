@@ -16,6 +16,7 @@ export default async function run(): Promise<void> {
   const cli = new Cli({
     argv: process.argv,
     cwd,
+    env: process.env,
     stdout: process.stdout,
   })
 

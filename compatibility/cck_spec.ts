@@ -41,6 +41,7 @@ describe('Cucumber Compatibility Kit', () => {
         await new Cli({
           argv: args,
           cwd: PROJECT_PATH,
+          env: {},
           stdout,
         }).run()
       } catch (ignored) {
