@@ -36,9 +36,8 @@ export default class StepDefinitionSnippetBuilder {
     const comment =
       'Write code here that turns the phrase above into concrete actions'
     const functionName = this.getFunctionName(keywordType)
-    const generatedExpressions = this.cucumberExpressionGenerator.generateExpressions(
-      pickleStep.text
-    )
+    const generatedExpressions =
+      this.cucumberExpressionGenerator.generateExpressions(pickleStep.text)
     const stepParameterNames = this.getStepParameterNames(pickleStep)
     return this.snippetSyntax.build({
       comment,

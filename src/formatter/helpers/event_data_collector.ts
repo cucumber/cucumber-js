@@ -113,17 +113,15 @@ export default class EventDataCollector {
     testStepId,
     testStepResult,
   }: messages.TestStepFinished): void {
-    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
-      testStepId
-    ] = testStepResult
+    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[testStepId] =
+      testStepResult
   }
 
   storeTestCaseResult({ testCaseStartedId }: messages.TestCaseFinished): void {
     const stepResults = values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
-    this.testCaseAttemptDataMap[
-      testCaseStartedId
-    ].worstTestStepResult = messages.getWorstTestStepResult(stepResults)
+    this.testCaseAttemptDataMap[testCaseStartedId].worstTestStepResult =
+      messages.getWorstTestStepResult(stepResults)
   }
 }

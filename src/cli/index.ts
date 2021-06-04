@@ -133,7 +133,9 @@ export default class Cli {
           supportCodeLibrary,
         }
         if (doesNotHaveValue(formatOptions.colorsEnabled)) {
-          typeOptions.parsedArgvOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
+          typeOptions.parsedArgvOptions.colorsEnabled = (
+            stream as TtyWriteStream
+          ).isTTY
         }
         if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
           const outputToName = outputTo === '' ? 'stdout' : outputTo

@@ -125,12 +125,14 @@ export default class Coordinator {
           stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
             (s) => s.id
           ),
-          beforeTestCaseHookDefinitionIds: this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-            (h) => h.id
-          ),
-          afterTestCaseHookDefinitionIds: this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
-            (h) => h.id
-          ),
+          beforeTestCaseHookDefinitionIds:
+            this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
+              (h) => h.id
+            ),
+          afterTestCaseHookDefinitionIds:
+            this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
+              (h) => h.id
+            ),
         },
         options: this.options,
       },

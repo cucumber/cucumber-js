@@ -133,9 +133,8 @@ export function parseTestCaseAttempt({
 }: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-    gherkinDocument
-  )
+  const gherkinScenarioLocationMap =
+    getGherkinScenarioLocationMap(gherkinDocument)
   const pickleStepMap = getPickleStepMap(pickle)
   const relativePickleUri = pickle.uri
   const parsedTestCase: IParsedTestCase = {
