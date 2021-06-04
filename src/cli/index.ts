@@ -208,14 +208,18 @@ export default class Cli {
         relativeTo: this.cwd,
       }
     )
-    const pickleIds = await parseGherkinMessageStream({
-      cwd: this.cwd,
-      eventBroadcaster,
-      eventDataCollector,
-      gherkinMessageStream,
-      order: configuration.order,
-      pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
-    })
+    let pickleIds: string[] = []
+
+    if (configuration.featurePaths.length > 0) {
+      pickleIds = await parseGherkinMessageStream({
+        cwd: this.cwd,
+        eventBroadcaster,
+        eventDataCollector,
+        gherkinMessageStream,
+        order: configuration.order,
+        pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
+      })
+    }
     emitSupportCodeMessages({
       eventBroadcaster,
       supportCodeLibrary,
