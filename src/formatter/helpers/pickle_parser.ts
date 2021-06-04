@@ -52,8 +52,7 @@ export function getPickleLocation({
   gherkinDocument,
   pickle,
 }: IGetPickleLocationRequest): messages.Location {
-  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-    gherkinDocument
-  )
+  const gherkinScenarioLocationMap =
+    getGherkinScenarioLocationMap(gherkinDocument)
   return gherkinScenarioLocationMap[_.last(pickle.astNodeIds)]
 }

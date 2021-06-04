@@ -101,8 +101,7 @@ describe('ProgressBarFormatter', () => {
           uri: 'a.feature',
         },
         {
-          data:
-            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          data: 'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -125,8 +124,7 @@ describe('ProgressBarFormatter', () => {
           uri: 'a.feature',
         },
         {
-          data:
-            'Feature: a\nRule: b\nExample: c\nGiven a step\nWhen a step\nThen a step',
+          data: 'Feature: a\nRule: b\nExample: c\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -149,8 +147,7 @@ describe('ProgressBarFormatter', () => {
           uri: 'a.feature',
         },
         {
-          data:
-            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          data: 'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -370,8 +367,7 @@ describe('ProgressBarFormatter', () => {
         // Arrange
         const sources = [
           {
-            data:
-              'Feature: a\nScenario: b\nGiven a passing step\n When a flaky step\nThen a passing step',
+            data: 'Feature: a\nScenario: b\nGiven a passing step\n When a flaky step\nThen a passing step',
             uri: 'a.feature',
           },
         ]
@@ -384,7 +380,8 @@ describe('ProgressBarFormatter', () => {
           sources,
           supportCodeLibrary,
         })
-        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
+        const progressBar =
+          progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
 
         // Assert
         expect(progressBar.interrupt).to.have.callCount(1)

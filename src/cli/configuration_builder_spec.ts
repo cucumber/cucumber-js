@@ -76,11 +76,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeFeaturePath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -99,11 +96,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeFeaturePath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -124,11 +118,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeFeaturePath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -151,11 +142,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeFeaturePath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -175,11 +163,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeRerunPath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([])
@@ -199,11 +184,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeRerunPath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([])
@@ -223,11 +205,8 @@ describe('Configuration', () => {
       const argv = baseArgv.concat([relativeRerunPath])
 
       // Act
-      const {
-        featurePaths,
-        pickleFilterOptions,
-        supportCodePaths,
-      } = await ConfigurationBuilder.build({ argv, cwd })
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
       // Assert
       expect(featurePaths).to.eql([])

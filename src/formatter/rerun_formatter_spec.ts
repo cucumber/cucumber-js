@@ -148,8 +148,7 @@ describe('RerunFormatter', () => {
       // Arrange
       const sources = [
         {
-          data:
-            'Feature: a\nScenario: b\nGiven a step\nScenario: c\nGiven a step',
+          data: 'Feature: a\nScenario: b\nGiven a step\nScenario: c\nGiven a step',
           uri: 'a.feature',
         },
       ]
