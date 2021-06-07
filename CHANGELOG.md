@@ -16,6 +16,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Changed
 
+* Change the behaviour of `Cli` so that the process does not exit when bad command line options are used.
+  It will still exit when `--help`, `--version` or `-v` is passed.
 * All `testCase` messages now emitted upfront at the start of the run (relevant for formatter authors) ([#1408](https://github.com/cucumber/cucumber-js/issues/1408)
   [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
 * Clarify that the JSON formatter will not be removed any time soon

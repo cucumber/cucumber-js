@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Command } from 'commander'
+import { Command, CommanderError } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
@@ -101,6 +101,12 @@ const ArgvParser = {
 
   parse(argv: string[]): IParsedArgv {
     const program = new Command(path.basename(argv[1]))
+
+    // We want to be in full control over when the process exits.
+    // This is important for other tools using Cucumber as a library,
+    // such as https://github.com/cucumber/cucumber-electron
+    // The exception is --help, --version (and -v) which will still exit the process immediately
+    program.exitOverride()
 
     program
       .storeOptionsAsProperties(false)
@@ -227,7 +233,22 @@ const ArgvParser = {
       /* eslint-enable no-console */
     })
 
-    program.parse(argv)
+    try {
+      program.parse(argv)
+    } catch (err) {
+      // An error is always thrown when program.exitOverride() is set.
+      const commanderError: CommanderError = err
+      if (commanderError.exitCode !== 0) {
+        throw commanderError
+      }
+      if (
+        argv.includes('-v') ||
+        argv.includes('--version') ||
+        argv.includes('--help')
+      ) {
+        process.exit(0)
+      }
+    }
     const options = program.opts() as IParsedArgvOptions
     ArgvParser.validateRetryOptions(options)
 
