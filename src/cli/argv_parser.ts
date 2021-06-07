@@ -102,6 +102,11 @@ const ArgvParser = {
   parse(argv: string[]): IParsedArgv {
     const program = new Command(path.basename(argv[1]))
 
+    // We want to be in full control over when the process exits.
+    // This is important for other tools using Cucumber as a library,
+    // such as https://github.com/cucumber/cucumber-electron
+    program.exitOverride()
+
     program
       .storeOptionsAsProperties(false)
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
