@@ -43,4 +43,8 @@ export {
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
+export {
+  ITestCaseHookParameter,
+  ITestStepHookParameter,
+} from './support_code_library_builder/types'
 export const Status = messages.TestStepResultStatus
