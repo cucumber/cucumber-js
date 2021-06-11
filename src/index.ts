@@ -15,7 +15,7 @@ export { default as supportCodeLibraryBuilder } from './support_code_library_bui
 export { default as DataTable } from './models/data_table'
 
 // Formatters
-export { default as Formatter } from './formatter'
+export { default as Formatter, IFormatterOptions } from './formatter'
 export { default as FormatterBuilder } from './formatter/builder'
 export { default as JsonFormatter } from './formatter/json_formatter'
 export { default as ProgressFormatter } from './formatter/progress_formatter'
