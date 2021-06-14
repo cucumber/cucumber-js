@@ -25,12 +25,12 @@ export interface ITestStepHookParameter {
 
 export type TestCaseHookFunction<WorldType> = (
   this: WorldType,
-  arg?: ITestCaseHookParameter
+  arg: ITestCaseHookParameter
 ) => any | Promise<any>
 
 export type TestStepHookFunction<WorldType> = (
   this: WorldType,
-  arg?: ITestStepHookParameter
+  arg: ITestStepHookParameter
 ) => void
 
 export type TestStepFunction<WorldType> = (
