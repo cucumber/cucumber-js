@@ -1,5 +1,44 @@
 # CLI
 
+
+```
+Options:
+  -v, --version                                      output the version number
+  -b, --backtrace                                    show full backtrace for errors
+  -d, --dry-run                                      invoke formatters without executing steps (default: false)
+  --exit                                             force shutdown of the event loop when the test run has finished: cucumber
+                                                     will call process.exit (default: false)
+  --fail-fast                                        abort the run on first failure (default: false)
+  -f, --format <TYPE[:PATH]>                         specify the output format, optionally supply PATH to redirect formatter
+                                                     output (repeatable) (default: [])
+  --format-options <JSON>                            provide options for formatters (repeatable) (default: {})
+  --i18n-keywords <ISO 639-1>                        list language keywords (default: "")
+  --i18n-languages                                   list languages (default: false)
+  --language <ISO 639-1>                             provide the default language for feature files (default: "en")
+  --name <REGEXP>                                    only execute the scenarios with name matching the expression (repeatable)
+                                                     (default: [])
+  --no-strict                                        succeed even if there are pending steps
+  --order <TYPE[:SEED]>                              run scenarios in the specified order. Type should be `defined` or `random`
+                                                     (default: "defined")
+  -p, --profile <NAME>                               specify the profile to use (repeatable) (default: [])
+  --parallel <NUMBER_OF_WORKERS>                     run in parallel with the given number of workers (default: 0)
+  --predictable-ids                                  Use predictable ids in messages (option ignored if using parallel)
+                                                     (default: false)
+  --publish                                          Publish a report to https://reports.cucumber.io (default: false)
+  --publish-quiet                                    Don't print information banner about publishing reports (default: false)
+  -r, --require <GLOB|DIR|FILE>                      require files before executing features (repeatable) (default: [])
+  --require-module <NODE_MODULE>                     require node modules before requiring files (repeatable) (default: [])
+  --retry <NUMBER_OF_RETRIES>                        specify the number of times to retry failing test cases (default: 0)
+                                                     (default: 0)
+  --retryTagFilter, --retry-tag-filter <EXPRESSION>  only retries the features or scenarios with tags matching the expression (repeatable).
+          This option requires '--retry' to be specified. (default: "")
+  -t, --tags <EXPRESSION>                            only execute the features or scenarios with tags matching the expression
+                                                     (repeatable) (default: "")
+  --world-parameters <JSON>                          provide parameters that will be passed to the world constructor
+                                                     (repeatable) (default: {})
+  -h, --help                                         display help for command
+```
+
 Cucumber.js includes an executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
