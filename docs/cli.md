@@ -122,21 +122,7 @@ Note that the rerun file parser can only work with the default separator for now
 
 ## Parallel
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables (as well as a copy of `process.env` from the coordinator process):
-
-* `CUCUMBER_PARALLEL` - set to 'true'
-* `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
-* `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
-
-### Timing
-
-When using parallel mode, the last line of the summary output differentiates between real time elapsed during the test run and aggregate time spent actually running steps: 
-
-```
-73 scenarios (73 passed)
-512 steps (512 passed)
-0m51.627s (executing steps: 4m51.228s)
-```
+See [Parallel](./parallel.md).
 
 ## Profiles
 

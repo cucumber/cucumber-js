@@ -1,6 +1,6 @@
 # Retry
 
-If you have a flaky scenario (e.g. failing 10% of the time for some reason), you can use *Retry* to have Cucumber attempt it multiple times until either it passes or the maximum number of attempts is reached. You enable this via the `--retry` CLI option, like this:
+If you have a flaky scenario (e.g. failing 10% of the time for some reason), you can use *Retry* to have Cucumber attempt it multiple times until either it passes or the maximum number of attempts is reached. You enable this via the `--retry <MAXIMUM_RETRIES>` CLI option, like this:
 
 ```shell
 $ cucumber-js --retry 1
@@ -19,7 +19,7 @@ Some notes on how Retry works:
 
 ## Targeting scenarios
 
-Using the `--retry` option alone would mean every scenario would be allowed multiple attempts - this almost certainly isn't what you want, assuming you have a small set of flaky scenarios. To target just the relevant scenarios, you can provide a [tag expression](https://cucumber.io/docs/cucumber/api/#tag-expressions) via the `--retry-tag-filter` CLI option, like this:
+Using the `--retry` option alone would mean every scenario would be allowed multiple attempts - this almost certainly isn't what you want, assuming you have a small set of flaky scenarios. To target just the relevant scenarios, you can provide a [tag expression](https://cucumber.io/docs/cucumber/api/#tag-expressions) via the `--retry-tag-filter <TAG_EXPRESSION>` CLI option, like this:
 
 ```shell
 $ cucumber-js --retry 1 --retry-tag-filter @flaky

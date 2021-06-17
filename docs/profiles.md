@@ -37,5 +37,5 @@ $ cucumber-js --profile ci
 
 Some notes about how Profiles work:
 
-- The `--profile` CLI option is repeatable, so you can apply multiple profiles at once
-- You can still supply options directly on the command line when using profiles, they will be appended to whatever comes from profiles
+- The `--profile` CLI option is repeatable, so you can apply multiple profiles at once.
+- You can still supply options directly on the command line when using profiles, they will be appended to whatever comes from profiles.
