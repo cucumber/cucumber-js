@@ -1,44 +1,5 @@
 # CLI
 
-
-```
-Options:
-  -v, --version                                      output the version number
-  -b, --backtrace                                    show full backtrace for errors
-  -d, --dry-run                                      invoke formatters without executing steps (default: false)
-  --exit                                             force shutdown of the event loop when the test run has finished: cucumber
-                                                     will call process.exit (default: false)
-  --fail-fast                                        abort the run on first failure (default: false)
-  -f, --format <TYPE[:PATH]>                         specify the output format, optionally supply PATH to redirect formatter
-                                                     output (repeatable) (default: [])
-  --format-options <JSON>                            provide options for formatters (repeatable) (default: {})
-  --i18n-keywords <ISO 639-1>                        list language keywords (default: "")
-  --i18n-languages                                   list languages (default: false)
-  --language <ISO 639-1>                             provide the default language for feature files (default: "en")
-  --name <REGEXP>                                    only execute the scenarios with name matching the expression (repeatable)
-                                                     (default: [])
-  --no-strict                                        succeed even if there are pending steps
-  --order <TYPE[:SEED]>                              run scenarios in the specified order. Type should be `defined` or `random`
-                                                     (default: "defined")
-  -p, --profile <NAME>                               specify the profile to use (repeatable) (default: [])
-  --parallel <NUMBER_OF_WORKERS>                     run in parallel with the given number of workers (default: 0)
-  --predictable-ids                                  Use predictable ids in messages (option ignored if using parallel)
-                                                     (default: false)
-  --publish                                          Publish a report to https://reports.cucumber.io (default: false)
-  --publish-quiet                                    Don't print information banner about publishing reports (default: false)
-  -r, --require <GLOB|DIR|FILE>                      require files before executing features (repeatable) (default: [])
-  --require-module <NODE_MODULE>                     require node modules before requiring files (repeatable) (default: [])
-  --retry <NUMBER_OF_RETRIES>                        specify the number of times to retry failing test cases (default: 0)
-                                                     (default: 0)
-  --retryTagFilter, --retry-tag-filter <EXPRESSION>  only retries the features or scenarios with tags matching the expression (repeatable).
-          This option requires '--retry' to be specified. (default: "")
-  -t, --tags <EXPRESSION>                            only execute the features or scenarios with tags matching the expression
-                                                     (repeatable) (default: "")
-  --world-parameters <JSON>                          provide parameters that will be passed to the world constructor
-                                                     (repeatable) (default: {})
-  -h, --help                                         display help for command
-```
-
 Cucumber.js includes an executable file to run the features. After installing Cucumber in your project, you can run it with:
 
 ``` shell
@@ -181,6 +142,8 @@ When using parallel mode, the last line of the summary output differentiates bet
 
 In order to store and reuse commonly used CLI options, you can add a `cucumber.js` file to your project root directory. The file should export an object where the key is the profile name and the value is a string of CLI options. The profile can be applied with `-p <NAME>` or `--profile <NAME>`. This will prepend the profile's CLI options to the ones provided by the command line. Multiple profiles can be specified at a time. If no profile is specified and a profile named `default` exists, it will be applied.
 
+See [Profiles](./profiles.md).
+
 ## Tags
 
 Use `--tags <EXPRESSION>` to run specific features or scenarios. This option is repeatable and the expressions will be merged with an `and` operator.
@@ -196,8 +159,7 @@ A note on using in conjunction with `--retry`: we consider a test case to have f
 
 ## Retry failing tests
 
-Use `--retry <int>` to rerun tests that have been failing. This can be very helpful for flaky tests.
-To only retry failing tests in a subset of test use `--retry-tag-filter <EXPRESSION>` (use the same as in Use [Tags](#tags))
+See [Retry](./retry.md)
 
 ## Transpilation
 
@@ -267,10 +229,4 @@ Note that the first `--require tests.setup.js` overrides the default require glo
 
 ## World Parameters
 
-You can pass in parameters to pass to the world constructor with `--world-parameters <JSON>`. The JSON string must define an object. The parsed object will be passed as the `parameters` to the the world constructor. This option is repeatable and the objects will be merged with the last instance taking precedence.
-
-Example:
-
-```
---world-parameters '{"fancySetting":true}'
-```
+See [World](./support_files/world.md).
