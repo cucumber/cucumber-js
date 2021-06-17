@@ -29,8 +29,13 @@ module.exports = {
 
 Now, if we just run `cucumber-js` with no arguments, it will pick up our profiles and use the `default` one.
 
-In CI, we just need to change the command to:
+In CI, we just need to change the command to specify the "ci" profile:
 
 ```shell
 $ cucumber-js --profile ci
 ```
+
+Some notes about how Profiles work:
+
+- The `--profile` CLI option is repeatable, so you can apply multiple profiles at once
+- You can still supply options directly on the command line when using profiles, they will be appended to whatever comes from profiles
