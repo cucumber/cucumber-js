@@ -1,6 +1,6 @@
 # Retry
 
-If you have a flaky scenario (e.g. failing 10% of the time for some reason), you can configure Cucumber to attempt it multiple times until either it passes or the maximum number of attempts is reached. You enable this via the `--retry` CLI option, like this:
+If you have a flaky scenario (e.g. failing 10% of the time for some reason), you can use *Retry* to have Cucumber attempt it multiple times until either it passes or the maximum number of attempts is reached. You enable this via the `--retry` CLI option, like this:
 
 ```shell
 $ cucumber-js --retry 1
