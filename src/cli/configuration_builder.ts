@@ -212,15 +212,15 @@ export default class ConfigurationBuilder {
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
           const content = await fs.readFile(filePath, 'utf8')
-          return _.chain(content).split('\n').map(_.trim).compact().value()
+          return _.chain(content).split('\n').map(_.trim).value()
         }
         return [arg]
       })
       const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {
-        return featurePaths
+        return _.compact(featurePaths)
       }
     }
-    return ['features/**/*.feature']
+    return ['features/**/*.{feature,feature.md}']
   }
 }

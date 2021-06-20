@@ -1,35 +1,27 @@
 import indentString from 'indent-string'
-import Status from '../../status'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { IColorFns } from '../get_color_fns'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ITestCaseAttempt } from './event_data_collector'
-import { Dictionary } from 'lodash'
 
-export function isFailure(
-  result: messages.TestStepFinished.ITestStepResult
-): boolean {
+export function isFailure(result: messages.TestStepResult): boolean {
   return (
-    result.status === Status.AMBIGUOUS ||
-    result.status === Status.UNDEFINED ||
-    (result.status === Status.FAILED && !result.willBeRetried)
+    result.status === 'AMBIGUOUS' ||
+    result.status === 'UNDEFINED' ||
+    (result.status === 'FAILED' && !result.willBeRetried)
   )
 }
 
-export function isWarning(
-  result: messages.TestStepFinished.ITestStepResult
-): boolean {
+export function isWarning(result: messages.TestStepResult): boolean {
   return (
-    result.status === Status.PENDING ||
-    (result.status === Status.FAILED && result.willBeRetried)
+    result.status === 'PENDING' ||
+    (result.status === 'FAILED' && result.willBeRetried)
   )
 }
 
-export function isIssue(
-  result: messages.TestStepFinished.ITestStepResult
-): boolean {
+export function isIssue(result: messages.TestStepResult): boolean {
   return isFailure(result) || isWarning(result)
 }
 
@@ -69,10 +61,10 @@ export function formatIssue({
 }
 
 export function formatUndefinedParameterTypes(
-  undefinedParameterTypes: messages.IUndefinedParameterType[]
+  undefinedParameterTypes: messages.UndefinedParameterType[]
 ): string {
   const output = [`Undefined parameter types:\n\n`]
-  const withLatest: Dictionary<messages.IUndefinedParameterType> = {}
+  const withLatest: Record<string, messages.UndefinedParameterType> = {}
   undefinedParameterTypes.forEach((parameterType) => {
     withLatest[parameterType.name] = parameterType
   })
@@ -88,7 +80,7 @@ export function formatUndefinedParameterTypes(
 }
 
 export function formatUndefinedParameterType(
-  parameterType: messages.IUndefinedParameterType
+  parameterType: messages.UndefinedParameterType
 ): string {
   return `"${parameterType.name}" e.g. \`${parameterType.expression}\``
 }

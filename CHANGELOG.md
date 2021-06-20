@@ -19,6 +19,32 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+## [7.3.0] (2021-06-17)
+
+### Added
+
+* Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
+  ([#1645](https://github.com/cucumber/cucumber-js/pull/1645))
+
+### Changed
+
+* All `testCase` messages now emitted upfront at the start of the run (relevant for formatter authors) ([#1408](https://github.com/cucumber/cucumber-js/issues/1408)
+  [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
+* Clarify that the JSON formatter will not be removed any time soon
+
+### Fixed
+
+* `this` now has correct TypeScript type in support code functions ([#1667](https://github.com/cucumber/cucumber-js/issues/1667) [#1690](https://github.com/cucumber/cucumber-js/pull/1690))
+* Progress bar formatter now reports total step count correctly ([#1579](https://github.com/cucumber/cucumber-js/issues/1579)
+  [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
+* Rerun functionality will now run nothing if the rerun file is empty from the previous run ([#1302](https://github.com/cucumber/cucumber-js/issues/1302) [#1568](https://github.com/cucumber/cucumber-js/pull/1568))
+* All messages now emitted with project-relative `uri`s
+  ([#1534](https://github.com/cucumber/cucumber-js/issues/1534)
+  [#1672](https://github.com/cucumber/cucumber-js/pull/1672))
+* Json formatter now works with tagged examples
+  ([#1621](https://github.com/cucumber/cucumber-js/issues/1621)
+   [#1651](https://github.com/cucumber/cucumber-js/pull/1651))
+
 ## [7.2.1] (2021-04-21)
 
 ### Fixed
@@ -1825,7 +1851,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.2.1...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.0...master
+[7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
 [7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
 [7.1.0]:        https://github.com/cucumber/cucumber-js/compare/7.1.0-rc.0...7.0.0

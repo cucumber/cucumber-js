@@ -1,17 +1,21 @@
 import * as formatterHelpers from './formatter/helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
+import * as messages from '@cucumber/messages'
 
 // Top level
 export { default as Cli } from './cli'
 export { parseGherkinMessageStream } from './cli/helpers'
 export { default as PickleFilter } from './pickle_filter'
-export { default as Runtime } from './runtime'
+export {
+  default as Runtime,
+  INewRuntimeOptions,
+  IRuntimeOptions,
+} from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
-export { default as Status } from './status'
 export { default as DataTable } from './models/data_table'
 
 // Formatters
-export { default as Formatter } from './formatter'
+export { default as Formatter, IFormatterOptions } from './formatter'
 export { default as FormatterBuilder } from './formatter/builder'
 export { default as JsonFormatter } from './formatter/json_formatter'
 export { default as ProgressFormatter } from './formatter/progress_formatter'
@@ -40,5 +44,11 @@ export const Then = methods.Then
 export const When = methods.When
 export {
   default as World,
+  IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
+export {
+  ITestCaseHookParameter,
+  ITestStepHookParameter,
+} from './support_code_library_builder/types'
+export const Status = messages.TestStepResultStatus

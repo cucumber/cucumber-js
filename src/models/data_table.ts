@@ -1,12 +1,10 @@
-import _, { Dictionary } from 'lodash'
-import { messages } from '@cucumber/messages'
+import _ from 'lodash'
+import * as messages from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]
 
-  constructor(
-    sourceTable: messages.PickleStepArgument.IPickleTable | string[][]
-  ) {
+  constructor(sourceTable: messages.PickleTable | string[][]) {
     if (sourceTable instanceof Array) {
       this.rawTable = sourceTable
     } else {
@@ -33,7 +31,7 @@ export default class DataTable {
     return copy
   }
 
-  rowsHash(): Dictionary<any> {
+  rowsHash(): Record<string, string> {
     const rows = this.raw()
     const everyRowHasTwoColumns = _.every(rows, (row) => row.length === 2)
     if (!everyRowHasTwoColumns) {

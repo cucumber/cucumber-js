@@ -1,42 +1,42 @@
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
+import { IWorld } from './world'
 
 export type DefineStepPattern = string | RegExp
 
 export interface ITestCaseHookParameter {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
-  result?: messages.TestStepFinished.ITestStepResult
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
+  result?: messages.TestStepResult
   testCaseStartedId: string
 }
 
 export interface ITestStepHookParameter {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
-  result: messages.TestStepFinished.ITestStepResult
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
+  result: messages.TestStepResult
   testCaseStartedId: string
   testStepId: string
 }
 
-export type TestCaseHookFunctionWithoutParameter = () => any | Promise<any>
-export type TestCaseHookFunctionWithParameter = (
+export type TestCaseHookFunction<WorldType> = (
+  this: WorldType,
   arg: ITestCaseHookParameter
 ) => any | Promise<any>
-export type TestCaseHookFunction =
-  | TestCaseHookFunctionWithoutParameter
-  | TestCaseHookFunctionWithParameter
 
-export type TestStepHookFunctionWithoutParameter = () => void
-export type TestStepHookFunctionWithParameter = (
+export type TestStepHookFunction<WorldType> = (
+  this: WorldType,
   arg: ITestStepHookParameter
 ) => void
-export type TestStepHookFunction =
-  | TestStepHookFunctionWithoutParameter
-  | TestStepHookFunctionWithParameter
+
+export type TestStepFunction<WorldType> = (
+  this: WorldType,
+  ...args: any[]
+) => any | Promise<any>
 
 export interface IDefineStepOptions {
   timeout?: number
@@ -67,48 +67,90 @@ export interface IParameterTypeDefinition<T> {
 
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: ((pattern: DefineStepPattern, code: Function) => void) &
-    ((
+  defineStep: (<WorldType = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction<WorldType>
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setWorldConstructor: (fn: any) => void
-  After: ((code: TestCaseHookFunction) => void) &
-    ((tags: string, code: TestCaseHookFunction) => void) &
-    ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
-  AfterStep: ((code: TestStepHookFunction) => void) &
-    ((tags: string, code: TestStepHookFunction) => void) &
-    ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
+  After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestCaseHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
+      options: IDefineTestCaseHookOptions,
+      code: TestCaseHookFunction<WorldType>
+    ) => void)
+  AfterStep: (<WorldType = IWorld>(
+    code: TestStepHookFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestStepHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
+      options: IDefineTestStepHookOptions,
+      code: TestStepHookFunction<WorldType>
+    ) => void)
   AfterAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Before: ((code: TestCaseHookFunction) => void) &
-    ((tags: string, code: TestCaseHookFunction) => void) &
-    ((options: IDefineTestCaseHookOptions, code: TestCaseHookFunction) => void)
-  BeforeStep: ((code: TestStepHookFunction) => void) &
-    ((tags: string, code: TestStepHookFunction) => void) &
-    ((options: IDefineTestStepHookOptions, code: TestStepHookFunction) => void)
+  Before: (<WorldType = IWorld>(
+    code: TestCaseHookFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestCaseHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
+      options: IDefineTestCaseHookOptions,
+      code: TestCaseHookFunction<WorldType>
+    ) => void)
+  BeforeStep: (<WorldType = IWorld>(
+    code: TestStepHookFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
+      tags: string,
+      code: TestStepHookFunction<WorldType>
+    ) => void) &
+    (<WorldType = IWorld>(
+      options: IDefineTestStepHookOptions,
+      code: TestStepHookFunction<WorldType>
+    ) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: ((pattern: DefineStepPattern, code: Function) => void) &
-    ((
+  Given: (<WorldType = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction<WorldType>
     ) => void)
-  Then: ((pattern: DefineStepPattern, code: Function) => void) &
-    ((
+  Then: (<WorldType = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction<WorldType>
     ) => void)
-  When: ((pattern: DefineStepPattern, code: Function) => void) &
-    ((
+  When: (<WorldType = IWorld>(
+    pattern: DefineStepPattern,
+    code: TestStepFunction<WorldType>
+  ) => void) &
+    (<WorldType = IWorld>(
       pattern: DefineStepPattern,
       options: IDefineStepOptions,
-      code: Function
+      code: TestStepFunction<WorldType>
     ) => void)
 }
 
@@ -121,7 +163,7 @@ export interface ISupportCodeLibrary {
   readonly beforeTestRunHookDefinitions: TestRunHookDefinition[]
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
-  readonly undefinedParameterTypes: messages.IUndefinedParameterType[]
+  readonly undefinedParameterTypes: messages.UndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
 }

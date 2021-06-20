@@ -142,7 +142,9 @@ export default class Cli {
           supportCodeLibrary,
         }
         if (doesNotHaveValue(formatOptions.colorsEnabled)) {
-          typeOptions.parsedArgvOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
+          typeOptions.parsedArgvOptions.colorsEnabled = (
+            stream as TtyWriteStream
+          ).isTTY
         }
         if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
           const outputToName = outputTo === '' ? 'stdout' : outputTo
@@ -214,16 +216,21 @@ export default class Cli {
       {
         defaultDialect: configuration.featureDefaultLanguage,
         newId,
+        relativeTo: this.cwd,
       }
     )
-    const pickleIds = await parseGherkinMessageStream({
-      cwd: this.cwd,
-      eventBroadcaster,
-      eventDataCollector,
-      gherkinMessageStream,
-      order: configuration.order,
-      pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
-    })
+    let pickleIds: string[] = []
+
+    if (configuration.featurePaths.length > 0) {
+      pickleIds = await parseGherkinMessageStream({
+        cwd: this.cwd,
+        eventBroadcaster,
+        eventDataCollector,
+        gherkinMessageStream,
+        order: configuration.order,
+        pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
+      })
+    }
     emitSupportCodeMessages({
       eventBroadcaster,
       supportCodeLibrary,
@@ -236,17 +243,13 @@ export default class Cli {
         eventBroadcaster,
         eventDataCollector,
         options: configuration.runtimeOptions,
+        newId,
         pickleIds,
         supportCodeLibrary,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
-      await new Promise<void>((resolve) => {
-        parallelRuntimeCoordinator.run(configuration.parallel, (s) => {
-          success = s
-          resolve()
-        })
-      })
+      success = await parallelRuntimeCoordinator.run(configuration.parallel)
     } else {
       const runtime = new Runtime({
         eventBroadcaster,

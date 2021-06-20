@@ -1,5 +1,5 @@
 import Formatter, { IFormatterOptions } from '.'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import resolvePkg from 'resolve-pkg'
 import CucumberHtmlStream from '@cucumber/html-formatter'
 import { doesHaveValue } from '../value_checker'
@@ -13,7 +13,7 @@ export default class HtmlFormatter extends Formatter {
     super(options)
     const cucumberHtmlStream = new CucumberHtmlStream(
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
-        '/dist/cucumber-react.css',
+        '/dist/main.css',
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
         '/dist/main.js'
     )

@@ -1,4 +1,4 @@
-import { When, Then, DataTable } from '../../..'
+import { When, Then, DataTable } from '../../../src'
 import { expect } from 'chai'
 
 When(

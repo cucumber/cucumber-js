@@ -59,7 +59,7 @@ If multiple formats are specified with the same output, only the last is used.
 
 * **message** - prints each [message](https://github.com/cucumber/cucumber/tree/master/cucumber-messages) in NDJSON form, which can then be consumed by other tools.
 * **html** - prints a rich HTML report to a standalone page
-* **json** - prints the feature as JSON. *Note: this formatter is deprecated and will be removed in the next major release. Where you need a structured data representation of your test run, it's best to use the `message` formatter. For legacy tools that depend on the deprecated JSON format, a standalone formatter is available (see https://github.com/cucumber/cucumber/tree/master/json-formatter).
+* **json** - prints the feature as JSON. *Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead.*
 * **progress** - prints one character per scenario (default).
 * **progress-bar** - prints a progress bar and outputs errors/warnings along the way.
 * **rerun** - prints the paths of any non-passing scenarios ([example](/features/rerun_formatter.feature))
@@ -109,15 +109,15 @@ By default, cucumber exits when the event loop drains. Use the `--exit` flag in 
 * [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
 * Isolating what scenario or scenarios causes the hang
 
-## Undefined Step Snippets
-
-Undefined steps snippets are printed in JavaScript using the callback interface by default.
-
 ## --no-strict
 
 disable _strict_ mode.
 
 By default, cucumber works in _strict_ mode, meaning it will fail if there are pending steps.
+
+## Undefined Step Snippets
+
+Undefined steps snippets are printed in JavaScript using the callback interface by default.
 
 ### Interface
 
@@ -138,7 +138,7 @@ Note that the rerun file parser can only work with the default separator for now
 
 ## Parallel
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables:
+You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables (as well as a copy of `process.env` from the coordinator process):
 
 * `CUCUMBER_PARALLEL` - set to 'true'
 * `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
@@ -196,7 +196,9 @@ If your files end with an extension other than `js`, make sure to also include t
 --require-module coffeescript/register --require 'features/**/*.coffee'
 ```
 
-### Typescript
+### TypeScript
+
+Your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
 
 #### With ts-node
 
@@ -227,6 +229,7 @@ require('ts-node').register({
   transpileOnly: true,
   compilerOptions: {
     "module": "commonjs",
+    "resolveJsonModule": true,
   },
 });
 ```
