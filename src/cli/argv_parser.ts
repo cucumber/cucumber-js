@@ -235,9 +235,8 @@ const ArgvParser = {
 
     try {
       program.parse(argv)
-    } catch (err) {
-      // An error is always thrown when program.exitOverride() is set.
-      const commanderError: CommanderError = err
+      // @ts-expect-error
+    } catch (commanderError: CommanderError) {
       if (commanderError.exitCode !== 0) {
         throw commanderError
       }
