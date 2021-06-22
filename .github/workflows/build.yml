@@ -45,4 +45,4 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - run: yarn audit
+      - run: yarn audit --groups dependencies

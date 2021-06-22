@@ -11,6 +11,18 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## [7.3.0] (2021-06-17)
+
+### Added
+
 * Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
   ([#1645](https://github.com/cucumber/cucumber-js/pull/1645))
 
@@ -23,10 +35,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * All `testCase` messages now emitted upfront at the start of the run (relevant for formatter authors) ([#1408](https://github.com/cucumber/cucumber-js/issues/1408)
   [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
 * Clarify that the JSON formatter will not be removed any time soon
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
@@ -1847,7 +1855,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.2.1...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.0...master
+[7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
 [7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
 [7.1.0]:        https://github.com/cucumber/cucumber-js/compare/7.1.0-rc.0...7.0.0
