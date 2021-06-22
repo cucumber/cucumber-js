@@ -8,7 +8,7 @@ const formattedReportUrl = underlineBoldCyan('https://reports.cucumber.io')
 const formattedEnv =
   colors.cyan('CUCUMBER_PUBLISH_ENABLED') + '=' + colors.cyan('true')
 const formattedMoreInfoUrl = underlineBoldCyan(
-  'https://reports.cucumber.io/docs/cucumber-js'
+  'https://cucumber.io/docs/cucumber/environment-variables/'
 )
 
 const text = `\
