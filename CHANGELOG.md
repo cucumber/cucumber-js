@@ -9,6 +9,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ----
 ## [Unreleased] (In Git)
 
+### Breaking changes
+
+* Drop support for Node.js 10 15, add support for Node.js 16
+
 ### Added
 
 ### Changed
@@ -19,7 +23,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
-* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables 
+* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables
 
 ## [7.3.0] (2021-06-17)
 
