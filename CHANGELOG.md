@@ -11,7 +11,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Breaking changes
 
-* Drop support for Node.js 10 15, add support for Node.js 16
+* Drop support for Node.js 10 and 15, add support for Node.js 16
 
 ### Added
 
