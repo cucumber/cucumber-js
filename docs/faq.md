@@ -2,12 +2,15 @@
 
 ## The world instance isn’t available in my hooks or step definitions.
 
-This has frequently been caused by the use of ES6 arrow functions.
-If you are using the world instance (which is bound to `this`) in a step definition, then you cannot use ES6 arrow functions for step definitions or hooks because they bind `this` to the current context which prevents the world instance from being injected. 
+If you are referencing the world instance (which is bound to `this`) in a step definition or hook, then you cannot use ES6 arrow functions.
+
+Cucumber uses [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) internally to call your step definition and hooks functions using the world object as `this`.
+
+Using `apply` [does not work with arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#call_apply_and_bind), so if you need to reference the world, use a regular `function`.
 
 ## Why do my definition patterns need to be globally unique instead of unique only within `Given`, `When`, `Then`?
 
-To encourage a ubiquitous, non-ambiguous domain language. 
+To encourage a ubiquitous, non-ambiguous domain language.
 Using the same language to mean different things is basically the definition of ambiguous.
 If you have similar `Given` and `Then` patterns, try adding the word “should” to `Then` patterns.
 
