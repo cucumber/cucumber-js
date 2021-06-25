@@ -1,6 +1,11 @@
 # World
 
-*World* is an isolated context for each scenario, exposed to the hooks and steps as `this`, enabling you to set and recall some state across the lifecycle of your scenario. A simple example:
+*World* is an isolated context for each scenario, exposed to the hooks and steps as `this`, enabling you to set and recall some state across the lifecycle of your scenario.
+
+Note that your hooks and step definition functions cannot reference the world as `this` if you use
+arrow functions. See [FAQ](../faq.md) for details.
+
+A simple example:
 
 ```javascript
 const { When } = require('@cucumber/cucumber')
@@ -45,12 +50,12 @@ class CustomWorld extends World {
     driver = new seleniumWebdriver.Builder()
         .forBrowser('firefox')
         .build()
-    
+
     constructor(options) {
         // needed so `attach`, `log` and `parameters` are properly set
         super(options)
     }
-    
+
     // Returns a promise that resolves to the element
     async waitForElement(locator) {
         const condition = seleniumWebdriver.until.elementLocated(locator)
