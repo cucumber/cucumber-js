@@ -4,7 +4,8 @@
 
 If you are referencing the world instance (which is bound to `this`) in a step definition or hook, then you cannot use ES6 arrow functions.
 
-Cucumber uses [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) internally to call your step definition and hooks functions using the world object as `this`.
+Cucumber uses [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) internally to call your [step definition](./support_files/step_definitions.md) and
+[hook](./support_files/hooks.md) functions using the world object as `this`.
 
 Using `apply` [does not work with arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#call_apply_and_bind), so if you need to reference the world, use a regular `function`.
 
