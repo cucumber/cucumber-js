@@ -64,7 +64,7 @@ const ArgvParser = {
         const e: Error = error
         throw new Error(`${option} passed invalid JSON: ${e.message}: ${str}`)
       }
-      if (typeof val !== 'object') {
+      if (typeof val !== 'object' || Array.isArray(val)) {
         throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
       return { ...memo, ...val }

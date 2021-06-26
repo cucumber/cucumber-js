@@ -9,16 +9,20 @@ import { IParameterTypeDefinition } from './types'
 export function getDefinitionLineAndUri(cwd: string): ILineAndUri {
   let line: number
   let uri: string
-  const stackframes = StackTrace.getSync()
-  const stackframe = stackframes.find((frame) => {
-    return !isFileNameInCucumber(frame.getFileName())
-  })
-  if (doesHaveValue(stackframe)) {
-    line = stackframe.getLineNumber()
-    uri = stackframe.getFileName()
-    if (doesHaveValue(uri)) {
-      uri = path.relative(cwd, uri)
+  try {
+    const stackframes = StackTrace.getSync()
+    const stackframe = stackframes.find((frame) => {
+      return !isFileNameInCucumber(frame.getFileName())
+    })
+    if (stackframe != null) {
+      line = stackframe.getLineNumber()
+      uri = stackframe.getFileName()
+      if (doesHaveValue(uri)) {
+        uri = path.relative(cwd, uri)
+      }
     }
+  } catch (e) {
+    console.warn('Warning: unable to get definition line and uri', e)
   }
   return {
     line: valueOrDefault(line, 0),
