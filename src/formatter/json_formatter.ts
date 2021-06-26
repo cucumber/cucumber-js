@@ -288,7 +288,7 @@ export default class JsonFormatter extends Formatter {
     ) {
       data.result.error_message = message
     }
-    if (testStepAttachments.length > 0) {
+    if (testStepAttachments?.length > 0) {
       data.embeddings = testStepAttachments.map((attachment) => ({
         data: attachment.body,
         mime_type: attachment.mediaType,
