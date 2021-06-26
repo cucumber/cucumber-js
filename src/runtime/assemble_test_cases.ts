@@ -63,7 +63,8 @@ function makeAfterHookSteps({
   pickle: messages.Pickle
   newId: IdGenerator.NewId
 }): messages.TestStep[] {
-  return supportCodeLibrary.afterTestCaseHookDefinitions.slice(0)
+  return supportCodeLibrary.afterTestCaseHookDefinitions
+    .slice(0)
     .reverse()
     .filter((hookDefinition) => hookDefinition.appliesToTestCase(pickle))
     .map((hookDefinition) => ({

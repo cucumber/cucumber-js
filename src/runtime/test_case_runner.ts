@@ -104,7 +104,8 @@ export default class TestCaseRunner {
   }
 
   getAfterStepHookDefinitions(): TestStepHookDefinition[] {
-    return this.supportCodeLibrary.afterTestStepHookDefinitions.slice(0)
+    return this.supportCodeLibrary.afterTestStepHookDefinitions
+      .slice(0)
       .reverse()
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }

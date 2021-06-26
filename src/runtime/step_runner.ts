@@ -46,9 +46,7 @@ export async function run({
       defaultTimeout
     )
 
-    if (
-      invocationData.validCodeLengths.includes(stepDefinition.code.length)
-    ) {
+    if (invocationData.validCodeLengths.includes(stepDefinition.code.length)) {
       const data = await UserCodeRunner.run({
         argsArray: invocationData.parameters,
         fn: stepDefinition.code,

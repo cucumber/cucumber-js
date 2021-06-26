@@ -29,8 +29,9 @@ export default class RerunFormatter extends Formatter {
 
   logFailedTestCases(): void {
     const mapping: UriToLinesMap = {}
-    this.eventDataCollector.getTestCaseAttempts().forEach(
-      ({ gherkinDocument, pickle, worstTestStepResult }) => {
+    this.eventDataCollector
+      .getTestCaseAttempts()
+      .forEach(({ gherkinDocument, pickle, worstTestStepResult }) => {
         if (
           worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
         ) {
@@ -44,14 +45,13 @@ export default class RerunFormatter extends Formatter {
           }
           mapping[relativeUri].push(line)
         }
-      }
-    )
+      })
     const text = Object.keys(mapping)
-      .map(uri => {
+      .map((uri) => {
         const lines = mapping[uri]
         return `${uri}:${lines.join(':')}`
       })
-      .join(this.separator);
+      .join(this.separator)
     this.log(text)
   }
 }

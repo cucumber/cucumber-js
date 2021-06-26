@@ -96,7 +96,9 @@ export default class JsonFormatter extends Formatter {
 
   formatDataTable(dataTable: messages.PickleTable): any {
     return {
-      rows: dataTable.rows.map((row) => ({ cells: row.cells.map(x => x.value) })),
+      rows: dataTable.rows.map((row) => ({
+        cells: row.cells.map((x) => x.value),
+      })),
     }
   }
 
@@ -127,8 +129,9 @@ export default class JsonFormatter extends Formatter {
 
   onTestRunFinished(): void {
     const groupedTestCaseAttempts: UriToTestCaseAttemptsMap = {}
-    this.eventDataCollector.getTestCaseAttempts().forEach(
-      (testCaseAttempt: ITestCaseAttempt) => {
+    this.eventDataCollector
+      .getTestCaseAttempts()
+      .forEach((testCaseAttempt: ITestCaseAttempt) => {
         if (!testCaseAttempt.worstTestStepResult.willBeRetried) {
           const uri = testCaseAttempt.pickle.uri
           if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
@@ -136,8 +139,7 @@ export default class JsonFormatter extends Formatter {
           }
           groupedTestCaseAttempts[uri].push(testCaseAttempt)
         }
-      }
-    )
+      })
     const features = Object.keys(groupedTestCaseAttempts).map((uri) => {
       const group = groupedTestCaseAttempts[uri]
       const { gherkinDocument } = group[0]

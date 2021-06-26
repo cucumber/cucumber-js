@@ -62,7 +62,7 @@ export class World {
       '--format',
       `message:${messageFilename}`,
     ])
-    const env = { ...process.env, ...this.sharedEnv, ...envOverride}
+    const env = { ...process.env, ...this.sharedEnv, ...envOverride }
     const cwd = this.tmpDir
 
     let result: IRunResult

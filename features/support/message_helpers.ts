@@ -203,7 +203,7 @@ function getPickleStepByStepText(
   stepText: string
 ): messages.PickleStep {
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-  return _.find(pickle.steps, (s) => {
+  return pickle.steps.find((s) => {
     const keyword = getStepKeyword({ pickleStep: s, gherkinStepMap })
     return `${keyword}${s.text}` === stepText
   })

@@ -2,7 +2,6 @@ import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
-import { moveMessagePortToContext } from 'worker_threads'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
@@ -68,7 +67,7 @@ const ArgvParser = {
       if (typeof val !== 'object') {
         throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
-      return {...memo, ...val }
+      return { ...memo, ...val }
     }
   },
 

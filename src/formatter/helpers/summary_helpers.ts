@@ -3,7 +3,6 @@ import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
-import { Status } from '../..'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,
@@ -71,9 +70,9 @@ function getCountSummary({
   objects,
   type,
 }: IGetCountSummaryRequest): string {
-  const counts: Record<string, number> = {};
-  STATUS_REPORT_ORDER.forEach(x => counts[x] = 0);
-  objects.forEach(x => counts[x.status] += 1);
+  const counts: Record<string, number> = {}
+  STATUS_REPORT_ORDER.forEach((x) => (counts[x] = 0))
+  objects.forEach((x) => (counts[x.status] += 1))
   const total = Object.values(counts).reduce((acc, x) => acc + x, 0)
   let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {

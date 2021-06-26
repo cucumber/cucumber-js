@@ -21,7 +21,7 @@ export default class StackTraceFilter {
         if (this.isErrorInCucumber(frames)) {
           return frames
         }
-        const index = frames.findIndex(x => this.isFrameInCucumber(x))
+        const index = frames.findIndex((x) => this.isFrameInCucumber(x))
         if (index === -1) {
           return frames
         }
@@ -31,7 +31,7 @@ export default class StackTraceFilter {
   }
 
   isErrorInCucumber(frames: CallSite[]): boolean {
-    const filteredFrames = frames.filter(x => !this.isFrameInNode(x))
+    const filteredFrames = frames.filter((x) => !this.isFrameInNode(x))
     return (
       filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
     )

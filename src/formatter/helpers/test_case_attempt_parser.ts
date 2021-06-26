@@ -141,7 +141,9 @@ export function parseTestCaseAttempt({
     name: pickle.name,
     sourceLocation: {
       uri: relativePickleUri,
-      line: gherkinScenarioLocationMap[pickle.astNodeIds[pickle.astNodeIds.length - 1]].line,
+      line: gherkinScenarioLocationMap[
+        pickle.astNodeIds[pickle.astNodeIds.length - 1]
+      ].line,
     },
     worstTestStepResult: testCaseAttempt.worstTestStepResult,
   }

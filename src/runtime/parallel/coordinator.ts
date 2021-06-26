@@ -145,7 +145,7 @@ export default class Coordinator {
     if (!success) {
       this.success = false
     }
-    if (Object.values(this.workers).every(x => x.closed)) {
+    if (Object.values(this.workers).every((x) => x.closed)) {
       const envelope: messages.Envelope = {
         testRunFinished: {
           timestamp: this.stopwatch.timestamp(),
@@ -187,7 +187,7 @@ export default class Coordinator {
     })
     return await new Promise<boolean>((resolve) => {
       for (let i = 0; i <= numberOfWorkers; i++) {
-        this.startWorker(i.toString(), numberOfWorkers);
+        this.startWorker(i.toString(), numberOfWorkers)
       }
       this.onFinish = resolve
     })

@@ -193,7 +193,10 @@ export default class ConfigurationBuilder {
 
       mapping[publishUrl] = 'message'
     }
-    return Object.keys(mapping).map((type) => ({ outputTo: mapping[type], type }))
+    return Object.keys(mapping).map((outputTo) => ({
+      outputTo,
+      type: mapping[outputTo],
+    }))
   }
 
   isTruthyString(s: string | undefined): boolean {
@@ -210,13 +213,13 @@ export default class ConfigurationBuilder {
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
           const content = await fs.readFile(filePath, 'utf8')
-          return content.split('\n').map(x => x.trim())
+          return content.split('\n').map((x) => x.trim())
         }
         return [arg]
       })
       const featurePaths = nestedFeaturePaths.flat()
       if (featurePaths.length > 0) {
-        return featurePaths.filter(x => x !== "")
+        return featurePaths.filter((x) => x !== '')
       }
     }
     return ['features/**/*.{feature,feature.md}']

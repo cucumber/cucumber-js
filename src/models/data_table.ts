@@ -19,7 +19,7 @@ export default class DataTable {
     const valuesArray = copy.slice(1)
     return valuesArray.map((values) => {
       const rowObject: Record<string, string> = {}
-      keys.forEach((key, index) => rowObject[key] = values[index]);
+      keys.forEach((key, index) => (rowObject[key] = values[index]))
       return rowObject
     })
   }
@@ -43,7 +43,7 @@ export default class DataTable {
       )
     }
     const result: Record<string, string> = {}
-    rows.forEach(x => result[x[0]] = x[1])
+    rows.forEach((x) => (result[x[0]] = x[1]))
     return result
   }
 

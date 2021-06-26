@@ -1,5 +1,4 @@
 import * as messages from '@cucumber/messages'
-import { Scenario } from '@cucumber/messages';
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(
@@ -9,8 +8,10 @@ export function getGherkinStepMap(
   gherkinDocument.feature.children
     .map(extractStepContainers)
     .flat()
-    .forEach(x => x.steps.forEach((step: messages.Step) => result[step.id] = step))
-  return result;
+    .forEach((x) =>
+      x.steps.forEach((step: messages.Step) => (result[step.id] = step))
+    )
+  return result
 }
 
 function extractStepContainers(
@@ -40,11 +41,11 @@ export function getGherkinScenarioMap(
       return [child]
     })
     .flat()
-    .forEach(x => {
+    .forEach((x) => {
       if (x.scenario != null) {
         result[x.scenario.id] = x.scenario
       }
-    });
+    })
   return result
 }
 
@@ -53,10 +54,11 @@ export function getGherkinExampleRuleMap(
 ): Record<string, messages.Rule> {
   const result: Record<string, messages.Rule> = {}
   gherkinDocument.feature.children
-    .filter(x => x.rule != null)
-    .forEach(x => x.rule.children
+    .filter((x) => x.rule != null)
+    .forEach((x) =>
+      x.rule.children
         .filter((child) => doesHaveValue(child.scenario))
-        .forEach((child) => result[child.scenario.id] = x.rule)
+        .forEach((child) => (result[child.scenario.id] = x.rule))
     )
   return result
 }
@@ -71,9 +73,11 @@ export function getGherkinScenarioLocationMap(
     const scenario = scenarioMap[id]
     locationMap[id] = scenario.location
     if (doesHaveValue(scenario.examples)) {
-      scenario.examples
-        .forEach(x => x.tableBody
-          .forEach((tableRow) => locationMap[tableRow.id] = tableRow.location))
+      scenario.examples.forEach((x) =>
+        x.tableBody.forEach(
+          (tableRow) => (locationMap[tableRow.id] = tableRow.location)
+        )
+      )
     }
   })
   return locationMap

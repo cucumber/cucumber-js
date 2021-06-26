@@ -22,9 +22,7 @@ export function getScenarioDescription({
 }: IGetScenarioDescriptionRequest): string {
   return pickle.astNodeIds
     .map((id) => gherkinScenarioMap[id])
-    .filter(x => x != null)
-    [0]
-    .description
+    .filter((x) => x != null)[0].description
 }
 
 export function getStepKeyword({
@@ -33,17 +31,14 @@ export function getStepKeyword({
 }: IGetStepKeywordRequest): string {
   return pickleStep.astNodeIds
     .map((id) => gherkinStepMap[id])
-    .filter(x => x != null)
-    [0]
-    .keyword
+    .filter((x) => x != null)[0].keyword
 }
 
 export function getPickleStepMap(
   pickle: messages.Pickle
 ): Record<string, messages.PickleStep> {
   const result: Record<string, messages.PickleStep> = {}
-  pickle.steps
-    .forEach((pickleStep) => result[pickleStep.id] = pickleStep)
+  pickle.steps.forEach((pickleStep) => (result[pickleStep.id] = pickleStep))
   return result
 }
 
@@ -53,5 +48,7 @@ export function getPickleLocation({
 }: IGetPickleLocationRequest): messages.Location {
   const gherkinScenarioLocationMap =
     getGherkinScenarioLocationMap(gherkinDocument)
-  return gherkinScenarioLocationMap[pickle.astNodeIds[pickle.astNodeIds.length - 1]]
+  return gherkinScenarioLocationMap[
+    pickle.astNodeIds[pickle.astNodeIds.length - 1]
+  ]
 }

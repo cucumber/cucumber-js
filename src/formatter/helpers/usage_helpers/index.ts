@@ -88,7 +88,7 @@ function buildMapping({
 
 function normalizeDuration(duration?: messages.Duration): number {
   if (duration == null) {
-    return Number.MAX_SAFE_INTEGER
+    return Number.MIN_SAFE_INTEGER
   }
   return messages.TimeConversion.durationToMilliseconds(duration)
 }
@@ -96,21 +96,32 @@ function normalizeDuration(duration?: messages.Duration): number {
 function buildResult(mapping: Record<string, IUsage>): IUsage[] {
   return Object.keys(mapping)
     .map((stepDefinitionId) => {
-      const { matches, ...rest } = mapping[stepDefinitionId];
+      const { matches, ...rest } = mapping[stepDefinitionId]
       const sortedMatches = matches.sort((a: IUsageMatch, b: IUsageMatch) => {
-        return normalizeDuration(b.duration) - normalizeDuration(a.duration);
+        if (a.duration === b.duration) {
+          return a.text < b.text ? -1 : 1
+        }
+        return normalizeDuration(b.duration) - normalizeDuration(a.duration)
       })
       const result = { matches: sortedMatches, ...rest }
       const durations: messages.Duration[] = matches
-        .filter(m => m.duration != null)
-        .map(m => m.duration);
+        .filter((m) => m.duration != null)
+        .map((m) => m.duration)
       if (durations.length > 0) {
-        const totalMilliseconds = durations.reduce((acc, x) => acc + messages.TimeConversion.durationToMilliseconds(x), 0)
-        result.meanDuration = messages.TimeConversion.millisecondsToDuration(totalMilliseconds / durations.length)
+        const totalMilliseconds = durations.reduce(
+          (acc, x) => acc + messages.TimeConversion.durationToMilliseconds(x),
+          0
+        )
+        result.meanDuration = messages.TimeConversion.millisecondsToDuration(
+          totalMilliseconds / durations.length
+        )
       }
       return result
     })
-    .sort((a: IUsage, b: IUsage) => normalizeDuration(b.meanDuration) - normalizeDuration(a.meanDuration))
+    .sort(
+      (a: IUsage, b: IUsage) =>
+        normalizeDuration(b.meanDuration) - normalizeDuration(a.meanDuration)
+    )
 }
 
 export function getUsage({

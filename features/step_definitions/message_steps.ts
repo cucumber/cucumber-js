@@ -73,7 +73,7 @@ Then(
       this.lastRun.envelopes,
       pickleName
     )
-    const testStepResult = testStepResults.find(x => x.text === stepText)
+    const testStepResult = testStepResults.find((x) => x.text === stepText)
     expect(testStepResult.result.status).to.eql(
       status.toUpperCase() as messages.TestStepResultStatus
     )
@@ -94,7 +94,7 @@ Then(
       pickleName,
       attempt
     )
-    const testStepResult = testStepResults.find(x => x.text === stepText)
+    const testStepResult = testStepResults.find((x) => x.text === stepText)
     expect(testStepResult.result.status).to.eql(
       status.toUpperCase() as messages.TestStepResultStatus
     )
@@ -113,7 +113,7 @@ Then(
       this.lastRun.envelopes,
       pickleName
     )
-    const testStepResult = testStepResults.find(x => x.text === hookKeyword)
+    const testStepResult = testStepResults.find((x) => x.text === hookKeyword)
     expect(testStepResult.result.status).to.eql(
       status.toUpperCase() as messages.TestStepResultStatus
     )
@@ -132,7 +132,7 @@ Then(
       this.lastRun.envelopes,
       pickleName
     )
-    const testStepResult = testStepResults.find(x => x.text === stepText)
+    const testStepResult = testStepResults.find((x) => x.text === stepText)
     if (semver.satisfies(process.version, '>=14.0.0')) {
       errorMessage = errorMessage.replace(
         '{ member: [Circular] }',
@@ -160,7 +160,7 @@ Then(
       pickleName,
       attempt
     )
-    const testStepResult = testStepResults.find(x => x.text === stepText)
+    const testStepResult = testStepResults.find((x) => x.text === stepText)
     expect(testStepResult.result.status).to.eql(
       messages.TestStepResultStatus.FAILED
     )

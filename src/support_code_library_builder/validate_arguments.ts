@@ -1,4 +1,3 @@
-import { doesNotHaveValue } from '../value_checker'
 import { DefineStepPattern, IDefineStepOptions } from './types'
 
 interface IValidation {
@@ -16,7 +15,7 @@ interface IDefineStepArguments {
 const optionsValidation = {
   expectedType: 'object or function',
   predicate({ options }: IDefineStepArguments) {
-    return typeof(options) === 'object'
+    return typeof options === 'object'
   },
 }
 
@@ -24,14 +23,14 @@ const optionsTimeoutValidation = {
   identifier: '"options.timeout"',
   expectedType: 'integer',
   predicate({ options }: IDefineStepArguments) {
-    return options.timeout == null && typeof(options.timeout) == 'number'
+    return options.timeout == null || typeof options.timeout === 'number'
   },
 }
 
 const fnValidation = {
   expectedType: 'function',
   predicate({ code }: IDefineStepArguments) {
-    return typeof(code) === 'function'
+    return typeof code === 'function'
   },
 }
 
@@ -47,7 +46,7 @@ const validations: Record<string, IValidation[]> = {
       identifier: '"options.tags"',
       expectedType: 'string',
       predicate({ options }) {
-        return options.tags == null || typeof(options.tags) === 'string'
+        return options.tags == null || typeof options.tags === 'string'
       },
     },
     optionsTimeoutValidation,
@@ -59,7 +58,7 @@ const validations: Record<string, IValidation[]> = {
       identifier: '"options.tags"',
       expectedType: 'string',
       predicate({ options }) {
-        return options.tags == null || typeof(options.tags) === 'string'
+        return options.tags == null || typeof options.tags === 'string'
       },
     },
     optionsTimeoutValidation,
@@ -70,7 +69,7 @@ const validations: Record<string, IValidation[]> = {
       identifier: 'first argument',
       expectedType: 'string or regular expression',
       predicate({ pattern }) {
-        return pattern instanceof RegExp || typeof(pattern) === 'string'
+        return pattern instanceof RegExp || typeof pattern === 'string'
       },
     },
     { identifier: 'second argument', ...optionsValidation },
