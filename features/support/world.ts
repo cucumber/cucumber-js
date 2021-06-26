@@ -7,7 +7,6 @@ import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
-import _ from 'lodash'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
@@ -63,7 +62,7 @@ export class World {
       '--format',
       `message:${messageFilename}`,
     ])
-    const env = _.merge({}, process.env, this.sharedEnv, envOverride)
+    const env = { ...process.env, ...this.sharedEnv, ...envOverride}
     const cwd = this.tmpDir
 
     let result: IRunResult

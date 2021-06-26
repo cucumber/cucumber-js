@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import stackChain from 'stack-chain'
 import path from 'path'
 import { valueOrDefault } from './value_checker'
@@ -8,8 +7,8 @@ const projectRootPath = path.join(__dirname, '..')
 const projectChildDirs = ['src', 'lib', 'node_modules']
 
 export function isFileNameInCucumber(fileName: string): boolean {
-  return _.some(projectChildDirs, (dir) =>
-    _.startsWith(fileName, path.join(projectRootPath, dir))
+  return projectChildDirs.some((dir) =>
+    fileName.startsWith(path.join(projectRootPath, dir))
   )
 }
 
@@ -22,7 +21,7 @@ export default class StackTraceFilter {
         if (this.isErrorInCucumber(frames)) {
           return frames
         }
-        const index = _.findIndex(frames, this.isFrameInCucumber.bind(this))
+        const index = frames.findIndex(x => this.isFrameInCucumber(x))
         if (index === -1) {
           return frames
         }
@@ -32,7 +31,7 @@ export default class StackTraceFilter {
   }
 
   isErrorInCucumber(frames: CallSite[]): boolean {
-    const filteredFrames = _.reject(frames, this.isFrameInNode.bind(this))
+    const filteredFrames = frames.filter(x => !this.isFrameInNode(x))
     return (
       filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
     )
@@ -45,7 +44,7 @@ export default class StackTraceFilter {
 
   isFrameInNode(frame: CallSite): boolean {
     const fileName = valueOrDefault(frame.getFileName(), '')
-    return !_.includes(fileName, path.sep)
+    return !fileName.includes(path.sep)
   }
 
   unfilter(): void {

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import ArgvParser, {
   IParsedArgvFormatOptions,
   IParsedArgvOptions,
@@ -135,10 +134,10 @@ export default class ConfigurationBuilder {
           }
           return [match]
         })
-        return _.flatten(expanded)
+        return expanded.flat()
       }
     )
-    return _.flatten(expandedPaths).map((x) => path.normalize(x))
+    return expandedPaths.flat().map((x) => path.normalize(x))
   }
 
   async expandFeaturePaths(featurePaths: string[]): Promise<string[]> {
@@ -162,7 +161,7 @@ export default class ConfigurationBuilder {
       }
       return path.relative(this.cwd, featureDir)
     })
-    return _.uniq(featureDirs)
+    return [...new Set(featureDirs)]
   }
 
   isPublishing(): boolean {
@@ -194,7 +193,7 @@ export default class ConfigurationBuilder {
 
       mapping[publishUrl] = 'message'
     }
-    return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
+    return Object.keys(mapping).map((type) => ({ outputTo: mapping[type], type }))
   }
 
   isTruthyString(s: string | undefined): boolean {
@@ -211,13 +210,13 @@ export default class ConfigurationBuilder {
         if (filename[0] === '@') {
           const filePath = path.join(this.cwd, arg)
           const content = await fs.readFile(filePath, 'utf8')
-          return _.chain(content).split('\n').map(_.trim).value()
+          return content.split('\n').map(x => x.trim())
         }
         return [arg]
       })
       const featurePaths = _.flatten(nestedFeaturePaths)
       if (featurePaths.length > 0) {
-        return _.compact(featurePaths)
+        return featurePaths.filter(x => x !== "")
       }
     }
     return ['features/**/*.{feature,feature.md}']
