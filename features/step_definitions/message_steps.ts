@@ -19,8 +19,7 @@ const ENCODING_MAP: { [key: string]: messages.AttachmentContentEncoding } = {
 }
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
-  const testCaseStartedEvents = filter(
-    this.lastRun.envelopes,
+  const testCaseStartedEvents = this.lastRun.envelopes.filter(
     (e) => e.testCaseStarted
   )
   expect(testCaseStartedEvents).to.have.lengthOf(expectedCount)
