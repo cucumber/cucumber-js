@@ -37,10 +37,15 @@ Feature: Target specific scenarios
     Then it fails
     And it runs the scenario "second scenario - X"
 
-  Scenario: run multiple scenarios
-    When I run cucumber-js with `features/a.feature:2:10`
+  Scenario Outline: run multiple scenarios
+    When I run cucumber-js with `<args>`
     Then it fails
     And it runs the scenarios:
       | NAME                |
       | first scenario      |
       | second scenario - X |
+
+    Examples:
+      | args                                       |
+      | features/a.feature:2:10                    |
+      | features/a.feature:2 features/a.feature:10 |
