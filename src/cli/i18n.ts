@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { dialects } from '@cucumber/gherkin'
 import Table from 'cli-table3'
 import { capitalCase } from 'capital-case'
@@ -47,18 +46,18 @@ function getAsTable(header: string[], rows: string[][]): string {
 }
 
 export function getLanguages(): string {
-  const rows = _.map(dialects, (data, isoCode) => [
+  const rows = Object.keys(dialects).map((isoCode) => [
     isoCode,
-    data.name,
-    data.native,
+    dialects[isoCode].name,
+    dialects[isoCode].native,
   ])
   return getAsTable(['ISO 639-1', 'ENGLISH NAME', 'NATIVE NAME'], rows)
 }
 
 export function getKeywords(isoCode: string): string {
   const language = dialects[isoCode]
-  const rows = _.map(keywords, (keyword) => {
-    const words = _.map(language[keyword], (s) => `"${s}"`).join(', ')
+  const rows = keywords.map((keyword) => {
+    const words = language[keyword].map((s) => `"${s}"`).join(', ')
     return [capitalCase(keyword), words]
   })
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)

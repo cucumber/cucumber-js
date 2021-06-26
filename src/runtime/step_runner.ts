@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
 import * as messages from '@cucumber/messages'
@@ -48,7 +47,7 @@ export async function run({
     )
 
     if (
-      _.includes(invocationData.validCodeLengths, stepDefinition.code.length)
+      invocationData.validCodeLengths.includes(stepDefinition.code.length)
     ) {
       const data = await UserCodeRunner.run({
         argsArray: invocationData.parameters,

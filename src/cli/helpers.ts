@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
@@ -29,7 +28,7 @@ export async function getExpandedArgv({
   let fullArgv = argv
   const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
   if (profileArgv.length > 0) {
-    fullArgv = _.concat(argv.slice(0, 2), profileArgv, argv.slice(2))
+    fullArgv = argv.slice(0, 2).concat(profileArgv).concat(argv.slice(2))
   }
   return fullArgv
 }

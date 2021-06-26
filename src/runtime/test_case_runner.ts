@@ -1,4 +1,3 @@
-import { clone } from 'lodash'
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
@@ -105,7 +104,7 @@ export default class TestCaseRunner {
   }
 
   getAfterStepHookDefinitions(): TestStepHookDefinition[] {
-    return clone(this.supportCodeLibrary.afterTestStepHookDefinitions)
+    return this.supportCodeLibrary.afterTestStepHookDefinitions.slice(0)
       .reverse()
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }

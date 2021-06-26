@@ -1,4 +1,3 @@
-import _, { clone } from 'lodash'
 import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
@@ -153,7 +152,7 @@ export default class Runtime {
       await this.runTestCase(pickleId, assembledTestCases[pickleId])
     })
     await this.runTestRunHooks(
-      clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
+      this.supportCodeLibrary.afterTestRunHookDefinitions.slice(0).reverse(),
       'an AfterAll'
     )
     this.stopwatch.stop()
@@ -178,6 +177,6 @@ export default class Runtime {
     ]
     if (this.options.strict)
       failureStatuses.push(messages.TestStepResultStatus.PENDING)
-    return _.includes(failureStatuses, status)
+    return failureStatuses.includes(status)
   }
 }

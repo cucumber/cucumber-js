@@ -1,4 +1,3 @@
-import _, { Dictionary } from 'lodash'
 import { getGherkinStepMap } from '../../src/formatter/helpers/gherkin_document_parser'
 import {
   getPickleStepMap,
@@ -18,12 +17,12 @@ export interface IStepTextAndResult {
 export function getPickleNamesInOrderOfExecution(
   envelopes: messages.Envelope[]
 ): string[] {
-  const pickleNameMap: Dictionary<string> = _.chain(envelopes)
+  const pickleNameMap: Record<string, string> = _.chain(envelopes)
     .filter((e) => doesHaveValue(e.pickle))
     .map((e) => [e.pickle.id, e.pickle.name])
     .fromPairs()
     .value()
-  const testCaseToPickleNameMap: Dictionary<string> = _.chain(envelopes)
+  const testCaseToPickleNameMap: Record<string, string> = _.chain(envelopes)
     .filter((e) => doesHaveValue(e.testCase))
     .map((e) => [e.testCase.id, pickleNameMap[e.testCase.pickleId]])
     .fromPairs()

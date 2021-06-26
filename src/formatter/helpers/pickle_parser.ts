@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 import * as messages from '@cucumber/messages'
 
@@ -21,31 +20,31 @@ export function getScenarioDescription({
   pickle,
   gherkinScenarioMap,
 }: IGetScenarioDescriptionRequest): string {
-  return _.chain(pickle.astNodeIds)
+  return pickle.astNodeIds
     .map((id) => gherkinScenarioMap[id])
-    .compact()
-    .first()
-    .value().description
+    .filter(x => x != null)
+    [0]
+    .description
 }
 
 export function getStepKeyword({
   pickleStep,
   gherkinStepMap,
 }: IGetStepKeywordRequest): string {
-  return _.chain(pickleStep.astNodeIds)
+  return pickleStep.astNodeIds
     .map((id) => gherkinStepMap[id])
-    .compact()
-    .first()
-    .value().keyword
+    .filter(x => x != null)
+    [0]
+    .keyword
 }
 
 export function getPickleStepMap(
   pickle: messages.Pickle
 ): Record<string, messages.PickleStep> {
-  return _.chain(pickle.steps)
-    .map((pickleStep) => [pickleStep.id, pickleStep])
-    .fromPairs()
-    .value()
+  const result: Record<string, messages.PickleStep> = {}
+  pickle.steps
+    .forEach((pickleStep) => result[pickleStep.id] = pickleStep)
+  return result
 }
 
 export function getPickleLocation({
@@ -54,5 +53,5 @@ export function getPickleLocation({
 }: IGetPickleLocationRequest): messages.Location {
   const gherkinScenarioLocationMap =
     getGherkinScenarioLocationMap(gherkinDocument)
-  return gherkinScenarioLocationMap[_.last(pickle.astNodeIds)]
+  return gherkinScenarioLocationMap[pickle.astNodeIds[pickle.astNodeIds.length - 1]]
 }

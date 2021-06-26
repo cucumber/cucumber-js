@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import colors from 'colors/safe'
 import { TestStepResultStatus } from '@cucumber/messages'
 
@@ -32,10 +31,10 @@ export default function getColorFns(enabled: boolean): IColorFns {
   } else {
     return {
       forStatus(status: TestStepResultStatus) {
-        return _.identity
+        return (x) => x
       },
-      location: _.identity,
-      tag: _.identity,
+      location: (x) => x,
+      tag: (x) => x,
     }
   }
 }

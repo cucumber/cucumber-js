@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import * as messages from '@cucumber/messages'
 
 export default class DataTable {
@@ -18,7 +17,11 @@ export default class DataTable {
     const copy = this.raw()
     const keys = copy[0]
     const valuesArray = copy.slice(1)
-    return valuesArray.map((values) => _.zipObject(keys, values))
+    return valuesArray.map((values) => {
+      const rowObject: Record<string, string> = {}
+      keys.forEach((key, index) => rowObject[key] = values[index]);
+      return rowObject
+    })
   }
 
   raw(): string[][] {
@@ -33,13 +36,15 @@ export default class DataTable {
 
   rowsHash(): Record<string, string> {
     const rows = this.raw()
-    const everyRowHasTwoColumns = _.every(rows, (row) => row.length === 2)
+    const everyRowHasTwoColumns = rows.every((row) => row.length === 2)
     if (!everyRowHasTwoColumns) {
       throw new Error(
         'rowsHash can only be called on a data table where all rows have exactly two columns'
       )
     }
-    return _.fromPairs(rows)
+    const result: Record<string, string> = {}
+    rows.forEach(x => result[x[0]] = x[1])
+    return result
   }
 
   transpose(): DataTable {

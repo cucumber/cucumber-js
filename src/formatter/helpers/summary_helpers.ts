@@ -1,9 +1,9 @@
-import _ from 'lodash'
 import Duration from 'duration'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
+import { Status } from '../..'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,
@@ -37,7 +37,7 @@ export function formatSummary({
     })
     if (!worstTestStepResult.willBeRetried) {
       testCaseResults.push(worstTestStepResult)
-      _.each(testCase.testSteps, (testStep) => {
+      testCase.testSteps.forEach((testStep) => {
         if (doesHaveValue(testStep.pickleStepId)) {
           testStepResults.push(stepResults[testStep.id])
         }
@@ -71,8 +71,10 @@ function getCountSummary({
   objects,
   type,
 }: IGetCountSummaryRequest): string {
-  const counts = _.chain(objects).groupBy('status').mapValues('length').value()
-  const total = _.chain(counts).values().sum().value()
+  const counts: Record<string, number> = {};
+  STATUS_REPORT_ORDER.forEach(x => counts[x] = 0);
+  objects.forEach(x => counts[x.status] += 1);
+  const total = Object.values(counts).reduce((acc, x) => acc + x, 0)
   let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
     const details: string[] = []

@@ -1,6 +1,5 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import _ from 'lodash'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { testFormatter } from '../../test/formatter_helpers'
 
@@ -162,12 +161,12 @@ describe('RerunFormatter', () => {
   })
 
   describe('with two failing scenarios in different files', () => {
-    _.each(
-      [
-        { separator: { opt: undefined, expected: '\n' }, label: 'default' },
-        { separator: { opt: '\n', expected: '\n' }, label: 'newline' },
-        { separator: { opt: ' ', expected: ' ' }, label: 'space' },
-      ],
+    const examples = [
+      { separator: { opt: undefined, expected: '\n' }, label: 'default' },
+      { separator: { opt: '\n', expected: '\n' }, label: 'newline' },
+      { separator: { opt: ' ', expected: ' ' }, label: 'space' },
+    ];
+    examples.forEach(
       ({ separator, label }) => {
         describe(`using ${label} separator`, () => {
           it('outputs the reference needed to run the scenario again', async () => {

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
 import { retriesForPickle } from '../helpers'
@@ -100,11 +99,12 @@ export default class Coordinator {
   startWorker(id: string, total: number): void {
     const workerProcess = fork(runWorkerPath, [], {
       cwd: this.cwd,
-      env: _.assign({}, process.env, {
+      env: {
+        ...process.env,
         CUCUMBER_PARALLEL: 'true',
-        CUCUMBER_TOTAL_WORKERS: total,
+        CUCUMBER_TOTAL_WORKERS: total.toString(),
         CUCUMBER_WORKER_ID: id,
-      }),
+      },
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
     const worker = { closed: false, process: workerProcess }
@@ -145,7 +145,7 @@ export default class Coordinator {
     if (!success) {
       this.success = false
     }
-    if (_.every(this.workers, 'closed')) {
+    if (Object.values(this.workers).every(x => x.closed)) {
       const envelope: messages.Envelope = {
         testRunFinished: {
           timestamp: this.stopwatch.timestamp(),
@@ -186,9 +186,9 @@ export default class Coordinator {
       supportCodeLibrary: this.supportCodeLibrary,
     })
     return await new Promise<boolean>((resolve) => {
-      _.times(numberOfWorkers, (id) =>
-        this.startWorker(id.toString(), numberOfWorkers)
-      )
+      for (let i = 0; i <= numberOfWorkers; i++) {
+        this.startWorker(i.toString(), numberOfWorkers);
+      }
       this.onFinish = resolve
     })
   }
@@ -223,7 +223,7 @@ export default class Coordinator {
 
   shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
     return (
-      _.includes(['AMBIGUOUS', 'FAILED', 'UNDEFINED'], status) ||
+      ['AMBIGUOUS', 'FAILED', 'UNDEFINED'].includes(status) ||
       (status === 'PENDING' && this.options.strict)
     )
   }

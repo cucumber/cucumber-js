@@ -214,7 +214,7 @@ export default class ConfigurationBuilder {
         }
         return [arg]
       })
-      const featurePaths = _.flatten(nestedFeaturePaths)
+      const featurePaths = nestedFeaturePaths.flat()
       if (featurePaths.length > 0) {
         return featurePaths.filter(x => x !== "")
       }

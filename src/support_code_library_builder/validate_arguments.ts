@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { doesNotHaveValue } from '../value_checker'
 import { DefineStepPattern, IDefineStepOptions } from './types'
 
@@ -17,7 +16,7 @@ interface IDefineStepArguments {
 const optionsValidation = {
   expectedType: 'object or function',
   predicate({ options }: IDefineStepArguments) {
-    return _.isPlainObject(options)
+    return typeof(options) === 'object'
   },
 }
 
@@ -25,14 +24,14 @@ const optionsTimeoutValidation = {
   identifier: '"options.timeout"',
   expectedType: 'integer',
   predicate({ options }: IDefineStepArguments) {
-    return doesNotHaveValue(options.timeout) || _.isInteger(options.timeout)
+    return options.timeout == null && typeof(options.timeout) == 'number'
   },
 }
 
 const fnValidation = {
   expectedType: 'function',
   predicate({ code }: IDefineStepArguments) {
-    return _.isFunction(code)
+    return typeof(code) === 'function'
   },
 }
 
@@ -48,7 +47,7 @@ const validations: Record<string, IValidation[]> = {
       identifier: '"options.tags"',
       expectedType: 'string',
       predicate({ options }) {
-        return doesNotHaveValue(options.tags) || _.isString(options.tags)
+        return options.tags == null || typeof(options.tags) === 'string'
       },
     },
     optionsTimeoutValidation,
@@ -60,7 +59,7 @@ const validations: Record<string, IValidation[]> = {
       identifier: '"options.tags"',
       expectedType: 'string',
       predicate({ options }) {
-        return doesNotHaveValue(options.tags) || _.isString(options.tags)
+        return options.tags == null || typeof(options.tags) === 'string'
       },
     },
     optionsTimeoutValidation,
@@ -71,7 +70,7 @@ const validations: Record<string, IValidation[]> = {
       identifier: 'first argument',
       expectedType: 'string or regular expression',
       predicate({ pattern }) {
-        return _.isRegExp(pattern) || _.isString(pattern)
+        return pattern instanceof RegExp || typeof(pattern) === 'string'
       },
     },
     { identifier: 'second argument', ...optionsValidation },

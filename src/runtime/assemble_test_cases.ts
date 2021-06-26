@@ -4,7 +4,6 @@ import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { Group } from '@cucumber/cucumber-expressions'
 import { doesHaveValue } from '../value_checker'
-import { clone } from 'lodash'
 
 export declare type IAssembledTestCases = Record<string, messages.TestCase>
 
@@ -64,7 +63,7 @@ function makeAfterHookSteps({
   pickle: messages.Pickle
   newId: IdGenerator.NewId
 }): messages.TestStep[] {
-  return clone(supportCodeLibrary.afterTestCaseHookDefinitions)
+  return supportCodeLibrary.afterTestCaseHookDefinitions.slice(0)
     .reverse()
     .filter((hookDefinition) => hookDefinition.appliesToTestCase(pickle))
     .map((hookDefinition) => ({
