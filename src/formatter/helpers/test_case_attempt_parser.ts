@@ -150,8 +150,12 @@ export function parseTestCaseAttempt({
   let isBeforeHook = true
   let previousKeywordType = KeywordType.Precondition
   _.each(testCase.testSteps, (testStep) => {
-    const testStepResult = testCaseAttempt.stepResults[testStep.id]
+    const testStepResult = testCaseAttempt.stepResults[testStep.id] || {
+      status: Status.UNKNOWN,
+    }
+    
     isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
+
     let keyword, keywordType, pickleStep
     if (doesHaveValue(testStep.pickleStepId)) {
       pickleStep = pickleStepMap[testStep.pickleStepId]
