@@ -59,8 +59,6 @@ export default class ConfigurationBuilder {
 
   constructor({ argv, cwd }: INewConfigurationBuilderOptions) {
     this.cwd = cwd
-
-    ArgvParser.lint(argv)
     const parsedArgv = ArgvParser.parse(argv)
     this.args = parsedArgv.args
     this.options = parsedArgv.options
