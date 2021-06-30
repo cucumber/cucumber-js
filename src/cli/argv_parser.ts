@@ -199,7 +199,7 @@ const ArgvParser = {
         0
       )
       .option(
-        '--retryTagFilter, --retry-tag-filter <EXPRESSION>',
+        '--retry-tag-filter <EXPRESSION>',
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags,
@@ -233,14 +233,6 @@ const ArgvParser = {
     return {
       options,
       args: program.args,
-    }
-  },
-
-  lint(fullArgv: string[]): void {
-    if (fullArgv.includes('--retryTagFilter')) {
-      console.warn(
-        'the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter'
-      )
     }
   },
 }

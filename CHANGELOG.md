@@ -12,6 +12,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Breaking changes
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
+* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`) 
 
 ### Added
 
