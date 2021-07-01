@@ -227,7 +227,7 @@ const ArgvParser = {
     })
 
     program.parse(argv)
-    const options = program.opts() as IParsedArgvOptions
+    const options: IParsedArgvOptions = program.opts()
     ArgvParser.validateRetryOptions(options)
 
     return {
