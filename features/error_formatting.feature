@@ -123,7 +123,7 @@ Feature: Error formatting
       Given(/^a basic step$/, function() { this.attach('Some attached text.') })
       Given(/^a pending step$/, function() { return 'pending' })
       """
-    When I run cucumber-js with `--format-options '{"printStepAttachments": false}'`
+    When I run cucumber-js with `--format-options '{"printAttachments": false}'`
     Then the output contains the text:
       """
       Warnings:
