@@ -164,8 +164,10 @@
   },
   "main": "./lib/index.js",
   "exports": {
-    "import": "./lib/wrapper.mjs",
-    "require": "./lib/index.js"
+    ".": {
+      "import": "./lib/wrapper.mjs",
+      "require": "./lib/index.js"
+    }
   },
   "types": "./lib/index.d.ts",
   "engines": {
