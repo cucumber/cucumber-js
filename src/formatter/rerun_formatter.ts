@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import {
@@ -30,28 +29,29 @@ export default class RerunFormatter extends Formatter {
 
   logFailedTestCases(): void {
     const mapping: UriToLinesMap = {}
-    _.each(
-      this.eventDataCollector.getTestCaseAttempts(),
-      ({ gherkinDocument, pickle, worstTestStepResult }) => {
+    this.eventDataCollector
+      .getTestCaseAttempts()
+      .forEach(({ gherkinDocument, pickle, worstTestStepResult }) => {
         if (
           worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
         ) {
           const relativeUri = pickle.uri
           const line =
             getGherkinScenarioLocationMap(gherkinDocument)[
-              _.last(pickle.astNodeIds)
+              pickle.astNodeIds[pickle.astNodeIds.length - 1]
             ].line
           if (doesNotHaveValue(mapping[relativeUri])) {
             mapping[relativeUri] = []
           }
           mapping[relativeUri].push(line)
         }
-      }
-    )
-    const text = _.chain(mapping)
-      .map((lines, uri) => `${uri}:${lines.join(':')}`)
+      })
+    const text = Object.keys(mapping)
+      .map((uri) => {
+        const lines = mapping[uri]
+        return `${uri}:${lines.join(':')}`
+      })
       .join(this.separator)
-      .value()
     this.log(text)
   }
 }

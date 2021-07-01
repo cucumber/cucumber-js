@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
@@ -65,10 +64,10 @@ const ArgvParser = {
         const e: Error = error
         throw new Error(`${option} passed invalid JSON: ${e.message}: ${str}`)
       }
-      if (!_.isPlainObject(val)) {
+      if (typeof val !== 'object' || Array.isArray(val)) {
         throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
-      return _.merge(memo, val)
+      return { ...memo, ...val }
     }
   },
 
@@ -85,7 +84,7 @@ const ArgvParser = {
   },
 
   validateLanguage(value: string): string {
-    if (!_.includes(_.keys(dialects), value)) {
+    if (!Object.keys(dialects).includes(value)) {
       throw new Error(`Unsupported ISO 639-1: ${value}`)
     }
     return value

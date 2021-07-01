@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import path from 'path'
 import parse from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
@@ -94,10 +93,13 @@ export class PickleLineFilter {
     if (doesHaveValue(linesToMatch)) {
       const gherkinScenarioLocationMap =
         getGherkinScenarioLocationMap(gherkinDocument)
-      const pickleLines = pickle.astNodeIds.map(
-        (sourceId) => gherkinScenarioLocationMap[sourceId].line
+      const pickleLines = new Set(
+        pickle.astNodeIds.map(
+          (sourceId) => gherkinScenarioLocationMap[sourceId].line
+        )
       )
-      return _.size(_.intersection(linesToMatch, pickleLines)) > 0
+      const linesIntersection = linesToMatch.filter((x) => pickleLines.has(x))
+      return linesIntersection.length > 0
     }
     return true
   }
@@ -114,7 +116,7 @@ export class PickleNameFilter {
     if (this.names.length === 0) {
       return true
     }
-    return _.some(this.names, (name) => pickle.name.match(name))
+    return this.names.some((name) => pickle.name.match(name))
   }
 }
 
@@ -131,6 +133,6 @@ export class PickleTagFilter {
     if (doesNotHaveValue(this.tagExpressionNode)) {
       return true
     }
-    return this.tagExpressionNode.evaluate(_.map(pickle.tags, 'name'))
+    return this.tagExpressionNode.evaluate(pickle.tags.map((x) => x.name))
   }
 }

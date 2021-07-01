@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
@@ -375,15 +374,13 @@ export class SupportCodeLibraryBuilder {
 
   finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
     if (doesNotHaveValue(this.definitionFunctionWrapper)) {
-      const definitionConfigs = _.chain([
+      const definitionConfigs = [
         this.afterTestCaseHookDefinitionConfigs,
         this.afterTestRunHookDefinitionConfigs,
         this.beforeTestCaseHookDefinitionConfigs,
         this.beforeTestRunHookDefinitionConfigs,
         this.stepDefinitionConfigs,
-      ])
-        .flatten()
-        .value()
+      ].flat()
       validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
     }
     const stepDefinitionsResult = this.buildStepDefinitions(
