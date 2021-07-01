@@ -106,3 +106,31 @@ Feature: Error formatting
              Pending
       """
     And it fails
+
+  Scenario: failing scenario when requested to not print step attachments
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+
+        Scenario: some scenario
+          Given a basic step
+          And a pending step
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given(/^a basic step$/, function() { this.attach('Some attached text.') })
+      Given(/^a pending step$/, function() { return 'pending' })
+      """
+    When I run cucumber-js with `--format-options '{"printStepAttachments": false}'`
+    Then the output contains the text:
+      """
+      Warnings:
+
+      1) Scenario: some scenario # features/a.feature:3
+         ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
+         ? And a pending step # features/step_definitions/cucumber_steps.js:4
+             Pending
+      """
+    And it fails
