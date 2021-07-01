@@ -16,6 +16,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+* Add support for user code as native ES modules
+
 ### Changed
 
 ### Deprecated
