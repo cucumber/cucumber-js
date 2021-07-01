@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'
@@ -35,6 +34,6 @@ export default class ProfileLoader {
       }
       return stringArgv(definitions[profile])
     })
-    return _.flatten(argvs)
+    return argvs.flat()
   }
 }

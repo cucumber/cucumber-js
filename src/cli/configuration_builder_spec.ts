@@ -106,6 +106,24 @@ describe('Configuration', () => {
         expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
         expect(supportCodePaths).to.eql([supportCodePath])
       })
+
+      it('deduplicates the .feature files before returning', async function () {
+        // Arrange
+        const cwd = await buildTestWorkingDirectory()
+        const relativeFeaturePath = path.join('features', 'a.feature')
+        const featurePath = path.join(cwd, relativeFeaturePath)
+        await fsExtra.outputFile(featurePath, '')
+        const argv = baseArgv.concat([
+          `${relativeFeaturePath}:3`,
+          `${relativeFeaturePath}:4`,
+        ])
+
+        // Act
+        const { featurePaths } = await ConfigurationBuilder.build({ argv, cwd })
+
+        // Assert
+        expect(featurePaths).to.eql([featurePath])
+      })
     })
 
     describe('with esm and js support files', () => {

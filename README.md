@@ -66,6 +66,10 @@ The following documentation is for master. See below for documentation for older
   * [Data Table Interface](/docs/support_files/data_table_interface.md)
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
+* Guides
+  * [Running in parallel](./docs/parallel.md)
+  * [Retrying failing scenarios](./docs/retry.md)
+  * [Profiles](./docs/profiles.md)
 * [FAQ](/docs/faq.md)
 
 #### Documentation for older versions

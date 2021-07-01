@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { formatLocation, getUsage } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import Table from 'cli-table3'
@@ -55,7 +54,7 @@ export default class UsageFormatter extends Formatter {
           col2.push('UNUSED')
         }
         const col3 = [formatLocation({ line, uri })]
-        _.take(matches, 5).forEach((match) => {
+        matches.slice(0, 5).forEach((match) => {
           col1.push(`  ${match.text}`)
           if (doesHaveValue(match.duration)) {
             col2.push(

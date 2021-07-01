@@ -21,3 +21,7 @@ Feature: Custom stack trace
       """
     When I run cucumber-js
     Then it passes
+    And the error output contains the text:
+      """
+      Warning: unable to get definition line and uri [Custom message]
+      """

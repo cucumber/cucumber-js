@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
 import { getGherkinStepMap } from '../gherkin_document_parser'
 import * as messages from '@cucumber/messages'
@@ -58,7 +57,7 @@ function buildMapping({
   eventDataCollector,
 }: IGetUsageRequest): Record<string, IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
-  _.each(eventDataCollector.getTestCaseAttempts(), (testCaseAttempt) => {
+  eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
     testCaseAttempt.testCase.testSteps.forEach((testStep) => {
@@ -87,36 +86,42 @@ function buildMapping({
   return mapping
 }
 
-function invertDuration(duration: messages.Duration): number {
-  if (doesHaveValue(duration)) {
-    return -1 * messages.TimeConversion.durationToMilliseconds(duration)
+function normalizeDuration(duration?: messages.Duration): number {
+  if (duration == null) {
+    return Number.MIN_SAFE_INTEGER
   }
-  return 1
+  return messages.TimeConversion.durationToMilliseconds(duration)
 }
 
 function buildResult(mapping: Record<string, IUsage>): IUsage[] {
-  return _.chain(mapping)
-    .map(({ matches, ...rest }: IUsage) => {
-      const sortedMatches = _.sortBy(matches, [
-        (match: IUsageMatch) => invertDuration(match.duration),
-        'text',
-      ])
+  return Object.keys(mapping)
+    .map((stepDefinitionId) => {
+      const { matches, ...rest } = mapping[stepDefinitionId]
+      const sortedMatches = matches.sort((a: IUsageMatch, b: IUsageMatch) => {
+        if (a.duration === b.duration) {
+          return a.text < b.text ? -1 : 1
+        }
+        return normalizeDuration(b.duration) - normalizeDuration(a.duration)
+      })
       const result = { matches: sortedMatches, ...rest }
-      const durations: messages.Duration[] = _.chain(matches)
-        .map((m: IUsageMatch) => m.duration)
-        .compact()
-        .value()
+      const durations: messages.Duration[] = matches
+        .filter((m) => m.duration != null)
+        .map((m) => m.duration)
       if (durations.length > 0) {
+        const totalMilliseconds = durations.reduce(
+          (acc, x) => acc + messages.TimeConversion.durationToMilliseconds(x),
+          0
+        )
         result.meanDuration = messages.TimeConversion.millisecondsToDuration(
-          _.meanBy(durations, (d: messages.Duration) =>
-            messages.TimeConversion.durationToMilliseconds(d)
-          )
+          totalMilliseconds / durations.length
         )
       }
       return result
     })
-    .sortBy((usage: IUsage) => invertDuration(usage.meanDuration))
-    .value()
+    .sort(
+      (a: IUsage, b: IUsage) =>
+        normalizeDuration(b.meanDuration) - normalizeDuration(a.meanDuration)
+    )
 }
 
 export function getUsage({
