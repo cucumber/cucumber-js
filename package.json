@@ -167,6 +167,9 @@
     ".": {
       "import": "./lib/wrapper.mjs",
       "require": "./lib/index.js"
+    },
+    "./lib/*": {
+      "require": "./lib/*.js"
     }
   },
   "types": "./lib/index.d.ts",
