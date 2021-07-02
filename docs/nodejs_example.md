@@ -1,6 +1,6 @@
 ## Setup
 
-- Install [Node.js](https://nodejs.org) (10 or higher)
+- Install [Node.js](https://nodejs.org) (12 or higher)
 - Install Cucumber modules with [yarn](https://yarnpkg.com/en/) **or** [npm](https://www.npmjs.com/)
 
   ```
