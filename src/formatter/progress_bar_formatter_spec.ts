@@ -64,7 +64,6 @@ async function testProgressBarFormatter({
     eventDataCollector: new EventDataCollector(eventBroadcaster),
     log: logFn,
     parsedArgvOptions: {},
-    importer: async (path) => await import(path),
     stream: passThrough,
     cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,

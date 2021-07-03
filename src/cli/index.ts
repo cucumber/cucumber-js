@@ -29,9 +29,10 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
+import { pathToFileURL } from 'url'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const importers = require('../importers')
+const { importer } = require('../importer')
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {
@@ -53,16 +54,10 @@ interface IGetSupportCodeLibraryRequest {
   supportCodePaths: string[]
 }
 
-export type IUserCodeImporter = (
-  path: string,
-  isFilePath?: boolean
-) => Promise<any>
-
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
-  private importer: IUserCodeImporter = importers.legacy
 
   constructor({
     argv,
@@ -133,7 +128,6 @@ export default class Cli {
           eventDataCollector,
           log: stream.write.bind(stream),
           parsedArgvOptions: formatOptions,
-          importer: this.importer,
           stream,
           cleanup:
             stream === this.stdout
@@ -168,12 +162,14 @@ export default class Cli {
     supportCodeRequiredModules,
     supportCodePaths,
   }: IGetSupportCodeLibraryRequest): Promise<ISupportCodeLibrary> {
-    for (const requiredModule of supportCodeRequiredModules) {
-      await this.importer(requiredModule)
-    }
+    supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     for (const codePath of supportCodePaths) {
-      await this.importer(codePath, true)
+      if (!supportCodeRequiredModules.length) {
+        await importer(pathToFileURL(codePath))
+      } else {
+        require(codePath)
+      }
     }
     return supportCodeLibraryBuilder.finalize()
   }
@@ -193,9 +189,6 @@ export default class Cli {
       configuration.predictableIds && configuration.parallel <= 1
         ? incrementing()
         : uuid()
-    if (configuration.esm) {
-      this.importer = importers.esm
-    }
     const supportCodeLibrary = await this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,

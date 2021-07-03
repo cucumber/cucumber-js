@@ -25,7 +25,6 @@ async function testFormatIssue(sourceData: string): Promise<string> {
     number: 1,
     snippetBuilder: await FormatterBuilder.getStepDefinitionSnippetBuilder({
       cwd: 'project/',
-      importer: async (path) => await import(path),
       supportCodeLibrary,
     }),
     supportCodeLibrary,

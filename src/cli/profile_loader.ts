@@ -2,13 +2,9 @@ import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { IUserCodeImporter } from './index'
 
 export default class ProfileLoader {
-  constructor(
-    private readonly directory: string,
-    private readonly importer: IUserCodeImporter
-  ) {}
+  constructor(private readonly directory: string) {}
 
   async getDefinitions(): Promise<Record<string, string>> {
     const definitionsFilePath = path.join(this.directory, 'cucumber.js')
@@ -16,7 +12,8 @@ export default class ProfileLoader {
     if (!exists) {
       return {}
     }
-    const definitions = await this.importer(definitionsFilePath, true)
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const definitions = require(definitionsFilePath)
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }

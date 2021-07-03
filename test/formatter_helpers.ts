@@ -66,7 +66,6 @@ export async function testFormatter({
     eventDataCollector,
     log: logFn,
     parsedArgvOptions,
-    importer: async (path) => await import(path),
     stream: passThrough,
     cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,

@@ -19,7 +19,10 @@ import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { IRuntimeOptions } from '../index'
 import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
+import { pathToFileURL } from 'url'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../../importer')
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
@@ -73,7 +76,13 @@ export default class Worker {
   }: IWorkerCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
-    supportCodePaths.forEach((codePath) => require(codePath))
+    for (const codePath of supportCodePaths) {
+      if (!supportCodeRequiredModules.length) {
+        await importer(pathToFileURL(codePath))
+      } else {
+        require(codePath)
+      }
+    }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.worldParameters = options.worldParameters

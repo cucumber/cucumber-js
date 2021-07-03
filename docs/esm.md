@@ -30,6 +30,5 @@ As well as support code, these things can also be in ES modules syntax:
 
 - Custom formatters
 - Custom snippets
-- Your `cucumber.js` config file
 
 You can use ES modules selectively/incrementally - the module loading strategy that the `--esm` flag activates supports both ES modules and CommonJS.

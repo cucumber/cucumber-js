@@ -20,11 +20,12 @@ import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
-import { IUserCodeImporter } from '../cli'
+import { pathToFileURL } from 'url'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../importer')
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
-  importer: IUserCodeImporter
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
   supportCodeLibrary: ISupportCodeLibrary
@@ -36,7 +37,6 @@ export interface IBuildOptions {
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
   parsedArgvOptions: IParsedArgvFormatOptions
-  importer: IUserCodeImporter
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
@@ -46,14 +46,12 @@ const FormatterBuilder = {
   async build(type: string, options: IBuildOptions): Promise<Formatter> {
     const FormatterConstructor = await FormatterBuilder.getConstructorByType(
       type,
-      options.cwd,
-      options.importer
+      options.cwd
     )
     const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
     const snippetBuilder =
       await FormatterBuilder.getStepDefinitionSnippetBuilder({
         cwd: options.cwd,
-        importer: options.importer,
         snippetInterface: options.parsedArgvOptions.snippetInterface,
         snippetSyntax: options.parsedArgvOptions.snippetSyntax,
         supportCodeLibrary: options.supportCodeLibrary,
@@ -67,8 +65,7 @@ const FormatterBuilder = {
 
   async getConstructorByType(
     type: string,
-    cwd: string,
-    importer: IUserCodeImporter
+    cwd: string
   ): Promise<typeof Formatter> {
     switch (type) {
       case 'json':
@@ -92,13 +89,12 @@ const FormatterBuilder = {
       case 'usage-json':
         return UsageJsonFormatter
       default:
-        return await FormatterBuilder.loadCustomFormatter(type, cwd, importer)
+        return await FormatterBuilder.loadCustomFormatter(type, cwd)
     }
   },
 
   async getStepDefinitionSnippetBuilder({
     cwd,
-    importer,
     snippetInterface,
     snippetSyntax,
     supportCodeLibrary,
@@ -109,7 +105,7 @@ const FormatterBuilder = {
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = await importer(fullSyntaxPath, true)
+      Syntax = await importer(pathToFileURL(fullSyntaxPath))
       Syntax = FormatterBuilder.resolveConstructor(Syntax)
     }
     return new StepDefinitionSnippetBuilder({
@@ -118,13 +114,9 @@ const FormatterBuilder = {
     })
   },
 
-  async loadCustomFormatter(
-    customFormatterPath: string,
-    cwd: string,
-    importer: IUserCodeImporter
-  ) {
+  async loadCustomFormatter(customFormatterPath: string, cwd: string) {
     let CustomFormatter = customFormatterPath.startsWith(`.`)
-      ? await importer(path.resolve(cwd, customFormatterPath), true)
+      ? await importer(pathToFileURL(path.resolve(cwd, customFormatterPath)))
       : await importer(customFormatterPath)
     CustomFormatter = FormatterBuilder.resolveConstructor(CustomFormatter)
     if (doesHaveValue(CustomFormatter)) {
