@@ -173,3 +173,49 @@ export function normalizeSummaryDuration(output: string): string {
     '<duration-stat>'
   )
 }
+
+/**
+ * Removes the indentation of the template based on the indentation of the first line.
+ * It removes the first new-line character so it is not needed for it to be escaped.
+ *
+ * @example
+ * if (true) { // This block illustrate indentation issues in source code
+ *   const unindented = unindent`
+ *     Expected output
+ *       Expected indented output
+ *       Another line
+ *     `
+ *   // is the same as the following:
+ *   const expected = `\
+ *  Expected output
+ *    Expected indented output
+ *    Another line
+ *  `
+ *    expect(unindented).to.eql(expected)
+ * }
+ */
+export function unindent(
+  strings: TemplateStringsArray,
+  ...expressionValues: string[]
+): string {
+  let finalString = strings[0].replace(/^\n/, '')
+
+  const numberOfSpaceToRemove = finalString.search(/\S|$/)
+  const spacesToRemove = Array(numberOfSpaceToRemove + 1).join(' ')
+
+  for (let i = 1; i < strings.length; i++) {
+    finalString += expressionValues[i - 1].toUpperCase()
+    finalString += strings[i]
+  }
+
+  return finalString
+    .split('\n')
+    .map((line) => {
+      if (line.startsWith(spacesToRemove)) {
+        return line.replace(spacesToRemove, '')
+      }
+
+      return line
+    })
+    .join('\n')
+}

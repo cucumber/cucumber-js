@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
-import { testFormatter } from '../../test/formatter_helpers'
+import { testFormatter, unindent } from '../../test/formatter_helpers'
 
 describe('UsageFormatter', () => {
   let clock: InstalledClock
@@ -41,17 +41,17 @@ describe('UsageFormatter', () => {
         })
 
         // Assert
-        expect(output).to.eql(`\
-┌────────────────┬──────────┬───────────────────┐
-│ Pattern / Text │ Duration │ Location          │
-├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:11 │
-├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ UNUSED   │ usage_steps.ts:16 │
-├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:25 │
-└────────────────┴──────────┴───────────────────┘
-`)
+        expect(output).to.eql(unindent`
+          ┌────────────────┬──────────┬───────────────────┐
+          │ Pattern / Text │ Duration │ Location          │
+          ├────────────────┼──────────┼───────────────────┤
+          │ abc            │ UNUSED   │ usage_steps.ts:11 │
+          ├────────────────┼──────────┼───────────────────┤
+          │ /def?/         │ UNUSED   │ usage_steps.ts:16 │
+          ├────────────────┼──────────┼───────────────────┤
+          │ ghi            │ UNUSED   │ usage_steps.ts:25 │
+          └────────────────┴──────────┴───────────────────┘
+          `)
       })
     })
 
@@ -77,19 +77,19 @@ describe('UsageFormatter', () => {
           })
 
           // Assert
-          expect(output).to.eql(`\
-┌────────────────┬──────────┬───────────────────┐
-│ Pattern / Text │ Duration │ Location          │
-├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:11 │
-├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ -        │ usage_steps.ts:16 │
-│   de           │ -        │ a.feature:4       │
-│   def          │ -        │ a.feature:3       │
-├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:25 │
-└────────────────┴──────────┴───────────────────┘
-`)
+          expect(output).to.eql(unindent`
+            ┌────────────────┬──────────┬───────────────────┐
+            │ Pattern / Text │ Duration │ Location          │
+            ├────────────────┼──────────┼───────────────────┤
+            │ abc            │ UNUSED   │ usage_steps.ts:11 │
+            ├────────────────┼──────────┼───────────────────┤
+            │ /def?/         │ -        │ usage_steps.ts:16 │
+            │   de           │ -        │ a.feature:4       │
+            │   def          │ -        │ a.feature:3       │
+            ├────────────────┼──────────┼───────────────────┤
+            │ ghi            │ UNUSED   │ usage_steps.ts:25 │
+            └────────────────┴──────────┴───────────────────┘
+            `)
         })
       })
 
@@ -112,19 +112,19 @@ describe('UsageFormatter', () => {
           })
 
           // Assert
-          expect(output).to.eql(`\
-┌────────────────┬──────────┬───────────────────┐
-│ Pattern / Text │ Duration │ Location          │
-├────────────────┼──────────┼───────────────────┤
-│ /def?/         │ 1.50ms   │ usage_steps.ts:16 │
-│   def          │ 2ms      │ a.feature:3       │
-│   de           │ 1ms      │ a.feature:4       │
-├────────────────┼──────────┼───────────────────┤
-│ abc            │ UNUSED   │ usage_steps.ts:11 │
-├────────────────┼──────────┼───────────────────┤
-│ ghi            │ UNUSED   │ usage_steps.ts:25 │
-└────────────────┴──────────┴───────────────────┘
-`)
+          expect(output).to.eql(unindent`
+            ┌────────────────┬──────────┬───────────────────┐
+            │ Pattern / Text │ Duration │ Location          │
+            ├────────────────┼──────────┼───────────────────┤
+            │ /def?/         │ 1.50ms   │ usage_steps.ts:16 │
+            │   def          │ 2ms      │ a.feature:3       │
+            │   de           │ 1ms      │ a.feature:4       │
+            ├────────────────┼──────────┼───────────────────┤
+            │ abc            │ UNUSED   │ usage_steps.ts:11 │
+            ├────────────────┼──────────┼───────────────────┤
+            │ ghi            │ UNUSED   │ usage_steps.ts:25 │
+            └────────────────┴──────────┴───────────────────┘
+            `)
         })
       })
     })
