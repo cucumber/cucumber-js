@@ -10,10 +10,12 @@ export interface IRunParameters {
     names?: string[]
     tagExpression?: string
   }
-  support: {
-    transpileWith?: string[]
-    paths: string[]
-  } | ISupportCodeLibrary
+  support:
+    | {
+        transpileWith?: string[]
+        paths: string[]
+      }
+    | ISupportCodeLibrary
   runtime: {
     dryRun?: boolean
     failFast?: boolean
@@ -40,6 +42,8 @@ export interface IRunResult {
   support: ISupportCodeLibrary
 }
 
-export async function runCucumber(options: IRunParameters): Promise<IRunResult> {
+export async function runCucumber(
+  options: IRunParameters
+): Promise<IRunResult> {
   return null
 }
