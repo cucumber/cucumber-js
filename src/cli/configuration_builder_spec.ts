@@ -65,66 +65,64 @@ describe('Configuration', () => {
   })
 
   describe('path to a feature', () => {
-    describe('without esm', () => {
-      it('returns the appropriate .feature and support code paths', async function () {
-        // Arrange
-        const cwd = await buildTestWorkingDirectory()
-        const relativeFeaturePath = path.join('features', 'a.feature')
-        const featurePath = path.join(cwd, relativeFeaturePath)
-        await fsExtra.outputFile(featurePath, '')
-        const jsSupportCodePath = path.join(cwd, 'features', 'a.js')
-        await fsExtra.outputFile(jsSupportCodePath, '')
-        const esmSupportCodePath = path.join(cwd, 'features', 'a.mjs')
-        await fsExtra.outputFile(esmSupportCodePath, '')
-        const argv = baseArgv.concat([relativeFeaturePath])
+    it('returns the appropriate .feature and support code paths', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      const jsSupportCodePath = path.join(cwd, 'features', 'a.js')
+      await fsExtra.outputFile(jsSupportCodePath, '')
+      const esmSupportCodePath = path.join(cwd, 'features', 'a.mjs')
+      await fsExtra.outputFile(esmSupportCodePath, '')
+      const argv = baseArgv.concat([relativeFeaturePath])
 
-        // Act
-        const { featurePaths, pickleFilterOptions, supportCodePaths } =
-          await ConfigurationBuilder.build({ argv, cwd })
+      // Act
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
-        // Assert
-        expect(featurePaths).to.eql([featurePath])
-        expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
-        expect(supportCodePaths).to.eql([jsSupportCodePath, esmSupportCodePath])
-      })
+      // Assert
+      expect(featurePaths).to.eql([featurePath])
+      expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+      expect(supportCodePaths).to.eql([jsSupportCodePath, esmSupportCodePath])
+    })
 
-      it('returns the appropriate .md and support code paths', async function () {
-        // Arrange
-        const cwd = await buildTestWorkingDirectory()
-        const relativeFeaturePath = path.join('features', 'a.feature.md')
-        const featurePath = path.join(cwd, relativeFeaturePath)
-        await fsExtra.outputFile(featurePath, '')
-        const supportCodePath = path.join(cwd, 'features', 'a.js')
-        await fsExtra.outputFile(supportCodePath, '')
-        const argv = baseArgv.concat([relativeFeaturePath])
+    it('returns the appropriate .md and support code paths', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature.md')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      const supportCodePath = path.join(cwd, 'features', 'a.js')
+      await fsExtra.outputFile(supportCodePath, '')
+      const argv = baseArgv.concat([relativeFeaturePath])
 
-        // Act
-        const { featurePaths, pickleFilterOptions, supportCodePaths } =
-          await ConfigurationBuilder.build({ argv, cwd })
+      // Act
+      const { featurePaths, pickleFilterOptions, supportCodePaths } =
+        await ConfigurationBuilder.build({ argv, cwd })
 
-        // Assert
-        expect(featurePaths).to.eql([featurePath])
-        expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
-        expect(supportCodePaths).to.eql([supportCodePath])
-      })
+      // Assert
+      expect(featurePaths).to.eql([featurePath])
+      expect(pickleFilterOptions.featurePaths).to.eql([relativeFeaturePath])
+      expect(supportCodePaths).to.eql([supportCodePath])
+    })
 
-      it('deduplicates the .feature files before returning', async function () {
-        // Arrange
-        const cwd = await buildTestWorkingDirectory()
-        const relativeFeaturePath = path.join('features', 'a.feature')
-        const featurePath = path.join(cwd, relativeFeaturePath)
-        await fsExtra.outputFile(featurePath, '')
-        const argv = baseArgv.concat([
-          `${relativeFeaturePath}:3`,
-          `${relativeFeaturePath}:4`,
-        ])
+    it('deduplicates the .feature files before returning', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      const argv = baseArgv.concat([
+        `${relativeFeaturePath}:3`,
+        `${relativeFeaturePath}:4`,
+      ])
 
-        // Act
-        const { featurePaths } = await ConfigurationBuilder.build({ argv, cwd })
+      // Act
+      const { featurePaths } = await ConfigurationBuilder.build({ argv, cwd })
 
-        // Assert
-        expect(featurePaths).to.eql([featurePath])
-      })
+      // Assert
+      expect(featurePaths).to.eql([featurePath])
     })
   })
 
