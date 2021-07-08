@@ -18,7 +18,7 @@ Given I have 42 cucumbers in my belly
 
 JS:
 ```js
-import { Given } from 'cucumber';
+import { Given } from '@cucumber/cucumber';
 
 Given('I have {int} cucumbers in my belly', function (cucumberCount) {
   assert.equal(this.responseStatus, cucumberCount)
