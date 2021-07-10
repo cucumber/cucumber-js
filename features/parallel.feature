@@ -4,7 +4,6 @@ Feature: Running scenarios in parallel
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       Given(/^a slow step$/, function(callback) {
         setTimeout(callback, 1000)
@@ -27,7 +26,6 @@ Feature: Running scenarios in parallel
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {BeforeAll, Given} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       Given(/^a slow step$/, function(callback) {
         setTimeout(callback, 1000)
