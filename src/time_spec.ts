@@ -8,19 +8,21 @@ describe.only('wrapPromiseWithTimeout()', () => {
       // Arrange
       const promise = new Promise((resolve) => {
         setTimeout(resolve, 50)
-      });
+      })
 
       // Act
-      let error: Error = null;
+      let error: Error = null
       try {
         await wrapPromiseWithTimeout(promise, 25)
       } catch (e) {
-        error = e;
+        error = e
       }
 
       // Assert
-      expect(error).to.exist();
-      expect(error.message).to.eql('Action did not complete within 25 milliseconds')
+      expect(error).to.exist()
+      expect(error.message).to.eql(
+        'Action did not complete within 25 milliseconds'
+      )
     })
   })
 
@@ -29,18 +31,18 @@ describe.only('wrapPromiseWithTimeout()', () => {
       // Arrange
       const promise = new Promise((resolve) => {
         setTimeout(resolve, 50)
-      });
+      })
 
       // Act
-      let error: Error = null;
+      let error: Error = null
       try {
         await wrapPromiseWithTimeout(promise, 25, 'custom timeout message')
       } catch (e) {
-        error = e;
+        error = e
       }
 
       // Assert
-      expect(error).to.exist();
+      expect(error).to.exist()
       expect(error.message).to.eql('custom timeout message')
     })
   })
@@ -50,7 +52,7 @@ describe.only('wrapPromiseWithTimeout()', () => {
       // Arrange
       const promise = new Promise<string>((resolve) => {
         setTimeout(() => resolve('value'), 10)
-      });
+      })
 
       // Act
       const result = await wrapPromiseWithTimeout(promise, 25)
