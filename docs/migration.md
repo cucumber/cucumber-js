@@ -1,14 +1,21 @@
+# Migrating to cucumber-js 8.x.x
+
+## Removal of setDefinitionFunctionWrapper
+
+If you used `setDefinitionFunctionWrapper` to wrap generator functions, you can transition to using async / await.
+If you used `setDefinitionFunctionWrapper` to wrap step definitions, please use `BeforeStep` / `AfterStep` hooks instead.
+
 # Migrating to cucumber-js 7.x.x
 
 ## Package Name
 
 cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
- 
+
 ```shell
 $ npm rm cucumber
 $ npm install --save-dev @cucumber/cucumber
-``` 
- 
+```
+
 You'll need to update any `import`/`require` statements in your support code to use the new package name.
 
 (The executable is still `cucumber-js` though.)
