@@ -20,7 +20,7 @@ import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { PassThrough } from 'stream'
 import ProgressBar from 'progress'
-import bluebird from 'bluebird'
+import { promisify } from 'util'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -65,7 +65,7 @@ async function testProgressBarFormatter({
     log: logFn,
     parsedArgvOptions: {},
     stream: passThrough,
-    cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
+    cleanup: promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
   })) as ProgressBarFormatter
   let mocked = false

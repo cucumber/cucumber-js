@@ -16,18 +16,18 @@ import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
 import path from 'path'
 import PickleFilter from '../pickle_filter'
-import bluebird from 'bluebird'
 import ParallelRuntimeCoordinator from '../runtime/parallel/coordinator'
 import Runtime from '../runtime'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import { IdGenerator } from '@cucumber/messages'
-import { IFormatterStream } from '../formatter'
+import Formatter, { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
+import { promisify } from 'util'
 import { Writable } from 'stream'
 import { pathToFileURL } from 'url'
 
@@ -91,9 +91,8 @@ export default class Cli {
     formats,
     supportCodeLibrary,
   }: IInitializeFormattersRequest): Promise<() => Promise<void>> {
-    const formatters = await bluebird.map(
-      formats,
-      async ({ type, outputTo }) => {
+    const formatters: Formatter[] = await Promise.all(
+      formats.map(async ({ type, outputTo }) => {
         let stream: IFormatterStream = this.stdout
         if (outputTo !== '') {
           if (outputTo.match(/^https?:\/\//) !== null) {
@@ -132,7 +131,7 @@ export default class Cli {
           cleanup:
             stream === this.stdout
               ? async () => await Promise.resolve()
-              : bluebird.promisify(stream.end.bind(stream)),
+              : promisify<any>(stream.end.bind(stream)),
           supportCodeLibrary,
         }
         if (doesNotHaveValue(formatOptions.colorsEnabled)) {
@@ -148,12 +147,10 @@ export default class Cli {
           type = 'progress'
         }
         return await FormatterBuilder.build(type, typeOptions)
-      }
+      })
     )
     return async function () {
-      await bluebird.each(formatters, async (formatter) => {
-        await formatter.finished()
-      })
+      await Promise.all(formatters.map(async (f) => await f.finished()))
     }
   }
 
