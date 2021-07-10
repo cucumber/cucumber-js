@@ -2,8 +2,9 @@
 
 ## Removal of setDefinitionFunctionWrapper
 
-If you used `setDefinitionFunctionWrapper` to wrap generator functions, you can transition to using async / await.
-If you used `setDefinitionFunctionWrapper` to wrap step definitions, please use `BeforeStep` / `AfterStep` hooks instead.
+If this was used to wrap generator functions, please transition to using async / await.
+If this was used to wrap step definitions, please use `BeforeStep` / `AfterStep` hooks instead.
+If you had other use cases, please create an issue.
 
 # Migrating from 6.x.x to 7.x.x
 
