@@ -147,7 +147,7 @@ export default class Cli {
       })
     )
     return async function () {
-      await Promise.all(formatters.map(f => f.finished()))
+      await Promise.all(formatters.map(async (f) => await f.finished()))
     }
   }
 
