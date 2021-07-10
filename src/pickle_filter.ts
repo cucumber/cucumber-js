@@ -1,11 +1,10 @@
-import _, { Dictionary } from 'lodash'
 import path from 'path'
 import parse from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
-import { messages } from '@cucumber/messages'
-import IGherkinDocument = messages.IGherkinDocument
-import IPickle = messages.IPickle
+import * as messages from '@cucumber/messages'
+import IGherkinDocument = messages.GherkinDocument
+import IPickle = messages.Pickle
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -17,8 +16,8 @@ export interface IPickleFilterOptions {
 }
 
 export interface IMatchesAnyLineRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
 }
 
 export default class PickleFilter {
@@ -53,27 +52,24 @@ export default class PickleFilter {
 }
 
 export class PickleLineFilter {
-  private readonly featureUriToLinesMapping: Dictionary<number[]>
+  private readonly featureUriToLinesMapping: Record<string, number[]>
 
   constructor(cwd: string, featurePaths: string[] = []) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
-      cwd,
       featurePaths,
     })
   }
 
   getFeatureUriToLinesMapping({
-    cwd,
     featurePaths,
   }: {
-    cwd: string
     featurePaths: string[]
-  }): Dictionary<number[]> {
-    const mapping: Dictionary<number[]> = {}
+  }): Record<string, number[]> {
+    const mapping: Record<string, number[]> = {}
     featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {
-        const uri = path.resolve(cwd, match[1])
+        const uri = path.normalize(match[1])
         const linesExpression = match[2]
         if (doesHaveValue(linesExpression)) {
           if (doesNotHaveValue(mapping[uri])) {
@@ -92,15 +88,18 @@ export class PickleLineFilter {
   }
 
   matchesAnyLine({ gherkinDocument, pickle }: IMatchesAnyLineRequest): boolean {
-    const linesToMatch = this.featureUriToLinesMapping[pickle.uri]
+    const uri = path.normalize(pickle.uri)
+    const linesToMatch = this.featureUriToLinesMapping[uri]
     if (doesHaveValue(linesToMatch)) {
-      const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-        gherkinDocument
+      const gherkinScenarioLocationMap =
+        getGherkinScenarioLocationMap(gherkinDocument)
+      const pickleLines = new Set(
+        pickle.astNodeIds.map(
+          (sourceId) => gherkinScenarioLocationMap[sourceId].line
+        )
       )
-      const pickleLines = pickle.astNodeIds.map(
-        (sourceId) => gherkinScenarioLocationMap[sourceId].line
-      )
-      return _.size(_.intersection(linesToMatch, pickleLines)) > 0
+      const linesIntersection = linesToMatch.filter((x) => pickleLines.has(x))
+      return linesIntersection.length > 0
     }
     return true
   }
@@ -113,11 +112,11 @@ export class PickleNameFilter {
     this.names = names
   }
 
-  matchesAnyName(pickle: messages.IPickle): boolean {
+  matchesAnyName(pickle: messages.Pickle): boolean {
     if (this.names.length === 0) {
       return true
     }
-    return _.some(this.names, (name) => pickle.name.match(name))
+    return this.names.some((name) => pickle.name.match(name))
   }
 }
 
@@ -130,10 +129,10 @@ export class PickleTagFilter {
     }
   }
 
-  matchesAllTagExpressions(pickle: messages.IPickle): boolean {
+  matchesAllTagExpressions(pickle: messages.Pickle): boolean {
     if (doesNotHaveValue(this.tagExpressionNode)) {
       return true
     }
-    return this.tagExpressionNode.evaluate(_.map(pickle.tags, 'name'))
+    return this.tagExpressionNode.evaluate(pickle.tags.map((x) => x.name))
   }
 }

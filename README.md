@@ -2,7 +2,8 @@
 
 [![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
-
+[![pull requests](https://oselvar.com/api/badge?label=pull%20requests&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2FpullRequests.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
+[![issues](https://oselvar.com/api/badge?label=issues&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2Fissues.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
 
 [![GitHub Actions](https://github.com/cucumber/cucumber-js/workflows/Build/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
 [![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
@@ -65,6 +66,10 @@ The following documentation is for master. See below for documentation for older
   * [Data Table Interface](/docs/support_files/data_table_interface.md)
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
+* Guides
+  * [Running in parallel](./docs/parallel.md)
+  * [Retrying failing scenarios](./docs/retry.md)
+  * [Profiles](./docs/profiles.md)
 * [FAQ](/docs/faq.md)
 
 #### Documentation for older versions

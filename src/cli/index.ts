@@ -23,11 +23,12 @@ import { IdGenerator } from '@cucumber/messages'
 import Formatter, { IFormatterStream } from '../formatter'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { doesNotHaveValue } from '../value_checker'
-import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
+import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 import { promisify } from 'util'
+import { Writable } from 'stream'
 
 const { incrementing, uuid } = IdGenerator
 
@@ -97,14 +98,26 @@ export default class Cli {
               headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
             }
 
-            stream = new HttpStream(outputTo, 'GET', headers, (content) =>
-              console.error(content)
-            )
+            stream = new HttpStream(outputTo, 'GET', headers)
+            const readerStream = new Writable({
+              objectMode: true,
+              write: function (responseBody: string, encoding, writeCallback) {
+                console.error(responseBody)
+                writeCallback()
+              },
+            })
+            stream.pipe(readerStream)
           } else {
             const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
             stream = fs.createWriteStream(null, { fd })
           }
         }
+
+        stream.on('error', (error) => {
+          console.error(error.message)
+          process.exit(1)
+        })
+
         const typeOptions = {
           cwd: this.cwd,
           eventBroadcaster,
@@ -119,7 +132,9 @@ export default class Cli {
           supportCodeLibrary,
         }
         if (doesNotHaveValue(formatOptions.colorsEnabled)) {
-          typeOptions.parsedArgvOptions.colorsEnabled = (stream as TtyWriteStream).isTTY
+          typeOptions.parsedArgvOptions.colorsEnabled = (
+            stream as TtyWriteStream
+          ).isTTY
         }
         if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
           const outputToName = outputTo === '' ? 'stdout' : outputTo
@@ -145,7 +160,14 @@ export default class Cli {
   }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    supportCodePaths.forEach((codePath) => require(codePath))
+    supportCodePaths.forEach((codePath) => {
+      try {
+        require(codePath)
+      } catch (e) {
+        console.error(e.stack)
+        console.error('codepath: ' + codePath)
+      }
+    })
     return supportCodeLibraryBuilder.finalize()
   }
 
@@ -184,16 +206,21 @@ export default class Cli {
       {
         defaultDialect: configuration.featureDefaultLanguage,
         newId,
+        relativeTo: this.cwd,
       }
     )
-    const pickleIds = await parseGherkinMessageStream({
-      cwd: this.cwd,
-      eventBroadcaster,
-      eventDataCollector,
-      gherkinMessageStream,
-      order: configuration.order,
-      pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
-    })
+    let pickleIds: string[] = []
+
+    if (configuration.featurePaths.length > 0) {
+      pickleIds = await parseGherkinMessageStream({
+        cwd: this.cwd,
+        eventBroadcaster,
+        eventDataCollector,
+        gherkinMessageStream,
+        order: configuration.order,
+        pickleFilter: new PickleFilter(configuration.pickleFilterOptions),
+      })
+    }
     emitSupportCodeMessages({
       eventBroadcaster,
       supportCodeLibrary,
@@ -206,17 +233,13 @@ export default class Cli {
         eventBroadcaster,
         eventDataCollector,
         options: configuration.runtimeOptions,
+        newId,
         pickleIds,
         supportCodeLibrary,
         supportCodePaths: configuration.supportCodePaths,
         supportCodeRequiredModules: configuration.supportCodeRequiredModules,
       })
-      await new Promise<void>((resolve) => {
-        parallelRuntimeCoordinator.run(configuration.parallel, (s) => {
-          success = s
-          resolve()
-        })
-      })
+      success = await parallelRuntimeCoordinator.run(configuration.parallel)
     } else {
       const runtime = new Runtime({
         eventBroadcaster,

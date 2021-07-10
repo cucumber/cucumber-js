@@ -1,15 +1,12 @@
-import _, { Dictionary } from 'lodash'
 import { getPickleStepMap } from '../pickle_parser'
-import path from 'path'
 import { getGherkinStepMap } from '../gherkin_document_parser'
-import { durationToMilliseconds, millisecondsToDuration } from '../../../time'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import StepDefinition from '../../../models/step_definition'
 import { doesHaveValue } from '../../../value_checker'
 import EventDataCollector from '../event_data_collector'
 
 export interface IUsageMatch {
-  duration?: messages.IDuration
+  duration?: messages.Duration
   line: number
   text: string
   uri: string
@@ -19,7 +16,7 @@ export interface IUsage {
   code: string
   line: number
   matches: IUsageMatch[]
-  meanDuration?: messages.IDuration
+  meanDuration?: messages.Duration
   pattern: string
   patternType: string
   uri: string
@@ -33,8 +30,8 @@ export interface IGetUsageRequest {
 
 function buildEmptyMapping(
   stepDefinitions: StepDefinition[]
-): Dictionary<IUsage> {
-  const mapping: Dictionary<IUsage> = {}
+): Record<string, IUsage> {
+  const mapping: Record<string, IUsage> = {}
   stepDefinitions.forEach((stepDefinition) => {
     mapping[stepDefinition.id] = {
       code: stepDefinition.unwrappedCode.toString(),
@@ -48,18 +45,24 @@ function buildEmptyMapping(
   return mapping
 }
 
+const unexecutedStatuses: readonly messages.TestStepResultStatus[] = [
+  messages.TestStepResultStatus.AMBIGUOUS,
+  messages.TestStepResultStatus.SKIPPED,
+  messages.TestStepResultStatus.UNDEFINED,
+]
+
 function buildMapping({
   cwd,
   stepDefinitions,
   eventDataCollector,
-}: IGetUsageRequest): Dictionary<IUsage> {
+}: IGetUsageRequest): Record<string, IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
-  _.each(eventDataCollector.getTestCaseAttempts(), (testCaseAttempt) => {
+  eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
     testCaseAttempt.testCase.testSteps.forEach((testStep) => {
       if (
-        testStep.pickleStepId !== '' &&
+        doesHaveValue(testStep.pickleStepId) &&
         testStep.stepDefinitionIds.length === 1
       ) {
         const stepDefinitionId = testStep.stepDefinitionIds[0]
@@ -68,17 +71,10 @@ function buildMapping({
         const match: IUsageMatch = {
           line: gherkinStep.location.line,
           text: pickleStep.text,
-          uri: path.relative(cwd, testCaseAttempt.pickle.uri),
+          uri: testCaseAttempt.pickle.uri,
         }
         const { duration, status } = testCaseAttempt.stepResults[testStep.id]
-        if (
-          ![
-            messages.TestStepFinished.TestStepResult.Status.AMBIGUOUS,
-            messages.TestStepFinished.TestStepResult.Status.SKIPPED,
-            messages.TestStepFinished.TestStepResult.Status.UNDEFINED,
-          ].includes(status) &&
-          doesHaveValue(duration)
-        ) {
+        if (!unexecutedStatuses.includes(status) && doesHaveValue(duration)) {
           match.duration = duration
         }
         if (doesHaveValue(mapping[stepDefinitionId])) {
@@ -90,36 +86,42 @@ function buildMapping({
   return mapping
 }
 
-function invertDuration(duration: messages.IDuration): number {
-  if (doesHaveValue(duration)) {
-    return -1 * durationToMilliseconds(duration)
+function normalizeDuration(duration?: messages.Duration): number {
+  if (duration == null) {
+    return Number.MIN_SAFE_INTEGER
   }
-  return 1
+  return messages.TimeConversion.durationToMilliseconds(duration)
 }
 
-function buildResult(mapping: Dictionary<IUsage>): IUsage[] {
-  return _.chain(mapping)
-    .map(({ matches, ...rest }: IUsage) => {
-      const sortedMatches = _.sortBy(matches, [
-        (match: IUsageMatch) => invertDuration(match.duration),
-        'text',
-      ])
+function buildResult(mapping: Record<string, IUsage>): IUsage[] {
+  return Object.keys(mapping)
+    .map((stepDefinitionId) => {
+      const { matches, ...rest } = mapping[stepDefinitionId]
+      const sortedMatches = matches.sort((a: IUsageMatch, b: IUsageMatch) => {
+        if (a.duration === b.duration) {
+          return a.text < b.text ? -1 : 1
+        }
+        return normalizeDuration(b.duration) - normalizeDuration(a.duration)
+      })
       const result = { matches: sortedMatches, ...rest }
-      const durations: messages.IDuration[] = _.chain(matches)
-        .map((m: IUsageMatch) => m.duration)
-        .compact()
-        .value()
+      const durations: messages.Duration[] = matches
+        .filter((m) => m.duration != null)
+        .map((m) => m.duration)
       if (durations.length > 0) {
-        result.meanDuration = millisecondsToDuration(
-          _.meanBy(durations, (d: messages.IDuration) =>
-            durationToMilliseconds(d)
-          )
+        const totalMilliseconds = durations.reduce(
+          (acc, x) => acc + messages.TimeConversion.durationToMilliseconds(x),
+          0
+        )
+        result.meanDuration = messages.TimeConversion.millisecondsToDuration(
+          totalMilliseconds / durations.length
         )
       }
       return result
     })
-    .sortBy((usage: IUsage) => invertDuration(usage.meanDuration))
-    .value()
+    .sort(
+      (a: IUsage, b: IUsage) =>
+        normalizeDuration(b.meanDuration) - normalizeDuration(a.meanDuration)
+    )
 }
 
 export function getUsage({

@@ -12,7 +12,8 @@ executedModules:
       - version
 
 ignoreErrors:
-  missing: []
+  missing:
+    - '@tsd/typescript'
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
@@ -23,7 +24,7 @@ ignoreErrors:
     - bluebird # features/generator_step_definitions.feature
     - coffeescript # features/compiler.feature
     - eslint-config-prettier # .eslintrc.yml - extends - prettier
-    - eslint-config-standard-with-typescript # .eslintrc.yml - extends - standard-with-typescript 
+    - eslint-config-standard-with-typescript # .eslintrc.yml - extends - standard-with-typescript
     - eslint-plugin-import # peer dependency of eslint-config-standard-with-typescript
     - eslint-plugin-node # peer dependency of eslint-config-standard-with-typescript
     - eslint-plugin-prettier # .eslintrc.yml - extends - prettier
@@ -37,6 +38,7 @@ requiredModules:
     dev:
       - '{compatibility,features,scripts,test}/**/*'
       - '**/*_spec.ts'
+      - 'test-d/**/*.ts'
       - 'example/index.ts'
       - '**/test_helpers.ts'
     ignore:

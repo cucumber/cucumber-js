@@ -1,4 +1,3 @@
-import _, { Dictionary } from 'lodash'
 import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'
@@ -11,7 +10,7 @@ export default class ProfileLoader {
     this.directory = directory
   }
 
-  async getDefinitions(): Promise<Dictionary<string>> {
+  async getDefinitions(): Promise<Record<string, string>> {
     const definitionsFilePath = path.join(this.directory, 'cucumber.js')
     const exists = await fs.exists(definitionsFilePath)
     if (!exists) {
@@ -35,6 +34,6 @@ export default class ProfileLoader {
       }
       return stringArgv(definitions[profile])
     })
-    return _.flatten(argvs)
+    return argvs.flat()
   }
 }

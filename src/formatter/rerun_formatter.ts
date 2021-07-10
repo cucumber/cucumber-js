@@ -1,14 +1,11 @@
-import _ from 'lodash'
 import Formatter, { IFormatterOptions } from './'
-import Status from '../status'
-import path from 'path'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
 import {
   doesHaveValue,
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 const DEFAULT_SEPARATOR = '\n'
 
@@ -21,7 +18,7 @@ export default class RerunFormatter extends Formatter {
 
   constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', (envelope: messages.IEnvelope) => {
+    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.logFailedTestCases()
       }
@@ -32,25 +29,29 @@ export default class RerunFormatter extends Formatter {
 
   logFailedTestCases(): void {
     const mapping: UriToLinesMap = {}
-    _.each(
-      this.eventDataCollector.getTestCaseAttempts(),
-      ({ gherkinDocument, pickle, worstTestStepResult }) => {
-        if (worstTestStepResult.status !== Status.PASSED) {
-          const relativeUri = path.relative(this.cwd, pickle.uri)
-          const line = getGherkinScenarioLocationMap(gherkinDocument)[
-            _.last(pickle.astNodeIds)
-          ].line
+    this.eventDataCollector
+      .getTestCaseAttempts()
+      .forEach(({ gherkinDocument, pickle, worstTestStepResult }) => {
+        if (
+          worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
+        ) {
+          const relativeUri = pickle.uri
+          const line =
+            getGherkinScenarioLocationMap(gherkinDocument)[
+              pickle.astNodeIds[pickle.astNodeIds.length - 1]
+            ].line
           if (doesNotHaveValue(mapping[relativeUri])) {
             mapping[relativeUri] = []
           }
           mapping[relativeUri].push(line)
         }
-      }
-    )
-    const text = _.chain(mapping)
-      .map((lines, uri) => `${uri}:${lines.join(':')}`)
+      })
+    const text = Object.keys(mapping)
+      .map((uri) => {
+        const lines = mapping[uri]
+        return `${uri}:${lines.join(':')}`
+      })
       .join(this.separator)
-      .value()
     this.log(text)
   }
 }

@@ -12,27 +12,6 @@ Feature: Retry flaky tests
       """
     And it fails
 
-  @spawn
-  Scenario: running Cucumber JS with --retryTagFilter in camel case will result in a warning
-    Given a file named "features/a.feature" with:
-      """
-      Feature:
-        Scenario:
-          Given a step
-      """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
-      """
-      const {Given} = require('@cucumber/cucumber')
-
-      Given(/^a step$/, function() {})
-      """
-    When I run cucumber-js with `--retry 1 --retryTagFilter @flaky`
-    Then the error output contains the text:
-      """
-      the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter
-      """
-    But it passes
-
   Scenario: running Cucumber JS with negative --retry will fail
     When I run cucumber-js with `--retry -1`
     Then the error output contains the text:
@@ -534,3 +513,60 @@ Feature: Retry flaky tests
       """
     When I run cucumber-js with `--retry 1`
     Then it passes
+
+  Rule: using retry in combination with fail-fast will exhaust retries before failing test run
+
+    Scenario: a flaky scenario that passes on the second attempt, set to fail fast
+      Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Flaky
+          Given a flaky step
+
+        Scenario: Passing
+          Given a passing step
+      """
+      Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      let willPass = false
+
+      Given(/^a flaky step$/, function() {
+        if (willPass) {
+          return
+        }
+        willPass = true
+        throw 'fail'
+      })
+
+      Given(/^a passing step$/, function() {})
+      """
+      When I run cucumber-js with `--retry 1 --fail-fast`
+      Then it passes
+      And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
+      And scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
+      And scenario "Passing" step "Given a passing step" has status "passed"
+
+    Scenario: a scenario that fails every allotted attempt, set to fail fast
+      Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Failing
+          Given a failing step
+
+        Scenario: Passing
+          Given a passing step
+      """
+      Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given(/^a failing step$/, function() { throw 'fail' })
+      Given(/^a passing step$/, function() {})
+      """
+      When I run cucumber-js with `--retry 1 --fail-fast`
+      Then it fails
+      And scenario "Failing" attempt 0 step "Given a failing step" has status "failed"
+      And scenario "Failing" attempt 1 step "Given a failing step" has status "failed"
+      And scenario "Passing" step "Given a passing step" has status "skipped"

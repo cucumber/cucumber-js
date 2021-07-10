@@ -1,21 +1,11 @@
-import { pipeline, Writable } from 'stream'
+import { pipeline, Transform, Writable } from 'stream'
 import tmp from 'tmp'
 import fs from 'fs'
 import http from 'http'
 import https from 'https'
 import { doesHaveValue } from '../value_checker'
 
-// https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
-type HttpMethod =
-  | 'GET'
-  | 'HEAD'
-  | 'POST'
-  | 'PUT'
-  | 'DELETE'
-  | 'CONNECT'
-  | 'OPTIONS'
-  | 'TRACE'
-  | 'PATCH'
+type HttpMethod = 'GET' | 'POST' | 'PUT'
 
 /**
  * This Writable writes data to a HTTP/HTTPS URL.
@@ -27,18 +17,18 @@ type HttpMethod =
  *
  * 3xx redirects are not currently followed.
  */
-export default class HttpStream extends Writable {
+export default class HttpStream extends Transform {
   private tempFilePath: string
   private tempFile: Writable
-  private responseBodyFromGet: string | null = null
 
   constructor(
     private readonly url: string,
     private readonly method: HttpMethod,
-    private readonly headers: { [name: string]: string },
-    private readonly reportLocation: (content: string) => void
+    private readonly headers: http.OutgoingHttpHeaders
   ) {
-    super()
+    super({
+      readableObjectMode: true,
+    })
   }
 
   _write(
@@ -49,7 +39,6 @@ export default class HttpStream extends Writable {
     if (this.tempFile === undefined) {
       tmp.file((err, name, fd) => {
         if (doesHaveValue(err)) return callback(err)
-
         this.tempFilePath = name
         this.tempFile = fs.createWriteStream(name, { fd })
         this.tempFile.write(chunk, encoding, callback)
@@ -61,79 +50,97 @@ export default class HttpStream extends Writable {
 
   _final(callback: (error?: Error | null) => void): void {
     this.tempFile.end(() => {
-      this.sendRequest(
+      this.sendHttpRequest(
         this.url,
         this.method,
-        (err: Error | null | undefined) => {
-          if (doesHaveValue(err)) return callback(err)
-          this.reportLocation(this.responseBodyFromGet)
-          callback(null)
+        this.headers,
+        (err1, res1) => {
+          if (doesHaveValue(err1)) return callback(err1)
+          this.pushResponseBody(res1, () => {
+            this.emitErrorUnlessHttp2xx(res1, this.url, this.method)
+            if (
+              res1.statusCode === 202 &&
+              res1.headers.location !== undefined
+            ) {
+              this.sendHttpRequest(
+                res1.headers.location,
+                'PUT',
+                {},
+                (err2, res2) => {
+                  if (doesHaveValue(err2)) return callback(err2)
+                  this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
+                  callback()
+                }
+              )
+            } else {
+              callback()
+            }
+          })
         }
       )
     })
   }
 
-  private sendRequest(
+  private pushResponseBody(res: http.IncomingMessage, done: () => void): void {
+    let body = Buffer.alloc(0)
+    res.on('data', (chunk) => {
+      body = Buffer.concat([body, chunk])
+    })
+    res.on('end', () => {
+      this.push(body.toString('utf-8'))
+      done()
+    })
+  }
+
+  private emitErrorUnlessHttp2xx(
+    res: http.IncomingMessage,
+    url: string,
+    method: string
+  ): void {
+    if (res.statusCode >= 300)
+      this.emit(
+        'error',
+        new Error(
+          `Unexpected http status ${res.statusCode} from ${method} ${url}`
+        )
+      )
+  }
+
+  private sendHttpRequest(
     url: string,
     method: HttpMethod,
-    callback: (err: Error | null | undefined, url?: string) => void
+    headers: http.OutgoingHttpHeaders,
+    callback: (err?: Error | null, res?: http.IncomingMessage) => void
   ): void {
     const httpx = doesHaveValue(url.match(/^https:/)) ? https : http
+    const additionalHttpHeaders: http.OutgoingHttpHeaders = {}
 
-    if (method === 'GET') {
-      httpx.get(url, { headers: this.headers }, (res) => {
-        if (res.statusCode >= 400) {
-          return callback(
-            new Error(`${method} ${url} returned status ${res.statusCode}`)
-          )
-        }
+    const upload = method === 'PUT' || method === 'POST'
+    if (upload) {
+      additionalHttpHeaders['Content-Length'] = fs.statSync(
+        this.tempFilePath
+      ).size
+    }
 
-        if (res.statusCode !== 202 || res.headers.location === undefined) {
-          callback(null, url)
-        } else {
-          let body = Buffer.alloc(0)
-          res.on('data', (chunk) => {
-            body = Buffer.concat([body, chunk])
-          })
-          res.on('end', () => {
-            this.responseBodyFromGet = body.toString('utf-8')
-            this.sendRequest(res.headers.location, 'PUT', callback)
-          })
+    const allHeaders = { ...headers, ...additionalHttpHeaders }
+    const req = httpx.request(url, {
+      method,
+      headers: allHeaders,
+    })
+    req.on('error', (err) => this.emit('error', err))
+    req.on('response', (res) => {
+      res.on('error', (err) => this.emit('error', err))
+      callback(null, res)
+    })
+
+    if (upload) {
+      pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
+        if (doesHaveValue(err)) {
+          this.emit('error', err)
         }
       })
     } else {
-      const contentLength = fs.statSync(this.tempFilePath).size
-      const req = httpx.request(url, {
-        method,
-        headers: {
-          'Content-Length': contentLength,
-        },
-      })
-
-      req.on('response', (res) => {
-        if (res.statusCode >= 400) {
-          let body = Buffer.alloc(0)
-          res.on('data', (chunk) => {
-            body = Buffer.concat([body, chunk])
-          })
-          res.on('end', () => {
-            callback(
-              new Error(
-                `${method} ${url} returned status ${
-                  res.statusCode
-                }:\n${body.toString('utf-8')}`
-              )
-            )
-          })
-          res.on('error', callback)
-        } else {
-          callback(null, url)
-        }
-      })
-
-      pipeline(fs.createReadStream(this.tempFilePath), req, (err) => {
-        if (doesHaveValue(err)) callback(err)
-      })
+      req.end()
     }
   }
 }

@@ -13,6 +13,52 @@ You'll need to update any `import`/`require` statements in your support code to 
 
 (The executable is still `cucumber-js` though.)
 
+## Hooks
+
+The result object passed as the argument to your `After` hook function has a different structure.
+
+Previously in `cucumber`:
+
+```js
+{
+  "sourceLocation": {
+    "uri": "features/example.feature",
+    "line": 7
+  },
+  "pickle": {...},
+  "result": {
+    "duration": 660000000,
+    "status": "failed",
+    "exception": {
+      "name": "AssertionError",
+      "message": "...",
+      "showDiff": false,
+      "stack": "..."
+    },
+    "retried": true
+  }
+}
+```
+
+Now in `@cucumber/cucumber`:
+
+```js
+{
+  "gherkinDocument": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/GherkinDocument.json
+  "pickle": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/Pickle.json
+  "testCaseStartedId": "[uuid]",
+  "result": {
+    "status": "FAILED", // one of: UNKNOWN, PASSED, SKIPPED, PENDING, UNDEFINED, AMBIGUOUS, FAILED
+    "message": "...", // includes stack trace
+    "duration": {
+      "seconds": "0",
+      "nanos": 660000000
+    },
+    "willBeRetried": true
+  }
+}
+```
+
 ## Formatters
 
 The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
@@ -48,3 +94,5 @@ There are a few minor differences to be aware of:
 
 - The type for data tables was named `TableDefinition` - it's now named `DataTable`
 - `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](./custom_formatters.md)
+
+Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.

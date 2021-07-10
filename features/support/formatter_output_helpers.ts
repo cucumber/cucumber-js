@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {
   doesHaveValue,
   doesNotHaveValue,
@@ -9,6 +8,7 @@ import {
   IJsonScenario,
   IJsonStep,
 } from '../../src/formatter/json_formatter'
+import * as messages from '@cucumber/messages'
 
 // Converting windows stack trace to posix and removing cwd
 //    C:\\project\\path\\features\\support/code.js
@@ -19,9 +19,10 @@ function normalizeExceptionAndUri(exception: string, cwd: string): string {
     .replace(cwd, '')
     .replace(/\\/g, '/')
     .replace('/features', 'features')
+    .split('\n')[0]
 }
 
-function normalizeProtobufObject(obj: any, cwd: string): void {
+function normalizeMessage(obj: any, cwd: string): void {
   if (doesHaveValue(obj.uri)) {
     obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
   }
@@ -45,18 +46,20 @@ function normalizeProtobufObject(obj: any, cwd: string): void {
 }
 
 export function normalizeMessageOutput(
-  envelopeObjects: any[],
+  envelopeObjects: messages.Envelope[],
   cwd: string
-): any[] {
+): messages.Envelope[] {
   envelopeObjects.forEach((e: any) => {
     for (const key in e) {
-      normalizeProtobufObject(e[key], cwd)
+      normalizeMessage(e[key], cwd)
     }
   })
   return envelopeObjects
 }
 
-export function stripMetaMessages(envelopeObjects: any[]): any[] {
+export function stripMetaMessages(
+  envelopeObjects: messages.Envelope[]
+): messages.Envelope[] {
   return envelopeObjects.filter((e: any) => {
     // filter off meta objects, almost none of it predictable/useful for testing
     return doesNotHaveValue(e.meta)
@@ -64,13 +67,13 @@ export function stripMetaMessages(envelopeObjects: any[]): any[] {
 }
 
 export function normalizeJsonOutput(str: string, cwd: string): IJsonFeature[] {
-  const json = JSON.parse(valueOrDefault(str, '[]'))
-  _.each(json, (feature: IJsonFeature) => {
+  const json: IJsonFeature[] = JSON.parse(valueOrDefault(str, '[]'))
+  json.forEach((feature: IJsonFeature) => {
     if (doesHaveValue(feature.uri)) {
       feature.uri = normalizeExceptionAndUri(feature.uri, cwd)
     }
-    _.each(feature.elements, (element: IJsonScenario) => {
-      _.each(element.steps, (step: IJsonStep) => {
+    feature.elements.forEach((element: IJsonScenario) => {
+      element.steps.forEach((step: IJsonStep) => {
         if (doesHaveValue(step.match) && doesHaveValue(step.match.location)) {
           step.match.location = normalizeExceptionAndUri(
             step.match.location,

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import ArgvParser, {
   IParsedArgvFormatOptions,
   IParsedArgvOptions,
@@ -58,8 +57,6 @@ export default class ConfigurationBuilder {
 
   constructor({ argv, cwd }: INewConfigurationBuilderOptions) {
     this.cwd = cwd
-
-    ArgvParser.lint(argv)
     const parsedArgv = ArgvParser.parse(argv)
     this.args = parsedArgv.args
     this.options = parsedArgv.options
@@ -135,14 +132,15 @@ export default class ConfigurationBuilder {
             return [match]
           })
         )
-        return _.flatten(expanded)
+        return expanded.flat()
       })
     )
-    return _.flatten(expandedPaths).map((x) => path.normalize(x))
+    return expandedPaths.flat().map((x) => path.normalize(x))
   }
 
   async expandFeaturePaths(featurePaths: string[]): Promise<string[]> {
     featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
+    featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
     return this.expandPaths(featurePaths, '.feature')
   }
 
@@ -161,7 +159,7 @@ export default class ConfigurationBuilder {
       }
       return path.relative(this.cwd, featureDir)
     })
-    return _.uniq(featureDirs)
+    return [...new Set(featureDirs)]
   }
 
   isPublishing(): boolean {
@@ -193,7 +191,10 @@ export default class ConfigurationBuilder {
 
       mapping[publishUrl] = 'message'
     }
-    return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
+    return Object.keys(mapping).map((outputTo) => ({
+      outputTo,
+      type: mapping[outputTo],
+    }))
   }
 
   isTruthyString(s: string | undefined): boolean {
@@ -211,16 +212,16 @@ export default class ConfigurationBuilder {
           if (filename[0] === '@') {
             const filePath = path.join(this.cwd, arg)
             const content = await fs.readFile(filePath, 'utf8')
-            return _.chain(content).split('\n').map(_.trim).compact().value()
+            return content.split('\n').map((x) => x.trim())
           }
           return [arg]
         })
       )
-      const featurePaths = _.flatten(nestedFeaturePaths)
+      const featurePaths = nestedFeaturePaths.flat()
       if (featurePaths.length > 0) {
-        return featurePaths
+        return featurePaths.filter((x) => x !== '')
       }
     }
-    return ['features/**/*.feature']
+    return ['features/**/*.{feature,feature.md}']
   }
 }

@@ -1,25 +1,21 @@
 import assert from 'assert'
 import HttpStream from './http_stream'
 import FakeReportServer from '../../test/fake_report_server'
+import { Writable } from 'stream'
 
 type Callback = (err?: Error | null) => void
 
 describe('HttpStream', () => {
-  const port = 8998
   let reportServer: FakeReportServer
+  let port: number
 
   beforeEach(async () => {
-    reportServer = new FakeReportServer(port)
-    await reportServer.start()
+    reportServer = new FakeReportServer(0)
+    port = await reportServer.start()
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
-    const stream = new HttpStream(
-      `http://localhost:${port}/s3`,
-      'PUT',
-      {},
-      () => undefined
-    )
+    const stream = new HttpStream(`http://localhost:${port}/s3`, 'PUT', {})
 
     stream.on('error', callback)
     stream.on('finish', () => {
@@ -42,11 +38,12 @@ describe('HttpStream', () => {
   })
 
   it(`follows location from GET response, and sends body and headers in a PUT request`, (callback: Callback) => {
+    const bearerToken = 'f318d9ec-5a3d-4727-adec-bd7b69e2edd3'
+
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      { Authorization: 'Bearer blablabla' },
-      () => undefined
+      { Authorization: `Bearer ${bearerToken}` }
     )
 
     stream.on('error', callback)
@@ -63,7 +60,7 @@ describe('HttpStream', () => {
             )
             assert.strictEqual(
               reportServer.receivedHeaders.authorization,
-              'Bearer blablabla'
+              `Bearer ${bearerToken}`
             )
             callback()
           } catch (err) {
@@ -84,28 +81,35 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      {},
-      (content) => {
-        reported = content
-      }
+      {}
     )
 
+    const readerStream = new Writable({
+      objectMode: true,
+      write: function (responseBody: string, encoding, writeCallback) {
+        reported = responseBody
+        writeCallback()
+      },
+    })
+
+    stream.pipe(readerStream)
+
     stream.on('error', callback)
-    stream.on('finish', () => {
+    readerStream.on('error', callback)
+
+    readerStream.on('finish', () => {
       reportServer
         .stop()
-        .then((receivedBodies) => {
+        .then(() => {
           try {
-            assert.strictEqual(
-              reported,
-              `┌──────────────────────────────────────────────────────────────────────────┐
+            const expectedResult = `┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
 `
-            )
+            assert.deepStrictEqual(reported, expectedResult)
             callback()
           } catch (err) {
             callback(err)
@@ -113,6 +117,44 @@ describe('HttpStream', () => {
         })
         .catch(callback)
     })
+
+    stream.write('hello')
+    stream.end()
+  })
+
+  it('reports the body provided by the server even when an error is returned by the server and still fail', (callback: Callback) => {
+    let reported: string
+
+    const stream = new HttpStream(
+      `http://localhost:${port}/api/reports`,
+      'GET',
+      { Authorization: `Bearer an-invalid-token` }
+    )
+
+    const readerStream = new Writable({
+      objectMode: true,
+      write: function (responseBody: string, encoding, writeCallback) {
+        reported = responseBody
+        writeCallback()
+      },
+    })
+
+    stream.pipe(readerStream)
+
+    stream.on('error', () => {
+      reportServer
+        .stop()
+        .then(() => {
+          const expectedResult = `┌─────────────────────┐
+│ Error invalid token │
+└─────────────────────┘
+`
+          assert.deepStrictEqual(reported, expectedResult)
+          callback()
+        })
+        .catch(callback)
+    })
+    readerStream.on('error', callback)
 
     stream.write('hello')
     stream.end()

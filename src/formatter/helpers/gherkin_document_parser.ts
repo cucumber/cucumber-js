@@ -1,26 +1,22 @@
-import _, { Dictionary } from 'lodash'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(
-  gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.IStep> {
-  return _.chain(gherkinDocument.feature.children)
+  gherkinDocument: messages.GherkinDocument
+): Record<string, messages.Step> {
+  const result: Record<string, messages.Step> = {}
+  gherkinDocument.feature.children
     .map(extractStepContainers)
-    .flatten()
-    .map('steps')
-    .flatten()
-    .map((step: messages.GherkinDocument.Feature.IStep) => [step.id, step])
-    .fromPairs()
-    .value()
+    .flat()
+    .forEach((x) =>
+      x.steps.forEach((step: messages.Step) => (result[step.id] = step))
+    )
+  return result
 }
 
 function extractStepContainers(
-  child: messages.GherkinDocument.Feature.IFeatureChild
-): Array<
-  | messages.GherkinDocument.Feature.IScenario
-  | messages.GherkinDocument.Feature.IBackground
-> {
+  child: messages.FeatureChild
+): Array<messages.Scenario | messages.Background> {
   if (doesHaveValue(child.background)) {
     return [child.background]
   } else if (doesHaveValue(child.rule)) {
@@ -34,62 +30,55 @@ function extractStepContainers(
 }
 
 export function getGherkinScenarioMap(
-  gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.IScenario> {
-  return _.chain(gherkinDocument.feature.children)
-    .map((child: messages.GherkinDocument.Feature.IFeatureChild) => {
+  gherkinDocument: messages.GherkinDocument
+): Record<string, messages.Scenario> {
+  const result: Record<string, messages.Scenario> = {}
+  gherkinDocument.feature.children
+    .map((child: messages.FeatureChild) => {
       if (doesHaveValue(child.rule)) {
         return child.rule.children
       }
       return [child]
     })
-    .flatten()
-    .filter('scenario')
-    .map('scenario')
-    .map((scenario: messages.GherkinDocument.Feature.IScenario) => [
-      scenario.id,
-      scenario,
-    ])
-    .fromPairs()
-    .value()
+    .flat()
+    .forEach((x) => {
+      if (x.scenario != null) {
+        result[x.scenario.id] = x.scenario
+      }
+    })
+  return result
 }
 
 export function getGherkinExampleRuleMap(
-  gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.GherkinDocument.Feature.FeatureChild.IRule> {
-  return _.chain(gherkinDocument.feature.children)
-    .filter('rule')
-    .map('rule')
-    .map((rule) => {
-      return rule.children
+  gherkinDocument: messages.GherkinDocument
+): Record<string, messages.Rule> {
+  const result: Record<string, messages.Rule> = {}
+  gherkinDocument.feature.children
+    .filter((x) => x.rule != null)
+    .forEach((x) =>
+      x.rule.children
         .filter((child) => doesHaveValue(child.scenario))
-        .map((child) => [child.scenario.id, rule])
-    })
-    .flatten()
-    .fromPairs()
-    .value()
+        .forEach((child) => (result[child.scenario.id] = x.rule))
+    )
+  return result
 }
 
 export function getGherkinScenarioLocationMap(
-  gherkinDocument: messages.IGherkinDocument
-): Dictionary<messages.ILocation> {
-  const locationMap: Dictionary<messages.ILocation> = {}
-  const scenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario> = getGherkinScenarioMap(
-    gherkinDocument
-  )
-  _.entries<messages.GherkinDocument.Feature.IScenario>(scenarioMap).forEach(
-    ([id, scenario]) => {
-      locationMap[id] = scenario.location
-      if (doesHaveValue(scenario.examples)) {
-        _.chain(scenario.examples)
-          .map('tableBody')
-          .flatten()
-          .forEach((tableRow) => {
-            locationMap[tableRow.id] = tableRow.location
-          })
-          .value()
-      }
+  gherkinDocument: messages.GherkinDocument
+): Record<string, messages.Location> {
+  const locationMap: Record<string, messages.Location> = {}
+  const scenarioMap: Record<string, messages.Scenario> =
+    getGherkinScenarioMap(gherkinDocument)
+  Object.keys(scenarioMap).forEach((id) => {
+    const scenario = scenarioMap[id]
+    locationMap[id] = scenario.location
+    if (doesHaveValue(scenario.examples)) {
+      scenario.examples.forEach((x) =>
+        x.tableBody.forEach(
+          (tableRow) => (locationMap[tableRow.id] = tableRow.location)
+        )
+      )
     }
-  )
+  })
   return locationMap
 }

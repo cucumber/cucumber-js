@@ -2,7 +2,7 @@ import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { formatUndefinedParameterType } from './helpers/issue_helpers'
 import { durationBetweenTimestamps } from '../time'
@@ -10,7 +10,7 @@ import { durationBetweenTimestamps } from '../time'
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {
   private numberOfSteps: number
-  private testRunStarted: messages.ITestRunStarted
+  private testRunStarted: messages.TestRunStarted
   private issueCount: number
   public progressBar: ProgressBar
 
@@ -42,18 +42,17 @@ export default class ProgressBarFormatter extends Formatter {
   logProgress({
     testStepId,
     testCaseStartedId,
-  }: messages.ITestStepFinished): void {
-    const { testCase } = this.eventDataCollector.getTestCaseAttempt(
-      testCaseStartedId
-    )
+  }: messages.TestStepFinished): void {
+    const { testCase } =
+      this.eventDataCollector.getTestCaseAttempt(testCaseStartedId)
     const testStep = testCase.testSteps.find((s) => s.id === testStepId)
-    if (testStep.pickleStepId !== '') {
+    if (doesHaveValue(testStep.pickleStepId)) {
       this.progressBar.tick()
     }
   }
 
   logUndefinedParametertype(
-    parameterType: messages.IUndefinedParameterType
+    parameterType: messages.UndefinedParameterType
   ): void {
     this.log(
       `Undefined parameter type: ${formatUndefinedParameterType(
@@ -62,7 +61,7 @@ export default class ProgressBarFormatter extends Formatter {
     )
   }
 
-  logErrorIfNeeded(testCaseFinished: messages.ITestCaseFinished): void {
+  logErrorIfNeeded(testCaseFinished: messages.TestCaseFinished): void {
     const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
@@ -88,7 +87,7 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logSummary(testRunFinished: messages.ITestRunFinished): void {
+  logSummary(testRunFinished: messages.TestRunFinished): void {
     const testRunDuration = durationBetweenTimestamps(
       this.testRunStarted.timestamp,
       testRunFinished.timestamp
@@ -102,11 +101,11 @@ export default class ProgressBarFormatter extends Formatter {
     )
   }
 
-  parseEnvelope(envelope: messages.IEnvelope): void {
+  parseEnvelope(envelope: messages.Envelope): void {
     if (doesHaveValue(envelope.undefinedParameterType)) {
       this.logUndefinedParametertype(envelope.undefinedParameterType)
-    } else if (doesHaveValue(envelope.pickle)) {
-      this.incrementStepCount(envelope.pickle.id)
+    } else if (doesHaveValue(envelope.testCase)) {
+      this.incrementStepCount(envelope.testCase.pickleId)
     } else if (doesHaveValue(envelope.testStepStarted)) {
       this.initializeProgressBar()
     } else if (doesHaveValue(envelope.testStepFinished)) {

@@ -1,59 +1,54 @@
-import _, { Dictionary } from 'lodash'
 import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 export interface IGetPickleLocationRequest {
-  gherkinDocument: messages.IGherkinDocument
-  pickle: messages.IPickle
+  gherkinDocument: messages.GherkinDocument
+  pickle: messages.Pickle
 }
 
 export interface IGetStepKeywordRequest {
-  pickleStep: messages.Pickle.IPickleStep
-  gherkinStepMap: Dictionary<messages.GherkinDocument.Feature.IStep>
+  pickleStep: messages.PickleStep
+  gherkinStepMap: Record<string, messages.Step>
 }
 
 export interface IGetScenarioDescriptionRequest {
-  pickle: messages.IPickle
-  gherkinScenarioMap: Dictionary<messages.GherkinDocument.Feature.IScenario>
+  pickle: messages.Pickle
+  gherkinScenarioMap: Record<string, messages.Scenario>
 }
 
 export function getScenarioDescription({
   pickle,
   gherkinScenarioMap,
 }: IGetScenarioDescriptionRequest): string {
-  return _.chain(pickle.astNodeIds)
+  return pickle.astNodeIds
     .map((id) => gherkinScenarioMap[id])
-    .compact()
-    .first()
-    .value().description
+    .filter((x) => x != null)[0].description
 }
 
 export function getStepKeyword({
   pickleStep,
   gherkinStepMap,
 }: IGetStepKeywordRequest): string {
-  return _.chain(pickleStep.astNodeIds)
+  return pickleStep.astNodeIds
     .map((id) => gherkinStepMap[id])
-    .compact()
-    .first()
-    .value().keyword
+    .filter((x) => x != null)[0].keyword
 }
 
 export function getPickleStepMap(
-  pickle: messages.IPickle
-): Dictionary<messages.Pickle.IPickleStep> {
-  return _.chain(pickle.steps)
-    .map((pickleStep) => [pickleStep.id, pickleStep])
-    .fromPairs()
-    .value()
+  pickle: messages.Pickle
+): Record<string, messages.PickleStep> {
+  const result: Record<string, messages.PickleStep> = {}
+  pickle.steps.forEach((pickleStep) => (result[pickleStep.id] = pickleStep))
+  return result
 }
 
 export function getPickleLocation({
   gherkinDocument,
   pickle,
-}: IGetPickleLocationRequest): messages.ILocation {
-  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-    gherkinDocument
-  )
-  return gherkinScenarioLocationMap[_.last(pickle.astNodeIds)]
+}: IGetPickleLocationRequest): messages.Location {
+  const gherkinScenarioLocationMap =
+    getGherkinScenarioLocationMap(gherkinDocument)
+  return gherkinScenarioLocationMap[
+    pickle.astNodeIds[pickle.astNodeIds.length - 1]
+  ]
 }

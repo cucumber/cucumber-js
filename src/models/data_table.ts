@@ -1,12 +1,9 @@
-import _, { Dictionary } from 'lodash'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]
 
-  constructor(
-    sourceTable: messages.PickleStepArgument.IPickleTable | string[][]
-  ) {
+  constructor(sourceTable: messages.PickleTable | string[][]) {
     if (sourceTable instanceof Array) {
       this.rawTable = sourceTable
     } else {
@@ -20,7 +17,11 @@ export default class DataTable {
     const copy = this.raw()
     const keys = copy[0]
     const valuesArray = copy.slice(1)
-    return valuesArray.map((values) => _.zipObject(keys, values))
+    return valuesArray.map((values) => {
+      const rowObject: Record<string, string> = {}
+      keys.forEach((key, index) => (rowObject[key] = values[index]))
+      return rowObject
+    })
   }
 
   raw(): string[][] {
@@ -33,15 +34,17 @@ export default class DataTable {
     return copy
   }
 
-  rowsHash(): Dictionary<any> {
+  rowsHash(): Record<string, string> {
     const rows = this.raw()
-    const everyRowHasTwoColumns = _.every(rows, (row) => row.length === 2)
+    const everyRowHasTwoColumns = rows.every((row) => row.length === 2)
     if (!everyRowHasTwoColumns) {
       throw new Error(
         'rowsHash can only be called on a data table where all rows have exactly two columns'
       )
     }
-    return _.fromPairs(rows)
+    const result: Record<string, string> = {}
+    rows.forEach((x) => (result[x[0]] = x[1]))
+    return result
   }
 
   transpose(): DataTable {

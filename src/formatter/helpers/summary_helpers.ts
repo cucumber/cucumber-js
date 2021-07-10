@@ -1,24 +1,22 @@
-import _ from 'lodash'
 import Duration from 'duration'
-import Status from '../../status'
-import { addDurations, getZeroDuration } from '../../time'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import { messages, TimeConversion } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import { doesHaveValue } from '../../value_checker'
 
 const STATUS_REPORT_ORDER = [
-  Status.FAILED,
-  Status.AMBIGUOUS,
-  Status.UNDEFINED,
-  Status.PENDING,
-  Status.SKIPPED,
-  Status.PASSED,
+  messages.TestStepResultStatus.FAILED,
+  messages.TestStepResultStatus.AMBIGUOUS,
+  messages.TestStepResultStatus.UNDEFINED,
+  messages.TestStepResultStatus.PENDING,
+  messages.TestStepResultStatus.SKIPPED,
+  messages.TestStepResultStatus.PASSED,
 ]
 
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
-  testRunDuration: messages.IDuration
+  testRunDuration: messages.Duration
 }
 
 export function formatSummary({
@@ -26,17 +24,20 @@ export function formatSummary({
   testCaseAttempts,
   testRunDuration,
 }: IFormatSummaryRequest): string {
-  const testCaseResults: messages.TestStepFinished.ITestStepResult[] = []
-  const testStepResults: messages.TestStepFinished.ITestStepResult[] = []
-  let totalStepDuration = getZeroDuration()
+  const testCaseResults: messages.TestStepResult[] = []
+  const testStepResults: messages.TestStepResult[] = []
+  let totalStepDuration = messages.TimeConversion.millisecondsToDuration(0)
   testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
     Object.values(stepResults).forEach((stepResult) => {
-      totalStepDuration = addDurations(totalStepDuration, stepResult.duration)
+      totalStepDuration = messages.TimeConversion.addDurations(
+        totalStepDuration,
+        stepResult.duration
+      )
     })
     if (!worstTestStepResult.willBeRetried) {
       testCaseResults.push(worstTestStepResult)
-      _.each(testCase.testSteps, (testStep) => {
-        if (testStep.pickleStepId !== '') {
+      testCase.testSteps.forEach((testStep) => {
+        if (doesHaveValue(testStep.pickleStepId)) {
           testStepResults.push(stepResults[testStep.id])
         }
       })
@@ -60,7 +61,7 @@ export function formatSummary({
 
 interface IGetCountSummaryRequest {
   colorFns: IColorFns
-  objects: messages.TestStepFinished.ITestStepResult[]
+  objects: messages.TestStepResult[]
   type: string
 }
 
@@ -69,8 +70,10 @@ function getCountSummary({
   objects,
   type,
 }: IGetCountSummaryRequest): string {
-  const counts = _.chain(objects).groupBy('status').mapValues('length').value()
-  const total = _.chain(counts).values().sum().value()
+  const counts: Record<string, number> = {}
+  STATUS_REPORT_ORDER.forEach((x) => (counts[x] = 0))
+  objects.forEach((x) => (counts[x.status] += 1))
+  const total = Object.values(counts).reduce((acc, x) => acc + x, 0)
   let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
     const details: string[] = []
@@ -78,7 +81,7 @@ function getCountSummary({
       if (counts[status] > 0) {
         details.push(
           colorFns.forStatus(status)(
-            `${counts[status].toString()} ${Status[status].toLowerCase()}`
+            `${counts[status].toString()} ${status.toLowerCase()}`
           )
         )
       }
@@ -88,9 +91,11 @@ function getCountSummary({
   return text
 }
 
-function getDurationSummary(durationMsg: messages.IDuration): string {
+function getDurationSummary(durationMsg: messages.Duration): string {
   const start = new Date(0)
-  const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
+  const end = new Date(
+    messages.TimeConversion.durationToMilliseconds(durationMsg)
+  )
   const duration = new Duration(start, end)
   // Use spaces in toString method for readability and to avoid %Ls which is a format
   return duration.toString('%Ms m %S . %L s').replace(/ /g, '')

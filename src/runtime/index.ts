@@ -1,12 +1,11 @@
-import _, { clone } from 'lodash'
 import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import StackTraceFilter from '../stack_trace_filter'
-import Status from '../status'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
 import { retriesForPickle } from './helpers'
-import { IdGenerator, messages } from '@cucumber/messages'
-import PickleRunner from './pickle_runner'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import TestCaseRunner from './test_case_runner'
 import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -16,6 +15,7 @@ import {
   PredictableTestRunStopwatch,
   RealTestRunStopwatch,
 } from './stopwatch'
+import { assembleTestCases } from './assemble_test_cases'
 
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
@@ -96,22 +96,26 @@ export default class Runtime {
     }
   }
 
-  async runPickle(pickleId: string): Promise<void> {
+  async runTestCase(
+    pickleId: string,
+    testCase: messages.TestCase
+  ): Promise<void> {
     const pickle = this.eventDataCollector.getPickle(pickleId)
     const retries = retriesForPickle(pickle, this.options)
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
-    const pickleRunner = new PickleRunner({
+    const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch: this.stopwatch,
       gherkinDocument: this.eventDataCollector.getGherkinDocument(pickle.uri),
       newId: this.newId,
       pickle,
+      testCase,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
     })
-    const status = await pickleRunner.run()
+    const status = await testCaseRunner.run()
     if (this.shouldCauseFailure(status)) {
       this.success = false
     }
@@ -121,47 +125,54 @@ export default class Runtime {
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
-    this.eventBroadcaster.emit(
-      'envelope',
-      new messages.Envelope({
-        testRunStarted: {
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const testRunStarted: messages.Envelope = {
+      testRunStarted: {
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testRunStarted)
     this.stopwatch.start()
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
     )
+    const assembledTestCases = await assembleTestCases({
+      eventBroadcaster: this.eventBroadcaster,
+      newId: this.newId,
+      pickles: this.pickleIds.map((pickleId) =>
+        this.eventDataCollector.getPickle(pickleId)
+      ),
+      supportCodeLibrary: this.supportCodeLibrary,
+    })
     for (const pickleId of this.pickleIds) {
-      await this.runPickle(pickleId)
+      await this.runTestCase(pickleId, assembledTestCases[pickleId])
     }
     await this.runTestRunHooks(
-      clone(this.supportCodeLibrary.afterTestRunHookDefinitions).reverse(),
+      this.supportCodeLibrary.afterTestRunHookDefinitions.slice(0).reverse(),
       'an AfterAll'
     )
     this.stopwatch.stop()
-    this.eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        testRunFinished: {
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
+    const testRunFinished: messages.Envelope = {
+      testRunFinished: {
+        timestamp: this.stopwatch.timestamp(),
+        success: this.success,
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testRunFinished)
     if (this.options.filterStacktraces) {
       this.stackTraceFilter.unfilter()
     }
     return this.success
   }
 
-  shouldCauseFailure(
-    status: messages.TestStepFinished.TestStepResult.Status
-  ): boolean {
-    return (
-      _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
-      (status === Status.PENDING && this.options.strict)
-    )
+  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
+    const failureStatuses: messages.TestStepResultStatus[] = [
+      messages.TestStepResultStatus.AMBIGUOUS,
+      messages.TestStepResultStatus.FAILED,
+      messages.TestStepResultStatus.UNDEFINED,
+    ]
+    if (this.options.strict)
+      failureStatuses.push(messages.TestStepResultStatus.PENDING)
+    return failureStatuses.includes(status)
   }
 }

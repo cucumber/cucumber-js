@@ -1,17 +1,18 @@
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import { SourceMediaType } from '@cucumber/messages'
 import { doesHaveValue } from '../src/value_checker'
 import { IGherkinOptions } from '@cucumber/gherkin'
-import GherkinStreams from '@cucumber/gherkin/dist/src/stream/GherkinStreams'
+import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { EventEmitter } from 'events'
 
 export interface IParsedSource {
-  pickles: messages.IPickle[]
-  source: messages.ISource
-  gherkinDocument: messages.IGherkinDocument
+  pickles: messages.Pickle[]
+  source: messages.Source
+  gherkinDocument: messages.GherkinDocument
 }
 
 export interface IParsedSourceWithEnvelopes extends IParsedSource {
-  envelopes: messages.IEnvelope[]
+  envelopes: messages.Envelope[]
 }
 
 export interface IParseRequest {
@@ -25,22 +26,22 @@ export async function parse({
   uri,
   options,
 }: IParseRequest): Promise<IParsedSourceWithEnvelopes> {
-  const sources = [
+  const sources: messages.Envelope[] = [
     {
       source: {
         uri,
         data: data,
-        mediaType: 'text/x.cucumber.gherkin+plain',
+        mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
       },
     },
   ]
   return await new Promise<IParsedSourceWithEnvelopes>((resolve, reject) => {
-    let source: messages.ISource
-    let gherkinDocument: messages.IGherkinDocument
-    const pickles: messages.IPickle[] = []
-    const envelopes: messages.IEnvelope[] = []
+    let source: messages.Source
+    let gherkinDocument: messages.GherkinDocument
+    const pickles: messages.Pickle[] = []
+    const envelopes: messages.Envelope[] = []
     const messageStream = GherkinStreams.fromSources(sources, options)
-    messageStream.on('data', (envelope: messages.IEnvelope) => {
+    messageStream.on('data', (envelope: messages.Envelope) => {
       envelopes.push(envelope)
       if (doesHaveValue(envelope.source)) {
         source = envelope.source
@@ -90,7 +91,7 @@ export async function generateEvents({
 
 export async function getPickleWithTags(
   tags: string[]
-): Promise<messages.IPickle> {
+): Promise<messages.Pickle> {
   const {
     pickles: [pickle],
   } = await parse({
@@ -107,7 +108,7 @@ Feature: a
 
 export async function getPickleStepWithText(
   text: string
-): Promise<messages.IPickle> {
+): Promise<messages.PickleStep> {
   const {
     pickles: [pickle],
   } = await parse({

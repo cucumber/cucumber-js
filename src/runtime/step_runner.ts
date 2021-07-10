@@ -1,8 +1,6 @@
-import _ from 'lodash'
-import Status from '../status'
-import Time, { millisecondsToDuration } from '../time'
+import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { format } from 'assertion-error-formatter'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
@@ -17,7 +15,7 @@ const { beginTiming, endTiming } = Time
 export interface IRunOptions {
   defaultTimeout: number
   hookParameter: ITestCaseHookParameter
-  step: messages.Pickle.IPickleStep
+  step: messages.PickleStep
   stepDefinition: IDefinition
   world: any
 }
@@ -28,11 +26,9 @@ export async function run({
   step,
   stepDefinition,
   world,
-}: IRunOptions): Promise<messages.TestStepFinished.ITestStepResult> {
+}: IRunOptions): Promise<messages.TestStepResult> {
   beginTiming()
-  let error: any,
-    result: messages.TestStepFinished.ITestStepResult,
-    invocationData: IGetInvocationDataResponse
+  let error: any, result: any, invocationData: IGetInvocationDataResponse
 
   try {
     invocationData = await stepDefinition.getInvocationParameters({
@@ -50,9 +46,7 @@ export async function run({
       defaultTimeout
     )
 
-    if (
-      _.includes(invocationData.validCodeLengths, stepDefinition.code.length)
-    ) {
+    if (invocationData.validCodeLengths.includes(stepDefinition.code.length)) {
       const data = await UserCodeRunner.run({
         argsArray: invocationData.parameters,
         fn: stepDefinition.code,
@@ -66,22 +60,26 @@ export async function run({
     }
   }
 
-  const testStepResult = messages.TestStepFinished.TestStepResult.fromObject({
-    duration: millisecondsToDuration(endTiming()),
-  })
-
+  const duration = messages.TimeConversion.millisecondsToDuration(endTiming())
+  let status: messages.TestStepResultStatus
+  let message: string
   if (result === 'skipped') {
-    testStepResult.status = Status.SKIPPED
+    status = messages.TestStepResultStatus.SKIPPED
   } else if (result === 'pending') {
-    testStepResult.status = Status.PENDING
+    status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    testStepResult.message = format(error)
-    testStepResult.status = Status.FAILED
+    message = format(error)
+    status = messages.TestStepResultStatus.FAILED
   } else {
-    testStepResult.status = Status.PASSED
+    status = messages.TestStepResultStatus.PASSED
   }
 
-  return testStepResult
+  return {
+    duration,
+    status,
+    message,
+    willBeRetried: false,
+  }
 }
 
 export default { run }

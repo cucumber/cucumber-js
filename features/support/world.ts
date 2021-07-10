@@ -2,21 +2,23 @@ import { Cli, setWorldConstructor } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
-import { PassThrough } from 'stream'
+import { PassThrough, pipeline, Writable } from 'stream'
 import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
-import _ from 'lodash'
-import ndjsonParse from 'ndjson-parse'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
 import { doesHaveValue } from '../../src/value_checker'
+import util from 'util'
+
+const asyncPipeline = util.promisify(pipeline)
 
 interface ILastRun {
   error: any
   errorOutput: string
-  envelopes: messages.IEnvelope[]
+  envelopes: messages.Envelope[]
   output: string
 }
 
@@ -60,7 +62,7 @@ export class World {
       '--format',
       `message:${messageFilename}`,
     ])
-    const env = _.merge({}, process.env, this.sharedEnv, envOverride)
+    const env = { ...process.env, ...this.sharedEnv, ...envOverride }
     const cwd = this.tmpDir
 
     let result: IRunResult
@@ -98,11 +100,20 @@ export class World {
       stdout.end()
       result = { error, stdout: await toString(stdout), stderr }
     }
-    let envelopes: messages.Envelope[] = []
+    const envelopes: messages.Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)
     if (fs.existsSync(messageOutputPath)) {
-      const data = fs.readFileSync(messageOutputPath, { encoding: 'utf-8' })
-      envelopes = ndjsonParse(data).map(messages.Envelope.fromObject)
+      await asyncPipeline(
+        fs.createReadStream(messageOutputPath, { encoding: 'utf-8' }),
+        new messageStreams.NdjsonToMessageStream(),
+        new Writable({
+          objectMode: true,
+          write(envelope: messages.Envelope, _: BufferEncoding, callback) {
+            envelopes.push(envelope)
+            callback()
+          },
+        })
+      )
     }
     if (this.debug) {
       console.log(result.stdout + result.stderr) // eslint-disable-line no-console

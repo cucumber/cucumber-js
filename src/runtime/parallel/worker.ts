@@ -8,9 +8,10 @@ import {
 import { EventEmitter } from 'events'
 import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import PickleRunner from '../pickle_runner'
+import TestCaseRunner from '../test_case_runner'
 import UserCodeRunner from '../../user_code_runner'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
@@ -57,7 +58,7 @@ export default class Worker {
     this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       this.sendMessage({
-        jsonEnvelope: JSON.stringify(envelope.toJSON()),
+        jsonEnvelope: JSON.stringify(envelope),
       })
     })
   }
@@ -66,25 +67,14 @@ export default class Worker {
     filterStacktraces,
     supportCodeRequiredModules,
     supportCodePaths,
+    supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     supportCodePaths.forEach((codePath) => require(codePath))
-    this.supportCodeLibrary = supportCodeLibraryBuilder.finalize()
-    this.sendMessage({
-      supportCodeIds: {
-        stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
-          (s) => s.id
-        ),
-        beforeTestCaseHookDefinitionIds: this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-          (h) => h.id
-        ),
-        afterTestCaseHookDefinitionIds: this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
-          (h) => h.id
-        ),
-      },
-    })
+    this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
+
     this.worldParameters = options.worldParameters
     this.options = options
     this.filterStacktraces = filterStacktraces
@@ -122,6 +112,7 @@ export default class Worker {
   async runTestCase({
     gherkinDocument,
     pickle,
+    testCase,
     elapsed,
     retries,
     skip,
@@ -130,18 +121,19 @@ export default class Worker {
       ? new PredictableTestRunStopwatch()
       : new RealTestRunStopwatch()
     stopwatch.from(duration(elapsed))
-    const pickleRunner = new PickleRunner({
+    const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,
       gherkinDocument,
       newId: this.newId,
       pickle,
+      testCase,
       retries,
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.worldParameters,
     })
-    await pickleRunner.run()
+    await testCaseRunner.run()
     this.sendMessage({ ready: true })
   }
 
