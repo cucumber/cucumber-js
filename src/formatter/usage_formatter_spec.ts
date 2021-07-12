@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
-import { testFormatter, unindent } from '../../test/formatter_helpers'
+import { testFormatter, reindent } from '../../test/formatter_helpers'
 
 describe('UsageFormatter', () => {
   let clock: InstalledClock
@@ -41,7 +41,7 @@ describe('UsageFormatter', () => {
         })
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           ┌────────────────┬──────────┬───────────────────┐
           │ Pattern / Text │ Duration │ Location          │
           ├────────────────┼──────────┼───────────────────┤
@@ -77,7 +77,7 @@ describe('UsageFormatter', () => {
           })
 
           // Assert
-          expect(output).to.eql(unindent`
+          expect(output).to.eql(reindent`
             ┌────────────────┬──────────┬───────────────────┐
             │ Pattern / Text │ Duration │ Location          │
             ├────────────────┼──────────┼───────────────────┤
@@ -112,7 +112,7 @@ describe('UsageFormatter', () => {
           })
 
           // Assert
-          expect(output).to.eql(unindent`
+          expect(output).to.eql(reindent`
             ┌────────────────┬──────────┬───────────────────┐
             │ Pattern / Text │ Duration │ Location          │
             ├────────────────┼──────────┼───────────────────┤

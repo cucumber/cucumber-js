@@ -12,7 +12,7 @@ import {
 } from '../../../test/gherkin_helpers'
 import * as messages from '@cucumber/messages'
 import IGherkinDocument = messages.GherkinDocument
-import { unindent } from '../../../test/formatter_helpers'
+import { reindent } from '../../../test/formatter_helpers'
 
 describe('GherkinDocumentParser', () => {
   describe('getGherkinStepMap', () => {
@@ -316,7 +316,7 @@ async function parseGherkinDocument(data: string): Promise<IGherkinDocument> {
 }
 
 async function withBackgroundAndScenario(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(unindent`
+  return await parseGherkinDocument(reindent`
     Feature: a feature
       Background:
         Given a setup step
@@ -327,7 +327,7 @@ async function withBackgroundAndScenario(): Promise<IGherkinDocument> {
 }
 
 async function withBackgroundAndScenarioOutline(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(unindent`
+  return await parseGherkinDocument(reindent`
     Feature: a feature
       Background:
         Given a setup step
@@ -342,7 +342,7 @@ async function withBackgroundAndScenarioOutline(): Promise<IGherkinDocument> {
 }
 
 async function withBackgroundAndRuleWithExamples(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(unindent`
+  return await parseGherkinDocument(reindent`
     Feature: a feature
       Background:
         Given a setup step
@@ -359,7 +359,7 @@ async function withBackgroundAndRuleWithExamples(): Promise<IGherkinDocument> {
 }
 
 async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(unindent`
+  return await parseGherkinDocument(reindent`
     Feature: a feature
       Background:
         Given a feature-level setup step

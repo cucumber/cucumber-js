@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import { testFormatter, unindent } from '../../test/formatter_helpers'
+import { testFormatter, reindent } from '../../test/formatter_helpers'
 import figures from 'figures'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
@@ -21,7 +21,7 @@ describe('ProgressFormatter', () => {
     // Arrange
     const sources = [
       {
-        data: unindent`
+        data: reindent`
           Feature: a
             Scenario: a1
               Given an ambiguous step
@@ -49,7 +49,7 @@ describe('ProgressFormatter', () => {
     })
 
     // Assert
-    expect(output).to.eql(unindent`
+    expect(output).to.eql(reindent`
       AFP.-U
 
       Failures:
@@ -90,7 +90,7 @@ describe('ProgressFormatter', () => {
     // Arrange
     const sources = [
       {
-        data: unindent`
+        data: reindent`
           Feature: feature
             Rule: rule1
               Example: example1
@@ -116,7 +116,7 @@ describe('ProgressFormatter', () => {
     })
 
     // Assert
-    expect(output).to.eql(unindent`
+    expect(output).to.eql(reindent`
       ...
 
       3 scenarios (3 passed)

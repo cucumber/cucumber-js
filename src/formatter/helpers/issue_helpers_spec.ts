@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import getColorFns from '../get_color_fns'
 import { formatIssue } from './issue_helpers'
 import figures from 'figures'
-import { getTestCaseAttempts, unindent } from '../../../test/formatter_helpers'
+import { getTestCaseAttempts, reindent } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
 
@@ -37,7 +37,7 @@ describe('IssueHelpers', () => {
     describe('with a failed step', () => {
       it('prints the scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given a passing step
@@ -49,7 +49,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given a passing step # steps.ts:29
              ${figures.cross} When a failing step # steps.ts:9
@@ -63,7 +63,7 @@ describe('IssueHelpers', () => {
     describe('with an ambiguous step', () => {
       it('returns the formatted scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given a passing step
@@ -75,7 +75,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given a passing step # steps.ts:29
              ${figures.cross} When an ambiguous step
@@ -91,7 +91,7 @@ describe('IssueHelpers', () => {
     describe('with an undefined step', () => {
       it('returns the formatted scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given a passing step
@@ -103,7 +103,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given a passing step # steps.ts:29
              ? When an undefined step
@@ -123,7 +123,7 @@ describe('IssueHelpers', () => {
     describe('with a pending step', () => {
       it('returns the formatted scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given a passing step
@@ -135,7 +135,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given a passing step # steps.ts:29
              ? When a pending step # steps.ts:16
@@ -149,7 +149,7 @@ describe('IssueHelpers', () => {
     describe('step with data table', () => {
       it('returns the formatted scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given a passing step
@@ -164,7 +164,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given a passing step # steps.ts:29
              ? When a pending step # steps.ts:16
@@ -181,7 +181,7 @@ describe('IssueHelpers', () => {
     describe('step with doc string', () => {
       it('returns the formatted scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given a passing step
@@ -199,7 +199,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given a passing step # steps.ts:29
              ? When a pending step # steps.ts:16
@@ -219,7 +219,7 @@ describe('IssueHelpers', () => {
     describe('step with attachment text', () => {
       it('prints the scenario', async () => {
         // Arrange
-        const sourceData = unindent`
+        const sourceData = reindent`
           Feature: my feature
             Scenario: my scenario
               Given attachment step1
@@ -231,7 +231,7 @@ describe('IssueHelpers', () => {
         const output = await testFormatIssue(sourceData)
 
         // Assert
-        expect(output).to.eql(unindent`
+        expect(output).to.eql(reindent`
           1) Scenario: my scenario # a.feature:2
              ${figures.tick} Given attachment step1 # steps.ts:35
                  Attachment (text/plain): Some info

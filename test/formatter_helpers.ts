@@ -180,7 +180,7 @@ export function normalizeSummaryDuration(output: string): string {
  *
  * @example
  * if (true) { // This block illustrate indentation issues in source code
- *   const unindented = unindent`
+ *   const reindented = reindent`
  *     Expected output
  *       Expected indented output
  *       Another line
@@ -191,10 +191,10 @@ export function normalizeSummaryDuration(output: string): string {
  *    Expected indented output
  *    Another line
  *  `
- *    expect(unindented).to.eql(expected)
+ *    expect(reindented).to.eql(expected)
  * }
  */
-export function unindent(
+export function reindent(
   strings: TemplateStringsArray,
   ...expressionValues: string[]
 ): string {
