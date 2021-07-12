@@ -113,7 +113,6 @@ Feature: Parameter types
     Given a file named "features/step_definitions/particular_steps.js" with:
       """
       const {defineParameterType} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       defineParameterType({
         regexp: /particular/,
