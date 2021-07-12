@@ -41,7 +41,7 @@ Feature: ES modules support
       | --parallel 2 |
 
   @esm
-  Scenario: .mjs support code files are matched by default when using --esm
+  Scenario: .mjs support code files are matched by default
     Given a file named "features/a.feature" with:
       """
       Feature:
