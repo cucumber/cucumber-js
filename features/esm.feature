@@ -1,6 +1,6 @@
 Feature: ES modules support
 
-  cucumber-js works with native ES modules, via a Cli flag `--esm`
+  cucumber-js works with native ES modules
 
   @esm
   Scenario Outline: native module syntax works in support code, formatters and snippets
