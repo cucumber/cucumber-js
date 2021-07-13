@@ -175,17 +175,18 @@ export function normalizeSummaryDuration(output: string): string {
 }
 
 /**
- * Removes the indentation of the template based on the indentation of the first line.
- * It removes the first new-line character so it is not needed for it to be escaped.
+ * Removes the indentation of the given string based on the indentation of its first line.
+ *
+ * It removes the first line if it is empty so it is not needed for it to be escaped.
  *
  * @example
- * if (true) { // This block illustrate indentation issues in source code
- *   const reindented = reindent`
+ * {
+ *   const reindented = reindent(`
  *     Expected output
  *       Expected indented output
  *       Another line
- *     `
- *   // is the same as the following:
+ *   `)
+ *
  *   const expected = `\
  *  Expected output
  *    Expected indented output
@@ -194,23 +195,17 @@ export function normalizeSummaryDuration(output: string): string {
  *    expect(reindented).to.eql(expected)
  * }
  */
-export function reindent(
-  strings: TemplateStringsArray,
-  ...expressionValues: string[]
-): string {
-  let finalString = strings[0].replace(/^\n/, '')
-
-  const numberOfSpaceToRemove = finalString.search(/\S|$/)
+export function reindent(original: string): string {
+  const lines = original.replace(/^\n/, '').split(`\n`)
+  const numberOfSpaceToRemove = lines[0].search(/\S|$/)
   const spacesToRemove = Array(numberOfSpaceToRemove + 1).join(' ')
 
-  for (let i = 1; i < strings.length; i++) {
-    finalString += expressionValues[i - 1].toUpperCase()
-    finalString += strings[i]
-  }
+  return lines
+    .map((line, index) => {
+      if (index === lines.length - 1 && line.trim() === '') {
+        return ''
+      }
 
-  return finalString
-    .split('\n')
-    .map((line) => {
       if (line.startsWith(spacesToRemove)) {
         return line.replace(spacesToRemove, '')
       }

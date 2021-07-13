@@ -316,64 +316,72 @@ async function parseGherkinDocument(data: string): Promise<IGherkinDocument> {
 }
 
 async function withBackgroundAndScenario(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(reindent`
-    Feature: a feature
-      Background:
-        Given a setup step
+  return await parseGherkinDocument(
+    reindent(`
+      Feature: a feature
+        Background:
+          Given a setup step
 
-      Scenario:
-        When a regular step
+        Scenario:
+          When a regular step
     `)
+  )
 }
 
 async function withBackgroundAndScenarioOutline(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(reindent`
-    Feature: a feature
-      Background:
-        Given a setup step
+  return await parseGherkinDocument(
+    reindent(`
+      Feature: a feature
+        Background:
+          Given a setup step
 
-      Scenario Outline:
-        When a templated step with <word>
-      Examples:
-        | word |
-        | foo  |
-        | bar  |
+        Scenario Outline:
+          When a templated step with <word>
+        Examples:
+          | word |
+          | foo  |
+          | bar  |
     `)
+  )
 }
 
 async function withBackgroundAndRuleWithExamples(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(reindent`
-    Feature: a feature
-      Background:
-        Given a setup step
+  return await parseGherkinDocument(
+    reindent(`
+      Feature: a feature
+        Background:
+          Given a setup step
 
-      Rule: a rule
-        Example: an example
-          When a regular step
-          Then an assertion
+        Rule: a rule
+          Example: an example
+            When a regular step
+            Then an assertion
 
-        Example: another example
-          When a regular step
-          Then an assertion
+          Example: another example
+            When a regular step
+            Then an assertion
     `)
+  )
 }
 
 async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<IGherkinDocument> {
-  return await parseGherkinDocument(reindent`
-    Feature: a feature
-      Background:
-        Given a feature-level setup step
-
-      Rule: a rule
+  return await parseGherkinDocument(
+    reindent(`
+      Feature: a feature
         Background:
-          Given a rule-level setup step
+          Given a feature-level setup step
 
-        Example: an example
-          When a regular step
-          Then an assertion
+        Rule: a rule
+          Background:
+            Given a rule-level setup step
 
-        Example: another example
-          When a regular step
-          Then an assertion
+          Example: an example
+            When a regular step
+            Then an assertion
+
+          Example: another example
+            When a regular step
+            Then an assertion
     `)
+  )
 }

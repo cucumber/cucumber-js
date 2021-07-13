@@ -35,11 +35,13 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(reindent`
-          functionName('{string} def {string}', function (string, string2, callback) {
-            // comment
-            callback(null, 'pending');
-          });`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function (string, string2, callback) {
+              // comment
+              callback(null, 'pending');
+            });`)
+        )
       })
     })
 
@@ -58,11 +60,13 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(reindent`
-          functionName('{string} def {string}', function *(string, string2) {
-            // comment
-            return 'pending';
-          });`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function *(string, string2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -81,11 +85,13 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(reindent`
-          functionName('{string} def {string}', function (string, string2) {
-            // comment
-            return 'pending';
-          });`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function (string, string2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -104,11 +110,13 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(reindent`
-          functionName('{string} def {string}', function (string, string2) {
-            // comment
-            return 'pending';
-          });`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function (string, string2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -127,11 +135,13 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(reindent`
-          functionName('pattern\\'', function () {
-            // comment
-            return 'pending';
-          });`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('pattern\\'', function () {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -150,14 +160,16 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(reindent`
-          functionName('{int} {int}', function (int, int2) {
-          // functionName('{int} {float}', function (int, float) {
-          // functionName('{float} {int}', function (float, int) {
-          // functionName('{float} {float}', function (float, float2) {
-            // comment
-            return 'pending';
-          });`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{int} {int}', function (int, int2) {
+            // functionName('{int} {float}', function (int, float) {
+            // functionName('{float} {int}', function (float, int) {
+            // functionName('{float} {float}', function (float, float2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
   })
