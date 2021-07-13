@@ -15,8 +15,9 @@ describe('Usage Helpers', () => {
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a step', code)
         })
-        const { eventDataCollector } =
-          await getEnvelopesAndEventDataCollector({ supportCodeLibrary })
+        const { eventDataCollector } = await getEnvelopesAndEventDataCollector({
+          supportCodeLibrary,
+        })
 
         // Act
         const output = getUsage({

@@ -197,7 +197,6 @@
     "stacktrace-js": "^2.0.2",
     "string-argv": "^0.3.1",
     "tmp": "^0.2.1",
-    "util-arity": "^1.1.0",
     "verror": "^1.10.0"
   },
   "devDependencies": {
