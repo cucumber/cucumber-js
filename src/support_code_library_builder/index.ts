@@ -249,7 +249,6 @@ export class SupportCodeLibraryBuilder {
         id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
-        unwrappedCode: code,
         uri,
       })
     })
@@ -264,7 +263,6 @@ export class SupportCodeLibraryBuilder {
         id: this.newId(),
         line,
         options,
-        unwrappedCode: code,
         uri,
       })
     })
@@ -279,7 +277,6 @@ export class SupportCodeLibraryBuilder {
         id: this.newId(),
         line,
         options,
-        unwrappedCode: code,
         uri,
       })
     })
@@ -325,7 +322,6 @@ export class SupportCodeLibraryBuilder {
             line,
             options,
             pattern,
-            unwrappedCode: code,
             uri,
           })
         )

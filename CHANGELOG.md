@@ -15,7 +15,7 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
-* Remove `setDefinitionFunctionWrapper`
+* Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
 
 ### Added
 

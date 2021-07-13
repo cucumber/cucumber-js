@@ -40,7 +40,6 @@ export type TestStepFunction<WorldType> = (
 
 export interface IDefineStepOptions {
   timeout?: number
-  wrapperOptions?: any
 }
 
 export interface IDefineTestCaseHookOptions {
