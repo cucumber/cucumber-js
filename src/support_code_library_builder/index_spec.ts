@@ -83,11 +83,6 @@ describe('supportCodeLibraryBuilder', () => {
         const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
-        supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(
-          function (fn: Function) {
-            return fn()
-          }
-        )
 
         // Act
         const options = supportCodeLibraryBuilder.finalize()

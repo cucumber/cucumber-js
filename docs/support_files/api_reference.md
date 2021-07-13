@@ -132,37 +132,6 @@ Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.
 
 ---
 
-#### `setDefinitionFunctionWrapper(wrapper)`
-
-Set a function used to wrap step / hook definitions.
-
-The `wrapper` function is expected to take 2 arguments:
-
-- `fn` is the original function defined for the step - needs to be called in order for the step to be run.
-- `options` is the step specific `wrapperOptions` and may be undefined.
-
-A common use case is attaching a screenshot on step failure - this would typically look something like (for a promise-based setup):
-
-```javascript
-setDefinitionFunctionWrapper(function(fn, options) {
-  return function(...args) {
-    // call original function with correct `this` and arguments
-    // ensure return value of function is returned
-    return fn.apply(this, args)
-      .catch(error => {
-        // call a method on world
-        this.doScreenshot();
-        // rethrow error to avoid swallowing failure
-        throw error;
-      });
-  }
-})
-```
-
-When used, the result is wrapped again to ensure it has the same length of the original step / hook definition.
-
----
-
 #### `setWorldConstructor(constructor)`
 
 Set a custom world constructor, to override the default world constructor:

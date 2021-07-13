@@ -77,7 +77,6 @@ export interface IDefineSupportCodeMethods {
       code: TestStepFunction<WorldType>
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
-  setDefinitionFunctionWrapper: (fn: Function) => void
   setWorldConstructor: (fn: any) => void
   After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
     (<WorldType = IWorld>(
