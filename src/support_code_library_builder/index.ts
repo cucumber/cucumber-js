@@ -108,6 +108,9 @@ export class SupportCodeLibraryBuilder {
         this.defaultTimeout = milliseconds
       },
       setDefinitionFunctionWrapper: (fn) => {
+        console.log(
+          `setDefinitionFunctionWrapper is deprecated and will be removed in version 8.0.0 of cucumber-js. If this was used to wrap generator functions, please transition to using async / await. If this was used to wrap step definitions, please use BeforeStep / AfterStep hooks instead. If you had other use cases, please create an issue.`
+        )
         this.definitionFunctionWrapper = fn
       },
       setWorldConstructor: (fn) => {
