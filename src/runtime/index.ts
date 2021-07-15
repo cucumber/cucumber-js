@@ -11,11 +11,7 @@ import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
-import {
-  ITestRunStopwatch,
-  PredictableTestRunStopwatch,
-  RealTestRunStopwatch,
-} from './stopwatch'
+import { ITestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 
 export interface INewRuntimeOptions {
@@ -29,7 +25,6 @@ export interface INewRuntimeOptions {
 
 export interface IRuntimeOptions {
   dryRun: boolean
-  predictableIds: boolean
   failFast: boolean
   filterStacktraces: boolean
   retry: number
@@ -59,9 +54,7 @@ export default class Runtime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    this.stopwatch = new RealTestRunStopwatch()
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds

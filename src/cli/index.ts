@@ -30,7 +30,7 @@ import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
 
-const { incrementing, uuid } = IdGenerator
+const { uuid } = IdGenerator
 
 export interface ICliRunResult {
   shouldExitImmediately: boolean
@@ -183,10 +183,7 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { shouldExitImmediately: true, success: true }
     }
-    const newId =
-      configuration.predictableIds && configuration.parallel <= 1
-        ? incrementing()
-        : uuid()
+    const newId = uuid()
     const supportCodeLibrary = this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,
