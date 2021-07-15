@@ -6,6 +6,7 @@ Before anything else, thank you. Thank you for taking some of your precious time
 
 * install [Node.Js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/)
 * `yarn install`
+* `yarn test` # Compile typescript and run the tests
 
 ## Tests
 
