@@ -59,7 +59,7 @@ export interface IDefineTestRunHookOptions {
 
 export interface IParameterTypeDefinition<T> {
   name: string
-  regexp: RegExp
+  regexp: readonly RegExp[] | readonly string[] | RegExp | string
   transformer: (...match: string[]) => T
   useForSnippets?: boolean
   preferForRegexpMatch?: boolean

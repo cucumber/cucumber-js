@@ -23,6 +23,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * Prevent duplicate scenario execution where the same feature is targeted in multiple line expressions ([#1706](https://github.com/cucumber/cucumber-js/issues/1706))
 * Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables 
+* IParameterTypeDefinition regexp fix [1702](https://github.com/cucumber/cucumber-js/issues/1702)
 
 ## [7.3.0] (2021-06-17)
 
