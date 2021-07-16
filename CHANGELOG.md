@@ -15,6 +15,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Deprecated
 
+* Deprecate `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+
 ### Removed
 
 ### Fixed
