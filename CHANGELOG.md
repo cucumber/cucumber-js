@@ -29,6 +29,8 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 * Prevent duplicate scenario execution where the same feature is targeted in multiple line expressions ([#1706](https://github.com/cucumber/cucumber-js/issues/1706))
 * Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables
+* Re-add color functions for use with custom formatters [1582](https://github.com/cucumber/cucumber-js/issues/1582)
+* IParameterTypeDefinition regexp fix [1702](https://github.com/cucumber/cucumber-js/issues/1702)
 
 ## [7.3.0] (2021-06-17)
 
