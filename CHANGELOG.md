@@ -26,7 +26,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * Prevent duplicate scenario execution where the same feature is targeted in multiple line expressions ([#1706](https://github.com/cucumber/cucumber-js/issues/1706))
 * Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables 
-* errorMessage and errorStack functions are not found [1582](https://github.com/cucumber/cucumber-js/issues/1582)
+* Re-add color functions for use with custom formatters [1582](https://github.com/cucumber/cucumber-js/issues/1582)
 
 ## [7.3.0] (2021-06-17)
 
