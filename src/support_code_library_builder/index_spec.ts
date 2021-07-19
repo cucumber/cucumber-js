@@ -38,66 +38,40 @@ describe('supportCodeLibraryBuilder', () => {
   })
 
   describe('step', () => {
-    describe('without definition function wrapper', () => {
-      it('adds a step definition and makes original code available', function () {
-        // Arrange
-        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
+    it('adds a step definition and makes original code available', function () {
+      // Arrange
+      const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+      supportCodeLibraryBuilder.reset('path/to/project', uuid())
+      supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
 
-        // Act
-        const options = supportCodeLibraryBuilder.finalize()
+      // Act
+      const options = supportCodeLibraryBuilder.finalize()
 
-        // Assert
-        expect(options.stepDefinitions).to.have.lengthOf(1)
-        const stepDefinition = options.stepDefinitions[0]
-        expect(stepDefinition.code).to.eql(step)
-        expect(stepDefinition.unwrappedCode).to.eql(step)
-      })
-
-      it('uses the canonical ids provided in order', function () {
-        // Arrange
-        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
-        supportCodeLibraryBuilder.methods.defineStep('I do another thing', step)
-
-        // Act
-        const options = supportCodeLibraryBuilder.finalize({
-          stepDefinitionIds: ['one', 'two'],
-          beforeTestCaseHookDefinitionIds: [],
-          afterTestCaseHookDefinitionIds: [],
-        })
-
-        // Assert
-        expect(options.stepDefinitions).to.have.lengthOf(2)
-        expect(
-          options.stepDefinitions.map((stepDefinition) => stepDefinition.id)
-        ).to.deep.eq(['one', 'two'])
-      })
+      // Assert
+      expect(options.stepDefinitions).to.have.lengthOf(1)
+      const stepDefinition = options.stepDefinitions[0]
+      expect(stepDefinition.code).to.eql(step)
     })
 
-    describe('with definition function wrapper', () => {
-      it('adds a step definition and makes original code available', function () {
-        // Arrange
-        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        supportCodeLibraryBuilder.reset('path/to/project', uuid())
-        supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
-        supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(
-          function (fn: Function) {
-            return fn()
-          }
-        )
+    it('uses the canonical ids provided in order', function () {
+      // Arrange
+      const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+      supportCodeLibraryBuilder.reset('path/to/project', uuid())
+      supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
+      supportCodeLibraryBuilder.methods.defineStep('I do another thing', step)
 
-        // Act
-        const options = supportCodeLibraryBuilder.finalize()
-
-        // Assert
-        expect(options.stepDefinitions).to.have.lengthOf(1)
-        const stepDefinition = options.stepDefinitions[0]
-        expect(stepDefinition.code).not.to.eql(step)
-        expect(stepDefinition.unwrappedCode).to.eql(step)
+      // Act
+      const options = supportCodeLibraryBuilder.finalize({
+        stepDefinitionIds: ['one', 'two'],
+        beforeTestCaseHookDefinitionIds: [],
+        afterTestCaseHookDefinitionIds: [],
       })
+
+      // Assert
+      expect(options.stepDefinitions).to.have.lengthOf(2)
+      expect(
+        options.stepDefinitions.map((stepDefinition) => stepDefinition.id)
+      ).to.deep.eq(['one', 'two'])
     })
   })
 

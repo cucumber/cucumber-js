@@ -40,7 +40,6 @@ export type TestStepFunction<WorldType> = (
 
 export interface IDefineStepOptions {
   timeout?: number
-  wrapperOptions?: any
 }
 
 export interface IDefineTestCaseHookOptions {
@@ -59,7 +58,7 @@ export interface IDefineTestRunHookOptions {
 
 export interface IParameterTypeDefinition<T> {
   name: string
-  regexp: RegExp
+  regexp: readonly RegExp[] | readonly string[] | RegExp | string
   transformer: (...match: string[]) => T
   useForSnippets?: boolean
   preferForRegexpMatch?: boolean
@@ -77,7 +76,6 @@ export interface IDefineSupportCodeMethods {
       code: TestStepFunction<WorldType>
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
-  setDefinitionFunctionWrapper: (fn: Function) => void
   setWorldConstructor: (fn: any) => void
   After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
     (<WorldType = IWorld>(
