@@ -15,9 +15,15 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Deprecated
 
-* Deprecate `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
-
 ### Removed
+
+### Fixed
+
+## [7.3.1] (2021-07-20)
+
+### Deprecated
+
+* Deprecate `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
 
 ### Fixed
 
@@ -1858,7 +1864,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.0...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.1...master
+[7.3.1]:        https://github.com/cucumber/cucumber-js/compare/7.3.1-rc.0...7.0.0
 [7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
 [7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
