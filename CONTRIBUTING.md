@@ -10,7 +10,7 @@ Before anything else, thank you. Thank you for taking some of your precious time
 
 ## Tests
 
-See the `package.json` scripts section for how to run each category of tests.
+Now type `yarn run` or see the `package.json` scripts section for how to run each category of tests.
 
 * lint - `yarn lint`
   * [prettier](https://github.com/prettier/prettier)
