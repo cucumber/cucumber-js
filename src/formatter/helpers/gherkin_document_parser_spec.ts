@@ -12,7 +12,7 @@ import {
 } from '../../../test/gherkin_helpers'
 import * as messages from '@cucumber/messages'
 import IGherkinDocument = messages.GherkinDocument
-import { reindent } from '../../../test/formatter_helpers'
+import { reindent } from 'reindent-template-literals'
 
 describe('GherkinDocumentParser', () => {
   describe('getGherkinStepMap', () => {

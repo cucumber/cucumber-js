@@ -8,7 +8,7 @@ import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import { reindent } from '../../../test/formatter_helpers'
+import { reindent } from 'reindent-template-literals'
 
 function generateExpressions(text: string): readonly GeneratedExpression[] {
   const parameterTypeRegistry = new ParameterTypeRegistry()

@@ -3431,6 +3431,11 @@ regexpp@^3.0.0, regexpp@^3.1.0:
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.1.0.tgz#206d0ad0a5648cffbdb8ae46438f3dc51c9f78e2"
   integrity sha512-ZOIzd8yVsQQA7j8GCSlPGXwg5PfmA1mrq0JP4nGhh54LaKN3xdai/vHUDu74pKwV8OxseMS65u2NImosQcSD0Q==
 
+reindent-template-literals@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/reindent-template-literals/-/reindent-template-literals-1.0.0.tgz#7c6fa92f825f342515ea6e1c9e0cbe2d8671ce3c"
+  integrity sha512-q5ttxEAkS6dWL3oGyQS5wnvwZc2zzOpE679uZLAS0izTk6c1LkC7S4q6ca6gq/hL2Cokw1ozInee/mkPsXW4WA==
+
 release-zalgo@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/release-zalgo/-/release-zalgo-1.0.0.tgz#09700b7e5074329739330e535c5a90fb67851730"
