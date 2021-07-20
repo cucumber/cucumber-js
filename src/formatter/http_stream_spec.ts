@@ -159,4 +159,32 @@ describe('HttpStream', () => {
     stream.write('hello')
     stream.end()
   })
+
+  for (let i = 0; i < 1000; i++) {
+    it(`runs race condition test ${i}`, (callback) => {
+      const stream = new HttpStream(
+        `http://localhost:${port}/api/reports`,
+        'GET',
+        {}
+      )
+
+      const readerStream = new Writable({
+        objectMode: true,
+        write: function (responseBody: string, encoding, writeCallback) {
+          writeCallback()
+        },
+      })
+
+      stream.pipe(readerStream)
+      readerStream.on('error', callback)
+      readerStream.on('finish', () => {
+        reportServer
+          .stop()
+          .then(() => callback())
+          .catch(callback)
+      })
+      stream.write('hello')
+      stream.end()
+    })
+  }
 })
