@@ -8,18 +8,15 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         os:
           - ubuntu-latest
           - windows-latest
         node-version: [12.x, 14.x, 16.x]
-        experimental: [false]
         include:
           - os: ubuntu-latest
             node-version: 15.x
-            experimental: true
       fail-fast: false
 
     steps:
