@@ -6,7 +6,6 @@ import {
   IWorkerCommandRun,
 } from './command_types'
 import { EventEmitter } from 'events'
-import bluebird from 'bluebird'
 import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import TestCaseRunner from '../test_case_runner'
@@ -145,7 +144,7 @@ export default class Worker {
     if (this.options.dryRun) {
       return
     }
-    await bluebird.each(testRunHookDefinitions, async (hookDefinition) => {
+    for (const hookDefinition of testRunHookDefinitions) {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,
@@ -163,6 +162,6 @@ export default class Worker {
           `${name} hook errored on worker ${this.id}, process exiting: ${location}`
         )
       }
-    })
+    }
   }
 }

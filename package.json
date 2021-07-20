@@ -176,7 +176,6 @@
     "@cucumber/messages": "^16.0.1",
     "@cucumber/tag-expressions": "^3.0.1",
     "assertion-error-formatter": "^3.0.0",
-    "bluebird": "^3.7.2",
     "capital-case": "^1.0.4",
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
@@ -187,7 +186,6 @@
     "figures": "^3.2.0",
     "glob": "^7.1.6",
     "indent-string": "^4.0.0",
-    "is-generator": "^1.0.3",
     "is-stream": "^2.0.0",
     "knuth-shuffle-seeded": "^1.0.6",
     "mz": "^2.7.0",
@@ -198,7 +196,6 @@
     "stacktrace-js": "^2.0.2",
     "string-argv": "^0.3.1",
     "tmp": "^0.2.1",
-    "util-arity": "^1.1.0",
     "verror": "^1.10.0"
   },
   "devDependencies": {
@@ -206,7 +203,6 @@
     "@cucumber/message-streams": "2.1.0",
     "@cucumber/query": "10.1.0",
     "@sinonjs/fake-timers": "7.1.2",
-    "@types/bluebird": "3.5.35",
     "@types/chai": "4.2.19",
     "@types/dirty-chai": "2.0.2",
     "@types/express": "4.17.12",
