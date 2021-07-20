@@ -60,7 +60,7 @@ export async function testFormatter({
     output += data
   }
   const passThrough = new PassThrough()
-  FormatterBuilder.build(type, {
+  await FormatterBuilder.build(type, {
     cwd: '',
     eventBroadcaster,
     eventDataCollector,

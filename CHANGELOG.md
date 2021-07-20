@@ -19,6 +19,8 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 ### Added
 
+* Add support for user code as native ES modules
+
 ### Changed
 
 ### Deprecated

@@ -4,11 +4,7 @@ import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 
 export default class ProfileLoader {
-  private readonly directory: string
-
-  constructor(directory: string) {
-    this.directory = directory
-  }
+  constructor(private readonly directory: string) {}
 
   async getDefinitions(): Promise<Record<string, string>> {
     const definitionsFilePath = path.join(this.directory, 'cucumber.js')
@@ -16,7 +12,8 @@ export default class ProfileLoader {
     if (!exists) {
       return {}
     }
-    const definitions = require(definitionsFilePath) // eslint-disable-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const definitions = require(definitionsFilePath)
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }

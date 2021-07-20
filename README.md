@@ -67,6 +67,7 @@ The following documentation is for master. See below for documentation for older
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
 * Guides
+  * [ES Modules](./docs/esm.md)
   * [Running in parallel](./docs/parallel.md)
   * [Retrying failing scenarios](./docs/retry.md)
   * [Profiles](./docs/profiles.md)

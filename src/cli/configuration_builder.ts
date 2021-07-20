@@ -76,7 +76,7 @@ export default class ConfigurationBuilder {
       }
       supportCodePaths = await this.expandPaths(
         unexpandedSupportCodePaths,
-        '.js'
+        '.@(js|mjs)'
       )
     }
     return {
