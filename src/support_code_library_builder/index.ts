@@ -1,4 +1,5 @@
-import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
+import { buildParameterType } from './build_parameter_type'
+import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
