@@ -6,15 +6,16 @@ import { ILineAndUri } from '../types'
 
 export function getDefinitionLineAndUri(
   cwd: string,
-  exclude = isFileNameInCucumber
+  isExcluded = isFileNameInCucumber
 ): ILineAndUri {
   let line: number
   let uri: string
   try {
     const stackframes = StackTrace.getSync()
-    const stackframe = stackframes.find((frame) => {
-      return !exclude(frame.getFileName())
-    })
+    const stackframe = stackframes.find(
+      (frame) =>
+        frame.getFileName() !== __filename && !isExcluded(frame.getFileName())
+    )
     if (stackframe != null) {
       line = stackframe.getLineNumber()
       uri = stackframe.getFileName()
