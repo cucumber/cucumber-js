@@ -4,13 +4,16 @@ import { isFileNameInCucumber } from '../stack_trace_filter'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { ILineAndUri } from '../types'
 
-export function getDefinitionLineAndUri(cwd: string): ILineAndUri {
+export function getDefinitionLineAndUri(
+  cwd: string,
+  exclude = isFileNameInCucumber
+): ILineAndUri {
   let line: number
   let uri: string
   try {
     const stackframes = StackTrace.getSync()
     const stackframe = stackframes.find((frame) => {
-      return !isFileNameInCucumber(frame.getFileName())
+      return !exclude(frame.getFileName())
     })
     if (stackframe != null) {
       line = stackframe.getLineNumber()
