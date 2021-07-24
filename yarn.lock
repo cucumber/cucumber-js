@@ -1359,10 +1359,10 @@ depd@~1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
-dependency-lint@7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/dependency-lint/-/dependency-lint-7.0.1.tgz#10cc1aa087daed9def2c248ab3f22db74031ee7c"
-  integrity sha512-ucOH3t8ijtspv92Vjwd0V0cbP8yk8wemoj8sxVypUvtekHyZAiX4D4b/AekUFOAwrFCXja9950KW6AXeq25hOA==
+dependency-lint@7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/dependency-lint/-/dependency-lint-7.1.0.tgz#8d27414b55b8ad63870dcfe18ec0b53827ba7d6e"
+  integrity sha512-N04kRN80zaiBxzOLVyvGANeaGQQuAI6Pkgse22BGjvtUFEMcD9j4ob4S8DcayMp8+BVXso9Z80pB88xQJKjcDw==
   dependencies:
     bluebird "^3.4.3"
     builtin-modules "^3.0.0"

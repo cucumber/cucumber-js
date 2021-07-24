@@ -229,7 +229,7 @@
     "chai": "4.3.4",
     "chai-exclude": "2.0.3",
     "coffeescript": "2.5.1",
-    "dependency-lint": "7.0.1",
+    "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
     "eslint": "7.29.0",
     "eslint-config-prettier": "8.3.0",
