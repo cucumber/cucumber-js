@@ -12,8 +12,7 @@ executedModules:
       - version
 
 ignoreErrors:
-  missing:
-    - '@tsd/typescript'
+  missing: []
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
