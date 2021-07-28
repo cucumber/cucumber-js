@@ -18,7 +18,7 @@ Given I have 42 cucumbers in my belly
 
 JS:
 ```js
-import { Given } from 'cucumber';
+import { Given } from '@cucumber/cucumber';
 
 Given('I have {int} cucumbers in my belly', function (cucumberCount) {
   assert.equal(this.responseStatus, cucumberCount)
@@ -66,36 +66,6 @@ When(/^I view my profile$/, function () {
   return this.driver.findElement({ css: '.profile-link' }).then(function(element) {
     return element.click();
   });
-});
-```
-
-
-## Definition function wrapper
-
-If you would like to wrap step or hook definitions in with some additional logic you can use `setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
-
-```javascript
-// features/step_definitions/file_steps.js
-const { Then } = require('@cucumber/cucumber');
-const assert = require('assert');
-const mzFs = require('mz/fs');
-
-Then(/^the file named (.*) is empty$/, function *(fileName) {
-  contents = yield mzFs.readFile(fileName, 'utf8');
-  assert.equal(contents, '');
-});
-
-// features/support/setup.js
-const { setDefinitionFunctionWrapper } = require('@cucumber/cucumber');
-const isGenerator = require('is-generator');
-const Promise = require('bluebird');
-
-setDefinitionFunctionWrapper(function (fn) {
-  if (isGenerator.fn(fn)) {
-    return Promise.coroutine(fn);
-  } else {
-    return fn;
-  }
 });
 ```
 

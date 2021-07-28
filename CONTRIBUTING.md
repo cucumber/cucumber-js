@@ -5,11 +5,12 @@ Before anything else, thank you. Thank you for taking some of your precious time
 ## Setup
 
 * install [Node.Js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/)
-* `yarn install`
+* `yarn install` - Install dependencies
+* `yarn test` - Compile typescript and run the tests
 
 ## Tests
 
-See the `package.json` scripts section for how to run each category of tests.
+Now type `yarn run` or see the `package.json` scripts section for how to run each category of tests.
 
 * lint - `yarn lint`
   * [prettier](https://github.com/prettier/prettier)
@@ -132,6 +133,7 @@ Push to git:
     git push
     git push --tags
 
+* Edit and publish the [release entry on GitHub](https://github.com/cucumber/cucumber-js/releases)
 * Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
   * Update the cucumber-js version `data/versions.yaml`
   * Ensure the javascript examples are up to date
