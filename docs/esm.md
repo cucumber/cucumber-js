@@ -28,3 +28,5 @@ As well as support code, these things can also be in ES modules syntax:
 - Custom snippets
 
 You can use ES modules selectively/incrementally - so you can have a mixture of CommonJS and ESM in the same project.
+
+When using a transpiler for e.g. TypeScript, ESM isn't supported - you'll need to configure your transpiler to output modules in CommonJS syntax (for now).
