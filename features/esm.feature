@@ -1,8 +1,8 @@
+@esm
 Feature: ES modules support
 
   cucumber-js works with native ES modules
 
-  @esm
   Scenario Outline: native module syntax works in support code, formatters and snippets
     Given a file named "features/a.feature" with:
       """
@@ -40,7 +40,6 @@ Feature: ES modules support
       |              |
       | --parallel 2 |
 
-  @esm
   Scenario: .mjs support code files are matched by default
     Given a file named "features/a.feature" with:
       """
