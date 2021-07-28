@@ -105,8 +105,9 @@ const FormatterBuilder = {
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = await importer(pathToFileURL(fullSyntaxPath))
-      Syntax = FormatterBuilder.resolveConstructor(Syntax)
+      Syntax = FormatterBuilder.resolveConstructor(
+        await importer(pathToFileURL(fullSyntaxPath))
+      )
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
