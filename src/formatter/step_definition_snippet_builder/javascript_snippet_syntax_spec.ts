@@ -8,6 +8,7 @@ import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
+import { reindent } from 'reindent-template-literals'
 
 function generateExpressions(text: string): readonly GeneratedExpression[] {
   const parameterTypeRegistry = new ParameterTypeRegistry()
@@ -34,11 +35,13 @@ describe('JavascriptSnippetSyntax', () => {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(`\
-functionName('{string} def {string}', function (string, string2, callback) {
-  // comment
-  callback(null, 'pending');
-});`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function (string, string2, callback) {
+              // comment
+              callback(null, 'pending');
+            });`)
+        )
       })
     })
 
@@ -57,11 +60,13 @@ functionName('{string} def {string}', function (string, string2, callback) {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(`\
-functionName('{string} def {string}', function *(string, string2) {
-  // comment
-  return 'pending';
-});`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function *(string, string2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -80,11 +85,13 @@ functionName('{string} def {string}', function *(string, string2) {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(`\
-functionName('{string} def {string}', function (string, string2) {
-  // comment
-  return 'pending';
-});`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function (string, string2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -103,11 +110,13 @@ functionName('{string} def {string}', function (string, string2) {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(`\
-functionName('{string} def {string}', function (string, string2) {
-  // comment
-  return 'pending';
-});`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{string} def {string}', function (string, string2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -126,11 +135,13 @@ functionName('{string} def {string}', function (string, string2) {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(`\
-functionName('pattern\\'', function () {
-  // comment
-  return 'pending';
-});`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('pattern\\'', function () {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
 
@@ -149,14 +160,16 @@ functionName('pattern\\'', function () {
         const result = syntax.build(buildOptions)
 
         // Assert
-        expect(result).to.eql(`\
-functionName('{int} {int}', function (int, int2) {
-// functionName('{int} {float}', function (int, float) {
-// functionName('{float} {int}', function (float, int) {
-// functionName('{float} {float}', function (float, float2) {
-  // comment
-  return 'pending';
-});`)
+        expect(result).to.eql(
+          reindent(`
+            functionName('{int} {int}', function (int, int2) {
+            // functionName('{int} {float}', function (int, float) {
+            // functionName('{float} {int}', function (float, int) {
+            // functionName('{float} {float}', function (float, float2) {
+              // comment
+              return 'pending';
+            });`)
+        )
       })
     })
   })

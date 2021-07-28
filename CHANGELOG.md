@@ -9,10 +9,13 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ----
 ## [Unreleased] (In Git)
 
+See the [migration guide](./docs/migration.md) for details of how to migrate from 7.x.x to 8.x.x
+
 ### Breaking changes
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
-* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`) 
+* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
+* Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
 
 ### Added
 
@@ -26,8 +29,18 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+## [7.3.1] (2021-07-20)
+
+### Deprecated
+
+* Deprecate `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+
+### Fixed
+
 * Prevent duplicate scenario execution where the same feature is targeted in multiple line expressions ([#1706](https://github.com/cucumber/cucumber-js/issues/1706))
-* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables 
+* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables
+* Re-add color functions for use with custom formatters [1582](https://github.com/cucumber/cucumber-js/issues/1582)
+* IParameterTypeDefinition regexp fix [1702](https://github.com/cucumber/cucumber-js/issues/1702)
 
 ## [7.3.0] (2021-06-17)
 
