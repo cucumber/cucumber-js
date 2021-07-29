@@ -33,10 +33,16 @@ This option is repeatable, so you can use it multiple times and the objects will
 
 The Summary Formatter outputs a summary of the test run's results.
 
-If everything passed, this will be pretty concise:
+If everything passed, this will be short and sweet:
 
 ![](./images/summary_green.gif)
 
 Where there are failures, you'll see the detail of them:
 
 ![](./images/summary_red.gif)
+
+### `progress`
+
+The Progress Formatter has the same output as the Summary Formatter at the end of the test run, but also provides concise real-time feedback each time a step or hook completes:
+
+![](./images/progress_green.gif)
