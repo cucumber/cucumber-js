@@ -2,7 +2,7 @@
 
 In cucumber-js, Formatters ingest data about your test run in real time and then output content, either to the console or a file, in a useful format. (Some frameworks refer to this kind of thing as "reporters".)
 
-cucumber-js provides many built-in Formatters, plus building blocks with which you can write your own formatter.
+cucumber-js provides many built-in Formatters, plus building blocks with which you can [write your own](./custom_formatters.md).
 
 You can specify one or more formats via the `--format <TYPE[:PATH]>` CLI option, where `TYPE` is one of:
 
@@ -69,3 +69,37 @@ You can:
 - See attachments rendered in-place
 - Filter to specific statuses
 - Search by keywords or tag expressions
+
+### `usage`
+
+The Usage Formatter lists your step definitions and tells you about usages in your scenarios, including the duration of each usage, and any unused steps. Here's an example of the output:
+
+```
+┌───────────────────────────────────────┬──────────┬─────────────────────────────────┐
+│ Pattern / Text                        │ Duration │ Location                        │
+├───────────────────────────────────────┼──────────┼─────────────────────────────────┤
+│ an empty todo list                    │ 760.33ms │ support/steps/steps.ts:6        │
+│   an empty todo list                  │ 820ms    │ features/empty.feature:4        │
+│   an empty todo list                  │ 761ms    │ features/adding-todos.feature:4 │
+│   an empty todo list                  │ 700ms    │ features/empty.feature:4        │
+├───────────────────────────────────────┼──────────┼─────────────────────────────────┤
+│ I add the todo {string}               │ 432.00ms │ support/steps/steps.ts:10       │
+│   I add the todo "buy some cheese"    │ 432ms    │ features/adding-todos.feature:5 │
+├───────────────────────────────────────┼──────────┼─────────────────────────────────┤
+│ my cursor is ready to create a todo   │ 53.00ms  │ support/steps/steps.ts:27       │
+│   my cursor is ready to create a todo │ 101ms    │ features/empty.feature:10       │
+│   my cursor is ready to create a todo │ 5ms      │ features/adding-todos.feature:8 │
+├───────────────────────────────────────┼──────────┼─────────────────────────────────┤
+│ no todos are listed                   │ 46.00ms  │ support/steps/steps.ts:15       │
+│   no todos are listed                 │ 46ms     │ features/empty.feature:7        │
+├───────────────────────────────────────┼──────────┼─────────────────────────────────┤
+│ the todos are:                        │ 31.00ms  │ support/steps/steps.ts:21       │
+│   the todos are:                      │ 31ms     │ features/adding-todos.feature:6 │
+├───────────────────────────────────────┼──────────┼─────────────────────────────────┤
+│ I remove the todo {string}            │ UNUSED   │ support/steps/steps.ts:33       │
+└───────────────────────────────────────┴──────────┴─────────────────────────────────┘
+```
+
+### `usage-json`
+
+Does what the Usage Formatter does, but outputs JSON, which can be output to a file and then consumed by other tools.
