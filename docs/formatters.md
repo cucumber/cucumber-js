@@ -37,6 +37,12 @@ If everything passed, this will be short and sweet:
 
 ![](./images/summary_green.gif)
 
+If there were issues, you'll see useful details including:
+
+- Failed hooks or steps including error messages and stack traces
+- Locations of any pending steps
+- Snippets to implement any undefined steps
+
 ### `progress`
 
 The Progress Formatter has the same output as the Summary Formatter at the end of the test run, but also provides concise real-time feedback each time a step or hook completes:
