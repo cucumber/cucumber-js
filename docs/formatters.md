@@ -56,3 +56,16 @@ Similar to the Progress Formatter, but provides a real-time updating progress ba
 ![](./images/progress_bar_green.gif)
 
 *Note: the Progress Bar Formatter will only work with a TTY terminal (and not, for example, a file stream).*
+
+### `html`
+
+The HTML Formatter produces a rich interactive report bundled as a standalone HTML page:
+
+![](./images/html_formatter.png)
+
+You can:
+
+- See detailed results including error messages and stack traces
+- See attachments rendered in-place
+- Filter to specific statuses
+- Search by keywords or tag expressions
