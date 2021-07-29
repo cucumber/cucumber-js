@@ -46,3 +46,11 @@ Where there are failures, you'll see the detail of them:
 The Progress Formatter has the same output as the Summary Formatter at the end of the test run, but also provides concise real-time feedback each time a step or hook completes:
 
 ![](./images/progress_green.gif)
+
+### `progress-bar`
+
+Similar to the Progress Formatter, but provides a real-time updating progress bar based on the total number of steps to be executed in the test run:
+
+![](./images/progress_bar_green.gif)
+
+*Note: the Progress Bar Formatter will only work with a TTY terminal (and not, for example, a file stream).*
