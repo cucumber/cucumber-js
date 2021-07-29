@@ -45,7 +45,7 @@ Where there are failures, you'll see the detail of them:
 
 The Progress Formatter has the same output as the Summary Formatter at the end of the test run, but also provides concise real-time feedback each time a step or hook completes:
 
-![](./images/progress_green.gif)
+![](./images/progress.gif)
 
 ### `progress-bar`
 
