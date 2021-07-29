@@ -15,7 +15,7 @@ If `PATH` is supplied, the formatter prints to the given file, otherwise it prin
 Some notes on specifying Formatters:
 
 * If multiple formatters are specified with the same output, only the last is used.
-* If no formatter for `stdout` is specified, we default to the `summary` formatter.
+* If no formatter for `stdout` is specified, we default to the `progress` formatter.
 
 ## Options
 
@@ -29,6 +29,14 @@ This option is repeatable, so you can use it multiple times and the objects will
 
 ## Built-in formatters
 
-### Summary
+### `summary`
 
-TBA
+The Summary Formatter outputs a summary of the test run's results.
+
+If everything passed, this will be pretty concise:
+
+![](./images/summary_green.gif)
+
+Where there are failures, you'll see the detail of them:
+
+![](./images/summary_red.gif)
