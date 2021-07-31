@@ -27,6 +27,10 @@ $ cucumber-js --format-options '{"someOption":true}'
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
+Some options offered by built-in formatters:
+
+- `colorsEnabled` - if set to `false`, colors in terminal output are disabled.
+
 ## Built-in formatters
 
 ### `summary`
@@ -41,7 +45,7 @@ If there were issues, you'll see useful details including:
 
 - Failed hooks or steps including error messages and stack traces
 - Locations of any pending steps
-- Snippets to implement any undefined steps
+- [Snippets](./snippets.md) to implement any undefined steps
 
 ### `progress`
 
@@ -69,6 +73,10 @@ You can:
 - See attachments rendered in-place
 - Filter to specific statuses
 - Search by keywords or tag expressions
+
+### `snippets`
+
+The Snippets Formatter doesn't output anything regarding the test run; it just prints [Snippets to implement any undefined steps](./snippets.md). This is useful when you want to quickly zero in on the steps you have to implement and grab the snippet code for them in one go.
 
 ### `usage`
 
