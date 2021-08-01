@@ -3375,7 +3375,7 @@ regexpp@^3.0.0, regexpp@^3.1.0:
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.2.0.tgz#0425a2768d8f23bad70ca4b90461fa2f1213e1b2"
   integrity sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==
 
-reindent-template-literals@^1.1.0:
+reindent-template-literals@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/reindent-template-literals/-/reindent-template-literals-1.1.0.tgz#587a89b6ca91f35a5ea061ab4dade65492717648"
   integrity sha512-Zbf5y+QqimAwwPef+FrXdC+MCbpg0mo9YjSHhRMglfLJrqPXes5jXTnVZP8YCwLhVVne2ZMxu14/x+m8xkZr4w==
