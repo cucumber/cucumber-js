@@ -534,10 +534,10 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
 
-"@types/progress@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@types/progress/-/progress-2.0.3.tgz#7ccbd9c6d4d601319126c469e73b5bb90dfc8ccc"
-  integrity sha512-bPOsfCZ4tsTlKiBjBhKnM8jpY5nmIll166IPD58D92hR7G7kZDfx5iB9wGF4NfZrdKolebjeAr3GouYkSGoJ/A==
+"@types/progress@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/progress/-/progress-2.0.4.tgz#01f8eb06a5f6be396b81d19a20f273cea11ef9b6"
+  integrity sha512-vXGO4Hkk1QeLGRtOD9D8q2K0peciCA46Qo3n/w8joyW5BYx80C2h3b7qk5MkcRnncQRPlFm+KA73BJRfVl+yyw==
   dependencies:
     "@types/node" "*"
 
