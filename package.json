@@ -217,7 +217,7 @@
     "@types/semver": "7.3.8",
     "@types/sinon-chai": "3.2.5",
     "@types/sinonjs__fake-timers": "6.0.2",
-    "@types/stream-buffers": "3.0.3",
+    "@types/stream-buffers": "3.0.4",
     "@types/tmp": "0.2.0",
     "@types/verror": "1.10.4",
     "@typescript-eslint/eslint-plugin": "4.28.1",
